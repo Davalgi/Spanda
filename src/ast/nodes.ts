@@ -20,7 +20,7 @@ export type UnitKind =
   | "deg"
   | "Hz";
 
-export type SynapseType =
+export type SpandaType =
   | { kind: "void" }
   | { kind: "bool" }
   | { kind: "number"; unit: UnitKind }

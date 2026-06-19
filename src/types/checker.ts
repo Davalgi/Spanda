@@ -7,7 +7,7 @@ import type {
   SafetyZoneDecl,
   Stmt,
   UnitKind,
-  SynapseType,
+  SpandaType,
 } from "../ast/nodes.js";
 import { resolveImport } from "../lib/registry.js";
 import { resolveAiImport } from "../ai/registry.js";
@@ -36,7 +36,7 @@ import {
 
 type SymbolEntry = {
   name: string;
-  roboType: SynapseType;
+  roboType: SpandaType;
   kind: "sensor" | "actuator" | "variable" | "behavior" | "topic" | "service" | "action" | "robot" | "ai_model" | "agent" | "safety";
   sensorType?: string;
   actuatorType?: string;
@@ -392,7 +392,7 @@ class TypeChecker {
     }
   }
 
-  private checkExpr(expr: Expr): SynapseType {
+  private checkExpr(expr: Expr): SpandaType {
     switch (expr.kind) {
       case "LiteralExpr":
         if (typeof expr.value === "boolean") return { kind: "bool" };
@@ -449,7 +449,7 @@ class TypeChecker {
     }
   }
 
-  private checkMember(expr: import("../ast/nodes.js").MemberExpr): SynapseType {
+  private checkMember(expr: import("../ast/nodes.js").MemberExpr): SpandaType {
     if (expr.object.kind === "IdentExpr") {
       const sym = this.symbols.get(expr.object.name);
       if (sym?.kind === "sensor" && sym.sensorType === "Lidar" && expr.property === "nearest_distance") {
@@ -498,7 +498,7 @@ class TypeChecker {
     return { kind: "void" };
   }
 
-  private checkCall(expr: import("../ast/nodes.js").CallExpr): SynapseType {
+  private checkCall(expr: import("../ast/nodes.js").CallExpr): SpandaType {
     if (expr.callee.kind === "IdentExpr") {
       const fn = BUILTIN_FUNCTIONS[expr.callee.name];
       if (!fn) {
@@ -619,7 +619,7 @@ class TypeChecker {
     return method.returns;
   }
 
-  private typesCompatible(expected: SynapseType, actual: SynapseType): boolean {
+  private typesCompatible(expected: SpandaType, actual: SpandaType): boolean {
     if (expected.kind === actual.kind) {
       if (expected.kind === "number" && actual.kind === "number") {
         return unitsCompatible(expected.unit, actual.unit);
@@ -638,12 +638,12 @@ class TypeChecker {
     return false;
   }
 
-  private assertNamedType(actual: SynapseType, typeName: string, line: number, column: number): void {
+  private assertNamedType(actual: SpandaType, typeName: string, line: number, column: number): void {
     if (actual.kind === "named" && actual.name === typeName) return;
     this.error(`Expected ${typeName}, got ${actual.kind}`, line, column);
   }
 
-  private assertCompatible(expected: SynapseType, actual: SynapseType, line: number, column: number): void {
+  private assertCompatible(expected: SpandaType, actual: SpandaType, line: number, column: number): void {
     if (expected.kind === "void" && actual.kind === "void") return;
     if (!this.typesCompatible(expected, actual)) {
       if (expected.kind === "number" && actual.kind === "number") {

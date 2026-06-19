@@ -18,8 +18,8 @@ export type RunResult = {
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function cliPath(): string | null {
-  const release = join(repoRoot, "target/release/synapse");
-  const debug = join(repoRoot, "target/debug/synapse");
+  const release = join(repoRoot, "target/release/spanda");
+  const debug = join(repoRoot, "target/debug/spanda");
   if (existsSync(release)) return release;
   if (existsSync(debug)) return debug;
   return null;
@@ -37,7 +37,7 @@ export function checkViaCli(source: string): CheckResult {
       diagnostics: [{ message: "Rust CLI not built (run: npm run build:rust)", line: 1, column: 1 }],
     };
   }
-  const tmp = join(repoRoot, ".synapse-check-tmp.syn");
+  const tmp = join(repoRoot, ".spanda-check-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["check", "--json", tmp], { encoding: "utf-8" });
   try {
@@ -59,7 +59,7 @@ export function runViaCli(source: string): RunResult {
   if (!bin) {
     throw new Error("Rust CLI not built (run: npm run build:rust)");
   }
-  const tmp = join(repoRoot, ".synapse-run-tmp.syn");
+  const tmp = join(repoRoot, ".spanda-run-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["run", "--json", tmp], { encoding: "utf-8" });
   try {

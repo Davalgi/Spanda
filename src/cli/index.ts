@@ -7,17 +7,19 @@ import { LexerError } from "../lexer/index.js";
 import { ParseError } from "../parser/index.js";
 import { TypeCheckError } from "../types/index.js";
 import { RuntimeError } from "../runtime/index.js";
+import { warnDeprecatedSourceExtension } from "../source-path.js";
 
-const USAGE = `Synapse — safe, strongly typed language for robot control
+const USAGE = `Spanda — safe, strongly typed language for robot control
 
 Usage:
-  synapse run <file.syn>   Run program with interpreter (simulated backend)
-  synapse sim <file.syn>   Run program in simulation mode with visual output
-  synapse check <file.syn> Type-check a Synapse file
+  spanda run <file.sd>   Run program with interpreter (simulated backend)
+  spanda sim <file.sd>   Run program in simulation mode with visual output
+  spanda check <file.sd> Type-check a Spanda file
 
 Examples:
-  synapse run examples/lidar_avoidance.syn
-  synapse sim examples/differential_drive.syn
+  spanda run examples/rover.sd
+  spanda sim examples/rover.sd
+  spanda check examples/rover.sd
 `;
 
 function main(): void {
@@ -37,6 +39,7 @@ function main(): void {
   }
 
   const absPath = resolve(filePath);
+  warnDeprecatedSourceExtension(absPath);
 
   try {
     switch (command) {

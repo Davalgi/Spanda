@@ -26,7 +26,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
 
   async connect(options: Ros2ConnectOptions): Promise<void> {
     this.connected = true;
-    console.log(`[ROS2] Connected as node '${options.nodeName ?? "synapse_node"}'`);
+    console.log(`[ROS2] Connected as node '${options.nodeName ?? "spanda_node"}'`);
   }
 
   async disconnect(): Promise<void> {

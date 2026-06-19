@@ -1,4 +1,4 @@
-import type { UnitKind, SynapseType } from "../ast/nodes.js";
+import type { UnitKind, SpandaType } from "../ast/nodes.js";
 import { allLibrarySensorTypes } from "../lib/registry.js";
 
 export type TypeError = {
@@ -23,9 +23,9 @@ export function unitsCompatible(a: UnitKind, b: UnitKind): boolean {
 
 export function resultUnitForBinary(
   op: string,
-  left: SynapseType,
-  right: SynapseType,
-): SynapseType | null {
+  left: SpandaType,
+  right: SpandaType,
+): SpandaType | null {
   if (op === "and" || op === "or") {
     if (left.kind === "bool" && right.kind === "bool") return { kind: "bool" };
     return null;
@@ -59,26 +59,26 @@ export function resultUnitForBinary(
   return null;
 }
 
-export const MESSAGE_TYPES: Record<string, SynapseType> = {
+export const MESSAGE_TYPES: Record<string, SpandaType> = {
   Velocity: { kind: "velocity" },
   Pose: { kind: "pose" },
   Scan: { kind: "scan" },
   String: { kind: "string" },
 };
 
-export const SERVICE_TYPES: Record<string, SynapseType> = {
+export const SERVICE_TYPES: Record<string, SpandaType> = {
   ResetCostmap: { kind: "named", name: "ResetCostmap" },
   ClearCostmap: { kind: "named", name: "ClearCostmap" },
   SetPose: { kind: "named", name: "SetPose" },
 };
 
-export const ACTION_TYPES: Record<string, SynapseType> = {
+export const ACTION_TYPES: Record<string, SpandaType> = {
   NavigateTo: { kind: "named", name: "NavigateTo" },
   FollowPath: { kind: "named", name: "FollowPath" },
   PickObject: { kind: "named", name: "PickObject" },
 };
 
-export const SENSOR_TYPES: Record<string, SynapseType> = {
+export const SENSOR_TYPES: Record<string, SpandaType> = {
   Lidar: { kind: "named", name: "Lidar" },
   IMU: { kind: "named", name: "IMU" },
   GPS: { kind: "named", name: "GPS" },
@@ -94,7 +94,7 @@ export function getLibraryForSensorType(sensorType: string): string | undefined 
   return allLibrarySensorTypes()[sensorType]?.library;
 }
 
-function inferReadReturn(typeName: string): SynapseType {
+function inferReadReturn(typeName: string): SpandaType {
   if (typeName.includes("Lidar") || typeName.includes("Velodyne") || typeName.includes("Hokuyo") || typeName.includes("Ydlidar") || typeName.includes("RealSense")) {
     return { kind: "scan" };
   }
@@ -118,20 +118,20 @@ export function mergeLibraryMethods(): void {
   }
 }
 
-export const ACTUATOR_TYPES: Record<string, SynapseType> = {
+export const ACTUATOR_TYPES: Record<string, SpandaType> = {
   DifferentialDrive: { kind: "named", name: "DifferentialDrive" },
   RoboticArm: { kind: "named", name: "RoboticArm" },
   DroneRotors: { kind: "named", name: "DroneRotors" },
   Gripper: { kind: "named", name: "Gripper" },
 };
 
-export const AI_MODEL_TYPES: Record<string, SynapseType> = {
+export const AI_MODEL_TYPES: Record<string, SpandaType> = {
   LLM: { kind: "named", name: "LLM" },
   VisionModel: { kind: "named", name: "VisionModel" },
   EmbeddingModel: { kind: "named", name: "EmbeddingModel" },
 };
 
-export const AI_VALUE_TYPES: Record<string, SynapseType> = {
+export const AI_VALUE_TYPES: Record<string, SpandaType> = {
   ActionProposal: { kind: "named", name: "ActionProposal" },
   SafeAction: { kind: "named", name: "SafeAction" },
   Completion: { kind: "named", name: "Completion" },
@@ -146,7 +146,7 @@ export const AI_VALUE_TYPES: Record<string, SynapseType> = {
 
 export const BUILTIN_FUNCTIONS: Record<
   string,
-  { namedParams: Record<string, SynapseType>; returns: SynapseType }
+  { namedParams: Record<string, SpandaType>; returns: SpandaType }
 > = {
   pose: {
     namedParams: {
@@ -182,7 +182,7 @@ export const BUILTIN_FUNCTIONS: Record<
   },
 };
 
-export const ROBOT_METHODS: Record<string, { params: SynapseType[]; returns: SynapseType }> = {
+export const ROBOT_METHODS: Record<string, { params: SpandaType[]; returns: SpandaType }> = {
   pose: { params: [], returns: { kind: "pose" } },
   velocity: { params: [], returns: { kind: "velocity" } },
   in_zone: { params: [{ kind: "string" }], returns: { kind: "bool" } },
@@ -190,7 +190,7 @@ export const ROBOT_METHODS: Record<string, { params: SynapseType[]; returns: Syn
 
 export const BUILTIN_METHODS: Record<
   string,
-  Record<string, { params: SynapseType[]; namedParams?: Record<string, SynapseType>; returns: SynapseType }>
+  Record<string, { params: SpandaType[]; namedParams?: Record<string, SpandaType>; returns: SpandaType }>
 > = {
   Lidar: {
     read: { params: [], returns: { kind: "scan" } },
@@ -310,11 +310,11 @@ export const BUILTIN_METHODS: Record<
   },
 };
 
-export const SCAN_PROPERTIES: Record<string, SynapseType> = {
+export const SCAN_PROPERTIES: Record<string, SpandaType> = {
   nearest_distance: { kind: "number", unit: "m" },
 };
 
-export const OBJECT_PROPERTIES: Record<string, Record<string, SynapseType>> = {
+export const OBJECT_PROPERTIES: Record<string, Record<string, SpandaType>> = {
   IMUReading: { yaw: { kind: "number", unit: "rad" }, roll: { kind: "number", unit: "rad" }, pitch: { kind: "number", unit: "rad" } },
   ForceTorqueReading: { force: { kind: "number", unit: "none" } },
   GPSReading: { lat: { kind: "number", unit: "none" }, lon: { kind: "number", unit: "none" } },
@@ -349,14 +349,14 @@ export const OBJECT_PROPERTIES: Record<string, Record<string, SynapseType>> = {
   },
 };
 
-export const POSE_PROPERTIES: Record<string, SynapseType> = {
+export const POSE_PROPERTIES: Record<string, SpandaType> = {
   x: { kind: "number", unit: "m" },
   y: { kind: "number", unit: "m" },
   theta: { kind: "number", unit: "rad" },
   z: { kind: "number", unit: "m" },
 };
 
-export const VELOCITY_PROPERTIES: Record<string, SynapseType> = {
+export const VELOCITY_PROPERTIES: Record<string, SpandaType> = {
   linear: { kind: "number", unit: "m/s" },
   angular: { kind: "number", unit: "rad/s" },
 };

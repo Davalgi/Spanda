@@ -4,7 +4,7 @@ import { parse } from "../src/parser/index.js";
 import { compile, run } from "../src/compile.js";
 import { createDefaultSimulator } from "../src/simulator/index.js";
 
-describe("AI-native Synapse", () => {
+describe("AI-native Spanda", () => {
   it("tokenizes ai_model and agent keywords", () => {
     const tokens = tokenize("ai_model agent uses tools goal plan memory provider");
     const types = tokens.filter((t) => t.type !== "EOF").map((t) => t.type);
