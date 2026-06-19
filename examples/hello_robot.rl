@@ -1,0 +1,7 @@
+robot HelloBot {
+  actuator speaker: DifferentialDrive;
+
+  behavior hello() {
+    speaker.stop();
+  }
+}

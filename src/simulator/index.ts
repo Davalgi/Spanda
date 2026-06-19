@@ -1,0 +1,185 @@
+import type {
+  MotionCommand,
+  RobotBackend,
+  RobotState,
+  RuntimeValue,
+} from "../runtime/interpreter.js";
+
+export type Obstacle = { x: number; y: number; radius: number };
+
+export type SimulatorConfig = {
+  obstacles?: Obstacle[];
+  initialPose?: { x: number; y: number; theta: number; z?: number };
+  lidarRange?: number;
+  simulationSteps?: number;
+};
+
+export class Simulator implements RobotBackend {
+  private pose: { x: number; y: number; theta: number; z: number };
+  private velocity = { linear: 0, angular: 0 };
+  private emergencyStop = false;
+  private obstacles: Obstacle[];
+  private lidarRange: number;
+  private armPosition = { x: 0, y: 0, z: 0.5 };
+  private gripperClosed = false;
+  private thrust = 0;
+  private eventLog: string[] = [];
+
+  constructor(config: SimulatorConfig = {}) {
+    this.pose = {
+      x: config.initialPose?.x ?? 0,
+      y: config.initialPose?.y ?? 0,
+      theta: config.initialPose?.theta ?? 0,
+      z: config.initialPose?.z ?? 0,
+    };
+    this.obstacles = config.obstacles ?? [
+      { x: 2, y: 0, radius: 0.3 },
+      { x: -1, y: 1.5, radius: 0.25 },
+    ];
+    this.lidarRange = config.lidarRange ?? 10;
+  }
+
+  readSensor(sensorName: string, sensorType: string): RuntimeValue {
+    switch (sensorType) {
+      case "Lidar":
+        return { kind: "scan", nearestDistance: this.simulateLidar() };
+      case "IMU":
+        return {
+          kind: "object",
+          typeName: "IMUReading",
+          fields: {
+            roll: { kind: "number", value: 0, unit: "rad" },
+            pitch: { kind: "number", value: 0, unit: "rad" },
+            yaw: { kind: "number", value: this.pose.theta, unit: "rad" },
+          },
+        };
+      case "AltitudeSensor":
+        return { kind: "number", value: this.pose.z, unit: "m" };
+      case "GPS":
+        return {
+          kind: "object",
+          typeName: "GPSReading",
+          fields: {
+            lat: { kind: "number", value: this.pose.x, unit: "none" },
+            lon: { kind: "number", value: this.pose.y, unit: "none" },
+          },
+        };
+      case "ForceTorque":
+        return {
+          kind: "object",
+          typeName: "ForceTorqueReading",
+          fields: {
+            force: { kind: "number", value: this.gripperClosed ? 5.0 : 0, unit: "none" },
+          },
+        };
+      default:
+        return { kind: "void" };
+    }
+  }
+
+  executeMotion(cmd: MotionCommand): void {
+    if (this.emergencyStop && cmd.kind !== "stop") {
+      this.velocity = { linear: 0, angular: 0 };
+      return;
+    }
+
+    switch (cmd.kind) {
+      case "drive":
+        this.velocity = { linear: cmd.linear, angular: cmd.angular };
+        this.eventLog.push(`drive(${cmd.linear.toFixed(2)} m/s, ${cmd.angular.toFixed(2)} rad/s)`);
+        break;
+      case "stop":
+        this.velocity = { linear: 0, angular: 0 };
+        this.eventLog.push("stop()");
+        break;
+      case "move_to":
+        this.armPosition = { x: cmd.x, y: cmd.y, z: cmd.z };
+        this.eventLog.push(`move_to(${cmd.x}, ${cmd.y}, ${cmd.z})`);
+        break;
+      case "grip":
+        this.gripperClosed = true;
+        this.eventLog.push("grip()");
+        break;
+      case "release":
+        this.gripperClosed = false;
+        this.eventLog.push("release()");
+        break;
+      case "open":
+        this.gripperClosed = false;
+        this.eventLog.push("open()");
+        break;
+      case "set_thrust":
+        this.thrust = cmd.thrust;
+        this.eventLog.push(`set_thrust(${cmd.thrust})`);
+        break;
+      case "hover":
+        this.thrust = 0.5;
+        this.velocity = { linear: 0, angular: 0 };
+        this.eventLog.push("hover()");
+        break;
+    }
+  }
+
+  tick(dtMs: number): void {
+    if (this.emergencyStop) {
+      this.velocity = { linear: 0, angular: 0 };
+      return;
+    }
+
+    const dt = dtMs / 1000;
+
+    if (this.thrust > 0) {
+      const climbRate = (this.thrust - 0.5) * 2;
+      this.pose.z = Math.max(0, this.pose.z + climbRate * dt);
+    }
+
+    const newTheta = this.pose.theta + this.velocity.angular * dt;
+    const newX = this.pose.x + this.velocity.linear * Math.cos(this.pose.theta) * dt;
+    const newY = this.pose.y + this.velocity.linear * Math.sin(this.pose.theta) * dt;
+
+    this.pose = { ...this.pose, x: newX, y: newY, theta: newTheta };
+  }
+
+  getState(): RobotState {
+    return {
+      pose: { ...this.pose },
+      velocity: { ...this.velocity },
+      emergencyStop: this.emergencyStop,
+    };
+  }
+
+  setEmergencyStop(value: boolean): void {
+    this.emergencyStop = value;
+    if (value) this.velocity = { linear: 0, angular: 0 };
+  }
+
+  getEventLog(): string[] {
+    return [...this.eventLog];
+  }
+
+  getArmPosition(): { x: number; y: number; z: number } {
+    return { ...this.armPosition };
+  }
+
+  private simulateLidar(): number {
+    let nearest = this.lidarRange;
+
+    for (const obs of this.obstacles) {
+      const dx = obs.x - this.pose.x;
+      const dy = obs.y - this.pose.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) - obs.radius;
+      if (dist > 0 && dist < nearest) {
+        nearest = dist;
+      }
+    }
+
+    const wallDist = 5 - Math.abs(this.pose.x);
+    if (wallDist > 0 && wallDist < nearest) nearest = wallDist;
+
+    return Math.max(0.01, nearest);
+  }
+}
+
+export function createDefaultSimulator(config?: SimulatorConfig): Simulator {
+  return new Simulator(config);
+}
