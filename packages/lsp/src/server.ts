@@ -26,21 +26,32 @@ function cliPath(): string | null {
 
 type CliDiagnostic = { message: string; line: number; column: number };
 
-function checkSource(source: string): CliDiagnostic[] {
+type CompatItem = {
+  message: string;
+  line: number;
+  column: number;
+  severity: "pass" | "warning" | "error";
+  category: string;
+};
+
+function runCliJson(args: string[], source: string): unknown {
   const bin = cliPath();
   if (!bin) {
-    return [
-      {
-        message: "Rust CLI not built — run: npm run build:rust",
-        line: 1,
-        column: 1,
-      },
-    ];
+    return {
+      ok: false,
+      diagnostics: [
+        {
+          message: "Rust CLI not built — run: npm run build:rust",
+          line: 1,
+          column: 1,
+        },
+      ],
+    };
   }
 
   const tmp = join(repoRoot, ".spanda-lsp-check.sd");
   writeFileSync(tmp, source);
-  const result = spawnSync(bin, ["check", "--json", tmp], { encoding: "utf-8" });
+  const result = spawnSync(bin, [...args, "--json", tmp], { encoding: "utf-8" });
   try {
     unlinkSync(tmp);
   } catch {
@@ -48,14 +59,40 @@ function checkSource(source: string): CliDiagnostic[] {
   }
 
   if (!result.stdout?.trim()) {
-    return [{ message: result.stderr || "CLI check failed", line: 1, column: 1 }];
+    return {
+      ok: false,
+      diagnostics: [{ message: result.stderr || "CLI failed", line: 1, column: 1 }],
+    };
   }
 
-  const parsed = JSON.parse(result.stdout) as {
+  return JSON.parse(result.stdout);
+}
+
+function checkSource(source: string): CliDiagnostic[] {
+  const parsed = runCliJson(["check"], source) as {
     ok: boolean;
     diagnostics?: CliDiagnostic[];
   };
   return parsed.ok ? [] : (parsed.diagnostics ?? []);
+}
+
+function verifySource(source: string): CompatItem[] {
+  const parsed = runCliJson(["verify"], source) as {
+    ok: boolean;
+    items?: CompatItem[];
+    diagnostics?: CliDiagnostic[];
+  };
+  if (parsed.items?.length) {
+    return parsed.items.filter((i) => i.severity !== "pass");
+  }
+  if (!parsed.ok && parsed.diagnostics) {
+    return parsed.diagnostics.map((d) => ({
+      ...d,
+      severity: "error" as const,
+      category: "error",
+    }));
+  }
+  return [];
 }
 
 const connection = createConnection(ProposedFeatures.all);
@@ -68,8 +105,11 @@ connection.onInitialize((_params: InitializeParams) => ({
 }));
 
 function validate(textDocument: TextDocument): Diagnostic[] {
-  const diags = checkSource(textDocument.getText());
-  return diags.map(
+  const source = textDocument.getText();
+  const typeErrors = checkSource(source);
+  const compatItems = verifySource(source);
+
+  const typeDiags = typeErrors.map(
     (d): Diagnostic => ({
       severity: DiagnosticSeverity.Error,
       range: {
@@ -80,6 +120,23 @@ function validate(textDocument: TextDocument): Diagnostic[] {
       source: "spanda",
     }),
   );
+
+  const compatDiags = compatItems.map((d): Diagnostic => {
+    const severity =
+      d.severity === "warning" ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error;
+    const prefix = d.category ? `[${d.category}] ` : "";
+    return {
+      severity,
+      range: {
+        start: { line: Math.max(0, d.line - 1), character: Math.max(0, d.column - 1) },
+        end: { line: Math.max(0, d.line - 1), character: Math.max(0, d.column + 20) },
+      },
+      message: `${prefix}${d.message}`,
+      source: "spanda-compat",
+    };
+  });
+
+  return [...typeDiags, ...compatDiags];
 }
 
 documents.onDidChangeContent((change) => {

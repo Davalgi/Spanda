@@ -83,7 +83,73 @@ export type TaskDecl = {
   requires: Expr | null;
   ensures: Expr | null;
   invariant: Expr | null;
+  budget: ResourceBudgetDecl | null;
   body: Stmt[];
+  span: Span;
+};
+
+export type ResourceBudgetDecl = {
+  kind: "ResourceBudgetDecl";
+  batteryPctMax: number | null;
+  memoryMbMax: number | null;
+  cpuPctMax: number | null;
+  networkMbpsMax: number | null;
+  storageMbMax: number | null;
+  span: Span;
+};
+
+export type RequiresHardwareDecl = {
+  kind: "RequiresHardwareDecl";
+  memoryMbMin: number | null;
+  storageMbMin: number | null;
+  gpuTopsMin: number | null;
+  gpuRequired: boolean;
+  sensors: string[];
+  actuators: string[];
+  span: Span;
+};
+
+export type RequiresNetworkDecl = {
+  kind: "RequiresNetworkDecl";
+  bandwidthMbpsMin: number | null;
+  latencyMsMax: number | null;
+  span: Span;
+};
+
+export type MissionDecl = {
+  kind: "MissionDecl";
+  durationHours: number;
+  span: Span;
+};
+
+export type HardwareDecl = {
+  kind: "HardwareDecl";
+  name: string;
+  cpu: string | null;
+  memoryMb: number | null;
+  storageMb: number | null;
+  gpuTops: number | null;
+  gpuRequired: boolean;
+  sensors: string[];
+  actuators: string[];
+  batteryWh: number | null;
+  networkBandwidthMbps: number | null;
+  networkLatencyMs: number | null;
+  minControlPeriodMs: number | null;
+  powerDrawW: number | null;
+  span: Span;
+};
+
+export type DeployDecl = {
+  kind: "DeployDecl";
+  robotName: string;
+  targets: string[];
+  span: Span;
+};
+
+export type SimulateCompatibilityDecl = {
+  kind: "SimulateCompatibilityDecl";
+  faults: { faultType: string; span: Span }[];
   span: Span;
 };
 
