@@ -1,5 +1,8 @@
 use serde::Serialize;
-use spanda_core::{check, format_source, run, RunOptions, SpandaError};
+use spanda_core::{
+    check, format_source, run, verify_compatibility, CompatSeverity, RunOptions, SpandaError,
+    VerifyOptions,
+};
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -20,11 +23,20 @@ struct RunResponse {
     diagnostics: Option<Vec<spanda_core::Diagnostic>>,
 }
 
+#[derive(Serialize)]
+struct VerifyResponse {
+    ok: bool,
+    target: Option<String>,
+    items: Vec<spanda_core::CompatItem>,
+}
+
 fn usage() {
     eprintln!(
         "Spanda Programming Language\n\n\
          Usage:\n\
            spanda check [--json] <file.sd>\n\
+           spanda verify [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
+           spanda compatibility <file.sd> [--target <HardwareProfile>]\n\
            spanda run [--json] [--verbose] <file.sd>\n\
            spanda sim [--json] <file.sd>\n\
            spanda fmt <file.sd>\n"
@@ -132,6 +144,71 @@ fn human_run(source: &str, file: &str, verbose: bool) {
     }
 }
 
+fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
+    match verify_compatibility(source, options) {
+        Ok(report) => {
+            println!("Hardware compatibility: {file}");
+            if let Some(t) = &report.target {
+                println!("Target: {t}\n");
+            }
+            for item in &report.items {
+                let icon = match item.severity {
+                    CompatSeverity::Pass => "✓",
+                    CompatSeverity::Warning => "⚠",
+                    CompatSeverity::Error => "✗",
+                };
+                println!("  {icon} [{}] {}", item.category, item.message);
+            }
+            if report.compatible {
+                println!("\n✓ Deployment compatible");
+            } else {
+                println!("\n✗ Deployment incompatible");
+                process::exit(1);
+            }
+            if let Some(matrix) = &report.matrix {
+                println!("\n── Compatibility Matrix ──");
+                for cell in &matrix.cells {
+                    let icon = if cell.compatible { "✓" } else { "✗" };
+                    println!("  {icon} {} → {}", cell.robot, cell.target);
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {e}");
+            for d in e.diagnostics() {
+                eprintln!("  [{}:{}] {}", d.line, d.column, d.message);
+            }
+            process::exit(1);
+        }
+    }
+}
+
+fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaError>) {
+    let resp = match result {
+        Ok(report) => VerifyResponse {
+            ok: report.compatible,
+            target: report.target.clone(),
+            items: report.items.clone(),
+        },
+        Err(e) => VerifyResponse {
+            ok: false,
+            target: None,
+            items: e
+                .diagnostics()
+                .into_iter()
+                .map(|d| spanda_core::CompatItem {
+                    category: "error".into(),
+                    message: d.message,
+                    severity: CompatSeverity::Error,
+                    line: d.line,
+                    column: d.column,
+                })
+                .collect(),
+        },
+    };
+    println!("{}", serde_json::to_string(&resp).unwrap());
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 || args[1] == "--help" || args[1] == "-h" {
@@ -141,14 +218,30 @@ fn main() {
 
     let mut json = false;
     let mut verbose = false;
+    let mut target: Option<String> = None;
+    let mut all_targets = false;
+    let mut simulate = false;
     let mut command: Option<&str> = None;
     let mut file: Option<&str> = None;
 
-    for arg in args.iter().skip(1) {
-        match arg.as_str() {
+    let mut i = 1;
+    while i < args.len() {
+        match args[i].as_str() {
             "--json" => json = true,
             "--verbose" | "-v" => verbose = true,
-            "check" | "run" | "sim" | "fmt" if command.is_none() => command = Some(arg),
+            "--target" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--target requires a hardware profile name");
+                    process::exit(1);
+                }
+                target = Some(args[i].clone());
+            }
+            "--all-targets" => all_targets = true,
+            "--simulate" => simulate = true,
+            "check" | "run" | "sim" | "fmt" | "verify" | "compatibility" if command.is_none() => {
+                command = Some(&args[i]);
+            }
             other if !other.starts_with('-') && file.is_none() => file = Some(other),
             other => {
                 eprintln!("Unknown argument: {other}");
@@ -156,6 +249,7 @@ fn main() {
                 process::exit(1);
             }
         }
+        i += 1;
     }
 
     let command = command.unwrap_or_else(|| {
@@ -178,6 +272,18 @@ fn main() {
                 print_check_json(check(&source).err());
             } else {
                 human_check(&source, file);
+            }
+        }
+        "verify" | "compatibility" => {
+            let options = VerifyOptions {
+                target: target.clone(),
+                all_targets,
+                simulate,
+            };
+            if json {
+                print_verify_json(verify_compatibility(&source, &options));
+            } else {
+                human_verify(&source, file, &options);
             }
         }
         "run" | "sim" => {
