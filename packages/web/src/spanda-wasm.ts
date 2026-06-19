@@ -28,7 +28,7 @@ export function isWasmLoaded(): boolean {
 async function ensureWasm(): Promise<void> {
   if (wasmModule) return;
   try {
-    const init = await import("../wasm/synapse_wasm.js");
+    const init = await import("../wasm/spanda_wasm.js");
     await init.default();
     wasmModule = init as typeof wasmModule;
   } catch {

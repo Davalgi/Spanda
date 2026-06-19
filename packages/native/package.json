@@ -1,7 +1,7 @@
 {
-  "name": "@synapse/native",
+  "name": "@spanda/native",
   "version": "0.1.0",
-  "description": "Synapse Rust core bindings for Node.js",
+  "description": "Spanda Rust core bindings for Node.js",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,11 +13,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:native": "napi build --platform --release --cargo-cwd ../../crates/synapse-node --js ./native.js --dts ./native.d.ts .",
-    "build:cli": "cargo build -p synapse-cli --release"
+    "build:native": "napi build --platform --release --cargo-cwd ../../crates/spanda-node --js ./native.js --dts ./native.d.ts .",
+    "build:cli": "cargo build -p spanda-cli --release"
   },
   "napi": {
-    "name": "synapse-node",
+    "name": "spanda-node",
     "triples": {
       "defaults": true,
       "additional": [

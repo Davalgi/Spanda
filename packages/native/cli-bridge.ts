@@ -7,8 +7,8 @@ import type { CheckResult, RunResult } from "./index.js";
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function cliPath(): string | null {
-  const release = join(repoRoot, "target/release/synapse");
-  const debug = join(repoRoot, "target/debug/synapse");
+  const release = join(repoRoot, "target/release/spanda");
+  const debug = join(repoRoot, "target/debug/spanda");
   if (existsSync(release)) return release;
   if (existsSync(debug)) return debug;
   return null;
@@ -21,9 +21,9 @@ export function isCliAvailable(): boolean {
 export function checkViaCli(source: string): CheckResult {
   const bin = cliPath();
   if (!bin) {
-    return { ok: false, diagnostics: [{ message: "Rust CLI not built (run: cargo build -p synapse-cli)", line: 1, column: 1 }] };
+    return { ok: false, diagnostics: [{ message: "Rust CLI not built (run: cargo build -p spanda-cli)", line: 1, column: 1 }] };
   }
-  const tmp = join(repoRoot, ".synapse-check-tmp.syn");
+  const tmp = join(repoRoot, ".spanda-check-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["check", "--json", tmp], { encoding: "utf-8" });
   try {
@@ -43,9 +43,9 @@ export function checkViaCli(source: string): CheckResult {
 export function runViaCli(source: string): RunResult {
   const bin = cliPath();
   if (!bin) {
-    throw new Error("Rust CLI not built (run: cargo build -p synapse-cli)");
+    throw new Error("Rust CLI not built (run: cargo build -p spanda-cli)");
   }
-  const tmp = join(repoRoot, ".synapse-run-tmp.syn");
+  const tmp = join(repoRoot, ".spanda-run-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["run", "--json", tmp], { encoding: "utf-8" });
   try {

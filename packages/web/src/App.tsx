@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SOURCE, EXAMPLES } from "./examples";
-import { checkSource, runSource, type CheckResponse, type RunResponse } from "./synapse-wasm";
+import { checkSource, runSource, type CheckResponse, type RunResponse } from "./spanda-wasm";
 
 type Backend = "wasm" | "unavailable";
 
@@ -13,7 +13,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    import("./synapse-wasm").then((m) => {
+    import("./spanda-wasm").then((m) => {
       setBackend(m.isWasmLoaded() ? "wasm" : "unavailable");
     });
   }, []);
@@ -55,7 +55,7 @@ export default function App() {
     <div className="app">
       <header>
         <div>
-          <h1>Synapse Playground</h1>
+          <h1>Spanda Playground</h1>
           <p className="subtitle">AI-native robotics language — Rust core via WASM</p>
         </div>
         <span className={`badge ${backend}`}>
@@ -100,7 +100,7 @@ export default function App() {
             value={source}
             onChange={(e) => setSource(e.target.value)}
             spellCheck={false}
-            aria-label="Synapse source"
+            aria-label="Spanda source"
           />
         </section>
 

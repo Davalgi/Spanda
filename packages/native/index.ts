@@ -38,13 +38,13 @@ export type RunOptions = {
   maxLoopIterations?: number;
 };
 
-export interface SynapseNative {
+export interface SpandaNative {
   checkSource(source: string): CheckResult;
   runSource(source: string, options?: RunOptions): RunResult;
   coreVersion(): string;
 }
 
-let native: SynapseNative | null = null;
+let native: SpandaNative | null = null;
 let loadAttempted = false;
 
 export function isNativeAvailable(): boolean {
@@ -57,7 +57,7 @@ function loadNative(): void {
   loadAttempted = true;
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mod = require("./native.js") as SynapseNative;
+    const mod = require("./native.js") as SpandaNative;
     native = mod;
   } catch {
     native = null;
