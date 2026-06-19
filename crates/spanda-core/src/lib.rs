@@ -5,6 +5,7 @@ pub mod events;
 pub mod format;
 pub mod foundations;
 pub mod hal;
+pub mod hardware;
 pub mod lexer;
 pub mod lib_registry;
 pub mod parser;
@@ -21,6 +22,10 @@ pub mod types;
 pub use ast::*;
 pub use error::*;
 pub use format::format_source;
+pub use hardware::{
+    list_hardware_profiles, CompatItem, CompatSeverity, CompatibilityMatrix, CompatibilityReport,
+    MatrixCell, VerifyOptions,
+};
 
 use runtime::{Interpreter, InterpreterOptions, RobotBackend};
 use simulator::{create_default_simulator, Obstacle, SimulatorConfig};
@@ -41,6 +46,30 @@ pub fn check(source: &str) -> Result<(), SpandaError> {
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)
+}
+
+pub fn verify_compatibility(
+    source: &str,
+    options: &hardware::VerifyOptions,
+) -> Result<hardware::CompatibilityReport, SpandaError> {
+    let tokens = lexer::tokenize(source)?;
+    let program = parser::parse(tokens)?;
+    types::check(&program)?;
+    Ok(hardware::verify_program_compatibility(&program, options))
+}
+
+pub fn verify_compatibility_target(
+    source: &str,
+    target: Option<&str>,
+) -> Result<hardware::CompatibilityReport, SpandaError> {
+    verify_compatibility(
+        source,
+        &hardware::VerifyOptions {
+            target: target.map(str::to_string),
+            all_targets: false,
+            simulate: false,
+        },
+    )
 }
 
 pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
