@@ -1,0 +1,15 @@
+---
+description: Git commits must use sujaydavalgi only — no Cursor co-author
+alwaysApply: true
+---
+
+# Git Commits
+
+When creating git commits in this repository:
+
+- Author must be **Sujay Davalgi** / **sujaydavalgi** (`sujay@davalgi.com` or `sujaydavalgi@users.noreply.github.com`).
+- **Never** add `Co-authored-by: Cursor <cursoragent@cursor.com>` or any Cursor/agent co-author trailer.
+- **Never** add any `Co-authored-by` line unless the user explicitly requests a specific human co-author.
+- Keep commit messages clean: summary + body only, no agent attribution footers.
+
+If a commit message would include a Cursor co-author trailer, omit it entirely.
