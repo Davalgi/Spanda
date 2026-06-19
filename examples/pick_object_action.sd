@@ -1,0 +1,28 @@
+robot PickBot {
+  sensor camera: Camera on "/camera";
+  sensor ft_sensor: ForceTorque on "/ft";
+
+  actuator arm: RoboticArm;
+  actuator gripper: Gripper;
+
+  action pick: PickObject;
+
+  safety {
+    max_speed = 0.5 m/s;
+  }
+
+  behavior pick_sequence() {
+    let target = pose(x: 0.4 m, y: 0.0 m, z: 0.1 m);
+
+    arm.move_to(x: 0.4 m, y: 0.0 m, z: 0.15 m);
+    gripper.open();
+    send_goal pick with target;
+
+    loop every 100ms {
+      let force = ft_sensor.read();
+      gripper.close();
+      arm.move_to(x: 0.2 m, y: 0.2 m, z: 0.3 m);
+      gripper.open();
+    }
+  }
+}

@@ -16,6 +16,16 @@
       "run": { "maxLoopIterations": 5 }
     },
     {
+      "file": "examples/outdoor_navigation.sd",
+      "check": "pass",
+      "run": { "maxLoopIterations": 5 }
+    },
+    {
+      "file": "examples/warehouse_logistics.sd",
+      "check": "pass",
+      "run": { "maxLoopIterations": 5 }
+    },
+    {
       "file": "examples/ai_navigation.sd",
       "check": "pass",
       "run": { "maxLoopIterations": 5 }

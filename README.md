@@ -347,6 +347,11 @@ tests/         Lexer, parser, type, safety, interpreter, simulator tests
 - `examples/robotic_arm_pick_place.sd` — arm pick-and-place sequence
 - `examples/drone_altitude_hold.sd` — altitude control loop
 - `examples/patrol_with_zones.sd` — topics, services, actions, zones, trajectories
+- `examples/warehouse_logistics.sd` — rect zones, transforms, FollowPath, ClearCostmap, SetPose
+- `examples/pick_object_action.sd` — PickObject action with arm and force sensing
+- `examples/outdoor_navigation.sd` — IMU heading fused with lidar avoidance
+- `examples/jetson_inspection.sd` — Jetson SoC with vision agent inspection loop
+- `examples/stm32_motor_control.sd` — STM32 HAL with PWM, GPIO, ADC, and IMU
 - `examples/raspberry_pi_hal.sd` — Raspberry Pi with HAL and Velodyne/Bosch libraries
 - `examples/esp32_sensors.sd` — ESP32 with multi-vendor I2C sensors
 - `examples/ai_navigation.sd` — AI agent navigation with safety validation

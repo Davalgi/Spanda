@@ -1,0 +1,38 @@
+robot EdgeBot {
+  soc JetsonOrin;
+
+  hal {
+    i2c sensor_bus at 0x29;
+    uart depth_cam on "/dev/ttyUSB1" baud 921600;
+  }
+
+  sensor camera: Camera on "/camera";
+  actuator wheels: DifferentialDrive;
+
+  ai_model detector: VisionModel {
+    provider: "mock";
+    model: "yolo-v8";
+  }
+
+  agent Inspector {
+    uses detector;
+    tools [camera, wheels];
+    memory short_term;
+    goal "Inspect aisle and stop at obstacles";
+
+    plan {
+      let frame = camera.frame();
+      let object = detector.detect(frame);
+
+      if object.label == "obstacle" {
+        wheels.stop();
+      }
+    }
+  }
+
+  behavior inspect() {
+    loop every 150ms {
+      Inspector.plan();
+    }
+  }
+}

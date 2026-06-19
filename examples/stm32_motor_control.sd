@@ -1,0 +1,24 @@
+robot MotorController {
+  soc STM32F4;
+
+  hal {
+    pwm motor_left on pin 5 frequency 20000 Hz;
+    pwm motor_right on pin 6 frequency 20000 Hz;
+    gpio enable out pin 8;
+    adc battery on channel 1;
+  }
+
+  sensor imu: IMU on "/imu";
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 0.5 m/s;
+  }
+
+  behavior drive() {
+    loop every 20ms {
+      let heading = imu.read();
+      wheels.drive(linear: 0.2 m/s, angular: heading.yaw * 0.02 rad/s);
+    }
+  }
+}
