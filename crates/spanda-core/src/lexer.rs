@@ -1,5 +1,5 @@
 use crate::ast::UnitKind;
-use crate::error::SynapseError;
+use crate::error::SpandaError;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -223,7 +223,7 @@ fn keywords() -> HashMap<&'static str, TokenType> {
     ])
 }
 
-pub fn tokenize(source: &str) -> Result<Vec<Token>, SynapseError> {
+pub fn tokenize(source: &str) -> Result<Vec<Token>, SpandaError> {
     let keywords = keywords();
     let mut tokens = Vec::new();
     let mut line: u32 = 1;
@@ -412,7 +412,7 @@ pub fn tokenize(source: &str) -> Result<Vec<Token>, SynapseError> {
                     }
                 }
                 if i >= chars.len() {
-                    return Err(SynapseError::Lexer {
+                    return Err(SpandaError::Lexer {
                         message: "Unterminated string".to_string(),
                         line: start_line,
                         column: start_column,
@@ -529,7 +529,7 @@ pub fn tokenize(source: &str) -> Result<Vec<Token>, SynapseError> {
                 });
             }
             _ => {
-                return Err(SynapseError::Lexer {
+                return Err(SpandaError::Lexer {
                     message: format!("Unexpected character '{ch}'"),
                     line,
                     column,

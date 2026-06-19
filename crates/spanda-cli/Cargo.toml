@@ -1,14 +1,14 @@
 [package]
-name = "synapse-cli"
+name = "spanda-cli"
 version = "0.1.0"
 edition = "2021"
-description = "Synapse native CLI (check / run / sim with JSON output)"
+description = "Spanda native CLI (check / run / sim with JSON output)"
 
 [[bin]]
-name = "synapse"
+name = "spanda"
 path = "src/main.rs"
 
 [dependencies]
-synapse-core = { path = "../synapse-core" }
+spanda-core = { path = "../spanda-core" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

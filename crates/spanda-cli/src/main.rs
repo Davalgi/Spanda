@@ -3,30 +3,30 @@ use std::env;
 use std::fs;
 use std::io::{self, Write};
 use std::process;
-use synapse_core::{check, run, RunOptions, SynapseError};
+use spanda_core::{check, run, RunOptions, SpandaError, source_path};
 
 #[derive(Serialize)]
 struct CheckResponse {
     ok: bool,
-    diagnostics: Vec<synapse_core::Diagnostic>,
+    diagnostics: Vec<spanda_core::Diagnostic>,
 }
 
 #[derive(Serialize)]
 struct RunResponse {
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    result: Option<synapse_core::RunResult>,
+    result: Option<spanda_core::RunResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    diagnostics: Option<Vec<synapse_core::Diagnostic>>,
+    diagnostics: Option<Vec<spanda_core::Diagnostic>>,
 }
 
 fn usage() {
     eprintln!(
-        "Synapse native CLI\n\n\
+        "Spanda native CLI\n\n\
          Usage:\n\
-           synapse check [--json] <file.syn>\n\
-           synapse run [--json] [--verbose] <file.syn>\n\
-           synapse sim [--json] <file.syn>\n"
+           spanda check [--json] <file.sd>\n\
+           spanda run [--json] [--verbose] <file.sd>\n\
+           spanda sim [--json] <file.sd>\n"
     );
 }
 
@@ -37,7 +37,7 @@ fn read_source(path: &str) -> String {
     })
 }
 
-fn print_check_json(err: Option<SynapseError>) {
+fn print_check_json(err: Option<SpandaError>) {
     let resp = match err {
         None => CheckResponse {
             ok: true,
@@ -51,7 +51,7 @@ fn print_check_json(err: Option<SynapseError>) {
     println!("{}", serde_json::to_string(&resp).unwrap());
 }
 
-fn print_run_json(result: Result<synapse_core::RunResult, SynapseError>) {
+fn print_run_json(result: Result<spanda_core::RunResult, SpandaError>) {
     let resp = match result {
         Ok(result) => RunResponse {
             ok: true,
@@ -170,6 +170,7 @@ fn main() {
     });
 
     let source = read_source(file);
+    source_path::warn_deprecated_source_extension(file);
 
     match command {
         "check" => {

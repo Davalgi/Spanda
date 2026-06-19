@@ -1,17 +1,17 @@
 use glob::glob;
-use synapse_core::{compile, run, RunOptions};
+use spanda_core::{compile, run, RunOptions};
 
-const NEGATIVE_FIXTURES: &[&str] = &["ai_safety_violation.syn"];
+const NEGATIVE_FIXTURES: &[&str] = &["ai_safety_violation.sd"];
 
 #[test]
 fn examples_compile_and_run() {
-    let pattern = concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/*.syn");
+    let pattern = concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/*.sd");
     let paths: Vec<_> = glob(pattern)
         .expect("glob pattern")
         .filter_map(|entry| entry.ok())
         .collect();
 
-    assert!(!paths.is_empty(), "expected example .syn files");
+    assert!(!paths.is_empty(), "expected example .sd files");
 
     for path in paths {
         let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
@@ -34,9 +34,9 @@ fn examples_compile_and_run() {
 fn negative_fixture_fails_type_check() {
     let path = concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/ai_safety_violation.syn"
+        "/../../examples/ai_safety_violation.sd"
     );
-    let source = std::fs::read_to_string(path).expect("read ai_safety_violation.syn");
+    let source = std::fs::read_to_string(path).expect("read ai_safety_violation.sd");
     let err = compile(&source).expect_err("expected compile failure");
     assert!(
         err.diagnostics()

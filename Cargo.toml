@@ -1,9 +1,9 @@
 [workspace]
 members = [
-    "crates/synapse-core",
-    "crates/synapse-cli",
-    "crates/synapse-node",
-    "crates/synapse-wasm",
+    "crates/spanda-core",
+    "crates/spanda-cli",
+    "crates/spanda-node",
+    "crates/spanda-wasm",
 ]
 resolver = "2"
 

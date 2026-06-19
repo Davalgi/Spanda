@@ -68,7 +68,7 @@ impl UnitKind {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
-pub enum SynapseType {
+pub enum SpandaType {
     #[serde(rename = "void")]
     Void,
     #[serde(rename = "bool")]

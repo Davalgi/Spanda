@@ -1,22 +1,22 @@
 use crate::ai::resolve_ai_import;
 use crate::ast::*;
-use crate::error::{Diagnostic, SynapseError};
+use crate::error::{Diagnostic, SpandaError};
 use crate::hal::hal_member_from_decl;
 use crate::lib_registry::{all_library_sensor_types, resolve_import};
 use crate::soc::{get_soc_profile, validate_hal_against_soc};
 use std::collections::HashMap;
 
-pub fn type_check(program: &Program) -> Result<(), SynapseError> {
+pub fn type_check(program: &Program) -> Result<(), SpandaError> {
     check(program)
 }
 
-pub fn check(program: &Program) -> Result<(), SynapseError> {
+pub fn check(program: &Program) -> Result<(), SpandaError> {
     let mut checker = TypeChecker::new();
     checker.check_program(program);
     if checker.errors.is_empty() {
         Ok(())
     } else {
-        Err(SynapseError::TypeCheck {
+        Err(SpandaError::TypeCheck {
             diagnostics: checker.errors,
         })
     }
@@ -35,45 +35,45 @@ pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
     )
 }
 
-pub fn result_unit_for_binary(op: BinaryOp, left: &SynapseType, right: &SynapseType) -> Option<SynapseType> {
+pub fn result_unit_for_binary(op: BinaryOp, left: &SpandaType, right: &SpandaType) -> Option<SpandaType> {
     match op {
         BinaryOp::And | BinaryOp::Or => {
-            if matches!(left, SynapseType::Bool) && matches!(right, SynapseType::Bool) {
-                Some(SynapseType::Bool)
+            if matches!(left, SpandaType::Bool) && matches!(right, SpandaType::Bool) {
+                Some(SpandaType::Bool)
             } else {
                 None
             }
         }
         BinaryOp::Lt | BinaryOp::Lte | BinaryOp::Gt | BinaryOp::Gte | BinaryOp::Eq | BinaryOp::Neq => {
-            if matches!(left, SynapseType::Number { .. }) && matches!(right, SynapseType::Number { .. }) {
-                let SynapseType::Number { unit: lu, .. } = left else { unreachable!() };
-                let SynapseType::Number { unit: ru, .. } = right else { unreachable!() };
+            if matches!(left, SpandaType::Number { .. }) && matches!(right, SpandaType::Number { .. }) {
+                let SpandaType::Number { unit: lu, .. } = left else { unreachable!() };
+                let SpandaType::Number { unit: ru, .. } = right else { unreachable!() };
                 if units_compatible(*lu, *ru) {
-                    return Some(SynapseType::Bool);
+                    return Some(SpandaType::Bool);
                 }
             }
-            if matches!(left, SynapseType::Bool) && matches!(right, SynapseType::Bool) {
-                return Some(SynapseType::Bool);
+            if matches!(left, SpandaType::Bool) && matches!(right, SpandaType::Bool) {
+                return Some(SpandaType::Bool);
             }
-            if matches!(left, SynapseType::String) && matches!(right, SynapseType::String) {
-                return Some(SynapseType::Bool);
+            if matches!(left, SpandaType::String) && matches!(right, SpandaType::String) {
+                return Some(SpandaType::Bool);
             }
             None
         }
         BinaryOp::Add | BinaryOp::Sub => {
-            if let (SynapseType::Number { unit: lu, .. }, SynapseType::Number { unit: ru, .. }) =
+            if let (SpandaType::Number { unit: lu, .. }, SpandaType::Number { unit: ru, .. }) =
                 (left, right)
             {
                 if units_compatible(*lu, *ru) {
                     let unit = if *lu != UnitKind::None { *lu } else { *ru };
-                    return Some(SynapseType::Number { unit });
+                    return Some(SpandaType::Number { unit });
                 }
             }
             None
         }
         BinaryOp::Mul | BinaryOp::Div => {
-            if matches!(left, SynapseType::Number { .. }) && matches!(right, SynapseType::Number { .. }) {
-                Some(SynapseType::Number {
+            if matches!(left, SpandaType::Number { .. }) && matches!(right, SpandaType::Number { .. }) {
+                Some(SpandaType::Number {
                     unit: UnitKind::None,
                 })
             } else {
@@ -84,14 +84,14 @@ pub fn result_unit_for_binary(op: BinaryOp, left: &SynapseType, right: &SynapseT
 }
 
 pub struct MethodSig {
-    params: Vec<SynapseType>,
-    named_params: HashMap<String, SynapseType>,
-    returns: SynapseType,
+    params: Vec<SpandaType>,
+    named_params: HashMap<String, SpandaType>,
+    returns: SpandaType,
 }
 
 #[derive(Clone)]
 struct SymbolEntry {
-    robo_type: SynapseType,
+    robo_type: SpandaType,
     kind: SymbolKind,
     sensor_type: Option<String>,
     actuator_type: Option<String>,
@@ -230,7 +230,7 @@ impl TypeChecker {
             self.symbols.insert(
                 "robot".into(),
                 SymbolEntry {
-                    robo_type: SynapseType::Named {
+                    robo_type: SpandaType::Named {
                         name: "Robot".into(),
                     },
                     kind: SymbolKind::Robot,
@@ -248,7 +248,7 @@ impl TypeChecker {
             self.symbols.insert(
                 "safety".into(),
                 SymbolEntry {
-                    robo_type: SynapseType::Named {
+                    robo_type: SpandaType::Named {
                         name: "Safety".into(),
                     },
                     kind: SymbolKind::Safety,
@@ -270,7 +270,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: SynapseType::Void,
+                    robo_type: SpandaType::Void,
                     kind: SymbolKind::Behavior,
                     sensor_type: None,
                     actuator_type: None,
@@ -297,7 +297,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: message_type_for(message_type).unwrap_or(SynapseType::Void),
+                    robo_type: message_type_for(message_type).unwrap_or(SpandaType::Void),
                     kind: SymbolKind::Topic,
                     sensor_type: None,
                     actuator_type: None,
@@ -322,7 +322,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: service_type_for(service_type).unwrap_or(SynapseType::Void),
+                    robo_type: service_type_for(service_type).unwrap_or(SpandaType::Void),
                     kind: SymbolKind::Service,
                     sensor_type: None,
                     actuator_type: None,
@@ -347,7 +347,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: action_type_for(action_type).unwrap_or(SynapseType::Void),
+                    robo_type: action_type_for(action_type).unwrap_or(SpandaType::Void),
                     kind: SymbolKind::Action,
                     sensor_type: None,
                     actuator_type: None,
@@ -406,7 +406,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: sensor_type_for(sensor_type).unwrap_or(SynapseType::Named {
+                    robo_type: sensor_type_for(sensor_type).unwrap_or(SpandaType::Named {
                         name: sensor_type.clone(),
                     }),
                     kind: SymbolKind::Sensor,
@@ -433,7 +433,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: actuator_type_for(actuator_type).unwrap_or(SynapseType::Named {
+                    robo_type: actuator_type_for(actuator_type).unwrap_or(SpandaType::Named {
                         name: actuator_type.clone(),
                     }),
                     kind: SymbolKind::Actuator,
@@ -447,7 +447,7 @@ impl TypeChecker {
         match rule {
             SafetyRule::MaxSpeedRule { value, unit, span, .. } => {
                 let t = self.check_expr(value);
-                if !matches!(t, SynapseType::Number { .. }) || !units_compatible(t.unit(), *unit) {
+                if !matches!(t, SpandaType::Number { .. }) || !units_compatible(t.unit(), *unit) {
                     self.error(
                         format!("Expected value with unit '{}' for max_speed", unit.as_str()),
                         span.start.line,
@@ -456,7 +456,7 @@ impl TypeChecker {
                 }
             }
             SafetyRule::StopIfRule { condition, span } => {
-                if !matches!(self.check_expr(condition), SynapseType::Bool) {
+                if !matches!(self.check_expr(condition), SpandaType::Bool) {
                     self.error(
                         "stop_if condition must be boolean".into(),
                         span.start.line,
@@ -478,8 +478,8 @@ impl TypeChecker {
             span,
             ..
         } = zone;
-            if !matches!(self.check_expr(x), SynapseType::Number { .. })
-                || !matches!(self.check_expr(y), SynapseType::Number { .. })
+            if !matches!(self.check_expr(x), SpandaType::Number { .. })
+                || !matches!(self.check_expr(y), SpandaType::Number { .. })
             {
                 self.error(
                     "Zone coordinates must be numeric".into(),
@@ -489,7 +489,7 @@ impl TypeChecker {
             }
             if *shape == ZoneShape::Circle {
                 if let Some(r) = radius {
-                    if !matches!(self.check_expr(r), SynapseType::Number { .. }) {
+                    if !matches!(self.check_expr(r), SpandaType::Number { .. }) {
                         self.error(
                             "Zone radius must be numeric".into(),
                             span.start.line,
@@ -500,7 +500,7 @@ impl TypeChecker {
             }
             if *shape == ZoneShape::Rect {
                 if let Some(w) = width {
-                    if !matches!(self.check_expr(w), SynapseType::Number { .. }) {
+                    if !matches!(self.check_expr(w), SpandaType::Number { .. }) {
                         self.error(
                             "Zone size must be numeric".into(),
                             span.start.line,
@@ -509,7 +509,7 @@ impl TypeChecker {
                     }
                 }
                 if let Some(h) = height {
-                    if !matches!(self.check_expr(h), SynapseType::Number { .. }) {
+                    if !matches!(self.check_expr(h), SpandaType::Number { .. }) {
                         self.error(
                             "Zone size must be numeric".into(),
                             span.start.line,
@@ -544,7 +544,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: ai_model_type_for(model_type).unwrap_or(SynapseType::Void),
+                    robo_type: ai_model_type_for(model_type).unwrap_or(SpandaType::Void),
                     kind: SymbolKind::AiModel,
                     sensor_type: None,
                     actuator_type: None,
@@ -590,7 +590,7 @@ impl TypeChecker {
             self.symbols.insert(
                 name.clone(),
                 SymbolEntry {
-                    robo_type: SynapseType::Named {
+                    robo_type: SpandaType::Named {
                         name: "Agent".into(),
                     },
                     kind: SymbolKind::Agent,
@@ -611,7 +611,7 @@ impl TypeChecker {
         self.symbols.insert(
             "robot".into(),
             SymbolEntry {
-                robo_type: SynapseType::Named {
+                robo_type: SpandaType::Named {
                     name: "Robot".into(),
                 },
                 kind: SymbolKind::Robot,
@@ -645,7 +645,7 @@ impl TypeChecker {
                 else_branch,
                 span,
             } => {
-                if !matches!(self.check_expr(condition), SynapseType::Bool) {
+                if !matches!(self.check_expr(condition), SpandaType::Bool) {
                     self.error(
                         "if condition must be boolean".into(),
                         span.start.line,
@@ -727,7 +727,7 @@ impl TypeChecker {
                     );
                 } else {
                     let goal_t = self.check_expr(goal);
-                    if !matches!(goal_t, SynapseType::Pose | SynapseType::Trajectory) {
+                    if !matches!(goal_t, SpandaType::Pose | SpandaType::Trajectory) {
                         self.error(
                             "Action goal must be pose or trajectory".into(),
                             span.start.line,
@@ -748,17 +748,17 @@ impl TypeChecker {
         }
     }
 
-    fn check_expr(&mut self, expr: &Expr) -> SynapseType {
+    fn check_expr(&mut self, expr: &Expr) -> SpandaType {
         match expr {
             Expr::LiteralExpr { value, .. } => match value {
-                LiteralValue::Bool(_) => SynapseType::Bool,
-                LiteralValue::Number(_) => SynapseType::Number {
+                LiteralValue::Bool(_) => SpandaType::Bool,
+                LiteralValue::Number(_) => SpandaType::Number {
                     unit: UnitKind::None,
                 },
-                LiteralValue::String(_) => SynapseType::String,
-                LiteralValue::Null => SynapseType::Void,
+                LiteralValue::String(_) => SpandaType::String,
+                LiteralValue::Null => SpandaType::Void,
             },
-            Expr::UnitLiteralExpr { value: _, unit, .. } => SynapseType::Number { unit: *unit },
+            Expr::UnitLiteralExpr { value: _, unit, .. } => SpandaType::Number { unit: *unit },
             Expr::IdentExpr { name, span } => {
                 if let Some(sym) = self.symbols.get(name) {
                     sym.robo_type.clone()
@@ -768,7 +768,7 @@ impl TypeChecker {
                         span.start.line,
                         span.start.column,
                     );
-                    SynapseType::Void
+                    SpandaType::Void
                 }
             }
             Expr::BinaryExpr { op, left, right, span } => {
@@ -782,20 +782,20 @@ impl TypeChecker {
                         span.start.line,
                         span.start.column,
                     );
-                    SynapseType::Void
+                    SpandaType::Void
                 }
             }
             Expr::UnaryExpr { op, operand, span } => {
                 let t = self.check_expr(operand);
                 match op {
-                    UnaryOp::Not if !matches!(t, SynapseType::Bool) => {
+                    UnaryOp::Not if !matches!(t, SpandaType::Bool) => {
                         self.error(
                             "Operand of 'not' must be boolean".into(),
                             span.start.line,
                             span.start.column,
                         );
                     }
-                    UnaryOp::Neg if !matches!(t, SynapseType::Number { .. }) => {
+                    UnaryOp::Neg if !matches!(t, SpandaType::Number { .. }) => {
                         self.error(
                             "Operand of '-' must be numeric".into(),
                             span.start.line,
@@ -805,7 +805,7 @@ impl TypeChecker {
                     _ => {}
                 }
                 if *op == UnaryOp::Not {
-                    SynapseType::Bool
+                    SpandaType::Bool
                 } else {
                     t
                 }
@@ -820,37 +820,37 @@ impl TypeChecker {
         }
     }
 
-    fn check_member(&mut self, object: &Expr, property: &str, span: &Span) -> SynapseType {
+    fn check_member(&mut self, object: &Expr, property: &str, span: &Span) -> SpandaType {
         if let Expr::IdentExpr { name, .. } = object {
             if let Some(sym) = self.symbols.get(name) {
                 if sym.sensor_type.as_deref() == Some("Lidar") && property == "nearest_distance" {
-                    return SynapseType::Number { unit: UnitKind::M };
+                    return SpandaType::Number { unit: UnitKind::M };
                 }
             }
         }
 
         let obj_type = self.check_expr(object);
         match &obj_type {
-            SynapseType::Scan if property == "nearest_distance" => {
-                SynapseType::Number { unit: UnitKind::M }
+            SpandaType::Scan if property == "nearest_distance" => {
+                SpandaType::Number { unit: UnitKind::M }
             }
-            SynapseType::Pose => pose_property(property).unwrap_or_else(|| {
+            SpandaType::Pose => pose_property(property).unwrap_or_else(|| {
                 self.error(
                     format!("Unknown pose property '{property}'"),
                     span.start.line,
                     span.start.column,
                 );
-                SynapseType::Void
+                SpandaType::Void
             }),
-            SynapseType::Velocity => velocity_property(property).unwrap_or_else(|| {
+            SpandaType::Velocity => velocity_property(property).unwrap_or_else(|| {
                 self.error(
                     format!("Unknown velocity property '{property}'"),
                     span.start.line,
                     span.start.column,
                 );
-                SynapseType::Void
+                SpandaType::Void
             }),
-            SynapseType::Named { name } => {
+            SpandaType::Named { name } => {
                 if let Some(prop) = object_property(name, property) {
                     return prop;
                 }
@@ -864,7 +864,7 @@ impl TypeChecker {
                     span.start.line,
                     span.start.column,
                 );
-                SynapseType::Void
+                SpandaType::Void
             }
             _ => {
                 self.error(
@@ -872,7 +872,7 @@ impl TypeChecker {
                     span.start.line,
                     span.start.column,
                 );
-                SynapseType::Void
+                SpandaType::Void
             }
         }
     }
@@ -883,7 +883,7 @@ impl TypeChecker {
         args: &[Expr],
         named_args: &[NamedArg],
         span: &Span,
-    ) -> SynapseType {
+    ) -> SpandaType {
         if let Expr::IdentExpr { name, .. } = callee {
             if let Some(sig) = builtin_functions().get(name.as_str()) {
                 for arg in named_args {
@@ -910,16 +910,16 @@ impl TypeChecker {
                 span.start.line,
                 span.start.column,
             );
-            return SynapseType::Void;
+            return SpandaType::Void;
         }
 
         let Expr::MemberExpr { object, property, .. } = callee else {
             self.error("Invalid call target".into(), span.start.line, span.start.column);
-            return SynapseType::Void;
+            return SpandaType::Void;
         };
         let Expr::IdentExpr { name: target_name, .. } = object.as_ref() else {
             self.error("Invalid call target".into(), span.start.line, span.start.column);
-            return SynapseType::Void;
+            return SpandaType::Void;
         };
 
         let Some(sym) = self.symbols.get(target_name).cloned() else {
@@ -928,7 +928,7 @@ impl TypeChecker {
                 span.start.line,
                 span.start.column,
             );
-            return SynapseType::Void;
+            return SpandaType::Void;
         };
 
         if sym.kind == SymbolKind::Robot {
@@ -951,7 +951,7 @@ impl TypeChecker {
                 span.start.line,
                 span.start.column,
             );
-            return SynapseType::Void;
+            return SpandaType::Void;
         }
 
         let type_name = match sym.kind {
@@ -959,7 +959,7 @@ impl TypeChecker {
             SymbolKind::Actuator => sym.actuator_type.clone().unwrap_or_default(),
             SymbolKind::Safety => "Safety".into(),
             SymbolKind::AiModel => {
-                if let SynapseType::Named { name } = sym.robo_type {
+                if let SpandaType::Named { name } = sym.robo_type {
                     name
                 } else {
                     String::new()
@@ -983,7 +983,7 @@ impl TypeChecker {
                 span.start.line,
                 span.start.column,
             );
-            return SynapseType::Void;
+            return SpandaType::Void;
         };
         let Some(method) = methods.get(property.as_str()) else {
             self.error(
@@ -991,7 +991,7 @@ impl TypeChecker {
                 span.start.line,
                 span.start.column,
             );
-            return SynapseType::Void;
+            return SpandaType::Void;
         };
 
         for arg in named_args {
@@ -1022,28 +1022,28 @@ impl TypeChecker {
         method.returns.clone()
     }
 
-    fn types_compatible(&self, expected: &SynapseType, actual: &SynapseType) -> bool {
+    fn types_compatible(&self, expected: &SpandaType, actual: &SpandaType) -> bool {
         if std::mem::discriminant(expected) == std::mem::discriminant(actual) {
             match (expected, actual) {
-                (SynapseType::Number { unit: eu, .. }, SynapseType::Number { unit: au, .. }) => {
+                (SpandaType::Number { unit: eu, .. }, SpandaType::Number { unit: au, .. }) => {
                     units_compatible(*eu, *au)
                 }
-                (SynapseType::Named { name: en }, SynapseType::Named { name: an }) => {
+                (SpandaType::Named { name: en }, SpandaType::Named { name: an }) => {
                     en == an || an.contains(en.as_str())
                 }
                 _ => true,
             }
-        } else if let (SynapseType::Named { name }, SynapseType::Scan) = (expected, actual) {
+        } else if let (SpandaType::Named { name }, SpandaType::Scan) = (expected, actual) {
             name.contains("Lidar")
-        } else if let (SynapseType::Scan, SynapseType::Named { name }) = (expected, actual) {
+        } else if let (SpandaType::Scan, SpandaType::Named { name }) = (expected, actual) {
             ["Detection", "CameraFrame", "Completion"].contains(&name.as_str())
         } else {
             false
         }
     }
 
-    fn assert_named_type(&mut self, actual: &SynapseType, type_name: &str, line: u32, column: u32) {
-        if let SynapseType::Named { name } = actual {
+    fn assert_named_type(&mut self, actual: &SpandaType, type_name: &str, line: u32, column: u32) {
+        if let SpandaType::Named { name } = actual {
             if name == type_name {
                 return;
             }
@@ -1057,16 +1057,16 @@ impl TypeChecker {
 
     fn assert_compatible(
         &mut self,
-        expected: &SynapseType,
-        actual: &SynapseType,
+        expected: &SpandaType,
+        actual: &SpandaType,
         line: u32,
         column: u32,
     ) {
-        if matches!(expected, SynapseType::Void) && matches!(actual, SynapseType::Void) {
+        if matches!(expected, SpandaType::Void) && matches!(actual, SpandaType::Void) {
             return;
         }
         if !self.types_compatible(expected, actual) {
-            if let (SynapseType::Number { unit: eu, .. }, SynapseType::Number { unit: au, .. }) =
+            if let (SpandaType::Number { unit: eu, .. }, SpandaType::Number { unit: au, .. }) =
                 (expected, actual)
             {
                 self.error(
@@ -1097,31 +1097,31 @@ impl TypeChecker {
     }
 }
 
-trait SynapseTypeExt {
+trait SpandaTypeExt {
     fn unit(&self) -> UnitKind;
     fn kind_name(&self) -> &'static str;
 }
 
-impl SynapseTypeExt for SynapseType {
+impl SpandaTypeExt for SpandaType {
     fn unit(&self) -> UnitKind {
         match self {
-            SynapseType::Number { unit, .. } => *unit,
+            SpandaType::Number { unit, .. } => *unit,
             _ => UnitKind::None,
         }
     }
 
     fn kind_name(&self) -> &'static str {
         match self {
-            SynapseType::Void => "void",
-            SynapseType::Bool => "bool",
-            SynapseType::Number { .. } => "number",
-            SynapseType::String => "string",
-            SynapseType::Named { .. } => "named",
-            SynapseType::Scan => "scan",
-            SynapseType::Pose => "pose",
-            SynapseType::Velocity => "velocity",
-            SynapseType::Trajectory => "trajectory",
-            SynapseType::Transform => "transform",
+            SpandaType::Void => "void",
+            SpandaType::Bool => "bool",
+            SpandaType::Number { .. } => "number",
+            SpandaType::String => "string",
+            SpandaType::Named { .. } => "named",
+            SpandaType::Scan => "scan",
+            SpandaType::Pose => "pose",
+            SpandaType::Velocity => "velocity",
+            SpandaType::Trajectory => "trajectory",
+            SpandaType::Transform => "transform",
         }
     }
 }
@@ -1163,42 +1163,42 @@ impl SafetyBlockRules for SafetyBlock {
 }
 
 pub struct FnSig {
-    named_params: HashMap<String, SynapseType>,
-    returns: SynapseType,
+    named_params: HashMap<String, SpandaType>,
+    returns: SpandaType,
 }
 
-fn message_type_for(name: &str) -> Option<SynapseType> {
+fn message_type_for(name: &str) -> Option<SpandaType> {
     match name {
-        "Velocity" => Some(SynapseType::Velocity),
-        "Pose" => Some(SynapseType::Pose),
-        "Scan" => Some(SynapseType::Scan),
-        "String" => Some(SynapseType::String),
+        "Velocity" => Some(SpandaType::Velocity),
+        "Pose" => Some(SpandaType::Pose),
+        "Scan" => Some(SpandaType::Scan),
+        "String" => Some(SpandaType::String),
         _ => None,
     }
 }
 
-fn service_type_for(name: &str) -> Option<SynapseType> {
+fn service_type_for(name: &str) -> Option<SpandaType> {
     match name {
-        "ResetCostmap" | "ClearCostmap" | "SetPose" => Some(SynapseType::Named {
+        "ResetCostmap" | "ClearCostmap" | "SetPose" => Some(SpandaType::Named {
             name: name.into(),
         }),
         _ => None,
     }
 }
 
-fn action_type_for(name: &str) -> Option<SynapseType> {
+fn action_type_for(name: &str) -> Option<SpandaType> {
     match name {
-        "NavigateTo" | "FollowPath" | "PickObject" => Some(SynapseType::Named {
+        "NavigateTo" | "FollowPath" | "PickObject" => Some(SpandaType::Named {
             name: name.into(),
         }),
         _ => None,
     }
 }
 
-fn sensor_type_for(name: &str) -> Option<SynapseType> {
+fn sensor_type_for(name: &str) -> Option<SpandaType> {
     let base = match name {
         "Lidar" | "IMU" | "GPS" | "Camera" | "AltitudeSensor" | "ForceTorque" => {
-            Some(SynapseType::Named { name: name.into() })
+            Some(SpandaType::Named { name: name.into() })
         }
         _ => None,
     };
@@ -1206,61 +1206,61 @@ fn sensor_type_for(name: &str) -> Option<SynapseType> {
         return base;
     }
     if all_library_sensor_types().contains_key(name) {
-        Some(SynapseType::Named { name: name.into() })
+        Some(SpandaType::Named { name: name.into() })
     } else {
         None
     }
 }
 
-fn actuator_type_for(name: &str) -> Option<SynapseType> {
+fn actuator_type_for(name: &str) -> Option<SpandaType> {
     match name {
-        "DifferentialDrive" | "RoboticArm" | "DroneRotors" | "Gripper" => Some(SynapseType::Named {
+        "DifferentialDrive" | "RoboticArm" | "DroneRotors" | "Gripper" => Some(SpandaType::Named {
             name: name.into(),
         }),
         _ => None,
     }
 }
 
-fn ai_model_type_for(name: &str) -> Option<SynapseType> {
+fn ai_model_type_for(name: &str) -> Option<SpandaType> {
     match name {
-        "LLM" | "VisionModel" | "EmbeddingModel" => Some(SynapseType::Named {
+        "LLM" | "VisionModel" | "EmbeddingModel" => Some(SpandaType::Named {
             name: name.into(),
         }),
         _ => None,
     }
 }
 
-fn pose_property(name: &str) -> Option<SynapseType> {
+fn pose_property(name: &str) -> Option<SpandaType> {
     match name {
-        "x" | "y" | "z" => Some(SynapseType::Number { unit: UnitKind::M }),
-        "theta" => Some(SynapseType::Number { unit: UnitKind::Rad }),
+        "x" | "y" | "z" => Some(SpandaType::Number { unit: UnitKind::M }),
+        "theta" => Some(SpandaType::Number { unit: UnitKind::Rad }),
         _ => None,
     }
 }
 
-fn velocity_property(name: &str) -> Option<SynapseType> {
+fn velocity_property(name: &str) -> Option<SpandaType> {
     match name {
-        "linear" => Some(SynapseType::Number { unit: UnitKind::MPerS }),
-        "angular" => Some(SynapseType::Number { unit: UnitKind::RadPerS }),
+        "linear" => Some(SpandaType::Number { unit: UnitKind::MPerS }),
+        "angular" => Some(SpandaType::Number { unit: UnitKind::RadPerS }),
         _ => None,
     }
 }
 
-fn object_property(type_name: &str, property: &str) -> Option<SynapseType> {
+fn object_property(type_name: &str, property: &str) -> Option<SpandaType> {
     match (type_name, property) {
-        ("IMUReading", "yaw" | "roll" | "pitch") => Some(SynapseType::Number { unit: UnitKind::Rad }),
-        ("ForceTorqueReading", "force") => Some(SynapseType::Number { unit: UnitKind::None }),
-        ("GPSReading", "lat" | "lon") => Some(SynapseType::Number { unit: UnitKind::None }),
+        ("IMUReading", "yaw" | "roll" | "pitch") => Some(SpandaType::Number { unit: UnitKind::Rad }),
+        ("ForceTorqueReading", "force") => Some(SpandaType::Number { unit: UnitKind::None }),
+        ("GPSReading", "lat" | "lon") => Some(SpandaType::Number { unit: UnitKind::None }),
         ("ActionProposal" | "SafeAction" | "NavigationPolicy", "linear") => {
-            Some(SynapseType::Number { unit: UnitKind::MPerS })
+            Some(SpandaType::Number { unit: UnitKind::MPerS })
         }
         ("ActionProposal" | "SafeAction" | "NavigationPolicy", "angular") => {
-            Some(SynapseType::Number { unit: UnitKind::RadPerS })
+            Some(SpandaType::Number { unit: UnitKind::RadPerS })
         }
-        ("Detection", "label") => Some(SynapseType::String),
-        ("Detection", "confidence") => Some(SynapseType::Number { unit: UnitKind::None }),
-        ("Detection", "nearest_distance") => Some(SynapseType::Number { unit: UnitKind::M }),
-        ("Completion", "text") => Some(SynapseType::String),
+        ("Detection", "label") => Some(SpandaType::String),
+        ("Detection", "confidence") => Some(SpandaType::Number { unit: UnitKind::None }),
+        ("Detection", "nearest_distance") => Some(SpandaType::Number { unit: UnitKind::M }),
+        ("Completion", "text") => Some(SpandaType::String),
         _ => None,
     }
 }
@@ -1271,44 +1271,44 @@ fn builtin_functions() -> HashMap<&'static str, FnSig> {
             "pose",
             FnSig {
                 named_params: HashMap::from([
-                    ("x".into(), SynapseType::Number { unit: UnitKind::M }),
-                    ("y".into(), SynapseType::Number { unit: UnitKind::M }),
-                    ("theta".into(), SynapseType::Number { unit: UnitKind::Rad }),
-                    ("z".into(), SynapseType::Number { unit: UnitKind::M }),
+                    ("x".into(), SpandaType::Number { unit: UnitKind::M }),
+                    ("y".into(), SpandaType::Number { unit: UnitKind::M }),
+                    ("theta".into(), SpandaType::Number { unit: UnitKind::Rad }),
+                    ("z".into(), SpandaType::Number { unit: UnitKind::M }),
                 ]),
-                returns: SynapseType::Pose,
+                returns: SpandaType::Pose,
             },
         ),
         (
             "velocity",
             FnSig {
                 named_params: HashMap::from([
-                    ("linear".into(), SynapseType::Number { unit: UnitKind::MPerS }),
-                    ("angular".into(), SynapseType::Number { unit: UnitKind::RadPerS }),
+                    ("linear".into(), SpandaType::Number { unit: UnitKind::MPerS }),
+                    ("angular".into(), SpandaType::Number { unit: UnitKind::RadPerS }),
                 ]),
-                returns: SynapseType::Velocity,
+                returns: SpandaType::Velocity,
             },
         ),
         (
             "trajectory",
             FnSig {
                 named_params: HashMap::from([
-                    ("from".into(), SynapseType::Pose),
-                    ("to".into(), SynapseType::Pose),
-                    ("steps".into(), SynapseType::Number { unit: UnitKind::None }),
+                    ("from".into(), SpandaType::Pose),
+                    ("to".into(), SpandaType::Pose),
+                    ("steps".into(), SpandaType::Number { unit: UnitKind::None }),
                 ]),
-                returns: SynapseType::Trajectory,
+                returns: SpandaType::Trajectory,
             },
         ),
         (
             "transform",
             FnSig {
                 named_params: HashMap::from([
-                    ("from".into(), SynapseType::String),
-                    ("to".into(), SynapseType::String),
-                    ("pose".into(), SynapseType::Pose),
+                    ("from".into(), SpandaType::String),
+                    ("to".into(), SpandaType::String),
+                    ("pose".into(), SpandaType::Pose),
                 ]),
-                returns: SynapseType::Transform,
+                returns: SpandaType::Transform,
             },
         ),
     ])
@@ -1321,7 +1321,7 @@ fn robot_methods() -> HashMap<&'static str, MethodSig> {
             MethodSig {
                 params: vec![],
                 named_params: HashMap::new(),
-                returns: SynapseType::Pose,
+                returns: SpandaType::Pose,
             },
         ),
         (
@@ -1329,22 +1329,22 @@ fn robot_methods() -> HashMap<&'static str, MethodSig> {
             MethodSig {
                 params: vec![],
                 named_params: HashMap::new(),
-                returns: SynapseType::Velocity,
+                returns: SpandaType::Velocity,
             },
         ),
         (
             "in_zone",
             MethodSig {
-                params: vec![SynapseType::String],
+                params: vec![SpandaType::String],
                 named_params: HashMap::new(),
-                returns: SynapseType::Bool,
+                returns: SpandaType::Bool,
             },
         ),
     ])
 }
 
 fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> {
-    let m = |params: Vec<SynapseType>, named: HashMap<&str, SynapseType>, returns: SynapseType| {
+    let m = |params: Vec<SpandaType>, named: HashMap<&str, SpandaType>, returns: SpandaType| {
         MethodSig {
             params,
             named_params: named.into_iter().map(|(k, v)| (k.to_string(), v)).collect(),
@@ -1356,14 +1356,14 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
         "Lidar" => Some(HashMap::from([
             (
                 "read",
-                m(vec![], HashMap::new(), SynapseType::Scan),
+                m(vec![], HashMap::new(), SpandaType::Scan),
             ),
             (
                 "nearest_distance",
                 m(
                     vec![],
                     HashMap::new(),
-                    SynapseType::Number { unit: UnitKind::M },
+                    SpandaType::Number { unit: UnitKind::M },
                 ),
             ),
         ])),
@@ -1372,7 +1372,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
             m(
                 vec![],
                 HashMap::new(),
-                SynapseType::Named {
+                SpandaType::Named {
                     name: "IMUReading".into(),
                 },
             ),
@@ -1382,7 +1382,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
             m(
                 vec![],
                 HashMap::new(),
-                SynapseType::Number { unit: UnitKind::M },
+                SpandaType::Number { unit: UnitKind::M },
             ),
         )])),
         "ForceTorque" => Some(HashMap::from([(
@@ -1390,7 +1390,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
             m(
                 vec![],
                 HashMap::new(),
-                SynapseType::Named {
+                SpandaType::Named {
                     name: "ForceTorqueReading".into(),
                 },
             ),
@@ -1400,7 +1400,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
             m(
                 vec![],
                 HashMap::new(),
-                SynapseType::Number { unit: UnitKind::M },
+                SpandaType::Number { unit: UnitKind::M },
             ),
         )])),
         "Camera" => Some(HashMap::from([
@@ -1409,7 +1409,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::new(),
-                    SynapseType::Named {
+                    SpandaType::Named {
                         name: "CameraFrame".into(),
                     },
                 ),
@@ -1419,7 +1419,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::new(),
-                    SynapseType::Named {
+                    SpandaType::Named {
                         name: "CameraFrame".into(),
                     },
                 ),
@@ -1429,7 +1429,7 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::new(),
-                    SynapseType::Named {
+                    SpandaType::Named {
                         name: "Detection".into(),
                     },
                 ),
@@ -1441,31 +1441,31 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::from([
-                        ("linear", SynapseType::Number { unit: UnitKind::MPerS }),
-                        ("angular", SynapseType::Number { unit: UnitKind::RadPerS }),
+                        ("linear", SpandaType::Number { unit: UnitKind::MPerS }),
+                        ("angular", SpandaType::Number { unit: UnitKind::RadPerS }),
                     ]),
-                    SynapseType::Void,
+                    SpandaType::Void,
                 ),
             ),
             (
                 "execute",
                 m(
-                    vec![SynapseType::Named {
+                    vec![SpandaType::Named {
                         name: "SafeAction".into(),
                     }],
                     HashMap::new(),
-                    SynapseType::Void,
+                    SpandaType::Void,
                 ),
             ),
             (
                 "follow",
                 m(
                     vec![],
-                    HashMap::from([("path", SynapseType::Trajectory)]),
-                    SynapseType::Void,
+                    HashMap::from([("path", SpandaType::Trajectory)]),
+                    SpandaType::Void,
                 ),
             ),
-            ("stop", m(vec![], HashMap::new(), SynapseType::Void)),
+            ("stop", m(vec![], HashMap::new(), SpandaType::Void)),
         ])),
         "RoboticArm" => Some(HashMap::from([
             (
@@ -1473,15 +1473,15 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::from([
-                        ("x", SynapseType::Number { unit: UnitKind::M }),
-                        ("y", SynapseType::Number { unit: UnitKind::M }),
-                        ("z", SynapseType::Number { unit: UnitKind::M }),
+                        ("x", SpandaType::Number { unit: UnitKind::M }),
+                        ("y", SpandaType::Number { unit: UnitKind::M }),
+                        ("z", SpandaType::Number { unit: UnitKind::M }),
                     ]),
-                    SynapseType::Void,
+                    SpandaType::Void,
                 ),
             ),
-            ("grip", m(vec![], HashMap::new(), SynapseType::Void)),
-            ("release", m(vec![], HashMap::new(), SynapseType::Void)),
+            ("grip", m(vec![], HashMap::new(), SpandaType::Void)),
+            ("release", m(vec![], HashMap::new(), SpandaType::Void)),
         ])),
         "DroneRotors" => Some(HashMap::from([
             (
@@ -1490,16 +1490,16 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                     vec![],
                     HashMap::from([(
                         "thrust",
-                        SynapseType::Number { unit: UnitKind::None },
+                        SpandaType::Number { unit: UnitKind::None },
                     )]),
-                    SynapseType::Void,
+                    SpandaType::Void,
                 ),
             ),
-            ("hover", m(vec![], HashMap::new(), SynapseType::Void)),
+            ("hover", m(vec![], HashMap::new(), SpandaType::Void)),
         ])),
         "Gripper" => Some(HashMap::from([
-            ("close", m(vec![], HashMap::new(), SynapseType::Void)),
-            ("open", m(vec![], HashMap::new(), SynapseType::Void)),
+            ("close", m(vec![], HashMap::new(), SpandaType::Void)),
+            ("open", m(vec![], HashMap::new(), SpandaType::Void)),
         ])),
         "LLM" => Some(HashMap::from([
             (
@@ -1507,10 +1507,10 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 m(
                     vec![],
                     HashMap::from([
-                        ("prompt", SynapseType::String),
-                        ("input", SynapseType::Scan),
+                        ("prompt", SpandaType::String),
+                        ("input", SpandaType::Scan),
                     ]),
-                    SynapseType::Named {
+                    SpandaType::Named {
                         name: "ActionProposal".into(),
                     },
                 ),
@@ -1519,8 +1519,8 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                 "summarize",
                 m(
                     vec![],
-                    HashMap::from([("input", SynapseType::Scan)]),
-                    SynapseType::Named {
+                    HashMap::from([("input", SpandaType::Scan)]),
+                    SpandaType::Named {
                         name: "Completion".into(),
                     },
                 ),
@@ -1529,27 +1529,27 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
         "VisionModel" => Some(HashMap::from([(
             "detect",
             m(
-                vec![SynapseType::Named {
+                vec![SpandaType::Named {
                     name: "CameraFrame".into(),
                 }],
                 HashMap::new(),
-                SynapseType::Named {
+                SpandaType::Named {
                     name: "Detection".into(),
                 },
             ),
         )])),
         "Agent" => Some(HashMap::from([(
             "plan",
-            m(vec![], HashMap::new(), SynapseType::Void),
+            m(vec![], HashMap::new(), SpandaType::Void),
         )])),
         "Safety" => Some(HashMap::from([(
             "validate",
             m(
-                vec![SynapseType::Named {
+                vec![SpandaType::Named {
                     name: "ActionProposal".into(),
                 }],
                 HashMap::new(),
-                SynapseType::Named {
+                SpandaType::Named {
                     name: "SafeAction".into(),
                 },
             ),
@@ -1561,24 +1561,24 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
     }
 }
 
-fn infer_read_return(type_name: &str) -> SynapseType {
+fn infer_read_return(type_name: &str) -> SpandaType {
     if type_name.contains("Lidar")
         || type_name.contains("Velodyne")
         || type_name.contains("Hokuyo")
         || type_name.contains("Ydlidar")
         || type_name.contains("RealSense")
     {
-        return SynapseType::Scan;
+        return SpandaType::Scan;
     }
     if type_name.contains("BNO") || type_name.contains("LSM9") || type_name.contains("IMU") {
-        return SynapseType::Named {
+        return SpandaType::Named {
             name: "IMUReading".into(),
         };
     }
     if type_name.contains("BMP") || type_name.contains("VL53") || type_name.contains("UWMF") {
-        return SynapseType::Number { unit: UnitKind::M };
+        return SpandaType::Number { unit: UnitKind::M };
     }
-    SynapseType::Void
+    SpandaType::Void
 }
 
 pub fn merge_library_methods(
@@ -1587,7 +1587,7 @@ pub fn merge_library_methods(
     for (type_name, info) in all_library_sensor_types() {
         methods.entry(type_name).or_insert_with(|| {
             let read_name = match info.robo_type {
-                SynapseType::Named { ref name } => name.clone(),
+                SpandaType::Named { ref name } => name.clone(),
                 _ => String::new(),
             };
             HashMap::from([
@@ -1604,7 +1604,7 @@ pub fn merge_library_methods(
                     MethodSig {
                         params: vec![],
                         named_params: HashMap::new(),
-                        returns: SynapseType::Void,
+                        returns: SpandaType::Void,
                     },
                 ),
             ])
@@ -1627,7 +1627,7 @@ fn library_sensor_methods(type_name: &str) -> HashMap<&'static str, MethodSig> {
             MethodSig {
                 params: vec![],
                 named_params: HashMap::new(),
-                returns: SynapseType::Void,
+                returns: SpandaType::Void,
             },
         ),
     ])
@@ -1640,42 +1640,42 @@ pub fn get_library_for_sensor_type(sensor_type: &str) -> Option<String> {
 }
 
 #[allow(non_snake_case)]
-pub fn MESSAGE_TYPES() -> HashMap<String, SynapseType> {
+pub fn MESSAGE_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("Velocity".into(), SynapseType::Velocity),
-        ("Pose".into(), SynapseType::Pose),
-        ("Scan".into(), SynapseType::Scan),
-        ("String".into(), SynapseType::String),
+        ("Velocity".into(), SpandaType::Velocity),
+        ("Pose".into(), SpandaType::Pose),
+        ("Scan".into(), SpandaType::Scan),
+        ("String".into(), SpandaType::String),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn SERVICE_TYPES() -> HashMap<String, SynapseType> {
+pub fn SERVICE_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("ResetCostmap".into(), SynapseType::Named { name: "ResetCostmap".into() }),
-        ("ClearCostmap".into(), SynapseType::Named { name: "ClearCostmap".into() }),
-        ("SetPose".into(), SynapseType::Named { name: "SetPose".into() }),
+        ("ResetCostmap".into(), SpandaType::Named { name: "ResetCostmap".into() }),
+        ("ClearCostmap".into(), SpandaType::Named { name: "ClearCostmap".into() }),
+        ("SetPose".into(), SpandaType::Named { name: "SetPose".into() }),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn ACTION_TYPES() -> HashMap<String, SynapseType> {
+pub fn ACTION_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("NavigateTo".into(), SynapseType::Named { name: "NavigateTo".into() }),
-        ("FollowPath".into(), SynapseType::Named { name: "FollowPath".into() }),
-        ("PickObject".into(), SynapseType::Named { name: "PickObject".into() }),
+        ("NavigateTo".into(), SpandaType::Named { name: "NavigateTo".into() }),
+        ("FollowPath".into(), SpandaType::Named { name: "FollowPath".into() }),
+        ("PickObject".into(), SpandaType::Named { name: "PickObject".into() }),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn SENSOR_TYPES() -> HashMap<String, SynapseType> {
+pub fn SENSOR_TYPES() -> HashMap<String, SpandaType> {
     let mut map = HashMap::from([
-        ("Lidar".into(), SynapseType::Named { name: "Lidar".into() }),
-        ("IMU".into(), SynapseType::Named { name: "IMU".into() }),
-        ("GPS".into(), SynapseType::Named { name: "GPS".into() }),
-        ("Camera".into(), SynapseType::Named { name: "Camera".into() }),
-        ("AltitudeSensor".into(), SynapseType::Named { name: "AltitudeSensor".into() }),
-        ("ForceTorque".into(), SynapseType::Named { name: "ForceTorque".into() }),
+        ("Lidar".into(), SpandaType::Named { name: "Lidar".into() }),
+        ("IMU".into(), SpandaType::Named { name: "IMU".into() }),
+        ("GPS".into(), SpandaType::Named { name: "GPS".into() }),
+        ("Camera".into(), SpandaType::Named { name: "Camera".into() }),
+        ("AltitudeSensor".into(), SpandaType::Named { name: "AltitudeSensor".into() }),
+        ("ForceTorque".into(), SpandaType::Named { name: "ForceTorque".into() }),
     ]);
     for (type_name, info) in all_library_sensor_types() {
         map.insert(type_name, info.robo_type);
@@ -1684,37 +1684,37 @@ pub fn SENSOR_TYPES() -> HashMap<String, SynapseType> {
 }
 
 #[allow(non_snake_case)]
-pub fn ACTUATOR_TYPES() -> HashMap<String, SynapseType> {
+pub fn ACTUATOR_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("DifferentialDrive".into(), SynapseType::Named { name: "DifferentialDrive".into() }),
-        ("RoboticArm".into(), SynapseType::Named { name: "RoboticArm".into() }),
-        ("DroneRotors".into(), SynapseType::Named { name: "DroneRotors".into() }),
-        ("Gripper".into(), SynapseType::Named { name: "Gripper".into() }),
+        ("DifferentialDrive".into(), SpandaType::Named { name: "DifferentialDrive".into() }),
+        ("RoboticArm".into(), SpandaType::Named { name: "RoboticArm".into() }),
+        ("DroneRotors".into(), SpandaType::Named { name: "DroneRotors".into() }),
+        ("Gripper".into(), SpandaType::Named { name: "Gripper".into() }),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn AI_MODEL_TYPES() -> HashMap<String, SynapseType> {
+pub fn AI_MODEL_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("LLM".into(), SynapseType::Named { name: "LLM".into() }),
-        ("VisionModel".into(), SynapseType::Named { name: "VisionModel".into() }),
-        ("EmbeddingModel".into(), SynapseType::Named { name: "EmbeddingModel".into() }),
+        ("LLM".into(), SpandaType::Named { name: "LLM".into() }),
+        ("VisionModel".into(), SpandaType::Named { name: "VisionModel".into() }),
+        ("EmbeddingModel".into(), SpandaType::Named { name: "EmbeddingModel".into() }),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn AI_VALUE_TYPES() -> HashMap<String, SynapseType> {
+pub fn AI_VALUE_TYPES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("ActionProposal".into(), SynapseType::Named { name: "ActionProposal".into() }),
-        ("SafeAction".into(), SynapseType::Named { name: "SafeAction".into() }),
-        ("Completion".into(), SynapseType::Named { name: "Completion".into() }),
-        ("Detection".into(), SynapseType::Named { name: "Detection".into() }),
-        ("Classification".into(), SynapseType::Named { name: "Classification".into() }),
-        ("Plan".into(), SynapseType::Named { name: "Plan".into() }),
-        ("Agent".into(), SynapseType::Named { name: "Agent".into() }),
-        ("CameraFrame".into(), SynapseType::Named { name: "CameraFrame".into() }),
-        ("Memory".into(), SynapseType::Named { name: "Memory".into() }),
-        ("Prompt".into(), SynapseType::String),
+        ("ActionProposal".into(), SpandaType::Named { name: "ActionProposal".into() }),
+        ("SafeAction".into(), SpandaType::Named { name: "SafeAction".into() }),
+        ("Completion".into(), SpandaType::Named { name: "Completion".into() }),
+        ("Detection".into(), SpandaType::Named { name: "Detection".into() }),
+        ("Classification".into(), SpandaType::Named { name: "Classification".into() }),
+        ("Plan".into(), SpandaType::Named { name: "Plan".into() }),
+        ("Agent".into(), SpandaType::Named { name: "Agent".into() }),
+        ("CameraFrame".into(), SpandaType::Named { name: "CameraFrame".into() }),
+        ("Memory".into(), SpandaType::Named { name: "Memory".into() }),
+        ("Prompt".into(), SpandaType::String),
     ])
 }
 
@@ -1750,50 +1750,50 @@ pub fn BUILTIN_METHODS() -> HashMap<String, HashMap<String, MethodSig>> {
 }
 
 #[allow(non_snake_case)]
-pub fn SCAN_PROPERTIES() -> HashMap<String, SynapseType> {
+pub fn SCAN_PROPERTIES() -> HashMap<String, SpandaType> {
     HashMap::from([(
         "nearest_distance".into(),
-        SynapseType::Number { unit: UnitKind::M },
+        SpandaType::Number { unit: UnitKind::M },
     )])
 }
 
 #[allow(non_snake_case)]
-pub fn OBJECT_PROPERTIES() -> HashMap<String, HashMap<String, SynapseType>> {
+pub fn OBJECT_PROPERTIES() -> HashMap<String, HashMap<String, SpandaType>> {
     HashMap::from([
         (
             "IMUReading".into(),
             HashMap::from([
-                ("yaw".into(), SynapseType::Number { unit: UnitKind::Rad }),
-                ("roll".into(), SynapseType::Number { unit: UnitKind::Rad }),
-                ("pitch".into(), SynapseType::Number { unit: UnitKind::Rad }),
+                ("yaw".into(), SpandaType::Number { unit: UnitKind::Rad }),
+                ("roll".into(), SpandaType::Number { unit: UnitKind::Rad }),
+                ("pitch".into(), SpandaType::Number { unit: UnitKind::Rad }),
             ]),
         ),
         (
             "Detection".into(),
             HashMap::from([
-                ("label".into(), SynapseType::String),
-                ("confidence".into(), SynapseType::Number { unit: UnitKind::None }),
-                ("nearest_distance".into(), SynapseType::Number { unit: UnitKind::M }),
+                ("label".into(), SpandaType::String),
+                ("confidence".into(), SpandaType::Number { unit: UnitKind::None }),
+                ("nearest_distance".into(), SpandaType::Number { unit: UnitKind::M }),
             ]),
         ),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn POSE_PROPERTIES() -> HashMap<String, SynapseType> {
+pub fn POSE_PROPERTIES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("x".into(), SynapseType::Number { unit: UnitKind::M }),
-        ("y".into(), SynapseType::Number { unit: UnitKind::M }),
-        ("theta".into(), SynapseType::Number { unit: UnitKind::Rad }),
-        ("z".into(), SynapseType::Number { unit: UnitKind::M }),
+        ("x".into(), SpandaType::Number { unit: UnitKind::M }),
+        ("y".into(), SpandaType::Number { unit: UnitKind::M }),
+        ("theta".into(), SpandaType::Number { unit: UnitKind::Rad }),
+        ("z".into(), SpandaType::Number { unit: UnitKind::M }),
     ])
 }
 
 #[allow(non_snake_case)]
-pub fn VELOCITY_PROPERTIES() -> HashMap<String, SynapseType> {
+pub fn VELOCITY_PROPERTIES() -> HashMap<String, SpandaType> {
     HashMap::from([
-        ("linear".into(), SynapseType::Number { unit: UnitKind::MPerS }),
-        ("angular".into(), SynapseType::Number { unit: UnitKind::RadPerS }),
+        ("linear".into(), SpandaType::Number { unit: UnitKind::MPerS }),
+        ("angular".into(), SpandaType::Number { unit: UnitKind::RadPerS }),
     ])
 }
 
@@ -1803,7 +1803,7 @@ mod tests {
     use crate::lexer::tokenize;
     use crate::parser::parse;
 
-    fn check_source(source: &str) -> Result<(), SynapseError> {
+    fn check_source(source: &str) -> Result<(), SpandaError> {
         let tokens = tokenize(source)?;
         let program = parse(tokens)?;
         type_check(&program)
@@ -1835,7 +1835,7 @@ mod tests {
               }
             }
         "#;
-        assert!(matches!(check_source(source), Err(SynapseError::TypeCheck { .. })));
+        assert!(matches!(check_source(source), Err(SpandaError::TypeCheck { .. })));
     }
 
     #[test]
@@ -1845,7 +1845,7 @@ mod tests {
               sensor cam: UnknownSensor;
             }
         "#;
-        assert!(matches!(check_source(source), Err(SynapseError::TypeCheck { .. })));
+        assert!(matches!(check_source(source), Err(SpandaError::TypeCheck { .. })));
     }
 
     #[test]
@@ -1855,7 +1855,7 @@ mod tests {
               sensor imu: BoschBNO055 from bosch.bno055 on imu;
             }
         "#;
-        assert!(matches!(check_source(source), Err(SynapseError::TypeCheck { .. })));
+        assert!(matches!(check_source(source), Err(SpandaError::TypeCheck { .. })));
     }
 
     #[test]

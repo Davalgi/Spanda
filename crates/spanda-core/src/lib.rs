@@ -10,6 +10,7 @@ pub mod hal;
 pub mod soc;
 pub mod lib_registry;
 mod error;
+pub mod source_path;
 
 pub use ast::*;
 pub use error::*;
@@ -19,7 +20,7 @@ use simulator::{create_default_simulator, Obstacle, SimulatorConfig};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub fn compile(source: &str) -> Result<CompileResult, SynapseError> {
+pub fn compile(source: &str) -> Result<CompileResult, SpandaError> {
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::type_check(&program)?;
@@ -29,18 +30,18 @@ pub fn compile(source: &str) -> Result<CompileResult, SynapseError> {
     })
 }
 
-pub fn check(source: &str) -> Result<(), SynapseError> {
+pub fn check(source: &str) -> Result<(), SpandaError> {
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)
 }
 
-pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SynapseError> {
+pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
     let compiled = compile(source)?;
     run_program(&compiled.program, options)
 }
 
-pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SynapseError> {
+pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
     let obstacles: Vec<Obstacle> = options
         .obstacles
         .iter()

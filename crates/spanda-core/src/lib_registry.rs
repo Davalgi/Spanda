@@ -65,7 +65,7 @@ pub struct LibModule {
 
 #[derive(Debug, Clone)]
 pub struct LibrarySensorTypeInfo {
-    pub robo_type: crate::ast::SynapseType,
+    pub robo_type: crate::ast::SpandaType,
     pub library: String,
 }
 
@@ -530,7 +530,7 @@ pub fn all_library_sensor_types() -> HashMap<String, LibrarySensorTypeInfo> {
             result.insert(
                 type_name.clone(),
                 LibrarySensorTypeInfo {
-                    robo_type: crate::ast::SynapseType::Named {
+                    robo_type: crate::ast::SpandaType::Named {
                         name: type_name.clone(),
                     },
                     library: lib_id.clone(),

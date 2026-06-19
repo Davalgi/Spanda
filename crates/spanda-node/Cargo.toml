@@ -1,14 +1,14 @@
 [package]
-name = "synapse-node"
+name = "spanda-node"
 version = "0.1.0"
 edition = "2021"
-description = "Node.js N-API bindings for Synapse core"
+description = "Node.js N-API bindings for Spanda core"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-synapse-core = { path = "../synapse-core" }
+spanda-core = { path = "../spanda-core" }
 napi = { version = "2", features = ["serde-json"] }
 napi-derive = "2"
 serde = { version = "1", features = ["derive"] }

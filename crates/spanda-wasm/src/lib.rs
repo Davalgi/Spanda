@@ -1,20 +1,20 @@
 use serde::{Deserialize, Serialize};
-use synapse_core::{check, run, RunOptions};
+use spanda_core::{check, run, RunOptions};
 use wasm_bindgen::prelude::*;
 
 #[derive(Serialize, Deserialize)]
 struct CheckResponse {
     ok: bool,
-    diagnostics: Vec<synapse_core::Diagnostic>,
+    diagnostics: Vec<spanda_core::Diagnostic>,
 }
 
 #[derive(Serialize, Deserialize)]
 struct RunResponse {
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    result: Option<synapse_core::RunResult>,
+    result: Option<spanda_core::RunResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    diagnostics: Option<Vec<synapse_core::Diagnostic>>,
+    diagnostics: Option<Vec<spanda_core::Diagnostic>>,
 }
 
 fn to_js<T: Serialize>(value: &T) -> JsValue {

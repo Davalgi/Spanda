@@ -8,7 +8,7 @@ use crate::ast::{
     Program, RobotDecl, SafetyRule, SafetyZoneDecl, SensorBinding, SensorDecl, ServiceDecl, Stmt,
     TopicDecl, UnaryOp, UnitKind, ZoneShape,
 };
-use crate::error::{PoseState, RobotState, SynapseError, VelocityState};
+use crate::error::{PoseState, RobotState, SpandaError, VelocityState};
 use crate::hal::{create_sim_hal, hal_member_from_decl, HalBackend, SimHalBackend};
 use crate::lib_registry::{get_sensor_driver, read_with_driver, DriverContext, SimState};
 use crate::safety::{
@@ -249,8 +249,8 @@ impl RuntimeError {
         }
     }
 
-    pub fn into_synapse(self) -> SynapseError {
-        SynapseError::Runtime {
+    pub fn into_spanda(self) -> SpandaError {
+        SpandaError::Runtime {
             message: self.message,
             line: self.line,
         }
@@ -311,7 +311,7 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         program: &Program,
         entry_behavior: Option<&str>,
-    ) -> Result<RobotState, SynapseError> {
+    ) -> Result<RobotState, SpandaError> {
         let Program::Program { robots, .. } = program;
         for robot in robots {
             self.setup_robot(robot)?;
@@ -327,7 +327,7 @@ impl<B: RobotBackend> Interpreter<B> {
         Ok(self.backend.get_state())
     }
 
-    fn setup_robot(&mut self, robot: &RobotDecl) -> Result<(), SynapseError> {
+    fn setup_robot(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
         let RobotDecl::RobotDecl {
             soc,
             hal,
@@ -485,7 +485,7 @@ impl<B: RobotBackend> Interpreter<B> {
         true
     }
 
-    fn eval_safety_zone(&mut self, zone: &SafetyZoneDecl) -> Result<SafetyZoneRuntime, SynapseError> {
+    fn eval_safety_zone(&mut self, zone: &SafetyZoneDecl) -> Result<SafetyZoneRuntime, SpandaError> {
         let SafetyZoneDecl::SafetyZoneDecl {
             name,
             shape,
@@ -628,14 +628,14 @@ impl<B: RobotBackend> Interpreter<B> {
         self.log(format!("Agent '{name}': {goal}"));
     }
 
-    fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SynapseError> {
+    fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
         for stmt in stmts {
             self.execute_stmt(stmt)?;
         }
         Ok(())
     }
 
-    fn execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SynapseError> {
+    fn execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SpandaError> {
         match stmt {
             Stmt::VarDecl { name, init, .. } => {
                 let value = self.eval_expr(init)?;
@@ -737,7 +737,7 @@ impl<B: RobotBackend> Interpreter<B> {
         Ok(())
     }
 
-    fn eval_expr(&mut self, expr: &Expr) -> Result<RuntimeValue, SynapseError> {
+    fn eval_expr(&mut self, expr: &Expr) -> Result<RuntimeValue, SpandaError> {
         match expr {
             Expr::LiteralExpr { value, .. } => Ok(match value {
                 LiteralValue::Bool(b) => RuntimeValue::Bool { value: *b },
@@ -753,7 +753,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 unit: *unit,
             }),
             Expr::IdentExpr { name, span } => self.env.get(name).cloned().ok_or_else(|| {
-                RuntimeError::new(format!("Undefined variable '{name}'"), span.start.line).into_synapse()
+                RuntimeError::new(format!("Undefined variable '{name}'"), span.start.line).into_spanda()
             }),
             Expr::BinaryExpr { op, left, right, span } => {
                 let left_val = self.eval_expr(left)?;
@@ -788,7 +788,7 @@ impl<B: RobotBackend> Interpreter<B> {
         }
     }
 
-    fn eval_member(&mut self, obj: &RuntimeValue, property: &str) -> Result<RuntimeValue, SynapseError> {
+    fn eval_member(&mut self, obj: &RuntimeValue, property: &str) -> Result<RuntimeValue, SpandaError> {
         match obj {
             RuntimeValue::Scan { nearest_distance } if property == "nearest_distance" => {
                 Ok(RuntimeValue::Number {
@@ -862,7 +862,7 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         named_args: &[crate::ast::NamedArg],
         line: u32,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         if let Expr::IdentExpr { name, .. } = callee {
             return self.eval_builtin_function(name, args, named_args);
         }
@@ -878,7 +878,7 @@ impl<B: RobotBackend> Interpreter<B> {
             .env
             .get(target_name)
             .cloned()
-            .ok_or_else(|| RuntimeError::new(format!("Undefined '{target_name}'"), line).into_synapse())?;
+            .ok_or_else(|| RuntimeError::new(format!("Undefined '{target_name}'"), line).into_spanda())?;
 
         if matches!(target, RuntimeValue::Robot) || target_name == "robot" {
             return self.eval_robot_method(property, args, named_args);
@@ -902,7 +902,7 @@ impl<B: RobotBackend> Interpreter<B> {
         if let RuntimeValue::Agent { name } = &target {
             if property == "plan" {
                 let agent = self.agents.get(name).ok_or_else(|| {
-                    RuntimeError::new(format!("Unknown agent '{name}'"), line).into_synapse()
+                    RuntimeError::new(format!("Unknown agent '{name}'"), line).into_spanda()
                 })?;
                 let agent = agent.clone();
                 struct PlanRunner<'a, B: RobotBackend> {
@@ -948,7 +948,7 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         named_args: &[crate::ast::NamedArg],
         line: u32,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         match method {
             "reason" => {
                 let prompt = get_string(&self.get_named_arg_value(named_args, "prompt")?, "");
@@ -963,10 +963,10 @@ impl<B: RobotBackend> Interpreter<B> {
                     .get(target_name)
                     .ok_or_else(|| {
                         RuntimeError::new(format!("Unknown AI model '{target_name}'"), line)
-                            .into_synapse()
+                            .into_spanda()
                     })?
                     .reason(&prompt, input)
-                    .map_err(|message| SynapseError::Runtime { message, line })?;
+                    .map_err(|message| SpandaError::Runtime { message, line })?;
                 self.log(format!("ai {target_name}.reason() -> ActionProposal"));
                 Ok(result)
             }
@@ -981,10 +981,10 @@ impl<B: RobotBackend> Interpreter<B> {
                     .get(target_name)
                     .ok_or_else(|| {
                         RuntimeError::new(format!("Unknown AI model '{target_name}'"), line)
-                            .into_synapse()
+                            .into_spanda()
                     })?
                     .summarize(input)
-                    .map_err(|message| SynapseError::Runtime { message, line })
+                    .map_err(|message| SpandaError::Runtime { message, line })
             }
             "detect" => {
                 let frame = if let Some(first) = args.first() {
@@ -996,21 +996,21 @@ impl<B: RobotBackend> Interpreter<B> {
                     .get(target_name)
                     .ok_or_else(|| {
                         RuntimeError::new(format!("Unknown AI model '{target_name}'"), line)
-                            .into_synapse()
+                            .into_spanda()
                     })?
                     .detect(frame)
-                    .map_err(|message| SynapseError::Runtime { message, line })
+                    .map_err(|message| SpandaError::Runtime { message, line })
             }
             "drive" => Err(RuntimeError::new(
                 "Unsafe AI action: LLM cannot drive actuators directly — use safety.validate() then wheels.execute()",
                 line,
             )
-            .into_synapse()),
+            .into_spanda()),
             _ => Ok(RuntimeValue::Void),
         }
     }
 
-    fn read_sensor_value(&mut self, target: &RuntimeValue) -> Result<RuntimeValue, SynapseError> {
+    fn read_sensor_value(&mut self, target: &RuntimeValue) -> Result<RuntimeValue, SpandaError> {
         let RuntimeValue::Sensor {
             name,
             sensor_type,
@@ -1044,7 +1044,7 @@ impl<B: RobotBackend> Interpreter<B> {
         name: &str,
         _args: &[Expr],
         named_args: &[crate::ast::NamedArg],
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         match name {
             "pose" => Ok(runtime_pose(
                 get_number(&self.get_named_arg_value(named_args, "x")?, 0.0),
@@ -1097,14 +1097,14 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         named_args: &[crate::ast::NamedArg],
         line: u32,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         let arg = if let Some(first) = args.first() {
             self.eval_expr(first)?
         } else {
             self.get_named_arg_value(named_args, "proposal")?
         };
         let proposal = proposal_from_value(&arg).ok_or_else(|| {
-            RuntimeError::new("safety.validate() expects ActionProposal", line).into_synapse()
+            RuntimeError::new("safety.validate() expects ActionProposal", line).into_spanda()
         })?;
         let state = self.backend.get_state();
         let pose2d = Pose2d {
@@ -1112,7 +1112,7 @@ impl<B: RobotBackend> Interpreter<B> {
             y: state.pose.y,
         };
         let monitor = self.safety_monitor.as_ref().ok_or_else(|| {
-            RuntimeError::new("Safety monitor not configured", line).into_synapse()
+            RuntimeError::new("Safety monitor not configured", line).into_spanda()
         })?;
         let result = monitor.validate_action_proposal(
             proposal.linear,
@@ -1126,7 +1126,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 Ok(safe_action_from_proposal(motion.linear, motion.angular))
             }
             ValidateActionResult::Err { reason } => {
-                Err(RuntimeError::new(reason, line).into_synapse())
+                Err(RuntimeError::new(reason, line).into_spanda())
             }
         }
     }
@@ -1136,7 +1136,7 @@ impl<B: RobotBackend> Interpreter<B> {
         method: &str,
         args: &[Expr],
         _named_args: &[crate::ast::NamedArg],
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         let state = self.backend.get_state();
         match method {
             "pose" => Ok(pose_from_state(&state.pose)),
@@ -1171,7 +1171,7 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         named_args: &[crate::ast::NamedArg],
         line: u32,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         let motion_methods = [
             "drive", "move_to", "set_thrust", "grip", "release", "open", "hover", "follow",
         ];
@@ -1262,13 +1262,13 @@ impl<B: RobotBackend> Interpreter<B> {
                             "Unsafe AI action: ActionProposal cannot execute actuators — call safety.validate() first",
                             line,
                         )
-                        .into_synapse());
+                        .into_spanda());
                     }
                     return Err(RuntimeError::new(
                         "Actuator execute() requires SafeAction from safety.validate()",
                         line,
                     )
-                    .into_synapse());
+                    .into_spanda());
                 }
                 if !self.check_safety_before_motion() {
                     if let Some(cb) = &self.options.on_motion_blocked {
@@ -1298,7 +1298,7 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         named_args: &[crate::ast::NamedArg],
         name: &str,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         for arg in named_args {
             if arg.name == name {
                 return self.eval_expr(&arg.value);
@@ -1313,7 +1313,7 @@ impl<B: RobotBackend> Interpreter<B> {
         left: RuntimeValue,
         right: RuntimeValue,
         line: u32,
-    ) -> Result<RuntimeValue, SynapseError> {
+    ) -> Result<RuntimeValue, SpandaError> {
         match op {
             BinaryOp::And => Ok(RuntimeValue::Bool {
                 value: matches!(left, RuntimeValue::Bool { value: true, .. })
@@ -1523,7 +1523,7 @@ mod tests {
     use super::*;
     use crate::simulator::{create_default_simulator, SimulatorConfig, Obstacle};
 
-    fn compile_and_run(source: &str, max_iters: usize) -> Result<RobotState, SynapseError> {
+    fn compile_and_run(source: &str, max_iters: usize) -> Result<RobotState, SpandaError> {
         let tokens = crate::lexer::tokenize(source)?;
         let program = crate::parser::parse(tokens)?;
         let sim = create_default_simulator(SimulatorConfig {

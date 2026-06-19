@@ -1,8 +1,8 @@
 [package]
-name = "synapse-core"
+name = "spanda-core"
 version = "0.1.0"
 edition = "2021"
-description = "Synapse robotics language — lexer, parser, type checker, and interpreter"
+description = "Spanda robotics language — lexer, parser, type checker, and interpreter"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

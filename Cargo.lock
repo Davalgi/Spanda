@@ -302,27 +302,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
 
 [[package]]
-name = "syn"
-version = "2.0.118"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422"
-dependencies = [
- "proc-macro2",
- "quote",
- "unicode-ident",
-]
-
-[[package]]
-name = "synapse-cli"
+name = "spanda-cli"
 version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
- "synapse-core",
+ "spanda-core",
 ]
 
 [[package]]
-name = "synapse-core"
+name = "spanda-core"
 version = "0.1.0"
 dependencies = [
  "glob",
@@ -332,7 +321,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "synapse-node"
+name = "spanda-node"
 version = "0.1.0"
 dependencies = [
  "napi",
@@ -340,17 +329,28 @@ dependencies = [
  "napi-derive",
  "serde",
  "serde_json",
- "synapse-core",
+ "spanda-core",
 ]
 
 [[package]]
-name = "synapse-wasm"
+name = "spanda-wasm"
 version = "0.1.0"
 dependencies = [
  "serde",
  "serde-wasm-bindgen",
- "synapse-core",
+ "spanda-core",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "syn"
+version = "2.0.118"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
 ]
 
 [[package]]

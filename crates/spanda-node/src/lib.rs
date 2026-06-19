@@ -2,7 +2,7 @@
 
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use synapse_core::{check, run, RunOptions, SynapseError};
+use spanda_core::{check, run, RunOptions, SpandaError};
 
 #[napi(object)]
 pub struct DiagnosticJs {
@@ -52,7 +52,7 @@ pub struct RunOptionsJs {
     pub max_loop_iterations: Option<u32>,
 }
 
-fn map_diagnostics(err: &SynapseError) -> Vec<DiagnosticJs> {
+fn map_diagnostics(err: &SpandaError) -> Vec<DiagnosticJs> {
     err.diagnostics()
         .into_iter()
         .map(|d| DiagnosticJs {

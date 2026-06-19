@@ -10,7 +10,7 @@ pub struct Diagnostic {
 }
 
 #[derive(Debug, Error)]
-pub enum SynapseError {
+pub enum SpandaError {
     #[error("{message} (line {line}, col {column})")]
     Lexer {
         message: String,
@@ -29,21 +29,21 @@ pub enum SynapseError {
     Runtime { message: String, line: u32 },
 }
 
-impl SynapseError {
+impl SpandaError {
     pub fn diagnostics(&self) -> Vec<Diagnostic> {
         match self {
-            SynapseError::Lexer { message, line, column } => vec![Diagnostic {
+            SpandaError::Lexer { message, line, column } => vec![Diagnostic {
                 message: message.clone(),
                 line: *line,
                 column: *column,
             }],
-            SynapseError::Parse { message, line, column } => vec![Diagnostic {
+            SpandaError::Parse { message, line, column } => vec![Diagnostic {
                 message: message.clone(),
                 line: *line,
                 column: *column,
             }],
-            SynapseError::TypeCheck { diagnostics } => diagnostics.clone(),
-            SynapseError::Runtime { message, line } => vec![Diagnostic {
+            SpandaError::TypeCheck { diagnostics } => diagnostics.clone(),
+            SpandaError::Runtime { message, line } => vec![Diagnostic {
                 message: message.clone(),
                 line: *line,
                 column: 1,

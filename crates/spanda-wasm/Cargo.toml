@@ -1,14 +1,14 @@
 [package]
-name = "synapse-wasm"
+name = "spanda-wasm"
 version = "0.1.0"
 edition = "2021"
-description = "WebAssembly bindings for Synapse core"
+description = "WebAssembly bindings for Spanda core"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-synapse-core = { path = "../synapse-core" }
+spanda-core = { path = "../spanda-core" }
 wasm-bindgen = "0.2"
 serde = { version = "1", features = ["derive"] }
 serde-wasm-bindgen = "0.6"

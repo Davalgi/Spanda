@@ -1,8 +1,8 @@
 use crate::ast::*;
-use crate::error::SynapseError;
+use crate::error::SpandaError;
 use crate::lexer::{unit_from_lexeme, Token, TokenType, TokenValue, UnitLexeme};
 
-pub fn parse(tokens: Vec<Token>) -> Result<Program, SynapseError> {
+pub fn parse(tokens: Vec<Token>) -> Result<Program, SpandaError> {
     Parser::new(tokens).parse_program()
 }
 
@@ -45,12 +45,12 @@ impl Parser {
         false
     }
 
-    fn expect(&mut self, ty: TokenType, message: &str) -> Result<Token, SynapseError> {
+    fn expect(&mut self, ty: TokenType, message: &str) -> Result<Token, SpandaError> {
         if self.check(ty) {
             Ok(self.advance())
         } else {
             let t = self.peek();
-            Err(SynapseError::Parse {
+            Err(SpandaError::Parse {
                 message: message.to_string(),
                 line: t.line,
                 column: t.column,
@@ -65,7 +65,7 @@ impl Parser {
         }
     }
 
-    fn parse_program(&mut self) -> Result<Program, SynapseError> {
+    fn parse_program(&mut self) -> Result<Program, SpandaError> {
         let start = self.peek().clone();
         let mut imports = Vec::new();
         let mut robots = Vec::new();
@@ -82,7 +82,7 @@ impl Parser {
         })
     }
 
-    fn parse_import(&mut self) -> Result<ImportDecl, SynapseError> {
+    fn parse_import(&mut self) -> Result<ImportDecl, SpandaError> {
         let start = self.advance();
         let vendor = self.expect(TokenType::Ident, "Expected library vendor name")?;
         self.expect(TokenType::Dot, "Expected '.' in import path")?;
@@ -94,7 +94,7 @@ impl Parser {
         })
     }
 
-    fn parse_robot(&mut self) -> Result<RobotDecl, SynapseError> {
+    fn parse_robot(&mut self) -> Result<RobotDecl, SpandaError> {
         let start = self.expect(TokenType::Robot, "Expected 'robot'")?;
         let name_tok = self.expect(TokenType::Ident, "Expected robot name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after robot name")?;
@@ -137,7 +137,7 @@ impl Parser {
                 behaviors.push(self.parse_behavior()?);
             } else {
                 let t = self.peek();
-                return Err(SynapseError::Parse {
+                return Err(SpandaError::Parse {
                     message: "Expected robot member declaration".into(),
                     line: t.line,
                     column: t.column,
@@ -163,7 +163,7 @@ impl Parser {
         })
     }
 
-    fn parse_soc(&mut self) -> Result<SocDecl, SynapseError> {
+    fn parse_soc(&mut self) -> Result<SocDecl, SpandaError> {
         let start = self.advance();
         let profile = self.expect(TokenType::Ident, "Expected SoC profile name")?;
         self.expect(TokenType::Semicolon, "Expected ';' after soc declaration")?;
@@ -173,7 +173,7 @@ impl Parser {
         })
     }
 
-    fn parse_hal(&mut self) -> Result<HalBlock, SynapseError> {
+    fn parse_hal(&mut self) -> Result<HalBlock, SpandaError> {
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after hal")?;
         let mut members = Vec::new();
@@ -187,7 +187,7 @@ impl Parser {
         })
     }
 
-    fn parse_hal_member(&mut self) -> Result<HalMemberDecl, SynapseError> {
+    fn parse_hal_member(&mut self) -> Result<HalMemberDecl, SpandaError> {
         let start = self.peek().clone();
         if self.match_types(&[TokenType::I2c]) {
             let name = self.expect(TokenType::Ident, "Expected I2C bus name")?;
@@ -277,14 +277,14 @@ impl Parser {
             });
         }
         let t = self.peek();
-        Err(SynapseError::Parse {
+        Err(SpandaError::Parse {
             message: "Expected HAL member (i2c, spi, gpio, pwm, uart, adc)".into(),
             line: t.line,
             column: t.column,
         })
     }
 
-    fn parse_frequency_hz(&mut self) -> Result<f64, SynapseError> {
+    fn parse_frequency_hz(&mut self) -> Result<f64, SpandaError> {
         let tok = self.peek().clone();
         if tok.token_type == TokenType::UnitLiteral && tok.unit == Some(UnitLexeme::Hz) {
             self.advance();
@@ -297,14 +297,14 @@ impl Parser {
             }
             return Ok(num(&tok));
         }
-        Err(SynapseError::Parse {
+        Err(SpandaError::Parse {
             message: "Expected frequency like 50 Hz".into(),
             line: tok.line,
             column: tok.column,
         })
     }
 
-    fn parse_node(&mut self) -> Result<NodeDecl, SynapseError> {
+    fn parse_node(&mut self) -> Result<NodeDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected node name")?;
         let namespace = if self.match_types(&[TokenType::On]) {
@@ -320,7 +320,7 @@ impl Parser {
         })
     }
 
-    fn parse_topic(&mut self) -> Result<TopicDecl, SynapseError> {
+    fn parse_topic(&mut self) -> Result<TopicDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected topic name")?;
         self.expect(TokenType::Colon, "Expected ':' after topic name")?;
@@ -337,7 +337,7 @@ impl Parser {
         })
     }
 
-    fn parse_service(&mut self) -> Result<ServiceDecl, SynapseError> {
+    fn parse_service(&mut self) -> Result<ServiceDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected service name")?;
         self.expect(TokenType::Colon, "Expected ':' after service name")?;
@@ -350,7 +350,7 @@ impl Parser {
         })
     }
 
-    fn parse_action(&mut self) -> Result<ActionDecl, SynapseError> {
+    fn parse_action(&mut self) -> Result<ActionDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected action name")?;
         self.expect(TokenType::Colon, "Expected ':' after action name")?;
@@ -363,7 +363,7 @@ impl Parser {
         })
     }
 
-    fn parse_sensor(&mut self) -> Result<SensorDecl, SynapseError> {
+    fn parse_sensor(&mut self) -> Result<SensorDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected sensor name")?;
         self.expect(TokenType::Colon, "Expected ':' after sensor name")?;
@@ -401,7 +401,7 @@ impl Parser {
         })
     }
 
-    fn parse_actuator(&mut self) -> Result<ActuatorDecl, SynapseError> {
+    fn parse_actuator(&mut self) -> Result<ActuatorDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected actuator name")?;
         self.expect(TokenType::Colon, "Expected ':' after actuator name")?;
@@ -414,7 +414,7 @@ impl Parser {
         })
     }
 
-    fn parse_safety(&mut self) -> Result<SafetyBlock, SynapseError> {
+    fn parse_safety(&mut self) -> Result<SafetyBlock, SpandaError> {
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after safety")?;
         let mut rules = Vec::new();
@@ -428,7 +428,7 @@ impl Parser {
                 rules.push(self.parse_max_speed_rule()?);
             } else {
                 let t = self.peek();
-                return Err(SynapseError::Parse {
+                return Err(SpandaError::Parse {
                     message: "Expected safety rule or zone".into(),
                     line: t.line,
                     column: t.column,
@@ -443,7 +443,7 @@ impl Parser {
         })
     }
 
-    fn parse_ai_model(&mut self) -> Result<AiModelDecl, SynapseError> {
+    fn parse_ai_model(&mut self) -> Result<AiModelDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected ai model name")?;
         self.expect(TokenType::Colon, "Expected ':' after ai model name")?;
@@ -459,7 +459,7 @@ impl Parser {
         })
     }
 
-    fn parse_ai_config_entries(&mut self) -> Result<Vec<AiConfigEntry>, SynapseError> {
+    fn parse_ai_config_entries(&mut self) -> Result<Vec<AiConfigEntry>, SpandaError> {
         let mut entries = Vec::new();
         while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
             let entry_start = self.peek().clone();
@@ -476,12 +476,12 @@ impl Parser {
         Ok(entries)
     }
 
-    fn parse_config_key_token(&mut self) -> Result<String, SynapseError> {
+    fn parse_config_key_token(&mut self) -> Result<String, SpandaError> {
         if self.check(TokenType::Ident) || self.check(TokenType::Provider) {
             Ok(self.advance().lexeme)
         } else {
             let t = self.peek();
-            Err(SynapseError::Parse {
+            Err(SpandaError::Parse {
                 message: "Expected config key".into(),
                 line: t.line,
                 column: t.column,
@@ -489,7 +489,7 @@ impl Parser {
         }
     }
 
-    fn parse_config_value(&mut self) -> Result<ConfigValue, SynapseError> {
+    fn parse_config_value(&mut self) -> Result<ConfigValue, SpandaError> {
         if self.match_types(&[TokenType::String]) {
             Ok(ConfigValue::String(str_val(self.previous())))
         } else if self.match_types(&[TokenType::True]) {
@@ -500,7 +500,7 @@ impl Parser {
             Ok(ConfigValue::Number(num(self.previous())))
         } else {
             let t = self.peek();
-            Err(SynapseError::Parse {
+            Err(SpandaError::Parse {
                 message: "Expected config value".into(),
                 line: t.line,
                 column: t.column,
@@ -508,7 +508,7 @@ impl Parser {
         }
     }
 
-    fn parse_agent(&mut self) -> Result<AgentDecl, SynapseError> {
+    fn parse_agent(&mut self) -> Result<AgentDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected agent name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after agent name")?;
@@ -527,7 +527,7 @@ impl Parser {
                     "short_term" => MemoryKind::ShortTerm,
                     "long_term" => MemoryKind::LongTerm,
                     _ => {
-                        return Err(SynapseError::Parse {
+                        return Err(SpandaError::Parse {
                             message: "Memory kind must be short_term or long_term".into(),
                             line: kind.line,
                             column: kind.column,
@@ -556,7 +556,7 @@ impl Parser {
                 self.expect(TokenType::Rbrace, "Expected '}' to close plan")?;
             } else {
                 let t = self.peek();
-                return Err(SynapseError::Parse {
+                return Err(SpandaError::Parse {
                     message: "Expected agent member".into(),
                     line: t.line,
                     column: t.column,
@@ -575,7 +575,7 @@ impl Parser {
         })
     }
 
-    fn parse_safety_zone(&mut self) -> Result<SafetyZoneDecl, SynapseError> {
+    fn parse_safety_zone(&mut self) -> Result<SafetyZoneDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected zone name")?;
         let shape = if self.match_types(&[TokenType::Circle]) {
@@ -584,7 +584,7 @@ impl Parser {
             ZoneShape::Rect
         } else {
             let t = self.peek();
-            return Err(SynapseError::Parse {
+            return Err(SpandaError::Parse {
                 message: "Expected 'circle' or 'rect' after zone name".into(),
                 line: t.line,
                 column: t.column,
@@ -621,7 +621,7 @@ impl Parser {
         })
     }
 
-    fn parse_max_speed_rule(&mut self) -> Result<SafetyRule, SynapseError> {
+    fn parse_max_speed_rule(&mut self) -> Result<SafetyRule, SpandaError> {
         let start = self.advance();
         let name = start.lexeme.clone();
         self.expect(TokenType::Assign, "Expected '=' in safety rule")?;
@@ -640,7 +640,7 @@ impl Parser {
         })
     }
 
-    fn parse_stop_if_rule(&mut self) -> Result<SafetyRule, SynapseError> {
+    fn parse_stop_if_rule(&mut self) -> Result<SafetyRule, SpandaError> {
         let start = self.advance();
         let condition = self.parse_expr()?;
         self.expect(TokenType::Semicolon, "Expected ';' after stop_if rule")?;
@@ -650,7 +650,7 @@ impl Parser {
         })
     }
 
-    fn parse_behavior(&mut self) -> Result<BehaviorDecl, SynapseError> {
+    fn parse_behavior(&mut self) -> Result<BehaviorDecl, SpandaError> {
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected behavior name")?;
         self.expect(TokenType::Lparen, "Expected '(' after behavior name")?;
@@ -665,7 +665,7 @@ impl Parser {
         })
     }
 
-    fn parse_block(&mut self) -> Result<Vec<Stmt>, SynapseError> {
+    fn parse_block(&mut self) -> Result<Vec<Stmt>, SpandaError> {
         let mut stmts = Vec::new();
         while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
             stmts.push(self.parse_stmt()?);
@@ -673,7 +673,7 @@ impl Parser {
         Ok(stmts)
     }
 
-    fn parse_stmt(&mut self) -> Result<Stmt, SynapseError> {
+    fn parse_stmt(&mut self) -> Result<Stmt, SpandaError> {
         let start = self.peek().clone();
         if self.match_types(&[TokenType::Let]) {
             let name = self.parse_local_name("Expected variable name")?;
@@ -770,7 +770,7 @@ impl Parser {
         })
     }
 
-    fn parse_duration(&mut self) -> Result<f64, SynapseError> {
+    fn parse_duration(&mut self) -> Result<f64, SpandaError> {
         let tok = self.peek().clone();
         if tok.token_type == TokenType::UnitLiteral && tok.unit == Some(UnitLexeme::Ms) {
             self.advance();
@@ -787,17 +787,17 @@ impl Parser {
             }
             return Ok(num(&tok));
         }
-        Err(SynapseError::Parse {
+        Err(SpandaError::Parse {
             message: "Expected duration like 50ms".into(),
             line: tok.line,
             column: tok.column,
         })
     }
 
-    fn parse_unit_suffix(&mut self) -> Result<UnitKind, SynapseError> {
+    fn parse_unit_suffix(&mut self) -> Result<UnitKind, SpandaError> {
         self.try_parse_unit_suffix().ok_or_else(|| {
             let t = self.peek();
-            SynapseError::Parse {
+            SpandaError::Parse {
                 message: "Expected unit suffix".into(),
                 line: t.line,
                 column: t.column,
@@ -834,11 +834,11 @@ impl Parser {
         None
     }
 
-    fn parse_expr(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_expr(&mut self) -> Result<Expr, SpandaError> {
         self.parse_or()
     }
 
-    fn parse_or(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_or(&mut self) -> Result<Expr, SpandaError> {
         let mut left = self.parse_and()?;
         while self.match_types(&[TokenType::Or]) {
             let op_start = self.previous().clone();
@@ -853,7 +853,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_and(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_and(&mut self) -> Result<Expr, SpandaError> {
         let mut left = self.parse_comparison()?;
         while self.match_types(&[TokenType::And]) {
             let op_start = self.previous().clone();
@@ -868,7 +868,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_comparison(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_comparison(&mut self) -> Result<Expr, SpandaError> {
         let mut left = self.parse_additive()?;
         while self.match_types(&[
             TokenType::Lt,
@@ -890,7 +890,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_additive(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_additive(&mut self) -> Result<Expr, SpandaError> {
         let mut left = self.parse_multiplicative()?;
         while self.match_types(&[TokenType::Plus, TokenType::Minus]) {
             let op_tok = self.previous().clone();
@@ -905,7 +905,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_multiplicative(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_multiplicative(&mut self) -> Result<Expr, SpandaError> {
         let mut left = self.parse_unary()?;
         while self.match_types(&[TokenType::Star, TokenType::Slash]) {
             let op_tok = self.previous().clone();
@@ -920,7 +920,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_unary(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_unary(&mut self) -> Result<Expr, SpandaError> {
         if self.match_types(&[TokenType::Minus, TokenType::Not]) {
             let op_tok = self.previous().clone();
             let op = if op_tok.token_type == TokenType::Not {
@@ -938,7 +938,7 @@ impl Parser {
         self.parse_postfix()
     }
 
-    fn parse_postfix(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_postfix(&mut self) -> Result<Expr, SpandaError> {
         let mut expr = self.parse_primary()?;
         loop {
             if self.match_types(&[TokenType::Dot]) {
@@ -991,7 +991,7 @@ impl Parser {
         Ok(expr)
     }
 
-    fn parse_primary(&mut self) -> Result<Expr, SynapseError> {
+    fn parse_primary(&mut self) -> Result<Expr, SpandaError> {
         let start = self.peek().clone();
         if self.match_types(&[TokenType::Robot]) {
             return Ok(Expr::IdentExpr {
@@ -1063,19 +1063,19 @@ impl Parser {
             return Ok(expr);
         }
         let t = self.peek();
-        Err(SynapseError::Parse {
+        Err(SpandaError::Parse {
             message: "Expected expression".into(),
             line: t.line,
             column: t.column,
         })
     }
 
-    fn parse_property_name(&mut self) -> Result<Token, SynapseError> {
+    fn parse_property_name(&mut self) -> Result<Token, SpandaError> {
         if self.check(TokenType::Ident) || self.check(TokenType::Plan) {
             Ok(self.advance())
         } else {
             let t = self.peek();
-            Err(SynapseError::Parse {
+            Err(SpandaError::Parse {
                 message: "Expected property name after '.'".into(),
                 line: t.line,
                 column: t.column,
@@ -1083,12 +1083,12 @@ impl Parser {
         }
     }
 
-    fn parse_local_name(&mut self, message: &str) -> Result<Token, SynapseError> {
+    fn parse_local_name(&mut self, message: &str) -> Result<Token, SpandaError> {
         if self.check(TokenType::Ident) || self.check(TokenType::Action) {
             Ok(self.advance())
         } else {
             let t = self.peek();
-            Err(SynapseError::Parse {
+            Err(SpandaError::Parse {
                 message: message.to_string(),
                 line: t.line,
                 column: t.column,
@@ -1101,7 +1101,7 @@ impl Parser {
             && (self.check(TokenType::Ident) || self.check(TokenType::From))
     }
 
-    fn parse_named_arg_name(&mut self) -> Result<String, SynapseError> {
+    fn parse_named_arg_name(&mut self) -> Result<String, SpandaError> {
         if self.match_types(&[TokenType::From]) {
             Ok("from".into())
         } else {
