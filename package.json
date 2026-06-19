@@ -3,14 +3,23 @@
   "version": "0.1.0",
   "description": "Synapse — a safe, strongly typed language for robot control and simulation",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "bin": {
     "synapse": "./dist/cli/index.js"
   },
   "scripts": {
     "build": "tsc",
+    "build:rust": "bash scripts/build-rust.sh",
+    "build:wasm": "bash scripts/build-wasm.sh",
     "test": "vitest run",
+    "test:rust": "cargo test --workspace",
     "test:watch": "vitest",
-    "synapse": "node --import tsx src/cli/index.ts"
+    "synapse": "node --import tsx src/cli/index.ts",
+    "synapse:native": "cargo run -p synapse-cli --",
+    "web:dev": "npm run dev --workspace=@synapse/web",
+    "web:build": "npm run build --workspace=@synapse/web"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
@@ -20,5 +29,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": true
   }
 }
