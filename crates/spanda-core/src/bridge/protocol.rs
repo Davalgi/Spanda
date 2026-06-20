@@ -1,4 +1,7 @@
 //! Shared JSON stdin/stdout protocol for subprocess FFI bridges.
+//!
+//! Defines request/response envelopes and helpers to spawn bridge processes
+//! for Python and C++ extern function calls.
 
 use crate::ast::SpandaType;
 use crate::error::SpandaError;
@@ -9,21 +12,44 @@ use std::io::Write;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
+/// JSON request envelope sent to a bridge subprocess on stdin.
 #[derive(Serialize)]
 pub struct BridgeRequest<'a> {
+    /// Extern function name to invoke.
     #[serde(rename = "fn")]
     pub fn_name: &'a str,
+    /// JSON-encoded argument values.
     pub args: Vec<serde_json::Value>,
 }
 
+/// JSON response envelope read from a bridge subprocess stdout.
 #[derive(Deserialize)]
 pub struct BridgeResponse {
+    /// `true` when the handler succeeded.
     pub ok: bool,
+    /// Handler return value when `ok` is true.
     pub result: Option<serde_json::Value>,
+    /// Error message when `ok` is false.
     pub error: Option<String>,
 }
 
 pub fn runtime_value_to_json(value: &RuntimeValue) -> serde_json::Value {
+    // Convert a [`RuntimeValue`] to JSON for bridge IPC.
+    //
+    // Parameters:
+    //
+    // - `value` — Runtime argument or result fragment.
+    //
+    // Returns:
+    //
+    // JSON value (numbers, bools, strings; opaque debug for other variants).
+    //
+    // Example:
+    //
+    // use spanda_core::bridge::protocol::runtime_value_to_json;
+    // use spanda_core::runtime::RuntimeValue;
+    // let json = runtime_value_to_json(&RuntimeValue::Bool { value: true });
+    // assert_eq!(json, serde_json::json!(true));
     match value {
         RuntimeValue::Number { value, .. } => serde_json::Value::Number(
             serde_json::Number::from_f64(*value).unwrap_or_else(|| serde_json::Number::from(0)),
@@ -36,6 +62,16 @@ pub fn runtime_value_to_json(value: &RuntimeValue) -> serde_json::Value {
 }
 
 pub fn json_to_runtime_value(value: &serde_json::Value, return_type: &SpandaType) -> RuntimeValue {
+    // Convert bridge JSON back to a [`RuntimeValue`] using the declared return type.
+    //
+    // Parameters:
+    //
+    // - `value` — JSON result from the bridge.
+    // - `return_type` — Spanda type annotation for coercion.
+    //
+    // Returns:
+    //
+    // Coerced [`RuntimeValue`] (defaults for missing fields).
     use crate::ast::UnitKind;
     match return_type {
         SpandaType::Bool => RuntimeValue::Bool {
@@ -67,6 +103,28 @@ pub fn call_subprocess_bridge(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    // Spawn a bridge executable, send a [`BridgeRequest`], and parse the response.
+    //
+    // Parameters:
+    //
+    // - `bridge_label` — Human label for error messages (`"Python"`, `"C++"`).
+    // - `executable` — Path to the bridge interpreter or binary.
+    // - `extra_args` — Additional argv entries (e.g. script path for Python).
+    // - `decl` — Extern declaration (name, return type, span for errors).
+    // - `args` — Runtime call arguments.
+    //
+    // Returns:
+    //
+    // Handler result as [`RuntimeValue`], or [`SpandaError`] on spawn/IO/JSON failure.
+    //
+    // Options:
+    //
+    // - Writes one JSON line to stdin and expects one JSON line on stdout.
+    //
+    // Example:
+    //
+    // use spanda_core::bridge::protocol::call_subprocess_bridge;
+    // // Typically invoked via bridge::python::call_extern or bridge::cpp::call_extern.
     let line = decl.span.start.line;
     let request = BridgeRequest {
         fn_name: &decl.name,

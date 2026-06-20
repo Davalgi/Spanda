@@ -1,3 +1,5 @@
+//! debug support for Spanda.
+//!
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -31,6 +33,20 @@ pub struct DebugSession {
 
 impl DebugSession {
     pub fn paused(&self) -> bool {
+        // Paused.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.paused();
+
         !self.pauses.is_empty()
     }
 }
@@ -44,6 +60,20 @@ pub struct DebugController {
 
 impl DebugController {
     pub fn new(options: DebugOptions) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `options` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::debug::new(options);
+
         Self {
             breakpoints: options.breakpoints,
             step: RefCell::new(options.step),
@@ -52,10 +82,39 @@ impl DebugController {
     }
 
     pub fn pauses(&self) -> Rc<RefCell<Vec<DebugPause>>> {
+        // Pauses.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Rc<RefCell<Vec<DebugPause>>>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.pauses();
+
         self.pauses.clone()
     }
 
     pub fn should_pause(&self, line: u32) -> bool {
+        // Should pause.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `line` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.should_pause(line);
+
         if *self.step.borrow() {
             *self.step.borrow_mut() = false;
             return true;
@@ -69,6 +128,23 @@ impl DebugController {
         reason: &str,
         variables: std::collections::HashMap<String, String>,
     ) {
+        // Record pause.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `line` — input value
+        // - `reason` — input value
+        // - `variables` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_pause(line, reason, variables);
+
         self.pauses.borrow_mut().push(DebugPause {
             line,
             reason: reason.to_string(),
@@ -77,6 +153,21 @@ impl DebugController {
     }
 
     pub fn command(&self, cmd: DebugCommand) {
+        // Command.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `cmd` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.command(cmd);
+
         if matches!(cmd, DebugCommand::Step) {
             *self.step.borrow_mut() = true;
         }
@@ -84,6 +175,20 @@ impl DebugController {
 }
 
 pub fn stmt_line(stmt: &crate::ast::Stmt) -> u32 {
+    // Stmt line.
+    //
+    // Parameters:
+    // - `stmt` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug::stmt_line(stmt);
+
     use crate::ast::Stmt;
     match stmt {
         Stmt::VarDecl { span, .. }

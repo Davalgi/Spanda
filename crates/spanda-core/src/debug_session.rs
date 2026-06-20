@@ -43,6 +43,21 @@ pub struct DebugMachine {
 
 impl DebugMachine {
     pub fn start(source: &str, options: DebugOptions) -> Result<Self, SpandaError> {
+        // Start.
+        //
+        // Parameters:
+        // - `source` — input value
+        // - `options` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::start(source, options);
+
         let program = crate::compile(source)?.program;
         let step = options.step;
         let controller = DebugController::new(options.clone());
@@ -84,18 +99,74 @@ impl DebugMachine {
     }
 
     pub fn is_finished(&self) -> bool {
+        // Return whether finished.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.is_finished();
+
         self.finished
     }
 
     pub fn source_path(&self) -> Option<&str> {
+        // Source path.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.source_path();
+
         self.source_path.as_deref()
     }
 
     pub fn pauses(&self) -> Vec<DebugPause> {
+        // Pauses.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<DebugPause>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.pauses();
+
         self.controller.pauses().borrow().clone()
     }
 
     pub fn stack_trace(&self) -> Vec<(String, u32)> {
+        // Stack trace.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<(String, u32)>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.stack_trace();
+
         self.stack_trace_frames()
             .into_iter()
             .map(|frame| (frame.name, frame.line))
@@ -103,6 +174,20 @@ impl DebugMachine {
     }
 
     pub fn stack_trace_frames(&self) -> Vec<DebugStackFrame> {
+        // Stack trace frames.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<DebugStackFrame>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.stack_trace_frames();
+
         self.frames
             .iter()
             .rev()
@@ -119,6 +204,21 @@ impl DebugMachine {
     }
 
     pub fn frame_variables(&self, frame_id: usize) -> HashMap<String, String> {
+        // Frame variables.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `frame_id` — input value
+        //
+        // Returns:
+        // HashMap<String, String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.frame_variables(frame_id);
+
         if frame_id == 0 {
             return self.interpreter.env().snapshot_display();
         }
@@ -130,6 +230,22 @@ impl DebugMachine {
     }
 
     pub fn set_variable(&mut self, name: &str, value: &str) -> Result<(), SpandaError> {
+        // Set variable.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set_variable(name, value);
+
         self.interpreter
             .env_mut()
             .set(name, parse_debug_value(value));
@@ -140,6 +256,21 @@ impl DebugMachine {
     }
 
     pub fn run_until_pause(&mut self, step: DebugStepKind) -> Result<DebugSession, SpandaError> {
+        // Run until pause.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `step` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_until_pause(step);
+
         self.step_kind = step;
         if step == DebugStepKind::Continue {
             self.controller
@@ -220,12 +351,42 @@ impl DebugMachine {
     }
 
     fn sync_top_locals(&mut self) {
+        // Sync top locals.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.sync_top_locals();
+
         if let Some(frame) = self.frames.last_mut() {
             frame.locals = self.interpreter.env().snapshot_display();
         }
     }
 
     fn record_pause_at_top(&mut self, line: u32, reason: &str) {
+        // Record pause at top.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `line` — input value
+        // - `reason` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_pause_at_top(line, reason);
+
         self.sync_top_locals();
         let variables = self
             .frames
@@ -242,6 +403,24 @@ impl DebugMachine {
         frame_top: usize,
         line: u32,
     ) -> Result<bool, SpandaError> {
+        // Try enter inner.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `step` — input value
+        // - `stmt` — input value
+        // - `frame_top` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.try_enter_inner(step, stmt, frame_top, line);
+
         if step != DebugStepKind::StepIn {
             return Ok(false);
         }
@@ -277,6 +456,20 @@ impl DebugMachine {
 }
 
 fn behavior_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaError> {
+    // Behavior body.
+    //
+    // Parameters:
+    // - `robot` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug_session::behavior_body(robot);
+
     let RobotDecl::RobotDecl { behaviors, .. } = robot;
     let BehaviorDecl::BehaviorDecl { name, body, .. } =
         behaviors.first().ok_or_else(|| SpandaError::Runtime {
@@ -287,6 +480,20 @@ fn behavior_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaError> 
 }
 
 fn inner_block(stmt: &Stmt) -> Option<Vec<Stmt>> {
+    // Inner block.
+    //
+    // Parameters:
+    // - `stmt` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug_session::inner_block(stmt);
+
     match stmt {
         Stmt::IfStmt { then_branch, .. } => Some(then_branch.clone()),
         Stmt::LoopStmt { body, .. } => Some(body.clone()),
@@ -295,6 +502,20 @@ fn inner_block(stmt: &Stmt) -> Option<Vec<Stmt>> {
 }
 
 fn stmt_kind_label(stmt: &Stmt) -> &'static str {
+    // Stmt kind label.
+    //
+    // Parameters:
+    // - `stmt` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug_session::stmt_kind_label(stmt);
+
     match stmt {
         Stmt::IfStmt { .. } => "if",
         Stmt::LoopStmt { .. } => "loop",
@@ -303,6 +524,20 @@ fn stmt_kind_label(stmt: &Stmt) -> &'static str {
 }
 
 fn pause_reason(step: DebugStepKind) -> &'static str {
+    // Pause reason.
+    //
+    // Parameters:
+    // - `step` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug_session::pause_reason(step);
+
     match step {
         DebugStepKind::Continue => "breakpoint",
         DebugStepKind::StepOver => "step",
@@ -312,6 +547,20 @@ fn pause_reason(step: DebugStepKind) -> &'static str {
 }
 
 fn parse_debug_value(text: &str) -> RuntimeValue {
+    // Parse debug value.
+    //
+    // Parameters:
+    // - `text` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::debug_session::parse_debug_value(text);
+
     let t = text.trim();
     if t == "true" {
         return RuntimeValue::Bool { value: true };
@@ -338,6 +587,20 @@ mod tests {
 
     #[test]
     fn resumable_debug_steps_and_sets_variable() {
+        // Resumable debug steps and sets variable.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::resumable_debug_steps_and_sets_variable();
+
         let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -370,6 +633,20 @@ robot R {
 
     #[test]
     fn step_out_returns_to_caller_frame() {
+        // Step out returns to caller frame.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::step_out_returns_to_caller_frame();
+
         let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -404,6 +681,20 @@ robot R {
 
     #[test]
     fn resolve_sync_call_finds_export_fn_in_var_decl() {
+        // Resolve sync call finds export fn in var decl.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::resolve_sync_call_finds_export_fn_in_var_decl();
+
         let source = r#"
 module demo;
 export fn bump() -> Int { return 42; }
@@ -427,6 +718,20 @@ robot R {
 
     #[test]
     fn step_in_enters_module_function_call() {
+        // Step in enters module function call.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::step_in_enters_module_function_call();
+
         let source = r#"
 module demo;
 export fn bump() -> Int {
@@ -462,6 +767,20 @@ robot R {
 
     #[test]
     fn step_over_skips_into_function_without_entering() {
+        // Step over skips into function without entering.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::step_over_skips_into_function_without_entering();
+
         let source = r#"
 module demo;
 export fn bump() -> Int { return 42; }
@@ -494,6 +813,20 @@ robot R {
 
     #[test]
     fn frame_variables_snapshot_per_stack_frame() {
+        // Frame variables snapshot per stack frame.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::debug_session::frame_variables_snapshot_per_stack_frame();
+
         let source = r#"
 module demo;
 export fn bump() -> Int {

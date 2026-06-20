@@ -1,7 +1,23 @@
+//! concurrency extended support for Spanda.
+//!
 use spanda_core::{check, lint, run, RunOptions};
 
 #[test]
 fn agent_mailbox_send_recv_in_plan() {
+    // Agent mailbox send recv in plan.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::concurrency_extended::agent_mailbox_send_recv_in_plan();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -32,6 +48,20 @@ robot R {
 
 #[test]
 fn peer_send_delivers_to_subscriber() {
+    // Peer send delivers to subscriber.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::concurrency_extended::peer_send_delivers_to_subscriber();
+
     let source = r#"
 robot FleetBot {
   bus local;
@@ -52,6 +82,20 @@ robot FleetBot {
 
 #[test]
 fn runtime_budget_skips_over_budget_task() {
+    // Runtime budget skips over budget task.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::concurrency_extended::runtime_budget_skips_over_budget_task();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -95,6 +139,20 @@ robot R {
 
 #[test]
 fn lint_warns_recv_without_send() {
+    // Lint warns recv without send.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::concurrency_extended::lint_warns_recv_without_send();
+
     let source = r#"
 module m;
 

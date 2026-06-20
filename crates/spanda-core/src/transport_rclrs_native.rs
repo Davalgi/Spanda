@@ -27,6 +27,20 @@ struct NativeLib {
 static NATIVE: OnceLock<Option<NativeLib>> = OnceLock::new();
 
 fn library_candidates() -> Vec<PathBuf> {
+    // Library candidates.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<PathBuf>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::library_candidates();
+
     let mut paths = Vec::new();
     if let Ok(path) = std::env::var("SPANDA_ROS2_RCLRS_LIB") {
         paths.push(PathBuf::from(path));
@@ -49,6 +63,20 @@ fn library_candidates() -> Vec<PathBuf> {
 }
 
 fn load_library(path: &Path) -> Option<NativeLib> {
+    // Load library.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::load_library(path);
+
     let library = unsafe { libloading::Library::new(path).ok()? };
     unsafe {
         let sdk_available = *library.get(b"spanda_ros2_rclrs_sdk_available").ok()?;
@@ -68,6 +96,20 @@ fn load_library(path: &Path) -> Option<NativeLib> {
 }
 
 fn native() -> Option<&'static NativeLib> {
+    // Native.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::native();
+
     NATIVE
         .get_or_init(|| {
             for path in library_candidates() {
@@ -83,16 +125,58 @@ fn native() -> Option<&'static NativeLib> {
 }
 
 fn c_string(value: &str) -> Option<CString> {
+    // C string.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::c_string(value);
+
     CString::new(value).ok()
 }
 
 pub fn sdk_available() -> bool {
+    // Sdk available.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::sdk_available();
+
     native()
         .map(|lib| unsafe { (lib.sdk_available)() })
         .unwrap_or(false)
 }
 
 pub fn init_node(name: &str) -> Result<(), String> {
+    // Init node.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::init_node(name);
+
     let Some(lib) = native() else {
         return Err("native rclrs library not loaded — set SPANDA_ROS2_RCLRS_LIB".into());
     };
@@ -106,6 +190,21 @@ pub fn init_node(name: &str) -> Result<(), String> {
 }
 
 pub fn publish(topic: &str, payload: &str) -> bool {
+    // Publish.
+    //
+    // Parameters:
+    // - `topic` — input value
+    // - `payload` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::publish(topic, payload);
+
     let Some(lib) = native() else {
         return false;
     };
@@ -119,6 +218,20 @@ pub fn publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn subscribe(topic: &str) -> bool {
+    // Subscribe.
+    //
+    // Parameters:
+    // - `topic` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::subscribe(topic);
+
     let Some(lib) = native() else {
         return false;
     };
@@ -129,6 +242,22 @@ pub fn subscribe(topic: &str) -> bool {
 }
 
 pub fn service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Service call.
+    //
+    // Parameters:
+    // - `service` — input value
+    // - `service_type` — input value
+    // - `request` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_native::service_call(service, service_type, request);
+
     let Some(lib) = native() else {
         return false;
     };
@@ -150,6 +279,20 @@ mod tests {
 
     #[test]
     fn missing_library_does_not_panic() {
+        // Missing library does not panic.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::transport_rclrs_native::missing_library_does_not_panic();
+
         assert!(!sdk_available());
         assert!(!publish("/x", "y"));
     }

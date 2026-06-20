@@ -9,14 +9,57 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 pub fn registry_tarball_url(name: &str, version: &str) -> Option<String> {
+    // Registry tarball url.
+    //
+    // Parameters:
+    // - `name` — input value
+    // - `version` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::registry_tarball_url(name, version);
+
     registry_base_url().map(|base| format!("{base}/packages/{name}/{version}"))
 }
 
 pub fn registry_cache_dir(project_root: &Path) -> PathBuf {
+    // Registry cache dir.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    //
+    // Returns:
+    // PathBuf.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::registry_cache_dir(project_root);
+
     project_root.join(".spanda/registry")
 }
 
 pub fn global_registry_cache_dir() -> Option<PathBuf> {
+    // Global registry cache dir.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::global_registry_cache_dir();
+
     std::env::var("SPANDA_REGISTRY_CACHE")
         .ok()
         .map(PathBuf::from)
@@ -24,6 +67,20 @@ pub fn global_registry_cache_dir() -> Option<PathBuf> {
 }
 
 fn dirs_home() -> Option<PathBuf> {
+    // Dirs home.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::dirs_home();
+
     std::env::var("HOME")
         .ok()
         .map(PathBuf::from)
@@ -31,6 +88,22 @@ fn dirs_home() -> Option<PathBuf> {
 }
 
 pub fn resolve_local_tarball(project_root: &Path, name: &str, version: &str) -> Option<PathBuf> {
+    // Resolve local tarball.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `version` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::resolve_local_tarball(project_root, name, version);
+
     let mut candidates = vec![
         project_root
             .join("dist")
@@ -55,6 +128,23 @@ pub fn cache_registry_tarball(
     version: &str,
     tarball: &Path,
 ) -> Result<PathBuf, String> {
+    // Cache registry tarball.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `version` — input value
+    // - `tarball` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::cache_registry_tarball(project_root, name, version, tarball);
+
     let cache_dir = registry_cache_dir(project_root);
     fs::create_dir_all(&cache_dir).map_err(|e| format!("create registry cache: {e}"))?;
     let dest = cache_dir.join(format!("{name}-{version}.tar.gz"));
@@ -75,6 +165,23 @@ pub fn fetch_registry_tarball(
     version: &str,
     dest: &Path,
 ) -> Result<PathBuf, String> {
+    // Fetch registry tarball.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `version` — input value
+    // - `dest` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::fetch_registry_tarball(project_root, name, version, dest);
+
     fs::create_dir_all(dest).map_err(|e| format!("create vendor dir: {e}"))?;
 
     if let Some(local) = resolve_local_tarball(project_root, name, version) {
@@ -96,6 +203,21 @@ pub fn fetch_registry_tarball(
 }
 
 pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {
+    // Fetch url to file.
+    //
+    // Parameters:
+    // - `url` — input value
+    // - `output` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::fetch_url_to_file(url, output);
+
     if let Some(path) = file_url_path(url) {
         fs::copy(&path, output).map_err(|e| format!("copy {path:?} to vendor: {e}"))?;
         return Ok(());
@@ -113,6 +235,20 @@ pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {
 }
 
 pub fn file_url_path(url: &str) -> Option<PathBuf> {
+    // File url path.
+    //
+    // Parameters:
+    // - `url` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::file_url_path(url);
+
     let path = url.strip_prefix("file://")?;
     if path.is_empty() {
         return None;
@@ -121,6 +257,21 @@ pub fn file_url_path(url: &str) -> Option<PathBuf> {
 }
 
 pub fn extract_tarball(tarball: &Path, dest: &Path) -> Result<(), String> {
+    // Extract tarball.
+    //
+    // Parameters:
+    // - `tarball` — input value
+    // - `dest` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_fetch::extract_tarball(tarball, dest);
+
     let status = Command::new("tar")
         .args(["-xzf"])
         .arg(tarball)
@@ -141,12 +292,40 @@ mod tests {
 
     #[test]
     fn tarball_url_requires_registry_env() {
+        // Tarball url requires registry env.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_fetch::tarball_url_requires_registry_env();
+
         std::env::remove_var("SPANDA_REGISTRY_URL");
         assert!(registry_tarball_url("demo", "0.1.0").is_none());
     }
 
     #[test]
     fn tarball_url_uses_base_path() {
+        // Tarball url uses base path.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_fetch::tarball_url_uses_base_path();
+
         std::env::set_var("SPANDA_REGISTRY_URL", "https://registry.example.com");
         assert_eq!(
             registry_tarball_url("spanda-mqtt", "1.0.0"),
@@ -157,6 +336,20 @@ mod tests {
 
     #[test]
     fn file_url_path_parses_local_paths() {
+        // File url path parses local paths.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_fetch::file_url_path_parses_local_paths();
+
         assert_eq!(
             file_url_path("file:///tmp/registry/index.json"),
             Some(PathBuf::from("/tmp/registry/index.json"))
@@ -165,6 +358,20 @@ mod tests {
 
     #[test]
     fn resolve_local_tarball_finds_dist_bundle() {
+        // Resolve local tarball finds dist bundle.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_fetch::resolve_local_tarball_finds_dist_bundle();
+
         let root = std::env::temp_dir().join(format!("spanda-fetch-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(root.join("dist")).unwrap();
@@ -176,6 +383,20 @@ mod tests {
 
     #[test]
     fn cache_registry_tarball_writes_project_cache() {
+        // Cache registry tarball writes project cache.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_fetch::cache_registry_tarball_writes_project_cache();
+
         let root = std::env::temp_dir().join(format!("spanda-cache-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();

@@ -17,6 +17,21 @@ pub struct PublishReport {
 
 /// Create a `.tar.gz` bundle containing manifest, lockfile, and source files.
 pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<PublishReport> {
+    // Bundle package.
+    //
+    // Parameters:
+    // - `root` — input value
+    // - `manifest` — input value
+    //
+    // Returns:
+    // PackageResult<PublishReport>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::bundle_package(root, manifest);
+
     let sources = collect_source_files(root)?;
     if sources.is_empty() {
         return Err(PackageError::Validation(
@@ -50,6 +65,21 @@ pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<
 
 /// Bundle the package and optionally upload to `SPANDA_REGISTRY_URL`.
 pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult<PublishReport> {
+    // Publish package.
+    //
+    // Parameters:
+    // - `root` — input value
+    // - `manifest` — input value
+    //
+    // Returns:
+    // PackageResult<PublishReport>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::publish_package(root, manifest);
+
     let mut report = bundle_package(root, manifest)?;
     if let Some(base) = registry_base_url() {
         let url = format!(
@@ -74,6 +104,22 @@ pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult
 }
 
 fn create_tar_gz(output: &Path, root: &Path, files: &[PathBuf]) -> PackageResult<()> {
+    // Create tar gz.
+    //
+    // Parameters:
+    // - `output` — input value
+    // - `root` — input value
+    // - `files` — input value
+    //
+    // Returns:
+    // PackageResult<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::create_tar_gz(output, root, files);
+
     let rel_paths: Vec<String> = files
         .iter()
         .filter_map(|path| path.strip_prefix(root).ok())
@@ -99,6 +145,21 @@ fn create_tar_gz(output: &Path, root: &Path, files: &[PathBuf]) -> PackageResult
 }
 
 fn upload_bundle(bundle: &Path, url: &str) -> Result<(), String> {
+    // Upload bundle.
+    //
+    // Parameters:
+    // - `bundle` — input value
+    // - `url` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::upload_bundle(bundle, url);
+
     let output = Command::new("curl")
         .args([
             "-fsSL",
@@ -124,6 +185,21 @@ fn upload_bundle(bundle: &Path, url: &str) -> Result<(), String> {
 }
 
 fn update_registry_index(base: &str, manifest: &PackageManifest) -> Result<(), String> {
+    // Update registry index.
+    //
+    // Parameters:
+    // - `base` — input value
+    // - `manifest` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::update_registry_index(base, manifest);
+
     let index_url = format!("{base}/index.json");
     let body = fetch_index_json(&index_url).unwrap_or_else(|_| "[]".to_string());
     let mut entries: Vec<RemoteRegistryEntry> = serde_json::from_str(&body).unwrap_or_default();
@@ -160,6 +236,21 @@ fn update_registry_index(base: &str, manifest: &PackageManifest) -> Result<(), S
 }
 
 fn upload_json(url: &str, body: &str) -> Result<(), String> {
+    // Upload json.
+    //
+    // Parameters:
+    // - `url` — input value
+    // - `body` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::publish::upload_json(url, body);
+
     let output = Command::new("curl")
         .args([
             "-fsSL",
@@ -200,6 +291,20 @@ mod tests {
 
     #[test]
     fn bundles_manifest_and_sources() {
+        // Bundles manifest and sources.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::publish::bundles_manifest_and_sources();
+
         let dir = tempfile::tempdir().expect("tempdir");
         let root = dir.path();
         fs::create_dir_all(root.join("src")).expect("src");

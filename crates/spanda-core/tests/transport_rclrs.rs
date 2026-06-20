@@ -1,3 +1,5 @@
+//! transport rclrs support for Spanda.
+//!
 use spanda_core::runtime::RuntimeValue;
 use spanda_core::transport_rclrs;
 use std::sync::Mutex;
@@ -6,11 +8,39 @@ static ENV_LOCK: Mutex<()> = Mutex::new(());
 
 #[test]
 fn native_sdk_reports_unavailable_without_ros_by_default() {
+    // Native sdk reports unavailable without ros by default.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::native_sdk_reports_unavailable_without_ros_by_default();
+
     assert!(!transport_rclrs::native_sdk_available());
 }
 
 #[test]
 fn rclrs_transport_chain_respects_env_flag() {
+    // Rclrs transport chain respects env flag.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::rclrs_transport_chain_respects_env_flag();
+
     let _lock = ENV_LOCK.lock().unwrap();
     std::env::remove_var("SPANDA_ROS2_RCLRS");
     assert!(!transport_rclrs::rclrs_enabled());

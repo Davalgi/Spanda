@@ -13,14 +13,56 @@ use crate::transport_rclrs_daemon::{daemon_publish, daemon_service_call, daemon_
 use crate::transport_rclrs_native as native;
 
 pub fn rclrs_enabled() -> bool {
+    // Rclrs enabled.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::rclrs_enabled();
+
     std::env::var("SPANDA_ROS2_RCLRS").is_ok()
 }
 
 pub fn rclrs_available() -> bool {
+    // Rclrs available.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::rclrs_available();
+
     rclrs_enabled()
 }
 
 fn payload_string(value: &RuntimeValue) -> String {
+    // Payload string.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::payload_string(value);
+
     match value {
         RuntimeValue::String { value } => value.clone(),
         RuntimeValue::Number { value, .. } => value.to_string(),
@@ -30,6 +72,21 @@ fn payload_string(value: &RuntimeValue) -> String {
 }
 
 pub fn try_rclrs_publish(topic: &str, value: &RuntimeValue) -> bool {
+    // Try rclrs publish.
+    //
+    // Parameters:
+    // - `topic` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::try_rclrs_publish(topic, value);
+
     if !rclrs_enabled() {
         return false;
     }
@@ -43,6 +100,20 @@ pub fn try_rclrs_publish(topic: &str, value: &RuntimeValue) -> bool {
 }
 
 pub fn try_rclrs_subscribe(topic: &str) -> bool {
+    // Try rclrs subscribe.
+    //
+    // Parameters:
+    // - `topic` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::try_rclrs_subscribe(topic);
+
     if !rclrs_enabled() {
         return false;
     }
@@ -56,6 +127,22 @@ pub fn try_rclrs_subscribe(topic: &str) -> bool {
 }
 
 pub fn try_rclrs_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Try rclrs service call.
+    //
+    // Parameters:
+    // - `service` — input value
+    // - `service_type` — input value
+    // - `request` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::try_rclrs_service_call(service, service_type, request);
+
     if !rclrs_enabled() {
         return false;
     }
@@ -69,6 +156,20 @@ pub fn try_rclrs_service_call(service: &str, service_type: &str, request: &str) 
 }
 
 pub fn init_node(name: &str) -> Result<(), String> {
+    // Init node.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::init_node(name);
+
     if native::sdk_available() {
         return native::init_node(name);
     }
@@ -84,6 +185,20 @@ pub fn init_node(name: &str) -> Result<(), String> {
 }
 
 pub fn native_sdk_available() -> bool {
+    // Native sdk available.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs::native_sdk_available();
+
     native::sdk_available()
 }
 
@@ -93,6 +208,20 @@ mod tests {
 
     #[test]
     fn rclrs_off_by_default() {
+        // Rclrs off by default.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::transport_rclrs::rclrs_off_by_default();
+
         std::env::remove_var("SPANDA_ROS2_RCLRS");
         assert!(!rclrs_enabled());
     }

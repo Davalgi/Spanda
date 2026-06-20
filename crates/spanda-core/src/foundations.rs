@@ -1,3 +1,5 @@
+//! foundations support for Spanda.
+//!
 use crate::ast::{Expr, Span, SpandaType, Stmt};
 use serde::{Deserialize, Serialize};
 
@@ -43,6 +45,20 @@ pub enum BridgeKind {
 
 impl BridgeKind {
     pub fn as_str(&self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             Self::Native => "native",
             Self::Python => "python",
@@ -225,6 +241,20 @@ pub enum TaskPriority {
 
 impl TaskPriority {
     pub fn from_ident(ident: &str) -> Option<Self> {
+        // Construct from ident.
+        //
+        // Parameters:
+        // - `ident` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::foundations::from_ident(ident);
+
         match ident {
             "critical" => Some(Self::Critical),
             "high" => Some(Self::High),
@@ -529,6 +559,20 @@ pub struct SecureBlockDecl {
 
 impl Default for SecureBlockDecl {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::foundations::default();
+
         Self {
             signed: false,
             min_trust: None,
@@ -559,6 +603,20 @@ pub struct CapabilityDecl {
 
 /// Known code-module import paths (Phase 1 module system).
 pub fn resolve_module_import(path: &str) -> bool {
+    // Resolve module import.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::foundations::resolve_module_import(path);
+
     matches!(
         path,
         "sensors.lidar"
@@ -615,6 +673,20 @@ pub fn resolve_module_import(path: &str) -> bool {
 
 /// Map user-facing type aliases to physical units / builtin types.
 pub fn resolve_type_alias(name: &str) -> Option<&'static str> {
+    // Resolve type alias.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::foundations::resolve_type_alias(name);
+
     match name {
         "Distance" | "meter" | "Meter" => Some("distance"),
         "Angle" | "radian" | "Radian" => Some("angle"),

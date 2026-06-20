@@ -20,6 +20,11 @@ extern "C" {
 }
 
 pub fn native_available() -> bool {
+    // Returns `true` when the C++ native bridge was compiled in.
+    //
+    // Returns:
+    //
+    // `true` when `SPANDA_CPP_NATIVE` was set at compile time.
     option_env!("SPANDA_CPP_NATIVE").is_some()
 }
 
@@ -27,6 +32,20 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    // Invoke a C++ extern via in-process C ABI bridge.
+    //
+    // Parameters:
+    //
+    // - `decl` — `extern cpp fn` declaration.
+    // - `args` — Runtime arguments.
+    //
+    // Returns:
+    //
+    // Handler result, or [`SpandaError`] on ABI/JSON failure.
+    //
+    // Options:
+    //
+    // Requires `cpp-native` Cargo feature.
     let line = decl.span.start.line;
     let args_json = serde_json::json!({
         "args": args.iter().map(runtime_value_to_json).collect::<Vec<_>>()
@@ -100,6 +119,20 @@ mod tests {
     use crate::foundations::BridgeKind;
 
     fn test_decl(name: &str) -> ExternFnDecl {
+        // Test decl.
+        //
+        // Parameters:
+        // - `name` — input value
+        //
+        // Returns:
+        // ExternFnDecl.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::cpp_native::test_decl(name);
+
         ExternFnDecl {
             name: name.into(),
             library: Some("cpp".into()),
@@ -123,6 +156,20 @@ mod tests {
 
     #[test]
     fn native_cpp_add_when_available() {
+        // Native cpp add when available.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::cpp_native::native_cpp_add_when_available();
+
         if !native_available() {
             return;
         }

@@ -1,8 +1,24 @@
+//! build support for Spanda.
+//!
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
+    // Main.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::build::main();
+
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let src = manifest_dir.join("src/bridge/spanda_cpp_bridge.cpp");

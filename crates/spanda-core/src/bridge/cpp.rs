@@ -12,6 +12,20 @@ use super::protocol::call_subprocess_bridge;
 
 /// Resolve the C++ bridge executable path.
 pub fn bridge_binary_path() -> Option<PathBuf> {
+    // Bridge binary path.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::cpp::bridge_binary_path();
+
     if let Ok(path) = std::env::var("SPANDA_CPP_BRIDGE") {
         let p = PathBuf::from(path);
         if p.is_file() {
@@ -24,6 +38,20 @@ pub fn bridge_binary_path() -> Option<PathBuf> {
 }
 
 fn candidate_binary_paths() -> Vec<PathBuf> {
+    // Candidate binary paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<PathBuf>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::cpp::candidate_binary_paths();
+
     let mut paths = Vec::new();
     if let Some(path) = option_env!("SPANDA_CPP_BRIDGE_BIN") {
         paths.push(PathBuf::from(path));
@@ -37,6 +65,20 @@ fn candidate_binary_paths() -> Vec<PathBuf> {
 }
 
 pub fn bridge_available() -> bool {
+    // Bridge available.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::cpp::bridge_available();
+
     bridge_binary_path().is_some()
 }
 
@@ -44,6 +86,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    // Call extern.
+    //
+    // Parameters:
+    // - `decl` — input value
+    // - `args` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::cpp::call_extern(decl, args);
+
     #[cfg(feature = "cpp-native")]
     if std::env::var("SPANDA_CPP_SUBPROCESS").is_err() {
         if super::cpp_native::native_available() {
@@ -68,6 +125,20 @@ mod tests {
     use crate::foundations::BridgeKind;
 
     fn test_decl(name: &str) -> ExternFnDecl {
+        // Test decl.
+        //
+        // Parameters:
+        // - `name` — input value
+        //
+        // Returns:
+        // ExternFnDecl.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::cpp::test_decl(name);
+
         ExternFnDecl {
             name: name.into(),
             library: Some("cpp".into()),
@@ -91,6 +162,20 @@ mod tests {
 
     #[test]
     fn subprocess_cpp_add_when_binary_available() {
+        // Subprocess cpp add when binary available.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::cpp::subprocess_cpp_add_when_binary_available();
+
         if !bridge_available() {
             return;
         }
@@ -117,6 +202,20 @@ mod tests {
 
     #[test]
     fn subprocess_unknown_fn_errors() {
+        // Subprocess unknown fn errors.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::cpp::subprocess_unknown_fn_errors();
+
         if !bridge_available() {
             return;
         }

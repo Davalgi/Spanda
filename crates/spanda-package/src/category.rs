@@ -1,3 +1,5 @@
+//! category support for Spanda.
+//!
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -28,6 +30,20 @@ pub enum PackageCategory {
 
 impl PackageCategory {
     pub fn all() -> &'static [PackageCategory] {
+        // All.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // &'static [PackageCategory].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::category::all();
+
         &[
             Self::Ai,
             Self::Robotics,
@@ -52,6 +68,20 @@ impl PackageCategory {
     }
 
     pub fn as_str(&self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             Self::Ai => "ai",
             Self::Robotics => "robotics",
@@ -80,6 +110,20 @@ impl FromStr for PackageCategory {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Construct from str.
+        //
+        // Parameters:
+        // - `s` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::category::from_str(s);
+
         match s {
             "ai" => Ok(Self::Ai),
             "robotics" => Ok(Self::Robotics),
@@ -107,6 +151,21 @@ impl FromStr for PackageCategory {
 
 impl std::fmt::Display for PackageCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Fmt.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `f` — input value
+        //
+        // Returns:
+        // std::fmt::Result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.fmt(f);
+
         f.write_str(self.as_str())
     }
 }

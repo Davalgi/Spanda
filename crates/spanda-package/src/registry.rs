@@ -1,3 +1,5 @@
+//! registry support for Spanda.
+//!
 use crate::category::PackageCategory;
 use crate::safety::SafetyLevel;
 use serde::Serialize;
@@ -146,6 +148,20 @@ pub static LOCAL_REGISTRY: &[RegistryEntry] = &[
 ];
 
 pub fn search_registry(query: &str) -> Vec<&'static RegistryEntry> {
+    // Search registry.
+    //
+    // Parameters:
+    // - `query` — input value
+    //
+    // Returns:
+    // Vec<&'static RegistryEntry>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::search_registry(query);
+
     let q = query.to_lowercase();
     LOCAL_REGISTRY
         .iter()
@@ -158,6 +174,20 @@ pub fn search_registry(query: &str) -> Vec<&'static RegistryEntry> {
 }
 
 pub fn search_registry_merged(query: &str) -> Vec<String> {
+    // Search registry merged.
+    //
+    // Parameters:
+    // - `query` — input value
+    //
+    // Returns:
+    // Vec<String>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::search_registry_merged(query);
+
     let mut names: Vec<String> = search_registry(query)
         .into_iter()
         .map(|entry| entry.name.to_string())
@@ -172,11 +202,39 @@ pub fn search_registry_merged(query: &str) -> Vec<String> {
 }
 
 pub fn find_registry_entry(name: &str) -> Option<&'static RegistryEntry> {
+    // Find registry entry.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::find_registry_entry(name);
+
     LOCAL_REGISTRY.iter().find(|e| e.name == name)
 }
 
 /// Local source tree for a registry package (when shipped in-repo).
 pub fn registry_package_dir(name: &str) -> Option<std::path::PathBuf> {
+    // Registry package dir.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::registry_package_dir(name);
+
     find_registry_entry(name)?;
     let candidates = [
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -190,6 +248,20 @@ pub fn registry_package_dir(name: &str) -> Option<std::path::PathBuf> {
 impl RegistryEntry {
     /// Default safety level for registry packages (until per-entry metadata is stored remotely).
     pub fn safety_level(&self) -> SafetyLevel {
+        // Safety level.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // SafetyLevel.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.safety_level();
+
         match self.name {
             "spanda-ros2" | "spanda-opencv" | "spanda-yolo" | "spanda-mqtt" => {
                 SafetyLevel::SimulationOnly
@@ -213,6 +285,20 @@ pub struct RegistryInfo {
 }
 
 pub fn registry_info(name: &str) -> Option<RegistryInfo> {
+    // Registry info.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::registry_info(name);
+
     find_registry_entry(name)
         .map(|e| RegistryInfo {
             name: e.name.to_string(),
@@ -242,6 +328,20 @@ pub fn registry_info(name: &str) -> Option<RegistryInfo> {
 }
 
 pub fn all_import_paths() -> Vec<&'static str> {
+    // All import paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<&'static str>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry::all_import_paths();
+
     let mut paths: Vec<&'static str> = LOCAL_REGISTRY
         .iter()
         .flat_map(|e| e.import_paths.iter().copied())

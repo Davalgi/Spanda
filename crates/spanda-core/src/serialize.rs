@@ -8,6 +8,21 @@ use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
 
 pub fn serialize_value(value: &RuntimeValue, format: &str) -> Result<RuntimeValue, SpandaError> {
+    // Serialize value.
+    //
+    // Parameters:
+    // - `value` — input value
+    // - `format` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::serialize_value(value, format);
+
     match format.to_ascii_lowercase().as_str() {
         "json" => Ok(RuntimeValue::String {
             value: serde_json::to_string(&runtime_to_json(value)).map_err(|e| {
@@ -35,6 +50,21 @@ pub fn serialize_value(value: &RuntimeValue, format: &str) -> Result<RuntimeValu
 }
 
 pub fn deserialize_value(data: &RuntimeValue, format: &str) -> Result<RuntimeValue, SpandaError> {
+    // Deserialize value.
+    //
+    // Parameters:
+    // - `data` — input value
+    // - `format` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::deserialize_value(data, format);
+
     match format.to_ascii_lowercase().as_str() {
         "json" => {
             let text = runtime_string(data)?;
@@ -76,6 +106,20 @@ pub fn deserialize_value(data: &RuntimeValue, format: &str) -> Result<RuntimeVal
 }
 
 fn runtime_string(value: &RuntimeValue) -> Result<String, SpandaError> {
+    // Runtime string.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::runtime_string(value);
+
     match value {
         RuntimeValue::String { value } => Ok(value.clone()),
         _ => {
@@ -85,6 +129,20 @@ fn runtime_string(value: &RuntimeValue) -> Result<String, SpandaError> {
 }
 
 fn runtime_to_json(value: &RuntimeValue) -> JsonValue {
+    // Runtime to json.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // JsonValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::runtime_to_json(value);
+
     match value {
         RuntimeValue::Number { value, unit } => json!({
             "kind": "number",
@@ -139,6 +197,20 @@ fn runtime_to_json(value: &RuntimeValue) -> JsonValue {
 }
 
 fn runtime_kind_name(value: &RuntimeValue) -> &'static str {
+    // Runtime kind name.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::runtime_kind_name(value);
+
     match value {
         RuntimeValue::Scan { .. } => "scan",
         RuntimeValue::Trajectory { .. } => "trajectory",
@@ -158,6 +230,20 @@ fn runtime_kind_name(value: &RuntimeValue) -> &'static str {
 }
 
 fn json_to_runtime(value: &JsonValue) -> Result<RuntimeValue, SpandaError> {
+    // Json to runtime.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::serialize::json_to_runtime(value);
+
     if value.is_null() {
         return Ok(RuntimeValue::Null);
     }
@@ -275,6 +361,20 @@ mod tests {
 
     #[test]
     fn round_trip_json_pose() {
+        // Round trip json pose.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::serialize::round_trip_json_pose();
+
         let value = RuntimeValue::Pose {
             x: 1.0,
             y: 2.0,

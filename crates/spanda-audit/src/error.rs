@@ -1,5 +1,8 @@
+//! Audit error types and result alias for the Spanda audit crate.
+
 use thiserror::Error;
 
+/// Errors raised by audit backends and the audit runtime.
 #[derive(Debug, Error)]
 pub enum AuditError {
     #[error("audit record not found: {0}")]
@@ -16,4 +19,5 @@ pub enum AuditError {
     Other(String),
 }
 
+/// Convenience alias for audit operations that may fail with [`AuditError`].
 pub type AuditResult<T> = Result<T, AuditError>;

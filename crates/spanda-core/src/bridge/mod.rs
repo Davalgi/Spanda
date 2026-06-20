@@ -1,3 +1,5 @@
+//! bridge module for Spanda.
+//!
 pub mod cpp;
 #[cfg(feature = "cpp-native")]
 pub mod cpp_native;

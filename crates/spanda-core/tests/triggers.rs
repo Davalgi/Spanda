@@ -1,7 +1,23 @@
+//! triggers support for Spanda.
+//!
 use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn event_trigger_dispatch() {
+    // Event trigger dispatch.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::event_trigger_dispatch();
+
     let source = r#"
 robot Rover {
   actuator wheels: DifferentialDrive;
@@ -36,6 +52,20 @@ robot Rover {
 
 #[test]
 fn message_trigger_on_publish() {
+    // Message trigger on publish.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::message_trigger_on_publish();
+
     let source = r#"
 robot Rover {
   topic lidar_scan: String subscribe on "/scan";
@@ -57,6 +87,20 @@ robot Rover {
 
 #[test]
 fn timer_trigger_every() {
+    // Timer trigger every.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::timer_trigger_every();
+
     let source = r#"
 robot Rover {
   topic status: String publish on "/status";
@@ -88,6 +132,20 @@ robot Rover {
 
 #[test]
 fn condition_trigger_when() {
+    // Condition trigger when.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::condition_trigger_when();
+
     let source = r#"
 robot Rover {
   sensor lidar: Lidar on "/scan";
@@ -111,6 +169,20 @@ robot Rover {
 
 #[test]
 fn safety_trigger_priority_critical() {
+    // Safety trigger priority critical.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::safety_trigger_priority_critical();
+
     let source = r#"
 robot Rover {
   actuator wheels: DifferentialDrive;
@@ -131,6 +203,20 @@ robot Rover {
 
 #[test]
 fn state_trigger_entered() {
+    // State trigger entered.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::state_trigger_entered();
+
     let source = r#"
 robot Rover {
   state_machine Nav {
@@ -154,6 +240,20 @@ robot Rover {
 
 #[test]
 fn verification_trigger_syntax() {
+    // Verification trigger syntax.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::verification_trigger_syntax();
+
     let source = r#"
 robot Rover {
   on verification Failed {
@@ -170,6 +270,20 @@ robot Rover {
 
 #[test]
 fn agent_message_trigger() {
+    // Agent message trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::agent_message_trigger();
+
     let source = r#"
 robot Rover {
   topic camera_frame: String subscribe on "/camera";
@@ -186,6 +300,20 @@ robot Rover {
 
 #[test]
 fn condition_trigger_rejects_non_boolean() {
+    // Condition trigger rejects non boolean.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::condition_trigger_rejects_non_boolean();
+
     let source = r#"
 robot Rover {
   when 42 {
@@ -201,6 +329,20 @@ robot Rover {
 
 #[test]
 fn trigger_metrics_recorded() {
+    // Trigger metrics recorded.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::trigger_metrics_recorded();
+
     let source = r#"
 robot Rover {
   event Tick;
@@ -222,6 +364,20 @@ robot Rover {
 
 #[test]
 fn hardware_trigger_from_simulate_compatibility() {
+    // Hardware trigger from simulate compatibility.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::hardware_trigger_from_simulate_compatibility();
+
     let source = r#"
 simulate_compatibility {
   fault LidarFailure;
@@ -252,6 +408,20 @@ robot Rover {
 
 #[test]
 fn ai_goal_completed_trigger() {
+    // Ai goal completed trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::ai_goal_completed_trigger();
+
     let source = r#"
 robot Rover {
   ai_model planner: LLM {
@@ -287,6 +457,20 @@ robot Rover {
 
 #[test]
 fn ai_confidence_low_trigger() {
+    // Ai confidence low trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::ai_confidence_low_trigger();
+
     let source = r#"
 robot Rover {
   sensor lidar: Lidar on "/scan";
@@ -311,6 +495,20 @@ robot Rover {
 
 #[test]
 fn verification_warning_trigger() {
+    // Verification warning trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::verification_warning_trigger();
+
     let source = r#"
 robot Rover {
   on verification Warning {
@@ -332,6 +530,20 @@ robot Rover {
 
 #[test]
 fn while_level_condition_trigger() {
+    // While level condition trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::while_level_condition_trigger();
+
     let source = r#"
 robot Rover {
   topic status: String publish on "/status";
@@ -361,6 +573,20 @@ robot Rover {
 
 #[test]
 fn twin_fault_injected_trigger() {
+    // Twin fault injected trigger.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::triggers::twin_fault_injected_trigger();
+
     let source = r#"
 simulate_compatibility {
   fault InjectedFault;

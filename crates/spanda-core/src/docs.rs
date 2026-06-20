@@ -1,14 +1,54 @@
+//! Markdown documentation generator for Spanda programs.
+//!
+//! Emits module-level API reference from the AST: imports, functions, structs,
+//! enums, traits, robots, and test blocks.
+
 use crate::ast::*;
 use crate::error::SpandaError;
 use crate::foundations::Visibility;
 
 pub fn generate_markdown(source: &str) -> Result<String, SpandaError> {
+    // Generate Markdown API documentation from Spanda source.
+    //
+    // Parameters:
+    //
+    // - `source` — Full program source text.
+    //
+    // Returns:
+    //
+    // Markdown document string, or [`SpandaError`] if lexing/parsing fails.
+    //
+    // Example:
+    //
+    // use spanda_core::docs::generate_markdown;
+    // let source = r#"
+    // module nav;
+    // export fn plan() -> Path { return trajectory(from: pose(x: 0.0 m, y: 0.0 m), to: pose(x: 1.0 m, y: 0.0 m), steps: 3); }
+    // robot R { actuator wheels: DifferentialDrive; behavior run() { wheels.stop(); } }
+    // "#;
+    // let md = generate_markdown(source).unwrap();
+    // assert!(md.contains("# Module `nav`"));
+    // assert!(md.contains("### `R`"));
     let tokens = crate::lexer::tokenize(source)?;
     let program = crate::parser::parse(tokens)?;
     Ok(render_program_docs(&program))
 }
 
 fn render_program_docs(program: &Program) -> String {
+    // Render program docs.
+    //
+    // Parameters:
+    // - `program` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_program_docs(program);
+
     let Program::Program {
         module_name,
         imports,
@@ -93,6 +133,20 @@ fn render_program_docs(program: &Program) -> String {
 }
 
 fn render_module_fn(func: &crate::foundations::ModuleFnDecl) -> String {
+    // Render module fn.
+    //
+    // Parameters:
+    // - `func` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_module_fn(func);
+
     let visibility = match func.visibility {
         Visibility::Export => "export ",
         Visibility::Public => "public ",
@@ -118,6 +172,20 @@ fn render_module_fn(func: &crate::foundations::ModuleFnDecl) -> String {
 }
 
 fn render_struct(decl: &crate::foundations::StructDecl) -> String {
+    // Render struct.
+    //
+    // Parameters:
+    // - `decl` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_struct(decl);
+
     let crate::foundations::StructDecl::StructDecl { name, fields, .. } = decl;
     let mut out = format!("### `{name}`\n\n");
     for field in fields {
@@ -127,6 +195,20 @@ fn render_struct(decl: &crate::foundations::StructDecl) -> String {
 }
 
 fn render_enum(decl: &crate::foundations::EnumDecl) -> String {
+    // Render enum.
+    //
+    // Parameters:
+    // - `decl` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_enum(decl);
+
     let crate::foundations::EnumDecl::EnumDecl { name, variants, .. } = decl;
     let mut out = format!("### `{name}`\n\n");
     for variant in variants {
@@ -144,6 +226,20 @@ fn render_enum(decl: &crate::foundations::EnumDecl) -> String {
 }
 
 fn render_trait(decl: &crate::foundations::TraitDecl) -> String {
+    // Render trait.
+    //
+    // Parameters:
+    // - `decl` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_trait(decl);
+
     let crate::foundations::TraitDecl::TraitDecl { name, methods, .. } = decl;
     let mut out = format!("### `{name}`\n\n");
     for method in methods {
@@ -162,6 +258,20 @@ fn render_trait(decl: &crate::foundations::TraitDecl) -> String {
 }
 
 fn render_robot(robot: &RobotDecl) -> String {
+    // Render robot.
+    //
+    // Parameters:
+    // - `robot` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::render_robot(robot);
+
     let RobotDecl::RobotDecl {
         name,
         sensors,
@@ -223,6 +333,20 @@ fn render_robot(robot: &RobotDecl) -> String {
 }
 
 fn type_name(ty: &SpandaType) -> String {
+    // Type name.
+    //
+    // Parameters:
+    // - `ty` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::docs::type_name(ty);
+
     match ty {
         SpandaType::Void => "Void".into(),
         SpandaType::Int => "Int".into(),
@@ -265,6 +389,20 @@ mod tests {
 
     #[test]
     fn generates_module_docs() {
+        // Generates module docs.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::docs::generates_module_docs();
+
         let source = r#"
 module navigation;
 

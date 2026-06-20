@@ -1,7 +1,23 @@
+//! communication support for Spanda.
+//!
 use spanda_core::{check, compile, run, verify_compatibility_target, CompatSeverity, RunOptions};
 
 #[test]
 fn message_parsing_and_registry() {
+    // Message parsing and registry.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::message_parsing_and_registry();
+
     let source = r#"
 message LidarReading {
   scan: Scan;
@@ -23,6 +39,20 @@ robot CommBot {
 
 #[test]
 fn topic_qos_and_transport() {
+    // Topic qos and transport.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::topic_qos_and_transport();
+
     let source = r#"
 robot QosBot {
   bus sim;
@@ -44,6 +74,20 @@ robot QosBot {
 
 #[test]
 fn service_and_action_typed() {
+    // Service and action typed.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::service_and_action_typed();
+
     let source = r#"
 message BatteryStatus { level: String; }
 
@@ -70,6 +114,20 @@ robot ServiceBot {
 
 #[test]
 fn subscribe_and_publish_parens() {
+    // Subscribe and publish parens.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::subscribe_and_publish_parens();
+
     let source = r#"
 robot PubSubBot {
   topic scan_out: Scan publish on "/out";
@@ -95,6 +153,20 @@ robot PubSubBot {
 
 #[test]
 fn agent_communication_capabilities() {
+    // Agent communication capabilities.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::agent_communication_capabilities();
+
     let source = r#"
 robot AgentBot {
   topic data: Scan publish on "/data";
@@ -116,6 +188,20 @@ robot AgentBot {
 
 #[test]
 fn robot_peer_and_device_declarations() {
+    // Robot peer and device declarations.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::robot_peer_and_device_declarations();
+
     let source = r#"
 robot FleetBot {
   bus local;
@@ -135,6 +221,20 @@ robot FleetBot {
 
 #[test]
 fn discover_with_capability_filter() {
+    // Discover with capability filter.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::discover_with_capability_filter();
+
     let source = r#"
 robot DiscoverBot {
   actuator wheels: DifferentialDrive;
@@ -149,6 +249,20 @@ robot DiscoverBot {
 
 #[test]
 fn event_with_payload_fields() {
+    // Event with payload fields.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::event_with_payload_fields();
+
     let source = r#"
 message Alert { text: String; }
 
@@ -167,6 +281,20 @@ robot EventBot {
 
 #[test]
 fn topic_qos_bandwidth_verify() {
+    // Topic qos bandwidth verify.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::topic_qos_bandwidth_verify();
+
     let source = r#"
 robot BandwidthBot {
   topic stream: Scan publish on "/stream" {
@@ -196,6 +324,20 @@ deploy BandwidthBot to ESP32;
 
 #[test]
 fn transport_ros2_routing_at_runtime() {
+    // Transport ros2 routing at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::transport_ros2_routing_at_runtime();
+
     let source = r#"
 robot RosBot {
   bus ros2;
@@ -219,6 +361,20 @@ robot RosBot {
 
 #[test]
 fn std_network_import_type_check() {
+    // Std network import type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::std_network_import_type_check();
+
     let source = r#"
 import std.network;
 
@@ -239,6 +395,20 @@ robot NetBot {
 
 #[test]
 fn requires_network_integration() {
+    // Requires network integration.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::requires_network_integration();
+
     let source = r#"
 requires_network {
   bandwidth >= 5 Mbps;
@@ -261,6 +431,20 @@ robot NetBot {
 
 #[test]
 fn simulator_comm_bus_round_trip() {
+    // Simulator comm bus round trip.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::simulator_comm_bus_round_trip();
+
     let source = r#"
 robot SimBot {
   bus sim;
@@ -287,6 +471,20 @@ robot SimBot {
 
 #[test]
 fn rejects_unknown_message_type_on_topic() {
+    // Rejects unknown message type on topic.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::rejects_unknown_message_type_on_topic();
+
     let source = r#"
 robot BadBot {
   topic x: UnknownMsg publish on "/x";
@@ -300,6 +498,20 @@ robot BadBot {
 
 #[test]
 fn rejects_invalid_capability_target() {
+    // Rejects invalid capability target.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::communication::rejects_invalid_capability_target();
+
     let source = r#"
 robot BadBot {
   sensor lidar: Lidar on "/scan";

@@ -1,7 +1,23 @@
+//! struct literals support for Spanda.
+//!
 use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn struct_literal_constructs_pose() {
+    // Struct literal constructs pose.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::struct_literals::struct_literal_constructs_pose();
+
     let source = r#"
 struct Pose {
   x: Distance;
@@ -24,6 +40,20 @@ robot R {
 
 #[test]
 fn struct_literal_requires_all_fields() {
+    // Struct literal requires all fields.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::struct_literals::struct_literal_requires_all_fields();
+
     let source = r#"
 struct Pose {
   x: Distance;

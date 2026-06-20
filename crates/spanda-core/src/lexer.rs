@@ -1,3 +1,5 @@
+//! lexer support for Spanda.
+//!
 use crate::ast::UnitKind;
 use crate::error::SpandaError;
 use serde::{Deserialize, Serialize};
@@ -351,6 +353,20 @@ pub enum UnitLexeme {
 
 impl UnitLexeme {
     pub fn as_str(self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             UnitLexeme::PercentVwc => "%VWC",
             UnitLexeme::PercentRh => "%RH",
@@ -458,6 +474,20 @@ pub enum TokenValue {
 }
 
 pub fn unit_from_lexeme(lexeme: UnitLexeme) -> UnitKind {
+    // Unit from lexeme.
+    //
+    // Parameters:
+    // - `lexeme` — input value
+    //
+    // Returns:
+    // UnitKind.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::unit_from_lexeme(lexeme);
+
     UnitKind::from_lexeme(lexeme.as_str())
 }
 
@@ -544,6 +574,20 @@ const UNIT_SUFFIXES: &[UnitLexeme] = &[
 ];
 
 fn keywords() -> HashMap<&'static str, TokenType> {
+    // Keywords.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // HashMap<&'static str, TokenType>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::keywords();
+
     HashMap::from([
         ("import", TokenType::Import),
         ("module", TokenType::Module),
@@ -699,6 +743,20 @@ fn keywords() -> HashMap<&'static str, TokenType> {
 }
 
 pub fn tokenize(source: &str) -> Result<Vec<Token>, SpandaError> {
+    // Tokenize.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::tokenize(source);
+
     let keywords = keywords();
     let mut tokens = Vec::new();
     let mut line: u32 = 1;
@@ -1184,18 +1242,74 @@ pub fn tokenize(source: &str) -> Result<Vec<Token>, SpandaError> {
 }
 
 fn is_hex_digit(ch: char) -> bool {
+    // Return whether hex digit.
+    //
+    // Parameters:
+    // - `ch` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::is_hex_digit(ch);
+
     is_digit(ch) || ('a'..='f').contains(&ch) || ('A'..='F').contains(&ch)
 }
 
 fn is_digit(ch: char) -> bool {
+    // Return whether digit.
+    //
+    // Parameters:
+    // - `ch` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::is_digit(ch);
+
     ch.is_ascii_digit()
 }
 
 fn is_ident_start(ch: char) -> bool {
+    // Return whether ident start.
+    //
+    // Parameters:
+    // - `ch` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::is_ident_start(ch);
+
     ch.is_ascii_alphabetic() || ch == '_'
 }
 
 fn is_ident_char(ch: char) -> bool {
+    // Return whether ident char.
+    //
+    // Parameters:
+    // - `ch` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::is_ident_char(ch);
+
     is_ident_start(ch) || is_digit(ch)
 }
 
@@ -1207,6 +1321,25 @@ fn push_single(
     column: u32,
     offset: usize,
 ) {
+    // Push single.
+    //
+    // Parameters:
+    // - `tokens` — input value
+    // - `token_type` — input value
+    // - `lexeme` — input value
+    // - `line` — input value
+    // - `column` — input value
+    // - `offset` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lexer::push_single(tokens, token_type, lexeme, line, column, offset);
+
     tokens.push(Token {
         token_type,
         lexeme: lexeme.to_string(),
@@ -1224,6 +1357,20 @@ mod tests {
 
     #[test]
     fn tokenizes_robot_keywords() {
+        // Tokenizes robot keywords.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_robot_keywords();
+
         let tokens = tokenize("robot Rover { sensor lidar: Lidar; }").unwrap();
         let types: Vec<_> = tokens.iter().map(|t| t.token_type).collect();
         assert!(types.contains(&TokenType::Robot));
@@ -1234,6 +1381,20 @@ mod tests {
 
     #[test]
     fn tokenizes_unit_literals() {
+        // Tokenizes unit literals.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_unit_literals();
+
         let tokens = tokenize("1.5m/s").unwrap();
         let unit_tok = tokens
             .iter()
@@ -1246,6 +1407,20 @@ mod tests {
 
     #[test]
     fn tokenizes_spaced_unit_literals() {
+        // Tokenizes spaced unit literals.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_spaced_unit_literals();
+
         let tokens = tokenize("1.5 m/s").unwrap();
         let unit_tok = tokens
             .iter()
@@ -1255,6 +1430,20 @@ mod tests {
 
     #[test]
     fn tokenizes_duration_units() {
+        // Tokenizes duration units.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_duration_units();
+
         let tokens = tokenize("loop every 50ms").unwrap();
         let ms_tok = tokens
             .iter()
@@ -1265,18 +1454,60 @@ mod tests {
 
     #[test]
     fn tokenizes_stop_if() {
+        // Tokenizes stop if.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_stop_if();
+
         let tokens = tokenize("stop_if x < 0.5 m;").unwrap();
         assert!(tokens.iter().any(|t| t.token_type == TokenType::StopIf));
     }
 
     #[test]
     fn skips_comments() {
+        // Skips comments.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::skips_comments();
+
         let tokens = tokenize("// comment\nrobot R {}").unwrap();
         assert_eq!(tokens[0].token_type, TokenType::Robot);
     }
 
     #[test]
     fn tokenizes_comparisons() {
+        // Tokenizes comparisons.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lexer::tokenizes_comparisons();
+
         let tokens = tokenize("< <= > >= == !=").unwrap();
         let types: Vec<_> = tokens
             .iter()

@@ -1,7 +1,23 @@
+//! type system support for Spanda.
+//!
 use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn foundation_types_with_annotations() {
+    // Foundation types with annotations.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::foundation_types_with_annotations();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -19,6 +35,20 @@ robot R {
 
 #[test]
 fn generic_collections_type_check() {
+    // Generic collections type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::generic_collections_type_check();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -53,6 +83,20 @@ robot R {
 
 #[test]
 fn generic_arity_mismatch_fails() {
+    // Generic arity mismatch fails.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::generic_arity_mismatch_fails();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -75,6 +119,20 @@ robot R {
 
 #[test]
 fn unit_literals_and_valid_operations() {
+    // Unit literals and valid operations.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::unit_literals_and_valid_operations();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -101,6 +159,20 @@ robot R {
 
 #[test]
 fn extended_unit_literals_type_check() {
+    // Extended unit literals type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::extended_unit_literals_type_check();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -124,6 +196,20 @@ robot R {
 
 #[test]
 fn sensor_environmental_units_type_check() {
+    // Sensor environmental units type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::sensor_environmental_units_type_check();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -150,6 +236,20 @@ robot R {
 
 #[test]
 fn invalid_unit_operation_fails() {
+    // Invalid unit operation fails.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::invalid_unit_operation_fails();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -173,6 +273,20 @@ robot R {
 
 #[test]
 fn distance_plus_duration_fails() {
+    // Distance plus duration fails.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::distance_plus_duration_fails();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -196,6 +310,20 @@ robot R {
 
 #[test]
 fn spatial_sensor_and_ai_types_parse() {
+    // Spatial sensor and ai types parse.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::spatial_sensor_and_ai_types_parse();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -216,6 +344,20 @@ robot R {
 
 #[test]
 fn action_proposal_cannot_execute_directly() {
+    // Action proposal cannot execute directly.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::action_proposal_cannot_execute_directly();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -239,6 +381,20 @@ robot R {
 
 #[test]
 fn safe_action_can_execute() {
+    // Safe action can execute.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::safe_action_can_execute();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -257,6 +413,20 @@ robot R {
 
 #[test]
 fn unknown_type_fails_at_parse() {
+    // Unknown type fails at parse.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::unknown_type_fails_at_parse();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -279,6 +449,20 @@ robot R {
 
 #[test]
 fn goal_type_and_agent_goal_injection() {
+    // Goal type and agent goal injection.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::goal_type_and_agent_goal_injection();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -320,6 +504,20 @@ robot R {
 
 #[test]
 fn goals_example_runs() {
+    // Goals example runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::goals_example_runs();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/types/goals.sd"
@@ -331,6 +529,20 @@ fn goals_example_runs() {
 
 #[test]
 fn memory_remember_and_recall() {
+    // Memory remember and recall.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::memory_remember_and_recall();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -368,6 +580,20 @@ robot R {
 
 #[test]
 fn memory_example_runs() {
+    // Memory example runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::memory_example_runs();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/types/memory.sd"
@@ -379,6 +605,20 @@ fn memory_example_runs() {
 
 #[test]
 fn verify_block_type_checks_and_runs() {
+    // Verify block type checks and runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::verify_block_type_checks_and_runs();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -397,6 +637,20 @@ robot R {
 
 #[test]
 fn verify_example_runs() {
+    // Verify example runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::verify_example_runs();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/types/verify.sd"
@@ -408,6 +662,20 @@ fn verify_example_runs() {
 
 #[test]
 fn safety_example_runs() {
+    // Safety example runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::safety_example_runs();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/types/safety.sd"

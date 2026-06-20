@@ -25,6 +25,21 @@ pub fn compile_native(
     sir: &SirProgram,
     opts: &CompileNativeOptions,
 ) -> Result<CompileNativeResult, String> {
+    // Compile native.
+    //
+    // Parameters:
+    // - `sir` — input value
+    // - `opts` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_llvm::compile::compile_native(sir, opts);
+
     let clang =
         opts.clang.clone().or_else(detect_clang).ok_or_else(|| {
             "clang not found — install LLVM/clang to use compile-native".to_string()
@@ -87,6 +102,20 @@ pub fn compile_native(
 }
 
 fn hal_profile_triple(profile: Option<&str>) -> Option<&'static str> {
+    // Hal profile triple.
+    //
+    // Parameters:
+    // - `profile` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_llvm::compile::hal_profile_triple(profile);
+
     match profile? {
         "embedded-arm" => Some("aarch64-unknown-linux-gnu"),
         "esp32" => Some("xtensa-esp32-elf"),
@@ -95,6 +124,20 @@ fn hal_profile_triple(profile: Option<&str>) -> Option<&'static str> {
 }
 
 fn detect_clang() -> Option<String> {
+    // Detect clang.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_llvm::compile::detect_clang();
+
     for candidate in ["clang", "clang-18", "clang-17", "clang-16"] {
         if Command::new(candidate)
             .arg("--version")
@@ -109,12 +152,40 @@ fn detect_clang() -> Option<String> {
 }
 
 fn resolve_target_dir(workspace_root: &Path) -> PathBuf {
+    // Resolve target dir.
+    //
+    // Parameters:
+    // - `workspace_root` — input value
+    //
+    // Returns:
+    // PathBuf.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_llvm::compile::resolve_target_dir(workspace_root);
+
     std::env::var("CARGO_TARGET_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|_| workspace_root.join("target"))
 }
 
 fn ensure_spanda_rt_staticlib(workspace_root: &Path) -> Result<PathBuf, String> {
+    // Ensure spanda rt staticlib.
+    //
+    // Parameters:
+    // - `workspace_root` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_llvm::compile::ensure_spanda_rt_staticlib(workspace_root);
+
     let target_dir = resolve_target_dir(workspace_root);
     let profile = "debug";
     let lib_path = target_dir.join(profile).join("libspanda_rt.a");
@@ -151,6 +222,20 @@ mod tests {
 
     #[test]
     fn compile_native_when_clang_available() {
+        // Compile native when clang available.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_llvm::compile::compile_native_when_clang_available();
+
         if detect_clang().is_none() {
             return;
         }

@@ -1,5 +1,8 @@
+//! Security error types and result alias for the Spanda security crate.
+
 use thiserror::Error;
 
+/// Convenience alias for security operations that may fail with [`SecurityError`].
 pub type SecurityResult<T> = Result<T, SecurityError>;
 
 #[derive(Debug, Error, PartialEq)]

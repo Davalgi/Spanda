@@ -1,3 +1,5 @@
+//! src crate public API and re-exports.
+//!
 use serde::{Deserialize, Serialize};
 use spanda_core::{check, run, verify_compatibility, RunOptions, VerifyOptions};
 use wasm_bindgen::prelude::*;
@@ -18,11 +20,39 @@ struct RunResponse {
 }
 
 fn to_js<T: Serialize>(value: &T) -> JsValue {
+    // Convert to js.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // JsValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::to_js(value);
+
     serde_wasm_bindgen::to_value(value).unwrap_or(JsValue::NULL)
 }
 
 #[wasm_bindgen]
 pub fn wasm_check(source: &str) -> JsValue {
+    // Wasm check.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // JsValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_check(source);
+
     let resp = match check(source) {
         Ok(()) => CheckResponse {
             ok: true,
@@ -38,6 +68,21 @@ pub fn wasm_check(source: &str) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
+    // Wasm run.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `max_loop_iterations` — input value
+    //
+    // Returns:
+    // JsValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_run(source, max_loop_iterations);
+
     let resp = match run(
         source,
         RunOptions {
@@ -61,6 +106,20 @@ pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_ir(source: &str) -> JsValue {
+    // Wasm ir.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // JsValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_ir(source);
+
     match spanda_core::lower_to_sir(source) {
         Ok(sir) => serde_wasm_bindgen::to_value(&sir).unwrap_or(JsValue::NULL),
         Err(e) => to_js(&CheckResponse {
@@ -72,11 +131,39 @@ pub fn wasm_ir(source: &str) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_fmt(source: &str) -> String {
+    // Wasm fmt.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_fmt(source);
+
     spanda_core::format_source(source)
 }
 
 #[wasm_bindgen]
 pub fn wasm_version() -> String {
+    // Wasm version.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_version();
+
     env!("CARGO_PKG_VERSION").to_string()
 }
 
@@ -89,6 +176,20 @@ struct VerifyResponse {
 
 #[wasm_bindgen]
 pub fn wasm_verify(source: &str) -> JsValue {
+    // Wasm verify.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // JsValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_wasm::wasm_verify(source);
+
     let resp = match verify_compatibility(source, &VerifyOptions::default()) {
         Ok(report) => VerifyResponse {
             ok: report.compatible,

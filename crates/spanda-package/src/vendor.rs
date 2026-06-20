@@ -20,6 +20,21 @@ pub fn vendor_dependencies(
     project_root: &Path,
     lockfile: &Lockfile,
 ) -> PackageResult<VendorReport> {
+    // Vendor dependencies.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `lockfile` — input value
+    //
+    // Returns:
+    // PackageResult<VendorReport>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::vendor::vendor_dependencies(project_root, lockfile);
+
     let vendor_root = project_root.join(".spanda/packages");
     fs::create_dir_all(&vendor_root).map_err(PackageError::Io)?;
     let mut report = VendorReport::default();
@@ -70,6 +85,23 @@ fn vendor_registry_package(
     version: &str,
     vendor_root: &Path,
 ) -> PackageResult<Option<PathBuf>> {
+    // Vendor registry package.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `version` — input value
+    // - `vendor_root` — input value
+    //
+    // Returns:
+    // PackageResult<Option<PathBuf>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::vendor::vendor_registry_package(project_root, name, version, vendor_root);
+
     let dest = vendor_root.join(name);
     if dest.exists() {
         fs::remove_dir_all(&dest).map_err(PackageError::Io)?;
@@ -97,6 +129,24 @@ fn vendor_git(
     rev: Option<&str>,
     dest: &Path,
 ) -> PackageResult<()> {
+    // Vendor git.
+    //
+    // Parameters:
+    // - `url` — input value
+    // - `branch` — input value
+    // - `tag` — input value
+    // - `rev` — input value
+    // - `dest` — input value
+    //
+    // Returns:
+    // PackageResult<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::vendor::vendor_git(url, branch, tag, rev, dest);
+
     let mut args = vec!["clone", "--depth", "1"];
     if let Some(t) = tag {
         args.push("--branch");
@@ -137,6 +187,21 @@ fn vendor_git(
 }
 
 fn copy_dir_recursive(src: &Path, dest: &Path) -> PackageResult<()> {
+    // Copy dir recursive.
+    //
+    // Parameters:
+    // - `src` — input value
+    // - `dest` — input value
+    //
+    // Returns:
+    // PackageResult<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::vendor::copy_dir_recursive(src, dest);
+
     fs::create_dir_all(dest).map_err(PackageError::Io)?;
     for entry in fs::read_dir(src).map_err(PackageError::Io)? {
         let entry = entry.map_err(PackageError::Io)?;
@@ -161,6 +226,20 @@ mod tests {
 
     #[test]
     fn vendors_local_registry_package_when_present() {
+        // Vendors local registry package when present.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::vendor::vendors_local_registry_package_when_present();
+
         let root = std::env::temp_dir().join(format!("spanda-vendor-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).unwrap();

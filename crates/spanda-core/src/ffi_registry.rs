@@ -12,6 +12,20 @@ const FFI_BRIDGE_IMPORTS: &[&str] = &[
 ];
 
 pub fn resolve_ffi_import(path: &str) -> bool {
+    // Resolve ffi import.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::ffi_registry::resolve_ffi_import(path);
+
     if FFI_BRIDGE_IMPORTS.contains(&path) {
         return true;
     }
@@ -36,12 +50,40 @@ mod tests {
 
     #[test]
     fn known_ffi_imports_resolve() {
+        // Known ffi imports resolve.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ffi_registry::known_ffi_imports_resolve();
+
         assert!(resolve_ffi_import("python.torch"));
         assert!(resolve_ffi_import("cpp.ros2"));
     }
 
     #[test]
     fn unknown_imports_do_not_resolve() {
+        // Unknown imports do not resolve.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ffi_registry::unknown_imports_do_not_resolve();
+
         assert!(!resolve_ffi_import("java.awt"));
     }
 }

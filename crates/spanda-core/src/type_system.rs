@@ -14,6 +14,20 @@ pub struct GenericDef {
 
 /// Resolve a type name (optionally qualified) to a `SpandaType`.
 pub fn resolve_type_name(name: &str) -> Result<SpandaType, String> {
+    // Resolve type name.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::resolve_type_name(name);
+
     let name = name.strip_prefix("std.").unwrap_or(name);
     let name = name.rsplit('.').next().unwrap_or(name);
 
@@ -157,6 +171,21 @@ pub fn resolve_type_name(name: &str) -> Result<SpandaType, String> {
 }
 
 pub fn resolve_generic_type(name: &str, args: &[SpandaType]) -> Result<SpandaType, String> {
+    // Resolve generic type.
+    //
+    // Parameters:
+    // - `name` — input value
+    // - `args` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::resolve_generic_type(name, args);
+
     let base = name.rsplit('.').next().unwrap_or(name);
     let expected = generic_arity(base).ok_or_else(|| format!("Unknown generic type '{base}'"))?;
     if args.len() != expected {
@@ -172,6 +201,20 @@ pub fn resolve_generic_type(name: &str, args: &[SpandaType]) -> Result<SpandaTyp
 }
 
 pub fn generic_arity(name: &str) -> Option<usize> {
+    // Generic arity.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::generic_arity(name);
+
     match name {
         "Array" | "Set" | "Queue" | "Stack" | "Topic" | "Message" | "Twin" | "Future" => Some(1),
         "Map" | "Service" | "Tuple" | "Result" => Some(2),
@@ -183,6 +226,20 @@ pub fn generic_arity(name: &str) -> Option<usize> {
 }
 
 fn is_known_domain_type(name: &str) -> bool {
+    // Return whether known domain type.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::is_known_domain_type(name);
+
     KNOWN_DOMAIN_TYPES.contains(&name)
 }
 
@@ -320,6 +377,20 @@ const KNOWN_DOMAIN_TYPES: &[&str] = &[
 
 /// Physical category used to reject invalid unit operations.
 pub fn physical_category(ty: &SpandaType) -> PhysicalCategory {
+    // Physical category.
+    //
+    // Parameters:
+    // - `ty` — input value
+    //
+    // Returns:
+    // PhysicalCategory.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::physical_category(ty);
+
     match ty {
         SpandaType::Int | SpandaType::Float => PhysicalCategory::Scalar,
         SpandaType::Number { unit, .. } => units::unit_category(*unit),
@@ -367,6 +438,22 @@ pub fn binary_physical_op_allowed(
     left: &SpandaType,
     right: &SpandaType,
 ) -> bool {
+    // Binary physical op allowed.
+    //
+    // Parameters:
+    // - `op` — input value
+    // - `left` — input value
+    // - `right` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::binary_physical_op_allowed(op, left, right);
+
     use crate::ast::BinaryOp;
     let cat_l = physical_category(left);
     let cat_r = physical_category(right);
@@ -392,6 +479,20 @@ pub fn binary_physical_op_allowed(
 }
 
 pub fn is_action_proposal_type(ty: &SpandaType) -> bool {
+    // Return whether action proposal type.
+    //
+    // Parameters:
+    // - `ty` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::is_action_proposal_type(ty);
+
     matches!(
         ty,
         SpandaType::Named { name } if name == "ActionProposal"
@@ -399,6 +500,20 @@ pub fn is_action_proposal_type(ty: &SpandaType) -> bool {
 }
 
 pub fn is_safe_action_type(ty: &SpandaType) -> bool {
+    // Return whether safe action type.
+    //
+    // Parameters:
+    // - `ty` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::is_safe_action_type(ty);
+
     matches!(
         ty,
         SpandaType::Named { name } if name == "SafeAction"
@@ -406,6 +521,20 @@ pub fn is_safe_action_type(ty: &SpandaType) -> bool {
 }
 
 pub fn std_namespaces() -> HashMap<&'static str, &'static [&'static str]> {
+    // Std namespaces.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // HashMap<&'static str, &'static [&'static str]>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::type_system::std_namespaces();
+
     let mut m = HashMap::new();
     m.insert(
         "std.time",
@@ -769,11 +898,39 @@ mod tests {
 
     #[test]
     fn rejects_unknown_type() {
+        // Rejects unknown type.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::type_system::rejects_unknown_type();
+
         assert!(resolve_type_name("NotARealType").is_err());
     }
 
     #[test]
     fn resolves_generics_with_arity() {
+        // Resolves generics with arity.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::type_system::resolves_generics_with_arity();
+
         let goal = SpandaType::Named {
             name: "Goal".into(),
         };
@@ -785,6 +942,20 @@ mod tests {
 
     #[test]
     fn rejects_mixed_physical_add() {
+        // Rejects mixed physical add.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::type_system::rejects_mixed_physical_add();
+
         let vel = SpandaType::Velocity;
         let volt = SpandaType::Named {
             name: "Voltage".into(),

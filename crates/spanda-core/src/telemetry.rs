@@ -61,6 +61,23 @@ impl RuntimeTelemetry {
         priority: TaskPriority,
         interval_ms: f64,
     ) -> &mut TaskMetrics {
+        // Task mut.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        //
+        // Returns:
+        // &mut TaskMetrics.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.task_mut(name, priority, interval_ms);
+
         self.tasks
             .entry(name.to_string())
             .or_insert_with(|| TaskMetrics {
@@ -72,6 +89,23 @@ impl RuntimeTelemetry {
     }
 
     pub fn record_task_tick(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
+        // Record task tick.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_task_tick(name, priority, interval_ms);
+
         self.task_mut(name, priority, interval_ms).ticks += 1;
     }
 
@@ -82,6 +116,24 @@ impl RuntimeTelemetry {
         interval_ms: f64,
         duration_ms: f64,
     ) {
+        // Record task duration.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        // - `duration_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_task_duration(name, priority, interval_ms, duration_ms);
+
         let entry = self.task_mut(name, priority, interval_ms);
         entry.last_duration_ms = duration_ms;
         if duration_ms > entry.max_duration_ms {
@@ -95,47 +147,213 @@ impl RuntimeTelemetry {
         priority: TaskPriority,
         interval_ms: f64,
     ) {
+        // Record budget violation.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_budget_violation(name, priority, interval_ms);
+
         self.task_mut(name, priority, interval_ms).budget_violations += 1;
     }
 
     pub fn record_task_skip(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
+        // Record task skip.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_task_skip(name, priority, interval_ms);
+
         self.task_mut(name, priority, interval_ms).skipped += 1;
     }
 
     pub fn record_missed_deadline(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
+        // Record missed deadline.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `priority` — input value
+        // - `interval_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_missed_deadline(name, priority, interval_ms);
+
         self.task_mut(name, priority, interval_ms).missed_deadlines += 1;
     }
 
     pub fn record_scheduler_start(&mut self, task_count: u64, base_tick_ms: f64) {
+        // Record scheduler start.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `task_count` — input value
+        // - `base_tick_ms` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_scheduler_start(task_count, base_tick_ms);
+
         self.scheduler.multiplexed_tasks = task_count;
         self.scheduler.base_tick_ms = base_tick_ms;
     }
 
     pub fn record_scheduler_tick(&mut self) {
+        // Record scheduler tick.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_scheduler_tick();
+
         self.scheduler.scheduler_ticks += 1;
     }
 
     pub fn record_emergency_stop(&mut self) {
+        // Record emergency stop.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_emergency_stop();
+
         self.scheduler.emergency_stops += 1;
     }
 
     pub fn record_spawn(&mut self) {
+        // Record spawn.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_spawn();
+
         self.execution.spawns += 1;
     }
 
     pub fn record_fire_and_forget_spawn(&mut self) {
+        // Record fire and forget spawn.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_fire_and_forget_spawn();
+
         self.execution.fire_and_forget_spawns += 1;
     }
 
     pub fn record_join(&mut self) {
+        // Record join.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_join();
+
         self.execution.joins += 1;
     }
 
     pub fn record_parallel_block(&mut self) {
+        // Record parallel block.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_parallel_block();
+
         self.execution.parallel_blocks += 1;
     }
 
     pub fn record_replay_frames(&mut self, count: u64) {
+        // Record replay frames.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `count` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_replay_frames(count);
+
         self.replay_frames = count;
     }
 
@@ -145,6 +363,23 @@ impl RuntimeTelemetry {
         category: &str,
         priority: TaskPriority,
     ) -> &mut TriggerMetrics {
+        // Trigger mut.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `category` — input value
+        // - `priority` — input value
+        //
+        // Returns:
+        // &mut TriggerMetrics.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trigger_mut(name, category, priority);
+
         self.triggers
             .entry(name.to_string())
             .or_insert_with(|| TriggerMetrics {
@@ -163,6 +398,25 @@ impl RuntimeTelemetry {
         duration_ms: f64,
         failed: bool,
     ) {
+        // Record trigger execution.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `category` — input value
+        // - `priority` — input value
+        // - `duration_ms` — input value
+        // - `failed` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_trigger_execution(name, category, priority, duration_ms, failed);
+
         let entry = self.trigger_mut(name, category, priority);
         entry.executions += 1;
         if failed {
@@ -180,11 +434,42 @@ impl RuntimeTelemetry {
         category: &str,
         priority: TaskPriority,
     ) {
+        // Record trigger missed deadline.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `category` — input value
+        // - `priority` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_trigger_missed_deadline(name, category, priority);
+
         self.trigger_mut(name, category, priority).missed_deadlines += 1;
     }
 }
 
 fn priority_label(priority: TaskPriority) -> String {
+    // Priority label.
+    //
+    // Parameters:
+    // - `priority` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::telemetry::priority_label(priority);
+
     match priority {
         TaskPriority::Critical => "critical".into(),
         TaskPriority::High => "high".into(),
@@ -199,6 +484,20 @@ mod tests {
 
     #[test]
     fn aggregates_task_and_scheduler_metrics() {
+        // Aggregates task and scheduler metrics.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::telemetry::aggregates_task_and_scheduler_metrics();
+
         let mut telemetry = RuntimeTelemetry::default();
         telemetry.record_scheduler_start(2, 50.0);
         telemetry.record_scheduler_tick();

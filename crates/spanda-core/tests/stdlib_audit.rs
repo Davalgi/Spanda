@@ -7,6 +7,20 @@ use spanda_package::{
 
 #[test]
 fn std_namespace_imports_resolve() {
+    // Std namespace imports resolve.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::std_namespace_imports_resolve();
+
     let source = r#"
 import std.core;
 import std.time;
@@ -40,6 +54,20 @@ robot Demo {
 
 #[test]
 fn audit_record_creation_runtime() {
+    // Audit record creation runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::audit_record_creation_runtime();
+
     let source = include_str!("../../../examples/std/audit_log.sd");
     let result = run(source, RunOptions::default()).expect("audit_log example should run");
     assert!(result.logs.iter().any(|l| l.contains("audit.record")));
@@ -47,6 +75,20 @@ fn audit_record_creation_runtime() {
 
 #[test]
 fn provenance_and_identity_example() {
+    // Provenance and identity example.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::provenance_and_identity_example();
+
     let source = include_str!("../../../examples/std/provenance.sd");
     compile(source).expect("provenance example should compile");
     run(source, RunOptions::default()).expect("provenance example should run");
@@ -54,6 +96,20 @@ fn provenance_and_identity_example() {
 
 #[test]
 fn mock_ledger_anchoring_example() {
+    // Mock ledger anchoring example.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::mock_ledger_anchoring_example();
+
     let source = include_str!("../../../examples/std/mock_ledger.sd");
     let result = run(source, RunOptions::default()).expect("mock_ledger example should run");
     assert!(result.logs.iter().any(|l| l.contains("mock_ledger.anchor")));
@@ -61,12 +117,40 @@ fn mock_ledger_anchoring_example() {
 
 #[test]
 fn device_identity_example() {
+    // Device identity example.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::device_identity_example();
+
     let source = include_str!("../../../examples/std/device_identity.sd");
     check(source).expect("device_identity example should type-check");
 }
 
 #[test]
 fn audit_crypto_builtins_via_spanda_audit() {
+    // Audit crypto builtins via spanda audit.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::audit_crypto_builtins_via_spanda_audit();
+
     use spanda_core::audit::{sha256, sign, verify_signature};
     let hash = sha256("mission-data");
     assert_eq!(hash.0.len(), 64);
@@ -76,6 +160,20 @@ fn audit_crypto_builtins_via_spanda_audit() {
 
 #[test]
 fn package_audit_capabilities_known() {
+    // Package audit capabilities known.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::package_audit_capabilities_known();
+
     assert!(validate_capability("audit.write").is_ok());
     assert!(validate_capability("audit.read").is_ok());
     assert!(validate_capability("identity.sign").is_ok());
@@ -85,6 +183,20 @@ fn package_audit_capabilities_known() {
 
 #[test]
 fn package_metadata_for_audit_libraries() {
+    // Package metadata for audit libraries.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::stdlib_audit::package_metadata_for_audit_libraries();
+
     let manifest = PackageManifest::parse_str(
         r#"
 [package]

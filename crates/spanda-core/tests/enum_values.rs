@@ -1,7 +1,23 @@
+//! enum values support for Spanda.
+//!
 use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn unqualified_enum_variant_in_match() {
+    // Unqualified enum variant in match.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::enum_values::unqualified_enum_variant_in_match();
+
     let source = r#"
 enum RobotState {
   Idle,
@@ -28,6 +44,20 @@ robot Rover {
 
 #[test]
 fn qualified_enum_variant_reference() {
+    // Qualified enum variant reference.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::enum_values::qualified_enum_variant_reference();
+
     let source = r#"
 enum Mode {
   Idle,
@@ -50,6 +80,20 @@ robot R {
 
 #[test]
 fn duplicate_enum_variant_name_rejected() {
+    // Duplicate enum variant name rejected.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::enum_values::duplicate_enum_variant_name_rejected();
+
     let source = r#"
 enum A { Idle, Go }
 enum B { Idle, Stop }

@@ -18,18 +18,79 @@ pub struct HardwareMonitor {
 
 impl HardwareMonitor {
     pub fn register_sensor(&mut self, name: impl Into<String>, sensor_type: impl Into<String>) {
+        // Register sensor.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `sensor_type` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_sensor(name, sensor_type);
+
         self.sensors.push((name.into(), sensor_type.into()));
     }
 
     pub fn register_actuator(&mut self, name: impl Into<String>, actuator_type: impl Into<String>) {
+        // Register actuator.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `actuator_type` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_actuator(name, actuator_type);
+
         self.actuators.push((name.into(), actuator_type.into()));
     }
 
     pub fn inject_fault(&mut self, fault: impl Into<String>) {
+        // Inject fault.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `fault` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.inject_fault(fault);
+
         self.injected_faults.insert(fault.into());
     }
 
     pub fn sensor_event_for_type(sensor_type: &str) -> Option<&'static str> {
+        // Sensor event for type.
+        //
+        // Parameters:
+        // - `sensor_type` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::hardware_monitor::sensor_event_for_type(sensor_type);
+
         match sensor_type {
             "Lidar" => Some("LidarFailure"),
             "Camera" | "VisionCamera" | "RGBCamera" => Some("CameraFailure"),
@@ -40,6 +101,20 @@ impl HardwareMonitor {
     }
 
     pub fn actuator_event_for_type(actuator_type: &str) -> Option<&'static str> {
+        // Actuator event for type.
+        //
+        // Parameters:
+        // - `actuator_type` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::hardware_monitor::actuator_event_for_type(actuator_type);
+
         match actuator_type {
             "DifferentialDrive" | "Wheels" => Some("DriveFailure"),
             "Arm" | "Manipulator" => Some("ActuatorFailure"),
@@ -48,6 +123,22 @@ impl HardwareMonitor {
     }
 
     fn fault_matches_sensor(fault: &str, sensor_type: &str, sensor_name: &str) -> bool {
+        // Fault matches sensor.
+        //
+        // Parameters:
+        // - `fault` — input value
+        // - `sensor_type` — input value
+        // - `sensor_name` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::hardware_monitor::fault_matches_sensor(fault, sensor_type, sensor_name);
+
         let fault_lower = fault.to_ascii_lowercase();
         let name_lower = sensor_name.to_ascii_lowercase();
         if fault == sensor_name || fault_lower == name_lower {
@@ -68,6 +159,23 @@ impl HardwareMonitor {
     }
 
     pub fn record_sensor_reading(&mut self, name: &str, sensor_type: &str, reading: &RuntimeValue) {
+        // Record sensor reading.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `sensor_type` — input value
+        // - `reading` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_sensor_reading(name, sensor_type, reading);
+
         if Self::reading_failed(reading) {
             let count = self.read_failures.entry(name.to_string()).or_insert(0);
             *count += 1;
@@ -82,6 +190,20 @@ impl HardwareMonitor {
     }
 
     fn reading_failed(reading: &RuntimeValue) -> bool {
+        // Reading failed.
+        //
+        // Parameters:
+        // - `reading` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::hardware_monitor::reading_failed(reading);
+
         matches!(
             reading,
             RuntimeValue::Null | RuntimeValue::Void | RuntimeValue::Result { ok: false, .. }
@@ -89,6 +211,20 @@ impl HardwareMonitor {
     }
 
     pub fn evaluate_injected_faults(&mut self) {
+        // Evaluate injected faults.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.evaluate_injected_faults();
+
         for fault in self.injected_faults.clone() {
             for (name, sensor_type) in &self.sensors {
                 if Self::fault_matches_sensor(&fault, sensor_type, name) {
@@ -108,6 +244,20 @@ impl HardwareMonitor {
 
     /// Returns newly detected hardware events to dispatch (edge-triggered).
     pub fn poll_new_events(&mut self) -> Vec<String> {
+        // Poll new events.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.poll_new_events();
+
         self.evaluate_injected_faults();
         let mut new_events = Vec::new();
         for event in &self.active_events {
@@ -119,6 +269,21 @@ impl HardwareMonitor {
     }
 
     pub fn clear_event(&mut self, event: &str) {
+        // Clear event.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `event` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.clear_event(event);
+
         self.active_events.remove(event);
         self.dispatched_events.remove(event);
     }
@@ -130,6 +295,20 @@ mod tests {
 
     #[test]
     fn injected_lidar_fault_maps_to_event() {
+        // Injected lidar fault maps to event.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::hardware_monitor::injected_lidar_fault_maps_to_event();
+
         let mut monitor = HardwareMonitor::default();
         monitor.register_sensor("lidar", "Lidar");
         monitor.inject_fault("LidarFailure");

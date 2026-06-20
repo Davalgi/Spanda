@@ -1,3 +1,5 @@
+//! lint support for Spanda.
+//!
 use crate::ast::*;
 use crate::error::SpandaError;
 use crate::foundations::TaskDecl;
@@ -26,6 +28,20 @@ pub struct LintReport {
 
 impl LintReport {
     pub fn has_errors(&self) -> bool {
+        // Return whether this value has errors.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.has_errors();
+
         self.issues
             .iter()
             .any(|i| i.severity == LintSeverity::Error)
@@ -33,12 +49,41 @@ impl LintReport {
 }
 
 pub fn lint(source: &str) -> Result<LintReport, SpandaError> {
+    // Lint.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint(source);
+
     let tokens = crate::lexer::tokenize(source)?;
     let program = crate::parser::parse(tokens)?;
     Ok(lint_program(source, &program))
 }
 
 fn lint_concurrency(program: &Program, issues: &mut Vec<LintIssue>) {
+    // Lint concurrency.
+    //
+    // Parameters:
+    // - `program` — input value
+    // - `issues` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_concurrency(program, issues);
+
     let Program::Program { robots, .. } = program;
     for robot in robots {
         let RobotDecl::RobotDecl {
@@ -56,6 +101,21 @@ fn lint_concurrency(program: &Program, issues: &mut Vec<LintIssue>) {
 }
 
 fn lint_stmt_channel_flow(stmts: &[Stmt], issues: &mut Vec<LintIssue>) {
+    // Lint stmt channel flow.
+    //
+    // Parameters:
+    // - `stmts` — input value
+    // - `issues` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_stmt_channel_flow(stmts, issues);
+
     let mut channels: std::collections::HashMap<String, (bool, bool, u32, u32)> =
         std::collections::HashMap::new();
     collect_channel_flow(stmts, &mut channels);
@@ -90,6 +150,21 @@ fn collect_channel_flow(
     stmts: &[Stmt],
     channels: &mut std::collections::HashMap<String, (bool, bool, u32, u32)>,
 ) {
+    // Collect channel flow.
+    //
+    // Parameters:
+    // - `stmts` — input value
+    // - `channels` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::collect_channel_flow(stmts, channels);
+
     for stmt in stmts {
         match stmt {
             Stmt::VarDecl {
@@ -169,6 +244,21 @@ fn mark_channel_usage(
     expr: &Expr,
     channels: &mut std::collections::HashMap<String, (bool, bool, u32, u32)>,
 ) {
+    // Mark channel usage.
+    //
+    // Parameters:
+    // - `expr` — input value
+    // - `channels` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::mark_channel_usage(expr, channels);
+
     match expr {
         Expr::CallExpr { callee, args, .. } => {
             if let Expr::IdentExpr { name: fn_name, .. } = callee.as_ref() {
@@ -209,6 +299,21 @@ fn mark_channel_usage(
 }
 
 fn lint_program(source: &str, program: &Program) -> LintReport {
+    // Lint program.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `program` — input value
+    //
+    // Returns:
+    // LintReport.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_program(source, program);
+
     let mut issues = Vec::new();
     lint_source_style(source, &mut issues);
     lint_program_structure(program, &mut issues);
@@ -218,6 +323,21 @@ fn lint_program(source: &str, program: &Program) -> LintReport {
 }
 
 fn lint_source_style(source: &str, issues: &mut Vec<LintIssue>) {
+    // Lint source style.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `issues` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_source_style(source, issues);
+
     for (idx, line) in source.lines().enumerate() {
         let line_no = idx as u32 + 1;
         if line.ends_with(' ') || line.ends_with('\t') {
@@ -242,6 +362,21 @@ fn lint_source_style(source: &str, issues: &mut Vec<LintIssue>) {
 }
 
 fn lint_program_structure(program: &Program, issues: &mut Vec<LintIssue>) {
+    // Lint program structure.
+    //
+    // Parameters:
+    // - `program` — input value
+    // - `issues` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_program_structure(program, issues);
+
     let Program::Program {
         module_name,
         tests,
@@ -291,6 +426,22 @@ fn lint_program_structure(program: &Program, issues: &mut Vec<LintIssue>) {
 }
 
 fn lint_imports(source: &str, program: &Program, issues: &mut Vec<LintIssue>) {
+    // Lint imports.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `program` — input value
+    // - `issues` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::lint_imports(source, program, issues);
+
     let Program::Program { imports, .. } = program;
     for import in imports {
         let ImportDecl::ImportDecl { path, span } = import;
@@ -312,6 +463,20 @@ fn lint_imports(source: &str, program: &Program, issues: &mut Vec<LintIssue>) {
 }
 
 fn is_std_import(path: &str) -> bool {
+    // Return whether std import.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lint::is_std_import(path);
+
     path.starts_with("std.") || path.starts_with("sensors.")
 }
 
@@ -321,6 +486,20 @@ mod tests {
 
     #[test]
     fn detects_missing_module_and_trailing_space() {
+        // Detects missing module and trailing space.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lint::detects_missing_module_and_trailing_space();
+
         let source = "robot R {  \n  actuator wheels: DifferentialDrive;\n}\n";
         let report = lint(source).expect("lint should parse");
         assert!(report.issues.iter().any(|i| i.rule == "missing-module"));
@@ -332,6 +511,20 @@ mod tests {
 
     #[test]
     fn detects_empty_test_block() {
+        // Detects empty test block.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::lint::detects_empty_test_block();
+
         let source = r#"
 module tests;
 

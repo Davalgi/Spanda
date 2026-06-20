@@ -13,6 +13,11 @@ use super::protocol::{json_to_runtime_value, runtime_value_to_json};
 use super::python::bridge_script_path;
 
 pub fn native_available() -> bool {
+    // Returns `true` when the Python bridge script is available for in-process use.
+    //
+    // Returns:
+    //
+    // `true` if [`super::python::bridge_script_path`] resolves.
     bridge_script_path().is_some()
 }
 
@@ -20,6 +25,20 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    // Invoke a Python extern via PyO3 in-process bridge.
+    //
+    // Parameters:
+    //
+    // - `decl` — `extern python fn` declaration.
+    // - `args` — Runtime arguments.
+    //
+    // Returns:
+    //
+    // Handler result, or [`SpandaError`] on load/execution failure.
+    //
+    // Options:
+    //
+    // Requires `python-native` Cargo feature and bridge script on disk.
     let line = decl.span.start.line;
     let script = bridge_script_path().ok_or_else(|| SpandaError::Runtime {
         message: "Python bridge script not found for native bridge".into(),
@@ -96,6 +115,20 @@ mod tests {
     use crate::foundations::BridgeKind;
 
     fn test_decl(name: &str) -> ExternFnDecl {
+        // Test decl.
+        //
+        // Parameters:
+        // - `name` — input value
+        //
+        // Returns:
+        // ExternFnDecl.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::python_native::test_decl(name);
+
         ExternFnDecl {
             name: name.into(),
             library: Some("python".into()),
@@ -119,6 +152,20 @@ mod tests {
 
     #[test]
     fn native_py_add_when_available() {
+        // Native py add when available.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::python_native::native_py_add_when_available();
+
         if !native_available() {
             return;
         }

@@ -1,3 +1,5 @@
+//! p3 features support for Spanda.
+//!
 use spanda_core::{
     check, codegen, run, run_debug, wasm_deploy_manifest, CodegenTarget, DebugOptions, FfiRegistry,
     RunOptions,
@@ -6,6 +8,20 @@ use std::collections::HashSet;
 
 #[test]
 fn extern_fn_parses_and_runs_with_stub() {
+    // Extern fn parses and runs with stub.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_fn_parses_and_runs_with_stub();
+
     let source = r#"
 module ffi;
 
@@ -26,6 +42,20 @@ robot R {
 
 #[test]
 fn codegen_native_emits_c_header() {
+    // Codegen native emits c header.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::codegen_native_emits_c_header();
+
     let source = r#"
 module demo;
 
@@ -45,6 +75,20 @@ robot R {
 
 #[test]
 fn codegen_wasm_emits_module() {
+    // Codegen wasm emits module.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::codegen_wasm_emits_module();
+
     let source = "module m;\nexport fn f() -> Int { return 1; }\n";
     let output = codegen(source, CodegenTarget::Wasm).expect("wasm codegen");
     assert!(output.contains("(module"));
@@ -53,6 +97,20 @@ fn codegen_wasm_emits_module() {
 
 #[test]
 fn wasm_deploy_manifest_json() {
+    // Wasm deploy manifest json.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::wasm_deploy_manifest_json();
+
     let source = r#"
 module web;
 
@@ -70,6 +128,20 @@ robot R {
 
 #[test]
 fn debug_session_records_breakpoint() {
+    // Debug session records breakpoint.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::debug_session_records_breakpoint();
+
     let source = r#"
 module dbg;
 
@@ -94,6 +166,20 @@ robot R {
 
 #[test]
 fn ffi_registry_stub_echo() {
+    // Ffi registry stub echo.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::ffi_registry_stub_echo();
+
     let registry = FfiRegistry::new();
     let decl = spanda_core::foundations::ExternFnDecl {
         name: "stub_echo".into(),
@@ -131,6 +217,20 @@ fn ffi_registry_stub_echo() {
 
 #[test]
 fn ffi_bridge_imports_type_check() {
+    // Ffi bridge imports type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::ffi_bridge_imports_type_check();
+
     let source = r#"
 import python.torch;
 import cpp.ros2;
@@ -145,6 +245,20 @@ robot R {
 
 #[test]
 fn extern_python_fn_parses_with_bridge_kind() {
+    // Extern python fn parses with bridge kind.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_python_fn_parses_with_bridge_kind();
+
     let source = r#"
 extern python fn py_version() -> Int;
 
@@ -163,6 +277,20 @@ robot R {
 
 #[test]
 fn extern_python_fn_fails_at_runtime_without_link() {
+    // Extern python fn fails at runtime without link.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_python_fn_fails_at_runtime_without_link();
+
     let source = r#"
 extern python fn py_missing() -> Int;
 
@@ -184,6 +312,20 @@ robot R {
 
 #[test]
 fn extern_python_fn_runs_via_subprocess_bridge() {
+    // Extern python fn runs via subprocess bridge.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_python_fn_runs_via_subprocess_bridge();
+
     if !spanda_core::bridge::python::python_available()
         || spanda_core::bridge::python::bridge_script_path().is_none()
     {
@@ -206,6 +348,20 @@ robot R {
 
 #[test]
 fn extern_cpp_fn_parses_with_bridge_kind() {
+    // Extern cpp fn parses with bridge kind.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_cpp_fn_parses_with_bridge_kind();
+
     let source = r#"
 extern cpp fn cpp_version() -> Int;
 
@@ -224,6 +380,20 @@ robot R {
 
 #[test]
 fn extern_cpp_fn_fails_at_runtime_without_handler() {
+    // Extern cpp fn fails at runtime without handler.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_cpp_fn_fails_at_runtime_without_handler();
+
     let source = r#"
 extern cpp fn cpp_missing() -> Int;
 
@@ -245,6 +415,20 @@ robot R {
 
 #[test]
 fn extern_cpp_fn_runs_via_subprocess_bridge() {
+    // Extern cpp fn runs via subprocess bridge.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p3_features::extern_cpp_fn_runs_via_subprocess_bridge();
+
     if !spanda_core::bridge::cpp::bridge_available() {
         return;
     }

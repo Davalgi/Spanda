@@ -1,3 +1,5 @@
+//! main support for Spanda.
+//!
 use serde_json::{json, Value};
 use spanda_core::{DebugMachine, DebugOptions, DebugStepKind, SpandaError};
 use std::cell::RefCell;
@@ -9,6 +11,20 @@ thread_local! {
 }
 
 fn read_message(reader: &mut dyn BufRead) -> io::Result<Option<Value>> {
+    // Read message.
+    //
+    // Parameters:
+    // - `reader` — input value
+    //
+    // Returns:
+    // io::Result<Option<Value>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::read_message(reader);
+
     let mut line = String::new();
     let mut content_length = 0usize;
     loop {
@@ -28,12 +44,43 @@ fn read_message(reader: &mut dyn BufRead) -> io::Result<Option<Value>> {
 }
 
 fn write_message(writer: &mut dyn Write, msg: &Value) -> io::Result<()> {
+    // Write message.
+    //
+    // Parameters:
+    // - `writer` — input value
+    // - `msg` — input value
+    //
+    // Returns:
+    // io::Result<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::write_message(writer, msg);
+
     let body = serde_json::to_string(msg)?;
     write!(writer, "Content-Length: {}\r\n\r\n{}", body.len(), body)?;
     writer.flush()
 }
 
 fn respond(writer: &mut dyn Write, req: &Value, body: Value) -> io::Result<()> {
+    // Respond.
+    //
+    // Parameters:
+    // - `writer` — input value
+    // - `req` — input value
+    // - `body` — input value
+    //
+    // Returns:
+    // io::Result<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::respond(writer, req, body);
+
     write_message(
         writer,
         &json!({
@@ -48,6 +95,20 @@ fn respond(writer: &mut dyn Write, req: &Value, body: Value) -> io::Result<()> {
 }
 
 fn step_kind(command: &str) -> DebugStepKind {
+    // Step kind.
+    //
+    // Parameters:
+    // - `command` — input value
+    //
+    // Returns:
+    // DebugStepKind.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::step_kind(command);
+
     match command {
         "stepIn" => DebugStepKind::StepIn,
         "stepOut" => DebugStepKind::StepOut,
@@ -88,6 +149,23 @@ pub fn serve(
     reader: &mut dyn BufRead,
     writer: &mut dyn Write,
 ) -> io::Result<()> {
+    // Serve.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `source_path` — input value
+    // - `reader` — input value
+    // - `writer` — input value
+    //
+    // Returns:
+    // io::Result<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::serve(source, source_path, reader, writer);
+
     let mut breakpoints: HashSet<u32> = HashSet::new();
     let mut running = false;
 
@@ -293,6 +371,20 @@ pub fn serve(
 }
 
 fn main() {
+    // Main.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_dap::main::main();
+
     let source = std::env::args().nth(1).unwrap_or_else(|| {
         eprintln!("Usage: spanda-dap <file.sd>");
         std::process::exit(1);
@@ -316,6 +408,20 @@ mod tests {
 
     #[test]
     fn resumable_machine_across_continue_requests() {
+        // Resumable machine across continue requests.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_dap::main::resumable_machine_across_continue_requests();
+
         let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;

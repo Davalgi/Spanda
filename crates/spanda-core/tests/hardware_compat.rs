@@ -1,9 +1,25 @@
+//! hardware compat support for Spanda.
+//!
 use spanda_core::{
     check, verify_compatibility, verify_compatibility_target, CompatSeverity, VerifyOptions,
 };
 
 #[test]
 fn custom_hardware_profile_parsed_and_verified() {
+    // Custom hardware profile parsed and verified.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::custom_hardware_profile_parsed_and_verified();
+
     let source = r#"
 hardware Tiny {
   sensors [ IMU ];
@@ -25,6 +41,20 @@ deploy Rover to Tiny;
 
 #[test]
 fn missing_sensor_on_target_fails_verify() {
+    // Missing sensor on target fails verify.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::missing_sensor_on_target_fails_verify();
+
     let source = r#"
 robot Rover {
   sensor camera: Camera on "/camera";
@@ -46,6 +76,20 @@ deploy Rover to ESP32;
 
 #[test]
 fn missing_actuator_on_target_fails_verify() {
+    // Missing actuator on target fails verify.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::missing_actuator_on_target_fails_verify();
+
     let source = r#"
 robot Rover {
   sensor imu: IMU;
@@ -66,6 +110,20 @@ deploy Rover to RoverV1;
 
 #[test]
 fn cli_target_overrides_deploy() {
+    // Cli target overrides deploy.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::cli_target_overrides_deploy();
+
     let source = r#"
 robot Rover {
   sensor camera: Camera on "/camera";
@@ -81,6 +139,20 @@ robot Rover {
 
 #[test]
 fn rover_deploy_example_compatible() {
+    // Rover deploy example compatible.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::rover_deploy_example_compatible();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/hardware/rover_deploy.sd"
@@ -93,6 +165,20 @@ fn rover_deploy_example_compatible() {
 
 #[test]
 fn requires_hardware_memory_check() {
+    // Requires hardware memory check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::requires_hardware_memory_check();
+
     let source = r#"
 requires_hardware {
   memory >= 8 GB;
@@ -113,6 +199,20 @@ deploy Rover to ESP32;
 
 #[test]
 fn ai_model_gpu_requirement_fails_on_esp32() {
+    // Ai model gpu requirement fails on esp32.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::ai_model_gpu_requirement_fails_on_esp32();
+
     let source = r#"
 robot Rover {
   sensor camera: Camera on "/camera";
@@ -135,6 +235,20 @@ deploy Rover to ESP32;
 
 #[test]
 fn compatibility_matrix_all_targets() {
+    // Compatibility matrix all targets.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::compatibility_matrix_all_targets();
+
     let source = r#"
 robot Rover {
   sensor imu: IMU;
@@ -157,6 +271,20 @@ robot Rover {
 
 #[test]
 fn task_budget_memory_exceeds_esp32() {
+    // Task budget memory exceeds esp32.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::task_budget_memory_exceeds_esp32();
+
     let source = r#"
 robot Rover {
   sensor imu: IMU;
@@ -176,6 +304,20 @@ robot Rover {
 
 #[test]
 fn requires_network_bandwidth_check() {
+    // Requires network bandwidth check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::hardware_compat::requires_network_bandwidth_check();
+
     let source = r#"
 requires_network {
   bandwidth >= 50 Mbps;

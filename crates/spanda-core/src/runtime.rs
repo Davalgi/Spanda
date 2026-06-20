@@ -1,3 +1,5 @@
+//! runtime support for Spanda.
+//!
 use crate::ai::{
     create_agent_runtime, create_ai_model, execute_agent_plan, is_action_proposal, is_safe_action,
     mock_analyze_frame, mock_camera_frame, proposal_confidence, proposal_from_value,
@@ -58,6 +60,20 @@ pub struct PoseValue {
 
 impl Default for PoseValue {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::default();
+
         Self {
             x: 0.0,
             y: 0.0,
@@ -211,16 +227,60 @@ pub enum RuntimeValue {
 
 impl RuntimeValue {
     pub fn number(value: f64, unit: UnitKind) -> Self {
+        // Number.
+        //
+        // Parameters:
+        // - `value` — input value
+        // - `unit` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::number(value, unit);
+
         RuntimeValue::Number { value, unit }
     }
 
     pub fn string(value: impl Into<String>) -> Self {
+        // String.
+        //
+        // Parameters:
+        // - `value` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::string(value);
+
         RuntimeValue::String {
             value: value.into(),
         }
     }
 
     pub fn object(type_name: impl Into<String>, fields: HashMap<String, RuntimeValue>) -> Self {
+        // Object.
+        //
+        // Parameters:
+        // - `type_name` — input value
+        // - `fields` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::object(type_name, fields);
+
         RuntimeValue::Object {
             type_name: type_name.into(),
             fields,
@@ -228,10 +288,38 @@ impl RuntimeValue {
     }
 
     pub fn scan(nearest_distance: f64) -> Self {
+        // Scan.
+        //
+        // Parameters:
+        // - `nearest_distance` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::scan(nearest_distance);
+
         RuntimeValue::Scan { nearest_distance }
     }
 
     pub fn as_number(&self) -> Option<f64> {
+        // Return as number.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_number();
+
         match self {
             RuntimeValue::Number { value, .. } => Some(*value),
             _ => None,
@@ -239,6 +327,20 @@ impl RuntimeValue {
     }
 
     pub fn as_string(&self) -> Option<&str> {
+        // Return as string.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_string();
+
         match self {
             RuntimeValue::String { value } => Some(value),
             _ => None,
@@ -294,9 +396,57 @@ pub trait RobotBackend {
     fn execute_motion(&mut self, cmd: MotionCommand);
     fn tick(&mut self, dt_ms: f64);
     fn get_state(&self) -> RobotState;
-    fn set_emergency_stop(&mut self, _active: bool) {}
-    fn publish_topic(&mut self, _topic_path: &str, _message_type: &str, _value: RuntimeValue) {}
+    fn set_emergency_stop(&mut self, _active: bool) {
+        // Set emergency stop.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_active` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set_emergency_stop(_active);
+}
+    fn publish_topic(&mut self, _topic_path: &str, _message_type: &str, _value: RuntimeValue) {
+        // Publish topic.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_topic_path` — input value
+        // - `_message_type` — input value
+        // - `_value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.publish_topic(_topic_path, _message_type, _value);
+}
     fn call_service(&mut self, _service_name: &str, _service_type: &str) -> RuntimeValue {
+        // Call service.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_service_name` — input value
+        // - `_service_type` — input value
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.call_service(_service_name, _service_type);
+
         RuntimeValue::Bool { value: true }
     }
     fn send_action(
@@ -305,17 +455,76 @@ pub trait RobotBackend {
         _action_type: &str,
         _goal: RuntimeValue,
     ) -> RuntimeValue {
+        // Send action.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_action_name` — input value
+        // - `_action_type` — input value
+        // - `_goal` — input value
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.send_action(_action_name, _action_type, _goal);
+
         RuntimeValue::Bool { value: true }
     }
     fn get_hal(&mut self) -> Option<&mut dyn HalBackend> {
+        // Return hal.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.get_hal();
+
         None
     }
     fn event_log(&self) -> Vec<String> {
+        // Event log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.event_log();
+
         Vec::new()
     }
 }
 
 pub fn format_runtime_value(value: &RuntimeValue) -> String {
+    // Format runtime value.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::format_runtime_value(value);
+
     match value {
         RuntimeValue::Number { value, unit } => {
             if *unit == UnitKind::None {
@@ -366,30 +575,119 @@ pub struct Environment {
 
 impl Environment {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::new();
+
         Self {
             bindings: HashMap::new(),
         }
     }
 
     pub fn define(&mut self, name: impl Into<String>, value: RuntimeValue) {
+        // Define.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define(name, value);
+
         self.bindings.insert(name.into(), value);
     }
 
     pub fn get(&self, name: &str) -> Option<&RuntimeValue> {
+        // Get.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.get(name);
+
         self.bindings.get(name)
     }
 
     pub fn set(&mut self, name: impl Into<String>, value: RuntimeValue) {
+        // Set.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set(name, value);
+
         self.bindings.insert(name.into(), value);
     }
 
     pub fn clone_bindings(&self) -> Self {
+        // Clone bindings.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.clone_bindings();
+
         Self {
             bindings: self.bindings.clone(),
         }
     }
 
     pub fn snapshot_display(&self) -> std::collections::HashMap<String, String> {
+        // Snapshot display.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // std::collections::HashMap<String, String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.snapshot_display();
+
         self.bindings
             .iter()
             .map(|(name, value)| (name.clone(), format_runtime_value(value)))
@@ -399,6 +697,20 @@ impl Environment {
 
 impl Default for Environment {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::default();
+
         Self::new()
     }
 }
@@ -410,6 +722,21 @@ pub struct RuntimeError {
 
 impl RuntimeError {
     pub fn new(message: impl Into<String>, line: u32) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `message` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::new(message, line);
+
         Self {
             message: message.into(),
             line,
@@ -417,6 +744,20 @@ impl RuntimeError {
     }
 
     pub fn into_spanda(self) -> SpandaError {
+        // Convert into spanda.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // SpandaError.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.into_spanda();
+
         SpandaError::Runtime {
             message: self.message,
             line: self.line,
@@ -445,6 +786,20 @@ pub struct InterpreterOptions {
 
 impl Default for InterpreterOptions {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::default();
+
         Self {
             max_loop_iterations: 10,
             on_motion_blocked: None,
@@ -508,6 +863,21 @@ pub struct Interpreter<B: RobotBackend> {
 
 impl<B: RobotBackend> Interpreter<B> {
     pub fn new(backend: B, options: InterpreterOptions) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `backend` — input value
+        // - `options` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::runtime::new(backend, options);
+
         Self {
             backend,
             options,
@@ -554,60 +924,235 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn telemetry(&self) -> &crate::telemetry::RuntimeTelemetry {
+        // Telemetry.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &crate::telemetry::RuntimeTelemetry.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.telemetry();
+
         &self.telemetry
     }
 
     pub fn take_telemetry(&mut self) -> crate::telemetry::RuntimeTelemetry {
+        // Take telemetry.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // crate::telemetry::RuntimeTelemetry.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.take_telemetry();
+
         std::mem::take(&mut self.telemetry)
     }
 
     fn trace_scheduler_log(&self, message: impl Into<String>) {
+        // Trace scheduler log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trace_scheduler_log(message);
+
         if self.options.trace_scheduler {
             self.log(format!("trace-scheduler: {}", message.into()));
         }
     }
 
     fn trace_task_log(&self, message: impl Into<String>) {
+        // Trace task log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trace_task_log(message);
+
         if self.options.trace_tasks {
             self.log(format!("trace-task: {}", message.into()));
         }
     }
 
     fn trace_trigger_log(&self, message: impl Into<String>) {
+        // Trace trigger log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trace_trigger_log(message);
+
         if self.options.trace_triggers {
             self.log(format!("trace-trigger: {}", message.into()));
         }
     }
 
     fn trace_event_log(&self, message: impl Into<String>) {
+        // Trace event log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trace_event_log(message);
+
         if self.options.trace_events || self.options.trace_triggers {
             self.log(format!("trace-event: {}", message.into()));
         }
     }
 
     fn trace_replay_log(&self, message: impl Into<String>) {
+        // Trace replay log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.trace_replay_log(message);
+
         if self.options.replay_trace {
             self.log(format!("trace-replay: {}", message.into()));
         }
     }
 
     pub fn robot_backend(&self) -> &B {
+        // Robot backend.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &B.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.robot_backend();
+
         &self.backend
     }
 
     pub fn env(&self) -> &Environment {
+        // Env.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Environment.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.env();
+
         &self.env
     }
 
     pub fn env_mut(&mut self) -> &mut Environment {
+        // Env mut.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &mut Environment.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.env_mut();
+
         &mut self.env
     }
 
     pub fn setup_robot_for_debug(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
+        // Setup robot for debug.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `robot` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.setup_robot_for_debug(robot);
+
         self.setup_robot(robot)
     }
 
     pub fn debug_execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SpandaError> {
+        // Debug execute stmt.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmt` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.debug_execute_stmt(stmt);
+
         self.execute_stmt(stmt)
     }
 
@@ -619,6 +1164,21 @@ impl<B: RobotBackend> Interpreter<B> {
         crate::foundations::ModuleFnDecl,
         Vec<crate::ast::Expr>,
     )> {
+        // Resolve sync call.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmt` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_sync_call(stmt);
+
         use crate::ast::{Expr, Stmt};
         let expr = match stmt {
             Stmt::VarDecl {
@@ -652,6 +1212,22 @@ impl<B: RobotBackend> Interpreter<B> {
         func: &crate::foundations::ModuleFnDecl,
         args: &[crate::ast::Expr],
     ) -> Result<Environment, SpandaError> {
+        // Bind call args.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func` — input value
+        // - `args` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.bind_call_args(func, args);
+
         let saved = self.env.clone_bindings();
         for (i, param) in func.params.iter().enumerate() {
             if let Some(arg) = args.get(i) {
@@ -663,6 +1239,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn restore_env(&mut self, env: Environment) {
+        // Restore env.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `env` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.restore_env(env);
+
         self.env = env;
     }
 
@@ -671,6 +1262,22 @@ impl<B: RobotBackend> Interpreter<B> {
         program: &Program,
         entry_behavior: Option<&str>,
     ) -> Result<RobotState, SpandaError> {
+        // Run the operation.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `program` — input value
+        // - `entry_behavior` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run(program, entry_behavior);
+
         let Program::Program {
             robots,
             simulate_compatibility,
@@ -755,6 +1362,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn run_tests(&mut self, program: &Program) -> Result<(), SpandaError> {
+        // Run tests.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `program` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_tests(program);
+
         let Program::Program { tests, .. } = program;
         self.load_program_metadata(program);
         for test in tests {
@@ -766,6 +1388,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn load_program_metadata(&mut self, program: &Program) {
+        // Load program metadata.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `program` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.load_program_metadata(program);
+
         use crate::foundations::{EnumDecl, ModuleFnDecl, StructDecl, TraitDecl, Visibility};
         let Program::Program {
             structs,
@@ -833,6 +1470,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn setup_robot(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
+        // Setup robot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `robot` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.setup_robot(robot);
+
         let RobotDecl::RobotDecl {
             name: robot_name,
             soc,
@@ -1303,6 +1955,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn evaluate_stop_if(&mut self, env: &Environment) -> bool {
+        // Evaluate stop if.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `env` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.evaluate_stop_if(env);
+
         for condition in &self.stop_if_conditions.clone() {
             let saved = self.env.clone_bindings();
             self.env = env.clone_bindings();
@@ -1316,6 +1983,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn check_safety_before_motion(&mut self) -> bool {
+        // Check safety before motion.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.check_safety_before_motion();
+
         let state = self.backend.get_state();
 
         if self.evaluate_stop_if(&self.env.clone_bindings()) {
@@ -1350,6 +2031,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         zone: &SafetyZoneDecl,
     ) -> Result<SafetyZoneRuntime, SpandaError> {
+        // Eval safety zone.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `zone` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_safety_zone(zone);
+
         let SafetyZoneDecl::SafetyZoneDecl {
             name,
             shape,
@@ -1391,6 +2087,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn define_topic(&mut self, topic: &TopicDecl) {
+        // Define topic.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define_topic(topic);
+
         let TopicDecl::TopicDecl {
             name,
             message_type,
@@ -1419,6 +2130,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn define_service(&mut self, service: &ServiceDecl) {
+        // Define service.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `service` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define_service(service);
+
         let ServiceDecl::ServiceDecl {
             name,
             service_type,
@@ -1447,6 +2173,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn define_action(&mut self, action: &ActionDecl) {
+        // Define action.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `action` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define_action(action);
+
         let ActionDecl::ActionDecl {
             name,
             action_type,
@@ -1473,6 +2214,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn define_sensor(&mut self, sensor: &SensorDecl) {
+        // Define sensor.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `sensor` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define_sensor(sensor);
+
         let SensorDecl::SensorDecl {
             name,
             sensor_type,
@@ -1500,6 +2256,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn define_actuator(&mut self, actuator: &ActuatorDecl) {
+        // Define actuator.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `actuator` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.define_actuator(actuator);
+
         let ActuatorDecl::ActuatorDecl {
             name,
             actuator_type,
@@ -1517,6 +2288,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn setup_agent(&mut self, agent_decl: &AgentDecl) {
+        // Setup agent.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `agent_decl` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.setup_agent(agent_decl);
+
         let AgentDecl::AgentDecl {
             name,
             goal,
@@ -1536,6 +2322,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_scheduled_task(&mut self, schedule: &TaskSchedule) -> Result<bool, SpandaError> {
+        // Run scheduled task.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `schedule` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_scheduled_task(schedule);
+
         if let Some(budget) = &schedule.budget {
             if let Some(metrics) = self.telemetry.tasks.get(&schedule.name) {
                 if metrics.max_duration_ms > 0.0 {
@@ -1603,6 +2404,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn eval_contract(&mut self, expr: &Expr) -> Result<bool, SpandaError> {
+        // Eval contract.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `expr` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_contract(expr);
+
         match self.eval_expr(expr)? {
             RuntimeValue::Bool { value, .. } => Ok(value),
             _ => Err(RuntimeError::new("Contract expression must be boolean", 0).into_spanda()),
@@ -1616,6 +2432,24 @@ impl<B: RobotBackend> Interpreter<B> {
         ensures: &Option<Expr>,
         invariant: &Option<Expr>,
     ) -> Result<(), SpandaError> {
+        // Execute with contracts.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `body` — input value
+        // - `requires` — input value
+        // - `ensures` — input value
+        // - `invariant` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_with_contracts(body, requires, ensures, invariant);
+
         if let Some(req) = requires {
             if !self.eval_contract(req)? {
                 return Err(RuntimeError::new("requires contract failed", 0).into_spanda());
@@ -1638,6 +2472,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_verify_warnings(&mut self) -> Result<(), SpandaError> {
+        // Run verify warnings.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_verify_warnings();
+
         let warnings = self.verify_warning_rules.clone();
         if warnings.is_empty() {
             return Ok(());
@@ -1663,6 +2511,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_verify_rules(&mut self) -> Result<(), SpandaError> {
+        // Run verify rules.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_verify_rules();
+
         let rules = self.verify_rules.clone();
         if rules.is_empty() {
             return Ok(());
@@ -1703,6 +2565,28 @@ impl<B: RobotBackend> Interpreter<B> {
         invariant: &Option<Expr>,
         budget: Option<crate::foundations::ResourceBudgetDecl>,
     ) -> Result<(), SpandaError> {
+        // Execute task loop with contracts.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `task_name` — input value
+        // - `priority` — input value
+        // - `body` — input value
+        // - `interval_ms` — input value
+        // - `requires` — input value
+        // - `ensures` — input value
+        // - `invariant` — input value
+        // - `budget` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_task_loop_with_contracts(task_name, priority, body, interval_ms, requires, ensures, invariant, budget);
+
         self.telemetry.record_scheduler_start(1, interval_ms);
         self.trace_scheduler_log(format!(
             "single-task {task_name} interval={interval_ms}ms priority={}",
@@ -1752,6 +2636,25 @@ impl<B: RobotBackend> Interpreter<B> {
         invariant: &Option<Expr>,
         task_name: Option<&str>,
     ) -> Result<bool, SpandaError> {
+        // Execute task iteration.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `body` — input value
+        // - `requires` — input value
+        // - `ensures` — input value
+        // - `invariant` — input value
+        // - `task_name` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_task_iteration(body, requires, ensures, invariant, task_name);
+
         if let Some(req) = requires {
             if !self.eval_contract(req)? {
                 let label = task_name
@@ -1788,6 +2691,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_multiplexed_tasks(&mut self, tasks: Vec<TaskSchedule>) -> Result<(), SpandaError> {
+        // Execute multiplexed tasks.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `tasks` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_multiplexed_tasks(tasks);
+
         if tasks.is_empty() {
             return Ok(());
         }
@@ -1867,6 +2785,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_trigger_only_loop(&mut self) -> Result<(), SpandaError> {
+        // Execute trigger only loop.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_trigger_only_loop();
+
         let base_tick = self
             .trigger_timers
             .iter()
@@ -1903,6 +2835,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn update_twin_snapshot(&mut self) {
+        // Update twin snapshot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.update_twin_snapshot();
+
         let divergence_threshold = 0.15;
         if let Some(twin) = &self.twin {
             let state = self.backend.get_state();
@@ -1937,6 +2883,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn refresh_twin_shadow_from_backend(&mut self) {
+        // Refresh twin shadow from backend.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.refresh_twin_shadow_from_backend();
+
         let Some(twin) = &mut self.twin else {
             return;
         };
@@ -1964,6 +2924,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn has_standalone_triggers(&self) -> bool {
+        // Return whether this value has standalone triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.has_standalone_triggers();
+
         if !self.trigger_timers.is_empty() {
             return true;
         }
@@ -1973,6 +2947,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn register_trigger_decl(&mut self, trigger: &TriggerHandlerDecl, agent: Option<String>) {
+        // Register trigger decl.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `trigger` — input value
+        // - `agent` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_trigger_decl(trigger, agent);
+
         let TriggerHandlerDecl::TriggerHandlerDecl {
             trigger_kind,
             priority,
@@ -2006,10 +2996,39 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn can_dispatch_trigger(&mut self) -> bool {
+        // Can dispatch trigger.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.can_dispatch_trigger();
+
         self.triggers_dispatched_this_tick < self.options.max_triggers_per_tick
     }
 
     fn execute_trigger_handlers(&mut self, handler_ids: Vec<usize>) -> Result<(), SpandaError> {
+        // Execute trigger handlers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `handler_ids` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_trigger_handlers(handler_ids);
+
         let mut ids = handler_ids;
         ids.sort_by_key(|id| {
             self.trigger_registry
@@ -2034,6 +3053,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_trigger_body_by_id(&mut self, handler_id: usize) -> Result<bool, SpandaError> {
+        // Execute trigger body by id.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `handler_id` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_trigger_body_by_id(handler_id);
+
         let (name, kind, priority, body, agent) = {
             let handler = self
                 .trigger_registry
@@ -2080,6 +3114,22 @@ impl<B: RobotBackend> Interpreter<B> {
         category: SystemTriggerCategory,
         event: &str,
     ) -> Result<(), SpandaError> {
+        // Dispatch system trigger.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `category` — input value
+        // - `event` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.dispatch_system_trigger(category, event);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_category(category, event)
@@ -2098,6 +3148,22 @@ impl<B: RobotBackend> Interpreter<B> {
         topic_name: &str,
         topic_path: &str,
     ) -> Result<(), SpandaError> {
+        // Dispatch message triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_name` — input value
+        // - `topic_path` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.dispatch_message_triggers(topic_name, topic_path);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_message(topic_name, topic_path)
@@ -2111,6 +3177,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_condition_triggers(&mut self) -> Result<(), SpandaError> {
+        // Run condition triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_condition_triggers();
+
         let handlers: Vec<(usize, Expr, bool)> = self
             .trigger_registry
             .condition_handlers()
@@ -2141,6 +3221,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_trigger_maintenance(&mut self) -> Result<(), SpandaError> {
+        // Run trigger maintenance.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_trigger_maintenance();
+
         self.run_hardware_triggers()?;
         self.poll_transport_inbound_triggers()?;
         self.run_twin_fault_triggers()?;
@@ -2148,6 +3242,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_hardware_triggers(&mut self) -> Result<(), SpandaError> {
+        // Run hardware triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_hardware_triggers();
+
         for event in self.hardware_monitor.poll_new_events() {
             self.dispatch_system_trigger(SystemTriggerCategory::Hardware, &event)?;
         }
@@ -2155,6 +3263,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn poll_transport_inbound_triggers(&mut self) -> Result<(), SpandaError> {
+        // Poll transport inbound triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.poll_transport_inbound_triggers();
+
         let inbound = self.comm_bus.poll_inbound(self.default_transport);
         for (topic_path, _value) in inbound {
             let topic_name = self
@@ -2168,6 +3290,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_twin_fault_triggers(&mut self) -> Result<(), SpandaError> {
+        // Run twin fault triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_twin_fault_triggers();
+
         for fault in self.comm_bus.active_faults() {
             let fault_lower = fault.to_ascii_lowercase();
             if (fault_lower.contains("fault")
@@ -2187,6 +3323,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_timer_triggers(&mut self, sim_time: f64) -> Result<(), SpandaError> {
+        // Run timer triggers.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `sim_time` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.run_timer_triggers(sim_time);
+
         let mut to_run = Vec::new();
         for schedule in &mut self.trigger_timers {
             if schedule.next_due_ms <= sim_time {
@@ -2207,6 +3358,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn dispatch_event(&mut self, event_name: &str) -> Result<(), SpandaError> {
+        // Dispatch event.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `event_name` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.dispatch_event(event_name);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_event(event_name)
@@ -2229,6 +3395,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_enter(&mut self, state_name: &str, line: u32) -> Result<(), SpandaError> {
+        // Execute enter.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `state_name` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_enter(state_name, line);
+
         let mut logs = Vec::new();
         let mut transitioned = false;
         let mut previous_states = Vec::new();
@@ -2277,6 +3459,24 @@ impl<B: RobotBackend> Interpreter<B> {
         target: Option<&str>,
         line: u32,
     ) -> Result<(), SpandaError> {
+        // Check agent capability.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `agent` — input value
+        // - `action` — input value
+        // - `target` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.check_agent_capability(agent, action, target, line);
+
         let caps = self
             .agent_capabilities
             .get(agent)
@@ -2302,6 +3502,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn secure_policy_from_block(block: &crate::foundations::SecureBlockDecl) -> SecurePolicy {
+        // Secure policy from block.
+        //
+        // Parameters:
+        // - `block` — input value
+        //
+        // Returns:
+        // SecurePolicy.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::secure_policy_from_block(block);
+
         SecurePolicy {
             signed: block.signed,
             min_trust: block
@@ -2313,6 +3527,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn resolve_signing_key(&self, key: &str) -> Result<String, SpandaError> {
+        // Resolve signing key.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `key` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_signing_key(key);
+
         if self.security.secrets.get(key).is_ok() {
             self.security
                 .secrets
@@ -2324,10 +3553,41 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn security_error(&self, err: crate::security::SecurityError, line: u32) -> SpandaError {
+        // Security error.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `err` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // SpandaError.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.security_error(err, line);
+
         RuntimeError::new(err.to_string(), line).into_spanda()
     }
 
     fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
+        // Execute block.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmts` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_block(stmts);
+
         for stmt in stmts {
             self.execute_stmt(stmt)?;
         }
@@ -2335,6 +3595,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SpandaError> {
+        // Execute stmt.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmt` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_stmt(stmt);
+
         if let Some(debug) = &self.options.debug {
             let line = crate::debug::stmt_line(stmt);
             if debug.should_pause(line) {
@@ -2706,6 +3981,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         stmts: &[Stmt],
     ) -> Result<Option<RuntimeValue>, SpandaError> {
+        // Execute block with return.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmts` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_block_with_return(stmts);
+
         for stmt in stmts {
             if let Some(val) = self.execute_stmt_with_return(stmt)? {
                 return Ok(Some(val));
@@ -2718,6 +4008,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         stmt: &Stmt,
     ) -> Result<Option<RuntimeValue>, SpandaError> {
+        // Execute stmt with return.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmt` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_stmt_with_return(stmt);
+
         match stmt {
             Stmt::ReturnStmt { value, .. } => {
                 let val = if let Some(expr) = value {
@@ -2758,6 +4063,23 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         _line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Call module function.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func` — input value
+        // - `args` — input value
+        // - `_line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.call_module_function(func, args, _line);
+
         let saved = self.env.clone_bindings();
         for (i, param) in func.params.iter().enumerate() {
             if let Some(arg) = args.get(i) {
@@ -2777,6 +4099,22 @@ impl<B: RobotBackend> Interpreter<B> {
         future: RuntimeValue,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Resolve future.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `future` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_future(future, line);
+
         match future {
             RuntimeValue::Future {
                 resolved: Some(value),
@@ -2819,6 +4157,23 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         line: u32,
     ) -> Result<(String, Vec<RuntimeValue>), SpandaError> {
+        // Eval spawn target.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `callee` — input value
+        // - `args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_spawn_target(callee, args, line);
+
         let mut arg_values = Vec::new();
         for arg in args {
             arg_values.push(self.eval_expr(arg)?);
@@ -2836,6 +4191,23 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[RuntimeValue],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Execute spawn job.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func_name` — input value
+        // - `args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_spawn_job(func_name, args, line);
+
         let func = self
             .module_functions
             .get(func_name)
@@ -2858,6 +4230,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn resolve_task_handle(&mut self, id: u64, line: u32) -> Result<RuntimeValue, SpandaError> {
+        // Resolve task handle.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `id` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_task_handle(id, line);
+
         if let Some(result) = self.concurrency.handle(id).and_then(|h| h.result.clone()) {
             return Ok(result);
         }
@@ -2868,6 +4256,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_spawn_handle(&mut self, id: u64, line: u32) -> Result<RuntimeValue, SpandaError> {
+        // Execute spawn handle.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `id` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_spawn_handle(id, line);
+
         if let Some(result) = self.concurrency.handle(id).and_then(|h| h.result.clone()) {
             return Ok(result);
         }
@@ -2883,6 +4287,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn process_spawn_queue(&mut self) -> Result<(), SpandaError> {
+        // Process spawn queue.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.process_spawn_queue();
+
         let ids = self.concurrency.drain_fire_and_forget_queue();
         for id in ids {
             self.execute_spawn_handle(id, 0)?;
@@ -2891,6 +4309,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn eval_expr(&mut self, expr: &Expr) -> Result<RuntimeValue, SpandaError> {
+        // Eval expr.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `expr` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_expr(expr);
+
         match expr {
             Expr::LiteralExpr { value, .. } => Ok(match value {
                 LiteralValue::Bool(b) => RuntimeValue::Bool { value: *b },
@@ -3080,6 +4513,23 @@ impl<B: RobotBackend> Interpreter<B> {
         fields: &[crate::ast::StructFieldInit],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval struct literal.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `type_name` — input value
+        // - `fields` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_struct_literal(type_name, fields, line);
+
         let mut values = HashMap::new();
         for field in fields {
             values.insert(field.name.clone(), self.eval_expr(&field.value)?);
@@ -3117,6 +4567,22 @@ impl<B: RobotBackend> Interpreter<B> {
         obj: &RuntimeValue,
         property: &str,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval member.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `obj` — input value
+        // - `property` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_member(obj, property);
+
         match obj {
             RuntimeValue::Scan { nearest_distance } if property == "nearest_distance" => {
                 Ok(RuntimeValue::Number {
@@ -3236,6 +4702,24 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval call.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `callee` — input value
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_call(callee, args, named_args, line);
+
         if let Expr::IdentExpr { name, .. } = callee {
             if let Some(ext) = self.extern_functions.get(name).cloned() {
                 let mut arg_values = Vec::new();
@@ -3363,6 +4847,21 @@ impl<B: RobotBackend> Interpreter<B> {
                 }
                 impl<B: RobotBackend> PlanExecutor for PlanRunner<'_, B> {
                     fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
+                        // Execute block.
+                        //
+                        // Parameters:
+                        // - `self` — method receiver
+                        // - `stmts` — input value
+                        //
+                        // Returns:
+                        // Success value on completion, or an error.
+                        //
+                        // Options:
+                        // None.
+                        //
+                        // Example:
+                        // let result = instance.execute_block(stmts);
+
                         self.interp.current_agent = Some(self.agent_name.clone());
                         let result = self.interp.execute_block(stmts);
                         self.interp.current_agent = None;
@@ -3424,6 +4923,25 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval ai method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `target_name` — input value
+        // - `method` — input value
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_ai_method(target_name, method, args, named_args, line);
+
         match method {
             "reason" => {
                 if let Some(agent) = self.current_agent.as_deref() {
@@ -3509,6 +5027,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn read_sensor_value(&mut self, target: &RuntimeValue) -> Result<RuntimeValue, SpandaError> {
+        // Read sensor value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `target` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.read_sensor_value(target);
+
         let RuntimeValue::Sensor {
             name,
             sensor_type,
@@ -3546,6 +5079,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn read_fused_observation(&mut self) -> Result<RuntimeValue, SpandaError> {
+        // Read fused observation.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.read_fused_observation();
+
         let sensors = self.fusion_sensors.clone();
         let mut fields = HashMap::new();
         for sensor_name in &sensors {
@@ -3578,6 +5125,24 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval builtin function.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_builtin_function(name, args, named_args, line);
+
         match name {
             "pose" => Ok(runtime_pose(
                 get_number(&self.get_named_arg_value(named_args, "x")?, 0.0),
@@ -3926,6 +5491,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn goal_text_from_value(value: &RuntimeValue) -> Option<String> {
+        // Goal text from value.
+        //
+        // Parameters:
+        // - `value` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::goal_text_from_value(value);
+
         match value {
             RuntimeValue::Goal { text } => Some(text.clone()),
             RuntimeValue::String { value } => Some(value.clone()),
@@ -3938,6 +5517,22 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<Option<String>, SpandaError> {
+        // Resolve reason goal.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_reason_goal(named_args, line);
+
         if let Ok(value) = self.get_named_arg_value(named_args, "goal") {
             if !matches!(value, RuntimeValue::Void) {
                 return Ok(Self::goal_text_from_value(&value));
@@ -3958,6 +5553,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn enrich_reason_goal(&self, goal: Option<String>) -> Option<String> {
+        // Enrich reason goal.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `goal` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.enrich_reason_goal(goal);
+
         let mut parts = Vec::new();
         if let Some(g) = goal.filter(|s| !s.is_empty()) {
             parts.push(g);
@@ -3980,6 +5590,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn expr_path_string(expr: &Expr) -> String {
+        // Expr path string.
+        //
+        // Parameters:
+        // - `expr` — input value
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::expr_path_string(expr);
+
         match expr {
             Expr::IdentExpr { name, .. } => name.clone(),
             Expr::MemberExpr {
@@ -3992,6 +5616,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn runtime_value_payload(value: &RuntimeValue) -> String {
+        // Runtime value payload.
+        //
+        // Parameters:
+        // - `value` — input value
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::runtime_value_payload(value);
+
         match value {
             RuntimeValue::String { value } => value.clone(),
             RuntimeValue::Number { value, .. } => value.to_string(),
@@ -4019,6 +5657,24 @@ impl<B: RobotBackend> Interpreter<B> {
         _named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval audit method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `method` — input value
+        // - `args` — input value
+        // - `_named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_audit_method(method, args, _named_args, line);
+
         match method {
             "record" => {
                 self.security
@@ -4167,6 +5823,24 @@ impl<B: RobotBackend> Interpreter<B> {
         _named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval ledger method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `method` — input value
+        // - `args` — input value
+        // - `_named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_ledger_method(method, args, _named_args, line);
+
         use crate::audit::LedgerBackend;
         match method {
             "anchor" => {
@@ -4230,6 +5904,23 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval safety validate.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_safety_validate(args, named_args, line);
+
         let arg = if let Some(first) = args.first() {
             self.eval_expr(first)?
         } else {
@@ -4265,6 +5956,23 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         _named_args: &[crate::ast::NamedArg],
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval robot method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `method` — input value
+        // - `args` — input value
+        // - `_named_args` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_robot_method(method, args, _named_args);
+
         let state = self.backend.get_state();
         match method {
             "pose" => Ok(pose_from_state(&state.pose)),
@@ -4306,6 +6014,24 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval twin method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `method` — input value
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_twin_method(method, args, named_args, line);
+
         if self.twin.is_none() {
             return Err(RuntimeError::new("No digital twin configured", line).into_spanda());
         }
@@ -4393,6 +6119,23 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<String, SpandaError> {
+        // Twin field name.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.twin_field_name(args, named_args, line);
+
         for arg in named_args {
             if arg.name == "field" {
                 return self.twin_field_from_expr(&arg.value, line);
@@ -4405,6 +6148,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn twin_field_from_expr(&mut self, expr: &Expr, _line: u32) -> Result<String, SpandaError> {
+        // Twin field from expr.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `expr` — input value
+        // - `_line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.twin_field_from_expr(expr, _line);
+
         match expr {
             Expr::LiteralExpr {
                 value: LiteralValue::String(s),
@@ -4424,6 +6183,26 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Execute actuator method.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `_actuator_type` — input value
+        // - `method` — input value
+        // - `args` — input value
+        // - `named_args` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.execute_actuator_method(name, _actuator_type, method, args, named_args, line);
+
         let motion_methods = [
             "drive",
             "move_to",
@@ -4564,6 +6343,22 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[crate::ast::NamedArg],
         name: &str,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Return named arg value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `named_args` — input value
+        // - `name` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.get_named_arg_value(named_args, name);
+
         for arg in named_args {
             if arg.name == name {
                 return self.eval_expr(&arg.value);
@@ -4579,6 +6374,24 @@ impl<B: RobotBackend> Interpreter<B> {
         right: RuntimeValue,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Eval binary.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `op` — input value
+        // - `left` — input value
+        // - `right` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.eval_binary(op, left, right, line);
+
         match op {
             BinaryOp::And => Ok(RuntimeValue::Bool {
                 value: matches!(left, RuntimeValue::Bool { value: true, .. })
@@ -4667,6 +6480,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn log(&self, message: String) {
+        // Log.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.log(message);
+
         if let Some(cb) = &self.options.on_log {
             cb(message);
         }
@@ -4674,26 +6502,114 @@ impl<B: RobotBackend> Interpreter<B> {
 }
 
 pub fn runtime_pose(x: f64, y: f64, theta: f64, z: f64) -> RuntimeValue {
+    // Runtime pose.
+    //
+    // Parameters:
+    // - `x` — input value
+    // - `y` — input value
+    // - `theta` — input value
+    // - `z` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::runtime_pose(x, y, theta, z);
+
     RuntimeValue::Pose { x, y, theta, z }
 }
 
 pub fn runtime_velocity(linear: f64, angular: f64) -> RuntimeValue {
+    // Runtime velocity.
+    //
+    // Parameters:
+    // - `linear` — input value
+    // - `angular` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::runtime_velocity(linear, angular);
+
     RuntimeValue::Velocity { linear, angular }
 }
 
 pub fn runtime_trajectory(waypoints: Vec<PoseValue>) -> RuntimeValue {
+    // Runtime trajectory.
+    //
+    // Parameters:
+    // - `waypoints` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::runtime_trajectory(waypoints);
+
     RuntimeValue::Trajectory { waypoints }
 }
 
 pub fn pose_from_state(state: &PoseState) -> RuntimeValue {
+    // Pose from state.
+    //
+    // Parameters:
+    // - `state` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::pose_from_state(state);
+
     runtime_pose(state.x, state.y, state.theta, state.z.unwrap_or(0.0))
 }
 
 pub fn velocity_from_state(state: &VelocityState) -> RuntimeValue {
+    // Velocity from state.
+    //
+    // Parameters:
+    // - `state` — input value
+    //
+    // Returns:
+    // RuntimeValue.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::velocity_from_state(state);
+
     runtime_velocity(state.linear, state.angular)
 }
 
 pub fn get_pose_fields(val: &RuntimeValue) -> Option<PoseValue> {
+    // Return pose fields.
+    //
+    // Parameters:
+    // - `val` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::get_pose_fields(val);
+
     match val {
         RuntimeValue::Pose { x, y, theta, z } => Some(PoseValue {
             x: *x,
@@ -4706,6 +6622,20 @@ pub fn get_pose_fields(val: &RuntimeValue) -> Option<PoseValue> {
 }
 
 pub fn get_velocity_fields(val: &RuntimeValue) -> Option<(f64, f64)> {
+    // Return velocity fields.
+    //
+    // Parameters:
+    // - `val` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::get_velocity_fields(val);
+
     match val {
         RuntimeValue::Velocity { linear, angular } => Some((*linear, *angular)),
         _ => None,
@@ -4713,6 +6643,20 @@ pub fn get_velocity_fields(val: &RuntimeValue) -> Option<(f64, f64)> {
 }
 
 pub fn get_trajectory_waypoints(val: &RuntimeValue) -> Option<Vec<PoseValue>> {
+    // Return trajectory waypoints.
+    //
+    // Parameters:
+    // - `val` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::get_trajectory_waypoints(val);
+
     match val {
         RuntimeValue::Trajectory { waypoints } => Some(waypoints.clone()),
         _ => None,
@@ -4720,14 +6664,58 @@ pub fn get_trajectory_waypoints(val: &RuntimeValue) -> Option<Vec<PoseValue>> {
 }
 
 pub fn get_number(val: &RuntimeValue, default: f64) -> f64 {
+    // Return number.
+    //
+    // Parameters:
+    // - `val` — input value
+    // - `default` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::get_number(val, default);
+
     val.as_number().unwrap_or(default)
 }
 
 pub fn get_string(val: &RuntimeValue, default: &str) -> String {
+    // Return string.
+    //
+    // Parameters:
+    // - `val` — input value
+    // - `default` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::get_string(val, default);
+
     val.as_string().unwrap_or(default).to_string()
 }
 
 fn pose_value_to_state(pose: &PoseValue) -> PoseState {
+    // Pose value to state.
+    //
+    // Parameters:
+    // - `pose` — input value
+    //
+    // Returns:
+    // PoseState.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::pose_value_to_state(pose);
+
     PoseState {
         x: pose.x,
         y: pose.y,
@@ -4756,6 +6744,22 @@ fn task_budget_violation_kind(
     duration_ms: f64,
     interval_ms: f64,
 ) -> Option<&'static str> {
+    // Task budget violation kind.
+    //
+    // Parameters:
+    // - `budget` — input value
+    // - `duration_ms` — input value
+    // - `interval_ms` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::task_budget_violation_kind(budget, duration_ms, interval_ms);
+
     let crate::foundations::ResourceBudgetDecl::ResourceBudgetDecl {
         cpu_pct_max,
         battery_pct_max,
@@ -4778,6 +6782,20 @@ fn task_budget_violation_kind(
 
 impl TaskSchedule {
     fn priority_rank(&self) -> u8 {
+        // Priority rank.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // u8.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.priority_rank();
+
         match self.priority {
             TaskPriority::Critical => 0,
             TaskPriority::High => 1,
@@ -4788,6 +6806,20 @@ impl TaskSchedule {
 }
 
 fn priority_label(priority: TaskPriority) -> &'static str {
+    // Priority label.
+    //
+    // Parameters:
+    // - `priority` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::priority_label(priority);
+
     match priority {
         TaskPriority::Critical => "critical",
         TaskPriority::High => "high",
@@ -4797,6 +6829,20 @@ fn priority_label(priority: TaskPriority) -> &'static str {
 }
 
 fn trigger_category_label(kind: &TriggerKind) -> &'static str {
+    // Trigger category label.
+    //
+    // Parameters:
+    // - `kind` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime::trigger_category_label(kind);
+
     match kind {
         TriggerKind::Event { .. } => "event",
         TriggerKind::Message { .. } => "message",
@@ -4821,6 +6867,20 @@ trait RobotDeclExt {
 
 impl RobotDeclExt for RobotDecl {
     fn first_behavior_name(&self) -> Option<String> {
+        // First behavior name.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.first_behavior_name();
+
         let RobotDecl::RobotDecl {
             behaviors, tasks, ..
         } = self;
@@ -4835,6 +6895,21 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn behavior_with_contracts(&self, name: &str) -> Option<BehaviorContracts> {
+        // Behavior with contracts.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.behavior_with_contracts(name);
+
         let RobotDecl::RobotDecl { behaviors, .. } = self;
         behaviors.iter().find_map(|b| match b {
             BehaviorDecl::BehaviorDecl {
@@ -4855,6 +6930,21 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn task_with_contracts(&self, name: &str) -> Option<TaskContracts> {
+        // Task with contracts.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.task_with_contracts(name);
+
         let RobotDecl::RobotDecl { tasks, .. } = self;
         tasks.iter().find_map(|t| match t {
             TaskDecl::TaskDecl {
@@ -4878,6 +6968,20 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn all_task_schedules(&self) -> Vec<TaskSchedule> {
+        // All task schedules.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<TaskSchedule>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.all_task_schedules();
+
         let RobotDecl::RobotDecl { tasks, .. } = self;
         tasks
             .iter()
@@ -4914,6 +7018,20 @@ trait SocDeclExt {
 
 impl SocDeclExt for crate::ast::SocDecl {
     fn profile(&self) -> &str {
+        // Profile.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.profile();
+
         match self {
             crate::ast::SocDecl::SocDecl { profile, .. } => profile,
         }
@@ -4926,6 +7044,20 @@ trait HalBlockExt {
 
 impl HalBlockExt for crate::ast::HalBlock {
     fn members(&self) -> &[crate::ast::HalMemberDecl] {
+        // Members.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &[crate::ast::HalMemberDecl].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.members();
+
         match self {
             crate::ast::HalBlock::HalBlock { members, .. } => members,
         }
@@ -4939,12 +7071,40 @@ trait SafetyBlockExt {
 
 impl SafetyBlockExt for crate::ast::SafetyBlock {
     fn rules(&self) -> &[SafetyRule] {
+        // Rules.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &[SafetyRule].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.rules();
+
         match self {
             crate::ast::SafetyBlock::SafetyBlock { rules, .. } => rules,
         }
     }
 
     fn zones(&self) -> &[SafetyZoneDecl] {
+        // Zones.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &[SafetyZoneDecl].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.zones();
+
         match self {
             crate::ast::SafetyBlock::SafetyBlock { zones, .. } => zones,
         }
@@ -4957,6 +7117,21 @@ mod tests {
     use crate::simulator::{create_default_simulator, Obstacle, SimulatorConfig};
 
     fn compile_and_run(source: &str, max_iters: usize) -> Result<RobotState, SpandaError> {
+        // Compile and run.
+        //
+        // Parameters:
+        // - `source` — input value
+        // - `max_iters` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::compile_and_run(source, max_iters);
+
         let tokens = crate::lexer::tokenize(source)?;
         let program = crate::parser::parse(tokens)?;
         let sim = create_default_simulator(SimulatorConfig {
@@ -4979,6 +7154,20 @@ mod tests {
 
     #[test]
     fn executes_let_bindings_and_if_else() {
+        // Executes let bindings and if else.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::executes_let_bindings_and_if_else();
+
         let source = r#"
       robot R {
         sensor lidar: Lidar;
@@ -4999,6 +7188,20 @@ mod tests {
 
     #[test]
     fn runs_deterministic_loop() {
+        // Runs deterministic loop.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::runs_deterministic_loop();
+
         let source = r#"
       robot R {
         actuator wheels: DifferentialDrive;
@@ -5015,6 +7218,20 @@ mod tests {
 
     #[test]
     fn stops_on_close_obstacle() {
+        // Stops on close obstacle.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::stops_on_close_obstacle();
+
         let source = r#"
       robot R {
         sensor lidar: Lidar;
@@ -5054,6 +7271,20 @@ mod tests {
 
     #[test]
     fn enforces_safety_in_interpreter() {
+        // Enforces safety in interpreter.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::runtime::enforces_safety_in_interpreter();
+
         let source = r#"
       robot R {
         sensor lidar: Lidar;

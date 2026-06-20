@@ -1,3 +1,5 @@
+//! runtime support for Spanda.
+//!
 use crate::backend::{AuditBackend, LocalAuditBackend};
 use crate::crypto::{sha256, sign, verify_signature};
 use crate::error::{AuditError, AuditResult};
@@ -18,6 +20,21 @@ pub struct AuditRuntime {
 
 impl AuditRuntime {
     pub fn new(audit_name: impl Into<String>, watched_fields: Vec<String>) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `audit_name` — input value
+        // - `watched_fields` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_audit::runtime::new(audit_name, watched_fields);
+
         Self {
             backend: LocalAuditBackend::new(),
             identity: None,
@@ -30,6 +47,21 @@ impl AuditRuntime {
     }
 
     pub fn with_identity(mut self, identity: DeviceIdentity) -> Self {
+        // Return a copy with identity updated.
+        //
+        // Parameters:
+        // - `mut self` — input value
+        // - `identity` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_audit::runtime::with_identity(mut self, identity);
+
         self.identity = Some(identity);
         self
     }
@@ -39,12 +71,44 @@ impl AuditRuntime {
         hash_algo: impl Into<String>,
         signed_by: impl Into<String>,
     ) -> Self {
+        // Return a copy with provenance updated.
+        //
+        // Parameters:
+        // - `mut self` — input value
+        // - `hash_algo` — input value
+        // - `signed_by` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_audit::runtime::with_provenance(mut self, hash_algo, signed_by);
+
         self.hash_algo = hash_algo.into();
         self.signed_by = Some(signed_by.into());
         self
     }
 
     pub fn record_event(&mut self, event_type: &str, payload: &str) -> AuditResult<RecordId> {
+        // Record event.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `event_type` — input value
+        // - `payload` — input value
+        //
+        // Returns:
+        // AuditResult<RecordId>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_event(event_type, payload);
+
         let id = RecordId(format!("audit-{}", self.next_id));
         self.next_id += 1;
 
@@ -87,15 +151,58 @@ impl AuditRuntime {
     }
 
     pub fn verify_record(&self, record_id: &RecordId) -> AuditResult<bool> {
+        // Verify record.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `record_id` — input value
+        //
+        // Returns:
+        // AuditResult<bool>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.verify_record(record_id);
+
         self.backend.verify(record_id)
     }
 
     pub fn export_json(&self) -> AuditResult<String> {
+        // Export json.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // AuditResult<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.export_json();
+
         let export = self.backend.export()?;
         serde_json::to_string_pretty(&export).map_err(|e| AuditError::Serialization(e.to_string()))
     }
 
     pub fn record_count(&self) -> usize {
+        // Return the number of record.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Numeric result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.record_count();
+
         self.backend.record_count()
     }
 
@@ -104,6 +211,22 @@ impl AuditRuntime {
         name: &str,
         record_id: &RecordId,
     ) -> AuditResult<ProvenanceRecord> {
+        // Create provenance.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `record_id` — input value
+        //
+        // Returns:
+        // AuditResult<ProvenanceRecord>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.create_provenance(name, record_id);
+
         let record = self
             .backend
             .records()
@@ -137,6 +260,21 @@ impl AuditRuntime {
     }
 
     pub fn verify_provenance_signature(&self, prov: &ProvenanceRecord) -> bool {
+        // Verify provenance signature.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `prov` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.verify_provenance_signature(prov);
+
         let verify_key = self
             .identity
             .as_ref()
@@ -146,6 +284,20 @@ impl AuditRuntime {
     }
 
     pub fn root_hash(&self) -> Option<Hash> {
+        // Root hash.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.root_hash();
+
         self.backend.last_hash()
     }
 }

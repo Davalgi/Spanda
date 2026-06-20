@@ -1,3 +1,5 @@
+//! signed support for Spanda.
+//!
 use crate::error::{SecurityError, SecurityResult};
 use crate::identity::RobotIdentity;
 use serde::{Deserialize, Serialize};
@@ -20,6 +22,21 @@ pub struct SignedMessage {
 
 impl SignedMessage {
     pub fn sign(payload: impl Into<String>, identity: &RobotIdentity) -> Self {
+        // Sign.
+        //
+        // Parameters:
+        // - `payload` — input value
+        // - `identity` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_security::signed::sign(payload, identity);
+
         let payload = payload.into();
         let hash = spanda_audit::sha256(&payload);
         let sig_value = sign(&payload, &identity.signing_key());
@@ -34,6 +51,21 @@ impl SignedMessage {
     }
 
     pub fn verify(&self, identity: &RobotIdentity) -> SecurityResult<bool> {
+        // Verify.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `identity` — input value
+        //
+        // Returns:
+        // SecurityResult<bool>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.verify(identity);
+
         if self.signature.signer_id != identity.id() {
             return Err(SecurityError::SignatureInvalid);
         }
@@ -45,6 +77,20 @@ impl SignedMessage {
     }
 
     pub fn to_json(&self) -> SecurityResult<String> {
+        // Convert to json.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // SecurityResult<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.to_json();
+
         serde_json::to_string(self)
             .map_err(|e| SecurityError::Other(format!("serialization failed: {e}")))
     }
@@ -56,6 +102,20 @@ mod tests {
 
     #[test]
     fn signed_message_roundtrip() {
+        // Signed message roundtrip.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_security::signed::signed_message_roundtrip();
+
         let id = RobotIdentity::new("rover-1", "key-abc");
         let msg = SignedMessage::sign("telemetry", &id);
         assert!(msg.verify(&id).unwrap());

@@ -1,3 +1,8 @@
+//! Spanda package manager: manifests, dependency resolution, registry, and publishing.
+//!
+//! Reads and writes `spanda.toml` / `spanda.lock`, resolves registry, path, and git
+//! dependencies, validates safety metadata, and bundles packages for publication.
+
 pub mod adapter;
 pub mod category;
 pub mod dependency;

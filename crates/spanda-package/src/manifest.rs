@@ -1,3 +1,5 @@
+//! `spanda.toml` manifest parsing, validation, and project root discovery.
+//!
 use crate::adapter::AdapterMetadata;
 use crate::category::PackageCategory;
 use crate::dependency::DependencySpec;
@@ -55,31 +57,116 @@ pub struct HardwareSection {
 
 impl PackageManifest {
     pub fn parse_str(content: &str) -> PackageResult<Self> {
+        // Parse str.
+        //
+        // Parameters:
+        // - `content` — input value
+        //
+        // Returns:
+        // PackageResult<Self>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::manifest::parse_str(content);
+
         let mut manifest: Self = toml::from_str(content)?;
         manifest.safety.normalize();
         Ok(manifest)
     }
 
     pub fn load(path: &Path) -> PackageResult<Self> {
+        // Load the value.
+        //
+        // Parameters:
+        // - `path` — input value
+        //
+        // Returns:
+        // PackageResult<Self>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::manifest::load(path);
+
         let content = std::fs::read_to_string(path).map_err(PackageError::from)?;
         Self::parse_str(&content)
     }
 
     pub fn load_from_dir(dir: &Path) -> PackageResult<Self> {
+        // Load from dir.
+        //
+        // Parameters:
+        // - `dir` — input value
+        //
+        // Returns:
+        // PackageResult<Self>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::manifest::load_from_dir(dir);
+
         Self::load(&dir.join(MANIFEST_FILENAME))
     }
 
     pub fn save(&self, path: &Path) -> PackageResult<()> {
+        // Save the value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `path` — input value
+        //
+        // Returns:
+        // PackageResult<()>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.save(path);
+
         let content = toml::to_string_pretty(self)?;
         std::fs::write(path, content).map_err(PackageError::from)?;
         Ok(())
     }
 
     pub fn version(&self) -> PackageResult<Version> {
+        // Version.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // PackageResult<Version>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.version();
+
         crate::dependency::parse_version(&self.package.version)
     }
 
     pub fn all_dependencies(&self) -> impl Iterator<Item = (&str, &DependencySpec)> {
+        // All dependencies.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // impl Iterator<Item = (&str, &DependencySpec)>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.all_dependencies();
+
         self.dependencies
             .iter()
             .chain(self.dev_dependencies.iter())
@@ -89,6 +176,20 @@ impl PackageManifest {
 
 /// Find the project root by walking up from `start` looking for spanda.toml.
 pub fn find_project_root(start: &Path) -> Option<PathBuf> {
+    // Find project root.
+    //
+    // Parameters:
+    // - `start` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::manifest::find_project_root(start);
+
     let mut dir = if start.is_file() {
         start.parent()?.to_path_buf()
     } else {
@@ -134,6 +235,20 @@ required = [
 
     #[test]
     fn parses_warehouse_manifest() {
+        // Parses warehouse manifest.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::manifest::parses_warehouse_manifest();
+
         let m = PackageManifest::parse_str(WAREHOUSE).unwrap();
         assert_eq!(m.package.name, "warehouse_robot");
         assert_eq!(m.dependencies.len(), 3);

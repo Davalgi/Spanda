@@ -1,7 +1,23 @@
+//! fusion support for Spanda.
+//!
 use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn observe_block_type_checks_and_fuses_sensors() {
+    // Observe block type checks and fuses sensors.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::fusion::observe_block_type_checks_and_fuses_sensors();
+
     let source = r#"
 robot R {
   sensor camera: Camera on "/camera";
@@ -41,6 +57,20 @@ robot R {
 
 #[test]
 fn observe_unknown_sensor_rejected_at_typecheck() {
+    // Observe unknown sensor rejected at typecheck.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::fusion::observe_unknown_sensor_rejected_at_typecheck();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -60,6 +90,20 @@ robot R {
 
 #[test]
 fn fusion_example_runs() {
+    // Fusion example runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::fusion::fusion_example_runs();
+
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/types/fusion.sd"

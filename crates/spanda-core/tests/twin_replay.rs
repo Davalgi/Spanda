@@ -1,7 +1,23 @@
+//! twin replay support for Spanda.
+//!
 use spanda_core::{run, RunOptions};
 
 #[test]
 fn twin_sync_parses_and_mirrors_telemetry() {
+    // Twin sync parses and mirrors telemetry.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin_replay::twin_sync_parses_and_mirrors_telemetry();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -36,6 +52,20 @@ robot R {
 
 #[test]
 fn twin_frame_count_grows_during_task() {
+    // Twin frame count grows during task.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin_replay::twin_frame_count_grows_during_task();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -76,6 +106,20 @@ robot R {
 
 #[test]
 fn twin_pose_returns_current_shadow() {
+    // Twin pose returns current shadow.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin_replay::twin_pose_returns_current_shadow();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -104,6 +148,20 @@ robot R {
 
 #[test]
 fn twin_replay_returns_historical_frame() {
+    // Twin replay returns historical frame.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin_replay::twin_replay_returns_historical_frame();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -135,6 +193,20 @@ robot R {
 
 #[test]
 fn twin_replay_disabled_errors_at_runtime() {
+    // Twin replay disabled errors at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin_replay::twin_replay_disabled_errors_at_runtime();
+
     let source = r#"
 robot R {
   twin Shadow {

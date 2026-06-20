@@ -20,10 +20,40 @@ pub struct ModuleRegistry {
 
 impl ModuleRegistry {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::modules::new();
+
         Self::default()
     }
 
     pub fn register(&mut self, module_name: &str, program: &Program) {
+        // Register the value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `module_name` — input value
+        // - `program` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register(module_name, program);
+
         let Program::Program { functions, .. } = program;
         let mut exports = ModuleExports::default();
         for func in functions {
@@ -38,10 +68,41 @@ impl ModuleRegistry {
     }
 
     pub fn exports_for(&self, import_path: &str) -> Option<&ModuleExports> {
+        // Exports for.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `import_path` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.exports_for(import_path);
+
         self.modules.get(import_path)
     }
 
     pub fn function(&self, import_path: &str, name: &str) -> Option<&ModuleFnDecl> {
+        // Function.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `import_path` — input value
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.function(import_path, name);
+
         self.exports_for(import_path)
             .and_then(|e| e.functions.get(name))
     }
@@ -56,12 +117,40 @@ impl ModuleRegistry {
     }
 
     pub fn module_count(&self) -> usize {
+        // Return the number of module.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Numeric result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.module_count();
+
         self.modules.len()
     }
 }
 
 /// Parse all `.sd` files under `src/` and `tests/`, building a module registry.
 pub fn load_project_modules(project_root: &Path) -> Result<ModuleRegistry, SpandaError> {
+    // Load project modules.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules::load_project_modules(project_root);
+
     let mut entries = Vec::new();
     for sub in ["src", "tests"] {
         let dir = project_root.join(sub);
@@ -95,6 +184,21 @@ pub fn load_project_modules(project_root: &Path) -> Result<ModuleRegistry, Spand
 }
 
 fn collect_modules(dir: &Path, out: &mut Vec<(String, Program)>) -> Result<(), SpandaError> {
+    // Collect modules.
+    //
+    // Parameters:
+    // - `dir` — input value
+    // - `out` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules::collect_modules(dir, out);
+
     for entry in std::fs::read_dir(dir).map_err(|e| SpandaError::Runtime {
         message: e.to_string(),
         line: 0,
@@ -132,6 +236,20 @@ fn collect_modules(dir: &Path, out: &mut Vec<(String, Program)>) -> Result<(), S
 
 /// Infer module name from file path when `module` declaration is absent (single-file mode).
 pub fn module_name_from_path(path: &Path) -> String {
+    // Module name from path.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules::module_name_from_path(path);
+
     path.file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("main")
@@ -145,6 +263,20 @@ mod tests {
     use crate::foundations::{ModuleFnDecl, Visibility};
 
     fn empty_span() -> Span {
+        // Empty span.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::modules::empty_span();
+
         Span {
             start: crate::ast::SourceLocation {
                 line: 1,
@@ -160,6 +292,20 @@ mod tests {
     }
 
     fn sample_program(functions: Vec<ModuleFnDecl>) -> Program {
+        // Sample program.
+        //
+        // Parameters:
+        // - `functions` — input value
+        //
+        // Returns:
+        // Program.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::modules::sample_program(functions);
+
         Program::Program {
             module_name: Some("navigation.path_planning".into()),
             imports: vec![],
@@ -182,6 +328,20 @@ mod tests {
 
     #[test]
     fn registry_exports_public_functions_only() {
+        // Registry exports public functions only.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::modules::registry_exports_public_functions_only();
+
         let funcs = vec![
             ModuleFnDecl {
                 name: "plan_path".into(),

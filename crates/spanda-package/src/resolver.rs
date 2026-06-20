@@ -1,3 +1,5 @@
+//! resolver support for Spanda.
+//!
 use crate::dependency::{
     parse_version, DependencySourceKind, DependencySpec, LockedDependency, LockedSource,
 };
@@ -26,6 +28,22 @@ pub fn resolve_dependencies(
     manifest: &PackageManifest,
     options: &ResolveOptions,
 ) -> PackageResult<ResolveResult> {
+    // Resolve dependencies.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `manifest` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // PackageResult<ResolveResult>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::resolver::resolve_dependencies(project_root, manifest, options);
+
     let mut lockfile_deps = BTreeMap::new();
     let mut warnings = Vec::new();
 
@@ -50,6 +68,23 @@ fn resolve_one(
     spec: &DependencySpec,
     _options: &ResolveOptions,
 ) -> PackageResult<LockedDependency> {
+    // Resolve one.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `spec` — input value
+    // - `_options` — input value
+    //
+    // Returns:
+    // PackageResult<LockedDependency>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::resolver::resolve_one(project_root, name, spec, _options);
+
     match spec.source_kind() {
         DependencySourceKind::Local => {
             let path = spec.local_path(project_root).ok_or_else(|| {
@@ -116,6 +151,20 @@ fn resolve_one(
 }
 
 fn load_dep_manifest(path: &Path) -> PackageResult<PackageManifest> {
+    // Load dep manifest.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // PackageResult<PackageManifest>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::resolver::load_dep_manifest(path);
+
     let manifest_path = path.join(MANIFEST_FILENAME);
     if !manifest_path.is_file() {
         return Err(PackageError::Dependency(format!(
@@ -130,6 +179,21 @@ fn select_registry_version(
     entry: &RegistryEntryLookup,
     req: &semver::VersionReq,
 ) -> PackageResult<Version> {
+    // Select registry version.
+    //
+    // Parameters:
+    // - `entry` — input value
+    // - `req` — input value
+    //
+    // Returns:
+    // PackageResult<Version>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::resolver::select_registry_version(entry, req);
+
     let mut candidates: Vec<Version> = entry
         .versions()
         .iter()
@@ -155,6 +219,22 @@ mod tests {
     use tempfile::TempDir;
 
     fn write_manifest(dir: &Path, name: &str, version: &str) {
+        // Write manifest.
+        //
+        // Parameters:
+        // - `dir` — input value
+        // - `name` — input value
+        // - `version` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::resolver::write_manifest(dir, name, version);
+
         let content = format!(
             r#"
 [package]
@@ -167,6 +247,20 @@ version = "{version}"
 
     #[test]
     fn resolves_local_dependency() {
+        // Resolves local dependency.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::resolver::resolves_local_dependency();
+
         let root = TempDir::new().unwrap();
         let lib = root.path().join("lib");
         fs::create_dir(&lib).unwrap();
@@ -195,6 +289,20 @@ version = "{version}"
 
     #[test]
     fn resolves_registry_dependency() {
+        // Resolves registry dependency.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::resolver::resolves_registry_dependency();
+
         let root = TempDir::new().unwrap();
         write_manifest(root.path(), "app", "0.1.0");
 
@@ -212,6 +320,20 @@ version = "{version}"
 
     #[test]
     fn parses_git_dependency() {
+        // Parses git dependency.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::resolver::parses_git_dependency();
+
         let root = TempDir::new().unwrap();
         write_manifest(root.path(), "app", "0.1.0");
 

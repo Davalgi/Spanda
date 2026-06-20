@@ -5,11 +5,39 @@ use std::process::Command;
 use tempfile::TempDir;
 
 fn spanda_bin() -> String {
+    // Spanda bin.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::package_cli::spanda_bin();
+
     std::env::var("CARGO_BIN_EXE_spanda").expect("CARGO_BIN_EXE_spanda not set")
 }
 
 #[test]
 fn init_creates_manifest_and_sources() {
+    // Init creates manifest and sources.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::package_cli::init_creates_manifest_and_sources();
+
     let dir = TempDir::new().unwrap();
     let output = Command::new(spanda_bin())
         .arg("init")
@@ -28,6 +56,20 @@ fn init_creates_manifest_and_sources() {
 
 #[test]
 fn registry_search_finds_ros2() {
+    // Registry search finds ros2.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::package_cli::registry_search_finds_ros2();
+
     let output = Command::new(spanda_bin())
         .args(["registry", "search", "ros2"])
         .output()
@@ -39,6 +81,20 @@ fn registry_search_finds_ros2() {
 
 #[test]
 fn install_writes_lockfile() {
+    // Install writes lockfile.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::package_cli::install_writes_lockfile();
+
     let dir = TempDir::new().unwrap();
     let manifest = r#"
 [package]
@@ -67,6 +123,20 @@ spanda-ros2 = "0.1.0"
 
 #[test]
 fn add_and_remove_dependency() {
+    // Add and remove dependency.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::package_cli::add_and_remove_dependency();
+
     let dir = TempDir::new().unwrap();
     let manifest = r#"
 [package]

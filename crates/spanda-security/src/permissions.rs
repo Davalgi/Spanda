@@ -1,3 +1,5 @@
+//! Application-level package permissions derived from manifest capability declarations.
+
 use crate::capability::CapabilitySet;
 use serde::{Deserialize, Serialize};
 
@@ -9,16 +11,58 @@ pub struct PackagePermissions {
 
 impl PackagePermissions {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_security::permissions::new();
+
         Self::default()
     }
 
     pub fn permissive() -> Self {
+        // Permissive.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_security::permissions::permissive();
+
         Self {
             capabilities: CapabilitySet::permissive(),
         }
     }
 
     pub fn from_capabilities(caps: impl IntoIterator<Item = impl Into<String>>) -> Self {
+        // Construct from capabilities.
+        //
+        // Parameters:
+        // - `caps` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_security::permissions::from_capabilities(caps);
+
         let mut set = CapabilitySet::new();
         set.grant_all(caps);
         Self { capabilities: set }

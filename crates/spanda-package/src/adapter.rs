@@ -1,3 +1,5 @@
+//! adapter support for Spanda.
+//!
 use serde::{Deserialize, Serialize};
 
 /// Driver / adapter package model — what a community package provides and requires.
@@ -21,6 +23,20 @@ pub struct FrameworkPackage {
 }
 
 pub fn framework_packages() -> &'static [FrameworkPackage] {
+    // Framework packages.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static [FrameworkPackage].
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::adapter::framework_packages();
+
     &[
         FrameworkPackage {
             name: "spanda-ros2",
@@ -92,6 +108,20 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
 }
 
 pub fn framework_import_paths() -> Vec<&'static str> {
+    // Framework import paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<&'static str>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::adapter::framework_import_paths();
+
     framework_packages()
         .iter()
         .flat_map(|p| p.import_paths.iter().copied())

@@ -1,3 +1,5 @@
+//! soc support for Spanda.
+//!
 use crate::hal::HalMemberConfig;
 use std::collections::HashMap;
 
@@ -39,6 +41,20 @@ pub struct SocValidationError {
 }
 
 fn build_profiles() -> HashMap<&'static str, SocProfile> {
+    // Build profiles.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // HashMap<&'static str, SocProfile>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::soc::build_profiles();
+
     HashMap::from([
         (
             "RaspberryPi4",
@@ -269,10 +285,38 @@ fn build_profiles() -> HashMap<&'static str, SocProfile> {
 }
 
 pub fn get_soc_profile(name: &str) -> Option<SocProfile> {
+    // Return soc profile.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::soc::get_soc_profile(name);
+
     build_profiles().remove(name)
 }
 
 pub fn list_soc_profiles() -> Vec<SocProfile> {
+    // List soc profiles.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<SocProfile>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::soc::list_soc_profiles();
+
     build_profiles().into_values().collect()
 }
 
@@ -280,6 +324,21 @@ pub fn validate_hal_against_soc(
     profile: &SocProfile,
     hal_members: &[HalMemberConfig],
 ) -> Vec<SocValidationError> {
+    // Validate hal against soc.
+    //
+    // Parameters:
+    // - `profile` — input value
+    // - `hal_members` — input value
+    //
+    // Returns:
+    // Vec<SocValidationError>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::soc::validate_hal_against_soc(profile, hal_members);
+
     let mut errors = Vec::new();
     let mut i2c_count = 0u32;
     let mut spi_count = 0u32;

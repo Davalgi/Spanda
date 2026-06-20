@@ -1,3 +1,5 @@
+//! integration support for Spanda.
+//!
 use glob::glob;
 use spanda_core::{compile, run, RunOptions};
 
@@ -5,6 +7,20 @@ const NEGATIVE_FIXTURES: &[&str] = &["ai_safety_violation.sd"];
 
 #[test]
 fn examples_compile_and_run() {
+    // Examples compile and run.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::integration::examples_compile_and_run();
+
     let patterns = [
         concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/*.sd"),
         concat!(
@@ -42,6 +58,20 @@ fn examples_compile_and_run() {
 
 #[test]
 fn negative_fixture_fails_type_check() {
+    // Negative fixture fails type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::integration::negative_fixture_fails_type_check();
+
     let path = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/ai_safety_violation.sd"

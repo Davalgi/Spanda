@@ -1,3 +1,5 @@
+//! main support for Spanda.
+//!
 mod package;
 
 use serde::Serialize;
@@ -65,6 +67,20 @@ struct IrResponse {
 }
 
 fn usage() {
+    // Usage.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::usage();
+
     eprintln!(
         "Spanda Programming Language\n\n\
          Usage:\n\
@@ -97,6 +113,20 @@ fn usage() {
 }
 
 fn read_source(path: &str) -> String {
+    // Read source.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::read_source(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {path}: {e}");
         process::exit(1);
@@ -104,6 +134,20 @@ fn read_source(path: &str) -> String {
 }
 
 fn print_check_json(err: Option<SpandaError>) {
+    // Print check json.
+    //
+    // Parameters:
+    // - `err` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::print_check_json(err);
+
     let resp = match err {
         None => CheckResponse {
             ok: true,
@@ -118,6 +162,20 @@ fn print_check_json(err: Option<SpandaError>) {
 }
 
 fn print_run_json(result: Result<spanda_core::RunResult, SpandaError>) {
+    // Print run json.
+    //
+    // Parameters:
+    // - `result` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::print_run_json(result);
+
     let resp = match result {
         Ok(result) => RunResponse {
             ok: true,
@@ -134,6 +192,21 @@ fn print_run_json(result: Result<spanda_core::RunResult, SpandaError>) {
 }
 
 fn human_check(source: &str, file: &str) {
+    // Human check.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `file` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::human_check(source, file);
+
     match check(source) {
         Ok(()) => {
             println!("✓ {file} — no type errors");
@@ -157,6 +230,26 @@ fn human_run(
     trace_triggers: bool,
     trace_events: bool,
 ) {
+    // Human run.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `file` — input value
+    // - `verbose` — input value
+    // - `trace_scheduler` — input value
+    // - `trace_tasks` — input value
+    // - `trace_triggers` — input value
+    // - `trace_events` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::human_run(source, file, verbose, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+
     let max_loop_iterations = if verbose { 20 } else { 10 };
     match run(
         source,
@@ -261,6 +354,22 @@ fn human_run(
 }
 
 fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
+    // Human verify.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `file` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::human_verify(source, file, options);
+
     match verify_compatibility(source, options) {
         Ok(report) => {
             println!("Hardware compatibility: {file}");
@@ -304,6 +413,20 @@ fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
 }
 
 fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaError>) {
+    // Print verify json.
+    //
+    // Parameters:
+    // - `result` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::print_verify_json(result);
+
     let resp = match result {
         Ok(report) => VerifyResponse {
             ok: report.compatible,
@@ -334,6 +457,20 @@ fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaErro
 }
 
 fn is_package_command(cmd: &str) -> bool {
+    // Return whether package command.
+    //
+    // Parameters:
+    // - `cmd` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::is_package_command(cmd);
+
     matches!(
         cmd,
         "init" | "build" | "test" | "add" | "remove" | "publish" | "install" | "registry"
@@ -341,6 +478,20 @@ fn is_package_command(cmd: &str) -> bool {
 }
 
 fn fleet_dispatch(args: &[String]) {
+    // Fleet dispatch.
+    //
+    // Parameters:
+    // - `args` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::fleet_dispatch(args);
+
     if args.first().map(String::as_str) != Some("run") {
         eprintln!("Usage: spanda fleet run [--json] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>");
         process::exit(1);
@@ -399,6 +550,25 @@ fn human_fleet_run(
     trace_triggers: bool,
     trace_events: bool,
 ) {
+    // Human fleet run.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `file` — input value
+    // - `trace_scheduler` — input value
+    // - `trace_tasks` — input value
+    // - `trace_triggers` — input value
+    // - `trace_events` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::human_fleet_run(source, file, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+
     use spanda_core::ast::{Program, RobotDecl};
     use spanda_core::foundations::DeployDecl;
 
@@ -492,6 +662,25 @@ fn print_fleet_json(
     trace_triggers: bool,
     trace_events: bool,
 ) {
+    // Print fleet json.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `_file` — input value
+    // - `trace_scheduler` — input value
+    // - `trace_tasks` — input value
+    // - `trace_triggers` — input value
+    // - `trace_events` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::print_fleet_json(source, _file, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+
     let opts = RunOptions {
         max_loop_iterations: 20,
         trace_scheduler,
@@ -505,6 +694,21 @@ fn print_fleet_json(
 }
 
 fn dispatch_package(command: &str, rest: &[String]) {
+    // Dispatch package.
+    //
+    // Parameters:
+    // - `command` — input value
+    // - `rest` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::dispatch_package(command, rest);
+
     match command {
         "init" => package::cmd_init(rest),
         "build" => package::cmd_build(rest),
@@ -530,6 +734,20 @@ fn dispatch_package(command: &str, rest: &[String]) {
 }
 
 fn main() {
+    // Main.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::main();
+
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 || args[1] == "--help" || args[1] == "-h" {
         usage();

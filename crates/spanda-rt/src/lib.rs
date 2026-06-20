@@ -122,16 +122,58 @@ pub extern "C" fn spanda_rt_compare_double(op: i32, left: f64, right: f64) -> u8
 
 /// Test helper: drain and return recorded runtime events.
 pub fn take_events() -> Vec<String> {
+    // Take events.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<String>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::take_events();
+
     EVENTS.lock().unwrap().drain(..).collect()
 }
 
 fn log_event(msg: String) {
+    // Log event.
+    //
+    // Parameters:
+    // - `msg` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::log_event(msg);
+
     if let Ok(mut events) = EVENTS.lock() {
         events.push(msg);
     }
 }
 
 fn ptr_to_str(ptr: *const c_char) -> String {
+    // Ptr to str.
+    //
+    // Parameters:
+    // - `ptr` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::ptr_to_str(ptr);
+
     if ptr.is_null() {
         return "<null>".into();
     }
@@ -140,6 +182,20 @@ fn ptr_to_str(ptr: *const c_char) -> String {
 
 #[cfg_attr(not(test), allow(dead_code))]
 fn events_since(start: usize) -> Vec<String> {
+    // Events since.
+    //
+    // Parameters:
+    // - `start` — input value
+    //
+    // Returns:
+    // Vec<String>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::events_since(start);
+
     EVENTS.lock().unwrap()[start..].to_vec()
 }
 
@@ -150,6 +206,20 @@ mod tests {
 
     #[test]
     fn c_abi_records_actuator_calls() {
+        // C abi records actuator calls.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::c_abi_records_actuator_calls();
+
         let start = EVENTS.lock().unwrap().len();
         let wheels = CString::new("wheels").unwrap();
         spanda_rt_drive(wheels.as_ptr(), 0.5, 0.1);
@@ -163,6 +233,20 @@ mod tests {
 
     #[test]
     fn c_abi_records_publish_and_loop() {
+        // C abi records publish and loop.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::c_abi_records_publish_and_loop();
+
         let start = EVENTS.lock().unwrap().len();
         let topic = CString::new("/status").unwrap();
         let payload = CString::new("ok").unwrap();
@@ -175,6 +259,20 @@ mod tests {
 
     #[test]
     fn c_abi_records_subscribe() {
+        // C abi records subscribe.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::c_abi_records_subscribe();
+
         let start = EVENTS.lock().unwrap().len();
         let topic = CString::new("/cmd").unwrap();
         spanda_rt_subscribe(topic.as_ptr());

@@ -1,7 +1,23 @@
+//! modules result support for Spanda.
+//!
 use spanda_core::{check, check_with_registry, compile, run, ModuleRegistry, RunOptions};
 
 #[test]
 fn export_fn_in_module_type_checks() {
+    // Export fn in module type checks.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::export_fn_in_module_type_checks();
+
     let source = r#"
 module navigation.path_planning;
 
@@ -24,6 +40,20 @@ robot R {
 
 #[test]
 fn cross_module_import_resolves_export() {
+    // Cross module import resolves export.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::cross_module_import_resolves_export();
+
     let planning = r#"
 module navigation.path_planning;
 
@@ -58,6 +88,20 @@ robot R {
 
 #[test]
 fn private_fn_not_exported_to_importer() {
+    // Private fn not exported to importer.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::private_fn_not_exported_to_importer();
+
     let planning = r#"
 module navigation.path_planning;
 
@@ -92,6 +136,20 @@ robot R {
 
 #[test]
 fn generic_export_fn_with_type_param() {
+    // Generic export fn with type param.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::generic_export_fn_with_type_param();
+
     let source = r#"
 module std.collections;
 
@@ -113,6 +171,20 @@ robot R {
 
 #[test]
 fn result_ok_err_match() {
+    // Result ok err match.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::result_ok_err_match();
+
     let source = r#"
 module navigation;
 
@@ -139,6 +211,20 @@ robot R {
 
 #[test]
 fn option_some_none_match() {
+    // Option some none match.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::option_some_none_match();
+
     let source = r#"
 module sensors;
 
@@ -161,6 +247,20 @@ robot R {
 
 #[test]
 fn result_generic_type_annotation() {
+    // Result generic type annotation.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::modules_result::result_generic_type_annotation();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;

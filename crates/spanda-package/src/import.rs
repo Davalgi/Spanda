@@ -1,8 +1,24 @@
+//! import support for Spanda.
+//!
 use crate::adapter::framework_import_paths;
 use crate::registry::all_import_paths;
 
 /// Built-in module import paths (Phase 1 module system).
 pub fn builtin_import_paths() -> &'static [&'static str] {
+    // Builtin import paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static [&'static str].
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::import::builtin_import_paths();
+
     &[
         "sensors.lidar",
         "sensors.camera",
@@ -58,6 +74,20 @@ pub fn builtin_import_paths() -> &'static [&'static str] {
 
 /// Resolve whether an import path is known (builtin, std, or package registry).
 pub fn resolve_package_import(path: &str) -> bool {
+    // Resolve package import.
+    //
+    // Parameters:
+    // - `path` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::import::resolve_package_import(path);
+
     if builtin_import_paths().contains(&path) {
         return true;
     }
@@ -66,6 +96,20 @@ pub fn resolve_package_import(path: &str) -> bool {
 
 /// All registered import paths for tooling / LSP.
 pub fn all_registered_import_paths() -> Vec<String> {
+    // All registered import paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<String>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::import::all_registered_import_paths();
+
     let mut paths: Vec<String> = builtin_import_paths()
         .iter()
         .map(|s| (*s).to_string())
@@ -83,6 +127,20 @@ mod tests {
 
     #[test]
     fn resolves_navigation_imports() {
+        // Resolves navigation imports.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::import::resolves_navigation_imports();
+
         assert!(resolve_package_import("navigation.path_planning"));
         assert!(resolve_package_import("robotics.ros2"));
         assert!(resolve_package_import("ai.openai"));

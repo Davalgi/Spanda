@@ -1,7 +1,23 @@
+//! enum payloads support for Spanda.
+//!
 use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn enum_payload_constructor_and_match_bindings() {
+    // Enum payload constructor and match bindings.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::enum_payloads::enum_payload_constructor_and_match_bindings();
+
     let source = r#"
 enum Command {
   Stop,
@@ -25,6 +41,20 @@ robot R {
 
 #[test]
 fn enum_payload_arity_mismatch_rejected() {
+    // Enum payload arity mismatch rejected.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::enum_payloads::enum_payload_arity_mismatch_rejected();
+
     let source = r#"
 enum Command { Drive(Float, Float) }
 robot R {

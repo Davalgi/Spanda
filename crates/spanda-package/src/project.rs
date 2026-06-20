@@ -1,3 +1,5 @@
+//! project support for Spanda.
+//!
 use crate::error::{PackageError, PackageResult};
 use crate::manifest::{PackageManifest, MANIFEST_FILENAME};
 use std::fs;
@@ -36,6 +38,22 @@ pub fn init_package(
     name: Option<&str>,
     description: Option<&str>,
 ) -> PackageResult<PathBuf> {
+    // Init package.
+    //
+    // Parameters:
+    // - `dir` — input value
+    // - `name` — input value
+    // - `description` — input value
+    //
+    // Returns:
+    // PackageResult<PathBuf>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::project::init_package(dir, name, description);
+
     let pkg_name = name
         .map(str::to_string)
         .or_else(|| dir.file_name().and_then(|n| n.to_str()).map(str::to_string))
@@ -73,6 +91,20 @@ pub fn init_package(
 
 /// Collect `.sd` source files from a project (src/ and tests/).
 pub fn collect_source_files(project_root: &Path) -> PackageResult<Vec<PathBuf>> {
+    // Collect source files.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    //
+    // Returns:
+    // PackageResult<Vec<PathBuf>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::project::collect_source_files(project_root);
+
     let mut files = Vec::new();
     for sub in ["src", "tests"] {
         let dir = project_root.join(sub);
@@ -94,6 +126,21 @@ pub fn collect_source_files(project_root: &Path) -> PackageResult<Vec<PathBuf>> 
 }
 
 fn collect_sd_files(dir: &Path, out: &mut Vec<PathBuf>) -> PackageResult<()> {
+    // Collect sd files.
+    //
+    // Parameters:
+    // - `dir` — input value
+    // - `out` — input value
+    //
+    // Returns:
+    // PackageResult<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::project::collect_sd_files(dir, out);
+
     for entry in fs::read_dir(dir).map_err(PackageError::from)? {
         let entry = entry.map_err(PackageError::from)?;
         let path = entry.path();
@@ -112,6 +159,22 @@ pub fn add_dependency(
     name: &str,
     spec: crate::dependency::DependencySpec,
 ) -> PackageResult<()> {
+    // Add dependency.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    // - `spec` — input value
+    //
+    // Returns:
+    // PackageResult<()>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::project::add_dependency(project_root, name, spec);
+
     let manifest_path = project_root.join(MANIFEST_FILENAME);
     let mut manifest = PackageManifest::load(&manifest_path)?;
     manifest.dependencies.insert(name.to_string(), spec);
@@ -120,6 +183,21 @@ pub fn add_dependency(
 
 /// Remove a dependency from the manifest and save.
 pub fn remove_dependency(project_root: &Path, name: &str) -> PackageResult<bool> {
+    // Remove dependency.
+    //
+    // Parameters:
+    // - `project_root` — input value
+    // - `name` — input value
+    //
+    // Returns:
+    // PackageResult<bool>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::project::remove_dependency(project_root, name);
+
     let manifest_path = project_root.join(MANIFEST_FILENAME);
     let mut manifest = PackageManifest::load(&manifest_path)?;
     let removed = manifest.dependencies.remove(name).is_some();

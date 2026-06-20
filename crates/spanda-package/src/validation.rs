@@ -1,3 +1,5 @@
+//! validation support for Spanda.
+//!
 use crate::error::{PackageError, PackageResult};
 use crate::hardware_req::{validate_capability, CapabilityRequirements, HardwareRequirements};
 use crate::manifest::PackageManifest;
@@ -17,6 +19,20 @@ pub struct ApplicationPermissions {
 
 impl ApplicationPermissions {
     pub fn permissive() -> Self {
+        // Permissive.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::validation::permissive();
+
         Self {
             capabilities: crate::hardware_req::known_capabilities()
                 .iter()
@@ -53,6 +69,20 @@ pub struct ValidationReport {
 
 impl ValidationReport {
     pub fn ok(&self) -> bool {
+        // Ok.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.ok();
+
         !self
             .issues
             .iter()
@@ -60,6 +90,22 @@ impl ValidationReport {
     }
 
     pub fn push_error(&mut self, category: &str, message: impl Into<String>) {
+        // Push error.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `category` — input value
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.push_error(category, message);
+
         self.issues.push(ValidationIssue {
             severity: ValidationSeverity::Error,
             category: category.to_string(),
@@ -68,6 +114,22 @@ impl ValidationReport {
     }
 
     pub fn push_warning(&mut self, category: &str, message: impl Into<String>) {
+        // Push warning.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `category` — input value
+        // - `message` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.push_warning(category, message);
+
         let msg = message.into();
         self.warnings.push(msg.clone());
         self.issues.push(ValidationIssue {
@@ -83,6 +145,21 @@ pub fn validate_package(
     manifest: &PackageManifest,
     app_perms: &ApplicationPermissions,
 ) -> PackageResult<ValidationReport> {
+    // Validate package.
+    //
+    // Parameters:
+    // - `manifest` — input value
+    // - `app_perms` — input value
+    //
+    // Returns:
+    // PackageResult<ValidationReport>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_package(manifest, app_perms);
+
     let mut report = ValidationReport::default();
 
     validate_version(&manifest.package.version, &mut report);
@@ -116,12 +193,42 @@ pub fn validate_package(
 }
 
 fn validate_version(version: &str, report: &mut ValidationReport) {
+    // Validate version.
+    //
+    // Parameters:
+    // - `version` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_version(version, report);
+
     if crate::dependency::parse_version(version).is_err() {
         report.push_error("version", format!("invalid semver version '{version}'"));
     }
 }
 
 fn validate_capabilities(caps: &CapabilityRequirements, report: &mut ValidationReport) {
+    // Validate capabilities.
+    //
+    // Parameters:
+    // - `caps` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_capabilities(caps, report);
+
     for cap in caps.all() {
         if let Err(e) = validate_capability(cap) {
             report.push_warning("capabilities", e.to_string());
@@ -130,6 +237,21 @@ fn validate_capabilities(caps: &CapabilityRequirements, report: &mut ValidationR
 }
 
 fn validate_hardware_requirements(req: &HardwareRequirements, report: &mut ValidationReport) {
+    // Validate hardware requirements.
+    //
+    // Parameters:
+    // - `req` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_hardware_requirements(req, report);
+
     if let Some(mem) = &req.memory {
         if req.memory_mb_min().is_none() {
             report.push_error(
@@ -153,6 +275,22 @@ fn validate_hardware_targets(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
+    // Validate hardware targets.
+    //
+    // Parameters:
+    // - `manifest` — input value
+    // - `app_perms` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_hardware_targets(manifest, app_perms, report);
+
     let known = list_hardware_profiles();
     for target in &manifest.hardware.targets {
         if !known.contains(target) {
@@ -175,6 +313,22 @@ fn validate_safety(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
+    // Validate safety.
+    //
+    // Parameters:
+    // - `safety` — input value
+    // - `app_perms` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_safety(safety, app_perms, report);
+
     if !app_perms.allowed_safety_levels.contains(&safety.level) {
         report.push_error(
             "safety",
@@ -206,6 +360,22 @@ fn validate_license(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
+    // Validate license.
+    //
+    // Parameters:
+    // - `manifest` — input value
+    // - `app_perms` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_license(manifest, app_perms, report);
+
     if let Some(license) = &manifest.package.license {
         if !app_perms.allowed_licenses.is_empty()
             && !app_perms.allowed_licenses.contains(license)
@@ -228,6 +398,21 @@ fn validate_license(
 }
 
 fn validate_adapter(manifest: &PackageManifest, report: &mut ValidationReport) {
+    // Validate adapter.
+    //
+    // Parameters:
+    // - `manifest` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_adapter(manifest, report);
+
     for req in &manifest.adapter.requires {
         if let Err(e) = validate_capability(req) {
             report.push_warning("adapter", e.to_string());
@@ -242,6 +427,21 @@ fn validate_adapter(manifest: &PackageManifest, report: &mut ValidationReport) {
 }
 
 fn validate_dependencies(manifest: &PackageManifest, report: &mut ValidationReport) {
+    // Validate dependencies.
+    //
+    // Parameters:
+    // - `manifest` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::validate_dependencies(manifest, report);
+
     for (name, spec) in manifest.all_dependencies() {
         if spec.source_kind() == crate::dependency::DependencySourceKind::Registry {
             if find_registry_entry(name).is_none() {
@@ -266,6 +466,22 @@ fn check_capability_excess(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
+    // Check capability excess.
+    //
+    // Parameters:
+    // - `caps` — input value
+    // - `app_perms` — input value
+    // - `report` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::validation::check_capability_excess(caps, app_perms, report);
+
     for cap in caps.uses.iter().chain(caps.required.iter()) {
         if !app_perms.capabilities.contains(cap) {
             let severity = if crate::hardware_req::is_high_risk_capability(cap) {
@@ -301,6 +517,20 @@ mod tests {
 
     #[test]
     fn validates_safety_level_conflict() {
+        // Validates safety level conflict.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::validation::validates_safety_level_conflict();
+
         let manifest = PackageManifest::parse_str(
             r#"
 [package]
@@ -320,6 +550,20 @@ can_control_actuators = true
 
     #[test]
     fn warns_on_capability_excess() {
+        // Warns on capability excess.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::validation::warns_on_capability_excess();
+
         let manifest = PackageManifest::parse_str(
             r#"
 [package]
@@ -342,6 +586,20 @@ uses = ["camera.read"]
 
     #[test]
     fn validates_hardware_metadata() {
+        // Validates hardware metadata.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::validation::validates_hardware_metadata();
+
         let manifest = PackageManifest::parse_str(
             r#"
 [package]

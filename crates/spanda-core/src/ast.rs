@@ -1,3 +1,5 @@
+//! ast support for Spanda.
+//!
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
@@ -205,6 +207,20 @@ pub enum UnitKind {
 
 impl UnitKind {
     pub fn as_str(self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             UnitKind::None => "none",
             UnitKind::M => "m",
@@ -287,6 +303,20 @@ impl UnitKind {
     }
 
     pub fn from_lexeme(lexeme: &str) -> Self {
+        // Construct from lexeme.
+        //
+        // Parameters:
+        // - `lexeme` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ast::from_lexeme(lexeme);
+
         match lexeme {
             "m" => UnitKind::M,
             "mm" => UnitKind::Mm,
@@ -982,6 +1012,20 @@ pub enum BinaryOp {
 
 impl BinaryOp {
     pub fn from_lexeme(lexeme: &str) -> Option<Self> {
+        // Construct from lexeme.
+        //
+        // Parameters:
+        // - `lexeme` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ast::from_lexeme(lexeme);
+
         match lexeme {
             "+" => Some(BinaryOp::Add),
             "-" => Some(BinaryOp::Sub),
@@ -1000,6 +1044,20 @@ impl BinaryOp {
     }
 
     pub fn as_str(self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             BinaryOp::Add => "+",
             BinaryOp::Sub => "-",
@@ -1032,12 +1090,40 @@ pub const ACTION_TYPES: &[&str] = &["NavigateTo", "FollowPath", "PickObject"];
 // Helpers to access inner fields ergonomically
 impl Program {
     pub fn imports(&self) -> &[ImportDecl] {
+        // Imports.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &[ImportDecl].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.imports();
+
         match self {
             Program::Program { imports, .. } => imports,
         }
     }
 
     pub fn robots(&self) -> &[RobotDecl] {
+        // Robots.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &[RobotDecl].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.robots();
+
         match self {
             Program::Program { robots, .. } => robots,
         }
@@ -1046,6 +1132,20 @@ impl Program {
 
 impl RobotDecl {
     pub fn name(&self) -> &str {
+        // Name.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.name();
+
         match self {
             RobotDecl::RobotDecl { name, .. } => name,
         }

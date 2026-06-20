@@ -1,5 +1,8 @@
+//! Package manager error types and result alias.
+
 use thiserror::Error;
 
+/// Errors raised while parsing manifests, resolving dependencies, or publishing packages.
 #[derive(Debug, Error)]
 pub enum PackageError {
     #[error("manifest error: {0}")]
@@ -27,4 +30,5 @@ pub enum PackageError {
     Semver(#[from] semver::Error),
 }
 
+/// Convenience alias for package operations that may fail with [`PackageError`].
 pub type PackageResult<T> = Result<T, PackageError>;

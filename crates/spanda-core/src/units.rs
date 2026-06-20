@@ -42,6 +42,20 @@ pub enum PhysicalCategory {
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
 pub fn unit_category(unit: UnitKind) -> PhysicalCategory {
+    // Unit category.
+    //
+    // Parameters:
+    // - `unit` — input value
+    //
+    // Returns:
+    // PhysicalCategory.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::unit_category(unit);
+
     match unit {
         UnitKind::None => PhysicalCategory::Scalar,
         UnitKind::M | UnitKind::Mm | UnitKind::Cm | UnitKind::Km | UnitKind::Ft | UnitKind::In => {
@@ -89,6 +103,21 @@ pub fn unit_category(unit: UnitKind) -> PhysicalCategory {
 }
 
 pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
+    // Units compatible.
+    //
+    // Parameters:
+    // - `a` — input value
+    // - `b` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::units_compatible(a, b);
+
     if a == b {
         return true;
     }
@@ -99,6 +128,21 @@ pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
 }
 
 pub fn unit_matches_named_type(type_name: &str, unit: UnitKind) -> bool {
+    // Unit matches named type.
+    //
+    // Parameters:
+    // - `type_name` — input value
+    // - `unit` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::unit_matches_named_type(type_name, unit);
+
     match type_name {
         "Distance" => unit_category(unit) == PhysicalCategory::Distance,
         "Duration" => unit_category(unit) == PhysicalCategory::Duration,
@@ -136,12 +180,41 @@ pub fn unit_matches_named_type(type_name: &str, unit: UnitKind) -> bool {
 
 /// Convert `value` in `unit` to the canonical unit for its physical category.
 pub fn to_canonical(value: f64, unit: UnitKind) -> (f64, UnitKind) {
+    // Convert to canonical.
+    //
+    // Parameters:
+    // - `value` — input value
+    // - `unit` — input value
+    //
+    // Returns:
+    // (f64, UnitKind).
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::to_canonical(value, unit);
+
     let category = unit_category(unit);
     let canonical = canonical_unit(category);
     (to_canonical_linear(value, unit), canonical)
 }
 
 pub fn canonical_unit(category: PhysicalCategory) -> UnitKind {
+    // Canonical unit.
+    //
+    // Parameters:
+    // - `category` — input value
+    //
+    // Returns:
+    // UnitKind.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::canonical_unit(category);
+
     match category {
         PhysicalCategory::Scalar => UnitKind::None,
         PhysicalCategory::Distance => UnitKind::M,
@@ -179,6 +252,22 @@ pub fn canonical_unit(category: PhysicalCategory) -> UnitKind {
 }
 
 pub fn convert_value(value: f64, from: UnitKind, to: UnitKind) -> Option<f64> {
+    // Convert value.
+    //
+    // Parameters:
+    // - `value` — input value
+    // - `from` — input value
+    // - `to` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::convert_value(value, from, to);
+
     if from == to {
         return Some(value);
     }
@@ -191,6 +280,22 @@ pub fn convert_value(value: f64, from: UnitKind, to: UnitKind) -> Option<f64> {
 }
 
 fn from_canonical(value: f64, category: PhysicalCategory, to: UnitKind) -> f64 {
+    // Construct from canonical.
+    //
+    // Parameters:
+    // - `value` — input value
+    // - `category` — input value
+    // - `to` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::from_canonical(value, category, to);
+
     match category {
         PhysicalCategory::Distance => match to {
             UnitKind::M => value,
@@ -358,6 +463,21 @@ fn from_canonical(value: f64, category: PhysicalCategory, to: UnitKind) -> f64 {
 }
 
 fn to_canonical_linear(value: f64, unit: UnitKind) -> f64 {
+    // Convert to canonical linear.
+    //
+    // Parameters:
+    // - `value` — input value
+    // - `unit` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::to_canonical_linear(value, unit);
+
     match unit {
         UnitKind::M => value,
         UnitKind::Mm => value / 1000.0,
@@ -438,6 +558,23 @@ pub fn align_for_binary(
     right: f64,
     right_unit: UnitKind,
 ) -> Option<(f64, f64, UnitKind)> {
+    // Align for binary.
+    //
+    // Parameters:
+    // - `left` — input value
+    // - `left_unit` — input value
+    // - `right` — input value
+    // - `right_unit` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::units::align_for_binary(left, left_unit, right, right_unit);
+
     if !units_compatible(left_unit, right_unit) {
         return None;
     }
@@ -454,12 +591,40 @@ mod tests {
 
     #[test]
     fn converts_distance_units() {
+        // Converts distance units.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::units::converts_distance_units();
+
         assert!((convert_value(100.0, UnitKind::Cm, UnitKind::M).unwrap() - 1.0).abs() < 1e-9);
         assert!((convert_value(1.0, UnitKind::Km, UnitKind::M).unwrap() - 1000.0).abs() < 1e-6);
     }
 
     #[test]
     fn converts_mixed_duration_addition() {
+        // Converts mixed duration addition.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::units::converts_mixed_duration_addition();
+
         let (l, r, _) = align_for_binary(500.0, UnitKind::Ms, 0.5, UnitKind::S).unwrap();
         assert!((l - 500.0).abs() < 1e-9);
         assert!((r - 500.0).abs() < 1e-9);
@@ -467,6 +632,20 @@ mod tests {
 
     #[test]
     fn converts_temperature() {
+        // Converts temperature.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::units::converts_temperature();
+
         assert!(
             (convert_value(32.0, UnitKind::Fahrenheit, UnitKind::Celsius).unwrap()).abs() < 1e-9
         );
@@ -478,6 +657,20 @@ mod tests {
 
     #[test]
     fn rejects_incompatible_units() {
+        // Rejects incompatible units.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::units::rejects_incompatible_units();
+
         assert!(!units_compatible(UnitKind::M, UnitKind::Kg));
         assert!(convert_value(1.0, UnitKind::M, UnitKind::Kg).is_none());
         assert!(!units_compatible(UnitKind::Rh, UnitKind::Lux));
@@ -485,6 +678,20 @@ mod tests {
 
     #[test]
     fn converts_sensor_units() {
+        // Converts sensor units.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::units::converts_sensor_units();
+
         assert!(
             (convert_value(65.0, UnitKind::PercentRh, UnitKind::Rh).unwrap() - 65.0).abs() < 1e-9
         );

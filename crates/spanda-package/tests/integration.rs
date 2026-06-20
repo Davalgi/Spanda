@@ -12,6 +12,20 @@ use tempfile::TempDir;
 
 #[test]
 fn spanda_toml_parsing_full() {
+    // Spanda toml parsing full.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::spanda_toml_parsing_full();
+
     let content = r#"
 [package]
 name = "warehouse_robot"
@@ -55,6 +69,20 @@ categories = ["robotics", "navigation"]
 
 #[test]
 fn dependency_parsing_local_and_git() {
+    // Dependency parsing local and git.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::dependency_parsing_local_and_git();
+
     let spec = DependencySpec::Detail(DependencyDetail {
         version: None,
         path: Some(PathBuf::from("../lib")),
@@ -84,6 +112,20 @@ fn dependency_parsing_local_and_git() {
 
 #[test]
 fn version_constraint_validation() {
+    // Version constraint validation.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::version_constraint_validation();
+
     let req = parse_version_req("^0.1.0").unwrap();
     assert!(version_satisfies(&Version::new(0, 1, 9), &req));
     assert!(!version_satisfies(&Version::new(0, 2, 0), &req));
@@ -91,6 +133,20 @@ fn version_constraint_validation() {
 
 #[test]
 fn lockfile_generation_roundtrip() {
+    // Lockfile generation roundtrip.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::lockfile_generation_roundtrip();
+
     let root = TempDir::new().unwrap();
     let content = r#"
 [package]
@@ -114,12 +170,40 @@ spanda-ros2 = "0.1.0"
 
 #[test]
 fn capability_validation_known_and_unknown() {
+    // Capability validation known and unknown.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::capability_validation_known_and_unknown();
+
     assert!(validate_capability("camera.read").is_ok());
     assert!(validate_capability("unknown.cap").is_err());
 }
 
 #[test]
 fn package_safety_level_validation() {
+    // Package safety level validation.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::package_safety_level_validation();
+
     let manifest = PackageManifest::parse_str(
         r#"
 [package]
@@ -138,6 +222,20 @@ can_control_actuators = true
 
 #[test]
 fn find_project_root_walks_up() {
+    // Find project root walks up.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::integration::find_project_root_walks_up();
+
     let root = TempDir::new().unwrap();
     fs::write(
         root.path().join("spanda.toml"),

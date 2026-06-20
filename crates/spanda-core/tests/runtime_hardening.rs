@@ -1,7 +1,23 @@
+//! runtime hardening support for Spanda.
+//!
 use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn capability_denied_when_agent_lacks_read() {
+    // Capability denied when agent lacks read.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_read();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -52,6 +68,20 @@ robot R {
 
 #[test]
 fn capability_denied_when_agent_lacks_summarize() {
+    // Capability denied when agent lacks summarize.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_summarize();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -87,6 +117,20 @@ robot R {
 
 #[test]
 fn reasoning_trace_from_action_proposal() {
+    // Reasoning trace from action proposal.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::reasoning_trace_from_action_proposal();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -106,6 +150,20 @@ robot R {
 
 #[test]
 fn capability_denied_when_agent_lacks_propose_motion() {
+    // Capability denied when agent lacks propose motion.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_propose_motion();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -156,6 +214,20 @@ robot R {
 
 #[test]
 fn behavior_requires_contract_fails_at_runtime() {
+    // Behavior requires contract fails at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::behavior_requires_contract_fails_at_runtime();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -182,6 +254,20 @@ robot R {
 
 #[test]
 fn behavior_ensures_contract_fails_at_runtime() {
+    // Behavior ensures contract fails at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::behavior_ensures_contract_fails_at_runtime();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -208,6 +294,20 @@ robot R {
 
 #[test]
 fn task_requires_skips_iteration_without_aborting() {
+    // Task requires skips iteration without aborting.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::task_requires_skips_iteration_without_aborting();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -242,6 +342,20 @@ robot R {
 
 #[test]
 fn task_ensures_contract_fails_at_runtime() {
+    // Task ensures contract fails at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::task_ensures_contract_fails_at_runtime();
+
     let source = r#"
 robot R {
   sensor lidar: Lidar on "/scan";
@@ -268,6 +382,20 @@ robot R {
 
 #[test]
 fn twin_unknown_mirror_field_rejected_at_typecheck() {
+    // Twin unknown mirror field rejected at typecheck.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::twin_unknown_mirror_field_rejected_at_typecheck();
+
     let source = r#"
 robot R {
   twin T {
@@ -288,6 +416,20 @@ robot R {
 
 #[test]
 fn match_non_exhaustive_enum_rejected_at_typecheck() {
+    // Match non exhaustive enum rejected at typecheck.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::match_non_exhaustive_enum_rejected_at_typecheck();
+
     let source = r#"
 enum Mode {
   Idle,
@@ -318,6 +460,20 @@ robot R {
 
 #[test]
 fn verify_rule_fails_at_runtime() {
+    // Verify rule fails at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::verify_rule_fails_at_runtime();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -342,6 +498,20 @@ robot R {
 
 #[test]
 fn verify_non_bool_rejected_at_typecheck() {
+    // Verify non bool rejected at typecheck.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::runtime_hardening::verify_non_bool_rejected_at_typecheck();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;

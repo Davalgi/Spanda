@@ -1,3 +1,5 @@
+//! error support for Spanda.
+//!
 use crate::ast::Program;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -33,6 +35,20 @@ pub enum SpandaError {
 
 impl SpandaError {
     pub fn diagnostics(&self) -> Vec<Diagnostic> {
+        // Diagnostics.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<Diagnostic>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.diagnostics();
+
         match self {
             SpandaError::Lexer {
                 message,
@@ -129,10 +145,38 @@ pub struct RunOptions {
 }
 
 fn default_max_loop_iterations() -> usize {
+    // Default max loop iterations.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::error::default_max_loop_iterations();
+
     10
 }
 
 fn default_lidar_range() -> f64 {
+    // Default lidar range.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::error::default_lidar_range();
+
     10.0
 }
 

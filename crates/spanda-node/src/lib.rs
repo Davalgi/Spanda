@@ -1,3 +1,5 @@
+//! src crate public API and re-exports.
+//!
 #![deny(clippy::all)]
 
 use napi::bindgen_prelude::*;
@@ -109,6 +111,20 @@ pub struct RunOptionsJs {
 }
 
 fn map_diagnostics(err: &SpandaError) -> Vec<DiagnosticJs> {
+    // Map diagnostics.
+    //
+    // Parameters:
+    // - `err` — input value
+    //
+    // Returns:
+    // Vec<DiagnosticJs>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::map_diagnostics(err);
+
     err.diagnostics()
         .into_iter()
         .map(|d| DiagnosticJs {
@@ -121,6 +137,20 @@ fn map_diagnostics(err: &SpandaError) -> Vec<DiagnosticJs> {
 
 #[napi]
 pub fn check_source(source: String) -> CheckResultJs {
+    // Check source.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // CheckResultJs.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::check_source(source);
+
     match check(&source) {
         Ok(()) => CheckResultJs {
             ok: true,
@@ -135,6 +165,21 @@ pub fn check_source(source: String) -> CheckResultJs {
 
 #[napi]
 pub fn run_source(source: String, options: Option<RunOptionsJs>) -> Result<RunResultJs> {
+    // Run source.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::run_source(source, options);
+
     let opts = options.unwrap_or(RunOptionsJs {
         entry_behavior: None,
         max_loop_iterations: None,
@@ -207,6 +252,20 @@ pub fn run_source(source: String, options: Option<RunOptionsJs>) -> Result<RunRe
 
 #[napi]
 pub fn core_version() -> String {
+    // Core version.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::core_version();
+
     env!("CARGO_PKG_VERSION").to_string()
 }
 
@@ -228,6 +287,20 @@ pub struct VerifyResultJs {
 
 #[napi]
 pub fn verify_source(source: String) -> VerifyResultJs {
+    // Verify source.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // VerifyResultJs.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::verify_source(source);
+
     match verify_compatibility(&source, &VerifyOptions::default()) {
         Ok(report) => VerifyResultJs {
             ok: report.compatible,
@@ -263,6 +336,20 @@ pub fn verify_source(source: String) -> VerifyResultJs {
 
 #[napi]
 pub fn sir_source(source: String) -> Result<String> {
+    // Sir source.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::sir_source(source);
+
     lower_to_sir(&source)
         .map(|sir| serde_json::to_string_pretty(&sir).unwrap_or_default())
         .map_err(|e| Error::from_reason(e.to_string()))
@@ -270,5 +357,19 @@ pub fn sir_source(source: String) -> Result<String> {
 
 #[napi]
 pub fn fmt_source(source: String) -> String {
+    // Fmt source.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_node::fmt_source(source);
+
     format_source(&source)
 }

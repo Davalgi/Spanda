@@ -1,3 +1,5 @@
+//! pretty support for Spanda.
+//!
 use crate::ast::*;
 use crate::comm::{DiscoverFilter, DiscoverTarget};
 use crate::foundations::{CapabilityDecl, Visibility};
@@ -10,6 +12,20 @@ struct PrettyPrinter {
 
 impl PrettyPrinter {
     fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::pretty::new();
+
         Self {
             out: String::new(),
             indent: 0,
@@ -18,6 +34,20 @@ impl PrettyPrinter {
     }
 
     fn finish(mut self) -> String {
+        // Finish.
+        //
+        // Parameters:
+        // - `mut self` — input value
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::pretty::finish(mut self);
+
         while self.out.ends_with('\n') {
             self.out.pop();
         }
@@ -26,6 +56,20 @@ impl PrettyPrinter {
     }
 
     fn write_indent(&mut self) {
+        // Write indent.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.write_indent();
+
         if self.at_line_start {
             for _ in 0..self.indent {
                 self.out.push_str("  ");
@@ -35,37 +79,141 @@ impl PrettyPrinter {
     }
 
     fn write(&mut self, text: &str) {
+        // Write.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `text` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.write(text);
+
         self.write_indent();
         self.out.push_str(text);
     }
 
     fn space(&mut self) {
+        // Space.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.space();
+
         if !self.at_line_start && !self.out.ends_with(' ') && !self.out.ends_with('\n') {
             self.out.push(' ');
         }
     }
 
     fn newline(&mut self) {
+        // Newline.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.newline();
+
         self.out.push('\n');
         self.at_line_start = true;
     }
 
     fn write_line(&mut self, text: &str) {
+        // Write line.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `text` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.write_line(text);
+
         self.write(text);
         self.newline();
     }
 
     fn open_block(&mut self, header: &str) {
+        // Open block.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `header` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.open_block(header);
+
         self.write_line(&format!("{header} {{"));
         self.indent += 1;
     }
 
     fn close_block(&mut self, suffix: &str) {
+        // Close block.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `suffix` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.close_block(suffix);
+
         self.indent = self.indent.saturating_sub(1);
         self.write_line(&format!("}}{suffix}"));
     }
 
     fn emit_source_span(&mut self, source: &str, span: &Span) {
+        // Emit source span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `source` — input value
+        // - `span` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.emit_source_span(source, span);
+
         let Some(chunk) = source.get(span.start.offset..span.end.offset) else {
             return;
         };
@@ -75,6 +223,21 @@ impl PrettyPrinter {
     }
 
     fn print_type(&mut self, ty: &SpandaType) {
+        // Print type.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `ty` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_type(ty);
+
         match ty {
             SpandaType::Void => self.write("Void"),
             SpandaType::Int => self.write("Int"),
@@ -122,6 +285,20 @@ impl PrettyPrinter {
     }
 
     fn visibility_prefix(v: Visibility) -> &'static str {
+        // Visibility prefix.
+        //
+        // Parameters:
+        // - `v` — input value
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::pretty::visibility_prefix(v);
+
         match v {
             Visibility::Export => "export ",
             Visibility::Public => "public ",
@@ -130,6 +307,22 @@ impl PrettyPrinter {
     }
 
     fn print_program(&mut self, source: &str, program: &Program) {
+        // Print program.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `source` — input value
+        // - `program` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_program(source, program);
+
         let Program::Program {
             module_name,
             imports,
@@ -244,6 +437,21 @@ impl PrettyPrinter {
     }
 
     fn print_module_fn(&mut self, func: &crate::foundations::ModuleFnDecl) {
+        // Print module fn.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_module_fn(func);
+
         let mut header = String::new();
         header.push_str(Self::visibility_prefix(func.visibility));
         if func.is_async {
@@ -278,12 +486,42 @@ impl PrettyPrinter {
     }
 
     fn print_test(&mut self, test: &crate::foundations::TestDecl) {
+        // Print test.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `test` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_test(test);
+
         self.open_block(&format!("test \"{}\"", test.name));
         self.print_stmts(&test.body);
         self.close_block("");
     }
 
     fn print_struct(&mut self, decl: &crate::foundations::StructDecl) {
+        // Print struct.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `decl` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_struct(decl);
+
         let crate::foundations::StructDecl::StructDecl { name, fields, .. } = decl;
         self.open_block(&format!("struct {name}"));
         for field in fields {
@@ -293,6 +531,21 @@ impl PrettyPrinter {
     }
 
     fn print_enum(&mut self, decl: &crate::foundations::EnumDecl) {
+        // Print enum.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `decl` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_enum(decl);
+
         let crate::foundations::EnumDecl::EnumDecl { name, variants, .. } = decl;
         self.open_block(&format!("enum {name}"));
         for (i, variant) in variants.iter().enumerate() {
@@ -311,6 +564,21 @@ impl PrettyPrinter {
     }
 
     fn print_trait(&mut self, decl: &crate::foundations::TraitDecl) {
+        // Print trait.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `decl` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_trait(decl);
+
         let crate::foundations::TraitDecl::TraitDecl { name, methods, .. } = decl;
         self.open_block(&format!("trait {name}"));
         for method in methods {
@@ -330,6 +598,22 @@ impl PrettyPrinter {
     }
 
     fn print_robot(&mut self, source: &str, robot: &RobotDecl) {
+        // Print robot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `source` — input value
+        // - `robot` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_robot(source, robot);
+
         let RobotDecl::RobotDecl {
             name,
             sensors,
@@ -548,12 +832,42 @@ impl PrettyPrinter {
     }
 
     fn print_stmts(&mut self, stmts: &[Stmt]) {
+        // Print stmts.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmts` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_stmts(stmts);
+
         for stmt in stmts {
             self.print_stmt(stmt);
         }
     }
 
     fn print_stmt(&mut self, stmt: &Stmt) {
+        // Print stmt.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `stmt` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_stmt(stmt);
+
         match stmt {
             Stmt::VarDecl {
                 name,
@@ -709,6 +1023,21 @@ impl PrettyPrinter {
     }
 
     fn print_expr(&mut self, expr: &Expr) {
+        // Print expr.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `expr` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.print_expr(expr);
+
         match expr {
             Expr::LiteralExpr { value, .. } => match value {
                 LiteralValue::Number(n) => self.write(&format_number(*n)),
@@ -855,6 +1184,20 @@ impl PrettyPrinter {
 }
 
 fn span_of<T: HasSpan>(value: &T) -> &Span {
+    // Span of.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // &Span.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::span_of(value);
+
     value.span()
 }
 
@@ -864,6 +1207,20 @@ trait HasSpan {
 
 impl HasSpan for crate::foundations::HardwareDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::foundations::HardwareDecl::HardwareDecl { span, .. } => span,
         }
@@ -872,6 +1229,20 @@ impl HasSpan for crate::foundations::HardwareDecl {
 
 impl HasSpan for crate::foundations::DeployDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::foundations::DeployDecl::DeployDecl { span, .. } => span,
         }
@@ -880,6 +1251,20 @@ impl HasSpan for crate::foundations::DeployDecl {
 
 impl HasSpan for crate::foundations::RequiresHardwareDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::foundations::RequiresHardwareDecl::RequiresHardwareDecl { span, .. } => span,
         }
@@ -888,6 +1273,20 @@ impl HasSpan for crate::foundations::RequiresHardwareDecl {
 
 impl HasSpan for crate::foundations::RequiresNetworkDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::foundations::RequiresNetworkDecl::RequiresNetworkDecl { span, .. } => span,
         }
@@ -896,6 +1295,20 @@ impl HasSpan for crate::foundations::RequiresNetworkDecl {
 
 impl HasSpan for crate::foundations::SimulateCompatibilityDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::foundations::SimulateCompatibilityDecl::SimulateCompatibilityDecl {
                 span,
@@ -907,6 +1320,20 @@ impl HasSpan for crate::foundations::SimulateCompatibilityDecl {
 
 impl HasSpan for crate::comm::MessageDecl {
     fn span(&self) -> &Span {
+        // Span.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // &Span.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.span();
+
         match self {
             crate::comm::MessageDecl::MessageDecl { span, .. } => span,
         }
@@ -914,6 +1341,20 @@ impl HasSpan for crate::comm::MessageDecl {
 }
 
 fn format_capability(cap: &CapabilityDecl) -> String {
+    // Format capability.
+    //
+    // Parameters:
+    // - `cap` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::format_capability(cap);
+
     if let Some(target) = &cap.target {
         format!("{}({target})", cap.action)
     } else {
@@ -922,6 +1363,20 @@ fn format_capability(cap: &CapabilityDecl) -> String {
 }
 
 fn format_discover_target(target: DiscoverTarget) -> &'static str {
+    // Format discover target.
+    //
+    // Parameters:
+    // - `target` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::format_discover_target(target);
+
     match target {
         DiscoverTarget::Robots => "robots",
         DiscoverTarget::Agents => "agents",
@@ -930,6 +1385,20 @@ fn format_discover_target(target: DiscoverTarget) -> &'static str {
 }
 
 fn format_discover_filter(filter: &DiscoverFilter) -> String {
+    // Format discover filter.
+    //
+    // Parameters:
+    // - `filter` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::format_discover_filter(filter);
+
     if let Some(cap) = &filter.capability {
         format!("where capability includes {cap}")
     } else {
@@ -938,6 +1407,20 @@ fn format_discover_filter(filter: &DiscoverFilter) -> String {
 }
 
 fn format_number(n: f64) -> String {
+    // Format number.
+    //
+    // Parameters:
+    // - `n` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::format_number(n);
+
     if (n - n.round()).abs() < f64::EPSILON {
         format!("{}", n as i64)
     } else {
@@ -946,10 +1429,39 @@ fn format_number(n: f64) -> String {
 }
 
 fn escape_string(s: &str) -> String {
+    // Escape string.
+    //
+    // Parameters:
+    // - `s` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::escape_string(s);
+
     s.replace('\\', "\\\\").replace('"', "\\\"")
 }
 
 pub fn pretty_print_program(source: &str, program: &Program) -> String {
+    // Pretty print program.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `program` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::pretty::pretty_print_program(source, program);
+
     let mut printer = PrettyPrinter::new();
     printer.print_program(source, program);
     printer.finish()
@@ -962,6 +1474,20 @@ mod tests {
 
     #[test]
     fn pretty_print_normalizes_module_fn() {
+        // Pretty print normalizes module fn.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::pretty::pretty_print_normalizes_module_fn();
+
         let source = r#"module math;
 export fn add(x:Int,y:Int)->Int{return x;}
 "#;
@@ -974,6 +1500,20 @@ export fn add(x:Int,y:Int)->Int{return x;}
 
     #[test]
     fn format_ast_round_trip_parseable() {
+        // Format ast round trip parseable.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::pretty::format_ast_round_trip_parseable();
+
         let source = r#"
 module demo;
 

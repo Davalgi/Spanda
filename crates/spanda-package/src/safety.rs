@@ -1,3 +1,5 @@
+//! safety support for Spanda.
+//!
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -14,6 +16,20 @@ pub enum SafetyLevel {
 
 impl SafetyLevel {
     pub fn all() -> &'static [SafetyLevel] {
+        // All.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // &'static [SafetyLevel].
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::safety::all();
+
         &[
             Self::Experimental,
             Self::SimulationOnly,
@@ -23,6 +39,20 @@ impl SafetyLevel {
     }
 
     pub fn as_str(&self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             Self::Experimental => "experimental",
             Self::SimulationOnly => "simulation_only",
@@ -33,11 +63,39 @@ impl SafetyLevel {
 
     /// Whether this level may control physical actuators on real hardware.
     pub fn can_control_actuators_default(&self) -> bool {
+        // Can control actuators default.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.can_control_actuators_default();
+
         matches!(self, Self::HardwareSafe | Self::Certified)
     }
 
     /// Whether packages at this level require manual review before deployment.
     pub fn requires_review_default(&self) -> bool {
+        // Requires review default.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.requires_review_default();
+
         matches!(self, Self::Experimental | Self::SimulationOnly)
     }
 }
@@ -46,6 +104,20 @@ impl FromStr for SafetyLevel {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Construct from str.
+        //
+        // Parameters:
+        // - `s` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::safety::from_str(s);
+
         match s {
             "experimental" => Ok(Self::Experimental),
             "simulation_only" => Ok(Self::SimulationOnly),
@@ -68,11 +140,39 @@ pub struct SafetyMetadata {
 }
 
 fn default_true() -> bool {
+    // Default true.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::safety::default_true();
+
     true
 }
 
 impl Default for SafetyMetadata {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_package::safety::default();
+
         let level = SafetyLevel::Experimental;
         Self {
             level,
@@ -84,6 +184,20 @@ impl Default for SafetyMetadata {
 
 impl SafetyMetadata {
     pub fn normalize(&mut self) {
+        // Normalize the value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.normalize();
+
         if self.level == SafetyLevel::default() && !self.can_control_actuators {
             self.requires_review = self.level.requires_review_default();
         }

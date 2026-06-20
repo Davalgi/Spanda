@@ -1,3 +1,5 @@
+//! dependency support for Spanda.
+//!
 use crate::error::{PackageError, PackageResult};
 use semver::{Version, VersionReq};
 use serde::{Deserialize, Serialize};
@@ -32,6 +34,20 @@ pub struct DependencyDetail {
 
 impl DependencySpec {
     pub fn parse_version_req(&self) -> PackageResult<Option<VersionReq>> {
+        // Parse version req.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // PackageResult<Option<VersionReq>>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.parse_version_req();
+
         match self {
             Self::Version(v) => Ok(Some(parse_version_req(v)?)),
             Self::Detail(d) => {
@@ -45,6 +61,20 @@ impl DependencySpec {
     }
 
     pub fn source_kind(&self) -> DependencySourceKind {
+        // Source kind.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // DependencySourceKind.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.source_kind();
+
         match self {
             Self::Version(_) => DependencySourceKind::Registry,
             Self::Detail(d) => {
@@ -60,6 +90,21 @@ impl DependencySpec {
     }
 
     pub fn local_path(&self, project_root: &std::path::Path) -> Option<PathBuf> {
+        // Local path.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `project_root` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.local_path(project_root);
+
         match self {
             Self::Detail(d) if d.path.is_some() => {
                 let p = d.path.as_ref().unwrap();
@@ -74,6 +119,20 @@ impl DependencySpec {
     }
 
     pub fn git_url(&self) -> Option<&str> {
+        // Git url.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.git_url();
+
         match self {
             Self::Detail(d) => d.git.as_deref(),
             _ => None,
@@ -119,14 +178,57 @@ pub enum LockedSource {
 }
 
 pub fn parse_version_req(spec: &str) -> PackageResult<VersionReq> {
+    // Parse version req.
+    //
+    // Parameters:
+    // - `spec` — input value
+    //
+    // Returns:
+    // PackageResult<VersionReq>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::dependency::parse_version_req(spec);
+
     VersionReq::parse(spec).map_err(PackageError::from)
 }
 
 pub fn parse_version(spec: &str) -> PackageResult<Version> {
+    // Parse version.
+    //
+    // Parameters:
+    // - `spec` — input value
+    //
+    // Returns:
+    // PackageResult<Version>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::dependency::parse_version(spec);
+
     Version::parse(spec).map_err(PackageError::from)
 }
 
 pub fn version_satisfies(version: &Version, req: &VersionReq) -> bool {
+    // Version satisfies.
+    //
+    // Parameters:
+    // - `version` — input value
+    // - `req` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::dependency::version_satisfies(version, req);
+
     req.matches(version)
 }
 
@@ -136,6 +238,20 @@ mod tests {
 
     #[test]
     fn parses_version_constraint() {
+        // Parses version constraint.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::dependency::parses_version_constraint();
+
         let req = parse_version_req("^0.1.0").unwrap();
         assert!(version_satisfies(&Version::new(0, 1, 5), &req));
         assert!(!version_satisfies(&Version::new(0, 2, 0), &req));
@@ -143,6 +259,20 @@ mod tests {
 
     #[test]
     fn detects_local_dependency() {
+        // Detects local dependency.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::dependency::detects_local_dependency();
+
         let spec = DependencySpec::Detail(DependencyDetail {
             version: None,
             path: Some(PathBuf::from("../lib")),
@@ -156,6 +286,20 @@ mod tests {
 
     #[test]
     fn detects_git_dependency() {
+        // Detects git dependency.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::dependency::detects_git_dependency();
+
         let spec = DependencySpec::Detail(DependencyDetail {
             version: None,
             path: None,

@@ -1,3 +1,5 @@
+//! src crate public API and re-exports.
+//!
 pub mod ai;
 pub mod ast;
 pub mod audit;
@@ -73,6 +75,20 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub fn compile(source: &str) -> Result<CompileResult, SpandaError> {
+    // Compile.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::compile(source);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::type_check(&program)?;
@@ -83,12 +99,41 @@ pub fn compile(source: &str) -> Result<CompileResult, SpandaError> {
 }
 
 pub fn check(source: &str) -> Result<(), SpandaError> {
+    // Check input.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::check(source);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)
 }
 
 pub fn check_with_registry(source: &str, registry: &ModuleRegistry) -> Result<(), SpandaError> {
+    // Check with registry.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `registry` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::check_with_registry(source, registry);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check_with_registry(&program, registry)
@@ -98,6 +143,21 @@ pub fn compile_with_registry(
     source: &str,
     registry: &ModuleRegistry,
 ) -> Result<CompileResult, SpandaError> {
+    // Compile with registry.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `registry` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::compile_with_registry(source, registry);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check_with_registry(&program, registry)?;
@@ -111,6 +171,21 @@ pub fn verify_compatibility(
     source: &str,
     options: &hardware::VerifyOptions,
 ) -> Result<hardware::CompatibilityReport, SpandaError> {
+    // Verify compatibility.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::verify_compatibility(source, options);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)?;
@@ -121,6 +196,21 @@ pub fn verify_compatibility_target(
     source: &str,
     target: Option<&str>,
 ) -> Result<hardware::CompatibilityReport, SpandaError> {
+    // Verify compatibility target.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `target` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::verify_compatibility_target(source, target);
+
     verify_compatibility(
         source,
         &hardware::VerifyOptions {
@@ -132,6 +222,20 @@ pub fn verify_compatibility_target(
 }
 
 pub fn lower_to_sir(source: &str) -> Result<SirProgram, SpandaError> {
+    // Lower to sir.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::lower_to_sir(source);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)?;
@@ -139,6 +243,21 @@ pub fn lower_to_sir(source: &str) -> Result<SirProgram, SpandaError> {
 }
 
 pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
+    // Run the operation.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::run(source, options);
+
     let program = if let Some(registry) = &options.module_registry {
         compile_with_registry(source, registry)?.program
     } else {
@@ -155,6 +274,20 @@ pub struct TestRunResult {
 }
 
 pub fn run_tests(source: &str) -> Result<TestRunResult, SpandaError> {
+    // Run tests.
+    //
+    // Parameters:
+    // - `source` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::run_tests(source);
+
     run_tests_with_registry(source, &ModuleRegistry::new())
 }
 
@@ -162,6 +295,21 @@ pub fn run_tests_with_registry(
     source: &str,
     registry: &ModuleRegistry,
 ) -> Result<TestRunResult, SpandaError> {
+    // Run tests with registry.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `registry` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::run_tests_with_registry(source, registry);
+
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check_with_registry(&program, registry)?;
@@ -201,6 +349,21 @@ pub fn run_tests_with_registry(
 }
 
 pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
+    // Run program.
+    //
+    // Parameters:
+    // - `program` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::run_program(program, options);
+
     let obstacles: Vec<Obstacle> = options
         .obstacles
         .iter()
@@ -263,6 +426,21 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
 }
 
 pub fn run_debug(source: &str, options: DebugOptions) -> Result<DebugSession, SpandaError> {
+    // Run debug.
+    //
+    // Parameters:
+    // - `source` — input value
+    // - `options` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::run_debug(source, options);
+
     let step = if options.step {
         DebugStepKind::StepOver
     } else {

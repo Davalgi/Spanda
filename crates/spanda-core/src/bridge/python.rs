@@ -13,6 +13,20 @@ use super::protocol::call_subprocess_bridge;
 
 /// Resolve the Python bridge script path.
 pub fn bridge_script_path() -> Option<PathBuf> {
+    // Bridge script path.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::python::bridge_script_path();
+
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
         let p = PathBuf::from(path);
         if p.is_file() {
@@ -25,6 +39,20 @@ pub fn bridge_script_path() -> Option<PathBuf> {
 }
 
 fn candidate_script_paths() -> Vec<PathBuf> {
+    // Candidate script paths.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<PathBuf>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::python::candidate_script_paths();
+
     let mut paths = vec![
         PathBuf::from("scripts/spanda_python_bridge.py"),
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../scripts/spanda_python_bridge.py"),
@@ -36,10 +64,38 @@ fn candidate_script_paths() -> Vec<PathBuf> {
 }
 
 pub fn python_available() -> bool {
+    // Python available.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::python::python_available();
+
     python_command().is_some()
 }
 
 fn python_command() -> Option<String> {
+    // Python command.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::python::python_command();
+
     for cmd in ["python3", "python"] {
         if Command::new(cmd)
             .arg("-c")
@@ -60,6 +116,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    // Call extern.
+    //
+    // Parameters:
+    // - `decl` — input value
+    // - `args` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::python::call_extern(decl, args);
+
     #[cfg(feature = "python-native")]
     if std::env::var("SPANDA_PYTHON_SUBPROCESS").is_err() {
         if super::python_native::native_available() {
@@ -93,6 +164,20 @@ mod tests {
     use crate::foundations::BridgeKind;
 
     fn test_decl(name: &str) -> ExternFnDecl {
+        // Test decl.
+        //
+        // Parameters:
+        // - `name` — input value
+        //
+        // Returns:
+        // ExternFnDecl.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::python::test_decl(name);
+
         ExternFnDecl {
             name: name.into(),
             library: Some("python".into()),
@@ -116,6 +201,20 @@ mod tests {
 
     #[test]
     fn subprocess_py_add_when_python_available() {
+        // Subprocess py add when python available.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::python::subprocess_py_add_when_python_available();
+
         if !python_available() || bridge_script_path().is_none() {
             return;
         }
@@ -142,6 +241,20 @@ mod tests {
 
     #[test]
     fn subprocess_unknown_fn_errors() {
+        // Subprocess unknown fn errors.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::python::subprocess_unknown_fn_errors();
+
         if !python_available() || bridge_script_path().is_none() {
             return;
         }

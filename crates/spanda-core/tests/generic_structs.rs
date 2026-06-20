@@ -1,7 +1,23 @@
+//! generic structs support for Spanda.
+//!
 use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn generic_struct_type_params_type_check() {
+    // Generic struct type params type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::generic_structs::generic_struct_type_params_type_check();
+
     let source = r#"
 struct Box<T> {
   value: T;
@@ -16,6 +32,20 @@ robot R {
 
 #[test]
 fn generic_struct_literal_instantiates_fields() {
+    // Generic struct literal instantiates fields.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::generic_structs::generic_struct_literal_instantiates_fields();
+
     let source = r#"
 struct Box<T> {
   value: T;
@@ -36,6 +66,20 @@ robot R {
 
 #[test]
 fn generic_struct_literal_arity_mismatch_rejected() {
+    // Generic struct literal arity mismatch rejected.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::generic_structs::generic_struct_literal_arity_mismatch_rejected();
+
     let source = r#"
 struct Box<T> {
   value: T;

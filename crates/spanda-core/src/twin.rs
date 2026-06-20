@@ -1,3 +1,5 @@
+//! twin support for Spanda.
+//!
 use crate::runtime::RuntimeValue;
 use std::collections::HashMap;
 
@@ -15,6 +17,22 @@ pub struct TwinRuntime {
 
 impl TwinRuntime {
     pub fn new(name: String, mirrors: Vec<String>, replay: bool) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `name` — input value
+        // - `mirrors` — input value
+        // - `replay` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::twin::new(name, mirrors, replay);
+
         Self {
             name,
             mirrors,
@@ -28,6 +46,24 @@ impl TwinRuntime {
     }
 
     pub fn with_sync(mut self, telemetry: bool, replay: bool, faults: bool, events: bool) -> Self {
+        // Return a copy with sync updated.
+        //
+        // Parameters:
+        // - `mut self` — input value
+        // - `telemetry` — input value
+        // - `replay` — input value
+        // - `faults` — input value
+        // - `events` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::twin::with_sync(mut self, telemetry, replay, faults, events);
+
         self.telemetry_sync = telemetry;
         if replay {
             self.replay = true;
@@ -45,22 +81,81 @@ impl TwinRuntime {
     }
 
     pub fn snapshot(&mut self, field: &str, value: RuntimeValue) {
+        // Snapshot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `field` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.snapshot(field, value);
+
         if self.mirrors.iter().any(|m| m == field) {
             self.shadow.insert(field.to_string(), value);
         }
     }
 
     pub fn commit_frame(&mut self) {
+        // Commit frame.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.commit_frame();
+
         if self.replay && !self.shadow.is_empty() {
             self.replay_buffer.push(self.shadow.clone());
         }
     }
 
     pub fn replay_frame_count(&self) -> usize {
+        // Return the number of replay frame.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Numeric result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.replay_frame_count();
+
         self.replay_buffer.len()
     }
 
     pub fn shadow_field(&self, field: &str) -> Option<&RuntimeValue> {
+        // Shadow field.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `field` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.shadow_field(field);
+
         if self.mirrors.iter().any(|m| m == field) {
             self.shadow.get(field)
         } else {
@@ -69,6 +164,22 @@ impl TwinRuntime {
     }
 
     pub fn replay_field(&self, index: usize, field: &str) -> Option<&RuntimeValue> {
+        // Replay field.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `index` — input value
+        // - `field` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.replay_field(index, field);
+
         if !self.replay || !self.mirrors.iter().any(|m| m == field) {
             return None;
         }
@@ -77,6 +188,22 @@ impl TwinRuntime {
 
     /// Compare previous shadow against live mirrored values; true when divergence exceeds threshold.
     pub fn detect_divergence(&self, live: &HashMap<String, RuntimeValue>, threshold: f64) -> bool {
+        // Detect divergence.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `live` — input value
+        // - `threshold` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.detect_divergence(live, threshold);
+
         for field in &self.mirrors {
             let Some(shadow_val) = self.shadow.get(field) else {
                 continue;
@@ -122,6 +249,21 @@ impl TwinRuntime {
 }
 
 fn value_distance(a: &RuntimeValue, b: &RuntimeValue) -> f64 {
+    // Value distance.
+    //
+    // Parameters:
+    // - `a` — input value
+    // - `b` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::twin::value_distance(a, b);
+
     match (a, b) {
         (
             RuntimeValue::Pose {
@@ -170,6 +312,20 @@ mod tests {
 
     #[test]
     fn replay_field_returns_historical_snapshot() {
+        // Replay field returns historical snapshot.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::twin::replay_field_returns_historical_snapshot();
+
         let mut twin = TwinRuntime::new("T".into(), vec!["pose".into()], true);
         twin.snapshot(
             "pose",

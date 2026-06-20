@@ -1,7 +1,23 @@
+//! p1 features support for Spanda.
+//!
 use spanda_core::{check, run, run_tests, RunOptions};
 
 #[test]
 fn serialize_json_round_trip() {
+    // Serialize json round trip.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::serialize_json_round_trip();
+
     let source = r#"
 module telemetry;
 
@@ -26,6 +42,20 @@ robot R {
 
 #[test]
 fn in_language_test_block_runs() {
+    // In language test block runs.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::in_language_test_block_runs();
+
     let source = r#"
 module math;
 
@@ -44,6 +74,20 @@ test "double returns input" {
 
 #[test]
 fn async_await_module_function() {
+    // Async await module function.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::async_await_module_function();
+
     let source = r#"
 module maps;
 
@@ -66,6 +110,20 @@ robot R {
 
 #[test]
 fn spawn_channel_select() {
+    // Spawn channel select.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::spawn_channel_select();
+
     let source = r#"
 module comm;
 
@@ -91,6 +149,20 @@ robot R {
 
 #[test]
 fn typed_channel_rejects_mismatched_payloads() {
+    // Typed channel rejects mismatched payloads.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::typed_channel_rejects_mismatched_payloads();
+
     let source = r#"
 module comm;
 
@@ -116,6 +188,20 @@ robot R {
 
 #[test]
 fn priority_task_without_every_is_allowed() {
+    // Priority task without every is allowed.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::priority_task_without_every_is_allowed();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -129,6 +215,20 @@ robot R {
 
 #[test]
 fn parallel_block_runs_and_waits_for_spawned_calls() {
+    // Parallel block runs and waits for spawned calls.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::parallel_block_runs_and_waits_for_spawned_calls();
+
     let source = r#"
 module comm;
 
@@ -160,6 +260,20 @@ robot R {
 
 #[test]
 fn join_future_returns_inner_value() {
+    // Join future returns inner value.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::join_future_returns_inner_value();
+
     let source = r#"
 module comm;
 
@@ -181,6 +295,20 @@ robot R {
 
 #[test]
 fn spawn_handle_join_returns_result() {
+    // Spawn handle join returns result.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::spawn_handle_join_returns_result();
+
     let source = r#"
 module comm;
 
@@ -202,6 +330,20 @@ robot R {
 
 #[test]
 fn parallel_aggregates_spawn_handles() {
+    // Parallel aggregates spawn handles.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::p1_features::parallel_aggregates_spawn_handles();
+
     let source = r#"
 module comm;
 

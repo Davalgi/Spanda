@@ -61,21 +61,78 @@ enum RtCondition {
 }
 
 fn bool_bindings() -> &'static Mutex<HashMap<String, bool>> {
+    // Bool bindings.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static Mutex<HashMap<String, bool>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::bool_bindings();
+
     static STORE: OnceLock<Mutex<HashMap<String, bool>>> = OnceLock::new();
     STORE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
 fn double_bindings() -> &'static Mutex<HashMap<String, f64>> {
+    // Double bindings.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static Mutex<HashMap<String, f64>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::double_bindings();
+
     static STORE: OnceLock<Mutex<HashMap<String, f64>>> = OnceLock::new();
     STORE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
 fn scan_distances() -> &'static Mutex<HashMap<String, f64>> {
+    // Scan distances.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static Mutex<HashMap<String, f64>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::scan_distances();
+
     static STORE: OnceLock<Mutex<HashMap<String, f64>>> = OnceLock::new();
     STORE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
 pub fn store_bool(name: &str, value: bool) {
+    // Store bool.
+    //
+    // Parameters:
+    // - `name` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::store_bool(name, value);
+
     bool_bindings()
         .lock()
         .unwrap()
@@ -83,6 +140,20 @@ pub fn store_bool(name: &str, value: bool) {
 }
 
 pub fn load_bool(name: &str) -> bool {
+    // Load bool.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::load_bool(name);
+
     bool_bindings()
         .lock()
         .unwrap()
@@ -92,6 +163,21 @@ pub fn load_bool(name: &str) -> bool {
 }
 
 pub fn store_double(name: &str, value: f64) {
+    // Store double.
+    //
+    // Parameters:
+    // - `name` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::store_double(name, value);
+
     double_bindings()
         .lock()
         .unwrap()
@@ -99,6 +185,20 @@ pub fn store_double(name: &str, value: f64) {
 }
 
 pub fn load_double(name: &str) -> f64 {
+    // Load double.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::load_double(name);
+
     double_bindings()
         .lock()
         .unwrap()
@@ -108,6 +208,20 @@ pub fn load_double(name: &str) -> f64 {
 }
 
 pub fn scan_nearest(name: &str) -> f64 {
+    // Scan nearest.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::scan_nearest(name);
+
     scan_distances()
         .lock()
         .unwrap()
@@ -117,6 +231,22 @@ pub fn scan_nearest(name: &str) -> f64 {
 }
 
 fn eval_compare(op: RtCompareOp, left: f64, right: f64) -> bool {
+    // Eval compare.
+    //
+    // Parameters:
+    // - `op` — input value
+    // - `left` — input value
+    // - `right` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::eval_compare(op, left, right);
+
     match op {
         RtCompareOp::Lt => left < right,
         RtCompareOp::Lte => left <= right,
@@ -128,6 +258,20 @@ fn eval_compare(op: RtCompareOp, left: f64, right: f64) -> bool {
 }
 
 pub fn eval_condition_json(json: &str) -> bool {
+    // Eval condition json.
+    //
+    // Parameters:
+    // - `json` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::eval_condition_json(json);
+
     let condition: RtCondition = match serde_json::from_str(json) {
         Ok(value) => value,
         Err(_) => return false,
@@ -136,6 +280,20 @@ pub fn eval_condition_json(json: &str) -> bool {
 }
 
 fn eval_condition(condition: &RtCondition) -> bool {
+    // Eval condition.
+    //
+    // Parameters:
+    // - `condition` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::eval_condition(condition);
+
     match condition {
         RtCondition::Bool { value } => *value,
         RtCondition::Ident { name } => load_bool(name),
@@ -163,11 +321,40 @@ fn eval_condition(condition: &RtCondition) -> bool {
 }
 
 fn string_bindings() -> &'static Mutex<HashMap<String, String>> {
+    // String bindings.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // &'static Mutex<HashMap<String, String>>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::string_bindings();
+
     static STORE: OnceLock<Mutex<HashMap<String, String>>> = OnceLock::new();
     STORE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
 pub fn store_string(name: &str, value: &str) {
+    // Store string.
+    //
+    // Parameters:
+    // - `name` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_rt::condition::store_string(name, value);
+
     string_bindings()
         .lock()
         .unwrap()
@@ -180,6 +367,20 @@ mod tests {
 
     #[test]
     fn evals_and_or_bool_tree() {
+        // Evals and or bool tree.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::condition::evals_and_or_bool_tree();
+
         store_bool("flag", true);
         store_bool("other", false);
         let json = r#"{"op":"and","left":{"op":"ident","name":"flag"},"right":{"op":"not","operand":{"op":"ident","name":"other"}}}"#;
@@ -188,6 +389,20 @@ mod tests {
 
     #[test]
     fn evals_double_compare() {
+        // Evals double compare.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::condition::evals_double_compare();
+
         store_double("speed", 0.5);
         let json = r#"{"op":"compare_double","name":"speed","cmp":"lt","value":1.0}"#;
         assert!(eval_condition_json(json));
@@ -195,6 +410,20 @@ mod tests {
 
     #[test]
     fn evals_string_compare() {
+        // Evals string compare.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_rt::condition::evals_string_compare();
+
         store_string("mode", "auto");
         let json = r#"{"op":"eq_string","name":"mode","value":"auto"}"#;
         assert!(eval_condition_json(json));

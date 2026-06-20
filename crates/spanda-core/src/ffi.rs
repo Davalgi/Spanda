@@ -1,3 +1,5 @@
+//! ffi support for Spanda.
+//!
 use crate::ast::UnitKind;
 use crate::error::SpandaError;
 use crate::foundations::{BridgeKind, ExternFnDecl};
@@ -12,12 +14,40 @@ pub struct FfiRegistry {
 
 impl Default for FfiRegistry {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::ffi::default();
+
         Self::new()
     }
 }
 
 impl FfiRegistry {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::ffi::new();
+
         let mut registry = Self {
             handlers: HashMap::new(),
         };
@@ -27,10 +57,41 @@ impl FfiRegistry {
     }
 
     pub fn register(&mut self, name: &str, handler: FfiHandler) {
+        // Register the value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        // - `handler` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register(name, handler);
+
         self.handlers.insert(name.to_string(), handler);
     }
 
     pub fn has_handler(&self, name: &str) -> bool {
+        // Return whether this value has handler.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.has_handler(name);
+
         self.handlers.contains_key(name)
     }
 
@@ -39,6 +100,22 @@ impl FfiRegistry {
         decl: &ExternFnDecl,
         args: &[RuntimeValue],
     ) -> Result<RuntimeValue, SpandaError> {
+        // Call.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `decl` — input value
+        // - `args` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.call(decl, args);
+
         if matches!(decl.bridge, BridgeKind::Python) && !self.handlers.contains_key(&decl.name) {
             return crate::bridge::python::call_extern(decl, args);
         }
@@ -65,10 +142,38 @@ impl FfiRegistry {
 }
 
 fn stub_echo(args: &[RuntimeValue]) -> Result<RuntimeValue, SpandaError> {
+    // Stub echo.
+    //
+    // Parameters:
+    // - `args` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::ffi::stub_echo(args);
+
     Ok(args.first().cloned().unwrap_or(RuntimeValue::Void))
 }
 
 fn stub_add(args: &[RuntimeValue]) -> Result<RuntimeValue, SpandaError> {
+    // Stub add.
+    //
+    // Parameters:
+    // - `args` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::ffi::stub_add(args);
+
     let a = match args.first() {
         Some(RuntimeValue::Number { value, .. }) => *value,
         _ => 0.0,
@@ -90,6 +195,20 @@ mod tests {
 
     #[test]
     fn stub_add_sums_integers() {
+        // Stub add sums integers.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ffi::stub_add_sums_integers();
+
         let registry = FfiRegistry::new();
         let decl = ExternFnDecl {
             name: "stub_add".into(),
@@ -136,6 +255,20 @@ mod tests {
 
     #[test]
     fn python_bridge_without_handler_errors_clearly() {
+        // Python bridge without handler errors clearly.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::ffi::python_bridge_without_handler_errors_clearly();
+
         let registry = FfiRegistry::new();
         let decl = ExternFnDecl {
             name: "detect_objects".into(),

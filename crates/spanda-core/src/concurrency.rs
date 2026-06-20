@@ -36,12 +36,40 @@ pub struct ConcurrencyRuntime {
 
 impl Default for ConcurrencyRuntime {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::concurrency::default();
+
         Self::new()
     }
 }
 
 impl ConcurrencyRuntime {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::concurrency::new();
+
         Self {
             next_channel_id: 1,
             channels: HashMap::new(),
@@ -55,6 +83,23 @@ impl ConcurrencyRuntime {
     }
 
     pub fn register_agent_route(&mut self, from: &str, to: &str, message_type: &str) {
+        // Register agent route.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `from` — input value
+        // - `to` — input value
+        // - `message_type` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_agent_route(from, to, message_type);
+
         self.agent_routes.push(AgentRoute {
             from: from.to_string(),
             to: to.to_string(),
@@ -69,6 +114,24 @@ impl ConcurrencyRuntime {
         value: RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
+        // Send agent.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `from` — input value
+        // - `to` — input value
+        // - `value` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.send_agent(from, to, value, line);
+
         let allowed = self
             .agent_routes
             .iter()
@@ -108,12 +171,43 @@ impl ConcurrencyRuntime {
     }
 
     pub fn try_recv_agent(&mut self, agent: &str, _line: u32) -> Option<RuntimeValue> {
+        // Try recv agent.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `agent` — input value
+        // - `_line` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.try_recv_agent(agent, _line);
+
         self.agent_inboxes
             .get_mut(agent)
             .and_then(|inbox| inbox.pop_front())
     }
 
     pub fn agent_inbox_len(&self, agent: &str) -> usize {
+        // Agent inbox len.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `agent` — input value
+        //
+        // Returns:
+        // Numeric result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.agent_inbox_len(agent);
+
         self.agent_inboxes
             .get(agent)
             .map(|inbox| inbox.len())
@@ -121,6 +215,20 @@ impl ConcurrencyRuntime {
     }
 
     pub fn create_channel(&mut self) -> RuntimeValue {
+        // Create channel.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.create_channel();
+
         let id = self.next_channel_id;
         self.next_channel_id += 1;
         let handle = Rc::new(RefCell::new(VecDeque::new()));
@@ -134,6 +242,23 @@ impl ConcurrencyRuntime {
         value: RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
+        // Send.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `channel` — input value
+        // - `value` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.send(channel, value, line);
+
         let RuntimeValue::Channel { id } = channel else {
             return Err(RuntimeError::new("send requires a channel", line).into_spanda());
         };
@@ -159,6 +284,22 @@ impl ConcurrencyRuntime {
         channel: &RuntimeValue,
         line: u32,
     ) -> Result<Option<RuntimeValue>, SpandaError> {
+        // Try recv.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `channel` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.try_recv(channel, line);
+
         let RuntimeValue::Channel { id } = channel else {
             return Err(RuntimeError::new("recv requires a channel", line).into_spanda());
         };
@@ -173,6 +314,22 @@ impl ConcurrencyRuntime {
         func_name: String,
         args: Vec<RuntimeValue>,
     ) -> RuntimeValue {
+        // Create task handle.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func_name` — input value
+        // - `args` — input value
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.create_task_handle(func_name, args);
+
         let id = self.next_handle_id;
         self.next_handle_id += 1;
         self.handles.insert(
@@ -187,6 +344,22 @@ impl ConcurrencyRuntime {
     }
 
     pub fn queue_fire_and_forget(&mut self, func_name: String, args: Vec<RuntimeValue>) {
+        // Queue fire and forget.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `func_name` — input value
+        // - `args` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.queue_fire_and_forget(func_name, args);
+
         let handle = self.create_task_handle(func_name, args);
         if let RuntimeValue::TaskHandle { id } = handle {
             self.fire_and_forget_queue.push(id);
@@ -194,20 +367,80 @@ impl ConcurrencyRuntime {
     }
 
     pub fn handle(&self, id: u64) -> Option<&SpawnHandle> {
+        // Handle.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `id` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.handle(id);
+
         self.handles.get(&id)
     }
 
     pub fn handle_mut(&mut self, id: u64) -> Option<&mut SpawnHandle> {
+        // Handle mut.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `id` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.handle_mut(id);
+
         self.handles.get_mut(&id)
     }
 
     pub fn set_handle_result(&mut self, id: u64, result: RuntimeValue) {
+        // Set handle result.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `id` — input value
+        // - `result` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set_handle_result(id, result);
+
         if let Some(handle) = self.handles.get_mut(&id) {
             handle.result = Some(result);
         }
     }
 
     pub fn drain_fire_and_forget_queue(&mut self) -> Vec<u64> {
+        // Drain fire and forget queue.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<u64>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.drain_fire_and_forget_queue();
+
         std::mem::take(&mut self.fire_and_forget_queue)
     }
 
@@ -217,6 +450,23 @@ impl ConcurrencyRuntime {
         value: &RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
+        // Bind channel type.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `channel` — input value
+        // - `value` — input value
+        // - `line` — input value
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.bind_channel_type(channel, value, line);
+
         let RuntimeValue::Channel { id } = channel else {
             return Err(
                 RuntimeError::new("channel type binding requires channel", line).into_spanda(),
@@ -239,6 +489,20 @@ impl ConcurrencyRuntime {
 }
 
 fn runtime_type_tag(value: &RuntimeValue) -> String {
+    // Runtime type tag.
+    //
+    // Parameters:
+    // - `value` — input value
+    //
+    // Returns:
+    // Text result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::concurrency::runtime_type_tag(value);
+
     match value {
         RuntimeValue::Object { type_name, .. } => format!("object:{type_name}"),
         RuntimeValue::Enum {

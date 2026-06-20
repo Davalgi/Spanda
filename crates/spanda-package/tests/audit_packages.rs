@@ -7,6 +7,20 @@ use spanda_package::{
 
 #[test]
 fn registry_includes_blockchain_packages() {
+    // Registry includes blockchain packages.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::audit_packages::registry_includes_blockchain_packages();
+
     let ledger = search_registry("ledger");
     assert!(ledger.iter().any(|e| e.name == "spanda-ledger"));
     let provenance = search_registry("provenance");
@@ -18,6 +32,20 @@ fn registry_includes_blockchain_packages() {
 
 #[test]
 fn high_risk_capability_detection() {
+    // High risk capability detection.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::audit_packages::high_risk_capability_detection();
+
     assert!(is_high_risk_capability("ledger.anchor"));
     assert!(is_high_risk_capability("identity.sign"));
     assert!(!is_high_risk_capability("camera.read"));
@@ -26,6 +54,20 @@ fn high_risk_capability_detection() {
 
 #[test]
 fn audit_package_manifest_validation() {
+    // Audit package manifest validation.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::audit_packages::audit_package_manifest_validation();
+
     let manifest = PackageManifest::parse_str(
         r#"
 [package]

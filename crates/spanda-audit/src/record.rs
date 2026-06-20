@@ -1,3 +1,5 @@
+//! Audit record types: device identity, append-only events, provenance, and export bundles.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -22,14 +24,42 @@ pub struct DeviceIdentity {
 
 impl DeviceIdentity {
     pub fn new(id: impl Into<String>, public_key: impl Into<String>) -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // - `id` — input value
+        // - `public_key` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_audit::record::new(id, public_key);
+
         Self {
             id: id.into(),
             public_key: public_key.into(),
         }
     }
 
-    /// Material used to derive the Ed25519 signing key.
     pub fn signing_material(&self) -> String {
+        // Signing material.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.signing_material();
+        // Material used to derive the Ed25519 signing key.
         if self.public_key.is_empty() || crate::crypto::is_hex_public_key(&self.public_key) {
             format!("spanda-device-{}", self.id)
         } else {
@@ -37,8 +67,21 @@ impl DeviceIdentity {
         }
     }
 
-    /// Hex-encoded Ed25519 public key for signature verification.
     pub fn verifying_key_hex(&self) -> String {
+        // Verifying key hex.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.verifying_key_hex();
+        // Hex-encoded Ed25519 public key for signature verification.
         if crate::crypto::is_hex_public_key(&self.public_key) {
             self.public_key.clone()
         } else {
@@ -46,8 +89,21 @@ impl DeviceIdentity {
         }
     }
 
-    /// Backward-compatible alias for signing material.
     pub fn default_key(&self) -> String {
+        // Default key.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.default_key();
+        // Backward-compatible alias for signing material.
         self.signing_material()
     }
 }
@@ -68,6 +124,20 @@ pub struct AuditRecord {
 
 impl AuditRecord {
     pub fn canonical_body(&self) -> String {
+        // Canonical body.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.canonical_body();
+
         format!(
             "{}|{}|{}|{}",
             self.timestamp.to_rfc3339(),

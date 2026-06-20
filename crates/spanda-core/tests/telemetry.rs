@@ -1,7 +1,23 @@
+//! telemetry support for Spanda.
+//!
 use spanda_core::{run, RunOptions};
 
 #[test]
 fn trace_scheduler_emits_diagnostics_and_metrics() {
+    // Trace scheduler emits diagnostics and metrics.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::telemetry::trace_scheduler_emits_diagnostics_and_metrics();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -29,6 +45,20 @@ robot R {
 
 #[test]
 fn trace_tasks_records_per_task_ticks() {
+    // Trace tasks records per task ticks.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::telemetry::trace_tasks_records_per_task_ticks();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;
@@ -60,6 +90,20 @@ robot R {
 
 #[test]
 fn replay_trace_logs_twin_frames() {
+    // Replay trace logs twin frames.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::telemetry::replay_trace_logs_twin_frames();
+
     let source = r#"
 robot R {
   actuator wheels: DifferentialDrive;

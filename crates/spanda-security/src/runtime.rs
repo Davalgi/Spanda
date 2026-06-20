@@ -1,3 +1,5 @@
+//! runtime support for Spanda.
+//!
 use crate::capability::{capability_for_operation, CapabilitySet};
 use crate::error::{SecurityError, SecurityResult};
 use crate::identity::RobotIdentity;
@@ -24,12 +26,40 @@ pub struct SecurityContext {
 
 impl Default for SecurityContext {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_security::runtime::default();
+
         Self::new()
     }
 }
 
 impl SecurityContext {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_security::runtime::new();
+
         Self {
             identity: None,
             trust: TrustLevel::Trusted,
@@ -42,16 +72,59 @@ impl SecurityContext {
     }
 
     pub fn enable_strict_permissions(&mut self) {
+        // Enable strict permissions.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.enable_strict_permissions();
+
         self.strict_permissions = true;
     }
 
     pub fn grant_if_not_strict(&mut self, capability: impl Into<String>) {
+        // Grant if not strict.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `capability` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.grant_if_not_strict(capability);
+
         if !self.strict_permissions {
             self.capabilities.grant(capability);
         }
     }
 
     pub fn with_permissions(perms: &PackagePermissions) -> Self {
+        // Return a copy with permissions updated.
+        //
+        // Parameters:
+        // - `perms` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_security::runtime::with_permissions(perms);
+
         Self {
             capabilities: perms.capabilities.clone(),
             ..Self::new()
@@ -59,11 +132,41 @@ impl SecurityContext {
     }
 
     pub fn set_identity(&mut self, identity: RobotIdentity) {
+        // Set identity.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `identity` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set_identity(identity);
+
         self.trust = identity.trust;
         self.identity = Some(identity);
     }
 
     pub fn require_operation(&self, operation: &str) -> SecurityResult<()> {
+        // Require operation.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `operation` — input value
+        //
+        // Returns:
+        // SecurityResult<()>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.require_operation(operation);
+
         if let Some(cap) = capability_for_operation(operation) {
             self.capabilities.require(cap)?;
         }
@@ -71,6 +174,22 @@ impl SecurityContext {
     }
 
     pub fn register_secure_endpoint(&mut self, path: impl Into<String>, policy: SecurePolicy) {
+        // Register secure endpoint.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `path` — input value
+        // - `policy` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_secure_endpoint(path, policy);
+
         self.secure_endpoints.register(path, policy);
     }
 
@@ -79,11 +198,43 @@ impl SecurityContext {
         path: &str,
         payload: &str,
     ) -> SecurityResult<Option<SignedMessage>> {
+        // Sign outbound.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `path` — input value
+        // - `payload` — input value
+        //
+        // Returns:
+        // SecurityResult<Option<SignedMessage>>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.sign_outbound(path, payload);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         policy.prepare_outbound(payload, self.identity.as_ref(), &self.capabilities, path)
     }
 
     pub fn verify_inbound(&self, path: &str, signed: Option<&SignedMessage>) -> SecurityResult<()> {
+        // Verify inbound.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `path` — input value
+        // - `signed` — input value
+        //
+        // Returns:
+        // SecurityResult<()>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.verify_inbound(path, signed);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         policy.verify_inbound(signed, self.identity.as_ref(), &self.capabilities, path)
     }
@@ -95,6 +246,23 @@ impl SecurityContext {
         event_type: &str,
         detail: &str,
     ) -> SecurityResult<()> {
+        // Audit event.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `audit` — input value
+        // - `event_type` — input value
+        // - `detail` — input value
+        //
+        // Returns:
+        // SecurityResult<()>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.audit_event(audit, event_type, detail);
+
         if !self.audit_security_events {
             return Ok(());
         }
@@ -119,6 +287,20 @@ pub struct SecuritySnapshot {
 
 impl SecurityContext {
     pub fn snapshot(&self) -> SecuritySnapshot {
+        // Snapshot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // SecuritySnapshot.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.snapshot();
+
         SecuritySnapshot {
             identity_id: self.identity.as_ref().map(|i| i.id().to_string()),
             trust: self.trust,

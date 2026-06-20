@@ -17,6 +17,20 @@ struct Ros2Daemon {
 
 impl Ros2Daemon {
     fn start() -> Result<Self, String> {
+        // Start.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Success value on completion, or an error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::transport_rclrs_daemon::start();
+
         let script = daemon_script_path()?;
         let python = python_cmd().ok_or_else(|| "python3 not found for ROS2 daemon".to_string())?;
         let mut child = Command::new(&python)
@@ -42,6 +56,22 @@ impl Ros2Daemon {
     }
 
     fn request(&mut self, op: &str, args: &[String]) -> bool {
+        // Request.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `op` — input value
+        // - `args` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.request(op, args);
+
         let payload = serde_json::json!({ "op": op, "args": args });
         let line = match serde_json::to_string(&payload) {
             Ok(text) => text,
@@ -65,6 +95,20 @@ impl Ros2Daemon {
 }
 
 fn python_cmd() -> Option<String> {
+    // Python cmd.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_daemon::python_cmd();
+
     for cmd in ["python3", "python"] {
         if Command::new(cmd)
             .arg("-c")
@@ -82,6 +126,20 @@ fn python_cmd() -> Option<String> {
 }
 
 pub fn daemon_script_path() -> Result<PathBuf, String> {
+    // Daemon script path.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_daemon::daemon_script_path();
+
     if let Ok(path) = std::env::var("SPANDA_ROS2_DAEMON_SCRIPT") {
         let path = PathBuf::from(path);
         if path.is_file() {
@@ -137,6 +195,21 @@ where
 }
 
 pub fn daemon_publish(topic: &str, value: &RuntimeValue) -> bool {
+    // Daemon publish.
+    //
+    // Parameters:
+    // - `topic` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_daemon::daemon_publish(topic, value);
+
     let payload = match value {
         RuntimeValue::String { value } => value.clone(),
         RuntimeValue::Number { value, .. } => value.to_string(),
@@ -147,10 +220,40 @@ pub fn daemon_publish(topic: &str, value: &RuntimeValue) -> bool {
 }
 
 pub fn daemon_subscribe(topic: &str) -> bool {
+    // Daemon subscribe.
+    //
+    // Parameters:
+    // - `topic` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_daemon::daemon_subscribe(topic);
+
     with_daemon(|daemon| daemon.request("subscribe", &[topic.to_string()]))
 }
 
 pub fn daemon_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Daemon service call.
+    //
+    // Parameters:
+    // - `service` — input value
+    // - `service_type` — input value
+    // - `request` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::transport_rclrs_daemon::daemon_service_call(service, service_type, request);
+
     with_daemon(|daemon| {
         daemon.request(
             "service_call",
@@ -169,6 +272,20 @@ mod tests {
 
     #[test]
     fn daemon_script_resolves_in_repo() {
+        // Daemon script resolves in repo.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::transport_rclrs_daemon::daemon_script_resolves_in_repo();
+
         if std::env::var("CARGO_MANIFEST_DIR").is_ok() {
             assert!(daemon_script_path().is_ok());
         }

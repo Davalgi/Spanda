@@ -23,6 +23,20 @@ pub enum TransportKind {
 
 impl TransportKind {
     pub fn from_ident(s: &str) -> Option<Self> {
+        // Construct from ident.
+        //
+        // Parameters:
+        // - `s` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::from_ident(s);
+
         match s {
             "local" => Some(Self::Local),
             "ros2" => Some(Self::Ros2),
@@ -35,6 +49,20 @@ impl TransportKind {
     }
 
     pub fn as_str(self) -> &'static str {
+        // Return as str.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.as_str();
+
         match self {
             Self::Local => "local",
             Self::Ros2 => "ros2",
@@ -99,6 +127,20 @@ pub struct MessageRegistry {
 
 impl MessageRegistry {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::comm::new();
+
         let mut reg = Self::default();
         for name in ["Velocity", "Pose", "Scan", "String"] {
             reg.builtin.insert(name.into());
@@ -107,6 +149,21 @@ impl MessageRegistry {
     }
 
     pub fn register(&mut self, decl: &MessageDecl) {
+        // Register the value.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `decl` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register(decl);
+
         let MessageDecl::MessageDecl {
             name,
             fields,
@@ -130,6 +187,21 @@ impl MessageRegistry {
         messages: &[MessageDecl],
         structs: &[crate::foundations::StructDecl],
     ) -> Self {
+        // Construct from program.
+        //
+        // Parameters:
+        // - `messages` — input value
+        // - `structs` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::from_program(messages, structs);
+
         let mut reg = Self::new();
         for msg in messages {
             reg.register(msg);
@@ -152,14 +224,59 @@ impl MessageRegistry {
     }
 
     pub fn is_known(&self, name: &str) -> bool {
+        // Return whether known.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // true or false.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.is_known(name);
+
         self.builtin.contains(name) || self.schemas.contains_key(name)
     }
 
     pub fn get(&self, name: &str) -> Option<&MessageSchema> {
+        // Get.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.get(name);
+
         self.schemas.get(name)
     }
 
     pub fn resolve_type(&self, name: &str) -> Option<SpandaType> {
+        // Resolve type.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.resolve_type(name);
+
         match name {
             "Velocity" => Some(SpandaType::Velocity),
             "Pose" => Some(SpandaType::Pose),
@@ -279,6 +396,20 @@ pub struct SimNetworkConfig {
 
 impl Default for SimNetworkConfig {
     fn default() -> Self {
+        // Return the default value.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::comm::default();
+
         Self {
             delay_ms: 0.0,
             packet_loss: 0.0,
@@ -332,6 +463,20 @@ pub struct InMemoryCommBus {
 
 impl InMemoryCommBus {
     pub fn new() -> Self {
+        // Create a new instance.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let value = spanda_core::comm::new();
+
         Self {
             discovered_robots: vec!["RoverA".into(), "RoverB".into()],
             discovered_agents: vec!["Vision".into(), "Planner".into(), "Navigator".into()],
@@ -341,26 +486,115 @@ impl InMemoryCommBus {
     }
 
     pub fn register_robot(&mut self, name: impl Into<String>) {
+        // Register robot.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_robot(name);
+
         self.discovered_robots.push(name.into());
     }
 
     pub fn register_agent(&mut self, name: impl Into<String>) {
+        // Register agent.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_agent(name);
+
         self.discovered_agents.push(name.into());
     }
 
     pub fn register_device(&mut self, name: impl Into<String>) {
+        // Register device.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `name` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.register_device(name);
+
         self.discovered_devices.push(name.into());
     }
 
     pub fn active_faults(&self) -> Vec<String> {
+        // Active faults.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.active_faults();
+
         self.faults.clone()
     }
 
     pub fn subscription_paths(&self) -> Vec<String> {
+        // Subscription paths.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.subscription_paths();
+
         self.subscriptions.keys().cloned().collect()
     }
 
     pub fn push_inbound(&mut self, topic_path: &str, value: RuntimeValue) {
+        // Push inbound.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_path` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.push_inbound(topic_path, value);
+
         self.buffers
             .entry(topic_path.to_string())
             .or_default()
@@ -375,6 +609,24 @@ impl InMemoryCommBus {
         value: RuntimeValue,
         transport: TransportKind,
     ) {
+        // Publish peer.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `peer` — input value
+        // - `topic` — input value
+        // - `value` — input value
+        // - `transport` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.publish_peer(peer, topic, value, transport);
+
         let path = format!("/{peer}/{topic}");
         self.publish(&path, "PeerMessage", value, transport);
     }
@@ -388,6 +640,24 @@ impl CommBus for InMemoryCommBus {
         value: RuntimeValue,
         transport: TransportKind,
     ) {
+        // Publish.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_path` — input value
+        // - `message_type` — input value
+        // - `value` — input value
+        // - `transport` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.publish(topic_path, message_type, value, transport);
+
         if self.faults.iter().any(|f| f == "NetworkOutage") {
             return;
         }
@@ -409,6 +679,22 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn subscribe(&mut self, topic_path: &str, handler: &str) {
+        // Subscribe.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_path` — input value
+        // - `handler` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.subscribe(topic_path, handler);
+
         self.subscriptions
             .entry(topic_path.to_string())
             .or_default()
@@ -417,6 +703,21 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn receive(&mut self, topic_path: &str) -> Option<RuntimeValue> {
+        // Receive.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_path` — input value
+        //
+        // Returns:
+        // Some value on success, otherwise none.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.receive(topic_path);
+
         self.buffers.get_mut(topic_path).and_then(|q| q.pop_front())
     }
 
@@ -426,6 +727,23 @@ impl CommBus for InMemoryCommBus {
         service_type: &str,
         _request: Option<RuntimeValue>,
     ) -> RuntimeValue {
+        // Call service.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_service_name` — input value
+        // - `service_type` — input value
+        // - `_request` — input value
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.call_service(_service_name, service_type, _request);
+
         RuntimeValue::Object {
             type_name: service_type.to_string(),
             fields: HashMap::from([("ok".into(), RuntimeValue::Bool { value: true })]),
@@ -438,6 +756,23 @@ impl CommBus for InMemoryCommBus {
         action_type: &str,
         _goal: RuntimeValue,
     ) -> RuntimeValue {
+        // Send action.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `_action_name` — input value
+        // - `action_type` — input value
+        // - `_goal` — input value
+        //
+        // Returns:
+        // RuntimeValue.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.send_action(_action_name, action_type, _goal);
+
         RuntimeValue::Object {
             type_name: action_type.to_string(),
             fields: HashMap::from([("success".into(), RuntimeValue::Bool { value: true })]),
@@ -445,6 +780,22 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn discover(&self, target: DiscoverTarget, filter: &DiscoverFilter) -> Vec<String> {
+        // Discover.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `target` — input value
+        // - `filter` — input value
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.discover(target, filter);
+
         let base = match target {
             DiscoverTarget::Robots => self.discovered_robots.clone(),
             DiscoverTarget::Agents => self.discovered_agents.clone(),
@@ -460,26 +811,114 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn published_messages(&self) -> Vec<PublishedCommMessage> {
+        // Published messages.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<PublishedCommMessage>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.published_messages();
+
         self.published.clone()
     }
 
     fn inject_fault(&mut self, fault: &str) {
+        // Inject fault.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `fault` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.inject_fault(fault);
+
         self.faults.push(fault.to_string());
     }
 
     fn set_network_config(&mut self, config: SimNetworkConfig) {
+        // Set network config.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `config` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.set_network_config(config);
+
         self.network = config;
     }
 
     fn active_faults(&self) -> Vec<String> {
+        // Active faults.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.active_faults();
+
         self.faults.clone()
     }
 
     fn subscription_paths(&self) -> Vec<String> {
+        // Subscription paths.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.subscription_paths();
+
         self.subscriptions.keys().cloned().collect()
     }
 
     fn push_inbound(&mut self, topic_path: &str, value: RuntimeValue) {
+        // Push inbound.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `topic_path` — input value
+        // - `value` — input value
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.push_inbound(topic_path, value);
+
         self.buffers
             .entry(topic_path.to_string())
             .or_default()
@@ -501,6 +940,21 @@ pub fn validate_comm_safety_chain(
     stage: CommSafetyStage,
     value: &RuntimeValue,
 ) -> Result<(), String> {
+    // Validate comm safety chain.
+    //
+    // Parameters:
+    // - `stage` — input value
+    // - `value` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::comm::validate_comm_safety_chain(stage, value);
+
     match stage {
         CommSafetyStage::ActionProposal => {
             if !matches!(value, RuntimeValue::Object { type_name, .. } if type_name == "ActionProposal")
@@ -528,10 +982,39 @@ pub fn validate_comm_safety_chain(
 // ── Network bandwidth estimation from QoS ────────────────────────────────────
 
 pub fn estimate_topic_bandwidth_mbps(rate_hz: f64, message_size_bytes: f64) -> f64 {
+    // Estimate topic bandwidth mbps.
+    //
+    // Parameters:
+    // - `rate_hz` — input value
+    // - `message_size_bytes` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::comm::estimate_topic_bandwidth_mbps(rate_hz, message_size_bytes);
+
     (rate_hz * message_size_bytes * 8.0) / 1_000_000.0
 }
 
 pub fn default_message_size(message_type: &str) -> f64 {
+    // Default message size.
+    //
+    // Parameters:
+    // - `message_type` — input value
+    //
+    // Returns:
+    // Numeric result.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::comm::default_message_size(message_type);
+
     match message_type {
         "Scan" | "LidarScan" | "LidarReading" => 64_000.0,
         "Pose" | "Velocity" => 128.0,
@@ -541,6 +1024,20 @@ pub fn default_message_size(message_type: &str) -> f64 {
 }
 
 pub fn qos_to_spanda_type(qos: &QosDecl) -> SpandaType {
+    // Qos to spanda type.
+    //
+    // Parameters:
+    // - `qos` — input value
+    //
+    // Returns:
+    // SpandaType.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::comm::qos_to_spanda_type(qos);
+
     let _ = qos;
     SpandaType::Named { name: "QoS".into() }
 }
@@ -562,6 +1059,20 @@ pub const SAFETY_MESSAGE_TYPES: &[&str] = &[
 pub const COMM_CAPABILITIES: &[&str] = &["subscribe", "publish", "call", "execute", "discover"];
 
 pub fn is_comm_capability(action: &str) -> bool {
+    // Return whether comm capability.
+    //
+    // Parameters:
+    // - `action` — input value
+    //
+    // Returns:
+    // true or false.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_core::comm::is_comm_capability(action);
+
     COMM_CAPABILITIES.contains(&action)
 }
 
@@ -571,6 +1082,20 @@ mod tests {
 
     #[test]
     fn message_registry_builtin_and_custom() {
+        // Message registry builtin and custom.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::message_registry_builtin_and_custom();
+
         let mut reg = MessageRegistry::new();
         assert!(reg.is_known("Velocity"));
         let decl = MessageDecl::MessageDecl {
@@ -611,6 +1136,20 @@ mod tests {
 
     #[test]
     fn in_memory_bus_pub_sub() {
+        // In memory bus pub sub.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::in_memory_bus_pub_sub();
+
         let mut bus = InMemoryCommBus::new();
         bus.subscribe("/scan", "handler");
         bus.publish(
@@ -628,6 +1167,20 @@ mod tests {
 
     #[test]
     fn discover_robots_with_capability() {
+        // Discover robots with capability.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::discover_robots_with_capability();
+
         let bus = InMemoryCommBus::new();
         let results = bus.discover(
             DiscoverTarget::Robots,
@@ -640,6 +1193,20 @@ mod tests {
 
     #[test]
     fn bandwidth_estimate() {
+        // Bandwidth estimate.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_core::comm::bandwidth_estimate();
+
         let mbps = estimate_topic_bandwidth_mbps(20.0, 64000.0);
         assert!(mbps > 10.0);
     }

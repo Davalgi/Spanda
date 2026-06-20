@@ -24,6 +24,20 @@ pub struct RemoteRegistryEntry {
 static REMOTE_CACHE: OnceLock<Vec<RemoteRegistryEntry>> = OnceLock::new();
 
 pub fn registry_base_url() -> Option<String> {
+    // Registry base url.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::registry_base_url();
+
     std::env::var("SPANDA_REGISTRY_URL")
         .ok()
         .map(|url| url.trim_end_matches('/').to_string())
@@ -31,6 +45,20 @@ pub fn registry_base_url() -> Option<String> {
 }
 
 pub fn fetch_index_json(url: &str) -> Result<String, String> {
+    // Fetch index json.
+    //
+    // Parameters:
+    // - `url` — input value
+    //
+    // Returns:
+    // Success value on completion, or an error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::fetch_index_json(url);
+
     if let Some(path) = super::registry_fetch::file_url_path(url) {
         return fs::read_to_string(&path)
             .map_err(|e| format!("failed to read registry index at {}: {e}", path.display()));
@@ -48,6 +76,20 @@ pub fn fetch_index_json(url: &str) -> Result<String, String> {
 }
 
 pub fn load_remote_registry() -> Vec<RemoteRegistryEntry> {
+    // Load remote registry.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Vec<RemoteRegistryEntry>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::load_remote_registry();
+
     REMOTE_CACHE
         .get_or_init(|| {
             let Some(base) = registry_base_url() else {
@@ -69,12 +111,40 @@ pub fn load_remote_registry() -> Vec<RemoteRegistryEntry> {
 }
 
 pub fn find_remote_entry(name: &str) -> Option<RemoteRegistryEntry> {
+    // Find remote entry.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::find_remote_entry(name);
+
     load_remote_registry()
         .into_iter()
         .find(|entry| entry.name == name)
 }
 
 pub fn search_remote_registry(query: &str) -> Vec<RemoteRegistryEntry> {
+    // Search remote registry.
+    //
+    // Parameters:
+    // - `query` — input value
+    //
+    // Returns:
+    // Vec<RemoteRegistryEntry>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::search_remote_registry(query);
+
     let q = query.to_lowercase();
     load_remote_registry()
         .into_iter()
@@ -87,10 +157,38 @@ pub fn search_remote_registry(query: &str) -> Vec<RemoteRegistryEntry> {
 }
 
 pub fn remote_category(name: &str) -> PackageCategory {
+    // Remote category.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // PackageCategory.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::remote_category(name);
+
     name.parse().unwrap_or(PackageCategory::Robotics)
 }
 
 pub fn remote_safety_level(name: &str) -> SafetyLevel {
+    // Remote safety level.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // SafetyLevel.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::remote_safety_level(name);
+
     match name {
         "spanda-ros2" | "spanda-opencv" | "spanda-yolo" | "spanda-mqtt" => {
             SafetyLevel::SimulationOnly
@@ -101,6 +199,20 @@ pub fn remote_safety_level(name: &str) -> SafetyLevel {
 }
 
 pub fn remote_as_static_view(entry: &RemoteRegistryEntry) -> RegistryEntryView<'_> {
+    // Remote as static view.
+    //
+    // Parameters:
+    // - `entry` — input value
+    //
+    // Returns:
+    // RegistryEntryView<'_>.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::remote_as_static_view(entry);
+
     RegistryEntryView {
         name: entry.name.as_str(),
         description: entry.description.as_str(),
@@ -126,6 +238,20 @@ pub struct RegistryEntryView<'a> {
 
 impl<'a> From<&'static RegistryEntry> for RegistryEntryView<'a> {
     fn from(entry: &'static RegistryEntry) -> Self {
+        // From.
+        //
+        // Parameters:
+        // - `entry` — input value
+        //
+        // Returns:
+        // A new instance of this type.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_remote::from(entry);
+
         RegistryEntryView {
             name: entry.name,
             description: entry.description,
@@ -139,6 +265,20 @@ impl<'a> From<&'static RegistryEntry> for RegistryEntryView<'a> {
 }
 
 pub fn lookup_registry_entry(name: &str) -> Option<RegistryEntryLookup> {
+    // Lookup registry entry.
+    //
+    // Parameters:
+    // - `name` — input value
+    //
+    // Returns:
+    // Some value on success, otherwise none.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_package::registry_remote::lookup_registry_entry(name);
+
     if let Some(entry) = super::registry::find_registry_entry(name) {
         return Some(RegistryEntryLookup::Local(entry));
     }
@@ -153,6 +293,20 @@ pub enum RegistryEntryLookup {
 
 impl RegistryEntryLookup {
     pub fn name(&self) -> &str {
+        // Name.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.name();
+
         match self {
             RegistryEntryLookup::Local(entry) => entry.name,
             RegistryEntryLookup::Remote(entry) => &entry.name,
@@ -160,6 +314,20 @@ impl RegistryEntryLookup {
     }
 
     pub fn versions(&self) -> Vec<String> {
+        // Versions.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Vec<String>.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.versions();
+
         match self {
             RegistryEntryLookup::Local(entry) => {
                 entry.versions.iter().map(|v| (*v).to_string()).collect()
@@ -169,6 +337,20 @@ impl RegistryEntryLookup {
     }
 
     pub fn registry_label(&self) -> &'static str {
+        // Registry label.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        //
+        // Returns:
+        // Text result.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.registry_label();
+
         match self {
             RegistryEntryLookup::Local(_) => "local",
             RegistryEntryLookup::Remote(_) => "remote",
@@ -182,6 +364,20 @@ mod tests {
 
     #[test]
     fn remote_disabled_without_env() {
+        // Remote disabled without env.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = spanda_package::registry_remote::remote_disabled_without_env();
+
         std::env::remove_var("SPANDA_REGISTRY_URL");
         assert!(load_remote_registry().is_empty());
     }
