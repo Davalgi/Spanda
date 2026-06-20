@@ -1,9 +1,9 @@
 use spanda_core::{check, load_project_modules, run_tests_with_registry};
 use spanda_package::{
     add_dependency, collect_source_files, find_project_root, init_package, publish_package,
-    registry_info, remove_dependency, resolve_dependencies, search_registry, search_registry_merged,
-    validate_package, ApplicationPermissions, DependencySpec, Lockfile, PackageManifest,
-    ResolveOptions, LOCKFILE_FILENAME, MANIFEST_FILENAME,
+    registry_info, remove_dependency, resolve_dependencies, search_registry,
+    search_registry_merged, validate_package, ApplicationPermissions, DependencySpec, Lockfile,
+    PackageManifest, ResolveOptions, LOCKFILE_FILENAME, MANIFEST_FILENAME,
 };
 use std::env;
 use std::fs;

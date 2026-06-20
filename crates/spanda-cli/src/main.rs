@@ -727,14 +727,8 @@ fn main() {
                         },
                     ) {
                         Ok(result) => {
-                            println!(
-                                "✓ wrote LLVM IR to {}",
-                                result.llvm_ir_path.display()
-                            );
-                            println!(
-                                "✓ linked native binary to {}",
-                                result.executable.display()
-                            );
+                            println!("✓ wrote LLVM IR to {}", result.llvm_ir_path.display());
+                            println!("✓ linked native binary to {}", result.executable.display());
                         }
                         Err(e) => {
                             eprintln!("Error: {e}");
