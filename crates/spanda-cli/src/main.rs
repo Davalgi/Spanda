@@ -4,9 +4,9 @@ mod package;
 
 use serde::Serialize;
 use spanda_core::{
-    check, codegen, format_source, generate_markdown, lint, lower_to_sir, replay_mission, run,
-    run_debug, verify_compatibility, wasm_deploy_manifest, CodegenTarget, CompatSeverity,
-    DebugOptions, RunOptions, SpandaError, VerifyOptions,
+    check, codegen, format_source, generate_markdown, lint, lower_to_sir, playback_mission,
+    replay_mission, run, run_debug, verify_compatibility, wasm_deploy_manifest, CodegenTarget,
+    CompatSeverity, DebugOptions, RunOptions, SchedulerClock, SpandaError, VerifyOptions,
 };
 use spanda_llvm::{compile_native, emit_module_ir_with_options, CompileNativeOptions};
 use std::collections::HashSet;
@@ -91,7 +91,7 @@ fn usage() {
            spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
            spanda run [--json] [--verbose] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-realtime] [--metrics-json] [--record] <file.sd>\n\
            spanda sim [--json] [--replay] [--trace-realtime] [--metrics-json] [--record] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
-           spanda replay <mission.trace> [--from T+mm:ss] [--deterministic]\n\
+           spanda replay <mission.trace> [--from T+mm:ss] [--deterministic] [--playback]\n\
            spanda fleet run [--json] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
            spanda fmt [--json] <file.sd>\n\
            spanda lint [--json] <file.sd>\n\
@@ -230,7 +230,13 @@ fn human_check(source: &str, file: &str) {
     }
 }
 
-fn human_replay(trace_file: &str, from: Option<&str>, deterministic: bool, as_json: bool) {
+fn human_replay(
+    trace_file: &str,
+    from: Option<&str>,
+    deterministic: bool,
+    playback: bool,
+    as_json: bool,
+) {
     use spanda_core::replay::{parse_replay_offset, MissionTrace};
     let trace = MissionTrace::load(trace_file).unwrap_or_else(|e| {
         eprintln!("{e}");
@@ -245,6 +251,46 @@ fn human_replay(trace_file: &str, from: Option<&str>, deterministic: bool, as_js
         0.0
     };
     let frames = trace.frames_from(offset_ms);
+
+    // Apply recorded state snapshots without re-running program logic.
+    if playback {
+        let (report, state) = playback_mission(
+            trace_file,
+            RunOptions {
+                replay_from_ms: Some(offset_ms),
+                playback_wall_clock: true,
+                ..Default::default()
+            },
+        )
+        .unwrap_or_else(|e| {
+            eprintln!("Playback failed: {e}");
+            process::exit(1);
+        });
+        if as_json {
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&serde_json::json!({
+                    "ok": true,
+                    "mode": "playback",
+                    "frames_applied": report.frames_applied,
+                    "states_applied": report.states_applied,
+                    "offset_ms": offset_ms,
+                    "state": state,
+                }))
+                .unwrap()
+            );
+            return;
+        }
+        println!(
+            "Playback {}: {} frames ({} with state) from {:.0}ms",
+            trace_file, report.frames_applied, report.states_applied, offset_ms
+        );
+        println!(
+            "  Final pose: x={:.3} y={:.3} θ={:.3}",
+            state.pose.x, state.pose.y, state.pose.theta
+        );
+        return;
+    }
 
     // Re-run the traced program and verify deterministic replay when requested.
     if deterministic {
@@ -1009,8 +1055,10 @@ fn main() {
     let mut record_trace = false;
     let mut metrics_json = false;
     let mut replay_deterministic = false;
+    let mut replay_playback = false;
     let mut replay_from: Option<String> = None;
     let mut trace_output: Option<String> = None;
+    let mut wall_clock = false;
     let mut i = 2;
 
     // Repeat while i < args.len().
@@ -1039,6 +1087,8 @@ fn main() {
                 trace_output = Some(args[i].clone());
             }
             "--deterministic" => replay_deterministic = true,
+            "--playback" => replay_playback = true,
+            "--wall-clock" => wall_clock = true,
             "--from" => {
                 i += 1;
                 if i >= args.len() {
@@ -1138,6 +1188,7 @@ fn main() {
             &trace_file,
             replay_from.as_deref(),
             replay_deterministic,
+            replay_playback,
             json,
         );
         let _ = io::stdout().flush();
@@ -1212,6 +1263,11 @@ fn main() {
                 metrics_json,
                 replay_trace: command == "sim" && replay_trace,
                 replay_deterministic,
+                scheduler_clock: if wall_clock {
+                    SchedulerClock::Wall
+                } else {
+                    SchedulerClock::Sim
+                },
                 ..Default::default()
             };
 
