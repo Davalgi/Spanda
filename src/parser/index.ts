@@ -527,6 +527,10 @@ class Parser {
   }
 
   private parseTypeAnnotation(): SpandaType {
+    if (this.match("DYN")) {
+      const traitName = this.parseTypeNamePart("Expected trait name after dyn");
+      return { kind: "trait_object", traitName };
+    }
     const parts = [this.parseTypeNamePart("Expected type name")];
     while (this.match("DOT")) {
       parts.push(this.parseTypeNamePart("Expected type name after '.'"));

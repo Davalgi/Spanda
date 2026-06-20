@@ -150,7 +150,8 @@ export type SpandaType =
   | { kind: "velocity" }
   | { kind: "trajectory" }
   | { kind: "transform" }
-  | { kind: "enum_variant"; enumName: string; variant: string };
+  | { kind: "enum_variant"; enumName: string; variant: string }
+  | { kind: "trait_object"; traitName: string };
 
 export type Program = {
   kind: "Program";

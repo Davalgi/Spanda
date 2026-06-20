@@ -67,6 +67,7 @@ export type RuntimeValue =
   | { kind: "action"; name: string; actionType: string }
   | { kind: "robot" }
   | { kind: "agent"; name: string }
+  | { kind: "trait_object"; traitName: string; agent: string }
   | { kind: "twin"; name: string }
   | { kind: "safety_ctx" }
   | { kind: "ai_model"; name: string; modelType: string; provider: string }
@@ -829,7 +830,18 @@ export class Interpreter {
     switch (stmt.kind) {
       case "VarDecl":
         if (stmt.init) {
-          this.env.define(stmt.name, this.evalExpr(stmt.init));
+          if (
+            stmt.typeAnnotation?.kind === "trait_object" &&
+            stmt.init.kind === "IdentExpr"
+          ) {
+            this.env.define(stmt.name, {
+              kind: "trait_object",
+              traitName: stmt.typeAnnotation.traitName,
+              agent: stmt.init.name,
+            });
+          } else {
+            this.env.define(stmt.name, this.evalExpr(stmt.init));
+          }
         } else {
           this.env.define(stmt.name, { kind: "void" });
         }
@@ -1234,6 +1246,32 @@ export class Interpreter {
           return mockAnalyzeFrame(frame, target.name);
         }
       }
+    }
+
+    if (target.kind === "trait_object") {
+      const agentName = target.agent;
+      const traitImpl = this.agentTraitImpls.get(agentName)?.get(method);
+      if (traitImpl) {
+        const saved = this.env.clone();
+        for (let i = 0; i < traitImpl.params.length; i++) {
+          const param = traitImpl.params[i];
+          const argVal = expr.args[i] ? this.evalExpr(expr.args[i]) : { kind: "void" as const };
+          this.env.define(param.name, argVal);
+        }
+        this.currentAgent = agentName;
+        try {
+          this.executeBlock(traitImpl.body);
+        } finally {
+          this.currentAgent = null;
+          this.env = saved;
+        }
+        this.options.onLog?.(`dyn ${target.traitName}@${agentName}.${method}()`);
+        return { kind: "void" };
+      }
+      throw new RuntimeError(
+        `Unknown trait method '${method}' on dyn ${target.traitName}`,
+        expr.span.start.line,
+      );
     }
 
     if (target.kind === "agent") {

@@ -383,6 +383,8 @@ export function typeKindName(ty: SpandaType): string {
       return "generic";
     case "enum_variant":
       return "enum_variant";
+    case "trait_object":
+      return "trait_object";
     default:
       return ty.kind;
   }

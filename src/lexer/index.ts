@@ -4,6 +4,7 @@ export type TokenType =
   | "STRUCT"
   | "ENUM"
   | "TRAIT"
+  | "DYN"
   | "IMPL"
   | "FOR"
   | "MATCH"
@@ -278,6 +279,7 @@ const KEYWORDS: Record<string, TokenType> = {
   struct: "STRUCT",
   enum: "ENUM",
   trait: "TRAIT",
+  dyn: "DYN",
   impl: "IMPL",
   for: "FOR",
   match: "MATCH",

@@ -102,6 +102,7 @@ class TypeChecker {
   private structDefs = new Map<string, Array<{ name: string; typeName: string }>>();
   private traitDefs = new Map<string, Map<string, { params: Array<{ name: string; typeName: string }>; returnType: string }>>();
   private agentTraitMethods = new Map<string, Map<string, SpandaType>>();
+  private agentTraits = new Map<string, Set<string>>();
   private stateMachineStates = new Set<string>();
   private currentRobot: RobotDecl | null = null;
   private messageRegistry = MessageRegistry.new();
@@ -353,6 +354,12 @@ class TypeChecker {
     if (ty.kind === "generic") {
       for (const arg of ty.typeArgs) {
         this.validateTypeAnnotation(arg, line, column);
+      }
+      return;
+    }
+    if (ty.kind === "trait_object") {
+      if (!this.traitDefs.has(ty.traitName)) {
+        this.error(`Unknown trait '${ty.traitName}'`, line, column);
       }
     }
   }
@@ -877,6 +884,9 @@ class TypeChecker {
       agentMethods.set(name, ret);
     }
     this.agentTraitMethods.set(decl.agentName, agentMethods);
+    const traits = this.agentTraits.get(decl.agentName) ?? new Set<string>();
+    traits.add(decl.traitName);
+    this.agentTraits.set(decl.agentName, traits);
   }
 
   private checkTopic(topic: TopicDecl): void {
@@ -1173,9 +1183,37 @@ class TypeChecker {
   private checkStmt(stmt: Stmt): void {
     switch (stmt.kind) {
       case "VarDecl": {
+        if (stmt.typeAnnotation) {
+          this.validateTypeAnnotation(
+            stmt.typeAnnotation,
+            stmt.span.start.line,
+            stmt.span.start.column,
+          );
+        }
+        if (
+          stmt.typeAnnotation?.kind === "trait_object" &&
+          stmt.init?.kind === "IdentExpr"
+        ) {
+          const traitName = stmt.typeAnnotation.traitName;
+          const agent = stmt.init.name;
+          const traits = this.agentTraits.get(agent);
+          if (!traits?.has(traitName)) {
+            this.error(
+              `Agent '${agent}' does not implement trait '${traitName}'`,
+              stmt.span.start.line,
+              stmt.span.start.column,
+            );
+          }
+        }
+        const traitAgentOk =
+          stmt.typeAnnotation?.kind === "trait_object" &&
+          stmt.init?.kind === "IdentExpr" &&
+          this.agentTraits.get(stmt.init.name)?.has(stmt.typeAnnotation.traitName);
         const inferred = stmt.init ? this.checkExpr(stmt.init) : null;
         let t: SpandaType;
-        if (stmt.typeAnnotation && inferred) {
+        if (stmt.typeAnnotation && inferred && traitAgentOk) {
+          t = stmt.typeAnnotation;
+        } else if (stmt.typeAnnotation && inferred) {
           this.assertCompatible(
             stmt.typeAnnotation,
             inferred,
@@ -1669,6 +1707,37 @@ class TypeChecker {
       if (methods?.[expr.property]) return methods[expr.property].returns;
     }
 
+    if (objType.kind === "trait_object") {
+      const traitMethods = this.traitDefs.get(objType.traitName);
+      const method = traitMethods?.get(expr.property);
+      if (method) {
+        return this.typeNameToSpanda(method.returnType);
+      }
+      this.error(
+        `Unknown trait method '${expr.property}' on '${objType.traitName}'`,
+        expr.span.start.line,
+        expr.span.start.column,
+      );
+      return { kind: "void" };
+    }
+
+    if (expr.object.kind === "IdentExpr") {
+      const sym = this.symbols.get(expr.object.name);
+      if (sym?.roboType.kind === "trait_object") {
+        const traitMethods = this.traitDefs.get(sym.roboType.traitName);
+        const method = traitMethods?.get(expr.property);
+        if (method) {
+          return this.typeNameToSpanda(method.returnType);
+        }
+        this.error(
+          `Unknown trait method '${expr.property}' on '${sym.roboType.traitName}'`,
+          expr.span.start.line,
+          expr.span.start.column,
+        );
+        return { kind: "void" };
+      }
+    }
+
     this.error(`Unknown member '${expr.property}'`, expr.span.start.line, expr.span.start.column);
     return { kind: "void" };
   }
@@ -1848,6 +1917,20 @@ class TypeChecker {
       return agentMethod.returns;
     }
 
+    if (sym.roboType.kind === "trait_object") {
+      const traitMethods = this.traitDefs.get(sym.roboType.traitName);
+      const method = traitMethods?.get(member.property);
+      if (method) {
+        return this.typeNameToSpanda(method.returnType);
+      }
+      this.error(
+        `Unknown trait method '${member.property}' on '${sym.roboType.traitName}'`,
+        expr.span.start.line,
+        expr.span.start.column,
+      );
+      return { kind: "void" };
+    }
+
     let typeName = "";
     if (sym.kind === "sensor" && sym.sensorType) typeName = sym.sensorType;
     else if (sym.kind === "actuator" && sym.actuatorType) typeName = sym.actuatorType;
@@ -1952,6 +2035,9 @@ class TypeChecker {
           expected.typeArgs.length === actual.typeArgs.length &&
           expected.typeArgs.every((e, i) => this.typesCompatible(e, actual.typeArgs[i]!))
         );
+      }
+      if (expected.kind === "trait_object" && actual.kind === "trait_object") {
+        return expected.traitName === actual.traitName;
       }
       return true;
     }
