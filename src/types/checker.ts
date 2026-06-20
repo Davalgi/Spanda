@@ -8,13 +8,22 @@ import type {
   Stmt,
   UnitKind,
   SpandaType,
+  TopicDecl,
+  ServiceDecl,
+  ActionDecl,
 } from "../ast/nodes.js";
 import type { CapabilityDecl, MatchArm, TraitImplDecl } from "../foundations.js";
 import { resolveModuleImport, resolveTypeAlias } from "../foundations.js";
 import { resolveStdImport } from "../stdlib.js";
 import {
+  MessageRegistry,
+  isCommCapability,
+  transportFromIdent,
+} from "../comm/index.js";
+import {
   binaryPhysicalOpAllowed,
   isActionProposalType,
+  resolveTypeName,
   isSafeActionType,
   resolveTypeName,
   typeKindName,
@@ -30,7 +39,6 @@ import {
   ACTUATOR_TYPES,
   BUILTIN_FUNCTIONS,
   BUILTIN_METHODS,
-  MESSAGE_TYPES,
   OBJECT_PROPERTIES,
   POSE_PROPERTIES,
   ROBOT_METHODS,
@@ -41,8 +49,10 @@ import {
   TypeCheckError,
   resultUnitForBinary,
   unitsCompatible,
+  unitMatchesNamedType,
   type TypeError,
 } from "./units.js";
+import { unitCategory } from "../units/index.js";
 
 type SymbolEntry = {
   name: string;
@@ -77,6 +87,11 @@ class TypeChecker {
   private agentTraitMethods = new Map<string, Map<string, SpandaType>>();
   private stateMachineStates = new Set<string>();
   private currentRobot: RobotDecl | null = null;
+  private messageRegistry = MessageRegistry.new();
+  private subscribedTopics = new Set<string>();
+  private agentNames = new Set<string>();
+  private deviceNames = new Set<string>();
+  private peerRobotNames = new Set<string>();
 
   checkProgram(program: Program): void {
     const imported = new Set<string>();
@@ -103,9 +118,44 @@ class TypeChecker {
       this.checkTrait(traitDecl);
     }
 
+    this.messageRegistry = MessageRegistry.fromProgram(program.messages, program.structs);
+    for (const msg of program.messages) {
+      this.checkMessage(msg);
+    }
+
     for (const robot of program.robots) {
       this.checkRobot(robot, imported);
     }
+  }
+
+  private checkMessage(decl: import("../comm/index.js").MessageDecl): void {
+    for (const field of decl.fields) {
+      let known = !!this.messageRegistry.resolveType(field.typeName) || !!resolveTypeAlias(field.typeName);
+      if (!known) {
+        try {
+          resolveTypeName(field.typeName);
+          known = true;
+        } catch {
+          /* unknown */
+        }
+      }
+      if (!known) {
+        this.error(
+          `Unknown field type '${field.typeName}' in message '${decl.name}'`,
+          field.span.start.line,
+          field.span.start.column,
+        );
+      }
+    }
+    this.symbols.set(decl.name, {
+      name: decl.name,
+      roboType: { kind: "named", name: decl.name },
+      kind: "variable",
+    });
+  }
+
+  private resolveMessageType(name: string): SpandaType | null {
+    return this.messageRegistry.resolveType(name);
   }
 
   private checkStruct(decl: import("../foundations.js").StructDecl): void {
@@ -189,6 +239,10 @@ class TypeChecker {
 
   private checkRobot(robot: RobotDecl, imported: Set<string>): void {
     this.currentRobot = robot;
+    this.subscribedTopics.clear();
+    this.agentNames.clear();
+    this.deviceNames.clear();
+    this.peerRobotNames.clear();
     this.symbols.clear();
     this.stateMachineStates.clear();
     this.agentTraitMethods.clear();
@@ -233,39 +287,15 @@ class TypeChecker {
     }
 
     for (const topic of robot.topics) {
-      if (!MESSAGE_TYPES[topic.messageType]) {
-        this.error(`Unknown message type '${topic.messageType}'`, topic.span.start.line, topic.span.start.column);
-      }
-      this.symbols.set(topic.name, {
-        name: topic.name,
-        roboType: MESSAGE_TYPES[topic.messageType] ?? { kind: "void" },
-        kind: "topic",
-        messageType: topic.messageType,
-      });
+      this.checkTopic(topic);
     }
 
     for (const service of robot.services) {
-      if (!SERVICE_TYPES[service.serviceType]) {
-        this.error(`Unknown service type '${service.serviceType}'`, service.span.start.line, service.span.start.column);
-      }
-      this.symbols.set(service.name, {
-        name: service.name,
-        roboType: SERVICE_TYPES[service.serviceType] ?? { kind: "void" },
-        kind: "service",
-        serviceType: service.serviceType,
-      });
+      this.checkService(service);
     }
 
     for (const action of robot.actions) {
-      if (!ACTION_TYPES[action.actionType]) {
-        this.error(`Unknown action type '${action.actionType}'`, action.span.start.line, action.span.start.column);
-      }
-      this.symbols.set(action.name, {
-        name: action.name,
-        roboType: ACTION_TYPES[action.actionType] ?? { kind: "void" },
-        kind: "action",
-        actionType: action.actionType,
-      });
+      this.checkAction(action);
     }
 
     for (const sensor of robot.sensors) {
@@ -304,6 +334,42 @@ class TypeChecker {
       });
     }
 
+    for (const bus of robot.buses) {
+      if (transportFromIdent(bus.name) === null && bus.transport === "local") {
+        this.error(
+          `Unknown transport '${bus.name}' in bus declaration`,
+          bus.span.start.line,
+          bus.span.start.column,
+        );
+      }
+    }
+
+    for (const peer of robot.peerRobots) {
+      this.peerRobotNames.add(peer.name);
+      this.symbols.set(peer.name, {
+        name: peer.name,
+        roboType: { kind: "named", name: "PeerRobot" },
+        kind: "robot",
+      });
+    }
+
+    for (const device of robot.devices) {
+      if (!["Camera", "IMU", "Lidar", "GPS", "Microphone", "Speaker"].includes(device.deviceType)) {
+        this.error(
+          `Unknown device type '${device.deviceType}'`,
+          device.span.start.line,
+          device.span.start.column,
+        );
+      }
+      this.deviceNames.add(device.name);
+      this.symbols.set(device.name, {
+        name: device.name,
+        roboType: { kind: "named", name: device.deviceType },
+        kind: "sensor",
+        sensorType: device.deviceType,
+      });
+    }
+
     if (robot.safety) {
       const saved = new Map(this.symbols);
       for (const rule of robot.safety.rules) {
@@ -331,6 +397,23 @@ class TypeChecker {
 
     for (const agent of robot.agents) {
       this.checkAgent(agent);
+    }
+
+    for (const channel of robot.agentChannels) {
+      if (!this.agentNames.has(channel.fromAgent)) {
+        this.error(
+          `Agent channel source '${channel.fromAgent}' is not declared`,
+          channel.span.start.line,
+          channel.span.start.column,
+        );
+      }
+      if (!this.agentNames.has(channel.toAgent)) {
+        this.error(
+          `Agent channel target '${channel.toAgent}' is not declared`,
+          channel.span.start.line,
+          channel.span.start.column,
+        );
+      }
     }
 
     for (const traitImpl of robot.traitImpls) {
@@ -566,6 +649,110 @@ class TypeChecker {
     this.agentTraitMethods.set(decl.agentName, agentMethods);
   }
 
+  private checkTopic(topic: TopicDecl): void {
+    if (!this.resolveMessageType(topic.messageType)) {
+      this.error(
+        `Unknown message type '${topic.messageType}'`,
+        topic.span.start.line,
+        topic.span.start.column,
+      );
+    }
+    if (topic.topic === null && topic.transport === null && topic.role === "publish") {
+      this.error(
+        `Topic '${topic.name}' publisher must specify path or transport`,
+        topic.span.start.line,
+        topic.span.start.column,
+      );
+    }
+    if (topic.role === "subscribe" || topic.role === "both") {
+      if (topic.topic) this.subscribedTopics.add(topic.topic);
+      this.subscribedTopics.add(topic.name);
+    }
+    if (topic.qos) {
+      if (topic.qos.rateHz !== null && topic.qos.rateHz <= 0) {
+        this.error("Topic rate must be positive", topic.qos.span.start.line, topic.qos.span.start.column);
+      }
+      if (topic.qos.deadlineMs !== null && topic.qos.deadlineMs <= 0) {
+        this.error("Topic deadline must be positive", topic.qos.span.start.line, topic.qos.span.start.column);
+      }
+    }
+    this.symbols.set(topic.name, {
+      name: topic.name,
+      roboType: this.resolveMessageType(topic.messageType) ?? { kind: "void" },
+      kind: "topic",
+      messageType: topic.messageType,
+    });
+  }
+
+  private checkService(service: ServiceDecl): void {
+    if (service.requestType && service.responseType) {
+      if (!this.resolveMessageType(service.requestType)) {
+        this.error(
+          `Unknown service request type '${service.requestType}'`,
+          service.span.start.line,
+          service.span.start.column,
+        );
+      }
+      if (!this.resolveMessageType(service.responseType)) {
+        this.error(
+          `Unknown service response type '${service.responseType}'`,
+          service.span.start.line,
+          service.span.start.column,
+        );
+      }
+    } else if (service.serviceType) {
+      if (!SERVICE_TYPES[service.serviceType]) {
+        this.error(
+          `Unknown service type '${service.serviceType}'`,
+          service.span.start.line,
+          service.span.start.column,
+        );
+      }
+    } else {
+      this.error(
+        `Service '${service.name}' must specify type or request/response`,
+        service.span.start.line,
+        service.span.start.column,
+      );
+    }
+    this.symbols.set(service.name, {
+      name: service.name,
+      roboType: { kind: "named", name: service.name },
+      kind: "service",
+      serviceType: service.serviceType ?? undefined,
+    });
+  }
+
+  private checkAction(action: ActionDecl): void {
+    if (action.requestType && action.feedbackType && action.resultType) {
+      for (const t of [action.requestType, action.feedbackType, action.resultType]) {
+        if (!this.resolveMessageType(t)) {
+          this.error(`Unknown action type '${t}'`, action.span.start.line, action.span.start.column);
+        }
+      }
+    } else if (action.actionType) {
+      if (!ACTION_TYPES[action.actionType]) {
+        this.error(
+          `Unknown action type '${action.actionType}'`,
+          action.span.start.line,
+          action.span.start.column,
+        );
+      }
+    } else {
+      this.error(
+        `Action '${action.name}' must specify type or request/feedback/result`,
+        action.span.start.line,
+        action.span.start.column,
+      );
+    }
+    this.symbols.set(action.name, {
+      name: action.name,
+      roboType: { kind: "named", name: action.name },
+      kind: "action",
+      actionType: action.actionType ?? undefined,
+    });
+  }
+
   private checkSafetyRule(rule: SafetyRule): void {
     if (rule.kind === "MaxSpeedRule") {
       const t = this.checkExpr(rule.value);
@@ -657,6 +844,7 @@ class TypeChecker {
     for (const cap of agent.capabilities) {
       this.checkCapability(agent.name, cap);
     }
+    this.agentNames.add(agent.name);
     this.symbols.set(agent.name, {
       name: agent.name,
       roboType: AI_VALUE_TYPES.Agent ?? { kind: "named", name: "Agent" },
@@ -671,22 +859,47 @@ class TypeChecker {
   }
 
   private checkCapability(agentName: string, cap: CapabilityDecl): void {
-    const allowed = ["read", "propose_motion", "summarize", "detect", "plan"];
-    if (!allowed.includes(cap.action)) {
+    const allowed = [
+      "read",
+      "propose_motion",
+      "summarize",
+      "detect",
+      "plan",
+      "subscribe",
+      "publish",
+      "call",
+      "execute",
+      "discover",
+    ];
+    if (!allowed.includes(cap.action) && !isCommCapability(cap.action)) {
       this.error(`Unknown capability '${cap.action}'`, cap.span.start.line, cap.span.start.column);
       return;
     }
-    if (cap.action === "read") {
+    if (
+      cap.action === "read" ||
+      cap.action === "subscribe" ||
+      cap.action === "publish" ||
+      cap.action === "call" ||
+      cap.action === "execute"
+    ) {
       if (cap.target) {
-        if (!this.symbols.has(cap.target)) {
+        const valid =
+          this.symbols.has(cap.target) ||
+          this.peerRobotNames.has(cap.target) ||
+          this.deviceNames.has(cap.target);
+        if (!valid) {
           this.error(
-            `Agent '${agentName}' capability read(${cap.target}) references unknown resource`,
+            `Agent '${agentName}' capability ${cap.action}(${cap.target}) references unknown resource`,
             cap.span.start.line,
             cap.span.start.column,
           );
         }
-      } else {
-        this.error(`Agent '${agentName}' read capability requires a target`, cap.span.start.line, cap.span.start.column);
+      } else if (cap.action === "read" || cap.action === "subscribe" || cap.action === "publish") {
+        this.error(
+          `Agent '${agentName}' ${cap.action} capability requires a target`,
+          cap.span.start.line,
+          cap.span.start.column,
+        );
       }
     }
   }
@@ -790,6 +1003,49 @@ class TypeChecker {
       case "RememberStmt":
         this.checkExpr(stmt.value);
         break;
+      case "SubscribeStmt": {
+        const [topicName] = stmt.target.split(".");
+        if (!this.symbols.has(topicName) && !this.peerRobotNames.has(topicName)) {
+          this.error(
+            `Unknown subscribe target '${stmt.target}'`,
+            stmt.span.start.line,
+            stmt.span.start.column,
+          );
+        }
+        this.subscribedTopics.add(stmt.target);
+        break;
+      }
+      case "ExecuteStmt": {
+        const action = this.symbols.get(stmt.actionName);
+        if (!action || action.kind !== "action") {
+          this.error(
+            `Unknown action '${stmt.actionName}'`,
+            stmt.span.start.line,
+            stmt.span.start.column,
+          );
+        } else {
+          this.checkExpr(stmt.goal);
+        }
+        break;
+      }
+      case "DiscoverStmt":
+        break;
+      case "ReceiveStmt": {
+        const topic = this.symbols.get(stmt.topicName);
+        if (!topic || topic.kind !== "topic") {
+          this.error(
+            `Unknown topic '${stmt.topicName}' for receive`,
+            stmt.span.start.line,
+            stmt.span.start.column,
+          );
+        }
+        this.symbols.set(stmt.varName, {
+          name: stmt.varName,
+          roboType: topic?.roboType ?? { kind: "void" },
+          kind: "variable",
+        });
+        break;
+      }
       case "ExprStmt":
         this.checkExpr(stmt.expr);
         break;
@@ -870,6 +1126,33 @@ class TypeChecker {
 
       case "StructLiteralExpr":
         return this.checkStructLiteral(expr);
+
+      case "ServiceCallExpr": {
+        const service = this.symbols.get(expr.serviceName);
+        if (!service || service.kind !== "service") {
+          this.error(
+            `Unknown service '${expr.serviceName}'`,
+            expr.span.start.line,
+            expr.span.start.column,
+          );
+        }
+        return { kind: "named", name: "ServiceResponse" };
+      }
+      case "ExecuteExpr": {
+        const action = this.symbols.get(expr.actionName);
+        if (!action || action.kind !== "action") {
+          this.error(
+            `Unknown action '${expr.actionName}'`,
+            expr.span.start.line,
+            expr.span.start.column,
+          );
+        } else {
+          this.checkExpr(expr.goal);
+        }
+        return { kind: "named", name: "ActionResult" };
+      }
+      case "DiscoverExpr":
+        return { kind: "named", name: "DiscoveryResult" };
 
       default:
         return { kind: "void" };
@@ -1203,28 +1486,15 @@ class TypeChecker {
     if (
       (expected.kind === "velocity" &&
         actual.kind === "number" &&
-        actual.unit === "m/s") ||
+        unitCategory(actual.unit) === "velocity") ||
       (actual.kind === "velocity" &&
         expected.kind === "number" &&
-        expected.unit === "m/s")
+        unitCategory(expected.unit) === "velocity")
     ) {
       return true;
     }
     if (expected.kind === "named" && actual.kind === "number") {
-      switch (expected.name) {
-        case "Distance":
-          return actual.unit === "m";
-        case "Duration":
-          return actual.unit === "ms" || actual.unit === "s";
-        case "Angle":
-          return actual.unit === "rad" || actual.unit === "deg";
-        case "Acceleration":
-          return actual.unit === "m/s²";
-        case "AngularVelocity":
-          return actual.unit === "rad/s";
-        default:
-          return false;
-      }
+      return unitMatchesNamedType(expected.name, actual.unit);
     }
     if (expected.kind === "named" && actual.kind === "string") {
       return expected.name === "Goal";

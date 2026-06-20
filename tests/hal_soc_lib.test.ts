@@ -37,6 +37,7 @@ describe("SoC", () => {
     const profiles = listSocProfiles();
     expect(profiles.length).toBeGreaterThanOrEqual(6);
     expect(profiles.some((p) => p.name === "ESP32")).toBe(true);
+    expect(profiles.some((p) => p.name === "STM32H7")).toBe(true);
     expect(profiles.some((p) => p.name === "RaspberryPi4")).toBe(true);
   });
 
@@ -60,6 +61,7 @@ describe("sensor libraries", () => {
     expect(resolveImport("bosch.bno055")?.vendor).toBe("Bosch");
     expect(resolveImport("velodyne.vlp16")?.sensors.VelodyneVLP16).toBeDefined();
     expect(resolveImport("intel.realsense")?.sensors.IntelRealSenseD435).toBeDefined();
+    expect(resolveImport("ouster.os1")?.sensors.OusterOS1).toBeDefined();
   });
 
   it("lists libraries by vendor", () => {

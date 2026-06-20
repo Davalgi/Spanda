@@ -78,6 +78,49 @@ export type TokenType =
   | "REMEMBER"
   | "VERIFY"
   | "OBSERVE"
+  | "HARDWARE"
+  | "DEPLOY"
+  | "CPU"
+  | "STORAGE"
+  | "GPU"
+  | "BATTERY"
+  | "CAPACITY"
+  | "SENSORS"
+  | "ACTUATORS"
+  | "TO"
+  | "REQUIRES_HARDWARE"
+  | "REQUIRES_NETWORK"
+  | "SIMULATE_COMPATIBILITY"
+  | "BUDGET"
+  | "FAULT"
+  | "MISSION"
+  | "NETWORK"
+  | "BANDWIDTH"
+  | "LATENCY"
+  | "TIMING"
+  | "MIN_PERIOD"
+  | "DURATION"
+  | "MESSAGE"
+  | "SUBSCRIBE"
+  | "EXECUTE"
+  | "DISCOVER"
+  | "BUS"
+  | "DEVICE"
+  | "REQUEST"
+  | "RESPONSE"
+  | "FEEDBACK"
+  | "RESULT"
+  | "QOS"
+  | "RELIABLE"
+  | "BEST_EFFORT"
+  | "RATE"
+  | "HISTORY"
+  | "DEADLINE"
+  | "WHERE"
+  | "INCLUDES"
+  | "RECEIVE"
+  | "TELEMETRY"
+  | "FAULTS"
   | "ON"
   | "TRUE"
   | "FALSE"
@@ -111,7 +154,86 @@ export type TokenType =
   | "NEQ"
   | "EOF";
 
-export type UnitLexeme = "m" | "s" | "ms" | "rad" | "m/s" | "m/s²" | "m/s2" | "rad/s" | "deg" | "Hz";
+export type UnitLexeme =
+  | "%VWC"
+  | "%RH"
+  | "µg/m³"
+  | "ug/m3"
+  | "uS/cm"
+  | "mS/cm"
+  | "uSv/h"
+  | "mSv/h"
+  | "S/m"
+  | "cd/m²"
+  | "cd/m2"
+  | "N·m"
+  | "kWh"
+  | "dBA"
+  | "MHz"
+  | "km/h"
+  | "m/s²"
+  | "m/s2"
+  | "m/s"
+  | "rad/s"
+  | "deg/s"
+  | "fahrenheit"
+  | "celsius"
+  | "kelvin"
+  | "kHz"
+  | "kPa"
+  | "kN"
+  | "kW"
+  | "kV"
+  | "mbar"
+  | "mph"
+  | "gram"
+  | "mm"
+  | "cm"
+  | "km"
+  | "ms"
+  | "us"
+  | "mV"
+  | "mA"
+  | "min"
+  | "deg"
+  | "rad"
+  | "psi"
+  | "bar"
+  | "Pa"
+  | "Hz"
+  | "ft"
+  | "in"
+  | "kg"
+  | "lb"
+  | "MW"
+  | "m"
+  | "s"
+  | "h"
+  | "g"
+  | "N"
+  | "W"
+  | "V"
+  | "A"
+  | "rh"
+  | "lux"
+  | "lx"
+  | "nit"
+  | "ppm"
+  | "ppb"
+  | "dB"
+  | "uT"
+  | "gauss"
+  | "rpm"
+  | "Nm"
+  | "J"
+  | "Wh"
+  | "uvi"
+  | "pH"
+  | "NTU"
+  | "FNU"
+  | "ppt"
+  | "psu"
+  | "vwc";
 
 export type Token = {
   type: TokenType;
@@ -212,6 +334,49 @@ const KEYWORDS: Record<string, TokenType> = {
   remember: "REMEMBER",
   verify: "VERIFY",
   observe: "OBSERVE",
+  hardware: "HARDWARE",
+  deploy: "DEPLOY",
+  cpu: "CPU",
+  storage: "STORAGE",
+  gpu: "GPU",
+  battery: "BATTERY",
+  capacity: "CAPACITY",
+  sensors: "SENSORS",
+  actuators: "ACTUATORS",
+  to: "TO",
+  requires_hardware: "REQUIRES_HARDWARE",
+  requires_network: "REQUIRES_NETWORK",
+  simulate_compatibility: "SIMULATE_COMPATIBILITY",
+  budget: "BUDGET",
+  fault: "FAULT",
+  mission: "MISSION",
+  network: "NETWORK",
+  bandwidth: "BANDWIDTH",
+  latency: "LATENCY",
+  timing: "TIMING",
+  min_period: "MIN_PERIOD",
+  duration: "DURATION",
+  message: "MESSAGE",
+  subscribe: "SUBSCRIBE",
+  execute: "EXECUTE",
+  discover: "DISCOVER",
+  bus: "BUS",
+  device: "DEVICE",
+  request: "REQUEST",
+  response: "RESPONSE",
+  feedback: "FEEDBACK",
+  result: "RESULT",
+  qos: "QOS",
+  reliable: "RELIABLE",
+  best_effort: "BEST_EFFORT",
+  rate: "RATE",
+  history: "HISTORY",
+  deadline: "DEADLINE",
+  where: "WHERE",
+  includes: "INCLUDES",
+  receive: "RECEIVE",
+  telemetry: "TELEMETRY",
+  faults: "FAULTS",
   on: "ON",
   true: "TRUE",
   false: "FALSE",
@@ -220,7 +385,17 @@ const KEYWORDS: Record<string, TokenType> = {
   not: "NOT",
 };
 
-const UNIT_SUFFIXES: UnitLexeme[] = ["m/s2", "m/s²", "m/s", "rad/s", "ms", "deg", "rad", "m", "s", "Hz"];
+const UNIT_SUFFIXES: UnitLexeme[] = [
+  "%VWC", "%RH", "µg/m³", "ug/m3", "uS/cm", "mS/cm", "uSv/h", "mSv/h", "S/m",
+  "cd/m2", "cd/m²", "N·m", "kWh", "dBA", "MHz", "km/h", "m/s2", "m/s²", "m/s", "rad/s", "deg/s",
+  "fahrenheit", "celsius", "kelvin",
+  "kHz", "kPa", "kN", "kW", "kV", "mbar", "mph", "gram",
+  "mm", "cm", "km", "ms", "us", "mV", "mA", "min",
+  "deg", "rad", "psi", "bar", "Pa", "Hz",
+  "ft", "in", "kg", "lb", "MW", "m", "s", "h", "g", "N", "W", "V", "A",
+  "rh", "lux", "lx", "nit", "ppm", "ppb", "dB", "uT", "gauss", "rpm", "Nm", "J", "Wh",
+  "uvi", "pH", "NTU", "FNU", "ppt", "psu", "vwc",
+];
 
 export function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
@@ -520,5 +695,7 @@ function isIdentChar(ch: string): boolean {
 
 export function unitFromLexeme(lexeme: UnitLexeme): import("../ast/nodes.js").UnitKind {
   if (lexeme === "m/s2" || lexeme === "m/s²") return "m/s²";
+  if (lexeme === "cd/m2") return "cd/m²";
+  if (lexeme === "µg/m³") return "ug/m3";
   return lexeme;
 }

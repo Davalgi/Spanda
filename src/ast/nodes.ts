@@ -1,4 +1,17 @@
 import type {
+  AgentChannelDecl,
+  BusDecl,
+  DiscoverFilter,
+  DiscoverTarget,
+  MessageDecl,
+  PeerRobotDecl,
+  DeviceDecl,
+  QosDecl,
+  TopicRole,
+  TransportKind,
+  TwinSyncDecl,
+} from "../comm/index.js";
+import type {
   CapabilityDecl,
   EnumDecl,
   EventDecl,
@@ -14,6 +27,20 @@ import type {
   ObserveDecl,
 } from "../foundations.js";
 
+export type {
+  AgentChannelDecl,
+  BusDecl,
+  DiscoverFilter,
+  DiscoverTarget,
+  MessageDecl,
+  PeerRobotDecl,
+  DeviceDecl,
+  QosDecl,
+  TopicRole,
+  TransportKind,
+  TwinSyncDecl,
+} from "../comm/index.js";
+
 export type SourceLocation = {
   line: number;
   column: number;
@@ -28,14 +55,82 @@ export type Span = {
 export type UnitKind =
   | "none"
   | "m"
+  | "mm"
+  | "cm"
+  | "km"
+  | "ft"
+  | "in"
   | "s"
   | "ms"
-  | "rad"
+  | "us"
+  | "min"
+  | "h"
   | "m/s"
+  | "km/h"
+  | "mph"
   | "m/s²"
-  | "rad/s"
+  | "g"
+  | "rad"
   | "deg"
-  | "Hz";
+  | "rad/s"
+  | "deg/s"
+  | "kg"
+  | "gram"
+  | "lb"
+  | "N"
+  | "kN"
+  | "W"
+  | "kW"
+  | "MW"
+  | "V"
+  | "mV"
+  | "kV"
+  | "A"
+  | "mA"
+  | "celsius"
+  | "fahrenheit"
+  | "kelvin"
+  | "Pa"
+  | "kPa"
+  | "bar"
+  | "psi"
+  | "mbar"
+  | "Hz"
+  | "kHz"
+  | "MHz"
+  | "rh"
+  | "%RH"
+  | "lux"
+  | "lx"
+  | "cd/m²"
+  | "nit"
+  | "ppm"
+  | "ppb"
+  | "dB"
+  | "dBA"
+  | "uT"
+  | "gauss"
+  | "rpm"
+  | "N·m"
+  | "Nm"
+  | "J"
+  | "Wh"
+  | "kWh"
+  | "uvi"
+  | "pH"
+  | "uS/cm"
+  | "mS/cm"
+  | "S/m"
+  | "ug/m3"
+  | "µg/m³"
+  | "NTU"
+  | "FNU"
+  | "ppt"
+  | "psu"
+  | "uSv/h"
+  | "mSv/h"
+  | "%VWC"
+  | "vwc";
 
 export type SpandaType =
   | { kind: "void" }
@@ -63,6 +158,7 @@ export type Program = {
   structs: StructDecl[];
   enums: EnumDecl[];
   traits: TraitDecl[];
+  messages: MessageDecl[];
   robots: RobotDecl[];
   span: Span;
 };
@@ -96,6 +192,11 @@ export type RobotDecl = {
   verify: VerifyDecl | null;
   observe: ObserveDecl | null;
   traitImpls: TraitImplDecl[];
+  buses: BusDecl[];
+  peerRobots: PeerRobotDecl[];
+  devices: DeviceDecl[];
+  agentChannels: AgentChannelDecl[];
+  twinSync: TwinSyncDecl | null;
   span: Span;
 };
 
@@ -176,21 +277,29 @@ export type TopicDecl = {
   kind: "TopicDecl";
   name: string;
   messageType: string;
-  topic: string;
+  topic: string | null;
+  role: TopicRole;
+  qos: QosDecl | null;
+  transport: TransportKind | null;
   span: Span;
 };
 
 export type ServiceDecl = {
   kind: "ServiceDecl";
   name: string;
-  serviceType: string;
+  serviceType: string | null;
+  requestType: string | null;
+  responseType: string | null;
   span: Span;
 };
 
 export type ActionDecl = {
   kind: "ActionDecl";
   name: string;
-  actionType: string;
+  actionType: string | null;
+  requestType: string | null;
+  feedbackType: string | null;
+  resultType: string | null;
   span: Span;
 };
 
@@ -297,12 +406,43 @@ export type Stmt =
   | ResetEmergencyStopStmt
   | EmitStmt
   | EnterStmt
-  | RememberStmt;
+  | RememberStmt
+  | SubscribeStmt
+  | ExecuteStmt
+  | DiscoverStmt
+  | ReceiveStmt;
 
 export type RememberStmt = {
   kind: "RememberStmt";
   key: string;
   value: Expr;
+  span: Span;
+};
+
+export type SubscribeStmt = {
+  kind: "SubscribeStmt";
+  target: string;
+  span: Span;
+};
+
+export type ExecuteStmt = {
+  kind: "ExecuteStmt";
+  actionName: string;
+  goal: Expr;
+  span: Span;
+};
+
+export type DiscoverStmt = {
+  kind: "DiscoverStmt";
+  target: DiscoverTarget;
+  filter: DiscoverFilter | null;
+  span: Span;
+};
+
+export type ReceiveStmt = {
+  kind: "ReceiveStmt";
+  topicName: string;
+  varName: string;
   span: Span;
 };
 
@@ -392,7 +532,10 @@ export type Expr =
   | CallExpr
   | MemberExpr
   | MatchExpr
-  | StructLiteralExpr;
+  | StructLiteralExpr
+  | ServiceCallExpr
+  | ExecuteExpr
+  | DiscoverExpr;
 
 export type LiteralExpr = {
   kind: "LiteralExpr";
@@ -466,6 +609,26 @@ export type StructLiteralExpr = {
   kind: "StructLiteralExpr";
   typeName: string;
   fields: StructFieldInit[];
+  span: Span;
+};
+
+export type ServiceCallExpr = {
+  kind: "ServiceCallExpr";
+  serviceName: string;
+  span: Span;
+};
+
+export type ExecuteExpr = {
+  kind: "ExecuteExpr";
+  actionName: string;
+  goal: Expr;
+  span: Span;
+};
+
+export type DiscoverExpr = {
+  kind: "DiscoverExpr";
+  target: DiscoverTarget;
+  filter: DiscoverFilter | null;
   span: Span;
 };
 

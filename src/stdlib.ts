@@ -9,6 +9,7 @@ export const STD_NAMESPACES = new Set([
   "std.safety",
   "std.twin",
   "std.hri",
+  "std.network",
 ]);
 
 export function resolveStdImport(path: string): boolean {

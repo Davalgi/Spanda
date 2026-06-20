@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -16,10 +16,18 @@ export type CompatItem = {
   column: number;
 };
 
+export type MatrixCell = {
+  robot: string;
+  target: string;
+  compatible: boolean;
+};
+
 export type VerifyResult = {
   ok: boolean;
+  compatible?: boolean;
   target?: string;
   items: CompatItem[];
+  matrix?: { cells: MatrixCell[] };
 };
 export type RunResult = {
   state: {
@@ -31,14 +39,18 @@ export type RunResult = {
   logs: string[];
 };
 
-const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 function cliPath(): string | null {
   const release = join(repoRoot, "target/release/spanda");
   const debug = join(repoRoot, "target/debug/spanda");
-  if (existsSync(release)) return release;
-  if (existsSync(debug)) return debug;
-  return null;
+  const candidates = [release, debug].filter((p) => existsSync(p));
+  if (candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0]!;
+  const newest = candidates.reduce((a, b) =>
+    statSync(a).mtimeMs >= statSync(b).mtimeMs ? a : b,
+  );
+  return newest;
 }
 
 export function isCliAvailable(): boolean {
@@ -91,7 +103,7 @@ export function verifyViaCli(
   }
   const tmp = join(repoRoot, ".spanda-verify-tmp.sd");
   writeFileSync(tmp, source);
-  const result = spawnSync(bin, ["verify", "--json", ...args, tmp], { encoding: "utf-8" });
+  const result = spawnSync(bin, ["verify", tmp, "--json", ...args], { encoding: "utf-8" });
   try {
     unlinkSync(tmp);
   } catch {

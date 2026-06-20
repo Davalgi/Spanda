@@ -7,6 +7,7 @@ import type {
   Stmt,
   UnitKind,
 } from "../ast/nodes.js";
+import { alignForBinary } from "../units/index.js";
 import { createSimHal, halMemberFromDecl, type HalBackend } from "../hal/index.js";
 import { getSensorDriver, readWithDriver } from "../lib/registry.js";
 import {
@@ -21,6 +22,7 @@ import { createAgentRuntime, executeAgentPlan, type AgentRuntime } from "../ai/A
 import { MemoryStore } from "../ai/MemoryStore.js";
 import { mockAnalyzeFrame, mockCameraFrame } from "../ai/MockAIProvider.js";
 import { getSocProfile } from "../soc/index.js";
+import { RoutingCommBus, type TransportKind } from "../transport/index.js";
 import { SafetyMonitor, createSafetyConfigFromRobot, interpolatePoses } from "../safety/index.js";
 import type { SafetyZoneRuntime } from "../safety/index.js";
 import {
@@ -158,6 +160,8 @@ export class Interpreter {
   >();
   private verifyRules: Expr[] = [];
   private fusionSensors: string[] = [];
+  private commBus = new RoutingCommBus();
+  private defaultTransport: TransportKind = "local";
 
   constructor(private options: InterpreterOptions) {}
 
@@ -484,6 +488,8 @@ export class Interpreter {
     this.verifyRules = [];
     this.fusionSensors = [];
     this.currentAgent = null;
+    this.commBus = new RoutingCommBus();
+    this.defaultTransport = "local";
 
     if (robot.soc) {
       const profile = getSocProfile(robot.soc.profile);
@@ -497,28 +503,42 @@ export class Interpreter {
       this.options.onLog?.(`HAL configured: ${members.length} bus(es)/pin(s)`);
     }
 
-    for (const topic of robot.topics) {
-      this.env.define(topic.name, {
-        kind: "topic",
-        name: topic.name,
-        messageType: topic.messageType,
-        topicPath: topic.topic,
+    for (const bus of robot.buses) {
+      this.defaultTransport = bus.transport;
+      this.commBus.configure({ nodeName: robot.name });
+      this.options.onLog?.(`bus transport: ${bus.transport}`);
+    }
+    for (const peer of robot.peerRobots) {
+      this.commBus.registerRobot(peer.name);
+    }
+    for (const device of robot.devices) {
+      this.commBus.registerDevice(device.name);
+      this.env.define(device.name, {
+        kind: "object",
+        typeName: "Device",
+        fields: {},
       });
     }
 
+    for (const topic of robot.topics) {
+      this.defineTopic(topic);
+    }
+
     for (const service of robot.services) {
+      const serviceType = service.serviceType ?? service.responseType ?? service.name;
       this.env.define(service.name, {
         kind: "service",
         name: service.name,
-        serviceType: service.serviceType,
+        serviceType,
       });
     }
 
     for (const action of robot.actions) {
+      const actionType = action.actionType ?? action.resultType ?? action.name;
       this.env.define(action.name, {
         kind: "action",
         name: action.name,
-        actionType: action.actionType,
+        actionType,
       });
     }
 
@@ -668,6 +688,17 @@ export class Interpreter {
     return base;
   }
 
+  private defineTopic(topic: import("../ast/nodes.js").TopicDecl): void {
+    const path = topic.topic ?? `/${topic.name}`;
+    this.commBus.subscribe(path, topic.name);
+    this.env.define(topic.name, {
+      kind: "topic",
+      name: topic.name,
+      messageType: topic.messageType,
+      topicPath: path,
+    });
+  }
+
   private executeBlock(stmts: Stmt[]): void {
     for (const stmt of stmts) {
       this.executeStmt(stmt);
@@ -705,6 +736,12 @@ export class Interpreter {
         const topic = this.env.get(stmt.topicName);
         const value = this.evalExpr(stmt.value);
         if (topic?.kind === "topic") {
+          this.commBus.publish(
+            topic.topicPath,
+            topic.messageType,
+            value,
+            this.defaultTransport,
+          );
           this.options.backend.publishTopic?.(topic.topicPath, topic.messageType, value);
           this.options.onLog?.(`publish ${topic.topicPath}`);
         }
@@ -713,6 +750,7 @@ export class Interpreter {
       case "ServiceCallStmt": {
         const service = this.env.get(stmt.serviceName);
         if (service?.kind === "service") {
+          this.commBus.callService(service.serviceType);
           this.options.backend.callService?.(service.name, service.serviceType);
           this.options.onLog?.(`call ${service.name}()`);
         }
@@ -722,8 +760,45 @@ export class Interpreter {
         const action = this.env.get(stmt.actionName);
         const goal = this.evalExpr(stmt.goal);
         if (action?.kind === "action") {
+          this.commBus.sendAction(action.actionType);
           this.options.backend.sendAction?.(action.name, action.actionType, goal);
           this.options.onLog?.(`send_goal ${action.name}`);
+        }
+        break;
+      }
+      case "SubscribeStmt": {
+        const path = stmt.target.includes(".")
+          ? `/${stmt.target.replace(".", "/")}`
+          : this.env.get(stmt.target)?.kind === "topic"
+            ? (this.env.get(stmt.target) as Extract<RuntimeValue, { kind: "topic" }>).topicPath
+            : `/${stmt.target}`;
+        this.commBus.subscribe(path, stmt.target);
+        this.options.onLog?.(`subscribe ${stmt.target}`);
+        break;
+      }
+      case "ExecuteStmt": {
+        const action = this.env.get(stmt.actionName);
+        const goal = this.evalExpr(stmt.goal);
+        if (action?.kind === "action") {
+          this.commBus.sendAction(action.actionType);
+          this.options.backend.sendAction?.(action.name, action.actionType, goal);
+          this.options.onLog?.(`execute ${action.name}`);
+        }
+        break;
+      }
+      case "DiscoverStmt": {
+        const results = this.commBus.discover(stmt.target, stmt.filter ?? { capability: null });
+        this.options.onLog?.(`discover ${stmt.target}: ${results.join(", ")}`);
+        break;
+      }
+      case "ReceiveStmt": {
+        const topic = this.env.get(stmt.topicName);
+        if (topic?.kind === "topic") {
+          const val = this.commBus.receive(topic.topicPath);
+          if (val) {
+            this.env.define(stmt.varName, val);
+            this.options.onLog?.(`receive ${stmt.topicName} to ${stmt.varName}`);
+          }
         }
         break;
       }
@@ -820,6 +895,37 @@ export class Interpreter {
       }
       case "StructLiteralExpr":
         return this.evalStructLiteral(expr);
+      case "ServiceCallExpr": {
+        const service = this.env.get(expr.serviceName);
+        if (service?.kind === "service") {
+          const result = this.commBus.callService(service.serviceType);
+          this.options.backend.callService?.(service.name, service.serviceType);
+          this.options.onLog?.(`call ${service.name}()`);
+          return result;
+        }
+        return { kind: "void" };
+      }
+      case "ExecuteExpr": {
+        const action = this.env.get(expr.actionName);
+        if (action?.kind === "action") {
+          const goal = this.evalExpr(expr.goal);
+          const result = this.commBus.sendAction(action.actionType);
+          this.options.backend.sendAction?.(action.name, action.actionType, goal);
+          this.options.onLog?.(`execute ${action.name}`);
+          return result;
+        }
+        return { kind: "void" };
+      }
+      case "DiscoverExpr": {
+        const results = this.commBus.discover(expr.target, expr.filter ?? { capability: null });
+        return {
+          kind: "object",
+          typeName: "DiscoveryResult",
+          fields: {
+            count: { kind: "number", value: results.length, unit: "none" },
+          },
+        };
+      }
       default:
         return { kind: "void" };
     }
@@ -1343,17 +1449,21 @@ export class Interpreter {
       if (op === "!=") return { kind: "bool", value: left.value !== right.value };
     }
     if (left.kind === "number" && right.kind === "number") {
+      const aligned = alignForBinary(left.value, left.unit, right.value, right.unit);
+      const l = aligned?.[0] ?? left.value;
+      const r = aligned?.[1] ?? right.value;
+      const resultUnit = aligned?.[2] ?? left.unit;
       switch (op) {
-        case "+": return { kind: "number", value: left.value + right.value, unit: left.unit };
-        case "-": return { kind: "number", value: left.value - right.value, unit: left.unit };
-        case "*": return { kind: "number", value: left.value * right.value, unit: "none" };
-        case "/": return { kind: "number", value: left.value / right.value, unit: "none" };
-        case "<": return { kind: "bool", value: left.value < right.value };
-        case "<=": return { kind: "bool", value: left.value <= right.value };
-        case ">": return { kind: "bool", value: left.value > right.value };
-        case ">=": return { kind: "bool", value: left.value >= right.value };
-        case "==": return { kind: "bool", value: left.value === right.value };
-        case "!=": return { kind: "bool", value: left.value !== right.value };
+        case "+": return { kind: "number", value: l + r, unit: resultUnit };
+        case "-": return { kind: "number", value: l - r, unit: resultUnit };
+        case "*": return { kind: "number", value: l * r, unit: "none" };
+        case "/": return { kind: "number", value: l / r, unit: "none" };
+        case "<": return { kind: "bool", value: l < r };
+        case "<=": return { kind: "bool", value: l <= r };
+        case ">": return { kind: "bool", value: l > r };
+        case ">=": return { kind: "bool", value: l >= r };
+        case "==": return { kind: "bool", value: l === r };
+        case "!=": return { kind: "bool", value: l !== r };
       }
     }
     return { kind: "void" };

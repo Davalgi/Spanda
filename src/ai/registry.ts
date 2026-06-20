@@ -4,7 +4,7 @@ export type AiLibModule = {
   name: string;
   version: string;
   description: string;
-  runtime: "onnx" | "tflite" | "tensorrt";
+  runtime: "onnx" | "tflite" | "tensorrt" | "openvino";
 };
 
 export const AI_LIB_REGISTRY: Record<string, AiLibModule> = {
@@ -31,6 +31,14 @@ export const AI_LIB_REGISTRY: Record<string, AiLibModule> = {
     version: "1.0.0",
     description: "TensorRT inference backend for Jetson",
     runtime: "tensorrt",
+  },
+  "openvino.runtime": {
+    id: "openvino.runtime",
+    vendor: "Intel",
+    name: "runtime",
+    version: "1.0.0",
+    description: "OpenVINO inference backend for Intel CPUs and VPUs",
+    runtime: "openvino",
   },
 };
 

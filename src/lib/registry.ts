@@ -163,6 +163,50 @@ export const LIB_REGISTRY: Record<string, LibModule> = {
       },
     },
   },
+  "bosch.bme280": {
+    id: "bosch.bme280",
+    vendor: "Bosch",
+    name: "bme280",
+    version: "1.0.0",
+    description: "Bosch BME280 environmental sensor (humidity, pressure, temperature)",
+    sensors: {
+      BoschBME280: {
+        sensorType: "BoschBME280",
+        vendor: "Bosch",
+        model: "BME280",
+        interfaces: ["i2c", "spi"],
+        defaultBus: "i2c",
+        methods: ["read", "calibrate"],
+        read: (ctx) => {
+          const x = ctx.simState?.pose.x ?? 0;
+          const humidity = Math.max(30, Math.min(90, 55 - x * 2));
+          return { kind: "number", value: humidity, unit: "rh" };
+        },
+      },
+    },
+  },
+  "adafruit.bh1750": {
+    id: "adafruit.bh1750",
+    vendor: "Adafruit",
+    name: "bh1750",
+    version: "1.0.0",
+    description: "Adafruit BH1750 digital light sensor",
+    sensors: {
+      AdafruitBH1750: {
+        sensorType: "AdafruitBH1750",
+        vendor: "Adafruit",
+        model: "BH1750",
+        interfaces: ["i2c"],
+        defaultBus: "i2c",
+        methods: ["read"],
+        read: (ctx) => {
+          const x = ctx.simState?.pose.x ?? 0;
+          const lux = Math.max(0, Math.min(100_000, 400 - x * 20));
+          return { kind: "number", value: lux, unit: "lux" };
+        },
+      },
+    },
+  },
   "intel.realsense": {
     id: "intel.realsense",
     vendor: "Intel",
@@ -279,6 +323,24 @@ export const LIB_REGISTRY: Record<string, LibModule> = {
           const dist = Math.max(0.02, 4.0 - (ctx.simState?.pose.x ?? 0) * 0.2);
           return { kind: "number", value: dist, unit: "m" };
         },
+      },
+    },
+  },
+  "ouster.os1": {
+    id: "ouster.os1",
+    vendor: "Ouster",
+    name: "os1",
+    version: "1.0.0",
+    description: "Ouster OS1 digital LiDAR sensor",
+    sensors: {
+      OusterOS1: {
+        sensorType: "OusterOS1",
+        vendor: "Ouster",
+        model: "OS1",
+        interfaces: ["ethernet"],
+        defaultBus: "ethernet",
+        methods: ["read", "calibrate"],
+        read: (ctx) => scanReading(ctx, 120),
       },
     },
   },

@@ -1,24 +1,14 @@
 import type { SpandaType, UnitKind } from "./ast/nodes.js";
+import { unitCategory, type PhysicalCategory } from "./units/index.js";
 
-export type PhysicalCategory =
-  | "scalar"
-  | "distance"
-  | "duration"
-  | "velocity"
-  | "acceleration"
-  | "angle"
-  | "angular_velocity"
-  | "mass"
-  | "force"
-  | "power"
-  | "voltage"
-  | "current"
-  | "temperature"
-  | "pressure"
-  | "frequency";
+export type { PhysicalCategory };
 
 const KNOWN_DOMAIN_TYPES = new Set([
-  "Mass", "Force", "Power", "Voltage", "Current", "Temperature", "Pressure", "Time",
+  "Mass", "Force", "Power", "Voltage", "Current", "Temperature", "Pressure",
+  "Humidity", "Illuminance", "Luminance", "Concentration", "SoundLevel",
+  "MagneticField", "RotationalSpeed", "Torque", "Energy",
+  "UvIndex", "Ph", "Conductivity", "ParticulateMatter", "Turbidity",
+  "Salinity", "Radiation", "SoilMoisture",
   "Timestamp", "Interval", "Waypoint", "MotionCommand", "ControlSignal", "PIDConfig", "GpsFix",
   "ImuData", "AudioFrame", "Prompt", "Completion", "Embedding", "Token", "Context", "Memory",
   "Plan", "ReasoningTrace", "Agent", "Goal", "Task", "Skill", "Capability", "Intent", "Command",
@@ -29,6 +19,9 @@ const KNOWN_DOMAIN_TYPES = new Set([
   "SensorFusion", "FusedObservation",
   "LLM", "VisionModel", "EmbeddingModel", "CameraFrame", "Image", "DepthImage", "PointCloud",
   "LidarScan", "Goal",
+  "Transport", "QosProfile", "QoS", "Bandwidth", "Latency", "TopicPath",
+  "ServiceEndpoint", "MessageEnvelope", "DiscoveryFilter", "NetworkRequirements",
+  "Reliability", "HistoryPolicy", "CommBus", "Endpoint",
 ]);
 
 function genericArity(name: string): number | undefined {
@@ -104,6 +97,23 @@ export function resolveTypeName(name: string): SpandaType {
     case "Current":
     case "Temperature":
     case "Pressure":
+    case "Humidity":
+    case "Illuminance":
+    case "Luminance":
+    case "Concentration":
+    case "SoundLevel":
+    case "MagneticField":
+    case "RotationalSpeed":
+    case "Torque":
+    case "Energy":
+    case "UvIndex":
+    case "Ph":
+    case "Conductivity":
+    case "ParticulateMatter":
+    case "Turbidity":
+    case "Salinity":
+    case "Radiation":
+    case "SoilMoisture":
       return { kind: "named", name: short };
     case "Point2D":
     case "Point3D":
@@ -183,6 +193,20 @@ export function resolveTypeName(name: string): SpandaType {
     case "StateEstimate":
     case "SensorFusion":
     case "FusedObservation":
+    case "Transport":
+    case "QosProfile":
+    case "QoS":
+    case "Bandwidth":
+    case "Latency":
+    case "TopicPath":
+    case "ServiceEndpoint":
+    case "MessageEnvelope":
+    case "DiscoveryFilter":
+    case "NetworkRequirements":
+    case "Reliability":
+    case "HistoryPolicy":
+    case "CommBus":
+    case "Endpoint":
       return { kind: "named", name: short };
     default:
       if (KNOWN_DOMAIN_TYPES.has(short)) {
@@ -210,26 +234,7 @@ export function physicalCategory(ty: SpandaType): PhysicalCategory {
     case "float":
       return "scalar";
     case "number":
-      switch (ty.unit) {
-        case "m":
-          return "distance";
-        case "s":
-        case "ms":
-          return "duration";
-        case "m/s":
-          return "velocity";
-        case "m/s²":
-          return "acceleration";
-        case "rad":
-        case "deg":
-          return "angle";
-        case "rad/s":
-          return "angular_velocity";
-        case "Hz":
-          return "frequency";
-        default:
-          return "scalar";
-      }
+      return unitCategory(ty.unit);
     case "velocity":
       return "velocity";
     case "pose":
@@ -264,6 +269,40 @@ export function physicalCategory(ty: SpandaType): PhysicalCategory {
           return "temperature";
         case "Pressure":
           return "pressure";
+        case "Humidity":
+          return "humidity";
+        case "Illuminance":
+          return "illuminance";
+        case "Luminance":
+          return "luminance";
+        case "Concentration":
+          return "concentration";
+        case "SoundLevel":
+          return "sound_level";
+        case "MagneticField":
+          return "magnetic_field";
+        case "RotationalSpeed":
+          return "rotational_speed";
+        case "Torque":
+          return "torque";
+        case "Energy":
+          return "energy";
+        case "UvIndex":
+          return "uv_index";
+        case "Ph":
+          return "ph";
+        case "Conductivity":
+          return "conductivity";
+        case "ParticulateMatter":
+          return "particulate_matter";
+        case "Turbidity":
+          return "turbidity";
+        case "Salinity":
+          return "salinity";
+        case "Radiation":
+          return "radiation";
+        case "SoilMoisture":
+          return "soil_moisture";
         default:
           return "scalar";
       }

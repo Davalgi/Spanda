@@ -1,6 +1,10 @@
 import type { UnitKind, SpandaType } from "../ast/nodes.js";
 import { allLibrarySensorTypes } from "../lib/registry.js";
 
+export { unitsCompatible, unitMatchesNamedType } from "../units/index.js";
+import { unitsCompatible, unitCategory, canonicalUnit, type PhysicalCategory } from "../units/index.js";
+import { physicalCategory } from "../type-system.js";
+
 export type TypeError = {
   message: string;
   line: number;
@@ -14,11 +18,61 @@ export class TypeCheckError extends Error {
   }
 }
 
-export function unitsCompatible(a: UnitKind, b: UnitKind): boolean {
-  if (a === b) return true;
-  if (a === "none" || b === "none") return true;
-  if ((a === "deg" && b === "rad") || (a === "rad" && b === "deg")) return true;
-  return false;
+function physicalTypesCompatible(left: SpandaType, right: SpandaType): boolean {
+  const catL = physicalCategory(left);
+  const catR = physicalCategory(right);
+  return catL === catR && catL !== "scalar";
+}
+
+function namedTypeDefaultUnit(name: string): UnitKind | undefined {
+  const map: Record<string, PhysicalCategory> = {
+    Distance: "distance",
+    Duration: "duration",
+    Velocity: "velocity",
+    Acceleration: "acceleration",
+    Angle: "angle",
+    AngularVelocity: "angular_velocity",
+    Mass: "mass",
+    Force: "force",
+    Power: "power",
+    Voltage: "voltage",
+    Current: "current",
+    Temperature: "temperature",
+    Pressure: "pressure",
+    Humidity: "humidity",
+    Illuminance: "illuminance",
+    Luminance: "luminance",
+    Concentration: "concentration",
+    SoundLevel: "sound_level",
+    MagneticField: "magnetic_field",
+    RotationalSpeed: "rotational_speed",
+    Torque: "torque",
+    Energy: "energy",
+    UvIndex: "uv_index",
+    Ph: "ph",
+    Conductivity: "conductivity",
+    ParticulateMatter: "particulate_matter",
+    Turbidity: "turbidity",
+    Salinity: "salinity",
+    Radiation: "radiation",
+    SoilMoisture: "soil_moisture",
+  };
+  const cat = map[name];
+  return cat ? canonicalUnit(cat) : undefined;
+}
+
+function resultNumberForPhysical(left: SpandaType, right: SpandaType): SpandaType | null {
+  if (left.kind === "number") return { kind: "number", unit: left.unit };
+  if (right.kind === "number") return { kind: "number", unit: right.unit };
+  if (left.kind === "named") {
+    const unit = namedTypeDefaultUnit(left.name);
+    if (unit) return { kind: "number", unit };
+  }
+  if (right.kind === "named") {
+    const unit = namedTypeDefaultUnit(right.name);
+    if (unit) return { kind: "number", unit };
+  }
+  return null;
 }
 
 export function resultUnitForBinary(
@@ -37,6 +91,7 @@ export function resultUnitForBinary(
     }
     if (left.kind === "bool" && right.kind === "bool") return { kind: "bool" };
     if (left.kind === "string" && right.kind === "string") return { kind: "bool" };
+    if (physicalTypesCompatible(left, right)) return { kind: "bool" };
     return null;
   }
 
@@ -45,6 +100,9 @@ export function resultUnitForBinary(
       if (unitsCompatible(left.unit, right.unit)) {
         return { kind: "number", unit: left.unit !== "none" ? left.unit : right.unit };
       }
+    }
+    if (physicalTypesCompatible(left, right)) {
+      return resultNumberForPhysical(left, right);
     }
     return null;
   }
@@ -95,7 +153,7 @@ export function getLibraryForSensorType(sensorType: string): string | undefined 
 }
 
 function inferReadReturn(typeName: string): SpandaType {
-  if (typeName.includes("Lidar") || typeName.includes("Velodyne") || typeName.includes("Hokuyo") || typeName.includes("Ydlidar") || typeName.includes("RealSense")) {
+  if (typeName.includes("Lidar") || typeName.includes("Velodyne") || typeName.includes("Hokuyo") || typeName.includes("Ydlidar") || typeName.includes("Ouster") || typeName.includes("RealSense")) {
     return { kind: "scan" };
   }
   if (typeName.includes("BNO") || typeName.includes("LSM9") || typeName.includes("IMU")) {
@@ -103,6 +161,36 @@ function inferReadReturn(typeName: string): SpandaType {
   }
   if (typeName.includes("BMP") || typeName.includes("VL53") || typeName.includes("UWMF")) {
     return { kind: "number", unit: "m" };
+  }
+  if (typeName.includes("BME")) {
+    return { kind: "number", unit: "rh" };
+  }
+  if (typeName.includes("BH1750") || typeName.includes("Light")) {
+    return { kind: "number", unit: "lux" };
+  }
+  if (typeName.includes("VEML") || typeName.includes("UV") || typeName.includes("Si1145")) {
+    return { kind: "number", unit: "uvi" };
+  }
+  if (typeName.includes("pH") || typeName.endsWith("PH")) {
+    return { kind: "number", unit: "pH" };
+  }
+  if (typeName.includes("EC") || typeName.includes("Conduct")) {
+    return { kind: "number", unit: "uS/cm" };
+  }
+  if (typeName.includes("PMS") || typeName.includes("Particulate")) {
+    return { kind: "number", unit: "ug/m3" };
+  }
+  if (typeName.includes("Turbid") || typeName.includes("NTU")) {
+    return { kind: "number", unit: "NTU" };
+  }
+  if (typeName.includes("Salinity")) {
+    return { kind: "number", unit: "ppt" };
+  }
+  if (typeName.includes("Geiger") || typeName.includes("Radiation") || typeName.includes("GMC")) {
+    return { kind: "number", unit: "uSv/h" };
+  }
+  if (typeName.includes("Soil") || typeName.includes("VWC") || typeName.includes("Vegetronix")) {
+    return { kind: "number", unit: "%VWC" };
   }
   return { kind: "void" };
 }

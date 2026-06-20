@@ -31,6 +31,19 @@ import type {
   UnitKind,
 } from "../ast/nodes.js";
 import type {
+  AgentChannelDecl,
+  BusDecl,
+  DeviceDecl,
+  DiscoverFilter,
+  DiscoverTarget,
+  MessageDecl,
+  PeerRobotDecl,
+  QosDecl,
+  TopicRole,
+  TransportKind,
+} from "../comm/index.js";
+import { transportFromIdent } from "../comm/index.js";
+import type {
   CapabilityDecl,
   EnumDecl,
   EventDecl,
@@ -129,8 +142,72 @@ class Parser {
       "MIRROR",
       "ENTER",
       "EMIT",
+      "EXECUTE",
+      "DISCOVER",
+      "SUBSCRIBE",
+      "RECEIVE",
+      "MESSAGE",
+      "RESPONSE",
+      "FEEDBACK",
+      "RESULT",
+      "REQUEST",
+      "DEVICE",
+      "BUS",
+      "QOS",
+      "RELIABLE",
+      "BEST_EFFORT",
+      "RATE",
+      "HISTORY",
+      "DEADLINE",
+      "TELEMETRY",
+      "FAULTS",
     ];
     if (labelTypes.includes(this.peek().type)) {
+      return this.advance().lexeme;
+    }
+    const t = this.peek();
+    throw new ParseError(message, t.line, t.column);
+  }
+
+  private parseBindingIdent(message: string): string {
+    const bindingTypes: Token["type"][] = [
+      "IDENT",
+      "PLAN",
+      "TWIN",
+      "SKILL",
+      "MATCH",
+      "STATE",
+      "EVENT",
+      "TASK",
+      "ACTION",
+      "GOAL",
+      "MEMORY",
+      "ON",
+      "REPLAY",
+      "MIRROR",
+      "ENTER",
+      "EMIT",
+      "MISSION",
+      "DURATION",
+      "NETWORK",
+      "BANDWIDTH",
+      "LATENCY",
+      "TIMING",
+      "BUDGET",
+      "FAULT",
+      "EXECUTE",
+      "DISCOVER",
+      "SUBSCRIBE",
+      "RECEIVE",
+      "MESSAGE",
+      "RESPONSE",
+      "FEEDBACK",
+      "RESULT",
+      "REQUEST",
+      "DEVICE",
+      "BUS",
+    ];
+    if (bindingTypes.includes(this.peek().type)) {
       return this.advance().lexeme;
     }
     const t = this.peek();
@@ -151,6 +228,7 @@ class Parser {
     const structs: StructDecl[] = [];
     const enums: EnumDecl[] = [];
     const traits: TraitDecl[] = [];
+    const messages: MessageDecl[] = [];
     const robots: RobotDecl[] = [];
 
     while (this.check("IMPORT")) {
@@ -164,11 +242,13 @@ class Parser {
         enums.push(this.parseEnum());
       } else if (this.check("TRAIT")) {
         traits.push(this.parseTrait());
+      } else if (this.check("MESSAGE")) {
+        messages.push(this.parseMessage());
       } else if (this.check("ROBOT")) {
         robots.push(this.parseRobot());
       } else {
         const t = this.peek();
-        throw new ParseError("Expected struct, enum, trait, or robot declaration", t.line, t.column);
+        throw new ParseError("Expected struct, enum, trait, message, or robot declaration", t.line, t.column);
       }
     }
 
@@ -180,6 +260,7 @@ class Parser {
       structs,
       enums,
       traits,
+      messages,
       robots,
       span: this.spanFrom(start, end),
     };
@@ -363,6 +444,11 @@ class Parser {
     let verify: VerifyDecl | null = null;
     let observe: ObserveDecl | null = null;
     const traitImpls: TraitImplDecl[] = [];
+    const buses: BusDecl[] = [];
+    const peerRobots: PeerRobotDecl[] = [];
+    const devices: DeviceDecl[] = [];
+    const agentChannels: AgentChannelDecl[] = [];
+    const twinSync = null;
 
     while (!this.check("RBRACE") && !this.check("EOF")) {
       if (this.check("SOC")) {
@@ -385,8 +471,14 @@ class Parser {
         safety = this.parseSafety();
       } else if (this.check("AI_MODEL")) {
         ai_models.push(this.parseAiModelDecl());
+      } else if (this.check("IDENT") && this.isAgentChannel()) {
+        agentChannels.push(this.parseAgentChannel());
       } else if (this.check("AGENT")) {
-        agents.push(this.parseAgent());
+        if (this.isAgentShorthand()) {
+          this.parseAgentShorthand(agents);
+        } else {
+          agents.push(this.parseAgent());
+        }
       } else if (this.check("BEHAVIOR")) {
         behaviors.push(this.parseBehavior());
       } else if (this.check("TASK")) {
@@ -405,6 +497,12 @@ class Parser {
         observe = this.parseObserve();
       } else if (this.check("IMPL")) {
         traitImpls.push(this.parseTraitImpl());
+      } else if (this.check("BUS")) {
+        buses.push(this.parseBus());
+      } else if (this.check("ROBOT")) {
+        peerRobots.push(this.parsePeerRobot());
+      } else if (this.check("DEVICE")) {
+        devices.push(this.parseDevice());
       } else {
         const t = this.peek();
         throw new ParseError("Expected robot member declaration", t.line, t.column);
@@ -435,8 +533,142 @@ class Parser {
       verify,
       observe,
       traitImpls,
+      buses,
+      peerRobots,
+      devices,
+      agentChannels,
+      twinSync,
       span: this.spanFrom(start, end),
     };
+  }
+
+  private isAgentShorthand(): boolean {
+    let idx = this.pos + 1;
+    if (idx >= this.tokens.length) return false;
+    if (this.tokens[idx]?.type !== "IDENT") return false;
+    idx += 1;
+    return idx < this.tokens.length && this.tokens[idx]?.type === "SEMICOLON";
+  }
+
+  private isAgentChannel(): boolean {
+    const idx = this.pos;
+    return (
+      idx + 2 < this.tokens.length &&
+      this.tokens[idx]?.type === "IDENT" &&
+      this.tokens[idx + 1]?.type === "ARROW" &&
+      this.tokens[idx + 2]?.type === "IDENT"
+    );
+  }
+
+  private parseAgentShorthand(agents: AgentDecl[]): void {
+    const start = this.advance();
+    const name = this.expect("IDENT", "Expected agent name");
+    this.expect("SEMICOLON", "Expected ';' after agent reference");
+    agents.push({
+      kind: "AgentDecl",
+      name: name.lexeme,
+      usesAi: [],
+      memoryKind: null,
+      tools: [],
+      skills: [],
+      capabilities: [],
+      goal: "",
+      planBody: [],
+      span: this.spanFrom(start, this.previous()),
+    });
+  }
+
+  private parseBus(): BusDecl {
+    const start = this.advance();
+    const transportName = this.expect("IDENT", "Expected bus transport name");
+    this.expect("SEMICOLON", "Expected ';' after bus declaration");
+    const transport = transportFromIdent(transportName.lexeme) ?? "local";
+    return {
+      kind: "BusDecl",
+      name: transportName.lexeme,
+      transport,
+      span: this.spanFrom(start, this.previous()),
+    };
+  }
+
+  private parsePeerRobot(): PeerRobotDecl {
+    const start = this.advance();
+    const name = this.expect("IDENT", "Expected peer robot name");
+    this.expect("SEMICOLON", "Expected ';' after peer robot");
+    return {
+      kind: "PeerRobotDecl",
+      name: name.lexeme,
+      span: this.spanFrom(start, this.previous()),
+    };
+  }
+
+  private parseDevice(): DeviceDecl {
+    const start = this.advance();
+    const name = this.expect("IDENT", "Expected device name");
+    this.expect("COLON", "Expected ':' after device name");
+    const deviceType = this.expect("IDENT", "Expected device type");
+    this.expect("SEMICOLON", "Expected ';' after device declaration");
+    return {
+      kind: "DeviceDecl",
+      name: name.lexeme,
+      deviceType: deviceType.lexeme,
+      span: this.spanFrom(start, this.previous()),
+    };
+  }
+
+  private parseAgentChannel(): AgentChannelDecl {
+    const start = this.peek();
+    const fromAgent = this.expect("IDENT", "Expected source agent").lexeme;
+    this.expect("ARROW", "Expected '->' in agent channel");
+    const toAgent = this.expect("IDENT", "Expected target agent").lexeme;
+    this.expect("SEMICOLON", "Expected ';' after agent channel");
+    return {
+      kind: "AgentChannelDecl",
+      fromAgent,
+      toAgent,
+      messageType: "",
+      span: this.spanFrom(start, this.previous()),
+    };
+  }
+
+  private parseMessage(): MessageDecl {
+    const start = this.advance();
+    const name = this.expect("IDENT", "Expected message name");
+    this.expect("LBRACE", "Expected '{' after message name");
+    const fields: FieldDecl[] = [];
+    let version: number | null = null;
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "version") {
+        this.advance();
+        this.expect("COLON", "Expected ':' after version");
+        version = this.parseNumberValue();
+        this.expect("SEMICOLON", "Expected ';' after version");
+        continue;
+      }
+      const fieldStart = this.peek();
+      const fieldName = this.expect("IDENT", "Expected field name");
+      this.expect("COLON", "Expected ':' after field name");
+      const typeName = this.expect("IDENT", "Expected field type");
+      this.expect("SEMICOLON", "Expected ';' after field");
+      fields.push({
+        name: fieldName.lexeme,
+        typeName: typeName.lexeme,
+        span: this.spanFrom(fieldStart, this.previous()),
+      });
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close message");
+    return {
+      kind: "MessageDecl",
+      name: name.lexeme,
+      fields,
+      version,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseNumberValue(): number {
+    const tok = this.expect("NUMBER", "Expected number");
+    return tok.value as number;
   }
 
   private parseObserve(): ObserveDecl {
@@ -670,19 +902,98 @@ class Parser {
 
   private parseTopic(): TopicDecl {
     const start = this.advance();
-    const name = this.expect("IDENT", "Expected topic name");
+    const name = this.parseLabel("Expected topic name");
     this.expect("COLON", "Expected ':' after topic name");
-    const messageType = this.expect("IDENT", "Expected message type");
-    this.expect("PUBLISH", "Expected 'publish' after message type");
-    this.expect("ON", "Expected 'on' after publish");
-    const topicTok = this.expect("STRING", "Expected topic string");
+    const messageType = this.parseLabel("Expected message type");
+
+    let role: TopicRole = "both";
+    let topicPath: string | null = null;
+    let qos: QosDecl | null = null;
+    let transport: TransportKind | null = null;
+
+    if (this.match("PUBLISH")) {
+      role = "publish";
+      if (this.match("ON")) {
+        if (this.check("STRING")) {
+          topicPath = this.advance().value as string;
+        } else {
+          const ident = this.expect("IDENT", "Expected transport or topic path");
+          transport = transportFromIdent(ident.lexeme);
+        }
+      }
+    } else if (this.match("SUBSCRIBE")) {
+      role = "subscribe";
+      if (this.match("ON")) {
+        if (this.check("STRING")) {
+          topicPath = this.advance().value as string;
+        } else {
+          const ident = this.expect("IDENT", "Expected transport or topic path");
+          transport = transportFromIdent(ident.lexeme);
+        }
+      }
+    }
+
+    if (this.check("LBRACE")) {
+      qos = this.parseQosBlock();
+    }
+
+    if (this.match("ON") && topicPath === null && transport === null) {
+      if (this.check("STRING")) {
+        topicPath = this.advance().value as string;
+      } else {
+        const ident = this.expect("IDENT", "Expected transport name after on");
+        transport = transportFromIdent(ident.lexeme);
+      }
+    }
+
     this.expect("SEMICOLON", "Expected ';' after topic declaration");
-    const end = this.previous();
     return {
       kind: "TopicDecl",
-      name: name.lexeme,
-      messageType: messageType.lexeme,
-      topic: topicTok.value as string,
+      name,
+      messageType,
+      topic: topicPath,
+      role,
+      qos,
+      transport,
+      span: this.spanFrom(start, this.previous()),
+    };
+  }
+
+  private parseQosBlock(): QosDecl {
+    const start = this.peek();
+    this.expect("LBRACE", "Expected '{' for topic QoS block");
+    let reliability: QosDecl["reliability"] = null;
+    let rateHz: number | null = null;
+    let deadlineMs: number | null = null;
+    let history: string | null = null;
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.match("QOS")) {
+        if (this.match("RELIABLE")) {
+          reliability = "reliable";
+        } else if (this.match("BEST_EFFORT")) {
+          reliability = "best_effort";
+        }
+        this.expect("SEMICOLON", "Expected ';' after qos reliability");
+      } else if (this.match("RATE")) {
+        rateHz = this.parseFrequencyHz();
+        this.expect("SEMICOLON", "Expected ';' after rate");
+      } else if (this.match("DEADLINE")) {
+        deadlineMs = this.parseDuration();
+        this.expect("SEMICOLON", "Expected ';' after deadline");
+      } else if (this.match("HISTORY")) {
+        history = this.expect("IDENT", "Expected history policy").lexeme;
+        this.expect("SEMICOLON", "Expected ';' after history");
+      } else {
+        const t = this.peek();
+        throw new ParseError("Expected qos, rate, deadline, or history in topic block", t.line, t.column);
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close QoS block");
+    return {
+      reliability,
+      rateHz,
+      deadlineMs,
+      history,
       span: this.spanFrom(start, end),
     };
   }
@@ -690,30 +1001,96 @@ class Parser {
   private parseService(): ServiceDecl {
     const start = this.advance();
     const name = this.expect("IDENT", "Expected service name");
+
+    if (this.check("LBRACE")) {
+      this.advance();
+      let requestType: string | null = null;
+      let responseType: string | null = null;
+      while (!this.check("RBRACE") && !this.check("EOF")) {
+        if (this.match("REQUEST")) {
+          requestType = this.expect("IDENT", "Expected request type").lexeme;
+          this.expect("SEMICOLON", "Expected ';' after request type");
+        } else if (this.match("RESPONSE")) {
+          responseType = this.expect("IDENT", "Expected response type").lexeme;
+          this.expect("SEMICOLON", "Expected ';' after response type");
+        } else {
+          const t = this.peek();
+          throw new ParseError("Expected request or response in service block", t.line, t.column);
+        }
+      }
+      this.expect("RBRACE", "Expected '}' to close service");
+      this.expect("SEMICOLON", "Expected ';' after service declaration");
+      return {
+        kind: "ServiceDecl",
+        name: name.lexeme,
+        serviceType: null,
+        requestType,
+        responseType,
+        span: this.spanFrom(start, this.previous()),
+      };
+    }
+
     this.expect("COLON", "Expected ':' after service name");
     const serviceType = this.expect("IDENT", "Expected service type");
     this.expect("SEMICOLON", "Expected ';' after service declaration");
-    const end = this.previous();
     return {
       kind: "ServiceDecl",
       name: name.lexeme,
       serviceType: serviceType.lexeme,
-      span: this.spanFrom(start, end),
+      requestType: null,
+      responseType: null,
+      span: this.spanFrom(start, this.previous()),
     };
   }
 
   private parseAction(): ActionDecl {
     const start = this.advance();
     const name = this.expect("IDENT", "Expected action name");
+
+    if (this.check("LBRACE")) {
+      this.advance();
+      let requestType: string | null = null;
+      let feedbackType: string | null = null;
+      let resultType: string | null = null;
+      while (!this.check("RBRACE") && !this.check("EOF")) {
+        if (this.match("REQUEST")) {
+          requestType = this.expect("IDENT", "Expected request type").lexeme;
+          this.expect("SEMICOLON", "Expected ';' after request type");
+        } else if (this.match("FEEDBACK")) {
+          feedbackType = this.expect("IDENT", "Expected feedback type").lexeme;
+          this.expect("SEMICOLON", "Expected ';' after feedback type");
+        } else if (this.match("RESULT")) {
+          resultType = this.expect("IDENT", "Expected result type").lexeme;
+          this.expect("SEMICOLON", "Expected ';' after result type");
+        } else {
+          const t = this.peek();
+          throw new ParseError("Expected request, feedback, or result in action block", t.line, t.column);
+        }
+      }
+      this.expect("RBRACE", "Expected '}' to close action");
+      this.expect("SEMICOLON", "Expected ';' after action declaration");
+      return {
+        kind: "ActionDecl",
+        name: name.lexeme,
+        actionType: null,
+        requestType,
+        feedbackType,
+        resultType,
+        span: this.spanFrom(start, this.previous()),
+      };
+    }
+
     this.expect("COLON", "Expected ':' after action name");
     const actionType = this.expect("IDENT", "Expected action type");
     this.expect("SEMICOLON", "Expected ';' after action declaration");
-    const end = this.previous();
     return {
       kind: "ActionDecl",
       name: name.lexeme,
       actionType: actionType.lexeme,
-      span: this.spanFrom(start, end),
+      requestType: null,
+      feedbackType: null,
+      resultType: null,
+      span: this.spanFrom(start, this.previous()),
     };
   }
 
@@ -1104,10 +1481,28 @@ class Parser {
   private parseEvent(): EventDecl {
     const start = this.advance();
     const name = this.expect("IDENT", "Expected event name");
+    const fields: FieldDecl[] = [];
+    if (this.check("LBRACE")) {
+      this.advance();
+      while (!this.check("RBRACE") && !this.check("EOF")) {
+        const fieldStart = this.peek();
+        const fieldName = this.expect("IDENT", "Expected event field name");
+        this.expect("COLON", "Expected ':' after event field name");
+        const typeName = this.expect("IDENT", "Expected event field type");
+        this.expect("SEMICOLON", "Expected ';' after event field");
+        fields.push({
+          name: fieldName.lexeme,
+          typeName: typeName.lexeme,
+          span: this.spanFrom(fieldStart, this.previous()),
+        });
+      }
+      this.expect("RBRACE", "Expected '}' to close event");
+    }
     this.expect("SEMICOLON", "Expected ';' after event");
     return {
       kind: "EventDecl",
       name: name.lexeme,
+      fields,
       span: this.spanFrom(start, this.previous()),
     };
   }
@@ -1134,7 +1529,7 @@ class Parser {
     let replay = false;
     while (!this.check("RBRACE") && !this.check("EOF")) {
       if (this.match("MIRROR")) {
-        mirrors.push(this.expect("IDENT", "Expected mirror field").lexeme);
+        mirrors.push(this.parseLabel("Expected mirror field"));
         this.expect("SEMICOLON", "Expected ';' after mirror");
       } else if (this.match("REPLAY")) {
         replay = this.match("TRUE");
@@ -1159,9 +1554,22 @@ class Parser {
 
   private parseCapability(): CapabilityDecl {
     const start = this.peek();
-    const action = this.match("PLAN")
-      ? "plan"
-      : this.expect("IDENT", "Expected capability action").lexeme;
+    let action: string;
+    if (this.match("PLAN")) {
+      action = "plan";
+    } else if (
+      this.check("IDENT") ||
+      this.check("PUBLISH") ||
+      this.check("SUBSCRIBE") ||
+      this.check("CALL") ||
+      this.check("EXECUTE") ||
+      this.check("DISCOVER")
+    ) {
+      action = this.advance().lexeme;
+    } else {
+      const t = this.peek();
+      throw new ParseError("Expected capability action", t.line, t.column);
+    }
     let target: string | null = null;
     if (this.match("LPAREN")) {
       target = this.expect("IDENT", "Expected capability target").lexeme;
@@ -1175,7 +1583,7 @@ class Parser {
   }
 
   private parseLocalName(message: string): Token {
-    const lexeme = this.parseLabel(message);
+    const lexeme = this.parseBindingIdent(message);
     return {
       type: "IDENT",
       lexeme,
@@ -1254,17 +1662,72 @@ class Parser {
     }
 
     if (this.match("PUBLISH")) {
-      const topicName = this.expect("IDENT", "Expected topic name after publish");
-      this.expect("WITH", "Expected 'with' after topic name");
+      const topicName = this.parseSubscribeTarget();
+      if (this.match("LPAREN")) {
+        const value = this.parseExpr();
+        this.expect("RPAREN", "Expected ')' after publish value");
+        this.expect("SEMICOLON", "Expected ';' after publish statement");
+        const end = this.previous();
+        return {
+          kind: "PublishStmt",
+          topicName,
+          value,
+          span: this.spanFrom(start, end),
+        };
+      }
+      this.expect("WITH", "Expected 'with' or '(' after topic name");
       const value = this.parseExpr();
       this.expect("SEMICOLON", "Expected ';' after publish statement");
       const end = this.previous();
       return {
         kind: "PublishStmt",
-        topicName: topicName.lexeme,
+        topicName,
         value,
         span: this.spanFrom(start, end),
       };
+    }
+
+    if (this.match("SUBSCRIBE")) {
+      const target = this.parseSubscribeTarget();
+      this.expect("SEMICOLON", "Expected ';' after subscribe");
+      const end = this.previous();
+      return { kind: "SubscribeStmt", target, span: this.spanFrom(start, end) };
+    }
+
+    if (this.match("EXECUTE")) {
+      const actionName = this.expect("IDENT", "Expected action name after execute").lexeme;
+      const goal = this.match("LPAREN")
+        ? (() => {
+            const g = this.parseExpr();
+            this.expect("RPAREN", "Expected ')' after execute goal");
+            return g;
+          })()
+        : this.parseExpr();
+      this.expect("SEMICOLON", "Expected ';' after execute");
+      const end = this.previous();
+      return {
+        kind: "ExecuteStmt",
+        actionName,
+        goal,
+        span: this.spanFrom(start, end),
+      };
+    }
+
+    if (this.match("DISCOVER")) {
+      const target = this.parseDiscoverTarget();
+      const filter = this.parseDiscoverFilter();
+      this.expect("SEMICOLON", "Expected ';' after discover");
+      const end = this.previous();
+      return { kind: "DiscoverStmt", target, filter, span: this.spanFrom(start, end) };
+    }
+
+    if (this.match("RECEIVE")) {
+      const topicName = this.expect("IDENT", "Expected topic name after receive").lexeme;
+      this.expect("TO", "Expected 'to' after topic in receive");
+      const varName = this.expect("IDENT", "Expected variable name").lexeme;
+      this.expect("SEMICOLON", "Expected ';' after receive");
+      const end = this.previous();
+      return { kind: "ReceiveStmt", topicName, varName, span: this.spanFrom(start, end) };
     }
 
     if (this.match("CALL")) {
@@ -1334,6 +1797,36 @@ class Parser {
     this.expect("SEMICOLON", "Expected ';' after expression");
     const end = this.previous();
     return { kind: "ExprStmt", expr, span: this.spanFrom(start, end) };
+  }
+
+  private parseSubscribeTarget(): string {
+    const first = this.parseLabel("Expected subscribe target");
+    if (this.match("DOT")) {
+      const second = this.parseLabel("Expected member after '.'");
+      return `${first}.${second}`;
+    }
+    return first;
+  }
+
+  private parseDiscoverTarget(): DiscoverTarget {
+    const name = this.expect("IDENT", "Expected discover target").lexeme;
+    if (name === "robots") return "robots";
+    if (name === "agents") return "agents";
+    if (name === "devices") return "devices";
+    const t = this.previous();
+    throw new ParseError(
+      `Expected robots, agents, or devices in discover, got '${name}'`,
+      t.line,
+      t.column,
+    );
+  }
+
+  private parseDiscoverFilter(): DiscoverFilter | null {
+    if (!this.match("WHERE")) return null;
+    this.expect("IDENT", "Expected 'capability' in discover filter");
+    this.expect("INCLUDES", "Expected 'includes' in discover filter");
+    const capability = this.expect("IDENT", "Expected capability name").lexeme;
+    return { capability };
   }
 
   private parseDuration(): number {
@@ -1622,6 +2115,45 @@ class Parser {
       };
     }
 
+    if (this.match("CALL")) {
+      const serviceName = this.expect("IDENT", "Expected service name after call").lexeme;
+      this.expect("LPAREN", "Expected '(' after service name");
+      this.expect("RPAREN", "Expected ')' after service arguments");
+      return {
+        kind: "ServiceCallExpr",
+        serviceName,
+        span: this.spanFrom(start, this.previous()),
+      };
+    }
+
+    if (this.match("EXECUTE")) {
+      const actionName = this.expect("IDENT", "Expected action name after execute").lexeme;
+      const goal = this.match("LPAREN")
+        ? (() => {
+            const g = this.parseExpr();
+            this.expect("RPAREN", "Expected ')' after execute goal");
+            return g;
+          })()
+        : this.parseExpr();
+      return {
+        kind: "ExecuteExpr",
+        actionName,
+        goal,
+        span: this.spanFrom(start, this.previous()),
+      };
+    }
+
+    if (this.match("DISCOVER")) {
+      const target = this.parseDiscoverTarget();
+      const filter = this.parseDiscoverFilter();
+      return {
+        kind: "DiscoverExpr",
+        target,
+        filter,
+        span: this.spanFrom(start, this.previous()),
+      };
+    }
+
     if (this.match("ROBOT")) {
       const tok = this.previous();
       return {
@@ -1697,6 +2229,25 @@ class Parser {
         "TASK",
         "TWIN",
         "MATCH",
+        "MISSION",
+        "DURATION",
+        "NETWORK",
+        "BANDWIDTH",
+        "LATENCY",
+        "TIMING",
+        "BUDGET",
+        "FAULT",
+        "EXECUTE",
+        "DISCOVER",
+        "SUBSCRIBE",
+        "RECEIVE",
+        "MESSAGE",
+        "RESPONSE",
+        "FEEDBACK",
+        "RESULT",
+        "REQUEST",
+        "DEVICE",
+        "BUS",
       )
     ) {
       const tok = this.previous();
@@ -1725,11 +2276,12 @@ class Parser {
   private isNamedArgStart(): boolean {
     const next = this.tokens[this.pos + 1];
     if (next?.type !== "COLON") return false;
-    return this.check("IDENT") || this.check("FROM") || this.check("GOAL");
+    return this.check("IDENT") || this.check("FROM") || this.check("GOAL") || this.check("TO");
   }
 
   private parseNamedArgName(): string {
     if (this.match("FROM")) return "from";
+    if (this.match("TO")) return "to";
     if (this.match("GOAL")) return "goal";
     return this.advance().lexeme;
   }

@@ -156,6 +156,7 @@ export type SimulateCompatibilityDecl = {
 export type EventDecl = {
   kind: "EventDecl";
   name: string;
+  fields: FieldDecl[];
   span: Span;
 };
 
@@ -213,6 +214,7 @@ export function resolveModuleImport(path: string): boolean {
     "std.safety",
     "std.twin",
     "std.hri",
+    "std.network",
   ].includes(path);
 }
 
