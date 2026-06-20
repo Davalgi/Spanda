@@ -34,6 +34,8 @@ Usage:
   spanda deploy --target wasm [--out <file.json>] <file.sd>
   spanda debug [--break <line>] <file.sd>
   spanda ir [--json] <file.sd>
+  spanda llvm-ir [--out <file.ll>] [--target-triple <triple>] <file.sd>
+  spanda compile-native [--out <binary>] [--target-triple <triple>] <file.sd>
 
 Package commands (require native CLI: npm run build:rust):
   spanda init [name] [--description <text>]
@@ -151,6 +153,12 @@ function main(): void {
         break;
       case "ir":
         handleIr(positional[0], json);
+        break;
+      case "llvm-ir":
+        handleNativeCodegen("llvm-ir", positional[0], flags);
+        break;
+      case "compile-native":
+        handleNativeCodegen("compile-native", positional[0], flags);
         break;
       case "init":
       case "build":
@@ -395,6 +403,25 @@ function handleIr(filePath: string | undefined, json: boolean): void {
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
   }
+  process.exit(result.status === 0 ? 0 : 1);
+}
+
+function handleNativeCodegen(
+  command: "llvm-ir" | "compile-native",
+  filePath: string | undefined,
+  flags: Map<string, string | boolean>,
+): void {
+  requireNative(`${command} requires the native Rust CLI.`);
+  const abs = absPath(filePath);
+  const args: string[] = [command];
+  const out = flagStr(flags, "out");
+  if (out) args.push("--out", out);
+  const triple = flagStr(flags, "target-triple");
+  if (triple) args.push("--target-triple", triple);
+  args.push(abs);
+  const result = runNativeCli(args);
+  process.stdout.write(result.stdout ?? "");
+  process.stderr.write(result.stderr ?? "");
   process.exit(result.status === 0 ? 0 : 1);
 }
 

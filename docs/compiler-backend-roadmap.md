@@ -44,16 +44,17 @@ Spanda source (.sd)
 
 ### Milestone 2 — LLVM backend ✓ (extended)
 
-- **`spanda llvm-ir file.sd`** emits LLVM IR from SIR with `libspanda_rt` declarations and calls for supported statements (actuator drive/stop, publish with string payloads, loop every, emergency stop, integer returns).
-- **`spanda compile-native [--out <binary>] file.sd`** links LLVM IR with `libspanda_rt` via clang when available.
-- `crates/spanda-rt` exposes the C ABI (`spanda_rt_drive`, `spanda_rt_stop`, `spanda_rt_publish`, `spanda_rt_loop_delay_ms`, …).
-- `crates/spanda-llvm` lowers SIR statement bodies where supported; loops, match, and comm remain planned.
+- **`spanda llvm-ir [--target-triple <triple>] file.sd`** emits LLVM IR from SIR with `libspanda_rt` declarations and calls for supported statements (actuator drive/stop, publish/subscribe with string payloads, constant `if`, loop every, emergency stop, integer returns).
+- **`spanda compile-native [--out <binary>] [--target-triple <triple>] file.sd`** links LLVM IR with `libspanda_rt` via clang when available.
+- `crates/spanda-rt` exposes the C ABI (`spanda_rt_drive`, `spanda_rt_stop`, `spanda_rt_publish`, `spanda_rt_subscribe`, `spanda_rt_loop_delay_ms`, …).
+- `crates/spanda-llvm` lowers SIR statement bodies where supported; runtime `match` and dynamic `if` remain planned.
 - Robot scheduler, safety monitor, and comm routing remain in **`libspanda_rt`** (interpreter-backed for now).
 - `-O2` builds for deployment; `-O0` + debug info for DAP debugging.
 
-### Milestone 3 — Cross-compilation
+### Milestone 3 — Cross-compilation (partial)
 
-- Target triples and HAL profiles drive conditional compilation (Jetson CUDA vs ESP32 bare-metal).
+- **`--target-triple`** on `llvm-ir` and `compile-native` selects the LLVM/clang target (e.g. `aarch64-unknown-linux-gnu`).
+- HAL profiles and conditional compilation for Jetson vs ESP32 remain planned.
 
 ## Target platforms
 

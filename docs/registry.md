@@ -1,6 +1,6 @@
 # Spanda Package Registry
 
-Spanda's package registry is designed for community frameworks, drivers, adapters, and libraries. A **local stub registry** ships with the toolchain for development; a public registry will follow.
+Spanda's package registry is designed for community frameworks, drivers, adapters, and libraries. A **local stub registry** ships with the toolchain for development. Set **`SPANDA_REGISTRY_URL`** to a base URL serving `index.json` to merge remote entries into search and dependency resolution.
 
 ## Searching packages
 
