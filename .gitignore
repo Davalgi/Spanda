@@ -28,11 +28,9 @@ packages/native/index.d.ts
 *.log
 .DS_Store
 
-# editor — ignore local Cursor state, keep shared rules
-.cursor/*
-!.cursor/
-!.cursor/rules/
-!.cursor/rules/**
+# local editor / git tooling — personal env only, not enforced repo-wide
+.cursor/
+.githooks/
 
 # test / coverage
 coverage/
