@@ -1,0 +1,151 @@
+use crate::backend::{AuditBackend, LocalAuditBackend};
+use crate::crypto::{sha256, sign, verify_signature};
+use crate::error::{AuditError, AuditResult};
+use crate::record::{AuditRecord, DeviceIdentity, Hash, ProvenanceRecord, RecordId};
+use chrono::Utc;
+
+/// High-level audit runtime used by the Spanda interpreter.
+#[derive(Debug)]
+pub struct AuditRuntime {
+    backend: LocalAuditBackend,
+    pub identity: Option<DeviceIdentity>,
+    pub audit_name: String,
+    pub watched_fields: Vec<String>,
+    pub hash_algo: String,
+    pub signed_by: Option<String>,
+    next_id: u64,
+}
+
+impl AuditRuntime {
+    pub fn new(audit_name: impl Into<String>, watched_fields: Vec<String>) -> Self {
+        Self {
+            backend: LocalAuditBackend::new(),
+            identity: None,
+            audit_name: audit_name.into(),
+            watched_fields,
+            hash_algo: "sha256".into(),
+            signed_by: None,
+            next_id: 1,
+        }
+    }
+
+    pub fn with_identity(mut self, identity: DeviceIdentity) -> Self {
+        self.identity = Some(identity);
+        self
+    }
+
+    pub fn with_provenance(
+        mut self,
+        hash_algo: impl Into<String>,
+        signed_by: impl Into<String>,
+    ) -> Self {
+        self.hash_algo = hash_algo.into();
+        self.signed_by = Some(signed_by.into());
+        self
+    }
+
+    pub fn record_event(&mut self, event_type: &str, payload: &str) -> AuditResult<RecordId> {
+        let id = RecordId(format!("audit-{}", self.next_id));
+        self.next_id += 1;
+
+        let previous_hash = self.backend.last_hash();
+        let timestamp = Utc::now();
+        let body = format!(
+            "{}|{}|{}|{}",
+            timestamp.to_rfc3339(),
+            event_type,
+            payload,
+            previous_hash.as_ref().map(|h| h.0.as_str()).unwrap_or("")
+        );
+        let hash = sha256(&body);
+
+        let (signature, signer_id, signing_key) = if let Some(identity) = &self.identity {
+            let key = identity.default_key();
+            (
+                Some(sign(&body, &key)),
+                Some(identity.id.clone()),
+                Some(key),
+            )
+        } else {
+            (None, None, None)
+        };
+
+        let record = AuditRecord {
+            id: id.clone(),
+            timestamp,
+            event_type: event_type.to_string(),
+            payload: payload.to_string(),
+            hash,
+            signature,
+            signer_id,
+            signing_key,
+            previous_hash,
+        };
+
+        self.backend.append(record)?;
+        Ok(id)
+    }
+
+    pub fn verify_record(&self, record_id: &RecordId) -> AuditResult<bool> {
+        self.backend.verify(record_id)
+    }
+
+    pub fn export_json(&self) -> AuditResult<String> {
+        let export = self.backend.export()?;
+        serde_json::to_string_pretty(&export).map_err(|e| AuditError::Serialization(e.to_string()))
+    }
+
+    pub fn record_count(&self) -> usize {
+        self.backend.record_count()
+    }
+
+    pub fn create_provenance(
+        &self,
+        name: &str,
+        record_id: &RecordId,
+    ) -> AuditResult<ProvenanceRecord> {
+        let record = self
+            .backend
+            .records()
+            .iter()
+            .find(|r| r.id == *record_id)
+            .ok_or_else(|| AuditError::NotFound(record_id.0.clone()))?;
+
+        let signed_by = self
+            .signed_by
+            .clone()
+            .or_else(|| self.identity.as_ref().map(|i| i.id.clone()))
+            .unwrap_or_else(|| "unknown".into());
+
+        let key = self
+            .identity
+            .as_ref()
+            .map(|i| i.default_key())
+            .unwrap_or_else(|| signed_by.clone());
+
+        let sig = sign(&record.hash.0, &key);
+
+        Ok(ProvenanceRecord {
+            name: name.to_string(),
+            record_id: record_id.clone(),
+            hash: record.hash.clone(),
+            signed_by,
+            signature: sig,
+            anchored: false,
+            anchor_tx: None,
+        })
+    }
+
+    pub fn verify_provenance_signature(&self, prov: &ProvenanceRecord) -> bool {
+        let key = self
+            .identity
+            .as_ref()
+            .map(|i| i.default_key())
+            .unwrap_or_else(|| prov.signed_by.clone());
+        verify_signature(&prov.hash.0, &prov.signature, &key)
+    }
+
+    pub fn root_hash(&self) -> Option<Hash> {
+        self.backend.last_hash()
+    }
+}
