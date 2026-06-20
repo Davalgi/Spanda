@@ -3,6 +3,7 @@ pub mod ast;
 pub mod audit;
 pub mod comm;
 mod error;
+pub mod security;
 pub mod events;
 pub mod format;
 pub mod foundations;

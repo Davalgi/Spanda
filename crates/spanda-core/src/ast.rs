@@ -464,6 +464,9 @@ pub enum RobotDecl {
         audit: Option<crate::foundations::AuditDecl>,
         provenance: Option<crate::foundations::ProvenanceDecl>,
         signed_records: Vec<crate::foundations::SignedRecordDecl>,
+        secrets: Vec<crate::foundations::SecretDecl>,
+        trust: Option<crate::foundations::TrustDecl>,
+        permissions: Option<crate::foundations::PermissionsDecl>,
         requires_hardware: Option<crate::foundations::RequiresHardwareDecl>,
         requires_network: Option<crate::foundations::RequiresNetworkDecl>,
         mission: Option<crate::foundations::MissionDecl>,
@@ -562,6 +565,8 @@ pub enum TopicDecl {
         qos: Option<crate::comm::QosDecl>,
         #[serde(default)]
         transport: Option<crate::comm::TransportKind>,
+        #[serde(default)]
+        secure: Option<crate::foundations::SecureBlockDecl>,
         span: Span,
     },
 }
@@ -577,6 +582,8 @@ pub enum ServiceDecl {
         request_type: Option<String>,
         #[serde(default)]
         response_type: Option<String>,
+        #[serde(default)]
+        secure: Option<crate::foundations::SecureBlockDecl>,
         span: Span,
     },
 }
@@ -594,6 +601,8 @@ pub enum ActionDecl {
         feedback_type: Option<String>,
         #[serde(default)]
         result_type: Option<String>,
+        #[serde(default)]
+        secure: Option<crate::foundations::SecureBlockDecl>,
         span: Span,
     },
 }

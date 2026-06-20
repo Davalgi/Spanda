@@ -12,6 +12,9 @@ use crate::audit::{
     sha256 as audit_sha256, sign as audit_sign, verify_signature, AuditRuntime, DeviceIdentity,
     MockLedgerBackend,
 };
+use crate::security::{
+    RobotIdentity, SecretHandle, SecretSource, SecurePolicy, SecurityContext, TrustLevel,
+};
 use crate::comm::{CommBus, DiscoverFilter, TransportKind};
 use crate::error::{PoseState, RobotState, SpandaError, VelocityState};
 use crate::events::EventBus;
@@ -134,6 +137,9 @@ pub enum RuntimeValue {
     Identity {
         id: String,
         public_key: String,
+    },
+    Secret {
+        name: String,
     },
     AiModel {
         name: String,
@@ -372,6 +378,7 @@ pub struct Interpreter<B: RobotBackend> {
     fusion_sensors: Vec<String>,
     audit_runtime: Option<AuditRuntime>,
     mock_ledger: MockLedgerBackend,
+    security: SecurityContext,
     comm_bus: RoutingCommBus,
     default_transport: TransportKind,
 }
@@ -401,6 +408,7 @@ impl<B: RobotBackend> Interpreter<B> {
             fusion_sensors: Vec::new(),
             audit_runtime: None,
             mock_ledger: MockLedgerBackend::new(),
+            security: SecurityContext::new(),
             comm_bus: RoutingCommBus::new(),
             default_transport: TransportKind::Sim,
         }
@@ -508,6 +516,9 @@ impl<B: RobotBackend> Interpreter<B> {
             audit,
             provenance,
             signed_records,
+            secrets,
+            trust,
+            permissions,
             trait_impls,
             buses,
             peer_robots,
@@ -528,6 +539,7 @@ impl<B: RobotBackend> Interpreter<B> {
         self.fusion_sensors.clear();
         self.audit_runtime = None;
         self.mock_ledger = MockLedgerBackend::new();
+        self.security = SecurityContext::new();
         self.current_agent = None;
 
         if let Some(soc_decl) = soc {
@@ -679,6 +691,47 @@ impl<B: RobotBackend> Interpreter<B> {
             ));
         }
 
+        if let Some(perm_decl) = permissions {
+            let crate::foundations::PermissionsDecl::PermissionsDecl {
+                capabilities, ..
+            } = perm_decl;
+            self.security.enable_strict_permissions();
+            self.security.capabilities.grant_all(capabilities);
+            self.log(format!(
+                "permissions: strict mode, granted {} capability(ies)",
+                self.security.capabilities.granted().count()
+            ));
+        }
+
+        if let Some(trust_decl) = trust {
+            let crate::foundations::TrustDecl::TrustDecl { level, .. } = trust_decl;
+            if let Ok(t) = level.parse::<TrustLevel>() {
+                self.security.trust = t;
+                self.log(format!("trust: level set to {}", t.as_str()));
+            }
+        }
+
+        for secret_decl in secrets {
+            let crate::foundations::SecretDecl::SecretDecl { name, source, .. } = secret_decl;
+            let src = match source {
+                crate::foundations::SecretSourceDecl::Env { var } => SecretSource::Env {
+                    var: var.clone(),
+                },
+                crate::foundations::SecretSourceDecl::Literal { value } => {
+                    SecretSource::Literal {
+                        value: value.clone(),
+                    }
+                }
+            };
+            self.security.secrets.register(SecretHandle {
+                name: name.clone(),
+                source: src,
+            });
+            self.env
+                .define(name.clone(), RuntimeValue::Secret { name: name.clone() });
+            self.log(format!("secret '{name}': registered"));
+        }
+
         if let Some(identity_decl) = identity {
             let crate::foundations::IdentityDecl::IdentityDecl { fields, .. } = identity_decl;
             let id = fields
@@ -691,17 +744,21 @@ impl<B: RobotBackend> Interpreter<B> {
                 .find(|(k, _)| k == "public_key")
                 .map(|(_, v)| v.clone())
                 .unwrap_or_default();
-            let device = DeviceIdentity::new(id.clone(), public_key.clone());
+            let robot_id = RobotIdentity::new(id.clone(), public_key.clone())
+                .with_trust(self.security.trust);
             self.env.define(
                 String::from("identity"),
                 RuntimeValue::Identity {
                     id: id.clone(),
-                    public_key,
+                    public_key: public_key.clone(),
                 },
             );
             if let Some(rt) = self.audit_runtime.as_mut() {
-                rt.identity = Some(device);
+                rt.identity = Some(DeviceIdentity::new(id.clone(), public_key));
             }
+            self.security.set_identity(robot_id);
+            self.security.grant_if_not_strict("identity.sign");
+            self.security.grant_if_not_strict("identity.verify");
             self.log(format!("identity: device '{id}' registered"));
         }
 
@@ -733,6 +790,8 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             self.env.define("audit", RuntimeValue::AuditCtx);
             self.audit_runtime = Some(rt);
+            self.security.grant_if_not_strict("audit.write");
+            self.security.grant_if_not_strict("audit.read");
             self.log(format!(
                 "audit {name}: recording {} field(s) [{}]",
                 watched.len(),
@@ -760,6 +819,7 @@ impl<B: RobotBackend> Interpreter<B> {
         }
 
         self.env.define("mock_ledger", RuntimeValue::LedgerCtx);
+        self.security.grant_if_not_strict("ledger.anchor");
 
         for sm in state_machines {
             let StateMachineDecl::StateMachineDecl {
@@ -909,10 +969,15 @@ impl<B: RobotBackend> Interpreter<B> {
             message_type,
             topic: topic_path,
             transport,
+            secure,
             ..
         } = topic;
         let path = topic_path.clone().unwrap_or_else(|| format!("/{name}"));
         let transport = transport.unwrap_or(self.default_transport);
+        if let Some(block) = secure {
+            self.security
+                .register_secure_endpoint(&path, Self::secure_policy_from_block(block));
+        }
         self.comm_bus.subscribe(&path, name);
         self.env.define(
             name.clone(),
@@ -931,8 +996,14 @@ impl<B: RobotBackend> Interpreter<B> {
             service_type,
             request_type,
             response_type,
+            secure,
             ..
         } = service;
+        let endpoint = format!("/service/{name}");
+        if let Some(block) = secure {
+            self.security
+                .register_secure_endpoint(&endpoint, Self::secure_policy_from_block(block));
+        }
         let st = service_type
             .clone()
             .or_else(|| response_type.clone())
@@ -952,8 +1023,14 @@ impl<B: RobotBackend> Interpreter<B> {
             name,
             action_type,
             result_type,
+            secure,
             ..
         } = action;
+        let endpoint = format!("/action/{name}");
+        if let Some(block) = secure {
+            self.security
+                .register_secure_endpoint(&endpoint, Self::secure_policy_from_block(block));
+        }
         let at = action_type
             .clone()
             .or_else(|| result_type.clone())
@@ -1299,6 +1376,32 @@ impl<B: RobotBackend> Interpreter<B> {
         Ok(())
     }
 
+    fn secure_policy_from_block(block: &crate::foundations::SecureBlockDecl) -> SecurePolicy {
+        SecurePolicy {
+            signed: block.signed,
+            min_trust: block
+                .min_trust
+                .as_ref()
+                .and_then(|s| s.parse::<TrustLevel>().ok()),
+            requires: block.requires.clone(),
+        }
+    }
+
+    fn resolve_signing_key(&self, key: &str) -> Result<String, SpandaError> {
+        if self.security.secrets.get(key).is_ok() {
+            self.security
+                .secrets
+                .resolve(key)
+                .map_err(|e| RuntimeError::new(e.to_string(), 0).into_spanda())
+        } else {
+            Ok(key.to_string())
+        }
+    }
+
+    fn security_error(&self, err: crate::security::SecurityError, line: u32) -> SpandaError {
+        RuntimeError::new(err.to_string(), line).into_spanda()
+    }
+
     fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
         for stmt in stmts {
             self.execute_stmt(stmt)?;
@@ -1350,6 +1453,10 @@ impl<B: RobotBackend> Interpreter<B> {
                 value,
                 span,
             } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "publish", Some(topic_name), line)?;
+                }
                 let topic = self.env.get(topic_name).cloned();
                 let val = self.eval_expr(value)?;
                 if let Some(RuntimeValue::Topic {
@@ -1358,6 +1465,10 @@ impl<B: RobotBackend> Interpreter<B> {
                     ..
                 }) = topic
                 {
+                    let payload = Self::runtime_value_payload(&val);
+                    if let Err(e) = self.security.sign_outbound(&topic_path, &payload) {
+                        return Err(self.security_error(e, line));
+                    }
                     self.comm_bus.publish(
                         &topic_path,
                         &message_type,
@@ -1365,32 +1476,66 @@ impl<B: RobotBackend> Interpreter<B> {
                         self.default_transport,
                     );
                     self.backend.publish_topic(&topic_path, &message_type, val);
+                    if let Some(rt) = self.audit_runtime.as_mut() {
+                        let _ = self.security.audit_event(
+                            rt,
+                            "publish",
+                            &format!("topic={topic_path}"),
+                        );
+                    }
                     self.log(format!("publish {topic_path}"));
                 }
-                let _ = span;
             }
-            Stmt::ServiceCallStmt { service_name, .. } => {
+            Stmt::ServiceCallStmt {
+                service_name,
+                span,
+                ..
+            } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "call", Some(service_name), line)?;
+                }
                 if let Some(RuntimeValue::Service { name, service_type }) =
                     self.env.get(service_name).cloned()
                 {
+                    let endpoint = format!("/service/{name}");
+                    if let Err(e) = self.security.verify_inbound(&endpoint, None) {
+                        return Err(self.security_error(e, line));
+                    }
                     self.backend.call_service(&name, &service_type);
                     self.log(format!("call {name}()"));
                 }
             }
             Stmt::ActionSendStmt {
-                action_name, goal, ..
+                action_name,
+                goal,
+                span,
+                ..
             } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "execute", Some(action_name), line)?;
+                }
                 if let Some(RuntimeValue::Action { name, action_type }) =
                     self.env.get(action_name).cloned()
                 {
+                    let endpoint = format!("/action/{name}");
                     let goal_val = self.eval_expr(goal)?;
+                    let payload = Self::runtime_value_payload(&goal_val);
+                    if let Err(e) = self.security.sign_outbound(&endpoint, &payload) {
+                        return Err(self.security_error(e, line));
+                    }
                     self.comm_bus
                         .send_action(&name, &action_type, goal_val.clone());
                     self.backend.send_action(&name, &action_type, goal_val);
                     self.log(format!("send_goal {name}"));
                 }
             }
-            Stmt::SubscribeStmt { target, .. } => {
+            Stmt::SubscribeStmt { target, span, .. } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "subscribe", Some(target), line)?;
+                }
                 let path = if target.contains('.') {
                     format!("/{}", target.replace('.', "/"))
                 } else if let Some(RuntimeValue::Topic { topic_path, .. }) = self.env.get(target) {
@@ -1398,23 +1543,47 @@ impl<B: RobotBackend> Interpreter<B> {
                 } else {
                     format!("/{target}")
                 };
+                if let Err(e) = self.security.verify_inbound(&path, None) {
+                    return Err(self.security_error(e, line));
+                }
                 self.comm_bus.subscribe(&path, target);
                 self.log(format!("subscribe {target}"));
             }
             Stmt::ExecuteStmt {
-                action_name, goal, ..
+                action_name,
+                goal,
+                span,
+                ..
             } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "execute", Some(action_name), line)?;
+                }
                 if let Some(RuntimeValue::Action { name, action_type }) =
                     self.env.get(action_name).cloned()
                 {
+                    let endpoint = format!("/action/{name}");
                     let goal_val = self.eval_expr(goal)?;
+                    let payload = Self::runtime_value_payload(&goal_val);
+                    if let Err(e) = self.security.sign_outbound(&endpoint, &payload) {
+                        return Err(self.security_error(e, line));
+                    }
                     self.comm_bus
                         .send_action(&name, &action_type, goal_val.clone());
                     self.backend.send_action(&name, &action_type, goal_val);
                     self.log(format!("execute {name}"));
                 }
             }
-            Stmt::DiscoverStmt { target, filter, .. } => {
+            Stmt::DiscoverStmt {
+                target,
+                filter,
+                span,
+                ..
+            } => {
+                let line = span.start.line;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "discover", None, line)?;
+                }
                 let results = self.comm_bus.discover(
                     *target,
                     filter
@@ -1422,6 +1591,7 @@ impl<B: RobotBackend> Interpreter<B> {
                         .unwrap_or(&DiscoverFilter { capability: None }),
                 );
                 self.log(format!("discover {:?}: {:?}", target, results));
+                let _ = line;
             }
             Stmt::ReceiveStmt {
                 topic_name,
@@ -2187,16 +2357,20 @@ impl<B: RobotBackend> Interpreter<B> {
                 })
             }
             "sign" => {
+                self.security
+                    .require_operation("identity.sign")
+                    .map_err(|e| self.security_error(e, line))?;
                 let data = if let Some(arg) = args.first() {
                     get_string(&self.eval_expr(arg)?, "")
                 } else {
                     get_string(&self.get_named_arg_value(named_args, "data")?, "")
                 };
-                let key = if args.len() > 1 {
+                let key_raw = if args.len() > 1 {
                     get_string(&self.eval_expr(&args[1])?, "")
                 } else {
                     get_string(&self.get_named_arg_value(named_args, "key")?, "")
                 };
+                let key = self.resolve_signing_key(&key_raw)?;
                 Ok(RuntimeValue::Object {
                     type_name: "Signature".into(),
                     fields: HashMap::from([(
@@ -2208,6 +2382,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 })
             }
             "verify_signature" => {
+                self.security
+                    .require_operation("identity.verify")
+                    .map_err(|e| self.security_error(e, line))?;
                 let data = if let Some(arg) = args.first() {
                     get_string(&self.eval_expr(arg)?, "")
                 } else {
@@ -2218,11 +2395,12 @@ impl<B: RobotBackend> Interpreter<B> {
                 } else {
                     get_string(&self.get_named_arg_value(named_args, "signature")?, "")
                 };
-                let key = if args.len() > 2 {
+                let key_raw = if args.len() > 2 {
                     get_string(&self.eval_expr(&args[2])?, "")
                 } else {
                     get_string(&self.get_named_arg_value(named_args, "key")?, "")
                 };
+                let key = self.resolve_signing_key(&key_raw)?;
                 Ok(RuntimeValue::Bool {
                     value: verify_signature(&data, &signature, &key),
                 })
@@ -2327,6 +2505,9 @@ impl<B: RobotBackend> Interpreter<B> {
     ) -> Result<RuntimeValue, SpandaError> {
         match method {
             "record" => {
+                self.security
+                    .require_operation("audit.record")
+                    .map_err(|e| self.security_error(e, line))?;
                 let event_type = if let Some(arg) = args.first() {
                     get_string(&self.eval_expr(arg)?, "event")
                 } else {
@@ -2347,6 +2528,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 let id = rt.record_event(&event_type, &payload).map_err(|e| {
                     RuntimeError::new(format!("audit.record failed: {e}"), line).into_spanda()
                 })?;
+                let _ = self.security.audit_event(rt, "audit.record", &event_type);
                 self.log(format!("audit.record({event_type}) -> {}", id.0));
                 Ok(RuntimeValue::Object {
                     type_name: "RecordId".into(),
@@ -2354,6 +2536,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 })
             }
             "export" => {
+                self.security
+                    .require_operation("audit.read")
+                    .map_err(|e| self.security_error(e, line))?;
                 let rt = self.audit_runtime.as_mut().ok_or_else(|| {
                     RuntimeError::new(
                         "Audit not configured — declare an audit block on the robot",
@@ -2389,6 +2574,72 @@ impl<B: RobotBackend> Interpreter<B> {
                     fields: HashMap::from([("hex".into(), RuntimeValue::String { value: hash })]),
                 })
             }
+            "create_provenance" => {
+                self.security
+                    .require_operation("identity.sign")
+                    .map_err(|e| self.security_error(e, line))?;
+                let name = if let Some(arg) = args.first() {
+                    get_string(&self.eval_expr(arg)?, "provenance")
+                } else {
+                    "provenance".into()
+                };
+                let record_id = if args.len() > 1 {
+                    match self.eval_expr(&args[1])? {
+                        RuntimeValue::Object { fields, .. } => fields
+                            .get("id")
+                            .and_then(|v| match v {
+                                RuntimeValue::String { value } => Some(crate::audit::RecordId(
+                                    value.clone(),
+                                )),
+                                _ => None,
+                            })
+                            .unwrap_or_else(|| crate::audit::RecordId("audit-1".into())),
+                        _ => crate::audit::RecordId("audit-1".into()),
+                    }
+                } else {
+                    crate::audit::RecordId("audit-1".into())
+                };
+                let rt = self.audit_runtime.as_ref().ok_or_else(|| {
+                    RuntimeError::new(
+                        "Audit not configured — declare an audit block on the robot",
+                        line,
+                    )
+                    .into_spanda()
+                })?;
+                let prov = rt.create_provenance(&name, &record_id).map_err(|e| {
+                    RuntimeError::new(format!("audit.create_provenance failed: {e}"), line)
+                        .into_spanda()
+                })?;
+                Ok(RuntimeValue::Object {
+                    type_name: "ProvenanceRecord".into(),
+                    fields: HashMap::from([
+                        (
+                            "name".into(),
+                            RuntimeValue::String {
+                                value: prov.name.clone(),
+                            },
+                        ),
+                        (
+                            "record_id".into(),
+                            RuntimeValue::Object {
+                                type_name: "RecordId".into(),
+                                fields: HashMap::from([(
+                                    "id".into(),
+                                    RuntimeValue::String {
+                                        value: prov.record_id.0.clone(),
+                                    },
+                                )]),
+                            },
+                        ),
+                        (
+                            "signed_by".into(),
+                            RuntimeValue::String {
+                                value: prov.signed_by.clone(),
+                            },
+                        ),
+                    ]),
+                })
+            }
             _ => Ok(RuntimeValue::Void),
         }
     }
@@ -2403,6 +2654,9 @@ impl<B: RobotBackend> Interpreter<B> {
         use crate::audit::LedgerBackend;
         match method {
             "anchor" => {
+                self.security
+                    .require_operation("ledger.anchor")
+                    .map_err(|e| self.security_error(e, line))?;
                 let hash_hex = if let Some(arg) = args.first() {
                     match self.eval_expr(arg)? {
                         RuntimeValue::Object { fields, .. } => fields

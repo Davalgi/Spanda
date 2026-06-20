@@ -310,6 +310,72 @@ pub enum SignedRecordDecl {
     },
 }
 
+/// Secret declaration resolved at runtime from env or literal.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum SecretDecl {
+    SecretDecl {
+        name: String,
+        source: SecretSourceDecl,
+        span: Span,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "source", rename_all = "snake_case")]
+pub enum SecretSourceDecl {
+    Env { var: String },
+    Literal { value: String },
+}
+
+/// Robot-level trust tier for secure communication and package gating.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum TrustDecl {
+    TrustDecl { level: String, span: Span },
+}
+
+/// Robot-level package capability grants (`permissions [ audit.write, ... ]`).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum PermissionsDecl {
+    PermissionsDecl {
+        capabilities: Vec<String>,
+        span: Span,
+    },
+}
+
+/// Security policy for topics, services, and actions.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SecureBlockDecl {
+    pub signed: bool,
+    pub min_trust: Option<String>,
+    pub requires: Vec<String>,
+    pub span: Span,
+}
+
+impl Default for SecureBlockDecl {
+    fn default() -> Self {
+        Self {
+            signed: false,
+            min_trust: None,
+            requires: Vec::new(),
+            span: Span {
+                start: crate::ast::SourceLocation {
+                    line: 0,
+                    column: 0,
+                    offset: 0,
+                },
+                end: crate::ast::SourceLocation {
+                    line: 0,
+                    column: 0,
+                    offset: 0,
+                },
+            },
+        }
+    }
+}
+
 /// Capability granted to an agent (`can [ read(lidar), propose_motion ]`).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CapabilityDecl {

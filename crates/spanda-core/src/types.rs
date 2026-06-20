@@ -454,6 +454,9 @@ impl TypeChecker {
             audit,
             provenance,
             signed_records,
+            secrets,
+            trust,
+            permissions,
             trait_impls,
             buses,
             peer_robots,
@@ -904,6 +907,62 @@ impl TypeChecker {
             }
         }
 
+        for secret in secrets {
+            let crate::foundations::SecretDecl::SecretDecl { name, span, .. } = secret;
+            if name.is_empty() {
+                self.error(
+                    "secret declaration requires a name".into(),
+                    span.start.line,
+                    span.start.column,
+                );
+            }
+            self.symbols.insert(
+                name.clone(),
+                SymbolEntry {
+                    robo_type: SpandaType::Named {
+                        name: "Secret".into(),
+                    },
+                    kind: SymbolKind::Variable,
+                    sensor_type: None,
+                    actuator_type: None,
+                },
+            );
+        }
+
+        if let Some(trust_decl) = trust {
+            let crate::foundations::TrustDecl::TrustDecl { level, span } = trust_decl;
+            if !["untrusted", "restricted", "trusted", "certified"].contains(&level.as_str()) {
+                self.error(
+                    format!("unknown trust level '{level}'"),
+                    span.start.line,
+                    span.start.column,
+                );
+            }
+        }
+
+        if let Some(perm_decl) = permissions {
+            let crate::foundations::PermissionsDecl::PermissionsDecl {
+                capabilities, span, ..
+            } = perm_decl;
+            if capabilities.is_empty() {
+                self.error(
+                    "permissions block must grant at least one capability".into(),
+                    span.start.line,
+                    span.start.column,
+                );
+            }
+            for cap in capabilities {
+                if spanda_security::is_known_capability(cap) {
+                    continue;
+                }
+                self.error(
+                    format!("unknown package capability '{cap}'"),
+                    span.start.line,
+                    span.start.column,
+                );
+            }
+        }
+
         for behavior in behaviors {
             let BehaviorDecl::BehaviorDecl {
                 name,
@@ -1038,6 +1097,7 @@ impl TypeChecker {
             role,
             qos,
             transport,
+            secure,
             span,
         } = topic;
         if resolve_message_type(&self.message_registry, message_type).is_none() {
@@ -1084,6 +1144,9 @@ impl TypeChecker {
             // transport-only topic is valid
         }
         let _ = transport;
+        if let Some(sec) = secure {
+            self.check_secure_block(sec);
+        }
         self.symbols.insert(
             name.clone(),
             SymbolEntry {
@@ -1102,6 +1165,7 @@ impl TypeChecker {
             service_type,
             request_type,
             response_type,
+            secure,
             span,
         } = service;
         if let (Some(req), Some(res)) = (request_type, response_type) {
@@ -1134,6 +1198,9 @@ impl TypeChecker {
                 span.start.column,
             );
         }
+        if let Some(sec) = secure {
+            self.check_secure_block(sec);
+        }
         self.symbols.insert(
             name.clone(),
             SymbolEntry {
@@ -1152,6 +1219,7 @@ impl TypeChecker {
             request_type,
             feedback_type,
             result_type,
+            secure,
             span,
         } = action;
         if let (Some(req), Some(fb), Some(res)) = (request_type, feedback_type, result_type) {
@@ -1179,6 +1247,9 @@ impl TypeChecker {
                 span.start.column,
             );
         }
+        if let Some(sec) = secure {
+            self.check_secure_block(sec);
+        }
         self.symbols.insert(
             name.clone(),
             SymbolEntry {
@@ -1188,6 +1259,27 @@ impl TypeChecker {
                 actuator_type: None,
             },
         );
+    }
+
+    fn check_secure_block(&mut self, block: &crate::foundations::SecureBlockDecl) {
+        if let Some(level) = &block.min_trust {
+            if !["untrusted", "restricted", "trusted", "certified"].contains(&level.as_str()) {
+                self.error(
+                    format!("unknown trust level '{level}' in secure block"),
+                    block.span.start.line,
+                    block.span.start.column,
+                );
+            }
+        }
+        for cap in &block.requires {
+            if !spanda_security::is_known_capability(cap) {
+                self.error(
+                    format!("unknown capability '{cap}' in secure block"),
+                    block.span.start.line,
+                    block.span.start.column,
+                );
+            }
+        }
     }
 
     fn check_sensor(
@@ -3104,6 +3196,18 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                     HashMap::new(),
                     SpandaType::Named {
                         name: "Hash".into(),
+                    },
+                ),
+            ),
+            (
+                "create_provenance",
+                m(
+                    vec![SpandaType::String, SpandaType::Named {
+                        name: "RecordId".into(),
+                    }],
+                    HashMap::new(),
+                    SpandaType::Named {
+                        name: "ProvenanceRecord".into(),
                     },
                 ),
             ),

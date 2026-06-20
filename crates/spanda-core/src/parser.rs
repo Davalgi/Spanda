@@ -159,6 +159,7 @@ impl Parser {
                 | TokenType::Telemetry
                 | TokenType::Faults
                 | TokenType::Verify
+                | TokenType::Requires
         );
         if ok {
             Ok(self.advance().lexeme)
@@ -1042,6 +1043,9 @@ impl Parser {
         let mut audit = None;
         let mut provenance = None;
         let mut signed_records = Vec::new();
+        let mut secrets = Vec::new();
+        let mut trust = None;
+        let mut permissions = None;
         let mut trait_impls = Vec::new();
         let mut requires_hardware = None;
         let mut requires_network = None;
@@ -1104,6 +1108,12 @@ impl Parser {
                 provenance = Some(self.parse_provenance()?);
             } else if self.is_robot_member_keyword("record") {
                 signed_records.push(self.parse_signed_record()?);
+            } else if self.check(TokenType::Secret) {
+                secrets.push(self.parse_secret()?);
+            } else if self.check(TokenType::Trust) {
+                trust = Some(self.parse_trust()?);
+            } else if self.check(TokenType::Permissions) {
+                permissions = Some(self.parse_permissions()?);
             } else if self.check(TokenType::RequiresHardware) {
                 requires_hardware = Some(self.parse_requires_hardware()?);
             } else if self.check(TokenType::RequiresNetwork) {
@@ -1153,6 +1163,9 @@ impl Parser {
             audit,
             provenance,
             signed_records,
+            secrets,
+            trust,
+            permissions,
             requires_hardware,
             requires_network,
             mission,
@@ -1668,6 +1681,12 @@ impl Parser {
             }
         }
 
+        let secure = if self.check(TokenType::Secure) {
+            Some(self.parse_secure_block()?)
+        } else {
+            None
+        };
+
         self.expect(TokenType::Semicolon, "Expected ';' after topic declaration")?;
         Ok(TopicDecl::TopicDecl {
             name,
@@ -1676,6 +1695,7 @@ impl Parser {
             role,
             qos,
             transport,
+            secure,
             span: self.span_from(&start, self.previous()),
         })
     }
@@ -1711,6 +1731,11 @@ impl Parser {
                 }
             }
             self.expect(TokenType::Rbrace, "Expected '}' to close service")?;
+            let secure = if self.check(TokenType::Secure) {
+                Some(self.parse_secure_block()?)
+            } else {
+                None
+            };
             self.expect(
                 TokenType::Semicolon,
                 "Expected ';' after service declaration",
@@ -1720,12 +1745,18 @@ impl Parser {
                 service_type: None,
                 request_type,
                 response_type,
+                secure,
                 span: self.span_from(&start, self.previous()),
             });
         }
 
         self.expect(TokenType::Colon, "Expected ':' after service name")?;
         let service_type = self.expect(TokenType::Ident, "Expected service type")?;
+        let secure = if self.check(TokenType::Secure) {
+            Some(self.parse_secure_block()?)
+        } else {
+            None
+        };
         self.expect(
             TokenType::Semicolon,
             "Expected ';' after service declaration",
@@ -1735,6 +1766,7 @@ impl Parser {
             service_type: Some(service_type.lexeme),
             request_type: None,
             response_type: None,
+            secure,
             span: self.span_from(&start, self.previous()),
         })
     }
@@ -1777,6 +1809,11 @@ impl Parser {
                 }
             }
             self.expect(TokenType::Rbrace, "Expected '}' to close action")?;
+            let secure = if self.check(TokenType::Secure) {
+                Some(self.parse_secure_block()?)
+            } else {
+                None
+            };
             self.expect(
                 TokenType::Semicolon,
                 "Expected ';' after action declaration",
@@ -1787,12 +1824,18 @@ impl Parser {
                 request_type,
                 feedback_type,
                 result_type,
+                secure,
                 span: self.span_from(&start, self.previous()),
             });
         }
 
         self.expect(TokenType::Colon, "Expected ':' after action name")?;
         let action_type = self.expect(TokenType::Ident, "Expected action type")?;
+        let secure = if self.check(TokenType::Secure) {
+            Some(self.parse_secure_block()?)
+        } else {
+            None
+        };
         self.expect(
             TokenType::Semicolon,
             "Expected ';' after action declaration",
@@ -1803,6 +1846,7 @@ impl Parser {
             request_type: None,
             feedback_type: None,
             result_type: None,
+            secure,
             span: self.span_from(&start, self.previous()),
         })
     }
@@ -2026,6 +2070,137 @@ impl Parser {
             event_name: event_name.lexeme,
             signed_by,
             span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_secret(&mut self) -> Result<crate::foundations::SecretDecl, SpandaError> {
+        use crate::foundations::{SecretDecl, SecretSourceDecl};
+        let start = self.advance();
+        let name = self.expect(TokenType::Ident, "Expected secret name")?;
+        self.expect(TokenType::From, "Expected 'from' after secret name")?;
+        let source = if self.match_types(&[TokenType::Env]) {
+            self.expect(TokenType::Lparen, "Expected '(' after env")?;
+            let var = str_val(&self.expect(TokenType::String, "Expected env var name")?);
+            self.expect(TokenType::Rparen, "Expected ')' after env var")?;
+            SecretSourceDecl::Env { var }
+        } else if self.check(TokenType::String) {
+            SecretSourceDecl::Literal {
+                value: str_val(&self.advance()),
+            }
+        } else {
+            let t = self.peek();
+            return Err(SpandaError::Parse {
+                message: "Expected env(...) or string literal for secret source".into(),
+                line: t.line,
+                column: t.column,
+            });
+        };
+        self.expect(TokenType::Semicolon, "Expected ';' after secret declaration")?;
+        Ok(SecretDecl::SecretDecl {
+            name: name.lexeme,
+            source,
+            span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_trust(&mut self) -> Result<crate::foundations::TrustDecl, SpandaError> {
+        use crate::foundations::TrustDecl;
+        let start = self.advance();
+        let level = self
+            .expect(TokenType::Ident, "Expected trust level")?
+            .lexeme;
+        self.expect(TokenType::Semicolon, "Expected ';' after trust declaration")?;
+        Ok(TrustDecl::TrustDecl {
+            level,
+            span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_dotted_capability(&mut self) -> Result<String, SpandaError> {
+        let first = self.parse_label("Expected capability name")?;
+        if self.match_types(&[TokenType::Dot]) {
+            let second = self.parse_label("Expected capability suffix")?;
+            Ok(format!("{first}.{second}"))
+        } else {
+            Ok(first)
+        }
+    }
+
+    fn parse_permissions(&mut self) -> Result<crate::foundations::PermissionsDecl, SpandaError> {
+        use crate::foundations::PermissionsDecl;
+        let start = self.advance();
+        self.expect(
+            TokenType::Lbracket,
+            "Expected '[' after permissions",
+        )?;
+        let mut capabilities = Vec::new();
+        if !self.check(TokenType::Rbracket) {
+            loop {
+                capabilities.push(self.parse_dotted_capability()?);
+                if !self.match_types(&[TokenType::Comma]) {
+                    break;
+                }
+            }
+        }
+        self.expect(TokenType::Rbracket, "Expected ']' to close permissions")?;
+        self.expect(
+            TokenType::Semicolon,
+            "Expected ';' after permissions declaration",
+        )?;
+        Ok(PermissionsDecl::PermissionsDecl {
+            capabilities,
+            span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_secure_block(&mut self) -> Result<crate::foundations::SecureBlockDecl, SpandaError> {
+        use crate::foundations::SecureBlockDecl;
+        let start = self.advance();
+        self.expect(TokenType::Lbrace, "Expected '{' after secure")?;
+        let mut signed = false;
+        let mut min_trust = None;
+        let mut requires = Vec::new();
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            let field = self.parse_label("Expected secure field name")?;
+            self.expect(TokenType::Assign, "Expected '=' in secure field")?;
+            match field.as_str() {
+                "signed" => {
+                    signed = self.match_types(&[TokenType::True]);
+                    if !signed {
+                        self.expect(TokenType::False, "Expected true or false for signed")?;
+                    }
+                }
+                "min_trust" => {
+                    min_trust = Some(self.parse_label("Expected trust level")?);
+                }
+                "requires" => {
+                    self.expect(TokenType::Lbracket, "Expected '[' after requires")?;
+                    if !self.check(TokenType::Rbracket) {
+                        loop {
+                            requires.push(self.parse_dotted_capability()?);
+                            if !self.match_types(&[TokenType::Comma]) {
+                                break;
+                            }
+                        }
+                    }
+                    self.expect(TokenType::Rbracket, "Expected ']' after requires")?;
+                }
+                other => {
+                    return Err(SpandaError::Parse {
+                        message: format!("Unknown secure field '{other}'"),
+                        line: self.previous().line,
+                        column: self.previous().column,
+                    });
+                }
+            }
+            self.expect(TokenType::Semicolon, "Expected ';' after secure field")?;
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close secure block")?;
+        Ok(SecureBlockDecl {
+            signed,
+            min_trust,
+            requires,
+            span: self.span_from(&start, &end),
         })
     }
 

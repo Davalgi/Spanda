@@ -397,6 +397,7 @@ fn runtime_value_kind(value: &RuntimeValue) -> &'static str {
         RuntimeValue::AuditCtx => "audit_ctx",
         RuntimeValue::LedgerCtx => "ledger_ctx",
         RuntimeValue::Identity { .. } => "identity",
+        RuntimeValue::Secret { .. } => "secret",
     }
 }
 
