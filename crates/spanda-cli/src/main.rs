@@ -2,9 +2,9 @@ mod package;
 
 use serde::Serialize;
 use spanda_core::{
-    check, codegen, format_source, generate_markdown, lint, run, run_debug, verify_compatibility,
-    wasm_deploy_manifest, CodegenTarget, CompatSeverity, DebugOptions, RunOptions, SpandaError,
-    VerifyOptions,
+    check, codegen, format_source, generate_markdown, lint, lower_to_sir, run, run_debug,
+    verify_compatibility, wasm_deploy_manifest, CodegenTarget, CompatSeverity, DebugOptions,
+    RunOptions, SpandaError, VerifyOptions,
 };
 use std::collections::HashSet;
 use std::env;
@@ -57,6 +57,12 @@ struct DocResponse {
     markdown: String,
 }
 
+#[derive(Serialize)]
+struct IrResponse {
+    ok: bool,
+    sir: spanda_core::SirProgram,
+}
+
 fn usage() {
     eprintln!(
         "Spanda Programming Language\n\n\
@@ -71,7 +77,8 @@ fn usage() {
            spanda doc [--json] [--out <file.md>] <file.sd>\n\
            spanda codegen [--target native|wasm|esp32] [--out <file>] <file.sd>\n\
            spanda deploy --target wasm [--out <file.json>] <file.sd>\n\
-           spanda debug [--break <line>] <file.sd>\n\n\
+           spanda debug [--break <line>] <file.sd>\n\
+           spanda ir [--json] <file.sd>\n\n\
          Package commands:\n\
            spanda init [name] [--description <text>]\n\
            spanda build [--project <dir>]\n\
@@ -80,7 +87,8 @@ fn usage() {
            spanda remove <package>\n\
            spanda install [--project <dir>]\n\
            spanda publish [--project <dir>]\n\
-           spanda registry search <query>\n"
+           spanda registry search <query>\n\
+           spanda registry info <package>\n"
     );
 }
 
@@ -274,13 +282,14 @@ fn dispatch_package(command: &str, rest: &[String]) {
         "remove" => package::cmd_remove(rest),
         "install" => package::cmd_install(rest),
         "publish" => package::cmd_publish(rest),
-        "registry" => {
-            if rest.first().map(String::as_str) != Some("search") {
-                eprintln!("Usage: spanda registry search <query>");
+        "registry" => match rest.first().map(String::as_str) {
+            Some("search") => package::cmd_registry_search(&rest[1..]),
+            Some("info") => package::cmd_registry_info(&rest[1..]),
+            _ => {
+                eprintln!("Usage: spanda registry search <query> | spanda registry info <package>");
                 process::exit(1);
             }
-            package::cmd_registry_search(&rest[1..]);
-        }
+        },
         _ => {
             eprintln!("Unknown package command: {command}");
             package::usage_package();
@@ -594,6 +603,51 @@ fn main() {
                 }
                 Err(e) => {
                     eprintln!("Error: {e}");
+                    process::exit(1);
+                }
+            }
+        }
+        "ir" => {
+            let file = file.unwrap_or_else(|| {
+                eprintln!("Missing file path");
+                usage();
+                process::exit(1);
+            });
+            let source = read_source(&file);
+            match lower_to_sir(&source) {
+                Ok(sir) => {
+                    if json {
+                        let resp = IrResponse { ok: true, sir };
+                        println!("{}", serde_json::to_string(&resp).unwrap());
+                    } else {
+                        println!("Spanda IR for {file}:");
+                        println!("  module: {:?}", sir.module_name);
+                        println!("  functions: {}", sir.functions.len());
+                        println!("  externs: {}", sir.externs.len());
+                        println!("  robots: {}", sir.robot_names.join(", "));
+                        for ext in &sir.externs {
+                            println!(
+                                "  extern {} fn {} -> {}",
+                                ext.bridge.as_str(),
+                                ext.name,
+                                ext.return_type
+                            );
+                        }
+                    }
+                }
+                Err(e) => {
+                    if json {
+                        println!(
+                            "{}",
+                            serde_json::to_string(&serde_json::json!({
+                                "ok": false,
+                                "error": e.to_string()
+                            }))
+                            .unwrap()
+                        );
+                    } else {
+                        eprintln!("Error: {e}");
+                    }
                     process::exit(1);
                 }
             }

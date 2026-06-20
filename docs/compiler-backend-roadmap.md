@@ -36,10 +36,11 @@ Spanda source (.sd)
   → native binary / WASM module
 ```
 
-### Milestone 1 — Spanda IR (SIR)
+### Milestone 1 — Spanda IR (SIR) ✓ (foundation)
 
-- Lower typed AST to a small SSA-like IR preserving units, safety contracts, and robot/task metadata as annotations.
-- SIR is the contract between frontend and backends; the interpreter can execute SIR directly for faster iteration.
+- Lower typed AST to SIR preserving module functions, extern bridge kinds, and robot names.
+- **`spanda ir [--json] file.sd`** emits SIR for codegen planning and CI inspection.
+- SIR is the contract between frontend and backends; the interpreter still executes AST directly.
 
 ### Milestone 2 — LLVM backend
 

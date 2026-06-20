@@ -25,6 +25,7 @@ pub mod safety;
 pub mod security;
 pub mod serialize;
 pub mod simulator;
+pub mod sir;
 pub mod soc;
 pub mod state_machine;
 pub mod stdlib;
@@ -47,6 +48,7 @@ pub use hardware::{
 };
 pub use lint::{lint, LintIssue, LintReport, LintSeverity};
 pub use modules::{load_project_modules, ModuleRegistry};
+pub use sir::{lower_program, SirExtern, SirFunction, SirParam, SirProgram, SirVisibility};
 
 use runtime::{Interpreter, InterpreterOptions, RobotBackend};
 use serde::{Deserialize, Serialize};
@@ -111,6 +113,13 @@ pub fn verify_compatibility_target(
             simulate: false,
         },
     )
+}
+
+pub fn lower_to_sir(source: &str) -> Result<SirProgram, SpandaError> {
+    let tokens = lexer::tokenize(source)?;
+    let program = parser::parse(tokens)?;
+    types::check(&program)?;
+    Ok(sir::lower_program(&program))
 }
 
 pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
