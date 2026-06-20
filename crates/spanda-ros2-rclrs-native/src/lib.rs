@@ -4,8 +4,10 @@
 //! `std_msgs` crates.io package. A sourced ROS 2 install is still required at
 //! runtime (`AMENT_PREFIX_PATH`).
 
-use rclrs::dynamic_message::{SimpleValueMut, ValueMut};
-use rclrs::{Context, DynamicMessage, MessageTypeName, RclrsError, SpinOptions};
+use rclrs::{
+    Context, CreateBasicExecutor, DynamicMessage, MessageTypeName, RclrsError, SimpleValueMut,
+    SpinOptions, ValueMut,
+};
 use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::process::Command;
