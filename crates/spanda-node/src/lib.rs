@@ -2,7 +2,10 @@
 
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use spanda_core::{check, run, verify_compatibility, RunOptions, SpandaError, VerifyOptions};
+use spanda_core::{
+    check, format_source, lower_to_sir, run, verify_compatibility, RunOptions, SpandaError,
+    VerifyOptions,
+};
 
 #[napi(object)]
 pub struct DiagnosticJs {
@@ -166,4 +169,16 @@ pub fn verify_source(source: String) -> VerifyResultJs {
                 .collect(),
         },
     }
+}
+
+#[napi]
+pub fn sir_source(source: String) -> Result<String> {
+    lower_to_sir(&source)
+        .map(|sir| serde_json::to_string_pretty(&sir).unwrap_or_default())
+        .map_err(|e| Error::from_reason(e.to_string()))
+}
+
+#[napi]
+pub fn fmt_source(source: String) -> String {
+    format_source(&source)
 }

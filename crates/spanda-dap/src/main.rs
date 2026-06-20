@@ -60,6 +60,8 @@ pub fn serve(source: &str, reader: &mut dyn BufRead, writer: &mut dyn Write) -> 
                         "capabilities": {
                             "supportsConfigurationDoneRequest": true,
                             "supportsSetVariable": false,
+                            "supportsStepBack": false,
+                            "supportsRestartRequest": false,
                         }
                     }),
                 )?;
@@ -87,12 +89,16 @@ pub fn serve(source: &str, reader: &mut dyn BufRead, writer: &mut dyn Write) -> 
                 respond(writer, &req, json!({ "breakpoints": verified }))?;
             }
             "configurationDone" => {
+                respond(writer, &req, json!({}))?;
+            }
+            "continue" | "next" | "stepIn" | "stepOut" | "pause" => {
                 if running {
+                    let step = matches!(command, "next" | "stepIn" | "stepOut");
                     let session = run_debug(
                         source,
                         DebugOptions {
                             breakpoints: breakpoints.clone(),
-                            step: false,
+                            step,
                         },
                     )
                     .unwrap_or_else(|e: SpandaError| {
@@ -110,7 +116,7 @@ pub fn serve(source: &str, reader: &mut dyn BufRead, writer: &mut dyn Write) -> 
                                 "type": "event",
                                 "event": "stopped",
                                 "body": {
-                                    "reason": "breakpoint",
+                                    "reason": if step { "step" } else { "breakpoint" },
                                     "threadId": 1,
                                     "text": pause.reason,
                                     "line": pause.line,
@@ -119,7 +125,7 @@ pub fn serve(source: &str, reader: &mut dyn BufRead, writer: &mut dyn Write) -> 
                         )?;
                     }
                 }
-                respond(writer, &req, json!({}))?;
+                respond(writer, &req, json!({ "allThreadsContinued": true }))?;
             }
             "threads" => {
                 respond(

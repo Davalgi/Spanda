@@ -60,6 +60,22 @@ pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
 }
 
 #[wasm_bindgen]
+pub fn wasm_ir(source: &str) -> JsValue {
+    match spanda_core::lower_to_sir(source) {
+        Ok(sir) => serde_wasm_bindgen::to_value(&sir).unwrap_or(JsValue::NULL),
+        Err(e) => to_js(&CheckResponse {
+            ok: false,
+            diagnostics: e.diagnostics(),
+        }),
+    }
+}
+
+#[wasm_bindgen]
+pub fn wasm_fmt(source: &str) -> String {
+    spanda_core::format_source(source)
+}
+
+#[wasm_bindgen]
 pub fn wasm_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
