@@ -144,10 +144,51 @@ Use `spanda verify --simulate` or declare `simulate_compatibility` in the progra
 
 ```
 ── Compatibility Matrix ──
-  ✓ Rover → RoverV1
-  ✗ Rover → ESP32
-  ✓ Rover → JetsonOrin
+  ✓ RoverProgram → RoverV1
+  ✗ RoverProgram → ESP32
+  ✓ RoverProgram → JetsonOrin
 ```
+
+## CLI
+
+```bash
+spanda verify examples/hardware/rover_deploy.sd
+spanda verify examples/hardware/rover_deploy.sd --target RoverV1
+spanda verify examples/hardware/rover_deploy.sd --all-targets
+spanda verify examples/hardware/rover_deploy.sd --json
+spanda compatibility examples/hardware/rover_deploy.sd --json   # alias
+```
+
+Human output uses ✓ / ⚠ / ✗ per check category. Exit code is `0` when compatible, `1` when incompatible or on parse/type errors. With `--all-targets`, the command always exits `0` after printing the matrix (some cells may be incompatible).
+
+### JSON output (`--json`)
+
+```json
+{
+  "ok": true,
+  "compatible": true,
+  "target": "RoverV1",
+  "items": [
+    {
+      "category": "sensors",
+      "message": "Camera supported on RoverV1",
+      "severity": "pass",
+      "line": 18,
+      "column": 3
+    }
+  ],
+  "matrix": {
+    "cells": [
+      { "robot": "RoverProgram", "target": "RoverV1", "compatible": true },
+      { "robot": "RoverProgram", "target": "ESP32", "compatible": false }
+    ]
+  }
+}
+```
+
+`matrix` is present only with `--all-targets`. `ok` and `compatible` are both `false` when verification fails.
+
+TypeScript: `verifyViaCli(source, ["--target", "RoverV1"])` in `src/rust-bridge.ts`.
 
 ## Verification engine
 
@@ -180,4 +221,6 @@ TypeScript tooling can call `verifyViaCli()` from `src/rust-bridge.ts`.
 ## Tests
 
 Rust integration: `crates/spanda-core/tests/hardware_compat.rs` (10 cases)  
+CLI integration: `crates/spanda-cli/tests/verify_cli.rs` (subprocess + JSON output)  
+TypeScript: `tests/verify-cli.test.ts` (`verifyViaCli`)  
 Rust unit: `hardware::tests` in `hardware.rs`

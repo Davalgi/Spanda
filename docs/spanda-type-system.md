@@ -54,6 +54,64 @@ let bad = speed + distance;
 
 Supported unit types include `Distance`, `Velocity`, `Acceleration`, `Angle`, `AngularVelocity`, `Mass`, `Force`, `Power`, `Voltage`, `Current`, `Temperature`, and `Pressure`.
 
+### Unit literals
+
+| Category | Canonical | Also accepted |
+|----------|-----------|---------------|
+| Distance | `m` | `mm`, `cm`, `km`, `ft`, `in` |
+| Duration | `s` | `ms`, `us`, `min`, `h` |
+| Velocity | `m/s` | `km/h`, `mph` |
+| Acceleration | `m/s²` | `g` (standard gravity) |
+| Angle | `rad` | `deg` |
+| Angular velocity | `rad/s` | `deg/s` |
+| Mass | `kg` | `gram`, `lb` |
+| Force | `N` | `kN` |
+| Power | `W` | `kW`, `MW` |
+| Voltage | `V` | `mV`, `kV` |
+| Current | `A` | `mA` |
+| Temperature | `celsius` | `fahrenheit`, `kelvin` |
+| Pressure | `Pa` | `kPa`, `bar`, `mbar`, `psi` |
+| Frequency | `Hz` | `kHz`, `MHz` |
+
+### Sensor / environmental units
+
+| Category | Type name | Canonical | Also accepted |
+|----------|-----------|-----------|---------------|
+| Humidity | `Humidity` | `rh` | `%RH` |
+| Illuminance | `Illuminance` | `lux` | `lx` |
+| Luminance | `Luminance` | `cd/m²` | `nit` |
+| Gas concentration | `Concentration` | `ppm` | `ppb` |
+| Sound level | `SoundLevel` | `dB` | `dBA` |
+| Magnetic field | `MagneticField` | `uT` | `gauss` |
+| Rotational speed | `RotationalSpeed` | `rpm` | — |
+| Torque | `Torque` | `N·m` | `Nm` |
+| Energy | `Energy` | `J` | `Wh`, `kWh` |
+| UV index | `UvIndex` | `uvi` | — |
+| Acidity | `Ph` | `pH` | — |
+| Conductivity | `Conductivity` | `uS/cm` | `mS/cm`, `S/m` |
+| Particulate matter | `ParticulateMatter` | `ug/m3` | `µg/m³` |
+| Turbidity | `Turbidity` | `NTU` | `FNU` |
+| Salinity | `Salinity` | `ppt` | `psu` |
+| Radiation | `Radiation` | `uSv/h` | `mSv/h` |
+| Soil moisture | `SoilMoisture` | `%VWC` | `vwc` |
+
+```spanda
+let humidity: Humidity = 65 %RH;
+let ambient: Illuminance = 320 lux;
+let co2: Concentration = 800 ppm;
+let noise: SoundLevel = 42 dBA;
+let uv: UvIndex = 6.5 uvi;
+let acidity: Ph = 7.2 pH;
+let ec: Conductivity = 850 uS/cm;
+let pm25: ParticulateMatter = 12 ug/m3;
+let turbidity: Turbidity = 4.5 NTU;
+let salt: Salinity = 35 ppt;
+let dose: Radiation = 0.12 uSv/h;
+let soil: SoilMoisture = 42 %VWC;
+```
+
+Compatible units may be mixed in comparisons and addition (e.g. `500 ms + 0.5 s`, `100 cm + 1 m`). Incompatible dimensions are rejected at compile time.
+
 ## Time types
 
 ```spanda

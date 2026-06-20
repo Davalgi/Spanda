@@ -26,8 +26,12 @@ struct RunResponse {
 #[derive(Serialize)]
 struct VerifyResponse {
     ok: bool,
+    compatible: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     target: Option<String>,
     items: Vec<spanda_core::CompatItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    matrix: Option<spanda_core::CompatibilityMatrix>,
 }
 
 fn usage() {
@@ -36,7 +40,7 @@ fn usage() {
          Usage:\n\
            spanda check [--json] <file.sd>\n\
            spanda verify [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
-           spanda compatibility <file.sd> [--target <HardwareProfile>]\n\
+           spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
            spanda run [--json] [--verbose] <file.sd>\n\
            spanda sim [--json] <file.sd>\n\
            spanda fmt <file.sd>\n"
@@ -159,18 +163,22 @@ fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
                 };
                 println!("  {icon} [{}] {}", item.category, item.message);
             }
-            if report.compatible {
-                println!("\n✓ Deployment compatible");
-            } else {
-                println!("\n✗ Deployment incompatible");
-                process::exit(1);
-            }
             if let Some(matrix) = &report.matrix {
                 println!("\n── Compatibility Matrix ──");
                 for cell in &matrix.cells {
                     let icon = if cell.compatible { "✓" } else { "✗" };
                     println!("  {icon} {} → {}", cell.robot, cell.target);
                 }
+                let compatible = matrix.cells.iter().filter(|c| c.compatible).count();
+                let total = matrix.cells.len();
+                println!("\n{compatible}/{total} robot × target pairs compatible");
+                return;
+            }
+            if report.compatible {
+                println!("\n✓ Deployment compatible");
+            } else {
+                println!("\n✗ Deployment incompatible");
+                process::exit(1);
             }
         }
         Err(e) => {
@@ -187,11 +195,14 @@ fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaErro
     let resp = match result {
         Ok(report) => VerifyResponse {
             ok: report.compatible,
+            compatible: report.compatible,
             target: report.target.clone(),
             items: report.items.clone(),
+            matrix: report.matrix.clone(),
         },
         Err(e) => VerifyResponse {
             ok: false,
+            compatible: false,
             target: None,
             items: e
                 .diagnostics()
@@ -204,6 +215,7 @@ fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaErro
                     column: d.column,
                 })
                 .collect(),
+            matrix: None,
         },
     };
     println!("{}", serde_json::to_string(&resp).unwrap());
@@ -281,7 +293,15 @@ fn main() {
                 simulate,
             };
             if json {
-                print_verify_json(verify_compatibility(&source, &options));
+                let result = verify_compatibility(&source, &options);
+                let failed = match &result {
+                    Ok(report) => !options.all_targets && !report.compatible,
+                    Err(_) => true,
+                };
+                print_verify_json(result);
+                if failed {
+                    process::exit(1);
+                }
             } else {
                 human_verify(&source, file, &options);
             }

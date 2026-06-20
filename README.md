@@ -55,8 +55,10 @@ Native CLI (after `npm run build:rust`):
 
 ```bash
 spanda check examples/rover.sd
+spanda verify examples/hardware/rover_deploy.sd
 spanda verify examples/hardware/rover_deploy.sd --target RoverV1
-spanda verify robot.sd --all-targets
+spanda verify examples/hardware/rover_deploy.sd --all-targets
+spanda verify examples/hardware/rover_deploy.sd --json
 spanda run examples/rover.sd
 spanda sim examples/rover.sd
 spanda fmt examples/rover.sd
@@ -88,7 +90,7 @@ robot PiBot {
 |---------|--------|--------------|------------------|
 | `RaspberryPi4` / `RaspberryPi5` | Broadcom | aarch64 | GPIO, I2C, SPI, UART, PWM, WiFi |
 | `ESP32` / `ESP32S3` | Espressif | xtensa | GPIO, I2C, SPI, UART, PWM, ADC, WiFi, BLE |
-| `STM32F4` | STMicro | Cortex-M4 | GPIO, I2C, SPI, UART, PWM, ADC |
+| `STM32F4` / `STM32H7` | STMicro | Cortex-M4 / M7 | GPIO, I2C, SPI, UART, PWM, ADC |
 | `JetsonNano` / `JetsonOrin` | NVIDIA | aarch64 | GPIO, CUDA, GPU |
 | `ArduinoUno` | Arduino | AVR | GPIO, I2C, SPI, UART, PWM, ADC |
 
@@ -97,6 +99,7 @@ robot PiBot {
 | Vendor | Modules | Sensors |
 |--------|---------|---------|
 | Velodyne | `vlp16`, `vlp32` | VLP-16, VLP-32C LiDAR |
+| Ouster | `os1` | OS1 digital LiDAR |
 | Hokuyo | `ust10`, `utm30` | UST-10LX, UTM-30LX-EW |
 | Bosch | `bno055`, `bmp388` | BNO055 IMU, BMP388 barometer |
 | Intel | `realsense` | RealSense D435, D455 |
@@ -112,6 +115,7 @@ robot PiBot {
 | ONNX | `onnx.runtime` | ONNX Runtime inference backend |
 | TensorFlow | `tflite.runtime` | TensorFlow Lite inference backend |
 | NVIDIA | `tensorrt.runtime` | TensorRT inference for Jetson |
+| Intel | `openvino.runtime` | OpenVINO inference for Intel CPUs and VPUs |
 
 ## AI-Native Autonomous Systems
 
@@ -261,7 +265,19 @@ deploy RoverProgram to RoverV1;
 spanda verify rover.sd
 spanda verify rover.sd --target RoverV1
 spanda verify rover.sd --all-targets    # compatibility matrix
-spanda verify rover.sd --simulate     # fault injection
+spanda verify rover.sd --simulate       # fault injection
+spanda verify rover.sd --json           # machine-readable report
+```
+
+`--json` returns `ok`, `compatible`, `target`, `items`, and (with `--all-targets`) `matrix.cells`:
+
+```json
+{
+  "ok": true,
+  "compatible": true,
+  "target": "RoverV1",
+  "items": [{ "category": "sensors", "message": "...", "severity": "pass", "line": 1, "column": 1 }]
+}
 ```
 
 Built-in profiles: `RoverV1`, `RoverV2`, `JetsonOrin`, `RaspberryPi5`, `ESP32`.
@@ -316,11 +332,12 @@ robot PatrolBot {
 | Command | Description |
 |---------|-------------|
 | `spanda check <file.sd>` | Type-check only |
-| `spanda verify <file.sd>` | Hardware compatibility verification |
+| `spanda verify <file.sd>` | Hardware compatibility verification (uses `deploy` target) |
 | `spanda verify --target <Profile>` | Verify against a specific hardware profile |
 | `spanda verify --all-targets` | Generate robot × profile compatibility matrix |
+| `spanda verify --json` | JSON report (`ok`, `compatible`, `target`, `items`, optional `matrix`) |
 | `spanda verify --simulate` | Run with fault injection scenarios |
-| `spanda compatibility <file.sd>` | Alias for `verify` |
+| `spanda compatibility <file.sd>` | Alias for `verify` (same flags) |
 | `spanda run <file.sd>` | Run with simulated backend |
 | `spanda sim <file.sd>` | Run simulation with detailed output |
 | `spanda fmt <file.sd>` | Format source file |
