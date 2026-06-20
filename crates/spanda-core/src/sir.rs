@@ -62,12 +62,10 @@ pub fn lower_program(program: &Program) -> SirProgram {
 
     let mut behavior_names = Vec::new();
     for robot in robots {
-        if let RobotDecl::RobotDecl { behaviors, .. } = robot {
-            for behavior in behaviors {
-                if let BehaviorDecl::BehaviorDecl { name, .. } = behavior {
-                    behavior_names.push(name.clone());
-                }
-            }
+        let RobotDecl::RobotDecl { behaviors, .. } = robot;
+        for behavior in behaviors {
+            let BehaviorDecl::BehaviorDecl { name, .. } = behavior;
+            behavior_names.push(name.clone());
         }
     }
 

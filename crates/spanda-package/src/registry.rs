@@ -163,9 +163,7 @@ pub fn find_registry_entry(name: &str) -> Option<&'static RegistryEntry> {
 
 /// Local source tree for a registry package (when shipped in-repo).
 pub fn registry_package_dir(name: &str) -> Option<std::path::PathBuf> {
-    if find_registry_entry(name).is_none() {
-        return None;
-    }
+    find_registry_entry(name)?;
     let candidates = [
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../../packages/registry")

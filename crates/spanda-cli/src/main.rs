@@ -6,6 +6,7 @@ use spanda_core::{
     verify_compatibility, wasm_deploy_manifest, CodegenTarget, CompatSeverity, DebugOptions,
     RunOptions, SpandaError, VerifyOptions,
 };
+use spanda_llvm::emit_module_ir;
 use std::collections::HashSet;
 use std::env;
 use std::fs;
@@ -78,7 +79,8 @@ fn usage() {
            spanda codegen [--target native|wasm|esp32] [--out <file>] <file.sd>\n\
            spanda deploy --target wasm [--out <file.json>] <file.sd>\n\
            spanda debug [--break <line>] <file.sd>\n\
-           spanda ir [--json] <file.sd>\n\n\
+           spanda ir [--json] <file.sd>\n\
+           spanda llvm-ir [--out <file.ll>] <file.sd>\n\n\
          Package commands:\n\
            spanda init [name] [--description <text>]\n\
            spanda build [--project <dir>]\n\
@@ -648,6 +650,32 @@ fn main() {
                     } else {
                         eprintln!("Error: {e}");
                     }
+                    process::exit(1);
+                }
+            }
+        }
+        "llvm-ir" => {
+            let file = file.unwrap_or_else(|| {
+                eprintln!("Missing file path");
+                usage();
+                process::exit(1);
+            });
+            let source = read_source(&file);
+            match lower_to_sir(&source) {
+                Ok(sir) => {
+                    let ir = emit_module_ir(&sir);
+                    if let Some(ref out) = out_path {
+                        fs::write(out, &ir).unwrap_or_else(|e| {
+                            eprintln!("Error writing {out}: {e}");
+                            process::exit(1);
+                        });
+                        println!("✓ wrote LLVM IR to {out}");
+                    } else {
+                        print!("{ir}");
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error: {e}");
                     process::exit(1);
                 }
             }

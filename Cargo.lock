@@ -720,6 +720,7 @@ dependencies = [
  "serde",
  "serde_json",
  "spanda-core",
+ "spanda-llvm",
  "spanda-package",
  "tempfile",
 ]
@@ -744,6 +745,13 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "spanda-core",
+]
+
+[[package]]
+name = "spanda-llvm"
+version = "0.1.0"
+dependencies = [
  "spanda-core",
 ]
 

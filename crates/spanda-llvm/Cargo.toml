@@ -1,0 +1,11 @@
+[package]
+name = "spanda-llvm"
+version = "0.1.0"
+edition = "2021"
+description = "Spanda SIR → LLVM IR emitter (Milestone 2 foundation)"
+
+[dependencies]
+spanda-core = { path = "../spanda-core" }
+
+[dev-dependencies]
+spanda-core = { path = "../spanda-core" }
