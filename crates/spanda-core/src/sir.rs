@@ -71,6 +71,14 @@ pub enum SirStmt {
         name: String,
         value: i64,
     },
+    LoopEvery {
+        interval_ms: f64,
+        body: Vec<SirStmt>,
+    },
+    Publish {
+        topic: String,
+        payload: Option<String>,
+    },
     Unsupported {
         #[serde(rename = "stmt_kind")]
         label: String,
@@ -228,6 +236,14 @@ fn lower_stmt(stmt: &Stmt) -> SirStmt {
         Stmt::ReturnStmt { value, .. } => lower_return(value.as_ref()),
         Stmt::ExprStmt { expr, .. } => lower_expr_stmt(expr),
         Stmt::EmergencyStopStmt { .. } => SirStmt::EmergencyStop,
+        Stmt::LoopStmt { interval_ms, body, .. } => SirStmt::LoopEvery {
+            interval_ms: *interval_ms,
+            body: lower_stmts(body),
+        },
+        Stmt::PublishStmt { topic_name, value, .. } => SirStmt::Publish {
+            topic: topic_name.clone(),
+            payload: string_literal(value),
+        },
         other => SirStmt::Unsupported {
             label: stmt_kind(other),
         },
@@ -323,6 +339,20 @@ fn int_literal(expr: &Expr) -> Option<i64> {
 
 fn float_literal(expr: &Expr) -> Option<f64> {
     numeric_value(expr)
+}
+
+fn string_literal(expr: &Expr) -> Option<String> {
+    match expr {
+        Expr::LiteralExpr {
+            value: LiteralValue::String(s),
+            ..
+        } => Some(s.clone()),
+        Expr::LiteralExpr {
+            value: LiteralValue::Number(n),
+            ..
+        } => Some((*n as i64).to_string()),
+        _ => None,
+    }
 }
 
 fn stmt_kind(stmt: &Stmt) -> String {
@@ -462,5 +492,28 @@ robot R {
             } if (linear - 0.5).abs() < f64::EPSILON && (angular - 0.1).abs() < f64::EPSILON
         ));
         assert!(matches!(sir.functions[0].body[0], SirStmt::ReturnInt { value: 42 }));
+    }
+
+    #[test]
+    fn lowers_loop_and_publish_stmts() {
+        let source = r#"
+robot R {
+  topic status: String publish on "/status";
+  actuator wheels: DifferentialDrive;
+  behavior run() {
+    publish status with "ok";
+    loop every 100ms {
+      wheels.stop();
+    }
+  }
+}
+"#;
+        let program = parser::parse(lexer::tokenize(source).expect("tokenize")).expect("parse");
+        types::check(&program).expect("check");
+        let sir = lower_program(&program);
+        let body = &sir.robots[0].behaviors[0].body;
+        assert!(matches!(body[0], SirStmt::Publish { ref topic, .. } if topic == "status"));
+        assert!(matches!(body[1], SirStmt::LoopEvery { interval_ms, .. } if (interval_ms - 100.0).abs() < f64::EPSILON));
+        assert!(matches!(body[1], SirStmt::LoopEvery { ref body, .. } if matches!(body[0], SirStmt::ActuatorStop { .. })));
     }
 }

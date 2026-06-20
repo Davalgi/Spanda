@@ -33,6 +33,19 @@ pub extern "C" fn spanda_rt_log_i32(tag: *const c_char, value: i32) {
     log_event(format!("log:{name}:{value}"));
 }
 
+#[no_mangle]
+pub extern "C" fn spanda_rt_publish(topic: *const c_char, payload: *const c_char) {
+    let topic = ptr_to_str(topic);
+    let payload = ptr_to_str(payload);
+    log_event(format!("publish:{topic}:{payload}"));
+}
+
+#[no_mangle]
+pub extern "C" fn spanda_rt_loop_delay_ms(millis: u64) {
+    log_event(format!("loop_delay:{millis}"));
+    std::thread::sleep(std::time::Duration::from_millis(millis));
+}
+
 /// Test helper: drain and return recorded runtime events.
 pub fn take_events() -> Vec<String> {
     EVENTS.lock().unwrap().drain(..).collect()
@@ -65,5 +78,16 @@ mod tests {
         assert_eq!(events.len(), 2);
         assert!(events[0].starts_with("drive:wheels:"));
         assert_eq!(events[1], "stop:wheels");
+    }
+
+    #[test]
+    fn c_abi_records_publish_and_loop() {
+        let topic = CString::new("/status").unwrap();
+        let payload = CString::new("ok").unwrap();
+        spanda_rt_publish(topic.as_ptr(), payload.as_ptr());
+        spanda_rt_loop_delay_ms(1);
+        let events = take_events();
+        assert_eq!(events[0], "publish:/status:ok");
+        assert_eq!(events[1], "loop_delay:1");
     }
 }

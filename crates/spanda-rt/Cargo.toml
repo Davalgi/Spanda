@@ -5,4 +5,4 @@ edition = "2021"
 description = "Spanda native runtime (libspanda_rt) — C ABI for LLVM-linked programs"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib", "rlib", "staticlib"]
