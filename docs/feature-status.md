@@ -24,7 +24,7 @@ Honest snapshot of Spanda capabilities as of **v0.1.0-alpha**. Use this document
 | **Trigger-driven execution** | Unified `on` / `every` / `when` / `while`; event, message, timer, condition, state, safety, hardware, AI, verification, twin |
 | **Cooperative concurrency** | `spawn`, `join`, `parallel`, channels, `select`, per-task `budget { }`; TypeScript mirror parity |
 | **Fleet simulation** | `spanda fleet run` — in-process multi-robot with deploy/peer wiring |
-| **Tooling** | Native CLI (`check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, `doc`), package manager (`init`, `build`, `test`, `install`) |
+| **Tooling** | Native CLI (`check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, `doc`), package manager (`init`, `build`, `test`, `install`), **prebuilt installable packages** (Linux/macOS/Windows via GitHub Releases) |
 | **Security / audit** | Capabilities, secrets, signed messages, audit records |
 | **Digital twins** | `twin`, mirror fields, replay buffer, `twin sync` telemetry |
 | **Real-time contracts** | `deadline`, `jitter <=`, `priority`, `critical isolated` on tasks; latency `pipeline` budgets |
@@ -113,6 +113,7 @@ Honest snapshot of Spanda capabilities as of **v0.1.0-alpha**. Use this document
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Native CLI (full) | **Stable** | check, verify, run, sim, replay, fleet, fmt, lint, doc, package |
+| Prebuilt packages | **Stable** | Linux/macOS/Windows archives, shell/PowerShell installers, Windows MSI, Homebrew formula; see [installation.md](./installation.md) |
 | TypeScript CLI | **Stable** | Delegates to Rust when built |
 | Formatter / linter / docgen | **Stable** | Rust |
 | LSP | **Experimental** | VS Code extension scaffold exists; marketplace publish pending |
@@ -187,6 +188,7 @@ See [architecture.md](./architecture.md) for diagrams.
 
 - [README.md](../README.md) — project overview
 - [getting-started.md](./getting-started.md) — first robot in 10 minutes
+- [installation.md](./installation.md) — prebuilt packages and source install
 - [triggers.md](./triggers.md) — trigger-driven execution
 - [concurrency.md](./concurrency.md) — tasks, spawn, channels, fleet CLI
 - [realtime.md](./realtime.md) — deadline-aware tasks and wall-clock scheduling

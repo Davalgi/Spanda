@@ -4,6 +4,30 @@ Spanda v0.1.0-alpha is now available for public evaluation.
 
 Release: <https://github.com/sujaydavalgi/Spanda/releases/tag/v0.1.0-alpha>
 
+## Install
+
+Prebuilt packages for **Linux**, **macOS**, and **Windows** are published on [GitHub Releases](https://github.com/sujaydavalgi/Spanda/releases). Semver tags (for example `v0.1.0`) ship platform archives, shell/PowerShell installers, a Windows `.msi`, and a Homebrew formula.
+
+```bash
+# Linux / macOS — replace the tag with the release you are installing
+curl --proto '=https' --tlsv1.2 -LsSf \
+  https://github.com/sujaydavalgi/Spanda/releases/download/v0.1.0/spanda-cli-installer.sh | sh
+```
+
+Windows: download the `.msi` or run the PowerShell installer from the same release page.
+
+Full instructions: [installation.md](./installation.md)
+
+To build from source instead:
+
+```bash
+git clone https://github.com/sujaydavalgi/Spanda.git
+cd Spanda
+npm install
+npm run build:rust
+export PATH="$PWD/target/release:$PATH"
+```
+
 ## What to try first
 
 Start with the showcase examples:
