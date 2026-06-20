@@ -42,6 +42,8 @@ jobs:
       - uses: ros-tooling/setup-ros@v0.7
         with:
           required-ros-distributions: humble
+      - name: Install ROS message packages for rclrs
+        run: sudo apt-get update && sudo apt-get install -y ros-humble-test-msgs
       - name: Test native rclrs crate
         run: |
           . /opt/ros/humble/setup.sh
