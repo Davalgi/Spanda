@@ -1,2 +1,2 @@
-export { typeCheck, check } from "./checker.js";
+export { typeCheck, check, checkWithRegistry } from "./checker.js";
 export * from "./units.js";

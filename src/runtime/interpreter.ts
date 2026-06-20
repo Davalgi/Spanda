@@ -43,6 +43,8 @@ import {
   velocityFromState,
 } from "./values.js";
 import { callExternBridge } from "../ffi/subprocess-bridge.js";
+import type { ModuleRegistry } from "../modules/index.js";
+import type { ExternFnDecl, ModuleFnDecl } from "../foundations.js";
 
 export type PoseValue = { x: number; y: number; theta: number; z: number };
 
@@ -112,6 +114,7 @@ export type InterpreterOptions = {
   maxLoopIterations?: number;
   onMotionBlocked?: (reason: string) => void;
   onLog?: (message: string) => void;
+  moduleRegistry?: ModuleRegistry;
 };
 
 export class Environment {
@@ -171,6 +174,11 @@ export class Interpreter {
   private security = new SecurityContext();
   private commBus = new RoutingCommBus();
   private defaultTransport: TransportKind = "local";
+  private moduleFunctions = new Map<string, ModuleFnDecl>();
+  private importedFunctions = new Map<string, ModuleFnDecl>();
+  private externFunctions = new Map<string, ExternFnDecl>();
+  private returning = false;
+  private returnValue: RuntimeValue = { kind: "void" };
 
   constructor(private options: InterpreterOptions) {}
 
@@ -205,6 +213,29 @@ export class Interpreter {
     this.enumVariants.clear();
     this.variantOwner.clear();
     this.structDefs.clear();
+    this.moduleFunctions.clear();
+    this.importedFunctions.clear();
+    this.externFunctions.clear();
+
+    for (const func of program.functions) {
+      if (func.visibility === "export" || func.visibility === "public") {
+        this.moduleFunctions.set(func.name, func);
+      }
+    }
+    for (const ext of program.externFunctions) {
+      this.externFunctions.set(ext.name, ext);
+    }
+    if (this.options.moduleRegistry) {
+      for (const imp of program.imports) {
+        const exports = this.options.moduleRegistry.exportsFor(imp.path);
+        if (exports) {
+          for (const [name, func] of exports.functions) {
+            this.importedFunctions.set(name, func);
+          }
+        }
+      }
+    }
+
     for (const enumDecl of program.enums) {
       this.enumVariants.set(enumDecl.name, [...enumDecl.variants]);
       for (const variant of enumDecl.variants) {
@@ -751,7 +782,32 @@ export class Interpreter {
   private executeBlock(stmts: Stmt[]): void {
     for (const stmt of stmts) {
       this.executeStmt(stmt);
+      if (this.returning) break;
     }
+  }
+
+  private executeBlockWithReturn(stmts: Stmt[]): RuntimeValue {
+    this.returning = false;
+    this.returnValue = { kind: "void" };
+    for (const stmt of stmts) {
+      this.executeStmt(stmt);
+      if (this.returning) break;
+    }
+    return this.returnValue;
+  }
+
+  private callModuleFunction(func: ModuleFnDecl, args: Expr[]): RuntimeValue {
+    const saved = this.env.clone();
+    for (let i = 0; i < func.params.length; i++) {
+      const param = func.params[i];
+      const arg = args[i];
+      if (param && arg) {
+        this.env.define(param.name, this.evalExpr(arg));
+      }
+    }
+    const result = this.executeBlockWithReturn(func.body);
+    this.env = saved;
+    return result;
   }
 
   private executeStmt(stmt: Stmt): void {
@@ -890,6 +946,8 @@ export class Interpreter {
         this.evalExpr(stmt.expr);
         break;
       case "ReturnStmt":
+        this.returnValue = stmt.value ? this.evalExpr(stmt.value) : { kind: "void" };
+        this.returning = true;
         break;
       case "SpawnStmt":
       case "SelectStmt":
@@ -1091,6 +1149,11 @@ export class Interpreter {
   private evalCall(expr: import("../ast/nodes.js").CallExpr): RuntimeValue {
     if (expr.callee.kind === "IdentExpr") {
       const calleeName = expr.callee.name;
+      const moduleFn =
+        this.moduleFunctions.get(calleeName) ?? this.importedFunctions.get(calleeName);
+      if (moduleFn) {
+        return this.callModuleFunction(moduleFn, expr.args);
+      }
       const externFn = this.currentProgram?.externFunctions.find(
         (decl) => decl.name === calleeName,
       );

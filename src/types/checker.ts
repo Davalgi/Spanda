@@ -30,6 +30,7 @@ import {
 } from "../type-system.js";
 import { resolveImport } from "../lib/registry.js";
 import { resolveAiImport } from "../ai/registry.js";
+import type { ModuleRegistry } from "../modules/index.js";
 import { getSocProfile, validateHalAgainstSoc } from "../soc/index.js";
 import { halMemberFromDecl } from "../hal/index.js";
 import {
@@ -80,7 +81,11 @@ export function typeCheck(program: Program): void {
 }
 
 export function check(program: Program): void {
-  const checker = new TypeChecker();
+  checkWithRegistry(program, undefined);
+}
+
+export function checkWithRegistry(program: Program, registry: ModuleRegistry | undefined): void {
+  const checker = new TypeChecker(registry);
   checker.checkProgram(program);
   if (checker.errors.length > 0) {
     throw new TypeCheckError(checker.errors);
@@ -106,21 +111,30 @@ class TypeChecker {
   private externFunctions = new Map<string, ExternFnDecl>();
   private typeParamScope = new Map<string, SpandaType>();
 
+  constructor(private moduleRegistry?: ModuleRegistry) {}
+
   checkProgram(program: Program): void {
     this.moduleFunctions.clear();
     this.externFunctions.clear();
     const imported = new Set<string>();
     for (const imp of program.imports) {
+      const registryExport = this.moduleRegistry?.exportsFor(imp.path);
       if (
         !resolveImport(imp.path) &&
         !resolveAiImport(imp.path) &&
         !resolveModuleImport(imp.path) &&
         !resolveStdImport(imp.path) &&
-        !resolveFfiImport(imp.path)
+        !resolveFfiImport(imp.path) &&
+        !registryExport
       ) {
         this.error(`Unknown import '${imp.path}'`, imp.span.start.line, imp.span.start.column);
       } else {
         imported.add(imp.path);
+        if (registryExport) {
+          for (const [fname, fdecl] of registryExport.functions) {
+            this.moduleFunctions.set(fname, fdecl);
+          }
+        }
       }
     }
 

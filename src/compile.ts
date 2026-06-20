@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { tokenize } from "./lexer/index.js";
 import { parse } from "./parser/index.js";
-import { typeCheck, TypeCheckError } from "./types/index.js";
+import { typeCheck, TypeCheckError, checkWithRegistry } from "./types/index.js";
+import type { ModuleRegistry } from "./modules/index.js";
 import { Interpreter, type RobotBackend, type RobotState } from "./runtime/index.js";
 import type { Program } from "./ast/nodes.js";
 
@@ -37,6 +38,23 @@ async function tryRustCliCheck(source: string): Promise<{ ok: boolean; diagnosti
   } catch {
     return null;
   }
+}
+
+export function compileWithRegistry(
+  source: string,
+  registry?: ModuleRegistry,
+  backend?: CompileBackend,
+): CompileResult {
+  const useBackend = backend ?? preferredBackend;
+  if (useBackend === "rust-native" || useBackend === "rust-cli") {
+    throw new Error(
+      "Use compileAsync() for Rust backends, or compile(source, 'typescript') for the TS interpreter",
+    );
+  }
+  const tokens = tokenize(source);
+  const program = parse(tokens);
+  checkWithRegistry(program, registry);
+  return { program, source, backend: "typescript" };
 }
 
 export function compile(source: string, backend?: CompileBackend): CompileResult {
@@ -119,6 +137,7 @@ export type RunOptions = {
   onLog?: (message: string) => void;
   /** When set, attempt Rust CLI run before TS interpreter */
   rustCli?: boolean;
+  moduleRegistry?: ModuleRegistry;
 };
 
 export function run(program: Program, options: RunOptions): RobotState {
@@ -127,6 +146,7 @@ export function run(program: Program, options: RunOptions): RobotState {
     maxLoopIterations: options.maxLoopIterations,
     onMotionBlocked: options.onMotionBlocked,
     onLog: options.onLog,
+    moduleRegistry: options.moduleRegistry,
   });
   return interpreter.run(program, options.entryBehavior);
 }
@@ -198,3 +218,5 @@ export async function verifyHardware(
   if (options.simulate) args.push("--simulate");
   return verifyViaCli(source, args);
 }
+
+export { ModuleRegistry, loadProjectModules } from "./modules/index.js";
