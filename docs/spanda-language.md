@@ -200,6 +200,45 @@ test "double returns input" {
 
 `assert(condition)` is a builtin; failed assertions fail the test run.
 
+## Foreign functions (FFI)
+
+Declare native bindings the runtime resolves through `FfiRegistry`:
+
+```spanda
+extern "libc" fn stub_add(a: Int, b: Int) -> Int;
+
+export fn sum_pair(a: Int, b: Int) -> Int {
+  return stub_add(a, b);
+}
+```
+
+Built-in stub bindings include `stub_echo` and `stub_add` for testing.
+
+## Code generation and deployment
+
+Cross-target stubs (validation + emit only; no full native compiler yet):
+
+```bash
+spanda codegen program.sd --target native
+spanda codegen program.sd --target wasm --out out.wat
+spanda codegen program.sd --target esp32 --out robot.ino
+spanda deploy program.sd --target wasm --out deploy.json
+```
+
+## Debugging
+
+Set breakpoints by line and run under the debug controller:
+
+```bash
+spanda debug program.sd --break 12
+```
+
+For editor integration, use the DAP adapter:
+
+```bash
+spanda-dap program.sd   # stdio Debug Adapter Protocol
+```
+
 ## Formatting
 
 The Rust CLI includes an AST-aware formatter:

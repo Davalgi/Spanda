@@ -32,11 +32,11 @@ Dual backend: Rust authoritative; TypeScript mirrors core language with CLI dele
 | Testing | Implemented | In-language `test "..." { }` + `spanda test` runner |
 | Documentation | Implemented | Strong `docs/` coverage |
 | LSP | Partially Implemented | Diagnostics, completion, hover, definition, format, symbols, rename |
-| Debugger | Missing | No DAP / breakpoints |
+| Debugger | Implemented | Breakpoints via `run_debug`; DAP server (`spanda-dap`) |
 | Serialization | Implemented | `serialize`/`deserialize` builtins (json/yaml/binary) |
-| FFI | Partially Implemented | N-API embed; no `extern` in `.sd` |
-| WASM | Implemented | Browser embed via `spanda-wasm` |
-| Cross compilation | Partially Implemented | Hardware verify, not codegen |
+| FFI | Implemented | `extern fn` syntax + `FfiRegistry` native bindings |
+| WASM | Implemented | Browser embed + `spanda deploy --target wasm` manifest |
+| Cross compilation | Partially Implemented | `spanda codegen` emits native C / WASM / ESP32 stubs |
 
 ---
 
@@ -177,7 +177,7 @@ Recommended evolution order:
 1. **P0** — Module exports, generic functions, Result/Option (done)
 2. **P1** — Async/await, serialization, in-language tests, spawn/channels (done)
 3. **P2** — AST formatter, linter, doc generator, LSP format/symbols/rename (done)
-4. **P3** — Debugger DAP, extern FFI, WASM deploy targets, cross-compile codegen
+4. **P3** — Debugger DAP, extern FFI, WASM deploy manifest, codegen stubs (done)
 
 Preserve: safety contracts, hardware verification, comm architecture, audit/provenance.
 
@@ -226,3 +226,12 @@ Preserve: safety contracts, hardware verification, comm architecture, audit/prov
 - `spanda lint` rules (missing-module, trailing-whitespace, empty-test)
 - `generate_markdown` doc output
 - `cargo test`, `cargo clippy`, `cargo fmt` clean
+
+## Test Plan (P3)
+
+- `extern fn` declarations with `FfiRegistry` stub bindings
+- `spanda codegen --target native|wasm|esp32`
+- `spanda deploy --target wasm` manifest JSON
+- `run_debug` breakpoint pauses
+- `crates/spanda-dap` DAP server binary
+- `crates/spanda-core/tests/p3_features.rs`
