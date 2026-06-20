@@ -60,6 +60,13 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
+    #[cfg(feature = "python-native")]
+    if std::env::var("SPANDA_PYTHON_SUBPROCESS").is_err() {
+        if super::python_native::native_available() {
+            return super::python_native::call_extern(decl, args);
+        }
+    }
+
     let line = decl.span.start.line;
     let script = bridge_script_path().ok_or_else(|| SpandaError::Runtime {
         message: "Python bridge script not found — set SPANDA_PYTHON_BRIDGE or run from repo root"

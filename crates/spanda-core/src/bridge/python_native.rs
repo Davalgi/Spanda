@@ -1,0 +1,149 @@
+//! In-process Python bridge via PyO3 (optional `python-native` feature).
+//!
+//! Loads `scripts/spanda_python_bridge.py` handlers directly when enabled.
+//! Falls back to subprocess bridge when this module is unavailable or fails.
+
+use crate::error::SpandaError;
+use crate::foundations::ExternFnDecl;
+use crate::runtime::RuntimeValue;
+use pyo3::prelude::*;
+use pyo3::types::PyDict;
+
+use super::protocol::{json_to_runtime_value, runtime_value_to_json};
+use super::python::bridge_script_path;
+
+pub fn native_available() -> bool {
+    bridge_script_path().is_some()
+}
+
+pub fn call_extern(
+    decl: &ExternFnDecl,
+    args: &[RuntimeValue],
+) -> Result<RuntimeValue, SpandaError> {
+    let line = decl.span.start.line;
+    let script = bridge_script_path().ok_or_else(|| SpandaError::Runtime {
+        message: "Python bridge script not found for native bridge".into(),
+        line,
+    })?;
+    let args_json = serde_json::to_string(
+        &args
+            .iter()
+            .map(runtime_value_to_json)
+            .collect::<Vec<_>>(),
+    )
+    .map_err(|e| SpandaError::Runtime {
+        message: format!("Failed to encode native bridge args: {e}"),
+        line,
+    })?;
+
+    Python::with_gil(|py| -> PyResult<RuntimeValue> {
+        let locals = PyDict::new(py);
+        locals.set_item("script_path", script.to_string_lossy().to_string())?;
+        locals.set_item("fn_name", &decl.name)?;
+        locals.set_item("args_json", args_json)?;
+
+        py.run(
+            c"import json, importlib.util
+spec = importlib.util.spec_from_file_location('spanda_python_bridge', script_path)
+if spec is None or spec.loader is None:
+    raise RuntimeError('failed to load python bridge module')
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+args = json.loads(args_json)
+handler = mod.HANDLERS.get(fn_name)
+if handler is None:
+    response = json.dumps({'ok': False, 'error': f\"Unknown python extern '{fn_name}'\"})
+else:
+    result = handler(*args)
+    response = json.dumps({'ok': True, 'result': result})",
+            None,
+            Some(&locals),
+        )?;
+
+        let response: String = locals
+            .get_item("response")?
+            .ok_or_else(|| pyo3::exceptions::PyRuntimeError::new_err("missing response"))?
+            .extract()?;
+
+        let parsed: serde_json::Value = serde_json::from_str(&response).map_err(|e| {
+            pyo3::exceptions::PyRuntimeError::new_err(format!("invalid bridge json: {e}"))
+        })?;
+
+        if parsed
+            .get("ok")
+            .and_then(|v| v.as_bool())
+            .is_some_and(|ok| !ok)
+        {
+            let msg = parsed
+                .get("error")
+                .and_then(|v| v.as_str())
+                .unwrap_or("Python native bridge call failed")
+                .to_string();
+            return Err(pyo3::exceptions::PyRuntimeError::new_err(msg));
+        }
+
+        Ok(json_to_runtime_value(
+            parsed.get("result").unwrap_or(&serde_json::Value::Null),
+            &decl.return_type,
+        ))
+    })
+    .map_err(|e| SpandaError::Runtime {
+        message: format!("Python native bridge error: {e}"),
+        line,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::ast::{SourceLocation, Span, SpandaType};
+    use crate::foundations::BridgeKind;
+
+    fn test_decl(name: &str) -> ExternFnDecl {
+        ExternFnDecl {
+            name: name.into(),
+            library: Some("python".into()),
+            bridge: BridgeKind::Python,
+            params: vec![],
+            return_type: SpandaType::Int,
+            span: Span {
+                start: SourceLocation {
+                    line: 1,
+                    column: 1,
+                    offset: 0,
+                },
+                end: SourceLocation {
+                    line: 1,
+                    column: 1,
+                    offset: 0,
+                },
+            },
+        }
+    }
+
+    #[test]
+    fn native_py_add_when_available() {
+        if !native_available() {
+            return;
+        }
+        let decl = test_decl("py_add");
+        let result = call_extern(
+            &decl,
+            &[
+                RuntimeValue::Number {
+                    value: 3.0,
+                    unit: crate::ast::UnitKind::None,
+                },
+                RuntimeValue::Number {
+                    value: 4.0,
+                    unit: crate::ast::UnitKind::None,
+                },
+            ],
+        )
+        .expect("py_add native");
+        assert!(matches!(
+            result,
+            RuntimeValue::Number { value, .. } if (value - 7.0).abs() < f64::EPSILON
+        ));
+    }
+}

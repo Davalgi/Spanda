@@ -16,20 +16,20 @@ Spanda is designed to **orchestrate** existing robotics and AI ecosystems — no
 |-------|--------|-------|
 | `extern fn` syntax | Implemented | Parsed and type-checked in Rust core |
 | `FfiRegistry` | Partially implemented | Stub handlers; `extern python`/`extern cpp` subprocess bridges |
-| N-API / WASM bindings | Partially implemented | `check` and `run` only |
-| Python bridge | **Partially implemented** | Subprocess bridge via `scripts/spanda_python_bridge.py` |
+| N-API / WASM bindings | Partially implemented | `check`, `run`, `verify`, `sir`, `fmt` |
+| Python bridge | **Partially implemented** | Subprocess bridge via `scripts/spanda_python_bridge.py`; optional in-process PyO3 |
 | C/C++ bridge | **Partially implemented** | Subprocess bridge via build-time C++ helper binary |
 | ROS2 bridge | Stubbed | `Ros2AdapterStub` logs calls; no live ROS2 node |
 | OpenCV / PyTorch / TensorFlow | Planned | Import paths reserved in std registry |
 
-Real native linking (dlopen, PyO3 in-process, cxx) is **not** implemented yet. **`extern python fn`** calls are executed via a **subprocess JSON bridge** when `python3` and `scripts/spanda_python_bridge.py` are available.
+Real native linking (dlopen, cxx) is **not** implemented yet. **`extern python fn`** calls use a **subprocess JSON bridge** by default when `python3` and `scripts/spanda_python_bridge.py` are available. Build with `--features python-native` on `spanda-core` for an **in-process PyO3** path (same handlers, no subprocess). Set `SPANDA_PYTHON_SUBPROCESS=1` to force subprocess mode even when PyO3 is enabled.
 
 ### Subprocess Python bridge (implemented)
 
-Bridge handlers include transport and AI shims (mock when credentials absent):
+Bridge handlers include transport and AI shims (mock when optional deps absent):
 
-- `ros2_publish(topic, data)` — log/sim publish metadata
-- `mqtt_publish(topic, payload)` — log/sim publish metadata  
+- `ros2_publish(topic, data)` — uses **rclpy** when installed, else mock metadata
+- `mqtt_publish(topic, payload)` — uses **paho-mqtt** when installed (`MQTT_BROKER` / `MQTT_PORT`), else mock
 - `openai_complete(prompt)` — calls OpenAI when `OPENAI_API_KEY` is set, else mock
 
 ```bash
@@ -58,6 +58,17 @@ let sum = py_add(2, 3);
 Protocol: Rust sends `{"fn":"py_add","args":[2,3]}` on stdin; Python returns `{"ok":true,"result":5}`.
 
 Calling `extern python fn` without a registered handler fails with `Unknown python extern 'name'`.
+
+### In-process Python bridge (optional `python-native` feature)
+
+When `spanda-core` is built with `--features python-native`, `extern python fn` calls load handlers from the same bridge script in-process via PyO3 (stable ABI `abi3-py310`). Subprocess mode remains the default when the feature is off, or when `SPANDA_PYTHON_SUBPROCESS=1` is set.
+
+On Python versions newer than PyO3's supported range, set `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1` at build time.
+
+```bash
+PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 cargo build -p spanda-core --features python-native
+spanda run examples/ffi_python_extern.sd
+```
 
 ### Subprocess C++ bridge (implemented)
 

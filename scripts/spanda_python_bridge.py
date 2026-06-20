@@ -51,12 +51,53 @@ def _openai_complete(prompt: str) -> str:
         return f"openai-error:{exc}"
 
 
+def _ros2_publish(topic: str, data: Any) -> dict[str, Any]:
+    try:
+        import rclpy
+        from rclpy.node import Node
+        from std_msgs.msg import String
+    except ImportError:
+        return {"topic": topic, "published": True, "bytes": len(str(data)), "mode": "mock"}
+
+    if not rclpy.ok():
+        rclpy.init()
+    node = Node("spanda_bridge_pub")
+    pub = node.create_publisher(String, topic, 10)
+    msg = String()
+    msg.data = str(data)
+    pub.publish(msg)
+    rclpy.spin_once(node, timeout_sec=0.1)
+    node.destroy_node()
+    return {"topic": topic, "published": True, "bytes": len(msg.data), "mode": "rclpy"}
+
+
+def _mqtt_publish(topic: str, payload: Any) -> dict[str, Any]:
+    try:
+        import paho.mqtt.client as mqtt
+    except ImportError:
+        return {
+            "topic": topic,
+            "published": True,
+            "bytes": len(str(payload)),
+            "mode": "mock",
+        }
+
+    host = __import__("os").environ.get("MQTT_BROKER", "localhost")
+    port = int(__import__("os").environ.get("MQTT_PORT", "1883"))
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    client.connect(host, port, keepalive=60)
+    body = str(payload)
+    client.publish(topic, body)
+    client.disconnect()
+    return {"topic": topic, "published": True, "bytes": len(body), "mode": "paho"}
+
+
 HANDLERS: dict[str, Handler] = {
     "py_add": lambda a, b: int(a) + int(b),
     "py_echo": lambda x: x,
     "py_version": lambda: 1,
-    "ros2_publish": lambda topic, data: {"topic": topic, "published": True, "bytes": len(str(data))},
-    "mqtt_publish": lambda topic, payload: {"topic": topic, "published": True, "bytes": len(str(payload))},
+    "ros2_publish": _ros2_publish,
+    "mqtt_publish": _mqtt_publish,
     "openai_complete": _openai_complete,
 }
 
