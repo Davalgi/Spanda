@@ -4,6 +4,7 @@
 //! interface that real broker/node integrations can implement later.
 
 use crate::transport_live as live;
+use crate::transport_rclrs as rclrs;
 use crate::comm::{
     CommBus, DiscoverFilter, DiscoverTarget, InMemoryCommBus, PublishedCommMessage,
     SimNetworkConfig, TransportKind,
@@ -205,12 +206,18 @@ impl TransportAdapter for Ros2TransportAdapter {
         if self.state.connected {
             self.state.publish(topic, message_type, value.clone());
         }
+        if rclrs::try_rclrs_publish(topic, &value) {
+            return;
+        }
         let _ = live::try_ros2_publish(topic, &value);
     }
 
     fn subscribe(&mut self, topic: &str) {
         if self.state.connected {
             self.state.subscribe(topic);
+        }
+        if rclrs::try_rclrs_subscribe(topic) {
+            return;
         }
         let _ = live::try_ros2_subscribe(topic);
     }
@@ -233,6 +240,9 @@ impl TransportAdapter for Ros2TransportAdapter {
             .as_ref()
             .map(payload_string_for_service)
             .unwrap_or_else(|| "{}".into());
+        if rclrs::try_rclrs_service_call(service, service_type, &request_text) {
+            return StubTransportState::service_result(service_type);
+        }
         let _ = live::try_ros2_service_call(service, service_type, &request_text);
         StubTransportState::service_result(service_type)
     }

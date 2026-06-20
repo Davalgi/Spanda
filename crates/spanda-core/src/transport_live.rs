@@ -137,10 +137,38 @@ pub fn try_ros2_native_service_call(
         .unwrap_or(false)
 }
 
+pub fn try_ros2_publish(topic: &str, value: &RuntimeValue) -> bool {
+    if ros2_native_enabled() {
+        return try_ros2_native_publish(topic, value);
+    }
+    try_ros2_bridge_publish(topic, value)
+}
+
+pub fn try_ros2_bridge_publish(topic: &str, value: &RuntimeValue) -> bool {
+    if !ros2_live_enabled() {
+        return false;
+    }
+    invoke_bridge(
+        "ros2_publish",
+        &[
+            RuntimeValue::String {
+                value: topic.to_string(),
+            },
+            RuntimeValue::String {
+                value: payload_string(value),
+            },
+        ],
+    )
+}
+
 pub fn try_ros2_subscribe(topic: &str) -> bool {
     if ros2_native_enabled() {
         return try_ros2_native_subscribe(topic);
     }
+    try_ros2_bridge_subscribe(topic)
+}
+
+pub fn try_ros2_bridge_subscribe(topic: &str) -> bool {
     if !ros2_live_enabled() {
         return false;
     }
@@ -156,6 +184,10 @@ pub fn try_ros2_service_call(service: &str, service_type: &str, request: &str) -
     if ros2_native_enabled() {
         return try_ros2_native_service_call(service, service_type, request);
     }
+    try_ros2_bridge_service_call(service, service_type, request)
+}
+
+pub fn try_ros2_bridge_service_call(service: &str, service_type: &str, request: &str) -> bool {
     if !ros2_live_enabled() {
         return false;
     }
@@ -170,26 +202,6 @@ pub fn try_ros2_service_call(service: &str, service_type: &str, request: &str) -
             },
             RuntimeValue::String {
                 value: request.to_string(),
-            },
-        ],
-    )
-}
-
-pub fn try_ros2_publish(topic: &str, value: &RuntimeValue) -> bool {
-    if ros2_native_enabled() {
-        return try_ros2_native_publish(topic, value);
-    }
-    if !ros2_live_enabled() {
-        return false;
-    }
-    invoke_bridge(
-        "ros2_publish",
-        &[
-            RuntimeValue::String {
-                value: topic.to_string(),
-            },
-            RuntimeValue::String {
-                value: payload_string(value),
             },
         ],
     )
