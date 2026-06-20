@@ -22,8 +22,8 @@ export function transportFromIdent(s: string): TransportKind | null {
   // None.
   //
   // Example:
-  // const result = transportFromIdent(s);
 
+  // const result = transportFromIdent(s);
   switch (s) {
     case "local":
       return "local";
@@ -55,8 +55,8 @@ export function transportAsStr(t: TransportKind): string {
   // None.
   //
   // Example:
-  // const result = transportAsStr(t);
 
+  // const result = transportAsStr(t);
   return t;
 }
 
@@ -157,10 +157,10 @@ export class MessageRegistry {
     // None.
     //
     // Example:
-    // const result = new();
 
+    // const result = new();
     return new MessageRegistry();
-  }
+}
 
   register(decl: MessageDecl): void {
     // Register the value.
@@ -175,6 +175,7 @@ export class MessageRegistry {
     // None.
     //
     // Example:
+
     // const result = register(decl);
 
     this.schemas.set(decl.name, {
@@ -198,10 +199,14 @@ export class MessageRegistry {
     // None.
     //
     // Example:
-    // const result = fromProgram(messages, structs);
 
+    // const result = fromProgram(messages, structs);
     const reg = MessageRegistry.new();
+
+    // Process each message.
     for (const msg of messages) reg.register(msg);
+
+    // Process each struct.
     for (const s of structs) {
       reg.schemas.set(s.name, {
         name: s.name,
@@ -210,7 +215,7 @@ export class MessageRegistry {
       });
     }
     return reg;
-  }
+}
 
   isKnown(name: string): boolean {
     // IsKnown.
@@ -225,6 +230,7 @@ export class MessageRegistry {
     // None.
     //
     // Example:
+
     // const result = isKnown(name);
 
     return this.builtin.has(name) || this.schemas.has(name);
@@ -243,6 +249,7 @@ export class MessageRegistry {
     // None.
     //
     // Example:
+
     // const result = resolveType(name);
 
     switch (name) {
@@ -312,6 +319,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = publish(topicPath, messageType, value, transport);
 
     if (this.faults.includes("NetworkOutage")) return;
@@ -338,6 +346,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = subscribe(topicPath, handler);
 
     const subs = this.subscriptions.get(topicPath) ?? [];
@@ -359,6 +368,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = receive(topicPath);
 
     const buf = this.buffers.get(topicPath);
@@ -378,6 +388,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = callService(serviceType);
 
     return {
@@ -400,6 +411,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = sendAction(actionType);
 
     return {
@@ -423,6 +435,7 @@ export class InMemoryCommBus {
     // None.
     //
     // Example:
+
     // const result = discover(target, filter);
 
     const base =
@@ -484,8 +497,8 @@ export function isCommCapability(action: string): boolean {
   // None.
   //
   // Example:
-  // const result = isCommCapability(action);
 
+  // const result = isCommCapability(action);
   return (COMM_CAPABILITIES as readonly string[]).includes(action);
 }
 
@@ -503,8 +516,8 @@ export function estimateTopicBandwidthMbps(rateHz: number, messageSizeBytes: num
   // None.
   //
   // Example:
-  // const result = estimateTopicBandwidthMbps(rateHz, messageSizeBytes);
 
+  // const result = estimateTopicBandwidthMbps(rateHz, messageSizeBytes);
   return (rateHz * messageSizeBytes * 8) / 1_000_000;
 }
 
@@ -521,8 +534,8 @@ export function defaultMessageSize(messageType: string): number {
   // None.
   //
   // Example:
-  // const result = defaultMessageSize(messageType);
 
+  // const result = defaultMessageSize(messageType);
   switch (messageType) {
     case "Scan":
     case "LidarScan":

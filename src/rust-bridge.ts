@@ -59,12 +59,16 @@ function cliPath(): string | null {
   // None.
   //
   // Example:
-  // const result = cliPath();
 
+  // const result = cliPath();
   const release = join(repoRoot, "target/release/spanda");
   const debug = join(repoRoot, "target/debug/spanda");
   const candidates = [release, debug].filter((p) => existsSync(p));
+
+  // continue when length equals 0.
   if (candidates.length === 0) return null;
+
+  // continue when length equals 1.
   if (candidates.length === 1) return candidates[0]!;
   const newest = candidates.reduce((a, b) =>
     statSync(a).mtimeMs >= statSync(b).mtimeMs ? a : b,
@@ -85,8 +89,8 @@ export function isCliAvailable(): boolean {
   // None.
   //
   // Example:
-  // const result = isCliAvailable();
 
+  // const result = isCliAvailable();
   return cliPath() !== null;
 }
 
@@ -103,9 +107,11 @@ export function checkViaCli(source: string): CheckResult {
   // None.
   //
   // Example:
-  // const result = checkViaCli(source);
 
+  // const result = checkViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return {
       ok: false,
@@ -115,11 +121,15 @@ export function checkViaCli(source: string): CheckResult {
   const tmp = join(repoRoot, ".spanda-check-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["check", "--json", tmp], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
     /* ignore */
   }
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return {
       ok: false,
@@ -146,9 +156,11 @@ export function verifyViaCli(
   // - `args` — optional parameter
   //
   // Example:
-  // const result = verifyViaCli(source, args);
 
+  // const result = verifyViaCli(source, args);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return {
       ok: false,
@@ -166,11 +178,15 @@ export function verifyViaCli(
   const tmp = join(repoRoot, ".spanda-verify-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["verify", tmp, "--json", ...args], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
     /* ignore */
   }
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return {
       ok: false,
@@ -201,15 +217,19 @@ export function runViaCli(source: string): RunResult {
   // None.
   //
   // Example:
-  // const result = runViaCli(source);
 
+  // const result = runViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     throw new Error("Rust CLI not built (run: npm run build:rust)");
   }
   const tmp = join(repoRoot, ".spanda-run-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["run", "--json", tmp], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -220,6 +240,8 @@ export function runViaCli(source: string): RunResult {
     result?: RunResult;
     diagnostics?: Diagnostic[];
   };
+
+  // continue when result is falsy.
   if (!parsed.ok || !parsed.result) {
     throw new Error(parsed.diagnostics?.[0]?.message ?? "Run failed");
   }
@@ -244,10 +266,12 @@ function withTempSource(
   source: string,
   suffix: string,
   run: (file: string) => SpawnSyncReturns<string>,
-): SpawnSyncReturns<string> {
+): SpawnSyncReturns<string> {  // Compute tmp for the following logic.
   const tmp = join(repoRoot, suffix);
   writeFileSync(tmp, source);
   const result = run(tmp);
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -269,15 +293,19 @@ export function fmtViaCli(source: string): FormatResult {
   // None.
   //
   // Example:
-  // const result = fmtViaCli(source);
 
+  // const result = fmtViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return { ok: false, changed: false, formatted: source };
   }
   const result = withTempSource(source, ".spanda-fmt-tmp.sd", (file) =>
     spawnSync(bin, ["fmt", "--json", file], { encoding: "utf-8" }),
   );
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return { ok: false, changed: false, formatted: source };
   }
@@ -297,9 +325,11 @@ export function lintViaCli(source: string): LintResult {
   // None.
   //
   // Example:
-  // const result = lintViaCli(source);
 
+  // const result = lintViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return {
       ok: false,
@@ -309,6 +339,8 @@ export function lintViaCli(source: string): LintResult {
   const result = withTempSource(source, ".spanda-lint-tmp.sd", (file) =>
     spawnSync(bin, ["lint", "--json", file], { encoding: "utf-8" }),
   );
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return {
       ok: false,
@@ -331,15 +363,19 @@ export function docViaCli(source: string): DocResult {
   // None.
   //
   // Example:
-  // const result = docViaCli(source);
 
+  // const result = docViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return { ok: false, markdown: "" };
   }
   const result = withTempSource(source, ".spanda-doc-tmp.sd", (file) =>
     spawnSync(bin, ["doc", "--json", file], { encoding: "utf-8" }),
   );
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return { ok: false, markdown: "" };
   }
@@ -360,15 +396,19 @@ export function codegenViaCli(source: string, target: CodegenTarget = "native"):
   // - `target` — optional parameter
   //
   // Example:
-  // const result = codegenViaCli(source, target);
 
+  // const result = codegenViaCli(source, target);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     throw new Error("Rust CLI not built (run: npm run build:rust)");
   }
   const result = withTempSource(source, ".spanda-codegen-tmp.sd", (file) =>
     spawnSync(bin, ["codegen", "--target", target, file], { encoding: "utf-8" }),
   );
+
+  // continue when status differs from 0.
   if (result.status !== 0) {
     throw new Error(result.stderr || "codegen failed");
   }
@@ -388,15 +428,19 @@ export function deployViaCli(source: string): string {
   // None.
   //
   // Example:
-  // const result = deployViaCli(source);
 
+  // const result = deployViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     throw new Error("Rust CLI not built (run: npm run build:rust)");
   }
   const result = withTempSource(source, ".spanda-deploy-tmp.sd", (file) =>
     spawnSync(bin, ["deploy", "--target", "wasm", file], { encoding: "utf-8" }),
   );
+
+  // continue when status differs from 0.
   if (result.status !== 0) {
     throw new Error(result.stderr || "deploy failed");
   }
@@ -417,9 +461,11 @@ export function debugViaCli(source: string, breakpoints: number[] = []): DebugRe
   // - `breakpoints` — optional parameter
   //
   // Example:
-  // const result = debugViaCli(source, breakpoints);
 
+  // const result = debugViaCli(source, breakpoints);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return { ok: false, pauses: [] };
   }
@@ -427,12 +473,18 @@ export function debugViaCli(source: string, breakpoints: number[] = []): DebugRe
   const result = withTempSource(source, ".spanda-debug-tmp.sd", (file) =>
     spawnSync(bin, [...args, file], { encoding: "utf-8" }),
   );
+
+  // continue when status differs from 0.
   if (result.status !== 0) {
     return { ok: false, pauses: [] };
   }
   const pauses: DebugPause[] = [];
+
+  // Handle each input line.
   for (const line of (result.stdout ?? "").split("\n")) {
     const m = line.match(/^\s*line (\d+) — (.+)$/);
+
+    // continue when m.
     if (m) {
       pauses.push({ line: Number(m[1]), reason: m[2]! });
     }
@@ -453,9 +505,11 @@ export function runNativeCli(args: string[]): SpawnSyncReturns<string> {
   // None.
   //
   // Example:
-  // const result = runNativeCli(args);
 
+  // const result = runNativeCli(args);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return {
       status: 1,
@@ -484,8 +538,8 @@ export function verifyFileViaCli(filePath: string, extraArgs: string[] = []): Ve
   // - `extraArgs` — optional parameter
   //
   // Example:
-  // const result = verifyFileViaCli(filePath, extraArgs);
 
+  // const result = verifyFileViaCli(filePath, extraArgs);
   const source = readFileSync(filePath, "utf-8");
   return verifyViaCli(source, extraArgs);
 }

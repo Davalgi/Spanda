@@ -68,6 +68,7 @@ export class Simulator implements RobotBackend {
     // - `_topic?` — optional parameter
     //
     // Example:
+
     // const result = readSensor(_sensorName, sensorType, _topic?);
 
     switch (sensorType) {
@@ -131,6 +132,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = publishTopic(topicPath, messageType, value);
 
     this.published.push({ topic: topicPath, messageType, value });
@@ -154,6 +156,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = callService(serviceName, serviceType);
 
     this.serviceLog.push(`${serviceName}:${serviceType}`);
@@ -176,6 +179,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = sendAction(actionName, actionType, goal);
 
     this.actionLog.push(`${actionName}:${actionType}`);
@@ -202,6 +206,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = getPublishedTopics();
 
     return [...this.published];
@@ -220,6 +225,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = executeMotion(cmd);
 
     if (this.emergencyStop && cmd.kind !== "stop") {
@@ -282,6 +288,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = tick(dtMs);
 
     if (this.emergencyStop) {
@@ -334,6 +341,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = getState();
 
     return {
@@ -356,6 +364,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = setEmergencyStop(value);
 
     this.emergencyStop = value;
@@ -378,6 +387,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = getHal();
 
     return this.hal;
@@ -396,6 +406,7 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
+
     // const result = getEventLog();
 
     return [...this.eventLog];
@@ -414,7 +425,8 @@ export class Simulator implements RobotBackend {
     // None.
     //
     // Example:
-    // const result = getArmPosition();
+
+ // const result = getArmPosition();
  x: number; y: number; z: number } {
     return { ...this.armPosition };
   }
@@ -427,23 +439,26 @@ export class Simulator implements RobotBackend {
     return [...this.actionLog];
   }
 
-  private simulateLidar(): number {
+  private simulateLidar(): number {    // Compute nearest for the following logic.
     let nearest = this.lidarRange;
 
+    // Process each obstacle.
     for (const obs of this.obstacles) {
       const dx = obs.x - this.pose.x;
       const dy = obs.y - this.pose.y;
       const dist = Math.sqrt(dx * dx + dy * dy) - obs.radius;
+
+      // continue when dist > 0 && dist < nearest.
       if (dist > 0 && dist < nearest) {
         nearest = dist;
       }
     }
-
     const wallDist = 5 - Math.abs(this.pose.x);
-    if (wallDist > 0 && wallDist < nearest) nearest = wallDist;
 
+    // continue when wallDist > 0 && wallDist < nearest.
+    if (wallDist > 0 && wallDist < nearest) nearest = wallDist;
     return Math.max(0.01, nearest);
-  }
+}
 }
 
 export function createDefaultSimulator(config?: SimulatorConfig): Simulator {
@@ -459,7 +474,7 @@ export function createDefaultSimulator(config?: SimulatorConfig): Simulator {
   // - `config?` — optional parameter
   //
   // Example:
-  // const result = createDefaultSimulator(config?);
 
+  // const result = createDefaultSimulator(config?);
   return new Simulator(config);
 }

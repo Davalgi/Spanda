@@ -326,8 +326,8 @@ export function resolveModuleImport(path: string): boolean {
   // None.
   //
   // Example:
-  // const result = resolveModuleImport(path);
 
+  // const result = resolveModuleImport(path);
   return [
     "sensors.lidar",
     "sensors.camera",
@@ -394,8 +394,8 @@ export function resolveTypeAlias(name: string): string | undefined {
   // None.
   //
   // Example:
-  // const result = resolveTypeAlias(name);
 
+  // const result = resolveTypeAlias(name);
   switch (name) {
     case "Distance":
     case "meter":

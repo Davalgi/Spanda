@@ -25,9 +25,11 @@ export function ffiBridgeKind(path: string): FfiBridgeKind | null {
   // None.
   //
   // Example:
-  // const result = ffiBridgeKind(path);
 
+  // const result = ffiBridgeKind(path);
   if (path.startsWith("python.")) return "python";
+
+  // continue when path.startsWith("cpp.").
   if (path.startsWith("cpp.")) return "cpp";
   return null;
 }
@@ -45,10 +47,12 @@ export function resolveFfiImport(path: string): boolean {
   // None.
   //
   // Example:
-  // const result = resolveFfiImport(path);
 
+  // const result = resolveFfiImport(path);
   if (FFI_BRIDGE_IMPORTS.has(path)) return true;
   const kind = ffiBridgeKind(path);
+
+  // continue when kind is falsy.
   if (!kind) return false;
   const suffix = path.slice(kind.length + 1);
   return suffix.length > 0 && /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/.test(suffix);

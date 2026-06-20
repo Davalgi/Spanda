@@ -60,8 +60,8 @@ export function resolveAiImport(path: string): AiLibModule | undefined {
   // None.
   //
   // Example:
-  // const result = resolveAiImport(path);
 
+  // const result = resolveAiImport(path);
   return AI_LIB_REGISTRY[path];
 }
 
@@ -78,7 +78,7 @@ export function listAiLibraries(): AiLibModule[] {
   // None.
   //
   // Example:
-  // const result = listAiLibraries();
 
+  // const result = listAiLibraries();
   return Object.values(AI_LIB_REGISTRY);
 }

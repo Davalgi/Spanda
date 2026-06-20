@@ -63,55 +63,45 @@ function createStubAdapter(kind: TransportKind): TransportAdapter {
   // None.
   //
   // Example:
-  // const result = createStubAdapter(kind);
 
+  // const result = createStubAdapter(kind);
   const state: StubState = {
     connected: false,
     config: {},
     subscriptions: new Map(),
     published: [],
   };
-
   return {
     kind: () => kind,
     connect(config) {
-      // Connect.
       //
       // Parameters:
       // - `config` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = connect(config);
-
       state.connected = true;
       state.config = config;
     },
     disconnect() {
-      // Disconnect.
       //
       // Parameters:
       // None.
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = disconnect();
-
       state.connected = false;
     },
     isConnected: () => state.connected,
     publish(topic, messageType, value) {
-      // Publish.
       //
       // Parameters:
       // - `topic` — input value
@@ -119,72 +109,67 @@ function createStubAdapter(kind: TransportKind): TransportAdapter {
       // - `value` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = publish(topic, messageType, value);
 
+      // continue when connected is falsy.
       if (!state.connected) return;
       state.published.push({ topic, messageType, value });
       const buf = state.subscriptions.get(topic);
+
+      // continue when buf) buf.push(value.
       if (buf) buf.push(value);
     },
     subscribe(topic) {
-      // Subscribe.
       //
       // Parameters:
       // - `topic` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = subscribe(topic);
 
+      // continue when connected is falsy.
       if (!state.connected) return;
+
+      // continue when set is falsy.
       if (!state.subscriptions.has(topic)) state.subscriptions.set(topic, []);
     },
     receive(topic) {
-      // Receive.
       //
       // Parameters:
       // - `topic` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = receive(topic);
 
+      // continue when connected is falsy.
       if (!state.connected) return null;
       const buf = state.subscriptions.get(topic);
       return buf?.shift() ?? null;
     },
     callService(_service, serviceType) {
-      // CallService.
       //
       // Parameters:
       // - `_service` — input value
       // - `serviceType` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = callService(_service, serviceType);
-
       return {
         kind: "object",
         typeName: serviceType,
@@ -192,21 +177,17 @@ function createStubAdapter(kind: TransportKind): TransportAdapter {
       };
     },
     sendAction(_action, actionType) {
-      // SendAction.
       //
       // Parameters:
       // - `_action` — input value
       // - `actionType` — input value
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = sendAction(_action, actionType);
-
       return {
         kind: "object",
         typeName: actionType,
@@ -237,6 +218,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = configure(config);
 
     this.ros2.connect({ nodeName: config.nodeName, namespace: config.namespace, ...config });
@@ -265,8 +247,8 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
-    // const result = adapter(transport);
 
+    // const result = adapter(transport);
     switch (transport) {
       case "ros2":
         return this.ros2;
@@ -279,7 +261,7 @@ export class RoutingCommBus {
       default:
         return null;
     }
-  }
+}
 
   registerRobot(name: string): void {
     // RegisterRobot.
@@ -294,6 +276,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = registerRobot(name);
 
     this.memory.registerRobot(name);
@@ -312,6 +295,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = registerAgent(name);
 
     this.memory.registerAgent(name);
@@ -330,6 +314,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = registerDevice(name);
 
     this.memory.registerDevice(name);
@@ -356,6 +341,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = publish(topicPath, messageType, value, transport);
 
     this.memory.publish(topicPath, messageType, value, transport);
@@ -376,6 +362,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = subscribe(topicPath, handler);
 
     this.memory.subscribe(topicPath, handler);
@@ -394,6 +381,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = receive(topicPath);
 
     return this.memory.receive(topicPath);
@@ -412,6 +400,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = callService(serviceType);
 
     return this.memory.callService(serviceType);
@@ -430,6 +419,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = sendAction(actionType);
 
     return this.memory.sendAction(actionType);
@@ -456,6 +446,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = publishPeer(peer, topic, value, transport);
 
     this.memory.publishPeer(peer, topic, value, transport);
@@ -475,6 +466,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = discover(target, filter);
 
     return this.memory.discover(target, filter);
@@ -493,6 +485,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = publishedMessages();
 
     return this.memory.publishedMessages();
@@ -511,6 +504,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = injectFault(fault);
 
     this.memory.injectFault(fault);
@@ -529,6 +523,7 @@ export class RoutingCommBus {
     // None.
     //
     // Example:
+
     // const result = adapterPublished(transport);
 
     return this.adapter(transport)?.published() ?? [];

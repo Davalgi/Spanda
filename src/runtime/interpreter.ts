@@ -144,6 +144,7 @@ export class Environment {
     // None.
     //
     // Example:
+
     // const result = define(name, value);
 
     this.bindings.set(name, value);
@@ -162,6 +163,7 @@ export class Environment {
     // None.
     //
     // Example:
+
     // const result = get(name);
 
     return this.bindings.get(name);
@@ -181,6 +183,7 @@ export class Environment {
     // None.
     //
     // Example:
+
     // const result = set(name, value);
 
     this.bindings.set(name, value);
@@ -199,6 +202,7 @@ export class Environment {
     // None.
     //
     // Example:
+
     // const result = remove(name);
 
     this.bindings.delete(name);
@@ -217,6 +221,7 @@ export class Environment {
     // None.
     //
     // Example:
+
     // const result = clone();
 
     const env = new Environment();
@@ -284,6 +289,7 @@ export class Interpreter {
     // - `entryBehavior?` — optional parameter
     //
     // Example:
+
     // const result = run(program, entryBehavior?);
 
     this.currentProgram = program;
@@ -327,6 +333,7 @@ export class Interpreter {
     // None.
     //
     // Example:
+
     // const result = runTests(program);
 
     this.currentProgram = program;
@@ -352,8 +359,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = loadProgramMetadata(program);
 
+    // const result = loadProgramMetadata(program);
     this.enumVariants.clear();
     this.variantOwner.clear();
     this.structDefs.clear();
@@ -361,18 +368,31 @@ export class Interpreter {
     this.importedFunctions.clear();
     this.externFunctions.clear();
 
+    // Process each function.
     for (const func of program.functions) {
+
+      // continue when visibility equals visibility === "public".
       if (func.visibility === "export" || func.visibility === "public") {
         this.moduleFunctions.set(func.name, func);
       }
     }
+
+    // Process each externFunction.
     for (const ext of program.externFunctions) {
       this.externFunctions.set(ext.name, ext);
     }
+
+    // continue when this.options.moduleRegistry.
     if (this.options.moduleRegistry) {
+
+      // Process each import declaration.
       for (const imp of program.imports) {
         const exports = this.options.moduleRegistry.exportsFor(imp.path);
+
+        // continue when exports.
         if (exports) {
+
+          // Iterate over the collection.
           for (const [name, func] of exports.functions) {
             this.importedFunctions.set(name, func);
           }
@@ -380,20 +400,25 @@ export class Interpreter {
       }
     }
 
+    // Process each enum.
     for (const enumDecl of program.enums) {
       const variantNames = enumDecl.variants.map((v) => v.name);
       this.enumVariants.set(enumDecl.name, variantNames);
+
+      // Process each variant.
       for (const variant of enumDecl.variants) {
         this.variantOwner.set(variant.name, enumDecl.name);
       }
     }
+
+    // Process each struct.
     for (const structDecl of program.structs) {
       this.structDefs.set(
         structDecl.name,
         structDecl.fields.map((f) => ({ name: f.name, typeName: f.typeName })),
       );
     }
-  }
+}
 
   private evalContract(expr: Expr): boolean {
     // EvalContract.
@@ -408,12 +433,14 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalContract(expr);
 
+    // const result = evalContract(expr);
     const val = this.evalExpr(expr);
+
+    // continue when kind equals "bool".
     if (val.kind === "bool") return val.value;
     throw new RuntimeError("Contract expression must be boolean", 0);
-  }
+}
 
   private executeWithContracts(
     body: Stmt[],
@@ -436,20 +463,24 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeWithContracts(body, requires, ensures, invariant);
 
+    // const result = executeWithContracts(body, requires, ensures, invariant);
     if (requires && !this.evalContract(requires)) {
       throw new RuntimeError("requires contract failed", 0);
     }
     this.executeBlock(body);
+
+    // continue when ensures && !this.evalContract(ensures).
     if (ensures && !this.evalContract(ensures)) {
       throw new RuntimeError("ensures contract failed", 0);
     }
+
+    // continue when invariant && !this.evalContract(invariant).
     if (invariant && !this.evalContract(invariant)) {
       throw new RuntimeError("invariant contract failed", 0);
     }
     this.runVerifyRules();
-  }
+}
 
   private runVerifyRules(): void {
     // RunVerifyRules.
@@ -464,20 +495,26 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = runVerifyRules();
 
+    // const result = runVerifyRules();
     if (this.verifyRules.length === 0) return;
+
+    // Loop with index variable i.
     for (let i = 0; i < this.verifyRules.length; i++) {
       const val = this.evalExpr(this.verifyRules[i]!);
+
+      // continue when kind differs from "bool".
       if (val.kind !== "bool") {
         throw new RuntimeError(`verify rule ${i + 1} must be boolean`, 0);
       }
+
+      // continue when value is falsy.
       if (!val.value) {
         throw new RuntimeError(`verify rule ${i + 1} failed`, 0);
       }
     }
     this.options.onLog?.(`verify: all ${this.verifyRules.length} rule(s) passed`);
-  }
+}
 
   private executeTaskLoop(task: TaskDecl): void {
     // ExecuteTaskLoop.
@@ -492,22 +529,26 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeTaskLoop(task);
 
+    // const result = executeTaskLoop(task);
     const { body, intervalMs, requires, ensures, invariant, name, priority, budget } = task;
     const maxIter = this.options.maxLoopIterations ?? 10;
     this.options.onLog?.(
       `single-task ${name} interval=${intervalMs}ms priority=${priority}`,
     );
+
+    // Loop with index variable i.
     for (let i = 0; i < maxIter; i++) {
       this.options.backend.tick(intervalMs);
+
+      // continue when runScheduledTask is falsy.
       if (!this.runScheduledTask(name, priority, intervalMs, body, requires, ensures, invariant, budget)) {
         break;
       }
       this.runVerifyRules();
       this.updateTwinSnapshot();
     }
-  }
+}
 
   private priorityRank(priority: TaskPriority): number {
     // PriorityRank.
@@ -522,8 +563,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = priorityRank(priority);
 
+    // const result = priorityRank(priority);
     switch (priority) {
       case "critical":
         return 0;
@@ -534,7 +575,7 @@ export class Interpreter {
       case "low":
         return 3;
     }
-  }
+}
 
   private taskBudgetViolation(
     budget: ResourceBudgetDecl,
@@ -555,13 +596,17 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = taskBudgetViolation(budget, durationMs, intervalMs);
 
+    // const result = taskBudgetViolation(budget, durationMs, intervalMs);
     const duty = (durationMs / Math.max(intervalMs, 1)) * 100;
+
+    // continue when budget.cpuPctMax != null && duty > budget.cpuPctMax.
     if (budget.cpuPctMax != null && duty > budget.cpuPctMax) return "cpu";
+
+    // continue when budget.batteryPctMax != null && duty > budget.batteryPctMax.
     if (budget.batteryPctMax != null && duty > budget.batteryPctMax) return "battery";
     return null;
-  }
+}
 
   private runScheduledTask(
     name: string,
@@ -592,13 +637,19 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = runScheduledTask(name, priority, intervalMs, body, requires, ensures, invariant, budget);
 
+    // const result = runScheduledTask(name, priority, intervalMs, body, requires, ensures, invariant, budget);
     const RUNTIME_TASK_COST_MS = 5;
+
+    // continue when budget.
     if (budget) {
       const prev = this.taskMaxDurationMs.get(name) ?? 0;
+
+      // continue when prev > 0.
       if (prev > 0) {
         const kind = this.taskBudgetViolation(budget, prev, intervalMs);
+
+        // continue when kind.
         if (kind) {
           this.options.onLog?.(`task '${name}': ${kind} budget exceeded — skipping tick`);
           return true;
@@ -608,14 +659,18 @@ export class Interpreter {
     const continueRunning = this.executeTaskIteration(body, requires, ensures, invariant, name);
     const durationMs = RUNTIME_TASK_COST_MS;
     this.taskMaxDurationMs.set(name, Math.max(this.taskMaxDurationMs.get(name) ?? 0, durationMs));
+
+    // continue when budget.
     if (budget) {
       const kind = this.taskBudgetViolation(budget, durationMs, intervalMs);
+
+      // continue when kind.
       if (kind) {
         this.options.onLog?.(`task '${name}': ${kind} budget exceeded (${durationMs.toFixed(2)}ms)`);
       }
     }
     return continueRunning;
-  }
+}
 
   private executeTaskIteration(
     body: Stmt[],
@@ -640,22 +695,26 @@ export class Interpreter {
     // - `taskName?` — optional parameter
     //
     // Example:
-    // const result = executeTaskIteration(body, requires, ensures, invariant, taskName?);
 
+    // const result = executeTaskIteration(body, requires, ensures, invariant, taskName?);
     if (requires && !this.evalContract(requires)) {
       const label = taskName ? `task '${taskName}'` : "task";
       this.options.onLog?.(`${label} requires contract failed — skipping iteration`);
       return true;
     }
     this.executeBlock(body);
+
+    // continue when ensures && !this.evalContract(ensures).
     if (ensures && !this.evalContract(ensures)) {
       throw new RuntimeError("task ensures contract failed", 0);
     }
+
+    // continue when invariant && !this.evalContract(invariant).
     if (invariant && !this.evalContract(invariant)) {
       throw new RuntimeError("task invariant contract failed", 0);
     }
     return !this.safetyMonitor?.isEmergencyStop();
-  }
+}
 
   private executeMultiplexedTasks(tasks: TaskDecl[]): void {
     // ExecuteMultiplexedTasks.
@@ -670,8 +729,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeMultiplexedTasks(tasks);
 
+    // const result = executeMultiplexedTasks(tasks);
     if (tasks.length === 0) return;
     const schedules = tasks.map((task) => ({
       name: task.name,
@@ -690,14 +749,20 @@ export class Interpreter {
     );
     const maxIter = this.options.maxLoopIterations ?? 10;
     let simTime = 0;
+
+    // Loop with index variable i.
     for (let i = 0; i < maxIter; i++) {
       this.options.backend.tick(baseTick);
       simTime += baseTick;
       const due = schedules
         .filter((schedule) => schedule.nextDueMs <= simTime)
         .sort((a, b) => this.priorityRank(a.priority) - this.priorityRank(b.priority));
+
+      // Iterate over due.
       for (const schedule of due) {
         this.options.onLog?.(`task '${schedule.name}': tick`);
+
+        // continue when value.
         if (
           !this.runScheduledTask(
             schedule.name,
@@ -717,9 +782,11 @@ export class Interpreter {
       this.processSpawnQueue();
       this.runVerifyRules();
       this.updateTwinSnapshot();
+
+      // continue when this.safetyMonitor?.isEmergencyStop().
       if (this.safetyMonitor?.isEmergencyStop()) break;
     }
-  }
+}
 
   private refreshTwinShadowFromBackend(): void {
     // RefreshTwinShadowFromBackend.
@@ -734,10 +801,12 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = refreshTwinShadowFromBackend();
 
+    // const result = refreshTwinShadowFromBackend();
     if (!this.twinRuntime) return;
     const state = this.options.backend.getState();
+
+    // check membership before continuing.
     if (this.twinRuntime.mirrors.includes("pose")) {
       this.twinRuntime.shadow.pose = {
         kind: "pose",
@@ -747,6 +816,8 @@ export class Interpreter {
         z: state.pose.z ?? 0,
       };
     }
+
+    // check membership before continuing.
     if (this.twinRuntime.mirrors.includes("velocity")) {
       this.twinRuntime.shadow.velocity = {
         kind: "velocity",
@@ -754,7 +825,7 @@ export class Interpreter {
         angular: state.velocity.angular,
       };
     }
-  }
+}
 
   private updateTwinSnapshot(): void {
     // UpdateTwinSnapshot.
@@ -769,20 +840,24 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = updateTwinSnapshot();
 
+    // const result = updateTwinSnapshot();
     if (!this.twinRuntime) return;
     this.refreshTwinShadowFromBackend();
+
+    // continue when this.twinRuntime.replay && Object.keys(this.twinRuntime.shadow).length.
     if (this.twinRuntime.replay && Object.keys(this.twinRuntime.shadow).length > 0) {
       this.twinRuntime.replayBuffer.push({ ...this.twinRuntime.shadow });
     }
     const fieldCount = Object.keys(this.twinRuntime.shadow).length;
+
+    // continue when fieldCount > 0.
     if (fieldCount > 0) {
       this.options.onLog?.(
         `twin ${this.twinRuntime.name} mirrored ${fieldCount} field(s), replay frames=${this.twinRuntime.replayBuffer.length}`,
       );
     }
-  }
+}
 
   private twinFieldFromExpr(expr: Expr): string {
     // TwinFieldFromExpr.
@@ -797,12 +872,14 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = twinFieldFromExpr(expr);
 
+    // const result = twinFieldFromExpr(expr);
     if (expr.kind === "LiteralExpr" && typeof expr.value === "string") return expr.value;
+
+    // continue when kind equals "IdentExpr".
     if (expr.kind === "IdentExpr") return expr.name;
     return getString(this.evalExpr(expr), "");
-  }
+}
 
   private evalTwinMethod(
     method: string,
@@ -821,17 +898,20 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalTwinMethod(method, expr);
 
+    // const result = evalTwinMethod(method, expr);
     if (!this.twinRuntime) {
       throw new RuntimeError("No digital twin configured", expr.span.start.line);
     }
     this.refreshTwinShadowFromBackend();
     const twin = this.twinRuntime;
 
+    // continue when method equals "frame count".
     if (method === "frame_count") {
       return { kind: "number", value: twin.replayBuffer.length, unit: "none" };
     }
+
+    // continue when method equals "mirror".
     if (method === "mirror") {
       const fieldArg = expr.namedArgs.find((a) => a.name === "field");
       const field = fieldArg
@@ -840,12 +920,18 @@ export class Interpreter {
           ? this.twinFieldFromExpr(expr.args[0])
           : "";
       const value = twin.shadow[field];
+
+      // continue when value is falsy.
       if (!value) {
         throw new RuntimeError(`Twin has no mirrored shadow field '${field}'`, expr.span.start.line);
       }
       return value;
     }
+
+    // continue when method equals "replay".
     if (method === "replay") {
+
+      // continue when replay is falsy.
       if (!twin.replay) {
         throw new RuntimeError("Twin replay is disabled — set replay true in twin block", expr.span.start.line);
       }
@@ -863,6 +949,8 @@ export class Interpreter {
           : "";
       const frame = twin.replayBuffer[Math.floor(index)];
       const value = frame?.[field];
+
+      // continue when value is falsy.
       if (!value) {
         throw new RuntimeError(
           `Twin replay frame ${Math.floor(index)} has no field '${field}'`,
@@ -871,15 +959,19 @@ export class Interpreter {
       }
       return value;
     }
+
+    // check membership before continuing.
     if (twin.mirrors.includes(method)) {
       const value = twin.shadow[method];
+
+      // continue when value is falsy.
       if (!value) {
         throw new RuntimeError(`Twin shadow field '${method}' not yet mirrored`, expr.span.start.line);
       }
       return value;
     }
     return { kind: "void" };
-  }
+}
 
   private checkAgentCapability(
     agent: string,
@@ -902,20 +994,24 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = checkAgentCapability(agent, action, target, line);
 
+    // const result = checkAgentCapability(agent, action, target, line);
     const caps = this.agentCapabilities.get(agent) ?? [];
+
+    // continue when length equals 0.
     if (caps.length === 0) {
       return;
     }
     const allowed = caps.some(
       (c) => c.action === action && (target === undefined || c.target === target),
     );
+
+    // continue when allowed is falsy.
     if (!allowed) {
       const suffix = target ? `(${target})` : "";
       throw new RuntimeError(`Agent '${agent}' lacks capability ${action}${suffix}`, line);
     }
-  }
+}
 
   private dispatchEvent(eventName: string): void {
     // DispatchEvent.
@@ -930,16 +1026,20 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = dispatchEvent(eventName);
 
+    // const result = dispatchEvent(eventName);
     const body = this.eventHandlers.get(eventName);
+
+    // continue when body.
     if (body) {
       this.options.onLog?.(`emit ${eventName}`);
       this.executeBlock(body);
+
+    // Handle any remaining cases.
     } else {
       this.options.onLog?.(`emit ${eventName} (no handler)`);
     }
-  }
+}
 
   private executeEnter(stateName: string, line: number): void {
     // ExecuteEnter.
@@ -955,22 +1055,30 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeEnter(stateName, line);
 
+    // const result = executeEnter(stateName, line);
     let transitioned = false;
+
+    // Iterate over the collection.
     for (const [smName, sm] of this.stateMachines) {
+
+      // continue when includes is falsy.
       if (!sm.states.includes(stateName)) continue;
       const allowed = sm.transitions.some((t) => t.from === sm.current && t.to === stateName);
+
+      // continue when allowed is falsy.
       if (!allowed) continue;
       const previous = sm.current;
       sm.current = stateName;
       this.options.onLog?.(`state_machine ${smName}: ${previous} -> ${stateName}`);
       transitioned = true;
     }
+
+    // continue when transitioned is falsy.
     if (!transitioned) {
       throw new RuntimeError(`No valid transition to state '${stateName}'`, line);
     }
-  }
+}
 
   private setupRobot(robot: RobotDecl): void {
     // SetupRobot.
@@ -985,8 +1093,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = setupRobot(robot);
 
+    // const result = setupRobot(robot);
     this.currentRobot = robot;
     this.env = new Environment();
     this.zones = [];
@@ -1002,26 +1110,33 @@ export class Interpreter {
     this.commBus = new RoutingCommBus();
     this.defaultTransport = "local";
 
+    // continue when robot.soc.
     if (robot.soc) {
       const profile = getSocProfile(robot.soc.profile);
       this.options.onLog?.(`SoC: ${profile?.name ?? robot.soc.profile} (${profile?.architecture ?? "unknown"})`);
     }
-
     this.hal = this.options.backend.getHal?.() ?? createSimHal();
+
+    // continue when robot.hal.
     if (robot.hal) {
       const members = robot.hal.members.map(halMemberFromDecl);
       this.hal.configure(members);
       this.options.onLog?.(`HAL configured: ${members.length} bus(es)/pin(s)`);
     }
 
+    // Process each buse.
     for (const bus of robot.buses) {
       this.defaultTransport = bus.transport;
       this.commBus.configure({ nodeName: robot.name });
       this.options.onLog?.(`bus transport: ${bus.transport}`);
     }
+
+    // Process each peerRobot.
     for (const peer of robot.peerRobots) {
       this.commBus.registerRobot(peer.name);
     }
+
+    // Process each device.
     for (const device of robot.devices) {
       this.commBus.registerDevice(device.name);
       this.env.define(device.name, {
@@ -1031,6 +1146,7 @@ export class Interpreter {
       });
     }
 
+    // continue when robot.permissions.
     if (robot.permissions) {
       this.security.enableStrictPermissions();
       this.security.capabilities.grantAll(robot.permissions.capabilities);
@@ -1039,20 +1155,25 @@ export class Interpreter {
       );
     }
 
+    // continue when robot.trust.
     if (robot.trust) {
       const level = parseTrustLevel(robot.trust.level);
+
+      // continue when level.
       if (level) {
         this.security.trust = level;
         this.options.onLog?.(`trust: level set to ${level}`);
       }
     }
 
+    // Iterate over secrets ?? [].
     for (const secret of robot.secrets ?? []) {
       this.security.secrets.register(secret.name, secret.source);
       this.env.define(secret.name, { kind: "secret", name: secret.name });
       this.options.onLog?.(`secret '${secret.name}': registered`);
     }
 
+    // continue when robot.identity.
     if (robot.identity) {
       const id = robot.identity.fields.find(([k]) => k === "id")?.[1] ?? "unknown";
       const publicKey = robot.identity.fields.find(([k]) => k === "public_key")?.[1] ?? "";
@@ -1063,10 +1184,12 @@ export class Interpreter {
       this.options.onLog?.(`identity: device '${id}' registered`);
     }
 
+    // Process each topic.
     for (const topic of robot.topics) {
       this.defineTopic(topic);
     }
 
+    // Process each service.
     for (const service of robot.services) {
       const serviceType = service.serviceType ?? service.responseType ?? service.name;
       this.env.define(service.name, {
@@ -1076,6 +1199,7 @@ export class Interpreter {
       });
     }
 
+    // Process each action.
     for (const action of robot.actions) {
       const actionType = action.actionType ?? action.resultType ?? action.name;
       this.env.define(action.name, {
@@ -1085,6 +1209,7 @@ export class Interpreter {
       });
     }
 
+    // Process each sensor.
     for (const sensor of robot.sensors) {
       const topic = sensor.binding?.kind === "topic" ? sensor.binding.path : null;
       const halBinding = sensor.binding?.kind === "hal" ? sensor.binding.busName : null;
@@ -1098,6 +1223,7 @@ export class Interpreter {
       });
     }
 
+    // Process each actuator.
     for (const actuator of robot.actuators) {
       this.env.define(actuator.name, {
         kind: "actuator",
@@ -1105,9 +1231,10 @@ export class Interpreter {
         actuatorType: actuator.actuatorType,
       });
     }
-
     this.ai_models.clear();
     this.agents.clear();
+
+    // Iterate over ai models ?? [].
     for (const modelDecl of robot.ai_models ?? []) {
       const model = createAIModel(modelDecl);
       this.ai_models.set(modelDecl.name, model);
@@ -1117,6 +1244,7 @@ export class Interpreter {
       );
     }
 
+    // Iterate over agents ?? [].
     for (const agentDecl of robot.agents ?? []) {
       const memory = agentDecl.memoryKind ? new MemoryStore(agentDecl.memoryKind) : null;
       const agent = createAgentRuntime(agentDecl, memory);
@@ -1127,6 +1255,7 @@ export class Interpreter {
       this.options.onLog?.(`Agent '${agentDecl.name}': ${agentDecl.goal}`);
     }
 
+    // Iterate over agentChannels ?? [].
     for (const channel of robot.agentChannels ?? []) {
       this.concurrency.registerAgentRoute(channel.fromAgent, channel.toAgent, channel.messageType);
       const typeSuffix = channel.messageType ? ` (${channel.messageType})` : "";
@@ -1135,22 +1264,29 @@ export class Interpreter {
       );
     }
 
+    // Iterate over traitImpls ?? [].
     for (const traitImpl of robot.traitImpls ?? []) {
       const agentMethods = this.agentTraitImpls.get(traitImpl.agentName) ?? new Map();
+
+      // Process each method.
       for (const method of traitImpl.methods) {
         agentMethods.set(method.name, { params: method.params, body: method.body });
       }
       this.agentTraitImpls.set(traitImpl.agentName, agentMethods);
     }
 
+    // Iterate over events ?? [].
     for (const event of robot.events ?? []) {
       this.options.onLog?.(`event declared: ${event.name}`);
     }
+
+    // Invoke each registered handler.
     for (const handler of robot.eventHandlers ?? []) {
       this.eventHandlers.set(handler.eventName, handler.body);
       this.options.onLog?.(`handler registered for ${handler.eventName}`);
     }
 
+    // continue when robot.twin.
     if (robot.twin) {
       this.twinRuntime = {
         name: robot.twin.name,
@@ -1165,11 +1301,13 @@ export class Interpreter {
       );
     }
 
+    // continue when robot.verify.
     if (robot.verify) {
       this.verifyRules = [...robot.verify.rules];
       this.options.onLog?.(`verify: ${robot.verify.rules.length} rule(s) registered`);
     }
 
+    // continue when robot.observe.
     if (robot.observe) {
       this.fusionSensors = [...robot.observe.sensors];
       this.env.define("fusion", { kind: "sensor_fusion", sensors: [...robot.observe.sensors] });
@@ -1178,6 +1316,7 @@ export class Interpreter {
       );
     }
 
+    // Iterate over stateMachines ?? [].
     for (const sm of robot.stateMachines ?? []) {
       const initial = sm.states[0] ?? "unknown";
       this.stateMachines.set(sm.name, {
@@ -1188,20 +1327,28 @@ export class Interpreter {
       this.options.onLog?.(`state_machine ${sm.name}: initial state ${initial}`);
     }
 
+    // continue when robot.safety.
     if (robot.safety) {
       this.env.define("safety", { kind: "safety_ctx" });
     }
-
     this.env.define("robot", { kind: "robot" });
-
     const stopIfRules: Array<(env: Environment) => boolean> = [];
     let maxSpeed = Infinity;
 
+    // continue when robot.safety.
     if (robot.safety) {
+
+      // Process each rule.
       for (const rule of robot.safety.rules) {
+
+        // continue when kind equals "MaxSpeedRule".
         if (rule.kind === "MaxSpeedRule") {
           const val = this.evalExpr(rule.value);
+
+          // continue when kind equals "number".
           if (val.kind === "number") maxSpeed = val.value;
+
+        // Handle any remaining cases.
         } else {
           stopIfRules.push((env) => {
             const saved = this.env;
@@ -1213,15 +1360,15 @@ export class Interpreter {
         }
       }
 
+      // Process each zone.
       for (const zone of robot.safety.zones) {
         this.zones.push(this.evalSafetyZone(zone));
       }
     }
-
     this.safetyMonitor = new SafetyMonitor(
       createSafetyConfigFromRobot(maxSpeed, stopIfRules, this.zones),
     );
-  }
+}
 
   private evalSafetyZone(zone: SafetyZoneDecl): SafetyZoneRuntime {
     // EvalSafetyZone.
@@ -1236,26 +1383,32 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalSafetyZone(zone);
 
+    // const result = evalSafetyZone(zone);
     const base: SafetyZoneRuntime = {
       name: zone.name,
       shape: zone.shape,
       x: getNumber(this.evalExpr(zone.x)),
       y: getNumber(this.evalExpr(zone.y)),
     };
+
+    // continue when shape equals radius.
     if (zone.shape === "circle" && zone.radius) {
       base.radius = getNumber(this.evalExpr(zone.radius));
     }
+
+    // continue when shape equals height.
     if (zone.shape === "rect" && zone.width && zone.height) {
       base.width = getNumber(this.evalExpr(zone.width));
       base.height = getNumber(this.evalExpr(zone.height));
     }
     return base;
-  }
+}
 
-  private defineTopic(topic: import("../ast/nodes.js").TopicDecl): void {
+  private defineTopic(topic: import("../ast/nodes.js").TopicDecl): void {    // Resolve the filesystem path for the next step.
     const path = topic.topic ?? `/${topic.name}`;
+
+    // continue when topic.secure.
     if (topic.secure) {
       this.security.secureEndpoints.register(path, {
         signed: topic.secure.signed,
@@ -1270,7 +1423,7 @@ export class Interpreter {
       messageType: topic.messageType,
       topicPath: path,
     });
-  }
+}
 
   private executeBlock(stmts: Stmt[]): void {
     // ExecuteBlock.
@@ -1285,13 +1438,15 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeBlock(stmts);
 
+    // const result = executeBlock(stmts);
     for (const stmt of stmts) {
       this.executeStmt(stmt);
+
+      // continue when this.returning.
       if (this.returning) break;
     }
-  }
+}
 
   private executeBlockWithReturn(stmts: Stmt[]): RuntimeValue {
     // ExecuteBlockWithReturn.
@@ -1306,16 +1461,20 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeBlockWithReturn(stmts);
 
+    // const result = executeBlockWithReturn(stmts);
     this.returning = false;
     this.returnValue = { kind: "void" };
+
+    // Execute each statement in sequence.
     for (const stmt of stmts) {
       this.executeStmt(stmt);
+
+      // continue when this.returning.
       if (this.returning) break;
     }
     return this.returnValue;
-  }
+}
 
   private callModuleFunction(func: ModuleFnDecl, args: Expr[]): RuntimeValue {
     // CallModuleFunction.
@@ -1331,16 +1490,20 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = callModuleFunction(func, args);
 
+    // const result = callModuleFunction(func, args);
     if (func.isAsync) {
       const argValues = args.map((arg) => this.evalExpr(arg));
       return { kind: "future", funcName: func.name, args: argValues, resolved: null };
     }
     const saved = this.env.clone();
+
+    // Loop with index variable i.
     for (let i = 0; i < func.params.length; i++) {
       const param = func.params[i];
       const arg = args[i];
+
+      // continue when param && arg.
       if (param && arg) {
         this.env.define(param.name, this.evalExpr(arg));
       }
@@ -1348,7 +1511,7 @@ export class Interpreter {
     const result = this.executeBlockWithReturn(func.body);
     this.env = saved;
     return result;
-  }
+}
 
   private executeStmt(stmt: Stmt): void {
     // ExecuteStmt.
@@ -1363,11 +1526,15 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeStmt(stmt);
 
+    // const result = executeStmt(stmt);
     switch (stmt.kind) {
       case "VarDecl":
+
+        // continue when stmt.init.
         if (stmt.init) {
+
+          // continue when value.
           if (
             stmt.typeAnnotation?.kind === "trait_object" &&
             stmt.init.kind === "IdentExpr"
@@ -1377,17 +1544,25 @@ export class Interpreter {
               traitName: stmt.typeAnnotation.traitName,
               agent: stmt.init.name,
             });
+
+          // Handle any remaining cases.
           } else {
             this.env.define(stmt.name, this.evalExpr(stmt.init));
           }
+
+        // Handle any remaining cases.
         } else {
           this.env.define(stmt.name, { kind: "void" });
         }
         break;
       case "IfStmt": {
         const cond = this.evalExpr(stmt.condition);
+
+        // continue when kind equals value.
         if (cond.kind === "bool" && cond.value) {
           this.executeBlock(stmt.thenBranch);
+
+        // Otherwise, continue when stmt.elseBranch.
         } else if (stmt.elseBranch) {
           this.executeBlock(stmt.elseBranch);
         }
@@ -1395,9 +1570,13 @@ export class Interpreter {
       }
       case "LoopStmt": {
         const maxIter = this.options.maxLoopIterations ?? 10;
+
+        // Loop with index variable i.
         for (let i = 0; i < maxIter; i++) {
           this.options.backend.tick(stmt.intervalMs);
           this.executeBlock(stmt.body);
+
+          // continue when this.safetyMonitor?.isEmergencyStop().
           if (this.safetyMonitor?.isEmergencyStop()) break;
         }
         break;
@@ -1405,6 +1584,8 @@ export class Interpreter {
       case "PublishStmt": {
         const topic = this.env.get(stmt.topicName);
         const value = this.evalExpr(stmt.value);
+
+        // continue when kind equals "topic".
         if (topic?.kind === "topic") {
           this.commBus.publish(
             topic.topicPath,
@@ -1419,6 +1600,8 @@ export class Interpreter {
       }
       case "ServiceCallStmt": {
         const service = this.env.get(stmt.serviceName);
+
+        // continue when kind equals "service".
         if (service?.kind === "service") {
           this.commBus.callService(service.serviceType);
           this.options.backend.callService?.(service.name, service.serviceType);
@@ -1429,6 +1612,8 @@ export class Interpreter {
       case "ActionSendStmt": {
         const action = this.env.get(stmt.actionName);
         const goal = this.evalExpr(stmt.goal);
+
+        // continue when kind equals "action".
         if (action?.kind === "action") {
           this.commBus.sendAction(action.actionType);
           this.options.backend.sendAction?.(action.name, action.actionType, goal);
@@ -1449,6 +1634,8 @@ export class Interpreter {
       case "ExecuteStmt": {
         const action = this.env.get(stmt.actionName);
         const goal = this.evalExpr(stmt.goal);
+
+        // continue when kind equals "action".
         if (action?.kind === "action") {
           this.commBus.sendAction(action.actionType);
           this.options.backend.sendAction?.(action.name, action.actionType, goal);
@@ -1468,6 +1655,8 @@ export class Interpreter {
             ? (this.env.get(stmt.topicName) as Extract<RuntimeValue, { kind: "topic" }>).topicPath
             : `/${stmt.topicName}`;
         const val = this.commBus.receive(path);
+
+        // continue when val.
         if (val) {
           this.env.define(stmt.varName, val);
           this.options.onLog?.(`receive ${stmt.topicName} to ${stmt.varName}`);
@@ -1492,6 +1681,8 @@ export class Interpreter {
         this.executeEnter(stmt.stateName, stmt.span.start.line);
         break;
       case "RememberStmt": {
+
+        // continue when currentAgent is falsy.
         if (!this.currentAgent) {
           throw new RuntimeError(
             "remember requires active agent context (run inside agent plan)",
@@ -1499,6 +1690,8 @@ export class Interpreter {
           );
         }
         const agent = this.agents.get(this.currentAgent);
+
+        // continue when memory is falsy.
         if (!agent?.memory) {
           throw new RuntimeError(
             "Agent has no memory — declare memory short_term or long_term on the agent",
@@ -1523,9 +1716,13 @@ export class Interpreter {
         break;
       }
       case "SelectStmt": {
+
+        // Process each arm.
         for (const arm of stmt.arms) {
           const channelVal = this.evalExpr(arm.channel);
           const msg = this.concurrency.tryRecv(channelVal, stmt.span.start.line);
+
+          // continue when msg.
           if (msg) {
             this.env.define("_msg", msg);
             this.executeBlock(arm.body);
@@ -1539,20 +1736,34 @@ export class Interpreter {
         const pendingHandles: Array<[string | null, number]> = [];
         const results: Record<string, RuntimeValue> = {};
         this.options.onLog?.(`parallel: executing ${stmt.body.length} branch(es) cooperatively`);
+
+        // Iterate over body.
         for (const branch of stmt.body) {
           this.env = saved.clone();
+
+          // continue when kind equals init.
           if (branch.kind === "VarDecl" && branch.init) {
             const val = this.evalExpr(branch.init);
+
+            // continue when kind equals "task handle".
             if (val.kind === "task_handle") {
               pendingHandles.push([branch.name, val.id]);
+
+            // Handle any remaining cases.
             } else {
               results[branch.name] = val;
             }
+
+          // Otherwise, continue when kind equals "ExprStmt".
           } else if (branch.kind === "ExprStmt") {
             const val = this.evalExpr(branch.expr);
+
+            // continue when kind equals "task handle".
             if (val.kind === "task_handle") {
               pendingHandles.push([null, val.id]);
             }
+
+          // Otherwise, continue when kind equals "SpawnStmt".
           } else if (branch.kind === "SpawnStmt") {
             const { funcName, args } = this.evalSpawnTarget(
               branch.callee,
@@ -1560,18 +1771,28 @@ export class Interpreter {
               branch.span.start.line,
             );
             const handle = this.concurrency.createTaskHandle(funcName, args);
+
+            // continue when kind equals "task handle".
             if (handle.kind === "task_handle") {
               pendingHandles.push([null, handle.id]);
             }
+
+          // Handle any remaining cases.
           } else {
             this.executeStmt(branch);
           }
         }
         this.env = saved;
+
+        // Iterate over the collection.
         for (const [name, id] of pendingHandles) {
           const result = this.resolveTaskHandle(id, stmt.span.start.line);
+
+          // continue when name.
           if (name) results[name] = result;
         }
+
+        // continue when Object.keys(results).length > 0.
         if (Object.keys(results).length > 0) {
           this.env.define("_parallel", {
             kind: "object",
@@ -1583,7 +1804,7 @@ export class Interpreter {
         break;
       }
     }
-  }
+}
 
   private evalExpr(expr: Expr): RuntimeValue {
     // EvalExpr.
@@ -1598,22 +1819,32 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalExpr(expr);
 
+    // const result = evalExpr(expr);
     switch (expr.kind) {
       case "LiteralExpr":
+
+        // continue when value equals "boolean".
         if (typeof expr.value === "boolean") return { kind: "bool", value: expr.value };
+
+        // continue when value equals "number".
         if (typeof expr.value === "number") return { kind: "number", value: expr.value, unit: "none" };
+
+        // continue when value equals "string".
         if (typeof expr.value === "string") return { kind: "string", value: expr.value };
         return { kind: "void" };
       case "UnitLiteralExpr":
         return { kind: "number", value: expr.value, unit: expr.unit };
       case "IdentExpr": {
         const enumName = this.variantOwner.get(expr.name);
+
+        // continue when enumName.
         if (enumName) {
           return { kind: "enum", enumName, variant: expr.name, payloads: [] };
         }
         const val = this.env.get(expr.name);
+
+        // continue when line is falsy.
         if (!val) throw new RuntimeError(`Undefined variable '${expr.name}'`, expr.span.start.line);
         return val;
       }
@@ -1621,9 +1852,13 @@ export class Interpreter {
         return this.evalBinary(expr.op, this.evalExpr(expr.left), this.evalExpr(expr.right));
       case "UnaryExpr": {
         const operand = this.evalExpr(expr.operand);
+
+        // continue when op equals "not".
         if (expr.op === "not") {
           return { kind: "bool", value: operand.kind === "bool" && !operand.value };
         }
+
+        // continue when op equals kind === "number".
         if (expr.op === "-" && operand.kind === "number") {
           return { kind: "number", value: -operand.value, unit: operand.unit };
         }
@@ -1642,20 +1877,38 @@ export class Interpreter {
       case "MatchExpr": {
         const value = this.evalExpr(expr.scrutinee);
         let variant = "";
+
+        // continue when kind equals "enum".
         if (value.kind === "enum") variant = value.variant;
+
+        // Otherwise, continue when kind equals "string".
         else if (value.kind === "string") variant = value.value;
+
+        // Otherwise, continue when kind equals "object".
         else if (value.kind === "object") variant = value.typeName;
+
+        // Process each arm.
         for (const arm of expr.arms) {
+
+          // continue when variant equals variant.
           if (arm.variant === variant) {
             const bindings = arm.bindings ?? [];
+
+            // continue when kind equals "enum".
             if (bindings.length > 0 && value.kind === "enum") {
+
+              // Loop with index variable i.
               for (let i = 0; i < bindings.length; i++) {
                 const payload = value.payloads[i];
                 const binding = bindings[i];
+
+                // continue when payload && binding) this.env.set(binding, payload.
                 if (payload && binding) this.env.set(binding, payload);
               }
             }
             this.executeBlock(arm.body);
+
+            // Process each binding.
             for (const binding of bindings) {
               this.env.remove(binding);
             }
@@ -1668,6 +1921,8 @@ export class Interpreter {
         return this.evalStructLiteral(expr);
       case "ServiceCallExpr": {
         const service = this.env.get(expr.serviceName);
+
+        // continue when kind equals "service".
         if (service?.kind === "service") {
           const result = this.commBus.callService(service.serviceType);
           this.options.backend.callService?.(service.name, service.serviceType);
@@ -1678,6 +1933,8 @@ export class Interpreter {
       }
       case "ExecuteExpr": {
         const action = this.env.get(expr.actionName);
+
+        // continue when kind equals "action".
         if (action?.kind === "action") {
           const goal = this.evalExpr(expr.goal);
           const result = this.commBus.sendAction(action.actionType);
@@ -1700,7 +1957,7 @@ export class Interpreter {
       default:
         return { kind: "void" };
     }
-  }
+}
 
   private evalStructLiteral(expr: import("../ast/nodes.js").StructLiteralExpr): RuntimeValue {
     // EvalStructLiteral.
@@ -1715,12 +1972,16 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalStructLiteral(expr);
 
+    // const result = evalStructLiteral(expr);
     const values: Record<string, RuntimeValue> = {};
+
+    // Process each field.
     for (const field of expr.fields) {
       values[field.name] = this.evalExpr(field.value);
     }
+
+    // continue when typeName equals "Pose".
     if (expr.typeName === "Pose") {
       const x = values.x?.kind === "number" ? values.x.value : 0;
       const y = values.y?.kind === "number" ? values.y.value : 0;
@@ -1733,7 +1994,7 @@ export class Interpreter {
       return { kind: "pose", x, y, theta: heading, z };
     }
     return { kind: "object", typeName: expr.typeName, fields: values };
-  }
+}
 
   private evalMember(expr: import("../ast/nodes.js").MemberExpr): RuntimeValue {
     // EvalMember.
@@ -1748,21 +2009,24 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalMember(expr);
 
+    // const result = evalMember(expr);
     if (expr.object.kind === "IdentExpr") {
       const variants = this.enumVariants.get(expr.object.name);
+
+      // check membership before continuing.
       if (variants?.includes(expr.property)) {
         return { kind: "enum", enumName: expr.object.name, variant: expr.property, payloads: [] };
       }
     }
-
     const obj = this.evalExpr(expr.object);
 
+    // continue when kind equals property === "nearest distance".
     if (obj.kind === "scan" && expr.property === "nearest_distance") {
       return { kind: "number", value: obj.nearestDistance, unit: "m" };
     }
 
+    // continue when kind equals "pose".
     if (obj.kind === "pose") {
       const map: Record<string, RuntimeValue> = {
         x: { kind: "number", value: obj.x, unit: "m" },
@@ -1773,6 +2037,7 @@ export class Interpreter {
       return map[expr.property] ?? { kind: "void" };
     }
 
+    // continue when kind equals "velocity".
     if (obj.kind === "velocity") {
       const map: Record<string, RuntimeValue> = {
         linear: { kind: "number", value: obj.linear, unit: "m/s" },
@@ -1781,14 +2046,20 @@ export class Interpreter {
       return map[expr.property] ?? { kind: "void" };
     }
 
+    // continue when kind equals property === "nearest distance".
     if (obj.kind === "sensor" && expr.property === "nearest_distance") {
       const reading = this.readSensorValue(obj);
+
+      // continue when kind equals "scan".
       if (reading.kind === "scan") {
         return { kind: "number", value: reading.nearestDistance, unit: "m" };
       }
     }
 
+    // continue when kind equals "action proposal".
     if (obj.kind === "action_proposal") {
+
+      // continue when property equals "trace".
       if (expr.property === "trace") {
         return {
           kind: "object",
@@ -1807,6 +2078,7 @@ export class Interpreter {
       return map[expr.property] ?? { kind: "void" };
     }
 
+    // continue when kind equals "safe action".
     if (obj.kind === "safe_action") {
       const map: Record<string, RuntimeValue> = {
         linear: { kind: "number", value: obj.linear, unit: "m/s" },
@@ -1815,25 +2087,28 @@ export class Interpreter {
       return map[expr.property] ?? { kind: "void" };
     }
 
+    // continue when kind equals property === "text".
     if (obj.kind === "goal" && expr.property === "text") {
       return { kind: "string", value: obj.text };
     }
 
+    // continue when kind equals property === "goal".
     if (obj.kind === "agent" && expr.property === "goal") {
       const agent = this.agents.get(obj.name);
       return { kind: "goal", text: agent?.decl.goal ?? "" };
     }
 
+    // continue when kind equals property === "text".
     if (obj.kind === "completion" && expr.property === "text") {
       return { kind: "string", value: obj.text };
     }
 
+    // continue when kind equals "object".
     if (obj.kind === "object") {
       return obj.fields[expr.property] ?? { kind: "void" };
     }
-
     return { kind: "void" };
-  }
+}
 
   private evalCall(expr: import("../ast/nodes.js").CallExpr): RuntimeValue {
     // EvalCall.
@@ -1848,23 +2123,29 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalCall(expr);
 
+    // const result = evalCall(expr);
     if (expr.callee.kind === "IdentExpr") {
       const calleeName = expr.callee.name;
       const moduleFn =
         this.moduleFunctions.get(calleeName) ?? this.importedFunctions.get(calleeName);
+
+      // continue when moduleFn.
       if (moduleFn) {
         return this.callModuleFunction(moduleFn, expr.args);
       }
       const externFn = this.currentProgram?.externFunctions.find(
         (decl) => decl.name === calleeName,
       );
+
+      // continue when bridge equals bridge === "cpp").
       if (externFn && (externFn.bridge === "python" || externFn.bridge === "cpp")) {
         const args = expr.args.map((arg) => this.evalExpr(arg));
         return callExternBridge(externFn, args);
       }
       const enumName = this.variantOwner.get(calleeName);
+
+      // continue when enumName.
       if (enumName) {
         const payloads = expr.args.map((arg) => this.evalExpr(arg));
         return { kind: "enum", enumName, variant: calleeName, payloads };
@@ -1872,40 +2153,58 @@ export class Interpreter {
       return this.evalBuiltinFunction(calleeName, expr);
     }
 
+    // continue when kind differs from kind !== "IdentExpr".
     if (expr.callee.kind !== "MemberExpr" || expr.callee.object.kind !== "IdentExpr") {
       return { kind: "void" };
     }
-
     const targetName = expr.callee.object.name;
     const method = expr.callee.property;
     const target = this.env.get(targetName);
+
+    // continue when target is falsy.
     if (!target) {
       throw new RuntimeError(`Undefined '${targetName}'`, expr.span.start.line);
     }
 
+    // continue when kind equals "robot" || targetName === "robot".
     if (target.kind === "robot" || targetName === "robot") {
       return this.evalRobotMethod(method, expr);
     }
 
+    // continue when kind equals "twin".
     if (target.kind === "twin") {
       return this.evalTwinMethod(method, expr);
     }
 
+    // continue when kind equals "sensor fusion".
     if (target.kind === "sensor_fusion") {
+
+      // continue when method equals "read".
       if (method === "read") {
         return this.readFusedObservation();
       }
     }
 
+    // continue when kind equals "sensor".
     if (target.kind === "sensor") {
+
+      // continue when method equals "read".
       if (method === "read") {
+
+        // continue when this.currentAgent.
         if (this.currentAgent) {
           this.checkAgentCapability(this.currentAgent, "read", targetName, expr.span.start.line);
         }
         return this.readSensorValue(target);
       }
+
+      // continue when sensorType equals "Camera".
       if (target.sensorType === "Camera") {
+
+        // continue when method equals "frame") return mockCameraFrame.
         if (method === "frame") return mockCameraFrame();
+
+        // continue when method equals "analyze".
         if (method === "analyze") {
           const frame = mockCameraFrame();
           return mockAnalyzeFrame(frame, target.name);
@@ -1913,17 +2212,24 @@ export class Interpreter {
       }
     }
 
+    // continue when kind equals "trait object".
     if (target.kind === "trait_object") {
       const agentName = target.agent;
       const traitImpl = this.agentTraitImpls.get(agentName)?.get(method);
+
+      // continue when traitImpl.
       if (traitImpl) {
         const saved = this.env.clone();
+
+        // Loop with index variable i.
         for (let i = 0; i < traitImpl.params.length; i++) {
           const param = traitImpl.params[i];
           const argVal = expr.args[i] ? this.evalExpr(expr.args[i]) : { kind: "void" as const };
           this.env.define(param.name, argVal);
         }
         this.currentAgent = agentName;
+
+        // Try the operation and handle failures below.
         try {
           this.executeBlock(traitImpl.body);
         } finally {
@@ -1939,16 +2245,23 @@ export class Interpreter {
       );
     }
 
+    // continue when kind equals "agent".
     if (target.kind === "agent") {
       const traitImpl = this.agentTraitImpls.get(targetName)?.get(method);
+
+      // continue when traitImpl.
       if (traitImpl) {
         const saved = this.env.clone();
+
+        // Loop with index variable i.
         for (let i = 0; i < traitImpl.params.length; i++) {
           const param = traitImpl.params[i];
           const argVal = expr.args[i] ? this.evalExpr(expr.args[i]) : { kind: "void" as const };
           this.env.define(param.name, argVal);
         }
         this.currentAgent = targetName;
+
+        // Try the operation and handle failures below.
         try {
           this.executeBlock(traitImpl.body);
         } finally {
@@ -1958,13 +2271,19 @@ export class Interpreter {
         this.options.onLog?.(`agent ${targetName}.${method}()`);
         return { kind: "void" };
       }
+
+      // continue when method equals "plan".
       if (method === "plan") {
         this.checkAgentCapability(targetName, "plan", undefined, expr.span.start.line);
         const agent = this.agents.get(targetName);
+
+        // continue when agent is falsy.
         if (!agent) {
           throw new RuntimeError(`Unknown agent '${targetName}'`, expr.span.start.line);
         }
         this.currentAgent = targetName;
+
+        // Try the operation and handle failures below.
         try {
           executeAgentPlan(agent, { executeBlock: (stmts) => this.executeBlock(stmts) });
         } finally {
@@ -1975,15 +2294,23 @@ export class Interpreter {
       }
     }
 
+    // continue when kind equals "safety ctx" && method === "validate".
     if (target.kind === "safety_ctx" && method === "validate") {
       return this.evalSafetyValidate(expr);
     }
-
     const aiModel = this.ai_models.get(targetName);
+
+    // continue when kind equals "ai model".
     if (aiModel || target.kind === "ai_model") {
       const model = aiModel ?? this.ai_models.get(targetName);
+
+      // continue when model is falsy.
       if (!model) return { kind: "void" };
+
+      // continue when method equals "reason".
       if (method === "reason") {
+
+        // continue when this.currentAgent.
         if (this.currentAgent) {
           this.checkAgentCapability(this.currentAgent, "propose_motion", undefined, expr.span.start.line);
         }
@@ -1998,20 +2325,30 @@ export class Interpreter {
         this.options.onLog?.(`ai ${targetName}.reason() -> ActionProposal`);
         return result;
       }
+
+      // continue when method equals "summarize".
       if (method === "summarize") {
+
+        // continue when this.currentAgent.
         if (this.currentAgent) {
           this.checkAgentCapability(this.currentAgent, "summarize", undefined, expr.span.start.line);
         }
         const input = this.getNamedArgValue(expr, "input");
         return model.summarize(input.kind === "void" ? undefined : input);
       }
+
+      // continue when method equals "detect".
       if (method === "detect") {
+
+        // continue when this.currentAgent.
         if (this.currentAgent) {
           this.checkAgentCapability(this.currentAgent, "detect", undefined, expr.span.start.line);
         }
         const frame = expr.args[0] ? this.evalExpr(expr.args[0]) : this.getNamedArgValue(expr, "frame");
         return model.detect(frame);
       }
+
+      // continue when method equals "drive".
       if (method === "drive") {
         throw new RuntimeError(
           "Unsafe AI action: LLM cannot drive actuators directly — use safety.validate() then wheels.execute()",
@@ -2020,12 +2357,12 @@ export class Interpreter {
       }
     }
 
+    // continue when kind equals "actuator".
     if (target.kind === "actuator") {
       return this.executeActuatorMethod(target.name, target.actuatorType, method, expr);
     }
-
     return { kind: "void" };
-  }
+}
 
   private readSensorValue(target: Extract<RuntimeValue, { kind: "sensor" }>): RuntimeValue {
     // ReadSensorValue.
@@ -2040,11 +2377,15 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = readSensorValue(target);
 
+    // const result = readSensorValue(target);
     const state = this.options.backend.getState();
+
+    // continue when target.library.
     if (target.library) {
       const driver = getSensorDriver(target.library, target.sensorType);
+
+      // continue when driver.
       if (driver) {
         return readWithDriver(driver, {
           hal: this.hal,
@@ -2055,7 +2396,7 @@ export class Interpreter {
       }
     }
     return this.options.backend.readSensor(target.name, target.sensorType, target.topic);
-  }
+}
 
   private readFusedObservation(): RuntimeValue {
     // ReadFusedObservation.
@@ -2070,11 +2411,15 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = readFusedObservation();
 
+    // const result = readFusedObservation();
     const fields: Record<string, RuntimeValue> = {};
+
+    // Process each fusionSensor.
     for (const sensorName of this.fusionSensors) {
       const sensorVal = this.env.get(sensorName);
+
+      // continue when kind differs from "sensor".
       if (!sensorVal || sensorVal.kind !== "sensor") {
         throw new RuntimeError(`Unknown observe sensor '${sensorName}'`, 0);
       }
@@ -2084,7 +2429,7 @@ export class Interpreter {
     fields.pose = poseFromState(state.pose);
     fields.count = { kind: "number", value: this.fusionSensors.length, unit: "none" };
     return { kind: "object", typeName: "FusedObservation", fields };
-  }
+}
 
   private evalBuiltinFunction(name: string, expr: import("../ast/nodes.js").CallExpr): RuntimeValue {
     // EvalBuiltinFunction.
@@ -2100,8 +2445,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalBuiltinFunction(name, expr);
 
+    // const result = evalBuiltinFunction(name, expr);
     switch (name) {
       case "pose":
         return runtimePose(
@@ -2138,6 +2483,8 @@ export class Interpreter {
         return { kind: "goal", text };
       }
       case "recall": {
+
+        // continue when currentAgent is falsy.
         if (!this.currentAgent) {
           throw new RuntimeError(
             "recall() requires active agent context (run inside agent plan)",
@@ -2145,6 +2492,8 @@ export class Interpreter {
           );
         }
         const agent = this.agents.get(this.currentAgent);
+
+        // continue when memory is falsy.
         if (!agent?.memory) {
           throw new RuntimeError(
             "Agent has no memory — declare memory short_term or long_term on the agent",
@@ -2161,13 +2510,19 @@ export class Interpreter {
       }
       case "assert": {
         const arg0 = expr.args[0];
+
+        // continue when arg0 is falsy.
         if (!arg0) {
           throw new RuntimeError("assert requires a boolean condition", expr.span.start.line);
         }
         const cond = this.evalExpr(arg0);
+
+        // continue when kind differs from "bool".
         if (cond.kind !== "bool") {
           throw new RuntimeError("assert requires a boolean condition", expr.span.start.line);
         }
+
+        // continue when value is falsy.
         if (!cond.value) {
           throw new RuntimeError("Assertion failed", expr.span.start.line);
         }
@@ -2188,15 +2543,21 @@ export class Interpreter {
       }
       case "join": {
         const handle = expr.args[0] ? this.evalExpr(expr.args[0]) : { kind: "void" as const };
+
+        // continue when kind equals "future".
         if (handle.kind === "future") {
           return this.resolveFuture(handle, expr.span.start.line);
         }
+
+        // continue when kind equals "task handle".
         if (handle.kind === "task_handle") {
           return this.resolveTaskHandle(handle.id, expr.span.start.line);
         }
         throw new RuntimeError("join requires a Future or TaskHandle value", expr.span.start.line);
       }
       case "send_agent": {
+
+        // continue when currentAgent is falsy.
         if (!this.currentAgent) {
           throw new RuntimeError("send_agent requires active agent context", expr.span.start.line);
         }
@@ -2209,6 +2570,8 @@ export class Interpreter {
         return { kind: "void" };
       }
       case "recv_agent": {
+
+        // continue when currentAgent is falsy.
         if (!this.currentAgent) {
           throw new RuntimeError("recv_agent requires active agent context", expr.span.start.line);
         }
@@ -2229,7 +2592,7 @@ export class Interpreter {
       default:
         return { kind: "void" };
     }
-  }
+}
 
   private evalSpawnTarget(
     callee: Expr,
@@ -2250,7 +2613,8 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalSpawnTarget(callee, args, line);
+
+ // const result = evalSpawnTarget(callee, args, line);
  funcName: string; args: RuntimeValue[] } {
     const argValues = args.map((arg) => this.evalExpr(arg));
     if (callee.kind !== "IdentExpr") {
@@ -2274,23 +2638,29 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeSpawnJob(funcName, args, line);
 
+    // const result = executeSpawnJob(funcName, args, line);
     const func =
       this.moduleFunctions.get(funcName) ?? this.importedFunctions.get(funcName);
+
+    // continue when func is falsy.
     if (!func) {
       throw new RuntimeError(`Unknown spawn target '${funcName}'`, line);
     }
     const saved = this.env.clone();
+
+    // Loop with index variable i.
     for (let i = 0; i < func.params.length; i++) {
       const param = func.params[i];
       const val = args[i];
+
+      // continue when param && val) this.env.define(param.name, val.
       if (param && val) this.env.define(param.name, val);
     }
     const result = this.executeBlockWithReturn(func.body);
     this.env = saved;
     return result;
-  }
+}
 
   private resolveTaskHandle(id: number, line: number): RuntimeValue {
     // ResolveTaskHandle.
@@ -2306,17 +2676,21 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = resolveTaskHandle(id, line);
 
+    // const result = resolveTaskHandle(id, line);
     const handle = this.concurrency.getHandle(id);
+
+    // continue when handle is falsy.
     if (!handle) {
       throw new RuntimeError(`Unknown task handle ${id}`, line);
     }
+
+    // continue when handle.result.
     if (handle.result) return handle.result;
     const result = this.executeSpawnJob(handle.funcName, handle.args, line);
     this.concurrency.setHandleResult(id, result);
     return result;
-  }
+}
 
   private resolveFuture(future: RuntimeValue, line: number): RuntimeValue {
     // ResolveFuture.
@@ -2332,15 +2706,17 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = resolveFuture(future, line);
 
+    // const result = resolveFuture(future, line);
     if (future.kind === "future") {
+
+      // continue when future.resolved.
       if (future.resolved) return future.resolved;
       const result = this.executeSpawnJob(future.funcName, future.args, line);
       return result;
     }
     return future;
-  }
+}
 
   private processSpawnQueue(): void {
     // ProcessSpawnQueue.
@@ -2355,12 +2731,12 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = processSpawnQueue();
 
+    // const result = processSpawnQueue();
     for (const id of this.concurrency.drainFireAndForgetQueue()) {
       this.resolveTaskHandle(id, 0);
     }
-  }
+}
 
   private goalTextFromValue(value: RuntimeValue): string | undefined {
     // GoalTextFromValue.
@@ -2375,25 +2751,33 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = goalTextFromValue(value);
 
+    // const result = goalTextFromValue(value);
     if (value.kind === "goal") return value.text;
+
+    // continue when kind equals "string".
     if (value.kind === "string") return value.value;
     return undefined;
-  }
+}
 
-  private resolveReasonGoal(expr: import("../ast/nodes.js").CallExpr): string | undefined {
+  private resolveReasonGoal(expr: import("../ast/nodes.js").CallExpr): string | undefined {    // Compute explicit for the following logic.
     const explicit = this.getNamedArgValue(expr, "goal");
+
+    // continue when kind differs from "void".
     if (explicit.kind !== "void") {
       return this.goalTextFromValue(explicit);
     }
+
+    // continue when this.currentAgent.
     if (this.currentAgent) {
       const agent = this.agents.get(this.currentAgent);
       const text = agent?.decl.goal?.trim();
+
+      // continue when text.
       if (text) return text;
     }
     return undefined;
-  }
+}
 
   private enrichReasonGoal(goalText: string | undefined): string | undefined {
     // EnrichReasonGoal.
@@ -2408,17 +2792,21 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = enrichReasonGoal(goalText);
 
+    // const result = enrichReasonGoal(goalText);
     if (!this.currentAgent) return goalText;
     const agent = this.agents.get(this.currentAgent);
     const memorySummary = agent?.memory?.summaryForPrompt();
+
+    // continue when memorySummary is falsy.
     if (!memorySummary) return goalText;
+
+    // continue when goalText.
     if (goalText) {
       return `${goalText}\n${memorySummary}`;
     }
     return memorySummary;
-  }
+}
 
   private evalSafetyValidate(expr: import("../ast/nodes.js").CallExpr): RuntimeValue {
     // EvalSafetyValidate.
@@ -2433,10 +2821,12 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalSafetyValidate(expr);
 
+    // const result = evalSafetyValidate(expr);
     const arg = expr.args[0] ? this.evalExpr(expr.args[0]) : this.getNamedArgValue(expr, "proposal");
     const proposal = proposalFromValue(arg);
+
+    // continue when proposal is falsy.
     if (!proposal) {
       throw new RuntimeError("safety.validate() expects ActionProposal", expr.span.start.line);
     }
@@ -2447,12 +2837,14 @@ export class Interpreter {
       this.env,
       state.pose,
     );
+
+    // continue when ok is falsy.
     if (!result?.ok) {
       throw new RuntimeError(result?.reason ?? "Safety validation failed for AI action", expr.span.start.line);
     }
     this.options.onLog?.("safety.validate() approved ActionProposal");
     return safeActionFromProposal(result.linear, result.angular);
-  }
+}
 
   private evalRobotMethod(method: string, expr: import("../ast/nodes.js").CallExpr): RuntimeValue {
     // EvalRobotMethod.
@@ -2468,9 +2860,11 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalRobotMethod(method, expr);
 
+    // const result = evalRobotMethod(method, expr);
     const state = this.options.backend.getState();
+
+    // Branch on method.
     switch (method) {
       case "pose":
         return poseFromState(state.pose);
@@ -2484,7 +2878,7 @@ export class Interpreter {
       default:
         return { kind: "void" };
     }
-  }
+}
 
   private executeActuatorMethod(
     name: string,
@@ -2507,10 +2901,14 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = executeActuatorMethod(name, actuatorType, method, expr);
 
+    // const result = executeActuatorMethod(name, actuatorType, method, expr);
     const motionMethods = ["drive", "move_to", "set_thrust", "grip", "release", "open", "hover", "follow"];
+
+    // continue when includes equals "stop".
     if (motionMethods.includes(method) || method === "stop") {
+
+      // continue when checkSafetyBeforeMotion is falsy.
       if (!this.checkSafetyBeforeMotion()) {
         this.options.onMotionBlocked?.("Safety rule triggered — motion blocked");
         this.options.backend.executeMotion({ kind: "stop", actuator: name });
@@ -2518,6 +2916,7 @@ export class Interpreter {
       }
     }
 
+    // Branch on method.
     switch (method) {
       case "stop":
         this.options.backend.executeMotion({ kind: "stop", actuator: name });
@@ -2564,13 +2963,19 @@ export class Interpreter {
         this.options.backend.executeMotion({ kind: "hover", actuator: name });
         break;
       case "execute": {
+
+        // continue when this.currentAgent.
         if (this.currentAgent) {
           this.checkAgentCapability(this.currentAgent, "propose_motion", undefined, expr.span.start.line);
         }
         const actionVal = expr.args[0]
           ? this.evalExpr(expr.args[0])
           : this.getNamedArgValue(expr, "action");
+
+        // continue when isSafeAction is falsy.
         if (!isSafeAction(actionVal)) {
+
+          // continue when isActionProposal(actionVal).
           if (isActionProposal(actionVal)) {
             throw new RuntimeError(
               "Unsafe AI action: ActionProposal cannot execute actuators — call safety.validate() first",
@@ -2583,6 +2988,8 @@ export class Interpreter {
           );
         }
         const safe = actionVal;
+
+        // continue when checkSafetyBeforeMotion is falsy.
         if (!this.checkSafetyBeforeMotion()) {
           this.options.onMotionBlocked?.("Safety rule triggered — motion blocked");
           this.options.backend.executeMotion({ kind: "stop", actuator: name });
@@ -2597,19 +3004,18 @@ export class Interpreter {
         break;
       }
     }
-
     this.options.onLog?.(`${name}.${method}()`);
     return { kind: "void" };
-  }
+}
 
-  private getNamedArgValue(expr: import("../ast/nodes.js").CallExpr, name: string): RuntimeValue {
+  private getNamedArgValue(expr: import("../ast/nodes.js").CallExpr, name: string): RuntimeValue {    // Compute arg for the following logic.
     const arg = expr.namedArgs.find((a) => a.name === name);
     return arg ? this.evalExpr(arg.value) : { kind: "void" };
-  }
+}
 
-  private getNamedArgNumber(expr: import("../ast/nodes.js").CallExpr, name: string, defaultVal: number): number {
+  private getNamedArgNumber(expr: import("../ast/nodes.js").CallExpr, name: string, defaultVal: number): number {    // Return getNamedArgValue to the caller.
     return getNumber(this.getNamedArgValue(expr, name), defaultVal);
-  }
+}
 
   private evalBinary(op: string, left: RuntimeValue, right: RuntimeValue): RuntimeValue {
     // EvalBinary.
@@ -2626,23 +3032,35 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = evalBinary(op, left, right);
 
+    // const result = evalBinary(op, left, right);
     if (op === "and") {
       return { kind: "bool", value: (left.kind === "bool" && left.value) && (right.kind === "bool" && right.value) };
     }
+
+    // continue when op equals "or".
     if (op === "or") {
       return { kind: "bool", value: (left.kind === "bool" && left.value) || (right.kind === "bool" && right.value) };
     }
+
+    // continue when kind equals kind === "bool".
     if (left.kind === "bool" && right.kind === "bool") {
+
+      // continue when op equals "==".
       if (op === "==") return { kind: "bool", value: left.value === right.value };
+
+      // continue when op equals "!=".
       if (op === "!=") return { kind: "bool", value: left.value !== right.value };
     }
+
+    // continue when kind equals kind === "number".
     if (left.kind === "number" && right.kind === "number") {
       const aligned = alignForBinary(left.value, left.unit, right.value, right.unit);
       const l = aligned?.[0] ?? left.value;
       const r = aligned?.[1] ?? right.value;
       const resultUnit = aligned?.[2] ?? left.unit;
+
+      // Branch on op.
       switch (op) {
         case "+": return { kind: "number", value: l + r, unit: resultUnit };
         case "-": return { kind: "number", value: l - r, unit: resultUnit };
@@ -2657,7 +3075,7 @@ export class Interpreter {
       }
     }
     return { kind: "void" };
-  }
+}
 
   private checkSafetyBeforeMotion(): boolean {
     // CheckSafetyBeforeMotion.
@@ -2672,11 +3090,15 @@ export class Interpreter {
     // None.
     //
     // Example:
-    // const result = checkSafetyBeforeMotion();
 
+    // const result = checkSafetyBeforeMotion();
     const state = this.options.backend.getState();
     const result = this.safetyMonitor?.evaluateBeforeMotion(this.env, state.pose);
+
+    // continue when allowed is falsy.
     if (!result?.allowed) {
+
+      // continue when result?.emergencyStop.
       if (result?.emergencyStop) {
         this.options.backend.setEmergencyStop?.(true);
         this.options.onLog?.(result.reason ?? "Safety blocked motion");
@@ -2684,7 +3106,7 @@ export class Interpreter {
       return false;
     }
     return true;
-  }
+}
 }
 
 export class RuntimeError extends Error {

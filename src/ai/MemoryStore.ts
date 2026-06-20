@@ -32,6 +32,7 @@ export class MemoryStore {
     // None.
     //
     // Example:
+
     // const result = remember(key, value);
 
     this.entries.push({ key, value, at: Date.now() });
@@ -53,6 +54,7 @@ export class MemoryStore {
     // None.
     //
     // Example:
+
     // const result = recall(key);
 
     for (let i = this.entries.length - 1; i >= 0; i--) {
@@ -74,6 +76,7 @@ export class MemoryStore {
     // - `count` — optional parameter
     //
     // Example:
+
     // const result = recent(count);
 
     return this.entries.slice(-count).map((e) => e.value);
@@ -92,6 +95,7 @@ export class MemoryStore {
     // None.
     //
     // Example:
+
     // const result = clear();
 
     this.entries = [];
@@ -110,6 +114,7 @@ export class MemoryStore {
     // None.
     //
     // Example:
+
     // const result = summaryForPrompt();
 
     if (this.entries.length === 0) return undefined;

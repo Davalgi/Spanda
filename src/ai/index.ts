@@ -33,8 +33,8 @@ export function runtimeSafeAction(linear: number, angular: number): RuntimeValue
   // None.
   //
   // Example:
-  // const result = runtimeSafeAction(linear, angular);
 
+  // const result = runtimeSafeAction(linear, angular);
   return { kind: "safe_action", linear, angular, trusted: true };
 }
 
@@ -57,8 +57,8 @@ export function runtimeActionProposal(
   // None.
   //
   // Example:
-  // const result = runtimeActionProposal(linear, angular, source);
 
+  // const result = runtimeActionProposal(linear, angular, source);
   return { kind: "action_proposal", linear, angular, source, trace: [], trusted: false };
 }
 
@@ -75,8 +75,8 @@ export function isActionProposal(value: RuntimeValue): boolean {
   // None.
   //
   // Example:
-  // const result = isActionProposal(value);
 
+  // const result = isActionProposal(value);
   return value.kind === "action_proposal";
 }
 
@@ -95,7 +95,8 @@ export function isSafeAction(
   // None.
   //
   // Example:
-  // const result = isSafeAction(value);
+
+ // const result = isSafeAction(value);
  kind: "safe_action" }> {
   return value.kind === "safe_action";
 }
@@ -113,7 +114,8 @@ export function proposalFromValue(value: RuntimeValue): {
   // None.
   //
   // Example:
-  // const result = proposalFromValue(value);
+
+ // const result = proposalFromValue(value);
  linear: number; angular: number; source: string } | null {
   if (value.kind === "action_proposal") {
     return { linear: value.linear, angular: value.angular, source: value.source };
@@ -146,8 +148,8 @@ export function safeActionFromProposal(
   // None.
   //
   // Example:
-  // const result = safeActionFromProposal(linear, angular);
 
+  // const result = safeActionFromProposal(linear, angular);
   return runtimeSafeAction(linear, angular);
 }
 
@@ -165,8 +167,8 @@ export function wrapCompletion(text: string, model: string): RuntimeValue {
   // None.
   //
   // Example:
-  // const result = wrapCompletion(text, model);
 
+  // const result = wrapCompletion(text, model);
   return { kind: "completion", text, model };
 }
 
@@ -189,8 +191,8 @@ export function wrapDetection(
   // None.
   //
   // Example:
-  // const result = wrapDetection(label, confidence, nearestDistance);
 
+  // const result = wrapDetection(label, confidence, nearestDistance);
   return {
     kind: "object",
     typeName: "Detection",

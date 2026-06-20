@@ -24,11 +24,15 @@ function cliPath(): string | null {
   // None.
   //
   // Example:
-  // const result = cliPath();
 
+  // const result = cliPath();
   const release = join(repoRoot, "target/release/spanda");
   const debug = join(repoRoot, "target/debug/spanda");
+
+  // continue when existsSync(release).
   if (existsSync(release)) return release;
+
+  // continue when existsSync(debug).
   if (existsSync(debug)) return debug;
   return null;
 }
@@ -46,8 +50,8 @@ export function isCliAvailable(): boolean {
   // None.
   //
   // Example:
-  // const result = isCliAvailable();
 
+  // const result = isCliAvailable();
   return cliPath() !== null;
 }
 
@@ -64,20 +68,26 @@ export function checkViaCli(source: string): CheckResult {
   // None.
   //
   // Example:
-  // const result = checkViaCli(source);
 
+  // const result = checkViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return { ok: false, diagnostics: [{ message: "Rust CLI not built (run: cargo build -p spanda-cli)", line: 1, column: 1 }] };
   }
   const tmp = join(repoRoot, ".spanda-check-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["check", "--json", tmp], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
     /* ignore */
   }
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return {
       ok: false,
@@ -100,15 +110,19 @@ export function runViaCli(source: string): RunResult {
   // None.
   //
   // Example:
-  // const result = runViaCli(source);
 
+  // const result = runViaCli(source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     throw new Error("Rust CLI not built (run: cargo build -p spanda-cli)");
   }
   const tmp = join(repoRoot, ".spanda-run-tmp.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, ["run", "--json", tmp], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -119,6 +133,8 @@ export function runViaCli(source: string): RunResult {
     result?: RunResult;
     diagnostics?: CheckResult["diagnostics"];
   };
+
+  // continue when result is falsy.
   if (!parsed.ok || !parsed.result) {
     throw new Error(parsed.diagnostics?.[0]?.message ?? "Run failed");
   }

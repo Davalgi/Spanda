@@ -168,8 +168,8 @@ export function getSocProfile(name: string): SocProfile | undefined {
   // None.
   //
   // Example:
-  // const result = getSocProfile(name);
 
+  // const result = getSocProfile(name);
   return SOC_PROFILES[name];
 }
 
@@ -190,8 +190,8 @@ export function validateHalAgainstSoc(
   // None.
   //
   // Example:
-  // const result = validateHalAgainstSoc(profile, halMembers);
 
+  // const result = validateHalAgainstSoc(profile, halMembers);
   const errors: SocValidationError[] = [];
   let i2cCount = 0;
   let spiCount = 0;
@@ -199,52 +199,70 @@ export function validateHalAgainstSoc(
   let adcCount = 0;
   let pwmCount = 0;
 
+  // Process each halMember.
   for (const m of halMembers) {
+
+    // Branch on kind.
     switch (m.kind) {
       case "i2c":
         i2cCount++;
+
+        // continue when i2cCount > profile.i2cBuses.
         if (i2cCount > profile.i2cBuses) {
           errors.push({ message: `SoC ${profile.name} supports max ${profile.i2cBuses} I2C bus(es)` });
         }
+
+        // continue when includes is falsy.
         if (!profile.capabilities.includes("i2c")) {
           errors.push({ message: `SoC ${profile.name} does not support I2C` });
         }
         break;
       case "spi":
         spiCount++;
+
+        // continue when spiCount > profile.spiBuses.
         if (spiCount > profile.spiBuses) {
           errors.push({ message: `SoC ${profile.name} supports max ${profile.spiBuses} SPI bus(es)` });
         }
         break;
       case "uart":
         uartCount++;
+
+        // continue when uartCount > profile.uartPorts.
         if (uartCount > profile.uartPorts) {
           errors.push({ message: `SoC ${profile.name} supports max ${profile.uartPorts} UART port(s)` });
         }
         break;
       case "adc":
         adcCount++;
+
+        // continue when adcCount > profile.adcChannels.
         if (adcCount > profile.adcChannels) {
           errors.push({ message: `SoC ${profile.name} supports max ${profile.adcChannels} ADC channel(s)` });
         }
+
+        // continue when includes is falsy.
         if (!profile.capabilities.includes("adc")) {
           errors.push({ message: `SoC ${profile.name} does not support ADC` });
         }
         break;
       case "pwm":
         pwmCount++;
+
+        // continue when pwmCount > profile.pwmChannels.
         if (pwmCount > profile.pwmChannels) {
           errors.push({ message: `SoC ${profile.name} supports max ${profile.pwmChannels} PWM channel(s)` });
         }
         break;
       case "gpio":
+
+        // continue when m.pin >= profile.gpioPins.
         if (m.pin >= profile.gpioPins) {
           errors.push({ message: `GPIO pin ${m.pin} exceeds ${profile.name} limit (${profile.gpioPins} pins)` });
         }
         break;
     }
   }
-
   return errors;
 }
 
@@ -261,7 +279,7 @@ export function listSocProfiles(): SocProfile[] {
   // None.
   //
   // Example:
-  // const result = listSocProfiles();
 
+  // const result = listSocProfiles();
   return Object.values(SOC_PROFILES);
 }

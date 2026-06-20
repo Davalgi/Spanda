@@ -36,8 +36,8 @@ export function isStdNetworkType(name: string): name is StdNetworkType {
   // None.
   //
   // Example:
-  // const result = isStdNetworkType(name);
 
+  // const result = isStdNetworkType(name);
   return (STD_NETWORK_TYPES as readonly string[]).includes(name);
 }
 
@@ -54,7 +54,7 @@ export function resolveStdNetworkImport(path: string): boolean {
   // None.
   //
   // Example:
-  // const result = resolveStdNetworkImport(path);
 
+  // const result = resolveStdNetworkImport(path);
   return path === "std.network";
 }

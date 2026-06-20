@@ -45,6 +45,7 @@ export class AIModel {
     // - `goal?` — optional parameter
     //
     // Example:
+
     // const result = reason(prompt, input?, goal?);
 
     if (this.modelType !== "LLM") {
@@ -73,6 +74,7 @@ export class AIModel {
     // - `input?` — optional parameter
     //
     // Example:
+
     // const result = summarize(input?);
 
     if (this.modelType !== "LLM") {
@@ -118,8 +120,8 @@ function parseConfig(decl: AiModelDecl): AiModelConfig {
   // None.
   //
   // Example:
-  // const result = parseConfig(decl);
 
+  // const result = parseConfig(decl);
   const map = new Map(decl.config.map((e) => [e.key, e.value]));
   return {
     provider: String(map.get("provider") ?? "mock"),
@@ -142,7 +144,7 @@ export function createAIModel(decl: AiModelDecl): AIModel {
   // None.
   //
   // Example:
-  // const result = createAIModel(decl);
 
+  // const result = createAIModel(decl);
   return new AIModel(decl);
 }

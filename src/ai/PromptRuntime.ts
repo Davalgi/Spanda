@@ -21,12 +21,16 @@ export function buildPrompt(base: string, input?: RuntimeValue, goal?: string): 
   // - `goal?` — optional parameter
   //
   // Example:
-  // const result = buildPrompt(base, input?, goal?);
 
+  // const result = buildPrompt(base, input?, goal?);
   const parts: string[] = [];
+
+  // continue when goal?.trim().
   if (goal?.trim()) {
     parts.push(`Goal: ${goal.trim()}`);
   }
+
+  // continue when base.trim().
   if (base.trim()) {
     parts.push(base.trim());
   }
@@ -48,21 +52,26 @@ function summarizeInput(input?: RuntimeValue): string {
   // - `input?` — optional parameter
   //
   // Example:
-  // const result = summarizeInput(input?);
 
+  // const result = summarizeInput(input?);
   if (!input || input.kind === "void") return "(no input)";
 
+  // Branch on kind.
   switch (input.kind) {
     case "scan":
       return `LiDAR scan — nearest obstacle ${input.nearestDistance.toFixed(2)} m`;
     case "string":
       return input.value;
     case "object":
+
+      // continue when typeName equals "Detection".
       if (input.typeName === "Detection") {
         const label = input.fields.label?.kind === "string" ? input.fields.label.value : "object";
         const conf = input.fields.confidence?.kind === "number" ? input.fields.confidence.value : 0;
         return `Vision scene — ${label} (${conf.toFixed(2)} confidence)`;
       }
+
+      // continue when typeName equals "Detections".
       if (input.typeName === "Detections") {
         const count = input.fields.count?.kind === "number" ? input.fields.count.value : 0;
         return `Detections — ${count} object(s) in view`;

@@ -25,8 +25,8 @@ export function createAgentRuntime(decl: AgentDecl, memory: MemoryStore | null):
   // None.
   //
   // Example:
-  // const result = createAgentRuntime(decl, memory);
 
+  // const result = createAgentRuntime(decl, memory);
   return { decl, memory };
 }
 
@@ -43,8 +43,8 @@ export function agentToolNames(decl: AgentDecl): string[] {
   // None.
   //
   // Example:
-  // const result = agentToolNames(decl);
 
+  // const result = agentToolNames(decl);
   return decl.tools;
 }
 
@@ -61,8 +61,8 @@ export function agentUsesModels(decl: AgentDecl): string[] {
   // None.
   //
   // Example:
-  // const result = agentUsesModels(decl);
 
+  // const result = agentUsesModels(decl);
   return decl.usesAi;
 }
 
@@ -84,7 +84,7 @@ export function executeAgentPlan(agent: AgentRuntime, executor: PlanExecutor): v
   // None.
   //
   // Example:
-  // const result = executeAgentPlan(agent, executor);
 
+  // const result = executeAgentPlan(agent, executor);
   executor.executeBlock(agent.decl.planBody);
 }

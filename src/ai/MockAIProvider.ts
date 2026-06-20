@@ -20,12 +20,18 @@ function scanDistance(input?: RuntimeValue): number {
   // - `input?` — optional parameter
   //
   // Example:
-  // const result = scanDistance(input?);
 
+  // const result = scanDistance(input?);
   if (!input) return 5;
+
+  // continue when kind equals "scan".
   if (input.kind === "scan") return input.nearestDistance;
+
+  // continue when kind equals typeName === "Detection".
   if (input.kind === "object" && input.typeName === "Detection") {
     const nearest = input.fields.nearest_distance;
+
+    // continue when kind equals "number".
     if (nearest?.kind === "number") return nearest.value;
   }
   return 5;
@@ -47,8 +53,8 @@ function actionProposal(linear: number, angular: number, source: string, trace: 
   // None.
   //
   // Example:
-  // const result = actionProposal(linear, angular, source, trace);
 
+  // const result = actionProposal(linear, angular, source, trace);
   return { kind: "action_proposal", linear, angular, source, trace, trusted: false };
 }
 
@@ -66,6 +72,7 @@ export class MockAIProvider implements AIProvider {
     // None.
     //
     // Example:
+
     // const result = complete(request);
 
     const prompt = buildPrompt(request.prompt, request.input);
@@ -112,6 +119,7 @@ export class MockAIProvider implements AIProvider {
     // None.
     //
     // Example:
+
     // const result = detect(request);
 
     const dist = scanDistance(request.frame);
@@ -152,15 +160,14 @@ export function mockSummarize(input?: RuntimeValue, model = "mock"): RuntimeValu
   // - `model` — optional parameter
   //
   // Example:
-  // const result = mockSummarize(input?, model);
 
+  // const result = mockSummarize(input?, model);
   const summary =
     input?.kind === "scan"
       ? `Nearest obstacle at ${input.nearestDistance.toFixed(2)} m`
       : input?.kind === "object" && input.typeName === "Detection"
         ? `Detected ${(input.fields.label as { value: string })?.value ?? "object"}`
         : "Environment stable";
-
   return { kind: "completion", text: `[${model}] ${summary}`, model };
 }
 
@@ -179,8 +186,8 @@ export function mockAnalyzeFrame(frame?: RuntimeValue, model = "mock"): RuntimeV
   // - `model` — optional parameter
   //
   // Example:
-  // const result = mockAnalyzeFrame(frame?, model);
 
+  // const result = mockAnalyzeFrame(frame?, model);
   const dist = scanDistance(frame);
   return {
     kind: "object",
@@ -206,8 +213,8 @@ export function mockCameraFrame(): RuntimeValue {
   // None.
   //
   // Example:
-  // const result = mockCameraFrame();
 
+  // const result = mockCameraFrame();
   return {
     kind: "object",
     typeName: "CameraFrame",

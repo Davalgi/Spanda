@@ -80,35 +80,49 @@ function parseArgs(argv: string[]): ParsedArgs {
   // None.
   //
   // Example:
-  // const result = parseArgs(argv);
 
+  // const result = parseArgs(argv);
   const positional: string[] = [];
   const flags = new Map<string, string | boolean>();
   let json = false;
   let verbose = false;
 
+  // Loop with index variable i.
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
+
+    // continue when arg equals "--json".
     if (arg === "--json") {
       json = true;
+
+    // Otherwise, continue when arg equals "--verbose".
     } else if (arg === "--verbose") {
       verbose = true;
+
+    // Otherwise, continue when arg.startsWith("--").
     } else if (arg.startsWith("--")) {
       const key = arg.slice(2);
       const next = argv[i + 1];
+
+      // continue when next && !next.startsWith("-").
       if (next && !next.startsWith("-")) {
         flags.set(key, next);
         i++;
+
+      // Handle any remaining cases.
       } else {
         flags.set(key, true);
       }
+
+    // Otherwise, continue when length equals 2.
     } else if (arg.startsWith("-") && arg.length === 2) {
       flags.set(arg.slice(1), true);
+
+    // Handle any remaining cases.
     } else {
       positional.push(arg);
     }
   }
-
   const command = positional.shift() ?? "";
   return { command, positional, json, verbose, flags };
 }
@@ -126,8 +140,8 @@ function requireNative(message: string): void {
   // None.
   //
   // Example:
-  // const result = requireNative(message);
 
+  // const result = requireNative(message);
   if (!isCliAvailable()) {
     console.error(`Error: ${message}`);
     console.error("Build the native CLI: npm run build:rust");
@@ -149,8 +163,8 @@ function flagStr(flags: Map<string, string | boolean>, key: string): string | un
   // None.
   //
   // Example:
-  // const result = flagStr(flags, key);
 
+  // const result = flagStr(flags, key);
   const v = flags.get(key);
   return typeof v === "string" ? v : undefined;
 }
@@ -169,8 +183,8 @@ function flagBool(flags: Map<string, string | boolean>, key: string): boolean {
   // None.
   //
   // Example:
-  // const result = flagBool(flags, key);
 
+  // const result = flagBool(flags, key);
   return flags.get(key) === true;
 }
 
@@ -187,17 +201,21 @@ function main(): void {
   // None.
   //
   // Example:
-  // const result = main();
 
+  // const result = main();
   const parsed = parseArgs(process.argv.slice(2));
   const { command, positional, json, verbose, flags } = parsed;
 
+  // continue when !command || command equals "help" || command === "--help" || command === "-h".
   if (!command || command === "help" || command === "--help" || command === "-h") {
     console.log(USAGE);
     process.exit(0);
   }
 
+  // Try the operation and handle failures below.
   try {
+
+    // Branch on command.
     switch (command) {
       case "check":
         handleCheck(positional[0], json);
@@ -255,8 +273,12 @@ function main(): void {
         process.exit(1);
     }
   } catch (err) {
+
+    // continue when json.
     if (json) {
       console.log(JSON.stringify({ ok: false, error: String(err) }));
+
+    // Handle any remaining cases.
     } else {
       printError(err);
     }
@@ -277,8 +299,8 @@ function absPath(filePath: string | undefined): string {
   // None.
   //
   // Example:
-  // const result = absPath(filePath);
 
+  // const result = absPath(filePath);
   if (!filePath) {
     console.error("Error: missing file path");
     console.log(USAGE);
@@ -301,13 +323,19 @@ function handleCheck(filePath: string | undefined, json: boolean): void {
   // None.
   //
   // Example:
-  // const result = handleCheck(filePath, json);
 
+  // const result = handleCheck(filePath, json);
   const abs = absPath(filePath);
+
+  // continue when isCliAvailable().
   if (isCliAvailable()) {
     const result = runNativeCli(json ? ["check", "--json", abs] : ["check", abs]);
+
+    // continue when json.
     if (json) {
       console.log(result.stdout ?? "");
+
+    // Handle any remaining cases.
     } else {
       process.stdout.write(result.stdout ?? "");
       process.stderr.write(result.stderr ?? "");
@@ -315,8 +343,12 @@ function handleCheck(filePath: string | undefined, json: boolean): void {
     process.exit(result.status === 0 ? 0 : 1);
   }
   compileFile(abs);
+
+  // continue when json.
   if (json) {
     console.log(JSON.stringify({ ok: true, diagnostics: [] }));
+
+  // Handle any remaining cases.
   } else {
     console.log(`✓ ${filePath} — no type errors`);
   }
@@ -337,20 +369,31 @@ function handleVerify(filePath: string | undefined, json: boolean, flags: Map<st
   // None.
   //
   // Example:
-  // const result = handleVerify(filePath, json, flags);
 
+  // const result = handleVerify(filePath, json, flags);
   requireNative("Hardware verification requires the native Rust CLI.");
   const abs = absPath(filePath);
   const extra: string[] = [];
   const target = flagStr(flags, "target");
-  if (target) extra.push("--target", target);
-  if (flagBool(flags, "all-targets")) extra.push("--all-targets");
-  if (flagBool(flags, "simulate")) extra.push("--simulate");
-  if (json) extra.push("--json");
 
+  // continue when target) extra.push("--target", target.
+  if (target) extra.push("--target", target);
+
+  // continue when flagBool(flags, "all-targets")) extra.push("--all-targets".
+  if (flagBool(flags, "all-targets")) extra.push("--all-targets");
+
+  // continue when flagBool(flags, "simulate")) extra.push("--simulate".
+  if (flagBool(flags, "simulate")) extra.push("--simulate");
+
+  // continue when json) extra.push("--json".
+  if (json) extra.push("--json");
   const result = runNativeCli(["verify", abs, ...extra]);
+
+  // continue when json.
   if (json) {
     console.log(result.stdout ?? "");
+
+  // Handle any remaining cases.
   } else {
     printVerifyHuman(JSON.parse(result.stdout || "{}") as VerifyResult, filePath!);
   }
@@ -371,18 +414,26 @@ function printVerifyHuman(result: VerifyResult, filePath: string): void {
   // None.
   //
   // Example:
-  // const result = printVerifyHuman(result, filePath);
 
+  // const result = printVerifyHuman(result, filePath);
   const compatible = result.compatible ?? result.ok;
   console.log(`\nHardware compatibility: ${filePath}`);
+
+  // continue when result.target) console.log(`  Target: ${result.target}`.
   if (result.target) console.log(`  Target: ${result.target}`);
   console.log(`  Status: ${compatible ? "COMPATIBLE" : "INCOMPATIBLE"}\n`);
+
+  // Handle each entry in items.
   for (const item of result.items) {
     const icon = item.severity === "pass" ? "✓" : item.severity === "warning" ? "⚠" : "✗";
     console.log(`  ${icon} [${item.category}] ${item.message}`);
   }
+
+  // continue when result.matrix?.cells.length.
   if (result.matrix?.cells.length) {
     console.log("\n  Compatibility matrix:");
+
+    // Process each cell.
     for (const cell of result.matrix.cells) {
       console.log(`    ${cell.robot} × ${cell.target}: ${cell.compatible ? "ok" : "fail"}`);
     }
@@ -406,19 +457,21 @@ function handleRun(filePath: string | undefined, verbose: boolean, json: boolean
   // None.
   //
   // Example:
-  // const result = handleRun(filePath, verbose, json, extraVerbose);
 
+  // const result = handleRun(filePath, verbose, json, extraVerbose);
   const abs = absPath(filePath);
   const showVerbose = verbose || extraVerbose;
 
+  // continue when isCliAvailable() && json.
   if (isCliAvailable() && json) {
     const args = ["run", "--json", abs];
+
+    // continue when showVerbose) args.push("--verbose".
     if (showVerbose) args.push("--verbose");
     const result = runNativeCli(args);
     console.log(result.stdout ?? "");
     process.exit(result.status === 0 ? 0 : 1);
   }
-
   runSimulation(abs, filePath!, showVerbose);
 }
 
@@ -437,48 +490,54 @@ function runSimulation(absPath: string, displayPath: string, verbose: boolean): 
   // None.
   //
   // Example:
-  // const result = runSimulation(absPath, displayPath, verbose);
 
+  // const result = runSimulation(absPath, displayPath, verbose);
   const { program } = compileFile(absPath);
   const robot = program.robots[0];
+
+  // continue when robot is falsy.
   if (!robot) {
     console.error("No robot defined in program");
     process.exit(1);
   }
-
   const sim = createDefaultSimulator();
   const logs: string[] = [];
-
   console.log(`\n🤖 Running robot "${robot.name}" from ${displayPath}\n`);
-
   const state = run(program, {
     backend: sim,
     maxLoopIterations: verbose ? 20 : 10,
     onLog: (msg) => logs.push(msg),
     onMotionBlocked: (reason) => logs.push(`⚠ BLOCKED: ${reason}`),
   });
-
   console.log("── Final State ──");
   console.log(`  Pose:     x=${state.pose.x.toFixed(3)} m, y=${state.pose.y.toFixed(3)} m, θ=${state.pose.theta.toFixed(3)} rad`);
+
+  // continue when z differs from undefined.
   if (state.pose.z !== undefined) {
     console.log(`  Altitude: z=${state.pose.z.toFixed(3)} m`);
   }
   console.log(`  Velocity: linear=${state.velocity.linear.toFixed(3)} m/s, angular=${state.velocity.angular.toFixed(3)} rad/s`);
   console.log(`  E-stop:   ${state.emergencyStop ? "ACTIVE" : "off"}`);
 
+  // continue when verbose.
   if (verbose) {
     console.log("\n── Simulation Log ──");
+
+    // Iterate over getEventLog.
     for (const event of sim.getEventLog()) {
       console.log(`  ${event}`);
     }
+
+    // continue when logs.length > 0.
     if (logs.length > 0) {
       console.log("\n── Runtime Log ──");
+
+      // Process each log.
       for (const log of logs) {
         console.log(`  ${log}`);
       }
     }
   }
-
   console.log("\n✓ Simulation complete\n");
 }
 
@@ -496,17 +555,23 @@ function handleFmt(filePath: string | undefined, json: boolean): void {
   // None.
   //
   // Example:
-  // const result = handleFmt(filePath, json);
 
+  // const result = handleFmt(filePath, json);
   requireNative("Formatting requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const result = fmtViaCli(source);
+
+  // continue when json.
   if (json) {
     console.log(JSON.stringify(result));
+
+  // Otherwise, continue when result.changed.
   } else if (result.changed) {
     writeFileSync(abs, result.formatted);
     console.log(`✓ Formatted ${filePath}`);
+
+  // Handle any remaining cases.
   } else {
     console.log(`✓ ${filePath} — already formatted`);
   }
@@ -527,19 +592,29 @@ function handleLint(filePath: string | undefined, json: boolean): void {
   // None.
   //
   // Example:
-  // const result = handleLint(filePath, json);
 
+  // const result = handleLint(filePath, json);
   requireNative("Linting requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const result = lintViaCli(source);
+
+  // continue when json.
   if (json) {
     console.log(JSON.stringify(result));
+
+  // Handle any remaining cases.
   } else {
+
+    // continue when result.ok.
     if (result.ok) {
       console.log(`✓ ${filePath} — no lint issues`);
+
+    // Handle any remaining cases.
     } else {
       console.error(`Lint issues in ${filePath}:`);
+
+      // Process each issue.
       for (const issue of result.issues) {
         console.error(`  [${issue.line}:${issue.column}] ${issue.severity}: ${issue.message} (${issue.rule})`);
       }
@@ -563,17 +638,23 @@ function handleDoc(filePath: string | undefined, json: boolean, outPath: string 
   // None.
   //
   // Example:
-  // const result = handleDoc(filePath, json, outPath);
 
+  // const result = handleDoc(filePath, json, outPath);
   requireNative("Documentation generation requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const result = docViaCli(source);
+
+  // continue when json.
   if (json) {
     console.log(JSON.stringify(result));
+
+  // Otherwise, continue when outPath.
   } else if (outPath) {
     writeFileSync(resolve(outPath), result.markdown);
     console.log(`✓ Wrote documentation to ${outPath}`);
+
+  // Handle any remaining cases.
   } else {
     console.log(result.markdown);
   }
@@ -595,16 +676,20 @@ function handleCodegen(filePath: string | undefined, target: string | undefined,
   // None.
   //
   // Example:
-  // const result = handleCodegen(filePath, target, outPath);
 
+  // const result = handleCodegen(filePath, target, outPath);
   requireNative("Codegen requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const t = (target ?? "native") as "native" | "wasm" | "esp32";
   const output = codegenViaCli(source, t);
+
+  // continue when outPath.
   if (outPath) {
     writeFileSync(resolve(outPath), output);
     console.log(`✓ Wrote codegen output to ${outPath}`);
+
+  // Handle any remaining cases.
   } else {
     console.log(output);
   }
@@ -624,15 +709,19 @@ function handleDeploy(filePath: string | undefined, outPath: string | undefined)
   // None.
   //
   // Example:
-  // const result = handleDeploy(filePath, outPath);
 
+  // const result = handleDeploy(filePath, outPath);
   requireNative("Deploy requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const manifest = deployViaCli(source);
+
+  // continue when outPath.
   if (outPath) {
     writeFileSync(resolve(outPath), manifest);
     console.log(`✓ Wrote WASM deploy manifest to ${outPath}`);
+
+  // Handle any remaining cases.
   } else {
     console.log(manifest);
   }
@@ -652,15 +741,21 @@ function handleIr(filePath: string | undefined, json: boolean): void {
   // None.
   //
   // Example:
-  // const result = handleIr(filePath, json);
 
+  // const result = handleIr(filePath, json);
   requireNative("Spanda IR lowering requires the native Rust CLI.");
   const abs = absPath(filePath);
   const args = ["ir", abs];
+
+  // continue when json) args.push("--json".
   if (json) args.push("--json");
   const result = runNativeCli(args);
+
+  // continue when json.
   if (json) {
     console.log(result.stdout ?? "");
+
+  // Handle any remaining cases.
   } else {
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
@@ -687,14 +782,18 @@ function handleNativeCodegen(
   // None.
   //
   // Example:
-  // const result = handleNativeCodegen(command, filePath, flags);
 
+  // const result = handleNativeCodegen(command, filePath, flags);
   requireNative(`${command} requires the native Rust CLI.`);
   const abs = absPath(filePath);
   const args: string[] = [command];
   const out = flagStr(flags, "out");
+
+  // continue when out) args.push("--out", out.
   if (out) args.push("--out", out);
   const triple = flagStr(flags, "target-triple");
+
+  // continue when triple) args.push("--target-triple", triple.
   if (triple) args.push("--target-triple", triple);
   args.push(abs);
   const result = runNativeCli(args);
@@ -717,19 +816,27 @@ function handleDebug(filePath: string | undefined, flags: Map<string, string | b
   // None.
   //
   // Example:
-  // const result = handleDebug(filePath, flags);
 
+  // const result = handleDebug(filePath, flags);
   requireNative("Debug requires the native Rust CLI.");
   const abs = absPath(filePath);
   const source = readFileSync(abs, "utf-8");
   const breakpoints: number[] = [];
   const br = flags.get("break");
+
+  // continue when typeof br equals push.
   if (typeof br === "string") breakpoints.push(Number(br));
   const result = debugViaCli(source, breakpoints);
+
+  // continue when length equals 0.
   if (result.pauses.length === 0) {
     console.log("✓ Debug session completed (no breakpoints hit)");
+
+  // Handle any remaining cases.
   } else {
     console.log("Debug pauses:");
+
+    // Process each pause.
     for (const p of result.pauses) {
       console.log(`  line ${p.line} — ${p.reason}`);
     }
@@ -758,23 +865,34 @@ function handlePackage(
   // None.
   //
   // Example:
-  // const result = handlePackage(command, positional, flags, json);
 
+  // const result = handlePackage(command, positional, flags, json);
   requireNative("Package commands require the native Rust CLI.");
   const args = [command];
+
+  // continue when json) args.push("--json".
   if (json) args.push("--json");
   const project = flagStr(flags, "project");
+
+  // continue when project) args.push("--project", project.
   if (project) args.push("--project", project);
   const description = flagStr(flags, "description");
+
+  // continue when description) args.push("--description", description.
   if (description) args.push("--description", description);
   const version = flagStr(flags, "version");
+
+  // continue when version) args.push("--version", version.
   if (version) args.push("--version", version);
   const pathFlag = flagStr(flags, "path");
+
+  // continue when pathFlag) args.push("--path", pathFlag.
   if (pathFlag) args.push("--path", pathFlag);
   const git = flagStr(flags, "git");
+
+  // continue when git) args.push("--git", git.
   if (git) args.push("--git", git);
   args.push(...positional);
-
   const result = runNativeCli(args);
   process.stdout.write(result.stdout ?? "");
   process.stderr.write(result.stderr ?? "");
@@ -795,24 +913,34 @@ function handleRegistry(positional: string[], json: boolean): void {
   // None.
   //
   // Example:
-  // const result = handleRegistry(positional, json);
 
+  // const result = handleRegistry(positional, json);
   requireNative("Registry commands require the native Rust CLI.");
   const sub = positional[0];
+
+  // continue when sub equals "search".
   if (sub === "search") {
     const query = positional[1];
+
+    // continue when query is falsy.
     if (!query) {
       console.error("Error: missing search query");
       process.exit(1);
     }
     const args = ["registry", "search", query];
+
+    // continue when json) args.push("--json".
     if (json) args.push("--json");
     const result = runNativeCli(args);
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
     process.exit(result.status === 0 ? 0 : 1);
+
+  // Otherwise, continue when sub equals "info".
   } else if (sub === "info") {
     const pkg = positional[1];
+
+    // continue when pkg is falsy.
     if (!pkg) {
       console.error("Error: missing package name");
       process.exit(1);
@@ -820,6 +948,8 @@ function handleRegistry(positional: string[], json: boolean): void {
     const result = runNativeCli(["registry", "info", pkg]);
     console.log(result.stdout ?? "");
     process.exit(result.status === 0 ? 0 : 1);
+
+  // Handle any remaining cases.
   } else {
     console.error("Usage: spanda registry search <query> | spanda registry info <package>");
     process.exit(1);
@@ -839,21 +969,33 @@ function printError(err: unknown): void {
   // None.
   //
   // Example:
-  // const result = printError(err);
 
+  // const result = printError(err);
   if (err instanceof LexerError) {
     console.error(`Lexer error [${err.line}:${err.column}]: ${err.message}`);
+
+  // Otherwise, continue when err instanceof ParseError.
   } else if (err instanceof ParseError) {
     console.error(`Parse error [${err.line}:${err.column}]: ${err.message}`);
+
+  // Otherwise, continue when err instanceof TypeCheckError.
   } else if (err instanceof TypeCheckError) {
     console.error("Type errors:");
+
+    // Process each error.
     for (const e of err.errors) {
       console.error(`  [${e.line}:${e.column}] ${e.message}`);
     }
+
+  // Otherwise, continue when err instanceof RuntimeError.
   } else if (err instanceof RuntimeError) {
     console.error(`Runtime error [line ${err.line}]: ${err.message}`);
+
+  // Otherwise, continue when err instanceof Error.
   } else if (err instanceof Error) {
     console.error(`Error: ${err.message}`);
+
+  // Handle any remaining cases.
   } else {
     console.error(String(err));
   }

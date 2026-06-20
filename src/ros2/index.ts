@@ -42,11 +42,11 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
-    // const result = connect(options);
 
+    // const result = connect(options);
     this.connected = true;
     console.log(`[ROS2] Connected as node '${options.nodeName ?? "spanda_node"}'`);
-  }
+}
 
   async disconnect(): Promise<void> {
     // Disconnect.
@@ -61,11 +61,11 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
-    // const result = disconnect();
 
+    // const result = disconnect();
     this.connected = false;
     console.log("[ROS2] Disconnected");
-  }
+}
 
   readSensor(_sensorName: string, sensorType: string): RuntimeValue {
     // ReadSensor.
@@ -81,6 +81,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
+
     // const result = readSensor(_sensorName, sensorType);
 
     if (!this.connected) throw new Error("ROS2 adapter not connected");
@@ -101,6 +102,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
+
     // const result = executeMotion(cmd);
 
     if (!this.connected) return;
@@ -120,6 +122,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
+
     // const result = tick(dtMs);
 
     const dt = dtMs / 1000;
@@ -141,6 +144,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
+
     // const result = getState();
 
     return { ...this.state, pose: { ...this.state.pose }, velocity: { ...this.state.velocity } };
@@ -159,6 +163,7 @@ export class Ros2AdapterStub implements Ros2Adapter {
     // None.
     //
     // Example:
+
     // const result = setEmergencyStop(active);
 
     this.state.emergencyStop = active;
@@ -202,7 +207,7 @@ export function createRos2Adapter(): Ros2Adapter {
   // None.
   //
   // Example:
-  // const result = createRos2Adapter();
 
+  // const result = createRos2Adapter();
   return new Ros2AdapterStub();
 }

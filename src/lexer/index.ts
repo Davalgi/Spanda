@@ -450,24 +450,26 @@ export function tokenize(source: string): Token[] {
   // None.
   //
   // Example:
-  // const result = tokenize(source);
 
+  // const result = tokenize(source);
   const tokens: Token[] = [];
   let line = 1;
   let column = 1;
   let i = 0;
-
   const loc = () => ({ line, column, offset: i });
 
+  // Repeat while i < source.length.
   while (i < source.length) {
     const ch = source[i];
 
+    // continue when ch equals " " || ch === "\t" || ch === "\r".
     if (ch === " " || ch === "\t" || ch === "\r") {
       i++;
       column++;
       continue;
     }
 
+    // continue when ch equals "\n".
     if (ch === "\n") {
       i++;
       line++;
@@ -475,153 +477,202 @@ export function tokenize(source: string): Token[] {
       continue;
     }
 
+    // continue when ch equals "/" && source[i + 1] === "/".
     if (ch === "/" && source[i + 1] === "/") {
+
+      // Repeat while i < source.length && source[i] !== "\n".
       while (i < source.length && source[i] !== "\n") {
         i++;
       }
       continue;
     }
-
     const start = loc();
 
+    // continue when ch equals "[".
     if (ch === "[") {
       tokens.push({ type: "LBRACKET", lexeme: "[", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "]".
     if (ch === "]") {
       tokens.push({ type: "RBRACKET", lexeme: "]", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "{".
     if (ch === "{") {
       tokens.push({ type: "LBRACE", lexeme: "{", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "}".
     if (ch === "}") {
       tokens.push({ type: "RBRACE", lexeme: "}", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ".
     if (ch === "(") {
       tokens.push({ type: "LPAREN", lexeme: "(", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ")".
     if (ch === ")") {
       tokens.push({ type: "RPAREN", lexeme: ")", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ";".
     if (ch === ";") {
       tokens.push({ type: "SEMICOLON", lexeme: ";", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ":".
     if (ch === ":") {
       tokens.push({ type: "COLON", lexeme: ":", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ",".
     if (ch === ",") {
       tokens.push({ type: "COMMA", lexeme: ",", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ".
     if (ch === ".") {
       tokens.push({ type: "DOT", lexeme: ".", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "+".
     if (ch === "+") {
       tokens.push({ type: "PLUS", lexeme: "+", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "-" && source[i + 1] === ">".
     if (ch === "-" && source[i + 1] === ">") {
       tokens.push({ type: "ARROW", lexeme: "->", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals "-".
     if (ch === "-") {
       tokens.push({ type: "MINUS", lexeme: "-", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "*".
     if (ch === "*") {
       tokens.push({ type: "STAR", lexeme: "*", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "/".
     if (ch === "/") {
       tokens.push({ type: "SLASH", lexeme: "/", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "%".
     if (ch === "%") {
       tokens.push({ type: "PERCENT", lexeme: "%", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "<" && source[i + 1] === "=".
     if (ch === "<" && source[i + 1] === "=") {
       tokens.push({ type: "LTE", lexeme: "<=", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals "<".
     if (ch === "<") {
       tokens.push({ type: "LT", lexeme: "<", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals ">" && source[i + 1] === "=".
     if (ch === ">" && source[i + 1] === "=") {
       tokens.push({ type: "GTE", lexeme: ">=", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals ">".
     if (ch === ">") {
       tokens.push({ type: "GT", lexeme: ">", value: null, ...start });
       i++;
       column++;
       continue;
     }
+
+    // continue when ch equals "=" && source[i + 1] === "=".
     if (ch === "=" && source[i + 1] === "=") {
       tokens.push({ type: "EQ", lexeme: "==", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals "!" && source[i + 1] === "=".
     if (ch === "!" && source[i + 1] === "=") {
       tokens.push({ type: "NEQ", lexeme: "!=", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals "=" && source[i + 1] === ">".
     if (ch === "=" && source[i + 1] === ">") {
       tokens.push({ type: "FAT_ARROW", lexeme: "=>", value: null, ...start });
       i += 2;
       column += 2;
       continue;
     }
+
+    // continue when ch equals "=".
     if (ch === "=") {
       tokens.push({ type: "ASSIGN", lexeme: "=", value: null, ...start });
       i++;
@@ -629,21 +680,30 @@ export function tokenize(source: string): Token[] {
       continue;
     }
 
+    // continue when ch equals '"'.
     if (ch === '"') {
       i++;
       column++;
       let value = "";
+
+      // Repeat while i < source.length && source[i] !== '"'.
       while (i < source.length && source[i] !== '"') {
+
+        // continue when source[i] equals length.
         if (source[i] === "\\" && i + 1 < source.length) {
           value += source[i + 1];
           i += 2;
           column += 2;
+
+        // Handle any remaining cases.
         } else {
           value += source[i];
           i++;
           column++;
         }
       }
+
+      // continue when i >= source.length.
       if (i >= source.length) {
         throw new LexerError("Unterminated string", line, column);
       }
@@ -653,10 +713,13 @@ export function tokenize(source: string): Token[] {
       continue;
     }
 
+    // continue when ch equals "0" &&.
     if (ch === "0" && (source[i + 1] === "x" || source[i + 1] === "X")) {
       i += 2;
       column += 2;
       let hexStr = "";
+
+      // Repeat while i < source.length && isHexDigit(source[i]).
       while (i < source.length && isHexDigit(source[i])) {
         hexStr += source[i];
         i++;
@@ -667,23 +730,33 @@ export function tokenize(source: string): Token[] {
       continue;
     }
 
+    // continue when isDigit equals " && isDigit.
     if (isDigit(ch) || (ch === "." && isDigit(source[i + 1]))) {
       let numStr = "";
+
+      // Repeat while i < source.length && (isDigit(source[i]) || source[i] === ".").
       while (i < source.length && (isDigit(source[i]) || source[i] === ".")) {
         numStr += source[i];
         i++;
         column++;
       }
       const num = parseFloat(numStr);
-
       let matchedUnit: UnitLexeme | undefined;
+
+      // Repeat while i < source.length && (source[i] === " " || source[i] === "\t").
       while (i < source.length && (source[i] === " " || source[i] === "\t")) {
         i++;
         column++;
       }
+
+      // Iterate over UNIT SUFFIXES.
       for (const suffix of UNIT_SUFFIXES) {
+
+        // continue when length) equals suffix.
         if (source.slice(i, i + suffix.length) === suffix) {
           const next = source[i + suffix.length];
+
+          // continue when next && equals "/").
           if (next && (isIdentChar(next) || next === "/")) continue;
           matchedUnit = suffix;
           i += suffix.length;
@@ -692,6 +765,7 @@ export function tokenize(source: string): Token[] {
         }
       }
 
+      // continue when matchedUnit.
       if (matchedUnit) {
         tokens.push({
           type: "UNIT_LITERAL",
@@ -700,14 +774,19 @@ export function tokenize(source: string): Token[] {
           unit: matchedUnit,
           ...start,
         });
+
+      // Handle any remaining cases.
       } else {
         tokens.push({ type: "NUMBER", lexeme: numStr, value: num, ...start });
       }
       continue;
     }
 
+    // continue when isIdentStart(ch).
     if (isIdentStart(ch)) {
       let ident = "";
+
+      // Repeat while i < source.length && isIdentChar(source[i]).
       while (i < source.length && isIdentChar(source[i])) {
         ident += source[i];
         i++;
@@ -722,10 +801,8 @@ export function tokenize(source: string): Token[] {
       });
       continue;
     }
-
     throw new LexerError(`Unexpected character '${ch}'`, line, column);
   }
-
   tokens.push({
     type: "EOF",
     lexeme: "",
@@ -750,8 +827,8 @@ function isHexDigit(ch: string): boolean {
   // None.
   //
   // Example:
-  // const result = isHexDigit(ch);
 
+  // const result = isHexDigit(ch);
   return isDigit(ch) || (ch >= "a" && ch <= "f") || (ch >= "A" && ch <= "F");
 }
 
@@ -768,8 +845,8 @@ function isDigit(ch: string): boolean {
   // None.
   //
   // Example:
-  // const result = isDigit(ch);
 
+  // const result = isDigit(ch);
   return ch >= "0" && ch <= "9";
 }
 
@@ -786,8 +863,8 @@ function isIdentStart(ch: string): boolean {
   // None.
   //
   // Example:
-  // const result = isIdentStart(ch);
 
+  // const result = isIdentStart(ch);
   return (ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || ch === "_";
 }
 
@@ -804,8 +881,8 @@ function isIdentChar(ch: string): boolean {
   // None.
   //
   // Example:
-  // const result = isIdentChar(ch);
 
+  // const result = isIdentChar(ch);
   return isIdentStart(ch) || isDigit(ch);
 }
 
@@ -822,10 +899,14 @@ export function unitFromLexeme(lexeme: UnitLexeme): import("../ast/nodes.js").Un
   // None.
   //
   // Example:
-  // const result = unitFromLexeme(lexeme);
 
+  // const result = unitFromLexeme(lexeme);
   if (lexeme === "m/s2" || lexeme === "m/s²") return "m/s²";
+
+  // continue when lexeme equals "cd/m2".
   if (lexeme === "cd/m2") return "cd/m²";
+
+  // continue when lexeme equals "µg/m³".
   if (lexeme === "µg/m³") return "ug/m3";
   return lexeme;
 }

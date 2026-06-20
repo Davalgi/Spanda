@@ -31,6 +31,7 @@ export class ModuleRegistry {
     // None.
     //
     // Example:
+
     // const result = register(moduleName, program);
 
     const exports: ModuleExports = { functions: new Map() };
@@ -50,13 +51,15 @@ export class ModuleRegistry {
     return this.modules.get(importPath)?.functions.get(name);
   }
 
-  static fromPrograms(entries: Array<[string, Program]>): ModuleRegistry {
+  static fromPrograms(entries: Array<[string, Program]>): ModuleRegistry {    // Compute registry for the following logic.
     const registry = new ModuleRegistry();
+
+    // Iterate over the collection.
     for (const [name, program] of entries) {
       registry.register(name, program);
     }
     return registry;
-  }
+}
 
   get moduleCount(): number {
     return this.modules.size;
@@ -77,17 +80,23 @@ function collectModules(dir: string, out: Array<[string, Program]>): void {
   // None.
   //
   // Example:
-  // const result = collectModules(dir, out);
 
+  // const result = collectModules(dir, out);
   for (const entry of readdirSync(dir)) {
     const path = join(dir, entry);
+
+    // continue when statSync(path).isDirectory().
     if (statSync(path).isDirectory()) {
       collectModules(path, out);
       continue;
     }
+
+    // continue when sd") is falsy.
     if (!entry.endsWith(".sd")) continue;
     const source = readFileSync(path, "utf8");
     const program = parse(tokenize(source));
+
+    // continue when moduleName is falsy.
     if (!program.moduleName) {
       throw new Error(`Module file '${path}' must declare \`module <name>;\``);
     }
@@ -108,23 +117,39 @@ export function loadProjectModules(projectRoot: string): ModuleRegistry {
   // None.
   //
   // Example:
-  // const result = loadProjectModules(projectRoot);
 
+  // const result = loadProjectModules(projectRoot);
   const entries: Array<[string, Program]> = [];
+
+  // Iterate over ["src", "tests"].
   for (const sub of ["src", "tests"]) {
     const dir = join(projectRoot, sub);
+
+    // Try the operation and handle failures below.
     try {
+
+      // continue when statSync(dir).isDirectory()) collectModules(dir, entries.
       if (statSync(dir).isDirectory()) collectModules(dir, entries);
     } catch {
       /* missing dir */
     }
   }
   const vendorRoot = join(projectRoot, ".spanda", "packages");
+
+  // Try the operation and handle failures below.
   try {
+
+    // continue when statSync(vendorRoot).isDirectory().
     if (statSync(vendorRoot).isDirectory()) {
+
+      // Iterate over readdirSync.
       for (const pkg of readdirSync(vendorRoot)) {
         const src = join(vendorRoot, pkg, "src");
+
+        // Try the operation and handle failures below.
         try {
+
+          // continue when statSync(src).isDirectory()) collectModules(src, entries.
           if (statSync(src).isDirectory()) collectModules(src, entries);
         } catch {
           /* no src */
@@ -150,8 +175,8 @@ export function moduleNameFromPath(path: string): string {
   // None.
   //
   // Example:
-  // const result = moduleNameFromPath(path);
 
+  // const result = moduleNameFromPath(path);
   const base = path.split("/").pop()?.replace(/\.sd$/, "") ?? "main";
   return base.replace(/-/g, "_");
 }

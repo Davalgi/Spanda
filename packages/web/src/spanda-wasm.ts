@@ -41,8 +41,8 @@ export function isWasmLoaded(): boolean {
   // None.
   //
   // Example:
-  // const result = isWasmLoaded();
 
+  // const result = isWasmLoaded();
   return wasmModule !== null;
 }
 
@@ -59,9 +59,11 @@ async function ensureWasm(): Promise<void> {
   // None.
   //
   // Example:
-  // const result = ensureWasm();
 
+  // const result = ensureWasm();
   if (wasmModule) return;
+
+  // Try the operation and handle failures below.
   try {
     const init = await import("../wasm/spanda_wasm.js");
     await init.default();
@@ -87,9 +89,11 @@ export async function checkSource(source: string): Promise<CheckResponse> {
   // None.
   //
   // Example:
-  // const result = checkSource(source);
 
+  // const result = checkSource(source);
   await ensureWasm();
+
+  // continue when wasmModule is falsy.
   if (!wasmModule) {
     return { ok: false, diagnostics: [{ message: "WASM module not loaded", line: 1, column: 1 }] };
   }
@@ -110,9 +114,11 @@ export async function runSource(source: string, maxLoopIterations: number): Prom
   // None.
   //
   // Example:
-  // const result = runSource(source, maxLoopIterations);
 
+  // const result = runSource(source, maxLoopIterations);
   await ensureWasm();
+
+  // continue when wasmModule is falsy.
   if (!wasmModule) {
     return { ok: false, diagnostics: [{ message: "WASM module not loaded", line: 1, column: 1 }] };
   }

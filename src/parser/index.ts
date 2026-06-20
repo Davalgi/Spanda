@@ -116,8 +116,8 @@ export function parse(tokens: Token[]): Program {
   // None.
   //
   // Example:
-  // const result = parse(tokens);
 
+  // const result = parse(tokens);
   const parser = new Parser(tokens);
   return parser.parseProgram();
 }
@@ -141,10 +141,10 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = peek();
 
+    // const result = peek();
     return this.tokens[this.pos];
-  }
+}
 
   private previous(): Token {
     // Previous.
@@ -159,10 +159,10 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = previous();
 
+    // const result = previous();
     return this.tokens[this.pos - 1];
-  }
+}
 
   private advance(): Token {
     // Advance.
@@ -177,11 +177,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = advance();
 
+    // const result = advance();
     if (this.peek().type !== "EOF") this.pos++;
     return this.previous();
-  }
+}
 
   private check(type: Token["type"]): boolean {
     // Check input.
@@ -196,10 +196,10 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = check(type);
 
+    // const result = check(type);
     return this.peek().type === type;
-  }
+}
 
   private match(...types: Token["type"][]): boolean {
     // Match.
@@ -214,16 +214,18 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = match(...types);
 
+    // const result = match(...types);
     for (const t of types) {
+
+      // continue when this.check(t).
       if (this.check(t)) {
         this.advance();
         return true;
       }
     }
     return false;
-  }
+}
 
   private expect(type: Token["type"], message: string): Token {
     // Expect.
@@ -239,12 +241,12 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = expect(type, message);
 
+    // const result = expect(type, message);
     if (this.check(type)) return this.advance();
     const t = this.peek();
     throw new ParseError(message, t.line, t.column);
-  }
+}
 
   private spanFrom(start: Token, end: Token): Span {
     // SpanFrom.
@@ -260,13 +262,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = spanFrom(start, end);
 
+    // const result = spanFrom(start, end);
     return {
       start: { line: start.line, column: start.column, offset: start.offset },
       end: { line: end.line, column: end.column, offset: end.offset },
     };
-  }
+}
 
   private parseLabel(message: string): string {
     // ParseLabel.
@@ -281,8 +283,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseLabel(message);
 
+    // const result = parseLabel(message);
     const labelTypes: Token["type"][] = [
       "IDENT",
       "PLAN",
@@ -324,12 +326,14 @@ class Parser {
       "VERIFY",
       "REQUIRES",
     ];
+
+    // check membership before continuing.
     if (labelTypes.includes(this.peek().type)) {
       return this.advance().lexeme;
     }
     const t = this.peek();
     throw new ParseError(message, t.line, t.column);
-  }
+}
 
   private parseBindingIdent(message: string): string {
     // ParseBindingIdent.
@@ -344,8 +348,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseBindingIdent(message);
 
+    // const result = parseBindingIdent(message);
     const bindingTypes: Token["type"][] = [
       "IDENT",
       "PLAN",
@@ -385,12 +389,14 @@ class Parser {
       "DEVICE",
       "BUS",
     ];
+
+    // check membership before continuing.
     if (bindingTypes.includes(this.peek().type)) {
       return this.advance().lexeme;
     }
     const t = this.peek();
     throw new ParseError(message, t.line, t.column);
-  }
+}
 
   parseProgram(): Program {
     // ParseProgram.
@@ -405,6 +411,7 @@ class Parser {
     // None.
     //
     // Example:
+
     // const result = parseProgram();
 
     const start = this.peek();
@@ -507,14 +514,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDottedName(message);
 
+    // const result = parseDottedName(message);
     const parts = [this.parseImportSegment(message)];
+
+    // Repeat while this.match("DOT").
     while (this.match("DOT")) {
       parts.push(this.parseImportSegment("Expected name after '.'"));
     }
     return parts.join(".");
-  }
+}
 
   private isModuleFnStart(): boolean {
     // IsModuleFnStart.
@@ -529,8 +538,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = isModuleFnStart();
 
+    // const result = isModuleFnStart();
     return (
       this.check("EXPORT") ||
       this.check("PUBLIC") ||
@@ -538,7 +547,7 @@ class Parser {
       this.check("ASYNC") ||
       this.check("FN")
     );
-  }
+}
 
   private parseTypeParams(): string[] {
     // ParseTypeParams.
@@ -553,18 +562,22 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTypeParams();
 
+    // const result = parseTypeParams();
     if (!this.match("LT")) return [];
     const params: string[] = [];
+
+    // continue when check is falsy.
     if (!this.check("GT")) {
+
+      // Evaluate do.
       do {
         params.push(this.parseLabel("Expected type parameter name"));
       } while (this.match("COMMA"));
     }
     this.expect("GT", "Expected '>' after type parameters");
     return params;
-  }
+}
 
   private parseModuleFn(): ModuleFnDecl {
     // ParseModuleFn.
@@ -579,12 +592,18 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseModuleFn();
 
+    // const result = parseModuleFn();
     const start = this.peek();
     let visibility: Visibility = "private";
+
+    // continue when this.match("EXPORT").
     if (this.match("EXPORT")) visibility = "export";
+
+    // Otherwise, continue when else if (this.match("PUBLIC").
     else if (this.match("PUBLIC")) visibility = "public";
+
+    // Otherwise, continue when else if (this.match("PRIVATE").
     else if (this.match("PRIVATE")) visibility = "private";
     const isAsync = this.match("ASYNC");
     this.expect("FN", "Expected 'fn' in module function");
@@ -594,7 +613,11 @@ class Parser {
     this.typeParamNames = new Set(typeParams);
     this.expect("LPAREN", "Expected '(' after function name");
     const params: ModuleParamDecl[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RPAREN")) {
+
+      // Evaluate do.
       do {
         const pstart = this.peek();
         const pname = this.parseLabel("Expected parameter name");
@@ -625,7 +648,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseExternFn(): ExternFnDecl {
     // ParseExternFn.
@@ -640,19 +663,27 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseExternFn();
 
+    // const result = parseExternFn();
     const start = this.previous();
     let library: string | null = null;
     let bridge: BridgeKind = "native";
+
+    // continue when this.match("STRING").
     if (this.match("STRING")) {
       library = this.previous().value as string;
+
+    // Otherwise, continue when this.check("IDENT").
     } else if (this.check("IDENT")) {
       const lex = this.peek().lexeme;
+
+      // continue when lex equals "python".
       if (lex === "python") {
         this.advance();
         library = "python";
         bridge = "python";
+
+      // Otherwise, continue when lex equals "cpp".
       } else if (lex === "cpp") {
         this.advance();
         library = "cpp";
@@ -663,7 +694,11 @@ class Parser {
     const name = this.parseLabel("Expected extern function name");
     this.expect("LPAREN", "Expected '(' after extern function name");
     const params: ModuleParamDecl[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RPAREN")) {
+
+      // Evaluate do.
       do {
         const pstart = this.peek();
         const pname = this.parseLabel("Expected parameter name");
@@ -689,7 +724,7 @@ class Parser {
       returnType,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTest(): TestDecl {
     // ParseTest.
@@ -704,8 +739,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTest();
 
+    // const result = parseTest();
     const start = this.advance();
     const nameTok = this.expect("STRING", "Expected test name string");
     const name = nameTok.value as string;
@@ -718,7 +753,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseImport(): ImportDecl {
     // ParseImport.
@@ -733,8 +768,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseImport();
 
+    // const result = parseImport();
     const start = this.advance();
     const vendor = this.parseImportSegment("Expected library vendor name");
     this.expect("DOT", "Expected '.' in import path");
@@ -746,7 +781,7 @@ class Parser {
       path: `${vendor}.${module}`,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseImportSegment(message: string): string {
     // ParseImportSegment.
@@ -761,17 +796,19 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseImportSegment(message);
 
+    // const result = parseImportSegment(message);
     if (this.check("IDENT")) {
       return this.advance().lexeme;
     }
+
+    // continue when this.check("EOF") || this.check("DOT") || this.check("SEMICOLON").
     if (this.check("EOF") || this.check("DOT") || this.check("SEMICOLON")) {
       const t = this.peek();
       throw new ParseError(message, t.line, t.column);
     }
     return this.advance().lexeme;
-  }
+}
 
   private parseTypeNamePart(message: string): string {
     // ParseTypeNamePart.
@@ -786,13 +823,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTypeNamePart(message);
 
+    // const result = parseTypeNamePart(message);
     if (this.check("IDENT")) {
       return this.advance().lexeme;
     }
     return this.parseLabel(message);
-  }
+}
 
   private finishGenericTypeName(base: string): string {
     // FinishGenericTypeName.
@@ -807,18 +844,22 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = finishGenericTypeName(base);
 
+    // const result = finishGenericTypeName(base);
     this.expect("LT", "Expected '<' to open generic type");
     const args: string[] = [];
+
+    // continue when check is falsy.
     if (!this.check("GT")) {
+
+      // Evaluate do.
       do {
         args.push(this.parseTypeName());
       } while (this.match("COMMA"));
     }
     this.expect("GT", "Expected '>' to close generic type");
     return `${base}<${args.join(", ")}>`;
-  }
+}
 
   private parseTypeName(): string {
     // ParseTypeName.
@@ -833,14 +874,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTypeName();
 
+    // const result = parseTypeName();
     let name = this.parseTypeNamePart("Expected type name");
+
+    // continue when this.check("LT").
     if (this.check("LT")) {
       name = this.finishGenericTypeName(name);
     }
     return name;
-  }
+}
 
   private parseTypeAnnotation(): SpandaType {
     // ParseTypeAnnotation.
@@ -855,26 +898,36 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTypeAnnotation();
 
+    // const result = parseTypeAnnotation();
     if (this.match("DYN")) {
       const traitName = this.parseTypeNamePart("Expected trait name after dyn");
       return { kind: "trait_object", traitName };
     }
     const parts = [this.parseTypeNamePart("Expected type name")];
+
+    // Repeat while this.match("DOT").
     while (this.match("DOT")) {
       parts.push(this.parseTypeNamePart("Expected type name after '.'"));
     }
     const qualified = parts.join(".");
+
+    // continue when this.match("LT").
     if (this.match("LT")) {
       const args: SpandaType[] = [];
+
+      // continue when check is falsy.
       if (!this.check("GT")) {
+
+        // Evaluate do.
         do {
           args.push(this.parseTypeAnnotation());
         } while (this.match("COMMA"));
       }
       this.expect("GT", "Expected '>' to close generic type");
       const base = parts[parts.length - 1] ?? qualified;
+
+      // Try the operation and handle failures below.
       try {
         return resolveGenericType(base, args);
       } catch (e) {
@@ -882,16 +935,20 @@ class Parser {
         throw new ParseError((e as Error).message, t.line, t.column);
       }
     }
+
+    // Try the operation and handle failures below.
     try {
       return resolveTypeName(qualified);
     } catch (e) {
+
+      // continue when this.typeParamNames.has(qualified) || this.typeParamNames.has(parts[pa.
       if (this.typeParamNames.has(qualified) || this.typeParamNames.has(parts[parts.length - 1] ?? qualified)) {
         return { kind: "named", name: parts[parts.length - 1] ?? qualified };
       }
       const t = this.peek();
       throw new ParseError((e as Error).message, t.line, t.column);
     }
-  }
+}
 
   private parseStruct(): StructDecl {
     // ParseStruct.
@@ -906,13 +963,15 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseStruct();
 
+    // const result = parseStruct();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected struct name");
     const typeParams = this.parseTypeParams();
     this.expect("LBRACE", "Expected '{' after struct name");
     const fields: FieldDecl[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const fieldStart = this.peek();
       const fieldName = this.expect("IDENT", "Expected field name");
@@ -933,7 +992,7 @@ class Parser {
       fields,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseEnum(): EnumDecl {
     // ParseEnum.
@@ -948,19 +1007,27 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseEnum();
 
+    // const result = parseEnum();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected enum name");
     this.expect("LBRACE", "Expected '{' after enum name");
     const variants: EnumVariantDecl[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const variantStart = this.peek();
       const variantName = this.expect("IDENT", "Expected enum variant");
       const fieldTypes: string[] = [];
+
+      // continue when this.match("LPAREN").
       if (this.match("LPAREN")) {
+
+        // Repeat while !this.check("RPAREN") && !this.check("EOF").
         while (!this.check("RPAREN") && !this.check("EOF")) {
           fieldTypes.push(this.parseTypeName());
+
+          // continue when match is falsy.
           if (!this.match("COMMA")) break;
         }
         this.expect("RPAREN", "Expected ')' after enum variant fields");
@@ -970,6 +1037,8 @@ class Parser {
         fieldTypes,
         span: this.spanFrom(variantStart, this.previous()),
       });
+
+      // continue when this.match("COMMA").
       if (this.match("COMMA")) continue;
     }
     const end = this.expect("RBRACE", "Expected '}' to close enum");
@@ -979,7 +1048,7 @@ class Parser {
       variants,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTrait(): TraitDecl {
     // ParseTrait.
@@ -994,12 +1063,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTrait();
 
+    // const result = parseTrait();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected trait name");
     this.expect("LBRACE", "Expected '{' after trait name");
     const methods: TraitMethodDecl[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       methods.push(this.parseTraitMethod());
     }
@@ -1010,7 +1081,7 @@ class Parser {
       methods,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTraitMethod(): TraitMethodDecl {
     // ParseTraitMethod.
@@ -1025,13 +1096,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTraitMethod();
 
+    // const result = parseTraitMethod();
     const start = this.advance(); // fn
     const name = this.parseLabel("Expected method name after fn");
     this.expect("LPAREN", "Expected '(' after method name");
     const params: TraitParamDecl[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RPAREN")) {
+
+      // Evaluate do.
       do {
         const paramStart = this.peek();
         const paramName = this.parseLabel("Expected parameter name");
@@ -1054,7 +1129,7 @@ class Parser {
       returnType: returnType.lexeme,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseRobot(): RobotDecl {
     // ParseRobot.
@@ -1069,12 +1144,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseRobot();
 
+    // const result = parseRobot();
     const start = this.expect("ROBOT", "Expected 'robot'");
     const nameTok = this.expect("IDENT", "Expected robot name");
     this.expect("LBRACE", "Expected '{' after robot name");
-
     let soc: SocDecl | null = null;
     let hal: HalBlock | null = null;
     const nodes: NodeDecl[] = [];
@@ -1109,81 +1183,151 @@ class Parser {
     const agentChannels: AgentChannelDecl[] = [];
     const twinSync = null;
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.check("SOC").
       if (this.check("SOC")) {
         soc = this.parseSoc();
+
+      // Otherwise, continue when this.check("HAL").
       } else if (this.check("HAL")) {
         hal = this.parseHal();
+
+      // Otherwise, continue when this.check("NODE").
       } else if (this.check("NODE")) {
         nodes.push(this.parseNode());
+
+      // Otherwise, continue when this.check("TOPIC").
       } else if (this.check("TOPIC")) {
         topics.push(this.parseTopic());
+
+      // Otherwise, continue when this.check("SERVICE").
       } else if (this.check("SERVICE")) {
         services.push(this.parseService());
+
+      // Otherwise, continue when this.check("ACTION").
       } else if (this.check("ACTION")) {
         actions.push(this.parseAction());
+
+      // Otherwise, continue when this.check("SENSOR").
       } else if (this.check("SENSOR")) {
         sensors.push(this.parseSensor());
+
+      // Otherwise, continue when this.check("ACTUATOR").
       } else if (this.check("ACTUATOR")) {
         actuators.push(this.parseActuator());
+
+      // Otherwise, continue when this.check("SAFETY").
       } else if (this.check("SAFETY")) {
         safety = this.parseSafety();
+
+      // Otherwise, continue when this.check("AI MODEL").
       } else if (this.check("AI_MODEL")) {
         ai_models.push(this.parseAiModelDecl());
+
+      // Otherwise, continue when this.check("IDENT") && this.isAgentChannel().
       } else if (this.check("IDENT") && this.isAgentChannel()) {
         agentChannels.push(this.parseAgentChannel());
+
+      // Otherwise, continue when this.check("AGENT").
       } else if (this.check("AGENT")) {
+
+        // continue when this.isAgentShorthand().
         if (this.isAgentShorthand()) {
           this.parseAgentShorthand(agents);
+
+        // Handle any remaining cases.
         } else {
           agents.push(this.parseAgent());
         }
+
+      // Otherwise, continue when this.check("BEHAVIOR").
       } else if (this.check("BEHAVIOR")) {
         behaviors.push(this.parseBehavior());
+
+      // Otherwise, continue when this.check("TASK").
       } else if (this.check("TASK")) {
         tasks.push(this.parseTask());
+
+      // Otherwise, continue when this.check("STATE MACHINE").
       } else if (this.check("STATE_MACHINE")) {
         stateMachines.push(this.parseStateMachine());
+
+      // Otherwise, continue when this.check("EVENT").
       } else if (this.check("EVENT")) {
         events.push(this.parseEvent());
+
+      // Otherwise, continue when this.check("ON").
       } else if (this.check("ON")) {
         eventHandlers.push(this.parseEventHandler());
+
+      // Otherwise, continue when this.check("TWIN").
       } else if (this.check("TWIN")) {
         twin = this.parseTwin();
+
+      // Otherwise, continue when this.check("VERIFY").
       } else if (this.check("VERIFY")) {
         verify = this.parseVerify();
+
+      // Otherwise, continue when this.check("OBSERVE").
       } else if (this.check("OBSERVE")) {
         observe = this.parseObserve();
+
+      // Otherwise, continue when this.isRobotMemberKeyword("identity").
       } else if (this.isRobotMemberKeyword("identity")) {
         identity = this.parseIdentity();
+
+      // Otherwise, continue when this.isRobotMemberKeyword("audit").
       } else if (this.isRobotMemberKeyword("audit")) {
         audit = this.parseAudit();
+
+      // Otherwise, continue when this.isRobotMemberKeyword("provenance").
       } else if (this.isRobotMemberKeyword("provenance")) {
         provenance = this.parseProvenance();
+
+      // Otherwise, continue when this.isRobotMemberKeyword("record").
       } else if (this.isRobotMemberKeyword("record")) {
         signedRecords.push(this.parseSignedRecord());
+
+      // Otherwise, continue when this.check("SECRET").
       } else if (this.check("SECRET")) {
         secrets.push(this.parseSecret());
+
+      // Otherwise, continue when this.check("TRUST").
       } else if (this.check("TRUST")) {
         trust = this.parseTrust();
+
+      // Otherwise, continue when this.check("PERMISSIONS").
       } else if (this.check("PERMISSIONS")) {
         permissions = this.parsePermissions();
+
+      // Otherwise, continue when this.check("MISSION").
       } else if (this.check("MISSION")) {
         mission = this.parseMission();
+
+      // Otherwise, continue when this.check("IMPL").
       } else if (this.check("IMPL")) {
         traitImpls.push(this.parseTraitImpl());
+
+      // Otherwise, continue when this.check("BUS").
       } else if (this.check("BUS")) {
         buses.push(this.parseBus());
+
+      // Otherwise, continue when this.check("ROBOT").
       } else if (this.check("ROBOT")) {
         peerRobots.push(this.parsePeerRobot());
+
+      // Otherwise, continue when this.check("DEVICE").
       } else if (this.check("DEVICE")) {
         devices.push(this.parseDevice());
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected robot member declaration", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close robot block");
     return {
       kind: "RobotDecl",
@@ -1223,7 +1367,7 @@ class Parser {
       twinSync,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private isRobotMemberKeyword(kw: string): boolean {
     // IsRobotMemberKeyword.
@@ -1238,10 +1382,10 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = isRobotMemberKeyword(kw);
 
+    // const result = isRobotMemberKeyword(kw);
     return this.check("IDENT") && this.peek().lexeme === kw;
-  }
+}
 
   private isAgentShorthand(): boolean {
     // IsAgentShorthand.
@@ -1256,14 +1400,18 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = isAgentShorthand();
 
+    // const result = isAgentShorthand();
     let idx = this.pos + 1;
+
+    // continue when idx >= this.tokens.length.
     if (idx >= this.tokens.length) return false;
+
+    // continue when type differs from "IDENT".
     if (this.tokens[idx]?.type !== "IDENT") return false;
     idx += 1;
     return idx < this.tokens.length && this.tokens[idx]?.type === "SEMICOLON";
-  }
+}
 
   private isAgentChannel(): boolean {
     // IsAgentChannel.
@@ -1278,8 +1426,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = isAgentChannel();
 
+    // const result = isAgentChannel();
     const idx = this.pos;
     return (
       idx + 2 < this.tokens.length &&
@@ -1287,7 +1435,7 @@ class Parser {
       this.tokens[idx + 1]?.type === "ARROW" &&
       this.tokens[idx + 2]?.type === "IDENT"
     );
-  }
+}
 
   private parseAgentShorthand(agents: AgentDecl[]): void {
     // ParseAgentShorthand.
@@ -1302,8 +1450,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAgentShorthand(agents);
 
+    // const result = parseAgentShorthand(agents);
     const start = this.advance();
     const name = this.expect("IDENT", "Expected agent name");
     this.expect("SEMICOLON", "Expected ';' after agent reference");
@@ -1319,7 +1467,7 @@ class Parser {
       planBody: [],
       span: this.spanFrom(start, this.previous()),
     });
-  }
+}
 
   private parseBus(): BusDecl {
     // ParseBus.
@@ -1334,8 +1482,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseBus();
 
+    // const result = parseBus();
     const start = this.advance();
     const transportName = this.expect("IDENT", "Expected bus transport name");
     this.expect("SEMICOLON", "Expected ';' after bus declaration");
@@ -1346,7 +1494,7 @@ class Parser {
       transport,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parsePeerRobot(): PeerRobotDecl {
     // ParsePeerRobot.
@@ -1361,8 +1509,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePeerRobot();
 
+    // const result = parsePeerRobot();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected peer robot name");
     this.expect("SEMICOLON", "Expected ';' after peer robot");
@@ -1371,7 +1519,7 @@ class Parser {
       name: name.lexeme,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseDevice(): DeviceDecl {
     // ParseDevice.
@@ -1386,8 +1534,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDevice();
 
+    // const result = parseDevice();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected device name");
     this.expect("COLON", "Expected ':' after device name");
@@ -1399,7 +1547,7 @@ class Parser {
       deviceType: deviceType.lexeme,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseAgentChannel(): AgentChannelDecl {
     // ParseAgentChannel.
@@ -1414,8 +1562,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAgentChannel();
 
+    // const result = parseAgentChannel();
     const start = this.peek();
     const fromAgent = this.expect("IDENT", "Expected source agent").lexeme;
     this.expect("ARROW", "Expected '->' in agent channel");
@@ -1428,7 +1576,7 @@ class Parser {
       messageType: "",
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseMessage(): MessageDecl {
     // ParseMessage.
@@ -1443,14 +1591,18 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseMessage();
 
+    // const result = parseMessage();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected message name");
     this.expect("LBRACE", "Expected '{' after message name");
     const fields: FieldDecl[] = [];
     let version: number | null = null;
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when lexeme equals "version".
       if (this.check("IDENT") && this.peek().lexeme === "version") {
         this.advance();
         this.expect("COLON", "Expected ':' after version");
@@ -1477,7 +1629,7 @@ class Parser {
       version,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseNumberValue(): number {
     // ParseNumberValue.
@@ -1492,11 +1644,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseNumberValue();
 
+    // const result = parseNumberValue();
     const tok = this.expect("NUMBER", "Expected number");
     return tok.value as number;
-  }
+}
 
   private parseStorageAmount(): number {
     // ParseStorageAmount.
@@ -1511,22 +1663,32 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseStorageAmount();
 
+    // const result = parseStorageAmount();
     const value = this.parseNumberValue();
+
+    // continue when this.check("IDENT").
     if (this.check("IDENT")) {
       const unit = this.peek().lexeme;
       let mb = value;
+
+      // continue when unit equals "GB" || unit === "Gb".
       if (unit === "GB" || unit === "Gb") mb = value * 1024;
+
+      // Otherwise, continue when else if equals "MB" || unit === "Mb".
       else if (unit === "MB" || unit === "Mb") mb = value;
+
+      // Otherwise, continue when else if equals "TB" || unit === "Tb".
       else if (unit === "TB" || unit === "Tb") mb = value * 1024 * 1024;
+
+      // continue when unit equals "GB" || unit === "MB" || unit === "TB" || unit === "Gb" || unit === "Mb" || unit === "Tb".
       if (unit === "GB" || unit === "MB" || unit === "TB" || unit === "Gb" || unit === "Mb" || unit === "Tb") {
         this.advance();
       }
       return mb;
     }
     return value;
-  }
+}
 
   private parseNetworkAmount(): number {
     // ParseNetworkAmount.
@@ -1541,22 +1703,28 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseNetworkAmount();
 
+    // const result = parseNetworkAmount();
     const value = this.parseNumberValue();
+
+    // continue when this.check("IDENT").
     if (this.check("IDENT")) {
       const unit = this.peek().lexeme;
+
+      // continue when unit equals "Mbps" || unit === "mbps".
       if (unit === "Mbps" || unit === "mbps") {
         this.advance();
         return value;
       }
+
+      // continue when unit equals "Gbps" || unit === "gbps".
       if (unit === "Gbps" || unit === "gbps") {
         this.advance();
         return value * 1000;
       }
     }
     return value;
-  }
+}
 
   private parseEnergyWhValue(): number {
     // ParseEnergyWhValue.
@@ -1571,19 +1739,23 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseEnergyWhValue();
 
+    // const result = parseEnergyWhValue();
     const tok = this.peek();
+
+    // continue when type equals unit === "Wh".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "Wh") {
       this.advance();
       return tok.value as number;
     }
     const value = this.parseNumberValue();
+
+    // continue when lexeme equals "Wh".
     if (this.check("IDENT") && this.peek().lexeme === "Wh") {
       this.advance();
     }
     return value;
-  }
+}
 
   private parsePowerWValue(): number {
     // ParsePowerWValue.
@@ -1598,19 +1770,23 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePowerWValue();
 
+    // const result = parsePowerWValue();
     const tok = this.peek();
+
+    // continue when type equals unit === "W".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "W") {
       this.advance();
       return tok.value as number;
     }
     const value = this.parseNumberValue();
+
+    // continue when lexeme equals "W".
     if (this.check("IDENT") && this.peek().lexeme === "W") {
       this.advance();
     }
     return value;
-  }
+}
 
   private parseHardwareTypeList(kind: string): string[] {
     // ParseHardwareTypeList.
@@ -1625,11 +1801,15 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseHardwareTypeList(kind);
 
+    // const result = parseHardwareTypeList(kind);
     this.expect("LBRACKET", `Expected '[' after ${kind}`);
     const items: string[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RBRACKET")) {
+
+      // Evaluate do.
       do {
         items.push(this.parseLabel(`Expected ${kind} type name`));
       } while (this.match("COMMA") && !this.check("RBRACKET"));
@@ -1637,7 +1817,7 @@ class Parser {
     this.expect("RBRACKET", `Expected ']' after ${kind} list`);
     this.expect("SEMICOLON", `Expected ';' after ${kind} list`);
     return items;
-  }
+}
 
   private parseHardware(): HardwareDecl {
     // ParseHardware.
@@ -1652,8 +1832,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseHardware();
 
+    // const result = parseHardware();
     const start = this.advance();
     const name = this.parseLabel("Expected hardware profile name");
     this.expect("LBRACE", "Expected '{' after hardware name");
@@ -1670,36 +1850,59 @@ class Parser {
     let minControlPeriodMs: number | null = null;
     let powerDrawW: number | null = null;
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("CPU").
       if (this.match("CPU")) {
         this.expect("COLON", "Expected ':' after cpu");
         cpu = this.parseLabel("Expected CPU identifier");
         this.expect("SEMICOLON", "Expected ';' after cpu");
+
+      // Otherwise, continue when this.match("MEMORY").
       } else if (this.match("MEMORY")) {
         this.expect("COLON", "Expected ':' after memory");
         memoryMb = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after memory");
+
+      // Otherwise, continue when this.match("STORAGE").
       } else if (this.match("STORAGE")) {
         this.expect("COLON", "Expected ':' after storage");
         storageMb = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after storage");
+
+      // Otherwise, continue when this.match("GPU").
       } else if (this.match("GPU")) {
         this.expect("COLON", "Expected ':' after gpu");
+
+        // continue when this.match("TRUE").
         if (this.match("TRUE")) {
           gpuRequired = true;
+
+        // Handle any remaining cases.
         } else {
           gpuTops = this.parseNumberValue();
+
+          // continue when lexeme equals "TOPS".
           if (this.check("IDENT") && this.peek().lexeme === "TOPS") {
             this.advance();
           }
         }
         this.expect("SEMICOLON", "Expected ';' after gpu");
+
+      // Otherwise, continue when this.match("SENSORS").
       } else if (this.match("SENSORS")) {
         sensors = this.parseHardwareTypeList("sensors");
+
+      // Otherwise, continue when this.match("ACTUATORS").
       } else if (this.match("ACTUATORS")) {
         actuators = this.parseHardwareTypeList("actuators");
+
+      // Otherwise, continue when this.match("BATTERY").
       } else if (this.match("BATTERY")) {
         this.expect("LBRACE", "Expected '{' after battery");
+
+        // Repeat while !this.check("RBRACE") && !this.check("EOF").
         while (!this.check("RBRACE") && !this.check("EOF")) {
           this.expect("CAPACITY", "Expected capacity in battery block");
           this.expect("COLON", "Expected ':' after capacity");
@@ -1707,25 +1910,39 @@ class Parser {
           this.expect("SEMICOLON", "Expected ';' after capacity");
         }
         this.expect("RBRACE", "Expected '}' to close battery block");
+
+      // Otherwise, continue when this.match("NETWORK").
       } else if (this.match("NETWORK")) {
         this.expect("LBRACE", "Expected '{' after network");
+
+        // Repeat while !this.check("RBRACE") && !this.check("EOF").
         while (!this.check("RBRACE") && !this.check("EOF")) {
+
+          // continue when this.match("BANDWIDTH").
           if (this.match("BANDWIDTH")) {
             this.expect("COLON", "Expected ':' after bandwidth");
             networkBandwidthMbps = this.parseNetworkAmount();
             this.expect("SEMICOLON", "Expected ';' after bandwidth");
+
+          // Otherwise, continue when this.match("LATENCY").
           } else if (this.match("LATENCY")) {
             this.expect("COLON", "Expected ':' after latency");
             networkLatencyMs = this.parseDuration();
             this.expect("SEMICOLON", "Expected ';' after latency");
+
+          // Handle any remaining cases.
           } else {
             const t = this.peek();
             throw new ParseError("Expected bandwidth or latency in network block", t.line, t.column);
           }
         }
         this.expect("RBRACE", "Expected '}' to close network block");
+
+      // Otherwise, continue when this.match("TIMING").
       } else if (this.match("TIMING")) {
         this.expect("LBRACE", "Expected '{' after timing");
+
+        // Repeat while !this.check("RBRACE") && !this.check("EOF").
         while (!this.check("RBRACE") && !this.check("EOF")) {
           this.expect("MIN_PERIOD", "Expected min_period in timing block");
           this.expect("COLON", "Expected ':' after min_period");
@@ -1733,16 +1950,19 @@ class Parser {
           this.expect("SEMICOLON", "Expected ';' after min_period");
         }
         this.expect("RBRACE", "Expected '}' to close timing block");
+
+      // Otherwise, continue when this.match("RESOURCE").
       } else if (this.match("RESOURCE")) {
         this.expect("COLON", "Expected ':' after resource");
         powerDrawW = this.parsePowerWValue();
         this.expect("SEMICOLON", "Expected ';' after resource power");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected hardware profile member", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close hardware block");
     return {
       kind: "HardwareDecl",
@@ -1761,7 +1981,7 @@ class Parser {
       powerDrawW,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseDeploy(): DeployDecl {
     // ParseDeploy.
@@ -1776,26 +1996,34 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDeploy();
 
+    // const result = parseDeploy();
     const start = this.advance();
     const robotName = this.parseLabel("Expected robot name after deploy");
     this.expect("TO", "Expected 'to' after deploy robot name");
     const targets: string[] = [];
+
+    // continue when this.match("LBRACKET").
     if (this.match("LBRACKET")) {
+
+      // continue when check is falsy.
       if (!this.check("RBRACKET")) {
+
+        // Evaluate do.
         do {
           targets.push(this.parseLabel("Expected hardware target name"));
         } while (this.match("COMMA"));
       }
       this.expect("RBRACKET", "Expected ']' after deploy targets");
+
+    // Handle any remaining cases.
     } else {
       targets.push(this.parseLabel("Expected hardware target name"));
     }
     this.expect("SEMICOLON", "Expected ';' after deploy statement");
     const end = this.previous();
     return { kind: "DeployDecl", robotName, targets, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseRequiresHardware(): RequiresHardwareDecl {
     // ParseRequiresHardware.
@@ -1810,8 +2038,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseRequiresHardware();
 
+    // const result = parseRequiresHardware();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after requires_hardware");
     let memoryMbMin: number | null = null;
@@ -1821,43 +2049,67 @@ class Parser {
     let sensors: string[] = [];
     let actuators: string[] = [];
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("MEMORY").
       if (this.match("MEMORY")) {
         this.expect("GTE", "Expected '>=' after memory in requires_hardware");
         memoryMbMin = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after memory requirement");
+
+      // Otherwise, continue when this.match("STORAGE").
       } else if (this.match("STORAGE")) {
         this.expect("GTE", "Expected '>=' after storage in requires_hardware");
         storageMbMin = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after storage requirement");
+
+      // Otherwise, continue when this.match("GPU").
       } else if (this.match("GPU")) {
+
+        // continue when this.match("GTE").
         if (this.match("GTE")) {
           gpuTopsMin = this.parseNumberValue();
+
+          // continue when lexeme equals "TOPS".
           if (this.check("IDENT") && this.peek().lexeme === "TOPS") {
             this.advance();
           }
+
+        // Handle any remaining cases.
         } else {
           this.expect("COLON", "Expected ':' or '>=' after gpu");
+
+          // continue when this.match("TRUE").
           if (this.match("TRUE")) {
             gpuRequired = true;
+
+          // Handle any remaining cases.
           } else {
             gpuTopsMin = this.parseNumberValue();
+
+            // continue when lexeme equals "TOPS".
             if (this.check("IDENT") && this.peek().lexeme === "TOPS") {
               this.advance();
             }
           }
         }
         this.expect("SEMICOLON", "Expected ';' after gpu requirement");
+
+      // Otherwise, continue when this.match("SENSORS").
       } else if (this.match("SENSORS")) {
         sensors = this.parseHardwareTypeList("sensors");
+
+      // Otherwise, continue when this.match("ACTUATORS").
       } else if (this.match("ACTUATORS")) {
         actuators = this.parseHardwareTypeList("actuators");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected requires_hardware member", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close requires_hardware");
     return {
       kind: "RequiresHardwareDecl",
@@ -1869,7 +2121,7 @@ class Parser {
       actuators,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseRequiresNetwork(): RequiresNetworkDecl {
     // ParseRequiresNetwork.
@@ -1884,28 +2136,34 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseRequiresNetwork();
 
+    // const result = parseRequiresNetwork();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after requires_network");
     let bandwidthMbpsMin: number | null = null;
     let latencyMsMax: number | null = null;
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("BANDWIDTH").
       if (this.match("BANDWIDTH")) {
         this.expect("GTE", "Expected '>=' after bandwidth");
         bandwidthMbpsMin = this.parseNetworkAmount();
         this.expect("SEMICOLON", "Expected ';' after bandwidth requirement");
+
+      // Otherwise, continue when this.match("LATENCY").
       } else if (this.match("LATENCY")) {
         this.expect("LTE", "Expected '<=' after latency");
         latencyMsMax = this.parseDuration();
         this.expect("SEMICOLON", "Expected ';' after latency requirement");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected bandwidth or latency in requires_network", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close requires_network");
     return {
       kind: "RequiresNetworkDecl",
@@ -1913,7 +2171,7 @@ class Parser {
       latencyMsMax,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseSimulateCompatibility(): SimulateCompatibilityDecl {
     // ParseSimulateCompatibility.
@@ -1928,12 +2186,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSimulateCompatibility();
 
+    // const result = parseSimulateCompatibility();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after simulate_compatibility");
     const faults: { faultType: string; span: Span }[] = [];
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       this.expect("FAULT", "Expected fault declaration in simulate_compatibility");
       const faultStart = this.peek();
@@ -1941,10 +2200,9 @@ class Parser {
       this.expect("SEMICOLON", "Expected ';' after fault");
       faults.push({ faultType, span: this.spanFrom(faultStart, this.previous()) });
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close simulate_compatibility");
     return { kind: "SimulateCompatibilityDecl", faults, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseObserve(): ObserveDecl {
     // ParseObserve.
@@ -1959,11 +2217,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseObserve();
 
+    // const result = parseObserve();
     const start = this.expect("OBSERVE", "Expected 'observe'");
     this.expect("LBRACE", "Expected '{' after observe");
     const sensors: string[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const sensorTok = this.expect("IDENT", "Expected sensor name in observe block");
       sensors.push(sensorTok.lexeme);
@@ -1971,7 +2231,7 @@ class Parser {
     }
     const end = this.expect("RBRACE", "Expected '}' to close observe block");
     return { kind: "ObserveDecl", sensors, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseIdentity(): IdentityDecl {
     // ParseIdentity.
@@ -1986,12 +2246,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseIdentity();
 
+    // const result = parseIdentity();
     const start = this.advance();
     const typeName = this.expect("IDENT", "Expected identity type name").lexeme;
     this.expect("LBRACE", "Expected '{' after identity type");
     const fields: [string, string][] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const key = this.expect("IDENT", "Expected identity field").lexeme;
       this.expect("COLON", "Expected ':' in identity field");
@@ -2006,7 +2268,7 @@ class Parser {
       fields,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseAudit(): AuditDecl {
     // ParseAudit.
@@ -2021,13 +2283,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAudit();
 
+    // const result = parseAudit();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected audit name").lexeme;
     this.expect("LBRACE", "Expected '{' after audit name");
     const records: Expr[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when lexeme equals "record").
       if (!(this.check("IDENT") && this.peek().lexeme === "record")) {
         const t = this.peek();
         throw new ParseError("Expected 'record' in audit block", t.line, t.column);
@@ -2038,7 +2304,7 @@ class Parser {
     }
     const end = this.expect("RBRACE", "Expected '}' to close audit");
     return { kind: "AuditDecl", name, records, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseProvenance(): ProvenanceDecl {
     // ParseProvenance.
@@ -2053,20 +2319,28 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseProvenance();
 
+    // const result = parseProvenance();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected provenance name").lexeme;
     this.expect("LBRACE", "Expected '{' after provenance name");
     let hashAlgo = "sha256";
     let signedBy = "";
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const field = this.expect("IDENT", "Expected provenance field").lexeme;
       this.expect("COLON", "Expected ':' in provenance field");
+
+      // continue when field equals "hash".
       if (field === "hash") {
         hashAlgo = this.expect("IDENT", "Expected hash algorithm").lexeme;
+
+      // Otherwise, continue when field equals "signed by".
       } else if (field === "signed_by") {
         signedBy = Parser.exprPathString(this.parseExpr());
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError(`Unknown provenance field '${field}'`, t.line, t.column);
@@ -2075,7 +2349,7 @@ class Parser {
     }
     const end = this.expect("RBRACE", "Expected '}' to close provenance");
     return { kind: "ProvenanceDecl", name, hashAlgo, signedBy, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseSignedRecord(): SignedRecordDecl {
     // ParseSignedRecord.
@@ -2090,15 +2364,15 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSignedRecord();
 
+    // const result = parseSignedRecord();
     const start = this.advance();
     const eventName = this.expect("IDENT", "Expected signed record event name").lexeme;
     this.expect("SIGNED_BY", "Expected 'signed_by' after record event");
     const signedBy = Parser.exprPathString(this.parseExpr());
     this.expect("SEMICOLON", "Expected ';' after signed record declaration");
     return { kind: "SignedRecordDecl", eventName, signedBy, span: this.spanFrom(start, this.previous()) };
-  }
+}
 
   private parseSecret(): SecretDecl {
     // ParseSecret.
@@ -2113,26 +2387,32 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSecret();
 
+    // const result = parseSecret();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected secret name").lexeme;
     this.expect("FROM", "Expected 'from' after secret name");
     let source: SecretDecl["source"];
+
+    // continue when this.match("ENV").
     if (this.match("ENV")) {
       this.expect("LPAREN", "Expected '(' after env");
       const varName = this.expect("STRING", "Expected env var name").value as string;
       this.expect("RPAREN", "Expected ')' after env var");
       source = { source: "env", var: varName };
+
+    // Otherwise, continue when this.check("STRING").
     } else if (this.check("STRING")) {
       source = { source: "literal", value: this.advance().value as string };
+
+    // Handle any remaining cases.
     } else {
       const t = this.peek();
       throw new ParseError("Expected env(...) or string literal for secret source", t.line, t.column);
     }
     this.expect("SEMICOLON", "Expected ';' after secret declaration");
     return { kind: "SecretDecl", name, source, span: this.spanFrom(start, this.previous()) };
-  }
+}
 
   private parseTrust(): TrustDecl {
     // ParseTrust.
@@ -2147,13 +2427,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTrust();
 
+    // const result = parseTrust();
     const start = this.advance();
     const level = this.parseLabel("Expected trust level");
     this.expect("SEMICOLON", "Expected ';' after trust declaration");
     return { kind: "TrustDecl", level, span: this.spanFrom(start, this.previous()) };
-  }
+}
 
   private parseDottedCapability(): string {
     // ParseDottedCapability.
@@ -2168,15 +2448,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDottedCapability();
 
+    // const result = parseDottedCapability();
     const first = this.parseLabel("Expected capability name");
+
+    // continue when this.match("DOT").
     if (this.match("DOT")) {
       const second = this.parseLabel("Expected capability suffix");
       return `${first}.${second}`;
     }
     return first;
-  }
+}
 
   private parsePermissions(): PermissionsDecl {
     // ParsePermissions.
@@ -2191,12 +2473,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePermissions();
 
+    // const result = parsePermissions();
     const start = this.advance();
     this.expect("LBRACKET", "Expected '[' after permissions");
     const capabilities: string[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RBRACKET")) {
+
+      // Evaluate do.
       do {
         capabilities.push(this.parseDottedCapability());
       } while (this.match("COMMA"));
@@ -2204,7 +2490,7 @@ class Parser {
     this.expect("RBRACKET", "Expected ']' to close permissions");
     this.expect("SEMICOLON", "Expected ';' after permissions declaration");
     return { kind: "PermissionsDecl", capabilities, span: this.spanFrom(start, this.previous()) };
-  }
+}
 
   private parseSecureBlock(): SecureBlockDecl {
     // ParseSecureBlock.
@@ -2219,29 +2505,45 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSecureBlock();
 
+    // const result = parseSecureBlock();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after secure");
     let signed = false;
     let minTrust: string | null = null;
     const requires: string[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const field = this.parseLabel("Expected secure field name");
       this.expect("ASSIGN", "Expected '=' in secure field");
+
+      // continue when field equals "signed".
       if (field === "signed") {
         signed = this.match("TRUE");
+
+        // continue when expect is falsy.
         if (!signed) this.expect("FALSE", "Expected true or false for signed");
+
+      // Otherwise, continue when field equals "min trust".
       } else if (field === "min_trust") {
         minTrust = this.parseLabel("Expected trust level");
+
+      // Otherwise, continue when field equals "requires".
       } else if (field === "requires") {
         this.expect("LBRACKET", "Expected '[' after requires");
+
+        // continue when check is falsy.
         if (!this.check("RBRACKET")) {
+
+          // Evaluate do.
           do {
             requires.push(this.parseDottedCapability());
           } while (this.match("COMMA"));
         }
         this.expect("RBRACKET", "Expected ']' after requires");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError(`Unknown secure field '${field}'`, t.line, t.column);
@@ -2250,7 +2552,7 @@ class Parser {
     }
     const end = this.expect("RBRACE", "Expected '}' to close secure block");
     return { signed, minTrust, requires, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseConfigValueString(): string {
     // ParseConfigValueString.
@@ -2265,13 +2567,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseConfigValueString();
 
+    // const result = parseConfigValueString();
     const tok = this.advance();
+
+    // continue when type equals "STRING".
     if (tok.type === "STRING") return tok.value as string;
+
+    // continue when type equals "IDENT".
     if (tok.type === "IDENT") return tok.lexeme;
     throw new ParseError("Expected string or identifier in config value", tok.line, tok.column);
-  }
+}
 
   private static exprPathString(expr: Expr): string {
     // ExprPathString.
@@ -2286,14 +2592,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = exprPathString(expr);
 
+    // const result = exprPathString(expr);
     if (expr.kind === "IdentExpr") return expr.name;
+
+    // continue when kind equals "MemberExpr".
     if (expr.kind === "MemberExpr") {
       return `${Parser.exprPathString(expr.object)}.${expr.property}`;
     }
     return "";
-  }
+}
 
   private parseVerify(): VerifyDecl {
     // ParseVerify.
@@ -2308,18 +2616,20 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseVerify();
 
+    // const result = parseVerify();
     const start = this.expect("VERIFY", "Expected 'verify'");
     this.expect("LBRACE", "Expected '{' after verify");
     const rules = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       rules.push(this.parseExpr());
       this.expect("SEMICOLON", "Expected ';' after verify rule");
     }
     const end = this.expect("RBRACE", "Expected '}' to close verify block");
     return { kind: "VerifyDecl", rules, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseTraitImpl(): TraitImplDecl {
     // ParseTraitImpl.
@@ -2334,14 +2644,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTraitImpl();
 
+    // const result = parseTraitImpl();
     const start = this.expect("IMPL", "Expected 'impl'");
     const traitName = this.parseLabel("Expected trait name after 'impl'");
     this.expect("FOR", "Expected 'for' after trait name");
     const agentName = this.parseLabel("Expected agent name after 'for'");
     this.expect("LBRACE", "Expected '{' after trait impl header");
     const methods = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       methods.push(this.parseTraitImplMethod());
     }
@@ -2353,7 +2665,7 @@ class Parser {
       methods,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTraitImplMethod(): import("../foundations.js").TraitImplMethodDecl {
     // ParseTraitImplMethod.
@@ -2368,13 +2680,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTraitImplMethod();
 
+    // const result = parseTraitImplMethod();
     const start = this.advance(); // fn
     const name = this.parseLabel("Expected method name");
     this.expect("LPAREN", "Expected '(' after method name");
     const params: TraitParamDecl[] = [];
+
+    // continue when check is falsy.
     if (!this.check("RPAREN")) {
+
+      // Evaluate do.
       do {
         const paramStart = this.peek();
         const paramName = this.parseLabel("Expected parameter name");
@@ -2400,7 +2716,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseSoc(): SocDecl {
     // ParseSoc.
@@ -2415,14 +2731,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSoc();
 
+    // const result = parseSoc();
     const start = this.advance();
     const profile = this.expect("IDENT", "Expected SoC profile name");
     this.expect("SEMICOLON", "Expected ';' after soc declaration");
     const end = this.previous();
     return { kind: "SocDecl", profile: profile.lexeme, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseHal(): HalBlock {
     // ParseHal.
@@ -2437,17 +2753,19 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseHal();
 
+    // const result = parseHal();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after hal");
     const members: HalMemberDecl[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       members.push(this.parseHalMember());
     }
     const end = this.expect("RBRACE", "Expected '}' to close hal block");
     return { kind: "HalBlock", members, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseHalMember(): HalMemberDecl {
     // ParseHalMember.
@@ -2462,10 +2780,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseHalMember();
 
+    // const result = parseHalMember();
     const start = this.peek();
 
+    // continue when this.match("I2C").
     if (this.match("I2C")) {
       const name = this.parseBindingIdent("Expected I2C bus name");
       this.expect("AT", "Expected 'at' after I2C bus name");
@@ -2479,11 +2798,14 @@ class Parser {
       };
     }
 
+    // continue when this.match("SPI").
     if (this.match("SPI")) {
       const name = this.parseBindingIdent("Expected SPI bus name");
       this.expect("AT", "Expected 'at' after SPI bus name");
       const busTok = this.expect("NUMBER", "Expected SPI bus number");
       let csPin: number | null = null;
+
+      // continue when this.match("PIN").
       if (this.match("PIN")) {
         const cs = this.expect("NUMBER", "Expected CS pin number");
         csPin = cs.value as number;
@@ -2498,10 +2820,15 @@ class Parser {
       };
     }
 
+    // continue when this.match("GPIO").
     if (this.match("GPIO")) {
       const name = this.parseBindingIdent("Expected GPIO name");
       let direction: "in" | "out" = "out";
+
+      // continue when this.match("OUT").
       if (this.match("OUT")) direction = "out";
+
+      // Otherwise, continue when else if (this.match("IN").
       else if (this.match("IN")) direction = "in";
       this.expect("PIN", "Expected 'pin' keyword");
       const pinTok = this.expect("NUMBER", "Expected GPIO pin number");
@@ -2515,6 +2842,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("PWM").
     if (this.match("PWM")) {
       const name = this.parseBindingIdent("Expected PWM name");
       this.expect("ON", "Expected 'on' after PWM name");
@@ -2532,6 +2860,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("UART").
     if (this.match("UART")) {
       const name = this.parseBindingIdent("Expected UART name");
       this.expect("ON", "Expected 'on' after UART name");
@@ -2548,6 +2877,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("ADC").
     if (this.match("ADC")) {
       const name = this.parseBindingIdent("Expected ADC name");
       this.expect("ON", "Expected 'on' after ADC name");
@@ -2561,10 +2891,9 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
-
     const t = this.peek();
     throw new ParseError("Expected HAL member (i2c, spi, gpio, pwm, uart, adc)", t.line, t.column);
-  }
+}
 
   private parseFrequencyHz(): number {
     // ParseFrequencyHz.
@@ -2579,22 +2908,28 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseFrequencyHz();
 
+    // const result = parseFrequencyHz();
     const tok = this.peek();
+
+    // continue when type equals unit === "Hz".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "Hz") {
       this.advance();
       return tok.value as number;
     }
+
+    // continue when type equals "NUMBER".
     if (tok.type === "NUMBER") {
       this.advance();
+
+      // continue when lexeme equals "Hz".
       if (this.check("IDENT") && this.peek().lexeme === "Hz") {
         this.advance();
       }
       return tok.value as number;
     }
     throw new ParseError("Expected frequency like 50 Hz", tok.line, tok.column);
-  }
+}
 
   private parseNode(): NodeDecl {
     // ParseNode.
@@ -2609,11 +2944,13 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseNode();
 
+    // const result = parseNode();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected node name");
     let namespace: string | null = null;
+
+    // continue when this.match("ON").
     if (this.match("ON")) {
       const ns = this.expect("STRING", "Expected namespace string after 'on'");
       namespace = ns.value as string;
@@ -2621,7 +2958,7 @@ class Parser {
     this.expect("SEMICOLON", "Expected ';' after node declaration");
     const end = this.previous();
     return { kind: "NodeDecl", name: name.lexeme, namespace, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseTopic(): TopicDecl {
     // ParseTopic.
@@ -2636,33 +2973,47 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTopic();
 
+    // const result = parseTopic();
     const start = this.advance();
     const name = this.parseLabel("Expected topic name");
     this.expect("COLON", "Expected ':' after topic name");
     const messageType = this.parseLabel("Expected message type");
-
     let role: TopicRole = "both";
     let topicPath: string | null = null;
     let qos: QosDecl | null = null;
     let transport: TransportKind | null = null;
 
+    // continue when this.match("PUBLISH").
     if (this.match("PUBLISH")) {
       role = "publish";
+
+      // continue when this.match("ON").
       if (this.match("ON")) {
+
+        // continue when this.check("STRING").
         if (this.check("STRING")) {
           topicPath = this.advance().value as string;
+
+        // Handle any remaining cases.
         } else {
           const ident = this.expect("IDENT", "Expected transport or topic path");
           transport = transportFromIdent(ident.lexeme);
         }
       }
+
+    // Otherwise, continue when this.match("SUBSCRIBE").
     } else if (this.match("SUBSCRIBE")) {
       role = "subscribe";
+
+      // continue when this.match("ON").
       if (this.match("ON")) {
+
+        // continue when this.check("STRING").
         if (this.check("STRING")) {
           topicPath = this.advance().value as string;
+
+        // Handle any remaining cases.
         } else {
           const ident = this.expect("IDENT", "Expected transport or topic path");
           transport = transportFromIdent(ident.lexeme);
@@ -2670,21 +3021,25 @@ class Parser {
       }
     }
 
+    // continue when this.check("LBRACE").
     if (this.check("LBRACE")) {
       qos = this.parseQosBlock();
     }
 
+    // continue when match equals null && transport === null.
     if (this.match("ON") && topicPath === null && transport === null) {
+
+      // continue when this.check("STRING").
       if (this.check("STRING")) {
         topicPath = this.advance().value as string;
+
+      // Handle any remaining cases.
       } else {
         const ident = this.expect("IDENT", "Expected transport name after on");
         transport = transportFromIdent(ident.lexeme);
       }
     }
-
     const secure = this.check("SECURE") ? this.parseSecureBlock() : null;
-
     this.expect("SEMICOLON", "Expected ';' after topic declaration");
     return {
       kind: "TopicDecl",
@@ -2697,7 +3052,7 @@ class Parser {
       secure,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseQosBlock(): QosDecl {
     // ParseQosBlock.
@@ -2712,31 +3067,47 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseQosBlock();
 
+    // const result = parseQosBlock();
     const start = this.peek();
     this.expect("LBRACE", "Expected '{' for topic QoS block");
     let reliability: QosDecl["reliability"] = null;
     let rateHz: number | null = null;
     let deadlineMs: number | null = null;
     let history: string | null = null;
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("QOS").
       if (this.match("QOS")) {
+
+        // continue when this.match("RELIABLE").
         if (this.match("RELIABLE")) {
           reliability = "reliable";
+
+        // Otherwise, continue when this.match("BEST EFFORT").
         } else if (this.match("BEST_EFFORT")) {
           reliability = "best_effort";
         }
         this.expect("SEMICOLON", "Expected ';' after qos reliability");
+
+      // Otherwise, continue when this.match("RATE").
       } else if (this.match("RATE")) {
         rateHz = this.parseFrequencyHz();
         this.expect("SEMICOLON", "Expected ';' after rate");
+
+      // Otherwise, continue when this.match("DEADLINE").
       } else if (this.match("DEADLINE")) {
         deadlineMs = this.parseDuration();
         this.expect("SEMICOLON", "Expected ';' after deadline");
+
+      // Otherwise, continue when this.match("HISTORY").
       } else if (this.match("HISTORY")) {
         history = this.expect("IDENT", "Expected history policy").lexeme;
         this.expect("SEMICOLON", "Expected ';' after history");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected qos, rate, deadline, or history in topic block", t.line, t.column);
@@ -2750,7 +3121,7 @@ class Parser {
       history,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseService(): ServiceDecl {
     // ParseService.
@@ -2765,22 +3136,31 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseService();
 
+    // const result = parseService();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected service name");
 
+    // continue when this.check("LBRACE").
     if (this.check("LBRACE")) {
       this.advance();
       let requestType: string | null = null;
       let responseType: string | null = null;
+
+      // Repeat while !this.check("RBRACE") && !this.check("EOF").
       while (!this.check("RBRACE") && !this.check("EOF")) {
+
+        // continue when this.match("REQUEST").
         if (this.match("REQUEST")) {
           requestType = this.expect("IDENT", "Expected request type").lexeme;
           this.expect("SEMICOLON", "Expected ';' after request type");
+
+        // Otherwise, continue when this.match("RESPONSE").
         } else if (this.match("RESPONSE")) {
           responseType = this.expect("IDENT", "Expected response type").lexeme;
           this.expect("SEMICOLON", "Expected ';' after response type");
+
+        // Handle any remaining cases.
         } else {
           const t = this.peek();
           throw new ParseError("Expected request or response in service block", t.line, t.column);
@@ -2799,7 +3179,6 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
-
     this.expect("COLON", "Expected ':' after service name");
     const serviceType = this.expect("IDENT", "Expected service type");
     const secure = this.check("SECURE") ? this.parseSecureBlock() : null;
@@ -2813,7 +3192,7 @@ class Parser {
       secure,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseAction(): ActionDecl {
     // ParseAction.
@@ -2828,26 +3207,37 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAction();
 
+    // const result = parseAction();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected action name");
 
+    // continue when this.check("LBRACE").
     if (this.check("LBRACE")) {
       this.advance();
       let requestType: string | null = null;
       let feedbackType: string | null = null;
       let resultType: string | null = null;
+
+      // Repeat while !this.check("RBRACE") && !this.check("EOF").
       while (!this.check("RBRACE") && !this.check("EOF")) {
+
+        // continue when this.match("REQUEST").
         if (this.match("REQUEST")) {
           requestType = this.expect("IDENT", "Expected request type").lexeme;
           this.expect("SEMICOLON", "Expected ';' after request type");
+
+        // Otherwise, continue when this.match("FEEDBACK").
         } else if (this.match("FEEDBACK")) {
           feedbackType = this.expect("IDENT", "Expected feedback type").lexeme;
           this.expect("SEMICOLON", "Expected ';' after feedback type");
+
+        // Otherwise, continue when this.match("RESULT").
         } else if (this.match("RESULT")) {
           resultType = this.expect("IDENT", "Expected result type").lexeme;
           this.expect("SEMICOLON", "Expected ';' after result type");
+
+        // Handle any remaining cases.
         } else {
           const t = this.peek();
           throw new ParseError("Expected request, feedback, or result in action block", t.line, t.column);
@@ -2867,7 +3257,6 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
-
     this.expect("COLON", "Expected ':' after action name");
     const actionType = this.expect("IDENT", "Expected action type");
     const secure = this.check("SECURE") ? this.parseSecureBlock() : null;
@@ -2882,7 +3271,7 @@ class Parser {
       secure,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseSensor(): SensorDecl {
     // ParseSensor.
@@ -2897,32 +3286,37 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSensor();
 
+    // const result = parseSensor();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected sensor name");
     this.expect("COLON", "Expected ':' after sensor name");
     const sensorType = this.expect("IDENT", "Expected sensor type");
-
     let library: string | null = null;
+
+    // continue when this.match("FROM").
     if (this.match("FROM")) {
       const vendor = this.expect("IDENT", "Expected library vendor in from clause");
       this.expect("DOT", "Expected '.' in library path");
       const module = this.expect("IDENT", "Expected library module in from clause");
       library = `${vendor.lexeme}.${module.lexeme}`;
     }
-
     let binding: SensorBinding | null = null;
+
+    // continue when this.match("ON").
     if (this.match("ON")) {
+
+      // continue when this.check("STRING").
       if (this.check("STRING")) {
         const topicTok = this.advance();
         binding = { kind: "topic", path: topicTok.value as string };
+
+      // Handle any remaining cases.
       } else {
         const busName = this.parseBindingIdent("Expected HAL bus name or topic string after 'on'");
         binding = { kind: "hal", busName };
       }
     }
-
     this.expect("SEMICOLON", "Expected ';' after sensor declaration");
     const end = this.previous();
     return {
@@ -2933,7 +3327,7 @@ class Parser {
       binding,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseActuator(): ActuatorDecl {
     // ParseActuator.
@@ -2948,8 +3342,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseActuator();
 
+    // const result = parseActuator();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected actuator name");
     this.expect("COLON", "Expected ':' after actuator name");
@@ -2962,7 +3356,7 @@ class Parser {
       actuatorType: actuatorType.lexeme,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseSafety(): SafetyBlock {
     // ParseSafety.
@@ -2977,29 +3371,37 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSafety();
 
+    // const result = parseSafety();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after safety");
     const rules: SafetyRule[] = [];
     const zones: SafetyZoneDecl[] = [];
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.check("STOP IF").
       if (this.check("STOP_IF")) {
         rules.push(this.parseStopIfRule());
+
+      // Otherwise, continue when this.check("ZONE").
       } else if (this.check("ZONE")) {
         zones.push(this.parseSafetyZone());
+
+      // Otherwise, continue when this.check("IDENT").
       } else if (this.check("IDENT")) {
         rules.push(this.parseMaxSpeedRule());
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected safety rule or zone", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close safety block");
     return { kind: "SafetyBlock", rules, zones, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseAiModelDecl(): AiModelDecl {
     // ParseAiModelDecl.
@@ -3014,8 +3416,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAiModelDecl();
 
+    // const result = parseAiModelDecl();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected ai model name");
     this.expect("COLON", "Expected ':' after ai model name");
@@ -3030,7 +3432,7 @@ class Parser {
       config,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseAiConfigEntries(): AiConfigEntry[] {
     // ParseAiConfigEntries.
@@ -3045,9 +3447,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAiConfigEntries();
 
+    // const result = parseAiConfigEntries();
     const entries: AiConfigEntry[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       const entryStart = this.peek();
       const keyTok = this.parseConfigKeyToken();
@@ -3061,7 +3465,7 @@ class Parser {
       });
     }
     return entries;
-  }
+}
 
   private parseConfigKeyToken(): string {
     // ParseConfigKeyToken.
@@ -3076,14 +3480,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseConfigKeyToken();
 
+    // const result = parseConfigKeyToken();
     if (this.check("IDENT") || this.check("PROVIDER") || this.check("MEMORY")) {
       return this.advance().lexeme;
     }
     const t = this.peek();
     throw new ParseError("Expected config key", t.line, t.column);
-  }
+}
 
   private parseConfigValue(): string | number | boolean {
     // ParseConfigValue.
@@ -3098,24 +3502,36 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseConfigValue();
 
+    // const result = parseConfigValue();
     if (this.match("STRING")) {
       return this.previous().value as string;
     }
+
+    // continue when this.match("TRUE").
     if (this.match("TRUE")) {
       return true;
     }
+
+    // continue when this.match("FALSE").
     if (this.match("FALSE")) {
       return false;
     }
+
+    // continue when this.check("UNIT LITERAL").
     if (this.check("UNIT_LITERAL")) {
       return this.advance().value as number;
     }
+
+    // continue when this.check("NUMBER").
     if (this.check("NUMBER")) {
       const value = this.parseNumberValue();
+
+      // continue when this.check("IDENT").
       if (this.check("IDENT")) {
         const unit = this.peek().lexeme;
+
+        // continue when unit equals "GB" || unit === "MB" || unit === "TB" || unit === "Gb" || unit === "Mb" || unit === "Tb".
         if (unit === "GB" || unit === "MB" || unit === "TB" || unit === "Gb" || unit === "Mb" || unit === "Tb") {
           this.advance();
         }
@@ -3124,7 +3540,7 @@ class Parser {
     }
     const t = this.peek();
     throw new ParseError("Expected config value", t.line, t.column);
-  }
+}
 
   private parseAgent(): AgentDecl {
     // ParseAgent.
@@ -3139,12 +3555,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAgent();
 
+    // const result = parseAgent();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected agent name");
     this.expect("LBRACE", "Expected '{' after agent name");
-
     const usesAi: string[] = [];
     let memoryKind: "short_term" | "long_term" | null = null;
     const tools: string[] = [];
@@ -3153,21 +3568,34 @@ class Parser {
     let goal = "";
     let planBody: Stmt[] = [];
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("USES").
       if (this.match("USES")) {
         const modelName = this.expect("IDENT", "Expected model name after uses");
         usesAi.push(modelName.lexeme);
         this.expect("SEMICOLON", "Expected ';' after uses");
+
+      // Otherwise, continue when this.match("MEMORY").
       } else if (this.match("MEMORY")) {
         const kindTok = this.expect("IDENT", "Expected memory kind");
+
+        // continue when lexeme differs from lexeme !== "long term".
         if (kindTok.lexeme !== "short_term" && kindTok.lexeme !== "long_term") {
           throw new ParseError("Memory kind must be short_term or long_term", kindTok.line, kindTok.column);
         }
         memoryKind = kindTok.lexeme;
         this.expect("SEMICOLON", "Expected ';' after memory");
+
+      // Otherwise, continue when this.match("TOOLS").
       } else if (this.match("TOOLS")) {
         this.expect("LBRACKET", "Expected '[' after tools");
+
+        // continue when check is falsy.
         if (!this.check("RBRACKET")) {
+
+          // Evaluate do.
           do {
             const tool = this.expect("IDENT", "Expected tool name");
             tools.push(tool.lexeme);
@@ -3175,32 +3603,45 @@ class Parser {
         }
         this.expect("RBRACKET", "Expected ']' after tools list");
         this.expect("SEMICOLON", "Expected ';' after tools");
+
+      // Otherwise, continue when this.match("SKILL").
       } else if (this.match("SKILL")) {
         skills.push(this.expect("IDENT", "Expected skill name").lexeme);
         this.expect("SEMICOLON", "Expected ';' after skill");
+
+      // Otherwise, continue when this.match("CAN").
       } else if (this.match("CAN")) {
         this.expect("LBRACKET", "Expected '[' after can");
+
+        // continue when check is falsy.
         if (!this.check("RBRACKET")) {
+
+          // Evaluate do.
           do {
             capabilities.push(this.parseCapability());
           } while (this.match("COMMA"));
         }
         this.expect("RBRACKET", "Expected ']' after capability list");
         this.expect("SEMICOLON", "Expected ';' after can");
+
+      // Otherwise, continue when this.match("GOAL").
       } else if (this.match("GOAL")) {
         const goalTok = this.expect("STRING", "Expected goal string");
         goal = goalTok.value as string;
         this.expect("SEMICOLON", "Expected ';' after goal");
+
+      // Otherwise, continue when this.match("PLAN").
       } else if (this.match("PLAN")) {
         this.expect("LBRACE", "Expected '{' after plan");
         planBody = this.parseBlock();
         this.expect("RBRACE", "Expected '}' to close plan");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected agent member", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close agent block");
     return {
       kind: "AgentDecl",
@@ -3214,7 +3655,7 @@ class Parser {
       planBody,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseSafetyZone(): SafetyZoneDecl {
     // ParseSafetyZone.
@@ -3229,29 +3670,34 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSafetyZone();
 
+    // const result = parseSafetyZone();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected zone name");
     let shape: "circle" | "rect" = "circle";
+
+    // continue when this.match("CIRCLE").
     if (this.match("CIRCLE")) shape = "circle";
+
+    // Otherwise, continue when else if (this.match("RECT").
     else if (this.match("RECT")) shape = "rect";
     else throw new ParseError("Expected 'circle' or 'rect' after zone name", this.peek().line, this.peek().column);
-
     this.expect("AT", "Expected 'at' in zone declaration");
     this.expect("LPAREN", "Expected '(' after 'at'");
     const x = this.parseExpr();
     this.expect("COMMA", "Expected ',' between coordinates");
     const y = this.parseExpr();
     this.expect("RPAREN", "Expected ')' after coordinates");
-
     let radius: Expr | null = null;
     let width: Expr | null = null;
     let height: Expr | null = null;
 
+    // continue when shape equals "circle".
     if (shape === "circle") {
       this.expect("RADIUS", "Expected 'radius' for circle zone");
       radius = this.parseExpr();
+
+    // Handle any remaining cases.
     } else {
       this.expect("SIZE", "Expected 'size' for rect zone");
       this.expect("LPAREN", "Expected '(' after 'size'");
@@ -3260,7 +3706,6 @@ class Parser {
       height = this.parseExpr();
       this.expect("RPAREN", "Expected ')' after size");
     }
-
     this.expect("SEMICOLON", "Expected ';' after zone declaration");
     const end = this.previous();
     return {
@@ -3274,7 +3719,7 @@ class Parser {
       height,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseMaxSpeedRule(): SafetyRule {
     // ParseMaxSpeedRule.
@@ -3289,15 +3734,19 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseMaxSpeedRule();
 
+    // const result = parseMaxSpeedRule();
     const start = this.peek();
     const name = this.advance();
     this.expect("ASSIGN", "Expected '=' in safety rule");
     const value = this.parseExpr();
     let unit: UnitKind;
+
+    // continue when kind equals "UnitLiteralExpr".
     if (value.kind === "UnitLiteralExpr") {
       unit = value.unit;
+
+    // Handle any remaining cases.
     } else {
       unit = this.parseUnitSuffix();
     }
@@ -3310,7 +3759,7 @@ class Parser {
       unit,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseStopIfRule(): SafetyRule {
     // ParseStopIfRule.
@@ -3325,14 +3774,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseStopIfRule();
 
+    // const result = parseStopIfRule();
     const start = this.advance();
     const condition = this.parseExpr();
     this.expect("SEMICOLON", "Expected ';' after stop_if rule");
     const end = this.previous();
     return { kind: "StopIfRule", condition, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseContractClauses(): {
     // ParseContractClauses.
@@ -3347,12 +3796,12 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseContractClauses();
 
+    // const result = parseContractClauses();
     requires: Expr | null;
     ensures: Expr | null;
     invariant: Expr | null;
-  } {
+} {
     let requires: Expr | null = null;
     let ensures: Expr | null = null;
     let invariant: Expr | null = null;
@@ -3383,8 +3832,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseBehavior();
 
+    // const result = parseBehavior();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected behavior name");
     this.expect("LPAREN", "Expected '(' after behavior name");
@@ -3402,7 +3851,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTask(): TaskDecl {
     // ParseTask.
@@ -3417,13 +3866,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTask();
 
+    // const result = parseTask();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected task name");
     let priority: TaskPriority = "normal";
+
+    // continue when this.check("IDENT").
     if (this.check("IDENT")) {
       const maybe = this.peek().lexeme;
+
+      // continue when maybe equals "critical" || maybe === "high" || maybe === "normal" || maybe === "low".
       if (maybe === "critical" || maybe === "high" || maybe === "normal" || maybe === "low") {
         this.advance();
         priority = maybe;
@@ -3433,6 +3886,8 @@ class Parser {
     const { requires, ensures, invariant } = this.parseContractClauses();
     this.expect("LBRACE", "Expected '{' after task signature");
     let budget: ResourceBudgetDecl | null = null;
+
+    // continue when this.check("BUDGET").
     if (this.check("BUDGET")) {
       budget = this.parseBudget();
     }
@@ -3450,7 +3905,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseBudget(): ResourceBudgetDecl {
     // ParseBudget.
@@ -3465,8 +3920,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseBudget();
 
+    // const result = parseBudget();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after budget");
     let batteryPctMax: number | null = null;
@@ -3475,33 +3930,45 @@ class Parser {
     let networkMbpsMax: number | null = null;
     let storageMbMax: number | null = null;
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("BATTERY").
       if (this.match("BATTERY")) {
         this.expect("LTE", "Expected '<=' after battery in budget");
         batteryPctMax = this.parsePercentValue();
         this.expect("SEMICOLON", "Expected ';' after battery budget");
+
+      // Otherwise, continue when this.match("MEMORY").
       } else if (this.match("MEMORY")) {
         this.expect("LTE", "Expected '<=' after memory in budget");
         memoryMbMax = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after memory budget");
+
+      // Otherwise, continue when this.match("CPU").
       } else if (this.match("CPU")) {
         this.expect("LTE", "Expected '<=' after cpu in budget");
         cpuPctMax = this.parsePercentValue();
         this.expect("SEMICOLON", "Expected ';' after cpu budget");
+
+      // Otherwise, continue when this.match("NETWORK").
       } else if (this.match("NETWORK")) {
         this.expect("LTE", "Expected '<=' after network in budget");
         networkMbpsMax = this.parseNetworkAmount();
         this.expect("SEMICOLON", "Expected ';' after network budget");
+
+      // Otherwise, continue when this.match("STORAGE").
       } else if (this.match("STORAGE")) {
         this.expect("LTE", "Expected '<=' after storage in budget");
         storageMbMax = this.parseStorageAmount();
         this.expect("SEMICOLON", "Expected ';' after storage budget");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected budget constraint", t.line, t.column);
       }
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close budget");
     return {
       kind: "ResourceBudgetDecl",
@@ -3512,7 +3979,7 @@ class Parser {
       storageMbMax,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parsePercentValue(): number {
     // ParsePercentValue.
@@ -3527,16 +3994,20 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePercentValue();
 
+    // const result = parsePercentValue();
     const value = this.parseNumberValue();
+
+    // continue when lexeme equals "%".
     if (this.check("IDENT") && this.peek().lexeme === "%") {
       this.advance();
+
+    // Otherwise, continue when this.match("PERCENT").
     } else if (this.match("PERCENT")) {
       /* consumed */
     }
     return value;
-  }
+}
 
   private parseMission(): MissionDecl {
     // ParseMission.
@@ -3551,20 +4022,22 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseMission();
 
+    // const result = parseMission();
     const start = this.advance();
     this.expect("LBRACE", "Expected '{' after mission");
     let durationHours: number | null = null;
 
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       this.expect("DURATION", "Expected duration in mission block");
       this.expect("COLON", "Expected ':' after duration");
       durationHours = this.parseDurationHours();
       this.expect("SEMICOLON", "Expected ';' after duration");
     }
-
     const end = this.expect("RBRACE", "Expected '}' to close mission");
+
+    // continue when durationHours equals null.
     if (durationHours === null) {
       const t = this.peek();
       throw new ParseError("mission block requires duration", t.line, t.column);
@@ -3574,7 +4047,7 @@ class Parser {
       durationHours,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseDurationHours(): number {
     // ParseDurationHours.
@@ -3589,24 +4062,36 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDurationHours();
 
+    // const result = parseDurationHours();
     const tok = this.peek();
+
+    // continue when type equals unit === "h".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "h") {
       this.advance();
       return tok.value as number;
     }
     const value = this.parseNumberValue();
+
+    // continue when this.check("IDENT").
     if (this.check("IDENT")) {
       const unit = this.peek().lexeme;
       let hours = value;
+
+      // continue when unit equals "h" || unit === "hr" || unit === "hrs" || unit === "hour" || unit === "hours".
       if (unit === "h" || unit === "hr" || unit === "hrs" || unit === "hour" || unit === "hours") {
         hours = value;
+
+      // Otherwise, continue when unit equals "min" || unit === "mins" || unit === "minute" || unit === "minutes".
       } else if (unit === "min" || unit === "mins" || unit === "minute" || unit === "minutes") {
         hours = value / 60;
+
+      // Otherwise, continue when unit equals "s" || unit === "sec" || unit === "secs".
       } else if (unit === "s" || unit === "sec" || unit === "secs") {
         hours = value / 3600;
       }
+
+      // continue when value.
       if (
         unit === "h" ||
         unit === "hr" ||
@@ -3626,7 +4111,7 @@ class Parser {
       return hours;
     }
     return value;
-  }
+}
 
   private parseStateMachine(): StateMachineDecl {
     // ParseStateMachine.
@@ -3641,17 +4126,23 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseStateMachine();
 
+    // const result = parseStateMachine();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected state machine name");
     this.expect("LBRACE", "Expected '{' after state machine name");
     const states: string[] = [];
     const transitions: TransitionDecl[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("STATE").
       if (this.match("STATE")) {
         states.push(this.expect("IDENT", "Expected state name").lexeme);
         this.expect("SEMICOLON", "Expected ';' after state");
+
+      // Otherwise, continue when this.match("TRANSITION").
       } else if (this.match("TRANSITION")) {
         const from = this.expect("IDENT", "Expected source state");
         this.expect("ARROW", "Expected '->' in transition");
@@ -3662,6 +4153,8 @@ class Parser {
           to: to.lexeme,
           span: this.spanFrom(from, this.previous()),
         });
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected state or transition in state machine", t.line, t.column);
@@ -3675,7 +4168,7 @@ class Parser {
       transitions,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseEvent(): EventDecl {
     // ParseEvent.
@@ -3690,13 +4183,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseEvent();
 
+    // const result = parseEvent();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected event name");
     const fields: FieldDecl[] = [];
+
+    // continue when this.check("LBRACE").
     if (this.check("LBRACE")) {
       this.advance();
+
+      // Repeat while !this.check("RBRACE") && !this.check("EOF").
       while (!this.check("RBRACE") && !this.check("EOF")) {
         const fieldStart = this.peek();
         const fieldName = this.expect("IDENT", "Expected event field name");
@@ -3718,7 +4215,7 @@ class Parser {
       fields,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseEventHandler(): EventHandlerDecl {
     // ParseEventHandler.
@@ -3733,8 +4230,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseEventHandler();
 
+    // const result = parseEventHandler();
     const start = this.advance(); // on
     const eventName = this.expect("IDENT", "Expected event name after on");
     this.expect("LBRACE", "Expected '{' after event handler");
@@ -3746,7 +4243,7 @@ class Parser {
       body,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseTwin(): TwinDecl {
     // ParseTwin.
@@ -3761,23 +4258,33 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseTwin();
 
+    // const result = parseTwin();
     const start = this.advance();
     const name = this.expect("IDENT", "Expected twin name");
     this.expect("LBRACE", "Expected '{' after twin name");
     const mirrors: string[] = [];
     let replay = false;
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
+
+      // continue when this.match("MIRROR").
       if (this.match("MIRROR")) {
         mirrors.push(this.parseLabel("Expected mirror field"));
         this.expect("SEMICOLON", "Expected ';' after mirror");
+
+      // Otherwise, continue when this.match("REPLAY").
       } else if (this.match("REPLAY")) {
         replay = this.match("TRUE");
+
+        // continue when replay is falsy.
         if (!replay) {
           this.expect("FALSE", "Expected true or false after replay");
         }
         this.expect("SEMICOLON", "Expected ';' after replay");
+
+      // Handle any remaining cases.
       } else {
         const t = this.peek();
         throw new ParseError("Expected mirror or replay in twin block", t.line, t.column);
@@ -3791,7 +4298,7 @@ class Parser {
       replay,
       span: this.spanFrom(start, end),
     };
-  }
+}
 
   private parseCapability(): CapabilityDecl {
     // ParseCapability.
@@ -3806,12 +4313,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseCapability();
 
+    // const result = parseCapability();
     const start = this.peek();
     let action: string;
+
+    // continue when this.match("PLAN").
     if (this.match("PLAN")) {
       action = "plan";
+
+    // Otherwise, continue when value.
     } else if (
       this.check("IDENT") ||
       this.check("PUBLISH") ||
@@ -3821,11 +4332,15 @@ class Parser {
       this.check("DISCOVER")
     ) {
       action = this.advance().lexeme;
+
+    // Handle any remaining cases.
     } else {
       const t = this.peek();
       throw new ParseError("Expected capability action", t.line, t.column);
     }
     let target: string | null = null;
+
+    // continue when this.match("LPAREN").
     if (this.match("LPAREN")) {
       target = this.expect("IDENT", "Expected capability target").lexeme;
       this.expect("RPAREN", "Expected ')' after capability target");
@@ -3835,7 +4350,7 @@ class Parser {
       target,
       span: this.spanFrom(start, this.previous()),
     };
-  }
+}
 
   private parseLocalName(message: string): Token {
     // ParseLocalName.
@@ -3850,8 +4365,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseLocalName(message);
 
+    // const result = parseLocalName(message);
     const lexeme = this.parseBindingIdent(message);
     return {
       type: "IDENT",
@@ -3861,7 +4376,7 @@ class Parser {
       column: this.previous().column,
       offset: this.previous().offset,
     };
-  }
+}
 
   private parseBlock(): Stmt[] {
     // ParseBlock.
@@ -3876,14 +4391,16 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseBlock();
 
+    // const result = parseBlock();
     const stmts: Stmt[] = [];
+
+    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       stmts.push(this.parseStmt());
     }
     return stmts;
-  }
+}
 
   private parseStmt(): Stmt {
     // ParseStmt.
@@ -3898,14 +4415,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseStmt();
 
+    // const result = parseStmt();
     const start = this.peek();
 
+    // continue when this.match("LET").
     if (this.match("LET")) {
       const name = this.parseLocalName("Expected variable name");
       const typeAnnotation = this.match("COLON") ? this.parseTypeAnnotation() : null;
       const init = this.match("ASSIGN") ? this.parseExpr() : null;
+
+      // continue when typeAnnotation && !init is falsy.
       if (!typeAnnotation && !init) {
         const t = this.peek();
         throw new ParseError("Expected type annotation or initializer in let declaration", t.line, t.column);
@@ -3921,19 +4441,20 @@ class Parser {
       };
     }
 
+    // continue when this.match("IF").
     if (this.match("IF")) {
       const condition = this.parseExpr();
       this.expect("LBRACE", "Expected '{' after if condition");
       const thenBranch = this.parseBlock();
       this.expect("RBRACE", "Expected '}' after if block");
-
       let elseBranch: Stmt[] | null = null;
+
+      // continue when this.match("ELSE").
       if (this.match("ELSE")) {
         this.expect("LBRACE", "Expected '{' after else");
         elseBranch = this.parseBlock();
         this.expect("RBRACE", "Expected '}' after else block");
       }
-
       const end = this.previous();
       return {
         kind: "IfStmt",
@@ -3944,6 +4465,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("LOOP").
     if (this.match("LOOP")) {
       this.expect("EVERY", "Expected 'every' after loop");
       const interval = this.parseDuration();
@@ -3958,8 +4480,11 @@ class Parser {
       };
     }
 
+    // continue when this.match("PUBLISH").
     if (this.match("PUBLISH")) {
       const topicName = this.parseSubscribeTarget();
+
+      // continue when this.match("LPAREN").
       if (this.match("LPAREN")) {
         const value = this.parseExpr();
         this.expect("RPAREN", "Expected ')' after publish value");
@@ -3984,6 +4509,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("SUBSCRIBE").
     if (this.match("SUBSCRIBE")) {
       const target = this.parseSubscribeTarget();
       this.expect("SEMICOLON", "Expected ';' after subscribe");
@@ -3991,6 +4517,7 @@ class Parser {
       return { kind: "SubscribeStmt", target, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("EXECUTE").
     if (this.match("EXECUTE")) {
       const actionName = this.expect("IDENT", "Expected action name after execute").lexeme;
       const goal = this.match("LPAREN")
@@ -4010,6 +4537,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("DISCOVER").
     if (this.match("DISCOVER")) {
       const target = this.parseDiscoverTarget();
       const filter = this.parseDiscoverFilter();
@@ -4018,6 +4546,7 @@ class Parser {
       return { kind: "DiscoverStmt", target, filter, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("RECEIVE").
     if (this.match("RECEIVE")) {
       const topicName = this.parseSubscribeTarget();
       this.expect("TO", "Expected 'to' after topic in receive");
@@ -4027,6 +4556,7 @@ class Parser {
       return { kind: "ReceiveStmt", topicName, varName, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("CALL").
     if (this.match("CALL")) {
       const serviceName = this.expect("IDENT", "Expected service name after call");
       this.expect("LPAREN", "Expected '(' after service name");
@@ -4040,6 +4570,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("SEND GOAL").
     if (this.match("SEND_GOAL")) {
       const actionName = this.expect("IDENT", "Expected action name after send_goal");
       this.expect("WITH", "Expected 'with' after action name");
@@ -4054,18 +4585,21 @@ class Parser {
       };
     }
 
+    // continue when this.match("EMERGENCY STOP").
     if (this.match("EMERGENCY_STOP")) {
       this.expect("SEMICOLON", "Expected ';' after emergency_stop");
       const end = this.previous();
       return { kind: "EmergencyStopStmt", span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("RESET EMERGENCY STOP").
     if (this.match("RESET_EMERGENCY_STOP")) {
       this.expect("SEMICOLON", "Expected ';' after reset_emergency_stop");
       const end = this.previous();
       return { kind: "ResetEmergencyStopStmt", span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("EMIT").
     if (this.match("EMIT")) {
       const eventName = this.parseLabel("Expected event name after emit");
       this.expect("SEMICOLON", "Expected ';' after emit statement");
@@ -4073,6 +4607,7 @@ class Parser {
       return { kind: "EmitStmt", eventName, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("ENTER").
     if (this.match("ENTER")) {
       const stateName = this.parseLabel("Expected state name after enter");
       this.expect("SEMICOLON", "Expected ';' after enter statement");
@@ -4080,6 +4615,7 @@ class Parser {
       return { kind: "EnterStmt", stateName, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("REMEMBER").
     if (this.match("REMEMBER")) {
       const keyTok = this.expect("STRING", "Expected memory key string");
       const key = keyTok.value as string;
@@ -4090,6 +4626,7 @@ class Parser {
       return { kind: "RememberStmt", key, value, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("RETURN").
     if (this.match("RETURN")) {
       const value = this.check("SEMICOLON") ? null : this.parseExpr();
       this.expect("SEMICOLON", "Expected ';' after return");
@@ -4097,6 +4634,7 @@ class Parser {
       return { kind: "ReturnStmt", value, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("SPAWN").
     if (this.match("SPAWN")) {
       const calleeName = this.parseLabel("Expected function name after spawn");
       const callee: Expr = {
@@ -4105,8 +4643,14 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
       const args: Expr[] = [];
+
+      // continue when this.match("LPAREN").
       if (this.match("LPAREN")) {
+
+        // continue when check is falsy.
         if (!this.check("RPAREN")) {
+
+          // Evaluate do.
           do {
             args.push(this.parseExpr());
           } while (this.match("COMMA"));
@@ -4118,6 +4662,7 @@ class Parser {
       return { kind: "SpawnStmt", callee, args, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("PARALLEL").
     if (this.match("PARALLEL")) {
       this.expect("LBRACE", "Expected '{' after parallel");
       const body = this.parseBlock();
@@ -4126,12 +4671,17 @@ class Parser {
       return { kind: "ParallelStmt", body, span: this.spanFrom(start, end) };
     }
 
+    // continue when this.match("SELECT").
     if (this.match("SELECT")) {
       this.expect("LBRACE", "Expected '{' after select");
       const arms: SelectArm[] = [];
+
+      // Repeat while !this.check("RBRACE") && !this.check("EOF").
       while (!this.check("RBRACE") && !this.check("EOF")) {
         const armStart = this.peek();
         const recv = this.expect("IDENT", "Expected 'recv' in select arm");
+
+        // continue when lexeme differs from "recv".
         if (recv.lexeme !== "recv") {
           throw new ParseError("Expected 'recv' in select arm", recv.line, recv.column);
         }
@@ -4140,10 +4690,14 @@ class Parser {
         this.expect("RPAREN", "Expected ')' after channel");
         this.expect("FAT_ARROW", "Expected '=>' in select arm");
         let body: Stmt[];
+
+        // continue when this.check("LBRACE").
         if (this.check("LBRACE")) {
           this.advance();
           body = this.parseBlock();
           this.expect("RBRACE", "Expected '}' to close select arm");
+
+        // Handle any remaining cases.
         } else {
           body = [this.parseStmt()];
         }
@@ -4157,12 +4711,11 @@ class Parser {
       this.expect("SEMICOLON", "Expected ';' after select");
       return { kind: "SelectStmt", arms, span: this.spanFrom(start, end) };
     }
-
     const expr = this.parseExpr();
     this.expect("SEMICOLON", "Expected ';' after expression");
     const end = this.previous();
     return { kind: "ExprStmt", expr, span: this.spanFrom(start, end) };
-  }
+}
 
   private parseSubscribeTarget(): string {
     // ParseSubscribeTarget.
@@ -4177,15 +4730,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseSubscribeTarget();
 
+    // const result = parseSubscribeTarget();
     const first = this.parseLabel("Expected subscribe target");
+
+    // continue when this.match("DOT").
     if (this.match("DOT")) {
       const second = this.parseLabel("Expected member after '.'");
       return `${first}.${second}`;
     }
     return first;
-  }
+}
 
   private parseDiscoverTarget(): DiscoverTarget {
     // ParseDiscoverTarget.
@@ -4200,11 +4755,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDiscoverTarget();
 
+    // const result = parseDiscoverTarget();
     const name = this.expect("IDENT", "Expected discover target").lexeme;
+
+    // continue when name equals "robots".
     if (name === "robots") return "robots";
+
+    // continue when name equals "agents".
     if (name === "agents") return "agents";
+
+    // continue when name equals "devices".
     if (name === "devices") return "devices";
     const t = this.previous();
     throw new ParseError(
@@ -4212,7 +4773,7 @@ class Parser {
       t.line,
       t.column,
     );
-  }
+}
 
   private parseDiscoverFilter(): DiscoverFilter | null {
     // ParseDiscoverFilter.
@@ -4227,14 +4788,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDiscoverFilter();
 
+    // const result = parseDiscoverFilter();
     if (!this.match("WHERE")) return null;
     this.expect("IDENT", "Expected 'capability' in discover filter");
     this.expect("INCLUDES", "Expected 'includes' in discover filter");
     const capability = this.expect("IDENT", "Expected capability name").lexeme;
     return { capability };
-  }
+}
 
   private parseDuration(): number {
     // ParseDuration.
@@ -4249,26 +4810,34 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseDuration();
 
+    // const result = parseDuration();
     const tok = this.peek();
+
+    // continue when type equals unit === "ms".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "ms") {
       this.advance();
       return tok.value as number;
     }
+
+    // continue when type equals unit === "s".
     if (tok.type === "UNIT_LITERAL" && tok.unit === "s") {
       this.advance();
       return (tok.value as number) * 1000;
     }
+
+    // continue when type equals "NUMBER".
     if (tok.type === "NUMBER") {
       this.advance();
+
+      // continue when lexeme equals "ms".
       if (this.check("IDENT") && this.peek().lexeme === "ms") {
         this.advance();
         return tok.value as number;
       }
     }
     throw new ParseError("Expected duration like 50ms", tok.line, tok.column);
-  }
+}
 
   private parseUnitSuffix(): UnitKind {
     // ParseUnitSuffix.
@@ -4283,15 +4852,17 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseUnitSuffix();
 
+    // const result = parseUnitSuffix();
     const unit = this.tryParseUnitSuffix();
+
+    // continue when unit is falsy.
     if (!unit) {
       const t = this.peek();
       throw new ParseError("Expected unit suffix", t.line, t.column);
     }
     return unit;
-  }
+}
 
   private tryParseUnitSuffix(): UnitKind | null {
     // TryParseUnitSuffix.
@@ -4306,13 +4877,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = tryParseUnitSuffix();
 
+    // const result = tryParseUnitSuffix();
     if (this.check("UNIT_LITERAL")) {
       const t = this.advance();
       return unitFromLexeme(t.unit!);
     }
 
+    // continue when lexeme equals lexeme === "s".
     if (this.check("IDENT") && this.peek().lexeme === "m" && this.tokens[this.pos + 1]?.type === "SLASH" && this.tokens[this.pos + 2]?.lexeme === "s") {
       this.advance();
       this.advance();
@@ -4320,6 +4892,7 @@ class Parser {
       return "m/s";
     }
 
+    // continue when lexeme equals lexeme === "s".
     if (this.check("IDENT") && this.peek().lexeme === "rad" && this.tokens[this.pos + 1]?.type === "SLASH" && this.tokens[this.pos + 2]?.lexeme === "s") {
       this.advance();
       this.advance();
@@ -4327,16 +4900,18 @@ class Parser {
       return "rad/s";
     }
 
+    // continue when this.check("IDENT").
     if (this.check("IDENT")) {
       const lexeme = this.peek().lexeme;
+
+      // continue when isUnitIdent(lexeme).
       if (isUnitIdent(lexeme)) {
         this.advance();
         return unitFromLexeme(lexeme as import("../lexer/index.js").UnitLexeme);
       }
     }
-
     return null;
-  }
+}
 
   private parseExpr(): Expr {
     // ParseExpr.
@@ -4351,10 +4926,10 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseExpr();
 
+    // const result = parseExpr();
     return this.parseOr();
-  }
+}
 
   private parseOr(): Expr {
     // ParseOr.
@@ -4369,9 +4944,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseOr();
 
+    // const result = parseOr();
     let left = this.parseAnd();
+
+    // Repeat while this.match("OR").
     while (this.match("OR")) {
       const opStart = this.previous();
       const right = this.parseAnd();
@@ -4387,7 +4964,7 @@ class Parser {
       };
     }
     return left;
-  }
+}
 
   private parseAnd(): Expr {
     // ParseAnd.
@@ -4402,9 +4979,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAnd();
 
+    // const result = parseAnd();
     let left = this.parseComparison();
+
+    // Repeat while this.match("AND").
     while (this.match("AND")) {
       const opStart = this.previous();
       const right = this.parseComparison();
@@ -4417,7 +4996,7 @@ class Parser {
       };
     }
     return left;
-  }
+}
 
   private parseComparison(): Expr {
     // ParseComparison.
@@ -4432,9 +5011,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseComparison();
 
+    // const result = parseComparison();
     let left = this.parseAdditive();
+
+    // Repeat while value.
     while (
       this.match("LT", "LTE", "GT", "GTE", "EQ", "NEQ")
     ) {
@@ -4450,7 +5031,7 @@ class Parser {
       };
     }
     return left;
-  }
+}
 
   private parseAdditive(): Expr {
     // ParseAdditive.
@@ -4465,9 +5046,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseAdditive();
 
+    // const result = parseAdditive();
     let left = this.parseMultiplicative();
+
+    // Repeat while this.match("PLUS", "MINUS").
     while (this.match("PLUS", "MINUS")) {
       const opTok = this.previous();
       const op = opTok.lexeme as BinaryOp;
@@ -4481,7 +5064,7 @@ class Parser {
       };
     }
     return left;
-  }
+}
 
   private parseMultiplicative(): Expr {
     // ParseMultiplicative.
@@ -4496,9 +5079,11 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseMultiplicative();
 
+    // const result = parseMultiplicative();
     let left = this.parseUnary();
+
+    // Repeat while this.match("STAR", "SLASH").
     while (this.match("STAR", "SLASH")) {
       const opTok = this.previous();
       const op = opTok.lexeme as BinaryOp;
@@ -4512,7 +5097,7 @@ class Parser {
       };
     }
     return left;
-  }
+}
 
   private parseUnary(): Expr {
     // ParseUnary.
@@ -4527,8 +5112,8 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parseUnary();
 
+    // const result = parseUnary();
     if (this.match("SPAWN")) {
       const start = this.previous();
       const calleeName = this.parseLabel("Expected function name after spawn");
@@ -4538,8 +5123,14 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
       const args: Expr[] = [];
+
+      // continue when this.match("LPAREN").
       if (this.match("LPAREN")) {
+
+        // continue when check is falsy.
         if (!this.check("RPAREN")) {
+
+          // Evaluate do.
           do {
             args.push(this.parseExpr());
           } while (this.match("COMMA"));
@@ -4548,6 +5139,8 @@ class Parser {
       }
       return { kind: "SpawnExpr", callee, args, span: this.spanFrom(start, this.previous()) };
     }
+
+    // continue when this.match("AWAIT").
     if (this.match("AWAIT")) {
       const start = this.previous();
       const operand = this.parseUnary();
@@ -4557,6 +5150,8 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
+
+    // continue when this.match("MINUS", "NOT").
     if (this.match("MINUS", "NOT")) {
       const opTok = this.previous();
       const op = (opTok.type === "NOT" ? "not" : "-") as import("../ast/nodes.js").UnaryOp;
@@ -4569,7 +5164,7 @@ class Parser {
       };
     }
     return this.parsePostfix();
-  }
+}
 
   private parsePostfix(): Expr {
     // ParsePostfix.
@@ -4584,11 +5179,14 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePostfix();
 
+    // const result = parsePostfix();
     let expr = this.parsePrimary();
 
+    // Repeat while true.
     while (true) {
+
+      // continue when this.match("DOT").
       if (this.match("DOT")) {
         const prop = this.parsePropertyName();
         expr = {
@@ -4600,12 +5198,19 @@ class Parser {
             prop,
           ),
         };
+
+      // Otherwise, continue when this.match("LPAREN").
       } else if (this.match("LPAREN")) {
         const args: Expr[] = [];
         const namedArgs: NamedArg[] = [];
 
+        // continue when check is falsy.
         if (!this.check("RPAREN")) {
+
+          // Evaluate do.
           do {
+
+            // continue when this.isNamedArgStart().
             if (this.isNamedArgStart()) {
               const name = this.parseNamedArgName();
               this.advance(); // colon
@@ -4615,12 +5220,13 @@ class Parser {
                 value,
                 span: this.spanFrom(this.previous(), this.previous()),
               });
+
+            // Handle any remaining cases.
             } else {
               args.push(this.parseExpr());
             }
           } while (this.match("COMMA"));
         }
-
         const end = this.expect("RPAREN", "Expected ')' after arguments");
         expr = {
           kind: "CallExpr",
@@ -4632,7 +5238,11 @@ class Parser {
             end,
           ),
         };
+
+      // Otherwise, continue when this.check("LT").
       } else if (this.check("LT")) {
+
+        // continue when kind equals name).
         if (expr.kind === "IdentExpr" && /^[A-Z]/.test(expr.name)) {
           const full = this.finishGenericTypeName(expr.name);
           expr = {
@@ -4646,11 +5256,19 @@ class Parser {
           continue;
         }
         break;
+
+      // Otherwise, continue when this.check("LBRACE").
       } else if (this.check("LBRACE")) {
+
+        // continue when kind equals name).
         if (expr.kind === "IdentExpr" && /^[A-Z]/.test(expr.name)) {
           this.advance();
           const fields: import("../ast/nodes.js").StructFieldInit[] = [];
+
+          // continue when check is falsy.
           if (!this.check("RBRACE")) {
+
+            // Evaluate do.
             do {
               const fieldStart = this.peek();
               const fieldName = this.parseLabel("Expected struct field name");
@@ -4676,13 +5294,14 @@ class Parser {
           continue;
         }
         break;
+
+      // Handle any remaining cases.
       } else {
         break;
       }
     }
-
     return expr;
-  }
+}
 
   private parsePrimary(): Expr {
     // ParsePrimary.
@@ -4697,31 +5316,44 @@ class Parser {
     // None.
     //
     // Example:
-    // const result = parsePrimary();
 
+    // const result = parsePrimary();
     const start = this.peek();
 
+    // continue when this.match("MATCH").
     if (this.match("MATCH")) {
       const scrutinee = this.parseExpr();
       this.expect("LBRACE", "Expected '{' after match scrutinee");
       const arms: MatchArm[] = [];
+
+      // Repeat while !this.check("RBRACE") && !this.check("EOF").
       while (!this.check("RBRACE") && !this.check("EOF")) {
         const armStart = this.peek();
         const variant = this.parseLabel("Expected match arm variant");
         const bindings: string[] = [];
+
+        // continue when this.match("LPAREN").
         if (this.match("LPAREN")) {
+
+          // Repeat while !this.check("RPAREN") && !this.check("EOF").
           while (!this.check("RPAREN") && !this.check("EOF")) {
             bindings.push(this.parseLabel("Expected binding name"));
+
+            // continue when match is falsy.
             if (!this.match("COMMA")) break;
           }
           this.expect("RPAREN", "Expected ')' after match bindings");
         }
         this.expect("FAT_ARROW", "Expected '=>' in match arm");
         let body: Stmt[];
+
+        // continue when this.check("LBRACE").
         if (this.check("LBRACE")) {
           this.advance();
           body = this.parseBlock();
           this.expect("RBRACE", "Expected '}' to close match arm");
+
+        // Handle any remaining cases.
         } else {
           body = [this.parseStmt()];
         }
@@ -4741,6 +5373,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("CALL").
     if (this.match("CALL")) {
       const serviceName = this.expect("IDENT", "Expected service name after call").lexeme;
       this.expect("LPAREN", "Expected '(' after service name");
@@ -4752,6 +5385,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("EXECUTE").
     if (this.match("EXECUTE")) {
       const actionName = this.expect("IDENT", "Expected action name after execute").lexeme;
       const goal = this.match("LPAREN")
@@ -4769,6 +5403,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("DISCOVER").
     if (this.match("DISCOVER")) {
       const target = this.parseDiscoverTarget();
       const filter = this.parseDiscoverFilter();
@@ -4780,6 +5415,7 @@ class Parser {
       };
     }
 
+    // continue when this.match("ROBOT").
     if (this.match("ROBOT")) {
       const tok = this.previous();
       return {
@@ -4788,6 +5424,8 @@ class Parser {
         span: this.spanFrom(start, tok),
       };
     }
+
+    // continue when this.match("SAFETY").
     if (this.match("SAFETY")) {
       const tok = this.previous();
       return {
@@ -4796,6 +5434,8 @@ class Parser {
         span: this.spanFrom(start, tok),
       };
     }
+
+    // continue when this.match("TRUE").
     if (this.match("TRUE")) {
       return {
         kind: "LiteralExpr",
@@ -4803,6 +5443,8 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
+
+    // continue when this.match("FALSE").
     if (this.match("FALSE")) {
       return {
         kind: "LiteralExpr",
@@ -4810,9 +5452,13 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
+
+    // continue when this.match("NUMBER").
     if (this.match("NUMBER")) {
       const tok = this.previous();
       const unit = this.tryParseUnitSuffix();
+
+      // continue when unit.
       if (unit) {
         return {
           kind: "UnitLiteralExpr",
@@ -4827,6 +5473,8 @@ class Parser {
         span: this.spanFrom(start, tok),
       };
     }
+
+    // continue when this.match("UNIT LITERAL").
     if (this.match("UNIT_LITERAL")) {
       const tok = this.previous();
       return {
@@ -4836,6 +5484,8 @@ class Parser {
         span: this.spanFrom(start, tok),
       };
     }
+
+    // continue when this.match("STRING").
     if (this.match("STRING")) {
       return {
         kind: "LiteralExpr",
@@ -4843,6 +5493,8 @@ class Parser {
         span: this.spanFrom(start, this.previous()),
       };
     }
+
+    // continue when value.
     if (
       this.match(
         "IDENT",
@@ -4885,34 +5537,41 @@ class Parser {
         span: this.spanFrom(start, tok),
       };
     }
+
+    // continue when this.match("LPAREN").
     if (this.match("LPAREN")) {
       const expr = this.parseExpr();
       const end = this.expect("RPAREN", "Expected ')' after expression");
       return { ...expr, span: this.spanFrom(start, end) };
     }
-
     const t = this.peek();
     throw new ParseError("Expected expression", t.line, t.column);
-  }
+}
 
-  private parsePropertyName(): Token {
+  private parsePropertyName(): Token {    // Compute lexeme for the following logic.
     const lexeme = this.parseLabel("Expected property name after '.'");
     const end = this.previous();
     return { type: "IDENT", lexeme, value: null, line: end.line, column: end.column, offset: end.offset };
-  }
+}
 
-  private isNamedArgStart(): boolean {
+  private isNamedArgStart(): boolean {    // Compute next for the following logic.
     const next = this.tokens[this.pos + 1];
+
+    // continue when type differs from "COLON".
     if (next?.type !== "COLON") return false;
     return this.check("IDENT") || this.check("FROM") || this.check("GOAL") || this.check("TO");
-  }
+}
 
-  private parseNamedArgName(): string {
+  private parseNamedArgName(): string {    // continue when this.match("FROM").
     if (this.match("FROM")) return "from";
+
+    // continue when this.match("TO").
     if (this.match("TO")) return "to";
+
+    // continue when this.match("GOAL").
     if (this.match("GOAL")) return "goal";
     return this.advance().lexeme;
-  }
+}
 }
 
 export { parse as parseTokens };
@@ -4930,7 +5589,7 @@ function isUnitIdent(lexeme: string): boolean {
   // None.
   //
   // Example:
-  // const result = isUnitIdent(lexeme);
 
+  // const result = isUnitIdent(lexeme);
   return ["m", "s", "ms", "rad", "deg", "Hz"].includes(lexeme);
 }

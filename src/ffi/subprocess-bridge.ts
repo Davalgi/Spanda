@@ -28,8 +28,8 @@ function runtimeValueToJson(value: RuntimeValue): unknown {
   // None.
   //
   // Example:
-  // const result = runtimeValueToJson(value);
 
+  // const result = runtimeValueToJson(value);
   switch (value.kind) {
     case "number":
       return value.value;
@@ -57,14 +57,18 @@ function jsonToRuntimeValue(value: unknown): RuntimeValue {
   // None.
   //
   // Example:
-  // const result = jsonToRuntimeValue(value);
 
+  // const result = jsonToRuntimeValue(value);
   if (typeof value === "number") {
     return { kind: "number", value, unit: "none" };
   }
+
+  // continue when typeof value equals "boolean".
   if (typeof value === "boolean") {
     return { kind: "bool", value };
   }
+
+  // continue when typeof value equals "string".
   if (typeof value === "string") {
     return { kind: "string", value };
   }
@@ -84,8 +88,8 @@ function repoRoot(): string {
   // None.
   //
   // Example:
-  // const result = repoRoot();
 
+  // const result = repoRoot();
   return resolve(import.meta.dirname, "../..");
 }
 
@@ -102,9 +106,11 @@ export function pythonBridgeScriptPath(): string | null {
   // None.
   //
   // Example:
-  // const result = pythonBridgeScriptPath();
 
+  // const result = pythonBridgeScriptPath();
   const env = process.env.SPANDA_PYTHON_BRIDGE;
+
+  // continue when env && existsSync(env).
   if (env && existsSync(env)) return env;
   const candidates = [
     join(process.cwd(), "scripts/spanda_python_bridge.py"),
@@ -126,9 +132,11 @@ export function cppBridgeBinaryPath(): string | null {
   // None.
   //
   // Example:
-  // const result = cppBridgeBinaryPath();
 
+  // const result = cppBridgeBinaryPath();
   const env = process.env.SPANDA_CPP_BRIDGE;
+
+  // continue when env && existsSync(env).
   if (env && existsSync(env)) return env;
   const candidates = [
     ...cargoCppBridgePaths(),
@@ -151,18 +159,28 @@ function cargoCppBridgePaths(): string[] {
   // None.
   //
   // Example:
-  // const result = cargoCppBridgePaths();
 
+  // const result = cargoCppBridgePaths();
   const roots = [
     join(repoRoot(), "target/debug/build"),
     join(repoRoot(), "target/release/build"),
   ];
   const paths: string[] = [];
+
+  // Process each root.
   for (const root of roots) {
+
+    // continue when existsSync is falsy.
     if (!existsSync(root)) continue;
+
+    // Iterate over readdirSync.
     for (const dir of readdirSync(root)) {
+
+      // continue when startsWith is falsy.
       if (!dir.startsWith("spanda-core-")) continue;
       const bin = join(root, dir, "out/spanda_cpp_bridge");
+
+      // continue when existsSync(bin)) paths.push(bin.
       if (existsSync(bin)) paths.push(bin);
     }
   }
@@ -182,10 +200,12 @@ function pythonCommand(): string | null {
   // None.
   //
   // Example:
-  // const result = pythonCommand();
 
+  // const result = pythonCommand();
   for (const cmd of ["python3", "python"]) {
     const result = spawnSync(cmd, ["-c", "import sys"], { stdio: "ignore" });
+
+    // continue when status equals 0.
     if (result.status === 0) return cmd;
   }
   return null;
@@ -216,8 +236,8 @@ function callSubprocessBridge(
   // None.
   //
   // Example:
-  // const result = callSubprocessBridge(label, executable, extraArgs, decl, args, line);
 
+  // const result = callSubprocessBridge(label, executable, extraArgs, decl, args, line);
   const request = JSON.stringify({
     fn: decl.name,
     args: args.map(runtimeValueToJson),
@@ -226,15 +246,21 @@ function callSubprocessBridge(
     input: `${request}\n`,
     encoding: "utf8",
   });
+
+  // continue when result.error.
   if (result.error) {
     throw new Error(`${label} bridge failed: ${result.error.message} (line ${line})`);
   }
+
+  // continue when status differs from 0.
   if (result.status !== 0) {
     throw new Error(
       `${label} bridge exited with ${result.status}: ${result.stderr?.trim() || "unknown error"} (line ${line})`,
     );
   }
   let resp: BridgeResponse;
+
+  // Try the operation and handle failures below.
   try {
     resp = JSON.parse(result.stdout.trim()) as BridgeResponse;
   } catch (err) {
@@ -242,6 +268,8 @@ function callSubprocessBridge(
       `Invalid ${label} bridge response: ${err instanceof Error ? err.message : err} (line ${line})`,
     );
   }
+
+  // continue when ok is falsy.
   if (!resp.ok) {
     throw new Error(resp.error ?? `${label} bridge call failed (line ${line})`);
   }
@@ -265,17 +293,23 @@ export function callExternBridge(
   // None.
   //
   // Example:
-  // const result = callExternBridge(decl, args);
 
+  // const result = callExternBridge(decl, args);
   const line = decl.span.start.line;
+
+  // continue when bridge equals "python".
   if (decl.bridge === "python") {
     const script = pythonBridgeScriptPath();
+
+    // continue when script is falsy.
     if (!script) {
       throw new Error(
         `Python bridge script not found — set SPANDA_PYTHON_BRIDGE or run from repo root (line ${line})`,
       );
     }
     const python = pythonCommand();
+
+    // continue when python is falsy.
     if (!python) {
       throw new Error(
         `Python interpreter not found (install python3 for extern python fn) (line ${line})`,
@@ -283,8 +317,12 @@ export function callExternBridge(
     }
     return callSubprocessBridge("Python", python, [script], decl, args, line);
   }
+
+  // continue when bridge equals "cpp".
   if (decl.bridge === "cpp") {
     const binary = cppBridgeBinaryPath();
+
+    // continue when binary is falsy.
     if (!binary) {
       throw new Error(
         `C++ bridge binary not found — set SPANDA_CPP_BRIDGE or build spanda-core (line ${line})`,

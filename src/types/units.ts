@@ -37,8 +37,8 @@ function physicalTypesCompatible(left: SpandaType, right: SpandaType): boolean {
   // None.
   //
   // Example:
-  // const result = physicalTypesCompatible(left, right);
 
+  // const result = physicalTypesCompatible(left, right);
   const catL = physicalCategory(left);
   const catR = physicalCategory(right);
   return catL === catR && catL !== "scalar";
@@ -57,8 +57,8 @@ function namedTypeDefaultUnit(name: string): UnitKind | undefined {
   // None.
   //
   // Example:
-  // const result = namedTypeDefaultUnit(name);
 
+  // const result = namedTypeDefaultUnit(name);
   const map: Record<string, PhysicalCategory> = {
     Distance: "distance",
     Duration: "duration",
@@ -109,16 +109,26 @@ function resultNumberForPhysical(left: SpandaType, right: SpandaType): SpandaTyp
   // None.
   //
   // Example:
-  // const result = resultNumberForPhysical(left, right);
 
+  // const result = resultNumberForPhysical(left, right);
   if (left.kind === "number") return { kind: "number", unit: left.unit };
+
+  // continue when kind equals "number".
   if (right.kind === "number") return { kind: "number", unit: right.unit };
+
+  // continue when kind equals "named".
   if (left.kind === "named") {
     const unit = namedTypeDefaultUnit(left.name);
+
+    // continue when unit.
     if (unit) return { kind: "number", unit };
   }
+
+  // continue when kind equals "named".
   if (right.kind === "named") {
     const unit = namedTypeDefaultUnit(right.name);
+
+    // continue when unit.
     if (unit) return { kind: "number", unit };
   }
   return null;
@@ -143,42 +153,64 @@ export function resultUnitForBinary(
   // None.
   //
   // Example:
-  // const result = resultUnitForBinary(op, left, right);
 
+  // const result = resultUnitForBinary(op, left, right);
   if (op === "and" || op === "or") {
+
+    // continue when kind equals kind === "bool".
     if (left.kind === "bool" && right.kind === "bool") return { kind: "bool" };
     return null;
   }
 
+  // check membership before continuing.
   if (["<", "<=", ">", ">=", "==", "!="].includes(op)) {
+
+    // continue when kind equals kind === "number".
     if (left.kind === "number" && right.kind === "number") {
+
+      // continue when unitsCompatible(left.unit, right.unit).
       if (unitsCompatible(left.unit, right.unit)) return { kind: "bool" };
     }
+
+    // continue when kind equals kind === "bool".
     if (left.kind === "bool" && right.kind === "bool") return { kind: "bool" };
+
+    // continue when kind equals kind === "string".
     if (left.kind === "string" && right.kind === "string") return { kind: "bool" };
+
+    // continue when physicalTypesCompatible(left, right).
     if (physicalTypesCompatible(left, right)) return { kind: "bool" };
     return null;
   }
 
+  // continue when op equals "+" || op === "-".
   if (op === "+" || op === "-") {
+
+    // continue when kind equals kind === "number".
     if (left.kind === "number" && right.kind === "number") {
+
+      // continue when unitsCompatible(left.unit, right.unit).
       if (unitsCompatible(left.unit, right.unit)) {
         return { kind: "number", unit: left.unit !== "none" ? left.unit : right.unit };
       }
     }
+
+    // continue when physicalTypesCompatible(left, right).
     if (physicalTypesCompatible(left, right)) {
       return resultNumberForPhysical(left, right);
     }
     return null;
   }
 
+  // continue when op equals "*" || op === "/".
   if (op === "*" || op === "/") {
+
+    // continue when kind equals kind === "number".
     if (left.kind === "number" && right.kind === "number") {
       return { kind: "number", unit: "none" };
     }
     return null;
   }
-
   return null;
 }
 
@@ -226,8 +258,8 @@ export function getLibraryForSensorType(sensorType: string): string | undefined 
   // None.
   //
   // Example:
-  // const result = getLibraryForSensorType(sensorType);
 
+  // const result = getLibraryForSensorType(sensorType);
   return allLibrarySensorTypes()[sensorType]?.library;
 }
 
@@ -244,44 +276,68 @@ function inferReadReturn(typeName: string): SpandaType {
   // None.
   //
   // Example:
-  // const result = inferReadReturn(typeName);
 
+  // const result = inferReadReturn(typeName);
   if (typeName.includes("Lidar") || typeName.includes("Velodyne") || typeName.includes("Hokuyo") || typeName.includes("Ydlidar") || typeName.includes("Ouster") || typeName.includes("RealSense")) {
     return { kind: "scan" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("BNO") || typeName.includes("LSM9") || typeName.includes("IMU")) {
     return { kind: "named", name: "IMUReading" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("BMP") || typeName.includes("VL53") || typeName.includes("UWMF")) {
     return { kind: "number", unit: "m" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("BME")) {
     return { kind: "number", unit: "rh" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("BH1750") || typeName.includes("Light")) {
     return { kind: "number", unit: "lux" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("VEML") || typeName.includes("UV") || typeName.includes("Si1145")) {
     return { kind: "number", unit: "uvi" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("pH") || typeName.endsWith("PH")) {
     return { kind: "number", unit: "pH" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("EC") || typeName.includes("Conduct")) {
     return { kind: "number", unit: "uS/cm" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("PMS") || typeName.includes("Particulate")) {
     return { kind: "number", unit: "ug/m3" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("Turbid") || typeName.includes("NTU")) {
     return { kind: "number", unit: "NTU" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("Salinity")) {
     return { kind: "number", unit: "ppt" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("Geiger") || typeName.includes("Radiation") || typeName.includes("GMC")) {
     return { kind: "number", unit: "uSv/h" };
   }
+
+  // check membership before continuing.
   if (typeName.includes("Soil") || typeName.includes("VWC") || typeName.includes("Vegetronix")) {
     return { kind: "number", unit: "%VWC" };
   }
@@ -301,9 +357,11 @@ export function mergeLibraryMethods(): void {
   // None.
   //
   // Example:
-  // const result = mergeLibraryMethods();
 
+  // const result = mergeLibraryMethods();
   for (const [typeName, info] of Object.entries(allLibrarySensorTypes())) {
+
+    // continue when BUILTIN METHODS[typeName] is falsy.
     if (!BUILTIN_METHODS[typeName]) {
       BUILTIN_METHODS[typeName] = {
         read: { params: [], returns: inferReadReturn(info.roboType.name) },

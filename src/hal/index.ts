@@ -52,6 +52,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = configure(members);
 
     this.members.clear();
@@ -78,6 +79,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = readGpio(name);
 
     return this.gpioState.get(name) ?? false;
@@ -97,6 +99,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = writeGpio(name, value);
 
     this.gpioState.set(name, value);
@@ -117,6 +120,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = readI2c(name, register, length);
 
     const regs = this.i2cRegisters.get(name) ?? new Map();
@@ -142,6 +146,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = writeI2c(name, register, data);
 
     let regs = this.i2cRegisters.get(name);
@@ -168,6 +173,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = transferSpi(_name, data);
 
     return data.map((b) => (b ^ 0xff) & 0xff);
@@ -186,6 +192,7 @@ export class SimHalBackend implements HalBackend {
     // None.
     //
     // Example:
+
     // const result = readUart(name);
 
     return this.uartBuffers.get(name) ?? "";
@@ -234,8 +241,8 @@ export function createSimHal(): SimHalBackend {
   // None.
   //
   // Example:
-  // const result = createSimHal();
 
+  // const result = createSimHal();
   return new SimHalBackend();
 }
 
@@ -252,8 +259,8 @@ export function halMemberFromDecl(decl: import("../ast/nodes.js").HalMemberDecl)
   // None.
   //
   // Example:
-  // const result = halMemberFromDecl(decl);
 
+  // const result = halMemberFromDecl(decl);
   switch (decl.kind) {
     case "HalI2cDecl":
       return { kind: "i2c", name: decl.name, address: decl.address };

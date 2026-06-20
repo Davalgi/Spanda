@@ -54,8 +54,8 @@ export function canonicalUnit(category: PhysicalCategory): UnitKind {
   // None.
   //
   // Example:
-  // const result = canonicalUnit(category);
 
+  // const result = canonicalUnit(category);
   switch (category) {
     case "scalar": return "none";
     case "distance": return "m";
@@ -105,8 +105,8 @@ export function unitCategory(unit: UnitKind): PhysicalCategory {
   // None.
   //
   // Example:
-  // const result = unitCategory(unit);
 
+  // const result = unitCategory(unit);
   switch (unit) {
     case "none":
       return "scalar";
@@ -236,9 +236,11 @@ export function unitsCompatible(a: UnitKind, b: UnitKind): boolean {
   // None.
   //
   // Example:
-  // const result = unitsCompatible(a, b);
 
+  // const result = unitsCompatible(a, b);
   if (a === b) return true;
+
+  // continue when a equals "none" || b === "none".
   if (a === "none" || b === "none") return true;
   return unitCategory(a) === unitCategory(b);
 }
@@ -257,8 +259,8 @@ export function unitMatchesNamedType(typeName: string, unit: UnitKind): boolean 
   // None.
   //
   // Example:
-  // const result = unitMatchesNamedType(typeName, unit);
 
+  // const result = unitMatchesNamedType(typeName, unit);
   switch (typeName) {
     case "Distance":
       return unitCategory(unit) === "distance";
@@ -339,8 +341,8 @@ function toCanonicalLinear(value: number, unit: UnitKind): number {
   // None.
   //
   // Example:
-  // const result = toCanonicalLinear(value, unit);
 
+  // const result = toCanonicalLinear(value, unit);
   switch (unit) {
     case "m": return value;
     case "mm": return value / 1000;
@@ -438,10 +440,12 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
   // None.
   //
   // Example:
-  // const result = fromCanonical(value, category, to);
 
+  // const result = fromCanonical(value, category, to);
   switch (category) {
     case "distance":
+
+      // Branch on to.
       switch (to) {
         case "m": return value;
         case "mm": return value * 1000;
@@ -452,6 +456,8 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "duration":
+
+      // Branch on to.
       switch (to) {
         case "s": return value;
         case "ms": return value * 1000;
@@ -461,6 +467,8 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "velocity":
+
+      // Branch on to.
       switch (to) {
         case "m/s": return value;
         case "km/h": return value * 3.6;
@@ -468,24 +476,32 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "acceleration":
+
+      // Branch on to.
       switch (to) {
         case "m/s²": return value;
         case "g": return value / 9.80665;
         default: return value;
       }
     case "angle":
+
+      // Branch on to.
       switch (to) {
         case "rad": return value;
         case "deg": return value / DEG_TO_RAD;
         default: return value;
       }
     case "angular_velocity":
+
+      // Branch on to.
       switch (to) {
         case "rad/s": return value;
         case "deg/s": return value / DEG_TO_RAD;
         default: return value;
       }
     case "mass":
+
+      // Branch on to.
       switch (to) {
         case "kg": return value;
         case "gram": return value * 1000;
@@ -493,12 +509,16 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "force":
+
+      // Branch on to.
       switch (to) {
         case "N": return value;
         case "kN": return value / 1000;
         default: return value;
       }
     case "power":
+
+      // Branch on to.
       switch (to) {
         case "W": return value;
         case "kW": return value / 1000;
@@ -506,6 +526,8 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "voltage":
+
+      // Branch on to.
       switch (to) {
         case "V": return value;
         case "mV": return value * 1000;
@@ -513,12 +535,16 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "current":
+
+      // Branch on to.
       switch (to) {
         case "A": return value;
         case "mA": return value * 1000;
         default: return value;
       }
     case "temperature":
+
+      // Branch on to.
       switch (to) {
         case "celsius": return value;
         case "fahrenheit": return value * 9 / 5 + 32;
@@ -526,6 +552,8 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "pressure":
+
+      // Branch on to.
       switch (to) {
         case "Pa": return value;
         case "kPa": return value / 1000;
@@ -535,6 +563,8 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "frequency":
+
+      // Branch on to.
       switch (to) {
         case "Hz": return value;
         case "kHz": return value / 1000;
@@ -542,53 +572,71 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "humidity":
+
+      // Branch on to.
       switch (to) {
         case "rh":
         case "%RH": return value;
         default: return value;
       }
     case "illuminance":
+
+      // Branch on to.
       switch (to) {
         case "lux":
         case "lx": return value;
         default: return value;
       }
     case "luminance":
+
+      // Branch on to.
       switch (to) {
         case "cd/m²":
         case "nit": return value;
         default: return value;
       }
     case "concentration":
+
+      // Branch on to.
       switch (to) {
         case "ppm": return value;
         case "ppb": return value * 1000;
         default: return value;
       }
     case "sound_level":
+
+      // Branch on to.
       switch (to) {
         case "dB":
         case "dBA": return value;
         default: return value;
       }
     case "magnetic_field":
+
+      // Branch on to.
       switch (to) {
         case "uT": return value;
         case "gauss": return value / 100;
         default: return value;
       }
     case "rotational_speed":
+
+      // Branch on to.
       switch (to) {
         case "rpm": return value;
         default: return value;
       }
     case "torque":
+
+      // Branch on to.
       switch (to) {
         case "N·m":
         case "Nm": return value;
         default: return value;
       }
     case "energy":
+
+      // Branch on to.
       switch (to) {
         case "J": return value;
         case "Wh": return value / 3600;
@@ -596,16 +644,22 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "uv_index":
+
+      // Branch on to.
       switch (to) {
         case "uvi": return value;
         default: return value;
       }
     case "ph":
+
+      // Branch on to.
       switch (to) {
         case "pH": return value;
         default: return value;
       }
     case "conductivity":
+
+      // Branch on to.
       switch (to) {
         case "uS/cm": return value;
         case "mS/cm": return value / 1000;
@@ -613,29 +667,39 @@ function fromCanonical(value: number, category: PhysicalCategory, to: UnitKind):
         default: return value;
       }
     case "particulate_matter":
+
+      // Branch on to.
       switch (to) {
         case "ug/m3": return value;
         default: return value;
       }
     case "turbidity":
+
+      // Branch on to.
       switch (to) {
         case "NTU":
         case "FNU": return value;
         default: return value;
       }
     case "salinity":
+
+      // Branch on to.
       switch (to) {
         case "ppt":
         case "psu": return value;
         default: return value;
       }
     case "radiation":
+
+      // Branch on to.
       switch (to) {
         case "uSv/h": return value;
         case "mSv/h": return value / 1000;
         default: return value;
       }
     case "soil_moisture":
+
+      // Branch on to.
       switch (to) {
         case "%VWC":
         case "vwc": return value;
@@ -661,9 +725,11 @@ export function convertValue(value: number, from: UnitKind, to: UnitKind): numbe
   // None.
   //
   // Example:
-  // const result = convertValue(value, from, to);
 
+  // const result = convertValue(value, from, to);
   if (from === to) return value;
+
+  // continue when unitsCompatible is falsy.
   if (!unitsCompatible(from, to)) return undefined;
   const canonical = toCanonicalLinear(value, from);
   return fromCanonical(canonical, unitCategory(from), to);
@@ -690,11 +756,15 @@ export function alignForBinary(
   // None.
   //
   // Example:
-  // const result = alignForBinary(left, leftUnit, right, rightUnit);
 
+  // const result = alignForBinary(left, leftUnit, right, rightUnit);
   if (!unitsCompatible(leftUnit, rightUnit)) return undefined;
+
+  // continue when leftUnit equals rightUnit.
   if (leftUnit === rightUnit) return [left, right, leftUnit];
   const rightInLeft = convertValue(right, rightUnit, leftUnit);
+
+  // continue when rightInLeft equals undefined.
   if (rightInLeft === undefined) return undefined;
   return [left, rightInLeft, leftUnit];
 }

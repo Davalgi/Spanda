@@ -31,8 +31,8 @@ function runtimeTypeTag(value: RuntimeValue): string {
   // None.
   //
   // Example:
-  // const result = runtimeTypeTag(value);
 
+  // const result = runtimeTypeTag(value);
   switch (value.kind) {
     case "object":
       return `object:${value.typeName}`;
@@ -80,6 +80,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = createChannel();
 
     const id = this.nextChannelId++;
@@ -102,6 +103,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = bindChannelType(channel, value, line);
 
     if (channel.kind !== "channel") {
@@ -130,6 +132,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = send(channel, value, line);
 
     if (channel.kind !== "channel") {
@@ -163,6 +166,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = tryRecv(channel, line);
 
     if (channel.kind !== "channel") {
@@ -189,6 +193,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = createTaskHandle(funcName, args);
 
     const id = this.nextHandleId++;
@@ -210,6 +215,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = queueFireAndForget(funcName, args);
 
     const handle = this.createTaskHandle(funcName, args);
@@ -231,6 +237,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = getHandle(id);
 
     return this.handles.get(id);
@@ -250,6 +257,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = setHandleResult(id, result);
 
     const handle = this.handles.get(id);
@@ -269,6 +277,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = drainFireAndForgetQueue();
 
     const queue = [...this.fireAndForgetQueue];
@@ -291,6 +300,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = registerAgentRoute(from, to, messageType);
 
     this.agentRoutes.push({ from, to, messageType });
@@ -312,6 +322,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = sendAgent(from, to, value, line);
 
     const allowed = this.agentRoutes.some((route) => route.from === from && route.to === to);
@@ -347,6 +358,7 @@ export class ConcurrencyRuntime {
     // None.
     //
     // Example:
+
     // const result = tryRecvAgent(agent);
 
     const inbox = this.agentInboxes.get(agent);

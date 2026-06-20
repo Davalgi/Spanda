@@ -102,8 +102,8 @@ export function isNativeAvailable(): boolean {
   // None.
   //
   // Example:
-  // const result = isNativeAvailable();
 
+  // const result = isNativeAvailable();
   loadNative();
   return native !== null;
 }
@@ -121,12 +121,13 @@ function loadNative(): void {
   // None.
   //
   // Example:
-  // const result = loadNative();
 
+  // const result = loadNative();
   if (loadAttempted) return;
   loadAttempted = true;
+
+  // Try the operation and handle failures below.
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require("./native.js") as SpandaNative;
     native = mod;
   } catch {
@@ -147,9 +148,11 @@ export function checkSource(source: string): CheckResult | null {
   // None.
   //
   // Example:
-  // const result = checkSource(source);
 
+  // const result = checkSource(source);
   loadNative();
+
+  // continue when native is falsy.
   if (!native) return null;
   return native.checkSource(source);
 }
@@ -168,9 +171,11 @@ export function runSource(source: string, options?: RunOptions): RunResult | nul
   // - `options?` — optional parameter
   //
   // Example:
-  // const result = runSource(source, options?);
 
+  // const result = runSource(source, options?);
   loadNative();
+
+  // continue when native is falsy.
   if (!native) return null;
   return native.runSource(source, options);
 }
@@ -188,8 +193,8 @@ export function coreVersion(): string | null {
   // None.
   //
   // Example:
-  // const result = coreVersion();
 
+  // const result = coreVersion();
   loadNative();
   return native?.coreVersion() ?? null;
 }

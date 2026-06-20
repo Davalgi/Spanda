@@ -30,8 +30,8 @@ export function runtimePose(x = 0, y = 0, theta = 0, z = 0): RuntimeValue {
   // - `z` — optional parameter
   //
   // Example:
-  // const result = runtimePose(x, y, theta, z);
 
+  // const result = runtimePose(x, y, theta, z);
   return { kind: "pose", x, y, theta, z };
 }
 
@@ -50,8 +50,8 @@ export function runtimeVelocity(linear = 0, angular = 0): RuntimeValue {
   // - `angular` — optional parameter
   //
   // Example:
-  // const result = runtimeVelocity(linear, angular);
 
+  // const result = runtimeVelocity(linear, angular);
   return { kind: "velocity", linear, angular };
 }
 
@@ -68,8 +68,8 @@ export function runtimeTrajectory(waypoints: PoseValue[]): RuntimeValue {
   // None.
   //
   // Example:
-  // const result = runtimeTrajectory(waypoints);
 
+  // const result = runtimeTrajectory(waypoints);
   return { kind: "trajectory", waypoints };
 }
 
@@ -86,8 +86,8 @@ export function poseFromState(state: { x: number; y: number; theta: number; z?: 
   // - `state` — optional parameter
   //
   // Example:
-  // const result = poseFromState(state);
 
+  // const result = poseFromState(state);
   return runtimePose(state.x, state.y, state.theta, state.z ?? 0);
 }
 
@@ -104,8 +104,8 @@ export function velocityFromState(state: { linear: number; angular: number }): R
   // None.
   //
   // Example:
-  // const result = velocityFromState(state);
 
+  // const result = velocityFromState(state);
   return runtimeVelocity(state.linear, state.angular);
 }
 
@@ -122,8 +122,8 @@ export function getPoseFields(val: RuntimeValue): PoseValue | null {
   // None.
   //
   // Example:
-  // const result = getPoseFields(val);
 
+  // const result = getPoseFields(val);
   if (val.kind !== "pose") return null;
   return { x: val.x, y: val.y, theta: val.theta, z: val.z };
 }
@@ -141,8 +141,8 @@ export function getVelocityFields(val: RuntimeValue): VelocityValue | null {
   // None.
   //
   // Example:
-  // const result = getVelocityFields(val);
 
+  // const result = getVelocityFields(val);
   if (val.kind !== "velocity") return null;
   return { linear: val.linear, angular: val.angular };
 }
@@ -160,8 +160,8 @@ export function getTrajectoryWaypoints(val: RuntimeValue): PoseValue[] | null {
   // None.
   //
   // Example:
-  // const result = getTrajectoryWaypoints(val);
 
+  // const result = getTrajectoryWaypoints(val);
   if (val.kind !== "trajectory") return null;
   return val.waypoints;
 }
@@ -180,8 +180,8 @@ export function getNumber(val: RuntimeValue, defaultVal = 0): number {
   // - `defaultVal` — optional parameter
   //
   // Example:
-  // const result = getNumber(val, defaultVal);
 
+  // const result = getNumber(val, defaultVal);
   return val.kind === "number" ? val.value : defaultVal;
 }
 
@@ -199,8 +199,8 @@ export function getString(val: RuntimeValue, defaultVal = ""): string {
   // - `defaultVal` — optional parameter
   //
   // Example:
-  // const result = getString(val, defaultVal);
 
+  // const result = getString(val, defaultVal);
   return val.kind === "string" ? val.value : defaultVal;
 }
 

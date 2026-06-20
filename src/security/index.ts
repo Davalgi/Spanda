@@ -33,8 +33,8 @@ export function trustSatisfies(actual: TrustLevel, required: TrustLevel): boolea
   // None.
   //
   // Example:
-  // const result = trustSatisfies(actual, required);
 
+  // const result = trustSatisfies(actual, required);
   return TRUST_RANK[actual] >= TRUST_RANK[required];
 }
 
@@ -51,8 +51,8 @@ export function parseTrustLevel(level: string): TrustLevel | null {
   // None.
   //
   // Example:
-  // const result = parseTrustLevel(level);
 
+  // const result = parseTrustLevel(level);
   if (level in TRUST_RANK) return level as TrustLevel;
   return null;
 }
@@ -70,8 +70,8 @@ function seedBytes(material: string): Uint8Array {
   // None.
   //
   // Example:
-  // const result = seedBytes(material);
 
+  // const result = seedBytes(material);
   return sha256(new TextEncoder().encode(material));
 }
 
@@ -88,8 +88,8 @@ export function isHexPublicKey(key: string): boolean {
   // None.
   //
   // Example:
-  // const result = isHexPublicKey(key);
 
+  // const result = isHexPublicKey(key);
   return key.length === 64 && /^[0-9a-fA-F]+$/.test(key);
 }
 
@@ -106,8 +106,8 @@ export function publicKeyFromMaterial(material: string): string {
   // None.
   //
   // Example:
-  // const result = publicKeyFromMaterial(material);
 
+  // const result = publicKeyFromMaterial(material);
   const priv = seedBytes(material);
   return bytesToHex(ed.getPublicKey(priv));
 }
@@ -125,8 +125,8 @@ export function sha256Hex(data: string): string {
   // None.
   //
   // Example:
-  // const result = sha256Hex(data);
 
+  // const result = sha256Hex(data);
   return bytesToHex(sha256(new TextEncoder().encode(data)));
 }
 
@@ -144,8 +144,8 @@ export async function signAsync(data: string, keyMaterial: string): Promise<stri
   // None.
   //
   // Example:
-  // const result = signAsync(data, keyMaterial);
 
+  // const result = signAsync(data, keyMaterial);
   const priv = keyMaterial.length === 64 && isHexPublicKey(keyMaterial)
     ? hexToBytes(keyMaterial)
     : seedBytes(keyMaterial);
@@ -167,8 +167,8 @@ export function sign(data: string, keyMaterial: string): string {
   // None.
   //
   // Example:
-  // const result = sign(data, keyMaterial);
 
+  // const result = sign(data, keyMaterial);
   const priv = keyMaterial.length === 64 && isHexPublicKey(keyMaterial)
     ? hexToBytes(keyMaterial)
     : seedBytes(keyMaterial);
@@ -190,12 +190,16 @@ export function verifySignature(data: string, signature: string, key: string): b
   // None.
   //
   // Example:
-  // const result = verifySignature(data, signature, key);
 
+  // const result = verifySignature(data, signature, key);
   try {
     const sig = hexToBytes(signature);
+
+    // continue when length differs from 64.
     if (sig.length !== 64) return false;
     const msg = new TextEncoder().encode(data);
+
+    // continue when isHexPublicKey(key).
     if (isHexPublicKey(key)) {
       return ed.verify(sig, msg, hexToBytes(key));
     }
@@ -234,45 +238,41 @@ export function createRobotIdentity(
   // - `trust` — optional parameter
   //
   // Example:
-  // const result = createRobotIdentity(id, publicKey, trust);
 
+  // const result = createRobotIdentity(id, publicKey, trust);
   return {
     id,
     publicKey,
     trust,
     signingMaterial() {
-      // SigningMaterial.
       //
       // Parameters:
       // None.
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = signingMaterial();
 
+      // continue when publicKey || isHexPublicKey is falsy.
       if (!publicKey || isHexPublicKey(publicKey)) return `spanda-device-${id}`;
       return publicKey;
     },
     verifyingKeyHex() {
-      // VerifyingKeyHex.
       //
       // Parameters:
       // None.
       //
       // Returns:
-      // Nothing.
       //
       // Options:
       // None.
       //
       // Example:
-      // const result = verifyingKeyHex();
 
+      // continue when isHexPublicKey(publicKey).
       if (isHexPublicKey(publicKey)) return publicKey;
       return publicKeyFromMaterial(this.signingMaterial());
     },
@@ -302,6 +302,7 @@ export class CapabilitySet {
     // None.
     //
     // Example:
+
     // const result = grant(cap);
 
     this.granted.add(cap);
@@ -320,6 +321,7 @@ export class CapabilitySet {
     // None.
     //
     // Example:
+
     // const result = grantAll(caps);
 
     for (const c of caps) this.grant(c);
@@ -338,6 +340,7 @@ export class CapabilitySet {
     // None.
     //
     // Example:
+
     // const result = has(cap);
 
     return this.permissive || this.granted.has(cap);
@@ -356,6 +359,7 @@ export class CapabilitySet {
     // None.
     //
     // Example:
+
     // const result = require(cap);
 
     if (!this.has(cap)) throw new Error(`capability denied: ${cap}`);
@@ -383,6 +387,7 @@ export class SecretStore {
     // None.
     //
     // Example:
+
     // const result = register(name, source);
 
     this.secrets.set(name, source);
@@ -401,6 +406,7 @@ export class SecretStore {
     // None.
     //
     // Example:
+
     // const result = resolve(name);
 
     const src = this.secrets.get(name);
@@ -429,6 +435,7 @@ export class SecureEndpointRegistry {
     // None.
     //
     // Example:
+
     // const result = register(path, policy);
 
     this.policies.set(path, policy);
@@ -447,6 +454,7 @@ export class SecureEndpointRegistry {
     // None.
     //
     // Example:
+
     // const result = policyOrOpen(path);
 
     return this.policies.get(path) ?? { signed: false, minTrust: null, requires: [] };
@@ -474,6 +482,7 @@ export class SecurityContext {
     // None.
     //
     // Example:
+
     // const result = enableStrictPermissions();
 
     this.strictPermissions = true;
@@ -492,6 +501,7 @@ export class SecurityContext {
     // None.
     //
     // Example:
+
     // const result = grantIfNotStrict(cap);
 
     if (!this.strictPermissions) this.capabilities.grant(cap);
@@ -510,6 +520,7 @@ export class SecurityContext {
     // None.
     //
     // Example:
+
     // const result = requireOperation(operation);
 
     const map: Record<string, string> = {
@@ -538,6 +549,7 @@ export class SecurityContext {
     // None.
     //
     // Example:
+
     // const result = signOutbound(path, payload);
 
     const policy = this.secureEndpoints.policyOrOpen(path);
@@ -575,7 +587,7 @@ export function isKnownCapability(cap: string): boolean {
   // None.
   //
   // Example:
-  // const result = isKnownCapability(cap);
 
+  // const result = isKnownCapability(cap);
   return (KNOWN_CAPABILITIES as readonly string[]).includes(cap);
 }

@@ -42,8 +42,8 @@ function genericArity(name: string): number | undefined {
   // None.
   //
   // Example:
-  // const result = genericArity(name);
 
+  // const result = genericArity(name);
   switch (name) {
     case "Array":
     case "Set":
@@ -80,9 +80,11 @@ export function resolveTypeName(name: string): SpandaType {
   // None.
   //
   // Example:
-  // const result = resolveTypeName(name);
 
+  // const result = resolveTypeName(name);
   const short = name.replace(/^std\./, "").split(".").pop() ?? name;
+
+  // Branch on short.
   switch (short) {
     case "Int":
     case "int":
@@ -245,6 +247,8 @@ export function resolveTypeName(name: string): SpandaType {
     case "Endpoint":
       return { kind: "named", name: short };
     default:
+
+      // continue when KNOWN DOMAIN TYPES.has(short).
       if (KNOWN_DOMAIN_TYPES.has(short)) {
         return { kind: "named", name: short };
       }
@@ -266,13 +270,17 @@ export function resolveGenericType(name: string, args: SpandaType[]): SpandaType
   // None.
   //
   // Example:
-  // const result = resolveGenericType(name, args);
 
+  // const result = resolveGenericType(name, args);
   const base = name.split(".").pop() ?? name;
   const expected = genericArity(base);
+
+  // continue when expected equals undefined.
   if (expected === undefined) {
     throw new Error(`Unknown generic type '${base}'`);
   }
+
+  // continue when length differs from expected.
   if (args.length !== expected) {
     throw new Error(`Type '${base}' expects ${expected} type argument(s), got ${args.length}`);
   }
@@ -292,8 +300,8 @@ export function physicalCategory(ty: SpandaType): PhysicalCategory {
   // None.
   //
   // Example:
-  // const result = physicalCategory(ty);
 
+  // const result = physicalCategory(ty);
   switch (ty.kind) {
     case "int":
     case "float":
@@ -305,6 +313,8 @@ export function physicalCategory(ty: SpandaType): PhysicalCategory {
     case "pose":
       return "distance";
     case "named":
+
+      // Branch on name.
       switch (ty.name) {
         case "Distance":
           return "distance";
@@ -418,15 +428,21 @@ export function binaryPhysicalOpAllowed(opLexeme: string, left: SpandaType, righ
   // None.
   //
   // Example:
-  // const result = binaryPhysicalOpAllowed(opLexeme, left, right);
 
+  // const result = binaryPhysicalOpAllowed(opLexeme, left, right);
   const op = OP_MAP[opLexeme];
+
+  // continue when op is falsy.
   if (!op) return true;
   const catL = physicalCategory(left);
   const catR = physicalCategory(right);
+
+  // Branch on op.
   switch (op) {
     case "add":
     case "sub":
+
+      // continue when catL equals "scalar" && catR === "scalar".
       if (catL === "scalar" && catR === "scalar") return true;
       return catL === catR && catL !== "scalar";
     case "lt":
@@ -460,8 +476,8 @@ export function isActionProposalType(ty: SpandaType): boolean {
   // None.
   //
   // Example:
-  // const result = isActionProposalType(ty);
 
+  // const result = isActionProposalType(ty);
   return ty.kind === "named" && ty.name === "ActionProposal";
 }
 
@@ -478,8 +494,8 @@ export function isSafeActionType(ty: SpandaType): boolean {
   // None.
   //
   // Example:
-  // const result = isSafeActionType(ty);
 
+  // const result = isSafeActionType(ty);
   return ty.kind === "named" && ty.name === "SafeAction";
 }
 
@@ -496,8 +512,8 @@ export function typeKindName(ty: SpandaType): string {
   // None.
   //
   // Example:
-  // const result = typeKindName(ty);
 
+  // const result = typeKindName(ty);
   switch (ty.kind) {
     case "generic":
       return "generic";

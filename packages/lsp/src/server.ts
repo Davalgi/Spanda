@@ -58,11 +58,15 @@ function cliPath(): string | null {
   // None.
   //
   // Example:
-  // const result = cliPath();
 
+  // const result = cliPath();
   const release = join(repoRoot, "target/release/spanda");
   const debug = join(repoRoot, "target/debug/spanda");
+
+  // continue when existsSync(release).
   if (existsSync(release)) return release;
+
+  // continue when existsSync(debug).
   if (existsSync(debug)) return debug;
   return null;
 }
@@ -120,15 +124,19 @@ function runSymbols(args: string[]): unknown {
   // None.
   //
   // Example:
-  // const result = runSymbols(args);
 
+  // const result = runSymbols(args);
   const result = spawnSync(process.execPath, ["--import", "tsx", symbolScript, ...args], {
     encoding: "utf-8",
     cwd: repoRoot,
   });
+
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return null;
   }
+
+  // Try the operation and handle failures below.
   try {
     return JSON.parse(result.stdout);
   } catch {
@@ -150,11 +158,13 @@ function refreshSymbolCache(uri: string, source: string): void {
   // None.
   //
   // Example:
-  // const result = refreshSymbolCache(uri, source);
 
+  // const result = refreshSymbolCache(uri, source);
   const tmp = join(repoRoot, ".spanda-lsp-symbols.sd");
   writeFileSync(tmp, source);
   const parsed = runSymbols(["index", tmp]) as { symbols?: SpandaSymbol[] } | null;
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -179,13 +189,15 @@ function lookupDefinition(uri: string, source: string, line: number, column: num
   // None.
   //
   // Example:
-  // const result = lookupDefinition(uri, source, line, column);
 
+  // const result = lookupDefinition(uri, source, line, column);
   const tmp = join(repoRoot, ".spanda-lsp-define.sd");
   writeFileSync(tmp, source);
   const parsed = runSymbols(["define", tmp, String(line), String(column)]) as {
     symbol?: SpandaSymbol | null;
   } | null;
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -209,13 +221,15 @@ function lookupHover(source: string, line: number, column: number): string | nul
   // None.
   //
   // Example:
-  // const result = lookupHover(source, line, column);
 
+  // const result = lookupHover(source, line, column);
   const tmp = join(repoRoot, ".spanda-lsp-hover.sd");
   writeFileSync(tmp, source);
   const parsed = runSymbols(["hover", tmp, String(line), String(column)]) as {
     markdown?: string | null;
   } | null;
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
@@ -237,8 +251,8 @@ function spanToRange(span: Span) {
   // None.
   //
   // Example:
-  // const result = spanToRange(span);
 
+  // const result = spanToRange(span);
   return {
     start: { line: Math.max(0, span.start.line - 1), character: Math.max(0, span.start.column - 1) },
     end: { line: Math.max(0, span.end.line - 1), character: Math.max(0, span.end.column) },
@@ -259,29 +273,32 @@ function runCliJson(args: string[], source: string): unknown {
   // None.
   //
   // Example:
-  // const result = runCliJson(args, source);
 
+  // const result = runCliJson(args, source);
   const bin = cliPath();
+
+  // continue when bin is falsy.
   if (!bin) {
     return null;
   }
-
   const tmp = join(repoRoot, ".spanda-lsp-check.sd");
   writeFileSync(tmp, source);
   const result = spawnSync(bin, [...args, "--json", tmp], { encoding: "utf-8" });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
     /* ignore */
   }
 
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return {
       ok: false,
       diagnostics: [{ message: result.stderr || "CLI failed", line: 1, column: 1 }],
     };
   }
-
   return JSON.parse(result.stdout);
 }
 
@@ -298,8 +315,8 @@ function checkSourceTs(source: string): CliDiagnostic[] {
   // None.
   //
   // Example:
-  // const result = checkSourceTs(source);
 
+  // const result = checkSourceTs(source);
   const tmp = join(repoRoot, ".spanda-lsp-ts-check.sd");
   writeFileSync(tmp, source);
   const script = join(repoRoot, "scripts/lsp-ts-check.mts");
@@ -307,16 +324,18 @@ function checkSourceTs(source: string): CliDiagnostic[] {
     encoding: "utf-8",
     cwd: repoRoot,
   });
+
+  // Try the operation and handle failures below.
   try {
     unlinkSync(tmp);
   } catch {
     /* ignore */
   }
 
+  // continue when trim is falsy.
   if (!result.stdout?.trim()) {
     return [{ message: result.stderr || "TypeScript check failed", line: 1, column: 1 }];
   }
-
   const parsed = JSON.parse(result.stdout) as { ok: boolean; diagnostics?: CliDiagnostic[] };
   return parsed.ok ? [] : (parsed.diagnostics ?? []);
 }
@@ -334,17 +353,17 @@ function checkSource(source: string): CliDiagnostic[] {
   // None.
   //
   // Example:
-  // const result = checkSource(source);
 
+  // const result = checkSource(source);
   const parsed = runCliJson(["check"], source) as {
     ok: boolean;
     diagnostics?: CliDiagnostic[];
   } | null;
 
+  // continue when parsed.
   if (parsed) {
     return parsed.ok ? [] : (parsed.diagnostics ?? []);
   }
-
   return checkSourceTs(source);
 }
 
@@ -361,8 +380,8 @@ function formatSource(source: string): string | null {
   // None.
   //
   // Example:
-  // const result = formatSource(source);
 
+  // const result = formatSource(source);
   const parsed = runCliJson(["fmt"], source) as {
     ok: boolean;
     formatted?: string;
@@ -383,8 +402,8 @@ function symbolKindFor(kind: string): SymbolKind {
   // None.
   //
   // Example:
-  // const result = symbolKindFor(kind);
 
+  // const result = symbolKindFor(kind);
   switch (kind) {
     case "robot":
       return SymbolKind.Class;
@@ -415,8 +434,8 @@ function documentSymbols(uri: string, _source: string): DocumentSymbol[] {
   // None.
   //
   // Example:
-  // const result = documentSymbols(uri, _source);
 
+  // const result = documentSymbols(uri, _source);
   const cached = symbolCache.get(uri) ?? [];
   return cached.map(
     (sym): DocumentSymbol => ({
@@ -442,21 +461,25 @@ function verifySource(source: string): CompatItem[] {
   // None.
   //
   // Example:
-  // const result = verifySource(source);
 
+  // const result = verifySource(source);
   const parsed = runCliJson(["verify"], source) as {
     ok: boolean;
     items?: CompatItem[];
     diagnostics?: CliDiagnostic[];
   } | null;
 
+  // continue when parsed is falsy.
   if (!parsed) {
     return [];
   }
 
+  // continue when parsed.items?.length.
   if (parsed.items?.length) {
     return parsed.items.filter((i) => i.severity !== "pass");
   }
+
+  // continue when diagnostics is falsy.
   if (!parsed.ok && parsed.diagnostics) {
     return parsed.diagnostics.map((d) => ({
       ...d,
@@ -497,13 +520,12 @@ function validate(textDocument: TextDocument): Diagnostic[] {
   // None.
   //
   // Example:
-  // const result = validate(textDocument);
 
+  // const result = validate(textDocument);
   const source = textDocument.getText();
   refreshSymbolCache(textDocument.uri, source);
   const typeErrors = checkSource(source);
   const compatItems = verifySource(source);
-
   const typeDiags = typeErrors.map(
     (d): Diagnostic => ({
       severity: DiagnosticSeverity.Error,
@@ -515,7 +537,6 @@ function validate(textDocument: TextDocument): Diagnostic[] {
       source: "spanda",
     }),
   );
-
   const compatDiags = compatItems.map((d): Diagnostic => {
     const severity =
       d.severity === "warning" ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error;
@@ -530,7 +551,6 @@ function validate(textDocument: TextDocument): Diagnostic[] {
       source: "spanda-compat",
     };
   });
-
   return [...typeDiags, ...compatDiags];
 }
 
@@ -547,8 +567,8 @@ function commCompletions(): CompletionItem[] {
   // None.
   //
   // Example:
-  // const result = commCompletions();
 
+  // const result = commCompletions();
   const kwItems = COMM_KEYWORDS.map(
     (label): CompletionItem => ({
       label,

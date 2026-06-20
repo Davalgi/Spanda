@@ -38,7 +38,7 @@ export function resolveStdImport(path: string): boolean {
   // None.
   //
   // Example:
-  // const result = resolveStdImport(path);
 
+  // const result = resolveStdImport(path);
   return STD_NAMESPACES.has(path);
 }
