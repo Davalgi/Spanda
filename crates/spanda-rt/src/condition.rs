@@ -164,4 +164,11 @@ mod tests {
         let json = r#"{"op":"compare_double","name":"speed","cmp":"lt","value":1.0}"#;
         assert!(eval_condition_json(json));
     }
+
+    #[test]
+    fn evals_string_compare() {
+        store_string("mode", "auto");
+        let json = r#"{"op":"eq_string","name":"mode","value":"auto"}"#;
+        assert!(eval_condition_json(json));
+    }
 }

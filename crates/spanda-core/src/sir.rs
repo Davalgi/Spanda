@@ -122,6 +122,10 @@ pub enum SirStmt {
         name: String,
         value: f64,
     },
+    LetString {
+        name: String,
+        value: String,
+    },
     IfCompareDouble {
         left: String,
         op: SirCompareOp,
@@ -400,6 +404,12 @@ impl LowerCtx<'_> {
                     }
                     if let Some(value) = bool_literal(init) {
                         return SirStmt::LetBool {
+                            name: name.clone(),
+                            value,
+                        };
+                    }
+                    if let Some(value) = string_literal(init) {
+                        return SirStmt::LetString {
                             name: name.clone(),
                             value,
                         };
@@ -1392,5 +1402,30 @@ robot R {
         let sir = lower_program(&program);
         let body = &sir.robots[0].behaviors[0].body;
         assert!(matches!(body[1], SirStmt::IfRuntime { ref condition, .. } if condition.contains("eq_string")));
+    }
+
+    #[test]
+    fn lowers_string_let_for_runtime_if() {
+        let source = r#"
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior run() {
+    let mode = "auto";
+    if mode == "auto" { wheels.stop(); }
+  }
+}
+"#;
+        let program = parser::parse(lexer::tokenize(source).expect("tokenize")).expect("parse");
+        types::check(&program).expect("check");
+        let sir = lower_program(&program);
+        let body = &sir.robots[0].behaviors[0].body;
+        assert!(matches!(
+            body[0],
+            SirStmt::LetString {
+                ref name,
+                ref value,
+                ..
+            } if name == "mode" && value == "auto"
+        ));
     }
 }

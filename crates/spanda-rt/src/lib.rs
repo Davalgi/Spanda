@@ -82,6 +82,11 @@ pub extern "C" fn spanda_rt_load_bool(name: *const c_char) -> u8 {
 }
 
 #[no_mangle]
+pub extern "C" fn spanda_rt_store_string(name: *const c_char, value: *const c_char) {
+    condition::store_string(&ptr_to_str(name), &ptr_to_str(value));
+}
+
+#[no_mangle]
 pub extern "C" fn spanda_rt_eval_condition(json: *const c_char) -> u8 {
     let text = ptr_to_str(json);
     if condition::eval_condition_json(&text) {

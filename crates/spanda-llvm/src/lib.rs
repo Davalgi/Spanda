@@ -52,6 +52,7 @@ pub fn emit_module_ir_with_options(
     out.push_str("declare void @spanda_rt_loop_delay_ms(i64)\n");
     out.push_str("declare double @spanda_rt_scan_nearest(i8*)\n");
     out.push_str("declare void @spanda_rt_store_bool(i8*, i8)\n");
+    out.push_str("declare void @spanda_rt_store_string(i8*, i8*)\n");
     out.push_str("declare i8 @spanda_rt_eval_condition(i8*)\n\n");
 
     let strings = collect_string_literals(sir);
@@ -191,6 +192,10 @@ fn collect_stmt_strings(stmts: &[SirStmt], set: &mut BTreeSet<String>) {
             }
             SirStmt::LetBool { name, .. } | SirStmt::LetDouble { name, .. } => {
                 set.insert(name.clone());
+            }
+            SirStmt::LetString { name, value, .. } => {
+                set.insert(name.clone());
+                set.insert(value.clone());
             }
             SirStmt::IfBool {
                 then_body,
@@ -550,12 +555,23 @@ fn emit_stmt(
         }
         SirStmt::LetDouble { name, value } => {
             let slot = double_slot(name);
+            let name_ptr = string_global_ptr_for(name, strings);
             let mut out = String::new();
             if locals.double_slots.insert(name.clone()) {
                 out.push_str(&format!("  %{slot} = alloca double\n"));
             }
             out.push_str(&format!("  store double {value}, double* %{slot}\n"));
+            out.push_str(&format!(
+                "  call void @spanda_rt_store_double(i8* {name_ptr}, double {value})\n"
+            ));
             out
+        }
+        SirStmt::LetString { name, value } => {
+            let name_ptr = string_global_ptr_for(name, strings);
+            let value_ptr = string_global_ptr_for(value, strings);
+            format!(
+                "  call void @spanda_rt_store_string(i8* {name_ptr}, i8* {value_ptr})\n"
+            )
         }
         SirStmt::LetEnumUnit { name, tag, .. } => {
             let slot = enum_slot(name);
