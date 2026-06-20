@@ -41,6 +41,12 @@ pub extern "C" fn spanda_rt_publish(topic: *const c_char, payload: *const c_char
 }
 
 #[no_mangle]
+pub extern "C" fn spanda_rt_subscribe(topic: *const c_char) {
+    let topic = ptr_to_str(topic);
+    log_event(format!("subscribe:{topic}"));
+}
+
+#[no_mangle]
 pub extern "C" fn spanda_rt_loop_delay_ms(millis: u64) {
     log_event(format!("loop_delay:{millis}"));
     std::thread::sleep(std::time::Duration::from_millis(millis));
@@ -64,6 +70,10 @@ fn ptr_to_str(ptr: *const c_char) -> String {
     unsafe { CStr::from_ptr(ptr).to_string_lossy().into_owned() }
 }
 
+fn events_since(start: usize) -> Vec<String> {
+    EVENTS.lock().unwrap()[start..].to_vec()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -71,23 +81,33 @@ mod tests {
 
     #[test]
     fn c_abi_records_actuator_calls() {
+        let start = EVENTS.lock().unwrap().len();
         let wheels = CString::new("wheels").unwrap();
         spanda_rt_drive(wheels.as_ptr(), 0.5, 0.1);
         spanda_rt_stop(wheels.as_ptr());
-        let events = take_events();
-        assert_eq!(events.len(), 2);
-        assert!(events[0].starts_with("drive:wheels:"));
-        assert_eq!(events[1], "stop:wheels");
+        let events = events_since(start);
+        assert!(events.iter().any(|event| event.starts_with("drive:wheels:")));
+        assert!(events.iter().any(|event| event == "stop:wheels"));
     }
 
     #[test]
     fn c_abi_records_publish_and_loop() {
+        let start = EVENTS.lock().unwrap().len();
         let topic = CString::new("/status").unwrap();
         let payload = CString::new("ok").unwrap();
         spanda_rt_publish(topic.as_ptr(), payload.as_ptr());
         spanda_rt_loop_delay_ms(1);
-        let events = take_events();
-        assert_eq!(events[0], "publish:/status:ok");
-        assert_eq!(events[1], "loop_delay:1");
+        let events = events_since(start);
+        assert!(events.iter().any(|event| event == "publish:/status:ok"));
+        assert!(events.iter().any(|event| event == "loop_delay:1"));
+    }
+
+    #[test]
+    fn c_abi_records_subscribe() {
+        let start = EVENTS.lock().unwrap().len();
+        let topic = CString::new("/cmd").unwrap();
+        spanda_rt_subscribe(topic.as_ptr());
+        let events = events_since(start);
+        assert!(events.iter().any(|event| event == "subscribe:/cmd"));
     }
 }

@@ -79,6 +79,14 @@ pub enum SirStmt {
         topic: String,
         payload: Option<String>,
     },
+    IfBool {
+        condition: bool,
+        then_body: Vec<SirStmt>,
+        else_body: Option<Vec<SirStmt>>,
+    },
+    Subscribe {
+        target: String,
+    },
     Unsupported {
         #[serde(rename = "stmt_kind")]
         label: String,
@@ -244,6 +252,27 @@ fn lower_stmt(stmt: &Stmt) -> SirStmt {
             topic: topic_name.clone(),
             payload: string_literal(value),
         },
+        Stmt::IfStmt {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            if let Some(condition) = bool_literal(condition) {
+                SirStmt::IfBool {
+                    condition,
+                    then_body: lower_stmts(then_branch),
+                    else_body: else_branch.as_ref().map(|branch| lower_stmts(branch)),
+                }
+            } else {
+                SirStmt::Unsupported {
+                    label: "if".into(),
+                }
+            }
+        }
+        Stmt::SubscribeStmt { target, .. } => SirStmt::Subscribe {
+            target: target.clone(),
+        },
         other => SirStmt::Unsupported {
             label: stmt_kind(other),
         },
@@ -339,6 +368,16 @@ fn int_literal(expr: &Expr) -> Option<i64> {
 
 fn float_literal(expr: &Expr) -> Option<f64> {
     numeric_value(expr)
+}
+
+fn bool_literal(expr: &Expr) -> Option<bool> {
+    match expr {
+        Expr::LiteralExpr {
+            value: LiteralValue::Bool(b),
+            ..
+        } => Some(*b),
+        _ => None,
+    }
 }
 
 fn string_literal(expr: &Expr) -> Option<String> {
@@ -515,5 +554,33 @@ robot R {
         assert!(matches!(body[0], SirStmt::Publish { ref topic, .. } if topic == "status"));
         assert!(matches!(body[1], SirStmt::LoopEvery { interval_ms, .. } if (interval_ms - 100.0).abs() < f64::EPSILON));
         assert!(matches!(body[1], SirStmt::LoopEvery { ref body, .. } if matches!(body[0], SirStmt::ActuatorStop { .. })));
+    }
+
+    #[test]
+    fn lowers_if_bool_and_subscribe_stmts() {
+        let source = r#"
+robot R {
+  topic cmd: String subscribe on "/cmd";
+  actuator wheels: DifferentialDrive;
+  behavior run() {
+    subscribe cmd;
+    if true { wheels.stop(); } else { wheels.drive(linear: 0.1 m/s, angular: 0.0 rad/s); }
+  }
+}
+"#;
+        let program = parser::parse(lexer::tokenize(source).expect("tokenize")).expect("parse");
+        types::check(&program).expect("check");
+        let sir = lower_program(&program);
+        let body = &sir.robots[0].behaviors[0].body;
+        assert!(matches!(body[0], SirStmt::Subscribe { ref target } if target == "cmd"));
+        assert!(matches!(
+            body[1],
+            SirStmt::IfBool {
+                condition: true,
+                ref then_body,
+                ref else_body,
+                ..
+            } if then_body.len() == 1 && else_body.as_ref().is_some_and(|b| b.len() == 1)
+        ));
     }
 }

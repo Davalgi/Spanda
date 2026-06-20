@@ -4,13 +4,14 @@ use spanda_core::sir::SirProgram;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use crate::emit_module_ir;
+use crate::{emit_module_ir_with_triple, default_target_triple_for_host};
 
 #[derive(Debug, Clone)]
 pub struct CompileNativeOptions {
     pub output: PathBuf,
     pub clang: Option<String>,
     pub workspace_root: PathBuf,
+    pub target_triple: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -29,7 +30,7 @@ pub fn compile_native(
         .or_else(detect_clang)
         .ok_or_else(|| "clang not found — install LLVM/clang to use compile-native".to_string())?;
 
-    let ir = emit_module_ir(sir);
+    let ir = emit_module_ir_with_triple(sir, opts.target_triple.as_deref());
     let build_dir = resolve_target_dir(&opts.workspace_root).join("spanda-native");
     std::fs::create_dir_all(&build_dir).map_err(|e| e.to_string())?;
     let llvm_ir_path = build_dir.join("program.ll");
@@ -47,6 +48,12 @@ pub fn compile_native(
         .arg(rt_lib.as_os_str())
         .arg("-o")
         .arg(output.as_os_str());
+
+    let triple = match opts.target_triple.as_deref() {
+        Some(triple) => triple,
+        None => default_target_triple_for_host(),
+    };
+    cmd.args(["-target", triple]);
 
     if cfg!(target_os = "macos") {
         cmd.arg("-Wl,-no_warn_duplicate_libraries");
@@ -140,6 +147,7 @@ robot R {
                 output: out.clone(),
                 clang: detect_clang(),
                 workspace_root: workspace_root.clone(),
+                target_triple: None,
             },
         )
         .expect("compile-native");
