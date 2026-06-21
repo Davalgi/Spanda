@@ -1222,6 +1222,23 @@ impl TypeChecker {
             );
         }
 
+        // Expose SLAM adapter hooks when a SLAM-related import is present.
+        if imported.iter().any(|path| {
+            crate::slam_adapter::slam_import_paths().contains(&path.as_str())
+        }) {
+            self.symbols.insert(
+                "slam".into(),
+                SymbolEntry {
+                    robo_type: SpandaType::Named {
+                        name: "Slam".into(),
+                    },
+                    kind: SymbolKind::Variable,
+                    sensor_type: None,
+                    actuator_type: None,
+                },
+            );
+        }
+
         // Process each key.
         for enum_name in self.enum_variants.keys() {
             self.symbols.insert(
@@ -6526,6 +6543,28 @@ fn builtin_methods(type_name: &str) -> Option<HashMap<&'static str, MethodSig>> 
                     HashMap::new(),
                     SpandaType::Named {
                         name: "CostMap".into(),
+                    },
+                ),
+            ),
+        ])),
+        "Slam" => Some(HashMap::from([
+            (
+                "localize",
+                m(
+                    vec![],
+                    HashMap::new(),
+                    SpandaType::Named {
+                        name: "LocalizationEstimate".into(),
+                    },
+                ),
+            ),
+            (
+                "map",
+                m(
+                    vec![],
+                    HashMap::new(),
+                    SpandaType::Named {
+                        name: "OccupancyGrid".into(),
                     },
                 ),
             ),

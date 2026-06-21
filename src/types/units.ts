@@ -687,6 +687,10 @@ export const BUILTIN_METHODS: Record<
     navigate: { params: [], returns: { kind: "named", name: "Trajectory" } },
     cost_map: { params: [], returns: { kind: "named", name: "CostMap" } },
   },
+  Slam: {
+    localize: { params: [], returns: { kind: "named", name: "LocalizationEstimate" } },
+    map: { params: [], returns: { kind: "named", name: "OccupancyGrid" } },
+  },
   AuditLog: {
     record: {
       params: [{ kind: "string" }, { kind: "string" }],

@@ -833,6 +833,16 @@ class TypeChecker {
       });
     }
 
+    // Expose SLAM adapter hooks when a SLAM-related import is present.
+    const slamImportPaths = ["navigation.slam", "navigation.cartographer", "navigation.rtabmap"];
+    if ([...imported].some((path) => slamImportPaths.includes(path))) {
+      this.symbols.set("slam", {
+        name: "slam",
+        roboType: { kind: "named", name: "Slam" },
+        kind: "variable",
+      });
+    }
+
     // Process each key.
     for (const enumName of this.enumVariants.keys()) {
       this.symbols.set(enumName, {
