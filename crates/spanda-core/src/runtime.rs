@@ -1025,6 +1025,27 @@ impl<B: RobotBackend> Interpreter<B> {
         std::mem::take(&mut self.telemetry)
     }
 
+    pub fn twin_replay_export(&self) -> Option<serde_json::Value> {
+        // Export digital twin replay frames as JSON when replay is enabled.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Replay JSON or none when no twin replay buffer exists.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let export = interp.twin_replay_export();
+
+        self.twin
+            .as_ref()
+            .filter(|twin| twin.replay_frame_count() > 0)
+            .map(|twin| twin.export_replay_json())
+    }
+
     pub fn take_mission_trace(&mut self) -> Option<MissionTrace> {
         // Take the recorded mission trace, if any.
         //

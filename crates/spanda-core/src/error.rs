@@ -184,6 +184,10 @@ pub struct RunOptions {
     /// Sleep between playback frames using recorded timestamps.
     #[serde(default)]
     pub playback_wall_clock: bool,
+
+    /// Write twin replay buffer JSON to this path after run/sim.
+    #[serde(default)]
+    pub twin_export_path: Option<String>,
 }
 
 fn default_max_loop_iterations() -> usize {
@@ -240,4 +244,6 @@ pub struct RunResult {
     pub metrics: crate::telemetry::RuntimeTelemetry,
     #[serde(default)]
     pub mission_trace: Option<crate::replay::MissionTrace>,
+    #[serde(default)]
+    pub twin_replay: Option<serde_json::Value>,
 }

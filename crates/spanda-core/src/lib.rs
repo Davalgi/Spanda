@@ -463,6 +463,19 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             trace.save(&path)?;
         }
     }
+    let twin_replay = interp.twin_replay_export();
+    if let Some(path) = &options.twin_export_path {
+        if let Some(export) = &twin_replay {
+            let body = serde_json::to_string_pretty(export).map_err(|e| SpandaError::Runtime {
+                message: format!("twin export JSON: {e}"),
+                line: 0,
+            })?;
+            std::fs::write(path, body).map_err(|e| SpandaError::Runtime {
+                message: format!("twin export write {path}: {e}"),
+                line: 0,
+            })?;
+        }
+    }
     let run_logs = logs.borrow().clone();
     Ok(RunResult {
         state,
@@ -470,6 +483,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
         logs: run_logs,
         metrics,
         mission_trace,
+        twin_replay,
     })
 }
 

@@ -325,6 +325,44 @@ fn value_distance(a: &RuntimeValue, b: &RuntimeValue) -> f64 {
     }
 }
 
+impl TwinRuntime {
+    pub fn export_replay_json(&self) -> serde_json::Value {
+        // Serialize the twin replay buffer for post-incident review.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // JSON object with twin name, mirrors, and per-frame field snapshots.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let json = twin.export_replay_json();
+
+        use crate::bridge::protocol::runtime_value_to_json;
+        let frames: Vec<serde_json::Value> = self
+            .replay_buffer
+            .iter()
+            .enumerate()
+            .map(|(index, frame)| {
+                let fields: serde_json::Map<String, serde_json::Value> = frame
+                    .iter()
+                    .map(|(key, value)| (key.clone(), runtime_value_to_json(value)))
+                    .collect();
+                serde_json::json!({ "frame": index, "fields": fields })
+            })
+            .collect();
+        serde_json::json!({
+            "twin": self.name,
+            "mirrors": self.mirrors,
+            "frame_count": self.replay_frame_count(),
+            "frames": frames,
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -368,6 +406,9 @@ mod tests {
         );
         twin.commit_frame();
         assert_eq!(twin.replay_frame_count(), 2);
+        let export = twin.export_replay_json();
+        assert_eq!(export["frame_count"], 2);
+        assert!(export["frames"].as_array().unwrap().len() == 2);
         let first = twin.replay_field(0, "pose").unwrap();
         assert_eq!(
             first,

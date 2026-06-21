@@ -90,9 +90,10 @@ fn usage() {
            spanda check [--json] [<file.sd> | --project]\n\
            spanda verify [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
            spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] <file.sd>\n\
-           spanda run [--json] [--verbose] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-realtime] [--metrics-json] [--record] <file.sd>\n\
-           spanda sim [--json] [--replay] [--trace-realtime] [--metrics-json] [--record] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
+           spanda run [--json] [--verbose] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-realtime] [--metrics-json] [--record] <file.sd>\n\
+           spanda sim [--json] [--replay] [--twin-export <replay.json>] [--trace-realtime] [--metrics-json] [--record] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
            spanda replay <mission.trace> [--from T+mm:ss] [--deterministic] [--playback]\n\
+           spanda twin export <file.sd> --out <replay.json>\n\
            spanda fleet run [--json] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
            spanda fmt [--json] <file.sd>\n\
            spanda lint [--json] <file.sd>\n\
@@ -710,6 +711,94 @@ fn is_package_command(cmd: &str) -> bool {
     )
 }
 
+fn twin_dispatch(args: &[String]) {
+    // Twin dispatch.
+    //
+    // Parameters:
+    // - `args` — input value
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let result = spanda_cli::main::twin_dispatch(args);
+
+    if args.first().map(String::as_str) != Some("export") {
+        eprintln!("Usage: spanda twin export <file.sd> --out <replay.json>");
+        process::exit(1);
+    }
+    let mut file: Option<String> = None;
+    let mut out_path: Option<String> = None;
+    let mut i = 1usize;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--out" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--out requires a path");
+                    process::exit(1);
+                }
+                out_path = Some(args[i].clone());
+            }
+            other if !other.starts_with('-') && file.is_none() => file = Some(other.to_string()),
+            other => {
+                eprintln!("Unknown argument: {other}");
+                process::exit(1);
+            }
+        }
+        i += 1;
+    }
+    let file = file.unwrap_or_else(|| {
+        eprintln!("Missing file path");
+        process::exit(1);
+    });
+    let out_path = out_path.unwrap_or_else(|| {
+        eprintln!("--out is required");
+        process::exit(1);
+    });
+    let source = read_source(&file);
+    let entry_behavior = spanda_core::compile(&source)
+        .ok()
+        .and_then(|compiled| {
+            let spanda_core::Program::Program { robots, .. } = compiled.program;
+            robots.first().and_then(|robot| {
+                let spanda_core::RobotDecl::RobotDecl { behaviors, tasks, .. } = robot;
+                behaviors.first().map(|behavior| {
+                    let spanda_core::BehaviorDecl::BehaviorDecl { name, .. } = behavior;
+                    name.clone()
+                }).or_else(|| {
+                    tasks.first().map(|task| {
+                        let spanda_core::foundations::TaskDecl::TaskDecl { name, .. } = task;
+                        name.clone()
+                    })
+                })
+            })
+        });
+    let opts = RunOptions {
+        max_loop_iterations: 50,
+        entry_behavior,
+        twin_export_path: Some(out_path.clone()),
+        ..Default::default()
+    };
+    match run(&source, opts) {
+        Ok(result) => {
+            if result.twin_replay.is_some() {
+                println!("✓ twin replay exported to {out_path}");
+            } else {
+                eprintln!("No twin replay buffer in {file} — add `twin {{ ... replay true; }}`");
+                process::exit(1);
+            }
+        }
+        Err(e) => {
+            eprintln!("Error: {e}");
+            process::exit(1);
+        }
+    }
+}
+
 fn fleet_dispatch(args: &[String]) {
     // Fleet dispatch.
     //
@@ -1028,6 +1117,13 @@ fn main() {
         return;
     }
 
+    // Take the branch when command equals "twin".
+    if command == "twin" {
+        twin_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
     // Take this path when is package command(command).
     if is_package_command(command) {
         dispatch_package(command, &args[2..]);
@@ -1059,6 +1155,7 @@ fn main() {
     let mut replay_playback = false;
     let mut replay_from: Option<String> = None;
     let mut trace_output: Option<String> = None;
+    let mut twin_export_path: Option<String> = None;
     let mut wall_clock = false;
     let mut i = 2;
 
@@ -1079,6 +1176,14 @@ fn main() {
                 json = true;
             }
             "--record" => record_trace = true,
+            "--twin-export" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--twin-export requires a path");
+                    process::exit(1);
+                }
+                twin_export_path = Some(args[i].clone());
+            }
             "--trace-out" => {
                 i += 1;
                 if i >= args.len() {
@@ -1279,6 +1384,7 @@ fn main() {
                 } else {
                     SchedulerClock::Sim
                 },
+                twin_export_path,
                 ..Default::default()
             };
 

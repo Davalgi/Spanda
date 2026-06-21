@@ -1,0 +1,20 @@
+// Twin replay JSON export demo
+// Run: spanda twin export examples/twin_export_demo.sd --out twin-replay.json
+
+robot R {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  twin Shadow {
+    mirror pose;
+    replay true;
+  }
+
+  safety {
+    max_speed = 1.0 m/s;
+  }
+
+  task sync every 50ms {
+    wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+  }
+}
