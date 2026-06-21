@@ -384,7 +384,11 @@ export async function verifyHardware(
       const { parse } = await import("./parser/index.js");
       const { verifyHardwareProgram } = await import("./hardware-verify.js");
       const program = parse(tokenize(source));
-      return verifyHardwareProgram(program, { target: options.target });
+      return verifyHardwareProgram(program, {
+        target: options.target,
+        allTargets: options.allTargets,
+        simulate: options.simulate,
+      });
     } catch (err) {
       return {
         ok: false,

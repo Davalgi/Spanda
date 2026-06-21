@@ -53,6 +53,7 @@ import type { ModuleRegistry } from "../modules/index.js";
 import type { ExternFnDecl, ModuleFnDecl, ResourceBudgetDecl, TaskDecl, TaskPriority } from "../foundations.js";
 import type { CaptureResult, RegexPattern } from "../regex.js";
 import {
+  applyGpsPositionFaults,
   connectivityLinkToTransport,
   connectivityPolicyFromDecl,
   faultToConnectivity,
@@ -505,7 +506,13 @@ export class Interpreter {
     // const [lat, lon] = currentGpsLatLon();
 
     const state = this.options.backend.getState();
-    return [state.pose.x, state.pose.y];
+    const { lat, lon } = applyGpsPositionFaults(
+      this.injectedFaults,
+      state.pose.x,
+      state.pose.y,
+      this.reliability.simTimeMs,
+    );
+    return [lat, lon];
   }
 
   private runGeofenceTriggers(): void {
@@ -594,6 +601,14 @@ export class Interpreter {
       this.connectivityEventsSeen.add(key);
       this.applyConnectivityFailover(mapped.domain, mapped.event);
       this.dispatchEvent(`${mapped.domain}.${mapped.event}`);
+    }
+
+    if (this.injectedFaults.has("GpsSpoofing")) {
+      const key = "fault:gps.spoofed";
+      if (!this.connectivityEventsSeen.has(key)) {
+        this.connectivityEventsSeen.add(key);
+        this.dispatchEvent("gps.spoofed");
+      }
     }
 
     const gpsOk = ![...this.injectedFaults].some((f) => f === "GpsFailure" || f === "GPSLost");
@@ -2720,6 +2735,7 @@ export class Interpreter {
 
     // const result = readSensorValue(target);
     const state = this.options.backend.getState();
+    let reading: RuntimeValue;
 
     // continue when target.library.
     if (target.library) {
@@ -2727,16 +2743,42 @@ export class Interpreter {
 
       // continue when driver.
       if (driver) {
-        return readWithDriver(driver, {
+        reading = readWithDriver(driver, {
           hal: this.hal,
           halBinding: target.halBinding ?? null,
           topic: target.topic ?? null,
           simState: { pose: state.pose },
         });
+      } else {
+        reading = this.options.backend.readSensor(target.name, target.sensorType, target.topic);
+      }
+    } else {
+      reading = this.options.backend.readSensor(target.name, target.sensorType, target.topic);
+    }
+
+    if (target.sensorType === "GPS" || target.sensorType === "GNSS") {
+      if (reading.kind === "object") {
+        const { lat, lon, fixQuality } = applyGpsPositionFaults(
+          this.injectedFaults,
+          state.pose.x,
+          state.pose.y,
+          this.reliability.simTimeMs,
+        );
+        reading = {
+          ...reading,
+          fields: {
+            ...reading.fields,
+            lat: { kind: "number", value: lat, unit: "none" },
+            lon: { kind: "number", value: lon, unit: "none" },
+            ...(reading.fields.fix_quality
+              ? { fix_quality: { kind: "number", value: fixQuality, unit: "none" } }
+              : {}),
+          },
+        };
       }
     }
-    return this.options.backend.readSensor(target.name, target.sensorType, target.topic);
-}
+    return reading;
+  }
 
   private readFusedObservation(): RuntimeValue {
     // ReadFusedObservation.

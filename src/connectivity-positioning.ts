@@ -7,11 +7,14 @@ import type {
   BleServiceDecl,
   ConnectivityPolicyDecl,
   GeofenceDecl,
-  HardwareDecl,
   RequiresConnectivityDecl,
+  RequiresHardwareDecl,
+  RequiresNetworkDecl,
+  ResourceBudgetDecl,
 } from "./foundations.js";
 import type { TransportKind } from "./comm/index.js";
 import type { CompatItem } from "./rust-bridge.js";
+import type { HardwareProfile } from "./hardware-profile.js";
 
 export type ConnectivityRequirement = "required" | "optional";
 
@@ -284,6 +287,8 @@ export function faultToConnectivity(
       return { domain: "bluetooth", event: "device_disconnected" };
     case "FiveGHandoff":
       return { domain: "cellular", event: "roaming" };
+    case "GpsSpoofing":
+      return { domain: "gps", event: "spoofed" };
     default:
       return null;
   }
@@ -325,6 +330,39 @@ export function connectivityLinkToTransport(link: string): TransportKind {
   }
 }
 
+export function applyGpsPositionFaults(
+  faults: Set<string>,
+  trueLat: number,
+  trueLon: number,
+  simTimeMs: number,
+): { lat: number; lon: number; fixQuality: number } {
+  // Apply GPS drift or spoofing simulation to WGS84 coordinates.
+  //
+  // Parameters:
+  // - `faults` — active injected fault names
+  // - `trueLat`, `trueLon` — ground-truth degrees
+  // - `simTimeMs` — simulation clock for drift accumulation
+  //
+  // Returns:
+  // Adjusted latitude, longitude, and fix quality.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // const pos = applyGpsPositionFaults(faults, 30, -97, 1000);
+
+  if (faults.has("GpsSpoofing")) {
+    return { lat: trueLat + 0.009, lon: trueLon + 0.012, fixQuality: 0.3 };
+  }
+  if (faults.has("GpsDrift")) {
+    const driftM = (simTimeMs / 1000) * 0.05;
+    const dDeg = driftM / 111_000;
+    return { lat: trueLat + dDeg, lon: trueLon + dDeg * 0.5, fixQuality: 0.8 };
+  }
+  return { lat: trueLat, lon: trueLon, fixQuality: 1.0 };
+}
+
 function compatItem(
   category: string,
   message: string,
@@ -337,7 +375,7 @@ function compatItem(
 
 export function verifyRequiresConnectivity(
   req: RequiresConnectivityDecl,
-  profile: HardwareDecl,
+  profile: HardwareProfile,
 ): CompatItem[] {
   // Verify requires_connectivity against a hardware profile (TypeScript fallback).
   //
@@ -471,15 +509,39 @@ export function verifyRequiresConnectivity(
   }
 
   if (req.packetLossPctMax != null) {
-    items.push(
-      compatItem(
-        "connectivity",
-        "Target packet loss unknown — cannot verify packet_loss requirement (TS verify)",
-        "warning",
-        line,
-        column,
-      ),
-    );
+    const maxLoss = req.packetLossPctMax;
+    const loss = profile.packetLossPct;
+    if (loss == null) {
+      items.push(
+        compatItem(
+          "connectivity",
+          "Target packet loss unknown — cannot verify packet_loss requirement",
+          "warning",
+          line,
+          column,
+        ),
+      );
+    } else if (loss <= maxLoss) {
+      items.push(
+        compatItem(
+          "connectivity",
+          `Packet loss ${loss}% meets requirement <= ${maxLoss}%`,
+          "pass",
+          line,
+          column,
+        ),
+      );
+    } else {
+      items.push(
+        compatItem(
+          "connectivity",
+          `Packet loss ${loss}% exceeds requirement <= ${maxLoss}%`,
+          "error",
+          line,
+          column,
+        ),
+      );
+    }
   }
 
   return items;
