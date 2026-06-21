@@ -51,3 +51,52 @@ swarm ReconLeader {
     assert_eq!(leader.remote_relayed, 1);
     assert!(leader.coordination_mode.ends_with("_mesh"));
 }
+
+#[test]
+fn swarm_round_robin_relays_peer_links_via_mesh() {
+    let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
+    let mut registry = FleetAgentRegistry::default();
+    register_fleet_agent(
+        &mut registry,
+        "ScoutB".into(),
+        format!("http://127.0.0.1:{port}"),
+        None,
+    )
+    .expect("register");
+    let (mesh_port, _mesh) = spawn_test_fleet_mesh(&registry).expect("spawn mesh");
+    let source = r#"
+robot ScoutA {
+  robot ScoutB;
+  mission Patrol { navigate; inspect; }
+}
+robot ScoutB {
+  mission Patrol { navigate; inspect; }
+}
+robot ScoutC {
+  mission Patrol { navigate; inspect; }
+}
+fleet Recon { ScoutA; ScoutB; ScoutC; }
+swarm ReconSwarm {
+  fleet Recon;
+  policy round_robin;
+}
+"#;
+    let program = compile(source).expect("compile").program;
+    thread::sleep(Duration::from_millis(30));
+    let mut state = SwarmState::default();
+    let result = coordinate_swarms_mesh(
+        &program,
+        "swarm_round.sd",
+        &mut state,
+        &format!("http://127.0.0.1:{mesh_port}"),
+        None,
+    );
+    assert!(result.success);
+    let round_robin = result
+        .swarms
+        .iter()
+        .find(|swarm| swarm.policy == "round_robin")
+        .expect("round_robin swarm");
+    assert_eq!(round_robin.remote_relayed, 1);
+    assert!(round_robin.coordination_mode.ends_with("_mesh"));
+}

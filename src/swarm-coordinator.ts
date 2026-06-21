@@ -77,25 +77,34 @@ function missionForRobot(robot: Program["robots"][number]): MissionRuntime | nul
   );
 }
 
-function advanceMember(program: Program, memberName: string): FleetMemberState {
+function advanceMember(program: Program, memberName: string): {
+  state: FleetMemberState;
+  deliveries: PeerDelivery[];
+} {
   const robot = program.robots.find((entry) => entry.name === memberName);
   if (!robot) {
     return {
-      robotName: memberName,
-      missionName: null,
-      missionState: "MissingRobot",
-      currentStep: "",
-      hasPeerLink: false,
+      state: {
+        robotName: memberName,
+        missionName: null,
+        missionState: "MissingRobot",
+        currentStep: "",
+        hasPeerLink: false,
+      },
+      deliveries: [],
     };
   }
   const runtime = missionForRobot(robot);
   if (!runtime) {
     return {
-      robotName: memberName,
-      missionName: null,
-      missionState: "NoMission",
-      currentStep: "",
-      hasPeerLink: (robot.peerRobots?.length ?? 0) > 0,
+      state: {
+        robotName: memberName,
+        missionName: null,
+        missionState: "NoMission",
+        currentStep: "",
+        hasPeerLink: (robot.peerRobots?.length ?? 0) > 0,
+      },
+      deliveries: [],
     };
   }
   missionStart(runtime);
@@ -103,13 +112,27 @@ function advanceMember(program: Program, memberName: string): FleetMemberState {
   const peerHandoffs = (robot.peerRobots ?? []).flatMap((peer) =>
     step ? [`${memberName}->${peer.name}:step=${step}`] : [],
   );
+  const deliveries: PeerDelivery[] = (robot.peerRobots ?? []).flatMap((peer) =>
+    step
+      ? [{
+          fromRobot: memberName,
+          toRobot: peer.name,
+          topic: "mission_step",
+          step,
+          delivered: true,
+        }]
+      : [],
+  );
   return {
-    robotName: memberName,
-    missionName: runtime.name,
-    missionState: runtime.state,
-    currentStep: step,
-    hasPeerLink: (robot.peerRobots?.length ?? 0) > 0,
-    peerHandoffs,
+    state: {
+      robotName: memberName,
+      missionName: runtime.name,
+      missionState: runtime.state,
+      currentStep: step,
+      hasPeerLink: (robot.peerRobots?.length ?? 0) > 0,
+      peerHandoffs,
+    },
+    deliveries,
   };
 }
 
@@ -149,13 +172,15 @@ function coordinateSwarmGroup(
       nextCursor = (index + 1) % members.length;
       const memberName = members[index]!;
       activeMember = memberName;
-      const state = advanceMember(program, memberName);
+      const { state, deliveries } = advanceMember(program, memberName);
+      peerDeliveries.push(...deliveries);
       if (state.currentStep) stepsAdvanced = 1;
       memberStates.push(state);
     }
   } else if (swarm.policy === "broadcast") {
     for (const memberName of members) {
-      const state = advanceMember(program, memberName);
+      const { state, deliveries } = advanceMember(program, memberName);
+      peerDeliveries.push(...deliveries);
       if (state.currentStep) stepsAdvanced += 1;
       memberStates.push(state);
     }
@@ -163,18 +188,18 @@ function coordinateSwarmGroup(
     const leader = members[0];
     if (leader) {
       activeMember = leader;
-      const state = advanceMember(program, leader);
+      const { state } = advanceMember(program, leader);
       if (state.currentStep) stepsAdvanced = 1;
-      peerDeliveries = leaderFollowDeliveries(leader, state.currentStep, members);
+      peerDeliveries.push(...leaderFollowDeliveries(leader, state.currentStep, members));
       memberStates.push(state);
     }
   }
 
   const coordinationMode =
     swarm.policy === "round_robin"
-      ? "swarm_round_robin"
+      ? (peerDeliveries.length > 0 ? "swarm_round_robin_peer" : "swarm_round_robin")
       : swarm.policy === "broadcast"
-        ? "swarm_broadcast"
+        ? (peerDeliveries.length > 0 ? "swarm_broadcast_peer" : "swarm_broadcast")
         : "swarm_leader_follow";
 
   return {

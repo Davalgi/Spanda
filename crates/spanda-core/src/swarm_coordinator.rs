@@ -91,17 +91,20 @@ fn advance_member(
     robots: &[RobotDecl],
     member_name: &str,
     mesh_bus: &mut InMemoryCommBus,
-) -> FleetMemberState {
+) -> (FleetMemberState, Vec<PeerDelivery>) {
     // Advance one fleet member mission and collect peer handoff metadata.
     let Some(robot) = robot_by_name(robots, member_name) else {
-        return FleetMemberState {
-            robot_name: member_name.to_string(),
-            mission_name: None,
-            mission_state: "MissingRobot".into(),
-            current_step: String::new(),
-            has_peer_link: false,
-            peer_handoffs: Vec::new(),
-        };
+        return (
+            FleetMemberState {
+                robot_name: member_name.to_string(),
+                mission_name: None,
+                mission_state: "MissingRobot".into(),
+                current_step: String::new(),
+                has_peer_link: false,
+                peer_handoffs: Vec::new(),
+            },
+            Vec::new(),
+        );
     };
     let RobotDecl::RobotDecl {
         peer_robots, mission, ..
@@ -115,16 +118,19 @@ fn advance_member(
         (None, "NoMission".into(), String::new())
     };
     let handoffs = peer_handoffs(member_name, &current_step, peer_robots);
+    let deliveries = deliver_peer_steps(mesh_bus, member_name, &current_step, peer_robots);
     let _ = mission;
-    let _ = deliver_peer_steps(mesh_bus, member_name, &current_step, peer_robots);
-    FleetMemberState {
-        robot_name: member_name.to_string(),
-        mission_name,
-        mission_state,
-        current_step,
-        has_peer_link: !peer_robots.is_empty(),
-        peer_handoffs: handoffs,
-    }
+    (
+        FleetMemberState {
+            robot_name: member_name.to_string(),
+            mission_name,
+            mission_state,
+            current_step,
+            has_peer_link: !peer_robots.is_empty(),
+            peer_handoffs: handoffs,
+        },
+        deliveries,
+    )
 }
 
 fn leader_follow_deliveries(
@@ -187,7 +193,9 @@ fn coordinate_swarm_group(
                 next_cursor = (index + 1) % members.len();
                 let member_name = &members[index];
                 active_member = Some(member_name.clone());
-                let state = advance_member(robots, member_name, &mut mesh_bus);
+                let (state, deliveries) =
+                    advance_member(robots, member_name, &mut mesh_bus);
+                peer_deliveries.extend(deliveries);
                 if !state.current_step.is_empty() {
                     steps_advanced = 1;
                 }
@@ -196,7 +204,9 @@ fn coordinate_swarm_group(
         }
         SwarmPolicy::Broadcast => {
             for member_name in members {
-                let state = advance_member(robots, member_name, &mut mesh_bus);
+                let (state, deliveries) =
+                    advance_member(robots, member_name, &mut mesh_bus);
+                peer_deliveries.extend(deliveries);
                 if !state.current_step.is_empty() {
                     steps_advanced += 1;
                 }
@@ -206,19 +216,32 @@ fn coordinate_swarm_group(
         SwarmPolicy::LeaderFollow => {
             if let Some(leader) = members.first() {
                 active_member = Some(leader.clone());
-                let state = advance_member(robots, leader, &mut mesh_bus);
+                let (state, _) = advance_member(robots, leader, &mut mesh_bus);
                 if !state.current_step.is_empty() {
                     steps_advanced = 1;
                 }
-                peer_deliveries = leader_follow_deliveries(leader, &state.current_step, members);
+                peer_deliveries =
+                    leader_follow_deliveries(leader, &state.current_step, members);
                 member_states.push(state);
             }
         }
     }
 
     let coordination_mode = match policy {
-        SwarmPolicy::RoundRobin => "swarm_round_robin",
-        SwarmPolicy::Broadcast => "swarm_broadcast",
+        SwarmPolicy::RoundRobin => {
+            if peer_deliveries.is_empty() {
+                "swarm_round_robin"
+            } else {
+                "swarm_round_robin_peer"
+            }
+        }
+        SwarmPolicy::Broadcast => {
+            if peer_deliveries.is_empty() {
+                "swarm_broadcast"
+            } else {
+                "swarm_broadcast_peer"
+            }
+        }
         SwarmPolicy::LeaderFollow => "swarm_leader_follow",
     };
 
