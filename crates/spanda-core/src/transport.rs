@@ -1,5 +1,10 @@
 //! Pluggable transport adapters for ROS2, MQTT, DDS, and WebSocket.
 //!
+//! **Lean-core note:** `TransportAdapter` and wire protocol types stay in core.
+//! Live vendor backends (`transport_mqtt`, `transport_rclrs`, `transport_dds`, etc.)
+//! are compatibility shims. Prefer official packages (`spanda-mqtt`, `spanda-ros2`, `spanda-dds`)
+//! and register implementations via `providers::TransportProvider`.
+//!
 //! Adapters exchange versioned wire frames (`TransportWireFrame` v1) with optional
 //! AES-256-GCM encryption negotiated via `TlsTransportSession`.
 
@@ -977,7 +982,6 @@ impl TransportAdapter for MqttTransportAdapter {
         self.state.published.clone()
     }
 }
-
 // ── Routing comm bus ──────────────────────────────────────────────────────────
 /// Routes publish/subscribe/service/action calls to transport-specific adapters
 /// while preserving in-memory semantics for simulation and discovery.
@@ -1301,12 +1305,16 @@ impl RoutingCommBus {
 
         // Process each filesystem path.
         for path in paths {
+
             // Process each kind.
             for kind in kinds {
+
                 // Emit output when adapter mut provides a adapter.
                 if let Some(adapter) = self.adapter_mut(kind) {
+
                     // Take this path when adapter.is connected().
                     if adapter.is_connected() {
+
                         // Emit output when receive provides a value.
                         if let Some(value) = adapter.receive(&path) {
                             let (value, source_id) = decode_wire_value(&self.config, value)

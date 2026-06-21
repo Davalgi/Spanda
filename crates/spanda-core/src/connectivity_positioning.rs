@@ -1,5 +1,9 @@
 //! GPS/GNSS positioning and wireless connectivity types, verification, and simulation faults.
 //!
+//! **Lean-core note:** Type names and verification rules stay in core. Driver implementations
+//! belong in official packages (`spanda-gps`, `spanda-wifi`, `spanda-ble`, `spanda-cellular`).
+//! This module remains as a compatibility shim until callers migrate to package imports.
+//!
 use crate::foundations::{
     ConnectivityPolicyDecl, GeofenceDecl, RequiresConnectivityDecl, SimFaultDecl,
 };

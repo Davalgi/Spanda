@@ -1,0 +1,63 @@
+//! Integration tests for lean-core provider contracts and registry.
+//!
+use spanda_core::providers::{
+    module_classifications, official_package_names, ModuleOwnership, ProviderId, ProviderRegistry,
+    TransportAdapterProvider,
+};
+use spanda_core::transport::{Ros2TransportAdapter, TransportConfig};
+
+#[test]
+fn official_package_list_is_non_empty() {
+    let names = official_package_names();
+    assert!(names.contains(&"spanda-gps"));
+    assert!(names.contains(&"spanda-ros2"));
+    assert!(names.contains(&"spanda-mqtt"));
+}
+
+#[test]
+fn module_classifications_include_core_and_shims() {
+    let table = module_classifications();
+    assert!(table
+        .iter()
+        .any(|m| m.module == "providers" && m.ownership == ModuleOwnership::Core));
+    assert!(table.iter().any(|m| {
+        m.module == "transport_mqtt" && m.ownership == ModuleOwnership::CompatibilityShim
+    }));
+}
+
+#[test]
+fn transport_adapter_provider_wraps_legacy_adapter() {
+    let mut registry = ProviderRegistry::new();
+    let adapter =
+        TransportAdapterProvider::new("spanda-ros2", "stub", Ros2TransportAdapter::default());
+    registry.register_transport(Box::new(adapter));
+
+    let ids = registry.list_transports();
+    assert_eq!(ids.len(), 1);
+    assert_eq!(ids[0].package, "spanda-ros2");
+
+    let connected = registry
+        .with_transport("spanda-ros2::stub", |transport| {
+            transport
+                .connect(&TransportConfig::default())
+                .expect("connect");
+            transport.is_connected()
+        })
+        .expect("registered transport");
+    assert!(connected);
+}
+
+#[test]
+fn bootstrap_registers_default_transports() {
+    let registry = spanda_core::providers::bootstrap_default_providers();
+    assert_eq!(registry.transport_count(), 2);
+    let ids = registry.list_transports();
+    assert!(ids.iter().any(|id| id.package == "spanda-mqtt"));
+    assert!(ids.iter().any(|id| id.package == "spanda-ros2"));
+}
+#[test]
+fn provider_id_key_format() {
+    let id = ProviderId::new("spanda-gps", "nmea");
+    assert_eq!(id.package, "spanda-gps");
+    assert_eq!(id.name, "nmea");
+}
