@@ -2,10 +2,11 @@
 //!
 use spanda_core::{check, load_project_modules, run_tests_with_registry};
 use spanda_package::{
-    add_dependency, collect_source_files, find_project_root, init_package, publish_package,
-    registry_info, remove_dependency, resolve_dependencies, search_registry,
-    search_registry_merged, validate_package, ApplicationPermissions, DependencySpec, Lockfile,
-    PackageManifest, ResolveOptions, LOCKFILE_FILENAME, MANIFEST_FILENAME,
+    add_dependency, adapter_verify_ok, collect_source_files, find_project_root, init_package,
+    publish_package, registry_info, remove_dependency, resolve_dependencies, search_registry,
+    search_registry_merged, validate_package, verify_adapter_package, ApplicationPermissions,
+    DependencySpec, Lockfile, PackageManifest, ResolveOptions, LOCKFILE_FILENAME,
+    MANIFEST_FILENAME,
 };
 use std::env;
 use std::fs;
@@ -38,6 +39,7 @@ pub fn usage_package() {
            spanda remove <package>\n\
            spanda install [--project <dir>]\n\
            spanda publish [--project <dir>]\n\
+           spanda verify-adapter [--project <dir>] [--import <path>] [--package <name>]\n\
            spanda registry search <query>\n"
     );
 }
@@ -742,4 +744,51 @@ fn parse_project_arg(args: &[String]) -> PathBuf {
         i += 1;
     }
     project.unwrap_or_else(project_root_from_cwd)
+}
+
+pub fn cmd_verify_adapter(args: &[String]) {
+    // Validate a project package adapter section against registry metadata.
+    let root = parse_project_arg(args);
+    let manifest = load_project(&root);
+    let mut import_path: Option<String> = None;
+    let mut package_name: Option<String> = None;
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--import" if i + 1 < args.len() => {
+                import_path = Some(args[i + 1].clone());
+                i += 1;
+            }
+            "--package" if i + 1 < args.len() => {
+                package_name = Some(args[i + 1].clone());
+                i += 1;
+            }
+            _ => {}
+        }
+        i += 1;
+    }
+    if import_path.is_none() && package_name.is_none() {
+        import_path = Some("navigation.nav2".into());
+    }
+    let issues = verify_adapter_package(
+        &manifest,
+        import_path.as_deref(),
+        package_name.as_deref(),
+    )
+    .unwrap_or_else(|e| {
+        eprintln!("Adapter verify failed: {e}");
+        process::exit(1);
+    });
+    for issue in &issues {
+        let icon = match issue.severity {
+            spanda_package::AdapterVerifySeverity::Pass => "✓",
+            spanda_package::AdapterVerifySeverity::Warning => "⚠",
+            spanda_package::AdapterVerifySeverity::Error => "✗",
+        };
+        println!("  {icon} {}", issue.message);
+    }
+    if !adapter_verify_ok(&issues) {
+        process::exit(1);
+    }
+    println!("✓ Adapter package verification passed for {}", manifest.package.name);
 }

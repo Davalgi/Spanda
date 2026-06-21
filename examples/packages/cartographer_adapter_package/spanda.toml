@@ -8,5 +8,5 @@ license = "Apache-2.0"
 [dependencies]
 
 [adapter]
-provides = ["CartographerSlam", "OccupancyGrid", "PoseGraph"]
-requires = ["topic.publish", "sensor.read"]
+provides = ["CartographerSlam", "OccupancyGrid", "PoseGraph", "slam.localize", "slam.map"]
+requires = ["topic.publish", "sensor.read", "lidar.read"]

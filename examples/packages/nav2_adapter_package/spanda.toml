@@ -8,5 +8,5 @@ license = "Apache-2.0"
 [dependencies]
 
 [adapter]
-provides = ["Nav2Adapter", "NavigationGoal", "CostMap"]
-requires = ["topic.publish", "safety.validate"]
+provides = ["Nav2Adapter", "NavigationGoal", "CostMap", "navigate"]
+requires = ["topic.publish", "safety.validate", "ros2.bridge", "actuator.drive"]

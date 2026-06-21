@@ -4,6 +4,7 @@
 //! dependencies, validates safety metadata, and bundles packages for publication.
 
 pub mod adapter;
+pub mod adapter_verify;
 pub mod category;
 pub mod dependency;
 pub mod error;
@@ -24,7 +25,11 @@ pub mod vendor;
 #[cfg(test)]
 mod testing;
 
-pub use adapter::{framework_packages, AdapterMetadata, FrameworkPackage};
+pub use adapter::{framework_packages, nav2_adapter_metadata, AdapterMetadata, FrameworkPackage};
+pub use adapter_verify::{
+    adapter_verify_ok, verify_adapter_package, verify_manifest_adapter, AdapterVerifyIssue,
+    AdapterVerifySeverity,
+};
 pub use category::PackageCategory;
 pub use dependency::{
     parse_version, parse_version_req, version_satisfies, DependencyDetail, DependencySourceKind,
