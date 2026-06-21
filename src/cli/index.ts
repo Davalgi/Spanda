@@ -90,7 +90,7 @@ Usage:
   spanda deploy rollout [--json] [--remote] [--require-certify] [--strategy all|canary|staged] [--canary-percent N] [--version <ver>] [--dry-run] <file.sd>
   spanda deploy rollback [--json] [--remote] <file.sd>
   spanda deploy status [--json]
-  spanda deploy agent start [--bind <addr>] [--target <Robot@Hardware>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>] [--require-hash]
+  spanda deploy agent start [--bind <addr>] [--target <Robot@Hardware>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>] [--require-hash] [--require-certify]
   spanda deploy agent register <Robot@Hardware> <http(s)://host:port> [--token <t>]
   spanda deploy agent list [--json]
   spanda deploy --target wasm [--out <file.json>] <file.sd>
@@ -1099,6 +1099,7 @@ function handleDeployAgent(subcommand: string | undefined, args: string[], json:
     let tlsKey: string | undefined;
     let requireHash = false;
     let requireSignature = false;
+    let requireCertify = false;
     let trustedPublicKey: string | undefined;
     for (let i = 0; i < args.length; i++) {
       if (args[i] === "--bind" && args[i + 1]) {
@@ -1113,6 +1114,8 @@ function handleDeployAgent(subcommand: string | undefined, args: string[], json:
         tlsKey = args[++i];
       } else if (args[i] === "--require-hash") {
         requireHash = true;
+      } else if (args[i] === "--require-certify") {
+        requireCertify = true;
       } else if (args[i] === "--require-signature") {
         requireSignature = true;
       } else if (args[i] === "--trust-key" && args[i + 1]) {
@@ -1139,6 +1142,7 @@ function handleDeployAgent(subcommand: string | undefined, args: string[], json:
       tlsKey,
       requireHash,
       requireSignature,
+      requireCertify,
       trustedPublicKey,
     });
     return;

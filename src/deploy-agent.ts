@@ -17,6 +17,7 @@ export type AgentState = {
   programHash?: string;
   requireHash?: boolean;
   requireSignature?: boolean;
+  requireCertify?: boolean;
   trustedPublicKey?: string;
 };
 
@@ -107,6 +108,13 @@ async function handleRequest(
       program_hash?: string;
       assignments?: Array<{ robot_name: string; hardware: string }>;
       certifications?: string[];
+      certification_proof?: {
+        passed?: boolean;
+        passed_strict?: boolean;
+        summary?: string;
+        error_count?: number;
+        warning_count?: number;
+      };
       artifact_signature?: string;
       artifact_public_key?: string;
     };
@@ -145,6 +153,14 @@ async function handleRequest(
       if (!ok) {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ ok: false, error: "invalid artifact signature" }));
+        return;
+      }
+    }
+    if (state.requireCertify) {
+      const proofOk = payload.certification_proof?.passed_strict === true;
+      if (!proofOk) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: "strict certification proof required" }));
         return;
       }
     }
@@ -211,6 +227,7 @@ export function startDeployAgentServer(options: {
   tlsKey?: string;
   requireHash?: boolean;
   requireSignature?: boolean;
+  requireCertify?: boolean;
   trustedPublicKey?: string;
 }): ReturnType<typeof createServer> {
   const statePath = options.statePath ?? defaultAgentStatePath();
@@ -219,6 +236,7 @@ export function startDeployAgentServer(options: {
   if (options.token) state.token = options.token;
   if (options.requireHash) state.requireHash = true;
   if (options.requireSignature) state.requireSignature = true;
+  if (options.requireCertify) state.requireCertify = true;
   if (options.trustedPublicKey) state.trustedPublicKey = options.trustedPublicKey;
   writeAgentStateToDisk(state, statePath);
   const requestHandler = (req: IncomingMessage, res: ServerResponse) => {

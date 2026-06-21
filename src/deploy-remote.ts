@@ -15,6 +15,20 @@ import {
   type RolloutStep,
 } from "./deploy-service.js";
 import type { DeployArtifactBundle } from "./deploy-bundle.js";
+import type { CertificationProofSummary } from "./certify-prover.js";
+
+function certificationProofPayload(
+  proof?: CertificationProofSummary,
+): Record<string, unknown> | undefined {
+  if (!proof) return undefined;
+  return {
+    passed: proof.passed,
+    passed_strict: proof.passedStrict,
+    summary: proof.summary,
+    error_count: proof.errorCount,
+    warning_count: proof.warningCount,
+  };
+}
 
 export type DeployAgentEntry = {
   target: string;
@@ -154,11 +168,12 @@ export async function executeRemoteRollout(
           version: bundle.version,
           program: bundle.program,
           program_hash: bundle.programHash,
-        assignments: bundle.assignments.map((assignment) => ({
-          robot_name: assignment.robotName,
-          hardware: assignment.hardware,
-        })),
+          assignments: bundle.assignments.map((assignment) => ({
+            robot_name: assignment.robotName,
+            hardware: assignment.hardware,
+          })),
           certifications: bundle.certifications,
+          certification_proof: certificationProofPayload(plan.certificationProof),
           artifact_signature: bundle.signature,
           artifact_public_key: bundle.publicKey,
         }),
