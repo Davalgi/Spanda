@@ -1,0 +1,19 @@
+// Basics 09 — behavior contracts
+//
+//   spanda check examples/basics/09_behavior_contracts.sd
+//   spanda run examples/basics/09_behavior_contracts.sd
+//
+// Next: 10_state_machine.sd
+
+robot ContractRover {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.0 m/s;
+  }
+
+  behavior move() requires lidar.nearest_distance > 0.5 m ensures true {
+    wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+  }
+}

@@ -1,0 +1,25 @@
+// Integration — minimal concurrency
+//
+//   spanda run examples/integration/concurrency_minimal.sd --trace-scheduler
+
+module comm.ping;
+
+export fn tick() -> Int {
+  return 1;
+}
+
+robot ConcurrentRover {
+  actuator wheels: DifferentialDrive;
+
+  behavior run() {
+    let ch = channel();
+    send(ch, 42);
+
+    select {
+      recv(ch) => wheels.stop();
+    };
+
+    spawn tick();
+    wheels.stop();
+  }
+}

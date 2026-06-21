@@ -1,0 +1,37 @@
+// Basics 05 — traits and impl
+//
+//   spanda run examples/basics/05_traits_and_impl.sd
+//
+// Next: 06_serialize_telemetry.sd
+
+struct NavGoal {
+  x: Distance;
+  y: Distance;
+  heading: Angle;
+}
+
+trait PathPlanner {
+  fn plan(goal: NavGoal) -> Path;
+}
+
+robot PlannerRover {
+  actuator wheels: DifferentialDrive;
+
+  agent Navigator {
+    tools [wheels];
+    goal "Plan safe paths";
+    plan { wheels.stop(); }
+  }
+
+  impl PathPlanner for Navigator {
+    fn plan(goal: NavGoal) -> Path {
+      wheels.stop();
+    }
+  }
+
+  behavior run() {
+    let goal = NavGoal { x: 1.0 m, y: 0.0 m, heading: 0.0 rad };
+    let route = Navigator.plan(goal);
+    let _ = route;
+  }
+}

@@ -1,0 +1,29 @@
+// Basics 11 — observe and sensor fusion
+//
+//   spanda run examples/basics/11_observe_and_fusion.sd
+//
+// Next: examples/integration/triggers_minimal.sd
+
+robot FusionRover {
+  sensor camera: Camera on "/camera";
+  sensor lidar: Lidar on "/scan";
+  sensor imu: IMU;
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.0 m/s;
+  }
+
+  observe {
+    camera;
+    lidar;
+    imu;
+  }
+
+  behavior fuse_and_stop() {
+    let fused = fusion.read();
+    let _ = fused.pose;
+    let _ = fused.count;
+    wheels.stop();
+  }
+}

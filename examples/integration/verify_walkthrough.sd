@@ -1,0 +1,37 @@
+// Integration — hardware verify walkthrough
+//
+//   spanda check examples/integration/verify_walkthrough.sd
+//   spanda verify examples/integration/verify_walkthrough.sd --target RoverV1 --json
+//
+// End-to-end package: examples/end_to_end/safe_patrol/
+
+hardware RoverV1 {
+  cpu: CortexA78;
+  memory: 4 GB;
+  sensors [ Lidar, IMU ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 100 Wh; }
+}
+
+robot VerifyRover {
+  sensor lidar: Lidar on "/scan";
+  sensor imu: IMU;
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.5 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  verify {
+    robot.velocity().linear <= 1.5 m/s;
+  }
+
+  behavior patrol() {
+    let scan = lidar.read();
+    let _ = scan;
+    wheels.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+  }
+}
+
+deploy VerifyRover to RoverV1;

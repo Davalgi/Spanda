@@ -1,0 +1,58 @@
+// End-to-end package — safe AI patrol with deploy target
+//
+//   spanda check examples/end_to_end/safe_patrol/src/main.sd
+//   spanda verify examples/end_to_end/safe_patrol/src/main.sd --target RoverV1
+//   spanda run examples/end_to_end/safe_patrol/src/main.sd
+//
+// From package root:
+//   cd examples/end_to_end/safe_patrol && spanda build
+
+module safe_patrol;
+
+hardware RoverV1 {
+  cpu: CortexA78;
+  memory: 4 GB;
+  sensors [ Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 100 Wh; }
+}
+
+robot PatrolBot {
+  sensor camera: Camera on "/camera";
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  ai_model planner: LLM {
+    provider: "mock";
+    model: "patrol-v1";
+    temperature: 0.1;
+  }
+
+  safety {
+    max_speed = 0.6 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  task watchdog every 50ms {
+    let scan = lidar.read();
+    let _ = scan;
+  }
+
+  behavior patrol() {
+    loop every 100ms {
+      let scene = camera.analyze();
+      let proposal = planner.reason(
+        prompt: "Suggest safe forward motion",
+        input: scene
+      );
+      let action = safety.validate(proposal);
+      wheels.execute(action);
+    }
+  }
+
+  verify {
+    robot.velocity().linear <= 0.6 m/s;
+  }
+}
+
+deploy PatrolBot to RoverV1;

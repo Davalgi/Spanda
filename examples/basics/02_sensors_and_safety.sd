@@ -1,0 +1,26 @@
+// Basics 02 — sensors and safety
+//
+//   spanda run examples/basics/02_sensors_and_safety.sd
+//
+// Next: 03_control_flow.sd
+
+robot SafeRover {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.0 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  behavior patrol() {
+    loop every 100ms {
+      let scan = lidar.read();
+      if scan.nearest_distance < 1.0 m {
+        wheels.stop();
+      } else {
+        wheels.drive(linear: 0.4 m/s, angular: 0.0 rad/s);
+      }
+    }
+  }
+}

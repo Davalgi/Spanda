@@ -1,0 +1,25 @@
+// Basics 07 — in-language tests
+//
+//   spanda check examples/basics/07_in_language_tests.sd
+//   spanda test examples/basics/07_in_language_tests.sd
+//
+// Next: 08_async_await.sd
+
+module basics.math;
+
+export fn clamp_speed(speed: Float) -> Float {
+  return speed;
+}
+
+test "clamp accepts in-range speed" {
+  assert(true);
+}
+
+robot TestRover {
+  actuator wheels: DifferentialDrive;
+
+  behavior run() {
+    let _ = clamp_speed(0.5);
+    wheels.stop();
+  }
+}

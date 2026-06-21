@@ -1,0 +1,21 @@
+// Basics 08 — async and await
+//
+//   spanda run examples/basics/08_async_await.sd
+//
+// Next: 09_behavior_contracts.sd
+
+module maps.loader;
+
+export async fn fetch_pose() -> Pose {
+  return pose(x: 0.0 m, y: 0.0 m, theta: 0.0 rad);
+}
+
+robot AsyncRover {
+  actuator wheels: DifferentialDrive;
+
+  behavior localize() {
+    let pose = await fetch_pose();
+    let _ = pose;
+    wheels.stop();
+  }
+}

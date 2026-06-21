@@ -1,0 +1,30 @@
+// Integration — minimal triggers (event handler + periodic task)
+//
+//   spanda run examples/integration/triggers_minimal.sd --trace-triggers
+//
+// Timer, condition, topic, and state triggers: examples/triggers_demo.sd
+
+robot TriggerRover {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.0 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  event ObstacleSeen;
+
+  on ObstacleSeen {
+    wheels.stop();
+  }
+
+  task sense every 50ms {
+    let scan = lidar.read();
+    if scan.nearest_distance < 0.5 m {
+      emit ObstacleSeen;
+    } else {
+      wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+    }
+  }
+}

@@ -1,0 +1,37 @@
+// Basics 04 — Result and Option
+//
+//   spanda check examples/basics/04_result_and_option.sd
+//   spanda run examples/basics/04_result_and_option.sd
+//
+// Next: 05_traits_and_impl.sd
+
+module navigation.outcomes;
+
+enum NavError {
+  Blocked,
+  Timeout
+}
+
+export fn plan_route() -> Result<Path, NavError> {
+  return Err(Blocked);
+}
+
+export fn latest_scan() -> Option<Scan> {
+  return None();
+}
+
+robot OutcomeRover {
+  actuator wheels: DifferentialDrive;
+
+  behavior run() {
+    match plan_route() {
+      Ok => wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+      Err => wheels.stop();
+    };
+
+    match latest_scan() {
+      Some => wheels.stop();
+      None => wheels.stop();
+    };
+  }
+}

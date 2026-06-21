@@ -1,0 +1,23 @@
+// Basics 06 — serialize telemetry
+//
+//   spanda run examples/basics/06_serialize_telemetry.sd
+//
+// Next: 07_in_language_tests.sd
+
+module telemetry.snapshot;
+
+export fn current_pose() -> Pose {
+  return pose(x: 1.0 m, y: 2.0 m, theta: 0.25 rad);
+}
+
+robot TelemetryRover {
+  actuator wheels: DifferentialDrive;
+
+  behavior send_telemetry() {
+    let pose = current_pose();
+    let json = serialize(pose, "json");
+    let restored = deserialize(json, "json");
+    let _ = restored;
+    wheels.stop();
+  }
+}

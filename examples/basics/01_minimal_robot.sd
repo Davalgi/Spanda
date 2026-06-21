@@ -1,0 +1,16 @@
+// Basics 01 — minimal robot
+//
+//   spanda check examples/basics/01_minimal_robot.sd
+//   spanda run examples/basics/01_minimal_robot.sd
+//
+// Next: 02_sensors_and_safety.sd
+
+module basics.minimal;
+
+robot TutorialBot {
+  actuator wheels: DifferentialDrive;
+
+  behavior greet() {
+    wheels.stop();
+  }
+}

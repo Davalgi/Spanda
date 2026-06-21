@@ -1,0 +1,39 @@
+// Basics 03 — control flow
+//
+//   spanda run examples/basics/03_control_flow.sd
+//
+// Next: 04_result_and_option.sd
+
+enum DriveMode {
+  Idle,
+  Cruise,
+  Avoid
+}
+
+robot FlowRover {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 1.0 m/s;
+    stop_if lidar.nearest_distance < 0.4 m;
+  }
+
+  behavior navigate() {
+    let mode = Avoid;
+
+    loop every 50ms {
+      let scan = lidar.read();
+
+      match mode {
+        Idle => wheels.stop();
+        Cruise => wheels.drive(linear: 0.5 m/s, angular: 0.0 rad/s);
+        Avoid => wheels.drive(linear: 0.0 m/s, angular: 0.3 rad/s);
+      };
+
+      if scan.nearest_distance > 2.0 m {
+        wheels.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+      }
+    }
+  }
+}

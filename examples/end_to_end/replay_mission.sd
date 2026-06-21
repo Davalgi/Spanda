@@ -1,0 +1,37 @@
+// End-to-end — record and replay a mission trace
+//
+// Record:
+//   spanda sim examples/end_to_end/replay_mission.sd --record
+//
+// Inspect / verify / playback:
+//   spanda replay replay_mission.trace
+//   spanda replay replay_mission.trace --deterministic
+//   spanda replay replay_mission.trace --playback --from T+00:01
+//
+// Golden traces may be committed under examples/ (see docs/replay.md).
+
+robot ReplayPatrol {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  twin Shadow {
+    replay true;
+    mirror pose;
+  }
+
+  safety {
+    max_speed = 0.8 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  task sense every 20ms {
+    let scan = lidar.read();
+    let _ = scan;
+  }
+
+  behavior patrol() {
+    loop every 50ms {
+      wheels.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+    }
+  }
+}

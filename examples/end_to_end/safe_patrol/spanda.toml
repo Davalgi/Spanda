@@ -1,0 +1,14 @@
+[package]
+name = "safe_patrol"
+version = "0.1.0"
+description = "End-to-end patrol package with AI safety gate and hardware deploy"
+license = "Apache-2.0"
+
+[hardware]
+targets = ["RoverV1"]
+
+[capabilities]
+required = ["lidar.read", "motion.propose"]
+
+[safety]
+level = "experimental"

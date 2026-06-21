@@ -1,0 +1,58 @@
+# Basics → end-to-end examples
+
+Progressive Spanda examples from a minimal robot to full deployment workflows.
+
+## Tier 1 — Language basics (`basics/`)
+
+| # | File | Topics |
+|---|------|--------|
+| 01 | [01_minimal_robot.sd](./01_minimal_robot.sd) | `robot`, `actuator`, `behavior` |
+| 02 | [02_sensors_and_safety.sd](./02_sensors_and_safety.sd) | Sensors, `safety { }`, `stop_if` |
+| 03 | [03_control_flow.sd](./03_control_flow.sd) | `if`/`else`, `match`, `loop every` |
+| 04 | [04_result_and_option.sd](./04_result_and_option.sd) | `Result<T,E>`, `Option<T>`, `match Ok/Err/Some/None` |
+| 05 | [05_traits_and_impl.sd](./05_traits_and_impl.sd) | `trait`, `agent`, `impl Trait for Agent` |
+| 06 | [06_serialize_telemetry.sd](./06_serialize_telemetry.sd) | `serialize` / `deserialize` for IPC |
+| 07 | [07_in_language_tests.sd](./07_in_language_tests.sd) | `test "..." { assert(...) }` — run with `spanda test` |
+| 08 | [08_async_await.sd](./08_async_await.sd) | `async fn`, `await` in behaviors |
+| 09 | [09_behavior_contracts.sd](./09_behavior_contracts.sd) | `requires` / `ensures` on behaviors |
+| 10 | [10_state_machine.sd](./10_state_machine.sd) | `state_machine`, `enter StateName` |
+| 11 | [11_observe_and_fusion.sd](./11_observe_and_fusion.sd) | `observe { }`, `fusion.read()` |
+
+Try each file:
+
+```bash
+spanda check examples/basics/01_minimal_robot.sd
+spanda run examples/basics/02_sensors_and_safety.sd
+spanda test examples/basics/07_in_language_tests.sd
+```
+
+## Tier 2 — Integration slices (`integration/`)
+
+| File | Topics |
+|------|--------|
+| [triggers_minimal.sd](../integration/triggers_minimal.sd) | Event triggers + periodic task |
+| [concurrency_minimal.sd](../integration/concurrency_minimal.sd) | `channel`, `spawn`, `select` |
+| [verify_walkthrough.sd](../integration/verify_walkthrough.sd) | `hardware`, `deploy`, `verify { }` |
+
+## Tier 3 — End-to-end scenarios (`end_to_end/`)
+
+| Path | Topics |
+|------|--------|
+| [safe_patrol/](./end_to_end/safe_patrol/) | Full package: AI safety gate, hardware profile, deploy |
+| [replay_mission.sd](./end_to_end/replay_mission.sd) | Record → replay workflow with twin + trace |
+
+## Existing topic directories
+
+| Directory | Focus |
+|-----------|--------|
+| `showcase/` | Curated v0.1.0-alpha demos |
+| `realtime/` | Deadlines, watchdogs, degraded modes |
+| `regex/` | Pattern triggers and validation |
+| `communication/` | Topics, services, fleet |
+| `hardware/` | Deploy and compatibility |
+| `modules/` | Cross-file imports |
+| `types/` | Type-system snippets |
+| `std/` | Standard library samples |
+| `packages/` | Package manifest layouts |
+
+Next step after basics: [docs/getting-started.md](../../docs/getting-started.md) and [showcase/killer_demo.sd](../showcase/killer_demo.sd).

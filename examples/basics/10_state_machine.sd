@@ -1,0 +1,23 @@
+// Basics 10 — state machine runtime
+//
+//   spanda run examples/basics/10_state_machine.sd
+//
+// Next: 11_observe_and_fusion.sd
+
+robot StateRover {
+  actuator wheels: DifferentialDrive;
+
+  state_machine Delivery {
+    state Idle;
+    state Loading;
+    state Navigate;
+    transition Idle -> Loading;
+    transition Loading -> Navigate;
+  }
+
+  behavior start_mission() {
+    enter Loading;
+    enter Navigate;
+    wheels.stop();
+  }
+}
