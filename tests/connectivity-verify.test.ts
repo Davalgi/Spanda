@@ -62,6 +62,23 @@ deploy R to Tiny;
     expect(result.items.some((i) => i.category === "sensors" && i.severity === "pass")).toBe(true);
   });
 
+  it("warns when deploy targets lack certification metadata", () => {
+    const source = readFileSync(
+      join(import.meta.dirname, "..", "examples/robotics/ota_deployment.sd"),
+      "utf8",
+    );
+    const program = parse(tokenize(source));
+    const result = verifyHardwareProgram(program);
+    expect(
+      result.items.some(
+        (i) =>
+          i.category === "certify" &&
+          i.severity === "warning" &&
+          i.message.includes("without certification metadata"),
+      ),
+    ).toBe(true);
+  });
+
   it("verifies AI models and adapters in full_compat", () => {
     const source = readFileSync(
       join(import.meta.dirname, "..", "examples/hardware/full_compat.sd"),

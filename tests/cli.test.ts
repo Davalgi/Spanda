@@ -32,4 +32,24 @@ describe("TypeScript CLI", () => {
     expect(status).toBe(1);
     expect(stderr + runCli(["not-a-command"]).stdout).toContain("Unknown command");
   });
+
+  it("plans OTA deployment from robotics example", () => {
+    const { status, stdout } = runCli([
+      "deploy",
+      "plan",
+      "examples/robotics/ota_deployment.sd",
+    ]);
+    expect(status).toBe(0);
+    expect(stdout).toContain("RoverProgram -> JetsonOrin");
+  });
+
+  it("orchestrates fleet missions from robotics example", () => {
+    const { status, stdout } = runCli([
+      "fleet",
+      "orchestrate",
+      "examples/robotics/fleet_management.sd",
+    ]);
+    expect(status).toBe(0);
+    expect(stdout).toContain("fleet Warehouse");
+  });
 });

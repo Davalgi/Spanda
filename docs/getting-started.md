@@ -138,6 +138,30 @@ hardware RoverV1 {
 deploy MyRover to RoverV1;
 ```
 
+Optional: record certification intent for verify/CI (metadata only — not a runtime safety proof):
+
+```spanda
+certify ISO13849 {
+  level PLd;
+}
+```
+
+### OTA deployment planning
+
+Plan and simulate rollouts from `deploy` blocks in your program:
+
+```bash
+spanda deploy plan examples/robotics/ota_deployment.sd
+spanda deploy rollout examples/robotics/ota_deployment.sd --strategy canary --canary-percent 25 --dry-run
+spanda deploy rollout examples/robotics/ota_deployment.sd --version 1.2.0
+spanda deploy rollback examples/robotics/ota_deployment.sd
+spanda deploy status
+```
+
+Rollout state is stored in `.spanda/deploy-state.json` (override with `SPANDA_DEPLOY_STATE`).
+
+See [robotics-platform.md](./robotics-platform.md) for missions, fleets, safety zones, and Nav2 integration.
+
 ### Run tests
 
 ```bash
@@ -221,6 +245,7 @@ Reactive programs use unified triggers — see [triggers.md](./triggers.md):
 spanda run examples/triggers_demo.sd --trace-triggers
 spanda run examples/concurrency.sd --trace-scheduler --trace-tasks
 spanda fleet run examples/communication/multi_robot_fleet.sd
+spanda fleet orchestrate examples/robotics/fleet_management.sd
 ```
 
 ### Real-time, reliability, and regex
