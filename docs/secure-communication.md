@@ -17,7 +17,21 @@ Encryption is optional for internal simulation and development. Deployments cros
 
 Publish-time **trusted-source enforcement** runs when `trusted_sources` is set on a secure topic. Inbound **receive** and transport poll paths verify trusted sources when publisher identity is available on the message envelope.
 
-Mock TLS frames protect in-process transport simulation (`RoutingCommBus` encrypts/decrypts adapter payloads when bus encryption is enabled). Production deployments should wire real TLS, DDS-Security, or MQTT TLS adapters.
+Broker URLs using TLS schemes (`mqtts://`, `wss://`, `dds+sec://`) automatically upgrade encryption to `required`. Adapters validate that a negotiated TLS session exists before publishing. When a certificate path is configured and the PEM file exists on disk, rustls parses it during session negotiation.
+
+Supported transports: `local`, `ros2`, `dds`, `mqtt`, `websocket`, `ble`, `wifi`, and `cellular`. Live broker integrations use the same wire frame and session material derived from configured cert/key secrets.
+
+| Transport | Rust (optional) | TypeScript (optional) |
+|-----------|-----------------|------------------------|
+| MQTT | `--features live-mqtt` + `SPANDA_LIVE_MQTT=1` | `SPANDA_LIVE_MQTT=1` (uses `mqtt` npm client) |
+| WebSocket | `--features live-websocket` + `SPANDA_LIVE_WEBSOCKET=1` | `SPANDA_LIVE_WEBSOCKET=1` (uses `ws`) |
+| DDS | `--features live-dds` + `SPANDA_LIVE_DDS=1` | `SPANDA_LIVE_DDS=1` (UDP multicast) |
+
+Build all live adapters at once with `--features live-transport`.
+
+### mTLS handshake (optional)
+
+When mutual authentication is configured and cert/key PEM files exist on disk, the runtime can perform a real TLS handshake against the broker URL (Rust: rustls; TypeScript: Node `tls` when `SPANDA_MTLS_HANDSHAKE=1`). Session keys for wire encryption are derived from the negotiated peer certificate hash. Set `SPANDA_MTLS_REQUIRED=1` to fail configuration when the handshake cannot complete (instead of falling back to cert-derived AES-GCM material).
 
 ## Robot-wide policy
 
