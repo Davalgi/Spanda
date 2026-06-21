@@ -844,7 +844,7 @@ fn fleet_dispatch(args: &[String]) {
         return;
     }
     if args.first().map(String::as_str) == Some("mesh") {
-        deploy_ota::fleet_mesh_dispatch(args);
+        deploy_ota::fleet_mesh_dispatch(&args[1..]);
         return;
     }
     if args.first().map(String::as_str) != Some("run") {

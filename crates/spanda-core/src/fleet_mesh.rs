@@ -42,6 +42,12 @@ pub struct FleetMeshState {
     pub token: Option<String>,
 }
 
+#[derive(Clone)]
+enum MeshRegistryBacking {
+    Path(Arc<PathBuf>),
+    Memory(Arc<FleetAgentRegistry>),
+}
+
 fn unauthorized(request: &HttpRequest, state: &FleetMeshState) -> bool {
     match (&state.token, &request.authorization) {
         (Some(expected), Some(provided)) => expected != provided,
@@ -50,9 +56,16 @@ fn unauthorized(request: &HttpRequest, state: &FleetMeshState) -> bool {
     }
 }
 
+fn load_registry(backing: &MeshRegistryBacking) -> FleetAgentRegistry {
+    match backing {
+        MeshRegistryBacking::Path(path) => load_fleet_agent_registry(path),
+        MeshRegistryBacking::Memory(registry) => (**registry).clone(),
+    }
+}
+
 pub fn handle_fleet_mesh_request(
     state: &mut FleetMeshState,
-    registry: &FleetAgentRegistry,
+    registry_backing: &MeshRegistryBacking,
     request: HttpRequest,
 ) -> HttpResponse {
     // Route mesh coordinator relay requests to registered fleet agents.
@@ -68,17 +81,20 @@ pub fn handle_fleet_mesh_request(
             status: 200,
             body: r#"{"ok":true,"agent":"spanda-fleet-mesh","version":"0.1.0"}"#.into(),
         },
-        ("GET", "/v1/status") => HttpResponse {
-            status: 200,
-            body: serde_json::to_string(&serde_json::json!({
-                "ok": true,
-                "agents": registry.agents.len(),
-                "relayed_total": state.relayed_total,
-                "failed_total": state.failed_total,
-                "healthy": true,
-            }))
-            .unwrap_or_else(|_| "{}".into()),
-        },
+        ("GET", "/v1/status") => {
+            let registry = load_registry(registry_backing);
+            HttpResponse {
+                status: 200,
+                body: serde_json::to_string(&serde_json::json!({
+                    "ok": true,
+                    "agents": registry.agents.len(),
+                    "relayed_total": state.relayed_total,
+                    "failed_total": state.failed_total,
+                    "healthy": true,
+                }))
+                .unwrap_or_else(|_| "{}".into()),
+            }
+        }
         ("POST", "/v1/mesh/relay") => {
             let Ok(payload) = serde_json::from_str::<MeshRelayRequest>(&request.body) else {
                 return HttpResponse {
@@ -86,12 +102,13 @@ pub fn handle_fleet_mesh_request(
                     body: r#"{"ok":false,"error":"invalid mesh relay payload"}"#.into(),
                 };
             };
-            let (relayed, failed) = relay_peer_deliveries(&payload.deliveries, registry);
+            let registry = load_registry(registry_backing);
+            let (relayed, failed) = relay_peer_deliveries(&payload.deliveries, &registry);
             state.relayed_total += relayed;
             state.failed_total += failed;
             let ok = failed == 0;
             HttpResponse {
-                status: if ok { 200 } else { 502 },
+                status: 200,
                 body: serde_json::to_string(&MeshRelayResponse {
                     ok,
                     relayed,
@@ -114,16 +131,16 @@ pub fn handle_fleet_mesh_request(
 
 fn handle_connection(
     state: Arc<Mutex<FleetMeshState>>,
-    registry: Arc<FleetAgentRegistry>,
+    registry_backing: MeshRegistryBacking,
     mut stream: TcpStream,
     tls: Option<Arc<rustls::ServerConfig>>,
 ) {
     if let Some(server_config) = tls {
         let shared = Arc::clone(&state);
-        let reg = Arc::clone(&registry);
+        let backing = registry_backing.clone();
         let _ = serve_tls_connection(&server_config, stream, move |request| {
             let mut locked = shared.lock().expect("fleet mesh state lock");
-            handle_fleet_mesh_request(&mut locked, &reg, request)
+            handle_fleet_mesh_request(&mut locked, &backing, request)
         });
         return;
     }
@@ -145,7 +162,7 @@ fn handle_connection(
     };
     let response = {
         let mut locked = state.lock().expect("fleet mesh state lock");
-        handle_fleet_mesh_request(&mut locked, &registry, request)
+        handle_fleet_mesh_request(&mut locked, &registry_backing, request)
     };
     let _ = write_plain_response(&mut stream, &response);
 }
@@ -164,7 +181,7 @@ pub fn run_fleet_mesh_coordinator(
     };
     let listener = TcpListener::bind(bind).map_err(|e| format!("bind {bind} failed: {e}"))?;
     let shared_state = Arc::new(Mutex::new(state));
-    let shared_registry = Arc::new(registry);
+    let registry_backing = MeshRegistryBacking::Path(Arc::new(registry_path.to_path_buf()));
     let server_config = tls
         .as_ref()
         .map(crate::deploy_http::build_deploy_server_config)
@@ -172,14 +189,16 @@ pub fn run_fleet_mesh_coordinator(
     let scheme = if server_config.is_some() { "https" } else { "http" };
     eprintln!(
         "Spanda fleet mesh listening on {scheme}://{bind} ({} agents)",
-        shared_registry.agents.len()
+        registry.agents.len()
     );
     for connection in listener.incoming() {
         let Ok(stream) = connection else { continue };
-        let state_clone = Arc::clone(&shared_state);
-        let registry_clone = Arc::clone(&shared_registry);
-        let tls_clone = server_config.clone();
-        thread::spawn(move || handle_connection(state_clone, registry_clone, stream, tls_clone));
+        handle_connection(
+            Arc::clone(&shared_state),
+            registry_backing.clone(),
+            stream,
+            server_config.clone(),
+        );
     }
     Ok(())
 }
@@ -219,12 +238,13 @@ pub fn spawn_test_fleet_mesh(
     let port = listener.local_addr().map_err(|e| e.to_string())?.port();
     let shared_registry = Arc::new(registry.clone());
     let shared_state = Arc::new(Mutex::new(FleetMeshState::default()));
+    let registry_backing = MeshRegistryBacking::Memory(shared_registry);
     let handle = thread::spawn(move || {
         for connection in listener.incoming() {
             let Ok(stream) = connection else { continue };
             handle_connection(
                 Arc::clone(&shared_state),
-                Arc::clone(&shared_registry),
+                registry_backing.clone(),
                 stream,
                 None,
             );

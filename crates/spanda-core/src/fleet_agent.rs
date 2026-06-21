@@ -89,8 +89,9 @@ pub fn handle_fleet_agent_request(state: &mut FleetAgentState, request: HttpRequ
                 && !state.robot_name.is_empty()
                 && payload.to_robot != state.robot_name
             {
-                let registry =
-                    crate::fleet_remote::load_fleet_agent_registry(&crate::fleet_remote::default_fleet_agents_path());
+                let registry = crate::fleet_remote::load_fleet_agent_registry(
+                    &crate::fleet_mesh::mesh_registry_path(),
+                );
                 if let Some(entry) =
                     crate::fleet_remote::lookup_fleet_agent(&registry, &payload.to_robot)
                 {
