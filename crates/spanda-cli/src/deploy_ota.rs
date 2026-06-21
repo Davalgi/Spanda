@@ -7,8 +7,9 @@ use spanda_core::{
     execute_remote_rollback, fleet_agent_health, load_agent_registry, load_deploy_state,
     load_fleet_agent_registry, mesh_registry_path, orchestrate_fleets, orchestrate_fleets_mesh,
     orchestrate_fleets_remote, plan_rollout, register_agent, register_fleet_agent, rollback_targets,
-    run_deploy_agent_server, run_fleet_agent_server, run_fleet_mesh_coordinator, save_agent_registry, save_deploy_state, save_fleet_agent_registry,
-    sign_deploy_bundle, DeployAgentTls, DeployState, RolloutOptions, RolloutStrategy,
+    run_deploy_agent_server, run_fleet_agent_server, run_fleet_mesh_coordinator, save_agent_registry,
+    save_deploy_state, save_fleet_agent_registry, sign_deploy_bundle, validate_rollout_certification,
+    DeployAgentTls, DeployState, RolloutOptions, RolloutStrategy,
 };
 use std::env;
 use std::fs;
@@ -72,7 +73,7 @@ pub fn deploy_dispatch(args: &[String]) {
 
 pub fn deploy_usage_lines() -> &'static str {
     "           spanda deploy plan [--json] [--version <ver>] [--sign-key <material>] [--bundle-out <file>] <file.sd>\n\
-     spanda deploy rollout [--json] [--remote] [--sign-key <material>] [--strategy all|canary|staged] [--canary-percent N] [--version <ver>] [--dry-run] <file.sd>\n\
+     spanda deploy rollout [--json] [--remote] [--require-certify] [--sign-key <material>] [--strategy all|canary|staged] [--canary-percent N] [--version <ver>] [--dry-run] <file.sd>\n\
      spanda deploy rollback [--json] [--remote] <file.sd>\n\
      spanda deploy status [--json]\n\
      spanda deploy agent start [--bind <addr>] [--target <Robot@Hardware>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>] [--require-hash] [--require-signature] [--trust-key <material>]\n\
@@ -156,6 +157,16 @@ fn cmd_plan(args: &[String]) {
         if let Some(signature) = &bundle.signature {
             println!("  artifact_signature: {signature}");
         }
+        if let Some(proof) = &plan.certification_proof {
+            let status = if proof.passed_strict {
+                "passed (strict)"
+            } else if proof.passed {
+                "passed (relaxed)"
+            } else {
+                "failed"
+            };
+            println!("  certification_proof: {status} — {}", proof.summary);
+        }
     }
 }
 
@@ -167,6 +178,7 @@ fn cmd_rollout(args: &[String]) {
     let mut strategy = RolloutStrategy::All;
     let mut canary_percent = 10u8;
     let mut sign_key = None;
+    let mut require_certify = false;
     let mut file: Option<String> = None;
     let mut i = 0;
     while i < args.len() {
@@ -174,6 +186,7 @@ fn cmd_rollout(args: &[String]) {
             "--json" => json = true,
             "--dry-run" => dry_run = true,
             "--remote" => remote = true,
+            "--require-certify" => require_certify = true,
             "--version" if i + 1 < args.len() => {
                 version = args[i + 1].clone();
                 i += 1;
@@ -225,8 +238,13 @@ fn cmd_rollout(args: &[String]) {
         canary_percent,
         version: version.clone(),
         dry_run,
+        require_certify,
         ..Default::default()
     };
+    if let Err(err) = validate_rollout_certification(&plan, &options) {
+        eprintln!("{err}");
+        process::exit(1);
+    }
     let result = if remote {
         let registry = load_agent_registry(&agents_path());
         execute_remote_rollout(&plan, &options, &registry, &bundle)

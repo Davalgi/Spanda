@@ -21,6 +21,15 @@ pub struct DeployTargetEntry {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CertificationProofSummary {
+    pub passed: bool,
+    pub passed_strict: bool,
+    pub summary: String,
+    pub error_count: u32,
+    pub warning_count: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CertificationProofReport {
     pub program: String,
     pub program_hash: Option<String>,
@@ -124,5 +133,51 @@ pub fn build_certification_proof(
         deploy_targets,
         checklist,
         summary,
+    }
+}
+
+/// Build a compact certification summary for deploy planning and rollout gates.
+pub fn build_certification_proof_summary(
+    program: &Program,
+    program_path: &str,
+) -> CertificationProofSummary {
+    // Derive non-strict and strict proof outcomes for deploy plan reporting.
+    //
+    // Parameters:
+    // - `program` — parsed Spanda program
+    // - `program_path` — source path for proof reporting
+    //
+    // Returns:
+    // Compact summary with both relaxed and strict pass flags.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let summary = build_certification_proof_summary(&program, "certified.sd");
+
+    let proof = build_certification_proof(program, program_path, false);
+    let strict = build_certification_proof(program, program_path, true);
+    let error_count = strict
+        .checklist
+        .iter()
+        .filter(|item| item.severity == CompatSeverity::Error)
+        .count() as u32;
+    let warning_count = strict
+        .checklist
+        .iter()
+        .filter(|item| item.severity == CompatSeverity::Warning)
+        .count() as u32;
+    let summary = if strict.passed {
+        proof.summary
+    } else {
+        strict.summary
+    };
+    CertificationProofSummary {
+        passed: proof.passed,
+        passed_strict: strict.passed,
+        summary,
+        error_count,
+        warning_count,
     }
 }

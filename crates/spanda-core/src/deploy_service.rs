@@ -4,6 +4,7 @@
 //! `deploy Robot to Hardware` bindings. This module is the in-process deploy runtime service.
 
 use crate::ast::Program;
+use crate::certify_prover::{build_certification_proof_summary, CertificationProofSummary};
 use crate::foundations::DeployDecl;
 use crate::robotics_platform::CertifyDecl;
 use serde::{Deserialize, Serialize};
@@ -36,6 +37,8 @@ pub struct DeployPlan {
     pub program_hash: Option<String>,
     pub assignments: Vec<DeployAssignment>,
     pub certifications: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certification_proof: Option<CertificationProofSummary>,
 }
 
 /// Status of one rollout step on a target.
@@ -85,6 +88,8 @@ pub struct RolloutOptions {
     pub staged_phases: Vec<u8>,
     pub version: String,
     pub dry_run: bool,
+    #[serde(default)]
+    pub require_certify: bool,
 }
 
 impl Default for RolloutOptions {
@@ -95,8 +100,44 @@ impl Default for RolloutOptions {
             staged_phases: vec![10, 50, 100],
             version: "1.0.0".into(),
             dry_run: false,
+            require_certify: false,
         }
     }
+}
+
+/// Block rollout when `--require-certify` is set and strict proof failed.
+pub fn validate_rollout_certification(
+    plan: &DeployPlan,
+    options: &RolloutOptions,
+) -> Result<(), String> {
+    // Enforce strict certification proof before OTA rollout proceeds.
+    //
+    // Parameters:
+    // - `plan` — deployment plan with embedded proof summary
+    // - `options` — rollout options including `require_certify`
+    //
+    // Returns:
+    // Ok when certification is not required or strict proof passed.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // validate_rollout_certification(&plan, &options)?;
+
+    if !options.require_certify {
+        return Ok(());
+    }
+    let Some(proof) = &plan.certification_proof else {
+        return Err("Deploy plan missing certification proof summary".into());
+    };
+    if !proof.passed_strict {
+        return Err(format!(
+            "Deploy blocked — strict certification proof failed: {}",
+            proof.summary
+        ));
+    }
+    Ok(())
 }
 
 fn assignment_key(robot: &str, hardware: &str) -> String {
@@ -193,12 +234,22 @@ pub fn build_deploy_plan(program: &Program, program_path: &str, version: &str) -
         program_hash: hash_program_artifact(program_path),
         assignments,
         certifications: certs,
+        certification_proof: Some(build_certification_proof_summary(program, program_path)),
     }
 }
 
 /// Plan which targets receive an update under the chosen rollout strategy.
 pub fn plan_rollout(plan: &DeployPlan, options: &RolloutOptions) -> RolloutResult {
     // Select rollout targets without mutating persistent deploy state.
+    if validate_rollout_certification(plan, options).is_err() {
+        return RolloutResult {
+            strategy: options.strategy,
+            version: options.version.clone(),
+            dry_run: options.dry_run,
+            steps: vec![],
+            success: false,
+        };
+    }
     let total = plan.assignments.len();
     let mut steps = Vec::new();
 

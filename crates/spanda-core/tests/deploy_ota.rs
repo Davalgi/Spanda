@@ -1,8 +1,8 @@
 //! OTA deploy service integration tests.
 
 use spanda_core::{
-    apply_rollout, build_deploy_plan, plan_rollout, RolloutOptions, RolloutStrategy, check,
-    compile,
+    apply_rollout, build_deploy_plan, plan_rollout, validate_rollout_certification, RolloutOptions,
+    RolloutStrategy, check, compile,
 };
 
 #[test]
@@ -50,4 +50,34 @@ fn ota_apply_rollout_updates_state() {
     );
     apply_rollout(&mut state, &rollout);
     assert!(!state.current_version.is_empty());
+}
+
+#[test]
+fn require_certify_blocks_uncertified_rollout() {
+    let source = include_str!("../../../examples/robotics/ota_deployment.sd");
+    let program = compile(source).expect("compile").program;
+    let plan = build_deploy_plan(&program, "ota_deployment.sd", "1.0.0");
+    let options = RolloutOptions {
+        require_certify: true,
+        ..Default::default()
+    };
+    assert!(validate_rollout_certification(&plan, &options).is_err());
+    let result = plan_rollout(&plan, &options);
+    assert!(!result.success);
+    assert!(result.steps.is_empty());
+}
+
+#[test]
+fn require_certify_allows_certified_program() {
+    let source = include_str!("../../../examples/robotics/certified_deployment.sd");
+    let program = compile(source).expect("compile").program;
+    let plan = build_deploy_plan(&program, "certified_deployment.sd", "1.0.0");
+    let options = RolloutOptions {
+        require_certify: true,
+        ..Default::default()
+    };
+    validate_rollout_certification(&plan, &options).expect("certified program should pass");
+    let result = plan_rollout(&plan, &options);
+    assert!(result.success);
+    assert!(plan.certification_proof.as_ref().unwrap().passed_strict);
 }

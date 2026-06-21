@@ -86,9 +86,9 @@ pub use codegen::{generate as codegen, wasm_deploy_manifest, CodegenTarget};
 pub use debug::{DebugCommand, DebugController, DebugOptions, DebugPause, DebugSession};
 pub use deploy_service::{
     apply_rollout, build_deploy_plan, default_state_path, deploy_target_key, hash_program_artifact,
-    load_deploy_state, plan_rollout, rollback_targets, save_deploy_state, DeployAssignment,
-    DeployPlan, DeployState, RolloutOptions, RolloutResult, RolloutStep, RolloutStepStatus,
-    RolloutStrategy,
+    load_deploy_state, plan_rollout, rollback_targets, save_deploy_state, validate_rollout_certification,
+    DeployAssignment, DeployPlan, DeployState, RolloutOptions, RolloutResult, RolloutStep,
+    RolloutStepStatus, RolloutStrategy,
 };
 pub use deploy_bundle::{
     build_deploy_bundle, bundle_canonical_json, sign_deploy_bundle, verify_deploy_bundle,
@@ -125,7 +125,8 @@ pub use fleet_mesh::{
 };
 pub use certify_verify::verify_certification_proof;
 pub use certify_prover::{
-    build_certification_proof, CertificationEntry, CertificationProofReport, DeployTargetEntry,
+    build_certification_proof, build_certification_proof_summary, CertificationEntry,
+    CertificationProofReport, CertificationProofSummary, DeployTargetEntry,
 };
 pub use certify_runtime::{
     certification_runtime_enabled_from_env, enforce_certification_runtime,
