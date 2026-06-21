@@ -1,0 +1,43 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { tokenize } from "../src/lexer/index.js";
+import { parse } from "../src/parser/index.js";
+import { run } from "../src/compile.js";
+import { createDefaultSimulator } from "../src/simulator/index.js";
+
+describe("connectivity runtime", () => {
+  it("failovers link and transport on network outage", () => {
+    const source = readFileSync(
+      join(import.meta.dirname, "..", "examples", "connectivity", "wifi_lte_failover.sd"),
+      "utf8",
+    );
+    const augmented = `${source}\nsimulate_compatibility { fault NetworkOutage; }\n`;
+    const program = parse(tokenize(augmented));
+    const logs: string[] = [];
+    run(program, {
+      backend: createDefaultSimulator(),
+      onLog: (msg) => logs.push(msg),
+    });
+    expect(logs.some((l) => l.includes("emit network.disconnected"))).toBe(true);
+    expect(logs.some((l) => l.includes("failover wifi -> cellular"))).toBe(true);
+  });
+
+  it("dispatches gps.lost when GPSLost fault is simulated", () => {
+    const program = parse(
+      tokenize(`
+simulate_compatibility { fault GPSLost; }
+robot R {
+  on gps.lost { }
+  behavior idle() { }
+}
+`),
+    );
+    const logs: string[] = [];
+    run(program, {
+      backend: createDefaultSimulator(),
+      onLog: (msg) => logs.push(msg),
+    });
+    expect(logs.some((l) => l.includes("emit gps.lost"))).toBe(true);
+  });
+});
