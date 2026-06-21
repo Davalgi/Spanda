@@ -1,25 +1,35 @@
 # Spanda Package Registry
 
-Spanda's package registry is designed for community frameworks, drivers, adapters, and libraries. A **local stub registry** ships with the toolchain for development. Set **`SPANDA_REGISTRY_URL`** to a base URL serving `index.json` to merge remote entries into search and dependency resolution.
+Spanda's package registry ships a **hosted index** in this repository (`registry/index.json`). The CLI defaults to:
+
+`https://raw.githubusercontent.com/Davalgi/Spanda/main/registry`
+
+Override with **`SPANDA_REGISTRY_URL`** (supports `https://` and `file://` bases). Entries merge with the local stub registry for search and `spanda install`.
 
 ## Searching packages
 
 ```bash
 spanda registry search ros2
-spanda registry search navigation
-spanda registry search lidar
+spanda registry search openai
 ```
 
-## Registry packages (local stub)
+## Curated packages (hosted)
 
 | Package | Category | Import paths |
 |---------|----------|--------------|
+| `spanda-openai` | ai | `ai.openai` |
 | `spanda-ros2` | ros2 | `robotics.ros2` |
+
+Tarballs live at `registry/packages/<name>/<version>` in the repo. Rebuild with `./scripts/build-registry.sh`.
+
+## Local stub packages
+
+| Package | Category | Import paths |
+|---------|----------|--------------|
 | `spanda-vision` | vision | `vision.core` |
 | `spanda-navigation` | navigation | `navigation.path_planning` |
 | `spanda-mqtt` | mqtt | `communication.mqtt` |
 | `spanda-lidar-rplidar` | sensors | `sensors.lidar.rplidar` |
-| `spanda-openai` | ai | `ai.openai` |
 
 ## Planned framework packages
 
@@ -45,6 +55,7 @@ From registry (local stub):
 
 ```bash
 spanda add spanda-ros2 --version 0.1.0
+spanda add spanda-openai --version 0.1.0
 spanda install
 ```
 
@@ -66,7 +77,7 @@ Resolution order:
 
 1. **Local path** — reads `spanda.toml` from the path, locks exact version
 2. **Git** — locks URL + branch/tag/rev (no fetch in foundation; metadata only)
-3. **Registry** — selects highest version matching semver constraint from local stub
+3. Registry — selects highest version from hosted index (default) or local stub
 
 Run `spanda install` after changing dependencies to regenerate `spanda.lock`.
 
@@ -76,7 +87,7 @@ Run `spanda install` after changing dependencies to regenerate `spanda.lock`.
 spanda publish
 ```
 
-Validates manifest, capabilities, hardware requirements, safety level, and license before marking the package publish-ready. A public upload endpoint is not yet available.
+Validates manifest, capabilities, hardware requirements, safety level, and license before marking the package publish-ready. Maintainers run `./scripts/build-registry.sh` and commit tarballs under `registry/packages/`.
 
 ## Version constraints
 

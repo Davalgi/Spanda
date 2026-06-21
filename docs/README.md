@@ -28,6 +28,12 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | [vision.md](./vision.md) | Long-term vision and positioning |
 | [product-strategy.md](./product-strategy.md) | **Product strategy, priorities, v0.5 beta scope, killer demo** |
 | [killer-demo.md](./killer-demo.md) | **Flagship demo: safety-typed AI, verify, and sim (5 min)** |
+| [adoption-path.md](./adoption-path.md) | **One-sprint adoption: wrap Python + ROS2, CI, one extern call** |
+| [ci-verify.md](./ci-verify.md) | **`spanda verify` in GitHub Actions and GitLab CI (`--json`)** |
+| [ros2-golden-path.md](./ros2-golden-path.md) | **ROS2 interop golden path (rclpy bridge, `/cmd_vel` / `/scan`)** |
+| [live-ai-provider.md](./live-ai-provider.md) | **Live OpenAI path via Python bridge** |
+| [debugging.md](./debugging.md) | **Debug `task every` loops in VS Code (DAP)** |
+| [registry.md](./registry.md) | **Hosted package registry and `spanda install`** |
 | [feature-status.md](./feature-status.md) | **v0.1.0-alpha support matrix** |
 | [release-announcement-v0.1.0-alpha.md](./release-announcement-v0.1.0-alpha.md) | Announcement copy for launch channels |
 | [hardware-compatibility.md](./hardware-compatibility.md) | **Hardware profiles, deploy targets, and compile-time verification** |

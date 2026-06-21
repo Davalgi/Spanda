@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **VS Code marketplace readiness:** bundled LSP in extension VSIX, deploy-target autocomplete, verify picker command, Spanda debug type (`editor/vscode/`)
+- **Hosted package registry:** `registry/index.json` + `spanda-openai` / `spanda-ros2` tarballs; default `SPANDA_REGISTRY_URL`
+- **Live AI provider:** OpenAI via Python bridge — `docs/live-ai-provider.md`, `examples/ffi_openai_live.sd`
+- **Twin replay JSON export:** `spanda twin export` and `--twin-export` on run/sim
+- **Web playground:** killer demo preset as default (`packages/web/`)
+- **Debug workflow:** `docs/debugging.md` — step through `task every` in VS Code
+- **Adoption docs:** `docs/adoption-path.md` (one-sprint Python + ROS2 wrap), `docs/ci-verify.md` (GitHub Actions / GitLab + `--json`), `docs/ros2-golden-path.md` (rclpy bridge golden path)
+- **Flagship showcase index:** `examples/showcase/README.md` — three evaluator entry points (safety, verify, sim); README trimmed to match
 - **End-to-end examples:** warehouse delivery, pick-and-place cell, fleet coordination, incident response, real-time patrol, validated telemetry, concurrent inspection (`examples/end_to_end/`)
 - **Feature examples:** `examples/features/` (16 focused demos) plus coverage index mapping every capability to a runnable file
 - **Tutorials index:** master catalog at `docs/tutorials/README.md` (all learning paths, topic guides, examples)

@@ -178,23 +178,19 @@ Start with the progressive ladder in [`examples/basics/`](examples/basics/README
 | Integration | `examples/integration/` | Triggers, concurrency, verify walkthrough |
 | End-to-end | [`examples/end_to_end/`](examples/end_to_end/README.md) | Patrol, warehouse, fleet, replay, real-time workflows |
 
-### Showcase examples
+### Flagship examples (start here)
 
-Curated demos in [`examples/showcase/`](examples/showcase/):
+Three pillars for evaluators — full library has 70+ files; start with these:
 
-| Example | Demonstrates |
-|---------|--------------|
-| `rover_navigation.sd` | Sensors, AI planning, SafeAction, motion |
-| `warehouse_robot.sd` | Tasks, communication, safety zones |
-| `ai_safety_violation.sd` | Compile-time rejection of unsafe AI |
-| `hardware_compatibility.sd` | Deploy target, verification report |
-| `communication_demo.sd` | Message, topic, service, action |
-| `digital_twin_demo.sd` | Twin, telemetry, replay |
-| `triggers_demo.sd` | Event, timer, condition, safety, and state triggers |
+| Pillar | Purpose | Command |
+|--------|---------|---------|
+| **Safety** | Block unsafe AI at compile time | `spanda check examples/showcase/ai_safety_violation.sd` |
+| **Verify** | Hardware fit before deploy | `spanda verify examples/showcase/hardware_compatibility.sd --json` |
+| **Sim** | Patrol without hardware | `spanda sim examples/showcase/killer_demo.sd` |
 
-Additional runnable examples: `examples/concurrency.sd`, `examples/communication/multi_robot_fleet.sd`
+5-minute walkthrough: [`docs/killer-demo.md`](docs/killer-demo.md) · Adoption path: [`docs/adoption-path.md`](docs/adoption-path.md) · CI: [`docs/ci-verify.md`](docs/ci-verify.md)
 
-Real-time and reliability demos in [`examples/realtime/`](examples/realtime/); regex demos in [`examples/regex/`](examples/regex/). Flagship safety walkthrough: [`docs/killer-demo.md`](docs/killer-demo.md).
+More showcase demos: [`examples/showcase/README.md`](examples/showcase/README.md). Real-time: [`examples/realtime/`](examples/realtime/); regex: [`examples/regex/`](examples/regex/).
 
 ---
 

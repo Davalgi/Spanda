@@ -19,7 +19,7 @@ Spanda is designed to **orchestrate** existing robotics and AI ecosystems — no
 | N-API / WASM bindings | Partially implemented | `check`, `run`, `verify`, `sir`, `fmt` |
 | Python bridge | **Partially implemented** | Subprocess bridge via `scripts/spanda_python_bridge.py`; optional in-process PyO3 |
 | C/C++ bridge | **Partially implemented** | Subprocess bridge via build-time C++ helper binary |
-| ROS2 bridge | Stubbed | `Ros2AdapterStub` logs calls; no live ROS2 node |
+| ROS2 bridge | **Partially implemented** | rclpy live path via `SPANDA_ROS2_LIVE=1`; see [ros2-golden-path.md](./ros2-golden-path.md) |
 | OpenCV / PyTorch / TensorFlow | Planned | Import paths reserved in std registry |
 
 Real native linking (dlopen, cxx) is **not** implemented yet. **`extern python fn`** calls use a **subprocess JSON bridge** by default when `python3` and `scripts/spanda_python_bridge.py` are available. Build with `--features python-native` on `spanda-core` for an **in-process PyO3** path (same handlers, no subprocess). Set `SPANDA_PYTHON_SUBPROCESS=1` to force subprocess mode even when PyO3 is enabled.
@@ -58,6 +58,15 @@ let sum = py_add(2, 3);
 Protocol: Rust sends `{"fn":"py_add","args":[2,3]}` on stdin; Python returns `{"ok":true,"result":5}`.
 
 Calling `extern python fn` without a registered handler fails with `Unknown python extern 'name'`.
+
+### When to use subprocess vs in-process PyO3
+
+| Mode | When | How |
+|------|------|-----|
+| **Subprocess (default)** | CI, quick eval, no Rust rebuild | `python3` + `scripts/spanda_python_bridge.py`; set `SPANDA_PYTHON_SUBPROCESS=1` to force even when PyO3 is built |
+| **In-process PyO3** | Production latency, heavy per-call Python | Build `spanda-core` with `--features python-native`; same handler registry, no IPC overhead |
+
+Subprocess remains the fallback when the `python-native` feature is off, `python3` is missing, or `SPANDA_PYTHON_SUBPROCESS=1` is set.
 
 ### In-process Python bridge (optional `python-native` feature)
 
@@ -152,7 +161,7 @@ At compile time, the type checker validates signatures. At link time, the bridge
 | `action go_to` | `rclcpp_action::Server` |
 | `publish cmd_vel with ...` | `publish()` on typed adapter |
 
-The existing `examples/ros2_bridge.sd` and `examples/packages/ros2_adapter_package/` demonstrate the intended surface; transport adapters today log to the simulator only.
+The existing [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) demonstrates the intended surface. With `SPANDA_ROS2_LIVE=1` and a sourced ROS2 distro, publish/subscribe uses the rclpy bridge; otherwise transport falls back to the simulator. **Golden path:** [ros2-golden-path.md](./ros2-golden-path.md).
 
 ## AI / ML mapping (planned)
 
@@ -194,6 +203,9 @@ Direct actuator calls with foreign outputs remain a **compile error** unless the
 
 ## Related documents
 
+- [ros2-golden-path.md](./ros2-golden-path.md) — documented ROS2 interop (rclpy bridge)
+- [adoption-path.md](./adoption-path.md) — one-sprint Python + ROS2 integration
+- [ci-verify.md](./ci-verify.md) — verify in CI before hardware exists
 - [compiler-backend-roadmap.md](./compiler-backend-roadmap.md) — native code generation path
 - [packages.md](./packages.md) — package capabilities and trust levels
 - [security.md](./security.md) — capabilities, secrets, signed messages

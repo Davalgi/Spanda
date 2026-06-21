@@ -213,18 +213,18 @@ Use these as GitHub issue titles. Order reflects dependency and adoption impact.
 | 1 | **Publish VS Code extension to marketplace** | Install from marketplace; LSP diagnostics for `check` and `verify` work out of the box |
 | 2 | **Curate killer demo program** | Single `.sd` file: compile-time AI block + verify pass + sim with emergency stop; documented in `docs/killer-demo.md` |
 | 3 | **One live AI provider path** | `extern python` or package calls real OpenAI/ONNX when configured; mock fallback when not |
-| 4 | **One ROS2 golden path** | Documented setup (rclpy bridge OR rclrs); publish/subscribe to `/cmd_vel` or `/scan` in CI or manual test doc |
+| 4 | **One ROS2 golden path** | [ros2-golden-path.md](./ros2-golden-path.md) — rclpy bridge; `/cmd_vel` or `/scan` manual validation |
 | 5 | **Remote package registry (minimal)** | `spanda install` fetches from a hosted registry; at least 2 curated packages (`spanda-openai`, `spanda-ros2`) |
 
 ### P1 — Adoption enablers
 
 | # | Issue | Acceptance criteria |
 |---|-------|---------------------|
-| 6 | **CI integration guide for `spanda verify`** | `docs/ci-verify.md` with GitHub Actions + GitLab examples; `--json` output parsed in CI |
-| 7 | **In-process Python FFI (PyO3) as default when built** | Document build flags; subprocess remains fallback |
+| 6 | **CI integration guide for `spanda verify`** | [ci-verify.md](./ci-verify.md) — GitHub Actions + GitLab; `--json` parsed in CI |
+| 7 | **In-process Python FFI (PyO3) as default when built** | Document build flags; subprocess remains fallback — see [ffi-and-ecosystem.md](./ffi-and-ecosystem.md) |
 | 8 | **Hardware profile picker in LSP/VS Code** | Deploy target hints or autocomplete for built-in profiles |
-| 9 | **Trim showcase to 3 flagship examples** | safety, verify, sim — linked from README |
-| 10 | **Adoption quickstart: wrap existing Python stack** | `docs/adoption-path.md` — 1-sprint integration guide |
+| 9 | **Trim showcase to 3 flagship examples** | [examples/showcase/README.md](../examples/showcase/README.md) — safety, verify, sim |
+| 10 | **Adoption quickstart: wrap existing Python stack** | [adoption-path.md](./adoption-path.md) — 1-sprint integration guide |
 
 ### P2 — Nice to have for beta
 
@@ -274,6 +274,8 @@ spanda sim my_robot.sd
 Week 1: CI with `check` + `verify`.  
 Week 2: one `extern python` call to existing model.  
 Week 3: ROS2 bridge for a single topic.
+
+**Guides:** [adoption-path.md](./adoption-path.md) · [ci-verify.md](./ci-verify.md) · [ros2-golden-path.md](./ros2-golden-path.md)
 
 **Positioning:** Spanda is a 2–5k LOC coordination layer above existing stacks, not a rewrite.
 

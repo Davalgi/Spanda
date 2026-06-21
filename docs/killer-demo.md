@@ -196,3 +196,5 @@ npm test -- tests/showcase.test.ts
 ## Related GitHub issue
 
 [v0.5 beta — Curate killer demo program](https://github.com/Davalgi/Spanda/issues/4)
+
+**Debug in VS Code:** [debugging.md](./debugging.md) — step through `task every` loops with `spanda-dap`.

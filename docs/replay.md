@@ -35,6 +35,28 @@ Playback uses wall-clock pacing between frames by default. Offsets accept millis
 
 Twin replay integrates with existing `twin { replay true; }` blocks.
 
+## Digital twin replay export (JSON)
+
+Export the twin replay buffer after simulation for post-incident review:
+
+```bash
+spanda twin export examples/twin_export_demo.sd --out twin-replay.json
+spanda sim examples/twin_export_demo.sd --twin-export twin-replay.json
+```
+
+JSON shape:
+
+```json
+{
+  "twin": "RobotTwin",
+  "mirrors": ["pose", "velocity"],
+  "frame_count": 12,
+  "frames": [
+    { "frame": 0, "fields": { "pose": { "...": "..." } } }
+  ]
+}
+```
+
 ## Golden traces in git
 
 Runtime `--record` output is ignored by default (`*.trace` in `.gitignore`). Committed reference traces are allowed under:
