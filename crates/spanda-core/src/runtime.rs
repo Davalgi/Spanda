@@ -4333,7 +4333,14 @@ impl<B: RobotBackend> Interpreter<B> {
 
     fn current_gps_lat_lon(&self) -> (f64, f64) {
         let state = self.backend.get_state();
-        (state.pose.x, state.pose.y)
+        let faults = self.hardware_monitor.injected_faults();
+        let (lat, lon, _) = crate::connectivity_positioning::apply_gps_position_faults(
+            faults,
+            state.pose.x,
+            state.pose.y,
+            self.sim_time_ms,
+        );
+        (lat, lon)
     }
 
     fn run_geofence_triggers(&mut self) -> Result<(), SpandaError> {
@@ -6433,6 +6440,17 @@ impl<B: RobotBackend> Interpreter<B> {
         } else {
             self.backend
                 .read_sensor(name, sensor_type, topic.as_deref())
+        };
+        let reading = if matches!(sensor_type.as_str(), "GPS" | "GNSS") {
+            crate::connectivity_positioning::apply_gps_reading_faults(
+                reading,
+                self.hardware_monitor.injected_faults(),
+                state.pose.x,
+                state.pose.y,
+                self.sim_time_ms,
+            )
+        } else {
+            reading
         };
         self.hardware_monitor
             .record_sensor_reading(name, sensor_type, &reading);

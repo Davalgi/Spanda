@@ -206,8 +206,74 @@ pub fn fault_to_connectivity(fault: &str) -> Option<(&'static str, &'static str)
         "NetworkOutage" | "LteOutage" | "WeakWifi" => Some(("network", "disconnected")),
         "BluetoothDisconnect" => Some(("bluetooth", "device_disconnected")),
         "FiveGHandoff" => Some(("cellular", "roaming")),
+        "GpsSpoofing" => Some(("gps", "spoofed")),
         _ => None,
     }
+}
+
+/// Apply GPS drift/spoofing simulation to WGS84 coordinates.
+pub fn apply_gps_position_faults(
+    faults: &HashSet<String>,
+    true_lat: f64,
+    true_lon: f64,
+    sim_time_ms: f64,
+) -> (f64, f64, f64) {
+    if faults.contains("GpsSpoofing") {
+        return (true_lat + 0.009, true_lon + 0.012, 0.3);
+    }
+    if faults.contains("GpsDrift") {
+        let drift_m = (sim_time_ms / 1000.0) * 0.05;
+        let d_deg = drift_m / 111_000.0;
+        return (true_lat + d_deg, true_lon + d_deg * 0.5, 0.8);
+    }
+    (true_lat, true_lon, 1.0)
+}
+
+/// Rewrite a GpsFix object's coordinates after applying GPS simulation faults.
+pub fn apply_gps_reading_faults(
+    reading: crate::runtime::RuntimeValue,
+    faults: &HashSet<String>,
+    true_lat: f64,
+    true_lon: f64,
+    sim_time_ms: f64,
+) -> crate::runtime::RuntimeValue {
+    use crate::ast::UnitKind;
+    use crate::runtime::RuntimeValue;
+    let RuntimeValue::Object {
+        type_name,
+        mut fields,
+    } = reading
+    else {
+        return reading;
+    };
+    if type_name != "GpsFix" && type_name != "GPSReading" {
+        return RuntimeValue::Object { type_name, fields };
+    }
+    let (lat, lon, fix_quality) = apply_gps_position_faults(faults, true_lat, true_lon, sim_time_ms);
+    fields.insert(
+        "lat".into(),
+        RuntimeValue::Number {
+            value: lat,
+            unit: UnitKind::None,
+        },
+    );
+    fields.insert(
+        "lon".into(),
+        RuntimeValue::Number {
+            value: lon,
+            unit: UnitKind::None,
+        },
+    );
+    if fields.contains_key("fix_quality") {
+        fields.insert(
+            "fix_quality".into(),
+            RuntimeValue::Number {
+                value: fix_quality,
+                unit: UnitKind::None,
+            },
+        );
+    }
+    RuntimeValue::Object { type_name, fields }
 }
 
 /// Map an active connectivity link name to the default transport kind.
@@ -598,6 +664,25 @@ mod tests {
             radius_m: 100.0,
         };
         assert!(geofence_contains(&fence, 30.2672, -97.7431));
+    }
+
+    #[test]
+    fn gps_spoofing_offsets_coordinates() {
+        use std::collections::HashSet;
+        let faults = HashSet::from(["GpsSpoofing".to_string()]);
+        let (lat, lon, fq) = apply_gps_position_faults(&faults, 30.0, -97.0, 0.0);
+        assert!((lat - 30.009).abs() < 1e-6);
+        assert!((lon - (-96.988)).abs() < 1e-6);
+        assert!((fq - 0.3).abs() < 1e-6);
+    }
+
+    #[test]
+    fn gps_drift_increases_with_sim_time() {
+        use std::collections::HashSet;
+        let faults = HashSet::from(["GpsDrift".to_string()]);
+        let (lat0, _, _) = apply_gps_position_faults(&faults, 30.0, -97.0, 0.0);
+        let (lat1, _, _) = apply_gps_position_faults(&faults, 30.0, -97.0, 10_000.0);
+        assert!(lat1 > lat0);
     }
 
     #[test]
