@@ -66,6 +66,11 @@ import {
 } from "../fleet-remote.js";
 import { startFleetAgentServer } from "../fleet-agent.js";
 import {
+  orchestrateFleets,
+  orchestrateFleetsMesh,
+  orchestrateFleetsRemote,
+} from "../fleet-orchestrator.js";
+import {
   adapterVerifyOk,
   readAdapterManifestSection,
   verifyAdapterPackage,
