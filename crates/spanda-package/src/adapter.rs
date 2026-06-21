@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 /// Driver / adapter package model — what a community package provides and requires.
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct AdapterMetadata {
+
     /// Symbols this package exports (e.g. `LidarAdapter`, `Topic<LidarScan>`).
     #[serde(default)]
     pub provides: Vec<String>,
@@ -144,9 +145,81 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
         },
         FrameworkPackage {
             name: "spanda-lte",
-            description: "LTE/cellular connectivity adapters",
+            description: "LTE/cellular connectivity adapters (alias for spanda-cellular)",
             category: super::category::PackageCategory::Hardware,
             import_paths: &["connectivity.lte"],
+        },
+        FrameworkPackage {
+            name: "spanda-cellular",
+            description: "LTE/4G/5G cellular connectivity adapters",
+            category: super::category::PackageCategory::Hardware,
+            import_paths: &["connectivity.cellular"],
+        },
+        FrameworkPackage {
+            name: "spanda-wifi",
+            description: "Wi-Fi connectivity adapters",
+            category: super::category::PackageCategory::Hardware,
+            import_paths: &["connectivity.wifi"],
+        },
+        FrameworkPackage {
+            name: "spanda-dds",
+            description: "DDS pub/sub transport",
+            category: super::category::PackageCategory::Mqtt,
+            import_paths: &["communication.dds"],
+        },
+        FrameworkPackage {
+            name: "spanda-moveit",
+            description: "MoveIt motion planning",
+            category: super::category::PackageCategory::Manipulation,
+            import_paths: &["manipulation.moveit"],
+        },
+        FrameworkPackage {
+            name: "spanda-gazebo",
+            description: "Gazebo simulation backend (alias for spanda-sim-gazebo)",
+            category: super::category::PackageCategory::Simulation,
+            import_paths: &["sim.gazebo"],
+        },
+        FrameworkPackage {
+            name: "spanda-webots",
+            description: "Webots simulation backend (alias for spanda-sim-webots)",
+            category: super::category::PackageCategory::Simulation,
+            import_paths: &["sim.webots"],
+        },
+        FrameworkPackage {
+            name: "spanda-fleet",
+            description: "Multi-robot fleet orchestration",
+            category: super::category::PackageCategory::Robotics,
+            import_paths: &["robotics.fleet"],
+        },
+        FrameworkPackage {
+            name: "spanda-ota",
+            description: "Over-the-air deploy and rollout",
+            category: super::category::PackageCategory::SupplyChain,
+            import_paths: &["deploy.ota"],
+        },
+        FrameworkPackage {
+            name: "spanda-maintenance",
+            description: "Predictive maintenance and health monitoring",
+            category: super::category::PackageCategory::Robotics,
+            import_paths: &["maintenance.health"],
+        },
+        FrameworkPackage {
+            name: "spanda-ledger",
+            description: "Audit ledger and provenance anchoring",
+            category: super::category::PackageCategory::Ledger,
+            import_paths: &["provenance.ledger"],
+        },
+        FrameworkPackage {
+            name: "spanda-cloud",
+            description: "Cloud telemetry and remote command channels",
+            category: super::category::PackageCategory::Robotics,
+            import_paths: &["cloud.remote"],
+        },
+        FrameworkPackage {
+            name: "spanda-openai",
+            description: "OpenAI LLM provider via Python bridge",
+            category: super::category::PackageCategory::Ai,
+            import_paths: &["ai.openai"],
         },
     ]
 }
@@ -252,10 +325,34 @@ pub fn adapter_metadata_for_import(import_path: &str) -> Option<AdapterMetadata>
 /// Resolve expected adapter metadata for a registry package name.
 pub fn adapter_metadata_for_package(package_name: &str) -> Option<AdapterMetadata> {
     match package_name {
-        "spanda-nav2" => Some(nav2_adapter_metadata()),
+        "spanda-nav2" | "spanda-nav" => Some(nav2_adapter_metadata()),
         "spanda-cartographer" => Some(cartographer_adapter_metadata()),
         "spanda-rtabmap" => Some(rtabmap_adapter_metadata()),
         "spanda-slam" => Some(slam_adapter_metadata()),
+        "spanda-gps" => Some(AdapterMetadata {
+            provides: vec!["GpsFix".into(), "positioning.gps.read".into()],
+            requires: vec!["sensor.read".into()],
+        }),
+        "spanda-mqtt" | "spanda-dds" => Some(AdapterMetadata {
+            provides: vec!["TransportAdapter".into(), "topic.publish".into()],
+            requires: vec!["comm.encrypt".into()],
+        }),
+        "spanda-ros2" => Some(AdapterMetadata {
+            provides: vec!["RosProvider".into(), "comm.ros2.publish".into()],
+            requires: vec!["ros2.bridge".into()],
+        }),
+        "spanda-fleet" => Some(AdapterMetadata {
+            provides: vec!["FleetProvider".into(), "fleet.orchestrate".into()],
+            requires: vec!["comm.publish".into(), "deploy.agent".into()],
+        }),
+        "spanda-ota" => Some(AdapterMetadata {
+            provides: vec!["deploy.rollout".into(), "deploy.rollback".into()],
+            requires: vec!["deploy.sign".into(), "deploy.verify".into()],
+        }),
+        "spanda-ledger" => Some(AdapterMetadata {
+            provides: vec!["LedgerProvider".into(), "audit.append".into()],
+            requires: vec!["crypto.sign".into()],
+        }),
         _ => None,
     }
 }
