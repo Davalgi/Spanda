@@ -437,3 +437,15 @@ Goal: close remaining partial gaps — in-memory IoT state, task return types, d
 | `scripts/verify_vscode_vsix.sh` build smoke test | **Complete** |
 | Integration tests (`phase32_gaps.rs`, IoT hub tests) | **Complete** |
 
+## Phase 33 — Complete ✓ (trigger I/O, live IoT, live AI)
+
+Goal: close remaining partial gaps — trigger handler return types, live Modbus/OPC-UA hardware paths, and live OpenAI provider for `ai_model`.
+
+| Step | Status |
+|------|--------|
+| Trigger `-> Type` return validation (`every`, `when`, `while`, `on`) | **Complete** |
+| Live Modbus TCP (`SPANDA_LIVE_MODBUS=1`, `--features live-iot`) + Python bridge fallback | **Complete** |
+| Live OPC-UA bridge reads (`SPANDA_LIVE_OPCUA=1`, Python asyncua path) | **Complete** |
+| Live OpenAI provider for `provider: "openai"` when `OPENAI_API_KEY` set | **Complete** |
+| Integration tests (`phase33_gaps.rs`) + `scripts/live_iot_golden_path.sh` | **Complete** |
+

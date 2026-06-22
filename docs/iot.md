@@ -24,8 +24,8 @@ IoT integrations live in official packages. Core defines generic contracts; pack
 | `spanda-ble` | Bluetooth LE |
 | `spanda-wifi` | WiFi connectivity |
 | `spanda-cellular` | LTE/cellular |
-| `spanda-opcua` | OPC-UA (stub) |
-| `spanda-modbus` | Modbus (stub) |
+| `spanda-opcua` | OPC-UA (stub + live bridge) |
+| `spanda-modbus` | Modbus (stub + live TCP) |
 | `spanda-canbus` | CAN bus (stub) |
 | `spanda-zigbee` | Zigbee (stub) |
 | `spanda-lora` | LoRa (stub) |
@@ -56,3 +56,18 @@ When official IoT packages are installed, module imports dispatch through `packa
 | `iot.telemetry` | `publish` | `spanda-iot-core` |
 | `iot.modbus` | `read_register` | `spanda-modbus` |
 | `iot.opcua` | `read_node` | `spanda-opcua` |
+
+## Live hardware (optional)
+
+Enable live reads with environment flags (build with `--features live-iot` on `spanda-cli` for native Modbus TCP):
+
+| Variable | Purpose |
+|----------|---------|
+| `SPANDA_LIVE_MODBUS=1` | Read holding registers from Modbus TCP hardware |
+| `SPANDA_MODBUS_HOST` | Modbus host (default `127.0.0.1`) |
+| `SPANDA_MODBUS_PORT` | Modbus port (default `502`) |
+| `SPANDA_MODBUS_UNIT` | Modbus unit/slave id (default `1`) |
+| `SPANDA_LIVE_OPCUA=1` | Read nodes via Python bridge (`asyncua`) |
+| `SPANDA_OPCUA_ENDPOINT` | OPC-UA endpoint (default `opc.tcp://127.0.0.1:4840`) |
+
+Golden path (mock fallback without hardware): `./scripts/live_iot_golden_path.sh`

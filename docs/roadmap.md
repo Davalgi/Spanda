@@ -33,6 +33,7 @@
 - **Verification & DX (Phase 30):** verification quick-fix hints; LSP code actions; continuous health polling in trigger loop; debug pause events for kill switch and critical health
 - **Verification & DX (Phase 31):** runtime health_policy reactions; behavior return types; agent SafeAction plan returns; IoT package dispatch; agent capability audit hooks
 - **Verification & DX (Phase 32):** in-memory IoT hub; task return types; agent can[] enforcement; VSIX verify script
+- **Verification & DX (Phase 33):** trigger handler return types; live Modbus/OPC-UA IoT paths; live OpenAI provider for ai_model
 
 ## In progress
 

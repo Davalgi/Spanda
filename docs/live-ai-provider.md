@@ -1,6 +1,8 @@
 # Live AI provider path (OpenAI)
 
-Spanda v0.5 beta includes one **real AI provider path** via the Python subprocess bridge. When `OPENAI_API_KEY` is set, `openai_complete` calls the OpenAI Chat Completions API; otherwise it returns a deterministic mock string.
+Spanda v0.5 beta includes a **real AI provider path** for `ai_model` blocks with `provider: "openai"`. When `OPENAI_API_KEY` is set, `planner.reason(...)` calls OpenAI via the Python bridge; otherwise it falls back to the deterministic mock provider.
+
+For FFI `extern python fn openai_complete`, the same bridge applies.
 
 ## Quick start
 
@@ -58,7 +60,8 @@ Unsafe direct execution remains a **compile error** regardless of provider.
 
 | Variable | Purpose |
 |----------|---------|
-| `OPENAI_API_KEY` | Enables live OpenAI calls |
+| `OPENAI_API_KEY` | Enables live OpenAI calls for `provider: "openai"` and FFI bridge |
+| `SPANDA_LIVE_AI=0` | Force mock provider even when API key is set |
 | `SPANDA_PYTHON_BRIDGE` | Override bridge script path |
 
 ## Registry package

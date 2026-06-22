@@ -157,7 +157,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 
 ## Known limitations (v0.1.0-alpha)
 
-- AI providers use **mock backends** by default; no live API keys required or shipped.
+- AI providers use **mock backends** by default; set `OPENAI_API_KEY` and `provider: "openai"` for live OpenAI via the Python bridge (`SPANDA_LIVE_AI=0` forces mock).
 - ROS2 integration requires manual ROS Humble setup and is not the default simulator transport.
 - Native compilation via LLVM is **experimental**; the tree-walking interpreter is the primary runtime.
 - Package publishing targets a **local stub registry**, not crates.io or npm-style global registry.
@@ -171,7 +171,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | Item | Category | Detail |
 |------|----------|--------|
 | Global package registry | Stubbed | `spanda publish` writes to local `~/.spanda/registry` |
-| Live OpenAI / cloud AI | Stubbed | Provider interface exists; mock only in default build |
+| Live OpenAI / cloud AI | Production path | `provider: "openai"` + `OPENAI_API_KEY`; Python bridge; mock fallback |
+| Live Modbus / OPC-UA IoT | Optional live hardware | `SPANDA_LIVE_MODBUS=1` / `SPANDA_LIVE_OPCUA=1`; `--features live-iot` for native Modbus TCP |
 | MQTT / DDS / WebSocket live transport | Production wire + optional live brokers | AES-256-GCM wire frames; live MQTT/WebSocket/DDS via `--features live-transport` + `SPANDA_LIVE_MQTT=1` / `SPANDA_LIVE_WEBSOCKET=1` / `SPANDA_LIVE_DDS=1`; TypeScript mirrors the same env flags |
 | Secure comm live crypto | Production wire | AES-256-GCM for transport frames and `EncryptedMessage` payloads; session material from robot secrets |
 | Full native binary deploy | Stubbed | `spanda codegen` emits skeleton output |
