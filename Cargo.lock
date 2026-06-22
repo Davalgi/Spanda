@@ -1203,6 +1203,7 @@ dependencies = [
  "spanda-deploy-http",
  "spanda-fleet",
  "spanda-hardware",
+ "spanda-lexer",
  "spanda-ota",
  "spanda-package",
  "spanda-security",
@@ -1247,6 +1248,15 @@ name = "spanda-hardware"
 version = "0.1.0"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "spanda-lexer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-ast",
 ]
 
 [[package]]

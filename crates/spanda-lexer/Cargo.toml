@@ -1,0 +1,16 @@
+[package]
+name = "spanda-lexer"
+version.workspace = true
+edition.workspace = true
+description = "Spanda language lexer — tokenization and reserved keywords"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+spanda-ast = { path = "../spanda-ast" }
+
+[dev-dependencies]
+serde_json = "1"

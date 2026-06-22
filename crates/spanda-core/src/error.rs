@@ -84,6 +84,16 @@ impl SpandaError {
     }
 }
 
+impl From<spanda_lexer::LexerError> for SpandaError {
+    fn from(err: spanda_lexer::LexerError) -> Self {
+        Self::Lexer {
+            message: err.message,
+            line: err.line,
+            column: err.column,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompileResult {
     pub program: Program,
