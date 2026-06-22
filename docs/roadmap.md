@@ -27,6 +27,7 @@
 - Incremental runtime: enum values, struct literals, trait impl binding
 - Phase 14: Example programs (`examples/types/`, `examples/hardware/`)
 - TypeScript parser mirror for hardware/deploy/requirements syntax
+- **Verification & DX (Phase 27):** `spanda-capability` crate; traceability matrices; hardware/robot capability exposure; minimum-hardware safety; health checks; kill switch syntax; hardened `spanda test`; IoT provider contracts; mdBook docs site
 
 ## In progress
 

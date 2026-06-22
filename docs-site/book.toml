@@ -1,0 +1,16 @@
+[book]
+title = "Spanda Documentation"
+authors = ["Sujay Davalgi"]
+description = "Spanda — safety-first language for robotics and autonomous systems"
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+create-missing = true
+
+[output.html]
+default-theme = "rust"
+git-repository-url = "https://github.com/Davalgi/Spanda"
+
+[preprocessor.links]

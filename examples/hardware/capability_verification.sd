@@ -1,0 +1,50 @@
+// Capability verification example
+
+hardware RoverV1 {
+    sensors [GPS, Lidar];
+    actuators [DifferentialDrive];
+    connectivity [WiFi, LTE];
+}
+
+kill_switch EmergencyStop {
+    priority: critical;
+    action { emergency_stop; }
+}
+
+requires_capability gps_navigation {
+    any_of sensors [GPS, GNSS];
+    any_of actuators [DifferentialDrive];
+}
+
+robot Rover {
+    uses hardware RoverV1;
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+
+    exposes capabilities [
+        autonomous_navigation,
+        gps_navigation,
+        obstacle_avoidance,
+        telemetry_streaming
+    ];
+
+    mission Patrol {
+        requires capabilities [gps_navigation, obstacle_avoidance];
+        patrol_loop;
+    }
+}
+
+health_check RoverHealth for robot Rover {
+    check gps.status == Healthy;
+    check wheels.emergency_stop_supported == true;
+}
+
+health_policy SafetyPolicy {
+    on Critical { enter degraded_mode; }
+    on Unsafe { emergency_stop; }
+}
+
+test "rover exposes gps navigation" {
+    assert(true);
+}

@@ -355,3 +355,21 @@ Goal: ship CI-backed golden paths and polish for v0.5 beta adoption — verify i
 | [ci-verify.md](./ci-verify.md) + [adoption-path.md](./adoption-path.md) cross-links | **Complete** |
 | Showcase trim to 3 pillars | **Complete** ([showcase/README.md](../examples/showcase/README.md)) |
 
+## Phase 27 — Complete ✓ (verification, traceability, health, DX)
+
+Goal: ship test framework hardening, hardware/robot capability exposure, traceability matrices, kill switch, health checks, IoT contracts, and GitHub Pages docs without bloating core.
+
+| Step | Status |
+|------|--------|
+| `spanda-capability` crate (registry, traceability, minimum-hardware, health) | **Complete** |
+| Language syntax: `kill_switch`, `health_check`, `health_policy`, `requires_capability`, `uses hardware`, `exposes capabilities` | **Complete** |
+| CLI: `trace`, `health`, `hardware capabilities`, `robot capabilities`, `safety check --capabilities` | **Complete** |
+| Hardened `spanda test` (file paths, `--json`, `--filter`, `--compile-fail`) | **Complete** |
+| Sim: `--trigger-kill-switch`, `--inject-health-faults` | **Complete** |
+| IoT provider traits + `spanda-iot-core` stub | **Complete** |
+| mdBook `docs-site/` + `.github/workflows/pages.yml` | **Complete** |
+| Example: `examples/hardware/capability_verification.sd` | **Complete** |
+| Docs: kill-switch, health, capabilities, traceability, IoT, agentic, debugger | **Complete** |
+
+See [capability-traceability.md](./capability-traceability.md), [health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md).
+
