@@ -1,9 +1,11 @@
 //! Swarm coordinator CLI (`spanda swarm coordinate`).
 
-use spanda_core::{
-    compile, coordinate_swarms, coordinate_swarms_mesh, default_swarm_state_path,
-    load_swarm_state, save_swarm_state,
+use spanda_driver::compile;
+use spanda_fleet::{
+    coordinate_swarms, coordinate_swarms_mesh, default_swarm_state_path, load_swarm_state,
+    save_swarm_state,
 };
+use spanda_ast::nodes::Program;
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -16,7 +18,7 @@ fn read_source(path: &str) -> String {
     })
 }
 
-fn parse_program(source: &str, file: &str) -> spanda_core::Program {
+fn parse_program(source: &str, file: &str) -> Program {
     compile(source).unwrap_or_else(|e| {
         eprintln!("Error compiling {file}: {e}");
         process::exit(1);

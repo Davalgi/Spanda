@@ -1,15 +1,22 @@
 //! OTA deploy CLI handlers (`spanda deploy plan|rollout|rollback|status|agent`).
 
-use spanda_core::{
-    agent_health, apply_rollout, build_deploy_bundle, build_deploy_plan, compile,
-    default_agent_state_path, default_agents_path, default_fleet_agent_state_path,
-    default_fleet_agents_path, default_state_path, execute_remote_rollout,
-    execute_remote_rollback, fleet_agent_health, load_agent_registry, load_deploy_state,
-    load_fleet_agent_registry, mesh_registry_path, orchestrate_fleets, orchestrate_fleets_mesh,
-    orchestrate_fleets_remote, plan_rollout, register_agent, register_fleet_agent, rollback_targets,
-    run_deploy_agent_server, run_fleet_agent_server, run_fleet_mesh_coordinator, save_agent_registry,
-    save_deploy_state, save_fleet_agent_registry, sign_deploy_bundle, validate_rollout_certification,
-    DeployAgentServerOptions, DeployAgentTls, DeployState, RolloutOptions, RolloutStrategy,
+use spanda_ast::nodes::Program;
+use spanda_deploy_http::DeployAgentTls;
+use spanda_driver::{build_deploy_plan, compile};
+use spanda_fleet::{
+    agent_health as fleet_agent_health, default_fleet_agent_state_path,
+    default_fleet_agents_path, load_fleet_agent_registry, mesh_registry_path,
+    orchestrate_fleets, orchestrate_fleets_mesh, orchestrate_fleets_remote,
+    register_fleet_agent, run_fleet_agent_server, run_fleet_mesh_coordinator,
+    save_fleet_agent_registry,
+};
+use spanda_ota::{
+    agent_health, apply_rollout, build_deploy_bundle, default_agent_state_path,
+    default_agents_path, default_state_path, execute_remote_rollout, execute_remote_rollback,
+    load_agent_registry, load_deploy_state, plan_rollout, register_agent, rollback_targets,
+    run_deploy_agent_server, save_agent_registry, save_deploy_state, sign_deploy_bundle,
+    validate_rollout_certification, DeployAgentServerOptions, DeployState, RolloutOptions,
+    RolloutResult, RolloutStrategy,
 };
 use std::env;
 use std::fs;
@@ -23,7 +30,7 @@ fn read_source(path: &str) -> String {
     })
 }
 
-fn parse_program(source: &str, file: &str) -> spanda_core::Program {
+fn parse_program(source: &str, file: &str) -> Program {
     compile(source).unwrap_or_else(|e| {
         eprintln!("Error compiling {file}: {e}");
         process::exit(1);
@@ -477,7 +484,7 @@ fn cmd_status(args: &[String]) {
     }
 }
 
-fn print_rollout(result: &spanda_core::RolloutResult, json: bool) {
+fn print_rollout(result: &RolloutResult, json: bool) {
     if json {
         println!("{}", serde_json::to_string_pretty(result).unwrap());
     } else {

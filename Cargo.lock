@@ -1223,9 +1223,27 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
- "spanda-core",
+ "spanda-ast",
+ "spanda-certify",
+ "spanda-codegen",
+ "spanda-debug",
+ "spanda-deploy-http",
+ "spanda-docs",
+ "spanda-driver",
+ "spanda-error",
+ "spanda-fleet",
+ "spanda-format",
+ "spanda-hardware",
+ "spanda-lint",
  "spanda-llvm",
+ "spanda-modules",
+ "spanda-ota",
  "spanda-package",
+ "spanda-parser",
+ "spanda-runtime",
+ "spanda-security",
+ "spanda-sir",
+ "spanda-typecheck",
  "tempfile",
 ]
 
@@ -1546,7 +1564,10 @@ dependencies = [
  "napi-derive",
  "serde",
  "serde_json",
- "spanda-core",
+ "spanda-driver",
+ "spanda-error",
+ "spanda-format",
+ "spanda-hardware",
 ]
 
 [[package]]

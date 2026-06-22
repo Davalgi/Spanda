@@ -1,6 +1,7 @@
 //! package support for Spanda.
 //!
-use spanda_core::{check, load_project_modules, run_tests_with_registry};
+use spanda_driver::{check, compile, run_tests_with_registry};
+use spanda_modules::load_project_modules;
 use spanda_package::{
     add_dependency, adapter_verify_ok, collect_source_files, find_project_root, init_package,
     publish_package, registry_info, remove_dependency, resolve_dependencies, search_registry,
@@ -185,7 +186,7 @@ pub fn cmd_build(args: &[String]) {
         });
 
         // Handle the error returned from compile.
-        if let Err(e) = spanda_core::compile(&source) {
+        if let Err(e) = compile(&source) {
             eprintln!("Build failed for {}: {e}", file.display());
             process::exit(1);
         }

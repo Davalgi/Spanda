@@ -1,6 +1,8 @@
 //! Certification proof CLI (`spanda certify prove`).
 
-use spanda_core::{build_certification_proof, compile};
+use spanda_certify::build_certification_proof;
+use spanda_driver::compile;
+use spanda_hardware::CompatSeverity;
 use std::fs;
 use std::io::{self, Write};
 use std::process;
@@ -76,9 +78,9 @@ fn cmd_prove(args: &[String]) {
         }
         for item in &report.checklist {
             let icon = match item.severity {
-                spanda_core::CompatSeverity::Pass => "✓",
-                spanda_core::CompatSeverity::Warning => "⚠",
-                spanda_core::CompatSeverity::Error => "✗",
+                CompatSeverity::Pass => "✓",
+                CompatSeverity::Warning => "⚠",
+                CompatSeverity::Error => "✗",
             };
             println!("  {icon} [{}] {}", item.category, item.message);
         }

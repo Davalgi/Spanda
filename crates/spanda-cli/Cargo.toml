@@ -23,9 +23,27 @@ license = false
 eula = false
 
 [dependencies]
-spanda-core = { path = "../spanda-core" }
-spanda-package = { path = "../spanda-package" }
+spanda-ast = { path = "../spanda-ast" }
+spanda-certify = { path = "../spanda-certify" }
+spanda-codegen = { path = "../spanda-codegen" }
+spanda-deploy-http = { path = "../spanda-deploy-http" }
+spanda-debug = { path = "../spanda-debug" }
+spanda-docs = { path = "../spanda-docs" }
+spanda-driver = { path = "../spanda-driver" }
+spanda-error = { path = "../spanda-error" }
+spanda-fleet = { path = "../spanda-fleet" }
+spanda-format = { path = "../spanda-format" }
+spanda-hardware = { path = "../spanda-hardware" }
+spanda-lint = { path = "../spanda-lint" }
 spanda-llvm = { path = "../spanda-llvm" }
+spanda-modules = { path = "../spanda-modules" }
+spanda-ota = { path = "../spanda-ota" }
+spanda-package = { path = "../spanda-package" }
+spanda-parser = { path = "../spanda-parser" }
+spanda-runtime = { path = "../spanda-runtime" }
+spanda-security = { path = "../spanda-security" }
+spanda-sir = { path = "../spanda-sir" }
+spanda-typecheck = { path = "../spanda-typecheck" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 

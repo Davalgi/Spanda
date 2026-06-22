@@ -8,7 +8,10 @@ description = "Node.js N-API bindings for Spanda core"
 crate-type = ["cdylib"]
 
 [dependencies]
-spanda-core = { path = "../spanda-core" }
+spanda-driver = { path = "../spanda-driver" }
+spanda-error = { path = "../spanda-error" }
+spanda-format = { path = "../spanda-format" }
+spanda-hardware = { path = "../spanda-hardware" }
 napi = { version = "2", features = ["serde-json"] }
 napi-derive = "2"
 serde = { version = "1", features = ["derive"] }

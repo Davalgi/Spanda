@@ -6,13 +6,28 @@ mod swarm_cli;
 mod package;
 
 use serde::Serialize;
-use spanda_core::{
-    check, codegen, format_source, generate_cli_man_pages, generate_language_reference,
-    generate_markdown, lint, lower_to_sir, playback_mission, replay_mission, run, run_debug,
-    security_audit, security_check, verify_compatibility, wasm_deploy_manifest, CodegenTarget,
-    CompatSeverity, DebugOptions, RunOptions, SchedulerClock, SecurityReport, SecuritySeverity,
-    SpandaError, VerifyOptions,
+use spanda_driver::{
+    check, compile, lower_to_sir, playback_mission, replay_mission, run, run_debug,
+    tokenize, verify_compatibility, RunOptions, RunResult,
 };
+use spanda_format::format_source;
+use spanda_docs::{generate_cli_man_pages, generate_language_reference, generate_markdown};
+use spanda_lint::{lint, LintIssue, LintSeverity};
+use spanda_codegen::{generate as codegen, wasm_deploy_manifest, CodegenTarget};
+use spanda_security::validate::{security_audit, security_check, SecurityReport, SecuritySeverity};
+use spanda_hardware::{
+    CompatItem, CompatSeverity, CompatibilityMatrix, CompatibilityReport, VerifyOptions,
+};
+use spanda_error::SpandaError;
+use spanda_typecheck::Diagnostic;
+use spanda_debug::DebugOptions;
+use spanda_runtime::replay::{parse_replay_offset, MissionTrace};
+use spanda_runtime::scheduler::SchedulerClock;
+use spanda_sir::SirProgram;
+use spanda_ast::nodes::{BehaviorDecl, Program, RobotDecl};
+use spanda_ast::foundations::{DeployDecl, TaskDecl};
+use spanda_ast::comm_decl::PeerRobotDecl;
+use spanda_parser::parse;
 use spanda_llvm::{compile_native, emit_module_ir_with_options, CompileNativeOptions};
 use std::collections::HashSet;
 use std::env;
@@ -30,16 +45,16 @@ fn run_options_for_file(file: &str, opts: RunOptions) -> RunOptions {
 #[derive(Serialize)]
 struct CheckResponse {
     ok: bool,
-    diagnostics: Vec<spanda_core::Diagnostic>,
+    diagnostics: Vec<Diagnostic>,
 }
 
 #[derive(Serialize)]
 struct RunResponse {
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    result: Option<spanda_core::RunResult>,
+    result: Option<RunResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    diagnostics: Option<Vec<spanda_core::Diagnostic>>,
+    diagnostics: Option<Vec<Diagnostic>>,
 }
 
 #[derive(Serialize)]
@@ -48,15 +63,15 @@ struct VerifyResponse {
     compatible: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     target: Option<String>,
-    items: Vec<spanda_core::CompatItem>,
+    items: Vec<CompatItem>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    matrix: Option<spanda_core::CompatibilityMatrix>,
+    matrix: Option<CompatibilityMatrix>,
 }
 
 #[derive(Serialize)]
 struct LintResponse {
     ok: bool,
-    issues: Vec<spanda_core::LintIssue>,
+    issues: Vec<LintIssue>,
 }
 
 #[derive(Serialize)]
@@ -75,7 +90,7 @@ struct DocResponse {
 #[derive(Serialize)]
 struct IrResponse {
     ok: bool,
-    sir: spanda_core::SirProgram,
+    sir: SirProgram,
 }
 
 fn usage() {
@@ -191,7 +206,7 @@ fn print_check_json(err: Option<SpandaError>) {
     println!("{}", serde_json::to_string(&resp).unwrap());
 }
 
-fn print_run_json(result: Result<spanda_core::RunResult, SpandaError>) {
+fn print_run_json(result: Result<RunResult, SpandaError>) {
     // Print run json.
     //
     // Parameters:
@@ -262,7 +277,6 @@ fn human_replay(
     playback: bool,
     as_json: bool,
 ) {
-    use spanda_core::replay::{parse_replay_offset, MissionTrace};
     let trace = MissionTrace::load(trace_file).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -667,7 +681,7 @@ fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
     }
 }
 
-fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaError>) {
+fn print_verify_json(result: Result<CompatibilityReport, SpandaError>) {
     // Print verify json.
     //
     // Parameters:
@@ -698,7 +712,7 @@ fn print_verify_json(result: Result<spanda_core::CompatibilityReport, SpandaErro
             items: e
                 .diagnostics()
                 .into_iter()
-                .map(|d| spanda_core::CompatItem {
+                .map(|d| CompatItem {
                     category: "error".into(),
                     message: d.message,
                     severity: CompatSeverity::Error,
@@ -783,21 +797,21 @@ fn twin_dispatch(args: &[String]) {
         process::exit(1);
     });
     let source = read_source(&file);
-    let entry_behavior = spanda_core::compile(&source).ok().and_then(|compiled| {
-        let spanda_core::Program::Program { robots, .. } = compiled.program;
+    let entry_behavior = compile(&source).ok().and_then(|compiled| {
+        let Program::Program { robots, .. } = compiled.program;
         robots.first().and_then(|robot| {
-            let spanda_core::RobotDecl::RobotDecl {
+            let RobotDecl::RobotDecl {
                 behaviors, tasks, ..
             } = robot;
             behaviors
                 .first()
                 .map(|behavior| {
-                    let spanda_core::BehaviorDecl::BehaviorDecl { name, .. } = behavior;
+                    let BehaviorDecl::BehaviorDecl { name, .. } = behavior;
                     name.clone()
                 })
                 .or_else(|| {
                     tasks.first().map(|task| {
-                        let spanda_core::foundations::TaskDecl::TaskDecl { name, .. } = task;
+                        let TaskDecl::TaskDecl { name, .. } = task;
                         name.clone()
                     })
                 })
@@ -939,14 +953,12 @@ fn human_fleet_run(
     // let result = spanda_cli::main::human_fleet_run(source, file, trace_scheduler, trace_tasks, trace_triggers, trace_events);
 
     // Import the items needed by the logic below.
-    use spanda_core::ast::{Program, RobotDecl};
-    use spanda_core::foundations::DeployDecl;
     println!("\n🛰️  Fleet run from {file}\n");
 
     // Handle the success value from tokenize.
-    if let Ok(tokens) = spanda_core::lexer::tokenize(source) {
+    if let Ok(tokens) = tokenize(source) {
         // Handle the success value from parse.
-        if let Ok(program) = spanda_core::parser::parse(tokens) {
+        if let Ok(program) = parse(tokens) {
             let Program::Program {
                 deployments,
                 robots,
@@ -978,7 +990,7 @@ fn human_fleet_run(
 
                 // Process each peer robot.
                 for peer in peer_robots {
-                    let spanda_core::comm::PeerRobotDecl::PeerRobotDecl {
+                    let PeerRobotDecl::PeerRobotDecl {
                         name: peer_name, ..
                     } = peer;
                     println!("  peer robot {name} knows {peer_name}");
@@ -1649,8 +1661,8 @@ fn main() {
                         // Process each issue.
                         for issue in &report.issues {
                             let level = match issue.severity {
-                                spanda_core::LintSeverity::Warning => "warning",
-                                spanda_core::LintSeverity::Error => "error",
+                                LintSeverity::Warning => "warning",
+                                LintSeverity::Error => "error",
                             };
                             eprintln!(
                                 "  [{level}] {} [{}:{}] {}",
@@ -1672,12 +1684,12 @@ fn main() {
                             issues: e
                                 .diagnostics()
                                 .into_iter()
-                                .map(|d| spanda_core::LintIssue {
+                                .map(|d| LintIssue {
                                     rule: "parse".into(),
                                     message: d.message,
                                     line: d.line,
                                     column: d.column,
-                                    severity: spanda_core::LintSeverity::Error,
+                                    severity: LintSeverity::Error,
                                 })
                                 .collect(),
                         };

@@ -176,9 +176,20 @@ Goal: move the last small glue bodies out of `spanda-core` and collapse multi-fi
 | Collapse `providers/` subdirectory into single `providers.rs` facade | **Complete** |
 | `lean_core_shims` guards for Phase 14 | **Complete** |
 
-### Optional follow-up (caller migration)
+## Phase 15 — Complete ✓ (caller migration)
+
+Goal: point first-party binaries and bindings at workspace crates directly instead of routing through `spanda-core` shims.
 
 | Step | Status |
 |------|--------|
-| Migrate `spanda-cli` / `spanda-node` imports to workspace crates directly | Planned |
+| Migrate `spanda-cli` imports to workspace crates (`spanda-driver`, `spanda-ota`, `spanda-fleet`, tooling crates) | **Complete** |
+| Migrate `spanda-node` imports to `spanda-driver`, `spanda-format`, `spanda-hardware`, `spanda-error` | **Complete** |
+| Move MQTT/DDS/WebSocket `RuntimeValue` live bridges to `spanda-transport-routing::live_bridges` | **Complete** |
+| `spanda-core` transport shims remain as thin `pub use` re-exports for external API stability | **Complete** |
+
+### Optional follow-up
+
+| Step | Status |
+|------|--------|
 | Remove deprecated `spanda_core::transport_*` shims after one release | Planned |
+| Migrate `spanda-llvm` off `spanda-core` when native compile path is unblocked | Planned |
