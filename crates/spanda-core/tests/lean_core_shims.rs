@@ -152,6 +152,19 @@ fn runtime_eval_logic_is_extracted() {
 }
 
 #[test]
+fn runtime_spawn_logic_is_extracted() {
+    let runtime = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime.rs");
+    let spawn = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_spawn.rs");
+    let runtime_source = fs::read_to_string(&runtime).expect("runtime.rs");
+    let spawn_source = fs::read_to_string(&spawn).expect("runtime_spawn.rs");
+    assert!(spawn_source.contains("fn resolve_future"));
+    assert!(spawn_source.contains("fn process_spawn_queue"));
+    assert!(spawn_source.contains("fn eval_spawn_target"));
+    assert!(!runtime_source.contains("fn resolve_future"));
+    assert!(!runtime_source.contains("fn process_spawn_queue"));
+}
+
+#[test]
 fn interpreter_accepts_injected_runtime_host() {
     use spanda_core::runtime::{Interpreter, InterpreterOptions};
     use spanda_core::simulator::{create_default_simulator, SimulatorConfig};

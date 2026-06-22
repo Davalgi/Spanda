@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Interpreter robotics/sensors/twin split:** AI/mission/fleet/safety (`runtime_robotics.rs`), sensor fusion (`runtime_sensors.rs`), and digital twin (`runtime_twin.rs`) extracted from `runtime.rs` (~580 lines); `runtime.rs` down to ~7670 lines
 - **Interpreter builtins/audit/actuators split:** builtin dispatch (`runtime_builtins.rs`), audit/ledger (`runtime_audit.rs`), actuator motion (`runtime_actuators.rs`), and shared helpers (`runtime_helpers.rs`) extracted; `runtime.rs` down to ~6640 lines
 - **Interpreter eval cluster split:** expression evaluation, member/call dispatch, regex methods, and binary operators moved to `runtime_eval.rs`; `runtime.rs` down to ~5750 lines
+- **Interpreter spawn/async split:** module calls, future resolution, spawn targets, and task-handle queue processing moved to `runtime_spawn.rs`; `runtime.rs` down to ~5480 lines
 
 ### Changed
 
