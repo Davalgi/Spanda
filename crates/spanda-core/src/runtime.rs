@@ -273,6 +273,9 @@ pub struct InterpreterOptions {
 
     /// Official package dependency names from the enclosing project manifest/lockfile.
     pub official_packages: Vec<String>,
+
+    /// Optional domain host for adapter and connectivity hooks; defaults to core host.
+    pub runtime_host: Option<&'static dyn RuntimeHost>,
 }
 
 impl Default for InterpreterOptions {
@@ -312,6 +315,7 @@ impl Default for InterpreterOptions {
             inject_security_faults: false,
             provider_registry: None,
             official_packages: Vec::new(),
+            runtime_host: None,
         }
     }
 }
@@ -382,6 +386,7 @@ pub struct Interpreter<B: RobotBackend> {
     nav2_enabled: bool,
     slam_enabled: bool,
     provider_registry: Rc<RefCell<crate::providers::ProviderRegistry>>,
+    host: &'static dyn RuntimeHost,
 }
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -416,6 +421,9 @@ impl<B: RobotBackend> Interpreter<B> {
                     )
                 }),
         ));
+        let host = options
+            .runtime_host
+            .unwrap_or_else(|| crate::runtime_host::core_runtime_host());
         let mut comm_bus = RoutingCommBus::new();
         comm_bus.attach_provider_registry(Rc::clone(&provider_registry));
         Self {
@@ -484,7 +492,12 @@ impl<B: RobotBackend> Interpreter<B> {
             program_safety_zones: crate::robotics_platform::ProgramSafetyZoneRegistry::default(),
             nav2_enabled: false,
             slam_enabled: false,
+            host,
         }
+    }
+
+    pub fn runtime_host(&self) -> &dyn RuntimeHost {
+        self.host
     }
 
     pub fn telemetry(&self) -> &crate::telemetry::RuntimeTelemetry {
@@ -1204,7 +1217,7 @@ impl<B: RobotBackend> Interpreter<B> {
                     path.as_str()
                 })
                 .collect();
-            spanda_runtime::imports_enable_navigation(&paths, crate::runtime_host::core_runtime_host())
+            spanda_runtime::imports_enable_navigation(&paths, self.host)
         };
         self.slam_enabled = {
             let paths: Vec<&str> = imports
@@ -1214,7 +1227,7 @@ impl<B: RobotBackend> Interpreter<B> {
                     path.as_str()
                 })
                 .collect();
-            spanda_runtime::imports_enable_slam(&paths, crate::runtime_host::core_runtime_host())
+            spanda_runtime::imports_enable_slam(&paths, self.host)
         };
     }
 
@@ -1228,7 +1241,7 @@ impl<B: RobotBackend> Interpreter<B> {
         self.connectivity_policies = policies.iter().map(connectivity_policy_from_decl).collect();
         if let Some(policy) = self.connectivity_policies.first() {
             self.active_connectivity_link = policy.preferred.clone();
-            self.default_transport = crate::runtime_host::core_runtime_host()
+            self.default_transport = self.host
                 .connectivity_link_to_transport(&self.active_connectivity_link);
         }
     }
@@ -4053,7 +4066,7 @@ impl<B: RobotBackend> Interpreter<B> {
         // Process each poll new event.
         for event in self.hardware_monitor.poll_new_events() {
             self.dispatch_system_trigger(SystemTriggerCategory::Hardware, &event)?;
-            if let Some((domain, evt)) = crate::runtime_host::core_runtime_host()
+            if let Some((domain, evt)) = self.host
                 .hardware_event_to_connectivity(&event)
             {
                 self.dispatch_connectivity_trigger(domain, evt)?;
@@ -4117,7 +4130,7 @@ impl<B: RobotBackend> Interpreter<B> {
     fn run_connectivity_triggers(&mut self) -> Result<(), SpandaError> {
         for fault in self.comm_bus.active_faults() {
             if let Some((domain, event)) =
-                crate::runtime_host::core_runtime_host().fault_to_connectivity(&fault)
+                self.host.fault_to_connectivity(&fault)
             {
                 let key = format!("fault:{domain}.{event}");
                 if self.connectivity_events_seen.insert(key) {
@@ -4153,7 +4166,7 @@ impl<B: RobotBackend> Interpreter<B> {
     fn activate_connectivity_link(&mut self, policy_name: &str, link: &str, reason: &str) {
         self.active_connectivity_link = link.to_string();
         self.default_transport =
-            crate::runtime_host::core_runtime_host().connectivity_link_to_transport(link);
+            self.host.connectivity_link_to_transport(link);
         self.comm_bus.reconnect_transport(self.default_transport);
         self.log(format!(
             "connectivity_policy '{policy_name}': {reason} (transport {:?})",
@@ -4189,7 +4202,7 @@ impl<B: RobotBackend> Interpreter<B> {
 
             if let Some(em) = &emergency {
                 if self.active_connectivity_link != *em
-                    && crate::runtime_host::core_runtime_host()
+                    && self.host
                         .is_link_impaired(&self.active_connectivity_link, &faults)
                 {
                     self.activate_connectivity_link(
@@ -4205,7 +4218,7 @@ impl<B: RobotBackend> Interpreter<B> {
     fn current_gps_lat_lon(&self) -> (f64, f64) {
         let state = self.backend.get_state();
         let faults = self.hardware_monitor.injected_faults();
-        let (lat, lon, _) = crate::runtime_host::core_runtime_host().apply_gps_position_faults(
+        let (lat, lon, _) = self.host.apply_gps_position_faults(
             faults,
             state.pose.x,
             state.pose.y,
@@ -4222,7 +4235,7 @@ impl<B: RobotBackend> Interpreter<B> {
         let mut entered = Vec::new();
         let mut exited = Vec::new();
         for fence in &self.geofences {
-            let inside = crate::runtime_host::core_runtime_host().geofence_contains(
+            let inside = self.host.geofence_contains(
                 fence.center_lat,
                 fence.center_lon,
                 fence.radius_m,
@@ -6437,7 +6450,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 .read_sensor(name, sensor_type, topic.as_deref())
         };
         let reading = if matches!(sensor_type.as_str(), "GPS" | "GNSS") {
-            crate::connectivity_positioning::apply_gps_reading_faults(
+            self.host.apply_gps_reading_faults(
                 reading,
                 self.hardware_monitor.injected_faults(),
                 state.pose.x,
@@ -6572,7 +6585,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 let goal_label = goal.as_deref().unwrap_or("none");
                 self.log(format!("navigation: executing goal '{goal_label}'"));
                 if let Some(output) =
-                    crate::runtime_host::core_runtime_host().invoke_nav2_bridge(goal_label)
+                    self.host.invoke_nav2_bridge(goal_label)
                 {
                     self.log(format!("navigation: Nav2 bridge output: {output}"));
                 }
@@ -6622,7 +6635,7 @@ impl<B: RobotBackend> Interpreter<B> {
             "localize" => {
                 let state = self.backend.get_state();
                 if let Some(output) =
-                    crate::runtime_host::core_runtime_host().invoke_slam_bridge("localize")
+                    self.host.invoke_slam_bridge("localize")
                 {
                     self.log(format!("slam: bridge localize output: {output}"));
                 } else {
@@ -6647,7 +6660,7 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             "map" => {
                 if let Some(output) =
-                    crate::runtime_host::core_runtime_host().invoke_slam_bridge("map")
+                    self.host.invoke_slam_bridge("map")
                 {
                     self.log(format!("slam: bridge map output: {output}"));
                 } else {
@@ -7761,7 +7774,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 let (lat, lon) = self.current_gps_lat_lon();
                 let inside = self.geofences.iter().any(|f| {
                     f.name == name
-                        && crate::runtime_host::core_runtime_host().geofence_contains(
+                        && self.host.geofence_contains(
                             f.center_lat,
                             f.center_lon,
                             f.radius_m,
@@ -7778,9 +7791,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.security
                     .require_operation("cellular.sim_identity")
                     .map_err(|e| self.security_error(e, 0))?;
-                let cellular_active = crate::connectivity_positioning::is_modem_bearer(
-                    &self.active_connectivity_link,
-                );
+                let cellular_active = self.host.is_modem_bearer(&self.active_connectivity_link);
                 let outage =
                     self.comm_bus.active_faults().iter().any(|f| {
                         matches!(
@@ -7790,7 +7801,7 @@ impl<B: RobotBackend> Interpreter<B> {
                     }) || self.hardware_monitor.injected_faults().iter().any(|f| {
                         f == "LteOutage" || f == "SatelliteOutage" || f == "NetworkOutage"
                     });
-                Ok(crate::connectivity_positioning::runtime_sim_identity(
+                Ok(self.host.runtime_sim_identity(
                     &self.active_connectivity_link,
                     cellular_active && !outage,
                 ))

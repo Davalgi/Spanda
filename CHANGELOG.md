@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Lean-core provider kernel:** `ProviderRegistry` and provider trait contracts moved to `spanda-runtime`; new `spanda-transport` crate for adapter traits and wire security; `spanda-interpreter` staging crate; fleet orchestration moved to `spanda-fleet`
 - **Lean-core connectivity runtime split:** moved geofence math, connectivity/fault trigger mapping, GPS drift/spoof simulation, and link impairment checks from `spanda-core::connectivity_positioning` to `spanda-connectivity::runtime_sim`; core keeps compatibility wrappers for AST/runtime value conversions
 - **Interpreter extraction staging:** expanded `spanda-runtime::RuntimeHost` with connectivity/geofence/GPS-fault hooks and routed `spanda-core::runtime` trigger/failover/geofence callsites through host methods to reduce direct core coupling
+- **Interpreter host injection:** `Interpreter` now stores an injectable `RuntimeHost` (`InterpreterOptions::runtime_host`); remaining GPS reading and SIM identity paths route through host hooks; `spanda-interpreter` re-exports `RuntimeHost`
 
 ### Changed
 

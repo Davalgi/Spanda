@@ -4,7 +4,7 @@ use crate::comm::TransportKind;
 use crate::nav2_adapter;
 use crate::slam_adapter;
 use spanda_connectivity::adapter_bridge;
-use spanda_runtime::RuntimeHost;
+use spanda_runtime::{RuntimeHost, RuntimeValue};
 use std::collections::HashSet;
 
 /// Default host wiring domain adapters from `spanda-core` into `spanda-runtime`.
@@ -68,6 +68,31 @@ impl RuntimeHost for CoreRuntimeHost {
             radius_m,
         };
         spanda_connectivity::geofence_contains(&fence, lat, lon)
+    }
+
+    fn is_modem_bearer(&self, link: &str) -> bool {
+        spanda_connectivity::is_modem_bearer(link)
+    }
+
+    fn apply_gps_reading_faults(
+        &self,
+        reading: RuntimeValue,
+        faults: &HashSet<String>,
+        true_lat: f64,
+        true_lon: f64,
+        sim_time_ms: f64,
+    ) -> RuntimeValue {
+        crate::connectivity_positioning::apply_gps_reading_faults(
+            reading,
+            faults,
+            true_lat,
+            true_lon,
+            sim_time_ms,
+        )
+    }
+
+    fn runtime_sim_identity(&self, link: &str, attested: bool) -> RuntimeValue {
+        crate::connectivity_positioning::runtime_sim_identity(link, attested)
     }
 }
 

@@ -10,3 +10,4 @@ homepage.workspace = true
 
 [dependencies]
 spanda-core = { path = "../spanda-core" }
+spanda-runtime = { path = "../spanda-runtime" }

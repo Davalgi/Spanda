@@ -1,6 +1,7 @@
 //! Host hooks for domain-specific interpreter behavior in `spanda-core`.
 //!
 
+use crate::value::RuntimeValue;
 use spanda_ast::comm_decl::TransportKind;
 use std::collections::HashSet;
 
@@ -71,6 +72,31 @@ pub trait RuntimeHost {
     ) -> bool {
         let _ = (center_lat, center_lon, radius_m, lat, lon);
         false
+    }
+
+    /// Return true when the link name denotes a cellular or satellite modem bearer.
+    fn is_modem_bearer(&self, link: &str) -> bool {
+        let _ = link;
+        false
+    }
+
+    /// Rewrite a GPS/GNSS sensor reading after applying simulation faults.
+    fn apply_gps_reading_faults(
+        &self,
+        reading: RuntimeValue,
+        faults: &HashSet<String>,
+        true_lat: f64,
+        true_lon: f64,
+        sim_time_ms: f64,
+    ) -> RuntimeValue {
+        let _ = (faults, true_lat, true_lon, sim_time_ms);
+        reading
+    }
+
+    /// Produce a [`SimIdentity`]-shaped runtime object for SIM/eSIM attestation simulation.
+    fn runtime_sim_identity(&self, link: &str, attested: bool) -> RuntimeValue {
+        let _ = (link, attested);
+        RuntimeValue::Void
     }
 }
 

@@ -45,3 +45,35 @@ fn transport_live_no_direct_python_bridge() {
         "transport_live should not resolve bridge script paths directly"
     );
 }
+
+#[test]
+fn interpreter_accepts_injected_runtime_host() {
+    use spanda_core::runtime::{Interpreter, InterpreterOptions};
+    use spanda_core::simulator::{create_default_simulator, SimulatorConfig};
+    use spanda_runtime::RuntimeHost;
+
+    struct StubHost;
+
+    impl RuntimeHost for StubHost {
+        fn slam_import_known(&self, _path: &str) -> bool {
+            false
+        }
+
+        fn navigation_import_known(&self, _path: &str) -> bool {
+            false
+        }
+    }
+
+    static STUB: StubHost = StubHost;
+    let interp = Interpreter::new(
+        create_default_simulator(SimulatorConfig::default()),
+        InterpreterOptions {
+            runtime_host: Some(&STUB),
+            ..Default::default()
+        },
+    );
+    assert!(std::ptr::eq(
+        interp.runtime_host() as *const dyn RuntimeHost,
+        &STUB as *const StubHost as *const dyn RuntimeHost,
+    ));
+}

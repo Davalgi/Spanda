@@ -16,6 +16,7 @@ pub use spanda_core::{
     ObstacleConfig, PoseState, RobotState, RunOptions, RunResult, SpandaError, TestRunResult,
     VelocityState,
 };
+pub use spanda_runtime::RuntimeHost;
 
 /// In-process simulator backend implementing [`RobotBackend`].
 pub type SimRobotBackend = Simulator;
