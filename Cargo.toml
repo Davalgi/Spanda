@@ -23,6 +23,8 @@ members = [
     "crates/spanda-lexer",
     "crates/spanda-parser",
     "crates/spanda-driver",
+    "crates/spanda-certify",
+    "crates/spanda-bridge",
     "crates/spanda-typecheck",
     "crates/spanda-runtime",
     "crates/spanda-comm",

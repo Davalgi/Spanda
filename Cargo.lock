@@ -1194,6 +1194,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-bridge"
+version = "0.1.0"
+dependencies = [
+ "pyo3",
+ "serde",
+ "serde_json",
+ "spanda-ast",
+ "spanda-error",
+ "spanda-ffi",
+ "spanda-runtime",
+]
+
+[[package]]
+name = "spanda-certify"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "spanda-ast",
+ "spanda-error",
+ "spanda-hardware",
+ "spanda-ota",
+]
+
+[[package]]
 name = "spanda-cli"
 version = "0.1.0"
 dependencies = [
@@ -1256,6 +1280,8 @@ dependencies = [
  "spanda-ai",
  "spanda-ast",
  "spanda-audit",
+ "spanda-bridge",
+ "spanda-certify",
  "spanda-comm",
  "spanda-concurrency",
  "spanda-connectivity",
@@ -1322,7 +1348,10 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "spanda-ast",
+ "spanda-bridge",
+ "spanda-certify",
  "spanda-error",
+ "spanda-interpreter",
  "spanda-lexer",
  "spanda-parser",
  "spanda-runtime-host",

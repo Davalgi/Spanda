@@ -1,0 +1,16 @@
+[package]
+name = "spanda-certify"
+version.workspace = true
+edition.workspace = true
+description = "Spanda deploy certification proof checklist and runtime gate"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+spanda-ast = { path = "../spanda-ast" }
+spanda-error = { path = "../spanda-error" }
+spanda-hardware = { path = "../spanda-hardware" }
+spanda-ota = { path = "../spanda-ota" }
