@@ -94,6 +94,27 @@ fn runtime_trigger_logic_is_extracted() {
 }
 
 #[test]
+fn runtime_robotics_sensors_and_twin_logic_is_extracted() {
+    let runtime = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime.rs");
+    let robotics = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_robotics.rs");
+    let sensors = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_sensors.rs");
+    let twin = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_twin.rs");
+    let runtime_source = fs::read_to_string(&runtime).expect("runtime.rs");
+    let robotics_source = fs::read_to_string(&robotics).expect("runtime_robotics.rs");
+    let sensors_source = fs::read_to_string(&sensors).expect("runtime_sensors.rs");
+    let twin_source = fs::read_to_string(&twin).expect("runtime_twin.rs");
+    assert!(robotics_source.contains("fn eval_ai_method"));
+    assert!(robotics_source.contains("fn eval_safety_validate"));
+    assert!(sensors_source.contains("fn read_sensor_value"));
+    assert!(sensors_source.contains("fn read_fused_observation"));
+    assert!(twin_source.contains("fn eval_twin_method"));
+    assert!(!runtime_source.contains("fn eval_ai_method"));
+    assert!(!runtime_source.contains("fn read_sensor_value"));
+    assert!(!runtime_source.contains("fn eval_safety_validate"));
+    assert!(!runtime_source.contains("fn eval_twin_method"));
+}
+
+#[test]
 fn interpreter_accepts_injected_runtime_host() {
     use spanda_core::runtime::{Interpreter, InterpreterOptions};
     use spanda_core::simulator::{create_default_simulator, SimulatorConfig};

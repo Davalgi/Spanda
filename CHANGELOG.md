@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Interpreter host injection:** `Interpreter` now stores an injectable `RuntimeHost` (`InterpreterOptions::runtime_host`); remaining GPS reading and SIM identity paths route through host hooks; `spanda-interpreter` re-exports `RuntimeHost`
 - **Interpreter module split:** connectivity trigger, geofence, and failover logic extracted from `runtime.rs` into `runtime_connectivity.rs` as a staging step toward `spanda-interpreter`
 - **Interpreter submodule extraction:** navigation/SLAM (`runtime_navigation.rs`), robot methods (`runtime_robot.rs`), and trigger dispatch (`runtime_triggers.rs`) split out of `runtime.rs` with lean_core guard tests
+- **Interpreter robotics/sensors/twin split:** AI/mission/fleet/safety (`runtime_robotics.rs`), sensor fusion (`runtime_sensors.rs`), and digital twin (`runtime_twin.rs`) extracted from `runtime.rs` (~580 lines); `runtime.rs` down to ~7670 lines
 
 ### Changed
 
