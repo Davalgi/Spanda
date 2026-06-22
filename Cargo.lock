@@ -1230,6 +1230,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-codegen"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "spanda-ast",
+ "spanda-driver",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-sir",
+]
+
+[[package]]
 name = "spanda-comm"
 version = "0.1.0"
 dependencies = [
@@ -1282,21 +1295,26 @@ dependencies = [
  "spanda-audit",
  "spanda-bridge",
  "spanda-certify",
+ "spanda-codegen",
  "spanda-comm",
  "spanda-concurrency",
  "spanda-connectivity",
  "spanda-connectivity-runtime",
  "spanda-debug",
  "spanda-deploy-http",
+ "spanda-docs",
  "spanda-driver",
  "spanda-error",
  "spanda-ffi",
  "spanda-fleet",
+ "spanda-format",
  "spanda-hal",
  "spanda-hardware",
  "spanda-interpreter",
  "spanda-lexer",
  "spanda-lib-registry",
+ "spanda-lint",
+ "spanda-modules",
  "spanda-ota",
  "spanda-package",
  "spanda-parser",
@@ -1344,6 +1362,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-docs"
+version = "0.1.0"
+dependencies = [
+ "spanda-ast",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-lib-registry",
+ "spanda-parser",
+ "spanda-runtime-host",
+ "spanda-typecheck",
+]
+
+[[package]]
 name = "spanda-driver"
 version = "0.1.0"
 dependencies = [
@@ -1351,6 +1382,7 @@ dependencies = [
  "spanda-ast",
  "spanda-bridge",
  "spanda-certify",
+ "spanda-debug",
  "spanda-error",
  "spanda-interpreter",
  "spanda-lexer",
@@ -1392,6 +1424,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-format"
+version = "0.1.0"
+dependencies = [
+ "spanda-ast",
+ "spanda-comm",
+ "spanda-driver",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-parser",
+]
+
+[[package]]
 name = "spanda-hal"
 version = "0.1.0"
 dependencies = [
@@ -1404,6 +1448,12 @@ name = "spanda-hardware"
 version = "0.1.0"
 dependencies = [
  "serde",
+ "spanda-ast",
+ "spanda-comm",
+ "spanda-connectivity",
+ "spanda-driver",
+ "spanda-lexer",
+ "spanda-parser",
 ]
 
 [[package]]
@@ -1454,11 +1504,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-lint"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "spanda-ast",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-parser",
+]
+
+[[package]]
 name = "spanda-llvm"
 version = "0.1.0"
 dependencies = [
  "spanda-core",
  "spanda-rt",
+]
+
+[[package]]
+name = "spanda-modules"
+version = "0.1.0"
+dependencies = [
+ "spanda-ast",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-typecheck",
 ]
 
 [[package]]
@@ -1587,7 +1659,12 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "spanda-ast",
  "spanda-audit",
+ "spanda-comm",
+ "spanda-error",
+ "spanda-lexer",
+ "spanda-parser",
  "thiserror 2.0.18",
 ]
 

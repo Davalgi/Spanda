@@ -4,10 +4,12 @@ pub mod agent;
 pub mod mesh;
 pub mod orchestrator;
 pub mod remote;
+pub mod swarm_coordinator;
 mod types;
 
 pub use agent::*;
 pub use mesh::*;
 pub use orchestrator::*;
 pub use remote::*;
+pub use swarm_coordinator::*;
 pub use types::PeerDelivery;

@@ -1,9 +1,8 @@
 //! Certification proof checklist tests for strict verify.
 
 use spanda_core::{
-    compile, verify_certification_proof, CompatSeverity, VerifyOptions,
+    compile, verify_certification_proof, verify_compatibility, CompatSeverity, VerifyOptions,
 };
-use spanda_core::hardware::verify_program_compatibility;
 
 #[test]
 fn deploy_without_certify_warns_by_default() {
@@ -86,15 +85,15 @@ deploy Rover to Tiny;
 #[test]
 fn strict_certify_flag_surfaces_in_verify_report() {
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
-    let program = compile(source).expect("compile").program;
-    let report = verify_program_compatibility(
-        &program,
+    let report = verify_compatibility(
+        source,
         &VerifyOptions {
             all_targets: true,
             strict_certify: true,
             ..Default::default()
         },
-    );
+    )
+    .expect("verify");
     assert!(
         report
             .items

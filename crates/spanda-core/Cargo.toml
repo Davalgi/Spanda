@@ -27,6 +27,11 @@ spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }
 spanda-driver = { path = "../spanda-driver" }
 spanda-sir = { path = "../spanda-sir" }
+spanda-format = { path = "../spanda-format" }
+spanda-lint = { path = "../spanda-lint" }
+spanda-codegen = { path = "../spanda-codegen" }
+spanda-modules = { path = "../spanda-modules" }
+spanda-docs = { path = "../spanda-docs" }
 spanda-certify = { path = "../spanda-certify" }
 spanda-bridge = { path = "../spanda-bridge" }
 spanda-typecheck = { path = "../spanda-typecheck" }

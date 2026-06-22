@@ -1,8 +1,8 @@
 [package]
-name = "spanda-driver"
+name = "spanda-modules"
 version.workspace = true
 edition.workspace = true
-description = "Spanda compile driver — lexer, parser, and type-check pipeline"
+description = "Spanda multi-file module loader and export registry"
 license.workspace = true
 repository.workspace = true
 authors.workspace = true
@@ -13,10 +13,4 @@ spanda-ast = { path = "../spanda-ast" }
 spanda-error = { path = "../spanda-error" }
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }
-spanda-runtime-host = { path = "../spanda-runtime-host" }
 spanda-typecheck = { path = "../spanda-typecheck" }
-spanda-interpreter = { path = "../spanda-interpreter" }
-spanda-certify = { path = "../spanda-certify" }
-spanda-bridge = { path = "../spanda-bridge" }
-spanda-debug = { path = "../spanda-debug" }
-serde = { version = "1", features = ["derive"] }

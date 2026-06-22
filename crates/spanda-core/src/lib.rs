@@ -208,7 +208,16 @@ pub fn verify_compatibility(
     let tokens = lexer::tokenize(source)?;
     let program = parser::parse(tokens)?;
     types::check(&program)?;
-    Ok(hardware::verify_program_compatibility(&program, options))
+    let mut report = hardware::verify_program_compatibility(&program, options);
+    report.items.extend(verify_certification_proof(
+        &program,
+        options.strict_certify,
+    ));
+    report.compatible = !report
+        .items
+        .iter()
+        .any(|item| item.severity == hardware::CompatSeverity::Error);
+    Ok(report)
 }
 
 pub fn verify_compatibility_target(

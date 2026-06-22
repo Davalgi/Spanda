@@ -15,6 +15,7 @@ pub mod secure_comm;
 pub mod signed;
 pub mod trust;
 pub mod trust_boundary;
+pub mod validate;
 pub mod wire_crypto;
 
 pub use capability::{
@@ -37,3 +38,6 @@ pub use signed::{Signature, SignedMessage};
 pub use trust::TrustLevel;
 pub use trust_boundary::{boundary_for_transport_name, TrustBoundaryKind, TrustBoundaryRegistry};
 pub use wire_crypto::WireCryptoSession;
+pub use validate::{
+    security_audit, security_check, SecurityFinding, SecurityReport, SecuritySeverity,
+};
