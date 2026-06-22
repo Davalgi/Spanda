@@ -2,7 +2,7 @@
 
 use crate::{
     capability_traceability, check_minimum_capabilities, infer_robot_capabilities,
-    lookup_capability,
+    lookup_capability, minimum::MinimumCapabilityRow,
 };
 use serde::{Deserialize, Serialize};
 use spanda_ast::foundations::{
@@ -18,6 +18,8 @@ pub struct VerificationDiagnostic {
     pub column: u32,
     pub severity: String,
     pub category: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggested_fix: Option<String>,
 }
 
 /// Collect capability, traceability, minimum-hardware, health, and kill-switch diagnostics.
@@ -59,6 +61,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
                     req.span.start.column,
                     "warning",
                     "capability",
+                    capability_fix_for(&row.capability),
                 ));
             }
         }
@@ -66,7 +69,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
 
     let minimum = check_minimum_capabilities(program);
     for err in &minimum.errors {
-        if let Some(d) = map_minimum_error(err, requires_capabilities, robots) {
+        if let Some(d) = map_minimum_error(err, requires_capabilities, robots, &minimum.rows) {
             diags.push(d);
         }
     }
@@ -77,6 +80,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
             1,
             "warning",
             "minimum-hardware",
+            None,
         ));
     }
 
@@ -88,6 +92,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
                 req.span.start.column,
                 severity_for(req.severity),
                 "capability",
+                None,
             ));
         }
     }
@@ -118,6 +123,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
                     span.start.column,
                     "info",
                     "kill-switch",
+                    Some(KILL_SWITCH_STUB.into()),
                 ));
             }
         }
@@ -132,6 +138,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
                 span.start.column,
                 "info",
                 "health",
+                Some(HEALTH_POLICY_STUB.into()),
             ));
         }
     }
@@ -151,6 +158,7 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
                         span.start.column,
                         "warning",
                         "capability",
+                        capability_fix_for(&row.capability),
                     ));
                 }
             }
@@ -160,13 +168,34 @@ pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDi
     diags
 }
 
-fn diag(message: String, line: u32, column: u32, severity: &str, category: &str) -> VerificationDiagnostic {
+fn diag(
+    message: String,
+    line: u32,
+    column: u32,
+    severity: &str,
+    category: &str,
+    suggested_fix: Option<String>,
+) -> VerificationDiagnostic {
     VerificationDiagnostic {
         message,
         line,
         column,
         severity: severity.into(),
         category: category.into(),
+        suggested_fix,
+    }
+}
+
+const KILL_SWITCH_STUB: &str = "kill_switch EmergencyStop {\n    priority: critical;\n    action { emergency_stop; }\n}";
+
+const HEALTH_POLICY_STUB: &str = "health_policy SafetyPolicy {\n    on Critical { enter degraded_mode; }\n    on Unsafe { emergency_stop; }\n}";
+
+fn capability_fix_for(capability: &str) -> Option<String> {
+    match capability {
+        "obstacle_avoidance" => Some("sensor lidar: Lidar;".into()),
+        "gps_navigation" => Some("sensor gps: GPS;".into()),
+        "emergency_stop" => Some(KILL_SWITCH_STUB.into()),
+        _ => None,
     }
 }
 
@@ -193,6 +222,7 @@ fn map_traceability_error(
                     span.start.column,
                     "error",
                     "traceability",
+                    None,
                 ));
             }
             let _ = tail;
@@ -206,6 +236,7 @@ fn map_traceability_error(
                 req.span.start.column,
                 "error",
                 "capability",
+                None,
             ));
         }
     }
@@ -224,6 +255,7 @@ fn map_traceability_warning(warn: &str, robots: &[RobotDecl]) -> Option<Verifica
                         span.start.column,
                         "warning",
                         "traceability",
+                        Some("safety { max_speed = 1.0 m/s; }".into()),
                     ));
                 }
             }
@@ -237,7 +269,21 @@ fn map_minimum_error(
     err: &str,
     requires: &[RequiresCapabilityDecl],
     robots: &[RobotDecl],
+    rows: &[MinimumCapabilityRow],
 ) -> Option<VerificationDiagnostic> {
+    let fix_from_rows = rows
+        .iter()
+        .find(|row| err.contains(&row.capability))
+        .and_then(|row| row.suggested_fixes.first().cloned())
+        .or_else(|| {
+            if err.contains("obstacle_avoidance") {
+                Some("Add Lidar sensor to hardware profile".into())
+            } else if err.contains("gps_navigation") {
+                Some("Add GPS sensor to hardware profile".into())
+            } else {
+                None
+            }
+        });
     for req in requires {
         if err.contains(&req.capability) {
             return Some(diag(
@@ -246,6 +292,7 @@ fn map_minimum_error(
                 req.span.start.column,
                 severity_for(req.severity),
                 "minimum-hardware",
+                fix_from_rows.clone().or_else(|| capability_fix_for(&req.capability)),
             ));
         }
     }
@@ -258,6 +305,7 @@ fn map_minimum_error(
                 span.start.column,
                 "error",
                 "minimum-hardware",
+                fix_from_rows,
             ));
         }
     }
@@ -281,6 +329,7 @@ fn kill_switch_diagnostics(ks: &KillSwitchDecl, program: &Program) -> Vec<Verifi
             span.start.column,
             "warning",
             "kill-switch",
+            Some("secure { signed required; }".into()),
         ));
     }
     diags
@@ -338,6 +387,12 @@ kill_switch EmergencyStop {
         let program = parse_source(source);
         let diags = collect_verification_diagnostics(&program);
         assert!(diags.iter().any(|d| d.category == "kill-switch" && d.severity == "warning"));
+        assert!(
+            diags
+                .iter()
+                .any(|d| d.suggested_fix.as_deref() == Some("secure { signed required; }")),
+            "expected signed comm quick-fix"
+        );
     }
 
     #[test]
