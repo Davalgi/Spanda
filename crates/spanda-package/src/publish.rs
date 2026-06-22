@@ -101,6 +101,13 @@ pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult
     // Create mutable report for accumulating results.
     let mut report = bundle_package(root, manifest)?;
 
+    if let Some(mirror_path) = mirror_bundle_to_local_registry(root, manifest, &report.bundle_path)? {
+        eprintln!(
+            "Registry mirror: wrote {}",
+            mirror_path.display()
+        );
+    }
+
     // Emit output when registry base url provides a base.
     if let Some(base) = registry_base_url() {
         let url = format!(
@@ -131,6 +138,35 @@ pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult
         }
     }
     Ok(report)
+}
+
+/// Copy a published bundle into the repo-local registry mirror when configured.
+pub fn mirror_bundle_to_local_registry(
+    root: &Path,
+    manifest: &PackageManifest,
+    bundle: &Path,
+) -> PackageResult<Option<PathBuf>> {
+    let mirror_root = std::env::var("SPANDA_REGISTRY_MIRROR")
+        .ok()
+        .map(PathBuf::from)
+        .or_else(|| {
+            let candidate = root.join("registry/packages");
+            candidate.is_dir().then_some(candidate)
+        })
+        .or_else(|| {
+            root.ancestors().find_map(|ancestor| {
+                let candidate = ancestor.join("registry/packages");
+                candidate.is_dir().then_some(candidate)
+            })
+        });
+    let Some(mirror_root) = mirror_root else {
+        return Ok(None);
+    };
+    let dest_dir = mirror_root.join(&manifest.package.name);
+    fs::create_dir_all(&dest_dir).map_err(PackageError::from)?;
+    let dest = dest_dir.join(&manifest.package.version);
+    fs::copy(bundle, &dest).map_err(PackageError::from)?;
+    Ok(Some(dest))
 }
 
 fn create_tar_gz(output: &Path, root: &Path, files: &[PathBuf]) -> PackageResult<()> {
