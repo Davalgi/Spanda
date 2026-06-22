@@ -63,7 +63,8 @@ impl<B: RobotBackend> Interpreter<B> {
         };
         let faults = self.hardware_monitor.runtime_faults();
         let events = self.hardware_monitor.runtime_events();
-        let report = evaluate_runtime_health(&faults, &events, &program);
+        let mut report = evaluate_runtime_health(&faults, &events, &program);
+        spanda_capability::apply_fleet_health_checks(&mut report, &self.fleets, &faults);
         let label = format!("{:?}", report.overall);
         if self.last_health_overall.as_deref() == Some(label.as_str()) {
             return;
@@ -92,6 +93,54 @@ impl<B: RobotBackend> Interpreter<B> {
             );
         }
         self.apply_health_policy_reactions(&report);
+        self.apply_swarm_health_coordination(&report);
+    }
+
+    fn apply_swarm_health_coordination(&mut self, report: &HealthReport) {
+        // Log swarm coordination when fleet health degrades across declared swarms.
+        //
+        // Parameters:
+        // - `self` — method receiver
+        // - `report` — runtime health evaluation result
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let result = instance.apply_swarm_health_coordination(report);
+
+        if !matches!(
+            report.overall,
+            HealthStatus::Critical | HealthStatus::Unsafe | HealthStatus::Failed
+        ) {
+            return;
+        }
+        for swarm in &self.program_swarms {
+            let spanda_ast::robotics_decl::SwarmDecl::SwarmDecl {
+                name,
+                fleet_name,
+                policy,
+                ..
+            } = swarm;
+            if self.fleets.members(fleet_name).is_some() {
+                self.log(format!(
+                    "swarm: {name} applying {:?} coordination for fleet {fleet_name} on {:?}",
+                    policy, report.overall
+                ));
+                self.record_debug_event(
+                    1,
+                    "swarm_health_coordination",
+                    &[
+                        ("swarm", name.clone()),
+                        ("fleet", fleet_name.clone()),
+                        ("overall", format!("{:?}", report.overall)),
+                    ],
+                );
+            }
+        }
     }
 
     fn apply_health_policy_reactions(&mut self, report: &HealthReport) {

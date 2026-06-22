@@ -14,6 +14,7 @@ spanda-ast = { path = "../spanda-ast" }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }
+spanda-runtime = { path = "../spanda-runtime" }
 
 [dev-dependencies]
 spanda-driver = { path = "../spanda-driver" }

@@ -10,7 +10,8 @@ pub mod traceability;
 
 pub use diagnostics::{collect_verification_diagnostics, VerificationDiagnostic};
 pub use health::{
-    evaluate_health_checks, evaluate_runtime_health, health_traceability, HealthCheckResult,
+    evaluate_health_checks, apply_fleet_health_checks, evaluate_runtime_health,
+    health_traceability, HealthCheckResult,
     HealthReport, HealthStatus, HealthTraceRow,
 };
 pub use minimum::{check_minimum_capabilities, MinimumCapabilityReport, MinimumCapabilityRow};

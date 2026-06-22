@@ -1297,6 +1297,7 @@ dependencies = [
  "spanda-hardware",
  "spanda-lexer",
  "spanda-parser",
+ "spanda-runtime",
 ]
 
 [[package]]

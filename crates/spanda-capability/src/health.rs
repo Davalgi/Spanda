@@ -170,6 +170,81 @@ pub fn evaluate_runtime_health(
     report
 }
 
+/// Refine fleet-target health checks using fleet membership and runtime faults.
+pub fn apply_fleet_health_checks(
+    report: &mut HealthReport,
+    fleets: &spanda_runtime::robotics::FleetRegistry,
+    faults: &[String],
+) {
+    // Refine fleet-target health checks using fleet membership and runtime faults.
+    //
+    // Parameters:
+    // - `report` — mutable health report
+    // - `fleets` — declared fleet groupings
+    // - `faults` — active runtime fault labels
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // apply_fleet_health_checks(&mut report, &fleets, &faults);
+
+    let fault_lower: Vec<String> = faults.iter().map(|f| f.to_ascii_lowercase()).collect();
+    for check in &mut report.checks {
+        if check.target_kind != "fleet" {
+            continue;
+        }
+        let members = fleets.members(&check.target).unwrap_or(&[]);
+        if members.is_empty() {
+            check.status = HealthStatus::Unknown;
+            continue;
+        }
+        let member_hit = members.iter().any(|member| {
+            let member_lower = member.to_ascii_lowercase();
+            fault_lower
+                .iter()
+                .any(|f| f.contains(&member_lower) || f.contains("critical") || f.contains("unsafe"))
+        });
+        check.status = if member_hit {
+            HealthStatus::Critical
+        } else if fault_lower.is_empty() {
+            HealthStatus::Healthy
+        } else {
+            HealthStatus::Degraded
+        };
+        check.message = Some(format!(
+            "Fleet '{}' members={} status={:?}",
+            check.target,
+            members.len(),
+            check.status
+        ));
+    }
+
+    report.overall = if report.checks.iter().any(|c| {
+        matches!(
+            c.status,
+            HealthStatus::Critical | HealthStatus::Failed | HealthStatus::Unsafe
+        )
+    }) {
+        HealthStatus::Critical
+    } else if report.checks.iter().any(|c| {
+        matches!(
+            c.status,
+            HealthStatus::Degraded | HealthStatus::Warning | HealthStatus::Offline
+        )
+    }) || !faults.is_empty()
+    {
+        HealthStatus::Degraded
+    } else if report.checks.is_empty() {
+        HealthStatus::Unknown
+    } else {
+        HealthStatus::Healthy
+    };
+}
+
 fn runtime_status_for_metric(
     metric: &str,
     faults: &[String],
