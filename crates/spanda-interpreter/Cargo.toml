@@ -1,0 +1,12 @@
+[package]
+name = "spanda-interpreter"
+version.workspace = true
+edition.workspace = true
+description = "Spanda interpreter staging crate — public run API re-exported from spanda-core"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+spanda-core = { path = "../spanda-core" }

@@ -4,7 +4,7 @@ Phased plan to complete the package-first architecture.
 
 ## Phase 1 — Complete ✓
 
-- Provider trait contracts in `spanda-core/src/providers/`
+- Provider trait contracts in `spanda-runtime/src/providers/` (bootstrap shims in `spanda-core`)
 - `ProviderRegistry` and `bootstrap_default_providers()`
 - 20 official package scaffolds under `packages/registry/`
 - Compatibility shims documented on legacy core modules
@@ -29,8 +29,10 @@ Compiler/runtime kernel extracted; interpreter remains the composition root in `
 | `spanda-ast` | Done |
 | `spanda-lexer` | Done |
 | `spanda-typecheck` | Done — `TypeCheckHost` + `CoreTypeCheckHost` |
-| `spanda-runtime` | Done — scheduler, provider types, robotics state, `RuntimeValue`, `Environment`, `RuntimeError`, `RuntimeHost` |
-| `spanda-core` | Facade — `Interpreter`, `RobotBackend`, full `ProviderRegistry`, domain shims |
+| `spanda-transport` | Done — `TransportAdapter` trait, wire security/TLS, stub state |
+| `spanda-runtime` | Done — scheduler, `ProviderRegistry`, provider traits, robotics state, `RuntimeValue`, `Environment`, `RuntimeError`, `RuntimeHost` |
+| `spanda-interpreter` | Staging — re-exports public run API from `spanda-core`; `Interpreter` body still in core until `RuntimeHost` migration completes |
+| `spanda-core` | Facade — `Interpreter` body, `RoutingCommBus`, bootstrap, thin re-export shims |
 
 The ~8k-line `Interpreter` intentionally stays in core as the orchestration layer until additional subsystems (HAL, safety, transport) expose narrower host traits.
 
@@ -55,7 +57,12 @@ TypeScript parity: `bootstrapProvidersForPackages()`, registry-backed `RoutingCo
 | Transport `TransportAdapter` impls | Moved to `spanda-transport-{ros2,mqtt,dds,websocket}`; `lean_core_shims` guards `transport.rs` |
 | Nav2/SLAM adapter bridge | Moved from `spanda-core` to `spanda-connectivity::adapter_bridge` |
 | ROS2 rclrs transport | Consolidated in `spanda-transport-ros2` (`rclrs.rs`); removed `transport_rclrs*.rs` from core |
-| Unused TLS deps in `spanda-core` | Removed (`rustls`, `rustls-pemfile`, `webpki-roots`, `hex`); TLS lives in `spanda-transport` / deploy crates |
+| Fleet orchestration | Moved to `spanda-fleet::orchestrator`; core shim re-exports |
+| `ProviderRegistry` / traits | Moved to `spanda-runtime`; bootstrap stays in core |
+
+## Phase 7 — Complete ✓ (shim deprecation)
+
+Protocol-specific I/O and adapter bodies live in workspace transport/fleet/connectivity crates. `spanda-core` retains only `RoutingCommBus`, wire encode/decode, bootstrap, package stubs, the `Interpreter` orchestration root, and thin `pub use` shims.
 
 ### Example repairs — Complete ✓
 
@@ -68,6 +75,6 @@ All 20 previously skipped examples now pass `spanda check`. The manifest retains
 - [x] Example regression script in CI (162 + 2 negative tests)
 - [x] `spanda-package` does not depend on `spanda-core`
 - [x] Every official package has bootstrap registration or documented stub status
-- [ ] Zero protocol-specific code in core except traits + wire types (ongoing shim deprecation — transport adapters, ROS2 rclrs, and live bridges in `spanda-transport-*`; Nav2/SLAM bridge in `spanda-connectivity`; core `transport.rs` is routing-only with re-exports)
+- [x] Zero protocol-specific code in core except traits + wire types (`spanda-transport-*` adapters, `spanda-connectivity` bridges, `spanda-fleet` orchestration; core routing + shims only)
 
 See also: [lean-core.md](./lean-core.md), [migration.md](./migration.md#lean-core-package-first-refactor)
