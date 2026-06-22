@@ -185,6 +185,10 @@ export type Program = {
   simulateCompatibility: import("../foundations.js").SimulateCompatibilityDecl | null;
   messages: MessageDecl[];
   validateRules: import("../foundations.js").ValidateRuleDecl[];
+  killSwitches: import("../foundations.js").KillSwitchDecl[];
+  healthChecks: import("../foundations.js").HealthCheckDecl[];
+  healthPolicies: import("../foundations.js").HealthPolicyDecl[];
+  requiresCapabilities: import("../foundations.js").RequiresCapabilityDecl[];
   robots: RobotDecl[];
   span: Span;
 };
@@ -241,6 +245,10 @@ export type RobotDecl = {
   twinSync: TwinSyncDecl | null;
   secureComm: import("../foundations.js").SecureCommPolicyDecl | null;
   trustBoundaries: import("../foundations.js").TrustBoundaryDecl[];
+  usesHardware: string | null;
+  exposesCapabilities: string[];
+  killSwitches: import("../foundations.js").KillSwitchDecl[];
+  healthChecks: import("../foundations.js").HealthCheckDecl[];
   span: Span;
 };
 
@@ -465,7 +473,14 @@ export type Stmt =
   | SubscribeStmt
   | ExecuteStmt
   | DiscoverStmt
-  | ReceiveStmt;
+  | ReceiveStmt
+  | ExpectCompileErrorStmt;
+
+export type ExpectCompileErrorStmt = {
+  kind: "ExpectCompileErrorStmt";
+  body: Stmt[];
+  span: Span;
+};
 
 export type SpawnStmt = {
   kind: "SpawnStmt";

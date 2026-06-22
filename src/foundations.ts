@@ -285,6 +285,7 @@ export type MissionDecl = {
   name: string | null;
   durationHours: number | null;
   steps: string[];
+  requiredCapabilities: string[];
   span: Span;
 };
 
@@ -342,6 +343,61 @@ export const CERTIFICATION_STANDARDS: CertificationStandard[] = [
   "ISO26262",
 ];
 
+export type HardwareComponentDecl = {
+  componentKind: string;
+  name: string;
+  componentType: string;
+  capabilities: string[];
+  properties: [string, string][];
+  span: Span;
+};
+
+export type KillSwitchDecl = {
+  kind: "KillSwitchDecl";
+  name: string;
+  source: string | null;
+  priority: string;
+  body: import("./ast/nodes.js").Stmt[];
+  remoteSigned: boolean;
+  span: Span;
+};
+
+export type HealthCheckCondition = {
+  metric: string;
+  operator: string;
+  threshold: string;
+  span: Span;
+};
+
+export type HealthCheckDecl = {
+  kind: "HealthCheckDecl";
+  name: string;
+  targetKind: string;
+  target: string;
+  conditions: HealthCheckCondition[];
+  span: Span;
+};
+
+export type HealthPolicyDecl = {
+  kind: "HealthPolicyDecl";
+  name: string;
+  reactions: [string, string][];
+  span: Span;
+};
+
+export type RequiresCapabilitySeverity = "error" | "warning" | "info";
+
+export type RequiresCapabilityDecl = {
+  capability: string;
+  requiredBy: string | null;
+  anyOfSensors: string[];
+  anyOfActuators: string[];
+  anyOfConnectivity: string[];
+  safetyRules: string[];
+  severity: RequiresCapabilitySeverity;
+  span: Span;
+};
+
 export type HardwareDecl = {
   kind: "HardwareDecl";
   name: string;
@@ -353,6 +409,7 @@ export type HardwareDecl = {
   sensors: string[];
   actuators: string[];
   connectivity: string[];
+  components: HardwareComponentDecl[];
   batteryWh: number | null;
   networkBandwidthMbps: number | null;
   networkLatencyMs: number | null;

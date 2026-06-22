@@ -86,6 +86,13 @@ import type {
   BleServiceDecl,
   SimulateCompatibilityDecl,
   MissionDecl,
+  KillSwitchDecl,
+  HealthCheckDecl,
+  HealthCheckCondition,
+  HealthPolicyDecl,
+  RequiresCapabilityDecl,
+  RequiresCapabilitySeverity,
+  HardwareComponentDecl,
   ResourceBudgetDecl,
   TaskPriority,
   PipelineDecl,
@@ -343,6 +350,11 @@ class Parser {
       "FAULTS",
       "VERIFY",
       "REQUIRES",
+      "ROBOT",
+      "SENSOR",
+      "ACTUATOR",
+      "FLEET",
+      "SWARM",
     ];
 
     // check membership before continuing.
@@ -451,6 +463,10 @@ class Parser {
     const traits: TraitDecl[] = [];
     const messages: MessageDecl[] = [];
     const validateRules: ValidateRuleDecl[] = [];
+    const killSwitches: KillSwitchDecl[] = [];
+    const healthChecks: HealthCheckDecl[] = [];
+    const healthPolicies: HealthPolicyDecl[] = [];
+    const requiresCapabilities: RequiresCapabilityDecl[] = [];
     const robots: RobotDecl[] = [];
     const hardwareProfiles: HardwareDecl[] = [];
     const deployments: DeployDecl[] = [];
@@ -513,6 +529,14 @@ class Parser {
         messages.push(this.parseMessage());
       } else if (this.check("IDENT") && this.peek().lexeme === "validate") {
         validateRules.push(this.parseValidateRule());
+      } else if (this.check("IDENT") && this.peek().lexeme === "kill_switch") {
+        killSwitches.push(this.parseKillSwitch());
+      } else if (this.check("IDENT") && this.peek().lexeme === "health_check") {
+        healthChecks.push(this.parseHealthCheck());
+      } else if (this.check("IDENT") && this.peek().lexeme === "health_policy") {
+        healthPolicies.push(this.parseHealthPolicy());
+      } else if (this.check("IDENT") && this.peek().lexeme === "requires_capability") {
+        requiresCapabilities.push(this.parseRequiresCapability());
       } else if (this.check("ROBOT")) {
         robots.push(this.parseRobot());
       } else {
@@ -551,6 +575,10 @@ class Parser {
       simulateCompatibility,
       messages,
       validateRules,
+      killSwitches,
+      healthChecks,
+      healthPolicies,
+      requiresCapabilities,
       robots,
       span: this.spanFrom(start, end),
     };
@@ -1247,6 +1275,10 @@ class Parser {
     const twinSync = null;
     let secureComm: SecureCommPolicyDecl | null = null;
     const trustBoundaries: TrustBoundaryDecl[] = [];
+    let usesHardware: string | null = null;
+    const exposesCapabilities: string[] = [];
+    const robotKillSwitches: KillSwitchDecl[] = [];
+    const robotHealthChecks: HealthCheckDecl[] = [];
 
     // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
@@ -1431,6 +1463,34 @@ class Parser {
       } else if (this.check("DEVICE")) {
         devices.push(this.parseDevice());
 
+      // Otherwise, continue when this.check("USES").
+      } else if (this.check("USES")) {
+        this.advance();
+        this.expect("HARDWARE", "Expected 'hardware' after uses");
+        usesHardware = this.parseLabel("Expected hardware profile name");
+        this.expect("SEMICOLON", "Expected ';' after uses hardware");
+
+      // Otherwise, continue when this.check("IDENT") && lexeme === "exposes".
+      } else if (this.check("IDENT") && this.peek().lexeme === "exposes") {
+        this.advance();
+        const capKw = this.expect("IDENT", "Expected 'capabilities' after exposes");
+        if (capKw.lexeme !== "capabilities") {
+          throw new ParseError(
+            "Expected 'capabilities' after exposes",
+            capKw.line,
+            capKw.column,
+          );
+        }
+        exposesCapabilities.push(...this.parseHardwareTypeList("capabilities"));
+
+      // Otherwise, continue when this.check("IDENT") && lexeme === "kill_switch".
+      } else if (this.check("IDENT") && this.peek().lexeme === "kill_switch") {
+        robotKillSwitches.push(this.parseKillSwitch());
+
+      // Otherwise, continue when this.check("IDENT") && lexeme === "health_check".
+      } else if (this.check("IDENT") && this.peek().lexeme === "health_check") {
+        robotHealthChecks.push(this.parseHealthCheck());
+
       // Handle any remaining cases.
       } else {
         const t = this.peek();
@@ -1484,6 +1544,10 @@ class Parser {
       twinSync,
       secureComm,
       trustBoundaries,
+      usesHardware,
+      exposesCapabilities,
+      killSwitches: robotKillSwitches,
+      healthChecks: robotHealthChecks,
       span: this.spanFrom(start, end),
     };
 }
@@ -1968,6 +2032,282 @@ class Parser {
     return items;
 }
 
+  private parseHardwareComponent(): HardwareComponentDecl {
+    const start = this.advance();
+    const componentKind = start.lexeme;
+    const nameTok = this.expect("IDENT", "Expected component name");
+    this.expect("COLON", "Expected ':' after component name");
+    const componentType = this.parseLabel("Expected component type");
+    this.expect("LBRACE", "Expected '{' after component type");
+    let capabilities: string[] = [];
+    const properties: [string, string][] = [];
+
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "capabilities") {
+        this.advance();
+        capabilities = this.parseHardwareTypeList("capabilities");
+      } else if (this.check("IDENT")) {
+        const key = this.advance().lexeme;
+        this.expect("COLON", "Expected ':' after property");
+        const val =
+          this.peek().type === "STRING"
+            ? `"${this.advance().lexeme.replace(/^"|"$/g, "")}"`
+            : this.parseLabel("Expected property value");
+        this.expect("SEMICOLON", "Expected ';' after property");
+        properties.push([key, val]);
+      } else {
+        const t = this.peek();
+        throw new ParseError(
+          "Expected capabilities or property in hardware component",
+          t.line,
+          t.column,
+        );
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close component");
+    this.expect("SEMICOLON", "Expected ';' after component");
+    return {
+      componentKind,
+      name: nameTok.lexeme,
+      componentType,
+      capabilities,
+      properties,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseKillSwitch(): KillSwitchDecl {
+    const start = this.advance();
+    const name = this.parseLabel("Expected kill switch name");
+    this.expect("LBRACE", "Expected '{' after kill switch name");
+    let source: string | null = null;
+    let priority = "critical";
+    let remoteSigned = false;
+    let body: Stmt[] = [];
+
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "source") {
+        this.advance();
+        this.expect("COLON", "Expected ':' after source");
+        source = this.parseDottedName("Expected kill switch source");
+        this.expect("SEMICOLON", "Expected ';' after source");
+      } else if (
+        this.check("PRIORITY") ||
+        (this.check("IDENT") && this.peek().lexeme === "priority")
+      ) {
+        this.advance();
+        this.expect("COLON", "Expected ':' after priority");
+        priority = this.parseLabel("Expected priority level");
+        this.expect("SEMICOLON", "Expected ';' after priority");
+      } else if (this.check("IDENT") && this.peek().lexeme === "remote_signed") {
+        this.advance();
+        remoteSigned = true;
+        this.expect("SEMICOLON", "Expected ';' after remote_signed");
+      } else if (
+        this.check("ACTION") ||
+        (this.check("IDENT") &&
+          (this.peek().lexeme === "action" || this.peek().lexeme === "body"))
+      ) {
+        this.advance();
+        this.expect("LBRACE", "Expected '{' after action");
+        body = this.parseBlock();
+        this.expect("RBRACE", "Expected '}' to close action");
+      } else {
+        const t = this.peek();
+        throw new ParseError(
+          "Expected source, priority, or action in kill_switch",
+          t.line,
+          t.column,
+        );
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close kill_switch");
+    return {
+      kind: "KillSwitchDecl",
+      name,
+      source,
+      priority,
+      body,
+      remoteSigned,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseHealthCheck(): HealthCheckDecl {
+    const start = this.advance();
+    const name = this.parseLabel("Expected health check name");
+    this.expect("FOR", "Expected 'for' after health check name");
+    const targetKind = this.parseLabel("Expected target kind");
+    const target = this.parseLabel("Expected target name");
+    this.expect("LBRACE", "Expected '{' after health check target");
+    const conditions: HealthCheckCondition[] = [];
+
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "check") {
+        const condStart = this.advance();
+        const metric = this.parseDottedName("Expected metric path");
+        let op: string;
+        if (this.match("GT")) {
+          op = this.match("EQ") ? ">=" : ">";
+        } else if (this.match("LT")) {
+          op = this.match("EQ") ? "<=" : "<";
+        } else if (this.match("EQ")) {
+          op = "==";
+        } else {
+          const t = this.peek();
+          throw new ParseError(
+            "Expected comparison operator in health check",
+            t.line,
+            t.column,
+          );
+        }
+        let threshold: string;
+        if (this.match("TRUE")) {
+          threshold = "true";
+        } else if (this.match("FALSE")) {
+          threshold = "false";
+        } else if (this.check("IDENT")) {
+          threshold = this.advance().lexeme;
+        } else if (this.check("NUMBER")) {
+          threshold = this.advance().lexeme;
+        } else {
+          threshold = this.parseLabel("Expected threshold value");
+        }
+        if (this.match("PERCENT")) {
+          threshold += "%";
+        }
+        this.expect("SEMICOLON", "Expected ';' after health check condition");
+        conditions.push({
+          metric,
+          operator: op,
+          threshold,
+          span: this.spanFrom(condStart, this.previous()),
+        });
+      } else if (this.check("IDENT") && this.peek().lexeme === "require") {
+        this.advance();
+        this.parseLabel("Expected require clause");
+        this.expect("SEMICOLON", "Expected ';' after require");
+      } else {
+        const t = this.peek();
+        throw new ParseError("Expected check or require in health_check", t.line, t.column);
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close health_check");
+    return {
+      kind: "HealthCheckDecl",
+      name,
+      targetKind,
+      target,
+      conditions,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseHealthPolicy(): HealthPolicyDecl {
+    const start = this.advance();
+    const name = this.parseLabel("Expected health policy name");
+    this.expect("LBRACE", "Expected '{' after health policy name");
+    const reactions: [string, string][] = [];
+
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("ON")) {
+        this.advance();
+        const status = this.parseLabel("Expected health status");
+        this.expect("LBRACE", "Expected '{' after status");
+        const body = this.parseBlock();
+        const action = body.map((s) => JSON.stringify(s)).join("; ");
+        reactions.push([status, action]);
+        this.expect("RBRACE", "Expected '}' after health policy action");
+      } else {
+        const t = this.peek();
+        throw new ParseError(
+          "Expected 'on Status { ... }' in health_policy",
+          t.line,
+          t.column,
+        );
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close health_policy");
+    return {
+      kind: "HealthPolicyDecl",
+      name,
+      reactions,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseRequiresCapability(): RequiresCapabilityDecl {
+    const start = this.advance();
+    const capability = this.parseLabel("Expected capability name");
+    this.expect("LBRACE", "Expected '{' after capability name");
+    let anyOfSensors: string[] = [];
+    let anyOfActuators: string[] = [];
+    let anyOfConnectivity: string[] = [];
+    const safetyRules: string[] = [];
+    let severity: RequiresCapabilitySeverity = "error";
+
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "any_of") {
+        this.advance();
+        let kind: string;
+        if (this.match("SENSORS")) {
+          kind = "sensors";
+        } else if (this.match("ACTUATORS")) {
+          kind = "actuators";
+        } else if (this.match("ACTUATOR")) {
+          kind = "actuators";
+        } else if (this.check("IDENT") && this.peek().lexeme === "connectivity") {
+          this.advance();
+          kind = "connectivity";
+        } else {
+          kind = this.parseLabel("Expected any_of kind");
+        }
+        const list = this.parseHardwareTypeList(kind);
+        if (kind === "sensors") {
+          anyOfSensors = list;
+        } else if (kind === "actuators") {
+          anyOfActuators = list;
+        } else if (kind === "connectivity") {
+          anyOfConnectivity = list;
+        } else {
+          anyOfSensors = list;
+        }
+      } else if (this.check("ACTUATOR")) {
+        const act = this.parseLabel("Expected actuator type");
+        anyOfActuators.push(act);
+        this.expect("SEMICOLON", "Expected ';' after actuator");
+      } else if (this.check("IDENT") && this.peek().lexeme === "safety") {
+        this.advance();
+        safetyRules.push(this.parseLabel("Expected safety rule"));
+        this.expect("SEMICOLON", "Expected ';' after safety rule");
+      } else if (this.check("IDENT") && this.peek().lexeme === "severity") {
+        this.advance();
+        const sev = this.parseLabel("Expected severity");
+        severity =
+          sev === "warning" ? "warning" : sev === "info" ? "info" : "error";
+        this.expect("SEMICOLON", "Expected ';' after severity");
+      } else {
+        const t = this.peek();
+        throw new ParseError(
+          "Expected any_of, actuator, safety, or severity",
+          t.line,
+          t.column,
+        );
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close requires_capability");
+    return {
+      capability,
+      requiredBy: null,
+      anyOfSensors,
+      anyOfActuators,
+      anyOfConnectivity,
+      safetyRules,
+      severity,
+      span: this.spanFrom(start, end),
+    };
+  }
+
   private parseHardware(): HardwareDecl {
     // ParseHardware.
     //
@@ -1999,6 +2339,7 @@ class Parser {
     let networkLatencyMs: number | null = null;
     let minControlPeriodMs: number | null = null;
     let powerDrawW: number | null = null;
+    const components: HardwareComponentDecl[] = [];
 
     // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
@@ -2105,6 +2446,13 @@ class Parser {
         }
         this.expect("RBRACE", "Expected '}' to close timing block");
 
+      // Otherwise, continue when component kind is sensor, actuator, compute, or connectivity.
+      } else if (
+        this.check("IDENT") &&
+        ["sensor", "actuator", "compute", "connectivity"].includes(this.peek().lexeme)
+      ) {
+        components.push(this.parseHardwareComponent());
+
       // Otherwise, continue when this.match("RESOURCE").
       } else if (this.match("RESOURCE")) {
         this.expect("COLON", "Expected ':' after resource");
@@ -2129,6 +2477,7 @@ class Parser {
       sensors,
       actuators,
       connectivity,
+      components,
       batteryWh,
       networkBandwidthMbps,
       networkLatencyMs,
@@ -4941,12 +5290,24 @@ class Parser {
     this.expect("LBRACE", "Expected '{' after mission");
     let durationHours: number | null = null;
     const steps: string[] = [];
+    let requiredCapabilities: string[] = [];
 
     while (!this.check("RBRACE") && !this.check("EOF")) {
       if (this.match("DURATION")) {
         this.expect("COLON", "Expected ':' after duration");
         durationHours = this.parseDurationHours();
         this.expect("SEMICOLON", "Expected ';' after duration");
+      } else if (this.check("REQUIRES")) {
+        this.advance();
+        const capKw = this.expect("IDENT", "Expected 'capabilities' after requires");
+        if (capKw.lexeme !== "capabilities") {
+          throw new ParseError(
+            "Expected 'capabilities' after requires",
+            capKw.line,
+            capKw.column,
+          );
+        }
+        requiredCapabilities = this.parseHardwareTypeList("capabilities");
       } else {
         const step = this.parseLabel("Expected mission step name");
         this.expect("SEMICOLON", "Expected ';' after mission step");
@@ -4954,7 +5315,7 @@ class Parser {
       }
     }
     const end = this.expect("RBRACE", "Expected '}' to close mission");
-    if (durationHours === null && steps.length === 0) {
+    if (durationHours === null && steps.length === 0 && requiredCapabilities.length === 0) {
       const t = this.peek();
       throw new ParseError("mission block requires duration or at least one step", t.line, t.column);
     }
@@ -4963,6 +5324,7 @@ class Parser {
       name,
       durationHours,
       steps,
+      requiredCapabilities,
       span: this.spanFrom(start, end),
     };
   }
@@ -5508,6 +5870,18 @@ class Parser {
 
     // const result = parseStmt();
     const start = this.peek();
+
+    if (this.check("IDENT") && this.peek().lexeme === "expect_compile_error") {
+      this.advance();
+      this.expect("LBRACE", "Expected '{' after expect_compile_error");
+      const body = this.parseBlock();
+      const end = this.expect("RBRACE", "Expected '}' to close expect_compile_error");
+      return {
+        kind: "ExpectCompileErrorStmt",
+        body,
+        span: this.spanFrom(start, end),
+      };
+    }
 
     if (this.check("IDENT") && this.peek().lexeme === "stop_all_actuators") {
       this.advance();
