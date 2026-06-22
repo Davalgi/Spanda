@@ -20,6 +20,35 @@ from typing import Any, Callable
 Handler = Callable[..., Any]
 
 
+def _modbus_read_register(host: str, port: str, address: int) -> float:
+    try:
+        from pymodbus.client import ModbusTcpClient
+    except ImportError:
+        return float(address % 100)
+
+    client = ModbusTcpClient(host, port=int(port))
+    if not client.connect():
+        return float(address % 100)
+    zero_based = max(address - 40001, 0)
+    result = client.read_holding_registers(zero_based, 1, slave=1)
+    client.close()
+    if result.isError():
+        return float(address % 100)
+    return float(result.registers[0])
+
+
+def _opcua_read_node(endpoint: str, node_id: str) -> str:
+    try:
+        from asyncua.sync import Client
+    except ImportError:
+        return f"mock-opcua:{node_id}"
+
+    with Client(endpoint) as client:
+        node = client.get_node(node_id)
+        value = node.get_value()
+        return str(value)
+
+
 def _openai_complete(prompt: str) -> str:
     import os
 
@@ -138,6 +167,8 @@ HANDLERS: dict[str, Handler] = {
     "ros2_subscribe": _ros2_subscribe,
     "ros2_service_call": _ros2_service_call,
     "mqtt_publish": _mqtt_publish,
+    "modbus_read_register": _modbus_read_register,
+    "opcua_read_node": _opcua_read_node,
     "openai_complete": _openai_complete,
 }
 

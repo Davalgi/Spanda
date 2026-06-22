@@ -57,6 +57,8 @@ live-mqtt = ["spanda-driver/live-mqtt"]
 live-websocket = ["spanda-driver/live-websocket"]
 live-dds = ["spanda-driver/live-dds"]
 live-transport = ["spanda-driver/live-transport"]
+live-iot = ["spanda-driver/live-iot"]
+live-ai = ["spanda-driver/live-ai"]
 cpp-native = ["spanda-driver/cpp-native"]
 python-native = ["spanda-driver/python-native"]
 

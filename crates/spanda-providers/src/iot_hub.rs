@@ -90,11 +90,17 @@ pub fn update_shadow(shadow: DeviceShadow) {
 
 /// Read a Modbus register from the in-memory IoT hub.
 pub fn read_modbus_register(address: u16) -> f64 {
+    if let Some(value) = crate::iot_live::read_modbus_register_live(address) {
+        return value;
+    }
     hub().lock().unwrap().read_modbus_register(address)
 }
 
 /// Read an OPC-UA node value from the in-memory IoT hub.
 pub fn read_opcua_node(node: &str) -> Option<String> {
+    if let Some(value) = crate::iot_live::read_opcua_node_live(node) {
+        return Some(value);
+    }
     hub().lock().unwrap().read_opcua_node(node)
 }
 

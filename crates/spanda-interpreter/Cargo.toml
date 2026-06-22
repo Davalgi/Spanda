@@ -36,6 +36,8 @@ spanda-capability = { path = "../spanda-capability" }
 
 [features]
 default = []
+live-iot = ["spanda-providers/live-iot"]
+live-ai = []
 live-mqtt = ["spanda-transport-routing/live-mqtt"]
 live-websocket = ["spanda-transport-routing/live-websocket"]
 live-dds = ["spanda-transport-routing/live-dds"]
