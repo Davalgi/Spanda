@@ -7,6 +7,9 @@ use crate::integrity::{
     read_checksum_sidecar, registry_require_checksum, verify_sha256, write_checksum_sidecar,
 };
 use crate::registry_remote::registry_base_url;
+use crate::registry_sign::{
+    registry_require_signature, registry_trust_key, verify_registry_signature,
+};
 use crate::tar_extract::extract_tarball_safe;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -184,6 +187,7 @@ pub fn fetch_registry_tarball(
     version: &str,
     dest: &Path,
     expected_sha256: Option<&str>,
+    expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>,
 ) -> Result<PathBuf, String> {
     // Fetch registry tarball.
     //
@@ -207,13 +211,20 @@ pub fn fetch_registry_tarball(
 
     // Emit output when resolve local tarball provides a local.
     if let Some(local) = resolve_local_tarball(project_root, name, version) {
-        verify_tarball_digest(&local, expected_sha256.or(read_checksum_sidecar(&local).as_deref()))?;
+        let sidecar_digest = read_checksum_sidecar(&local);
+        let digest = expected_sha256.or(sidecar_digest.as_deref());
+        verify_tarball_digest(&local, digest, name, version, expected_signature)?;
         extract_tarball_safe(&local, dest)?;
         return Ok(dest.to_path_buf());
     }
     if registry_require_checksum() && expected_sha256.is_none() {
         return Err(format!(
             "checksum required for '{name}@{version}' — set SPANDA_REGISTRY_REQUIRE_CHECKSUM=0 to allow unsigned remote installs"
+        ));
+    }
+    if registry_require_signature() && expected_signature.is_none() {
+        return Err(format!(
+            "signature required for '{name}@{version}' — set SPANDA_REGISTRY_REQUIRE_SIGNATURE=0 to allow unsigned remote installs"
         ));
     }
     let url = registry_tarball_url(name, version).ok_or_else(|| {
@@ -223,7 +234,17 @@ pub fn fetch_registry_tarball(
     })?;
     let tarball = dest.join(format!("{name}-{version}.tar.gz"));
     fetch_url_to_file(&url, &tarball)?;
-    verify_tarball_digest(&tarball, expected_sha256)?;
+    let digest = expected_sha256
+        .map(str::to_string)
+        .or_else(|| read_checksum_sidecar(&tarball))
+        .or_else(|| crate::integrity::sha256_file(&tarball).ok());
+    verify_tarball_digest(
+        &tarball,
+        digest.as_deref(),
+        name,
+        version,
+        expected_signature,
+    )?;
     let _ = cache_registry_tarball(project_root, name, version, &tarball);
     let _ = write_checksum_sidecar(&tarball);
     extract_tarball_safe(&tarball, dest)?;
@@ -231,30 +252,55 @@ pub fn fetch_registry_tarball(
     Ok(dest.to_path_buf())
 }
 
-fn verify_tarball_digest(tarball: &Path, expected: Option<&str>) -> Result<(), String> {
-    // Enforce SHA-256 when a digest is known or strict mode is enabled.
+fn verify_tarball_digest(
+    tarball: &Path,
+    expected: Option<&str>,
+    name: &str,
+    version: &str,
+    expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>,
+) -> Result<(), String> {
+    // Enforce SHA-256 and optional Ed25519 signature before extraction.
     //
     // Parameters:
     // - `tarball` — downloaded or local bundle
     // - `expected` — optional hex digest from index or sidecar
+    // - `name` — package name
+    // - `version` — semver string
+    // - `expected_signature` — optional registry index signature
     //
     // Returns:
     // Ok when verification passes or no digest is required.
     //
     // Options:
-    // Honors `SPANDA_REGISTRY_REQUIRE_CHECKSUM`.
+    // Honors `SPANDA_REGISTRY_REQUIRE_CHECKSUM` and `SPANDA_REGISTRY_REQUIRE_SIGNATURE`.
     //
     // Example:
-    // verify_tarball_digest(&tarball, entry.version_sha256("0.1.0").as_deref())?;
+    // verify_tarball_digest(&tarball, digest.as_deref(), name, version, sig)?;
 
-    match expected {
-        Some(digest) => verify_sha256(tarball, digest),
-        None if registry_require_checksum() => Err(format!(
-            "missing checksum for {}",
-            tarball.display()
-        )),
-        None => Ok(()),
+    let digest = match expected {
+        Some(digest) => {
+            verify_sha256(tarball, digest)?;
+            digest.to_string()
+        }
+        None if registry_require_checksum() => {
+            return Err(format!("missing checksum for {}", tarball.display()));
+        }
+        None => crate::integrity::sha256_file(tarball)?,
+    };
+
+    if let Some(signature) = expected_signature {
+        let trust_key = registry_trust_key().unwrap_or_else(|| signature.public_key.clone());
+        if !verify_registry_signature(name, version, &digest, signature, &trust_key) {
+            return Err(format!(
+                "invalid registry signature for {name}@{version}"
+            ));
+        }
+    } else if registry_require_signature() {
+        return Err(format!(
+            "missing registry signature for {name}@{version}"
+        ));
     }
+    Ok(())
 }
 
 pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {

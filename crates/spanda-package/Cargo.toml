@@ -13,6 +13,7 @@ thiserror = "2"
 flate2 = "1"
 tar = "0.4"
 sha2 = "0.10"
+spanda-audit = { path = "../spanda-audit" }
 spanda-hardware = { path = "../spanda-hardware" }
 
 [dev-dependencies]

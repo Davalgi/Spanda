@@ -125,7 +125,15 @@ fn vendor_registry_package(
 
     // Match on fetch registry tarball and handle each case.
     let expected = lookup_registry_entry(name).and_then(|entry| entry.version_sha256(version));
-    match fetch_registry_tarball(project_root, name, version, &dest, expected.as_deref()) {
+    let signature = lookup_registry_entry(name).and_then(|entry| entry.version_signature(version));
+    match fetch_registry_tarball(
+        project_root,
+        name,
+        version,
+        &dest,
+        expected.as_deref(),
+        signature.as_ref(),
+    ) {
         Ok(path) => Ok(Some(path)),
         Err(err) => {
             let _ = err;

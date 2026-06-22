@@ -19,6 +19,7 @@ pub mod publish;
 pub mod registry;
 pub mod registry_fetch;
 pub mod registry_remote;
+pub mod registry_sign;
 pub mod resolver;
 pub mod safety;
 pub mod tar_extract;
@@ -69,6 +70,11 @@ pub use registry_fetch::{
 pub use registry_remote::{
     find_remote_entry, load_remote_registry, lookup_registry_entry, registry_base_url,
     search_remote_registry, RegistryEntryLookup, RemoteRegistryEntry,
+};
+pub use registry_sign::{
+    registry_require_signature, registry_sign_key, registry_signature_payload,
+    registry_trust_key, sign_registry_tarball, verify_registry_signature,
+    RegistryVersionSignature,
 };
 pub use resolver::{resolve_dependencies, ResolveOptions, ResolveResult};
 pub use safety::{SafetyLevel, SafetyMetadata};

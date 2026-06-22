@@ -3,6 +3,7 @@
 use crate::error::{PackageError, PackageResult};
 use crate::integrity::write_checksum_sidecar;
 use crate::manifest::{PackageManifest, MANIFEST_FILENAME};
+use crate::registry_sign::{registry_sign_key, sign_registry_tarball};
 use crate::project::collect_source_files;
 use crate::registry_remote::{fetch_index_json, registry_base_url, RemoteRegistryEntry};
 use std::fs;
@@ -15,6 +16,7 @@ pub struct PublishReport {
     pub uploaded: bool,
     pub upload_url: Option<String>,
     pub sha256: Option<String>,
+    pub signature: Option<crate::registry_sign::RegistryVersionSignature>,
 }
 
 /// Create a `.tar.gz` bundle containing manifest, lockfile, and source files.
@@ -60,11 +62,17 @@ pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<
     paths.extend(sources);
     create_tar_gz(&bundle_path, root, &paths)?;
     let sha256 = write_checksum_sidecar(&bundle_path).ok();
+    let signature = sha256.as_deref().and_then(|digest| {
+        registry_sign_key().map(|key| {
+            sign_registry_tarball(&manifest.package.name, &manifest.package.version, digest, &key)
+        })
+    });
     Ok(PublishReport {
         bundle_path,
         uploaded: false,
         upload_url: None,
         sha256,
+        signature,
     })
 }
 
@@ -102,7 +110,12 @@ pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult
                 report.upload_url = Some(url);
 
                 // Handle the error returned from update registry index.
-                if let Err(err) = update_registry_index(&base, manifest, report.sha256.as_deref()) {
+                if let Err(err) = update_registry_index(
+                    &base,
+                    manifest,
+                    report.sha256.as_deref(),
+                    report.signature.as_ref(),
+                ) {
                     eprintln!("Warning: registry index update failed: {err}");
                 }
             }
@@ -204,6 +217,7 @@ fn update_registry_index(
     base: &str,
     manifest: &PackageManifest,
     sha256: Option<&str>,
+    signature: Option<&crate::registry_sign::RegistryVersionSignature>,
 ) -> Result<(), String> {
     // Update registry index.
     //
@@ -244,12 +258,21 @@ fn update_registry_index(
         if let Some(digest) = sha256 {
             existing
                 .version_checksums
-                .insert(version, digest.to_string());
+                .insert(version.clone(), digest.to_string());
+        }
+        if let Some(sig) = signature {
+            existing
+                .version_signatures
+                .insert(version.clone(), sig.clone());
         }
     } else {
         let mut version_checksums = std::collections::BTreeMap::new();
         if let Some(digest) = sha256 {
             version_checksums.insert(version.clone(), digest.to_string());
+        }
+        let mut version_signatures = std::collections::BTreeMap::new();
+        if let Some(sig) = signature {
+            version_signatures.insert(version.clone(), sig.clone());
         }
         entries.push(RemoteRegistryEntry {
             name: manifest.package.name.clone(),
@@ -263,6 +286,7 @@ fn update_registry_index(
                 .unwrap_or_else(|| "Apache-2.0".into()),
             import_paths: vec![],
             version_checksums,
+            version_signatures,
         });
     }
     let json = serde_json::to_string_pretty(&entries).map_err(|e| e.to_string())?;

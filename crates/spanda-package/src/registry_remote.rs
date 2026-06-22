@@ -21,6 +21,8 @@ pub struct RemoteRegistryEntry {
     pub import_paths: Vec<String>,
     #[serde(default)]
     pub version_checksums: std::collections::BTreeMap<String, String>,
+    #[serde(default)]
+    pub version_signatures: std::collections::BTreeMap<String, crate::registry_sign::RegistryVersionSignature>,
 }
 
 static REMOTE_CACHE: OnceLock<Vec<RemoteRegistryEntry>> = OnceLock::new();
@@ -402,6 +404,28 @@ impl RegistryEntryLookup {
         match self {
             RegistryEntryLookup::Local(_) => None,
             RegistryEntryLookup::Remote(entry) => entry.version_checksums.get(version).cloned(),
+        }
+    }
+
+    pub fn version_signature(&self, version: &str) -> Option<crate::registry_sign::RegistryVersionSignature> {
+        // Return the published Ed25519 signature for a registry version when known.
+        //
+        // Parameters:
+        // - `self` — registry lookup result
+        // - `version` — semver string
+        //
+        // Returns:
+        // Signature metadata from remote index, if present.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let sig = lookup.version_signature("0.1.0");
+
+        match self {
+            RegistryEntryLookup::Local(_) => None,
+            RegistryEntryLookup::Remote(entry) => entry.version_signatures.get(version).cloned(),
         }
     }
 }
