@@ -28,7 +28,7 @@ Phased plan to complete the package-first architecture after the initial scaffol
 |-------|--------|-------|
 | `spanda-transport-mqtt` | Done | Live MQTT bridge extracted; core shim retained |
 | `spanda-transport-ros2` | Done | Native rclrs + rclpy daemon extracted; core shims retained |
-| `spanda-connectivity` | Planned | GPS, WiFi, BLE, cellular sim |
+| `spanda-connectivity` | Done | Type catalogs and link classification extracted |
 | `spanda-fleet` | Planned | Orchestrator, agents, mesh |
 | `spanda-ota` | Planned | Deploy service, agents |
 

@@ -1167,6 +1167,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-connectivity"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "spanda-core"
 version = "0.1.0"
 dependencies = [
@@ -1182,6 +1189,7 @@ dependencies = [
  "serde_yaml",
  "sha2",
  "spanda-audit",
+ "spanda-connectivity",
  "spanda-package",
  "spanda-security",
  "spanda-transport-mqtt",

@@ -11,119 +11,11 @@ use crate::hardware::{CompatItem, CompatSeverity, HardwareProfile};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
-/// Requirement level for a connectivity channel in `requires_connectivity`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ConnectivityRequirement {
-    Required,
-    Optional,
-}
-
-/// Positioning and navigation native type names.
-pub fn positioning_types() -> &'static [&'static str] {
-    &[
-        "GpsFix",
-        "GnssFix",
-        "GeoPoint",
-        "GeoFence",
-        "Altitude",
-        "Heading",
-        "SpeedOverGround",
-        "SatelliteInfo",
-        "PositionAccuracy",
-        "NavigationStatus",
-    ]
-}
-
-/// Wireless and network connection type names.
-pub fn connectivity_types() -> &'static [&'static str] {
-    &[
-        "WifiConnection",
-        "BluetoothConnection",
-        "BleConnection",
-        "CellularConnection",
-        "LTEConnection",
-        "FourGConnection",
-        "FiveGConnection",
-        "EthernetConnection",
-        "MeshConnection",
-        "NetworkStatus",
-        "SignalStrength",
-        "Bandwidth",
-        "Latency",
-        "PacketLoss",
-        "RoamingStatus",
-        "SimIdentity",
-    ]
-}
-
-/// Hardware profile connectivity option identifiers.
-pub fn connectivity_options() -> &'static [&'static str] {
-    &[
-        "WiFi",
-        "WiFi6",
-        "Bluetooth",
-        "Bluetooth5",
-        "BLE",
-        "LTE",
-        "FourG",
-        "4G",
-        "FiveG",
-        "5G",
-        "Ethernet",
-        "Mesh",
-        "GPS",
-        "GNSS",
-        "Satellite",
-    ]
-}
-
-/// Map a requires_connectivity key to profile connectivity tokens.
-pub fn connectivity_key_to_profile_tokens(key: &str) -> Vec<&'static str> {
-    match key {
-        "gps" => vec!["GPS"],
-        "gnss" => vec!["GNSS", "GPS"],
-        "wifi" => vec!["WiFi", "WiFi6"],
-        "bluetooth" => vec!["Bluetooth", "Bluetooth5", "BLE"],
-        "cellular" => vec!["LTE", "FourG", "4G", "FiveG", "5G"],
-        "ethernet" => vec!["Ethernet"],
-        "mesh" => vec!["Mesh"],
-        "satellite" => vec!["Satellite"],
-        _ => vec![],
-    }
-}
-
-/// Connectivity-related simulation fault names.
-pub fn connectivity_faults() -> &'static [&'static str] {
-    &[
-        "GPSLost",
-        "GpsFailure",
-        "GpsDrift",
-        "GpsSpoofing",
-        "NetworkOutage",
-        "NetworkLatencySpike",
-        "WeakWifi",
-        "LteOutage",
-        "SatelliteOutage",
-        "FiveGHandoff",
-        "BluetoothDisconnect",
-        "PacketLoss",
-        "LatencySpike",
-    ]
-}
-
-/// Security capabilities for positioning and connectivity.
-pub fn connectivity_capabilities() -> &'static [&'static str] {
-    &[
-        "gps.read",
-        "network.status",
-        "wifi.connect",
-        "bluetooth.scan",
-        "bluetooth.pair",
-        "cellular.connect",
-        "network.failover",
-    ]
-}
+pub use spanda_connectivity::{
+    connectivity_capabilities, connectivity_faults, connectivity_key_to_profile_tokens,
+    connectivity_options, connectivity_types, positioning_types, ConnectivityRequirement,
+    is_cellular_link, is_modem_bearer, is_satellite_link, is_wifi_link,
+};
 
 /// Runtime geofence circle loaded from a program declaration.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -289,14 +181,13 @@ pub fn apply_gps_reading_faults(
 /// Map an active connectivity link name to the default transport kind.
 pub fn connectivity_link_to_transport(link: &str) -> crate::comm::TransportKind {
     use crate::comm::TransportKind;
-    match link.to_ascii_lowercase().as_str() {
-        "wifi" => TransportKind::Mqtt,
-        "cellular" | "lte" | "4g" | "fiveg" | "5g" => TransportKind::Dds,
-        "bluetooth" | "ble" => TransportKind::Websocket,
-        "ethernet" => TransportKind::Ros2,
-        "satellite" => TransportKind::Websocket,
-        "network" => TransportKind::Sim,
-        _ => TransportKind::Sim,
+    use spanda_connectivity::ConnectivityTransport;
+    match spanda_connectivity::connectivity_link_to_transport(link) {
+        ConnectivityTransport::Mqtt => TransportKind::Mqtt,
+        ConnectivityTransport::Dds => TransportKind::Dds,
+        ConnectivityTransport::Websocket => TransportKind::Websocket,
+        ConnectivityTransport::Ros2 => TransportKind::Ros2,
+        ConnectivityTransport::Sim => TransportKind::Sim,
     }
 }
 
@@ -343,32 +234,6 @@ pub fn runtime_gps_fix(
             ),
         ]),
     }
-}
-
-/// Return true when the active link name refers to a cellular bearer (not satellite).
-pub fn is_cellular_link(link: &str) -> bool {
-    matches!(
-        link.to_ascii_lowercase().as_str(),
-        "cellular" | "lte" | "4g" | "fourg" | "fiveg" | "5g"
-    )
-}
-
-/// Return true when the active link name refers to a satellite backhaul bearer.
-pub fn is_satellite_link(link: &str) -> bool {
-    link.eq_ignore_ascii_case("satellite")
-}
-
-/// Return true when the active link supports SIM/modem attestation simulation.
-pub fn is_modem_bearer(link: &str) -> bool {
-    is_cellular_link(link) || is_satellite_link(link)
-}
-
-/// Return true when a connectivity link name refers to Wi-Fi.
-pub fn is_wifi_link(link: &str) -> bool {
-    matches!(
-        link.to_ascii_lowercase().as_str(),
-        "wifi" | "wi-fi" | "wifi6"
-    )
 }
 
 /// Return true when simulation faults disable the given connectivity link.

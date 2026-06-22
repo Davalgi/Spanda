@@ -1,0 +1,12 @@
+[package]
+name = "spanda-connectivity"
+version.workspace = true
+edition.workspace = true
+description = "Connectivity and positioning type catalogs for Spanda lean-core packages"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
