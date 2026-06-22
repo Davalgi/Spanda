@@ -1,0 +1,169 @@
+//! High-level run helpers for parsed Spanda programs.
+//!
+use crate::options::{RunOptions, RunResult, TestRunResult};
+use crate::runtime::{Interpreter, InterpreterOptions, RobotBackend};
+use crate::simulator::{create_default_simulator, Obstacle, SimulatorConfig};
+use spanda_ast::nodes::Program;
+use spanda_error::SpandaError;
+use spanda_ffi::FfiRegistry;
+use spanda_providers::bootstrap_providers_for_packages;
+use spanda_runtime::robot_state::PoseState;
+use spanda_runtime::scheduler::SchedulerClock;
+use spanda_typecheck::ModuleRegistry;
+use std::cell::RefCell;
+use std::rc::Rc;
+
+/// Execute a type-checked program with simulation and optional provider wiring.
+pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
+    let obstacles: Vec<Obstacle> = options
+        .obstacles
+        .iter()
+        .map(|o| Obstacle {
+            x: o.x,
+            y: o.y,
+            radius: o.radius,
+        })
+        .collect();
+    let initial_pose = options.initial_pose.clone().unwrap_or(PoseState {
+        x: 0.0,
+        y: 0.0,
+        theta: 0.0,
+        z: Some(0.0),
+    });
+    let sim_config = SimulatorConfig {
+        obstacles: if obstacles.is_empty() {
+            SimulatorConfig::default().obstacles
+        } else {
+            obstacles
+        },
+        initial_pose,
+        lidar_range: options.lidar_range,
+    };
+    let sim = create_default_simulator(sim_config);
+    let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
+    let logs_cb = logs.clone();
+    let trace_realtime = options.trace_realtime;
+    let trace_source = options.trace_source.clone();
+    let record_trace = options.record_trace;
+    let scheduler_clock = if options.replay_deterministic {
+        SchedulerClock::Sim
+    } else {
+        options.scheduler_clock
+    };
+    let provider_registry = if options.official_packages.is_empty() {
+        None
+    } else {
+        Some(bootstrap_providers_for_packages(
+            &options
+                .official_packages
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+        ))
+    };
+    let ffi_registry = options
+        .ffi_registry
+        .clone()
+        .unwrap_or_else(FfiRegistry::new);
+    let mut interp = Interpreter::new(
+        sim,
+        InterpreterOptions {
+            max_loop_iterations: options.max_loop_iterations,
+            on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),
+            on_motion_blocked: None,
+            module_registry: options.module_registry.clone(),
+            trace_scheduler: options.trace_scheduler || trace_realtime,
+            trace_tasks: options.trace_tasks || trace_realtime,
+            trace_triggers: options.trace_triggers || trace_realtime,
+            trace_events: options.trace_events || trace_realtime,
+            replay_trace: options.replay_trace,
+            record_trace,
+            trace_source,
+            scheduler_clock,
+            replay_deterministic: options.replay_deterministic,
+            secure_mode: options.secure_mode,
+            inject_security_faults: options.inject_security_faults,
+            official_packages: options.official_packages.clone(),
+            provider_registry,
+            ffi_registry,
+            ..Default::default()
+        },
+    );
+    let state = interp.run(program, options.entry_behavior.as_deref())?;
+    let events = interp.robot_backend().event_log();
+    let metrics = interp.take_telemetry();
+    let mission_trace = interp.take_mission_trace();
+    if record_trace {
+        if let Some(trace) = &mission_trace {
+            let path = options.trace_output.clone().unwrap_or_else(|| {
+                let source = options.trace_source.as_deref().unwrap_or("program.sd");
+                if let Some(stripped) = source.strip_suffix(".sd") {
+                    format!("{stripped}.trace")
+                } else {
+                    format!("{source}.trace")
+                }
+            });
+            trace.save(&path)?;
+        }
+    }
+    let twin_replay = interp.twin_replay_export();
+    if let Some(path) = &options.twin_export_path {
+        if let Some(export) = &twin_replay {
+            let body = serde_json::to_string_pretty(export).map_err(|e| SpandaError::Runtime {
+                message: format!("twin export JSON: {e}"),
+                line: 0,
+            })?;
+            std::fs::write(path, body).map_err(|e| SpandaError::Runtime {
+                message: format!("twin export write {path}: {e}"),
+                line: 0,
+            })?;
+        }
+    }
+    let run_logs = logs.borrow().clone();
+    Ok(RunResult {
+        state,
+        events,
+        logs: run_logs,
+        metrics,
+        mission_trace,
+        twin_replay,
+    })
+}
+
+/// Run module tests embedded in a parsed program.
+pub fn run_tests_with_registry(
+    program: &Program,
+    registry: &ModuleRegistry,
+) -> Result<TestRunResult, SpandaError> {
+    let sim = create_default_simulator(SimulatorConfig::default());
+    let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
+    let logs_cb = logs.clone();
+    let mut interp = Interpreter::new(
+        sim,
+        InterpreterOptions {
+            max_loop_iterations: 10,
+            on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),
+            on_motion_blocked: None,
+            module_registry: Some(registry.clone()),
+            ..Default::default()
+        },
+    );
+    let Program::Program { tests, .. } = program;
+    let total = tests.len();
+    match interp.run_tests(program) {
+        Ok(()) => Ok(TestRunResult {
+            passed: total,
+            failed: 0,
+            logs: logs.borrow().clone(),
+        }),
+        Err(e) => Ok(TestRunResult {
+            passed: 0,
+            failed: total.max(1),
+            logs: {
+                let mut l = logs.borrow().clone();
+                l.push(e.to_string());
+                l
+            },
+        }),
+    }
+}

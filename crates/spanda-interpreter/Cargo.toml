@@ -2,7 +2,7 @@
 name = "spanda-interpreter"
 version.workspace = true
 edition.workspace = true
-description = "Spanda interpreter staging crate — public run API re-exported from spanda-core"
+description = "Spanda tree-walking interpreter — native runtime, run_program, and simulator"
 license.workspace = true
 repository.workspace = true
 authors.workspace = true
@@ -25,7 +25,8 @@ spanda-lib-registry = { path = "../spanda-lib-registry" }
 spanda-connectivity-runtime = { path = "../spanda-connectivity-runtime" }
 spanda-runtime-host = { path = "../spanda-runtime-host" }
 spanda-ffi = { path = "../spanda-ffi" }
-spanda-core = { path = "../spanda-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-security = { path = "../spanda-security" }
 spanda-transport-routing = { path = "../spanda-transport-routing" }

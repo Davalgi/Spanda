@@ -1759,7 +1759,6 @@ impl SafetyBlockExt for spanda_ast::nodes::SafetyBlock {
 
 #[path = "runtime_connectivity.rs"]
 mod runtime_connectivity;
-
 #[path = "runtime_setup.rs"]
 mod runtime_setup;
 #[path = "runtime_reliability.rs"]
