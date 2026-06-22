@@ -73,10 +73,28 @@ export const MODULE_CLASSIFICATIONS: readonly ModuleClassification[] = [
     notes: "Removed from spanda-core; use spanda-transport-mqtt or spanda-transport-routing",
   },
   {
+    module: "transport",
+    ownership: ModuleOwnership.Deprecated,
+    targetPackage: "spanda-transport-routing",
+    notes: "Removed from spanda-core; use spanda_transport_routing::RoutingCommBus",
+  },
+  {
+    module: "transport_wire",
+    ownership: ModuleOwnership.Deprecated,
+    targetPackage: "spanda-transport",
+    notes: "Removed from spanda-core; use spanda_transport wire helpers",
+  },
+  {
+    module: "transport_security",
+    ownership: ModuleOwnership.Deprecated,
+    targetPackage: "spanda-transport",
+    notes: "Removed from spanda-core; use spanda_transport::security",
+  },
+  {
     module: "transport_rclrs",
-    ownership: ModuleOwnership.CompatibilityShim,
+    ownership: ModuleOwnership.Deprecated,
     targetPackage: "spanda-ros2",
-    notes: "ROS2 transport; use spanda-ros2 package",
+    notes: "Removed from spanda-core; use spanda_transport_ros2::rclrs",
   },
   {
     module: "transport_dds",

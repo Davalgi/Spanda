@@ -252,10 +252,11 @@ robot R {
 
 #[test]
 fn transport_wire_frame_with_source_id() {
-    use spanda_core::comm::{CommBus, TransportKind};
-    use spanda_core::runtime::RuntimeValue;
-    use spanda_core::transport::{RoutingCommBus, TransportConfig};
-    use spanda_core::transport_security::{TlsTransportSession, TransportSecurityConfig};
+    use spanda_comm::{CommBus, TransportKind};
+    use spanda_runtime::value::RuntimeValue;
+    use spanda_transport::security::{TlsTransportSession, TransportSecurityConfig};
+    use spanda_transport::TransportConfig;
+    use spanda_transport_routing::RoutingCommBus;
     use spanda_security::{AuthenticationMode, EncryptionMode, IntegrityMode};
 
     let mut tls = TlsTransportSession::default();

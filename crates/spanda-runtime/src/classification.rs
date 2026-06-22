@@ -85,10 +85,28 @@ pub fn module_classifications() -> &'static [ModuleClassification] {
             notes: "Removed from spanda-core; use spanda-transport-mqtt or spanda-transport-routing",
         },
         ModuleClassification {
+            module: "transport",
+            ownership: ModuleOwnership::Deprecated,
+            target_package: Some("spanda-transport-routing"),
+            notes: "Removed from spanda-core; use spanda_transport_routing::RoutingCommBus",
+        },
+        ModuleClassification {
+            module: "transport_wire",
+            ownership: ModuleOwnership::Deprecated,
+            target_package: Some("spanda-transport"),
+            notes: "Removed from spanda-core; use spanda_transport wire helpers",
+        },
+        ModuleClassification {
+            module: "transport_security",
+            ownership: ModuleOwnership::Deprecated,
+            target_package: Some("spanda-transport"),
+            notes: "Removed from spanda-core; use spanda_transport::security",
+        },
+        ModuleClassification {
             module: "transport_rclrs",
-            ownership: ModuleOwnership::CompatibilityShim,
+            ownership: ModuleOwnership::Deprecated,
             target_package: Some("spanda-ros2"),
-            notes: "ROS2 transport; use spanda-ros2 package",
+            notes: "Removed from spanda-core; use spanda_transport_ros2::rclrs",
         },
         ModuleClassification {
             module: "transport_dds",

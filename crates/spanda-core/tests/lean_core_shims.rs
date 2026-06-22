@@ -274,8 +274,12 @@ fn interpreter_runtime_uses_workspace_security_and_scheduler() {
 }
 
 #[test]
-fn transport_live_shim_removed_from_core() {
+fn transport_shims_removed_from_core() {
     for module in [
+        "transport.rs",
+        "transport_wire.rs",
+        "transport_security.rs",
+        "transport_rclrs.rs",
         "transport_live.rs",
         "transport_mqtt.rs",
         "transport_dds.rs",
@@ -284,35 +288,9 @@ fn transport_live_shim_removed_from_core() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
         assert!(
             !path.exists(),
-            "{module} should be removed from spanda-core; use spanda-transport-routing"
+            "{module} should be removed from spanda-core; use spanda-transport-* workspace crates"
         );
     }
-}
-
-#[test]
-fn transport_routing_shim_reexports_spanda_transport() {
-    for module in ["transport.rs", "transport_wire.rs"] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
-        let source = fs::read_to_string(&path).expect(module);
-        assert!(
-            source.lines().count() <= 15,
-            "{module} should be a thin re-export shim"
-        );
-        assert!(
-            source.contains("spanda_transport_routing") || source.contains("spanda_transport"),
-            "{module} shim should re-export from spanda-transport routing stack"
-        );
-    }
-}
-
-#[test]
-fn transport_no_inline_adapter_impls() {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/transport.rs");
-    let source = fs::read_to_string(&path).expect("transport.rs");
-    assert!(
-        !source.contains("impl TransportAdapter for Ros2"),
-        "transport.rs must not define TransportAdapter impls; use spanda-transport-* crates"
-    );
 }
 
 #[test]
@@ -563,8 +541,6 @@ fn compatibility_shims_stay_thin() {
         "slam_adapter.rs",
         "connectivity_positioning.rs",
         "ffi_registry.rs",
-        "transport_wire.rs",
-        "transport_security.rs",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
         let source = fs::read_to_string(&path).expect(module);
@@ -573,16 +549,33 @@ fn compatibility_shims_stay_thin() {
             "{module} should remain a compatibility shim"
         );
     }
-    for module in ["transport_rclrs.rs"] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
-        let source = fs::read_to_string(&path).expect(module);
+}
+
+#[test]
+fn core_cargo_has_no_direct_transport_adapter_deps() {
+    let manifest = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
+    )
+    .expect("Cargo.toml");
+    let deps_start = manifest
+        .find("[dependencies]")
+        .expect("dependencies section");
+    let deps_end = manifest[deps_start..]
+        .find("\n[")
+        .map(|offset| deps_start + offset)
+        .unwrap_or(manifest.len());
+    let dependencies = &manifest[deps_start..deps_end];
+    for path in [
+        "../spanda-transport-mqtt",
+        "../spanda-transport-ros2",
+        "../spanda-transport-dds",
+        "../spanda-transport-websocket",
+        "../spanda-transport-routing",
+        "../spanda-transport\"",
+    ] {
         assert!(
-            source.lines().count() <= 40,
-            "{module} should remain a thin transport compatibility shim"
-        );
-        assert!(
-            source.contains("spanda_transport_routing") || source.contains("spanda_transport"),
-            "{module} should delegate to spanda-transport-* crates"
+            !dependencies.contains(path),
+            "spanda-core [dependencies] should not list {path} after Phase 19"
         );
     }
 }

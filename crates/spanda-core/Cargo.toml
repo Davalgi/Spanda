@@ -13,11 +13,7 @@ thiserror = "2"
 spanda-audit = { path = "../spanda-audit" }
 spanda-security = { path = "../spanda-security" }
 sha2 = "0.10"
-spanda-transport-mqtt = { path = "../spanda-transport-mqtt" }
-spanda-transport-ros2 = { path = "../spanda-transport-ros2" }
 spanda-connectivity = { path = "../spanda-connectivity" }
-spanda-transport-dds = { path = "../spanda-transport-dds" }
-spanda-transport-websocket = { path = "../spanda-transport-websocket" }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
 spanda-fleet = { path = "../spanda-fleet" }
 spanda-ota = { path = "../spanda-ota" }
@@ -44,8 +40,6 @@ spanda-ai = { path = "../spanda-ai" }
 spanda-providers = { path = "../spanda-providers" }
 spanda-concurrency = { path = "../spanda-concurrency" }
 spanda-debug = { path = "../spanda-debug" }
-spanda-transport-routing = { path = "../spanda-transport-routing" }
-spanda-transport = { path = "../spanda-transport" }
 spanda-regex-lang = { path = "../spanda-regex-lang" }
 spanda-lib-registry = { path = "../spanda-lib-registry" }
 spanda-connectivity-runtime = { path = "../spanda-connectivity-runtime" }
@@ -59,13 +53,12 @@ libloading = "0.8"
 
 [features]
 default = []
-live-mqtt = ["spanda-transport-mqtt/live"]
-live-websocket = ["spanda-transport-websocket/live"]
-live-dds = ["spanda-transport-dds/live"]
-live-transport = ["live-mqtt", "live-websocket", "live-dds"]
 python-native = ["spanda-bridge/python-native"]
 cpp-native = ["spanda-bridge/cpp-native"]
 
 [dev-dependencies]
 glob = "0.3"
 spanda-package = { path = "../spanda-package" }
+spanda-transport = { path = "../spanda-transport" }
+spanda-transport-routing = { path = "../spanda-transport-routing" }
+spanda-transport-ros2 = { path = "../spanda-transport-ros2" }

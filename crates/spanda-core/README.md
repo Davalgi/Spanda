@@ -8,8 +8,8 @@ After lean-core Phases 1–17, `spanda-core` is intentionally thin:
 
 - **Re-exports** the compile/run pipeline from [`spanda-driver`](../spanda-driver/README.md)
 - **Re-exports** AST, runtime, tooling, fleet, OTA, and security surfaces via `pub use` shims
-- **Keeps** a small set of compatibility modules (`transport`, `transport_rclrs`, deploy/fleet shims, `providers` facade)
-- **Does not** contain the interpreter body, parser, or transport adapter implementations
+- **Keeps** a small set of compatibility modules (deploy/fleet shims, `providers` facade)
+- **Does not** contain the interpreter body, parser, transport adapters, or transport routing
 
 First-party apps (`spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap`, `spanda-llvm`) import workspace crates directly and do **not** depend on `spanda-core`.
 
@@ -30,7 +30,7 @@ use spanda_ast::nodes::Program;
 use spanda_providers::ProviderRegistry;
 ```
 
-## Removed modules (Phase 17)
+## Removed modules (Phases 17 & 19)
 
 These paths no longer exist on `spanda_core`:
 
@@ -40,8 +40,10 @@ These paths no longer exist on `spanda_core`:
 | `spanda_core::transport_mqtt` | `spanda_transport_mqtt` or `spanda_transport_routing::live_bridges` |
 | `spanda_core::transport_dds` | `spanda_transport_dds` or `spanda_transport_routing::live_bridges` |
 | `spanda_core::transport_websocket` | `spanda_transport_websocket` or `spanda_transport_routing::live_bridges` |
-
-`spanda_core::transport` still re-exports `RoutingCommBus` and transport adapters for backward compatibility.
+| `spanda_core::transport` | `spanda_transport_routing::RoutingCommBus` |
+| `spanda_core::transport_wire` | `spanda_transport::{encode_wire_value, decode_wire_value}` |
+| `spanda_core::transport_security` | `spanda_transport::security` |
+| `spanda_core::transport_rclrs` | `spanda_transport_ros2::rclrs` |
 
 ## Tests
 

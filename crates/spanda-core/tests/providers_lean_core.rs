@@ -5,7 +5,7 @@ use spanda_core::providers::{
     TransportAdapterProvider,
 };
 use spanda_core::providers::TransportConfig;
-use spanda_core::transport::Ros2TransportAdapter;
+use spanda_transport_ros2::Ros2TransportAdapter;
 
 #[test]
 fn official_package_list_is_non_empty() {
@@ -22,7 +22,7 @@ fn module_classifications_include_core_and_shims() {
         .iter()
         .any(|m| m.module == "providers" && m.ownership == ModuleOwnership::Core));
     assert!(table.iter().any(|m| {
-        m.module == "transport_mqtt" && m.ownership == ModuleOwnership::Deprecated
+        m.module == "transport" && m.ownership == ModuleOwnership::Deprecated
     }));
 }
 

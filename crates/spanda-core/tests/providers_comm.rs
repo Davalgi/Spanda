@@ -4,7 +4,7 @@ use spanda_core::comm::TransportKind;
 use spanda_core::providers::{
     bootstrap_providers_for_packages, sync_comm_bus_for_official_packages,
 };
-use spanda_core::transport::RoutingCommBus;
+use spanda_transport_routing::RoutingCommBus;
 use std::cell::RefCell;
 use std::rc::Rc;
 
