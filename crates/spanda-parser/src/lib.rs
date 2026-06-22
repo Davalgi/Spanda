@@ -1058,6 +1058,7 @@ impl Parser {
         let target = self.parse_label("Expected target name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after health check target")?;
         let mut conditions = Vec::new();
+        let mut requirements = Vec::new();
         while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
             if self.check(TokenType::Ident) && self.peek().lexeme == "check" {
                 self.advance();
@@ -1114,8 +1115,15 @@ impl Parser {
                 });
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "require" {
                 self.advance();
-                let _ = self.parse_label("Expected require clause")?;
+                let mut clause = String::new();
+                while !self.check(TokenType::Semicolon) && !self.check(TokenType::Eof) {
+                    if !clause.is_empty() {
+                        clause.push(' ');
+                    }
+                    clause.push_str(&self.advance().lexeme);
+                }
                 self.expect(TokenType::Semicolon, "Expected ';' after require")?;
+                requirements.push(clause);
             } else {
                 let t = self.peek();
                 return Err(SpandaError::Parse {
@@ -1130,6 +1138,7 @@ impl Parser {
             name,
             target_kind,
             target,
+            requirements,
             conditions,
             span: self.span_from(&start, &end),
         })

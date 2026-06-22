@@ -30,7 +30,11 @@ robot Rover {
         diags
             .iter()
             .any(|d| d.category == "kill-switch" && d.message.contains("remote_signed")),
-        "expected remote_signed kill switch warning, got {diags:?}"
+        "expected remote_signed kill switch diagnostic, got {diags:?}"
+    );
+    assert!(
+        diags.iter().any(|d| d.severity == "error"),
+        "expected error severity for unsigned remote kill switch policy"
     );
 }
 

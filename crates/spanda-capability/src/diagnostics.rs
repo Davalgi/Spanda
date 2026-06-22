@@ -327,9 +327,9 @@ fn kill_switch_diagnostics(ks: &KillSwitchDecl, program: &Program) -> Vec<Verifi
             ),
             span.start.line,
             span.start.column,
-            "warning",
+            "error",
             "kill-switch",
-            Some("secure { signed required; }".into()),
+            Some("identity RobotIdentity { id: \"device\"; public_key: \"key\"; } secure { signed required; }".into()),
         ));
     }
     diags
@@ -386,12 +386,14 @@ kill_switch EmergencyStop {
 "#;
         let program = parse_source(source);
         let diags = collect_verification_diagnostics(&program);
-        assert!(diags.iter().any(|d| d.category == "kill-switch" && d.severity == "warning"));
+        assert!(diags.iter().any(|d| d.category == "kill-switch" && d.severity == "error"));
         assert!(
-            diags
-                .iter()
-                .any(|d| d.suggested_fix.as_deref() == Some("secure { signed required; }")),
-            "expected signed comm quick-fix"
+            diags.iter().any(|d| {
+                d.suggested_fix
+                    .as_deref()
+                    .is_some_and(|fix| fix.contains("identity RobotIdentity"))
+            }),
+            "expected identity + signed comm quick-fix"
         );
     }
 

@@ -64,7 +64,7 @@ impl<B: RobotBackend> Interpreter<B> {
         let faults = self.hardware_monitor.runtime_faults();
         let events = self.hardware_monitor.runtime_events();
         let mut report = evaluate_runtime_health(&faults, &events, &program);
-        spanda_capability::apply_fleet_health_checks(&mut report, &self.fleets, &faults);
+        spanda_capability::apply_fleet_health_checks(&mut report, &program, &self.fleets, &faults);
         let label = format!("{:?}", report.overall);
         if self.last_health_overall.as_deref() == Some(label.as_str()) {
             return;

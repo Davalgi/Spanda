@@ -894,6 +894,8 @@ pub enum HealthCheckDecl {
         name: String,
         target_kind: String,
         target: String,
+        #[serde(default)]
+        requirements: Vec<String>,
         conditions: Vec<HealthCheckCondition>,
         span: Span,
     },
