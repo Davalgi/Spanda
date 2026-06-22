@@ -1,0 +1,8 @@
+[package]
+name = "spanda-onnx"
+version = "0.1.0"
+description = "ONNX local inference provider (stub + bridge)"
+license = "Apache-2.0"
+
+[capabilities]
+ai = ["completion.generate"]

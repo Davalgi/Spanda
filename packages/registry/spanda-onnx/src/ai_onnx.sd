@@ -1,0 +1,7 @@
+module ai.onnx;
+
+extern python fn onnx_complete(prompt: String) -> String;
+
+export fn complete(prompt: String) -> String {
+  onnx_complete(prompt)
+}

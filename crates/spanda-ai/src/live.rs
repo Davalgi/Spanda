@@ -24,6 +24,14 @@ pub fn live_anthropic_enabled() -> bool {
             .is_some_and(|key| !key.is_empty())
 }
 
+/// Return true when live ONNX inference should be used.
+pub fn live_onnx_enabled() -> bool {
+    std::env::var("SPANDA_LIVE_AI").ok().as_deref() != Some("0")
+        && std::env::var("SPANDA_ONNX_MODEL_PATH")
+            .ok()
+            .is_some_and(|path| !path.is_empty())
+}
+
 /// Select a runtime AI provider for the configured provider name.
 pub fn resolve_ai_provider(provider: &str) -> Box<dyn AiProvider> {
     // Select a runtime AI provider for the configured provider name.
@@ -43,6 +51,7 @@ pub fn resolve_ai_provider(provider: &str) -> Box<dyn AiProvider> {
     match provider.to_ascii_lowercase().as_str() {
         "openai" if live_ai_enabled() => Box::new(OpenAiProvider),
         "anthropic" if live_anthropic_enabled() => Box::new(AnthropicProvider),
+        "onnx" if live_onnx_enabled() => Box::new(OnnxProvider),
         _ => Box::new(MockAiProvider),
     }
 }
@@ -88,6 +97,26 @@ impl AiProvider for AnthropicProvider {
     fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
         let prompt = build_prompt(&request.prompt, request.input.as_ref(), None);
         if let Some(text) = call_anthropic_complete(&prompt) {
+            return proposal_from_completion(&text, request);
+        }
+        MockAiProvider.complete(request)
+    }
+
+    fn detect(&self, request: &DetectionRequest) -> RuntimeValue {
+        MockAiProvider.detect(request)
+    }
+
+    fn embed(&self, request: &EmbedRequest) -> RuntimeValue {
+        MockAiProvider.embed(request)
+    }
+}
+
+pub struct OnnxProvider;
+
+impl AiProvider for OnnxProvider {
+    fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
+        let prompt = build_prompt(&request.prompt, request.input.as_ref(), None);
+        if let Some(text) = call_onnx_complete(&prompt) {
             return proposal_from_completion(&text, request);
         }
         MockAiProvider.complete(request)
@@ -160,6 +189,17 @@ fn proposal_from_completion(text: &str, request: &CompletionRequest) -> RuntimeV
             "decision=forward".into(),
         ],
     )
+}
+
+fn call_onnx_complete(prompt: &str) -> Option<String> {
+    let response = call_python_bridge(
+        "onnx_complete",
+        vec![serde_json::Value::String(prompt.to_string())],
+    )?;
+    match response.get("result") {
+        Some(serde_json::Value::String(text)) if !text.is_empty() => Some(text.clone()),
+        _ => None,
+    }
 }
 
 fn call_anthropic_complete(prompt: &str) -> Option<String> {
