@@ -65,8 +65,7 @@ Replace scaffold `.sd` exports with full implementations where workspace crates 
 |----------|---------|-------------------|--------|
 | 1 | `spanda-ros2` | `spanda-transport-ros2` | Transport registered; `.sd` scaffold |
 | 2 | `spanda-mqtt` | `spanda-transport-mqtt` | Transport registered; `.sd` scaffold |
-| 3 | `spanda-gps` | `lib_registry` UART stub | Capability grant only |
-| 4 | `spanda-nav` / `spanda-slam` | `nav2_adapter` / `slam_adapter` | Runtime hooks; capability grant |
+| **Capability grant + stub** | `spanda-gps`, `spanda-nav`, `spanda-slam` | `PositioningProvider` / `NavigationProvider` / `SlamProvider` stubs in bootstrap |
 | 5 | `spanda-fleet` / `spanda-ota` | `spanda-fleet` / `spanda-ota` | CLI + workspace crates; `.sd` scaffold |
 
 See [official-packages.md](./official-packages.md) for the live vs scaffold matrix.

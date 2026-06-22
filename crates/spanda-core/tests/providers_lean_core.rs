@@ -64,6 +64,14 @@ fn bootstrap_providers_for_ros2_only() {
 }
 
 #[test]
+fn bootstrap_registers_positioning_when_gps_installed() {
+    let registry = spanda_core::providers::bootstrap_providers_for_packages(&["spanda-gps"]);
+    let ids = registry.list_positioning();
+    assert_eq!(ids.len(), 1);
+    assert_eq!(ids[0].package, "spanda-gps");
+}
+
+#[test]
 fn provider_id_key_format() {
     let id = ProviderId::new("spanda-gps", "nmea");
     assert_eq!(id.package, "spanda-gps");

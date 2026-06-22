@@ -1,5 +1,6 @@
 //! Bootstrap default provider registrations from core compatibility shims.
 //!
+use super::package_stubs::{GpsPositioningStub, NavNavigationStub, SlamPackageStub};
 use super::registry::{transport_registry_key, ProviderRegistry};
 use super::traits::TransportAdapterProvider;
 use crate::comm::TransportKind;
@@ -39,6 +40,7 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
     // None.
     //
     // Example:
+
     // let registry = bootstrap_providers_for_packages(&["spanda-ros2"]);
 
     let mut registry = ProviderRegistry::new();
@@ -88,15 +90,18 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
             WebsocketTransportAdapterLive::default(),
         );
     }
-    if names.contains("spanda-gps") {
+    if (names.contains("spanda-gps")) {
         registry.grant_capability("positioning.read");
+        registry.register_positioning(Box::new(GpsPositioningStub));
     }
-    if names.contains("spanda-nav") || names.contains("spanda-nav2") {
+    if (names.contains("spanda-nav") || names.contains("spanda-nav2")) {
         registry.grant_capability("navigation.plan");
+        registry.register_navigation(Box::new(NavNavigationStub));
     }
-    if names.contains("spanda-slam") {
+    if (names.contains("spanda-slam")) {
         registry.grant_capability("slam.localize");
         registry.grant_capability("slam.map");
+        registry.register_slam(Box::new(SlamPackageStub));
     }
     if names.contains("spanda-fleet") {
         registry.grant_capability("fleet.orchestrate");

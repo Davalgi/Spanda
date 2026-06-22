@@ -7,6 +7,7 @@
 //!
 pub mod bootstrap;
 pub mod classification;
+pub mod package_stubs;
 pub mod registry;
 pub mod traits;
 pub mod types;
