@@ -48,6 +48,7 @@ members = [
     "crates/spanda-runtime-host",
     "crates/spanda-ffi",
     "crates/spanda-interpreter",
+    "crates/spanda-capability",
     "crates/spanda-transport",
 ]
 exclude = ["crates/spanda-ros2-rclrs-native"]

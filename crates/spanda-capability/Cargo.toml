@@ -1,0 +1,20 @@
+[package]
+name = "spanda-capability"
+version.workspace = true
+edition.workspace = true
+description = "Capability registry, traceability, health checks, and minimum-hardware safety for Spanda"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+spanda-ast = { path = "../spanda-ast" }
+spanda-hardware = { path = "../spanda-hardware" }
+spanda-lexer = { path = "../spanda-lexer" }
+spanda-parser = { path = "../spanda-parser" }
+
+[dev-dependencies]
+spanda-driver = { path = "../spanda-driver" }
+serde_json = "1"
