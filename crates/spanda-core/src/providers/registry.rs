@@ -7,6 +7,7 @@ use super::traits::{
     VisionProvider,
 };
 use super::types::{ProviderCapabilitySet, ProviderId};
+use crate::comm::TransportKind;
 use std::collections::HashMap;
 
 /// Holds installed provider implementations keyed by package and name.
@@ -34,6 +35,11 @@ pub struct ProviderRegistry {
 
 fn registry_key(id: &ProviderId) -> String {
     format!("{}::{}", id.package, id.name)
+}
+
+/// Stable registry lookup key for a project-scoped transport provider.
+pub fn transport_registry_key(package: &str) -> String {
+    format!("{package}::project")
 }
 
 impl ProviderRegistry {
@@ -164,5 +170,17 @@ impl ProviderRegistry {
         F: FnOnce(&mut dyn TransportProvider) -> R,
     {
         self.transports.get_mut(key).map(|p| f(p.as_mut()))
+    }
+
+    pub fn with_transport_for_kind<F, R>(&mut self, kind: TransportKind, f: F) -> Option<R>
+    where
+        F: FnOnce(&mut dyn TransportProvider) -> R,
+    {
+        let key = self
+            .transports
+            .iter()
+            .find(|(_, provider)| provider.kind() == kind)
+            .map(|(key, _)| key.clone())?;
+        self.with_transport(&key, f)
     }
 }

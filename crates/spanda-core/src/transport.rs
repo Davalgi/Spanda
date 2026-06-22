@@ -17,8 +17,11 @@ use crate::transport_live as live;
 use crate::transport_rclrs as rclrs;
 use crate::transport_security::TlsTransportSession;
 use crate::transport_wire::{decode_wire_value, encode_wire_value};
+use crate::providers::{ProviderRegistry, TransportProvider};
 use spanda_security::policy::EncryptionMode;
-use std::collections::{HashMap, VecDeque};
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet, VecDeque};
+use std::rc::Rc;
 
 fn payload_string_for_service(value: &RuntimeValue) -> String {
     // Payload string for service.
@@ -985,7 +988,6 @@ impl TransportAdapter for MqttTransportAdapter {
 // ── Routing comm bus ──────────────────────────────────────────────────────────
 /// Routes publish/subscribe/service/action calls to transport-specific adapters
 /// while preserving in-memory semantics for simulation and discovery.
-#[derive(Debug)]
 pub struct RoutingCommBus {
     memory: InMemoryCommBus,
     ros2: Ros2TransportAdapter,
@@ -993,6 +995,19 @@ pub struct RoutingCommBus {
     dds: DdsTransportAdapter,
     websocket: WebsocketTransportAdapter,
     config: TransportConfig,
+    providers: Option<Rc<RefCell<ProviderRegistry>>>,
+    registry_keys: HashMap<TransportKind, String>,
+    registry_backed: HashSet<TransportKind>,
+}
+
+impl std::fmt::Debug for RoutingCommBus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("RoutingCommBus")
+            .field("memory", &self.memory)
+            .field("config", &self.config)
+            .field("registry_backed", &self.registry_backed)
+            .finish_non_exhaustive()
+    }
 }
 
 impl Default for RoutingCommBus {
@@ -1039,6 +1054,125 @@ impl RoutingCommBus {
             dds: DdsTransportAdapter::default(),
             websocket: WebsocketTransportAdapter::default(),
             config: TransportConfig::default(),
+            providers: None,
+            registry_keys: HashMap::new(),
+            registry_backed: HashSet::new(),
+        }
+    }
+
+    pub fn attach_provider_registry(&mut self, registry: Rc<RefCell<ProviderRegistry>>) {
+        self.providers = Some(registry);
+    }
+
+    pub fn mark_registry_backed(&mut self, kind: TransportKind, key: String) {
+        self.registry_backed.insert(kind);
+        self.registry_keys.insert(kind, key);
+    }
+
+    pub fn clear_registry_backed(&mut self) {
+        self.registry_backed.clear();
+        self.registry_keys.clear();
+    }
+
+    pub fn is_registry_backed(&self, kind: TransportKind) -> bool {
+        self.registry_backed.contains(&kind)
+    }
+
+    fn uses_registry_transport(&self, kind: TransportKind) -> bool {
+        self.registry_backed.contains(&kind) && self.providers.is_some()
+    }
+
+    fn with_registry_transport<F, R>(&self, kind: TransportKind, f: F) -> Option<R>
+    where
+        F: FnOnce(&mut dyn TransportProvider) -> R,
+    {
+        if !self.uses_registry_transport(kind) {
+            return None;
+        }
+        let key = self.registry_keys.get(&kind)?.clone();
+        let providers = self.providers.as_ref()?;
+        providers.borrow_mut().with_transport(&key, f)
+    }
+
+    fn publish_external(
+        &mut self,
+        kind: TransportKind,
+        topic_path: &str,
+        message_type: &str,
+        value: RuntimeValue,
+    ) {
+        if let Some(()) = self.with_registry_transport(kind, |provider| {
+            if provider.is_connected() {
+                provider.publish(topic_path, message_type, value);
+            }
+        }) {
+            return;
+        }
+        if let Some(adapter) = self.adapter_mut(kind) {
+            adapter.publish(topic_path, message_type, value);
+        }
+    }
+
+    fn subscribe_external(&mut self, kind: TransportKind, topic_path: &str) {
+        if let Some(()) = self.with_registry_transport(kind, |provider| {
+            provider.subscribe(topic_path);
+        }) {
+            return;
+        }
+        if let Some(adapter) = self.adapter_mut(kind) {
+            adapter.subscribe(topic_path);
+        }
+    }
+
+    fn receive_external(&self, kind: TransportKind, topic_path: &str) -> Option<RuntimeValue> {
+        if let Some(value) = self
+            .with_registry_transport(kind, |provider| {
+                if provider.is_connected() {
+                    provider.receive(topic_path)
+                } else {
+                    None
+                }
+            })
+            .flatten()
+        {
+            return Some(value);
+        }
+        self.adapter(kind).and_then(|adapter| {
+            if adapter.is_connected() {
+                adapter.receive(topic_path)
+            } else {
+                None
+            }
+        })
+    }
+
+    fn connect_external(&mut self, kind: TransportKind, config: &TransportConfig) {
+        if let Some(()) = self.with_registry_transport(kind, |provider| {
+            let _ = provider.connect(config);
+        }) {
+            return;
+        }
+        let _ = match kind {
+            TransportKind::Ros2 => self.ros2.connect(config),
+            TransportKind::Mqtt => self.mqtt.connect(config),
+            TransportKind::Dds => self.dds.connect(config),
+            TransportKind::Websocket => self.websocket.connect(config),
+            TransportKind::Local | TransportKind::Sim => Ok(()),
+        };
+    }
+
+    fn disconnect_external(&mut self, kind: TransportKind) {
+        if let Some(()) = self.with_registry_transport(kind, |provider| {
+            provider.disconnect();
+        }) {
+            return;
+        }
+        match kind {
+            TransportKind::Ros2 => self.ros2.disconnect(),
+            TransportKind::Mqtt => self.mqtt.disconnect(),
+            TransportKind::Dds => self.dds.disconnect(),
+            TransportKind::Websocket => self.websocket.disconnect(),
+            TransportKind::Local | TransportKind::Sim => {}
         }
     }
 
@@ -1110,6 +1244,9 @@ impl RoutingCommBus {
         // let result = instance.adapter(kind);
 
         // Match on kind and handle each case.
+        if self.uses_registry_transport(kind) {
+            return None;
+        }
         match kind {
             TransportKind::Ros2 => Some(&self.ros2),
             TransportKind::Mqtt => Some(&self.mqtt),
@@ -1136,6 +1273,9 @@ impl RoutingCommBus {
         // let result = instance.adapter_mut(kind);
 
         // Match on kind and handle each case.
+        if self.uses_registry_transport(kind) {
+            return None;
+        }
         match kind {
             TransportKind::Ros2 => Some(&mut self.ros2),
             TransportKind::Mqtt => Some(&mut self.mqtt),
@@ -1181,6 +1321,16 @@ impl RoutingCommBus {
 
         // Produce memory as the result.
         &mut self.memory
+    }
+
+    fn is_external_connected(&self, kind: TransportKind) -> bool {
+        if let Some(connected) = self.with_registry_transport(kind, |provider| provider.is_connected())
+        {
+            return connected;
+        }
+        self.adapter(kind)
+            .map(|adapter| adapter.is_connected())
+            .unwrap_or(false)
     }
 
     pub fn register_robot(&mut self, name: impl Into<String>) {
@@ -1308,33 +1458,28 @@ impl RoutingCommBus {
 
             // Process each kind.
             for kind in kinds {
+                if !self.is_external_connected(kind) {
+                    continue;
+                }
 
-                // Emit output when adapter mut provides a adapter.
-                if let Some(adapter) = self.adapter_mut(kind) {
-
-                    // Take this path when adapter.is connected().
-                    if adapter.is_connected() {
-
-                        // Emit output when receive provides a value.
-                        if let Some(value) = adapter.receive(&path) {
-                            let (value, source_id) = decode_wire_value(&self.config, value)
-                                .unwrap_or_else(|_| {
-                                    (
-                                        RuntimeValue::String {
-                                            value: "<wire-decode-failed>".into(),
-                                        },
-                                        None,
-                                    )
-                                });
-                            let envelope = CommEnvelope {
-                                value: value.clone(),
-                                source_id,
-                            };
-                            self.memory
-                                .push_inbound(&path, value, envelope.source_id.as_deref());
-                            inbound.push((path.clone(), envelope));
-                        }
-                    }
+                // Emit output when receive provides a value.
+                if let Some(value) = self.receive_external(kind, &path) {
+                    let (value, source_id) = decode_wire_value(&self.config, value)
+                        .unwrap_or_else(|_| {
+                            (
+                                RuntimeValue::String {
+                                    value: "<wire-decode-failed>".into(),
+                                },
+                                None,
+                            )
+                        });
+                    let envelope = CommEnvelope {
+                        value: value.clone(),
+                        source_id,
+                    };
+                    self.memory
+                        .push_inbound(&path, value, envelope.source_id.as_deref());
+                    inbound.push((path.clone(), envelope));
                 }
             }
         }
@@ -1360,7 +1505,7 @@ impl RoutingCommBus {
 
         let paths = self.memory.subscription_paths();
 
-        // Tear down stub adapters that are no longer the active transport.
+        // Tear down transports that are no longer the active kind.
         for kind in [
             TransportKind::Ros2,
             TransportKind::Mqtt,
@@ -1368,59 +1513,58 @@ impl RoutingCommBus {
             TransportKind::Websocket,
         ] {
             if kind != transport {
-                match kind {
-                    TransportKind::Ros2 => self.ros2.disconnect(),
-                    TransportKind::Mqtt => self.mqtt.disconnect(),
-                    TransportKind::Dds => self.dds.disconnect(),
-                    TransportKind::Websocket => self.websocket.disconnect(),
-                    _ => {}
-                }
+                self.disconnect_external(kind);
             }
         }
 
-        // Connect the target adapter when it is not already live.
+        // Connect the target transport when it is not already live.
         match transport {
-            TransportKind::Ros2 if !self.ros2.is_connected() => {
-                let _ = self.ros2.connect(&self.config);
+            TransportKind::Ros2 if !self.is_external_connected(TransportKind::Ros2) => {
+                self.connect_external(TransportKind::Ros2, &self.config);
             }
-            TransportKind::Mqtt if !self.mqtt.is_connected() => {
-                let _ = self.mqtt.connect(&TransportConfig {
-                    broker_url: self
-                        .config
-                        .broker_url
-                        .clone()
-                        .or(Some("mqtt://localhost:1883".into())),
-                    client_id: self.config.client_id.clone().or(Some("spanda".into())),
-                    ..self.config.clone()
-                });
+            TransportKind::Mqtt if !self.is_external_connected(TransportKind::Mqtt) => {
+                self.connect_external(
+                    TransportKind::Mqtt,
+                    &TransportConfig {
+                        broker_url: self
+                            .config
+                            .broker_url
+                            .clone()
+                            .or(Some("mqtt://localhost:1883".into())),
+                        client_id: self.config.client_id.clone().or(Some("spanda".into())),
+                        ..self.config.clone()
+                    },
+                );
             }
-            TransportKind::Dds if !self.dds.is_connected() => {
-                let _ = self.dds.connect(&TransportConfig {
-                    domain_id: self.config.domain_id.or(Some(0)),
-                    ..self.config.clone()
-                });
+            TransportKind::Dds if !self.is_external_connected(TransportKind::Dds) => {
+                self.connect_external(
+                    TransportKind::Dds,
+                    &TransportConfig {
+                        domain_id: self.config.domain_id.or(Some(0)),
+                        ..self.config.clone()
+                    },
+                );
             }
-            TransportKind::Websocket if !self.websocket.is_connected() => {
-                let _ = self.websocket.connect(&TransportConfig {
-                    broker_url: self
-                        .config
-                        .broker_url
-                        .clone()
-                        .or(Some("ws://localhost:9090".into())),
-                    ..self.config.clone()
-                });
+            TransportKind::Websocket if !self.is_external_connected(TransportKind::Websocket) => {
+                self.connect_external(
+                    TransportKind::Websocket,
+                    &TransportConfig {
+                        broker_url: self
+                            .config
+                            .broker_url
+                            .clone()
+                            .or(Some("ws://localhost:9090".into())),
+                        ..self.config.clone()
+                    },
+                );
             }
             TransportKind::Local | TransportKind::Sim => return,
             _ => {}
         }
 
-        let Some(adapter) = self.adapter_mut(transport) else {
-            return;
-        };
-
-        // Resubscribe every topic path on the newly active adapter.
+        // Resubscribe every topic path on the newly active transport.
         for path in paths {
-            adapter.subscribe(&path);
+            self.subscribe_external(transport, &path);
         }
     }
 }
@@ -1463,18 +1607,19 @@ impl CommBus for RoutingCommBus {
 
         // Encrypt for external transport adapters when TLS is enabled.
         let config = self.config.clone();
-        if let Some(adapter) = self.adapter_mut(transport) {
-            let wire_value = encode_wire_value(
-                &config,
-                topic_path,
-                message_type,
-                &value,
-                source_id,
-                transport,
-            )
-            .unwrap_or(value);
-            adapter.publish(topic_path, message_type, wire_value);
+        if matches!(transport, TransportKind::Local | TransportKind::Sim) {
+            return;
         }
+        let wire_value = encode_wire_value(
+            &config,
+            topic_path,
+            message_type,
+            &value,
+            source_id,
+            transport,
+        )
+        .unwrap_or(value);
+        self.publish_external(transport, topic_path, message_type, wire_value);
     }
 
     fn subscribe(&mut self, topic_path: &str, handler: &str) {

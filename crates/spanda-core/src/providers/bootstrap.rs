@@ -1,6 +1,6 @@
 //! Bootstrap default provider registrations from core compatibility shims.
 //!
-use super::registry::ProviderRegistry;
+use super::registry::{transport_registry_key, ProviderRegistry};
 use super::traits::TransportAdapterProvider;
 use crate::comm::TransportKind;
 use crate::transport::{
@@ -125,43 +125,77 @@ pub fn official_package_for_transport(kind: TransportKind) -> Option<&'static st
     }
 }
 
-/// Connect comm-bus adapters that correspond to installed official packages.
+fn connect_registry_transport(
+    comm_bus: &mut crate::transport::RoutingCommBus,
+    registry: &mut ProviderRegistry,
+    kind: TransportKind,
+    package: &str,
+    config: &TransportConfig,
+) {
+    let key = transport_registry_key(package);
+    if registry
+        .with_transport(&key, |provider| provider.connect(config))
+        .is_some()
+    {
+        comm_bus.mark_registry_backed(kind, key);
+    }
+}
+
+/// Connect comm-bus transports through installed official package providers.
 pub fn sync_comm_bus_for_official_packages(
     comm_bus: &mut crate::transport::RoutingCommBus,
-    package_names: &[String],
+    registry: &mut ProviderRegistry,
 ) {
-    let config = TransportConfig::default();
-    for name in package_names {
+    comm_bus.clear_registry_backed();
+    let base = TransportConfig::default();
+    let packages: Vec<String> = registry.official_packages().to_vec();
+    for name in packages {
         match name.as_str() {
             "spanda-ros2" => {
-                if let Some(adapter) = comm_bus.adapter_mut(TransportKind::Ros2) {
-                    let _ = adapter.connect(&config);
-                }
+                connect_registry_transport(
+                    comm_bus,
+                    registry,
+                    TransportKind::Ros2,
+                    &name,
+                    &base,
+                );
             }
             "spanda-mqtt" => {
-                if let Some(adapter) = comm_bus.adapter_mut(TransportKind::Mqtt) {
-                    let _ = adapter.connect(&TransportConfig {
+                connect_registry_transport(
+                    comm_bus,
+                    registry,
+                    TransportKind::Mqtt,
+                    &name,
+                    &TransportConfig {
                         broker_url: Some("mqtt://localhost:1883".into()),
                         client_id: Some("spanda".into()),
-                        ..config.clone()
-                    });
-                }
+                        ..base.clone()
+                    },
+                );
             }
             "spanda-dds" => {
-                if let Some(adapter) = comm_bus.adapter_mut(TransportKind::Dds) {
-                    let _ = adapter.connect(&TransportConfig {
+                connect_registry_transport(
+                    comm_bus,
+                    registry,
+                    TransportKind::Dds,
+                    &name,
+                    &TransportConfig {
                         domain_id: Some(0),
-                        ..config.clone()
-                    });
-                }
+                        ..base.clone()
+                    },
+                );
             }
             "spanda-ble" | "spanda-wifi" => {
-                if let Some(adapter) = comm_bus.adapter_mut(TransportKind::Websocket) {
-                    let _ = adapter.connect(&TransportConfig {
+                connect_registry_transport(
+                    comm_bus,
+                    registry,
+                    TransportKind::Websocket,
+                    "spanda-ble",
+                    &TransportConfig {
                         broker_url: Some("ws://localhost:9090".into()),
-                        ..config.clone()
-                    });
-                }
+                        ..base.clone()
+                    },
+                );
             }
             _ => {}
         }
