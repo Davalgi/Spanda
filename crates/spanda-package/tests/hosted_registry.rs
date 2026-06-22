@@ -115,3 +115,23 @@ fn hosted_packages_match_registry_scaffolds() {
         assert!(scaffold.is_file(), "missing scaffold at {}", scaffold.display());
     }
 }
+
+#[test]
+fn hosted_registry_tarballs_match_index_checksums() {
+    let index_path = repo_root().join("registry/index.json");
+    let body = fs::read_to_string(&index_path).expect("registry/index.json");
+    let entries: Vec<RemoteRegistryEntry> =
+        serde_json::from_str(&body).expect("parse hosted index.json");
+
+    for entry in entries {
+        for (version, expected) in &entry.version_checksums {
+            let tarball = repo_root()
+                .join("registry/packages")
+                .join(&entry.name)
+                .join(version);
+            spanda_package::verify_sha256(&tarball, expected).unwrap_or_else(|err| {
+                panic!("checksum mismatch for {}/{}: {err}", entry.name, version);
+            });
+        }
+    }
+}

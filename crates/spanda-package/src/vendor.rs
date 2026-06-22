@@ -5,6 +5,7 @@ use crate::error::{PackageError, PackageResult};
 use crate::lockfile::Lockfile;
 use crate::registry::registry_package_dir;
 use crate::registry_fetch::fetch_registry_tarball;
+use crate::registry_remote::lookup_registry_entry;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -123,7 +124,8 @@ fn vendor_registry_package(
     }
 
     // Match on fetch registry tarball and handle each case.
-    match fetch_registry_tarball(project_root, name, version, &dest) {
+    let expected = lookup_registry_entry(name).and_then(|entry| entry.version_sha256(version));
+    match fetch_registry_tarball(project_root, name, version, &dest, expected.as_deref()) {
         Ok(path) => Ok(Some(path)),
         Err(err) => {
             let _ = err;

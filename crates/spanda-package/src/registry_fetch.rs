@@ -3,7 +3,11 @@
 //! Resolution order: local `dist/` or `.spanda/registry/` tarballs, then
 //! `SPANDA_REGISTRY_URL` (supports `https://` and `file://` bases).
 
+use crate::integrity::{
+    read_checksum_sidecar, registry_require_checksum, verify_sha256, write_checksum_sidecar,
+};
 use crate::registry_remote::registry_base_url;
+use crate::tar_extract::extract_tarball_safe;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -179,6 +183,7 @@ pub fn fetch_registry_tarball(
     name: &str,
     version: &str,
     dest: &Path,
+    expected_sha256: Option<&str>,
 ) -> Result<PathBuf, String> {
     // Fetch registry tarball.
     //
@@ -195,15 +200,21 @@ pub fn fetch_registry_tarball(
     // None.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::fetch_registry_tarball(project_root, name, version, dest);
+    // let result = spanda_package::registry_fetch::fetch_registry_tarball(project_root, name, version, dest, expected_sha256);
 
     // Produce map err as the result.
     fs::create_dir_all(dest).map_err(|e| format!("create vendor dir: {e}"))?;
 
     // Emit output when resolve local tarball provides a local.
     if let Some(local) = resolve_local_tarball(project_root, name, version) {
-        extract_tarball(&local, dest)?;
+        verify_tarball_digest(&local, expected_sha256.or(read_checksum_sidecar(&local).as_deref()))?;
+        extract_tarball_safe(&local, dest)?;
         return Ok(dest.to_path_buf());
+    }
+    if registry_require_checksum() && expected_sha256.is_none() {
+        return Err(format!(
+            "checksum required for '{name}@{version}' — set SPANDA_REGISTRY_REQUIRE_CHECKSUM=0 to allow unsigned remote installs"
+        ));
     }
     let url = registry_tarball_url(name, version).ok_or_else(|| {
         format!(
@@ -212,10 +223,38 @@ pub fn fetch_registry_tarball(
     })?;
     let tarball = dest.join(format!("{name}-{version}.tar.gz"));
     fetch_url_to_file(&url, &tarball)?;
+    verify_tarball_digest(&tarball, expected_sha256)?;
     let _ = cache_registry_tarball(project_root, name, version, &tarball);
-    extract_tarball(&tarball, dest)?;
+    let _ = write_checksum_sidecar(&tarball);
+    extract_tarball_safe(&tarball, dest)?;
     let _ = fs::remove_file(&tarball);
     Ok(dest.to_path_buf())
+}
+
+fn verify_tarball_digest(tarball: &Path, expected: Option<&str>) -> Result<(), String> {
+    // Enforce SHA-256 when a digest is known or strict mode is enabled.
+    //
+    // Parameters:
+    // - `tarball` — downloaded or local bundle
+    // - `expected` — optional hex digest from index or sidecar
+    //
+    // Returns:
+    // Ok when verification passes or no digest is required.
+    //
+    // Options:
+    // Honors `SPANDA_REGISTRY_REQUIRE_CHECKSUM`.
+    //
+    // Example:
+    // verify_tarball_digest(&tarball, entry.version_sha256("0.1.0").as_deref())?;
+
+    match expected {
+        Some(digest) => verify_sha256(tarball, digest),
+        None if registry_require_checksum() => Err(format!(
+            "missing checksum for {}",
+            tarball.display()
+        )),
+        None => Ok(()),
+    }
 }
 
 pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {
@@ -281,7 +320,7 @@ pub fn file_url_path(url: &str) -> Option<PathBuf> {
 }
 
 pub fn extract_tarball(tarball: &Path, dest: &Path) -> Result<(), String> {
-    // Extract tarball.
+    // Extract tarball using the safe in-process implementation.
     //
     // Parameters:
     // - `tarball` — input value
@@ -296,21 +335,7 @@ pub fn extract_tarball(tarball: &Path, dest: &Path) -> Result<(), String> {
     // Example:
     // let result = spanda_package::registry_fetch::extract_tarball(tarball, dest);
 
-    // Compute status for the following logic.
-    let status = Command::new("tar")
-        .args(["-xzf"])
-        .arg(tarball)
-        .arg("-C")
-        .arg(dest)
-        .status()
-        .map_err(|e| format!("tar extract failed: {e}"))?;
-
-    // Handle output when the subprocess succeeds.
-    if status.success() {
-        Ok(())
-    } else {
-        Err(format!("tar exited with {status}"))
-    }
+    extract_tarball_safe(tarball, dest)
 }
 
 #[cfg(test)]

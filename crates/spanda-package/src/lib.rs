@@ -10,6 +10,7 @@ pub mod dependency;
 pub mod error;
 pub mod hardware_req;
 pub mod import;
+pub mod integrity;
 pub mod lockfile;
 pub mod manifest;
 pub mod official;
@@ -20,6 +21,7 @@ pub mod registry_fetch;
 pub mod registry_remote;
 pub mod resolver;
 pub mod safety;
+pub mod tar_extract;
 pub mod validation;
 pub mod vendor;
 
@@ -42,6 +44,10 @@ pub use hardware_req::{
     CapabilityRequirements, HardwareRequirements,
 };
 pub use import::{all_registered_import_paths, resolve_package_import};
+pub use integrity::{
+    checksum_sidecar_path, read_checksum_sidecar, registry_require_checksum, sha256_file,
+    verify_sha256, write_checksum_sidecar,
+};
 pub use lockfile::{Lockfile, LOCKFILE_FILENAME};
 pub use manifest::{find_project_root, PackageManifest, PackageSection, MANIFEST_FILENAME};
 pub use official::{
@@ -51,6 +57,7 @@ pub use official::{
 };
 pub use project::{add_dependency, collect_source_files, init_package, remove_dependency};
 pub use publish::{bundle_package, publish_package, PublishReport};
+pub use tar_extract::extract_tarball_safe;
 pub use registry::{
     find_registry_entry, registry_info, registry_package_dir, search_registry,
     search_registry_merged, RegistryEntry, RegistryInfo, LOCAL_REGISTRY,

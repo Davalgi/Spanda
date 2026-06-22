@@ -19,6 +19,8 @@ pub struct RemoteRegistryEntry {
     pub license: String,
     #[serde(default)]
     pub import_paths: Vec<String>,
+    #[serde(default)]
+    pub version_checksums: std::collections::BTreeMap<String, String>,
 }
 
 static REMOTE_CACHE: OnceLock<Vec<RemoteRegistryEntry>> = OnceLock::new();
@@ -378,6 +380,28 @@ impl RegistryEntryLookup {
         match self {
             RegistryEntryLookup::Local(_) => "local",
             RegistryEntryLookup::Remote(_) => "remote",
+        }
+    }
+
+    pub fn version_sha256(&self, version: &str) -> Option<String> {
+        // Return the published SHA-256 for a registry version when known.
+        //
+        // Parameters:
+        // - `self` — registry lookup result
+        // - `version` — semver string
+        //
+        // Returns:
+        // Hex digest from remote index metadata, if present.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let digest = lookup.version_sha256("0.1.0");
+
+        match self {
+            RegistryEntryLookup::Local(_) => None,
+            RegistryEntryLookup::Remote(entry) => entry.version_checksums.get(version).cloned(),
         }
     }
 }

@@ -1,6 +1,7 @@
 //! Package bundle creation and optional remote registry upload.
 
 use crate::error::{PackageError, PackageResult};
+use crate::integrity::write_checksum_sidecar;
 use crate::manifest::{PackageManifest, MANIFEST_FILENAME};
 use crate::project::collect_source_files;
 use crate::registry_remote::{fetch_index_json, registry_base_url, RemoteRegistryEntry};
@@ -13,6 +14,7 @@ pub struct PublishReport {
     pub bundle_path: PathBuf,
     pub uploaded: bool,
     pub upload_url: Option<String>,
+    pub sha256: Option<String>,
 }
 
 /// Create a `.tar.gz` bundle containing manifest, lockfile, and source files.
@@ -57,10 +59,12 @@ pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<
     }
     paths.extend(sources);
     create_tar_gz(&bundle_path, root, &paths)?;
+    let sha256 = write_checksum_sidecar(&bundle_path).ok();
     Ok(PublishReport {
         bundle_path,
         uploaded: false,
         upload_url: None,
+        sha256,
     })
 }
 
@@ -98,7 +102,7 @@ pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult
                 report.upload_url = Some(url);
 
                 // Handle the error returned from update registry index.
-                if let Err(err) = update_registry_index(&base, manifest) {
+                if let Err(err) = update_registry_index(&base, manifest, report.sha256.as_deref()) {
                     eprintln!("Warning: registry index update failed: {err}");
                 }
             }
@@ -196,7 +200,11 @@ fn upload_bundle(bundle: &Path, url: &str) -> Result<(), String> {
     }
 }
 
-fn update_registry_index(base: &str, manifest: &PackageManifest) -> Result<(), String> {
+fn update_registry_index(
+    base: &str,
+    manifest: &PackageManifest,
+    sha256: Option<&str>,
+) -> Result<(), String> {
     // Update registry index.
     //
     // Parameters:
@@ -230,10 +238,19 @@ fn update_registry_index(base: &str, manifest: &PackageManifest) -> Result<(), S
     {
         // Check membership before continuing.
         if !existing.versions.contains(&version) {
-            existing.versions.push(version);
+            existing.versions.push(version.clone());
         }
         existing.description = description;
+        if let Some(digest) = sha256 {
+            existing
+                .version_checksums
+                .insert(version, digest.to_string());
+        }
     } else {
+        let mut version_checksums = std::collections::BTreeMap::new();
+        if let Some(digest) = sha256 {
+            version_checksums.insert(version.clone(), digest.to_string());
+        }
         entries.push(RemoteRegistryEntry {
             name: manifest.package.name.clone(),
             description,
@@ -245,6 +262,7 @@ fn update_registry_index(base: &str, manifest: &PackageManifest) -> Result<(), S
                 .clone()
                 .unwrap_or_else(|| "Apache-2.0".into()),
             import_paths: vec![],
+            version_checksums,
         });
     }
     let json = serde_json::to_string_pretty(&entries).map_err(|e| e.to_string())?;
@@ -355,6 +373,7 @@ mod tests {
         };
         let report = bundle_package(root, &manifest).expect("bundle");
         assert!(report.bundle_path.exists());
+        assert!(report.sha256.is_some());
         assert!(!report.uploaded);
     }
 }
