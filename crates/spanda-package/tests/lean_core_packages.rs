@@ -10,15 +10,26 @@ use std::path::Path;
 fn official_packages_registered_in_framework_list() {
     let names: Vec<_> = framework_packages().iter().map(|p| p.name).collect();
     for pkg in [
-        "spanda-gps",
-        "spanda-wifi",
         "spanda-ble",
         "spanda-cellular",
+        "spanda-cloud",
         "spanda-dds",
         "spanda-fleet",
-        "spanda-ota",
+        "spanda-gazebo",
+        "spanda-gps",
         "spanda-ledger",
-        "spanda-cloud",
+        "spanda-maintenance",
+        "spanda-moveit",
+        "spanda-mqtt",
+        "spanda-nav",
+        "spanda-openai",
+        "spanda-opencv",
+        "spanda-ota",
+        "spanda-ros2",
+        "spanda-slam",
+        "spanda-webots",
+        "spanda-wifi",
+        "spanda-yolo",
     ] {
         assert!(names.contains(&pkg), "missing framework entry for {pkg}");
     }
