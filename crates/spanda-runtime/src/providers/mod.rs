@@ -2,8 +2,14 @@
 //!
 pub mod registry;
 pub mod traits;
+pub mod iot;
 pub mod transport_types;
 pub mod types;
+
+pub use iot::{
+    ActuatorCommand, Command, CommandProvider, DeviceShadow, DeviceShadowProvider, IoTDevice,
+    IoTDeviceProvider, SensorReading, Telemetry, TelemetryProvider,
+};
 
 pub use registry::{transport_registry_key, ProviderRegistry};
 pub use traits::{

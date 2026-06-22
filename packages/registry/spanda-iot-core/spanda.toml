@@ -1,0 +1,8 @@
+[package]
+name = "spanda-iot-core"
+version = "0.1.0"
+description = "IoT device contracts and base types for Spanda packages"
+license = "Apache-2.0"
+
+[capabilities]
+iot = ["telemetry.read", "command.send", "shadow.sync"]
