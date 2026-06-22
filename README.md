@@ -76,7 +76,7 @@ Spanda exists to be that coordination layer: one typed language where perception
 
 ## Architecture overview
 
-Spanda uses a **lean-core, package-first** architecture. Core provides safety, verification, the type system, runtime hooks, and extension contracts. Robotics, AI, connectivity, simulation, and cloud integrations are added through [official packages](docs/official-packages.md).
+Spanda uses a **lean-core, package-first** workspace (Phases 1–17 complete). `spanda-core` is the stable public facade; first-party apps import focused workspace crates directly.
 
 ```
 .sd source → lexer → parser → AST → type checker
@@ -90,18 +90,20 @@ Spanda uses a **lean-core, package-first** architecture. Core provides safety, v
                             SIR → LLVM (experimental)
 ```
 
-| Layer | Technology | Responsibility |
-|-------|------------|----------------|
-| Language core | Rust (`spanda-core`) | Public facade — re-exports driver, interpreter, certify, and domain shims |
-| Compile + run driver | Rust (`spanda-driver`) | `compile`, `check`, `run`, `run_program` (certify + FFI + interpreter) |
-| Parser | Rust (`spanda-parser`) | AST construction from tokens |
-| Interpreter | Rust (`spanda-interpreter`) | Tree-walking runtime, `run_program`, simulator |
-| Official packages | `.sd` + `spanda.toml` | ROS2, MQTT, GPS, SLAM, vision, fleet, OTA, cloud |
-| Native CLI | Rust (`spanda-cli`) | `check`, `verify`, `run`, `sim`, package manager |
-| Bindings | N-API, WASM | Node and browser integration |
-| Developer UX | TypeScript + React | CLI wrapper, LSP, web playground, tests, VS Code extension scaffold (`editor/vscode`) |
+| Layer | Crates | Responsibility |
+|-------|--------|----------------|
+| **Public facade** | `spanda-core` | Stable `spanda_core::` re-exports + thin shims |
+| **Apps** | `spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap` | CLI, bindings, debugger — direct workspace deps |
+| **Pipeline** | `spanda-driver`, `spanda-lexer`, `spanda-parser`, `spanda-typecheck`, `spanda-sir` | Compile, check, verify, SIR |
+| **Runtime** | `spanda-interpreter`, `spanda-runtime`, `spanda-comm`, `spanda-safety`, … | Execution, scheduling, safety, comm |
+| **Transport** | `spanda-transport-routing`, `spanda-transport-*` | Adapters, live bridges, `RoutingCommBus` |
+| **Domain** | `spanda-hardware`, `spanda-fleet`, `spanda-ota`, `spanda-certify` | Verify, fleet, rollout, certification |
+| **Tooling** | `spanda-format`, `spanda-lint`, `spanda-codegen`, `spanda-docs` | fmt, lint, codegen, docgen |
+| **Packages** | `spanda-package`, `spanda-providers` | `spanda.toml`, registry, provider bootstrap |
+| **Official packages** | `packages/registry/*` | ROS2, MQTT, GPS, SLAM, vision, fleet, OTA, cloud |
+| **Mirror & UX** | `src/`, `packages/lsp`, `packages/web` | TypeScript tests, LSP, web playground |
 
-Deep dive: [docs/lean-core.md](docs/lean-core.md) · [docs/architecture.md](docs/architecture.md)
+Crate index: [crates/README.md](crates/README.md) · Deep dive: [docs/lean-core.md](docs/lean-core.md) · [docs/architecture.md](docs/architecture.md)
 
 ---
 
@@ -165,7 +167,7 @@ spanda verify rover.sd --json
 
 ### Examples library
 
-**Tutorial series:** [Tutorials index](docs/tutorials/README.md) · [For Dummies](docs/spanda-for-dummies/README.md) · [Spanda 101](docs/spanda-101/README.md)
+**[examples/README.md](examples/README.md)** — master index: killer demo, learning ladder, topics, packages, CI.
 
 Start with the progressive ladder in [`examples/basics/`](examples/basics/README.md), then integration slices and end-to-end packages:
 
@@ -365,12 +367,17 @@ Rust and TypeScript sources use **inline API documentation** (inside function bo
 | [docs/regex.md](docs/regex.md) | Regex literals, triggers, subscription filters |
 | [docs/triggers.md](docs/triggers.md) | Trigger-driven execution model |
 | [docs/concurrency.md](docs/concurrency.md) | Tasks, spawn, channels, fleet CLI |
-| [docs/architecture.md](docs/architecture.md) | Compiler pipeline and diagrams |
+| [docs/architecture.md](docs/architecture.md) | Compiler pipeline and workspace crate map |
+| [docs/lean-core.md](docs/lean-core.md) | Lean-core architecture (Phases 1–17) |
+| [crates/README.md](crates/README.md) | Workspace crate index |
 | [docs/feature-status.md](docs/feature-status.md) | Stable vs experimental vs planned |
 | [docs/product-strategy.md](docs/product-strategy.md) | v0.5 beta priorities and positioning |
 | [docs/spanda-language.md](docs/spanda-language.md) | Language reference |
 | [docs/spanda-reference.md](docs/spanda-reference.md) | Full language API (JavaDoc + man-style CLI) |
-| [docs/api-reference.md](docs/api-reference.md) | Rust/TypeScript compiler API index |
+| [docs/api-documentation.md](docs/api-documentation.md) | API doc hierarchy (language → compiler → JSON) |
+| [docs/api-reference.md](docs/api-reference.md) | Rust/TypeScript compiler API (grouped by layer) |
+| [docs/tutorials/README.md](docs/tutorials/README.md) | All tutorials, walkthroughs, and learning paths |
+| [examples/README.md](examples/README.md) | Runnable examples library index |
 | [docs/man/](docs/man/) | CLI manual pages |
 | [docs/README.md](docs/README.md) | Full documentation index |
 

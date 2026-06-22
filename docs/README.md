@@ -11,13 +11,15 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | Document | Description |
 |----------|-------------|
 | [tutorials/README.md](./tutorials/README.md) | **Master index — all tutorials, walkthroughs, and example paths** |
+| [../examples/README.md](../examples/README.md) | **Runnable examples library — ladder, topics, CI** |
 | [../README.md](../README.md) | Project overview, philosophy, quick start, and examples |
 | [getting-started.md](./getting-started.md) | **First robot in 10 minutes** |
 | [spanda-for-dummies/README.md](./spanda-for-dummies/README.md) | **Spanda for Dummies — plain-English no-jargon guide** |
 | [spanda-101/README.md](./spanda-101/README.md) | **Spanda 101 — 10-lesson tutorial series (basics → end-to-end)** |
 | [installation.md](./installation.md) | **Prebuilt packages for Linux, macOS, and Windows** |
 | [architecture.md](./architecture.md) | **Compiler pipeline with diagrams** |
-| [lean-core.md](./lean-core.md) | **Lean-core, package-first architecture** |
+| [lean-core.md](./lean-core.md) | **Lean-core workspace architecture (Phases 1–17)** |
+| [crates/README.md](../crates/README.md) | **Workspace crate index and dependency rules** |
 | [lean-core-roadmap.md](./lean-core-roadmap.md) | **Phased plan for crate extraction and runtime wiring** |
 | [provider-interfaces.md](./provider-interfaces.md) | **Provider trait contracts for packages** |
 | [official-packages.md](./official-packages.md) | **Official package catalog** |
@@ -49,8 +51,10 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | [cellular.md](./cellular.md) | **LTE/4G/5G hardware and roaming** |
 | [spanda-architecture.md](./spanda-architecture.md) | Architecture diagram, compiler pipeline, safety model |
 | [spanda-language.md](./spanda-language.md) | Language reference for modules, traits, tasks, twins, hardware |
-| [spanda-reference.md](./spanda-reference.md) | **Full language API reference** (keywords, `std.*`, builtins, man-style CLI) |
-| [api-reference.md](./api-reference.md) | Rust/TypeScript compiler API index (modules, types, functions) |
+| [spanda-reference.md](./spanda-reference.md) | **Spanda language API** — keywords, `std.*`, builtins, CLI (JavaDoc + man style) |
+| [api-documentation.md](./api-documentation.md) | **API doc hierarchy** — language vs compiler vs JSON contract |
+| [api-reference.md](./api-reference.md) | **Rust/TypeScript compiler API** — crates grouped by lean-core layer |
+| [api-contract.json](./api-contract.json) | JSON schema for diagnostics, run results, and verify output |
 | [standard-library.md](./standard-library.md) | Standard library overview and design |
 | [robotics-platform.md](./robotics-platform.md) | **Robotics platform: missions, fleet, safety zones, navigation, fusion, package strategy** |
 | [spanda-type-system.md](./spanda-type-system.md) | Type system: units, generics, AI/safety types |
@@ -65,29 +69,43 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 ## Repository layout
 
 ```
-crates/
-  spanda-core/              Lexer, parser, type checker, interpreter, triggers, concurrency, safety, AI, simulator
-  spanda-cli/               Native `spanda` binary (`check`, `verify`, `run`, `sim`, `fleet`, `fmt`)
-  spanda-package/           Package manager
-  spanda-audit/             Audit records and backends
-  spanda-security/          Capabilities, secrets, signed messages
-  spanda-ros2-rclrs-native/ Native ROS 2 rclrs cdylib for in-process transport
-  spanda-node/              Node.js N-API bindings
-  spanda-wasm/              WebAssembly bindings for the web playground
-  spanda-dap/               Debug Adapter Protocol server
+crates/                     Rust workspace — see crates/README.md for full index
+  spanda-core/              Public facade (re-exports + thin shims)
+  spanda-driver/            compile, check, run, verify, SIR, replay, debug
+  spanda-cli/               Native `spanda` binary
+  spanda-interpreter/       Tree-walking runtime (~21 modules under src/runtime/)
+  spanda-parser/            Parser (lexer → AST)
+  spanda-ast/               AST nodes and foundation types
+  spanda-typecheck/         Type checker and units
+  spanda-hardware/          Hardware compatibility verification
+  spanda-transport-routing/ RoutingCommBus, transport_live, live_bridges
+  spanda-fleet/             Fleet orchestration, agents, mesh, swarm
+  spanda-ota/               OTA deploy, rollout, remote agents
+  spanda-package/           Package manager (no spanda-core dependency)
+  spanda-providers/         Official package bootstrap
   spanda-llvm/              Experimental LLVM codegen
-  spanda-rt/                Runtime support for native codegen
+  spanda-node/              Node.js N-API bindings
+  spanda-wasm/              WebAssembly bindings
+  spanda-dap/               Debug Adapter Protocol server
+  …                         + comm, safety, hal, format, lint, certify, bridge, …
+
 packages/
   native/                   @spanda/native — Node wrapper for N-API
   web/                      @spanda/web — React playground
-  lsp/                      @spanda/lsp — Language Server (check + verify diagnostics)
-  registry/                 Official .sd packages (spanda-gps, spanda-ros2, spanda-mqtt, …)
-src/                        TypeScript interpreter, CLI wrapper, rust-bridge, and tests
-editor/vscode/              First-party VS Code extension scaffold
-scripts/                    Inline doc tooling, ROS2 daemon, Python bridge helpers
-examples/                   Sample `.sd` programs (basics/, features/, integration/, end_to_end/, showcase/, realtime/, regex/, …)
+  lsp/                      @spanda/lsp — Language Server
+  registry/                 20 official .sd packages (spanda-gps, spanda-ros2, …)
+
+src/                        TypeScript mirror (tests, CLI wrapper, providers)
+editor/vscode/              VS Code extension scaffold
+examples/                   Sample .sd programs (basics/, features/, showcase/, …)
 tests/                      Vitest suite and golden fixtures
+docs/                       Guides, architecture, API reference
+scripts/                    Doc tooling, example regression, ROS2 bridge helpers
 ```
+
+**Dependency rule:** Only `spanda-core` pulls the full facade graph. `spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap`, and `spanda-llvm` import workspace crates directly.
+
+**Removed from `spanda-core` (Phase 17):** `transport_live`, `transport_mqtt`, `transport_dds`, `transport_websocket` — use `spanda-transport-routing` or `spanda-transport-*` crates.
 
 ## CLI
 
@@ -132,7 +150,7 @@ Rust (`crates/`) and TypeScript (`src/`, `packages/`) use inline API docs inside
 - `add_inline_docs.py` — generate API doc blocks
 - `add_logic_block_docs.py` — generate contextual block comments
 - `normalize_inline_docs.py` — fix spacing and indentation (run after bulk edits)
-- `generate_api_reference.py` — regenerate [api-reference.md](./api-reference.md) from source
+- `generate_api_reference.py` — regenerate [api-reference.md](./api-reference.md) from source (see [api-documentation.md](./api-documentation.md))
 - `generate_spanda_reference.py` — regenerate [spanda-reference.md](./spanda-reference.md) and [man/](./man/)
 
 See [../CONTRIBUTING.md](../CONTRIBUTING.md#inline-documentation) for the full standard.
