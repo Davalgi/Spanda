@@ -2207,7 +2207,7 @@ class Parser {
     const start = this.advance();
     const name = this.parseLabel("Expected health policy name");
     this.expect("LBRACE", "Expected '{' after health policy name");
-    const reactions: [string, string][] = [];
+    const reactions: import("../foundations.js").HealthPolicyReaction[] = [];
 
     while (!this.check("RBRACE") && !this.check("EOF")) {
       if (this.check("ON")) {
@@ -2215,8 +2215,7 @@ class Parser {
         const status = this.parseLabel("Expected health status");
         this.expect("LBRACE", "Expected '{' after status");
         const body = this.parseBlock();
-        const action = body.map((s) => JSON.stringify(s)).join("; ");
-        reactions.push([status, action]);
+        reactions.push({ status, body });
         this.expect("RBRACE", "Expected '}' after health policy action");
       } else {
         const t = this.peek();
@@ -4948,6 +4947,11 @@ class Parser {
     const name = this.expect("IDENT", "Expected behavior name");
     this.expect("LPAREN", "Expected '(' after behavior name");
     this.expect("RPAREN", "Expected ')' after behavior parameters");
+    let returnType: SpandaType = { kind: "Void" };
+    if (this.check("ARROW")) {
+      this.advance();
+      returnType = this.parseTypeAnnotation();
+    }
     const { requires, ensures, invariant } = this.parseContractClauses();
     this.expect("LBRACE", "Expected '{' after behavior signature");
     const body = this.parseBlock();
@@ -4955,6 +4959,7 @@ class Parser {
     return {
       kind: "BehaviorDecl",
       name: name.lexeme,
+      returnType,
       requires,
       ensures,
       invariant,

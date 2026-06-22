@@ -66,8 +66,9 @@ describe("capability verification parsing (Phase 27)", () => {
     const policy = program.healthPolicies[0];
     expect(policy?.name).toBe("SafetyPolicy");
     expect(policy?.reactions).toHaveLength(2);
-    expect(policy?.reactions[0]?.[0]).toBe("Critical");
-    expect(policy?.reactions[1]?.[0]).toBe("Unsafe");
+    expect(policy?.reactions[0]?.status).toBe("Critical");
+    expect(policy?.reactions[1]?.status).toBe("Unsafe");
+    expect(policy?.reactions[0]?.body.length).toBeGreaterThan(0);
 
     expect(program.tests).toHaveLength(1);
     expect(program.tests[0]?.name).toBe("rover exposes gps navigation");

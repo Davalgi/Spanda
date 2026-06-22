@@ -441,6 +441,7 @@ export type SafetyZoneDecl = {
 export type BehaviorDecl = {
   kind: "BehaviorDecl";
   name: string;
+  returnType: SpandaType;
   requires: Expr | null;
   ensures: Expr | null;
   invariant: Expr | null;

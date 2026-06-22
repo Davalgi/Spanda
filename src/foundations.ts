@@ -378,10 +378,15 @@ export type HealthCheckDecl = {
   span: Span;
 };
 
+export type HealthPolicyReaction = {
+  status: string;
+  body: import("./nodes.js").Stmt[];
+};
+
 export type HealthPolicyDecl = {
   kind: "HealthPolicyDecl";
   name: string;
-  reactions: [string, string][];
+  reactions: HealthPolicyReaction[];
   span: Span;
 };
 
