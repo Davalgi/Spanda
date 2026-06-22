@@ -87,6 +87,11 @@
       "check": "pass"
     },
     {
+      "file": "examples/showcase/killer_demo.sd",
+      "check": "pass",
+      "run": { "maxLoopIterations": 5 }
+    },
+    {
       "file": "examples/showcase/communication_demo.sd",
       "check": "pass",
       "run": { "maxLoopIterations": 3 }

@@ -79,3 +79,17 @@ All 20 previously skipped examples now pass `spanda check`. The manifest retains
 - [x] Zero protocol-specific code in core except traits + wire types (`spanda-transport-*` adapters, `spanda-connectivity` bridges, `spanda-fleet` orchestration; core routing + shims only)
 
 See also: [lean-core.md](./lean-core.md), [migration.md](./migration.md#lean-core-package-first-refactor)
+
+## Phase 8 — Interpreter standalone compile (planned)
+
+Goal: `cargo build -p spanda-interpreter` compiles the runtime tree natively; `spanda-core` depends on `spanda-interpreter` (one-way) and drops the `#[path]` shim.
+
+| Step | Status |
+|------|--------|
+| Route runtime imports through workspace crates (`spanda-ast`, `spanda-runtime`, …) instead of `crate::` | Planned |
+| Move `run()` / `run_program()` from `spanda-core` into `spanda-interpreter` | Planned |
+| Add `spanda-interpreter` integration tests (not only re-exports) | Planned |
+| `spanda-core` feature-gated `pub use spanda_interpreter::runtime::*` | Blocked on cycle break |
+| Update `lean_core_shims` `runtime_shim_stays_thin` assertion for native re-export | Planned |
+
+Cargo cannot enable `spanda-core → spanda-interpreter` while `spanda-interpreter → spanda-core` until auxiliary domain modules finish extracting from core.
