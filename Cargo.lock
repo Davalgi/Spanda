@@ -1350,6 +1350,8 @@ name = "spanda-transport-mqtt"
 version = "0.1.0"
 dependencies = [
  "rumqttc",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
