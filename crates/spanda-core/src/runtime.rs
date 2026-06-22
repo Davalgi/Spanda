@@ -57,6 +57,7 @@ type TaskContracts = (Vec<Stmt>, f64, Option<Expr>, Option<Expr>, Option<Expr>);
 pub use spanda_runtime::value::*;
 pub use spanda_runtime::environment::Environment;
 pub use spanda_runtime::RuntimeError;
+use spanda_runtime::RuntimeHost;
 
 /// Convert extracted runtime errors into [`SpandaError`].
 pub trait IntoSpandaError {
@@ -1227,10 +1228,8 @@ impl<B: RobotBackend> Interpreter<B> {
         self.connectivity_policies = policies.iter().map(connectivity_policy_from_decl).collect();
         if let Some(policy) = self.connectivity_policies.first() {
             self.active_connectivity_link = policy.preferred.clone();
-            self.default_transport =
-                crate::connectivity_positioning::connectivity_link_to_transport(
-                    &self.active_connectivity_link,
-                );
+            self.default_transport = crate::runtime_host::core_runtime_host()
+                .connectivity_link_to_transport(&self.active_connectivity_link);
         }
     }
 
@@ -4154,7 +4153,7 @@ impl<B: RobotBackend> Interpreter<B> {
     fn activate_connectivity_link(&mut self, policy_name: &str, link: &str, reason: &str) {
         self.active_connectivity_link = link.to_string();
         self.default_transport =
-            crate::connectivity_positioning::connectivity_link_to_transport(link);
+            crate::runtime_host::core_runtime_host().connectivity_link_to_transport(link);
         self.comm_bus.reconnect_transport(self.default_transport);
         self.log(format!(
             "connectivity_policy '{policy_name}': {reason} (transport {:?})",
@@ -6568,7 +6567,9 @@ impl<B: RobotBackend> Interpreter<B> {
             "navigate" => {
                 let goal_label = goal.as_deref().unwrap_or("none");
                 self.log(format!("navigation: executing goal '{goal_label}'"));
-                if let Some(output) = crate::adapter_bridge::invoke_nav2_bridge(goal_label) {
+                if let Some(output) =
+                    crate::runtime_host::core_runtime_host().invoke_nav2_bridge(goal_label)
+                {
                     self.log(format!("navigation: Nav2 bridge output: {output}"));
                 }
                 if self.nav2_enabled || self.topic_path_to_message_type.contains_key("/cmd_vel")
@@ -6616,7 +6617,9 @@ impl<B: RobotBackend> Interpreter<B> {
         match property {
             "localize" => {
                 let state = self.backend.get_state();
-                if let Some(output) = crate::adapter_bridge::invoke_slam_bridge("localize") {
+                if let Some(output) =
+                    crate::runtime_host::core_runtime_host().invoke_slam_bridge("localize")
+                {
                     self.log(format!("slam: bridge localize output: {output}"));
                 } else {
                     self.log("slam: localize (stub adapter)".into());
@@ -6639,7 +6642,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 })
             }
             "map" => {
-                if let Some(output) = crate::adapter_bridge::invoke_slam_bridge("map") {
+                if let Some(output) =
+                    crate::runtime_host::core_runtime_host().invoke_slam_bridge("map")
+                {
                     self.log(format!("slam: bridge map output: {output}"));
                 } else {
                     self.log("slam: map snapshot (stub adapter)".into());

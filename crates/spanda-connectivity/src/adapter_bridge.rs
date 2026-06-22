@@ -29,6 +29,8 @@ pub fn invoke_nav2_bridge(goal: &str) -> Option<String> {
     let command_line = template.replace("{goal}", goal);
     let mut parts = command_line.split_whitespace();
     let program = parts.next()?;
+
+    // Run the bridge executable and capture stdout when it exits successfully.
     let output = Command::new(program)
         .args(parts)
         .output()
@@ -59,6 +61,8 @@ pub fn invoke_slam_bridge(operation: &str) -> Option<String> {
     let command_line = template.replace("{op}", operation);
     let mut parts = command_line.split_whitespace();
     let program = parts.next()?;
+
+    // Run the bridge executable and capture stdout when it exits successfully.
     let output = Command::new(program)
         .args(parts)
         .output()

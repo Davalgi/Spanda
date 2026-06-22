@@ -1,6 +1,10 @@
 //! Connectivity and positioning type catalogs extracted from Spanda core.
 //!
+pub mod adapter_bridge;
+
 use serde::{Deserialize, Serialize};
+
+pub use adapter_bridge::{invoke_nav2_bridge, invoke_slam_bridge};
 
 /// Requirement level for a connectivity channel in `requires_connectivity`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

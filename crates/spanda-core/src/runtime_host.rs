@@ -1,7 +1,9 @@
 //! Core-backed [`RuntimeHost`] hooks for the extracted runtime kernel.
 //!
+use crate::comm::TransportKind;
 use crate::nav2_adapter;
 use crate::slam_adapter;
+use spanda_connectivity::adapter_bridge;
 use spanda_runtime::RuntimeHost;
 
 /// Default host wiring domain adapters from `spanda-core` into `spanda-runtime`.
@@ -14,6 +16,18 @@ impl RuntimeHost for CoreRuntimeHost {
 
     fn navigation_import_known(&self, path: &str) -> bool {
         nav2_adapter::nav2_import_paths().contains(&path)
+    }
+
+    fn invoke_nav2_bridge(&self, goal: &str) -> Option<String> {
+        adapter_bridge::invoke_nav2_bridge(goal)
+    }
+
+    fn invoke_slam_bridge(&self, op: &str) -> Option<String> {
+        adapter_bridge::invoke_slam_bridge(op)
+    }
+
+    fn connectivity_link_to_transport(&self, link: &str) -> TransportKind {
+        crate::connectivity_positioning::connectivity_link_to_transport(link)
     }
 }
 
