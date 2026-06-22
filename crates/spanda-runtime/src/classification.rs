@@ -4,7 +4,6 @@
 /// Where a module or feature belongs in the lean-core architecture.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ModuleOwnership {
-
     /// Language compiler, type system, safety contracts, runtime kernel.
     Core,
 

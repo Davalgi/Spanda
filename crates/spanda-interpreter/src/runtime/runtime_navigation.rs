@@ -2,7 +2,7 @@
 //!
 
 use super::{
-    pose_from_state, runtime_pose, runtime_velocity, IntoSpandaError, Interpreter, RobotBackend,
+    pose_from_state, runtime_pose, runtime_velocity, Interpreter, IntoSpandaError, RobotBackend,
     RuntimeError, RuntimeValue,
 };
 use spanda_ast::nodes::{Expr, UnitKind};
@@ -76,8 +76,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 if let Some(output) = self.host.invoke_nav2_bridge(goal_label) {
                     self.log(format!("navigation: Nav2 bridge output: {output}"));
                 }
-                if self.nav2_enabled || self.topic_path_to_message_type.contains_key("/cmd_vel")
-                {
+                if self.nav2_enabled || self.topic_path_to_message_type.contains_key("/cmd_vel") {
                     if let Some(message_type) =
                         self.topic_path_to_message_type.get("/cmd_vel").cloned()
                     {

@@ -1,12 +1,12 @@
 //! Structured certification proof artifacts for CI and audit workflows.
 
-use spanda_ast::nodes::Program;
 use crate::verify::verify_certification_proof;
-use spanda_ota::hash_program_artifact;
-use spanda_ast::foundations::DeployDecl;
-use spanda_hardware::{CompatItem, CompatSeverity};
-use spanda_ast::robotics_decl::CertifyDecl;
 use serde::{Deserialize, Serialize};
+use spanda_ast::foundations::DeployDecl;
+use spanda_ast::nodes::Program;
+use spanda_ast::robotics_decl::CertifyDecl;
+use spanda_hardware::{CompatItem, CompatSeverity};
+use spanda_ota::hash_program_artifact;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CertificationEntry {
@@ -78,9 +78,7 @@ pub fn build_certification_proof(
         .iter()
         .map(|cert| {
             let CertifyDecl::CertifyDecl {
-                standard,
-                level,
-                ..
+                standard, level, ..
             } = cert;
             CertificationEntry {
                 standard: standard.as_str().to_string(),

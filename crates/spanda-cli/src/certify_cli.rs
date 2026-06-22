@@ -49,10 +49,12 @@ fn cmd_prove(args: &[String]) {
         process::exit(1);
     });
     let source = read_source(&file);
-    let program = compile(&source).unwrap_or_else(|e| {
-        eprintln!("Error compiling {file}: {e}");
-        process::exit(1);
-    }).program;
+    let program = compile(&source)
+        .unwrap_or_else(|e| {
+            eprintln!("Error compiling {file}: {e}");
+            process::exit(1);
+        })
+        .program;
     let report = build_certification_proof(&program, &file, strict);
     let payload = serde_json::to_string_pretty(&report).unwrap_or_else(|e| {
         eprintln!("Error serializing proof: {e}");
@@ -71,7 +73,10 @@ fn cmd_prove(args: &[String]) {
         println!("{payload}");
     } else if out_path.is_none() {
         println!("Certification proof for {file}");
-        println!("  Status: {}", if report.passed { "PASSED" } else { "FAILED" });
+        println!(
+            "  Status: {}",
+            if report.passed { "PASSED" } else { "FAILED" }
+        );
         println!("  {}", report.summary);
         if let Some(hash) = &report.program_hash {
             println!("  program_hash: {hash}");

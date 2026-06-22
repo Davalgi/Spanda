@@ -4,7 +4,9 @@ use spanda_error::SpandaError;
 use spanda_interpreter::{
     create_default_simulator, RobotBackend, RunOptions, RunResult, SimulatorConfig,
 };
-use spanda_runtime::replay::{playback_frames, verify_traces, MissionTrace, PlaybackReport, TraceVerification};
+use spanda_runtime::replay::{
+    playback_frames, verify_traces, MissionTrace, PlaybackReport, TraceVerification,
+};
 use spanda_runtime::robot_state::RobotState;
 
 use crate::run::run;

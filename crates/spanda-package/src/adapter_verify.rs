@@ -121,9 +121,11 @@ pub fn verify_adapter_package(
     let expected = import_path
         .and_then(adapter_metadata_for_import)
         .or_else(|| package_name.and_then(adapter_metadata_for_package))
-        .ok_or_else(|| PackageError::Validation(
-            "No adapter metadata registered for requested import/package".into(),
-        ))?;
+        .ok_or_else(|| {
+            PackageError::Validation(
+                "No adapter metadata registered for requested import/package".into(),
+            )
+        })?;
     Ok(verify_manifest_adapter(manifest, &expected))
 }
 

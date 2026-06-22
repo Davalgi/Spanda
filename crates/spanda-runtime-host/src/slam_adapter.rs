@@ -4,7 +4,11 @@ use spanda_ast::nodes::ImportDecl;
 
 /// Import paths that enable SLAM adapter behavior.
 pub fn slam_import_paths() -> &'static [&'static str] {
-    &["navigation.slam", "navigation.cartographer", "navigation.rtabmap"]
+    &[
+        "navigation.slam",
+        "navigation.cartographer",
+        "navigation.rtabmap",
+    ]
 }
 
 /// Return true when the program imports a SLAM-related module path.

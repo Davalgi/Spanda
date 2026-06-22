@@ -3,9 +3,9 @@
 //! Emits module-level API reference from the AST: imports, functions, structs,
 //! enums, traits, robots, and test blocks.
 
+use spanda_ast::foundations::Visibility;
 use spanda_ast::nodes::*;
 use spanda_error::SpandaError;
-use spanda_ast::foundations::Visibility;
 
 pub fn generate_markdown(source: &str) -> Result<String, SpandaError> {
     // Generate Markdown API documentation from Spanda source.

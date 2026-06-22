@@ -58,7 +58,6 @@ pub use official::{
 };
 pub use project::{add_dependency, collect_source_files, init_package, remove_dependency};
 pub use publish::{bundle_package, publish_package, PublishReport};
-pub use tar_extract::extract_tarball_safe;
 pub use registry::{
     find_registry_entry, registry_info, registry_package_dir, search_registry,
     search_registry_merged, RegistryEntry, RegistryInfo, LOCAL_REGISTRY,
@@ -72,12 +71,12 @@ pub use registry_remote::{
     search_remote_registry, RegistryEntryLookup, RemoteRegistryEntry,
 };
 pub use registry_sign::{
-    registry_require_signature, registry_sign_key, registry_signature_payload,
-    registry_trust_key, sign_registry_tarball, verify_registry_signature,
-    RegistryVersionSignature,
+    registry_require_signature, registry_sign_key, registry_signature_payload, registry_trust_key,
+    sign_registry_tarball, verify_registry_signature, RegistryVersionSignature,
 };
 pub use resolver::{resolve_dependencies, ResolveOptions, ResolveResult};
 pub use safety::{SafetyLevel, SafetyMetadata};
+pub use tar_extract::extract_tarball_safe;
 pub use validation::{
     validate_package, ApplicationPermissions, ValidationIssue, ValidationReport, ValidationSeverity,
 };

@@ -762,12 +762,11 @@ pub fn qos_to_spanda_type(qos: &QosDecl) -> SpandaType {
     SpandaType::Named { name: "QoS".into() }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_ast::nodes::Span;
     use spanda_ast::foundations::FieldDecl;
+    use spanda_ast::nodes::Span;
 
     #[test]
     fn message_registry_builtin_and_custom() {

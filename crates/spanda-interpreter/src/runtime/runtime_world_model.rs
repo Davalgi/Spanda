@@ -34,10 +34,11 @@ impl<B: RobotBackend> Interpreter<B> {
                 let observation = if let Some(arg) = args.first() {
                     self.eval_expr(arg)?
                 } else {
-                    return Err(
-                        RuntimeError::new("world_model.update requires an observation", line)
-                            .into(),
-                    );
+                    return Err(RuntimeError::new(
+                        "world_model.update requires an observation",
+                        line,
+                    )
+                    .into());
                 };
                 let confidence = self.world_model.update(&observation);
                 self.log(format!("world_model.update -> belief {confidence:.2}"));
@@ -54,11 +55,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 let json = self.world_model.export_json().to_string();
                 Ok(RuntimeValue::String { value: json })
             }
-            other => Err(RuntimeError::new(
-                format!("unknown world_model method: {other}"),
-                line,
-            )
-            .into()),
+            other => {
+                Err(RuntimeError::new(format!("unknown world_model method: {other}"), line).into())
+            }
         }
     }
 }

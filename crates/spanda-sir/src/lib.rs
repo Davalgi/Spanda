@@ -3,11 +3,11 @@
 //! Lowers module functions, extern declarations, robot metadata, and a subset of
 //! statements for LLVM codegen. Execution still uses the tree-walking interpreter.
 
+use serde::{Deserialize, Serialize};
+use spanda_ast::foundations::{BridgeKind, EnumDecl, ExternFnDecl, ModuleFnDecl, Visibility};
 use spanda_ast::nodes::{
     BehaviorDecl, Expr, LiteralValue, NamedArg, Program, RobotDecl, SpandaType, Stmt, UnitKind,
 };
-use spanda_ast::foundations::{BridgeKind, EnumDecl, ExternFnDecl, ModuleFnDecl, Visibility};
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

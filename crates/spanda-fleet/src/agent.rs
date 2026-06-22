@@ -57,7 +57,10 @@ fn unauthorized(request: &HttpRequest, state: &FleetAgentState) -> bool {
     }
 }
 
-pub fn handle_fleet_agent_request(state: &mut FleetAgentState, request: HttpRequest) -> HttpResponse {
+pub fn handle_fleet_agent_request(
+    state: &mut FleetAgentState,
+    request: HttpRequest,
+) -> HttpResponse {
     // Route fleet peer relay protocol requests.
     if unauthorized(&request, state) {
         return HttpResponse {
@@ -177,16 +180,14 @@ fn handle_connection(
     let raw = match read_plain_request(&mut stream) {
         Ok(raw) => raw,
         Err(_) => {
-            let _ = stream.write_all(
-                http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-            );
+            let _ = stream
+                .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
             return;
         }
     };
     let Ok(request) = parse_http_request(&raw) else {
-        let _ = stream.write_all(
-            http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-        );
+        let _ = stream
+            .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
         return;
     };
     let response = {

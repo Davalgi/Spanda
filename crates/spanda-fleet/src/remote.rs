@@ -67,7 +67,9 @@ pub fn register_fleet_agent(
     token: Option<String>,
 ) -> Result<(), String> {
     parse_http_url(&url)?;
-    registry.agents.retain(|entry| entry.robot_name != robot_name);
+    registry
+        .agents
+        .retain(|entry| entry.robot_name != robot_name);
     registry.agents.push(FleetAgentEntry {
         robot_name,
         url,

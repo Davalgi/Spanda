@@ -3,8 +3,8 @@
 //! Invokes `scripts/spanda_python_bridge.py` (or `SPANDA_PYTHON_BRIDGE`) with a
 //! JSON stdin/stdout protocol. This is a real (minimal) integration — not a stub.
 
-use spanda_error::SpandaError;
 use spanda_ast::foundations::ExternFnDecl;
+use spanda_error::SpandaError;
 use spanda_runtime::value::RuntimeValue;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
@@ -171,8 +171,8 @@ pub fn call_extern(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
     use spanda_ast::foundations::BridgeKind;
+    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
         // Test decl.

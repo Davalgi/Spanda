@@ -66,14 +66,15 @@ impl<B: RobotBackend> Interpreter<B> {
                     .require_operation("cellular.sim_identity")
                     .map_err(|e| self.security_error(e, 0))?;
                 let cellular_active = self.host.is_modem_bearer(&self.active_connectivity_link);
-                let outage = self.comm_bus.active_faults().iter().any(|f| {
-                    matches!(
-                        f.as_str(),
-                        "LteOutage" | "SatelliteOutage" | "NetworkOutage"
-                    )
-                }) || self.hardware_monitor.injected_faults().iter().any(|f| {
-                    f == "LteOutage" || f == "SatelliteOutage" || f == "NetworkOutage"
-                });
+                let outage =
+                    self.comm_bus.active_faults().iter().any(|f| {
+                        matches!(
+                            f.as_str(),
+                            "LteOutage" | "SatelliteOutage" | "NetworkOutage"
+                        )
+                    }) || self.hardware_monitor.injected_faults().iter().any(|f| {
+                        f == "LteOutage" || f == "SatelliteOutage" || f == "NetworkOutage"
+                    });
                 Ok(self.host.runtime_sim_identity(
                     &self.active_connectivity_link,
                     cellular_active && !outage,

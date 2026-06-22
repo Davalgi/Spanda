@@ -40,9 +40,7 @@ impl LiveWebsocketBridge {
         while let Ok(Message::Text(text)) = guard.read() {
             if let Ok(frame) = serde_json::from_str::<WireEnvelope>(&text) {
                 if let Ok(mut map) = self.inbound.lock() {
-                    map.entry(frame.topic)
-                        .or_default()
-                        .push_back(frame.payload);
+                    map.entry(frame.topic).or_default().push_back(frame.payload);
                 }
             }
         }

@@ -84,9 +84,10 @@ fn maintain(verify_only: bool) -> Result<(), String> {
                         entry.name, version
                     ));
                 }
-                let expected_sig = entry.version_signatures.get(version).ok_or_else(|| {
-                    format!("missing signature for {}/{}", entry.name, version)
-                })?;
+                let expected_sig = entry
+                    .version_signatures
+                    .get(version)
+                    .ok_or_else(|| format!("missing signature for {}/{}", entry.name, version))?;
                 if !verify_registry_signature(
                     &entry.name,
                     version,
@@ -94,10 +95,7 @@ fn maintain(verify_only: bool) -> Result<(), String> {
                     expected_sig,
                     &expected_sig.public_key,
                 ) {
-                    return Err(format!(
-                        "invalid signature for {}/{}",
-                        entry.name, version
-                    ));
+                    return Err(format!("invalid signature for {}/{}", entry.name, version));
                 }
             } else {
                 if entry.version_checksums.get(version) != Some(&digest) {
@@ -131,7 +129,10 @@ fn maintain(verify_only: bool) -> Result<(), String> {
     .map_err(|err| format!("write {}: {err}", index_path.display()))?;
     println!(
         "✓ updated {checksum_updates} checksum(s) and {signature_updates} signature(s) in {}",
-        index_path.strip_prefix(&root).unwrap_or(&index_path).display()
+        index_path
+            .strip_prefix(&root)
+            .unwrap_or(&index_path)
+            .display()
     );
     Ok(())
 }

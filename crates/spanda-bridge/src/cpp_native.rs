@@ -2,8 +2,8 @@
 //!
 //! Calls the same handler dispatch as the subprocess bridge via a C ABI.
 
-use spanda_error::SpandaError;
 use spanda_ast::foundations::ExternFnDecl;
+use spanda_error::SpandaError;
 use spanda_runtime::value::RuntimeValue;
 use std::ffi::CString;
 use std::os::raw::c_char;
@@ -116,8 +116,8 @@ pub fn call_extern(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
     use spanda_ast::foundations::BridgeKind;
+    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
         // Test decl.

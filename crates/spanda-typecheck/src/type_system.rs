@@ -1,7 +1,7 @@
 //! Spanda type system: primitives, generics, physical units, and domain types.
 
-use spanda_ast::nodes::{BinaryOp, SpandaType, UnitKind};
 use crate::units::{self, PhysicalCategory};
+use spanda_ast::nodes::{BinaryOp, SpandaType, UnitKind};
 use std::collections::HashMap;
 
 /// Generic type constructor arity.
@@ -479,11 +479,7 @@ pub fn physical_category(ty: &SpandaType) -> PhysicalCategory {
 }
 
 /// Returns `None` when the operation is invalid (e.g. distance + duration).
-pub fn binary_physical_op_allowed(
-    op: BinaryOp,
-    left: &SpandaType,
-    right: &SpandaType,
-) -> bool {
+pub fn binary_physical_op_allowed(op: BinaryOp, left: &SpandaType, right: &SpandaType) -> bool {
     // Binary physical op allowed.
     //
     // Parameters:
@@ -1113,10 +1109,6 @@ mod tests {
         let volt = SpandaType::Named {
             name: "Voltage".into(),
         };
-        assert!(!binary_physical_op_allowed(
-            BinaryOp::Add,
-            &vel,
-            &volt
-        ));
+        assert!(!binary_physical_op_allowed(BinaryOp::Add, &vel, &volt));
     }
 }

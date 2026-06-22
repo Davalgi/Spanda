@@ -147,16 +147,14 @@ fn handle_connection(
     let raw = match read_plain_request(&mut stream) {
         Ok(raw) => raw,
         Err(_) => {
-            let _ = stream.write_all(
-                http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-            );
+            let _ = stream
+                .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
             return;
         }
     };
     let Ok(request) = parse_http_request(&raw) else {
-        let _ = stream.write_all(
-            http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-        );
+        let _ = stream
+            .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
         return;
     };
     let response = {

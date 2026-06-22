@@ -1,8 +1,8 @@
 //! simulator support for Spanda.
 //!
-use spanda_runtime::robot_state::{PoseState, RobotState, VelocityState};
-use spanda_hal::hal::{create_sim_hal, HalBackend, SimHalBackend};
 use crate::runtime::{MotionCommand, PoseValue, RobotBackend, RuntimeValue};
+use spanda_hal::hal::{create_sim_hal, HalBackend, SimHalBackend};
+use spanda_runtime::robot_state::{PoseState, RobotState, VelocityState};
 
 #[derive(Debug, Clone)]
 pub struct Obstacle {

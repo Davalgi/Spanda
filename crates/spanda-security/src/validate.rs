@@ -1,15 +1,15 @@
 //! Static security validation and audit reporting for Spanda programs.
 
-use spanda_ast::nodes::{Program, RobotDecl, TopicDecl};
-use spanda_comm::{BusDecl, TransportKind};
+use crate::{
+    is_known_capability, AuthenticationMode, EncryptionMode, IntegrityMode, TrustBoundaryKind,
+    TrustBoundaryRegistry,
+};
 use spanda_ast::foundations::{
     IdentityDecl, SecretDecl, SecureBlockDecl, SecureCommPolicyDecl, TrustBoundaryDecl,
 };
+use spanda_ast::nodes::{Program, RobotDecl, TopicDecl};
+use spanda_comm::{BusDecl, TransportKind};
 use spanda_parser::parse;
-use crate::{
-    AuthenticationMode, EncryptionMode, IntegrityMode, TrustBoundaryKind, TrustBoundaryRegistry,
-    is_known_capability,
-};
 
 /// Single security finding from static analysis.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -203,7 +203,10 @@ fn secret_is_crypto_material(secret: &SecretDecl) -> bool {
     let SecretDecl::SecretDecl { name, source, .. } = secret;
     name.contains("key")
         || name.contains("cert")
-        || matches!(source, spanda_ast::foundations::SecretSourceDecl::File { .. })
+        || matches!(
+            source,
+            spanda_ast::foundations::SecretSourceDecl::File { .. }
+        )
 }
 
 fn validate_secure_comm(sc: &SecureCommPolicyDecl, report: &mut SecurityReport) {

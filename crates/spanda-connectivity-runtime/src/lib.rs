@@ -4,11 +4,9 @@
 //! belong in official packages (`spanda-gps`, `spanda-wifi`, `spanda-ble`, `spanda-cellular`).
 //! This module remains as a compatibility shim until callers migrate to package imports.
 //!
-use spanda_ast::foundations::{
-    ConnectivityPolicyDecl, GeofenceDecl, SimFaultDecl,
-};
-use spanda_hardware::HardwareProfile;
 use serde::{Deserialize, Serialize};
+use spanda_ast::foundations::{ConnectivityPolicyDecl, GeofenceDecl, SimFaultDecl};
+use spanda_hardware::HardwareProfile;
 use std::collections::HashSet;
 
 pub use spanda_connectivity::{

@@ -1,13 +1,13 @@
 //! Experimental swarm coordinator runtime built on fleet declarations and mission controllers.
 
-use spanda_ast::nodes::{Program, RobotDecl};
 use crate::{
     deliver_peer_steps, fleet_registry_from_program, peer_handoffs, relay_deliveries_via_mesh,
     FleetMemberState, FleetPeerMesh, PeerDelivery,
 };
-use spanda_ast::foundations::MissionDecl;
-use spanda_ast::robotics_decl::{FleetDecl, SwarmDecl, SwarmPolicy};
 use serde::{Deserialize, Serialize};
+use spanda_ast::foundations::MissionDecl;
+use spanda_ast::nodes::{Program, RobotDecl};
+use spanda_ast::robotics_decl::{FleetDecl, SwarmDecl, SwarmPolicy};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -107,7 +107,9 @@ fn advance_member(
         );
     };
     let RobotDecl::RobotDecl {
-        peer_robots, mission, ..
+        peer_robots,
+        mission,
+        ..
     } = robot;
     let mut runtime = mission_for_robot(robot);
     let (mission_name, mission_state, current_step) = if let Some(ref mut m) = runtime {
@@ -133,11 +135,7 @@ fn advance_member(
     )
 }
 
-fn leader_follow_deliveries(
-    leader: &str,
-    step: &str,
-    members: &[String],
-) -> Vec<PeerDelivery> {
+fn leader_follow_deliveries(leader: &str, step: &str, members: &[String]) -> Vec<PeerDelivery> {
     // Record synthetic leader-to-follower handoffs for non-peer fleet members.
     if step.is_empty() {
         return Vec::new();
@@ -193,8 +191,7 @@ fn coordinate_swarm_group(
                 next_cursor = (index + 1) % members.len();
                 let member_name = &members[index];
                 active_member = Some(member_name.clone());
-                let (state, deliveries) =
-                    advance_member(robots, member_name, &mut mesh);
+                let (state, deliveries) = advance_member(robots, member_name, &mut mesh);
                 peer_deliveries.extend(deliveries);
                 if !state.current_step.is_empty() {
                     steps_advanced = 1;
@@ -204,8 +201,7 @@ fn coordinate_swarm_group(
         }
         SwarmPolicy::Broadcast => {
             for member_name in members {
-                let (state, deliveries) =
-                    advance_member(robots, member_name, &mut mesh);
+                let (state, deliveries) = advance_member(robots, member_name, &mut mesh);
                 peer_deliveries.extend(deliveries);
                 if !state.current_step.is_empty() {
                     steps_advanced += 1;
@@ -220,8 +216,7 @@ fn coordinate_swarm_group(
                 if !state.current_step.is_empty() {
                     steps_advanced = 1;
                 }
-                peer_deliveries =
-                    leader_follow_deliveries(leader, &state.current_step, members);
+                peer_deliveries = leader_follow_deliveries(leader, &state.current_step, members);
                 member_states.push(state);
             }
         }
@@ -295,8 +290,7 @@ pub fn coordinate_swarms_mesh(
         if swarm.peer_deliveries.is_empty() {
             continue;
         }
-        match relay_deliveries_via_mesh(mesh_url, &swarm.peer_deliveries, token)
-        {
+        match relay_deliveries_via_mesh(mesh_url, &swarm.peer_deliveries, token) {
             Ok(resp) => {
                 swarm.remote_relayed = resp.relayed;
                 swarm.remote_failed = resp.failed;
@@ -344,7 +338,9 @@ pub fn coordinate_swarms(
     let mut reports = Vec::new();
 
     for swarm in swarms {
-        let SwarmDecl::SwarmDecl { name, fleet_name, .. } = swarm;
+        let SwarmDecl::SwarmDecl {
+            name, fleet_name, ..
+        } = swarm;
         if registry.members(fleet_name).is_none() {
             reports.push(SwarmCoordinationReport {
                 swarm_name: name.clone(),

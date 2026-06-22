@@ -2,11 +2,11 @@
 //!
 
 use super::{
-    IntoSpandaError, Interpreter, MotionCommand, RobotBackend, RuntimeError, RuntimeValue,
+    Interpreter, IntoSpandaError, MotionCommand, RobotBackend, RuntimeError, RuntimeValue,
 };
+use spanda_ast::comm_decl::DiscoverFilter;
 use spanda_ast::nodes::{Expr, SpandaType, Stmt};
 use spanda_comm::CommBus;
-use spanda_ast::comm_decl::DiscoverFilter;
 use spanda_debug::stmt_line;
 use spanda_error::SpandaError;
 use spanda_runtime::triggers::SystemTriggerCategory;
@@ -534,7 +534,12 @@ impl<B: RobotBackend> Interpreter<B> {
                 angular,
                 span,
             } => {
-                self.execute_navigate_stmt(goal, linear.as_deref(), angular.as_deref(), span.start.line)?;
+                self.execute_navigate_stmt(
+                    goal,
+                    linear.as_deref(),
+                    angular.as_deref(),
+                    span.start.line,
+                )?;
             }
         }
         Ok(())
@@ -626,5 +631,4 @@ impl<B: RobotBackend> Interpreter<B> {
             }
         }
     }
-
 }

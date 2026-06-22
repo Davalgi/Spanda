@@ -47,9 +47,7 @@ impl LiveDdsBridge {
                         if let Ok(text) = std::str::from_utf8(&buf[..len]) {
                             if let Ok(frame) = serde_json::from_str::<DdsWireEnvelope>(text) {
                                 if let Ok(mut map) = inbound_poll.lock() {
-                                    map.entry(frame.topic)
-                                        .or_default()
-                                        .push_back(frame.payload);
+                                    map.entry(frame.topic).or_default().push_back(frame.payload);
                                 }
                             }
                         }

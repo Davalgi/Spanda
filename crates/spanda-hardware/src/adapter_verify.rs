@@ -1,7 +1,7 @@
 //! Framework adapter import verification for `spanda verify`.
 
-use spanda_ast::nodes::ImportDecl;
 use crate::compat::{CompatItem, CompatSeverity};
+use spanda_ast::nodes::ImportDecl;
 
 fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
     CompatItem {
@@ -45,9 +45,7 @@ pub fn verify_framework_imports(imports: &[ImportDecl]) -> Vec<CompatItem> {
                 let detail = adapter_capability_summary(import_path);
                 items.push(pass(
                     "adapter",
-                    format!(
-                        "Framework import '{path}' maps to {package_name} — {detail}",
-                    ),
+                    format!("Framework import '{path}' maps to {package_name} — {detail}",),
                     span.start.line,
                     span.start.column,
                 ));

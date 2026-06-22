@@ -1,9 +1,7 @@
 //! src crate public API and re-exports.
 //!
 use serde::{Deserialize, Serialize};
-use spanda_driver::{
-    check, lower_to_sir, run, verify_compatibility, RunOptions, RunResult,
-};
+use spanda_driver::{check, lower_to_sir, run, verify_compatibility, RunOptions, RunResult};
 use spanda_error::Diagnostic;
 use spanda_format::format_source;
 use spanda_hardware::{CompatItem, CompatSeverity, VerifyOptions};

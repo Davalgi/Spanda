@@ -25,17 +25,14 @@ fn remote_rollout_updates_agent_state() {
         "/../../examples/robotics/ota_deployment.sd"
     );
     let plan = build_deploy_plan(&program, program_path, "2.0.0");
-    assert!(plan.program_hash.is_some(), "deploy plan should include program hash");
+    assert!(
+        plan.program_hash.is_some(),
+        "deploy plan should include program hash"
+    );
     let mut bundle = build_deploy_bundle(&plan);
     sign_deploy_bundle(&mut bundle, "test-signing-key").expect("sign bundle");
     let mut registry = DeployAgentRegistry::default();
-    register_agent(
-        &mut registry,
-        target.clone(),
-        entry.url.clone(),
-        None,
-    )
-    .expect("register agent");
+    register_agent(&mut registry, target.clone(), entry.url.clone(), None).expect("register agent");
 
     let result = execute_remote_rollout(
         &plan,
@@ -54,7 +51,8 @@ fn remote_rollout_updates_agent_state() {
 
     bundle.version = "2.1.0".into();
     sign_deploy_bundle(&mut bundle, "test-signing-key").expect("resign bundle");
-    let rollout = agent_rollout(&entry, &bundle, plan.certification_proof.as_ref()).expect("agent rollout");
+    let rollout =
+        agent_rollout(&entry, &bundle, plan.certification_proof.as_ref()).expect("agent rollout");
     assert!(rollout.ok);
     assert_eq!(rollout.version, "2.1.0");
 }

@@ -3,8 +3,8 @@
 //! Invokes a small C++ helper binary (built via `build.rs`, or `SPANDA_CPP_BRIDGE`)
 //! with the same JSON stdin/stdout protocol as the Python bridge.
 
-use spanda_error::SpandaError;
 use spanda_ast::foundations::ExternFnDecl;
+use spanda_error::SpandaError;
 use spanda_runtime::value::RuntimeValue;
 use std::path::PathBuf;
 
@@ -132,8 +132,8 @@ pub fn call_extern(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
     use spanda_ast::foundations::BridgeKind;
+    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
         // Test decl.

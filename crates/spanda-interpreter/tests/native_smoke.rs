@@ -1,6 +1,8 @@
 //! Native interpreter integration smoke tests.
 //!
-use spanda_interpreter::{create_default_simulator, Interpreter, InterpreterOptions, SimulatorConfig};
+use spanda_interpreter::{
+    create_default_simulator, Interpreter, InterpreterOptions, SimulatorConfig,
+};
 
 #[test]
 fn native_interpreter_construct_and_options_default() {

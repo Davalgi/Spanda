@@ -10,14 +10,15 @@ use crate::type_system::{
 };
 use crate::units::{self, unit_matches_named_type};
 use spanda_ast::comm_decl as comm;
+use spanda_ast::foundations::MissionDecl;
 use spanda_ast::foundations::{
     resolve_module_import, resolve_type_alias, CapabilityDecl, EnumDecl, EventDecl,
-    EventHandlerDecl, ExternFnDecl, MatchArm, ModuleFnDecl, SecureBlockDecl, StateMachineDecl, StructDecl,
-    ResourceBudgetDecl, TaskDecl, TraitDecl, TraitImplDecl, TriggerHandlerDecl, TriggerKind, TwinDecl, Visibility,
+    EventHandlerDecl, ExternFnDecl, MatchArm, ModuleFnDecl, ResourceBudgetDecl, SecureBlockDecl,
+    StateMachineDecl, StructDecl, TaskDecl, TraitDecl, TraitImplDecl, TriggerHandlerDecl,
+    TriggerKind, TwinDecl, Visibility,
 };
 use spanda_ast::nodes::*;
 use spanda_ast::robotics_decl::{CertifyDecl, FleetDecl, ProgramSafetyZoneDecl, SwarmDecl};
-use spanda_ast::foundations::MissionDecl;
 use std::collections::HashMap;
 
 /// Type-check failure carrying structured diagnostics.
@@ -498,8 +499,8 @@ impl<'h> TypeChecker<'h> {
                 .module_registry
                 .as_ref()
                 .is_some_and(|r| r.exports_for(path).is_some());
-            let known = resolve_module_import(path)
-                || self.host.import_path_known(path, module_has);
+            let known =
+                resolve_module_import(path) || self.host.import_path_known(path, module_has);
 
             // Take the branch when known is false.
             if !known {
@@ -572,7 +573,10 @@ impl<'h> TypeChecker<'h> {
                 members,
                 span,
             } = fleet;
-            if let Some(message) = self.host.validate_fleet_members(name, members, &robot_names) {
+            if let Some(message) = self
+                .host
+                .validate_fleet_members(name, members, &robot_names)
+            {
                 self.error(message, span.start.line, span.start.column);
             }
         }
@@ -599,7 +603,10 @@ impl<'h> TypeChecker<'h> {
                     span.start.column,
                 );
             }
-            if let Some(message) = self.host.validate_swarm_fleet(name, fleet_name, &fleet_names) {
+            if let Some(message) = self
+                .host
+                .validate_swarm_fleet(name, fleet_name, &fleet_names)
+            {
                 self.error(message, span.start.line, span.start.column);
             }
         }
@@ -1203,9 +1210,10 @@ impl<'h> TypeChecker<'h> {
         }
 
         // Expose SLAM adapter hooks when a SLAM-related import is present.
-        if imported.iter().any(|path| {
-            self.host.slam_import_known(path)
-        }) {
+        if imported
+            .iter()
+            .any(|path| self.host.slam_import_known(path))
+        {
             self.symbols.insert(
                 "slam".into(),
                 SymbolEntry {
@@ -1270,8 +1278,8 @@ impl<'h> TypeChecker<'h> {
             {
                 // Emit output when get soc profile provides a profile.
                 for err in self.host.validate_hal_against_soc(profile, members) {
-                        self.error(err, span.start.line, span.start.column);
-                    }
+                    self.error(err, span.start.line, span.start.column);
+                }
             }
         }
         let hal_bus_names: std::collections::HashSet<String> = hal
@@ -1692,7 +1700,10 @@ impl<'h> TypeChecker<'h> {
                 steps,
                 span,
             } = mission_decl;
-            if let Some(message) = self.host.validate_mission_decl(name, *duration_hours, steps) {
+            if let Some(message) = self
+                .host
+                .validate_mission_decl(name, *duration_hours, steps)
+            {
                 self.error(message, span.start.line, span.start.column);
             }
             self.symbols.insert(
@@ -1721,7 +1732,8 @@ impl<'h> TypeChecker<'h> {
 
         // Emit output when identity provides a identity decl.
         if let Some(identity_decl) = identity {
-            let spanda_ast::foundations::IdentityDecl::IdentityDecl { fields, span, .. } = identity_decl;
+            let spanda_ast::foundations::IdentityDecl::IdentityDecl { fields, span, .. } =
+                identity_decl;
             let has_id = fields.iter().any(|(k, _)| k == "id");
 
             // Take the branch when has id is false.
@@ -1867,7 +1879,9 @@ impl<'h> TypeChecker<'h> {
         // Emit output when permissions provides a perm decl.
         if let Some(perm_decl) = permissions {
             let spanda_ast::foundations::PermissionsDecl::PermissionsDecl {
-                capabilities, span, ..
+                capabilities,
+                span,
+                ..
             } = perm_decl;
 
             // Skip further work when capabilities is empty.
@@ -1996,8 +2010,9 @@ impl<'h> TypeChecker<'h> {
                 ..
             }) = budget
             {
-                for diag in
-                    self.host.validate_resource_budget(budget.as_ref().unwrap(), *span)
+                for diag in self
+                    .host
+                    .validate_resource_budget(budget.as_ref().unwrap(), *span)
                 {
                     self.error(diag.message, diag.line, diag.column);
                 }
@@ -6077,7 +6092,10 @@ fn robot_methods() -> HashMap<&'static str, MethodSig> {
     ])
 }
 
-fn builtin_methods(type_name: &str, host: &dyn TypeCheckHost) -> Option<HashMap<&'static str, MethodSig>> {
+fn builtin_methods(
+    type_name: &str,
+    host: &dyn TypeCheckHost,
+) -> Option<HashMap<&'static str, MethodSig>> {
     // Builtin methods.
     //
     // Parameters:
@@ -6526,9 +6544,7 @@ fn builtin_methods(type_name: &str, host: &dyn TypeCheckHost) -> Option<HashMap<
                 ),
             ),
         ])),
-        other if host.library_sensor_type_known(other) => {
-            Some(library_sensor_methods(other))
-        }
+        other if host.library_sensor_type_known(other) => Some(library_sensor_methods(other)),
         "String" => Some(HashMap::from([
             (
                 "matches",
@@ -6671,7 +6687,10 @@ fn infer_read_return(type_name: &str) -> SpandaType {
     SpandaType::Void
 }
 
-pub fn merge_library_methods(methods: &mut HashMap<String, HashMap<String, MethodSig>>, host: &dyn TypeCheckHost) {
+pub fn merge_library_methods(
+    methods: &mut HashMap<String, HashMap<String, MethodSig>>,
+    host: &dyn TypeCheckHost,
+) {
     // Merge library methods.
     //
     // Parameters:

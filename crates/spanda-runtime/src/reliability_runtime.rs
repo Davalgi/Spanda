@@ -1,7 +1,7 @@
 //! Runtime state for watchdogs, pipelines, retries, and recovery handlers.
 
-use spanda_ast::nodes::Stmt;
 use spanda_ast::foundations::{PipelineDecl, RecoverDecl, RetryDecl, WatchdogDecl};
+use spanda_ast::nodes::Stmt;
 use std::collections::HashMap;
 
 /// Loaded watchdog handler ready for sim-time evaluation.

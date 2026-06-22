@@ -2,7 +2,7 @@
 //!
 
 use super::{
-    get_number, get_string, IntoSpandaError, Interpreter, RobotBackend, RuntimeError, RuntimeValue,
+    get_number, get_string, Interpreter, IntoSpandaError, RobotBackend, RuntimeError, RuntimeValue,
 };
 use spanda_ast::nodes::{Expr, LiteralValue, UnitKind};
 use spanda_error::SpandaError;
@@ -25,9 +25,9 @@ impl<B: RobotBackend> Interpreter<B> {
         // Example:
         // let twin = self.twin_runtime(line)?;
 
-        self.twin.as_ref().ok_or_else(|| {
-            RuntimeError::new("No digital twin configured", line).into_spanda()
-        })
+        self.twin
+            .as_ref()
+            .ok_or_else(|| RuntimeError::new("No digital twin configured", line).into_spanda())
     }
 
     pub(super) fn eval_twin_method(
@@ -109,15 +109,13 @@ impl<B: RobotBackend> Interpreter<B> {
                 let twin = self.twin_runtime(line)?;
                 // Take this path when the twin mirrors the requested field.
                 if twin.mirrors.iter().any(|m| m == method) {
-                    twin.shadow_field(method)
-                        .cloned()
-                        .ok_or_else(|| {
-                            RuntimeError::new(
-                                format!("Twin shadow field '{method}' not yet mirrored"),
-                                line,
-                            )
-                            .into_spanda()
-                        })
+                    twin.shadow_field(method).cloned().ok_or_else(|| {
+                        RuntimeError::new(
+                            format!("Twin shadow field '{method}' not yet mirrored"),
+                            line,
+                        )
+                        .into_spanda()
+                    })
                 } else {
                     Ok(RuntimeValue::Void)
                 }

@@ -2,8 +2,8 @@
 
 use spanda_driver::compile;
 use spanda_fleet::{
-    default_fleet_agents_path, fleet_entry_for_port, orchestrate_fleets_mesh,
-    register_fleet_agent, relay_deliveries_via_mesh, relay_peer_delivery, save_fleet_agent_registry,
+    default_fleet_agents_path, fleet_entry_for_port, orchestrate_fleets_mesh, register_fleet_agent,
+    relay_deliveries_via_mesh, relay_peer_delivery, save_fleet_agent_registry,
     spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry, PeerDelivery,
 };
 use std::thread;

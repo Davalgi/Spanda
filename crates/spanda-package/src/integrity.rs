@@ -78,8 +78,8 @@ pub fn write_checksum_sidecar(tarball: &Path) -> Result<String, String> {
 
     let digest = sha256_file(tarball)?;
     let sidecar = checksum_sidecar_path(tarball);
-    let mut file = File::create(&sidecar)
-        .map_err(|e| format!("create {}: {e}", sidecar.display()))?;
+    let mut file =
+        File::create(&sidecar).map_err(|e| format!("create {}: {e}", sidecar.display()))?;
     writeln!(file, "{digest}").map_err(|e| format!("write {}: {e}", sidecar.display()))?;
     Ok(digest)
 }

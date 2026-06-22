@@ -37,7 +37,10 @@ fn interpreter_sources_live_in_interpreter_crate() {
         "orchestrator.rs should live under crates/spanda-interpreter/src/runtime/"
     );
     let eval = interpreter_runtime_dir().join("runtime_eval.rs");
-    assert!(eval.exists(), "runtime_eval.rs should live in spanda-interpreter tree");
+    assert!(
+        eval.exists(),
+        "runtime_eval.rs should live in spanda-interpreter tree"
+    );
 }
 
 #[test]
@@ -101,7 +104,9 @@ fn final_phase8_shims_reexport_workspace_crates() {
         ("nav2_adapter.rs", "spanda_runtime_host"),
         ("slam_adapter.rs", "spanda_runtime_host"),
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 8,
@@ -179,7 +184,9 @@ fn error_shim_reexports_spanda_error() {
 #[test]
 fn hal_shim_reexports_spanda_hal() {
     for module in ["hal.rs", "hardware_monitor.rs", "soc.rs"] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 8,
@@ -229,10 +236,15 @@ fn runtime_kernel_modules_reexport_from_spanda_runtime() {
         ("twin.rs", "spanda_runtime::twin"),
         ("events.rs", "spanda_runtime::events"),
         ("state_machine.rs", "spanda_runtime::state_machine"),
-        ("reliability_runtime.rs", "spanda_runtime::reliability_runtime"),
+        (
+            "reliability_runtime.rs",
+            "spanda_runtime::reliability_runtime",
+        ),
         ("serialize.rs", "spanda_runtime::serialize"),
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 8,
@@ -250,7 +262,10 @@ fn triggers_shim_reexports_spanda_runtime() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/triggers.rs");
     let source = fs::read_to_string(&path).expect("triggers.rs");
     let lines = source.lines().count();
-    assert!(lines <= 8, "triggers.rs should be a thin re-export shim (got {lines} lines)");
+    assert!(
+        lines <= 8,
+        "triggers.rs should be a thin re-export shim (got {lines} lines)"
+    );
     assert!(
         source.contains("spanda_runtime::triggers"),
         "triggers shim should re-export from spanda-runtime"
@@ -286,7 +301,9 @@ fn transport_shims_removed_from_core() {
         "transport_dds.rs",
         "transport_websocket.rs",
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         assert!(
             !path.exists(),
             "{module} should be removed from spanda-core; use spanda-transport-* workspace crates"
@@ -349,7 +366,8 @@ fn runtime_trigger_logic_is_extracted() {
 fn runtime_robotics_sensors_and_twin_logic_is_extracted() {
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let dir = interpreter_runtime_dir();
-    let robotics = fs::read_to_string(dir.join("runtime_robotics.rs")).expect("runtime_robotics.rs");
+    let robotics =
+        fs::read_to_string(dir.join("runtime_robotics.rs")).expect("runtime_robotics.rs");
     let sensors = fs::read_to_string(dir.join("runtime_sensors.rs")).expect("runtime_sensors.rs");
     let twin = fs::read_to_string(dir.join("runtime_twin.rs")).expect("runtime_twin.rs");
     assert!(robotics.contains("fn eval_ai_method"));
@@ -367,7 +385,8 @@ fn runtime_robotics_sensors_and_twin_logic_is_extracted() {
 fn runtime_builtins_audit_and_actuator_logic_is_extracted() {
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let dir = interpreter_runtime_dir();
-    let builtins = fs::read_to_string(dir.join("runtime_builtins.rs")).expect("runtime_builtins.rs");
+    let builtins =
+        fs::read_to_string(dir.join("runtime_builtins.rs")).expect("runtime_builtins.rs");
     let audit = fs::read_to_string(dir.join("runtime_audit.rs")).expect("runtime_audit.rs");
     let actuators =
         fs::read_to_string(dir.join("runtime_actuators.rs")).expect("runtime_actuators.rs");
@@ -465,14 +484,20 @@ fn interpreter_accepts_injected_runtime_host() {
 fn parser_shim_reexports_spanda_parser() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/parser.rs");
     let source = fs::read_to_string(path).expect("parser.rs shim");
-    assert!(source.lines().count() <= 5, "parser.rs should be a thin re-export shim");
+    assert!(
+        source.lines().count() <= 5,
+        "parser.rs should be a thin re-export shim"
+    );
     assert!(source.contains("spanda_parser::parse"));
 }
 
 #[test]
 fn compile_pipeline_lives_in_spanda_driver() {
     let driver = Path::new(env!("CARGO_MANIFEST_DIR")).join("../spanda-driver/src/compile.rs");
-    assert!(driver.exists(), "compile pipeline should live in spanda-driver");
+    assert!(
+        driver.exists(),
+        "compile pipeline should live in spanda-driver"
+    );
     let source = fs::read_to_string(driver).expect("spanda-driver compile.rs");
     assert!(source.contains("spanda_lexer::tokenize"));
     assert!(source.contains("spanda_parser::parse"));
@@ -505,7 +530,9 @@ fn phase13_extractions_use_thin_shims() {
         ("lexer.rs", "spanda_driver"),
         ("ffi.rs", "spanda_bridge"),
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 12,
@@ -543,7 +570,9 @@ fn compatibility_shims_stay_thin() {
         "connectivity_positioning.rs",
         "ffi_registry.rs",
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 8,
@@ -554,10 +583,8 @@ fn compatibility_shims_stay_thin() {
 
 #[test]
 fn core_cargo_has_no_direct_transport_adapter_deps() {
-    let manifest = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
-    )
-    .expect("Cargo.toml");
+    let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
+        .expect("Cargo.toml");
     let deps_start = manifest
         .find("[dependencies]")
         .expect("dependencies section");
@@ -583,10 +610,8 @@ fn core_cargo_has_no_direct_transport_adapter_deps() {
 
 #[test]
 fn fleet_and_ota_are_optional_embedder_features() {
-    let manifest = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
-    )
-    .expect("Cargo.toml");
+    let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
+        .expect("Cargo.toml");
     for crate_name in ["spanda-fleet", "spanda-ota", "spanda-deploy-http"] {
         assert!(
             manifest.contains(&format!(
@@ -601,10 +626,8 @@ fn fleet_and_ota_are_optional_embedder_features() {
 
 #[test]
 fn certify_and_bridge_are_optional_embedder_features() {
-    let manifest = fs::read_to_string(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
-    )
-    .expect("Cargo.toml");
+    let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
+        .expect("Cargo.toml");
     for crate_name in ["spanda-certify", "spanda-bridge", "spanda-ffi"] {
         assert!(
             manifest.contains(&format!(
@@ -634,7 +657,10 @@ fn run_pipeline_lives_in_spanda_driver() {
 fn sir_shim_reexports_spanda_sir() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/sir.rs");
     let source = fs::read_to_string(path).expect("sir.rs shim");
-    assert!(source.lines().count() <= 5, "sir.rs should be a thin re-export shim");
+    assert!(
+        source.lines().count() <= 5,
+        "sir.rs should be a thin re-export shim"
+    );
     assert!(source.contains("spanda_sir"));
 }
 
@@ -654,7 +680,9 @@ fn phase11_extractions_use_thin_shims() {
         ("language_reference.rs", "spanda_docs"),
         ("swarm_coordinator.rs", "spanda_fleet"),
     ] {
-        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src").join(module);
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join(module);
         let source = fs::read_to_string(&path).expect(module);
         assert!(
             source.lines().count() <= 8,

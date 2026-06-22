@@ -4,15 +4,14 @@ use spanda_ast::nodes::Program;
 use spanda_deploy_http::{ensure_agent_auth, DeployAgentTls};
 use spanda_driver::{build_deploy_plan, compile};
 use spanda_fleet::{
-    agent_health as fleet_agent_health, default_fleet_agent_state_path,
-    default_fleet_agents_path, load_fleet_agent_registry, mesh_registry_path,
-    orchestrate_fleets, orchestrate_fleets_mesh, orchestrate_fleets_remote,
-    register_fleet_agent, run_fleet_agent_server, run_fleet_mesh_coordinator,
-    save_fleet_agent_registry,
+    agent_health as fleet_agent_health, default_fleet_agent_state_path, default_fleet_agents_path,
+    load_fleet_agent_registry, mesh_registry_path, orchestrate_fleets, orchestrate_fleets_mesh,
+    orchestrate_fleets_remote, register_fleet_agent, run_fleet_agent_server,
+    run_fleet_mesh_coordinator, save_fleet_agent_registry,
 };
 use spanda_ota::{
     agent_health, apply_rollout, build_deploy_bundle, default_agent_state_path,
-    default_agents_path, default_state_path, execute_remote_rollout, execute_remote_rollback,
+    default_agents_path, default_state_path, execute_remote_rollback, execute_remote_rollout,
     load_agent_registry, load_deploy_state, plan_rollout, register_agent, rollback_targets,
     run_deploy_agent_server, save_agent_registry, save_deploy_state, sign_deploy_bundle,
     validate_rollout_certification, DeployAgentServerOptions, DeployState, RolloutOptions,
@@ -31,10 +30,12 @@ fn read_source(path: &str) -> String {
 }
 
 fn parse_program(source: &str, file: &str) -> Program {
-    compile(source).unwrap_or_else(|e| {
-        eprintln!("Error compiling {file}: {e}");
-        process::exit(1);
-    }).program
+    compile(source)
+        .unwrap_or_else(|e| {
+            eprintln!("Error compiling {file}: {e}");
+            process::exit(1);
+        })
+        .program
 }
 
 fn state_path() -> std::path::PathBuf {
@@ -420,7 +421,9 @@ fn cmd_agent_register(args: &[String]) {
             "--token" if idx + 1 < args.len() => {
                 token = Some(args[idx + 1].clone());
             }
-            other if !other.starts_with('-') && target.is_none() => target = Some(other.to_string()),
+            other if !other.starts_with('-') && target.is_none() => {
+                target = Some(other.to_string())
+            }
             other if !other.starts_with('-') && url.is_none() => url = Some(other.to_string()),
             other if other.starts_with('-') => {
                 eprintln!("Unknown argument: {other}");
@@ -545,12 +548,7 @@ pub fn fleet_orchestrate_dispatch(args: &[String]) {
     let source = read_source(&file);
     let program = parse_program(&source, &file);
     let result = if let Some(ref url) = mesh_url {
-        orchestrate_fleets_mesh(
-            &program,
-            &file,
-            url,
-            mesh_token.as_deref(),
-        )
+        orchestrate_fleets_mesh(&program, &file, url, mesh_token.as_deref())
     } else if remote {
         let registry = load_fleet_agent_registry(&fleet_agents_path());
         orchestrate_fleets_remote(&program, &file, &registry)
@@ -797,9 +795,6 @@ fn cmd_fleet_agent_list(args: &[String]) {
     }
     for entry in &registry.agents {
         let health = fleet_agent_health(entry).unwrap_or(false);
-        println!(
-            "  {} -> {} (healthy={health})",
-            entry.robot_name, entry.url
-        );
+        println!("  {} -> {} (healthy={health})", entry.robot_name, entry.url);
     }
 }

@@ -2,17 +2,20 @@
 //!
 
 use super::{
-    priority_label, task_budget_violation_kind, IntoSpandaError,
-    Interpreter, RobotBackend, RuntimeError, RuntimeValue, TaskSchedule, RUNTIME_TASK_COST_MS,
+    priority_label, task_budget_violation_kind, Interpreter, IntoSpandaError, RobotBackend,
+    RuntimeError, RuntimeValue, TaskSchedule, RUNTIME_TASK_COST_MS,
 };
+use spanda_ast::foundations::TaskPriority;
 use spanda_ast::nodes::{Expr, Stmt};
 use spanda_error::SpandaError;
-use spanda_ast::foundations::TaskPriority;
 use spanda_runtime::scheduler;
 use spanda_runtime::triggers::SystemTriggerCategory;
 
 impl<B: RobotBackend> Interpreter<B> {
-    pub(super) fn run_scheduled_task(&mut self, schedule: &TaskSchedule) -> Result<bool, SpandaError> {
+    pub(super) fn run_scheduled_task(
+        &mut self,
+        schedule: &TaskSchedule,
+    ) -> Result<bool, SpandaError> {
         // Run scheduled task.
         //
         // Parameters:
@@ -468,7 +471,10 @@ impl<B: RobotBackend> Interpreter<B> {
         Ok(!stop)
     }
 
-    pub(super) fn execute_multiplexed_tasks(&mut self, tasks: Vec<TaskSchedule>) -> Result<(), SpandaError> {
+    pub(super) fn execute_multiplexed_tasks(
+        &mut self,
+        tasks: Vec<TaskSchedule>,
+    ) -> Result<(), SpandaError> {
         // Execute multiplexed tasks.
         //
         // Parameters:
@@ -670,5 +676,4 @@ impl<B: RobotBackend> Interpreter<B> {
         }
         Ok(())
     }
-
 }

@@ -3,9 +3,9 @@
 use crate::error::{PackageError, PackageResult};
 use crate::integrity::write_checksum_sidecar;
 use crate::manifest::{PackageManifest, MANIFEST_FILENAME};
-use crate::registry_sign::{registry_sign_key, sign_registry_tarball};
 use crate::project::collect_source_files;
 use crate::registry_remote::{fetch_index_json, registry_base_url, RemoteRegistryEntry};
+use crate::registry_sign::{registry_sign_key, sign_registry_tarball};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -64,7 +64,12 @@ pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<
     let sha256 = write_checksum_sidecar(&bundle_path).ok();
     let signature = sha256.as_deref().and_then(|digest| {
         registry_sign_key().map(|key| {
-            sign_registry_tarball(&manifest.package.name, &manifest.package.version, digest, &key)
+            sign_registry_tarball(
+                &manifest.package.name,
+                &manifest.package.version,
+                digest,
+                &key,
+            )
         })
     });
     Ok(PublishReport {

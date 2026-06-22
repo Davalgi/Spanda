@@ -436,10 +436,7 @@ pub enum RequiresNetworkDecl {
 #[serde(tag = "kind")]
 pub enum RequiresConnectivityDecl {
     RequiresConnectivityDecl {
-        channels: Vec<(
-            String,
-            spanda_connectivity::ConnectivityRequirement,
-        )>,
+        channels: Vec<(String, spanda_connectivity::ConnectivityRequirement)>,
         latency_ms_max: Option<f64>,
         bandwidth_mbps_min: Option<f64>,
         packet_loss_pct_max: Option<f64>,

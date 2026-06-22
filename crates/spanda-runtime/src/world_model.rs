@@ -49,8 +49,7 @@ impl WorldModelRuntime {
         // Example:
         // let confidence = model.update(&obs);
 
-        self.observations
-            .push(runtime_value_to_json(observation));
+        self.observations.push(runtime_value_to_json(observation));
         if self.observations.len() > MAX_OBSERVATIONS {
             let overflow = self.observations.len() - MAX_OBSERVATIONS;
             self.observations.drain(0..overflow);

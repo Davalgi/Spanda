@@ -91,4 +91,3 @@ pub fn is_link_impaired(link: &str, faults: &HashSet<String>) -> bool {
     }
     false
 }
-

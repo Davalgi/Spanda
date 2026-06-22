@@ -27,8 +27,8 @@ pub use classification::{
 pub use environment::Environment;
 pub use error::RuntimeError;
 pub use events::EventBus;
-pub use host::{imports_enable_navigation, imports_enable_slam, RuntimeHost};
 pub use hal_config::HalMemberConfig;
+pub use host::{imports_enable_navigation, imports_enable_slam, RuntimeHost};
 pub use provider_types::{
     ProviderCapability, ProviderCapabilitySet, ProviderError, ProviderId, ProviderMetadata,
     ProviderResult, ProviderSafetyLevel,
@@ -48,12 +48,8 @@ pub use replay::{
     ReplayStateSnapshot, ReplayStateTarget, TraceFrame, TraceVerification,
 };
 pub use robot_state::{PoseState, RobotState, VelocityState};
-pub use robotics::{
-    FleetRegistry, MissionRuntime, MissionState, ProgramSafetyZoneRegistry,
-};
-pub use scheduler::{
-    advance_wall_tick, elapsed_ms, sleep_until, SchedulerClock,
-};
+pub use robotics::{FleetRegistry, MissionRuntime, MissionState, ProgramSafetyZoneRegistry};
+pub use scheduler::{advance_wall_tick, elapsed_ms, sleep_until, SchedulerClock};
 pub use serialize::{deserialize_value, serialize_value};
 pub use state_machine::StateMachineRuntime;
 pub use telemetry::{
@@ -65,9 +61,9 @@ pub use triggers::{
     SystemTriggerCategory, TriggerRegistry, TriggerTimerSchedule, MAX_TRIGGERS_PER_TICK,
 };
 pub use twin::TwinRuntime;
-pub use world_model::WorldModelRuntime;
 pub use value::{
     format_runtime_value, get_number, get_pose_fields, get_string, get_trajectory_waypoints,
     get_velocity_fields, runtime_pose, runtime_trajectory, runtime_velocity, MotionCommand,
     PoseValue, RuntimeValue,
 };
+pub use world_model::WorldModelRuntime;

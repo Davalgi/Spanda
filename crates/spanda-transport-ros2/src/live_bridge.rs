@@ -66,10 +66,7 @@ pub fn try_ros2_bridge_publish(topic: &str, payload: &str) -> bool {
     if !ros2_live_enabled() {
         return false;
     }
-    python_bridge::invoke_python_bridge(
-        "ros2_publish",
-        &[topic.to_string(), payload.to_string()],
-    )
+    python_bridge::invoke_python_bridge("ros2_publish", &[topic.to_string(), payload.to_string()])
 }
 
 pub fn try_ros2_bridge_subscribe(topic: &str) -> bool {

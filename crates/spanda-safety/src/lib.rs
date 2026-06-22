@@ -1,7 +1,7 @@
 //! Runtime safety monitor, geofenced zones, and motion validation for Spanda.
 //!
-use spanda_runtime::robot_state::RobotState;
 use spanda_runtime::environment::Environment;
+use spanda_runtime::robot_state::RobotState;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]

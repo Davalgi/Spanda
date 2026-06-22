@@ -26,27 +26,23 @@ pub fn serialize_value(value: &RuntimeValue, format: &str) -> Result<RuntimeValu
     // Match on as str and handle each case.
     match format.to_ascii_lowercase().as_str() {
         "json" => Ok(RuntimeValue::String {
-            value: serde_json::to_string(&runtime_to_json(value)).map_err(|e| {
-                RuntimeError::new(format!("serialize json failed: {e}"), 0)
-            })?,
+            value: serde_json::to_string(&runtime_to_json(value))
+                .map_err(|e| RuntimeError::new(format!("serialize json failed: {e}"), 0))?,
         }),
         "yaml" => {
-            let yaml = serde_yaml::to_string(&runtime_to_json(value)).map_err(|e| {
-                RuntimeError::new(format!("serialize yaml failed: {e}"), 0)
-            })?;
+            let yaml = serde_yaml::to_string(&runtime_to_json(value))
+                .map_err(|e| RuntimeError::new(format!("serialize yaml failed: {e}"), 0))?;
             Ok(RuntimeValue::String { value: yaml })
         }
         "binary" => {
-            let bytes = serde_json::to_vec(&runtime_to_json(value)).map_err(|e| {
-                RuntimeError::new(format!("serialize binary failed: {e}"), 0)
-            })?;
+            let bytes = serde_json::to_vec(&runtime_to_json(value))
+                .map_err(|e| RuntimeError::new(format!("serialize binary failed: {e}"), 0))?;
             Ok(RuntimeValue::Bytes { data: bytes })
         }
         other => Err(RuntimeError::new(
             format!("Unknown serialize format '{other}' (use json, yaml, or binary)"),
             0,
-        )
-        ),
+        )),
     }
 }
 
@@ -70,16 +66,14 @@ pub fn deserialize_value(data: &RuntimeValue, format: &str) -> Result<RuntimeVal
     match format.to_ascii_lowercase().as_str() {
         "json" => {
             let text = runtime_string(data)?;
-            let parsed: JsonValue = serde_json::from_str(&text).map_err(|e| {
-                RuntimeError::new(format!("deserialize json failed: {e}"), 0)
-            })?;
+            let parsed: JsonValue = serde_json::from_str(&text)
+                .map_err(|e| RuntimeError::new(format!("deserialize json failed: {e}"), 0))?;
             json_to_runtime(&parsed)
         }
         "yaml" => {
             let text = runtime_string(data)?;
-            let parsed: JsonValue = serde_yaml::from_str(&text).map_err(|e| {
-                RuntimeError::new(format!("deserialize yaml failed: {e}"), 0)
-            })?;
+            let parsed: JsonValue = serde_yaml::from_str(&text)
+                .map_err(|e| RuntimeError::new(format!("deserialize yaml failed: {e}"), 0))?;
             json_to_runtime(&parsed)
         }
         "binary" => {
@@ -90,20 +84,17 @@ pub fn deserialize_value(data: &RuntimeValue, format: &str) -> Result<RuntimeVal
                     return Err(RuntimeError::new(
                         "deserialize binary expects Bytes or String data",
                         0,
-                    )
-                    )
+                    ))
                 }
             };
-            let parsed: JsonValue = serde_json::from_slice(&bytes).map_err(|e| {
-                RuntimeError::new(format!("deserialize binary failed: {e}"), 0)
-            })?;
+            let parsed: JsonValue = serde_json::from_slice(&bytes)
+                .map_err(|e| RuntimeError::new(format!("deserialize binary failed: {e}"), 0))?;
             json_to_runtime(&parsed)
         }
         other => Err(RuntimeError::new(
             format!("Unknown deserialize format '{other}' (use json, yaml, or binary)"),
             0,
-        )
-        ),
+        )),
     }
 }
 
@@ -138,9 +129,10 @@ fn runtime_string(value: &RuntimeValue) -> Result<String, RuntimeError> {
     // Match on value and handle each case.
     match value {
         RuntimeValue::String { value } => Ok(value.clone()),
-        _ => {
-            Err(RuntimeError::new("Expected string data for text deserialization", 0))
-        }
+        _ => Err(RuntimeError::new(
+            "Expected string data for text deserialization",
+            0,
+        )),
     }
 }
 
@@ -378,9 +370,10 @@ fn json_to_runtime(value: &JsonValue) -> Result<RuntimeValue, RuntimeError> {
             linear: obj.get("linear").and_then(|v| v.as_f64()).unwrap_or(0.0),
             angular: obj.get("angular").and_then(|v| v.as_f64()).unwrap_or(0.0),
         }),
-        _ => Err(
-            RuntimeError::new(format!("Unsupported deserialized kind '{kind}'"), 0),
-        ),
+        _ => Err(RuntimeError::new(
+            format!("Unsupported deserialized kind '{kind}'"),
+            0,
+        )),
     }
 }
 

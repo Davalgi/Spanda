@@ -240,9 +240,8 @@ impl RoutingCommBus {
         // let result = instance.configure(config);
 
         let mut config = config;
-        if TransportSecurityConfig::url_requires_tls(
-            config.broker_url.as_deref(),
-        ) && config.security.encryption == EncryptionMode::None
+        if TransportSecurityConfig::url_requires_tls(config.broker_url.as_deref())
+            && config.security.encryption == EncryptionMode::None
         {
             config.security.encryption = EncryptionMode::Required;
         }
@@ -371,7 +370,8 @@ impl RoutingCommBus {
     }
 
     fn is_external_connected(&self, kind: TransportKind) -> bool {
-        if let Some(connected) = self.with_registry_transport(kind, |provider| provider.is_connected())
+        if let Some(connected) =
+            self.with_registry_transport(kind, |provider| provider.is_connected())
         {
             return connected;
         }
@@ -502,7 +502,6 @@ impl RoutingCommBus {
 
         // Process each filesystem path.
         for path in paths {
-
             // Process each kind.
             for kind in kinds {
                 if !self.is_external_connected(kind) {
@@ -511,8 +510,8 @@ impl RoutingCommBus {
 
                 // Emit output when receive provides a value.
                 if let Some(value) = self.receive_external(kind, &path) {
-                    let (value, source_id) = decode_wire_value(&self.config, value)
-                        .unwrap_or_else(|_| {
+                    let (value, source_id) =
+                        decode_wire_value(&self.config, value).unwrap_or_else(|_| {
                             (
                                 RuntimeValue::String {
                                     value: "<wire-decode-failed>".into(),

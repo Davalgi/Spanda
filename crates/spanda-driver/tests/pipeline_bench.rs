@@ -22,8 +22,5 @@ robot Bench {
 fn pipeline_bench_check_only() {
     let start = Instant::now();
     check(SAMPLE).expect("check");
-    eprintln!(
-        "pipeline check: {} ms",
-        start.elapsed().as_millis()
-    );
+    eprintln!("pipeline check: {} ms", start.elapsed().as_millis());
 }

@@ -1,11 +1,11 @@
 //! Swarm coordinator CLI (`spanda swarm coordinate`).
 
+use spanda_ast::nodes::Program;
 use spanda_driver::compile;
 use spanda_fleet::{
     coordinate_swarms, coordinate_swarms_mesh, default_swarm_state_path, load_swarm_state,
     save_swarm_state,
 };
-use spanda_ast::nodes::Program;
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -19,10 +19,12 @@ fn read_source(path: &str) -> String {
 }
 
 fn parse_program(source: &str, file: &str) -> Program {
-    compile(source).unwrap_or_else(|e| {
-        eprintln!("Error compiling {file}: {e}");
-        process::exit(1);
-    }).program
+    compile(source)
+        .unwrap_or_else(|e| {
+            eprintln!("Error compiling {file}: {e}");
+            process::exit(1);
+        })
+        .program
 }
 
 fn swarm_state_path() -> std::path::PathBuf {
@@ -92,13 +94,7 @@ fn cmd_coordinate(args: &[String]) {
     let path = swarm_state_path();
     let mut state = load_swarm_state(&path);
     let result = if let Some(ref url) = mesh_url {
-        coordinate_swarms_mesh(
-            &program,
-            &file,
-            &mut state,
-            url,
-            mesh_token.as_deref(),
-        )
+        coordinate_swarms_mesh(&program, &file, &mut state, url, mesh_token.as_deref())
     } else {
         coordinate_swarms(&program, &file, &mut state)
     };
@@ -120,7 +116,10 @@ fn cmd_coordinate(args: &[String]) {
             for member in &swarm.members {
                 println!(
                     "    {} mission={:?} state={} step='{}'",
-                    member.robot_name, member.mission_name, member.mission_state, member.current_step
+                    member.robot_name,
+                    member.mission_name,
+                    member.mission_state,
+                    member.current_step
                 );
             }
             for delivery in &swarm.peer_deliveries {

@@ -2,27 +2,25 @@
 //!
 
 use super::{
-    Environment, HalBlockExt, IntoSpandaError, Interpreter, RobotBackend, RuntimeError,
+    Environment, HalBlockExt, Interpreter, IntoSpandaError, RobotBackend, RuntimeError,
     RuntimeValue, SafetyBlockExt, SocDeclExt,
 };
 use spanda_ai::create_ai_model;
-use spanda_ast::nodes::{
-    AgentDecl, RobotDecl, SafetyRule, TopicDecl,
-};
 use spanda_ast::foundations::{StateMachineDecl, TwinDecl};
+use spanda_ast::nodes::{AgentDecl, RobotDecl, SafetyRule, TopicDecl};
 use spanda_audit::{AuditRuntime, DeviceIdentity, MockLedgerBackend};
 use spanda_error::SpandaError;
-use spanda_runtime::events::EventBus;
+use spanda_hal::get_soc_profile;
 use spanda_hal::hal::{hal_member_from_decl, HalBackend};
 use spanda_hal::HardwareMonitor;
-use spanda_safety::{create_safety_config_from_robot, SafetyMonitor};
-use spanda_security::{RobotIdentity, SecretHandle, SecretSource, SecurityContext, TrustLevel};
-use spanda_hal::get_soc_profile;
+use spanda_runtime::events::EventBus;
 use spanda_runtime::state_machine::StateMachineRuntime;
-use spanda_transport_routing::RoutingCommBus;
-use spanda_transport::TransportConfig;
 use spanda_runtime::triggers::{ConditionTriggerState, TriggerRegistry, TriggerTimerSchedule};
 use spanda_runtime::twin::TwinRuntime;
+use spanda_safety::{create_safety_config_from_robot, SafetyMonitor};
+use spanda_security::{RobotIdentity, SecretHandle, SecretSource, SecurityContext, TrustLevel};
+use spanda_transport::TransportConfig;
+use spanda_transport_routing::RoutingCommBus;
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -226,13 +224,12 @@ impl<B: RobotBackend> Interpreter<B> {
                 ..
             } = bus;
             self.default_transport = *transport;
-            let mut bus_security =
-                spanda_transport::TransportSecurityConfig::from_bus_fields(
-                    encryption.as_deref(),
-                    authentication.as_deref(),
-                    integrity.as_deref(),
-                )
-                .unwrap_or_default();
+            let mut bus_security = spanda_transport::TransportSecurityConfig::from_bus_fields(
+                encryption.as_deref(),
+                authentication.as_deref(),
+                integrity.as_deref(),
+            )
+            .unwrap_or_default();
             if let Some(sc) = secure_comm {
                 let spanda_ast::foundations::SecureCommPolicyDecl::SecureCommPolicyDecl {
                     encryption,
@@ -254,13 +251,12 @@ impl<B: RobotBackend> Interpreter<B> {
                         .and_then(|s| s.parse().ok())
                         .unwrap_or_default(),
                 };
-                bus_security = spanda_transport::effective_transport_policy(
-                    &robot_policy,
-                    &bus_security,
-                );
+                bus_security =
+                    spanda_transport::effective_transport_policy(&robot_policy, &bus_security);
             }
             for secret_decl in secrets {
-                let spanda_ast::foundations::SecretDecl::SecretDecl { name, source, .. } = secret_decl;
+                let spanda_ast::foundations::SecretDecl::SecretDecl { name, source, .. } =
+                    secret_decl;
                 if name.contains("cert") {
                     if let spanda_ast::foundations::SecretSourceDecl::File { path } = source {
                         bus_security.cert_path = Some(path.clone());
@@ -288,10 +284,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 bus_security.authentication,
                 bus_security.integrity,
             );
-            let resolved_broker =
-                spanda_transport::TransportSecurityConfig::resolve_broker_url(
-                    broker_url.as_deref(),
-                );
+            let resolved_broker = spanda_transport::TransportSecurityConfig::resolve_broker_url(
+                broker_url.as_deref(),
+            );
             self.comm_bus
                 .configure(TransportConfig {
                     node_name: Some(robot_name.clone()),
@@ -427,7 +422,9 @@ impl<B: RobotBackend> Interpreter<B> {
         // Invoke each registered handler.
         for handler in event_handlers {
             let spanda_ast::foundations::EventHandlerDecl::EventHandlerDecl {
-                event_name, body, ..
+                event_name,
+                body,
+                ..
             } = handler;
             self.event_bus.register(event_name.clone(), body.clone());
             self.trigger_registry
@@ -602,9 +599,11 @@ impl<B: RobotBackend> Interpreter<B> {
                 spanda_ast::foundations::SecretSourceDecl::File { path } => {
                     SecretSource::File { path: path.clone() }
                 }
-                spanda_ast::foundations::SecretSourceDecl::Literal { value } => SecretSource::Literal {
-                    value: value.clone(),
-                },
+                spanda_ast::foundations::SecretSourceDecl::Literal { value } => {
+                    SecretSource::Literal {
+                        value: value.clone(),
+                    }
+                }
             };
             self.security.grant_if_not_strict("secret.read");
             self.security.secrets.register(SecretHandle {
@@ -657,7 +656,8 @@ impl<B: RobotBackend> Interpreter<B> {
 
             // Emit output when identity provides a identity decl.
             if let Some(identity_decl) = identity {
-                let spanda_ast::foundations::IdentityDecl::IdentityDecl { fields, .. } = identity_decl;
+                let spanda_ast::foundations::IdentityDecl::IdentityDecl { fields, .. } =
+                    identity_decl;
                 let id = fields
                     .iter()
                     .find(|(k, _)| k == "id")
@@ -693,7 +693,8 @@ impl<B: RobotBackend> Interpreter<B> {
 
         // Emit output when provenance provides a provenance decl.
         if let Some(provenance_decl) = provenance {
-            let spanda_ast::foundations::ProvenanceDecl::ProvenanceDecl { name, .. } = provenance_decl;
+            let spanda_ast::foundations::ProvenanceDecl::ProvenanceDecl { name, .. } =
+                provenance_decl;
             self.log(format!("provenance {name}: sha256 signing enabled"));
         }
 
@@ -779,5 +780,4 @@ impl<B: RobotBackend> Interpreter<B> {
         self.load_reliability_config(robot)?;
         Ok(())
     }
-
 }

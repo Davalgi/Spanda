@@ -1,10 +1,8 @@
 //! ROS2 rclrs environment flag tests (moved from spanda-core Phase 19).
 
 use spanda_runtime::value::RuntimeValue;
-use spanda_transport_ros2::{
-    native_sdk_available, rclrs_enabled,
-};
 use spanda_transport_ros2::rclrs::try_rclrs_publish;
+use spanda_transport_ros2::{native_sdk_available, rclrs_enabled};
 use std::sync::Mutex;
 
 static ENV_LOCK: Mutex<()> = Mutex::new(());

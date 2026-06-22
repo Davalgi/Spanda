@@ -6,8 +6,8 @@ use crate::types::{
     CertificationProofSummary, DeployAssignment, DeployPlan, RolloutOptions, RolloutResult,
     RolloutStep, RolloutStepStatus, RolloutStrategy,
 };
-use spanda_deploy_http::{http_request, parse_http_url, HttpResponse};
 use serde::{Deserialize, Serialize};
+use spanda_deploy_http::{http_request, parse_http_url, HttpResponse};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -91,7 +91,9 @@ pub fn register_agent(
     // Validate URL shape before recording the agent endpoint.
     parse_http_url(&url)?;
     registry.agents.retain(|entry| entry.target != target);
-    registry.agents.push(DeployAgentEntry { target, url, token });
+    registry
+        .agents
+        .push(DeployAgentEntry { target, url, token });
     registry.agents.sort_by(|a, b| a.target.cmp(&b.target));
     Ok(())
 }
@@ -223,10 +225,7 @@ pub fn execute_remote_rollout(
     }
 }
 
-pub fn execute_remote_rollback(
-    plan: &DeployPlan,
-    registry: &DeployAgentRegistry,
-) -> RolloutResult {
+pub fn execute_remote_rollback(plan: &DeployPlan, registry: &DeployAgentRegistry) -> RolloutResult {
     let mut steps = Vec::new();
     let mut success = false;
     for assignment in &plan.assignments {
@@ -271,10 +270,7 @@ pub fn execute_remote_rollback(
     }
 }
 
-pub fn missing_remote_targets(
-    plan: &DeployPlan,
-    registry: &DeployAgentRegistry,
-) -> Vec<String> {
+pub fn missing_remote_targets(plan: &DeployPlan, registry: &DeployAgentRegistry) -> Vec<String> {
     let mut missing = Vec::new();
     for assignment in &plan.assignments {
         let key = deploy_target_key(&assignment.robot_name, &assignment.hardware);

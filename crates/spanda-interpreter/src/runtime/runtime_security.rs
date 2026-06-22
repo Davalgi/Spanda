@@ -1,7 +1,7 @@
 //! Agent capability checks and secure-operation helpers.
 //!
 
-use super::{IntoSpandaError, Interpreter, RobotBackend, RuntimeError};
+use super::{Interpreter, IntoSpandaError, RobotBackend, RuntimeError};
 use spanda_error::SpandaError;
 use spanda_security::{SecurePolicy, TrustLevel};
 
@@ -71,7 +71,9 @@ impl<B: RobotBackend> Interpreter<B> {
             .unwrap_or_else(|| "robot".into())
     }
 
-    pub(super) fn secure_policy_from_block(block: &spanda_ast::foundations::SecureBlockDecl) -> SecurePolicy {
+    pub(super) fn secure_policy_from_block(
+        block: &spanda_ast::foundations::SecureBlockDecl,
+    ) -> SecurePolicy {
         // Secure policy from block.
         //
         // Parameters:
@@ -141,7 +143,11 @@ impl<B: RobotBackend> Interpreter<B> {
         }
     }
 
-    pub(super) fn security_error(&self, err: spanda_security::SecurityError, line: u32) -> SpandaError {
+    pub(super) fn security_error(
+        &self,
+        err: spanda_security::SecurityError,
+        line: u32,
+    ) -> SpandaError {
         // Security error.
         //
         // Parameters:
@@ -161,5 +167,4 @@ impl<B: RobotBackend> Interpreter<B> {
         // Produce into spanda as the result.
         RuntimeError::new(err.to_string(), line).into_spanda()
     }
-
 }

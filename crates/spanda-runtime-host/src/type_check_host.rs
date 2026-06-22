@@ -1,6 +1,7 @@
 //! Core-backed [`TypeCheckHost`] hooks for the extracted program type checker.
 //!
 use spanda_ai::resolve_ai_import;
+use spanda_ast::nodes::{HalMemberDecl, Span, SpandaType};
 use spanda_ffi::resolve_ffi_import;
 use spanda_hal::{get_soc_profile, hal_member_from_decl, soc::validate_hal_against_soc};
 use spanda_lib_registry::{all_library_sensor_types, resolve_import};
@@ -8,7 +9,6 @@ use spanda_typecheck::{
     resolve_std_import, validate_resource_budget, validate_task_priority, validate_task_timing,
     Diagnostic, TypeCheckHost,
 };
-use spanda_ast::nodes::{HalMemberDecl, Span, SpandaType};
 use std::collections::HashMap;
 
 use crate::robotics_validation::{

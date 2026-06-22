@@ -110,8 +110,5 @@ pub fn try_mqtt_publish(topic: &str, payload: &str) -> bool {
     if !mqtt_live_enabled() {
         return false;
     }
-    invoke_python_bridge(
-        "mqtt_publish",
-        &[topic.to_string(), payload.to_string()],
-    )
+    invoke_python_bridge("mqtt_publish", &[topic.to_string(), payload.to_string()])
 }

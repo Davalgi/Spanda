@@ -1,7 +1,9 @@
 //! Minimal HTTP/1.1 helpers for the Spanda deploy agent protocol.
 //!
 use rustls::pki_types::{CertificateDer, PrivateKeyDer, ServerName};
-use rustls::{ClientConfig, ClientConnection, RootCertStore, ServerConfig, ServerConnection, StreamOwned};
+use rustls::{
+    ClientConfig, ClientConnection, RootCertStore, ServerConfig, ServerConnection, StreamOwned,
+};
 use rustls_pemfile::{certs, private_key};
 use std::fs::File;
 use std::io::{BufReader, Read, Write};
@@ -173,7 +175,10 @@ pub fn parse_http_response(raw: &str) -> Result<HttpResponse, String> {
     let (head, body) = raw
         .split_once("\r\n\r\n")
         .ok_or_else(|| "invalid HTTP response".to_string())?;
-    let status_line = head.lines().next().ok_or_else(|| "missing status line".to_string())?;
+    let status_line = head
+        .lines()
+        .next()
+        .ok_or_else(|| "missing status line".to_string())?;
     let status = status_line
         .split_whitespace()
         .nth(1)
@@ -192,7 +197,9 @@ pub fn parse_http_request(raw: &str) -> Result<HttpRequest, String> {
         .split_once("\r\n\r\n")
         .ok_or_else(|| "invalid HTTP request".to_string())?;
     let mut lines = head.lines();
-    let request_line = lines.next().ok_or_else(|| "missing request line".to_string())?;
+    let request_line = lines
+        .next()
+        .ok_or_else(|| "missing request line".to_string())?;
     let mut parts = request_line.split_whitespace();
     let method = parts
         .next()
@@ -223,7 +230,10 @@ pub fn http_response(status: u16, body: &str) -> String {
     )
 }
 
-pub fn serve_once(listener: &TcpListener, handler: impl Fn(HttpRequest) -> HttpResponse) -> Result<(), String> {
+pub fn serve_once(
+    listener: &TcpListener,
+    handler: impl Fn(HttpRequest) -> HttpResponse,
+) -> Result<(), String> {
     // Accept one HTTP connection and write the handler response.
     let (mut stream, _) = listener
         .accept()

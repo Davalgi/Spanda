@@ -29,13 +29,17 @@ pub fn extract_tarball_safe(tarball: &Path, dest: &Path) -> Result<(), String> {
     let decoder = GzDecoder::new(file);
     let mut archive = Archive::new(decoder);
 
-    for entry in archive.entries().map_err(|e| format!("read tar entries: {e}"))? {
+    for entry in archive
+        .entries()
+        .map_err(|e| format!("read tar entries: {e}"))?
+    {
         let mut entry = entry.map_err(|e| format!("read tar entry: {e}"))?;
         let entry_path = entry.path().map_err(|e| format!("tar entry path: {e}"))?;
         let target = safe_join(&base, &entry_path)?;
 
         if entry.header().entry_type().is_dir() {
-            fs::create_dir_all(&target).map_err(|e| format!("create dir {}: {e}", target.display()))?;
+            fs::create_dir_all(&target)
+                .map_err(|e| format!("create dir {}: {e}", target.display()))?;
         } else {
             if let Some(parent) = target.parent() {
                 fs::create_dir_all(parent)
@@ -69,10 +73,7 @@ fn safe_join(base: &Path, entry: &Path) -> Result<PathBuf, String> {
     for component in entry.components() {
         match component {
             Component::Prefix(_) | Component::RootDir => {
-                return Err(format!(
-                    "tar entry has absolute path: {}",
-                    entry.display()
-                ));
+                return Err(format!("tar entry has absolute path: {}", entry.display()));
             }
             Component::ParentDir => {
                 return Err(format!(
@@ -109,11 +110,13 @@ mod tests {
             header.set_path(name).expect("set path");
             header.set_size(data.len() as u64);
             header.set_cksum();
-            builder
-                .append(&header, &data[..])
-                .expect("append member");
+            builder.append(&header, &data[..]).expect("append member");
         }
-        builder.into_inner().expect("finish tar").finish().expect("finish gzip");
+        builder
+            .into_inner()
+            .expect("finish tar")
+            .finish()
+            .expect("finish gzip");
     }
 
     #[test]

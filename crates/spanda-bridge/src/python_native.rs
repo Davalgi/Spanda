@@ -3,11 +3,11 @@
 //! Loads `scripts/spanda_python_bridge.py` handlers directly when enabled.
 //! Falls back to subprocess bridge when this module is unavailable or fails.
 
-use spanda_error::SpandaError;
-use spanda_ast::foundations::ExternFnDecl;
-use spanda_runtime::value::RuntimeValue;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
+use spanda_ast::foundations::ExternFnDecl;
+use spanda_error::SpandaError;
+use spanda_runtime::value::RuntimeValue;
 
 use super::protocol::{json_to_runtime_value, runtime_value_to_json};
 use super::python::bridge_script_path;
@@ -109,8 +109,8 @@ else:
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
     use spanda_ast::foundations::BridgeKind;
+    use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
         // Test decl.

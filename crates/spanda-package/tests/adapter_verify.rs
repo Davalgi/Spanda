@@ -26,7 +26,9 @@ version = "0.1.0"
     )
     .expect("parse");
     let issues = verify_manifest_adapter(&manifest, &nav2_adapter_metadata());
-    assert!(issues.iter().any(|i| i.severity == AdapterVerifySeverity::Error));
+    assert!(issues
+        .iter()
+        .any(|i| i.severity == AdapterVerifySeverity::Error));
 }
 
 #[test]
@@ -35,7 +37,6 @@ fn verify_adapter_package_by_import_path() {
         "../../../examples/packages/nav2_adapter_package/spanda.toml"
     ))
     .expect("parse");
-    let issues =
-        verify_adapter_package(&manifest, Some("navigation.nav2"), None).expect("verify");
+    let issues = verify_adapter_package(&manifest, Some("navigation.nav2"), None).expect("verify");
     assert!(adapter_verify_ok(&issues));
 }

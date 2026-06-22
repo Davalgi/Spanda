@@ -22,7 +22,8 @@ pub struct RemoteRegistryEntry {
     #[serde(default)]
     pub version_checksums: std::collections::BTreeMap<String, String>,
     #[serde(default)]
-    pub version_signatures: std::collections::BTreeMap<String, crate::registry_sign::RegistryVersionSignature>,
+    pub version_signatures:
+        std::collections::BTreeMap<String, crate::registry_sign::RegistryVersionSignature>,
 }
 
 static REMOTE_CACHE: OnceLock<Vec<RemoteRegistryEntry>> = OnceLock::new();
@@ -407,7 +408,10 @@ impl RegistryEntryLookup {
         }
     }
 
-    pub fn version_signature(&self, version: &str) -> Option<crate::registry_sign::RegistryVersionSignature> {
+    pub fn version_signature(
+        &self,
+        version: &str,
+    ) -> Option<crate::registry_sign::RegistryVersionSignature> {
         // Return the published Ed25519 signature for a registry version when known.
         //
         // Parameters:

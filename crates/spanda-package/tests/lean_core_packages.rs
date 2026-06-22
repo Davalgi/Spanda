@@ -45,8 +45,8 @@ fn installed_official_packages_filters_dependencies() {
 
 #[test]
 fn load_official_packages_for_ros2_project() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../examples/packages/ros2_adapter_package");
+    let root =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/packages/ros2_adapter_package");
     let packages = load_official_packages_for_project(&root).expect("manifest");
     assert!(packages.contains(&"spanda-ros2".to_string()));
 }

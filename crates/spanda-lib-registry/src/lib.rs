@@ -1,7 +1,7 @@
 //! lib registry support for Spanda.
 //!
-use spanda_runtime::robot_state::PoseState;
 use spanda_hal::hal::HalBackend;
+use spanda_runtime::robot_state::PoseState;
 use spanda_runtime::value::RuntimeValue;
 use std::collections::HashMap;
 use std::sync::OnceLock;

@@ -159,6 +159,9 @@ mod tests {
     fn fleet_registry_resolves_members() {
         let mut reg = FleetRegistry::default();
         reg.register("alpha", vec!["r1".into(), "r2".into()]);
-        assert_eq!(reg.members("alpha"), Some(["r1".into(), "r2".into()].as_slice()));
+        assert_eq!(
+            reg.members("alpha"),
+            Some(["r1".into(), "r2".into()].as_slice())
+        );
     }
 }

@@ -2,7 +2,7 @@
 //!
 
 use super::{
-    get_number, get_trajectory_waypoints, IntoSpandaError, Interpreter, MotionCommand,
+    get_number, get_trajectory_waypoints, Interpreter, IntoSpandaError, MotionCommand,
     RobotBackend, RuntimeError, RuntimeValue,
 };
 use spanda_ai::{is_action_proposal, is_safe_action};
@@ -192,5 +192,4 @@ impl<B: RobotBackend> Interpreter<B> {
         self.log(format!("{name}.{method}()"));
         Ok(RuntimeValue::Void)
     }
-
 }

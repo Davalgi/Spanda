@@ -143,8 +143,7 @@ pub fn plan_rollout(plan: &DeployPlan, options: &RolloutOptions) -> RolloutResul
                 options.staged_phases.clone()
             };
             let final_phase = *phases.last().unwrap_or(&100);
-            let deploy_count =
-                ((total as f64 * final_phase as f64 / 100.0).ceil() as usize).max(1);
+            let deploy_count = ((total as f64 * final_phase as f64 / 100.0).ceil() as usize).max(1);
             for (idx, assignment) in plan.assignments.iter().enumerate() {
                 let deploy = idx < deploy_count;
                 steps.push(RolloutStep {
@@ -170,9 +169,7 @@ pub fn plan_rollout(plan: &DeployPlan, options: &RolloutOptions) -> RolloutResul
         strategy: options.strategy,
         version: options.version.clone(),
         dry_run: options.dry_run,
-        success: !steps
-            .iter()
-            .any(|s| s.status == RolloutStepStatus::Failed),
+        success: !steps.iter().any(|s| s.status == RolloutStepStatus::Failed),
         steps,
     }
 }
@@ -191,9 +188,7 @@ pub fn apply_rollout(state: &mut DeployState, result: &RolloutResult) {
         if let Some(prev) = state.current_version.get(&key) {
             state.previous_version.insert(key.clone(), prev.clone());
         }
-        state
-            .current_version
-            .insert(key, step.version.clone());
+        state.current_version.insert(key, step.version.clone());
     }
     state.history.push(result.clone());
 }

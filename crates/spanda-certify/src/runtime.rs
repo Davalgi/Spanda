@@ -1,7 +1,7 @@
 //! Runtime certification gate before executing deploy-target programs.
 
-use spanda_ast::nodes::Program;
 use crate::verify::verify_certification_proof;
+use spanda_ast::nodes::Program;
 use spanda_error::SpandaError;
 use spanda_hardware::CompatSeverity;
 

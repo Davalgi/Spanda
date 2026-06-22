@@ -20,12 +20,10 @@ fn ota_example_proof_fails_under_strict() {
     let program = compile(source).expect("compile").program;
     let proof = build_certification_proof(&program, "ota_deployment.sd", true);
     assert!(!proof.passed);
-    assert!(
-        proof
-            .checklist
-            .iter()
-            .any(|i| i.severity == CompatSeverity::Error),
-    );
+    assert!(proof
+        .checklist
+        .iter()
+        .any(|i| i.severity == CompatSeverity::Error),);
 }
 
 #[test]

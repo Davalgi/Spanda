@@ -3,6 +3,7 @@
 //! Emits markdown from the compiler's source of truth: std namespaces, builtins,
 //! type methods, object properties, keywords, and CLI commands.
 
+use crate::builtin_methods::BUILTIN_METHODS;
 use spanda_lexer::reserved_keywords;
 use spanda_lib_registry::list_libraries;
 use spanda_typecheck::type_system::std_namespaces;
@@ -10,7 +11,6 @@ use spanda_typecheck::{
     format_type_name, MethodSig, BUILTIN_FUNCTIONS, OBJECT_PROPERTIES, ROBOT_METHODS,
     SCAN_PROPERTIES,
 };
-use crate::builtin_methods::BUILTIN_METHODS;
 use std::collections::BTreeMap;
 
 /// Generate the full Spanda language reference as Markdown.

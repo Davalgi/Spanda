@@ -1,8 +1,8 @@
 //! First-class regex compilation, validation, and runtime matching for Spanda.
 //!
 use spanda_ast::nodes::Span;
-use spanda_error::SpandaError;
 pub use spanda_ast::{CaptureResult, RegexCompileError, RegexPattern};
+use spanda_error::SpandaError;
 use std::collections::HashMap;
 
 pub fn regex_matches(pattern: &RegexPattern, text: &str) -> Result<bool, SpandaError> {

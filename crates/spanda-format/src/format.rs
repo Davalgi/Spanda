@@ -3,8 +3,8 @@
 //! Applies AST-aware pretty printing when parsing succeeds; falls back to
 //! whitespace normalization (trim trailing spaces, ensure final newline).
 
-use spanda_error::SpandaError;
 use crate::pretty::pretty_print_program;
+use spanda_error::SpandaError;
 
 pub fn format_source(source: &str) -> String {
     // Format Spanda source, using the AST formatter when possible.

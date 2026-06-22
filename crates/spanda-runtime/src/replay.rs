@@ -139,8 +139,10 @@ impl MissionTrace {
         // trace.save("mission.trace")?;
 
         // Encode as pretty JSON for human inspection and tooling.
-        let json = serde_json::to_string_pretty(self).map_err(|err| RuntimeError::new(format!("Failed to encode trace: {err}"), 0))?;
-        fs::write(path, json).map_err(|err| RuntimeError::new(format!("Failed to write trace file: {err}"), 0))
+        let json = serde_json::to_string_pretty(self)
+            .map_err(|err| RuntimeError::new(format!("Failed to encode trace: {err}"), 0))?;
+        fs::write(path, json)
+            .map_err(|err| RuntimeError::new(format!("Failed to write trace file: {err}"), 0))
     }
 
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, RuntimeError> {
@@ -159,8 +161,10 @@ impl MissionTrace {
         // let trace = MissionTrace::load("mission.trace")?;
 
         // Read and decode the JSON trace file.
-        let text = fs::read_to_string(path.as_ref()).map_err(|err| RuntimeError::new(format!("Failed to read trace file: {err}"), 0))?;
-        serde_json::from_str(&text).map_err(|err| RuntimeError::new(format!("Invalid trace file: {err}"), 0))
+        let text = fs::read_to_string(path.as_ref())
+            .map_err(|err| RuntimeError::new(format!("Failed to read trace file: {err}"), 0))?;
+        serde_json::from_str(&text)
+            .map_err(|err| RuntimeError::new(format!("Invalid trace file: {err}"), 0))
     }
 
     pub fn frames_from(&self, offset_ms: f64) -> &[TraceFrame] {
@@ -209,7 +213,12 @@ pub fn parse_replay_offset(raw: &str) -> Result<f64, RuntimeError> {
     }
 
     // Parse `T+mm:ss` or `T+hh:mm:ss` formatted offsets.
-    let value = raw.strip_prefix("T+").ok_or_else(|| RuntimeError::new(format!("Invalid replay offset '{raw}'; expected T+mm:ss or milliseconds"), 0))?;
+    let value = raw.strip_prefix("T+").ok_or_else(|| {
+        RuntimeError::new(
+            format!("Invalid replay offset '{raw}'; expected T+mm:ss or milliseconds"),
+            0,
+        )
+    })?;
     let parts: Vec<&str> = value.split(':').collect();
     let total_secs = match parts.as_slice() {
         [mins, secs] => {
@@ -221,7 +230,10 @@ pub fn parse_replay_offset(raw: &str) -> Result<f64, RuntimeError> {
                 + secs.parse::<f64>().unwrap_or(0.0)
         }
         _ => {
-            return Err(RuntimeError::new(format!("Invalid replay offset '{raw}'; expected T+mm:ss"), 0))
+            return Err(RuntimeError::new(
+                format!("Invalid replay offset '{raw}'; expected T+mm:ss"),
+                0,
+            ))
         }
     };
     Ok(total_secs * 1000.0)

@@ -1,8 +1,8 @@
 //! pretty support for Spanda.
 //!
+use spanda_ast::foundations::{CapabilityDecl, Visibility};
 use spanda_ast::nodes::*;
 use spanda_comm::{DiscoverFilter, DiscoverTarget};
-use spanda_ast::foundations::{CapabilityDecl, Visibility};
 
 struct PrettyPrinter {
     out: String,
@@ -857,7 +857,9 @@ impl PrettyPrinter {
         // Invoke each registered handler.
         for handler in event_handlers {
             let spanda_ast::foundations::EventHandlerDecl::EventHandlerDecl {
-                event_name, body, ..
+                event_name,
+                body,
+                ..
             } = handler;
             self.open_block(&format!("on {event_name}"));
             self.print_stmts(body);
@@ -1491,7 +1493,9 @@ impl HasSpan for spanda_ast::foundations::RequiresHardwareDecl {
 
         // Dispatch based on the enum variant or current state.
         match self {
-            spanda_ast::foundations::RequiresHardwareDecl::RequiresHardwareDecl { span, .. } => span,
+            spanda_ast::foundations::RequiresHardwareDecl::RequiresHardwareDecl {
+                span, ..
+            } => span,
         }
     }
 }

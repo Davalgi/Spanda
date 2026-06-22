@@ -291,14 +291,10 @@ fn verify_tarball_digest(
     if let Some(signature) = expected_signature {
         let trust_key = registry_trust_key().unwrap_or_else(|| signature.public_key.clone());
         if !verify_registry_signature(name, version, &digest, signature, &trust_key) {
-            return Err(format!(
-                "invalid registry signature for {name}@{version}"
-            ));
+            return Err(format!("invalid registry signature for {name}@{version}"));
         }
     } else if registry_require_signature() {
-        return Err(format!(
-            "missing registry signature for {name}@{version}"
-        ));
+        return Err(format!("missing registry signature for {name}@{version}"));
     }
     Ok(())
 }

@@ -25,7 +25,10 @@ impl LiveDdsBridge {
         #[cfg(not(feature = "live"))]
         {
             let _ = domain_id;
-            Err("live DDS support not enabled (build spanda-transport-dds with --features live)".into())
+            Err(
+                "live DDS support not enabled (build spanda-transport-dds with --features live)"
+                    .into(),
+            )
         }
     }
 

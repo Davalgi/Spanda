@@ -3,15 +3,14 @@
 pub mod ffi_imports;
 
 pub use ffi_imports::resolve_ffi_import;
+use spanda_ast::foundations::{BridgeKind, ExternFnDecl};
 use spanda_ast::nodes::UnitKind;
 use spanda_error::SpandaError;
-use spanda_ast::foundations::{BridgeKind, ExternFnDecl};
 use spanda_runtime::value::RuntimeValue;
 use std::collections::HashMap;
 
 pub type FfiHandler = fn(&[RuntimeValue]) -> Result<RuntimeValue, SpandaError>;
-pub type ExternBridgeFn =
-    fn(&ExternFnDecl, &[RuntimeValue]) -> Result<RuntimeValue, SpandaError>;
+pub type ExternBridgeFn = fn(&ExternFnDecl, &[RuntimeValue]) -> Result<RuntimeValue, SpandaError>;
 
 #[derive(Clone, Copy, Default)]
 pub struct ExternBridges {

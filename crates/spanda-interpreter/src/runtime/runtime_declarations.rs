@@ -261,5 +261,4 @@ impl<B: RobotBackend> Interpreter<B> {
             .define(name.clone(), RuntimeValue::Agent { name: name.clone() });
         self.log(format!("Agent '{name}': {goal}"));
     }
-
 }

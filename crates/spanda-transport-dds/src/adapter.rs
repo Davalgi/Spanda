@@ -2,9 +2,7 @@
 //!
 use spanda_runtime::RuntimeValue;
 use spanda_security::policy::EncryptionMode;
-use spanda_transport::{
-    AdapterMessage, StubTransportState, TransportAdapter, TransportConfig,
-};
+use spanda_transport::{AdapterMessage, StubTransportState, TransportAdapter, TransportConfig};
 
 use crate::LiveDdsBridge;
 

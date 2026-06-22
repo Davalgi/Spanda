@@ -31,10 +31,7 @@ pub fn invoke_nav2_bridge(goal: &str) -> Option<String> {
     let program = parts.next()?;
 
     // Run the bridge executable and capture stdout when it exits successfully.
-    let output = Command::new(program)
-        .args(parts)
-        .output()
-        .ok()?;
+    let output = Command::new(program).args(parts).output().ok()?;
     if !output.status.success() {
         return None;
     }
@@ -63,10 +60,7 @@ pub fn invoke_slam_bridge(operation: &str) -> Option<String> {
     let program = parts.next()?;
 
     // Run the bridge executable and capture stdout when it exits successfully.
-    let output = Command::new(program)
-        .args(parts)
-        .output()
-        .ok()?;
+    let output = Command::new(program).args(parts).output().ok()?;
     if !output.status.success() {
         return None;
     }

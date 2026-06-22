@@ -37,7 +37,7 @@ pub use secure_comm::{SecureEndpointRegistry, SecurePolicy};
 pub use signed::{Signature, SignedMessage};
 pub use trust::TrustLevel;
 pub use trust_boundary::{boundary_for_transport_name, TrustBoundaryKind, TrustBoundaryRegistry};
-pub use wire_crypto::WireCryptoSession;
 pub use validate::{
     security_audit, security_check, SecurityFinding, SecurityReport, SecuritySeverity,
 };
+pub use wire_crypto::WireCryptoSession;

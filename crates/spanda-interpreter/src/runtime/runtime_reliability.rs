@@ -2,8 +2,8 @@
 //!
 
 use super::{
-    Environment, IntoSpandaError, Interpreter, RobotBackend, RuntimeError, RuntimeValue,
-    RUNTIME_TASK_COST_MS, runtime_velocity,
+    runtime_velocity, Environment, Interpreter, IntoSpandaError, RobotBackend, RuntimeError,
+    RuntimeValue, RUNTIME_TASK_COST_MS,
 };
 use spanda_ast::nodes::{Expr, RobotDecl};
 use spanda_error::SpandaError;
@@ -189,7 +189,11 @@ impl<B: RobotBackend> Interpreter<B> {
         }
     }
 
-    pub(super) fn record_mission_event(&mut self, event: impl Into<String>, payload: serde_json::Value) {
+    pub(super) fn record_mission_event(
+        &mut self,
+        event: impl Into<String>,
+        payload: serde_json::Value,
+    ) {
         // Append one frame to the mission trace when recording is enabled.
         //
         // Parameters:
@@ -580,5 +584,4 @@ impl<B: RobotBackend> Interpreter<B> {
         }
         false
     }
-
 }

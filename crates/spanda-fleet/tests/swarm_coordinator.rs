@@ -2,9 +2,7 @@
 
 use spanda_ast::robotics_decl::SwarmPolicy;
 use spanda_driver::{check, compile};
-use spanda_fleet::{
-    coordinate_swarms, load_swarm_state, save_swarm_state, SwarmState,
-};
+use spanda_fleet::{coordinate_swarms, load_swarm_state, save_swarm_state, SwarmState};
 
 #[test]
 fn swarm_round_robin_advances_one_member_per_tick() {

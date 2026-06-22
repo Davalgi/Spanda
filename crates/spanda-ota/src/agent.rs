@@ -3,11 +3,11 @@
 use crate::bundle::{verify_deploy_bundle, DeployArtifactBundle};
 use crate::remote::DeployAgentEntry;
 use crate::types::{CertificationProofSummary, DeployAssignment};
+use serde::{Deserialize, Serialize};
 use spanda_deploy_http::{
     http_response, parse_http_request, read_plain_request, serve_tls_connection,
     write_plain_response, DeployAgentTls, HttpRequest, HttpResponse,
 };
-use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
@@ -169,7 +169,8 @@ pub fn handle_agent_request(state: &mut AgentState, request: HttpRequest) -> Htt
                 if !proof_ok {
                     return HttpResponse {
                         status: 400,
-                        body: r#"{"ok":false,"error":"strict certification proof required"}"#.into(),
+                        body: r#"{"ok":false,"error":"strict certification proof required"}"#
+                            .into(),
                     };
                 }
             }
@@ -250,16 +251,14 @@ fn handle_connection(
     let raw = match read_plain_request(&mut stream) {
         Ok(raw) => raw,
         Err(_) => {
-            let _ = stream.write_all(
-                http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-            );
+            let _ = stream
+                .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
             return;
         }
     };
     let Ok(request) = parse_http_request(&raw) else {
-        let _ = stream.write_all(
-            http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes(),
-        );
+        let _ = stream
+            .write_all(http_response(400, r#"{"ok":false,"error":"bad request"}"#).as_bytes());
         return;
     };
     let response = {
@@ -328,7 +327,11 @@ pub fn run_deploy_agent_server(options: &DeployAgentServerOptions) -> Result<(),
         .as_ref()
         .map(spanda_deploy_http::build_deploy_server_config)
         .transpose()?;
-    let scheme = if server_config.is_some() { "https" } else { "http" };
+    let scheme = if server_config.is_some() {
+        "https"
+    } else {
+        "http"
+    };
     eprintln!("Spanda deploy agent listening on {scheme}://{bind} for target {target}");
     for connection in listener.incoming() {
         let Ok(stream) = connection else { continue };

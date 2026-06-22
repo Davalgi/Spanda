@@ -63,6 +63,7 @@ pub mod reliability_runtime;
 pub mod replay;
 pub mod robotics_platform;
 pub mod runtime;
+mod runtime_host;
 pub mod safety;
 pub mod scheduler;
 pub mod security;
@@ -80,12 +81,10 @@ pub mod telemetry;
 pub mod triggers;
 pub mod twin;
 mod type_check_host;
-mod runtime_host;
 pub mod type_system;
 pub mod types;
 pub mod units;
 
-pub use spanda_connectivity::adapter_bridge::{invoke_nav2_bridge, invoke_slam_bridge};
 pub use ast::*;
 #[cfg(feature = "certify")]
 pub use certify_prover::{
@@ -103,8 +102,7 @@ pub use debug_session::{DebugMachine, DebugStackFrame, DebugStepKind};
 pub use deploy_agent::{
     agent_entry_for_port, default_agent_state_path, handle_agent_request, load_agent_state,
     run_deploy_agent_server, save_agent_state, spawn_test_agent, spawn_test_agent_with_options,
-    DeployAgentServerOptions,
-    AgentState,
+    AgentState, DeployAgentServerOptions,
 };
 #[cfg(feature = "ota")]
 pub use deploy_bundle::{
@@ -175,6 +173,7 @@ pub use sir::{
     lower_program, SirBehavior, SirExtern, SirFunction, SirParam, SirProgram, SirStmt,
     SirVisibility,
 };
+pub use spanda_connectivity::adapter_bridge::{invoke_nav2_bridge, invoke_slam_bridge};
 #[cfg(feature = "fleet")]
 pub use swarm_coordinator::{
     coordinate_swarms, coordinate_swarms_mesh, default_swarm_state_path, load_swarm_state,

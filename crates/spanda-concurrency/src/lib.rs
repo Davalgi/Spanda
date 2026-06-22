@@ -146,8 +146,7 @@ impl ConcurrencyRuntime {
             return Err(SpandaError::from(RuntimeError::new(
                 format!("No agent channel from '{from}' to '{to}'"),
                 line,
-            )
-            ));
+            )));
         }
 
         // Emit output when self provides a route.
@@ -169,8 +168,7 @@ impl ConcurrencyRuntime {
                             route.message_type
                         ),
                         line,
-                    )
-                    ));
+                    )));
                 }
             }
         }
@@ -275,9 +273,14 @@ impl ConcurrencyRuntime {
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Channel { id } = channel else {
-            return Err(SpandaError::from(RuntimeError::new("send requires a channel", line)));
+            return Err(SpandaError::from(RuntimeError::new(
+                "send requires a channel",
+                line,
+            )));
         };
-        let handle = self.channels.get(id).ok_or_else(|| SpandaError::from(RuntimeError::new(format!("Unknown channel id {id}"), line)))?;
+        let handle = self.channels.get(id).ok_or_else(|| {
+            SpandaError::from(RuntimeError::new(format!("Unknown channel id {id}"), line))
+        })?;
 
         // Emit output when get provides a expected.
         if let Some(expected) = self.channel_type_tags.get(id) {
@@ -288,8 +291,7 @@ impl ConcurrencyRuntime {
                 return Err(SpandaError::from(RuntimeError::new(
                     format!("Channel type mismatch: expected {expected}, got {actual}"),
                     line,
-                )
-                ));
+                )));
             }
         }
         handle.borrow_mut().push_back(value);
@@ -319,9 +321,14 @@ impl ConcurrencyRuntime {
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Channel { id } = channel else {
-            return Err(SpandaError::from(RuntimeError::new("recv requires a channel", line)));
+            return Err(SpandaError::from(RuntimeError::new(
+                "recv requires a channel",
+                line,
+            )));
         };
-        let handle = self.channels.get(id).ok_or_else(|| SpandaError::from(RuntimeError::new(format!("Unknown channel id {id}"), line)))?;
+        let handle = self.channels.get(id).ok_or_else(|| {
+            SpandaError::from(RuntimeError::new(format!("Unknown channel id {id}"), line))
+        })?;
         Ok(handle.borrow_mut().pop_front())
     }
 
@@ -509,8 +516,7 @@ impl ConcurrencyRuntime {
                 return Err(SpandaError::from(RuntimeError::new(
                     format!("Channel type mismatch: expected {existing}, got {next}"),
                     line,
-                )
-                ));
+                )));
             }
             return Ok(());
         }

@@ -248,14 +248,12 @@ pub fn serve(
                     let session = with_machine(source, source_path, &breakpoints, |machine| {
                         machine.run_until_pause(kind)
                     })
-                    .unwrap_or_else(|e: SpandaError| {
-                        DebugSession {
-                            pauses: vec![DebugPause {
-                                line: 1,
-                                reason: e.to_string(),
-                                variables: Default::default(),
-                            }],
-                        }
+                    .unwrap_or_else(|e: SpandaError| DebugSession {
+                        pauses: vec![DebugPause {
+                            line: 1,
+                            reason: e.to_string(),
+                            variables: Default::default(),
+                        }],
                     });
 
                     // Process each pause.

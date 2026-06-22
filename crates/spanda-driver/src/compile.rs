@@ -1,12 +1,12 @@
 //! Compile pipeline entry points for Spanda source programs.
 //!
+use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
 use spanda_error::SpandaError;
 use spanda_lexer::Token;
 use spanda_parser::parse;
 use spanda_runtime_host::core_type_check_host;
 use spanda_typecheck::{self, ModuleRegistry, TypeCheckError};
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompileResult {

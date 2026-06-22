@@ -3,8 +3,8 @@
 //! Triggers unify events, messages, timers, conditions, state transitions, safety,
 //! hardware, AI, verification, and digital-twin reactive handlers under one registry.
 
-use spanda_ast::nodes::{Span, Stmt};
 use spanda_ast::foundations::{TaskPriority, TriggerHandlerDecl, TriggerKind};
+use spanda_ast::nodes::{Span, Stmt};
 use std::collections::{HashMap, HashSet};
 
 /// Maximum trigger dispatches per scheduler tick (prevents trigger storms).

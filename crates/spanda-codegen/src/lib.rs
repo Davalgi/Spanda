@@ -1,8 +1,8 @@
 //! codegen support for Spanda.
 //!
+use spanda_ast::foundations::{ExternFnDecl, ModuleFnDecl};
 use spanda_ast::nodes::*;
 use spanda_error::SpandaError;
-use spanda_ast::foundations::{ExternFnDecl, ModuleFnDecl};
 use spanda_sir::SirProgram;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -2,11 +2,11 @@
 //!
 
 use super::{
-    priority_label, trigger_category_label, IntoSpandaError, Interpreter, RobotBackend,
+    priority_label, trigger_category_label, Interpreter, IntoSpandaError, RobotBackend,
     RuntimeError, RuntimeValue,
 };
-use spanda_error::SpandaError;
 use spanda_ast::foundations::{TriggerHandlerDecl, TriggerKind};
+use spanda_error::SpandaError;
 use spanda_runtime::triggers::{priority_rank, trigger_display_name, SystemTriggerCategory};
 use spanda_runtime::twin::TwinRuntime;
 
@@ -136,7 +136,11 @@ impl<B: RobotBackend> Interpreter<B> {
             .any(|h| matches!(h.kind, TriggerKind::Condition { level: true, .. }))
     }
 
-    pub(super) fn register_trigger_decl(&mut self, trigger: &TriggerHandlerDecl, agent: Option<String>) {
+    pub(super) fn register_trigger_decl(
+        &mut self,
+        trigger: &TriggerHandlerDecl,
+        agent: Option<String>,
+    ) {
         // Register trigger decl.
         //
         // Parameters:
@@ -206,7 +210,10 @@ impl<B: RobotBackend> Interpreter<B> {
         self.triggers_dispatched_this_tick < self.options.max_triggers_per_tick
     }
 
-    pub(super) fn execute_trigger_handlers(&mut self, handler_ids: Vec<usize>) -> Result<(), SpandaError> {
+    pub(super) fn execute_trigger_handlers(
+        &mut self,
+        handler_ids: Vec<usize>,
+    ) -> Result<(), SpandaError> {
         // Execute trigger handlers.
         //
         // Parameters:
@@ -251,7 +258,10 @@ impl<B: RobotBackend> Interpreter<B> {
         Ok(())
     }
 
-    pub(super) fn execute_trigger_body_by_id(&mut self, handler_id: usize) -> Result<bool, SpandaError> {
+    pub(super) fn execute_trigger_body_by_id(
+        &mut self,
+        handler_id: usize,
+    ) -> Result<bool, SpandaError> {
         // Execute trigger body by id.
         //
         // Parameters:
@@ -423,5 +433,4 @@ impl<B: RobotBackend> Interpreter<B> {
         self.execute_trigger_handlers(ids)?;
         Ok(())
     }
-
 }

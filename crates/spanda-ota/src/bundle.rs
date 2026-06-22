@@ -88,7 +88,10 @@ pub fn bundle_canonical_json(bundle: &DeployArtifactBundle) -> Result<String, St
 }
 
 /// Sign an artifact bundle with Ed25519 key material.
-pub fn sign_deploy_bundle(bundle: &mut DeployArtifactBundle, key_material: &str) -> Result<(), String> {
+pub fn sign_deploy_bundle(
+    bundle: &mut DeployArtifactBundle,
+    key_material: &str,
+) -> Result<(), String> {
     // Attach a signature and derived public key to the bundle.
     //
     // Parameters:

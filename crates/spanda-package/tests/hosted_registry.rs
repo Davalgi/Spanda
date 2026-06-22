@@ -112,7 +112,11 @@ fn hosted_packages_match_registry_scaffolds() {
             .join("packages/registry")
             .join(name)
             .join("spanda.toml");
-        assert!(scaffold.is_file(), "missing scaffold at {}", scaffold.display());
+        assert!(
+            scaffold.is_file(),
+            "missing scaffold at {}",
+            scaffold.display()
+        );
     }
 }
 
@@ -165,13 +169,7 @@ fn hosted_registry_index_carries_valid_signatures() {
                 entry.name, version
             );
             assert!(
-                verify_registry_signature(
-                    &entry.name,
-                    version,
-                    digest,
-                    signature,
-                    &trust_key
-                ),
+                verify_registry_signature(&entry.name, version, digest, signature, &trust_key),
                 "invalid signature for {}/{}",
                 entry.name,
                 version

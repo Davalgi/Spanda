@@ -6,9 +6,9 @@ use spanda_runtime_host::core_type_check_host;
 use spanda_typecheck::{self, ModuleRegistry, TypeCheckError};
 
 pub use spanda_typecheck::{
-    format_type_name, units_compatible, MethodSig, TypeChecker, ACTUATOR_TYPES, AI_MODEL_TYPES,
-    AI_VALUE_TYPES, BUILTIN_FUNCTIONS, MESSAGE_TYPES, OBJECT_PROPERTIES, ROBOT_METHODS,
-    SCAN_PROPERTIES, SERVICE_TYPES, ACTION_TYPES, Diagnostic,
+    format_type_name, units_compatible, Diagnostic, MethodSig, TypeChecker, ACTION_TYPES,
+    ACTUATOR_TYPES, AI_MODEL_TYPES, AI_VALUE_TYPES, BUILTIN_FUNCTIONS, MESSAGE_TYPES,
+    OBJECT_PROPERTIES, ROBOT_METHODS, SCAN_PROPERTIES, SERVICE_TYPES,
 };
 
 pub fn type_check(program: &Program) -> Result<(), SpandaError> {
@@ -78,7 +78,8 @@ fn type_check_error(err: TypeCheckError) -> SpandaError {
 
 #[allow(non_snake_case)]
 pub fn BUILTIN_METHODS(
-) -> std::collections::HashMap<String, std::collections::HashMap<String, spanda_typecheck::MethodSig>> {
+) -> std::collections::HashMap<String, std::collections::HashMap<String, spanda_typecheck::MethodSig>>
+{
     spanda_typecheck::BUILTIN_METHODS(core_type_check_host())
 }
 

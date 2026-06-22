@@ -50,7 +50,10 @@ impl LiveMqttBridge {
         #[cfg(not(feature = "live"))]
         {
             let _ = (broker_url, client_id);
-            Err("live MQTT support not enabled (build spanda-transport-mqtt with --features live)".into())
+            Err(
+                "live MQTT support not enabled (build spanda-transport-mqtt with --features live)"
+                    .into(),
+            )
         }
     }
 

@@ -2,8 +2,8 @@
 //!
 
 use super::{Interpreter, RobotBackend};
-use spanda_connectivity_runtime::{connectivity_policy_from_decl, geofence_from_decl};
 use spanda_comm::CommBus;
+use spanda_connectivity_runtime::{connectivity_policy_from_decl, geofence_from_decl};
 use spanda_error::SpandaError;
 
 impl<B: RobotBackend> Interpreter<B> {

@@ -1,10 +1,8 @@
 //! Connectivity declaration validation for hardware verify.
 //!
-use spanda_ast::foundations::{
-    ConnectivityPolicyDecl, GeofenceDecl, RequiresConnectivityDecl,
-};
 use crate::compat::{CompatItem, CompatSeverity};
 use crate::profiles::HardwareProfile;
+use spanda_ast::foundations::{ConnectivityPolicyDecl, GeofenceDecl, RequiresConnectivityDecl};
 use spanda_connectivity::{connectivity_key_to_profile_tokens, ConnectivityRequirement};
 use std::collections::HashSet;
 

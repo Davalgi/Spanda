@@ -1,14 +1,19 @@
 //! Sensor reading and observe-fusion helpers for the interpreter.
 //!
 
-use super::{pose_from_state, IntoSpandaError, Interpreter, RobotBackend, RuntimeError, RuntimeValue};
+use super::{
+    pose_from_state, Interpreter, IntoSpandaError, RobotBackend, RuntimeError, RuntimeValue,
+};
 use spanda_ast::nodes::UnitKind;
 use spanda_error::SpandaError;
 use spanda_lib_registry::{get_sensor_driver, read_with_driver, DriverContext, SimState};
 use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
-    pub(super) fn read_sensor_value(&mut self, target: &RuntimeValue) -> Result<RuntimeValue, SpandaError> {
+    pub(super) fn read_sensor_value(
+        &mut self,
+        target: &RuntimeValue,
+    ) -> Result<RuntimeValue, SpandaError> {
         // Read sensor value.
         //
         // Parameters:

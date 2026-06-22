@@ -1,8 +1,8 @@
 //! Spanda language parser — AST construction from token streams.
 //!
+use spanda_ast::foundations::*;
 use spanda_ast::nodes::*;
 use spanda_error::SpandaError;
-use spanda_ast::foundations::*;
 use spanda_lexer::{unit_from_lexeme, Token, TokenType, TokenValue, UnitLexeme};
 use spanda_regex_lang::RegexPattern;
 
@@ -1272,8 +1272,8 @@ impl Parser {
     fn parse_requires_connectivity(
         &mut self,
     ) -> Result<spanda_ast::foundations::RequiresConnectivityDecl, SpandaError> {
-        use spanda_connectivity_runtime::ConnectivityRequirement;
         use spanda_ast::foundations::RequiresConnectivityDecl;
+        use spanda_connectivity_runtime::ConnectivityRequirement;
         let start = self.advance();
         self.expect(
             TokenType::Lbrace,
@@ -1466,7 +1466,9 @@ impl Parser {
         })
     }
 
-    fn parse_ble_service(&mut self) -> Result<spanda_ast::foundations::BleServiceDecl, SpandaError> {
+    fn parse_ble_service(
+        &mut self,
+    ) -> Result<spanda_ast::foundations::BleServiceDecl, SpandaError> {
         use spanda_ast::foundations::BleServiceDecl;
         let start = self.advance();
         let name = self
@@ -1771,12 +1773,10 @@ impl Parser {
             }
         }
         let end = self.expect(TokenType::Rbrace, "Expected '}' to close swarm")?;
-        let fleet_name = fleet_name.ok_or_else(|| {
-            SpandaError::Parse {
-                message: format!("swarm '{name}' requires a fleet reference"),
-                line: end.line,
-                column: end.column,
-            }
+        let fleet_name = fleet_name.ok_or_else(|| SpandaError::Parse {
+            message: format!("swarm '{name}' requires a fleet reference"),
+            line: end.line,
+            column: end.column,
         })?;
         Ok(SwarmDecl::SwarmDecl {
             name,
@@ -1839,7 +1839,10 @@ impl Parser {
         use spanda_ast::robotics_decl::{CertificationStandard, CertifyDecl};
         let start = self.advance();
         let standard_name = self
-            .expect(TokenType::Ident, "Expected certification standard after 'certify'")?
+            .expect(
+                TokenType::Ident,
+                "Expected certification standard after 'certify'",
+            )?
             .lexeme;
         let standard = CertificationStandard::parse_ident(&standard_name).ok_or_else(|| {
             SpandaError::Parse {
@@ -1857,10 +1860,16 @@ impl Parser {
                 if self.check(TokenType::Ident) && self.peek().lexeme == "level" {
                     self.advance();
                     level = Some(
-                        self.expect(TokenType::Ident, "Expected certification level after 'level'")?
-                            .lexeme,
+                        self.expect(
+                            TokenType::Ident,
+                            "Expected certification level after 'level'",
+                        )?
+                        .lexeme,
                     );
-                    self.expect(TokenType::Semicolon, "Expected ';' after certification level")?;
+                    self.expect(
+                        TokenType::Semicolon,
+                        "Expected ';' after certification level",
+                    )?;
                 } else {
                     let t = self.peek();
                     return Err(SpandaError::Parse {
@@ -3190,7 +3199,9 @@ impl Parser {
         })
     }
 
-    fn parse_agent_channel(&mut self) -> Result<spanda_ast::comm_decl::AgentChannelDecl, SpandaError> {
+    fn parse_agent_channel(
+        &mut self,
+    ) -> Result<spanda_ast::comm_decl::AgentChannelDecl, SpandaError> {
         // Parse agent channel.
         //
         // Parameters:
@@ -4631,7 +4642,9 @@ impl Parser {
         }
     }
 
-    fn parse_permissions(&mut self) -> Result<spanda_ast::foundations::PermissionsDecl, SpandaError> {
+    fn parse_permissions(
+        &mut self,
+    ) -> Result<spanda_ast::foundations::PermissionsDecl, SpandaError> {
         // Parse permissions.
         //
         // Parameters:
@@ -4675,7 +4688,9 @@ impl Parser {
         })
     }
 
-    fn parse_secure_block(&mut self) -> Result<spanda_ast::foundations::SecureBlockDecl, SpandaError> {
+    fn parse_secure_block(
+        &mut self,
+    ) -> Result<spanda_ast::foundations::SecureBlockDecl, SpandaError> {
         use spanda_ast::foundations::SecureBlockDecl;
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after secure")?;
@@ -4840,7 +4855,9 @@ impl Parser {
         })
     }
 
-    fn parse_secrets_block(&mut self) -> Result<Vec<spanda_ast::foundations::SecretDecl>, SpandaError> {
+    fn parse_secrets_block(
+        &mut self,
+    ) -> Result<Vec<spanda_ast::foundations::SecretDecl>, SpandaError> {
         use spanda_ast::foundations::{SecretDecl, SecretSourceDecl};
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after secrets")?;
@@ -5511,16 +5528,14 @@ impl Parser {
         // Accept explicit `priority critical` after the task name.
         if self.match_types(&[TokenType::Priority]) {
             let level = self.expect(TokenType::Ident, "Expected priority level")?;
-            priority =
-                spanda_ast::foundations::TaskPriority::from_ident(&level.lexeme).ok_or_else(|| {
-                    SpandaError::Parse {
-                        message: format!(
-                            "Invalid priority '{}'; use critical, high, normal, or low",
-                            level.lexeme
-                        ),
-                        line: level.line,
-                        column: level.column,
-                    }
+            priority = spanda_ast::foundations::TaskPriority::from_ident(&level.lexeme)
+                .ok_or_else(|| SpandaError::Parse {
+                    message: format!(
+                        "Invalid priority '{}'; use critical, high, normal, or low",
+                        level.lexeme
+                    ),
+                    line: level.line,
+                    column: level.column,
                 })?;
         }
         let interval_ms = if self.match_types(&[TokenType::Every]) {
@@ -6323,10 +6338,7 @@ impl Parser {
                         });
                     }
                 }
-                self.expect(
-                    TokenType::Semicolon,
-                    "Expected ';' after navigate field",
-                )?;
+                self.expect(TokenType::Semicolon, "Expected ';' after navigate field")?;
             }
             let end = self.expect(TokenType::Rbrace, "Expected '}' to close navigate block")?;
             let Some(goal_expr) = goal else {
@@ -6739,7 +6751,9 @@ impl Parser {
         }
     }
 
-    fn parse_discover_target(&mut self) -> Result<spanda_ast::comm_decl::DiscoverTarget, SpandaError> {
+    fn parse_discover_target(
+        &mut self,
+    ) -> Result<spanda_ast::comm_decl::DiscoverTarget, SpandaError> {
         // Parse discover target.
         //
         // Parameters:

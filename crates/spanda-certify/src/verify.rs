@@ -1,9 +1,9 @@
 //! Certification proof checklist for `spanda verify --strict-certify`.
 
-use spanda_ast::nodes::{Program, RobotDecl};
 use spanda_ast::foundations::DeployDecl;
+use spanda_ast::nodes::{Program, RobotDecl};
+use spanda_ast::robotics_decl::{CertificationStandard, CertifyDecl};
 use spanda_hardware::{CompatItem, CompatSeverity};
-use spanda_ast::robotics_decl::{CertifyDecl, CertificationStandard};
 
 fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
     CompatItem {
@@ -138,9 +138,7 @@ pub fn verify_certification_proof(program: &Program, strict: bool) -> Vec<Compat
             continue;
         };
         let RobotDecl::RobotDecl {
-            mission,
-            safety,
-            ..
+            mission, safety, ..
         } = robot;
         if mission.is_none() {
             let item = if strict {

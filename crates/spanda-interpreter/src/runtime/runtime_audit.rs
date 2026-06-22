@@ -1,7 +1,7 @@
 //! Audit and ledger runtime method dispatch.
 //!
 
-use super::{get_string, IntoSpandaError, Interpreter, RobotBackend, RuntimeError, RuntimeValue};
+use super::{get_string, Interpreter, IntoSpandaError, RobotBackend, RuntimeError, RuntimeValue};
 use spanda_ast::nodes::{Expr, UnitKind};
 use spanda_error::SpandaError;
 use std::collections::HashMap;
@@ -261,5 +261,4 @@ impl<B: RobotBackend> Interpreter<B> {
             _ => Ok(RuntimeValue::Void),
         }
     }
-
 }

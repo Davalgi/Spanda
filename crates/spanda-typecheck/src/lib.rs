@@ -10,11 +10,11 @@ pub mod type_system;
 pub mod units;
 
 pub use checker::{
-    check, check_with_registry, format_type_name, get_library_for_sensor_type, merge_library_methods,
-    type_check, units_compatible, MethodSig, TypeCheckError, TypeChecker, ACTUATOR_TYPES,
-    AI_MODEL_TYPES, AI_VALUE_TYPES, BUILTIN_FUNCTIONS, BUILTIN_METHODS, MESSAGE_TYPES,
-    OBJECT_PROPERTIES, POSE_PROPERTIES, ROBOT_METHODS, SCAN_PROPERTIES, SENSOR_TYPES,
-    SERVICE_TYPES, ACTION_TYPES, VELOCITY_PROPERTIES,
+    check, check_with_registry, format_type_name, get_library_for_sensor_type,
+    merge_library_methods, type_check, units_compatible, MethodSig, TypeCheckError, TypeChecker,
+    ACTION_TYPES, ACTUATOR_TYPES, AI_MODEL_TYPES, AI_VALUE_TYPES, BUILTIN_FUNCTIONS,
+    BUILTIN_METHODS, MESSAGE_TYPES, OBJECT_PROPERTIES, POSE_PROPERTIES, ROBOT_METHODS,
+    SCAN_PROPERTIES, SENSOR_TYPES, SERVICE_TYPES, VELOCITY_PROPERTIES,
 };
 pub use diagnostics::Diagnostic;
 pub use host::TypeCheckHost;

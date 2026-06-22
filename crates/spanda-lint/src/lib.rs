@@ -1,9 +1,9 @@
 //! lint support for Spanda.
 //!
+use serde::{Deserialize, Serialize};
+use spanda_ast::foundations::TaskDecl;
 use spanda_ast::nodes::*;
 use spanda_error::SpandaError;
-use spanda_ast::foundations::TaskDecl;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]

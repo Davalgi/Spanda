@@ -30,8 +30,7 @@ impl FleetPeerMesh {
 
     pub fn publish_peer(&mut self, peer: &str, topic: &str, from_robot: &str) {
         let path = format!("/{peer}/{topic}");
-        self.published
-            .push((path, Some(from_robot.to_string())));
+        self.published.push((path, Some(from_robot.to_string())));
     }
 
     fn was_delivered(&self, peer: &str, topic: &str, from_robot: &str) -> bool {
@@ -194,7 +193,9 @@ pub fn orchestrate_fleets(program: &Program, program_path: &str) -> FleetOrchest
                 continue;
             };
             let RobotDecl::RobotDecl {
-                peer_robots, mission, ..
+                peer_robots,
+                mission,
+                ..
             } = robot;
             let mut runtime = mission_for_robot(robot);
             let (mission_name, mission_state, current_step) = if let Some(ref mut m) = runtime {
@@ -203,11 +204,7 @@ pub fn orchestrate_fleets(program: &Program, program_path: &str) -> FleetOrchest
                 if !step.is_empty() {
                     steps_advanced += 1;
                 }
-                (
-                    m.name.clone(),
-                    m.state.as_str().to_string(),
-                    step,
-                )
+                (m.name.clone(), m.state.as_str().to_string(), step)
             } else {
                 (None, "NoMission".into(), String::new())
             };
@@ -250,9 +247,9 @@ pub fn orchestrate_fleets(program: &Program, program_path: &str) -> FleetOrchest
         });
     }
 
-    let success = reports.iter().all(|r| {
-        r.members.iter().all(|m| m.mission_state != "MissingRobot")
-    });
+    let success = reports
+        .iter()
+        .all(|r| r.members.iter().all(|m| m.mission_state != "MissingRobot"));
 
     FleetOrchestrationResult {
         program: program_path.to_string(),
