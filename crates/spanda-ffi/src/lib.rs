@@ -1,5 +1,8 @@
 //! ffi support for Spanda.
 //!
+pub mod ffi_imports;
+
+pub use ffi_imports::resolve_ffi_import;
 use spanda_ast::nodes::UnitKind;
 use spanda_error::SpandaError;
 use spanda_ast::foundations::{BridgeKind, ExternFnDecl};

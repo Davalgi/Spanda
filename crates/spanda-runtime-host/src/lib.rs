@@ -1,7 +1,11 @@
 //! Default `RuntimeHost` wiring for navigation, SLAM, and connectivity.
 //!
 pub mod nav2_adapter;
+pub mod robotics_validation;
 pub mod slam_adapter;
+pub mod type_check_host;
+
+pub use type_check_host::{core_type_check_host, CoreTypeCheckHost};
 
 use spanda_comm::TransportKind;
 use spanda_connectivity::adapter_bridge;

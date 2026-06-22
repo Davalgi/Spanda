@@ -5,6 +5,7 @@ pub mod diagnostics;
 pub mod host;
 pub mod message_registry;
 pub mod module_registry;
+pub mod reliability_validation;
 pub mod type_system;
 pub mod units;
 
@@ -19,3 +20,6 @@ pub use diagnostics::Diagnostic;
 pub use host::TypeCheckHost;
 pub use message_registry::{is_comm_capability, MessageRegistry, COMM_CAPABILITIES};
 pub use module_registry::{ModuleExports, ModuleRegistry};
+pub use reliability_validation::{
+    resolve_std_import, validate_resource_budget, validate_task_priority, validate_task_timing,
+};

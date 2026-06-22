@@ -7,7 +7,7 @@ pub use spanda_typecheck::{
 };
 
 use crate::error::SpandaError;
-use crate::type_check_host::core_type_check_host;
+use spanda_runtime_host::core_type_check_host;
 use spanda_ast::nodes::Program;
 use spanda_typecheck::{self, ModuleRegistry, TypeCheckError};
 
