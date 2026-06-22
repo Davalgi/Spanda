@@ -40,7 +40,8 @@ Each lesson links to a runnable example in the repo. Work through them in order,
 | Language reference | [spanda-language.md](../spanda-language.md) |
 | Full API index | [spanda-reference.md](../spanda-reference.md) |
 | Real-time & replay | [realtime.md](../realtime.md), [replay.md](../replay.md) |
-| All examples | [examples/basics/README.md](../../examples/basics/README.md) |
+| Examples library | [examples/README.md](../../examples/README.md) |
+| Package examples | [examples/packages/README.md](../../examples/packages/README.md) |
 
 ---
 

@@ -2,7 +2,7 @@
 
 Runnable `.sd` programs mapped to Spanda capabilities. Use this when you need **one file per feature** or want to see what the language supports.
 
-**Learning paths:** [Spanda 101](../../docs/spanda-101/README.md) · [Spanda for Dummies](../../docs/spanda-for-dummies/README.md) · [Tutorials index](../../docs/tutorials/README.md)
+**Learning paths:** [examples/README.md](../README.md) · [Spanda 101](../../docs/spanda-101/README.md) · [Spanda for Dummies](../../docs/spanda-for-dummies/README.md) · [Tutorials index](../../docs/tutorials/README.md)
 
 ```bash
 spanda check examples/features/dyn_trait_object.sd
@@ -173,8 +173,10 @@ spanda run examples/features/enum_payload.sd
 
 | Feature | Example |
 |---------|---------|
-| Package manifest | `packages/basic_project/` |
+| Package manifest | [`packages/basic_project/`](../packages/basic_project/) — [packages README](../packages/README.md) |
 | Path dependencies | `packages/local_dependency/` |
+| Nav2 / SLAM / ROS2 adapters | `packages/nav2_adapter_package/`, `packages/ros2_adapter_package/` |
+| Official registry packages | `packages/registry/` (repo) — [official-packages.md](../../docs/official-packages.md) |
 | Standard library | `std/*.sd` (robotics, spatial, time, ai, …) |
 | Type snippets | `types/*.sd` |
 

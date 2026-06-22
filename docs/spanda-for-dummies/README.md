@@ -91,6 +91,7 @@ Spanda is **not** trying to replace your favorite language. It orchestrates perc
 | First project in 10 min | [getting-started.md](../getting-started.md) |
 | Flagship demo | [killer-demo.md](../killer-demo.md) |
 | Full language spec | [spanda-language.md](../spanda-language.md) |
+| Examples library | [examples/README.md](../../examples/README.md) |
 
 ---
 

@@ -78,6 +78,8 @@ robot MyRover {
 
 ## Learn by example (basics → end-to-end)
 
+**Hub:** [examples/README.md](../examples/README.md) — full ladder, topic map, and CI regression.
+
 **New to Spanda?** Pick your style (full list: [Tutorials index](./tutorials/README.md)):
 
 - [Spanda for Dummies](./spanda-for-dummies/README.md) — plain English, ~45 min read, cheat sheet
@@ -96,6 +98,8 @@ spanda test examples/basics/07_in_language_tests.sd
 | Basics | `examples/basics/` | Robot syntax, safety, control flow, Result/Option, traits, async, contracts |
 | Integration | `examples/integration/` | Triggers, concurrency, hardware verify |
 | End-to-end | `examples/end_to_end/` | Full patrol package, record/replay mission |
+| Packages | `examples/packages/` | Manifests, adapter packages, local deps — [README](../examples/packages/README.md) |
+| By feature | `examples/features/` | One file per capability — [README](../examples/features/README.md) |
 
 After the ladder, try [`examples/showcase/killer_demo.sd`](examples/showcase/killer_demo.sd) and [killer-demo.md](./killer-demo.md).
 

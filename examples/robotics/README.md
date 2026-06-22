@@ -1,6 +1,6 @@
 # Robotics examples
 
-Runnable `.sd` programs demonstrating the Spanda robotics platform. See [robotics platform guide](../docs/robotics-platform.md).
+Runnable `.sd` programs demonstrating the Spanda robotics platform. See [robotics platform guide](../../docs/robotics-platform.md).
 
 | Example | Focus |
 |---------|--------|

@@ -9,6 +9,7 @@ One place to find every learning path: quick starts, structured courses, topic g
 | Plain English, no jargon | [Spanda for Dummies](../spanda-for-dummies/README.md) | ~45 min read |
 | Structured lessons + exercises | [Spanda 101](../spanda-101/README.md) | ~3 hours |
 | First robot in 10 minutes | [Getting started](../getting-started.md) | ~10 min |
+| Browse runnable code | [Examples library](../../examples/README.md) | self-paced |
 | Impress someone in a meeting | [Killer demo](../killer-demo.md) | ~5 min |
 
 ---
@@ -83,7 +84,9 @@ Deep dives on one capability. Read after a beginner track.
 | Mission replay | [replay.md](../replay.md) | `examples/end_to_end/replay_mission.sd` |
 | Regex | [regex.md](../regex.md) | `examples/regex/` |
 | Hardware & deploy | [hardware-compatibility.md](../hardware-compatibility.md) | `examples/hardware/` |
-| Packages | [packages.md](../packages.md) | `examples/packages/` |
+| Packages | [packages.md](../packages.md) | [examples/packages/](../../examples/packages/README.md) |
+| Official packages | [official-packages.md](../official-packages.md) | `packages/registry/`, adapter examples |
+| Lean-core / crates | [lean-core.md](../lean-core.md) | [crates/README.md](../../crates/README.md) |
 | Standard library | [standard-library.md](../standard-library.md) | `examples/std/` |
 | Type system | [spanda-type-system.md](../spanda-type-system.md) | `examples/types/` |
 | FFI & ROS2 | [ffi-and-ecosystem.md](../ffi-and-ecosystem.md) | `examples/ffi_*.sd`, `ros2_bridge.sd` |
@@ -93,6 +96,8 @@ Deep dives on one capability. Read after a beginner track.
 ---
 
 ## 4. Example libraries (learn by reading code)
+
+**Master index:** [examples/README.md](../../examples/README.md) — quick start, learning ladder, topic map, CI regression.
 
 Runnable `.sd` programs grouped by skill level. All paths relative to [`examples/`](../../examples/).
 
@@ -108,6 +113,7 @@ Runnable `.sd` programs grouped by skill level. All paths relative to [`examples
 | Integration | `examples/integration/` | triggers, concurrency, verify |
 | Features | `examples/features/` | one file per capability |
 | End-to-end | `examples/end_to_end/` | [README](../../examples/end_to_end/README.md) — patrol, warehouse, fleet, replay, … |
+| Packages | `examples/packages/` | [README](../../examples/packages/README.md) — manifests, adapters, local deps |
 
 ### Curated & domain demos
 
@@ -137,7 +143,8 @@ Use these when you know *what* you need; use tutorials when you're learning *how
 | Doc | Use when |
 |-----|----------|
 | [spanda-reference.md](../spanda-reference.md) | Keyword, builtin, CLI lookup |
-| [api-reference.md](../api-reference.md) | Rust/TypeScript compiler API |
+| [api-documentation.md](../api-documentation.md) | How language, compiler, and JSON API docs relate |
+| [api-reference.md](../api-reference.md) | Rust/TypeScript compiler API (grouped by crate layer) |
 | [man/](../man/) | Man-page CLI reference |
 | [feature-status.md](../feature-status.md) | What is stable vs experimental |
 | [api-contract.json](../api-contract.json) | JSON schemas for tool integration |
@@ -172,6 +179,13 @@ Use these when you know *what* you need; use tutorials when you're learning *how
 3. [feature-status.md](../feature-status.md)  
 4. [product-strategy.md](../product-strategy.md)
 
+### Path E — “I need ROS2 / MQTT / official packages”
+
+1. [packages.md](../packages.md) + `examples/packages/basic_project/`  
+2. [official-packages.md](../official-packages.md)  
+3. `examples/packages/ros2_adapter_package/` + [ros2-golden-path.md](../ros2-golden-path.md)  
+4. [lean-core.md](../lean-core.md) — how packages plug into the runtime
+
 ---
 
 ## 7. Contributing tutorials
@@ -179,7 +193,8 @@ Use these when you know *what* you need; use tutorials when you're learning *how
 Adding a new tutorial? See [CONTRIBUTING.md](../../CONTRIBUTING.md):
 
 - Beginner content → `docs/spanda-for-dummies/` or `docs/spanda-101/`
-- Topic guide → `docs/<topic>.md` + runnable example
+- Topic guide → `docs/<topic>.md` + runnable example under `examples/`
+- New example tier → update [examples/README.md](../../examples/README.md) and the directory README
 - Golden CI → `tests/golden/manifest.json`
 - Update **this index** when you add a new learning resource
 

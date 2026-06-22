@@ -2,7 +2,7 @@
 
 Progressive Spanda examples from a minimal robot to full deployment workflows.
 
-**Guided tutorials:** [Tutorials index](../../docs/tutorials/README.md) · [Spanda for Dummies](../../docs/spanda-for-dummies/README.md) · [Spanda 101](../../docs/spanda-101/README.md)
+**Examples hub:** [examples/README.md](../README.md) · **Guided tutorials:** [Tutorials index](../../docs/tutorials/README.md) · [Spanda for Dummies](../../docs/spanda-for-dummies/README.md) · [Spanda 101](../../docs/spanda-101/README.md)
 
 ## Tier 1 — Language basics (`basics/`)
 
@@ -62,6 +62,6 @@ See [end_to_end/README.md](../end_to_end/README.md) for the full catalog.
 | `modules/` | Cross-file imports |
 | `types/` | Type-system snippets |
 | `std/` | Standard library samples |
-| `packages/` | Package manifest layouts |
+| `packages/` | Package manifest layouts — [README](../packages/README.md) |
 
 Next step after basics: [Spanda for Dummies](../../docs/spanda-for-dummies/README.md), [Spanda 101](../../docs/spanda-101/README.md), [getting-started.md](../../docs/getting-started.md), and [showcase/killer_demo.sd](../showcase/killer_demo.sd).

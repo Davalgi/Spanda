@@ -1,8 +1,8 @@
 # Showcase — three flagship examples
 
-New evaluators should start with these three pillars — **safety**, **verify**, and **sim** — before browsing the full examples library.
+New evaluators should start with these three pillars — **safety**, **verify**, and **sim** — before browsing the full library.
 
-Full 5-minute walkthrough: [docs/killer-demo.md](../../docs/killer-demo.md)
+**Hub:** [examples/README.md](../README.md) · Walkthrough: [docs/killer-demo.md](../../docs/killer-demo.md)
 
 ---
 
