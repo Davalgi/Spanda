@@ -299,11 +299,11 @@ Goal: complete package→provider→runtime wiring, transitive dependencies, rep
 | `spanda update`, `--trace-providers`, flagship `autonomous_rover` demo | **Complete** |
 | Project-aware `check`/`build`/`run`/`verify` module registry | **Complete** |
 | TS mirror `package_dispatch.ts` | **Complete** |
-| Fleet multi-host CI + golden path docs | Planned |
-| MQTT live Mosquitto CI | Planned |
-| Twin cloud export CI | Planned |
+| Fleet multi-host CI + golden path docs | **Complete** |
+| MQTT live Mosquitto CI | **Complete** |
+| Twin cloud export CI | **Complete** |
 | `cpp-native` golden path CI | Planned |
-| LLVM golden path in CI | Planned |
+| LLVM golden path in CI | **Complete** |
 | Ledger community package scaffold | Planned |
 | World model parser + fusion hook | Planned |
 | Self-host lexer milestone | Planned |

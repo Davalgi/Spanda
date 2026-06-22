@@ -58,6 +58,45 @@ jobs:
         env:
           PATH: ${{ github.workspace }}/target/release:${{ env.PATH }}
 
+  mqtt-golden-path:
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Mosquitto
+        run: sudo apt-get update && sudo apt-get install -y mosquitto mosquitto-clients
+      - run: chmod +x scripts/mqtt_golden_path.sh
+      - run: ./scripts/mqtt_golden_path.sh
+
+  twin-cloud-golden-path:
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build -p spanda-cli --release
+      - run: chmod +x scripts/twin_cloud_golden_path.sh
+      - run: ./scripts/twin_cloud_golden_path.sh
+        env:
+          PATH: ${{ github.workspace }}/target/release:${{ env.PATH }}
+
+  llvm-golden-path:
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install clang
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - run: chmod +x scripts/llvm_golden_path.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/llvm_golden_path.sh
+        env:
+          PATH: ${{ github.workspace }}/target/release:${{ env.PATH }}
+
   ros2-rclrs-native:
     runs-on: ubuntu-22.04
     timeout-minutes: 20

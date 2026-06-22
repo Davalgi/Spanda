@@ -93,11 +93,11 @@ See [product-strategy.md](./product-strategy.md) § v0.5 beta — prioritized wo
 
 | Step | Status |
 |------|--------|
-| Fleet multi-host CI + golden path docs | Planned |
-| MQTT live Mosquitto CI | Planned |
-| Twin cloud export CI | Planned |
+| Fleet multi-host CI + golden path docs | **Complete** |
+| MQTT live Mosquitto CI | **Complete** |
+| Twin cloud export CI | **Complete** |
 | `cpp-native` golden path CI | Planned |
-| LLVM golden path in CI | Planned |
+| LLVM golden path in CI | **Complete** |
 | Ledger community package scaffold | Planned |
 | World model parser + fusion hook | Planned |
 | Self-host lexer milestone | Planned |
