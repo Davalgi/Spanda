@@ -1,18 +1,162 @@
 [
   {
+    "name": "spanda-ble",
+    "description": "Bluetooth Low Energy bridge",
+    "versions": ["0.1.0"],
+    "category": "connectivity",
+    "license": "Apache-2.0",
+    "import_paths": ["connectivity.ble"]
+  },
+  {
+    "name": "spanda-cellular",
+    "description": "LTE/4G/5G cellular adapters",
+    "versions": ["0.1.0"],
+    "category": "connectivity",
+    "license": "Apache-2.0",
+    "import_paths": ["connectivity.cellular"]
+  },
+  {
+    "name": "spanda-cloud",
+    "description": "Cloud telemetry and remote commands",
+    "versions": ["0.1.0"],
+    "category": "cloud",
+    "license": "Apache-2.0",
+    "import_paths": ["cloud.remote"]
+  },
+  {
+    "name": "spanda-dds",
+    "description": "DDS pub/sub transport",
+    "versions": ["0.1.0"],
+    "category": "communication",
+    "license": "Apache-2.0",
+    "import_paths": ["communication.dds"]
+  },
+  {
+    "name": "spanda-fleet",
+    "description": "Multi-robot fleet orchestration",
+    "versions": ["0.1.0"],
+    "category": "robotics",
+    "license": "Apache-2.0",
+    "import_paths": ["robotics.fleet"]
+  },
+  {
+    "name": "spanda-gazebo",
+    "description": "Gazebo simulation backend",
+    "versions": ["0.1.0"],
+    "category": "simulation",
+    "license": "Apache-2.0",
+    "import_paths": ["sim.gazebo"]
+  },
+  {
+    "name": "spanda-gps",
+    "description": "GPS/GNSS receiver adapters",
+    "versions": ["0.1.0"],
+    "category": "positioning",
+    "license": "Apache-2.0",
+    "import_paths": ["positioning.gps"]
+  },
+  {
+    "name": "spanda-ledger",
+    "description": "Audit ledger anchoring",
+    "versions": ["0.1.0"],
+    "category": "provenance",
+    "license": "Apache-2.0",
+    "import_paths": ["provenance.ledger"]
+  },
+  {
+    "name": "spanda-maintenance",
+    "description": "Predictive maintenance and health",
+    "versions": ["0.1.0"],
+    "category": "maintenance",
+    "license": "Apache-2.0",
+    "import_paths": ["maintenance.health"]
+  },
+  {
+    "name": "spanda-moveit",
+    "description": "MoveIt motion planning",
+    "versions": ["0.1.0"],
+    "category": "manipulation",
+    "license": "Apache-2.0",
+    "import_paths": ["manipulation.moveit"]
+  },
+  {
+    "name": "spanda-mqtt",
+    "description": "MQTT pub/sub transport adapter (bridge-backed)",
+    "versions": ["0.1.0"],
+    "category": "communication",
+    "license": "Apache-2.0",
+    "import_paths": ["communication.mqtt"]
+  },
+  {
+    "name": "spanda-nav",
+    "description": "Path planning and navigation",
+    "versions": ["0.1.0"],
+    "category": "navigation",
+    "license": "Apache-2.0",
+    "import_paths": ["navigation.path_planning"]
+  },
+  {
     "name": "spanda-openai",
-    "description": "OpenAI provider adapter via Python bridge (ai.openai)",
+    "description": "OpenAI provider adapter (Python bridge)",
     "versions": ["0.1.0"],
     "category": "ai",
     "license": "Apache-2.0",
     "import_paths": ["ai.openai"]
   },
   {
+    "name": "spanda-opencv",
+    "description": "OpenCV vision bindings",
+    "versions": ["0.1.0"],
+    "category": "vision",
+    "license": "Apache-2.0",
+    "import_paths": ["vision.opencv"]
+  },
+  {
+    "name": "spanda-ota",
+    "description": "Over-the-air deploy and rollout",
+    "versions": ["0.1.0"],
+    "category": "deploy",
+    "license": "Apache-2.0",
+    "import_paths": ["deploy.ota"]
+  },
+  {
     "name": "spanda-ros2",
-    "description": "ROS 2 integration framework (robotics.ros2)",
+    "description": "ROS 2 integration framework (bridge-backed)",
     "versions": ["0.1.0"],
     "category": "ros2",
     "license": "Apache-2.0",
     "import_paths": ["robotics.ros2"]
+  },
+  {
+    "name": "spanda-slam",
+    "description": "SLAM localization and mapping",
+    "versions": ["0.1.0"],
+    "category": "navigation",
+    "license": "Apache-2.0",
+    "import_paths": ["navigation.slam"]
+  },
+  {
+    "name": "spanda-webots",
+    "description": "Webots simulation backend",
+    "versions": ["0.1.0"],
+    "category": "simulation",
+    "license": "Apache-2.0",
+    "import_paths": ["sim.webots"]
+  },
+  {
+    "name": "spanda-wifi",
+    "description": "Wi-Fi connectivity adapters",
+    "versions": ["0.1.0"],
+    "category": "connectivity",
+    "license": "Apache-2.0",
+    "import_paths": ["connectivity.wifi"]
+  },
+  {
+    "name": "spanda-yolo",
+    "description": "YOLO object detection",
+    "versions": ["0.1.0"],
+    "category": "vision",
+    "license": "Apache-2.0",
+    "import_paths": ["vision.yolo"]
   }
 ]

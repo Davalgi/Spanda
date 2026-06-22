@@ -4,10 +4,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-PACKAGES=(spanda-openai spanda-ros2)
-
-for name in "${PACKAGES[@]}"; do
-  src="$ROOT/packages/registry/$name"
+shopt -s nullglob
+for src in "$ROOT/packages/registry"/*/; do
+  name=$(basename "$src")
   if [[ ! -f "$src/spanda.toml" ]]; then
     echo "missing $src/spanda.toml" >&2
     exit 1

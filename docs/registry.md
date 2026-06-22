@@ -15,12 +15,30 @@ spanda registry search openai
 
 ## Curated packages (hosted)
 
+All 20 official packages under `packages/registry/` are published in the hosted index. Tarballs live at `registry/packages/<name>/<version>`. Rebuild with `./scripts/build-registry.sh`.
+
 | Package | Category | Import paths |
 |---------|----------|--------------|
+| `spanda-ble` | connectivity | `connectivity.ble` |
+| `spanda-cellular` | connectivity | `connectivity.cellular` |
+| `spanda-cloud` | cloud | `cloud.remote` |
+| `spanda-dds` | communication | `communication.dds` |
+| `spanda-fleet` | robotics | `robotics.fleet` |
+| `spanda-gazebo` | simulation | `sim.gazebo` |
+| `spanda-gps` | positioning | `positioning.gps` |
+| `spanda-ledger` | provenance | `provenance.ledger` |
+| `spanda-maintenance` | maintenance | `maintenance.health` |
+| `spanda-moveit` | manipulation | `manipulation.moveit` |
+| `spanda-mqtt` | communication | `communication.mqtt` |
+| `spanda-nav` | navigation | `navigation.path_planning` |
 | `spanda-openai` | ai | `ai.openai` |
+| `spanda-opencv` | vision | `vision.opencv` |
+| `spanda-ota` | deploy | `deploy.ota` |
 | `spanda-ros2` | ros2 | `robotics.ros2` |
-
-Tarballs live at `registry/packages/<name>/<version>` in the repo. Rebuild with `./scripts/build-registry.sh`.
+| `spanda-slam` | navigation | `navigation.slam` |
+| `spanda-webots` | simulation | `sim.webots` |
+| `spanda-wifi` | connectivity | `connectivity.wifi` |
+| `spanda-yolo` | vision | `vision.yolo` |
 
 ## Local stub packages
 
@@ -33,21 +51,13 @@ Tarballs live at `registry/packages/<name>/<version>` in the repo. Rebuild with 
 
 ## Planned framework packages
 
-These are defined in the ecosystem metadata and will be published as the registry matures:
+Specialized adapter packages (not in the hosted index yet) are documented in [official-packages.md](./official-packages.md):
 
 | Package | Description |
 |---------|-------------|
-| `spanda-ros2` | ROS 2 pub/sub, services, actions |
-| `spanda-mqtt` | MQTT transport |
-| `spanda-opencv` | OpenCV bindings |
-| `spanda-yolo` | YOLO object detection |
-| `spanda-slam` | SLAM algorithms |
-| `spanda-nav` | Path planning |
-| `spanda-manipulation` | Arm manipulation |
-| `spanda-hri` | Human-robot interaction |
-| `spanda-digital-twin` | Digital twin sync |
-| `spanda-sim-gazebo` | Gazebo backend |
-| `spanda-sim-webots` | Webots backend |
+| `spanda-nav2` | Nav2 stack adapter |
+| `spanda-cartographer` | Cartographer SLAM adapter |
+| `spanda-rtabmap` | RTAB-Map SLAM adapter |
 
 ## Adding dependencies
 

@@ -34,7 +34,7 @@ Compiler/runtime kernel extracted; interpreter remains the composition root in `
 | `spanda-interpreter` | **Done** — owns `src/runtime/` module tree (21 files, ~10.7k lines); public API re-exported from `spanda-core` via thin include shim |
 | `spanda-core` | Facade — lexer/parser/typecheck, domain modules, `RoutingCommBus`, bootstrap, `CoreRuntimeHost`, and `#[path]` compile of interpreter sources |
 
-The `Interpreter` is split across 21 modules under `crates/spanda-interpreter/src/runtime/` (orchestrator + eval/execute/scheduler/setup/… child files). `spanda-core` compiles them through a thin `#[path]` shim to avoid a dependency cycle with auxiliary modules (`ai`, `safety`, `transport`, …).
+The `Interpreter` is split across 21 modules under `crates/spanda-interpreter/src/runtime/` (orchestrator + eval/execute/scheduler/setup/… child files). `spanda-core` compiles them through a thin `#[path]` shim to avoid a dependency cycle with auxiliary modules (`ai`, `safety`, `transport`, …). **Standalone `cargo build -p spanda-interpreter` with native sources** (no path shim) is deferred until more domain modules move out of `spanda-core` so the interpreter can depend on shared crates without `spanda-core` depending back on `spanda-interpreter`.
 
 ## Phase 5 — Complete ✓ (bootstrap wiring)
 

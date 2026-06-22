@@ -164,7 +164,28 @@ See [spanda-type-system.md](./spanda-type-system.md).
 
 ## Runtime
 
-The tree-walking interpreter (`runtime.rs`, ~4k LOC) executes typed AST with integrated subsystems:
+The tree-walking **interpreter** executes typed AST with integrated subsystems. Implementation lives in **`crates/spanda-interpreter/src/runtime/`** (21 modules, ~10.7k LOC): orchestrator, eval/execute, scheduler, triggers, robotics, sensors, safety, security, and related child files.
+
+**Composition root:** `spanda-core` exposes `spanda_core::runtime` via a thin `#[path]` include shim (`crates/spanda-core/src/runtime.rs` → `orchestrator.rs`). Sources are authored once under `spanda-interpreter`; core compiles them in-process so auxiliary modules (`ai`, `safety`, `transport`, `providers`, …) stay available without a `spanda-core` ↔ `spanda-interpreter` Cargo dependency cycle. The `spanda-interpreter` crate re-exports the public run API (`Interpreter`, `run`, `run_program`, …) for downstream dependents.
+
+`CoreRuntimeHost` in `spanda-core/src/runtime_host.rs` implements `spanda_runtime::RuntimeHost` and wires domain hooks (connectivity, fleet, transport adapters) into the interpreter.
+
+```mermaid
+flowchart TB
+  subgraph sources ["spanda-interpreter/src/runtime/"]
+    ORCH["orchestrator.rs"]
+    EVAL["runtime_eval / runtime_execute"]
+    SCHED["runtime_scheduler / runtime_triggers"]
+    DOM["robotics / sensors / safety / …"]
+    ORCH --> EVAL
+    ORCH --> SCHED
+    ORCH --> DOM
+  end
+  CORE["spanda-core (path shim)"]
+  HOST["CoreRuntimeHost"]
+  sources --> CORE
+  HOST --> ORCH
+```
 
 ```mermaid
 flowchart TB
