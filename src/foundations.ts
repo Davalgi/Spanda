@@ -149,6 +149,7 @@ export type TaskDecl = {
   ensures: Expr | null;
   invariant: Expr | null;
   budget: ResourceBudgetDecl | null;
+  returnType: SpandaType;
   body: Stmt[];
   span: Span;
 };

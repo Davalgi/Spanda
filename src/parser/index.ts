@@ -1646,6 +1646,7 @@ class Parser {
       tools: [],
       skills: [],
       capabilities: [],
+      capabilityEnforced: false,
       goal: "",
       planBody: [],
       span: this.spanFrom(start, this.previous()),
@@ -4674,6 +4675,7 @@ class Parser {
     const tools: string[] = [];
     const skills: string[] = [];
     const capabilities: CapabilityDecl[] = [];
+    let capabilityEnforced = false;
     let goal = "";
     let planBody: Stmt[] = [];
 
@@ -4720,6 +4722,7 @@ class Parser {
 
       // Otherwise, continue when this.match("CAN").
       } else if (this.match("CAN")) {
+        capabilityEnforced = true;
         this.expect("LBRACKET", "Expected '[' after can");
 
         // continue when check is falsy.
@@ -4760,6 +4763,7 @@ class Parser {
       tools,
       skills,
       capabilities,
+      capabilityEnforced,
       goal,
       planBody,
       span: this.spanFrom(start, end),
@@ -5029,6 +5033,12 @@ class Parser {
       isolated = true;
     }
 
+    let returnType: SpandaType = { kind: "Void" };
+    if (this.check("ARROW")) {
+      this.advance();
+      returnType = this.parseTypeAnnotation();
+    }
+
     const { requires, ensures, invariant } = this.parseContractClauses();
     this.expect("LBRACE", "Expected '{' after task signature");
     let budget: ResourceBudgetDecl | null = null;
@@ -5050,6 +5060,7 @@ class Parser {
       ensures,
       invariant,
       budget,
+      returnType,
       body,
       span: this.spanFrom(start, end),
     };

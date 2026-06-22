@@ -407,6 +407,7 @@ export type AgentDecl = {
   tools: string[];
   skills: string[];
   capabilities: CapabilityDecl[];
+  capabilityEnforced: boolean;
   goal: string;
   planBody: Stmt[];
   span: Span;
