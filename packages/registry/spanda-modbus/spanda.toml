@@ -1,0 +1,8 @@
+[package]
+name = "spanda-modbus"
+version = "0.1.0"
+description = "Modbus IoT protocol adapter (stub)"
+license = "Apache-2.0"
+
+[capabilities]
+iot = ["telemetry.read", "command.send"]
