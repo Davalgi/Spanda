@@ -14,15 +14,15 @@ Follow-up to the post–Phase 17 audit (security **B**, stability **A−**, perf
 
 | ID | Item | Implementation |
 |----|------|----------------|
-| P0.1 | **Registry tarball SHA-256** | `spanda publish` writes `.sha256` sidecar; `index.json` gains `version_checksums`; `spanda install` verifies before extract |
-| P0.2 | **Safe tar extraction** | Rust `tar` + `flate2` in `spanda-package` — reject `..` and absolute paths (tar-slip) |
-| P0.3 | **Agent auth defaults** | Non-loopback `--bind` requires `--token` unless `--allow-unauthenticated` (deploy, fleet, mesh agents) |
+| P0.1 | **Registry tarball SHA-256** | **Complete** — sidecar + `version_checksums` in index |
+| P0.2 | **Safe tar extraction** | **Complete** — `tar_extract.rs` rejects path traversal |
+| P0.3 | **Agent auth defaults** | **Complete** — non-loopback bind requires `--token` |
 
 ## P1 — Stability
 
 | ID | Item | Implementation |
 |----|------|----------------|
-| P1.1 | **Shim sunset** | Phase 19 target: remove `transport`, `transport_wire`, `transport_security`, `transport_rclrs` after one release |
+| P1.1 | **Shim sunset** | **Complete** (Phase 19) — removed remaining `transport*` shims |
 | P1.2 | **Panic audit** | Replace `.unwrap()` on twin state in `runtime_twin.rs`; audit CLI hot paths |
 | P1.3 | **Test distribution** | Package security tests in `spanda-package`; agent auth tests in `spanda-ota` / `spanda-fleet` |
 
@@ -40,11 +40,18 @@ Follow-up to the post–Phase 17 audit (security **B**, stability **A−**, perf
 |----|------|----------------|
 | P3.1 | **Pipeline benchmark** | `cargo bench -p spanda-driver` — parse → typecheck baseline |
 
-## Deferred (Phase 18b)
+## Phase 18b — Signed registry (complete)
 
-- Ed25519-signed registry packages (mirror OTA bundle model)
-- `spanda-core` optional transport features for embedders
+| ID | Item | Status |
+|----|------|--------|
+| B1 | Ed25519 signatures on publish (`SPANDA_REGISTRY_SIGN_KEY`) | **Complete** |
+| B2 | Verify on install (`SPANDA_REGISTRY_TRUST_KEY`, `SPANDA_REGISTRY_REQUIRE_SIGNATURE`) | **Complete** |
+| B3 | `version_signatures` in registry index | **Complete** |
+
+## Deferred (Phase 20+)
+
 - Full migration of `spanda-core/tests/` into owning crates
+- Optional `spanda-core` feature bundles for embedders (transport, fleet, OTA)
 
 ## Verification
 

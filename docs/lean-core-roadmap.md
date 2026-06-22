@@ -232,3 +232,15 @@ Goal: address post–Phase 17 audit findings without changing the lean-core depe
 | Phase 19 shim sunset plan (`transport*` remaining shims) | **Planned** |
 
 See [phase-18-security-hardening.md](./phase-18-security-hardening.md).
+
+## Phase 19 — Complete ✓ (transport shim removal)
+
+Goal: remove the last `spanda_core::transport*` facade modules and slim `spanda-core` dependencies.
+
+| Step | Status |
+|------|--------|
+| Delete `transport`, `transport_wire`, `transport_security`, `transport_rclrs` from `spanda-core` | **Complete** |
+| Drop direct `spanda-transport-*` deps from `spanda-core` Cargo.toml | **Complete** |
+| Migrate tests to workspace crate imports | **Complete** |
+| Mark modules `Deprecated` in classification tables (Rust + TS) | **Complete** |
+| Move `transport_rclrs` tests to `spanda-transport-ros2` | **Complete** |

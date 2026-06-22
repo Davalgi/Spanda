@@ -79,7 +79,8 @@ Honest snapshot of Spanda capabilities as of **v0.1.0-alpha**. Use this document
 | Legacy inference-only AI paths | `ai_model` + `agent` | Import-based ONNX/TFLite remain for classical workflows |
 | TypeScript-only verification | Native `spanda verify` | TS mirror validates deploy syntax; Rust CLI is authoritative |
 | `spanda_core::transport_live` | `spanda_transport_routing::transport_live` | Removed Phase 17 |
-| `spanda_core::transport_mqtt` / `transport_dds` / `transport_websocket` | `spanda-transport-*` or `spanda_transport_routing::live_bridges` | Removed Phase 17 |
+| `spanda_core::transport_mqtt` / `transport_dds` / `transport_websocket` / `transport_live` | `spanda-transport-*` or `spanda_transport_routing::live_bridges` | Removed Phase 17 |
+| `spanda_core::transport` / `transport_wire` / `transport_security` / `transport_rclrs` | `spanda-transport-routing`, `spanda-transport`, `spanda-transport-ros2` | Removed Phase 19 |
 
 ---
 
