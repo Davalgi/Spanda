@@ -13,6 +13,21 @@ fn package_manifest_has_no_spanda_core_dependency() {
 }
 
 #[test]
+fn package_dependency_tree_excludes_spanda_core() {
+    let output = std::process::Command::new("cargo")
+        .args(["tree", "-p", "spanda-package", "--prefix", "none"])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .expect("cargo tree");
+    assert!(output.status.success(), "cargo tree failed");
+    let tree = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        !tree.lines().any(|line| line.trim() == "spanda-core"),
+        "transitive dependency tree must not include spanda-core:\n{tree}"
+    );
+}
+
+#[test]
 fn permissive_permissions_use_hardware_catalog() {
     let perms = spanda_package::validation::ApplicationPermissions::permissive();
     assert!(perms.hardware_targets.iter().any(|t| t == "JetsonOrin"));

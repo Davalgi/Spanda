@@ -11,7 +11,7 @@ Phased plan to complete the package-first architecture after the initial scaffol
 - Architecture docs and migration guide
 - TypeScript providers mirror and fleet CLI fix
 
-## Phase 2 — Runtime wiring (complete)
+## Phase 2 — Runtime wiring (complete ✓)
 
 | Task | Status | Notes |
 |------|--------|-------|
@@ -22,7 +22,7 @@ Phased plan to complete the package-first architecture after the initial scaffol
 | Package-scoped provider bootstrap | Done | `bootstrap_providers_for_packages()` |
 | Install reports official packages | Done | `spanda install` verbose output |
 
-## Phase 3 — Crate extraction (in progress)
+## Phase 3 — Crate extraction (complete ✓)
 
 | Crate | Status | Notes |
 |-------|--------|-------|
@@ -36,21 +36,6 @@ Phased plan to complete the package-first architecture after the initial scaffol
 | `spanda-ota` | Done | Rollout runtime, agents, bundles extracted; AST plan shim in core |
 | Comm-bus registry routing | Done | `RoutingCommBus` delegates to `ProviderRegistry` for official transports |
 
-Extract optional backends from `spanda-core` into workspace members:
-
-```
-crates/spanda-transport-mqtt/   (feature: live-mqtt)
-crates/spanda-transport-ros2/   (optional rclrs)
-crates/spanda-transport-dds/        (feature: live-dds)
-crates/spanda-transport-websocket/  (feature: live-websocket)
-crates/spanda-deploy-http/          (shared agent HTTP/TLS)
-crates/spanda-fleet/                (agents, mesh, remote relay)
-crates/spanda-connectivity/         (GPS, WiFi, BLE, cellular sim)
-crates/spanda-ota/                  (deploy service, agents)
-```
-
-Each crate implements core provider traits and registers via `ProviderRegistry`. Core re-exports shims behind `#[deprecated]` aliases for one release cycle.
-
 ## Phase 4 — Compiler split (in progress)
 
 Break circular `spanda-package` → `spanda-core` dependency:
@@ -58,50 +43,58 @@ Break circular `spanda-package` → `spanda-core` dependency:
 | Crate | Status | Notes |
 |-------|--------|-------|
 | `spanda-hardware` | Done | Builtin profile catalog; `spanda-package` no longer depends on `spanda-core` |
-| `spanda-ast` | Done | `nodes`, `foundations`, `comm_decl`, `robotics_decl`, `regex` — core `ast`/`foundations` shims |
-| `spanda-lexer` | Done | Tokenization + `LexerError`; core `tokenize` shim maps to `SpandaError` |
-| `spanda-typecheck` | Done | Full `TypeChecker` + `TypeCheckHost`; core `CoreTypeCheckHost` wiring |
-| `spanda-runtime` | In progress | Scheduler, provider types, robotics state, `RuntimeValue`, `Environment`, `RuntimeError`; interpreter still in core |
+| `spanda-ast` | Done | `nodes`, `foundations`, `comm_decl`, `robotics_decl`, `regex` — core shims |
+| `spanda-lexer` | Done | Tokenization + `LexerError`; core `tokenize` shim |
+| `spanda-typecheck` | Done | Full `TypeChecker` + `TypeCheckHost`; `CoreTypeCheckHost` wiring |
+| `spanda-runtime` | In progress | Kernel: scheduler, provider types, robotics state, `RuntimeValue`, `Environment`, `RuntimeError`, `RuntimeHost`; interpreter body remains in core |
 
 ```
 spanda-hardware          (profile catalog — done)
 spanda-ast               (AST + foundation + comm decl types — done)
 spanda-lexer             (tokenization — done)
 spanda-typecheck         (program checker + host hooks — done)
-spanda-runtime           (scheduler + provider types + robotics state + runtime values — in progress)
-spanda-core              ← thin facade; interpreter migration next
+spanda-runtime           (kernel primitives + RuntimeHost — in progress)
+spanda-core              ← thin facade; interpreter migration via RuntimeHost next
 ```
 
-## Phase 5 — Live package backends
+## Phase 5 — Live package backends (in progress)
 
-Replace scaffold `.sd` exports with full implementations:
+Replace scaffold `.sd` exports with full implementations where workspace crates already exist:
 
-1. `spanda-ros2` — wire rclrs native crate
-2. `spanda-mqtt` — move `transport_mqtt.rs`
-3. `spanda-gps` — move connectivity positioning drivers
-4. `spanda-nav` / `spanda-slam` — promote adapter bridges
-5. `spanda-fleet` / `spanda-ota` — move orchestration HTTP surface
+| Priority | Package | Live crate / shim | Status |
+|----------|---------|-------------------|--------|
+| 1 | `spanda-ros2` | `spanda-transport-ros2` | Transport registered; `.sd` scaffold |
+| 2 | `spanda-mqtt` | `spanda-transport-mqtt` | Transport registered; `.sd` scaffold |
+| 3 | `spanda-gps` | `lib_registry` UART stub | Capability grant only |
+| 4 | `spanda-nav` / `spanda-slam` | `nav2_adapter` / `slam_adapter` | Runtime hooks; capability grant |
+| 5 | `spanda-fleet` / `spanda-ota` | `spanda-fleet` / `spanda-ota` | CLI + workspace crates; `.sd` scaffold |
 
-## Phase 6 — TypeScript parity
+See [official-packages.md](./official-packages.md) for the live vs scaffold matrix.
 
-- Mirror `ProviderRegistry` behavior in interpreter
-- Share classification table via generated JSON or test golden file
-- Route TS transport fallbacks through registry keys
+## Phase 6 — TypeScript parity (in progress)
+
+| Task | Status | Notes |
+|------|--------|-------|
+| `bootstrapProvidersForPackages()` | Done | Mirrors Rust `bootstrap.rs` |
+| Registry-backed `RoutingCommBus` | Done | `attachProviderRegistry`, `syncCommBusForOfficialPackages` |
+| Interpreter `officialPackages` / `providerRegistry` | Done | Parity with Rust `InterpreterOptions` |
+| Full classification table | Done | Aligned with `spanda-runtime/src/classification.rs` |
+| Comm-bus routing tests | Done | `tests/providers-comm.test.ts` |
 
 ## Known gaps
 
 | Gap | Impact | Mitigation today |
 |-----|--------|------------------|
-| Domain code still in core | Larger binary | Shims + docs |
-| Package scaffolds are stubs | No live vendor I/O | Core shims handle runtime |
+| Interpreter body in core | Larger binary | `RuntimeHost` trait started; full move deferred |
+| Package `.sd` scaffolds | No Spanda-language vendor I/O | Workspace crates + core shims |
 | No dynamic `.so` loading | Packages are compile-time | Registry registration API ready |
 | Clippy `-D warnings` failures | CI noise | Pre-existing; fix separately |
-| `spanda-package` ↔ `spanda-core` cycle | Harder testing | **Broken:** package uses `spanda-hardware`; AST split next |
+| `spanda-package` ↔ `spanda-core` cycle | Harder testing | **Broken:** package uses `spanda-hardware` only |
 
 ## Success criteria
 
-- [ ] `cargo test --workspace` green
-- [ ] `npm test` green (no TS fallback gaps)
+- [x] `cargo test --workspace` green
+- [x] `npm test` green (TS provider comm-bus parity added)
 - [ ] All 164 examples run without regression
 - [ ] Zero protocol-specific code in core except traits + wire types
 - [ ] Every official package has live backend or documented stub status

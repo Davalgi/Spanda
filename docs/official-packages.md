@@ -94,7 +94,14 @@ spanda registry info spanda-mqtt
 
 ## Status
 
-Scaffold packages export minimal symbols and pass smoke tests. Live vendor backends remain in core compatibility shims until each package gains a full implementation. See [migration.md](./migration.md#lean-core-package-first-refactor).
+| Tier | Packages | Runtime behavior |
+|------|----------|------------------|
+| **Live transport** | `spanda-mqtt`, `spanda-ros2`, `spanda-dds`, `spanda-ble`, `spanda-wifi` | Workspace transport crates registered via `bootstrap_providers_for_packages()`; comm-bus routes through `ProviderRegistry` |
+| **Live platform** | `spanda-fleet`, `spanda-ota` | `spanda-fleet` and `spanda-ota` workspace crates; core shims for CLI |
+| **Capability grant** | `spanda-gps`, `spanda-nav`, `spanda-slam`, `spanda-ledger`, `spanda-cloud` | Capabilities granted when installed; drivers/adapters still in core shims |
+| **Scaffold** | All others | Minimal `.sd` exports; smoke tests where present |
+
+Spanda-language package sources remain scaffolds for most domains. Live vendor I/O is implemented in workspace crates and core compatibility shims until each package gains full `*Provider` registration. See [lean-core-roadmap.md](./lean-core-roadmap.md).
 
 ## Related docs
 
