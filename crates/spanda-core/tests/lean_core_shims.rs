@@ -581,6 +581,24 @@ fn core_cargo_has_no_direct_transport_adapter_deps() {
 }
 
 #[test]
+fn fleet_and_ota_are_optional_embedder_features() {
+    let manifest = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
+    )
+    .expect("Cargo.toml");
+    for crate_name in ["spanda-fleet", "spanda-ota", "spanda-deploy-http"] {
+        assert!(
+            manifest.contains(&format!(
+                "{crate_name} = {{ path = \"../{crate_name}\", optional = true }}"
+            )),
+            "{crate_name} should be an optional dependency for minimal embedder builds"
+        );
+    }
+    assert!(manifest.contains("default = [\"full\"]"));
+    assert!(manifest.contains("full = [\"ota\", \"fleet\"]"));
+}
+
+#[test]
 fn run_pipeline_lives_in_spanda_driver() {
     let run_rs = Path::new(env!("CARGO_MANIFEST_DIR")).join("../spanda-driver/src/run.rs");
     assert!(run_rs.exists(), "run(source) should live in spanda-driver");

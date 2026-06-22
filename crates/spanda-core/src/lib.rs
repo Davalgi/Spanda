@@ -14,19 +14,28 @@ pub mod concurrency;
 pub mod connectivity_positioning;
 pub mod debug;
 pub mod debug_session;
+#[cfg(feature = "ota")]
 pub mod deploy_agent;
+#[cfg(feature = "ota")]
 pub mod deploy_bundle;
+#[cfg(feature = "ota")]
 pub mod deploy_http;
+#[cfg(feature = "ota")]
 pub mod deploy_remote;
+#[cfg(feature = "ota")]
 pub mod deploy_service;
 pub mod docs;
 mod error;
 pub mod events;
 pub mod ffi;
 pub mod ffi_registry;
+#[cfg(feature = "fleet")]
 pub mod fleet_agent;
+#[cfg(feature = "fleet")]
 pub mod fleet_mesh;
+#[cfg(feature = "fleet")]
 pub mod fleet_orchestrator;
+#[cfg(feature = "fleet")]
 pub mod fleet_remote;
 pub mod format;
 pub mod foundations;
@@ -59,6 +68,7 @@ pub mod slam_adapter;
 pub mod soc;
 pub mod state_machine;
 pub mod stdlib;
+#[cfg(feature = "fleet")]
 pub mod swarm_coordinator;
 pub mod telemetry;
 pub mod triggers;
@@ -80,23 +90,28 @@ pub use certify_verify::verify_certification_proof;
 pub use codegen::{generate as codegen, wasm_deploy_manifest, CodegenTarget};
 pub use debug::{DebugCommand, DebugController, DebugOptions, DebugPause, DebugSession};
 pub use debug_session::{DebugMachine, DebugStackFrame, DebugStepKind};
+#[cfg(feature = "ota")]
 pub use deploy_agent::{
     agent_entry_for_port, default_agent_state_path, handle_agent_request, load_agent_state,
     run_deploy_agent_server, save_agent_state, spawn_test_agent, spawn_test_agent_with_options,
     DeployAgentServerOptions,
     AgentState,
 };
+#[cfg(feature = "ota")]
 pub use deploy_bundle::{
     build_deploy_bundle, bundle_canonical_json, sign_deploy_bundle, verify_deploy_bundle,
     verify_rollout_artifact, DeployArtifactBundle,
 };
+#[cfg(feature = "ota")]
 pub use deploy_http::{parse_http_url, DeployAgentTls};
+#[cfg(feature = "ota")]
 pub use deploy_remote::{
     agent_health, agent_rollout, agent_status, default_agents_path, execute_remote_rollback,
     execute_remote_rollout, load_agent_registry, lookup_agent, missing_remote_targets,
     register_agent, save_agent_registry, AgentStatusResponse, DeployAgentEntry,
     DeployAgentRegistry,
 };
+#[cfg(feature = "ota")]
 pub use deploy_service::{
     apply_rollout, build_deploy_plan, default_state_path, deploy_target_key, hash_program_artifact,
     load_deploy_state, plan_rollout, rollback_targets, save_deploy_state,
@@ -106,20 +121,24 @@ pub use deploy_service::{
 pub use docs::generate_markdown;
 pub use error::*;
 pub use ffi::{new_with_core_bridges, FfiRegistry};
+#[cfg(feature = "fleet")]
 pub use fleet_agent::{
     default_fleet_agent_state_path, fleet_entry_for_port, handle_fleet_agent_request,
     load_fleet_agent_state, run_fleet_agent_server, save_fleet_agent_state, spawn_test_fleet_agent,
     FleetAgentState,
 };
+#[cfg(feature = "fleet")]
 pub use fleet_mesh::{
     default_fleet_mesh_state_path, mesh_registry_path, relay_deliveries_via_mesh,
     run_fleet_mesh_coordinator, spawn_test_fleet_mesh, FleetMeshState, MeshRelayResponse,
 };
+#[cfg(feature = "fleet")]
 pub use fleet_orchestrator::{
     fleet_registry_from_program, orchestrate_fleets, orchestrate_fleets_mesh,
     orchestrate_fleets_remote, FleetMemberState, FleetOrchestrationReport,
     FleetOrchestrationResult, PeerDelivery,
 };
+#[cfg(feature = "fleet")]
 pub use fleet_remote::{
     agent_health as fleet_agent_health, default_fleet_agents_path, load_fleet_agent_registry,
     lookup_fleet_agent, register_fleet_agent, relay_peer_deliveries, relay_peer_delivery,
@@ -146,6 +165,7 @@ pub use sir::{
     lower_program, SirBehavior, SirExtern, SirFunction, SirParam, SirProgram, SirStmt,
     SirVisibility,
 };
+#[cfg(feature = "fleet")]
 pub use swarm_coordinator::{
     coordinate_swarms, coordinate_swarms_mesh, default_swarm_state_path, load_swarm_state,
     save_swarm_state, SwarmCoordinationReport, SwarmCoordinationResult, SwarmState,

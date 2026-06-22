@@ -4,7 +4,7 @@
 
 ## What this crate is
 
-After lean-core Phases 1–17, `spanda-core` is intentionally thin:
+After lean-core Phases 1–20, `spanda-core` is intentionally thin:
 
 - **Re-exports** the compile/run pipeline from [`spanda-driver`](../spanda-driver/README.md)
 - **Re-exports** AST, runtime, tooling, fleet, OTA, and security surfaces via `pub use` shims
@@ -45,9 +45,24 @@ These paths no longer exist on `spanda_core`:
 | `spanda_core::transport_security` | `spanda_transport::security` |
 | `spanda_core::transport_rclrs` | `spanda_transport_ros2::rclrs` |
 
+## Embedder feature bundles (Phase 20)
+
+`spanda-core` defaults to `full` (`ota` + `fleet`). For a slimmer dependency graph:
+
+```toml
+spanda-core = { path = "...", default-features = false }
+# optional: features = ["ota"], ["fleet"], or ["full"]
+```
+
+| Feature | Enables |
+|---------|---------|
+| `ota` | Deploy agents, bundles, remote rollout (`spanda-ota`, `spanda-deploy-http`) |
+| `fleet` | Fleet mesh, orchestrator, swarm coordinator (`spanda-fleet`) |
+| `full` | Both (default) |
+
 ## Tests
 
-Integration tests live in `tests/`. `lean_core_shims.rs` guards shim thickness and extraction boundaries.
+Integration tests for fleet, OTA, providers, and certify live in the owning workspace crates. `spanda-core/tests/` keeps facade integration tests and `lean_core_shims.rs` guards.
 
 ## Related
 

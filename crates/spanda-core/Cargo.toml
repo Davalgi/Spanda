@@ -14,9 +14,9 @@ spanda-audit = { path = "../spanda-audit" }
 spanda-security = { path = "../spanda-security" }
 sha2 = "0.10"
 spanda-connectivity = { path = "../spanda-connectivity" }
-spanda-deploy-http = { path = "../spanda-deploy-http" }
-spanda-fleet = { path = "../spanda-fleet" }
-spanda-ota = { path = "../spanda-ota" }
+spanda-deploy-http = { path = "../spanda-deploy-http", optional = true }
+spanda-fleet = { path = "../spanda-fleet", optional = true }
+spanda-ota = { path = "../spanda-ota", optional = true }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-ast = { path = "../spanda-ast" }
 spanda-lexer = { path = "../spanda-lexer" }
@@ -52,7 +52,10 @@ pyo3 = { version = "0.29", optional = true, features = ["auto-initialize", "abi3
 libloading = "0.8"
 
 [features]
-default = []
+default = ["full"]
+full = ["ota", "fleet"]
+ota = ["dep:spanda-ota", "dep:spanda-deploy-http"]
+fleet = ["dep:spanda-fleet"]
 python-native = ["spanda-bridge/python-native"]
 cpp-native = ["spanda-bridge/cpp-native"]
 
