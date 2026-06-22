@@ -19,4 +19,8 @@ spanda-interpreter = { path = "../spanda-interpreter" }
 spanda-certify = { path = "../spanda-certify" }
 spanda-bridge = { path = "../spanda-bridge" }
 spanda-debug = { path = "../spanda-debug" }
+spanda-hardware = { path = "../spanda-hardware" }
+spanda-ota = { path = "../spanda-ota" }
+spanda-runtime = { path = "../spanda-runtime" }
+spanda-sir = { path = "../spanda-sir" }
 serde = { version = "1", features = ["derive"] }

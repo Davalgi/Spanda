@@ -1,5 +1,6 @@
 //! Compile-time robotics declaration validation helpers.
 //!
+use spanda_ast::robotics_decl::CertificationStandard;
 
 /// Validate fleet member names against declared robots.
 pub fn validate_fleet_members(
@@ -47,4 +48,14 @@ pub fn validate_mission_decl(
         ));
     }
     None
+}
+
+/// Validate certification standard identifiers at parse/type-check time.
+pub fn validate_certification_standard(name: &str) -> Option<String> {
+    if CertificationStandard::parse_ident(name).is_some() {
+        return None;
+    }
+    Some(format!(
+        "unknown certification standard '{name}' (expected ISO13849, IEC61508, or ISO26262)"
+    ))
 }

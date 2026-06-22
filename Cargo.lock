@@ -1384,10 +1384,14 @@ dependencies = [
  "spanda-certify",
  "spanda-debug",
  "spanda-error",
+ "spanda-hardware",
  "spanda-interpreter",
  "spanda-lexer",
+ "spanda-ota",
  "spanda-parser",
+ "spanda-runtime",
  "spanda-runtime-host",
+ "spanda-sir",
  "spanda-typecheck",
 ]
 
@@ -1554,6 +1558,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "spanda-ast",
  "spanda-audit",
  "spanda-deploy-http",
 ]

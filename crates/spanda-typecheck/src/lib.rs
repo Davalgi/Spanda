@@ -21,5 +21,6 @@ pub use host::TypeCheckHost;
 pub use message_registry::{is_comm_capability, MessageRegistry, COMM_CAPABILITIES};
 pub use module_registry::{ModuleExports, ModuleRegistry};
 pub use reliability_validation::{
-    resolve_std_import, validate_resource_budget, validate_task_priority, validate_task_timing,
+    resolve_std_import, validate_pipeline, validate_recover, validate_resource_budget,
+    validate_task_priority, validate_task_timing, validate_watchdog,
 };
