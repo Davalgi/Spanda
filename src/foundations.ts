@@ -447,6 +447,7 @@ export type EventDecl = {
 export type EventHandlerDecl = {
   kind: "EventHandlerDecl";
   eventName: string;
+  returnType: SpandaType;
   body: Stmt[];
   span: Span;
 };

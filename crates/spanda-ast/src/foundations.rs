@@ -296,6 +296,8 @@ pub enum EventDecl {
 pub enum EventHandlerDecl {
     EventHandlerDecl {
         event_name: String,
+        #[serde(default = "default_void_type")]
+        return_type: SpandaType,
         body: Vec<Stmt>,
         span: Span,
     },
@@ -361,6 +363,10 @@ pub enum TriggerKind {
     SensorEvent {
         sensor: String,
         event: String,
+    },
+    /// Kill switch handler trigger: `on kill_switch EmergencyStop`.
+    KillSwitch {
+        name: String,
     },
 }
 

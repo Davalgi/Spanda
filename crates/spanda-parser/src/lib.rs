@@ -3223,6 +3223,7 @@ impl Parser {
                 // Take this path when let TriggerHandlerDecl::TriggerHandlerDecl.
                 if let TriggerHandlerDecl::TriggerHandlerDecl {
                     trigger_kind: TriggerKind::Event { name },
+                    return_type,
                     body,
                     span,
                     ..
@@ -3230,6 +3231,7 @@ impl Parser {
                 {
                     event_handlers.push(EventHandlerDecl::EventHandlerDecl {
                         event_name: name.clone(),
+                        return_type: return_type.clone(),
                         body: body.clone(),
                         span: *span,
                     });
@@ -6385,6 +6387,12 @@ impl Parser {
                 .expect(TokenType::Ident, "Expected twin event name")?
                 .lexeme;
             TriggerKind::Twin { event }
+        } else if self.check(TokenType::Ident) && self.peek().lexeme == "kill_switch" {
+            self.advance();
+            let name = self
+                .expect(TokenType::Ident, "Expected kill switch name")?
+                .lexeme;
+            TriggerKind::KillSwitch { name }
         } else if self.match_types(&[TokenType::Geofence]) {
             let name = self
                 .expect(TokenType::Ident, "Expected geofence name")?

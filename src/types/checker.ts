@@ -176,6 +176,7 @@ class TypeChecker {
   private activeAgent: string | null = null;
 
   private programFleets = false;
+  private programKillSwitchNames = new Set<string>();
   private expectedReturnType: SpandaType | null = null;
 
   constructor(private moduleRegistry?: ModuleRegistry) {}
@@ -311,6 +312,10 @@ class TypeChecker {
       }
       certStandards.add(cert.standard);
     }
+
+    this.programKillSwitchNames = new Set(
+      program.killSwitches.map((ks) => ks.name),
+    );
 
     for (const robot of program.robots) {
       this.checkRobot(robot, imported);
@@ -1337,7 +1342,9 @@ class TypeChecker {
         roboType: { kind: "void" },
         kind: "behavior",
       });
+      this.expectedReturnType = this.resolveTypeAnn(behavior.returnType);
       this.checkBehaviorBody(behavior.body);
+      this.expectedReturnType = null;
     }
 
     // Process each task.
@@ -1433,6 +1440,11 @@ class TypeChecker {
       this.checkBehaviorBody(recover.body);
     }
 
+    const killSwitchNames = new Set(this.programKillSwitchNames);
+    for (const ks of robot.killSwitches) {
+      killSwitchNames.add(ks.name);
+    }
+
     // Invoke each registered handler.
     for (const handler of robot.eventHandlers) {
       const isTriggerHandler =
@@ -1440,6 +1452,7 @@ class TypeChecker {
         handler.eventName.startsWith("hardware.") ||
         handler.eventName.startsWith("message.") ||
         handler.eventName.startsWith("geofence:") ||
+        handler.eventName.startsWith("kill_switch:") ||
         /^[a-z]+\.[a-z_]+$/.test(handler.eventName);
       const declared = robot.events.some((e) => e.name === handler.eventName);
 
@@ -1451,7 +1464,21 @@ class TypeChecker {
           handler.span.start.column,
         );
       }
+
+      if (handler.eventName.startsWith("kill_switch:")) {
+        const switchName = handler.eventName.slice("kill_switch:".length);
+        if (!killSwitchNames.has(switchName)) {
+          this.error(
+            `Unknown kill switch '${switchName}'`,
+            handler.span.start.line,
+            handler.span.start.column,
+          );
+        }
+      }
+
+      this.expectedReturnType = this.resolveTypeAnn(handler.returnType);
       this.checkBehaviorBody(handler.body);
+      this.expectedReturnType = null;
     }
 }
 

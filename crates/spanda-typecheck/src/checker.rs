@@ -13,7 +13,7 @@ use spanda_ast::comm_decl as comm;
 use spanda_ast::foundations::MissionDecl;
 use spanda_ast::foundations::{
     resolve_module_import, resolve_type_alias, CapabilityDecl, EnumDecl, EventDecl,
-    EventHandlerDecl, ExternFnDecl, MatchArm, ModuleFnDecl, ResourceBudgetDecl, SecureBlockDecl,
+    EventHandlerDecl, ExternFnDecl, KillSwitchDecl, MatchArm, ModuleFnDecl, ResourceBudgetDecl, SecureBlockDecl,
     StateMachineDecl, StructDecl, TaskDecl, TraitDecl, TraitImplDecl, TriggerHandlerDecl,
     TriggerKind, TwinDecl, Visibility,
 };
@@ -410,6 +410,7 @@ pub struct TypeChecker<'h> {
     channel_payload_types: HashMap<String, SpandaType>,
     active_agent: Option<String>,
     program_fleets: bool,
+    program_kill_switch_names: std::collections::HashSet<String>,
     expected_return_type: Option<SpandaType>,
 }
 
@@ -455,6 +456,7 @@ impl<'h> TypeChecker<'h> {
             channel_payload_types: HashMap::new(),
             active_agent: None,
             program_fleets: false,
+            program_kill_switch_names: std::collections::HashSet::new(),
             expected_return_type: None,
         }
     }
@@ -488,6 +490,7 @@ impl<'h> TypeChecker<'h> {
             robots,
             fleets,
             swarms,
+            kill_switches,
             program_safety_zones,
             certifications,
             ..
@@ -567,6 +570,13 @@ impl<'h> TypeChecker<'h> {
             .collect();
 
         self.program_fleets = !fleets.is_empty();
+        self.program_kill_switch_names = kill_switches
+            .iter()
+            .map(|ks| {
+                let KillSwitchDecl::KillSwitchDecl { name, .. } = ks;
+                name.clone()
+            })
+            .collect();
 
         // Validate program-level fleet groupings against declared robots.
         for fleet in fleets {
@@ -1193,6 +1203,7 @@ impl<'h> TypeChecker<'h> {
             agent_channels,
             twin_sync,
             mission,
+            kill_switches,
             ..
         } = robot;
         self.subscribed_topics.clear();
@@ -2149,6 +2160,7 @@ impl<'h> TypeChecker<'h> {
         for handler in event_handlers {
             let EventHandlerDecl::EventHandlerDecl {
                 event_name,
+                return_type,
                 body,
                 span,
             } = handler;
@@ -2169,9 +2181,21 @@ impl<'h> TypeChecker<'h> {
                     span.start.column,
                 );
             }
-            self.check_behavior(body, &SpandaType::Void);
+            self.check_behavior(body, return_type);
         }
-        self.check_trigger_handlers(trigger_handlers, events, topics, state_machines, agents);
+        let mut kill_switch_names = self.program_kill_switch_names.clone();
+        for ks in kill_switches {
+            let KillSwitchDecl::KillSwitchDecl { name, .. } = ks;
+            kill_switch_names.insert(name.clone());
+        }
+        self.check_trigger_handlers(
+            trigger_handlers,
+            events,
+            topics,
+            state_machines,
+            agents,
+            &kill_switch_names,
+        );
     }
 
     fn check_trigger_handlers(
@@ -2181,6 +2205,7 @@ impl<'h> TypeChecker<'h> {
         topics: &[TopicDecl],
         state_machines: &[StateMachineDecl],
         agents: &[AgentDecl],
+        kill_switch_names: &std::collections::HashSet<String>,
     ) {
         // Check trigger handlers.
         //
@@ -2282,6 +2307,15 @@ impl<'h> TypeChecker<'h> {
                         );
                     }
                 }
+                TriggerKind::KillSwitch { name } => {
+                    if !kill_switch_names.contains(name) {
+                        self.error(
+                            format!("Unknown kill switch '{name}' in trigger handler"),
+                            span.start.line,
+                            span.start.column,
+                        );
+                    }
+                }
                 TriggerKind::StateEntered { state } | TriggerKind::StateExited { state } => {
                     // Check membership before continuing.
                     if !sm_states.contains(state) {
@@ -2296,7 +2330,7 @@ impl<'h> TypeChecker<'h> {
                 | TriggerKind::Hardware { event: _ }
                 | TriggerKind::Ai { event: _ }
                 | TriggerKind::Verification { event: _ }
-                | TriggerKind::Twin { event: _ }
+                |                 TriggerKind::Twin { event: _ }
                 | TriggerKind::Connectivity { .. }
                 | TriggerKind::Geofence { .. }
                 | TriggerKind::SensorEvent { .. } => {}

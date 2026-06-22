@@ -5686,6 +5686,10 @@ class Parser {
         throw new ParseError("Expected entered or exited after geofence name", t.line, t.column);
       }
       eventName = `geofence:${fenceName}:${phase}`;
+    } else if (this.check("IDENT") && this.peek().lexeme === "kill_switch") {
+      this.advance();
+      const switchName = this.expect("IDENT", "Expected kill switch name").lexeme;
+      eventName = `kill_switch:${switchName}`;
     } else if (
       this.check("IDENT") ||
       this.check("BLUETOOTH") ||
@@ -5702,12 +5706,19 @@ class Parser {
       eventName = this.expect("IDENT", "Expected trigger target name").lexeme;
     }
 
+    let returnType: SpandaType = { kind: "void" };
+    if (this.check("ARROW")) {
+      this.advance();
+      returnType = this.parseTypeAnnotation();
+    }
+
     this.expect("LBRACE", "Expected '{' after trigger signature");
     const body = this.parseBlock();
     const end = this.expect("RBRACE", "Expected '}' to close trigger handler");
     return {
       kind: "EventHandlerDecl",
       eventName,
+      returnType,
       body,
       span: this.spanFrom(start, end),
     };
