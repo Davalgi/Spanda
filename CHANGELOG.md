@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Secure comm parser/runtime:** `secure_topic.publish` / `actuator.execute.safe` capability parsing, timed `fault … at T+10s` offsets, inbound trusted-source checks on receive/poll, TypeScript parser mirror for `secure_comm`, `trust_boundary`, `secrets`, bus blocks, and full `secure { }` fields
+- **Example regression:** repaired 20 skipped `.sd` examples (regex, security, robotics, packages, hardware/modules); `scripts/check_all_examples.sh` resolves relative `SPANDA_BIN` from repo root for package checks — **162 pass, 2 expected-fail, 0 skips**
 
 ### Changed
 

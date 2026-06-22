@@ -49,22 +49,21 @@ TypeScript parity: `bootstrapProvidersForPackages()`, registry-backed `RoutingCo
 | `cargo clippy --workspace -D warnings` | Green |
 | `cargo test --workspace` | Green |
 | `npm test` | Green |
-| Example regression (`scripts/check_all_examples.sh`) | 142 pass, 2 expected-fail, 20 tracked skips |
+| Example regression (`scripts/check_all_examples.sh`) | 162 pass, 2 expected-fail, 0 skips |
 | `lean_core_cycle` cargo tree guard | Done |
 | Clippy / visibility / API hygiene | Fixed across hardware, fleet, ota, core, cli |
 
-### Remaining example repairs (tracked)
+### Example repairs — Complete ✓
 
-20 examples are listed in `scripts/examples-check-manifest.txt` as `skip` pending syntax/type-check updates (regex, security, robotics, packages). CI enforces zero *unexpected* failures.
+All 20 previously skipped examples now pass `spanda check`. The manifest retains only two `expect-fail` negative tests (`ai_safety_violation.sd`).
 
 ## Success criteria
 
 - [x] `cargo test --workspace` green
 - [x] `npm test` green
-- [x] Example regression script in CI (142 + 2 negative tests)
+- [x] Example regression script in CI (162 + 2 negative tests)
 - [x] `spanda-package` does not depend on `spanda-core`
 - [x] Every official package has bootstrap registration or documented stub status
 - [ ] Zero protocol-specific code in core except traits + wire types (ongoing shim deprecation)
-- [ ] Repair 20 skipped examples
 
 See also: [lean-core.md](./lean-core.md), [migration.md](./migration.md#lean-core-package-first-refactor)

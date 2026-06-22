@@ -9,6 +9,11 @@ LIST="$(mktemp)"
 trap 'rm -f "$LIST"' EXIT
 find examples -name '*.sd' | sort >"$LIST"
 
+if [[ -n "${SPANDA_BIN:-}" ]]; then
+  if [[ "$SPANDA_BIN" != /* ]]; then
+    SPANDA_BIN="$ROOT/$SPANDA_BIN"
+  fi
+fi
 if [[ -n "${SPANDA_BIN:-}" && -x "${SPANDA_BIN}" ]]; then
   SPANDA=("$SPANDA_BIN")
 elif [[ -x "$ROOT/target/release/spanda" ]]; then
