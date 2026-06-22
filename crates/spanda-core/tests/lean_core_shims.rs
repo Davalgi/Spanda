@@ -67,6 +67,33 @@ fn runtime_connectivity_logic_is_extracted() {
 }
 
 #[test]
+fn runtime_navigation_and_robot_logic_is_extracted() {
+    let runtime = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime.rs");
+    let navigation = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_navigation.rs");
+    let robot = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_robot.rs");
+    let runtime_source = fs::read_to_string(&runtime).expect("runtime.rs");
+    let navigation_source = fs::read_to_string(&navigation).expect("runtime_navigation.rs");
+    let robot_source = fs::read_to_string(&robot).expect("runtime_robot.rs");
+    assert!(navigation_source.contains("fn eval_navigation_method"));
+    assert!(navigation_source.contains("invoke_nav2_bridge"));
+    assert!(robot_source.contains("fn eval_robot_method"));
+    assert!(!runtime_source.contains("fn eval_navigation_method"));
+    assert!(!runtime_source.contains("fn eval_robot_method"));
+}
+
+#[test]
+fn runtime_trigger_logic_is_extracted() {
+    let runtime = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime.rs");
+    let triggers = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime_triggers.rs");
+    let runtime_source = fs::read_to_string(&runtime).expect("runtime.rs");
+    let triggers_source = fs::read_to_string(&triggers).expect("runtime_triggers.rs");
+    assert!(triggers_source.contains("fn run_trigger_maintenance"));
+    assert!(triggers_source.contains("fn dispatch_system_trigger"));
+    assert!(!runtime_source.contains("fn run_trigger_maintenance"));
+    assert!(!runtime_source.contains("fn dispatch_system_trigger"));
+}
+
+#[test]
 fn interpreter_accepts_injected_runtime_host() {
     use spanda_core::runtime::{Interpreter, InterpreterOptions};
     use spanda_core::simulator::{create_default_simulator, SimulatorConfig};
