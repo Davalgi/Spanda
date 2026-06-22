@@ -20,6 +20,7 @@ Spanda is designed to **orchestrate** existing robotics and AI ecosystems — no
 | Python bridge | **Partially implemented** | Subprocess bridge via `scripts/spanda_python_bridge.py`; optional in-process PyO3 |
 | C/C++ bridge | **Partially implemented** | Subprocess bridge via build-time C++ helper binary |
 | ROS2 bridge | **Partially implemented** | rclpy live path via `SPANDA_ROS2_LIVE=1`; see [ros2-golden-path.md](./ros2-golden-path.md) |
+| MQTT + Nav2 stack | **Documented** | Reference architecture: [mqtt-nav2-reference-architecture.md](./mqtt-nav2-reference-architecture.md) |
 | OpenCV / PyTorch / TensorFlow | Planned | Import paths reserved in std registry |
 
 Real native linking (dlopen, cxx) is **not** implemented yet. **`extern python fn`** calls use a **subprocess JSON bridge** by default when `python3` and `scripts/spanda_python_bridge.py` are available. Build with `--features python-native` on `spanda-core` for an **in-process PyO3** path (same handlers, no subprocess). Set `SPANDA_PYTHON_SUBPROCESS=1` to force subprocess mode even when PyO3 is enabled.
@@ -105,12 +106,16 @@ Real static/dynamic linking via cxx/bindgen is **not** implemented yet.
 
 ### In-process C++ bridge (optional `cpp-native` feature)
 
-When `spanda-core` is built with `--features cpp-native`, `extern cpp fn` calls the same handler dispatch in-process via a C ABI (`spanda_cpp_bridge_call`). Subprocess mode remains the default when the feature is off, or when `SPANDA_CPP_SUBPROCESS=1` is set.
+When `spanda-cli` is built with `--features cpp-native`, `extern cpp fn` calls the same handler dispatch in-process via a C ABI (`spanda_cpp_bridge_call`). Subprocess mode remains the default when the feature is off, or when `SPANDA_CPP_SUBPROCESS=1` is set.
 
 ```bash
-cargo build -p spanda-core --features cpp-native
+./scripts/cpp_native_golden_path.sh
+# or manually:
+cargo build -p spanda-cli --release --features cpp-native
 spanda run examples/ffi_cpp_extern.sd
 ```
+
+CI job: `cpp-native-golden-path` · Index: [tier-3-golden-paths.md](./tier-3-golden-paths.md)
 
 ## Planned import syntax
 

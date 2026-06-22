@@ -375,6 +375,7 @@ Runnable programs under `examples/robotics/`:
 | `safety_zones.sd` | Program + robot safety zones |
 | `navigation.sd` | `std.navigation` goals and paths |
 | `nav2_bridge.sd` | Nav2 golden path — `navigation.navigate()` publishes `/cmd_vel` when declared |
+| `fleet_field_trial.sd` | Three-agent fleet field-trial layout (`spanda fleet orchestrate`) |
 | `sensor_fusion.sd` | `observe` + extended fusion fields |
 | `slam_integration.sd` | Package + `extern` SLAM bridge |
 | `predictive_maintenance.sd` | `std.maintenance` health signals |

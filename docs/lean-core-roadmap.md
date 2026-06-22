@@ -310,3 +310,34 @@ Goal: complete package→provider→runtime wiring, transitive dependencies, rep
 
 See [tier-3-priority-plan.md](./tier-3-priority-plan.md) for full P0–P4 ordering and release windows.
 
+## Phase 24 — Complete ✓ (v1.0 optional Tier 3 showcases)
+
+Goal: ship evaluator-ready showcases and golden paths for P3 promotion criteria — world-model decisions, multi-agent fleet trials, twin incident workflow, and live MQTT in reference architectures.
+
+| Step | Status |
+|------|--------|
+| `world_model_patrol.sd` showcase + `world_model_golden_path.sh` CI | **Complete** |
+| Three-agent `fleet_field_trial.sd` in robotics golden path | **Complete** |
+| [tier-3-golden-paths.md](./tier-3-golden-paths.md) index | **Complete** |
+| Twin replay in incident workflow docs | **Complete** |
+| MQTT + Nav2 reference architecture doc | **Complete** |
+| LLVM Jetson/Pi benchmark slice | **Complete** |
+| Rust + TS world_model parity tests | **Complete** |
+
+See [tier-3-golden-paths.md](./tier-3-golden-paths.md) and [tier-3-priority-plan.md](./tier-3-priority-plan.md) § P3.
+
+## Phase 25 — In progress (v0.5 beta P0 golden paths)
+
+Goal: close v0.5 beta blockers with CI-backed golden paths for killer demo, live AI, ROS2 rclpy bridge, and hosted registry install.
+
+| Step | Status |
+|------|--------|
+| `killer_demo_golden_path.sh` + CI job | **Complete** |
+| `live_ai_golden_path.sh` + CI job | **Complete** |
+| `ros2_cmd_vel_ping.sd` + `ros2_golden_path.sh` CI | **Complete** |
+| `registry_golden_path.sh` (file:// + signatures) CI | **Complete** |
+| VS Code extension marketplace publish | **Partial** — release workflow publishes when `VSCE_PAT` secret is set |
+| P0 acceptance tracking in [tier-3-priority-plan.md](./tier-3-priority-plan.md) | Planned |
+
+See [killer-demo.md](./killer-demo.md), [live-ai-provider.md](./live-ai-provider.md), [ros2-golden-path.md](./ros2-golden-path.md), [registry.md](./registry.md).
+

@@ -35,13 +35,31 @@ Playback uses wall-clock pacing between frames by default. Offsets accept millis
 
 Twin replay integrates with existing `twin { replay true; }` blocks.
 
+## Incident workflow (Phase 24)
+
+Combine mission trace recording, twin export, and optional cloud upload for post-incident review:
+
+```bash
+# 1. Record a mission trace during simulation
+spanda sim examples/showcase/autonomous_rover/src/rover.sd --record
+
+# 2. Export twin replay JSON
+spanda twin export examples/communication/twin_replay_golden.sd --out incident-replay.json
+
+# 3. Optional cloud upload (mock HTTP server in CI)
+export SPANDA_CLOUD_UPLOAD_URL=http://127.0.0.1:18770/upload
+./scripts/twin_cloud_golden_path.sh
+```
+
+Golden path index: [tier-3-golden-paths.md](tier-3-golden-paths.md)
+
 ## Digital twin replay export (JSON)
 
 Export the twin replay buffer after simulation for post-incident review:
 
 ```bash
-spanda twin export examples/twin_export_demo.sd --out twin-replay.json
-spanda sim examples/twin_export_demo.sd --twin-export twin-replay.json
+spanda twin export examples/communication/twin_replay_golden.sd --out twin-replay.json
+spanda sim examples/showcase/digital_twin_demo.sd --twin-export twin-replay.json
 ```
 
 JSON shape:

@@ -22,7 +22,8 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | [crates/README.md](../crates/README.md) | **Workspace crate index and dependency rules** |
 | [lean-core-roadmap.md](./lean-core-roadmap.md) | **Phased plan for crate extraction and runtime wiring** |
 | [phase-18-security-hardening.md](./phase-18-security-hardening.md) | **Post–Phase 17 security/stability/performance hardening** |
-| [tier-3-experimental.md](./tier-3-experimental.md) | **Tier 3 experimental foundations (Phase 22)** |
+| [tier-3-experimental.md](./tier-3-experimental.md) | **Tier 3 experimental foundations (Phase 22–23)** |
+| [tier-3-golden-paths.md](./tier-3-golden-paths.md) | **Tier 3 CI golden paths — scripts, jobs, feature flags** |
 | [tier-3-priority-plan.md](./tier-3-priority-plan.md) | **Priority plan: beta → experimental hardening → v1.0 → production Tier 3** |
 | [provider-interfaces.md](./provider-interfaces.md) | **Provider trait contracts for packages** |
 | [official-packages.md](./official-packages.md) | **Official package catalog** |
@@ -44,6 +45,8 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | [adoption-path.md](./adoption-path.md) | **One-sprint adoption: wrap Python + ROS2, CI, one extern call** |
 | [ci-verify.md](./ci-verify.md) | **`spanda verify` in GitHub Actions and GitLab CI (`--json`)** |
 | [ros2-golden-path.md](./ros2-golden-path.md) | **ROS2 interop golden path (rclpy bridge, `/cmd_vel` / `/scan`)** |
+| [mqtt-nav2-reference-architecture.md](./mqtt-nav2-reference-architecture.md) | **MQTT + Nav2 + ROS2 reference stack for field robots** |
+| [llvm-embedded-benchmark.md](./llvm-embedded-benchmark.md) | **LLVM aarch64 cross-compile slice (Jetson / Pi)** |
 | [live-ai-provider.md](./live-ai-provider.md) | **Live OpenAI path via Python bridge** |
 | [debugging.md](./debugging.md) | **Debug `task every` loops in VS Code (DAP)** |
 | [registry.md](./registry.md) | **Hosted package registry and `spanda install`** |

@@ -425,6 +425,30 @@ code --install-extension spanda-vscode-0.1.0.vsix
 
 ---
 
+## Platform packages and golden paths
+
+For multi-package projects (GPS, MQTT, fleet, ledger):
+
+```bash
+cd examples/showcase/autonomous_rover
+spanda install
+spanda verify src/rover.sd
+spanda run src/rover.sd --trace-providers
+```
+
+World-model belief workflow:
+
+```bash
+spanda check examples/showcase/world_model_patrol.sd
+spanda run examples/showcase/world_model_patrol.sd
+```
+
+Experimental Tier 3 CI scripts (MQTT, twin cloud, LLVM, cpp-native): [tier-3-golden-paths.md](./tier-3-golden-paths.md)
+
+Platform guides: [how-packages-work.md](./how-packages-work.md) · [how-providers-work.md](./how-providers-work.md) · [how-runtime-resolution-works.md](./how-runtime-resolution-works.md)
+
+---
+
 ## Next steps
 
 - [spanda-language.md](./spanda-language.md) — full language reference

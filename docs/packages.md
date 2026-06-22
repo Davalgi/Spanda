@@ -181,6 +181,7 @@ Run `spanda install` to resolve all dependencies and write `spanda.lock`.
 |---------|-------------|
 | `spanda init` | Create a new package |
 | `spanda install` | Resolve deps, write lockfile |
+| `spanda update` | Refresh lockfile and vendored packages |
 | `spanda build` | Compile all `.sd` sources |
 | `spanda check` | Type-check project (or single file) |
 | `spanda test` | Type-check `tests/` |
@@ -201,4 +202,6 @@ See [examples/packages/](../examples/packages/) for:
 
 ## Community packages
 
-See [community-packages.md](./community-packages.md) for package categories, driver/adapters, and planned framework packages.
+Fork official scaffolds (e.g. `spanda-ledger`) for community-maintained integrations. Start from [packages/community/README.md](../packages/community/README.md) and run `./scripts/ledger_golden_path.sh` to validate the ledger scaffold.
+
+See also [community-packages.md](./community-packages.md) for package categories, driver/adapters, and planned framework packages.

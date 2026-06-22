@@ -56,10 +56,10 @@ Honest snapshot of Spanda capabilities as of **v0.1.0-alpha**. Use this document
 | **ROS2 adapter** | Native `rclrs` cdylib, rclpy daemon, CLI bridge | Requires ROS Humble; not default transport |
 | **LLVM / native codegen** | `spanda ir`, `llvm-ir`, `compile-native`; `scripts/llvm_golden_path.sh` | Early stage; not primary execution path |
 | **FFI** | `extern python`/`extern cpp` subprocess bridges; optional `cpp-native` in-process | PyO3 path is Tier 2 adoption unlock |
-| **World models** | `world_model.update` / `belief` / `export` runtime | Minimal belief buffer; not full knowledge-graph semantics |
+| **World models** | `world_model { }` block parser; `fusion.read()` → belief hook; `world_model.update` / `belief` / `export`; Rust + TS typecheck parity | Minimal belief buffer; see [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) |
 | **Ledger / provenance** | `spanda-ledger` provider → `MockLedgerBackend` | Mock chain only; no production blockchain adapters |
-| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, provider bootstrap for `spanda-mqtt` / `spanda-dds` | DDS is UDP JSON shim, not OMG middleware |
-| **Self-hosting bootstrap** | `examples/self_host/word_tokenizer.sd` | Rust compiler remains authoritative |
+| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; CI `mqtt-golden-path` | DDS is UDP JSON shim, not OMG middleware |
+| **Self-hosting bootstrap** | `examples/self_host/lexer_keywords.sd`; Rust parity tests | Rust compiler remains authoritative |
 | **LSP** | Diagnostics, completion, hover, rename | Requires built native CLI; VS Code extension scaffold available in `editor/vscode` |
 | **WASM / web playground** | Browser check/run/verify | Limited surface vs native CLI |
 | **Package publish** | `spanda publish`, registry search | Local/stub registry only |
@@ -76,7 +76,7 @@ Honest snapshot of Spanda capabilities as of **v0.1.0-alpha**. Use this document
 | **Production blockchain** | `spanda-ledger-ethereum` and related chain adapters |
 | **Full world models** | Knowledge graphs, beliefs, policies beyond minimal runtime |
 
-See [tier-3-experimental.md](./tier-3-experimental.md) for Phase 22 experimental foundations.
+See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.md](./tier-3-golden-paths.md).
 
 ### Deprecated
 
