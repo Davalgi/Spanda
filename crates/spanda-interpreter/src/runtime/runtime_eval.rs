@@ -624,8 +624,8 @@ impl<B: RobotBackend> Interpreter<B> {
 
         if let RuntimeValue::Sensor { sensor_type, .. } = &target {
             if property == "read" {
-                if let Some(agent) = self.current_agent.as_deref() {
-                    self.check_agent_capability(agent, "read", Some(target_name), line)?;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "read", Some(target_name), line)?;
                 }
                 return self.read_sensor_value(&target);
             }

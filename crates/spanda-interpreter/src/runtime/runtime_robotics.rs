@@ -44,8 +44,8 @@ impl<B: RobotBackend> Interpreter<B> {
             "reason" => {
 
                 // Emit output when as deref provides a agent.
-                if let Some(agent) = self.current_agent.as_deref() {
-                    self.check_agent_capability(agent, "propose_motion", None, line)?;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "propose_motion", None, line)?;
                 }
                 let prompt = get_string(&self.get_named_arg_value(named_args, "prompt")?, "");
                 let input = self.get_named_arg_value(named_args, "input")?;
@@ -87,8 +87,8 @@ impl<B: RobotBackend> Interpreter<B> {
             "summarize" => {
 
                 // Emit output when as deref provides a agent.
-                if let Some(agent) = self.current_agent.as_deref() {
-                    self.check_agent_capability(agent, "summarize", None, line)?;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "summarize", None, line)?;
                 }
                 let input = self.get_named_arg_value(named_args, "input")?;
                 let input = if matches!(input, RuntimeValue::Void) {
@@ -108,8 +108,8 @@ impl<B: RobotBackend> Interpreter<B> {
             "detect" => {
 
                 // Emit output when as deref provides a agent.
-                if let Some(agent) = self.current_agent.as_deref() {
-                    self.check_agent_capability(agent, "detect", None, line)?;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "detect", None, line)?;
                 }
                 let frame = if let Some(first) = args.first() {
                     self.eval_expr(first)?

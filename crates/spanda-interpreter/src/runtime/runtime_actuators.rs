@@ -140,8 +140,8 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             "execute" => {
                 // Emit output when as deref provides a agent.
-                if let Some(agent) = self.current_agent.as_deref() {
-                    self.check_agent_capability(agent, "propose_motion", None, line)?;
+                if let Some(agent) = self.current_agent.clone() {
+                    self.check_agent_capability(&agent, "propose_motion", None, line)?;
                 }
                 let action_val = if let Some(first) = args.first() {
                     self.eval_expr(first)?

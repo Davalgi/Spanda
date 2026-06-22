@@ -381,6 +381,7 @@ pub struct Interpreter<B: RobotBackend> {
     host: &'static dyn RuntimeHost,
     health_program: Option<Program>,
     last_health_overall: Option<String>,
+    applied_health_reactions: std::collections::HashSet<String>,
 }
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -487,6 +488,7 @@ impl<B: RobotBackend> Interpreter<B> {
             host,
             health_program: None,
             last_health_overall: None,
+            applied_health_reactions: std::collections::HashSet::new(),
         }
     }
 

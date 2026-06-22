@@ -7,7 +7,7 @@ use spanda_security::{SecurePolicy, TrustLevel};
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn check_agent_capability(
-        &self,
+        &mut self,
         agent: &str,
         action: &str,
         target: Option<&str>,
@@ -48,6 +48,20 @@ impl<B: RobotBackend> Interpreter<B> {
 
         // Take the branch when allowed is false.
         if !allowed {
+            self.log(format!(
+                "agent: denied {agent} {action}{}",
+                target.map(|t| format!("({t})")).unwrap_or_default()
+            ));
+            if let Some(rt) = self.audit_runtime.as_mut() {
+                let _ = self.security.audit_security_event(
+                    rt,
+                    "agent_capability_denied",
+                    &format!(
+                        "agent={agent} action={action} target={}",
+                        target.unwrap_or("none")
+                    ),
+                );
+            }
             return Err(RuntimeError::new(
                 format!(
                     "Agent '{agent}' lacks capability {action}{}",
@@ -56,6 +70,20 @@ impl<B: RobotBackend> Interpreter<B> {
                 line,
             )
             .into_spanda());
+        }
+        self.log(format!(
+            "agent: allowed {agent} {action}{}",
+            target.map(|t| format!("({t})")).unwrap_or_default()
+        ));
+        if let Some(rt) = self.audit_runtime.as_mut() {
+            let _ = self.security.audit_security_event(
+                rt,
+                "agent_capability_granted",
+                &format!(
+                    "agent={agent} action={action} target={}",
+                    target.unwrap_or("none")
+                ),
+            );
         }
         Ok(())
     }
