@@ -3,15 +3,22 @@
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_readiness::{
-    analyze_failure, audit_program, diagnose_trace, evaluate_fleet_readiness, evaluate_readiness,
-    evaluate_twin_readiness, format_audit, format_failure_analysis, format_fleet_readiness,
-    format_mission_verification, format_readiness, format_root_cause, format_safety_report,
-    generate_safety_report, verify_approvals, verify_fleet, verify_mission, ReadinessOptions,
+    analyze_failure, audit_program, build_runtime_context, diagnose_trace,
+    evaluate_fleet_readiness, evaluate_readiness_with_runtime, evaluate_twin_readiness,
+    format_audit, format_failure_analysis, format_fleet_readiness, format_mission_verification,
+    format_readiness, format_root_cause, format_safety_report, generate_safety_report,
+    readiness_options_from_flags, verify_approvals, verify_fleet, verify_mission, ReadinessOptions,
     ReportFormat,
 };
 use std::fs;
 use std::path::Path;
 use std::process;
+
+struct ParsedReadinessCli {
+    format: ReportFormat,
+    file: String,
+    options: ReadinessOptions,
+}
 
 fn read_file(path: &str) -> String {
     fs::read_to_string(path).unwrap_or_else(|e| {
@@ -43,37 +50,91 @@ fn parse_format(args: &[String]) -> ReportFormat {
     }
 }
 
-fn file_from_args(args: &[String]) -> String {
-    args.iter()
-        .find(|a| !a.starts_with('-'))
-        .cloned()
-        .unwrap_or_else(|| {
-            eprintln!("Missing file path");
-            process::exit(1);
-        })
-}
-
-/// `spanda readiness <file.sd> [--json|--markdown|--html]`
-pub fn cmd_readiness(args: &[String]) {
+fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
     let format = parse_format(args);
-    let file = file_from_args(args);
+    let mut target: Option<String> = None;
+    let mut include_runtime = false;
+    let mut inject_health_faults = false;
+    let mut simulate = false;
+    let mut strict = false;
+    let mut file: Option<String> = None;
+    let mut i = 0usize;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--json" | "--markdown" | "--html" => {}
+            "--target" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--target requires a hardware profile name");
+                    process::exit(1);
+                }
+                target = Some(args[i].clone());
+            }
+            "--runtime" => include_runtime = true,
+            "--inject-health-faults" => {
+                include_runtime = true;
+                inject_health_faults = true;
+            }
+            "--simulate" => simulate = true,
+            "--strict" => strict = true,
+            other if !other.starts_with('-') && file.is_none() => file = Some(other.to_string()),
+            other => {
+                eprintln!("Unknown argument: {other}");
+                process::exit(1);
+            }
+        }
+        i += 1;
+    }
+    let file = file.unwrap_or_else(|| {
+        eprintln!("Missing file path");
+        process::exit(1);
+    });
     let source = read_file(&file);
     let program = parse_program(&source);
-    let report = evaluate_readiness(&program, &ReadinessOptions::default());
-    println!("{}", format_readiness(&report, format));
+    let options = readiness_options_from_flags(
+        &program,
+        target,
+        include_runtime,
+        inject_health_faults,
+        simulate,
+        strict,
+    );
+    ParsedReadinessCli {
+        format,
+        file,
+        options,
+    }
+}
+
+fn evaluate_with_options(
+    program: &spanda_ast::nodes::Program,
+    options: &ReadinessOptions,
+) -> spanda_readiness::ReadinessReport {
+    let runtime = options
+        .include_runtime
+        .then(|| build_runtime_context(program, options.inject_health_faults));
+    evaluate_readiness_with_runtime(program, options, runtime.as_ref())
+}
+
+/// `spanda readiness <file.sd> [--target T] [--runtime] [--inject-health-faults] [--json]`
+pub fn cmd_readiness(args: &[String]) {
+    let parsed = parse_readiness_cli(args);
+    let source = read_file(&parsed.file);
+    let program = parse_program(&source);
+    let report = evaluate_with_options(&program, &parsed.options);
+    println!("{}", format_readiness(&report, parsed.format));
     if !report.mission_ready {
         process::exit(1);
     }
 }
 
-/// `spanda verify mission` — mission verification (also used when verify targets mission file).
+/// `spanda verify mission <file.sd> [--target T] [--json]`
 pub fn cmd_verify_mission(args: &[String]) {
-    let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
-    let source = read_file(&file);
+    let parsed = parse_readiness_cli(args);
+    let source = read_file(&parsed.file);
     let program = parse_program(&source);
-    let reports = verify_mission(&program, None);
-    if json {
+    let reports = verify_mission(&program, parsed.options.target.as_deref());
+    if parsed.format == ReportFormat::Json {
         println!("{}", serde_json::to_string_pretty(&reports).unwrap());
     } else {
         print!("{}", format_mission_verification(&reports));
@@ -86,7 +147,14 @@ pub fn cmd_verify_mission(args: &[String]) {
 /// `spanda analyze-failure <file.sd>`
 pub fn cmd_analyze_failure(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-'))
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
     let source = read_file(&file);
     let program = parse_program(&source);
     let report = analyze_failure(&program);
@@ -97,14 +165,13 @@ pub fn cmd_analyze_failure(args: &[String]) {
     }
 }
 
-/// `spanda safety-report <file.sd> [--json|--markdown|--html]`
+/// `spanda safety-report <file.sd>`
 pub fn cmd_safety_report(args: &[String]) {
-    let format = parse_format(args);
-    let file = file_from_args(args);
-    let source = read_file(&file);
+    let parsed = parse_readiness_cli(args);
+    let source = read_file(&parsed.file);
     let program = parse_program(&source);
-    let report = generate_safety_report(&program, &file);
-    println!("{}", format_safety_report(&report, format));
+    let report = generate_safety_report(&program, &parsed.file);
+    println!("{}", format_safety_report(&report, parsed.format));
     if !report.deployable {
         process::exit(1);
     }
@@ -113,7 +180,14 @@ pub fn cmd_safety_report(args: &[String]) {
 /// `spanda twin readiness <file.sd> [--trace <path>]`
 pub fn cmd_twin_readiness(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-') && *a != "--trace")
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
     let trace_path = args
         .windows(2)
         .find(|w| w[0] == "--trace")
@@ -128,14 +202,13 @@ pub fn cmd_twin_readiness(args: &[String]) {
     }
 }
 
-/// `spanda fleet readiness <file.sd>`
+/// `spanda fleet readiness <file.sd> [--target T] [--runtime]`
 pub fn cmd_fleet_readiness(args: &[String]) {
-    let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
-    let source = read_file(&file);
+    let parsed = parse_readiness_cli(args);
+    let source = read_file(&parsed.file);
     let program = parse_program(&source);
-    let report = evaluate_fleet_readiness(&program, &ReadinessOptions::default());
-    if json {
+    let report = evaluate_fleet_readiness(&program, &parsed.options);
+    if parsed.format == ReportFormat::Json {
         println!("{}", serde_json::to_string_pretty(&report).unwrap());
     } else {
         print!("{}", format_fleet_readiness(&report));
@@ -145,7 +218,14 @@ pub fn cmd_fleet_readiness(args: &[String]) {
 /// `spanda diagnose <trace>`
 pub fn cmd_diagnose(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-'))
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing trace path");
+            process::exit(1);
+        });
     let report = diagnose_trace(Path::new(&file)).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -160,7 +240,14 @@ pub fn cmd_diagnose(args: &[String]) {
 /// `spanda audit <file.sd>`
 pub fn cmd_audit(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-'))
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
     let source = read_file(&file);
     let program = parse_program(&source);
     let report = audit_program(&program, &source);
@@ -177,7 +264,14 @@ pub fn cmd_audit(args: &[String]) {
 /// `spanda verify-fleet <file.sd>`
 pub fn cmd_verify_fleet(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-'))
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
     let source = read_file(&file);
     let program = parse_program(&source);
     let report = verify_fleet(&program);
@@ -193,10 +287,17 @@ pub fn cmd_verify_fleet(args: &[String]) {
     }
 }
 
-/// `spanda verify-approval <file.sd>` (internal) or part of verify extensions.
+/// `spanda verify-approval <file.sd>`
 pub fn cmd_verify_approval(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
-    let file = file_from_args(args);
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-'))
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
     let source = read_file(&file);
     let program = parse_program(&source);
     let report = verify_approvals(&program);
@@ -220,10 +321,27 @@ pub fn cmd_verify_approval(args: &[String]) {
     }
 }
 
+/// Evaluate readiness from deployed program source (agents and services).
+pub fn evaluate_agent_readiness_json(
+    source: &str,
+    target: Option<&str>,
+    include_runtime: bool,
+    inject_health_faults: bool,
+) -> Result<String, String> {
+    spanda_readiness::evaluate_agent_readiness_json(
+        source,
+        target,
+        include_runtime,
+        inject_health_faults,
+    )
+}
+
 /// Top-level readiness dispatch for subcommands.
 pub fn readiness_dispatch(args: &[String]) {
     if args.is_empty() {
-        eprintln!("Usage: spanda readiness <file.sd> [--json|--markdown|--html]");
+        eprintln!(
+            "Usage: spanda readiness <file.sd> [--target <profile>] [--runtime] [--inject-health-faults] [--json|--markdown|--html]"
+        );
         process::exit(1);
     }
     cmd_readiness(args);

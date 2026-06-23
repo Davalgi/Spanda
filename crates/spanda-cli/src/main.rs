@@ -64,6 +64,8 @@ struct CheckResponse {
     diagnostics: Vec<Diagnostic>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification: Option<Vec<spanda_capability::VerificationDiagnostic>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    readiness: Option<spanda_readiness::ReadinessReport>,
 }
 
 #[derive(Serialize)]
@@ -203,6 +205,7 @@ fn read_source(path: &str) -> String {
 fn print_check_json(
     err: Option<SpandaError>,
     verification: Option<Vec<spanda_capability::VerificationDiagnostic>>,
+    readiness: Option<spanda_readiness::ReadinessReport>,
 ) {
     // Print check json.
     //
@@ -225,11 +228,13 @@ fn print_check_json(
             ok: true,
             diagnostics: vec![],
             verification,
+            readiness,
         },
         Some(e) => CheckResponse {
             ok: false,
             diagnostics: e.diagnostics(),
             verification: None,
+            readiness: None,
         },
     };
     println!("{}", serde_json::to_string(&resp).unwrap());
@@ -1547,6 +1552,7 @@ fn main() {
     let mut verify_health = false;
     let mut minimum_capabilities = false;
     let mut verification_json = false;
+    let mut readiness_json = false;
     let mut trigger_kill_switch: Option<String> = None;
     let mut inject_health_faults = false;
     let mut i = 2;
@@ -1558,6 +1564,10 @@ fn main() {
             "--json" => json = true,
             "--verification-json" => {
                 verification_json = true;
+                json = true;
+            }
+            "--readiness-json" => {
+                readiness_json = true;
                 json = true;
             }
             "--verbose" | "-v" => verbose = true,
@@ -1746,14 +1756,34 @@ fn main() {
                 // Take this path when json.
                 if json {
                     let check_result = check(&source);
+                    let program = trace_cli::parse_program(&source);
                     let verification = if verification_json && check_result.is_ok() {
                         Some(spanda_capability::collect_verification_diagnostics(
-                            &trace_cli::parse_program(&source),
+                            &program,
                         ))
                     } else {
                         None
                     };
-                    print_check_json(check_result.err(), verification);
+                    let readiness = if readiness_json && check_result.is_ok() {
+                        let options = spanda_readiness::readiness_options_from_flags(
+                            &program,
+                            target.clone(),
+                            inject_health_faults,
+                            inject_health_faults,
+                            simulate,
+                            strict_certify,
+                        );
+                        Some(spanda_readiness::evaluate_readiness_with_runtime(
+                            &program,
+                            &options,
+                            inject_health_faults
+                                .then(|| spanda_readiness::build_runtime_context(&program, true))
+                                .as_ref(),
+                        ))
+                    } else {
+                        None
+                    };
+                    print_check_json(check_result.err(), verification, readiness);
                 } else {
                     human_check(&source, file_path);
                 }

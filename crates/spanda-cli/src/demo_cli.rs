@@ -260,6 +260,33 @@ fn demo_health(root: &Path) {
     println!("\nDemo complete. See examples/showcase/health_monitoring/README.md");
 }
 
+fn demo_readiness(root: &Path) {
+    let readiness_path = showcase(root, &["readiness", "rover.sd"]);
+    let readiness_sd = require_file(&readiness_path);
+
+    println!("== Operational readiness — deploy-target scoring ==\n");
+    run_spanda("check", readiness_sd, &[]);
+    run_spanda_args(&[
+        "readiness",
+        readiness_sd.to_str().unwrap(),
+        "--target",
+        "RoverV1",
+        "--json",
+    ]);
+
+    println!("→ Runtime readiness with injected health faults");
+    run_spanda_args(&[
+        "readiness",
+        readiness_sd.to_str().unwrap(),
+        "--target",
+        "RoverV1",
+        "--runtime",
+        "--inject-health-faults",
+    ]);
+
+    println!("\nDemo complete. See examples/showcase/readiness/rover.sd and docs/readiness.md");
+}
+
 pub fn demo_dispatch(args: &[String]) {
     // Run a bundled showcase demo by name.
     //
@@ -284,6 +311,7 @@ pub fn demo_dispatch(args: &[String]) {
         "verify" => demo_verify(&root),
         "fleet" => demo_fleet(&root),
         "health" => demo_health(&root),
+        "readiness" => demo_readiness(&root),
         "" | "list" | "--help" | "-h" => {
             eprintln!(
                 "Spanda showcase demos\n\n\
@@ -294,7 +322,8 @@ pub fn demo_dispatch(args: &[String]) {
                    safety  — ActionProposal blocked; SafeAction passes\n\
                    verify  — hardware fit: missing Lidar fails, added Lidar passes\n\
                    fleet   — multi-robot fleet simulation\n\
-                   health  — health checks with fault injection\n\n\
+                   health  — health checks with fault injection\n\
+                   readiness — operational go/no-go with runtime health\n\n\
                  Set SPANDA_ROOT to the repository root if examples are not found.\n\
                  See examples/showcase/README.md"
             );
