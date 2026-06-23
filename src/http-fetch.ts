@@ -47,8 +47,8 @@ export function remoteFetch(url: string, init: RequestInit = {}): Promise<Respon
   const { signal: upstreamSignal, ...restInit } = init;
   let upstreamAbortHandler: (() => void) | undefined;
   const detachUpstreamAbortListener = () => {
-    if (upstreamAbortHandler) {
-      upstreamSignal?.removeEventListener("abort", upstreamAbortHandler);
+    if (upstreamSignal && upstreamAbortHandler) {
+      upstreamSignal.removeEventListener("abort", upstreamAbortHandler);
     }
   };
   const resolveAbortReason = (signal: AbortSignal): unknown =>
@@ -77,10 +77,6 @@ export function remoteFetch(url: string, init: RequestInit = {}): Promise<Respon
       clearTimeout(timeoutId);
       controller.abort(resolveAbortReason(upstreamSignal));
     };
-    if (upstreamSignal.aborted) {
-      upstreamAbortHandler();
-      return Promise.reject(resolveAbortReason(upstreamSignal));
-    }
     upstreamSignal.addEventListener("abort", upstreamAbortHandler, { once: true });
   }
 
