@@ -192,3 +192,69 @@ code {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.85em;
 }
+
+.operations-toolbar {
+  align-items: center;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #8b949e;
+}
+
+.agent-url {
+  flex: 1;
+  min-width: 200px;
+  font: inherit;
+  border-radius: 6px;
+  border: 1px solid #30363d;
+  background: #161b22;
+  color: inherit;
+  padding: 0.45rem 0.75rem;
+}
+
+.readiness-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.readiness-badge.ready {
+  background: #23863633;
+  color: #3fb950;
+}
+
+.readiness-badge.degraded {
+  background: #9e6a0333;
+  color: #d29922;
+}
+
+.readiness-badge.not-ready {
+  background: #490202;
+  color: #ffa198;
+}
+
+.factor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+}
+
+.factor-table th,
+.factor-table td {
+  text-align: left;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.agent-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8b949e;
+}

@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SOURCE, EXAMPLES } from "./examples";
 import { checkSource, runSource, type CheckResponse, type RunResponse } from "./spanda-wasm";
+import { OperationsPanel } from "./OperationsPanel";
 
 type Backend = "wasm" | "unavailable";
+type View = "playground" | "operations";
 
 export default function App() {
   const [source, setSource] = useState(DEFAULT_SOURCE);
+  const [view, setView] = useState<View>("playground");
   const [backend, setBackend] = useState<Backend>("unavailable");
   const [diagnostics, setDiagnostics] = useState<CheckResponse["diagnostics"]>([]);
   const [runResult, setRunResult] = useState<RunResponse["result"] | null>(null);
@@ -65,6 +68,14 @@ export default function App() {
 
       <div className="toolbar">
         <select
+          value={view}
+          onChange={(e) => setView(e.target.value as View)}
+          aria-label="View"
+        >
+          <option value="playground">Playground</option>
+          <option value="operations">Operations</option>
+        </select>
+        <select
           onChange={(e) => {
             const ex = EXAMPLES.find((x) => x.name === e.target.value);
             if (ex) setSource(ex.source);
@@ -77,13 +88,19 @@ export default function App() {
             </option>
           ))}
         </select>
-        <span className="demo-hint">Check → Run sim (verify needs native CLI)</span>
-        <button type="button" onClick={handleCheck} disabled={busy || backend === "unavailable"}>
-          Check
-        </button>
-        <button type="button" className="primary" onClick={handleRun} disabled={busy || backend === "unavailable"}>
-          Run sim
-        </button>
+        <span className="demo-hint">
+          {view === "playground" ? "Check → Run sim (verify needs native CLI)" : "Readiness scoring + live agent"}
+        </span>
+        {view === "playground" && (
+          <>
+            <button type="button" onClick={handleCheck} disabled={busy || backend === "unavailable"}>
+              Check
+            </button>
+            <button type="button" className="primary" onClick={handleRun} disabled={busy || backend === "unavailable"}>
+              Run sim
+            </button>
+          </>
+        )}
       </div>
 
       {backend === "unavailable" && (
@@ -103,44 +120,50 @@ export default function App() {
         </section>
 
         <section className="output-pane">
-          {error && <div className="error">{error}</div>}
-
-          {diagnostics.length > 0 && (
-            <div className="panel">
-              <h2>Diagnostics</h2>
-              <ul>
-                {diagnostics.map((d, i) => (
-                  <li key={i}>
-                    [{d.line}:{d.column}] {d.message}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {runResult && (
+          {view === "operations" ? (
+            <OperationsPanel source={source} />
+          ) : (
             <>
-              <div className="panel">
-                <h2>Robot state</h2>
-                <dl>
-                  <dt>Pose</dt>
-                  <dd>
-                    x={runResult.state.pose.x.toFixed(3)} m, y={runResult.state.pose.y.toFixed(3)} m, θ=
-                    {runResult.state.pose.theta.toFixed(3)} rad
-                  </dd>
-                  <dt>Velocity</dt>
-                  <dd>
-                    {runResult.state.velocity.linear.toFixed(3)} m/s, {runResult.state.velocity.angular.toFixed(3)}{" "}
-                    rad/s
-                  </dd>
-                  <dt>E-stop</dt>
-                  <dd>{runResult.state.emergency_stop ? "ACTIVE" : "off"}</dd>
-                </dl>
-              </div>
-              <div className="panel">
-                <h2>Simulation log</h2>
-                <pre>{runResult.events.join("\n") || "(no events)"}</pre>
-              </div>
+              {error && <div className="error">{error}</div>}
+
+              {diagnostics.length > 0 && (
+                <div className="panel">
+                  <h2>Diagnostics</h2>
+                  <ul>
+                    {diagnostics.map((d, i) => (
+                      <li key={i}>
+                        [{d.line}:{d.column}] {d.message}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {runResult && (
+                <>
+                  <div className="panel">
+                    <h2>Robot state</h2>
+                    <dl>
+                      <dt>Pose</dt>
+                      <dd>
+                        x={runResult.state.pose.x.toFixed(3)} m, y={runResult.state.pose.y.toFixed(3)} m, θ=
+                        {runResult.state.pose.theta.toFixed(3)} rad
+                      </dd>
+                      <dt>Velocity</dt>
+                      <dd>
+                        {runResult.state.velocity.linear.toFixed(3)} m/s, {runResult.state.velocity.angular.toFixed(3)}{" "}
+                        rad/s
+                      </dd>
+                      <dt>E-stop</dt>
+                      <dd>{runResult.state.emergency_stop ? "ACTIVE" : "off"}</dd>
+                    </dl>
+                  </div>
+                  <div className="panel">
+                    <h2>Simulation log</h2>
+                    <pre>{runResult.events.join("\n") || "(no events)"}</pre>
+                  </div>
+                </>
+              )}
             </>
           )}
         </section>
