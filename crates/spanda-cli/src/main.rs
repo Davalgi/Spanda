@@ -1,6 +1,7 @@
 //! main support for Spanda.
 //!
 mod certify_cli;
+mod demo_cli;
 mod deploy_ota;
 mod package;
 mod swarm_cli;
@@ -152,6 +153,8 @@ fn usage() {
            spanda ir [--json] <file.sd>\n\
            spanda llvm-ir [--out <file.ll>] [--target-triple <triple>] [--hal-profile <name>] <file.sd>\n\
            spanda compile-native [--out <binary>] [--target-triple <triple>] [--hal-profile <name>] <file.sd>\n\n\
+         Demo commands:\n\
+           spanda demo <rover|safety|verify|fleet|health>\n\n\
          Package commands:\n\
            spanda init [name] [--description <text>]\n\
            spanda build [--project <dir>]\n\
@@ -1335,6 +1338,12 @@ fn main() {
         process::exit(if args.len() < 2 { 1 } else { 0 });
     }
     let command = args[1].as_str();
+
+    if command == "demo" {
+        demo_cli::demo_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
 
     if command == "certify" {
         certify_cli::certify_dispatch(&args[2..]);
