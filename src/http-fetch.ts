@@ -9,7 +9,14 @@ export function remoteFetch(url: string, init: RequestInit = {}): Promise<Respon
   // Issue one HTTP request with a bounded wait for connect and response body.
   const controller = new AbortController();
   // Bound the full fetch lifecycle (connect + response/body read); expiry aborts via AbortController.
-  const timeoutId = setTimeout(() => controller.abort(), REMOTE_HTTP_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => {
+    controller.abort(
+      new DOMException(
+        `Remote fetch timed out after ${REMOTE_HTTP_TIMEOUT_MS}ms for URL: ${url}`,
+        "TimeoutError",
+      ),
+    );
+  }, REMOTE_HTTP_TIMEOUT_MS);
 
   const { signal: upstreamSignal, ...restInit } = init;
   let onAbort: (() => void) | undefined;
@@ -19,7 +26,7 @@ export function remoteFetch(url: string, init: RequestInit = {}): Promise<Respon
       controller.abort();
       clearTimeout(timeoutId);
       return Promise.reject(
-        new DOMException(`Remote fetch operation was aborted for URL: ${url}`, "AbortError"),
+        new DOMException("Remote fetch operation was aborted.", "AbortError"),
       );
     }
     onAbort = () => controller.abort();
