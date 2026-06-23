@@ -4,6 +4,7 @@ mod certify_cli;
 mod demo_cli;
 mod deploy_ota;
 mod package;
+mod readiness_cli;
 mod ros2_cli;
 mod swarm_cli;
 mod trace_cli;
@@ -824,6 +825,10 @@ fn twin_dispatch(args: &[String]) {
     // Example:
     // let result = spanda_cli::main::twin_dispatch(args);
 
+    if args.first().map(String::as_str) == Some("readiness") {
+        readiness_cli::cmd_twin_readiness(&args[1..]);
+        return;
+    }
     if args.first().map(String::as_str) != Some("export") {
         eprintln!("Usage: spanda twin export <file.sd> --out <replay.json>");
         process::exit(1);
@@ -916,6 +921,10 @@ fn fleet_dispatch(args: &[String]) {
     // let result = spanda_cli::main::fleet_dispatch(args);
 
     // take the branch when as str) differs from Some.
+    if args.first().map(String::as_str) == Some("readiness") {
+        readiness_cli::cmd_fleet_readiness(&args[1..]);
+        return;
+    }
     if args.first().map(String::as_str) == Some("orchestrate") {
         deploy_ota::fleet_orchestrate_dispatch(&args[1..]);
         return;
@@ -1404,6 +1413,54 @@ fn main() {
 
     if command == "security" {
         security_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "readiness" {
+        readiness_cli::readiness_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "analyze-failure" {
+        readiness_cli::cmd_analyze_failure(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "safety-report" {
+        readiness_cli::cmd_safety_report(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "diagnose" {
+        readiness_cli::cmd_diagnose(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "audit" {
+        readiness_cli::cmd_audit(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "verify-approval" {
+        readiness_cli::cmd_verify_approval(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "verify-fleet" {
+        readiness_cli::cmd_verify_fleet(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "verify" && args.get(2).map(String::as_str) == Some("mission") {
+        readiness_cli::cmd_verify_mission(&args[3..]);
         let _ = io::stdout().flush();
         return;
     }

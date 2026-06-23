@@ -356,6 +356,15 @@ async function main(): Promise<void> {
       case "registry":
         handleRegistry(positional, json);
         break;
+      case "readiness":
+      case "analyze-failure":
+      case "safety-report":
+      case "diagnose":
+      case "audit":
+      case "verify-fleet":
+      case "verify-approval":
+        handleReadinessNative(command, positional, flags);
+        break;
       default:
         console.error(`Unknown command: ${command}`);
         console.log(USAGE);
@@ -1391,6 +1400,10 @@ function handleFleet(
   // handleFleet(["orchestrate", "examples/robotics/nav2_bridge.sd"], flags, false);
 
   const sub = positional[0];
+  if (sub === "readiness") {
+    handleReadinessNative("fleet", positional, flags);
+    return;
+  }
   if (sub === "orchestrate") {
     void handleFleetOrchestrate(positional[1], json, flagBool(flags, "remote"), flags);
     return;
@@ -1778,6 +1791,30 @@ function handleRegistry(positional: string[], json: boolean): void {
     console.error("Usage: spanda registry search <query> | spanda registry info <package>");
     process.exit(1);
   }
+}
+
+function handleReadinessNative(
+  command: string,
+  positional: string[],
+  flags: Map<string, string | boolean>,
+): void {
+  // Delegate operational readiness commands to the native Spanda CLI.
+  if (!isCliAvailable()) {
+    console.error(`Native CLI required for: spanda ${command}`);
+    process.exit(1);
+  }
+  const args = [command, ...positional];
+  for (const [key, value] of flags) {
+    if (value === true) {
+      args.push(`--${key}`);
+    } else if (typeof value === "string") {
+      args.push(`--${key}`, value);
+    }
+  }
+  const result = runNativeCli(args);
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  process.exit(result.status ?? 1);
 }
 
 function printError(err: unknown): void {
