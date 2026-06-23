@@ -371,9 +371,10 @@ robot R {
 "#;
     let err = check(source).expect_err("ActionProposal execute should fail typecheck");
     assert!(
-        err.diagnostics()
-            .iter()
-            .any(|d| { d.message.contains("ActionProposal") && d.message.contains("execute") }),
+        err.diagnostics().iter().any(|d| {
+            d.message.contains("ActionProposal")
+                && (d.message.contains("execute") || d.message.contains("SafeAction"))
+        }),
         "got {:?}",
         err.diagnostics()
     );

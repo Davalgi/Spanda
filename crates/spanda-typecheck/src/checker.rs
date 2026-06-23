@@ -5121,13 +5121,18 @@ impl<'h> TypeChecker<'h> {
                 // Take this path when is action proposal type(&actual).
                 if is_action_proposal_type(&actual) {
                     self.error(
-                        "ActionProposal cannot be passed to actuator.execute() — call safety.validate() first".into(),
+                        "Expected SafeAction for actuator.execute()\n\
+                         Found: ActionProposal\n\
+                         Hint: let action = safety.validate(proposal); wheels.execute(action);"
+                            .into(),
                         span.start.line,
                         span.start.column,
                     );
                 } else if !crate::type_system::is_safe_action_type(&actual) {
                     self.error(
-                        "actuator.execute() requires SafeAction from safety.validate()".into(),
+                        "Expected SafeAction for actuator.execute()\n\
+                         Hint: call safety.validate() on an ActionProposal before execute()"
+                            .into(),
                         span.start.line,
                         span.start.column,
                     );
