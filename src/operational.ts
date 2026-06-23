@@ -561,10 +561,11 @@ export function runOperationalCommand(
   switch (command) {
     case "readiness": {
       if (flags.has("agent-json")) {
+        const readiness = evaluateReadinessSource(source, options);
         const body = JSON.stringify({
           ok: true,
-          mission_ready: evaluateReadinessSource(source, options).mission_ready,
-          readiness: evaluateReadinessSource(source, options),
+          mission_ready: readiness.mission_ready,
+          readiness,
         });
         const parsed = JSON.parse(body) as { mission_ready?: boolean };
         return { exitCode: parsed.mission_ready ? 0 : 1, output: body };
