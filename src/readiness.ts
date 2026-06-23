@@ -72,6 +72,36 @@ function parseProgramSource(source: string): Program {
   return parse(tokenize(source));
 }
 
+function lineColumnForFactor(program: Program, factor: string): { line: number; column: number } {
+  const robot = program.robots[0];
+  const deploy = program.deployments[0];
+  const health = program.healthChecks[0];
+  const fleet = program.fleets[0];
+  const missionRobot = program.robots.find((r) => r.mission);
+  if (factor === "Health" && health) {
+    return { line: health.span.start.line, column: health.span.start.column };
+  }
+  if ((factor === "Capabilities" || factor === "Mission Requirements") && missionRobot?.mission) {
+    return {
+      line: missionRobot.mission.span.start.line,
+      column: missionRobot.mission.span.start.column,
+    };
+  }
+  if (factor === "Safety" && robot?.safety) {
+    return { line: robot.safety.span.start.line, column: robot.safety.span.start.column };
+  }
+  if (factor === "Fleet" && fleet) {
+    return { line: fleet.span.start.line, column: fleet.span.start.column };
+  }
+  if (deploy && deploy.kind === "DeployDecl") {
+    return { line: deploy.span.start.line, column: deploy.span.start.column };
+  }
+  if (robot) {
+    return { line: robot.span.start.line, column: robot.span.start.column };
+  }
+  return { line: 1, column: 1 };
+}
+
 function factorRow(factor: string, score: number, weight: number): ReadinessFactorScore {
   return {
     factor,
@@ -228,11 +258,14 @@ export function readinessDiagnostics(
   category: string;
   suggested_fix?: string;
 }> {
+  const program = parseProgramSource(source);
   const report = evaluateReadinessSource(source, options);
-  return report.issues.map((issue) => ({
-    message: issue.message,
-    line: 1,
-    column: 1,
+  return report.issues.map((issue) => {
+    const span = lineColumnForFactor(program, issue.factor);
+    return {
+      message: issue.message,
+      line: span.line,
+      column: span.column,
     severity:
       issue.severity === "Critical" || issue.severity === "High"
         ? "error"
@@ -241,5 +274,6 @@ export function readinessDiagnostics(
           : "info",
     category: `readiness:${issue.factor.toLowerCase()}`,
     suggested_fix: issue.suggested_action,
-  }));
+    };
+  });
 }

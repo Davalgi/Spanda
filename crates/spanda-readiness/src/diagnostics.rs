@@ -2,6 +2,7 @@
 
 use crate::engine::evaluate_readiness_with_runtime;
 use crate::runtime::build_runtime_context;
+use crate::spans::line_column_for_factor;
 use crate::types::{ReadinessOptions, ReadinessSeverity};
 use spanda_ast::nodes::Program;
 use spanda_capability::VerificationDiagnostic;
@@ -20,13 +21,16 @@ pub fn collect_readiness_diagnostics(
     report
         .issues
         .iter()
-        .map(|issue| VerificationDiagnostic {
-            message: issue.message.clone(),
-            line: 1,
-            column: 1,
-            severity: severity_label(issue.severity).into(),
-            category: format!("readiness:{}", issue.factor.to_ascii_lowercase()),
-            suggested_fix: issue.suggested_action.clone(),
+        .map(|issue| {
+            let (line, column) = line_column_for_factor(program, &issue.factor);
+            VerificationDiagnostic {
+                message: issue.message.clone(),
+                line,
+                column,
+                severity: severity_label(issue.severity).into(),
+                category: format!("readiness:{}", issue.factor.to_ascii_lowercase()),
+                suggested_fix: issue.suggested_action.clone(),
+            }
         })
         .collect()
 }

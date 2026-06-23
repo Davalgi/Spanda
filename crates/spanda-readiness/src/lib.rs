@@ -17,6 +17,7 @@ pub mod mission;
 pub mod report;
 pub mod root_cause;
 pub mod runtime;
+pub mod spans;
 pub mod safety_report;
 pub mod target;
 pub mod traceability;
