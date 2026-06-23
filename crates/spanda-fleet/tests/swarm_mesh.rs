@@ -6,6 +6,7 @@ use spanda_fleet::{
     coordinate_swarms_mesh, register_fleet_agent, spawn_test_fleet_agent, spawn_test_fleet_mesh,
     FleetAgentRegistry, SwarmCoordinationResult, SwarmState,
 };
+use std::net::TcpListener;
 use std::thread;
 use std::time::Duration;
 
@@ -61,12 +62,15 @@ swarm ReconLeader {
 "#;
     let program = compile(source).expect("compile").program;
     let mut state = SwarmState::default();
-    coordinate_mesh_when_ready(
-        &program,
-        "swarm_leader.sd",
-        &mut state,
-        "http://127.0.0.1:9/",
-    );
+    // Reserve an ephemeral port, then release it so mesh HTTP has no server to talk to.
+    let sink_listener = TcpListener::bind("127.0.0.1:0").expect("bind sink listener");
+    let sink_port = sink_listener
+        .local_addr()
+        .expect("sink listener local addr")
+        .port();
+    drop(sink_listener);
+    let sink_url = format!("http://127.0.0.1:{sink_port}/");
+    coordinate_mesh_when_ready(&program, "swarm_leader.sd", &mut state, &sink_url);
 }
 
 #[test]
