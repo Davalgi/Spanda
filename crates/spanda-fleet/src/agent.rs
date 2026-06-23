@@ -8,8 +8,8 @@ use crate::remote::{
 use crate::PeerDelivery;
 use serde::{Deserialize, Serialize};
 use spanda_deploy_http::{
-    parse_http_request, read_plain_request, serve_tls_connection,
-    write_plain_response, DeployAgentTls, HttpRequest, HttpResponse,
+    parse_http_request, read_plain_request, serve_tls_connection, write_plain_response,
+    DeployAgentTls, HttpRequest, HttpResponse,
 };
 use std::fs;
 use std::net::{TcpListener, TcpStream};
@@ -276,12 +276,7 @@ pub fn spawn_test_fleet_agent(
     let handle = thread::spawn(move || {
         for connection in listener.incoming() {
             let Ok(stream) = connection else { continue };
-            handle_connection(
-                Arc::clone(&shared),
-                state_path.clone(),
-                stream,
-                None,
-            );
+            handle_connection(Arc::clone(&shared), state_path.clone(), stream, None);
         }
     });
     Ok((port, handle))

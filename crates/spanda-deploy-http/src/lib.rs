@@ -298,9 +298,7 @@ pub fn serve_tls_connection(
     let conn = ServerConnection::new(Arc::clone(server_config))
         .map_err(|e| format!("TLS server connection: {e}"))?;
     let mut tls = StreamOwned::new(conn, stream);
-    let _ = tls
-        .sock
-        .set_read_timeout(Some(Duration::from_secs(30)));
+    let _ = tls.sock.set_read_timeout(Some(Duration::from_secs(30)));
     let mut raw = String::new();
     tls.read_to_string(&mut raw)
         .map_err(|e| format!("read request failed: {e}"))?;
