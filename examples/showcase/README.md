@@ -1,89 +1,64 @@
-# Showcase — three flagship examples
+# Showcase — evaluator quick path
 
-New evaluators should start with these three pillars — **safety**, **verify**, and **sim** — before browsing the full library.
+Start here when evaluating Spanda as a **professional autonomous-systems platform**.
 
-**Hub:** [examples/README.md](../README.md) · Walkthrough: [docs/killer-demo.md](../../docs/killer-demo.md)
-
----
-
-## 1. Safety — compile-time AI gate
-
-**Purpose:** Prove that raw `ActionProposal` values cannot reach actuators without `safety.validate()`.
-
-```bash
-# Expect non-zero exit — ActionProposal rejected at compile time
-spanda check examples/showcase/ai_safety_violation.sd
-
-# Safe variant passes
-spanda check examples/showcase/killer_demo.sd
-```
-
-| File | Role |
-|------|------|
-| [`ai_safety_violation.sd`](./ai_safety_violation.sd) | Minimal 15-line failure case |
-| [`killer_demo.sd`](./killer_demo.sd) | Safe hero program with `safety.validate()` |
+**5-minute path:** [docs/killer-demo.md](../../docs/killer-demo.md) · **One command:** `spanda demo rover`
 
 ---
 
-## 2. Verify — hardware fit before deploy
+## One-command demos
 
-**Purpose:** Answer *"Will this program run on this robot?"* before flash or factory integration.
+| Command | What it runs |
+|---------|----------------|
+| `spanda demo rover` | Flagship autonomous rover — install, verify, sim, replay |
+| `spanda demo safety` | Unsafe AI blocked; safe path passes |
+| `spanda demo verify` | Missing Lidar fails; complete robot passes |
+| `spanda demo fleet` | Multi-robot fleet simulation |
+| `spanda demo health` | Health checks + fault injection |
 
-```bash
-spanda verify examples/showcase/hardware_compatibility.sd
-spanda verify examples/showcase/hardware_compatibility.sd --json --target RoverV1
-```
-
-| File | Role |
-|------|------|
-| [`hardware_compatibility.sd`](./hardware_compatibility.sd) | Deploy target, requirements, task budgets, fault simulation |
-| [`killer_demo.sd`](./killer_demo.sd) | Same verify flow on the flagship patrol program |
-
-CI integration: [docs/ci-verify.md](../../docs/ci-verify.md)
+Set `SPANDA_ROOT` to the repository root if examples are not found.
 
 ---
 
-## 3. Sim — test without hardware
+## Showcase directories
 
-**Purpose:** Run patrol logic with simulated sensors and `stop_if` emergency rules.
-
-```bash
-spanda sim examples/showcase/killer_demo.sd
-spanda verify examples/showcase/killer_demo.sd --simulate
-```
-
-| File | Role |
-|------|------|
-| [`killer_demo.sd`](./killer_demo.sd) | Patrol loop, lidar stop, AI planner, deploy + verify + sim |
-| [`autonomous_rover/`](./autonomous_rover/) | **Flagship platform demo** — GPS, MQTT, WiFi, providers, replay |
-| [`world_model_patrol.sd`](./world_model_patrol.sd) | **World model** — observe → fusion → belief → motion decision |
-
-Record and replay: [`examples/end_to_end/replay_mission.sd`](../end_to_end/replay_mission.sd)
+| Directory | Demonstrates |
+|-----------|----------------|
+| [`autonomous_rover/`](./autonomous_rover/) | GPS, MQTT, WiFi, AI planning, safety, verify, replay, audit |
+| [`unsafe_ai/`](./unsafe_ai/) | ActionProposal rejected; SafeAction passes |
+| [`hardware_verification/`](./hardware_verification/) | Mission needs Lidar; hardware without Lidar fails |
+| [`capability_verification/`](./capability_verification/) | Capability exposure, traceability, minimum hardware |
+| [`health_monitoring/`](./health_monitoring/) | Robot/sensor health, policies, fault injection |
+| [`fleet_management/`](./fleet_management/) | Fleet, health requirements, coordination |
+| [`replay/`](./replay/) | Record, replay, fault injection |
 
 ---
 
-## One-liner smoke script
+## Three pillars (minimal)
+
+| Pillar | Command |
+|--------|---------|
+| **Safety** | `spanda check examples/showcase/unsafe_ai/unsafe.sd` (must fail) |
+| **Verify** | `spanda verify examples/showcase/hardware_verification/mission_with_lidar.sd` |
+| **Sim** | `spanda sim examples/showcase/killer_demo.sd` |
+
+---
+
+## Smoke script
 
 ```bash
-set -e
-spanda check examples/showcase/ai_safety_violation.sd && exit 1 || true
-spanda check examples/showcase/killer_demo.sd
-spanda verify examples/showcase/hardware_compatibility.sd --json --target RoverV1
-spanda sim examples/showcase/killer_demo.sd
+./scripts/showcase_smoke.sh
 ```
 
 ---
 
-## Supplementary showcase demos
-
-These illustrate additional capabilities but are **not** part of the evaluator quick path:
+## Supplementary files
 
 | File | Topic |
 |------|-------|
-| [`rover_navigation.sd`](./rover_navigation.sd) | Sensors, AI planning, motion |
-| [`warehouse_robot.sd`](./warehouse_robot.sd) | Tasks, comms, safety zones |
-| [`communication_demo.sd`](./communication_demo.sd) | Message, topic, service, action |
-| [`digital_twin_demo.sd`](./digital_twin_demo.sd) | Twin, telemetry, replay |
-| [`world_model_patrol.sd`](./world_model_patrol.sd) | Observe, fusion hook, belief-gated patrol |
+| [`killer_demo.sd`](./killer_demo.sd) | Safe hero patrol program |
+| [`ai_safety_violation.sd`](./ai_safety_violation.sd) | Legacy single-file unsafe demo |
+| [`hardware_compatibility.sd`](./hardware_compatibility.sd) | Deploy + task budgets + faults |
+| [`world_model_patrol.sd`](./world_model_patrol.sd) | Observe → fusion → belief |
 
-Browse by capability: [examples/features/README.md](../features/README.md) · End-to-end workflows: [examples/end_to_end/README.md](../end_to_end/README.md) · Tier 3 CI golden paths: [docs/tier-3-golden-paths.md](../../docs/tier-3-golden-paths.md)
+Browse by capability: [examples/features/README.md](../features/README.md)
