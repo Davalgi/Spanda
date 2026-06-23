@@ -321,21 +321,6 @@ pub fn cmd_verify_approval(args: &[String]) {
     }
 }
 
-/// Evaluate readiness from deployed program source (agents and services).
-pub fn evaluate_agent_readiness_json(
-    source: &str,
-    target: Option<&str>,
-    include_runtime: bool,
-    inject_health_faults: bool,
-) -> Result<String, String> {
-    spanda_readiness::evaluate_agent_readiness_json(
-        source,
-        target,
-        include_runtime,
-        inject_health_faults,
-    )
-}
-
 /// Top-level readiness dispatch for subcommands.
 pub fn readiness_dispatch(args: &[String]) {
     if args.is_empty() {
