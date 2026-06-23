@@ -80,3 +80,4 @@ Phases 1–35: language core through verification & DX. See [lean-core-roadmap.m
 - [feature-status.md](./feature-status.md)
 - [product-strategy.md](./product-strategy.md)
 - [compiler-backend-roadmap.md](./compiler-backend-roadmap.md)
+- [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md)

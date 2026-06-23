@@ -65,7 +65,8 @@ Spanda is an AI-native autonomous systems programming language. Source files use
 | [hardware-traceability.md](./hardware-traceability.md) | **Hardware-to-code traceability mapping** |
 | [packages.md](./packages.md) | **Package manager, `spanda publish`, capabilities** |
 | [registry.md](./registry.md) | **Hosted package registry, `spanda publish` mirror, and `spanda install`** |
-| [feature-status.md](./feature-status.md) | **v0.1.0-alpha support matrix** |
+| [feature-status.md](./feature-status.md) | **v0.4 support matrix** |
+| [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md) | **June 2026 roadmap vs codebase gap audit and closure tracking** |
 | [hardware-compatibility.md](./hardware-compatibility.md) | **Hardware profiles, deploy targets, and compile-time verification** |
 | [positioning.md](./positioning.md) | **GPS/GNSS types, sensors, and simulation faults** |
 | [connectivity.md](./connectivity.md) | **Wi-Fi, LTE, failover policies, and offline modes** |

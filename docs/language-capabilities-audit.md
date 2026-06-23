@@ -38,4 +38,5 @@ For all release decisions, roadmap discussions, and community communication, use
 
 If future architectural audits are needed, create a new dated file
 (`language-capabilities-audit-YYYY-MM.md`) and keep `feature-status.md`
-as the release-facing canonical matrix.
+as the release-facing canonical matrix. For roadmap vs implementation alignment, see
+[`roadmap-codebase-audit-2026-06.md`](./roadmap-codebase-audit-2026-06.md).
