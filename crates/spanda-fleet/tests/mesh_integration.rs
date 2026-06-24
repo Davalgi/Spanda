@@ -5,8 +5,9 @@ use spanda_driver::compile;
 use spanda_fleet::{
     default_fleet_agents_path, fleet_entry_for_port, orchestrate_fleets_mesh, register_fleet_agent,
     relay_deliveries_via_mesh, relay_peer_delivery, relay_recovery_via_mesh,
-    save_fleet_agent_registry, spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry,
-    FleetRecoveryRequest, PeerDelivery,
+    relay_continuity_via_mesh, save_fleet_agent_registry, spawn_test_fleet_agent,
+    spawn_test_fleet_mesh, FleetAgentRegistry, FleetContinuityRequest, FleetRecoveryRequest,
+    PeerDelivery,
 };
 use std::thread;
 use std::time::Duration;
@@ -149,6 +150,85 @@ robot RoverBeta {
     assert!(status.body.contains("\"recovery_engine\":\"interpreter\""));
     assert!(status.body.contains("\"PASS\"") || status.body.contains("\"PARTIAL\""));
     assert!(status.body.contains("\"recovery_mode\":\"degraded\""));
+}
+
+#[test]
+fn mesh_coordinator_relays_fleet_takeover_to_agents() {
+    let (port_a, _agent_a) = spawn_test_fleet_agent("ScannerAlpha", None).expect("spawn A");
+    let (port_b, _agent_b) = spawn_test_fleet_agent("ScannerBeta", None).expect("spawn B");
+    let mut registry = FleetAgentRegistry::default();
+    register_fleet_agent(
+        &mut registry,
+        "ScannerAlpha".into(),
+        format!("http://127.0.0.1:{port_a}"),
+        None,
+    )
+    .expect("register A");
+    register_fleet_agent(
+        &mut registry,
+        "ScannerBeta".into(),
+        format!("http://127.0.0.1:{port_b}"),
+        None,
+    )
+    .expect("register B");
+    let (mesh_port, _mesh) = spawn_test_fleet_mesh(&registry).expect("spawn mesh");
+    thread::sleep(Duration::from_millis(30));
+    let fleet_program = r#"
+hardware RoverV1 {
+    sensors [GPS];
+    actuators [DifferentialDrive];
+    connectivity [WiFi];
+}
+continuity_policy WarehouseContinuity {
+    on robot.failed { resume from checkpoint; reassign mission; }
+}
+fleet WarehouseFleet { ScannerAlpha; ScannerBeta; }
+robot ScannerBeta {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior scan() { wheels.drive(0.3 m/s); }
+}
+"#;
+    let program_payload = serde_json::json!({ "program": fleet_program }).to_string();
+    let deploy = http_request(
+        "POST",
+        &format!("http://127.0.0.1:{port_b}/v1/program"),
+        Some(&program_payload),
+        None,
+    )
+    .expect("deploy program");
+    assert_eq!(deploy.status, 200);
+    let takeover = FleetContinuityRequest {
+        failed_robot: "ScannerAlpha".into(),
+        successor: Some("ScannerBeta".into()),
+        mission: Some("WarehouseInventoryScan".into()),
+        progress_percent: Some(72.0),
+        trigger: Some("robot_failed".into()),
+        fleet_name: Some("WarehouseFleet".into()),
+        from_robot: Some("ScannerAlpha".into()),
+        members: vec!["ScannerBeta".into()],
+    };
+    let resp = relay_continuity_via_mesh(
+        &format!("http://127.0.0.1:{mesh_port}"),
+        &takeover,
+        None,
+    )
+    .expect("mesh takeover");
+    assert!(resp.ok);
+    assert_eq!(resp.relayed, 1);
+    let status = http_request(
+        "GET",
+        &format!("http://127.0.0.1:{port_b}/v1/status"),
+        None,
+        None,
+    )
+    .expect("agent status");
+    assert!(status.body.contains("last_continuity_commands"));
+    assert!(status.body.contains("continuity_active"));
+    assert!(status.body.contains("continuity_successor"));
+    assert!(status.body.contains("\"continuity_engine\":\"interpreter\""));
+    assert!(status.body.contains("ScannerBeta"));
 }
 
 #[test]

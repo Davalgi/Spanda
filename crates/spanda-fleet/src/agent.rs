@@ -46,6 +46,26 @@ pub struct FleetAgentState {
     pub recovery_engine: Option<String>,
     #[serde(default)]
     pub last_recovery_runtime_logs: Vec<String>,
+    #[serde(default)]
+    pub last_continuity_commands: Vec<String>,
+    #[serde(default)]
+    pub continuity_active: Option<String>,
+    #[serde(default)]
+    pub continuity_successor: Option<String>,
+    #[serde(default)]
+    pub continuity_mode: Option<String>,
+    #[serde(default)]
+    pub continuity_validation: Option<String>,
+    #[serde(default)]
+    pub last_continuity_evidence: Option<serde_json::Value>,
+    #[serde(default)]
+    pub continuity_engine: Option<String>,
+    #[serde(default)]
+    pub last_continuity_runtime_logs: Vec<String>,
+    #[serde(default)]
+    pub mission_progress_percent: Option<f64>,
+    #[serde(default)]
+    pub mission_handoff_from: Option<String>,
 }
 
 pub fn default_fleet_agent_state_path() -> PathBuf {
@@ -212,6 +232,38 @@ fn clear_fleet_agent_on_identity_change(state: &mut FleetAgentState, new_robot_n
         state.recovery_speed_cap = None;
         state.recovery_engine = None;
         state.last_recovery_runtime_logs.clear();
+        state.last_continuity_commands.clear();
+        state.continuity_active = None;
+        state.continuity_successor = None;
+        state.continuity_mode = None;
+        state.continuity_validation = None;
+        state.last_continuity_evidence = None;
+        state.continuity_engine = None;
+        state.last_continuity_runtime_logs.clear();
+        state.mission_progress_percent = None;
+        state.mission_handoff_from = None;
+    }
+}
+
+pub(crate) fn apply_continuity_takeover(
+    state: &mut FleetAgentState,
+    report: &spanda_assurance::TakeoverReport,
+    request: &spanda_deploy_http::FleetContinuityRequest,
+) {
+    state.continuity_active = Some(format!("takeover:{}", report.successor));
+    state.continuity_successor = Some(report.successor.clone());
+    state.continuity_mode = Some(format!("{:?}", report.mode));
+    state.mission_progress_percent = request.progress_percent;
+    state.mission_handoff_from = Some(request.failed_robot.clone());
+
+    if state.robot_name == request.failed_robot {
+        state.mission_paused = true;
+    }
+    if state.robot_name == report.successor {
+        state.mission_paused = false;
+        if let Some(progress) = request.progress_percent {
+            state.mission_progress_percent = Some(progress);
+        }
     }
 }
 
@@ -373,6 +425,18 @@ pub fn handle_fleet_agent_request(
                 body: r#"{"ok":true}"#.into(),
             }
         }
+        ("POST", "/v1/continuity/ack") => {
+            state.continuity_active = None;
+            state.continuity_mode = None;
+            state.continuity_validation = None;
+            state.last_continuity_evidence = None;
+            state.continuity_engine = None;
+            state.last_continuity_runtime_logs.clear();
+            HttpResponse {
+                status: 200,
+                body: r#"{"ok":true}"#.into(),
+            }
+        }
         ("POST", "/v1/recovery/execute") => {
             let Ok(payload) = serde_json::from_str::<serde_json::Value>(&request.body) else {
                 return HttpResponse {
@@ -404,6 +468,38 @@ pub fn handle_fleet_agent_request(
                     "recovery_actions_applied": state.recovery_actions_applied,
                     "mission_paused": state.mission_paused,
                     "recovery_mode": state.recovery_mode,
+                }))
+                .unwrap_or_else(|_| r#"{"ok":true}"#.into()),
+            }
+        }
+        ("POST", "/v1/continuity/execute") => {
+            let body = request.body.clone();
+            let Ok(takeover) =
+                serde_json::from_str::<spanda_deploy_http::FleetContinuityRequest>(&body)
+            else {
+                return HttpResponse {
+                    status: 400,
+                    body: r#"{"ok":false,"error":"invalid continuity payload"}"#.into(),
+                };
+            };
+            if takeover.failed_robot.trim().is_empty() {
+                return HttpResponse {
+                    status: 400,
+                    body: r#"{"ok":false,"error":"failed_robot required"}"#.into(),
+                };
+            }
+            crate::continuity_agent::handle_fleet_takeover_command(state, &body);
+            HttpResponse {
+                status: 200,
+                body: serde_json::to_string(&serde_json::json!({
+                    "ok": true,
+                    "continuity_active": state.continuity_active,
+                    "continuity_successor": state.continuity_successor,
+                    "continuity_validation": state.continuity_validation,
+                    "continuity_engine": state.continuity_engine,
+                    "mission_paused": state.mission_paused,
+                    "mission_progress_percent": state.mission_progress_percent,
+                    "mission_handoff_from": state.mission_handoff_from,
                 }))
                 .unwrap_or_else(|_| r#"{"ok":true}"#.into()),
             }
@@ -443,6 +539,16 @@ pub fn handle_fleet_agent_request(
                 "recovery_speed_cap": state.recovery_speed_cap,
                 "last_recovery_runtime_logs": state.last_recovery_runtime_logs,
                 "last_recovery_evidence": state.last_recovery_evidence,
+                "last_continuity_commands": state.last_continuity_commands,
+                "continuity_active": state.continuity_active,
+                "continuity_successor": state.continuity_successor,
+                "continuity_mode": state.continuity_mode,
+                "continuity_validation": state.continuity_validation,
+                "continuity_engine": state.continuity_engine,
+                "last_continuity_runtime_logs": state.last_continuity_runtime_logs,
+                "last_continuity_evidence": state.last_continuity_evidence,
+                "mission_progress_percent": state.mission_progress_percent,
+                "mission_handoff_from": state.mission_handoff_from,
                 "has_program": state.program.is_some(),
                 "healthy": true,
             }))
@@ -509,6 +615,9 @@ pub fn handle_fleet_agent_request(
             state.last_peer_messages.push(message);
             if payload.topic == "fleet_recovery" {
                 crate::recovery_agent::handle_fleet_recovery_command(state, &payload.step);
+            }
+            if payload.topic == "fleet_takeover" {
+                crate::continuity_agent::handle_fleet_takeover_command(state, &payload.step);
             }
             HttpResponse {
                 status: 200,

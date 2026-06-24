@@ -1,12 +1,14 @@
 //! Multi-host fleet mesh coordinator for centralized peer relay routing.
 //!
 use crate::recovery_mesh::handle_fleet_recovery_post;
+use crate::continuity_mesh::handle_fleet_continuity_post;
 use crate::remote::{
     default_fleet_agents_path, load_fleet_agent_registry, relay_peer_deliveries, FleetAgentRegistry,
 };
 use crate::PeerDelivery;
 use serde::{Deserialize, Serialize};
 use spanda_deploy_http::FleetRecoveryResponse;
+use spanda_deploy_http::FleetContinuityResponse;
 use spanda_deploy_http::{
     http_request, parse_http_request, read_plain_request, serve_tls_connection,
     write_plain_response, DeployAgentTls, HttpRequest, HttpResponse,
@@ -54,6 +56,8 @@ pub struct FleetMeshState {
     pub failed_total: u32,
     pub recovery_relayed_total: u32,
     pub recovery_failed_total: u32,
+    pub continuity_relayed_total: u32,
+    pub continuity_failed_total: u32,
     #[serde(default)]
     pub token: Option<String>,
 }
@@ -238,6 +242,8 @@ pub fn handle_fleet_mesh_request(
                     "failed_total": state.failed_total,
                     "recovery_relayed_total": state.recovery_relayed_total,
                     "recovery_failed_total": state.recovery_failed_total,
+                    "continuity_relayed_total": state.continuity_relayed_total,
+                    "continuity_failed_total": state.continuity_failed_total,
                     "healthy": true,
                 }))
                 .unwrap_or_else(|_| "{}".into()),
@@ -258,6 +264,15 @@ pub fn handle_fleet_mesh_request(
             if let Ok(payload) = serde_json::from_str::<FleetRecoveryResponse>(&response.body) {
                 state.recovery_relayed_total += payload.relayed;
                 state.recovery_failed_total += payload.failed;
+            }
+            response
+        }
+        ("POST", "/v1/fleet/continuity") => {
+            let registry = load_registry(registry_backing);
+            let response = handle_fleet_continuity_post(&request.body, &registry);
+            if let Ok(payload) = serde_json::from_str::<FleetContinuityResponse>(&response.body) {
+                state.continuity_relayed_total += payload.relayed;
+                state.continuity_failed_total += payload.failed;
             }
             response
         }
@@ -346,6 +361,25 @@ fn dispatch_mesh_request(
             let mut locked = state.lock().expect("fleet mesh state lock");
             locked.recovery_relayed_total += payload.relayed;
             locked.recovery_failed_total += payload.failed;
+        }
+        return response;
+    }
+
+    if request.method == "POST" && request.path == "/v1/fleet/continuity" {
+        let locked = state.lock().expect("fleet mesh state lock");
+        if unauthorized(&request, &locked) {
+            return HttpResponse {
+                status: 401,
+                body: r#"{"ok":false,"error":"unauthorized"}"#.into(),
+            };
+        }
+        drop(locked);
+        let registry = load_registry(registry_backing);
+        let response = handle_fleet_continuity_post(&request.body, &registry);
+        if let Ok(payload) = serde_json::from_str::<FleetContinuityResponse>(&response.body) {
+            let mut locked = state.lock().expect("fleet mesh state lock");
+            locked.continuity_relayed_total += payload.relayed;
+            locked.continuity_failed_total += payload.failed;
         }
         return response;
     }
