@@ -203,6 +203,65 @@ pub fn read_all(conn: &Connection) -> TelemetryStoreResult<Vec<TelemetryEvent>> 
 }
 
 pub fn query(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
+    if query.session_id.is_some() {
+        return query_with_session_window(conn, query);
+    }
+    query_indexed(conn, query)
+}
+
+fn query_indexed(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
+    let mut sql = String::from("SELECT payload FROM telemetry_events WHERE 1=1");
+    let mut binds: Vec<String> = Vec::new();
+    if let Some(kind) = &query.kind {
+        sql.push_str(" AND kind = ?");
+        binds.push(kind.clone());
+    }
+    if let Some(device_id) = &query.device_id {
+        sql.push_str(" AND device_id = ?");
+        binds.push(device_id.clone());
+    }
+    if let Some(sensor_id) = &query.sensor_id {
+        sql.push_str(" AND sensor_id = ?");
+        binds.push(sensor_id.clone());
+    }
+    if let Some(task_name) = &query.task_name {
+        sql.push_str(" AND task_name = ?");
+        binds.push(task_name.clone());
+    }
+    if let Some(since_ms) = query.since_ms {
+        sql.push_str(&format!(" AND timestamp_ms >= {since_ms}"));
+    }
+    sql.push_str(" ORDER BY id ASC");
+    let fetch_limit = query.limit.map(|limit| limit.saturating_mul(4));
+    if let Some(limit) = fetch_limit {
+        sql.push_str(&format!(" LIMIT {limit}"));
+    }
+
+    let mut stmt = conn
+        .prepare(&sql)
+        .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+    let rows = stmt
+        .query_map(rusqlite::params_from_iter(binds.iter()), |row| row.get::<_, String>(0))
+        .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+    let mut events = Vec::new();
+    for row in rows {
+        let payload = row.map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+        let event: TelemetryEvent = serde_json::from_str(&payload)
+            .map_err(|error| TelemetryStoreError::Serialization(error.to_string()))?;
+        if matches_query(&event, query) {
+            events.push(event);
+        }
+    }
+    if let Some(limit) = query.limit {
+        if events.len() > limit {
+            let start = events.len() - limit;
+            events = events.split_off(start);
+        }
+    }
+    Ok(events)
+}
+
+fn query_with_session_window(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
     let all = read_all(conn)?;
     let session_window = query
         .session_id

@@ -339,6 +339,17 @@ pub struct TelemetrySessionSummary {
     pub event_count: usize,
 }
 
+/// Resolved store layout for operator diagnostics.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct TelemetryStoreInfo {
+    pub backend: String,
+    pub store_path: String,
+    pub heartbeat_path: Option<String>,
+    pub event_count: usize,
+    pub max_events: Option<usize>,
+    pub migrated_jsonl_backup: Option<String>,
+}
+
 /// Append-only store with JSONL or SQLite backend and heartbeat index.
 pub struct PersistentTelemetryStore {
     store_path: PathBuf,
@@ -706,6 +717,36 @@ impl PersistentTelemetryStore {
             }
         }
         Ok(None)
+    }
+
+    pub fn info(&self) -> TelemetryStoreResult<TelemetryStoreInfo> {
+        let migrated_jsonl_backup = if self.sqlite_backend {
+            let backup = self
+                .store_path
+                .parent()
+                .map(|dir| dir.join("telemetry-store.jsonl.bak"))
+                .filter(|path| path.is_file())
+                .map(|path| path.display().to_string());
+            backup
+        } else {
+            None
+        };
+        Ok(TelemetryStoreInfo {
+            backend: if self.sqlite_backend {
+                "sqlite".into()
+            } else {
+                "jsonl".into()
+            },
+            store_path: self.store_path.display().to_string(),
+            heartbeat_path: if self.sqlite_backend {
+                None
+            } else {
+                Some(self.heartbeat_path.display().to_string())
+            },
+            event_count: self.read_all()?.len(),
+            max_events: self.max_events,
+            migrated_jsonl_backup,
+        })
     }
 
     pub fn stats(&self) -> TelemetryStoreResult<TelemetryStats> {

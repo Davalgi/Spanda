@@ -401,3 +401,23 @@ fn list_sessions_links_mission_trace_and_event_counts() {
         Some("mission.trace")
     );
 }
+
+#[test]
+fn store_info_reports_backend_and_counts() {
+    let dir = tempdir().unwrap();
+    let store_path = dir.path().join("telemetry.jsonl");
+    let heartbeat_path = dir.path().join("heartbeats.json");
+    let mut store = PersistentTelemetryStore::open(store_path, heartbeat_path);
+    store
+        .append(TelemetryEvent::Health {
+            target: "overall".into(),
+            status: "Ok".into(),
+            timestamp_ms: 1.0,
+            session_id: None,
+        })
+        .unwrap();
+    let info = store.info().unwrap();
+    assert_eq!(info.backend, "jsonl");
+    assert_eq!(info.event_count, 1);
+    assert!(!store.sqlite_backend());
+}
