@@ -1,0 +1,59 @@
+// Recovery assurance showcase — evidence, traceability, and readiness
+//
+//   spanda assure examples/showcase/recovery_assurance/rover.sd
+//   spanda recovery-report examples/showcase/recovery_assurance/rover.sd
+
+hardware RoverV1 {
+    sensors [GPS, Camera, Lidar];
+    actuators [DifferentialDrive];
+    connectivity [WiFi, LTE];
+}
+
+operating_mode NormalMode { normal; }
+operating_mode DegradedMode { degraded; }
+operating_mode SafeMode { safe; }
+operating_mode RecoveryMode { recovery; }
+
+recovery_policy RoverRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+}
+
+resilience_policy RoverResilience {
+    strategy sensor_failover;
+    strategy operator_alert;
+}
+
+assurance_case RecoveryAssuranceCase {
+    evidence hardware_verification;
+    evidence health_checks;
+    evidence simulation_replay;
+}
+
+mitigation GPSLostMitigation {
+    if gps.failed {
+        switch_to visual_odometry;
+        enter degraded_mode;
+    }
+}
+
+health_check RoverHealth for robot Rover {
+    check battery.level >= 20%;
+}
+
+kill_switch EmergencyStop {
+    priority: critical;
+    action { emergency_stop; }
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor camera: Camera;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.2 m/s; }
+    behavior patrol() { wheels.drive(0.5 m/s); }
+}

@@ -29,10 +29,7 @@ pub fn weighted_confidence(sensor_types: &[&str]) -> f64 {
     if sensor_types.is_empty() {
         return 0.0;
     }
-    let total: f64 = sensor_types
-        .iter()
-        .map(|t| weight_for_sensor_type(t))
-        .sum();
+    let total: f64 = sensor_types.iter().map(|t| weight_for_sensor_type(t)).sum();
     let max_possible = sensor_types.len() as f64 * 0.35;
     (total / max_possible.max(0.35)).min(1.0)
 }
@@ -53,9 +50,7 @@ pub fn sensor_type_index(program: &Program) -> std::collections::HashMap<String,
         let RobotDecl::RobotDecl { sensors, .. } = robot;
         for sensor in sensors {
             let SensorDecl::SensorDecl {
-                name,
-                sensor_type,
-                ..
+                name, sensor_type, ..
             } = sensor;
             index.insert(name.clone(), sensor_type.clone());
         }
@@ -73,10 +68,7 @@ pub fn preview_fusion_inputs(
     let mut types = Vec::new();
     for input in inputs {
         let (sensor, _) = parse_fusion_input(input);
-        let sensor_type = index
-            .get(sensor)
-            .map(String::as_str)
-            .unwrap_or("Unknown");
+        let sensor_type = index.get(sensor).map(String::as_str).unwrap_or("Unknown");
         types.push(sensor_type);
     }
     let confidence = weighted_confidence(&types);

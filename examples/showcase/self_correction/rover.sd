@@ -1,0 +1,37 @@
+// Self-correction showcase — provider and connectivity recovery
+//
+//   spanda heal examples/showcase/self_correction/rover.sd
+//   spanda recovery-report examples/showcase/self_correction/rover.sd
+
+hardware RoverV1 {
+    sensors [GPS, Camera];
+    actuators [DifferentialDrive];
+    connectivity [WiFi, LTE];
+}
+
+operating_mode NormalMode { normal; }
+operating_mode DegradedMode { degraded; }
+operating_mode RecoveryMode { recovery; }
+
+recovery_policy ConnectivityRecovery {
+    on lte.failed {
+        restart connectivity;
+        enter degraded_mode;
+    }
+    on provider.failed {
+        reconnect provider;
+        reload package;
+    }
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor camera: Camera;
+    actuator wheels: DifferentialDrive;
+
+    safety { max_speed = 1.0 m/s; }
+
+    behavior patrol() {
+        wheels.drive(0.4 m/s);
+    }
+}

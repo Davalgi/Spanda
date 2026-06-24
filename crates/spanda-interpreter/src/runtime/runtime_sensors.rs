@@ -144,7 +144,8 @@ impl<B: RobotBackend> Interpreter<B> {
                 },
             );
         }
-        let confidence = weighted_confidence(&sensor_types.iter().map(String::as_str).collect::<Vec<_>>());
+        let confidence =
+            weighted_confidence(&sensor_types.iter().map(String::as_str).collect::<Vec<_>>());
         fields.insert(
             "confidence".into(),
             RuntimeValue::Number {

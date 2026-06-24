@@ -6,6 +6,7 @@ mod demo_cli;
 mod deploy_ota;
 mod package;
 mod readiness_cli;
+mod recovery_cli;
 mod ros2_cli;
 mod swarm_cli;
 mod trace_cli;
@@ -1470,6 +1471,28 @@ fn main() {
         return;
     }
 
+    if command == "heal" {
+        recovery_cli::cmd_heal(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "recover" {
+        recovery_cli::cmd_recover(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "recovery-report" || command == "recovery" {
+        if command == "recovery" {
+            recovery_cli::recovery_dispatch(&args[2..]);
+        } else {
+            recovery_cli::cmd_recovery_report(&args[2..]);
+        }
+        let _ = io::stdout().flush();
+        return;
+    }
+
     if command == "readiness" {
         readiness_cli::readiness_dispatch(&args[2..]);
         let _ = io::stdout().flush();
@@ -1477,7 +1500,11 @@ fn main() {
     }
 
     if command == "analyze-failure" {
-        readiness_cli::cmd_analyze_failure(&args[2..]);
+        if args.iter().any(|a| a == "--with-recovery") {
+            recovery_cli::cmd_analyze_failure_recovery(&args[2..]);
+        } else {
+            readiness_cli::cmd_analyze_failure(&args[2..]);
+        }
         let _ = io::stdout().flush();
         return;
     }
@@ -1603,6 +1630,7 @@ fn main() {
     let mut readiness_json = false;
     let mut trigger_kill_switch: Option<String> = None;
     let mut inject_health_faults = false;
+    let mut inject_failure: Option<String> = None;
     let mut i = 2;
 
     // Repeat while i < args.len().
@@ -1656,6 +1684,10 @@ fn main() {
                 trigger_kill_switch = Some(args[i].clone());
             }
             "--inject-health-faults" => inject_health_faults = true,
+            "--inject-failure" => {
+                i += 1;
+                inject_failure = args.get(i).cloned();
+            }
             "--twin-export" => {
                 i += 1;
                 if i >= args.len() {
@@ -1944,6 +1976,21 @@ fn main() {
                 print_run_json(run(&source, opts));
             } else {
                 human_run(&source, &file, command, opts);
+            }
+            if command == "sim" {
+                if let Some(failure_kind) = inject_failure.as_deref() {
+                    let program = parse(tokenize(&source).unwrap()).unwrap();
+                    let recovery =
+                        spanda_assurance::simulate_failure_recovery(&program, failure_kind);
+                    eprintln!("\n--- Recovery Simulation ---");
+                    eprintln!(
+                        "{}",
+                        spanda_assurance::format_recovery(
+                            &recovery,
+                            spanda_readiness::ReportFormat::Text
+                        )
+                    );
+                }
             }
         }
         "fmt" => {

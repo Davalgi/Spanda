@@ -62,6 +62,18 @@ operating_mode SafeMode {
     safe;
 }
 
+operating_mode RecoveryMode {
+    recovery;
+}
+
+recovery_policy RoverRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+}
+
 resilience_policy RoverResilience {
     strategy dual_navigation;
     strategy graceful_degradation;

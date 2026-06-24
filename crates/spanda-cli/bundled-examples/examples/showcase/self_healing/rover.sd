@@ -1,0 +1,57 @@
+// Self-healing showcase — GPS failure recovery with safety validation
+//
+//   spanda heal examples/showcase/self_healing/rover.sd
+//   spanda recover examples/showcase/self_healing/rover.sd --failure gps
+//   spanda sim examples/showcase/self_healing/rover.sd --inject-failure gps
+
+hardware RoverV1 {
+    sensors [GPS, Camera, Lidar];
+    actuators [DifferentialDrive];
+    connectivity [WiFi, LTE];
+}
+
+operating_mode NormalMode { normal; }
+operating_mode DegradedMode { degraded; }
+operating_mode SafeMode { safe; }
+operating_mode RecoveryMode { recovery; }
+
+recovery_policy RoverRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+    on lidar.failed {
+        reduce_speed 0.3 m/s;
+        enter safe_mode;
+    }
+}
+
+mitigation SensorDegradation {
+    if gps.failed {
+        switch_to visual_odometry;
+        enter degraded_mode;
+    }
+}
+
+health_check RoverHealth for robot Rover {
+    check battery.level >= 20%;
+}
+
+kill_switch EmergencyStop {
+    priority: critical;
+    action { emergency_stop; }
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor camera: Camera;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+
+    safety { max_speed = 1.2 m/s; }
+
+    behavior patrol() {
+        wheels.drive(0.5 m/s);
+    }
+}

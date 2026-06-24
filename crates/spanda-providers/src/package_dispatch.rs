@@ -525,7 +525,9 @@ pub fn dispatch_official_package_call(
                 unit: spanda_ast::nodes::UnitKind::None,
             })
         }
-        ("assurance.anomaly", "scan_learned") if registry.has_capability("assurance.anomaly.scan") => {
+        ("assurance.anomaly", "scan_learned")
+            if registry.has_capability("assurance.anomaly.scan") =>
+        {
             let detector = string_arg(args, 0);
             let observed = if args.len() > 1 {
                 number_arg(args, 1)
@@ -554,7 +556,9 @@ pub fn dispatch_official_package_call(
                 unit: spanda_ast::nodes::UnitKind::None,
             })
         }
-        ("assurance.anomaly", "backend_name") if registry.has_capability("assurance.anomaly.scan") => {
+        ("assurance.anomaly", "backend_name")
+            if registry.has_capability("assurance.anomaly.scan") =>
+        {
             record_call(
                 telemetry,
                 mission_trace,

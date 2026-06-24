@@ -1,0 +1,41 @@
+// Fleet recovery showcase — reassign mission on robot failure
+//
+//   spanda heal examples/showcase/fleet_recovery/fleet.sd
+//   spanda analyze-failure examples/showcase/fleet_recovery/fleet.sd --with-recovery
+
+hardware RoverV1 {
+    sensors [GPS, Camera];
+    actuators [DifferentialDrive];
+    connectivity [WiFi];
+}
+
+fleet PatrolFleet {
+    robot RoverAlpha;
+    robot RoverBeta;
+}
+
+recovery_policy FleetRecovery {
+    on fleet.failed {
+        reassign mission;
+        promote backup coordinator;
+        redistribute tasks;
+    }
+}
+
+operating_mode NormalMode { normal; }
+operating_mode DegradedMode { degraded; }
+operating_mode RecoveryMode { recovery; }
+
+robot RoverAlpha {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { wheels.drive(0.3 m/s); }
+}
+
+robot RoverBeta {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { wheels.drive(0.3 m/s); }
+}

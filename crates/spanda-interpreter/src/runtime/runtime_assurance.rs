@@ -33,9 +33,7 @@ fn collect_learned_detectors(program: &Program) -> Vec<(String, String)> {
                 learned_backend,
                 ..
             } = decl;
-            let backend = learned_backend
-                .clone()
-                .or_else(|| import_backend.clone())?;
+            let backend = learned_backend.clone().or_else(|| import_backend.clone())?;
             Some((name.clone(), backend))
         })
         .collect()
@@ -250,11 +248,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 continue;
             }
             for det in &anomaly_detectors {
-                let AnomalyDetectorDecl::AnomalyDetectorDecl {
-                    name,
-                    expected,
-                    ..
-                } = det;
+                let AnomalyDetectorDecl::AnomalyDetectorDecl { name, expected, .. } = det;
                 if check.name == *name || expected.iter().any(|e| check.metric.contains(&e.metric))
                 {
                     triggered.insert(name.clone());

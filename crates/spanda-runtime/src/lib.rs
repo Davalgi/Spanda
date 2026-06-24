@@ -1,10 +1,10 @@
 //! Spanda runtime kernel primitives extracted for the Phase 4 lean-core split.
 //!
-pub mod fusion;
 pub mod classification;
 pub mod environment;
 pub mod error;
 pub mod events;
+pub mod fusion;
 pub mod hal_config;
 pub mod host;
 pub mod provider_types;
@@ -22,16 +22,16 @@ pub mod twin;
 pub mod value;
 pub mod world_model;
 
-pub use fusion::{
-    parse_fusion_input, preview_fusion_inputs, sensor_type_index, weight_for_sensor_type,
-    weighted_confidence, FusionPreview,
-};
 pub use classification::{
     module_classifications, official_package_names, ModuleClassification, ModuleOwnership,
 };
 pub use environment::Environment;
 pub use error::RuntimeError;
 pub use events::EventBus;
+pub use fusion::{
+    parse_fusion_input, preview_fusion_inputs, sensor_type_index, weight_for_sensor_type,
+    weighted_confidence, FusionPreview,
+};
 pub use hal_config::HalMemberConfig;
 pub use host::{imports_enable_navigation, imports_enable_slam, RuntimeHost};
 pub use provider_types::{
