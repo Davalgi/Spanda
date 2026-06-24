@@ -8,6 +8,7 @@ Append-only local storage for device metrics, sensor readings, and task heartbea
 |------------|--------|------|
 | `device` | `iot.telemetry.publish`, IoT hub dispatch | Each published device metric |
 | `sensor` | Robot `sensor.read()` / fusion inputs | Each sensor read during runtime |
+| `topic` | Robot `publish` on declared topics | Recorded as device telemetry (`device_id=robot`, `metric=topic path`) |
 | `heartbeat` | Task scheduler watchdog heartbeats | Latest index on every tick; history throttled (5s per task) |
 | `device_heartbeat` | IoT device register, liveness metrics (`heartbeat`/`liveness`/`alive`/`ping`), fleet agent health | Latest index updated each touch; history throttled (5s per device) |
 | `health` | Health status transitions (overall + per-check) | Runtime health polling |
@@ -63,19 +64,24 @@ spanda telemetry export [--out <file.jsonl>]
 spanda sim examples/end_to_end/validated_telemetry.sd --persist-telemetry
 spanda telemetry stats
 spanda telemetry list --kind sensor --json
+spanda telemetry latest --device TelemetryRover --metric /telemetry
 spanda telemetry heartbeats
 spanda telemetry devices
 ```
+
+Or run the scripted golden path: `./scripts/telemetry_store_golden_path.sh`
 
 Device liveness is recorded when:
 - `iot.device.register` succeeds
 - `iot.telemetry.publish` uses metric `heartbeat`, `liveness`, `alive`, or `ping`
 - `spanda fleet agent` health checks succeed (`protocol=fleet-agent`)
+- Deploy OTA agents respond on `/v1/health` (`protocol=deploy-agent`)
+- Robot `publish` on declared topics (metric = topic path, e.g. `/telemetry`)
 
 ## Crate
 
 Implementation: `crates/spanda-telemetry-store` (`TelemetryEvent`, `PersistentTelemetryStore`).
 
-TypeScript mirror: `src/telemetry-store.ts` records sensor reads and task heartbeats when `persistTelemetry` is set on `run()` or `SPANDA_TELEMETRY_STORE=1`. Health events are recorded from the Rust runtime; use the native CLI for full parity.
+TypeScript mirror: `src/telemetry-store.ts` records sensor reads, topic publishes, task/device heartbeats, and simplified health transitions when `persistTelemetry` is set on `run()` or `SPANDA_TELEMETRY_STORE=1`.
 
 See also [iot.md](./iot.md), [watchdogs.md](./watchdogs.md), [replay.md](./replay.md).

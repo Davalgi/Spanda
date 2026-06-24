@@ -216,6 +216,7 @@ spanda lint --json robot.sd
 ```bash
 spanda fleet run examples/communication/multi_robot_fleet.sd
 spanda fleet run --trace-scheduler --trace-tasks fleet.sd
+spanda fleet run --persist-telemetry fleet.sd
 ```
 
 Output includes:

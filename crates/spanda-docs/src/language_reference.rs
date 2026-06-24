@@ -888,12 +888,12 @@ const CLI_COMMANDS: &[CliCommand] = &[
     CliCommand {
         name: "spanda-run",
         section: 1,
-        synopsis: "spanda run [--json] [--verbose] [--trace-*] [--record] <file.sd>",
+        synopsis: "spanda run [--json] [--verbose] [--trace-*] [--record] [--persist-telemetry] <file.sd>",
         description: "Execute a Spanda program on the interpreter backend.",
-        options: "`--trace-scheduler`, `--trace-tasks`, `--trace-triggers`, `--trace-events` — scheduler telemetry\n`--trace-realtime`, `--metrics-json` — realtime metrics\n`--record` — write mission trace",
-        examples: "spanda run examples/rover.sd\nspanda run robot.sd --trace-realtime --metrics-json",
+        options: "`--trace-scheduler`, `--trace-tasks`, `--trace-triggers`, `--trace-events` — scheduler telemetry\n`--trace-realtime`, `--metrics-json` — realtime metrics\n`--record` — write mission trace\n`--persist-telemetry` — append device/sensor/heartbeat events to `.spanda/telemetry-store.jsonl`",
+        examples: "spanda run examples/rover.sd\nspanda run robot.sd --trace-realtime --metrics-json\nspanda run rover.sd --persist-telemetry",
         exit_status: "0 on successful execution; 1 on runtime or compile errors.",
-        files: "Mission traces when using `--record` (default: `mission.trace`).",
+        files: "Mission traces when using `--record` (default: `mission.trace`). Persistent telemetry when using `--persist-telemetry` (`.spanda/telemetry-store.jsonl`).",
         see_also: "spanda-sim(1), spanda-replay(1)",
     },
     CliCommand {
@@ -905,7 +905,7 @@ const CLI_COMMANDS: &[CliCommand] = &[
         examples: "spanda sim examples/rover.sd --record\nspanda sim robot.sd --wall-clock",
         exit_status: "0 on successful simulation; 1 on errors.",
         files: "Mission traces when using `--record`.",
-        see_also: "spanda-run(1), spanda-replay(1)",
+        see_also: "spanda-run(1), spanda-replay(1), spanda-telemetry(1)",
     },
     CliCommand {
         name: "spanda-replay",
@@ -917,6 +917,17 @@ const CLI_COMMANDS: &[CliCommand] = &[
         exit_status: "0 when replay succeeds or deterministic check passes; 1 otherwise.",
         files: "Input mission trace file (`.trace`).",
         see_also: "spanda-sim(1), spanda-run(1)",
+    },
+    CliCommand {
+        name: "spanda-telemetry",
+        section: 1,
+        synopsis: "spanda telemetry list|latest|heartbeats|devices|stats|export [flags]",
+        description: "Query the persistent telemetry store written by `--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`.",
+        options: "`list` — filter events by device, sensor, task, kind, since, limit\n`latest` — most recent device metric, sensor read, task heartbeat, or device liveness\n`heartbeats` / `devices` — index sidecar for tasks and devices\n`stats` — event counts\n`export` — copy JSONL log",
+        examples: "spanda telemetry stats\nspanda telemetry list --kind sensor --json\nspanda telemetry latest --device Rover",
+        exit_status: "0 on success; 1 when the store cannot be read.",
+        files: "`.spanda/telemetry-store.jsonl`, `.spanda/telemetry-heartbeats.json` (override with `SPANDA_TELEMETRY_STORE_PATH`).",
+        see_also: "spanda-run(1), spanda-sim(1)",
     },
     CliCommand {
         name: "spanda-test",
