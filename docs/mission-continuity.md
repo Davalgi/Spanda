@@ -141,6 +141,24 @@ Candidates blocked when untrusted, compromised, tampered, or not mission-ready.
 
 ---
 
+## `continuity_policy` syntax
+
+```spanda
+continuity_policy WarehouseContinuity {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+    }
+    on battery.critical {
+        hot takeover;
+    }
+}
+```
+
+Declared actions influence takeover mode inference (`resume`, `hot takeover`, `restart`, `human takeover`, etc.).
+
+---
+
 ## Integrations
 
 | System | Integration |

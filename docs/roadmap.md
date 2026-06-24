@@ -114,7 +114,7 @@ See [self-healing.md](./self-healing.md), [recovery-policies.md](./recovery-poli
 | State transfer (`MissionStateSnapshot`, `MissionContextTransfer`) | **Stable** |
 | CLI (`continuity`, `takeover`, `delegate`, `succession`) | **Stable** |
 | Runtime takeover dispatch on fleet agents | **Future** |
-| Language `continuity_policy` declarations | **Future** |
+| Language `continuity_policy` declarations | **Experimental** |
 
 See [mission-continuity.md](./mission-continuity.md).
 

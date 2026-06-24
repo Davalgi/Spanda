@@ -31,6 +31,10 @@ echo "== showcase smoke: self-healing =="
 chmod +x scripts/self_healing_smoke.sh
 ./scripts/self_healing_smoke.sh
 
+echo "== showcase smoke: continuity =="
+chmod +x scripts/continuity_smoke.sh
+./scripts/continuity_smoke.sh
+
 echo "== showcase smoke: capability =="
 "${SPANDA}" check examples/showcase/capability_verification/rover.sd
 "${SPANDA}" verify examples/showcase/capability_verification/rover.sd --capabilities

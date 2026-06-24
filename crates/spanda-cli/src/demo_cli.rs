@@ -552,6 +552,58 @@ fn demo_self_healing(root: &Path) {
     println!("\nDemo complete. See examples/showcase/self_healing/ and docs/self-healing.md");
 }
 
+fn demo_continuity(root: &Path) {
+    let continuity_path = showcase(root, &["continuity", "warehouse.sd"]);
+    let fleet_path = showcase(root, &["fleet_succession", "delivery.sd"]);
+    let continuity_sd = require_file(&continuity_path);
+    let fleet_sd = require_file(&fleet_path);
+    let warehouse = continuity_sd.to_str().unwrap();
+    let delivery = fleet_sd.to_str().unwrap();
+
+    println!("== Mission continuity — takeover, delegation, succession ==\n");
+    run_spanda("check", continuity_sd, &[]);
+    run_spanda_args(&[
+        "continuity",
+        warehouse,
+        "--failed",
+        "ScannerAlpha",
+        "--progress",
+        "72",
+        "--trigger",
+        "robot_failed",
+    ]);
+    run_spanda_args(&[
+        "takeover",
+        warehouse,
+        "--failed",
+        "ScannerAlpha",
+        "--successor",
+        "ScannerBeta",
+        "--progress",
+        "72",
+    ]);
+    run_spanda_args(&[
+        "delegate",
+        warehouse,
+        "--failed",
+        "ScannerAlpha",
+        "--to",
+        "ScannerBeta",
+        "--progress",
+        "60",
+    ]);
+    run_spanda_args(&[
+        "succession",
+        delivery,
+        "--failed",
+        "CourierA",
+        "--scope",
+        "fleet",
+    ]);
+
+    println!("\nDemo complete. See examples/showcase/continuity/ and docs/mission-continuity.md");
+}
+
 fn demo_assurance(root: &Path) {
     // Description:
     //     Demo assurance.
@@ -612,6 +664,7 @@ pub fn demo_dispatch(args: &[String]) {
         "readiness" => demo_readiness(&root),
         "assurance" => demo_assurance(&root),
         "self-healing" | "selfhealing" | "healing" => demo_self_healing(&root),
+        "continuity" | "takeover" | "succession" => demo_continuity(&root),
         "" | "list" | "--help" | "-h" => {
             eprintln!(
                 "Spanda showcase demos\n\n\
@@ -625,7 +678,8 @@ pub fn demo_dispatch(args: &[String]) {
                    health    — health checks with fault injection\n\
                    readiness — operational go/no-go with runtime health\n\
                    assurance — mission assurance CLI suite (assure, anomaly, state)\n\
-                   self-healing — recovery policies, heal/recover/sim, fleet recovery\n\n\
+                   self-healing — recovery policies, heal/recover/sim, fleet recovery\n\
+                   continuity — mission continuity, takeover, delegation, succession\n\n\
                  Set SPANDA_ROOT to the repository root if examples are not found.\n\
                  See examples/showcase/README.md"
             );

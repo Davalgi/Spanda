@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Mission continuity framework:** `spanda-assurance` continuity module with `MissionContinuityManager`, `MissionDelegationManager`, `TakeoverCoordinator`, `SuccessionPlanner`, `MissionCheckpointManager`, `MissionStateTransferManager`, `MissionRecoveryPlanner`, and `ContinuationDecisionEngine`; takeover modes (resume, restart, partial restart, shadow/hot/cold/human); state transfer models; successor ranking with trust/readiness gates.
 - **Continuity CLI:** `spanda continuity`, `spanda takeover`, `spanda delegate`, `spanda succession` with `--failed`, `--progress`, `--trigger`, `--scope`, and report formats.
+- **`continuity_policy` syntax:** parser, AST, and takeover mode inference from declared actions; TypeScript parser parity.
+- **`spanda demo continuity`:** showcase demo and `scripts/continuity_smoke.sh` (wired into `showcase_smoke.sh`).
 - **Continuity examples:** `examples/showcase/continuity/`, `takeover/`, `delegation/`, `swarm_takeover/`, `fleet_succession/`.
 - **Docs:** [mission-continuity.md](docs/mission-continuity.md).
 - **Platform maturity roadmap:** [docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md) — classification, architecture impact, dependency mapping, priorities, documentation plan, risk analysis, and phased implementation for 16 adoption/trust/operations areas; tamper detection deep dive (architecture, trust model, detection strategies, response policies, demos, gaps).
