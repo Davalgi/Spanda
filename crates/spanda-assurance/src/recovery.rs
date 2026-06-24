@@ -248,7 +248,7 @@ pub struct RecoveryKnowledgeEntry {
 }
 
 /// Recovery knowledge base for self-improvement recommendations.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct RecoveryKnowledgeBase {
     pub entries: Vec<RecoveryKnowledgeEntry>,
 }
@@ -301,6 +301,12 @@ impl RecoveryPlanner {
             .unwrap_or_else(|| infer_diagnosis(&context.issue, classification));
         let policies = extract_recovery_policies(program);
         let mut actions = actions_from_policies(&policies, &context.issue);
+        if actions.is_empty() {
+            let knowledge = load_merged_recovery_knowledge(program);
+            if let Some(entry) = best_knowledge_entry(&knowledge, &context.issue) {
+                actions.push(parse_action_text(&entry.recovery_pattern, 1));
+            }
+        }
         if actions.is_empty() {
             actions = default_actions_for_classification(classification, &context.issue);
         }
@@ -656,6 +662,108 @@ pub fn build_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBase {
     RecoveryKnowledgeBase { entries }
 }
 
+/// Default on-disk path for the recovery knowledge store.
+pub fn default_knowledge_store_path() -> std::path::PathBuf {
+    std::path::PathBuf::from(".spanda/recovery_knowledge.json")
+}
+
+/// Load persisted recovery knowledge from disk.
+pub fn load_recovery_knowledge_store(path: &std::path::Path) -> RecoveryKnowledgeBase {
+    std::fs::read_to_string(path)
+        .ok()
+        .and_then(|content| serde_json::from_str(&content).ok())
+        .unwrap_or_default()
+}
+
+/// Persist recovery knowledge to disk.
+pub fn save_recovery_knowledge_store(
+    path: &std::path::Path,
+    kb: &RecoveryKnowledgeBase,
+) -> std::io::Result<()> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    std::fs::write(path, serde_json::to_string_pretty(kb).unwrap_or_default())
+}
+
+/// Update knowledge base from a recovery outcome (recommendations only).
+pub fn record_recovery_outcome(kb: &mut RecoveryKnowledgeBase, result: &RecoveryResult) {
+    let success = matches!(
+        result.status,
+        RecoveryStatus::Success | RecoveryStatus::PartialSuccess
+    );
+    let pattern = result.evidence.failure.clone();
+    for action in &result.executed_actions {
+        if let Some(entry) = kb.entries.iter_mut().find(|e| e.failure_pattern == pattern) {
+            entry.success_rate = if success {
+                (entry.success_rate * 0.85) + 0.15
+            } else {
+                entry.success_rate * 0.85
+            };
+            entry.recovery_pattern.clone_from(action);
+            entry.recommendation = format!("On {pattern} failure: {action}");
+        } else {
+            kb.entries.push(RecoveryKnowledgeEntry {
+                failure_pattern: pattern.clone(),
+                recovery_pattern: action.clone(),
+                success_rate: if success { 1.0 } else { 0.0 },
+                recommendation: format!("On {pattern} failure: {action}"),
+            });
+        }
+    }
+}
+
+/// Merge static and persisted recovery knowledge.
+pub fn merge_recovery_knowledge(
+    program: &Program,
+    persisted: &RecoveryKnowledgeBase,
+) -> RecoveryKnowledgeBase {
+    let mut kb = build_recovery_knowledge(program);
+    for entry in &persisted.entries {
+        if let Some(existing) = kb
+            .entries
+            .iter_mut()
+            .find(|e| e.failure_pattern == entry.failure_pattern)
+        {
+            existing.success_rate = (existing.success_rate + entry.success_rate) / 2.0;
+            if entry.success_rate > existing.success_rate {
+                existing
+                    .recovery_pattern
+                    .clone_from(&entry.recovery_pattern);
+                existing.recommendation.clone_from(&entry.recommendation);
+            }
+        } else {
+            kb.entries.push(entry.clone());
+        }
+    }
+    kb
+}
+
+/// Best knowledge entry for a failure issue by success rate.
+pub fn best_knowledge_entry<'a>(
+    kb: &'a RecoveryKnowledgeBase,
+    issue: &str,
+) -> Option<&'a RecoveryKnowledgeEntry> {
+    let lower = issue.to_lowercase();
+    kb.entries
+        .iter()
+        .filter(|e| {
+            lower.contains(&e.failure_pattern.to_lowercase())
+                || e.failure_pattern.to_lowercase().contains(&lower)
+        })
+        .max_by(|a, b| {
+            a.success_rate
+                .partial_cmp(&b.success_rate)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        })
+}
+
+/// Load merged recovery knowledge for a program (static + persisted store).
+pub fn load_merged_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBase {
+    let persisted = load_recovery_knowledge_store(&default_knowledge_store_path());
+    merge_recovery_knowledge(program, &persisted)
+}
+
 /// Simulate failure injection for recovery testing.
 pub fn simulate_failure_recovery(program: &Program, failure_kind: &str) -> RecoveryReport {
     let context = RecoveryContext {
@@ -724,7 +832,7 @@ pub fn evaluate_recovery(program: &Program, context: Option<&RecoveryContext>) -
     };
 
     let fleet_plans = plan_fleet_recovery(program, "Rover");
-    let knowledge = build_recovery_knowledge(program);
+    let knowledge = load_merged_recovery_knowledge(program);
     let mode_issues = validate_modes(program);
 
     let passed = !plans.is_empty()
@@ -821,7 +929,7 @@ pub fn recovery_from_diagnosis(program: &Program, diagnosis: &DiagnosisReport) -
             traceability,
         },
         fleet_plans: plan_fleet_recovery(program, "Rover"),
-        knowledge: build_recovery_knowledge(program),
+        knowledge: load_merged_recovery_knowledge(program),
         passed,
     }
 }
@@ -1189,5 +1297,59 @@ robot Rover {
         let report = simulate_failure_recovery(&program, "gps");
         assert!(!report.results.is_empty());
         assert_eq!(report.results[0].evidence.safety_validation, "PASS");
+    }
+
+    #[test]
+    fn knowledge_store_round_trip() {
+        let dir = std::env::temp_dir().join("spanda_recovery_kb_test");
+        let _ = std::fs::remove_dir_all(&dir);
+        let path = dir.join("knowledge.json");
+        let mut kb = RecoveryKnowledgeBase::default();
+        kb.entries.push(RecoveryKnowledgeEntry {
+            failure_pattern: "GPS".into(),
+            recovery_pattern: "switch_to visual_odometry".into(),
+            success_rate: 0.8,
+            recommendation: "On GPS failure: switch_to visual_odometry".into(),
+        });
+        save_recovery_knowledge_store(&path, &kb).unwrap();
+        let loaded = load_recovery_knowledge_store(&path);
+        assert_eq!(loaded.entries.len(), 1);
+        assert_eq!(loaded.entries[0].failure_pattern, "GPS");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn planner_prefers_persisted_knowledge() {
+        let program = parse_source(
+            "robot Rover { sensor gps: GPS; actuator w: DifferentialDrive; safety { max_speed = 1 m/s; } behavior b() {} }",
+        );
+        let store = super::default_knowledge_store_path();
+        if let Some(parent) = store.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        save_recovery_knowledge_store(
+            &store,
+            &RecoveryKnowledgeBase {
+                entries: vec![RecoveryKnowledgeEntry {
+                    failure_pattern: "gps".into(),
+                    recovery_pattern: "switch_to visual_odometry".into(),
+                    success_rate: 0.95,
+                    recommendation: "Use VO".into(),
+                }],
+            },
+        )
+        .unwrap();
+        let ctx = RecoveryContext {
+            issue: "gps.failed".into(),
+            diagnosis: None,
+            classification: None,
+            level: RecoveryLevel::Level2AutomaticLowRisk,
+        };
+        let plan = RecoveryPlanner::plan(&program, &ctx);
+        assert!(plan
+            .actions
+            .iter()
+            .any(|a| a.description.contains("visual_odometry")));
+        let _ = std::fs::remove_file(&store);
     }
 }

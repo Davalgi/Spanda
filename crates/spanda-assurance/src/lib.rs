@@ -28,16 +28,18 @@ pub use mitigation::{extract_mitigations, MitigationReport};
 pub use modes::{extract_operating_modes, validate_modes};
 pub use prognostics::{evaluate_prognostics, PrognosticsReport};
 pub use recovery::{
-    analyze_failure_with_recovery, build_recovery_audit, build_recovery_knowledge,
-    build_recovery_traceability, classify_failure, evaluate_recovery, evaluate_recovery_readiness,
-    execute_recovery_plan, extract_recovery_policies, operational_modes_from_program,
-    parse_self_correction, plan_fleet_recovery, recovery_from_diagnosis, simulate_failure_recovery,
-    validate_mode_transitions, validate_recovery_plan, FailureAnalysisWithRecovery,
-    FleetRecoveryPlan, OperationalMode, PlannedRecoveryAction, RecoveryAssuranceMetrics,
-    RecoveryAuditRecord, RecoveryContext, RecoveryEvidence, RecoveryKnowledgeBase,
-    RecoveryKnowledgeEntry, RecoveryLevel, RecoveryPlan, RecoveryPlanner, RecoveryPolicySpec,
-    RecoveryReadiness, RecoveryReport, RecoveryResult, RecoveryStatus, RecoveryStrategy,
-    RecoveryTraceChain, SafeRecoveryAction,
+    analyze_failure_with_recovery, best_knowledge_entry, build_recovery_audit,
+    build_recovery_knowledge, build_recovery_traceability, classify_failure,
+    default_knowledge_store_path, evaluate_recovery, evaluate_recovery_readiness,
+    execute_recovery_plan, extract_recovery_policies, load_merged_recovery_knowledge,
+    load_recovery_knowledge_store, merge_recovery_knowledge, operational_modes_from_program,
+    parse_self_correction, plan_fleet_recovery, record_recovery_outcome, recovery_from_diagnosis,
+    save_recovery_knowledge_store, simulate_failure_recovery, validate_mode_transitions,
+    validate_recovery_plan, FailureAnalysisWithRecovery, FleetRecoveryPlan, OperationalMode,
+    PlannedRecoveryAction, RecoveryAssuranceMetrics, RecoveryAuditRecord, RecoveryContext,
+    RecoveryEvidence, RecoveryKnowledgeBase, RecoveryKnowledgeEntry, RecoveryLevel, RecoveryPlan,
+    RecoveryPlanner, RecoveryPolicySpec, RecoveryReadiness, RecoveryReport, RecoveryResult,
+    RecoveryStatus, RecoveryStrategy, RecoveryTraceChain, SafeRecoveryAction,
 };
 pub use report::{
     format_anomaly, format_assurance, format_diagnosis, format_mission_assurance,
