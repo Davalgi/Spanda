@@ -6,6 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import { dirname } from "node:path";
+import { remoteFetch } from "./http-fetch.js";
 import {
   loadMissionTrace,
   parseReplayOffset,
@@ -403,6 +404,45 @@ function renderOtlp(): string {
       scopeMetrics: [{ scope: { name: "spanda.telemetry" }, metrics }],
     }],
   }, null, 2);
+}
+
+export async function runTelemetryPush(args: string[]): Promise<number> {
+  let endpoint = process.env.SPANDA_OTLP_ENDPOINT;
+  let token: string | undefined;
+  for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === "--endpoint") {
+      endpoint = args[++i];
+    } else if (args[i] === "--token") {
+      token = args[++i];
+    } else {
+      throw new Error(`Unknown telemetry push flag: ${args[i]}`);
+    }
+  }
+  if (!endpoint) {
+    console.error("telemetry push requires --endpoint <url> or SPANDA_OTLP_ENDPOINT");
+    return 1;
+  }
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const response = await remoteFetch(endpoint, {
+    method: "POST",
+    headers,
+    body: renderOtlp(),
+  });
+  if (response.ok) {
+    console.log(`Pushed OTLP metrics to ${endpoint}`);
+    return 0;
+  }
+  const body = await response.text();
+  console.error(`telemetry push failed: HTTP ${response.status} from ${endpoint}`);
+  if (body) {
+    console.error(body);
+  }
+  return 1;
 }
 
 function parseReplayArgs(args: string[]): {

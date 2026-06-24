@@ -99,7 +99,7 @@ Usage:
   spanda sim [--json] [--inject-security-faults] [--enforce-certify] [--persist-telemetry] <file.sd>
   spanda security check [--json] <file.sd>
   spanda security audit [--json] <file.sd>
-  spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|serve|sessions|replay|info [flags]
+  spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|push|serve|sessions|replay|info [flags]
   spanda fmt [--json] <file.sd>
   spanda lint [--json] <file.sd>
   spanda doc [--json] [--out <file.md>] <file.sd>
@@ -324,7 +324,7 @@ async function main(): Promise<void> {
         handleSecurity(positional, json);
         break;
       case "telemetry":
-        handleTelemetry(positional, flags, json);
+        await handleTelemetry(positional, flags, json);
         break;
       case "fmt":
         handleFmt(positional[0], json);
@@ -650,15 +650,15 @@ function handleSecurity(positional: string[], json: boolean): void {
   process.exit(reportHasErrors(report) ? 1 : 0);
 }
 
-function handleTelemetry(
+async function handleTelemetry(
   positional: string[],
   flags: Map<string, string | boolean>,
   json: boolean,
-): void {
+): Promise<void> {
   const sub = positional[0];
   if (!sub) {
     console.error(
-      "Usage: spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|serve|sessions|replay|info [flags]",
+      "Usage: spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|push|serve|sessions|replay|info [flags]",
     );
     process.exit(1);
   }
@@ -684,6 +684,10 @@ function handleTelemetry(
       process.stderr.write(native.stderr);
     }
     process.exit(0);
+  }
+  if (sub === "push") {
+    const { runTelemetryPush } = await import("../telemetry-cli.js");
+    process.exit(await runTelemetryPush(args));
   }
   process.exit(runTelemetryCli(sub, args));
 }

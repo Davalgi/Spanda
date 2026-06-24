@@ -1,6 +1,7 @@
 //! CLI commands for querying the persistent telemetry store.
 
 use crate::replay_cli;
+use spanda_deploy_http::http_request;
 use spanda_telemetry_store::{
     global_store, render_otlp_json, render_prometheus, resolve_store_path,
     run_telemetry_server, TelemetryEvent, TelemetryQuery, TelemetryServeOptions, TelemetrySessionSummary,
@@ -20,6 +21,7 @@ pub fn cmd_telemetry(sub: &str, args: &[String]) {
         "devices" => cmd_devices(args),
         "prometheus" => cmd_prometheus(args),
         "otlp" => cmd_otlp(args),
+        "push" => cmd_push(args),
         "serve" => cmd_serve(args),
         "sessions" => cmd_sessions(args),
         "replay" => cmd_replay(args),
@@ -43,6 +45,7 @@ fn usage() {
          spanda telemetry devices [--json]\n\
          spanda telemetry prometheus [--out <file.prom>]\n\
          spanda telemetry otlp [--out <file.json>]\n\
+         spanda telemetry push --endpoint <url> [--token <t>]\n\
          spanda telemetry serve [--bind <addr>] [--once]\n\
          spanda telemetry sessions [--json]\n\
          spanda telemetry replay --session <id> [--from T+mm:ss] [--deterministic] [--playback] [--json]\n\
@@ -74,6 +77,58 @@ fn cmd_otlp(args: &[String]) {
         return;
     }
     print!("{body}");
+}
+
+fn cmd_push(args: &[String]) {
+    let mut endpoint: Option<String> = None;
+    let mut token: Option<String> = None;
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--endpoint" => {
+                i += 1;
+                endpoint = args.get(i).cloned();
+            }
+            "--token" => {
+                i += 1;
+                token = args.get(i).cloned();
+            }
+            other => {
+                eprintln!("Unknown telemetry push flag: {other}");
+                process::exit(1);
+            }
+        }
+        i += 1;
+    }
+    let endpoint = endpoint
+        .or_else(|| std::env::var("SPANDA_OTLP_ENDPOINT").ok())
+        .unwrap_or_else(|| {
+            eprintln!("telemetry push requires --endpoint <url> or SPANDA_OTLP_ENDPOINT");
+            process::exit(1);
+        });
+    let store = global_store().lock().unwrap();
+    let body = render_otlp_json(&store).unwrap_or_else(|error| {
+        eprintln!("telemetry push failed: {error}");
+        process::exit(1);
+    });
+    let response = http_request("POST", &endpoint, Some(&body), token.as_deref()).unwrap_or_else(
+        |error| {
+            eprintln!("telemetry push failed: {error}");
+            process::exit(1);
+        },
+    );
+    if (200..300).contains(&response.status) {
+        println!("Pushed OTLP metrics to {endpoint}");
+        return;
+    }
+    eprintln!(
+        "telemetry push failed: HTTP {} from {endpoint}",
+        response.status
+    );
+    if !response.body.is_empty() {
+        eprintln!("{}", response.body);
+    }
+    process::exit(1);
 }
 
 fn cmd_serve(args: &[String]) {
