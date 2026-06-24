@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Self-healing and recovery framework:** `spanda-assurance` recovery module with `RecoveryPlan`, `RecoveryPlanner`, failure classification, recovery levels (0–4), safe mode transitions, self-correction actions, validation gates (safety, hardware, capability, readiness), human approval integration, recovery audit/traceability, fleet recovery, recovery knowledge base, and assurance metrics.
+- **Recovery policy syntax:** `recovery_policy Name { on condition { actions; } }` declarations.
+- **Recovery CLI:** `spanda heal`, `spanda recover`, `spanda recovery-report`, `spanda recovery plan`; `spanda sim --inject-failure <kind>`; `spanda analyze-failure --with-recovery`.
+- **Examples:** `examples/showcase/self_healing/`, `self_correction/`, `fleet_recovery/`, `recovery_assurance/`.
+- **Docs:** [self-healing.md](docs/self-healing.md), [self-correction.md](docs/self-correction.md), [recovery-planning.md](docs/recovery-planning.md), [recovery-assurance.md](docs/recovery-assurance.md), [recovery-policies.md](docs/recovery-policies.md).
 - **Mission assurance platform:** new `spanda-assurance` crate with core interfaces (knowledge model, state estimation, anomaly detection, diagnosis, prognostics, mitigation, mode management, mission planning, resilience, assurance evidence) and static analysis integrated with readiness, health, traceability, and hardware verification.
 - **Mission assurance language:** `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `operating_mode`, `mission_plan`, `resilience_policy`, and `assurance_case` declarations.
 - **Mission assurance CLI:** `spanda assure`, `spanda anomaly scan`, `spanda prognostics`, `spanda mission verify`, and `spanda resilience check`; enhanced `spanda diagnose` for traces and programs.
