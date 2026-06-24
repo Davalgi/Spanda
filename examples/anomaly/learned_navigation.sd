@@ -1,3 +1,5 @@
+// Minimal learned anomaly example — full showcase: examples/showcase/assurance/rover.sd
+
 hardware RoverV1 {
     sensors [GPS, Lidar];
     actuators [DifferentialDrive];

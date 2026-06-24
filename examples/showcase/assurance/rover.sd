@@ -3,6 +3,8 @@
 //   spanda demo assurance
 //   spanda assure examples/showcase/assurance/rover.sd
 //   spanda state estimate examples/showcase/assurance/rover.sd
+//
+// Learned anomaly variant: examples/anomaly/learned_navigation.sd
 
 hardware RoverV1 {
     sensors [GPS, Camera, Lidar];
@@ -24,6 +26,7 @@ state_estimator RoverState {
 }
 
 anomaly_detector NavigationAnomaly {
+    learned backend assurance.anomaly;
     expected gps.accuracy <= 3 m;
     expected localization.confidence >= 0.85;
 }

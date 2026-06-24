@@ -315,7 +315,7 @@ fn demo_assurance(root: &Path) {
     run_spanda_args(&["mitigation", "plan", file]);
     run_spanda_args(&["readiness", file, "--target", "RoverV1", "--json"]);
 
-    println!("\nDemo complete. See examples/showcase/assurance/README.md");
+    println!("\nDemo complete. See examples/showcase/assurance/README.md and examples/anomaly/learned_navigation.sd");
 }
 
 pub fn demo_dispatch(args: &[String]) {
