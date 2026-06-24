@@ -138,6 +138,22 @@ const CONTINUITY_BRANCH_SNIPPET = `    on robot.failed {
 
 const APPROVAL_TOPIC_SNIPPET = `topic approval: Approval subscribe on "/ops/approval";`;
 
+const ASSURANCE_DECL_KEYWORDS = [
+  "recovery_policy",
+  "continuity_policy",
+  "health_check",
+  "health_policy",
+  "mitigation",
+  "resilience_policy",
+  "mission_plan",
+  "anomaly_detector",
+  "prognostics",
+  "operating_mode",
+  "assurance_case",
+  "knowledge_model",
+  "state_estimator",
+];
+
 function diagnosticSource(category?: string): string {
   if (category?.startsWith("kill")) return "spanda-verify";
   if (category?.startsWith("readiness:")) return "spanda-readiness";
@@ -146,23 +162,50 @@ function diagnosticSource(category?: string): string {
   return "spanda-compat";
 }
 
-function quickFixInsert(item: CompatItem): string | null {
+function firstRobotBodyInsert(source: string): { line: number; column: number } | null {
+  const lines = source.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*robot\s+\w+/.test(lines[i])) {
+      for (let j = i; j < Math.min(i + 4, lines.length); j++) {
+        const braceIdx = lines[j].indexOf("{");
+        if (braceIdx >= 0) {
+          return { line: j, column: braceIdx + 1 };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+type QuickFixInsert = { line: number; column: number; text: string };
+
+function quickFixInsert(item: CompatItem, source: string): QuickFixInsert | null {
   const category = item.category ?? "";
+  const fallbackLine = Math.max(0, item.line - 1);
+  const fallbackColumn = Math.max(0, item.column - 1);
   if (category === "continuity:policy") {
     if (item.message.includes("without continuity_policy")) {
-      return `${CONTINUITY_POLICY_SNIPPET}\n\n`;
+      return { line: fallbackLine, column: fallbackColumn, text: `${CONTINUITY_POLICY_SNIPPET}\n\n` };
     }
     if (item.message.includes("has no on branches")) {
-      return `${CONTINUITY_BRANCH_SNIPPET}\n`;
+      return { line: fallbackLine, column: fallbackColumn, text: `${CONTINUITY_BRANCH_SNIPPET}\n` };
     }
   }
   if (category === "continuity:approval" || category === "recovery:approval") {
-    return `${APPROVAL_TOPIC_SNIPPET}\n`;
+    const robot = firstRobotBodyInsert(source);
+    const text = `    ${APPROVAL_TOPIC_SNIPPET}\n`;
+    if (robot) {
+      return { line: robot.line, column: robot.column, text };
+    }
+    return { line: fallbackLine, column: fallbackColumn, text };
   }
   if (category === "continuity:handoff") {
-    return `${CONTINUITY_POLICY_SNIPPET}\n\n`;
+    return { line: fallbackLine, column: fallbackColumn, text: `${CONTINUITY_POLICY_SNIPPET}\n\n` };
   }
-  return item.suggested_fix ? `${item.suggested_fix}\n` : null;
+  if (!item.suggested_fix) {
+    return null;
+  }
+  return { line: fallbackLine, column: fallbackColumn, text: `${item.suggested_fix}\n` };
 }
 
 const COMM_KEYWORDS = [
@@ -1070,8 +1113,18 @@ connection.onCompletion((params: TextDocumentPositionParams): CompletionItem[] =
       detail: `${sym.kind}${sym.detail ? `: ${sym.detail}` : ""}`,
     }),
   );
-  return [...symbolItems, ...commCompletions()];
+  return [...symbolItems, ...assuranceDeclCompletions(), ...commCompletions()];
 });
+
+function assuranceDeclCompletions(): CompletionItem[] {
+  return ASSURANCE_DECL_KEYWORDS.map(
+    (label): CompletionItem => ({
+      label,
+      kind: CompletionItemKind.Keyword,
+      detail: "Spanda assurance declaration",
+    }),
+  );
+}
 
 connection.onDefinition((params: DefinitionParams): Location | null => {
   const doc = documents.get(params.textDocument.uri);
@@ -1104,6 +1157,10 @@ const KEYWORD_HOVER: Record<string, string> = {
     "Hardware compatibility check: sensors, memory, timing, connectivity, capabilities.",
   health_check:
     "`health_check Name for robot Robot { check metric == Healthy; }`",
+  recovery_policy:
+    "`recovery_policy Name { on condition { actions; } }` — self-healing and fleet recovery actions.",
+  continuity_policy:
+    "`continuity_policy Name { on robot.failed { resume from checkpoint; reassign mission; } }` — takeover and succession planning.",
   kill_switch:
     "Emergency stop declaration; use `on kill_switch` handlers for runtime reaction.",
 };
@@ -1253,11 +1310,9 @@ connection.onCodeAction((params: CodeActionParams): CodeAction[] => {
     }
   }
   for (const item of items) {
-    const fixText = quickFixInsert(item);
-    if (!fixText) continue;
-    const itemLine = Math.max(0, item.line - 1);
-    const itemColumn = Math.max(0, item.column - 1);
-    const overlaps = params.range.start.line === itemLine
+    const fix = quickFixInsert(item, doc.getText());
+    if (!fix) continue;
+    const overlaps = params.range.start.line === fix.line
       || (params.context.diagnostics ?? []).some((diag) => diag.message.includes(item.message));
     if (!overlaps) continue;
     actions.push({
@@ -1269,10 +1324,10 @@ connection.onCodeAction((params: CodeActionParams): CodeAction[] => {
           [params.textDocument.uri]: [
             {
               range: {
-                start: { line: itemLine, character: itemColumn },
-                end: { line: itemLine, character: itemColumn },
+                start: { line: fix.line, character: fix.column },
+                end: { line: fix.line, character: fix.column },
               },
-              newText: fixText,
+              newText: fix.text,
             },
           ],
         },

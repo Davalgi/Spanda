@@ -54,7 +54,7 @@
       "patterns": [
         {
           "name": "keyword.control.spanda",
-          "match": "\\b(robot|behavior|task|loop|every|if|else|match|module|import|struct|enum|trait|impl|for|fn|return|test|safety|verify|observe|twin|state_machine|event|on|transition|hardware|deploy|requires_hardware|requires_network|simulate_compatibility|agent|ai_model|goal|memory|publish|call|send_goal|topic|service|action|message|sensor|actuator|node|bus|spawn|select|extern|async|await)\\b"
+          "match": "\\b(robot|behavior|task|loop|every|if|else|match|module|import|struct|enum|trait|impl|for|fn|return|test|safety|verify|observe|twin|state_machine|event|on|transition|hardware|deploy|requires_hardware|requires_network|simulate_compatibility|agent|ai_model|goal|memory|publish|call|send_goal|topic|service|action|message|sensor|actuator|node|bus|spawn|select|extern|async|await|fleet|health_check|health_policy|recovery_policy|continuity_policy|mitigation|resilience_policy|mission_plan|anomaly_detector|prognostics|operating_mode|assurance_case|knowledge_model|state_estimator)\\b"
         }
       ]
     },

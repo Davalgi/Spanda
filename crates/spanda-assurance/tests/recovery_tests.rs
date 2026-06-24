@@ -212,6 +212,40 @@ robot R {
 }
 
 #[test]
+fn continuity_diagnostics_suggest_insertable_policy_block() {
+    let program = parse_source(
+        r#"
+fleet Patrol { RoverA; RoverB; }
+robot RoverA {
+    sensor gps: GPS;
+    actuator w: DifferentialDrive;
+    safety { max_speed = 1 m/s; }
+    behavior b() {}
+}
+robot RoverB {
+    sensor gps: GPS;
+    actuator w: DifferentialDrive;
+    safety { max_speed = 1 m/s; }
+    behavior b() {}
+}
+"#,
+    );
+    let diags = spanda_assurance::collect_continuity_diagnostics(&program);
+    let policy = diags
+        .iter()
+        .find(|d| d.category == "continuity:policy")
+        .expect("continuity:policy diagnostic");
+    assert!(
+        policy
+            .suggested_fix
+            .as_ref()
+            .is_some_and(|fix| fix.contains("continuity_policy FleetContinuity")),
+        "expected insertable continuity_policy snippet, got {:?}",
+        policy.suggested_fix
+    );
+}
+
+#[test]
 fn fleet_showcase_recovery_report_passes() {
     // Description:
     //     Fleet showcase recovery report passes.
