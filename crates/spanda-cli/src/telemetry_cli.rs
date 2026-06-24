@@ -1,8 +1,10 @@
 //! CLI commands for querying the persistent telemetry store.
 
+use crate::replay_cli;
 use spanda_telemetry_store::{
     global_store, render_otlp_json, render_prometheus, resolve_store_path,
-    run_telemetry_server, TelemetryEvent, TelemetryQuery, TelemetryServeOptions, TelemetryStats,
+    run_telemetry_server, TelemetryEvent, TelemetryQuery, TelemetryServeOptions, TelemetrySessionSummary,
+    TelemetryStats,
 };
 use std::fs;
 use std::path::PathBuf;
@@ -19,6 +21,8 @@ pub fn cmd_telemetry(sub: &str, args: &[String]) {
         "prometheus" => cmd_prometheus(args),
         "otlp" => cmd_otlp(args),
         "serve" => cmd_serve(args),
+        "sessions" => cmd_sessions(args),
+        "replay" => cmd_replay(args),
         other => {
             eprintln!("Unknown telemetry subcommand: {other}");
             usage();
@@ -38,7 +42,9 @@ fn usage() {
          spanda telemetry devices [--json]\n\
          spanda telemetry prometheus [--out <file.prom>]\n\
          spanda telemetry otlp [--out <file.json>]\n\
-         spanda telemetry serve [--bind <addr>] [--once]"
+         spanda telemetry serve [--bind <addr>] [--once]\n\
+         spanda telemetry sessions [--json]\n\
+         spanda telemetry replay --session <id> [--from T+mm:ss] [--deterministic] [--playback] [--json]"
     );
 }
 
@@ -271,6 +277,74 @@ fn cmd_devices(args: &[String]) {
     }
 }
 
+fn cmd_sessions(args: &[String]) {
+    let json = args.iter().any(|arg| arg == "--json");
+    let store = global_store().lock().unwrap();
+    let sessions = store.list_sessions().unwrap_or_else(|error| {
+        eprintln!("telemetry sessions failed: {error}");
+        process::exit(1);
+    });
+    if json {
+        println!("{}", serde_json::to_string_pretty(&sessions).unwrap());
+        return;
+    }
+    if sessions.is_empty() {
+        println!("No telemetry sessions recorded");
+        return;
+    }
+    for session in sessions {
+        print_session_summary(&session);
+    }
+}
+
+fn cmd_replay(args: &[String]) {
+    let mut session_id = None;
+    let mut from = None;
+    let mut deterministic = false;
+    let mut playback = false;
+    let mut json = false;
+    let mut i = 0;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--session" => {
+                i += 1;
+                session_id = args.get(i).cloned();
+            }
+            "--from" => {
+                i += 1;
+                from = args.get(i).cloned();
+            }
+            "--deterministic" => deterministic = true,
+            "--playback" => playback = true,
+            "--json" => json = true,
+            other => {
+                eprintln!("Unknown telemetry replay flag: {other}");
+                usage();
+                process::exit(1);
+            }
+        }
+        i += 1;
+    }
+    let Some(session_id) = session_id else {
+        eprintln!("telemetry replay requires --session <id>");
+        usage();
+        process::exit(1);
+    };
+    let store = global_store().lock().unwrap();
+    let trace_path = store
+        .mission_trace_for_session(&session_id)
+        .unwrap_or_else(|error| {
+            eprintln!("telemetry replay failed: {error}");
+            process::exit(1);
+        });
+    let Some(trace_path) = trace_path else {
+        eprintln!("No mission trace linked for session {session_id}");
+        eprintln!("Run with --record to link a mission trace on session end.");
+        process::exit(1);
+    };
+    replay_cli::human_replay(&trace_path, from.as_deref(), deterministic, playback, json);
+}
+
 fn cmd_heartbeats(args: &[String]) {
     let json = args.iter().any(|arg| arg == "--json");
     let store = global_store().lock().unwrap();
@@ -372,6 +446,29 @@ fn parse_query_args(args: &[String]) -> ParsedQueryArgs {
         task_name,
         metric,
     }
+}
+
+fn print_session_summary(session: &TelemetrySessionSummary) {
+    println!(
+        "{} start={:.0}ms end={} events={}{}{}",
+        session.session_id,
+        session.start_ms,
+        session
+            .end_ms
+            .map(|value| format!("{value:.0}ms"))
+            .unwrap_or_else(|| "open".into()),
+        session.event_count,
+        session
+            .source
+            .as_ref()
+            .map(|value| format!(" source={value}"))
+            .unwrap_or_default(),
+        session
+            .mission_trace_path
+            .as_ref()
+            .map(|value| format!(" trace={value}"))
+            .unwrap_or_default()
+    );
 }
 
 fn print_event(event: &TelemetryEvent) {

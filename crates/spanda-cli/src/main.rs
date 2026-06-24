@@ -8,6 +8,7 @@ mod deploy_ota;
 mod package;
 mod readiness_cli;
 mod recovery_cli;
+mod replay_cli;
 mod ros2_cli;
 mod swarm_cli;
 mod telemetry_cli;
@@ -25,7 +26,7 @@ use spanda_docs::{
     markdown_man_to_roff,
 };
 use spanda_driver::{
-    check, compile, lower_to_sir, playback_mission, replay_mission, run, run_debug, tokenize,
+    check, compile, lower_to_sir, run, run_debug, tokenize,
     verify_compatibility_with_registry, RunOptions, RunResult,
 };
 use spanda_error::SpandaError;
@@ -37,7 +38,6 @@ use spanda_lint::{lint, LintIssue, LintSeverity};
 #[cfg(feature = "llvm")]
 use spanda_llvm::{compile_native, emit_module_ir_with_options, CompileNativeOptions};
 use spanda_parser::parse;
-use spanda_runtime::replay::{parse_replay_offset, MissionTrace};
 use spanda_runtime::scheduler::SchedulerClock;
 use spanda_security::validate::{security_audit, security_check, SecurityReport, SecuritySeverity};
 use spanda_sir::SirProgram;
@@ -348,203 +348,6 @@ fn human_check(source: &str, file: &str) {
             process::exit(1);
         }
     }
-}
-
-fn human_replay(
-    trace_file: &str,
-    from: Option<&str>,
-    deterministic: bool,
-    playback: bool,
-    as_json: bool,
-) {
-    // Description:
-    //     Human replay.
-    //
-    // Inputs:
-    //     race_file: &str
-    //         Caller-supplied race file.
-    //     fro: Option<&str>
-    //         Caller-supplied fro.
-    //     deterministic: bool
-    //         Caller-supplied deterministic.
-    //     playback: bool
-    //         Caller-supplied playback.
-    //     as_json: bool
-    //         Caller-supplied as json.
-    //
-    // Outputs:
-    //     None.
-    //
-    // Example:
-
-    //     let result = spanda_cli::main::human_replay(race_file, fro, deterministic, playback, as_json);
-
-    let trace = MissionTrace::load(trace_file).unwrap_or_else(|e| {
-        eprintln!("{e}");
-        process::exit(1);
-    });
-    let offset_ms = if let Some(raw) = from {
-        parse_replay_offset(raw).unwrap_or_else(|e| {
-            eprintln!("{e}");
-            process::exit(1);
-        })
-    } else {
-        0.0
-    };
-    let frames = trace.frames_from(offset_ms);
-
-    // Apply recorded state snapshots without re-running program logic.
-    if playback {
-        let (report, state) = playback_mission(
-            trace_file,
-            RunOptions {
-                replay_from_ms: Some(offset_ms),
-                playback_wall_clock: true,
-                ..Default::default()
-            },
-        )
-        .unwrap_or_else(|e| {
-            eprintln!("Playback failed: {e}");
-            process::exit(1);
-        });
-        if as_json {
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&serde_json::json!({
-                    "ok": true,
-                    "mode": "playback",
-                    "frames_applied": report.frames_applied,
-                    "states_applied": report.states_applied,
-                    "offset_ms": offset_ms,
-                    "state": state,
-                }))
-                .unwrap()
-            );
-            return;
-        }
-        println!(
-            "Playback {}: {} frames ({} with state) from {:.0}ms",
-            trace_file, report.frames_applied, report.states_applied, offset_ms
-        );
-        println!(
-            "  Final pose: x={:.3} y={:.3} θ={:.3}",
-            state.pose.x, state.pose.y, state.pose.theta
-        );
-        return;
-    }
-
-    // Re-run the traced program and verify deterministic replay when requested.
-    if deterministic {
-        let source_path = resolve_trace_source(trace_file, &trace.source);
-        let source = fs::read_to_string(&source_path).unwrap_or_else(|e| {
-            eprintln!("Failed to read trace source '{source_path}': {e}");
-            process::exit(1);
-        });
-        let (_, verification) = replay_mission(
-            &source,
-            trace_file,
-            RunOptions {
-                max_loop_iterations: 20,
-                record_trace: true,
-                trace_source: Some(trace.source.clone()),
-                replay_from_ms: Some(offset_ms),
-                replay_deterministic: true,
-                ..Default::default()
-            },
-        )
-        .unwrap_or_else(|e| {
-            eprintln!("Replay failed: {e}");
-            process::exit(1);
-        });
-        if as_json {
-            println!(
-                "{}",
-                serde_json::to_string_pretty(&serde_json::json!({
-                    "ok": verification.ok,
-                    "source": trace.source,
-                    "deterministic": true,
-                    "offset_ms": offset_ms,
-                    "matched": verification.matched,
-                    "mismatches": verification.mismatches,
-                }))
-                .unwrap()
-            );
-        } else if verification.ok {
-            println!(
-                "✓ Deterministic replay verified for {} ({} frames from {:.0}ms)",
-                trace_file, verification.matched, offset_ms
-            );
-        } else {
-            eprintln!("✗ Deterministic replay mismatch for {trace_file}:");
-            for mismatch in &verification.mismatches {
-                eprintln!("  {mismatch}");
-            }
-            process::exit(1);
-        }
-        return;
-    }
-
-    if as_json {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&serde_json::json!({
-                "ok": true,
-                "source": trace.source,
-                "deterministic": trace.deterministic,
-                "offset_ms": offset_ms,
-                "frames": frames,
-            }))
-            .unwrap()
-        );
-        return;
-    }
-    println!(
-        "Replay {} ({} frames from {:.0}ms)",
-        trace_file,
-        frames.len(),
-        offset_ms
-    );
-    for frame in frames.iter().take(20) {
-        println!(
-            "  t={:.1}ms {} {:?}",
-            frame.sim_time_ms, frame.event, frame.payload
-        );
-    }
-    if frames.len() > 20 {
-        println!("  ... {} more frames", frames.len() - 20);
-    }
-}
-
-fn resolve_trace_source(trace_file: &str, source: &str) -> String {
-    // Description:
-    //     Resolve trace source.
-    //
-    // Inputs:
-    //     race_file: &str
-    //         Caller-supplied race file.
-    //     source: &str
-    //         Caller-supplied source.
-    //
-    // Outputs:
-    //     result: String
-    //         Return value from `resolve_trace_source`.
-    //
-    // Example:
-    //     let result = spanda_cli::main::resolve_trace_source(race_file, source);
-
-    // Prefer an existing path verbatim when available.
-    if Path::new(source).is_file() {
-        return source.to_string();
-    }
-
-    // Fall back to a sibling of the trace file directory.
-    if let Some(parent) = Path::new(trace_file).parent() {
-        let candidate = parent.join(source);
-        if candidate.is_file() {
-            return candidate.to_string_lossy().into_owned();
-        }
-    }
-    source.to_string()
 }
 
 fn human_run(source: &str, file: &str, command: &str, opts: RunOptions) {
@@ -2026,7 +1829,7 @@ fn main() {
             usage();
             process::exit(1);
         });
-        human_replay(
+        replay_cli::human_replay(
             &trace_file,
             replay_from.as_deref(),
             replay_deterministic,
