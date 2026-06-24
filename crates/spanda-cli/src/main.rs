@@ -67,6 +67,8 @@ struct CheckResponse {
     verification: Option<Vec<spanda_capability::VerificationDiagnostic>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     readiness: Option<spanda_readiness::ReadinessReport>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    readiness_diagnostics: Option<Vec<spanda_capability::VerificationDiagnostic>>,
 }
 
 #[derive(Serialize)]
@@ -207,6 +209,7 @@ fn print_check_json(
     err: Option<SpandaError>,
     verification: Option<Vec<spanda_capability::VerificationDiagnostic>>,
     readiness: Option<spanda_readiness::ReadinessReport>,
+    readiness_diagnostics: Option<Vec<spanda_capability::VerificationDiagnostic>>,
 ) {
     // Print check json.
     //
@@ -230,12 +233,14 @@ fn print_check_json(
             diagnostics: vec![],
             verification,
             readiness,
+            readiness_diagnostics,
         },
         Some(e) => CheckResponse {
             ok: false,
             diagnostics: e.diagnostics(),
             verification: None,
             readiness: None,
+            readiness_diagnostics: None,
         },
     };
     println!("{}", serde_json::to_string(&resp).unwrap());
@@ -1820,7 +1825,27 @@ fn main() {
                     } else {
                         None
                     };
-                    print_check_json(check_result.err(), verification, readiness);
+                    let readiness_diagnostics = if readiness_json && check_result.is_ok() {
+                        let options = spanda_readiness::readiness_options_from_flags(
+                            &program,
+                            target.clone(),
+                            inject_health_faults,
+                            inject_health_faults,
+                            simulate,
+                            strict_certify,
+                        );
+                        Some(spanda_readiness::collect_readiness_diagnostics(
+                            &program, &options,
+                        ))
+                    } else {
+                        None
+                    };
+                    print_check_json(
+                        check_result.err(),
+                        verification,
+                        readiness,
+                        readiness_diagnostics,
+                    );
                 } else {
                     human_check(&source, file_path);
                 }

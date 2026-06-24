@@ -401,6 +401,7 @@ function verificationSource(source: string): CompatItem[] {
 function readinessSource(source: string): CompatItem[] {
   const parsed = runCliJson(["check", "--readiness-json"], source) as {
     ok: boolean;
+    readiness_diagnostics?: CompatItem[];
     readiness?: {
       issues?: Array<{
         factor: string;
@@ -410,6 +411,13 @@ function readinessSource(source: string): CompatItem[] {
       }>;
     };
   } | null;
+
+  if (parsed?.readiness_diagnostics?.length) {
+    return parsed.readiness_diagnostics.map((item) => ({
+      ...item,
+      severity: item.severity === "info" ? "warning" : item.severity,
+    }));
+  }
 
   if (parsed?.readiness?.issues?.length) {
     return parsed.readiness.issues.map((issue) => ({
