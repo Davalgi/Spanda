@@ -1,8 +1,8 @@
 //! Runtime recovery action dispatch, operator approval, and fleet coordination.
 
 use super::{Interpreter, RobotBackend};
-use crate::options::{RecoveryRunOptions, RecoveryRunResult};
-use crate::simulator::{create_default_simulator, SimulatorConfig};
+use super::super::super::options::{RecoveryRunOptions, RecoveryRunResult};
+use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use serde::{Deserialize, Serialize};
 use spanda_assurance::{
     classify_failure, default_knowledge_store_path, load_recovery_knowledge_store,
@@ -526,7 +526,7 @@ pub fn execute_recovery_on_program(
 #[cfg(test)]
 mod recovery_execute_tests {
     use super::execute_recovery_on_program;
-    use crate::options::RecoveryRunOptions;
+    use super::super::super::options::RecoveryRunOptions;
     use spanda_assurance::RecoveryStatus;
     use spanda_lexer::tokenize;
     use spanda_parser::parse;
