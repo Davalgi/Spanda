@@ -61,19 +61,18 @@ enum RtCondition {
 }
 
 fn bool_bindings() -> &'static Mutex<HashMap<String, bool>> {
-    // Bool bindings.
+    // Description:
+    //     Bool bindings.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static Mutex<HashMap<String, bool>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static Mutex<HashMap<String, bool>>
+    //         Return value from `bool_bindings`.
     //
     // Example:
-    // let result = spanda_rt::condition::bool_bindings();
+    //     let result = spanda_rt::condition::bool_bindings();
 
     // Produce new as the result.
     static STORE: OnceLock<Mutex<HashMap<String, bool>>> = OnceLock::new();
@@ -81,19 +80,18 @@ fn bool_bindings() -> &'static Mutex<HashMap<String, bool>> {
 }
 
 fn double_bindings() -> &'static Mutex<HashMap<String, f64>> {
-    // Double bindings.
+    // Description:
+    //     Double bindings.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static Mutex<HashMap<String, f64>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static Mutex<HashMap<String, f64>>
+    //         Return value from `double_bindings`.
     //
     // Example:
-    // let result = spanda_rt::condition::double_bindings();
+    //     let result = spanda_rt::condition::double_bindings();
 
     // Produce new as the result.
     static STORE: OnceLock<Mutex<HashMap<String, f64>>> = OnceLock::new();
@@ -101,19 +99,18 @@ fn double_bindings() -> &'static Mutex<HashMap<String, f64>> {
 }
 
 fn scan_distances() -> &'static Mutex<HashMap<String, f64>> {
-    // Scan distances.
+    // Description:
+    //     Scan distances.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static Mutex<HashMap<String, f64>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static Mutex<HashMap<String, f64>>
+    //         Return value from `scan_distances`.
     //
     // Example:
-    // let result = spanda_rt::condition::scan_distances();
+    //     let result = spanda_rt::condition::scan_distances();
 
     // Produce new as the result.
     static STORE: OnceLock<Mutex<HashMap<String, f64>>> = OnceLock::new();
@@ -121,20 +118,20 @@ fn scan_distances() -> &'static Mutex<HashMap<String, f64>> {
 }
 
 pub fn store_bool(name: &str, value: bool) {
-    // Store bool.
+    // Description:
+    //     Store bool.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `value` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     value: bool
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_rt::condition::store_bool(name, value);
+    //     let result = spanda_rt::condition::store_bool(name, value);
 
     // Produce bool bindings as the result.
     bool_bindings()
@@ -144,19 +141,19 @@ pub fn store_bool(name: &str, value: bool) {
 }
 
 pub fn load_bool(name: &str) -> bool {
-    // Load bool.
+    // Description:
+    //     Load bool.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `load_bool`.
     //
     // Example:
-    // let result = spanda_rt::condition::load_bool(name);
+    //     let result = spanda_rt::condition::load_bool(name);
 
     // Produce bool bindings as the result.
     bool_bindings()
@@ -168,20 +165,20 @@ pub fn load_bool(name: &str) -> bool {
 }
 
 pub fn store_double(name: &str, value: f64) {
-    // Store double.
+    // Description:
+    //     Store double.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `value` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     value: f64
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_rt::condition::store_double(name, value);
+    //     let result = spanda_rt::condition::store_double(name, value);
 
     // Produce double bindings as the result.
     double_bindings()
@@ -191,19 +188,19 @@ pub fn store_double(name: &str, value: f64) {
 }
 
 pub fn load_double(name: &str) -> f64 {
-    // Load double.
+    // Description:
+    //     Load double.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `load_double`.
     //
     // Example:
-    // let result = spanda_rt::condition::load_double(name);
+    //     let result = spanda_rt::condition::load_double(name);
 
     // Produce double bindings as the result.
     double_bindings()
@@ -215,19 +212,19 @@ pub fn load_double(name: &str) -> f64 {
 }
 
 pub fn scan_nearest(name: &str) -> f64 {
-    // Scan nearest.
+    // Description:
+    //     Scan nearest.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `scan_nearest`.
     //
     // Example:
-    // let result = spanda_rt::condition::scan_nearest(name);
+    //     let result = spanda_rt::condition::scan_nearest(name);
 
     // Produce scan distances as the result.
     scan_distances()
@@ -239,21 +236,23 @@ pub fn scan_nearest(name: &str) -> f64 {
 }
 
 fn eval_compare(op: RtCompareOp, left: f64, right: f64) -> bool {
-    // Eval compare.
+    // Description:
+    //     Eval compare.
     //
-    // Parameters:
-    // - `op` — input value
-    // - `left` — input value
-    // - `right` — input value
+    // Inputs:
+    //     op: RtCompareOp
+    //         Caller-supplied op.
+    //     lef: f64
+    //         Caller-supplied lef.
+    //     righ: f64
+    //         Caller-supplied righ.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `eval_compare`.
     //
     // Example:
-    // let result = spanda_rt::condition::eval_compare(op, left, right);
+    //     let result = spanda_rt::condition::eval_compare(op, lef, righ);
 
     // Match on op and handle each case.
     match op {
@@ -267,19 +266,19 @@ fn eval_compare(op: RtCompareOp, left: f64, right: f64) -> bool {
 }
 
 pub fn eval_condition_json(json: &str) -> bool {
-    // Eval condition json.
+    // Description:
+    //     Eval condition json.
     //
-    // Parameters:
-    // - `json` — input value
+    // Inputs:
+    //     json: &str
+    //         Caller-supplied json.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `eval_condition_json`.
     //
     // Example:
-    // let result = spanda_rt::condition::eval_condition_json(json);
+    //     let result = spanda_rt::condition::eval_condition_json(json);
 
     // Compute condition for the following logic.
     let condition: RtCondition = match serde_json::from_str(json) {
@@ -290,19 +289,19 @@ pub fn eval_condition_json(json: &str) -> bool {
 }
 
 fn eval_condition(condition: &RtCondition) -> bool {
-    // Eval condition.
+    // Description:
+    //     Eval condition.
     //
-    // Parameters:
-    // - `condition` — input value
+    // Inputs:
+    //     condition: &RtCondition
+    //         Caller-supplied condition.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `eval_condition`.
     //
     // Example:
-    // let result = spanda_rt::condition::eval_condition(condition);
+    //     let result = spanda_rt::condition::eval_condition(condition);
 
     // Match on condition and handle each case.
     match condition {
@@ -332,19 +331,18 @@ fn eval_condition(condition: &RtCondition) -> bool {
 }
 
 fn string_bindings() -> &'static Mutex<HashMap<String, String>> {
-    // String bindings.
+    // Description:
+    //     String bindings.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static Mutex<HashMap<String, String>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static Mutex<HashMap<String, String>>
+    //         Return value from `string_bindings`.
     //
     // Example:
-    // let result = spanda_rt::condition::string_bindings();
+    //     let result = spanda_rt::condition::string_bindings();
 
     // Produce new as the result.
     static STORE: OnceLock<Mutex<HashMap<String, String>>> = OnceLock::new();
@@ -352,20 +350,20 @@ fn string_bindings() -> &'static Mutex<HashMap<String, String>> {
 }
 
 pub fn store_string(name: &str, value: &str) {
-    // Store string.
+    // Description:
+    //     Store string.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `value` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     value: &str
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_rt::condition::store_string(name, value);
+    //     let result = spanda_rt::condition::store_string(name, value);
 
     // Produce string bindings as the result.
     string_bindings()
@@ -380,19 +378,18 @@ mod tests {
 
     #[test]
     fn evals_and_or_bool_tree() {
-        // Evals and or bool tree.
+        // Description:
+        //     Evals and or bool tree.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_rt::condition::evals_and_or_bool_tree();
+
+        //     let result = spanda_rt::condition::evals_and_or_bool_tree();
 
         store_bool("flag", true);
         store_bool("other", false);
@@ -402,19 +399,18 @@ mod tests {
 
     #[test]
     fn evals_double_compare() {
-        // Evals double compare.
+        // Description:
+        //     Evals double compare.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_rt::condition::evals_double_compare();
+
+        //     let result = spanda_rt::condition::evals_double_compare();
 
         store_double("speed", 0.5);
         let json = r#"{"op":"compare_double","name":"speed","cmp":"lt","value":1.0}"#;
@@ -423,19 +419,18 @@ mod tests {
 
     #[test]
     fn evals_string_compare() {
-        // Evals string compare.
+        // Description:
+        //     Evals string compare.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_rt::condition::evals_string_compare();
+
+        //     let result = spanda_rt::condition::evals_string_compare();
 
         store_string("mode", "auto");
         let json = r#"{"op":"eq_string","name":"mode","value":"auto"}"#;

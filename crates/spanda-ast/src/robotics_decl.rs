@@ -14,6 +14,20 @@ pub enum CertificationStandard {
 
 impl CertificationStandard {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
+        //
+        // Example:
+
+        //     let result = instance.as_str();
+
         match self {
             Self::Iso13849 => "ISO13849",
             Self::Iec61508 => "IEC61508",
@@ -22,6 +36,21 @@ impl CertificationStandard {
     }
 
     pub fn parse_ident(name: &str) -> Option<Self> {
+        // Description:
+        //     Parse ident.
+        //
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `parse_ident`.
+        //
+        // Example:
+
+        //     let result = spanda_ast::robotics_decl::parse_ident(name);
+
         match name {
             "ISO13849" => Some(Self::Iso13849),
             "IEC61508" => Some(Self::Iec61508),
@@ -31,6 +60,20 @@ impl CertificationStandard {
     }
 
     pub fn all() -> &'static [Self] {
+        // Description:
+        //     All.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: &'static [Self]
+        //         Return value from `all`.
+        //
+        // Example:
+
+        //     let result = spanda_ast::robotics_decl::all();
+
         &[Self::Iso13849, Self::Iec61508, Self::Iso26262]
     }
 }
@@ -68,6 +111,20 @@ pub enum SwarmPolicy {
 
 impl SwarmPolicy {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
+        //
+        // Example:
+
+        //     let result = instance.as_str();
+
         match self {
             Self::RoundRobin => "round_robin",
             Self::Broadcast => "broadcast",
@@ -76,6 +133,21 @@ impl SwarmPolicy {
     }
 
     pub fn parse_ident(name: &str) -> Option<Self> {
+        // Description:
+        //     Parse ident.
+        //
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `parse_ident`.
+        //
+        // Example:
+
+        //     let result = spanda_ast::robotics_decl::parse_ident(name);
+
         match name {
             "round_robin" => Some(Self::RoundRobin),
             "broadcast" => Some(Self::Broadcast),

@@ -16,21 +16,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         schedule: &TaskSchedule,
     ) -> Result<bool, SpandaError> {
-        // Run scheduled task.
+        // Description:
+        //     Run scheduled task.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `schedule` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     schedule: &TaskSchedule
+        //         Caller-supplied schedule.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `run_scheduled_task`.
         //
         // Example:
-        // let result = instance.run_scheduled_task(schedule);
-
+        //     let result = spanda_interpreter::runtime_scheduler::run_scheduled_task(&mut self, schedule);
         // use budget when budget is present.
 
         // Emit output when budget provides a budget.
@@ -117,20 +117,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn eval_contract(&mut self, expr: &Expr) -> Result<bool, SpandaError> {
-        // Eval contract.
+        // Description:
+        //     Eval contract.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `eval_contract`.
         //
         // Example:
-        // let result = instance.eval_contract(expr);
+        //     let result = spanda_interpreter::runtime_scheduler::eval_contract(&mut self, expr);
 
         // Match on eval expr and handle each case.
         match self.eval_expr(expr)? {
@@ -146,24 +147,27 @@ impl<B: RobotBackend> Interpreter<B> {
         ensures: &Option<Expr>,
         invariant: &Option<Expr>,
     ) -> Result<(), SpandaError> {
-        // Execute with contracts.
+        // Description:
+        //     Execute with contracts.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `body` — input value
-        // - `requires` — input value
-        // - `ensures` — input value
-        // - `invariant` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     body: &[Stmt]
+        //         Caller-supplied body.
+        //     requires: &Option<Expr>
+        //         Caller-supplied requires.
+        //     ensures: &Option<Expr>
+        //         Caller-supplied ensures.
+        //     invarian: &Option<Expr>
+        //         Caller-supplied invarian.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_with_contracts`.
         //
         // Example:
-        // let result = instance.execute_with_contracts(body, requires, ensures, invariant);
-
+        //     let result = spanda_interpreter::runtime_scheduler::execute_with_contracts(&mut self, body, requires, ensures, invarian);
         // use req when requires is present.
 
         // Emit output when requires provides a req.
@@ -196,19 +200,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_verify_warnings(&mut self) -> Result<(), SpandaError> {
-        // Run verify warnings.
+        // Description:
+        //     Run verify warnings.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_verify_warnings`.
         //
         // Example:
-        // let result = instance.run_verify_warnings();
+        //     let result = spanda_interpreter::runtime_scheduler::run_verify_warnings(&mut self);
 
         // Compute warnings for the following logic.
         let warnings = self.verify_warning_rules.clone();
@@ -241,19 +245,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_verify_rules(&mut self) -> Result<(), SpandaError> {
-        // Run verify rules.
+        // Description:
+        //     Run verify rules.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_verify_rules`.
         //
         // Example:
-        // let result = instance.run_verify_rules();
+        //     let result = spanda_interpreter::runtime_scheduler::run_verify_rules(&mut self);
 
         // Compute rules for the following logic.
         let rules = self.verify_rules.clone();
@@ -301,27 +305,35 @@ impl<B: RobotBackend> Interpreter<B> {
         invariant: &Option<Expr>,
         budget: Option<spanda_ast::foundations::ResourceBudgetDecl>,
     ) -> Result<(), SpandaError> {
-        // Execute task loop with contracts.
+        // Description:
+        //     Execute task loop with contracts.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `task_name` — input value
-        // - `priority` — input value
-        // - `body` — input value
-        // - `interval_ms` — input value
-        // - `requires` — input value
-        // - `ensures` — input value
-        // - `invariant` — input value
-        // - `budget` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ask_name: &str
+        //         Caller-supplied ask name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     body: &[Stmt]
+        //         Caller-supplied body.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
+        //     requires: &Option<Expr>
+        //         Caller-supplied requires.
+        //     ensures: &Option<Expr>
+        //         Caller-supplied ensures.
+        //     invarian: &Option<Expr>
+        //         Caller-supplied invarian.
+        //     budge: Option<spanda_ast::foundations::ResourceBudgetDecl>
+        //         Caller-supplied budge.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_task_loop_with_contracts`.
         //
         // Example:
-        // let result = instance.execute_task_loop_with_contracts(task_name, priority, body, interval_ms, requires, ensures, invariant, budget);
+        //     let result = spanda_interpreter::runtime_scheduler::execute_task_loop_with_contracts(&mut self, ask_name, priority, body, interval_ms, requires, ensures, invarian, budge);
 
         // Call record scheduler start on the current instance.
         self.telemetry.record_scheduler_start(1, interval_ms);
@@ -399,25 +411,29 @@ impl<B: RobotBackend> Interpreter<B> {
         invariant: &Option<Expr>,
         task_name: Option<&str>,
     ) -> Result<bool, SpandaError> {
-        // Execute task iteration.
+        // Description:
+        //     Execute task iteration.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `body` — input value
-        // - `requires` — input value
-        // - `ensures` — input value
-        // - `invariant` — input value
-        // - `task_name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     body: &[Stmt]
+        //         Caller-supplied body.
+        //     requires: &Option<Expr>
+        //         Caller-supplied requires.
+        //     ensures: &Option<Expr>
+        //         Caller-supplied ensures.
+        //     invarian: &Option<Expr>
+        //         Caller-supplied invarian.
+        //     ask_name: Option<&str>
+        //         Caller-supplied ask name.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `execute_task_iteration`.
         //
         // Example:
-        // let result = instance.execute_task_iteration(body, requires, ensures, invariant, task_name);
-
+        //     let result = spanda_interpreter::runtime_scheduler::execute_task_iteration(&mut self, body, requires, ensures, invarian, ask_name);
         // use req when requires is present.
 
         // Emit output when requires provides a req.
@@ -475,20 +491,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         tasks: Vec<TaskSchedule>,
     ) -> Result<(), SpandaError> {
-        // Execute multiplexed tasks.
+        // Description:
+        //     Execute multiplexed tasks.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `tasks` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     asks: Vec<TaskSchedule>
+        //         Caller-supplied asks.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_multiplexed_tasks`.
         //
         // Example:
-        // let result = instance.execute_multiplexed_tasks(tasks);
+        //     let result = spanda_interpreter::runtime_scheduler::execute_multiplexed_tasks(&mut self, asks);
 
         // skip further work when tasks is empty.
         if tasks.is_empty() {
@@ -552,6 +569,7 @@ impl<B: RobotBackend> Interpreter<B> {
                             max_jitter,
                         );
                     }
+
                     // Take this path when sim time > schedule.next due ms + declared deadline slack.
                     let deadline = schedule.deadline_ms.unwrap_or(schedule.interval_ms);
                     if sim_time > schedule.next_due_ms + deadline {
@@ -611,19 +629,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn execute_trigger_only_loop(&mut self) -> Result<(), SpandaError> {
-        // Execute trigger only loop.
+        // Description:
+        //     Execute trigger only loop.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_trigger_only_loop`.
         //
         // Example:
-        // let result = instance.execute_trigger_only_loop();
+        //     let result = spanda_interpreter::runtime_scheduler::execute_trigger_only_loop(&mut self);
 
         // Compute base tick for the following logic.
         let base_tick = self

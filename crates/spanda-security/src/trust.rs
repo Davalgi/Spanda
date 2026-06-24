@@ -17,19 +17,18 @@ pub enum TrustLevel {
 
 impl TrustLevel {
     pub fn all() -> &'static [TrustLevel] {
-        // All.
+        // Description:
+        //     All.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // &'static [TrustLevel].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static [TrustLevel]
+        //         Return value from `all`.
         //
         // Example:
-        // let result = spanda_security::trust::all();
+        //     let result = spanda_security::trust::all();
 
         // Return the static list of known values.
         &[
@@ -41,19 +40,18 @@ impl TrustLevel {
     }
 
     pub fn rank(self) -> u8 {
-        // Rank.
+        // Description:
+        //     Rank.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // u8.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: u8
+        //         Return value from `rank`.
         //
         // Example:
-        // let result = instance.rank();
+        //     let result = instance.rank();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -65,18 +63,18 @@ impl TrustLevel {
     }
 
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -88,20 +86,19 @@ impl TrustLevel {
     }
 
     pub fn satisfies(self, required: TrustLevel) -> bool {
-        // Satisfies.
+        // Description:
+        //     Satisfies.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `required` — input value
+        // Inputs:
+        //     required: TrustLevel
+        //         Caller-supplied required.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `satisfies`.
         //
         // Example:
-        // let result = instance.satisfies(required);
+        //     let result = instance.satisfies(required);
 
         // Call rank on the current instance.
         self.rank().cmp(&required.rank()) != Ordering::Less
@@ -112,19 +109,19 @@ impl FromStr for TrustLevel {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // Construct from str.
+        // Description:
+        //     From str.
         //
-        // Parameters:
-        // - `s` — input value
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
         //
         // Example:
-        // let result = spanda_security::trust::from_str(s);
+        //     let result = spanda_security::trust::from_str(s);
 
         // Match on s and handle each case.
         match s {
@@ -143,19 +140,18 @@ mod tests {
 
     #[test]
     fn trust_ordering() {
-        // Trust ordering.
+        // Description:
+        //     Trust ordering.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_security::trust::trust_ordering();
+
+        //     let result = spanda_security::trust::trust_ordering();
 
         assert!(TrustLevel::Certified.satisfies(TrustLevel::Trusted));
         assert!(!TrustLevel::Restricted.satisfies(TrustLevel::Trusted));

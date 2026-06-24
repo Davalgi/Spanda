@@ -17,6 +17,21 @@ pub struct MissionAssuranceReport {
 
 /// Verify mission plans against readiness mission verification.
 pub fn verify_mission_assurance(program: &Program) -> MissionAssuranceReport {
+    // Description:
+    //     Verify mission assurance.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: MissionAssuranceReport
+    //         Return value from `verify_mission_assurance`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::mission::verify_mission_assurance(progra);
+
     let Program::Program { mission_plans, .. } = program;
     let plans: Vec<MissionPlan> = mission_plans
         .iter()

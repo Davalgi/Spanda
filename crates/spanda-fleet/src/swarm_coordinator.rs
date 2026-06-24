@@ -46,10 +46,39 @@ pub struct SwarmCoordinationResult {
 }
 
 pub fn default_swarm_state_path() -> PathBuf {
+    // Description:
+    //     Default swarm state path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_swarm_state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::default_swarm_state_path();
+
     PathBuf::from(".spanda/swarm-state.json")
 }
 
 pub fn load_swarm_state(path: &Path) -> SwarmState {
+    // Description:
+    //     Load swarm state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: SwarmState
+    //         Return value from `load_swarm_state`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::load_swarm_state(path);
+
     if !path.exists() {
         return SwarmState::default();
     }
@@ -60,6 +89,23 @@ pub fn load_swarm_state(path: &Path) -> SwarmState {
 }
 
 pub fn save_swarm_state(path: &Path, state: &SwarmState) -> Result<(), String> {
+    // Description:
+    //     Save swarm state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     state: &SwarmState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `save_swarm_state`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::save_swarm_state(path, state);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -72,6 +118,21 @@ fn robot_by_name<'a>(robots: &'a [RobotDecl], name: &str) -> Option<&'a RobotDec
 }
 
 fn mission_for_robot(robot: &RobotDecl) -> Option<spanda_runtime::robotics::MissionRuntime> {
+    // Description:
+    //     Mission for robot.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: Option<spanda_runtime::robotics::MissionRuntime>
+    //         Return value from `mission_for_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::mission_for_robot(robo);
+
     let RobotDecl::RobotDecl { mission, .. } = robot;
     let mission = mission.as_ref()?;
     let MissionDecl::MissionDecl {
@@ -92,7 +153,39 @@ fn advance_member(
     member_name: &str,
     mesh: &mut FleetPeerMesh,
 ) -> (FleetMemberState, Vec<PeerDelivery>) {
-    // Advance one fleet member mission and collect peer handoff metadata.
+    // Description:
+
+    //     Advance member.
+
+    //
+
+    // Inputs:
+
+    //     robots: &[RobotDecl]
+
+    //         Caller-supplied robots.
+
+    //     ember_name: &str
+
+    //         Caller-supplied ember name.
+
+    //     esh: &mut FleetPeerMesh
+
+    //         Caller-supplied esh.
+
+    //
+
+    // Outputs:
+
+    //     result: (FleetMemberState, Vec<PeerDelivery>)
+
+    //         Return value from `advance_member`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::advance_member(robots, ember_name, esh);
     let Some(robot) = robot_by_name(robots, member_name) else {
         return (
             FleetMemberState {
@@ -136,7 +229,39 @@ fn advance_member(
 }
 
 fn leader_follow_deliveries(leader: &str, step: &str, members: &[String]) -> Vec<PeerDelivery> {
-    // Record synthetic leader-to-follower handoffs for non-peer fleet members.
+    // Description:
+
+    //     Leader follow deliveries.
+
+    //
+
+    // Inputs:
+
+    //     leader: &str
+
+    //         Caller-supplied leader.
+
+    //     step: &str
+
+    //         Caller-supplied step.
+
+    //     embers: &[String]
+
+    //         Caller-supplied embers.
+
+    //
+
+    // Outputs:
+
+    //     result: Vec<PeerDelivery>
+
+    //         Return value from `leader_follow_deliveries`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::leader_follow_deliveries(leader, step, embers);
     if step.is_empty() {
         return Vec::new();
     }
@@ -158,7 +283,39 @@ fn coordinate_swarm_group(
     swarm: &SwarmDecl,
     cursor: usize,
 ) -> (SwarmCoordinationReport, usize) {
-    // Apply a swarm policy to one declared fleet group.
+    // Description:
+
+    //     Coordinate swarm group.
+
+    //
+
+    // Inputs:
+
+    //     progra: &Program
+
+    //         Caller-supplied progra.
+
+    //     swar: &SwarmDecl
+
+    //         Caller-supplied swar.
+
+    //     cursor: usize
+
+    //         Caller-supplied cursor.
+
+    //
+
+    // Outputs:
+
+    //     result: (SwarmCoordinationReport, usize)
+
+    //         Return value from `coordinate_swarm_group`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::coordinate_swarm_group(progra, swar, cursor);
     let Program::Program { robots, fleets, .. } = program;
     let SwarmDecl::SwarmDecl {
         name,
@@ -266,23 +423,28 @@ pub fn coordinate_swarms_mesh(
     mesh_url: &str,
     token: Option<&str>,
 ) -> SwarmCoordinationResult {
-    // Execute swarm coordination locally, then push peer deliveries to the mesh coordinator.
+    // Description:
+    //     Coordinate swarms mesh.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for reporting
-    // - `state` — persistent swarm cursor state updated in place
-    // - `mesh_url` — fleet mesh coordinator base URL
-    // - `token` — optional bearer token for the mesh coordinator
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     state: &mut SwarmState
+    //         Caller-supplied state.
+    //     mesh_url: &str
+    //         Caller-supplied mesh url.
+    //     token: Option<&str>
+    //         Caller-supplied token.
     //
-    // Returns:
-    // Swarm coordination report with remote relay counters.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SwarmCoordinationResult
+    //         Return value from `coordinate_swarms_mesh`.
     //
     // Example:
-    // let result = coordinate_swarms_mesh(&program, "swarm.sd", &mut state, "http://mesh:8767", None);
+
+    //     let result = spanda_fleet::swarm_coordinator::coordinate_swarms_mesh(progra, program_path, state, esh_url, oken);
 
     let mut result = coordinate_swarms(program, program_path, state);
     let mut success = result.success;
@@ -317,21 +479,24 @@ pub fn coordinate_swarms(
     program_path: &str,
     state: &mut SwarmState,
 ) -> SwarmCoordinationResult {
-    // Execute one coordination tick for each swarm declaration in the program.
+    // Description:
+    //     Coordinate swarms.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for reporting
-    // - `state` — persistent swarm cursor state updated in place
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     state: &mut SwarmState
+    //         Caller-supplied state.
     //
-    // Returns:
-    // Swarm coordination report with per-group member states.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SwarmCoordinationResult
+    //         Return value from `coordinate_swarms`.
     //
     // Example:
-    // let result = coordinate_swarms(&program, "swarm.sd", &mut state);
+
+    //     let result = spanda_fleet::swarm_coordinator::coordinate_swarms(progra, program_path, state);
 
     let Program::Program { swarms, .. } = program;
     let registry = fleet_registry_from_program(program);

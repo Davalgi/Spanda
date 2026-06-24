@@ -4,19 +4,18 @@ use spanda_core::{run, RunOptions};
 
 #[test]
 fn multiplexes_multiple_tasks_without_entry_behavior() {
-    // Multiplexes multiple tasks without entry behavior.
+    // Description:
+    //     Multiplexes multiple tasks without entry behavior.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::scheduler::multiplexes_multiple_tasks_without_entry_behavior();
+
+    //     let result = spanda_core::scheduler::multiplexes_multiple_tasks_without_entry_behavior();
 
     let source = r#"
 robot R {
@@ -63,19 +62,18 @@ robot R {
 
 #[test]
 fn multitask_example_runs() {
-    // Multitask example runs.
+    // Description:
+    //     Multitask example runs.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::scheduler::multitask_example_runs();
+
+    //     let result = spanda_core::scheduler::multitask_example_runs();
 
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -87,19 +85,18 @@ fn multitask_example_runs() {
 
 #[test]
 fn scheduler_runs_critical_before_low_priority() {
-    // Scheduler runs critical before low priority.
+    // Description:
+    //     Scheduler runs critical before low priority.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::scheduler::scheduler_runs_critical_before_low_priority();
+
+    //     let result = spanda_core::scheduler::scheduler_runs_critical_before_low_priority();
 
     let source = r#"
 robot R {

@@ -12,19 +12,18 @@ use spanda_runtime::twin::TwinRuntime;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn update_twin_snapshot(&mut self) {
-        // Update twin snapshot.
+        // Description:
+        //     Update twin snapshot.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.update_twin_snapshot();
+        //     let result = spanda_interpreter::runtime_program::update_twin_snapshot(&mut self);
 
         // Compute divergence threshold for the following logic.
         let divergence_threshold = 0.15;
@@ -67,19 +66,18 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn refresh_twin_shadow_from_backend(&mut self) {
-        // Refresh twin shadow from backend.
+        // Description:
+        //     Refresh twin shadow from backend.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.refresh_twin_shadow_from_backend();
+        //     let result = spanda_interpreter::runtime_program::refresh_twin_shadow_from_backend(&mut self);
 
         // Compute Some for the following logic.
         let Some(twin) = &mut self.twin else {
@@ -113,18 +111,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn has_standalone_triggers(&self) -> bool {
+        // Description:
+        //     Has standalone triggers.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `has_standalone_triggers`.
         //
         // Example:
-        // let result = instance.has_standalone_triggers();
+        //     let result = spanda_interpreter::runtime_program::has_standalone_triggers(&self);
 
         // skip further work when trigger timers is empty.
         if !self.trigger_timers.is_empty() {
@@ -141,21 +140,22 @@ impl<B: RobotBackend> Interpreter<B> {
         trigger: &TriggerHandlerDecl,
         agent: Option<String>,
     ) {
-        // Register trigger decl.
+        // Description:
+        //     Register trigger decl.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `trigger` — input value
-        // - `agent` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     rigger: &TriggerHandlerDecl
+        //         Caller-supplied rigger.
+        //     agen: Option<String>
+        //         Caller-supplied agen.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_trigger_decl(trigger, agent);
+        //     let result = spanda_interpreter::runtime_program::register_trigger_decl(&mut self, rigger, agen);
 
         // Compute TriggerHandlerDecl for the following logic.
         let TriggerHandlerDecl::TriggerHandlerDecl {
@@ -194,19 +194,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn can_dispatch_trigger(&mut self) -> bool {
-        // Can dispatch trigger.
+        // Description:
+        //     Can dispatch trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `can_dispatch_trigger`.
         //
         // Example:
-        // let result = instance.can_dispatch_trigger();
+        //     let result = spanda_interpreter::runtime_program::can_dispatch_trigger(&mut self);
 
         // Call max triggers per tick on the current instance.
         self.triggers_dispatched_this_tick < self.options.max_triggers_per_tick
@@ -216,20 +216,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         handler_ids: Vec<usize>,
     ) -> Result<(), SpandaError> {
-        // Execute trigger handlers.
+        // Description:
+        //     Execute trigger handlers.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `handler_ids` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     handler_ids: Vec<usize>
+        //         Caller-supplied handler ids.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_trigger_handlers`.
         //
         // Example:
-        // let result = instance.execute_trigger_handlers(handler_ids);
+        //     let result = spanda_interpreter::runtime_program::execute_trigger_handlers(&mut self, handler_ids);
 
         // Create mutable ids for accumulating results.
         let mut ids = handler_ids;
@@ -264,20 +265,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         handler_id: usize,
     ) -> Result<bool, SpandaError> {
-        // Execute trigger body by id.
+        // Description:
+        //     Execute trigger body by id.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `handler_id` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     handler_id: usize
+        //         Caller-supplied handler id.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `execute_trigger_body_by_id`.
         //
         // Example:
-        // let result = instance.execute_trigger_body_by_id(handler_id);
+        //     let result = spanda_interpreter::runtime_program::execute_trigger_body_by_id(&mut self, handler_id);
 
         // Bind a local value for the next steps.
         let (name, kind, priority, body, agent) = {
@@ -328,19 +330,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn dispatch_event(&mut self, event_name: &str) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event_name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     event_name: &str
+        //         Caller-supplied event name.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_event`.
         //
         // Example:
-        // let result = instance.dispatch_event(event_name);
+        //     let result = spanda_interpreter::runtime_program::dispatch_event(&mut self, event_name);
 
         // Compute ids for the following logic.
         let ids: Vec<usize> = self
@@ -369,21 +373,23 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn execute_enter(&mut self, state_name: &str, line: u32) -> Result<(), SpandaError> {
-        // Execute enter.
+        // Description:
+        //     Execute enter.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `state_name` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     state_name: &str
+        //         Caller-supplied state name.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_enter`.
         //
         // Example:
-        // let result = instance.execute_enter(state_name, line);
+        //     let result = spanda_interpreter::runtime_program::execute_enter(&mut self, state_name, line);
 
         // Create mutable logs for accumulating results.
         let mut logs = Vec::new();

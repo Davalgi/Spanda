@@ -9,6 +9,19 @@ use std::time::Duration;
 
 #[test]
 fn agent_rejects_rollout_without_strict_proof_when_required() {
+    // Description:
+    //     Agent rejects rollout without strict proof when required.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent_certification::agent_rejects_rollout_without_strict_proof_when_required();
+
     let target = "RoverProgram@JetsonOrin".to_string();
     let (port, _handle) =
         spawn_test_agent_with_options(&target, None, true).expect("spawn test agent");
@@ -25,6 +38,19 @@ fn agent_rejects_rollout_without_strict_proof_when_required() {
 
 #[test]
 fn agent_accepts_rollout_with_strict_proof_when_required() {
+    // Description:
+    //     Agent accepts rollout with strict proof when required.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent_certification::agent_accepts_rollout_with_strict_proof_when_required();
+
     let target = "CertifiedRover@IndustrialController".to_string();
     let (port, _handle) =
         spawn_test_agent_with_options(&target, None, true).expect("spawn test agent");

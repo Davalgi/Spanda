@@ -21,6 +21,21 @@ pub struct ReadinessTraceRow {
 
 /// Build readiness traceability matrix for a program.
 pub fn readiness_traceability(program: &Program) -> Vec<ReadinessTraceRow> {
+    // Description:
+    //     Readiness traceability.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<ReadinessTraceRow>
+    //         Return value from `readiness_traceability`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::traceability::readiness_traceability(progra);
+
     let trace = capability_traceability(program);
     let health = health_traceability(program);
     let mut rows = Vec::new();

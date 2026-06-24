@@ -24,6 +24,21 @@ use std::io::{self, Write};
 use std::process;
 
 fn read_source(path: &str) -> String {
+    // Description:
+    //     Read source.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_source`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::read_source(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {path}: {e}");
         process::exit(1);
@@ -31,6 +46,23 @@ fn read_source(path: &str) -> String {
 }
 
 fn parse_program(source: &str, file: &str) -> Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
+    //
+    // Outputs:
+    //     result: Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::parse_program(source, file);
+
     compile(source)
         .unwrap_or_else(|e| {
             eprintln!("Error compiling {file}: {e}");
@@ -40,24 +72,80 @@ fn parse_program(source: &str, file: &str) -> Program {
 }
 
 fn state_path() -> std::path::PathBuf {
+    // Description:
+    //     State path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::state_path();
+
     env::var("SPANDA_DEPLOY_STATE")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| default_state_path())
 }
 
 fn agents_path() -> std::path::PathBuf {
+    // Description:
+    //     Agents path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `agents_path`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::agents_path();
+
     env::var("SPANDA_DEPLOY_AGENTS")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| default_agents_path())
 }
 
 fn fleet_agents_path() -> std::path::PathBuf {
+    // Description:
+    //     Fleet agents path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `fleet_agents_path`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::fleet_agents_path();
+
     env::var("SPANDA_FLEET_AGENTS")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| default_fleet_agents_path())
 }
 
 pub fn deploy_dispatch(args: &[String]) {
+    // Description:
+    //     Deploy dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::deploy_dispatch(args);
+
     if args.is_empty() {
         usage();
         process::exit(1);
@@ -81,6 +169,20 @@ pub fn deploy_dispatch(args: &[String]) {
 }
 
 pub fn deploy_usage_lines() -> &'static str {
+    // Description:
+    //     Deploy usage lines.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `deploy_usage_lines`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::deploy_usage_lines();
+
     "           spanda deploy plan [--json] [--version <ver>] [--sign-key <material>] [--bundle-out <file>] <file.sd>\n\
      spanda deploy rollout [--json] [--remote] [--require-certify] [--sign-key <material>] [--strategy all|canary|staged] [--canary-percent N] [--version <ver>] [--dry-run] <file.sd>\n\
      spanda deploy rollback [--json] [--remote] <file.sd>\n\
@@ -93,10 +195,37 @@ pub fn deploy_usage_lines() -> &'static str {
 }
 
 fn usage() {
+    // Description:
+    //     Usage.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::usage();
+
     eprintln!("Usage:\n{}", deploy_usage_lines());
 }
 
 fn cmd_plan(args: &[String]) {
+    // Description:
+    //     Cmd plan.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_plan(args);
+
     let mut json = false;
     let mut version = "1.0.0".to_string();
     let mut sign_key = None;
@@ -181,6 +310,20 @@ fn cmd_plan(args: &[String]) {
 }
 
 fn cmd_rollout(args: &[String]) {
+    // Description:
+    //     Cmd rollout.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_rollout(args);
+
     let mut json = false;
     let mut dry_run = false;
     let mut remote = false;
@@ -273,6 +416,20 @@ fn cmd_rollout(args: &[String]) {
 }
 
 fn cmd_rollback(args: &[String]) {
+    // Description:
+    //     Cmd rollback.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_rollback(args);
+
     let mut json = false;
     let mut remote = false;
     let mut file: Option<String> = None;
@@ -311,6 +468,20 @@ fn cmd_rollback(args: &[String]) {
 }
 
 fn cmd_agent(args: &[String]) {
+    // Description:
+    //     Cmd agent.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_agent(args);
+
     if args.is_empty() {
         eprintln!("Usage: spanda deploy agent start|register|list|readiness");
         process::exit(1);
@@ -328,6 +499,20 @@ fn cmd_agent(args: &[String]) {
 }
 
 fn cmd_agent_start(args: &[String]) {
+    // Description:
+    //     Cmd agent start.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_agent_start(args);
+
     let mut bind = "127.0.0.1:8765".to_string();
     let mut target = String::new();
     let mut token = None;
@@ -416,6 +601,20 @@ fn cmd_agent_start(args: &[String]) {
 }
 
 fn cmd_agent_register(args: &[String]) {
+    // Description:
+    //     Cmd agent register.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_agent_register(args);
+
     let mut target = None;
     let mut url = None;
     let mut token = None;
@@ -457,6 +656,20 @@ fn cmd_agent_register(args: &[String]) {
 }
 
 fn cmd_agent_list(args: &[String]) {
+    // Description:
+    //     Cmd agent list.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_agent_list(args);
+
     let json = args.iter().any(|a| a == "--json");
     let registry = load_agent_registry(&agents_path());
     if json {
@@ -475,6 +688,20 @@ fn cmd_agent_list(args: &[String]) {
 }
 
 fn cmd_agent_readiness(args: &[String]) {
+    // Description:
+    //     Cmd agent readiness.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_agent_readiness(args);
+
     let mut runtime = false;
     let mut inject_health_faults = false;
     let mut json = false;
@@ -541,6 +768,20 @@ fn cmd_agent_readiness(args: &[String]) {
 }
 
 fn cmd_status(args: &[String]) {
+    // Description:
+    //     Cmd status.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_status(args);
+
     let json = args.iter().any(|a| a == "--json");
     let path = state_path();
     let state: DeployState = load_deploy_state(&path);
@@ -563,6 +804,22 @@ fn cmd_status(args: &[String]) {
 }
 
 fn print_rollout(result: &RolloutResult, json: bool) {
+    // Description:
+    //     Print rollout.
+    //
+    // Inputs:
+    //     resul: &RolloutResult
+    //         Caller-supplied resul.
+    //     json: bool
+    //         Caller-supplied json.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::print_rollout(resul, json);
+
     if json {
         println!("{}", serde_json::to_string_pretty(result).unwrap());
     } else {
@@ -583,6 +840,20 @@ fn print_rollout(result: &RolloutResult, json: bool) {
 }
 
 pub fn fleet_orchestrate_dispatch(args: &[String]) {
+    // Description:
+    //     Fleet orchestrate dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::fleet_orchestrate_dispatch(args);
+
     let mut json = false;
     let mut remote = false;
     let mut mesh_url: Option<String> = None;
@@ -667,6 +938,20 @@ pub fn fleet_orchestrate_dispatch(args: &[String]) {
 }
 
 pub fn fleet_mesh_dispatch(args: &[String]) {
+    // Description:
+    //     Fleet mesh dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::fleet_mesh_dispatch(args);
+
     if args.first().map(String::as_str) != Some("start") {
         eprintln!("Usage: spanda fleet mesh start [--bind <addr>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>]");
         process::exit(1);
@@ -725,6 +1010,20 @@ pub fn fleet_mesh_dispatch(args: &[String]) {
 }
 
 pub fn fleet_agent_dispatch(args: &[String]) {
+    // Description:
+    //     Fleet agent dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::fleet_agent_dispatch(args);
+
     if args.is_empty() {
         eprintln!("Usage: spanda fleet agent start|register|list|readiness");
         process::exit(1);
@@ -742,6 +1041,20 @@ pub fn fleet_agent_dispatch(args: &[String]) {
 }
 
 fn cmd_fleet_agent_start(args: &[String]) {
+    // Description:
+    //     Cmd fleet agent start.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_fleet_agent_start(args);
+
     let mut bind = "127.0.0.1:8766".to_string();
     let mut robot_name = String::new();
     let mut token = None;
@@ -811,6 +1124,20 @@ fn cmd_fleet_agent_start(args: &[String]) {
 }
 
 fn cmd_fleet_agent_register(args: &[String]) {
+    // Description:
+    //     Cmd fleet agent register.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_fleet_agent_register(args);
+
     let mut robot_name = None;
     let mut url = None;
     let mut token = None;
@@ -852,6 +1179,20 @@ fn cmd_fleet_agent_register(args: &[String]) {
 }
 
 fn cmd_fleet_agent_list(args: &[String]) {
+    // Description:
+    //     Cmd fleet agent list.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_fleet_agent_list(args);
+
     let json = args.iter().any(|a| a == "--json");
     let registry = load_fleet_agent_registry(&fleet_agents_path());
     if json {
@@ -870,6 +1211,20 @@ fn cmd_fleet_agent_list(args: &[String]) {
 }
 
 fn cmd_fleet_agent_readiness(args: &[String]) {
+    // Description:
+    //     Cmd fleet agent readiness.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::deploy_ota::cmd_fleet_agent_readiness(args);
+
     let mut runtime = false;
     let mut inject_health_faults = false;
     let mut json = false;

@@ -13,23 +13,27 @@ impl<B: RobotBackend> Interpreter<B> {
         target: Option<&str>,
         line: u32,
     ) -> Result<(), SpandaError> {
-        // Check agent capability.
+        // Description:
+        //     Check agent capability.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent` — input value
-        // - `action` — input value
-        // - `target` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agen: &str
+        //         Caller-supplied agen.
+        //     action: &str
+        //         Caller-supplied action.
+        //     arge: Option<&str>
+        //         Caller-supplied arge.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `check_agent_capability`.
         //
         // Example:
-        // let result = instance.check_agent_capability(agent, action, target, line);
+        //     let result = spanda_interpreter::runtime_security::check_agent_capability(&mut self, agen, action, arge, line);
 
         // Compute caps for the following logic.
         let caps = self
@@ -109,6 +113,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn publish_source_id(&self) -> String {
+        // Description:
+        //     Publish source id.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: String
+        //         Return value from `publish_source_id`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_security::publish_source_id(&self);
+
         if let Some(agent) = &self.current_agent {
             return agent.clone();
         }
@@ -122,19 +141,19 @@ impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn secure_policy_from_block(
         block: &spanda_ast::foundations::SecureBlockDecl,
     ) -> SecurePolicy {
-        // Secure policy from block.
+        // Description:
+        //     Secure policy from block.
         //
-        // Parameters:
-        // - `block` — input value
+        // Inputs:
+        //     block: &spanda_ast::foundations::SecureBlockDecl
+        //         Caller-supplied block.
         //
-        // Returns:
-        // SecurePolicy.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurePolicy
+        //         Return value from `secure_policy_from_block`.
         //
         // Example:
-        // let result = spanda_core::runtime::secure_policy_from_block(block);
+        //     let result = spanda_interpreter::runtime_security::secure_policy_from_block(block);
 
         // Produce SecurePolicy as the result.
         SecurePolicy {
@@ -165,20 +184,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn resolve_signing_key(&self, key: &str) -> Result<String, SpandaError> {
-        // Resolve signing key.
+        // Description:
+        //     Resolve signing key.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `key` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     key: &str
+        //         Caller-supplied key.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `resolve_signing_key`.
         //
         // Example:
-        // let result = instance.resolve_signing_key(key);
+        //     let result = spanda_interpreter::runtime_security::resolve_signing_key(&self, key);
 
         // proceed only when is ok is available.
         if self.security.secrets.get(key).is_ok() {
@@ -196,21 +216,23 @@ impl<B: RobotBackend> Interpreter<B> {
         err: spanda_security::SecurityError,
         line: u32,
     ) -> SpandaError {
-        // Security error.
+        // Description:
+        //     Security error.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `err` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     err: spanda_security::SecurityError
+        //         Caller-supplied err.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // SpandaError.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaError
+        //         Return value from `security_error`.
         //
         // Example:
-        // let result = instance.security_error(err, line);
+        //     let result = spanda_interpreter::runtime_security::security_error(&self, err, line);
 
         // Produce into spanda as the result.
         RuntimeError::new(err.to_string(), line).into_spanda()

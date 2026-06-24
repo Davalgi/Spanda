@@ -8,6 +8,19 @@ use std::path::Path;
 
 #[test]
 fn official_packages_registered_in_framework_list() {
+    // Description:
+    //     Official packages registered in framework list.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_packages::official_packages_registered_in_framework_list();
+
     let names: Vec<_> = framework_packages().iter().map(|p| p.name).collect();
     let registry_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packages/registry");
     let hosted: Vec<String> = std::fs::read_dir(&registry_root)
@@ -26,6 +39,19 @@ fn official_packages_registered_in_framework_list() {
 
 #[test]
 fn installed_official_packages_filters_dependencies() {
+    // Description:
+    //     Installed official packages filters dependencies.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_packages::installed_official_packages_filters_dependencies();
+
     let found = installed_official_packages(["spanda-ros2", "my-local-lib", "spanda-gps"]);
     assert_eq!(found, vec!["spanda-gps", "spanda-ros2"]);
     assert!(is_official_package("spanda-mqtt"));
@@ -34,6 +60,19 @@ fn installed_official_packages_filters_dependencies() {
 
 #[test]
 fn load_official_packages_for_ros2_project() {
+    // Description:
+    //     Load official packages for ros2 project.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_packages::load_official_packages_for_ros2_project();
+
     let root =
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/packages/ros2_adapter_package");
     let packages = load_official_packages_for_project(&root).expect("manifest");
@@ -42,6 +81,19 @@ fn load_official_packages_for_ros2_project() {
 
 #[test]
 fn adapter_metadata_for_gps_and_fleet() {
+    // Description:
+    //     Adapter metadata for gps and fleet.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_packages::adapter_metadata_for_gps_and_fleet();
+
     assert!(adapter_metadata_for_package("spanda-gps").is_some());
     assert!(adapter_metadata_for_package("spanda-fleet").is_some());
     assert!(adapter_metadata_for_package("spanda-ota").is_some());

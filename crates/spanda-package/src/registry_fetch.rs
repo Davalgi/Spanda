@@ -16,58 +16,58 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 pub fn registry_tarball_url(name: &str, version: &str) -> Option<String> {
-    // Registry tarball url.
+    // Description:
+    //     Registry tarball url.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `version` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `registry_tarball_url`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::registry_tarball_url(name, version);
+    //     let result = spanda_package::registry_fetch::registry_tarball_url(name, version);
 
     // Transform registry base url and continue the chain.
     registry_base_url().map(|base| format!("{base}/packages/{name}/{version}"))
 }
 
 pub fn registry_cache_dir(project_root: &Path) -> PathBuf {
-    // Registry cache dir.
+    // Description:
+    //     Registry cache dir.
     //
-    // Parameters:
-    // - `project_root` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `registry_cache_dir`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::registry_cache_dir(project_root);
+    //     let result = spanda_package::registry_fetch::registry_cache_dir(project_roo);
 
     // Produce spanda/registry") as the result.
     project_root.join(".spanda/registry")
 }
 
 pub fn global_registry_cache_dir() -> Option<PathBuf> {
-    // Global registry cache dir.
+    // Description:
+    //     Global registry cache dir.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `global_registry_cache_dir`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::global_registry_cache_dir();
+    //     let result = spanda_package::registry_fetch::global_registry_cache_dir();
 
     // Produce var as the result.
     std::env::var("SPANDA_REGISTRY_CACHE")
@@ -77,19 +77,18 @@ pub fn global_registry_cache_dir() -> Option<PathBuf> {
 }
 
 fn dirs_home() -> Option<PathBuf> {
-    // Dirs home.
+    // Description:
+    //     Dirs home.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `dirs_home`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::dirs_home();
+    //     let result = spanda_package::registry_fetch::dirs_home();
 
     // Produce var as the result.
     std::env::var("HOME")
@@ -99,21 +98,23 @@ fn dirs_home() -> Option<PathBuf> {
 }
 
 pub fn resolve_local_tarball(project_root: &Path, name: &str, version: &str) -> Option<PathBuf> {
-    // Resolve local tarball.
+    // Description:
+    //     Resolve local tarball.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `version` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `resolve_local_tarball`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::resolve_local_tarball(project_root, name, version);
+    //     let result = spanda_package::registry_fetch::resolve_local_tarball(project_roo, name, version);
 
     // Create mutable candidates for accumulating results.
     let mut candidates = vec![
@@ -146,22 +147,25 @@ pub fn cache_registry_tarball(
     version: &str,
     tarball: &Path,
 ) -> Result<PathBuf, String> {
-    // Cache registry tarball.
+    // Description:
+    //     Cache registry tarball.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `version` — input value
-    // - `tarball` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     arball: &Path
+    //         Caller-supplied arball.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<PathBuf, String>
+    //         Return value from `cache_registry_tarball`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::cache_registry_tarball(project_root, name, version, tarball);
+    //     let result = spanda_package::registry_fetch::cache_registry_tarball(project_roo, name, version, arball);
 
     // Compute cache dir for the following logic.
     let cache_dir = registry_cache_dir(project_root);
@@ -189,22 +193,29 @@ pub fn fetch_registry_tarball(
     expected_sha256: Option<&str>,
     expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>,
 ) -> Result<PathBuf, String> {
-    // Fetch registry tarball.
+    // Description:
+    //     Fetch registry tarball.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `version` — input value
-    // - `dest` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     des: &Path
+    //         Caller-supplied des.
+    //     expected_sha256: Option<&str>
+    //         Caller-supplied expected sha256.
+    //     expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>
+    //         Caller-supplied expected signature.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<PathBuf, String>
+    //         Return value from `fetch_registry_tarball`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::fetch_registry_tarball(project_root, name, version, dest, expected_sha256);
+    //     let result = spanda_package::registry_fetch::fetch_registry_tarball(project_roo, name, version, des, expected_sha256, expected_signature);
 
     // Produce map err as the result.
     fs::create_dir_all(dest).map_err(|e| format!("create vendor dir: {e}"))?;
@@ -259,23 +270,28 @@ fn verify_tarball_digest(
     version: &str,
     expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>,
 ) -> Result<(), String> {
-    // Enforce SHA-256 and optional Ed25519 signature before extraction.
+    // Description:
+    //     Verify tarball digest.
     //
-    // Parameters:
-    // - `tarball` — downloaded or local bundle
-    // - `expected` — optional hex digest from index or sidecar
-    // - `name` — package name
-    // - `version` — semver string
-    // - `expected_signature` — optional registry index signature
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
+    //     expected: Option<&str>
+    //         Caller-supplied expected.
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     expected_signature: Option<&crate::registry_sign::RegistryVersionSignature>
+    //         Caller-supplied expected signature.
     //
-    // Returns:
-    // Ok when verification passes or no digest is required.
-    //
-    // Options:
-    // Honors `SPANDA_REGISTRY_REQUIRE_CHECKSUM` and `SPANDA_REGISTRY_REQUIRE_SIGNATURE`.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `verify_tarball_digest`.
     //
     // Example:
-    // verify_tarball_digest(&tarball, digest.as_deref(), name, version, sig)?;
+
+    //     let result = spanda_package::registry_fetch::verify_tarball_digest(arball, expected, name, version, expected_signature);
 
     let digest = match expected {
         Some(digest) => {
@@ -300,21 +316,21 @@ fn verify_tarball_digest(
 }
 
 pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {
-    // Fetch url to file.
+    // Description:
+    //     Fetch url to file.
     //
-    // Parameters:
-    // - `url` — input value
-    // - `output` — input value
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
+    //     outp: &Path
+    //         Caller-supplied outp.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `fetch_url_to_file`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::fetch_url_to_file(url, output);
-
+    //     let result = spanda_package::registry_fetch::fetch_url_to_file(rl, outp);
     // use path when file url path is present.
 
     // Emit output when file url path provides a path.
@@ -337,19 +353,19 @@ pub fn fetch_url_to_file(url: &str, output: &Path) -> Result<(), String> {
 }
 
 pub fn file_url_path(url: &str) -> Option<PathBuf> {
-    // File url path.
+    // Description:
+    //     File url path.
     //
-    // Parameters:
-    // - `url` — input value
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `file_url_path`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::file_url_path(url);
+    //     let result = spanda_package::registry_fetch::file_url_path(rl);
 
     // Resolve the filesystem path for the next step.
     let path = url.strip_prefix("file://")?;
@@ -362,20 +378,22 @@ pub fn file_url_path(url: &str) -> Option<PathBuf> {
 }
 
 pub fn extract_tarball(tarball: &Path, dest: &Path) -> Result<(), String> {
-    // Extract tarball using the safe in-process implementation.
+    // Description:
+    //     Extract tarball.
     //
-    // Parameters:
-    // - `tarball` — input value
-    // - `dest` — input value
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
+    //     des: &Path
+    //         Caller-supplied des.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `extract_tarball`.
     //
     // Example:
-    // let result = spanda_package::registry_fetch::extract_tarball(tarball, dest);
+
+    //     let result = spanda_package::registry_fetch::extract_tarball(arball, des);
 
     extract_tarball_safe(tarball, dest)
 }
@@ -386,6 +404,19 @@ mod tests {
 
     #[test]
     fn tarball_url_requires_registry_env() {
+        // Description:
+        //     Tarball url requires registry env.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::registry_fetch::tarball_url_requires_registry_env();
+
         let _guard = crate::testing::env_lock();
         // Tarball url requires registry env.
         //
@@ -409,6 +440,19 @@ mod tests {
 
     #[test]
     fn tarball_url_uses_base_path() {
+        // Description:
+        //     Tarball url uses base path.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::registry_fetch::tarball_url_uses_base_path();
+
         let _guard = crate::testing::env_lock();
         // Tarball url uses base path.
         //
@@ -434,19 +478,18 @@ mod tests {
 
     #[test]
     fn file_url_path_parses_local_paths() {
-        // File url path parses local paths.
+        // Description:
+        //     File url path parses local paths.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::registry_fetch::file_url_path_parses_local_paths();
+
+        //     let result = spanda_package::registry_fetch::file_url_path_parses_local_paths();
 
         assert_eq!(
             file_url_path("file:///tmp/registry/index.json"),
@@ -456,19 +499,18 @@ mod tests {
 
     #[test]
     fn resolve_local_tarball_finds_dist_bundle() {
-        // Resolve local tarball finds dist bundle.
+        // Description:
+        //     Resolve local tarball finds dist bundle.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::registry_fetch::resolve_local_tarball_finds_dist_bundle();
+
+        //     let result = spanda_package::registry_fetch::resolve_local_tarball_finds_dist_bundle();
 
         let root = std::env::temp_dir().join(format!("spanda-fetch-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
@@ -481,19 +523,18 @@ mod tests {
 
     #[test]
     fn cache_registry_tarball_writes_project_cache() {
-        // Cache registry tarball writes project cache.
+        // Description:
+        //     Cache registry tarball writes project cache.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::registry_fetch::cache_registry_tarball_writes_project_cache();
+
+        //     let result = spanda_package::registry_fetch::cache_registry_tarball_writes_project_cache();
 
         let root = std::env::temp_dir().join(format!("spanda-cache-test-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);

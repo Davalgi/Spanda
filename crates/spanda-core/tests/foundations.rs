@@ -4,19 +4,18 @@ use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn module_struct_enum_trait_and_match() {
-    // Module struct enum trait and match.
+    // Description:
+    //     Module struct enum trait and match.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::module_struct_enum_trait_and_match();
+
+    //     let result = spanda_core::foundations::module_struct_enum_trait_and_match();
 
     let source = r#"
 module navigation;
@@ -64,19 +63,18 @@ robot Rover {
 
 #[test]
 fn agent_capabilities_task_state_machine_event_twin() {
-    // Agent capabilities task state machine event twin.
+    // Description:
+    //     Agent capabilities task state machine event twin.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::agent_capabilities_task_state_machine_event_twin();
+
+    //     let result = spanda_core::foundations::agent_capabilities_task_state_machine_event_twin();
 
     let source = r#"
 robot DeliveryBot {
@@ -147,19 +145,18 @@ robot DeliveryBot {
 
 #[test]
 fn behavior_contracts_type_check() {
-    // Behavior contracts type check.
+    // Description:
+    //     Behavior contracts type check.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::behavior_contracts_type_check();
+
+    //     let result = spanda_core::foundations::behavior_contracts_type_check();
 
     let source = r#"
 robot R {
@@ -176,19 +173,18 @@ robot R {
 
 #[test]
 fn enter_stmt_transitions_state_machine() {
-    // Enter stmt transitions state machine.
+    // Description:
+    //     Enter stmt transitions state machine.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::enter_stmt_transitions_state_machine();
+
+    //     let result = spanda_core::foundations::enter_stmt_transitions_state_machine();
 
     let source = r#"
 robot Bot {
@@ -223,19 +219,18 @@ robot Bot {
 
 #[test]
 fn enter_stmt_rejects_invalid_transition() {
-    // Enter stmt rejects invalid transition.
+    // Description:
+    //     Enter stmt rejects invalid transition.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::enter_stmt_rejects_invalid_transition();
+
+    //     let result = spanda_core::foundations::enter_stmt_rejects_invalid_transition();
 
     let source = r#"
 robot Bot {
@@ -266,19 +261,18 @@ robot Bot {
 
 #[test]
 fn emit_event_dispatches_handler() {
-    // Emit event dispatches handler.
+    // Description:
+    //     Emit event dispatches handler.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::foundations::emit_event_dispatches_handler();
+
+    //     let result = spanda_core::foundations::emit_event_dispatches_handler();
 
     let source = r#"
 robot Bot {

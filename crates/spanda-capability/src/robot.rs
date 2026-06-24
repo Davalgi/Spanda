@@ -27,6 +27,21 @@ pub struct RobotCapabilityReport {
 
 /// Infer robot capabilities from program structure.
 pub fn infer_robot_capabilities(program: &Program) -> Vec<RobotCapabilityReport> {
+    // Description:
+    //     Infer robot capabilities.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<RobotCapabilityReport>
+    //         Return value from `infer_robot_capabilities`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::infer_robot_capabilities(progra);
+
     let Program::Program {
         hardware_profiles,
         robots,
@@ -51,6 +66,23 @@ fn analyze_robot(
     robot: &RobotDecl,
     hw_index: &std::collections::HashMap<String, &HardwareDecl>,
 ) -> RobotCapabilityReport {
+    // Description:
+    //     Analyze robot.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     hw_index: &std::collections::HashMap<String, &HardwareDecl>
+    //         Caller-supplied hw index.
+    //
+    // Outputs:
+    //     result: RobotCapabilityReport
+    //         Return value from `analyze_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::analyze_robot(robo, hw_index);
+
     let RobotDecl::RobotDecl {
         name,
         sensors,
@@ -181,10 +213,42 @@ fn analyze_robot(
 }
 
 fn has_any(set: &HashSet<String>, candidates: &[&str]) -> bool {
+    // Description:
+    //     Has any.
+    //
+    // Inputs:
+    //     se: &HashSet<String>
+    //         Caller-supplied se.
+    //     candidates: &[&str]
+    //         Caller-supplied candidates.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `has_any`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::has_any(se, candidates);
+
     candidates.iter().any(|c| set.contains(*c))
 }
 
 fn components_for(req: &crate::registry::CapabilityRequirement) -> Vec<String> {
+    // Description:
+    //     Components for.
+    //
+    // Inputs:
+    //     req: &crate::registry::CapabilityRequirement
+    //         Caller-supplied req.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `components_for`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::components_for(req);
+
     let mut parts = Vec::new();
     parts.extend(req.any_of_sensors.iter().cloned());
     parts.extend(req.any_of_actuators.iter().cloned());
@@ -199,6 +263,27 @@ fn satisfies(
     actuators: &HashSet<String>,
     connectivity: &HashSet<String>,
 ) -> bool {
+    // Description:
+    //     Satisfies.
+    //
+    // Inputs:
+    //     cap: &str
+    //         Caller-supplied cap.
+    //     sensors: &HashSet<String>
+    //         Caller-supplied sensors.
+    //     actuators: &HashSet<String>
+    //         Caller-supplied actuators.
+    //     connectivity: &HashSet<String>
+    //         Caller-supplied connectivity.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `satisfies`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::satisfies(cap, sensors, actuators, connectivity);
+
     let Some(def) = lookup_capability(cap) else {
         return false;
     };
@@ -217,6 +302,21 @@ fn satisfies(
 
 /// List package contributions relevant to a robot's inferred capabilities.
 pub fn package_capabilities_for_robot(report: &RobotCapabilityReport) -> Vec<CapabilityDefinition> {
+    // Description:
+    //     Package capabilities for robot.
+    //
+    // Inputs:
+    //     repor: &RobotCapabilityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     result: Vec<CapabilityDefinition>
+    //         Return value from `package_capabilities_for_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::robot::package_capabilities_for_robot(repor);
+
     let contribs = package_contributions();
     let caps: HashSet<String> = report.rows.iter().map(|r| r.capability.clone()).collect();
     contribs

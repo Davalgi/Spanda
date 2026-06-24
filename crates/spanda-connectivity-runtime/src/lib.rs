@@ -34,6 +34,21 @@ pub struct ConnectivityPolicyRuntime {
 
 /// Build runtime geofence from AST declaration.
 pub fn geofence_from_decl(decl: &GeofenceDecl) -> GeofenceRuntime {
+    // Description:
+    //     Geofence from decl.
+    //
+    // Inputs:
+    //     decl: &GeofenceDecl
+    //         Caller-supplied decl.
+    //
+    // Outputs:
+    //     result: GeofenceRuntime
+    //         Return value from `geofence_from_decl`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::geofence_from_decl(decl);
+
     let GeofenceDecl::GeofenceDecl {
         name,
         center_lat,
@@ -51,6 +66,21 @@ pub fn geofence_from_decl(decl: &GeofenceDecl) -> GeofenceRuntime {
 
 /// Build runtime connectivity policy from AST declaration.
 pub fn connectivity_policy_from_decl(decl: &ConnectivityPolicyDecl) -> ConnectivityPolicyRuntime {
+    // Description:
+    //     Connectivity policy from decl.
+    //
+    // Inputs:
+    //     decl: &ConnectivityPolicyDecl
+    //         Caller-supplied decl.
+    //
+    // Outputs:
+    //     result: ConnectivityPolicyRuntime
+    //         Return value from `connectivity_policy_from_decl`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::connectivity_policy_from_decl(decl);
+
     let ConnectivityPolicyDecl::ConnectivityPolicyDecl {
         name,
         preferred,
@@ -78,6 +108,29 @@ pub fn apply_gps_reading_faults(
     true_lon: f64,
     sim_time_ms: f64,
 ) -> spanda_runtime::value::RuntimeValue {
+    // Description:
+    //     Apply gps reading faults.
+    //
+    // Inputs:
+    //     reading: spanda_runtime::value::RuntimeValue
+    //         Caller-supplied reading.
+    //     faults: &HashSet<String>
+    //         Caller-supplied faults.
+    //     rue_la: f64
+    //         Caller-supplied rue la.
+    //     rue_lon: f64
+    //         Caller-supplied rue lon.
+    //     sim_time_ms: f64
+    //         Caller-supplied sim time ms.
+    //
+    // Outputs:
+    //     result: spanda_runtime::value::RuntimeValue
+    //         Return value from `apply_gps_reading_faults`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::apply_gps_reading_faults(reading, faults, rue_la, rue_lon, sim_time_ms);
+
     use spanda_ast::nodes::UnitKind;
     use spanda_runtime::value::RuntimeValue;
     let RuntimeValue::Object {
@@ -120,6 +173,21 @@ pub fn apply_gps_reading_faults(
 
 /// Map an active connectivity link name to the default transport kind.
 pub fn connectivity_link_to_transport(link: &str) -> spanda_comm::TransportKind {
+    // Description:
+    //     Connectivity link to transport.
+    //
+    // Inputs:
+    //     link: &str
+    //         Caller-supplied link.
+    //
+    // Outputs:
+    //     result: spanda_comm::TransportKind
+    //         Return value from `connectivity_link_to_transport`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::connectivity_link_to_transport(link);
+
     use spanda_comm::TransportKind;
     use spanda_connectivity::ConnectivityTransport;
     match spanda_connectivity::connectivity_link_to_transport(link) {
@@ -138,6 +206,27 @@ pub fn runtime_gps_fix(
     altitude: f64,
     fix_quality: f64,
 ) -> spanda_runtime::value::RuntimeValue {
+    // Description:
+    //     Runtime gps fix.
+    //
+    // Inputs:
+    //     la: f64
+    //         Caller-supplied la.
+    //     lon: f64
+    //         Caller-supplied lon.
+    //     altitude: f64
+    //         Caller-supplied altitude.
+    //     fix_quality: f64
+    //         Caller-supplied fix quality.
+    //
+    // Outputs:
+    //     result: spanda_runtime::value::RuntimeValue
+    //         Return value from `runtime_gps_fix`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::runtime_gps_fix(la, lon, altitude, fix_quality);
+
     use spanda_ast::nodes::UnitKind;
     use spanda_runtime::value::RuntimeValue;
     use std::collections::HashMap;
@@ -178,6 +267,23 @@ pub fn runtime_gps_fix(
 
 /// Produce a [`SimIdentity`]-shaped runtime object for SIM/eSIM attestation simulation.
 pub fn runtime_sim_identity(link: &str, attested: bool) -> spanda_runtime::value::RuntimeValue {
+    // Description:
+    //     Runtime sim identity.
+    //
+    // Inputs:
+    //     link: &str
+    //         Caller-supplied link.
+    //     attested: bool
+    //         Caller-supplied attested.
+    //
+    // Outputs:
+    //     result: spanda_runtime::value::RuntimeValue
+    //         Return value from `runtime_sim_identity`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::runtime_sim_identity(link, attested);
+
     use spanda_runtime::value::RuntimeValue;
     use std::collections::HashMap;
     let link_lower = link.to_ascii_lowercase();
@@ -219,6 +325,23 @@ pub fn apply_connectivity_fault(
     mut profile: HardwareProfile,
     fault: &SimFaultDecl,
 ) -> HardwareProfile {
+    // Description:
+    //     Apply connectivity fault.
+    //
+    // Inputs:
+    //     profile: HardwareProfile
+    //         Caller-supplied profile.
+    //     faul: &SimFaultDecl
+    //         Caller-supplied faul.
+    //
+    // Outputs:
+    //     result: HardwareProfile
+    //         Return value from `apply_connectivity_fault`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity_runtime::apply_connectivity_fault(profile, faul);
+
     match fault.fault_type.as_str() {
         "GPSLost" | "GpsFailure" => {
             profile.sensors.retain(|s| s != "GPS" && s != "GNSS");
@@ -277,12 +400,38 @@ mod tests {
 
     #[test]
     fn haversine_zero_distance() {
+        // Description:
+        //     Haversine zero distance.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::haversine_zero_distance();
+
         let d = haversine_m(30.0, -97.0, 30.0, -97.0);
         assert!(d.abs() < 0.01);
     }
 
     #[test]
     fn connectivity_link_to_transport_maps_wifi() {
+        // Description:
+        //     Connectivity link to transport maps wifi.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::connectivity_link_to_transport_maps_wifi();
+
         use spanda_comm::TransportKind;
         assert_eq!(connectivity_link_to_transport("wifi"), TransportKind::Mqtt);
         assert_eq!(
@@ -293,6 +442,19 @@ mod tests {
 
     #[test]
     fn geofence_contains_center() {
+        // Description:
+        //     Geofence contains center.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::geofence_contains_center();
+
         let fence = GeofenceRuntime {
             name: "Home".into(),
             center_lat: 30.2672,
@@ -304,6 +466,19 @@ mod tests {
 
     #[test]
     fn gps_spoofing_offsets_coordinates() {
+        // Description:
+        //     Gps spoofing offsets coordinates.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::gps_spoofing_offsets_coordinates();
+
         use std::collections::HashSet;
         let faults = HashSet::from(["GpsSpoofing".to_string()]);
         let (lat, lon, fq) = apply_gps_position_faults(&faults, 30.0, -97.0, 0.0);
@@ -314,6 +489,19 @@ mod tests {
 
     #[test]
     fn gps_drift_increases_with_sim_time() {
+        // Description:
+        //     Gps drift increases with sim time.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::gps_drift_increases_with_sim_time();
+
         use std::collections::HashSet;
         let faults = HashSet::from(["GpsDrift".to_string()]);
         let (lat0, _, _) = apply_gps_position_faults(&faults, 30.0, -97.0, 0.0);
@@ -323,11 +511,37 @@ mod tests {
 
     #[test]
     fn gps_drift_maps_to_trigger() {
+        // Description:
+        //     Gps drift maps to trigger.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::gps_drift_maps_to_trigger();
+
         assert_eq!(fault_to_connectivity("GpsDrift"), Some(("gps", "drift")));
     }
 
     #[test]
     fn connectivity_link_to_transport_maps_satellite() {
+        // Description:
+        //     Connectivity link to transport maps satellite.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::connectivity_link_to_transport_maps_satellite();
+
         assert_eq!(
             connectivity_link_to_transport("satellite"),
             spanda_comm::TransportKind::Websocket
@@ -336,6 +550,19 @@ mod tests {
 
     #[test]
     fn is_link_impaired_for_lte_outage_on_cellular() {
+        // Description:
+        //     Is link impaired for lte outage on cellular.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::is_link_impaired_for_lte_outage_on_cellular();
+
         use std::collections::HashSet;
         let faults = HashSet::from(["LteOutage".to_string()]);
         assert!(is_link_impaired("cellular", &faults));
@@ -344,6 +571,19 @@ mod tests {
 
     #[test]
     fn runtime_sim_identity_cellular_attested() {
+        // Description:
+        //     Runtime sim identity cellular attested.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::runtime_sim_identity_cellular_attested();
+
         use spanda_runtime::value::RuntimeValue;
         let value = runtime_sim_identity("cellular", true);
         let RuntimeValue::Object { type_name, fields } = value else {
@@ -356,6 +596,19 @@ mod tests {
 
     #[test]
     fn runtime_gps_fix_has_gpsfix_type() {
+        // Description:
+        //     Runtime gps fix has gpsfix type.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_connectivity_runtime::runtime_gps_fix_has_gpsfix_type();
+
         let fix = runtime_gps_fix(30.0, -97.0, 150.0, 1.0);
         assert!(matches!(
             fix,

@@ -9,25 +9,26 @@ pub enum SchedulerClock {
     /// Discrete-event simulation (default, deterministic).
     #[default]
     Sim,
+
     /// Wall-clock scheduling with real sleeps between ticks.
     Wall,
 }
 
 impl SchedulerClock {
     pub fn as_str(self) -> &'static str {
-        // Return a stable label for logs and telemetry.
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Clock mode name.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let label = SchedulerClock::Wall.as_str();
+
+        //     let result = instance.as_str();
 
         match self {
             SchedulerClock::Sim => "sim",
@@ -38,19 +39,19 @@ impl SchedulerClock {
 
 /// Sleep until an absolute wall-clock deadline when in wall mode.
 pub fn sleep_until(deadline: Instant) {
-    // Block the current thread until the deadline is reached.
+    // Description:
+    //     Sleep until.
     //
-    // Parameters:
-    // - `deadline` — monotonic instant to wait for
+    // Inputs:
+    //     deadline: Instant
+    //         Caller-supplied deadline.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // sleep_until(Instant::now() + Duration::from_millis(10));
+
+    //     let result = spanda_runtime::scheduler::sleep_until(deadline);
 
     let now = Instant::now();
     if deadline > now {
@@ -60,40 +61,44 @@ pub fn sleep_until(deadline: Instant) {
 
 /// Compute elapsed milliseconds between two monotonic instants.
 pub fn elapsed_ms(start: Instant, end: Instant) -> f64 {
-    // Convert an instant delta to milliseconds.
+    // Description:
+    //     Elapsed ms.
     //
-    // Parameters:
-    // - `start` — interval start
-    // - `end` — interval end
+    // Inputs:
+    //     star: Instant
+    //         Caller-supplied star.
+    //     end: Instant
+    //         Caller-supplied end.
     //
-    // Returns:
-    // Elapsed time in milliseconds.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `elapsed_ms`.
     //
     // Example:
-    // let ms = elapsed_ms(t0, Instant::now());
+
+    //     let result = spanda_runtime::scheduler::elapsed_ms(star, end);
 
     end.duration_since(start).as_secs_f64() * 1000.0
 }
 
 /// Advance a wall-clock tick anchor by the nominal period.
 pub fn advance_wall_tick(anchor: &mut Instant, period_ms: f64) -> Instant {
-    // Move the next tick deadline forward by one scheduler period.
+    // Description:
+    //     Advance wall tick.
     //
-    // Parameters:
-    // - `anchor` — mutable next-tick deadline
-    // - `period_ms` — nominal tick period in milliseconds
+    // Inputs:
+    //     anchor: &mut Instant
+    //         Caller-supplied anchor.
+    //     period_ms: f64
+    //         Caller-supplied period ms.
     //
-    // Returns:
-    // The deadline waited for this tick.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Instant
+    //         Return value from `advance_wall_tick`.
     //
     // Example:
-    // let deadline = advance_wall_tick(&mut next, 10.0);
+
+    //     let result = spanda_runtime::scheduler::advance_wall_tick(anchor, period_ms);
 
     let deadline = *anchor;
     *anchor += Duration::from_secs_f64(period_ms / 1000.0);

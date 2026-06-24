@@ -32,6 +32,20 @@ pub struct ReadinessPolicy {
 
 impl Default for ReadinessPolicy {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
+        //
+        // Example:
+
+        //     let result = spanda_readiness::types::default();
+
         Self {
             minimum_score: 80,
             weights: ReadinessWeights::default(),
@@ -58,6 +72,20 @@ pub struct ReadinessWeights {
 
 impl Default for ReadinessWeights {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
+        //
+        // Example:
+
+        //     let result = spanda_readiness::types::default();
+
         Self {
             hardware: 12,
             capabilities: 12,
@@ -130,9 +158,11 @@ pub struct ReadinessOptions {
     pub policy: Option<ReadinessPolicy>,
     pub simulate: bool,
     pub strict: bool,
+
     /// Evaluate health using runtime fault/event signals (live or injected).
     #[serde(default)]
     pub include_runtime: bool,
+
     /// When `include_runtime`, inject standard health fault scenarios.
     #[serde(default)]
     pub inject_health_faults: bool,

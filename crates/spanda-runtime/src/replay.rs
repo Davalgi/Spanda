@@ -39,19 +39,19 @@ pub struct MissionTrace {
 
 impl MissionTrace {
     pub fn new(source: impl Into<String>) -> Self {
-        // Create an empty mission trace for a source program.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `source` — `.sd` file path or label
+        // Inputs:
+        //     source: impl Into<String>
+        //         Caller-supplied source.
         //
-        // Returns:
-        // Empty trace container.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let trace = MissionTrace::new("rover.sd");
+        //     let value = spanda_runtime::replay::new(source);
 
         // Initialize metadata with an empty frame list.
         Self {
@@ -68,21 +68,24 @@ impl MissionTrace {
         event: impl Into<String>,
         payload: serde_json::Value,
     ) {
-        // Append one trace frame at the current simulation time.
+        // Description:
+        //     Record.
         //
-        // Parameters:
-        // - `sim_time_ms` — simulation clock in milliseconds
-        // - `event` — event label
-        // - `payload` — structured payload
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sim_time_ms: f64
+        //         Caller-supplied sim time ms.
+        //     even: impl Into<String>
+        //         Caller-supplied even.
+        //     payload: serde_json::Value
+        //         Caller-supplied payload.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // trace.record(10.0, "task_tick", json!({"task":"sense"}));
+        //     let result = spanda_runtime::replay::record(&mut self, sim_time_ms, even, payload);
 
         // Push the frame in arrival order for deterministic playback.
         self.record_with_state(sim_time_ms, event, payload, None);
@@ -95,22 +98,27 @@ impl MissionTrace {
         payload: serde_json::Value,
         state: Option<ReplayStateSnapshot>,
     ) {
-        // Append one trace frame with optional world-state snapshot.
+        // Description:
+        //     Record with state.
         //
-        // Parameters:
-        // - `sim_time_ms` — simulation clock in milliseconds
-        // - `event` — event label
-        // - `payload` — structured payload
-        // - `state` — optional robot snapshot for playback mode
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sim_time_ms: f64
+        //         Caller-supplied sim time ms.
+        //     even: impl Into<String>
+        //         Caller-supplied even.
+        //     payload: serde_json::Value
+        //         Caller-supplied payload.
+        //     state: Option<ReplayStateSnapshot>
+        //         Caller-supplied state.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // trace.record_with_state(10.0, "scheduler_tick", json!({}), Some(snapshot));
+
+        //     let result = spanda_runtime::replay::record_with_state(&mut self, sim_time_ms, even, payload, state);
 
         self.frames.push(TraceFrame {
             sim_time_ms,
@@ -124,19 +132,21 @@ impl MissionTrace {
     }
 
     pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), RuntimeError> {
-        // Serialize the trace to JSON on disk.
+        // Description:
+        //     Save.
         //
-        // Parameters:
-        // - `path` — output `.trace` file path
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: P
+        //         Caller-supplied path.
         //
-        // Returns:
-        // Ok on successful write.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), RuntimeError>
+        //         Return value from `save`.
         //
         // Example:
-        // trace.save("mission.trace")?;
+        //     let result = spanda_runtime::replay::save(&self, path);
 
         // Encode as pretty JSON for human inspection and tooling.
         let json = serde_json::to_string_pretty(self)
@@ -146,19 +156,19 @@ impl MissionTrace {
     }
 
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, RuntimeError> {
-        // Load a mission trace from disk.
+        // Description:
+        //     Load.
         //
-        // Parameters:
-        // - `path` — input `.trace` file path
+        // Inputs:
+        //     path: P
+        //         Caller-supplied path.
         //
-        // Returns:
-        // Parsed mission trace.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, RuntimeError>
+        //         Return value from `load`.
         //
         // Example:
-        // let trace = MissionTrace::load("mission.trace")?;
+        //     let result = spanda_runtime::replay::load(path);
 
         // Read and decode the JSON trace file.
         let text = fs::read_to_string(path.as_ref())
@@ -168,19 +178,21 @@ impl MissionTrace {
     }
 
     pub fn frames_from(&self, offset_ms: f64) -> &[TraceFrame] {
-        // Return trace frames starting at or after the requested offset.
+        // Description:
+        //     Frames from.
         //
-        // Parameters:
-        // - `offset_ms` — replay start offset in milliseconds
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     offset_ms: f64
+        //         Caller-supplied offset ms.
         //
-        // Returns:
-        // Slice of frames at/after the offset.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[TraceFrame]
+        //         Return value from `frames_from`.
         //
         // Example:
-        // let slice = trace.frames_from(30_000.0);
+        //     let result = spanda_runtime::replay::frames_from(&self, offset_ms);
 
         // Find the first frame at or after the offset timestamp.
         let idx = self
@@ -193,19 +205,19 @@ impl MissionTrace {
 }
 
 pub fn parse_replay_offset(raw: &str) -> Result<f64, RuntimeError> {
-    // Parse replay offset strings such as `T+00:30` into milliseconds.
+    // Description:
+    //     Parse replay offset.
     //
-    // Parameters:
-    // - `raw` — CLI offset argument
+    // Inputs:
+    //     raw: &str
+    //         Caller-supplied raw.
     //
-    // Returns:
-    // Offset in milliseconds.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<f64, RuntimeError>
+    //         Return value from `parse_replay_offset`.
     //
     // Example:
-    // let ms = parse_replay_offset("T+00:30")?;
+    //     let result = spanda_runtime::replay::parse_replay_offset(raw);
 
     // Accept plain millisecond values directly.
     if let Ok(ms) = raw.parse::<f64>() {
@@ -252,21 +264,23 @@ pub fn verify_traces(
     actual: &MissionTrace,
     from_ms: f64,
 ) -> TraceVerification {
-    // Compare two mission traces from the same offset for deterministic replay checks.
+    // Description:
+    //     Verify traces.
     //
-    // Parameters:
-    // - `expected` — reference trace loaded from disk
-    // - `actual` — trace recorded during a replay run
-    // - `from_ms` — comparison start offset in milliseconds
+    // Inputs:
+    //     expected: &MissionTrace
+    //         Caller-supplied expected.
+    //     actual: &MissionTrace
+    //         Caller-supplied actual.
+    //     from_ms: f64
+    //         Caller-supplied from ms.
     //
-    // Returns:
-    // Verification summary with mismatched frame details.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: TraceVerification
+    //         Return value from `verify_traces`.
     //
     // Example:
-    // let report = verify_traces(&expected, &actual, 0.0);
+    //     let result = spanda_runtime::replay::verify_traces(expected, actual, from_ms);
 
     // Align both traces from the requested offset.
     let exp = expected.frames_from(from_ms);
@@ -318,21 +332,24 @@ pub fn playback_frames<T: ReplayStateTarget>(
     target: &mut T,
     wall_clock: bool,
 ) -> PlaybackReport {
-    // Apply trace frames sequentially without executing program logic.
+    // Description:
+    //     Playback frames.
     //
-    // Parameters:
-    // - `frames` — slice of frames to play back
-    // - `target` — backend receiving state snapshots
-    // - `wall_clock` — sleep between frames using recorded timestamps
+    // Inputs:
+    //     frames: &[TraceFrame]
+    //         Caller-supplied frames.
+    //     arge: &mut T
+    //         Caller-supplied arge.
+    //     wall_clock: bool
+    //         Caller-supplied wall clock.
     //
-    // Returns:
-    // Playback summary with applied frame counts.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PlaybackReport
+    //         Return value from `playback_frames`.
     //
     // Example:
-    // let report = playback_frames(trace.frames_from(0.0), &mut sim, true);
+
+    //     let result = spanda_runtime::replay::playback_frames(frames, arge, wall_clock);
 
     let mut states_applied = 0usize;
     let mut events = Vec::new();

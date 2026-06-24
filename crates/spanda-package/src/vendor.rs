@@ -21,20 +21,21 @@ pub fn vendor_dependencies(
     project_root: &Path,
     lockfile: &Lockfile,
 ) -> PackageResult<VendorReport> {
-    // Vendor dependencies.
+    // Description:
+    //     Vendor dependencies.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `lockfile` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     lockfile: &Lockfile
+    //         Caller-supplied lockfile.
     //
-    // Returns:
-    // PackageResult<VendorReport>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<VendorReport>
+    //         Return value from `vendor_dependencies`.
     //
     // Example:
-    // let result = spanda_package::vendor::vendor_dependencies(project_root, lockfile);
+    //     let result = spanda_package::vendor::vendor_dependencies(project_roo, lockfile);
 
     // Compute vendor root for the following logic.
     let vendor_root = project_root.join(".spanda/packages");
@@ -91,22 +92,25 @@ fn vendor_registry_package(
     version: &str,
     vendor_root: &Path,
 ) -> PackageResult<Option<PathBuf>> {
-    // Vendor registry package.
+    // Description:
+    //     Vendor registry package.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `version` — input value
-    // - `vendor_root` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     vendor_roo: &Path
+    //         Caller-supplied vendor roo.
     //
-    // Returns:
-    // PackageResult<Option<PathBuf>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<Option<PathBuf>>
+    //         Return value from `vendor_registry_package`.
     //
     // Example:
-    // let result = spanda_package::vendor::vendor_registry_package(project_root, name, version, vendor_root);
+    //     let result = spanda_package::vendor::vendor_registry_package(project_roo, name, version, vendor_roo);
 
     // Compute dest for the following logic.
     let dest = vendor_root.join(name);
@@ -149,23 +153,27 @@ fn vendor_git(
     rev: Option<&str>,
     dest: &Path,
 ) -> PackageResult<()> {
-    // Vendor git.
+    // Description:
+    //     Vendor git.
     //
-    // Parameters:
-    // - `url` — input value
-    // - `branch` — input value
-    // - `tag` — input value
-    // - `rev` — input value
-    // - `dest` — input value
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
+    //     branch: Option<&str>
+    //         Caller-supplied branch.
+    //     ag: Option<&str>
+    //         Caller-supplied ag.
+    //     rev: Option<&str>
+    //         Caller-supplied rev.
+    //     des: &Path
+    //         Caller-supplied des.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `vendor_git`.
     //
     // Example:
-    // let result = spanda_package::vendor::vendor_git(url, branch, tag, rev, dest);
+    //     let result = spanda_package::vendor::vendor_git(rl, branch, ag, rev, des);
 
     // Create mutable args for accumulating results.
     let mut args = vec!["clone", "--depth", "1"];
@@ -214,20 +222,21 @@ fn vendor_git(
 }
 
 fn copy_dir_recursive(src: &Path, dest: &Path) -> PackageResult<()> {
-    // Copy dir recursive.
+    // Description:
+    //     Copy dir recursive.
     //
-    // Parameters:
-    // - `src` — input value
-    // - `dest` — input value
+    // Inputs:
+    //     src: &Path
+    //         Caller-supplied src.
+    //     des: &Path
+    //         Caller-supplied des.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `copy_dir_recursive`.
     //
     // Example:
-    // let result = spanda_package::vendor::copy_dir_recursive(src, dest);
+    //     let result = spanda_package::vendor::copy_dir_recursive(src, des);
 
     // Produce Io)? as the result.
     fs::create_dir_all(dest).map_err(PackageError::Io)?;
@@ -258,19 +267,18 @@ mod tests {
 
     #[test]
     fn vendors_local_registry_package_when_present() {
-        // Vendors local registry package when present.
+        // Description:
+        //     Vendors local registry package when present.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::vendor::vendors_local_registry_package_when_present();
+
+        //     let result = spanda_package::vendor::vendors_local_registry_package_when_present();
 
         let root = std::env::temp_dir().join(format!("spanda-vendor-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);

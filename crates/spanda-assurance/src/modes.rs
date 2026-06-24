@@ -5,6 +5,21 @@ use spanda_ast::assurance_decl::OperatingModeDecl;
 use spanda_ast::nodes::Program;
 
 fn parse_mode_kind(raw: &str) -> ModeKind {
+    // Description:
+    //     Parse mode kind.
+    //
+    // Inputs:
+    //     raw: &str
+    //         Caller-supplied raw.
+    //
+    // Outputs:
+    //     result: ModeKind
+    //         Return value from `parse_mode_kind`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::modes::parse_mode_kind(raw);
+
     match raw.to_lowercase().as_str() {
         "degraded" | "degraded_mode" => ModeKind::Degraded,
         "safe" | "safe_mode" => ModeKind::Safe,
@@ -16,6 +31,21 @@ fn parse_mode_kind(raw: &str) -> ModeKind {
 
 /// Extract operating modes from declarations and robot mode blocks.
 pub fn extract_operating_modes(program: &Program) -> Vec<OperatingMode> {
+    // Description:
+    //     Extract operating modes.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<OperatingMode>
+    //         Return value from `extract_operating_modes`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::modes::extract_operating_modes(progra);
+
     let Program::Program {
         operating_modes,
         robots,
@@ -53,6 +83,21 @@ pub fn extract_operating_modes(program: &Program) -> Vec<OperatingMode> {
 
 /// Validate mode coverage (safe and degraded modes recommended).
 pub fn validate_modes(program: &Program) -> Vec<String> {
+    // Description:
+    //     Validate modes.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `validate_modes`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::modes::validate_modes(progra);
+
     let modes = extract_operating_modes(program);
     let mut issues = Vec::new();
     let has_safe = modes.iter().any(|m| m.kind == ModeKind::Safe);

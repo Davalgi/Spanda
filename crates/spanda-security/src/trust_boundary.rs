@@ -20,6 +20,21 @@ impl FromStr for TrustBoundaryKind {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Description:
+        //     From str.
+        //
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
+        //
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
+        //
+        // Example:
+
+        //     let result = spanda_security::trust_boundary::from_str(s);
+
         match s {
             "robot_internal" => Ok(Self::RobotInternal),
             "robot_to_robot" => Ok(Self::RobotToRobot),
@@ -32,6 +47,21 @@ impl FromStr for TrustBoundaryKind {
 
 /// Map a transport name to the trust boundary it typically crosses.
 pub fn boundary_for_transport_name(transport: &str) -> Option<TrustBoundaryKind> {
+    // Description:
+    //     Boundary for transport name.
+    //
+    // Inputs:
+    //     ranspor: &str
+    //         Caller-supplied ranspor.
+    //
+    // Outputs:
+    //     result: Option<TrustBoundaryKind>
+    //         Return value from `boundary_for_transport_name`.
+    //
+    // Example:
+
+    //     let result = spanda_security::trust_boundary::boundary_for_transport_name(ranspor);
+
     match transport {
         "local" | "sim" | "ble" => Some(TrustBoundaryKind::RobotInternal),
         "ros2" | "dds" | "mqtt" => Some(TrustBoundaryKind::RobotToRobot),
@@ -43,6 +73,20 @@ pub fn boundary_for_transport_name(transport: &str) -> Option<TrustBoundaryKind>
 
 impl TrustBoundaryKind {
     pub fn required_encryption(self) -> EncryptionMode {
+        // Description:
+        //     Required encryption.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: EncryptionMode
+        //         Return value from `required_encryption`.
+        //
+        // Example:
+
+        //     let result = instance.required_encryption();
+
         match self {
             Self::RobotInternal => EncryptionMode::Optional,
             Self::RobotToRobot | Self::RobotToCloud | Self::OperatorToRobot => {
@@ -52,6 +96,20 @@ impl TrustBoundaryKind {
     }
 
     pub fn required_authentication(self) -> AuthenticationMode {
+        // Description:
+        //     Required authentication.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: AuthenticationMode
+        //         Return value from `required_authentication`.
+        //
+        // Example:
+
+        //     let result = instance.required_authentication();
+
         match self {
             Self::OperatorToRobot => AuthenticationMode::Mutual,
             _ => AuthenticationMode::None,
@@ -59,6 +117,20 @@ impl TrustBoundaryKind {
     }
 
     pub fn requires_verified_actuator(self) -> bool {
+        // Description:
+        //     Requires verified actuator.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `requires_verified_actuator`.
+        //
+        // Example:
+
+        //     let result = instance.requires_verified_actuator();
+
         matches!(
             self,
             Self::RobotToRobot | Self::RobotToCloud | Self::OperatorToRobot
@@ -74,14 +146,61 @@ pub struct TrustBoundaryRegistry {
 
 impl TrustBoundaryRegistry {
     pub fn new() -> Self {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_security::trust_boundary::new();
+
         Self::default()
     }
 
     pub fn declare(&mut self, boundary: TrustBoundaryKind) {
+        // Description:
+        //     Declare.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     boundary: TrustBoundaryKind
+        //         Caller-supplied boundary.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::trust_boundary::declare(&mut self, boundary);
+
         self.boundaries.insert(boundary);
     }
 
     pub fn contains(&self, boundary: TrustBoundaryKind) -> bool {
+        // Description:
+        //     Contains.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     boundary: TrustBoundaryKind
+        //         Caller-supplied boundary.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `contains`.
+        //
+        // Example:
+
+        //     let result = spanda_security::trust_boundary::contains(&self, boundary);
+
         self.boundaries.contains(&boundary)
     }
 
@@ -93,6 +212,31 @@ impl TrustBoundaryRegistry {
         integrity: IntegrityMode,
         message_type: &str,
     ) -> SecurityResult<()> {
+        // Description:
+        //     Validate channel.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     boundary: TrustBoundaryKind
+        //         Caller-supplied boundary.
+        //     encryption: EncryptionMode
+        //         Caller-supplied encryption.
+        //     authentication: AuthenticationMode
+        //         Caller-supplied authentication.
+        //     integrity: IntegrityMode
+        //         Caller-supplied integrity.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `validate_channel`.
+        //
+        // Example:
+
+        //     let result = spanda_security::trust_boundary::validate_channel(&self, boundary, encryption, authentication, integrity, essage_type);
+
         let req_enc = boundary.required_encryption();
         if req_enc == EncryptionMode::Required && encryption != EncryptionMode::Required {
             return Err(SecurityError::SecureEndpoint {
@@ -129,6 +273,20 @@ impl TrustBoundaryRegistry {
 
 impl TrustBoundaryKind {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
+        //
+        // Example:
+
+        //     let result = instance.as_str();
+
         match self {
             Self::RobotInternal => "robot_internal",
             Self::RobotToRobot => "robot_to_robot",
@@ -144,6 +302,19 @@ mod tests {
 
     #[test]
     fn robot_to_robot_requires_encryption() {
+        // Description:
+        //     Robot to robot requires encryption.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::trust_boundary::robot_to_robot_requires_encryption();
+
         let reg = TrustBoundaryRegistry::new();
         let err = reg
             .validate_channel(

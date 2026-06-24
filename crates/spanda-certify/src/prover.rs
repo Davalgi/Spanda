@@ -47,21 +47,24 @@ pub fn build_certification_proof(
     program_path: &str,
     strict: bool,
 ) -> CertificationProofReport {
-    // Aggregate certify metadata and checklist items into an audit artifact.
+    // Description:
+    //     Build certification proof.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for hashing and reporting
-    // - `strict` — treat checklist gaps as proof failures
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     stric: bool
+    //         Caller-supplied stric.
     //
-    // Returns:
-    // Structured proof report suitable for JSON export.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CertificationProofReport
+    //         Return value from `build_certification_proof`.
     //
     // Example:
-    // let proof = build_certification_proof(&program, "certified.sd", true);
+
+    //     let result = spanda_certify::prover::build_certification_proof(progra, program_path, stric);
 
     let Program::Program {
         certifications,
@@ -139,20 +142,22 @@ pub fn build_certification_proof_summary(
     program: &Program,
     program_path: &str,
 ) -> CertificationProofSummary {
-    // Derive non-strict and strict proof outcomes for deploy plan reporting.
+    // Description:
+    //     Build certification proof summary.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for proof reporting
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
     //
-    // Returns:
-    // Compact summary with both relaxed and strict pass flags.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CertificationProofSummary
+    //         Return value from `build_certification_proof_summary`.
     //
     // Example:
-    // let summary = build_certification_proof_summary(&program, "certified.sd");
+
+    //     let result = spanda_certify::prover::build_certification_proof_summary(progra, program_path);
 
     let proof = build_certification_proof(program, program_path, false);
     let strict = build_certification_proof(program, program_path, true);

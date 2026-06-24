@@ -25,19 +25,76 @@ pub use daemon::{
 
 /// Whether in-process ROS2 transport is enabled (`SPANDA_ROS2_RCLRS` env var).
 pub fn rclrs_enabled() -> bool {
+    // Description:
+    //     Rclrs enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `rclrs_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::rclrs_enabled();
+
     std::env::var("SPANDA_ROS2_RCLRS").is_ok()
 }
 
 /// Alias for `rclrs_enabled`.
 pub fn rclrs_available() -> bool {
+    // Description:
+    //     Rclrs available.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `rclrs_available`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::rclrs_available();
+
     rclrs_enabled()
 }
 
 pub fn native_sdk_available() -> bool {
+    // Description:
+    //     Native sdk available.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `native_sdk_available`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native_sdk_available();
+
     native::sdk_available()
 }
 
 pub fn init_node(name: &str) -> Result<(), String> {
+    // Description:
+    //     Init node.
+    //
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `init_node`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::init_node(name);
+
     if native::sdk_available() {
         return native::init_node(name);
     }
@@ -53,13 +110,64 @@ pub fn init_node(name: &str) -> Result<(), String> {
 }
 
 pub fn try_native_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Try native publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_native_publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::try_native_publish(opic, payload);
+
     native::publish(topic, payload)
 }
 
 pub fn try_native_subscribe(topic: &str) -> bool {
+    // Description:
+    //     Try native subscribe.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_native_subscribe`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::try_native_subscribe(opic);
+
     native::subscribe(topic)
 }
 
 pub fn try_native_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+    //     Try native service call.
+    //
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_native_service_call`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::try_native_service_call(service, service_type, reques);
+
     native::service_call(service, service_type, request)
 }

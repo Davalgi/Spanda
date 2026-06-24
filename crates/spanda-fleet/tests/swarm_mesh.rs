@@ -19,6 +19,27 @@ fn coordinate_mesh_when_ready(
     state: &mut SwarmState,
     mesh_url: &str,
 ) -> SwarmCoordinationResult {
+    // Description:
+    //     Coordinate mesh when ready.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     state: &mut SwarmState
+    //         Caller-supplied state.
+    //     mesh_url: &str
+    //         Caller-supplied mesh url.
+    //
+    // Outputs:
+    //     result: SwarmCoordinationResult
+    //         Return value from `coordinate_mesh_when_ready`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_mesh::coordinate_mesh_when_ready(progra, program_path, state, esh_url);
+
     let deadline = std::time::Instant::now() + Duration::from_secs(MESH_READY_TIMEOUT_SECS);
     loop {
         let result = coordinate_swarms_mesh(program, program_path, state, mesh_url, None);
@@ -38,6 +59,19 @@ fn coordinate_mesh_when_ready(
 #[test]
 #[should_panic(expected = "mesh and/or agent did not become ready within")]
 fn coordinate_mesh_when_ready_panics_on_timeout() {
+    // Description:
+    //     Coordinate mesh when ready panics on timeout.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_mesh::coordinate_mesh_when_ready_panics_on_timeout();
+
     let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -62,6 +96,7 @@ swarm ReconLeader {
 "#;
     let program = compile(source).expect("compile").program;
     let mut state = SwarmState::default();
+
     // Reserve an ephemeral port, then release it so mesh HTTP has no server to talk to.
     let ephemeral_listener = TcpListener::bind("127.0.0.1:0").expect("bind ephemeral listener");
     let sink_port = ephemeral_listener
@@ -80,6 +115,19 @@ swarm ReconLeader {
 
 #[test]
 fn swarm_leader_follow_relays_via_mesh() {
+    // Description:
+    //     Swarm leader follow relays via mesh.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_mesh::swarm_leader_follow_relays_via_mesh();
+
     let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -122,6 +170,19 @@ swarm ReconLeader {
 
 #[test]
 fn swarm_round_robin_relays_peer_links_via_mesh() {
+    // Description:
+    //     Swarm round robin relays peer links via mesh.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_mesh::swarm_round_robin_relays_peer_links_via_mesh();
+
     let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -132,6 +193,7 @@ fn swarm_round_robin_relays_peer_links_via_mesh() {
     )
     .expect("register");
     let (mesh_port, _mesh) = spawn_test_fleet_mesh(&registry).expect("spawn mesh");
+
     // ScoutA declares ScoutB as a peer robot for round-robin handoffs (valid Spanda syntax).
     let source = r#"
 robot ScoutA {
@@ -169,6 +231,19 @@ swarm ReconSwarm {
 
 #[test]
 fn swarm_leader_follow_relays_to_multiple_followers_via_mesh() {
+    // Description:
+    //     Swarm leader follow relays to multiple followers via mesh.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_mesh::swarm_leader_follow_relays_to_multiple_followers_via_mesh();
+
     let (port_b, _agent_b) = spawn_test_fleet_agent("ScoutB", None).expect("spawn ScoutB");
     let (port_c, _agent_c) = spawn_test_fleet_agent("ScoutC", None).expect("spawn ScoutC");
     let mut registry = FleetAgentRegistry::default();

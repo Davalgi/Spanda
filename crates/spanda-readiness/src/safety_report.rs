@@ -31,6 +31,23 @@ pub struct SafetyCaseReport {
 
 /// Generate a safety case report for deployment evidence.
 pub fn generate_safety_report(program: &Program, source_label: &str) -> SafetyCaseReport {
+    // Description:
+    //     Generate safety report.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     source_label: &str
+    //         Caller-supplied source label.
+    //
+    // Outputs:
+    //     result: SafetyCaseReport
+    //         Return value from `generate_safety_report`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::safety_report::generate_safety_report(progra, source_label);
+
     let verify_opts = VerifyOptions::default();
     let hw = verify_program_compatibility(program, &verify_opts);
     let minimum = check_minimum_capabilities(program);
@@ -117,6 +134,23 @@ pub fn generate_safety_report_source(
     source: &str,
     label: &str,
 ) -> Result<SafetyCaseReport, spanda_error::SpandaError> {
+    // Description:
+    //     Generate safety report source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     label: &str
+    //         Caller-supplied label.
+    //
+    // Outputs:
+    //     result: Result<SafetyCaseReport, spanda_error::SpandaError>
+    //         Return value from `generate_safety_report_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::safety_report::generate_safety_report_source(source, label);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(generate_safety_report(&program, label))

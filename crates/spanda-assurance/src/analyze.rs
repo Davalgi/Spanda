@@ -30,6 +30,23 @@ pub struct MissionAssuranceSummary {
 
 /// Run full mission assurance analysis on a program.
 pub fn assure_program(program: &Program, source_label: &str) -> MissionAssuranceSummary {
+    // Description:
+    //     Assure program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     source_label: &str
+    //         Caller-supplied source label.
+    //
+    // Outputs:
+    //     result: MissionAssuranceSummary
+    //         Return value from `assure_program`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::analyze::assure_program(progra, source_label);
+
     let assurance = build_assurance_report(program, source_label);
     let anomalies = scan_anomalies(program);
     let prognostics = evaluate_prognostics(program);
@@ -67,10 +84,40 @@ pub fn assure_program(program: &Program, source_label: &str) -> MissionAssurance
 
 /// Re-export mitigation report builder for CLI.
 pub fn mitigation_report(program: &Program) -> crate::mitigation::MitigationReport {
+    // Description:
+    //     Mitigation report.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: crate::mitigation::MitigationReport
+    //         Return value from `mitigation_report`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::analyze::mitigation_report(progra);
+
     extract_mitigations(program)
 }
 
 /// Re-export diagnosis for program-only path.
 pub fn diagnosis_report(program: &Program) -> DiagnosisReport {
+    // Description:
+    //     Diagnosis report.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: DiagnosisReport
+    //         Return value from `diagnosis_report`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::analyze::diagnosis_report(progra);
+
     diagnose_program(program)
 }

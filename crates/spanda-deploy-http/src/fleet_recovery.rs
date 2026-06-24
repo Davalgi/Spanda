@@ -31,21 +31,24 @@ pub fn relay_recovery_via_mesh(
     request: &FleetRecoveryRequest,
     token: Option<&str>,
 ) -> Result<FleetRecoveryResponse, String> {
-    // Post a recovery command to a running fleet mesh coordinator.
+    // Description:
+    //     Relay recovery via mesh.
     //
-    // Parameters:
-    // - `mesh_url` — base mesh coordinator URL
-    // - `request` — recovery action and optional fleet member targets
-    // - `token` — optional bearer token
+    // Inputs:
+    //     mesh_url: &str
+    //         Fleet mesh coordinator base URL.
+    //     request: &FleetRecoveryRequest
+    //         Recovery command payload to broadcast.
+    //     token: Option<&str>
+    //         Optional bearer token for authenticated mesh calls.
     //
-    // Returns:
-    // Relay counts from the coordinator response.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<FleetRecoveryResponse, String>
+    //         Return value from `relay_recovery_via_mesh`.
     //
     // Example:
-    // let response = relay_recovery_via_mesh(url, &request, token)?;
+
+    //     let result = spanda_deploy_http::fleet_recovery::relay_recovery_via_mesh(mesh_url, reques, oken);
 
     let parsed = parse_http_url(mesh_url)?;
     let url = format!(

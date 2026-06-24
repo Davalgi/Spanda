@@ -39,21 +39,23 @@ pub fn init_package(
     name: Option<&str>,
     description: Option<&str>,
 ) -> PackageResult<PathBuf> {
-    // Init package.
+    // Description:
+    //     Init package.
     //
-    // Parameters:
-    // - `dir` — input value
-    // - `name` — input value
-    // - `description` — input value
+    // Inputs:
+    //     dir: &Path
+    //         Caller-supplied dir.
+    //     name: Option<&str>
+    //         Caller-supplied name.
+    //     description: Option<&str>
+    //         Caller-supplied description.
     //
-    // Returns:
-    // PackageResult<PathBuf>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<PathBuf>
+    //         Return value from `init_package`.
     //
     // Example:
-    // let result = spanda_package::project::init_package(dir, name, description);
+    //     let result = spanda_package::project::init_package(dir, name, description);
 
     // Compute pkg name for the following logic.
     let pkg_name = name
@@ -89,19 +91,19 @@ pub fn init_package(
 
 /// Collect `.sd` source files from a project (src/ and tests/).
 pub fn collect_source_files(project_root: &Path) -> PackageResult<Vec<PathBuf>> {
-    // Collect source files.
+    // Description:
+    //     Collect source files.
     //
-    // Parameters:
-    // - `project_root` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
     //
-    // Returns:
-    // PackageResult<Vec<PathBuf>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<Vec<PathBuf>>
+    //         Return value from `collect_source_files`.
     //
     // Example:
-    // let result = spanda_package::project::collect_source_files(project_root);
+    //     let result = spanda_package::project::collect_source_files(project_roo);
 
     // Create mutable files for accumulating results.
     let mut files = Vec::new();
@@ -135,20 +137,21 @@ pub fn collect_source_files(project_root: &Path) -> PackageResult<Vec<PathBuf>> 
 }
 
 fn collect_sd_files(dir: &Path, out: &mut Vec<PathBuf>) -> PackageResult<()> {
-    // Collect sd files.
+    // Description:
+    //     Collect sd files.
     //
-    // Parameters:
-    // - `dir` — input value
-    // - `out` — input value
+    // Inputs:
+    //     dir: &Path
+    //         Caller-supplied dir.
+    //     o: &mut Vec<PathBuf>
+    //         Caller-supplied o.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `collect_sd_files`.
     //
     // Example:
-    // let result = spanda_package::project::collect_sd_files(dir, out);
+    //     let result = spanda_package::project::collect_sd_files(dir, o);
 
     // Process each registry entry.
     for entry in fs::read_dir(dir).map_err(PackageError::from)? {
@@ -171,21 +174,23 @@ pub fn add_dependency(
     name: &str,
     spec: crate::dependency::DependencySpec,
 ) -> PackageResult<()> {
-    // Add dependency.
+    // Description:
+    //     Add dependency.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `spec` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     spec: crate::dependency::DependencySpec
+    //         Caller-supplied spec.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `add_dependency`.
     //
     // Example:
-    // let result = spanda_package::project::add_dependency(project_root, name, spec);
+    //     let result = spanda_package::project::add_dependency(project_roo, name, spec);
 
     // Compute manifest path for the following logic.
     let manifest_path = project_root.join(MANIFEST_FILENAME);
@@ -196,20 +201,21 @@ pub fn add_dependency(
 
 /// Remove a dependency from the manifest and save.
 pub fn remove_dependency(project_root: &Path, name: &str) -> PackageResult<bool> {
-    // Remove dependency.
+    // Description:
+    //     Remove dependency.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // PackageResult<bool>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<bool>
+    //         Return value from `remove_dependency`.
     //
     // Example:
-    // let result = spanda_package::project::remove_dependency(project_root, name);
+    //     let result = spanda_package::project::remove_dependency(project_roo, name);
 
     // Compute manifest path for the following logic.
     let manifest_path = project_root.join(MANIFEST_FILENAME);

@@ -192,9 +192,41 @@ pub use spanda_driver::{
 };
 
 pub fn check(source: &str) -> Result<(), SpandaError> {
+    // Description:
+    //     Check.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `check`.
+    //
+    // Example:
+
+    //     let result = spanda_core::check(source);
+
     spanda_driver::check(source)
 }
 
 pub fn check_with_registry(source: &str, registry: &ModuleRegistry) -> Result<(), SpandaError> {
+    // Description:
+    //     Check with registry.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `check_with_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_core::check_with_registry(source, registry);
+
     spanda_driver::check_with_registry(source, registry)
 }

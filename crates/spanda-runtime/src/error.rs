@@ -16,20 +16,22 @@ impl std::fmt::Display for RuntimeError {
 
 impl RuntimeError {
     pub fn new(message: impl Into<String>, line: u32) -> Self {
-        // Build a runtime error tagged with a source line.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `message` — human-readable failure description
-        // - `line` — 1-based source line where execution failed
+        // Inputs:
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Tagged runtime error value.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let err = RuntimeError::new("division by zero", 42);
+
+        //     let value = spanda_runtime::error::new(essage, line);
 
         Self {
             message: message.into(),

@@ -13,19 +13,19 @@ thread_local! {
 }
 
 fn read_message(reader: &mut dyn BufRead) -> io::Result<Option<Value>> {
-    // Read message.
+    // Description:
+    //     Read message.
     //
-    // Parameters:
-    // - `reader` — input value
+    // Inputs:
+    //     reader: &mut dyn BufRead
+    //         Caller-supplied reader.
     //
-    // Returns:
-    // io::Result<Option<Value>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: io::Result<Option<Value>>
+    //         Return value from `read_message`.
     //
     // Example:
-    // let result = spanda_dap::main::read_message(reader);
+    //     let result = spanda_dap::main::read_message(reader);
 
     // Create mutable line for accumulating results.
     let mut line = String::new();
@@ -53,20 +53,21 @@ fn read_message(reader: &mut dyn BufRead) -> io::Result<Option<Value>> {
 }
 
 fn write_message(writer: &mut dyn Write, msg: &Value) -> io::Result<()> {
-    // Write message.
+    // Description:
+    //     Write message.
     //
-    // Parameters:
-    // - `writer` — input value
-    // - `msg` — input value
+    // Inputs:
+    //     writer: &mut dyn Write
+    //         Caller-supplied writer.
+    //     sg: &Value
+    //         Caller-supplied sg.
     //
-    // Returns:
-    // io::Result<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: io::Result<()>
+    //         Return value from `write_message`.
     //
     // Example:
-    // let result = spanda_dap::main::write_message(writer, msg);
+    //     let result = spanda_dap::main::write_message(writer, sg);
 
     // Hold the function body for execution.
     let body = serde_json::to_string(msg)?;
@@ -75,21 +76,23 @@ fn write_message(writer: &mut dyn Write, msg: &Value) -> io::Result<()> {
 }
 
 fn respond(writer: &mut dyn Write, req: &Value, body: Value) -> io::Result<()> {
-    // Respond.
+    // Description:
+    //     Respond.
     //
-    // Parameters:
-    // - `writer` — input value
-    // - `req` — input value
-    // - `body` — input value
+    // Inputs:
+    //     writer: &mut dyn Write
+    //         Caller-supplied writer.
+    //     req: &Value
+    //         Caller-supplied req.
+    //     body: Value
+    //         Caller-supplied body.
     //
-    // Returns:
-    // io::Result<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: io::Result<()>
+    //         Return value from `respond`.
     //
     // Example:
-    // let result = spanda_dap::main::respond(writer, req, body);
+    //     let result = spanda_dap::main::respond(writer, req, body);
 
     // Produce write message as the result.
     write_message(
@@ -106,19 +109,19 @@ fn respond(writer: &mut dyn Write, req: &Value, body: Value) -> io::Result<()> {
 }
 
 fn step_kind(command: &str) -> DebugStepKind {
-    // Step kind.
+    // Description:
+    //     Step kind.
     //
-    // Parameters:
-    // - `command` — input value
+    // Inputs:
+    //     command: &str
+    //         Caller-supplied command.
     //
-    // Returns:
-    // DebugStepKind.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: DebugStepKind
+    //         Return value from `step_kind`.
     //
     // Example:
-    // let result = spanda_dap::main::step_kind(command);
+    //     let result = spanda_dap::main::step_kind(command);
 
     // Match on command and handle each case.
     match command {
@@ -138,7 +141,43 @@ fn with_machine<F, R>(
 where
     F: FnOnce(&mut DebugMachine) -> Result<R, SpandaError>,
 {
-    // Produce with as the result.
+    // Description:
+
+    //     With machine.
+
+    //
+
+    // Inputs:
+
+    //     source: &str
+
+    //         Caller-supplied source.
+
+    //     source_path: Option<&str>
+
+    //         Caller-supplied source path.
+
+    //     breakpoints: &HashSet<u32>
+
+    //         Caller-supplied breakpoints.
+
+    //     f: F
+
+    //         Caller-supplied f.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<R, SpandaError> where F: FnOnce(&mut DebugMachine) -> Result<R, SpandaError>,
+
+    //         Return value from `with_machine`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_dap::main::with_machine(source, source_path, breakpoints, f);
     DEBUG_MACHINE.with(|cell| {
         let mut slot = cell.borrow_mut();
 
@@ -164,22 +203,25 @@ pub fn serve(
     reader: &mut dyn BufRead,
     writer: &mut dyn Write,
 ) -> io::Result<()> {
-    // Serve.
+    // Description:
+    //     Serve.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `source_path` — input value
-    // - `reader` — input value
-    // - `writer` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     source_path: Option<&str>
+    //         Caller-supplied source path.
+    //     reader: &mut dyn BufRead
+    //         Caller-supplied reader.
+    //     writer: &mut dyn Write
+    //         Caller-supplied writer.
     //
-    // Returns:
-    // io::Result<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: io::Result<()>
+    //         Return value from `serve`.
     //
     // Example:
-    // let result = spanda_dap::main::serve(source, source_path, reader, writer);
+    //     let result = spanda_dap::main::serve(source, source_path, reader, writer);
 
     // Create mutable breakpoints for accumulating results.
     let mut breakpoints: HashSet<u32> = HashSet::new();
@@ -412,19 +454,17 @@ pub fn serve(
 }
 
 fn main() {
-    // Main.
+    // Description:
+    //     Main.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_dap::main::main();
+    //     let result = spanda_dap::main::main();
 
     // Compute source for the following logic.
     let source = std::env::args().nth(1).unwrap_or_else(|| {
@@ -452,19 +492,18 @@ mod tests {
 
     #[test]
     fn resumable_machine_across_continue_requests() {
-        // Resumable machine across continue requests.
+        // Description:
+        //     Resumable machine across continue requests.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_dap::main::resumable_machine_across_continue_requests();
+
+        //     let result = spanda_dap::main::resumable_machine_across_continue_requests();
 
         let source = r#"
 robot R {

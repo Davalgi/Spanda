@@ -6,6 +6,27 @@ use spanda_ast::robotics_decl::{CertificationStandard, CertifyDecl};
 use spanda_hardware::{CompatItem, CompatSeverity};
 
 fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Pass.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `pass`.
+    //
+    // Example:
+
+    //     let result = spanda_certify::verify::pass(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -16,6 +37,27 @@ fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Warn.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `warn`.
+    //
+    // Example:
+
+    //     let result = spanda_certify::verify::warn(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -26,6 +68,27 @@ fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn error(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Error.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `error`.
+    //
+    // Example:
+
+    //     let result = spanda_certify::verify::error(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -41,20 +104,22 @@ fn robot_by_name<'a>(robots: &'a [RobotDecl], name: &str) -> Option<&'a RobotDec
 
 /// Build certification proof checklist items for verify reporting.
 pub fn verify_certification_proof(program: &Program, strict: bool) -> Vec<CompatItem> {
-    // Evaluate deploy/certify/safety/mission coverage for CI gates.
+    // Description:
+    //     Verify certification proof.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `strict` — treat gaps as errors instead of warnings
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     stric: bool
+    //         Caller-supplied stric.
     //
-    // Returns:
-    // Compatibility items for the verify report.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_certification_proof`.
     //
     // Example:
-    // let items = verify_certification_proof(&program, true);
+
+    //     let result = spanda_certify::verify::verify_certification_proof(progra, stric);
 
     let Program::Program {
         deployments,

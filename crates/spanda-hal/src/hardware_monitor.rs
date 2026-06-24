@@ -18,88 +18,121 @@ pub struct HardwareMonitor {
 
 impl HardwareMonitor {
     pub fn register_sensor(&mut self, name: impl Into<String>, sensor_type: impl Into<String>) {
-        // Register sensor.
+        // Description:
+        //     Register sensor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `sensor_type` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
+        //     sensor_type: impl Into<String>
+        //         Caller-supplied sensor type.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_sensor(name, sensor_type);
+        //     let result = spanda_hal::hardware_monitor::register_sensor(&mut self, name, sensor_type);
 
         // Append into self.
         self.sensors.push((name.into(), sensor_type.into()));
     }
 
     pub fn register_actuator(&mut self, name: impl Into<String>, actuator_type: impl Into<String>) {
-        // Register actuator.
+        // Description:
+        //     Register actuator.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `actuator_type` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
+        //     actuator_type: impl Into<String>
+        //         Caller-supplied actuator type.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_actuator(name, actuator_type);
+        //     let result = spanda_hal::hardware_monitor::register_actuator(&mut self, name, actuator_type);
 
         // Append into self.
         self.actuators.push((name.into(), actuator_type.into()));
     }
 
     pub fn has_injected_faults(&self) -> bool {
-        // Report whether simulate_compatibility faults are active.
+        // Description:
+        //     Has injected faults.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true when at least one fault was injected.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `has_injected_faults`.
         //
         // Example:
-        // let active = monitor.has_injected_faults();
+        //     let result = spanda_hal::hardware_monitor::has_injected_faults(&self);
 
         // Check the injected fault set.
         !self.injected_faults.is_empty()
     }
 
     pub fn inject_fault(&mut self, fault: impl Into<String>) {
+        // Description:
+        //     Inject fault.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     faul: impl Into<String>
+        //         Caller-supplied faul.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_hal::hardware_monitor::inject_fault(&mut self, faul);
+
         self.injected_faults.insert(fault.into());
     }
 
     pub fn injected_faults(&self) -> &HashSet<String> {
+        // Description:
+        //     Injected faults.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &HashSet<String>
+        //         Return value from `injected_faults`.
+        //
+        // Example:
+
+        //     let result = spanda_hal::hardware_monitor::injected_faults(&self);
+
         &self.injected_faults
     }
 
     pub fn sensor_event_for_type(sensor_type: &str) -> Option<&'static str> {
-        // Sensor event for type.
+        // Description:
+        //     Sensor event for type.
         //
-        // Parameters:
-        // - `sensor_type` — input value
+        // Inputs:
+        //     sensor_type: &str
+        //         Caller-supplied sensor type.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&'static str>
+        //         Return value from `sensor_event_for_type`.
         //
         // Example:
-        // let result = spanda_core::hardware_monitor::sensor_event_for_type(sensor_type);
+        //     let result = spanda_hal::hardware_monitor::sensor_event_for_type(sensor_type);
 
         // Match on sensor type and handle each case.
         match sensor_type {
@@ -113,19 +146,19 @@ impl HardwareMonitor {
     }
 
     pub fn actuator_event_for_type(actuator_type: &str) -> Option<&'static str> {
-        // Actuator event for type.
+        // Description:
+        //     Actuator event for type.
         //
-        // Parameters:
-        // - `actuator_type` — input value
+        // Inputs:
+        //     actuator_type: &str
+        //         Caller-supplied actuator type.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&'static str>
+        //         Return value from `actuator_event_for_type`.
         //
         // Example:
-        // let result = spanda_core::hardware_monitor::actuator_event_for_type(actuator_type);
+        //     let result = spanda_hal::hardware_monitor::actuator_event_for_type(actuator_type);
 
         // Match on actuator type and handle each case.
         match actuator_type {
@@ -136,21 +169,23 @@ impl HardwareMonitor {
     }
 
     fn fault_matches_sensor(fault: &str, sensor_type: &str, sensor_name: &str) -> bool {
-        // Fault matches sensor.
+        // Description:
+        //     Fault matches sensor.
         //
-        // Parameters:
-        // - `fault` — input value
-        // - `sensor_type` — input value
-        // - `sensor_name` — input value
+        // Inputs:
+        //     faul: &str
+        //         Caller-supplied faul.
+        //     sensor_type: &str
+        //         Caller-supplied sensor type.
+        //     sensor_name: &str
+        //         Caller-supplied sensor name.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `fault_matches_sensor`.
         //
         // Example:
-        // let result = spanda_core::hardware_monitor::fault_matches_sensor(fault, sensor_type, sensor_name);
+        //     let result = spanda_hal::hardware_monitor::fault_matches_sensor(faul, sensor_type, sensor_name);
 
         // Compute fault lower for the following logic.
         let fault_lower = fault.to_ascii_lowercase();
@@ -180,22 +215,24 @@ impl HardwareMonitor {
     }
 
     pub fn record_sensor_reading(&mut self, name: &str, sensor_type: &str, reading: &RuntimeValue) {
-        // Record sensor reading.
+        // Description:
+        //     Record sensor reading.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `sensor_type` — input value
-        // - `reading` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     sensor_type: &str
+        //         Caller-supplied sensor type.
+        //     reading: &RuntimeValue
+        //         Caller-supplied reading.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_sensor_reading(name, sensor_type, reading);
+        //     let result = spanda_hal::hardware_monitor::record_sensor_reading(&mut self, name, sensor_type, reading);
 
         // take this path when Self::reading failed(reading).
         if Self::reading_failed(reading) {
@@ -215,19 +252,19 @@ impl HardwareMonitor {
     }
 
     fn reading_failed(reading: &RuntimeValue) -> bool {
-        // Reading failed.
+        // Description:
+        //     Reading failed.
         //
-        // Parameters:
-        // - `reading` — input value
+        // Inputs:
+        //     reading: &RuntimeValue
+        //         Caller-supplied reading.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `reading_failed`.
         //
         // Example:
-        // let result = spanda_core::hardware_monitor::reading_failed(reading);
+        //     let result = spanda_hal::hardware_monitor::reading_failed(reading);
 
         // Produce matches! as the result.
         matches!(
@@ -237,19 +274,18 @@ impl HardwareMonitor {
     }
 
     pub fn evaluate_injected_faults(&mut self) {
-        // Evaluate injected faults.
+        // Description:
+        //     Evaluate injected faults.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.evaluate_injected_faults();
+        //     let result = spanda_hal::hardware_monitor::evaluate_injected_faults(&mut self);
 
         // Inject each configured hardware fault.
         for fault in self.injected_faults.clone() {
@@ -276,19 +312,19 @@ impl HardwareMonitor {
 
     /// Returns newly detected hardware events to dispatch (edge-triggered).
     pub fn poll_new_events(&mut self) -> Vec<String> {
-        // Poll new events.
+        // Description:
+        //     Poll new events.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `poll_new_events`.
         //
         // Example:
-        // let result = instance.poll_new_events();
+        //     let result = spanda_hal::hardware_monitor::poll_new_events(&mut self);
 
         // Call evaluate injected faults on the current instance.
         self.evaluate_injected_faults();
@@ -305,20 +341,20 @@ impl HardwareMonitor {
     }
 
     pub fn clear_event(&mut self, event: &str) {
-        // Clear event.
+        // Description:
+        //     Clear event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     even: &str
+        //         Caller-supplied even.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.clear_event(event);
+        //     let result = spanda_hal::hardware_monitor::clear_event(&mut self, even);
 
         // Call remove on the current instance.
         self.active_events.remove(event);
@@ -326,19 +362,20 @@ impl HardwareMonitor {
     }
 
     pub fn overall_health_label(&self) -> &'static str {
-        // Summarize monitor state for runtime health reporting.
+        // Description:
+        //     Overall health label.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Human-readable health label.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `overall_health_label`.
         //
         // Example:
-        // let label = monitor.overall_health_label();
+
+        //     let result = spanda_hal::hardware_monitor::overall_health_label(&self);
 
         let faults: Vec<String> = self
             .injected_faults
@@ -359,37 +396,39 @@ impl HardwareMonitor {
     }
 
     pub fn runtime_faults(&self) -> Vec<String> {
-        // Return injected fault names for health evaluation.
+        // Description:
+        //     Runtime faults.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Active fault labels.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `runtime_faults`.
         //
         // Example:
-        // let faults = monitor.runtime_faults();
+
+        //     let result = spanda_hal::hardware_monitor::runtime_faults(&self);
 
         self.injected_faults.iter().cloned().collect()
     }
 
     pub fn runtime_events(&self) -> Vec<String> {
-        // Return active hardware events for health evaluation.
+        // Description:
+        //     Runtime events.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Active event labels.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `runtime_events`.
         //
         // Example:
-        // let events = monitor.runtime_events();
+
+        //     let result = spanda_hal::hardware_monitor::runtime_events(&self);
 
         self.active_events.iter().cloned().collect()
     }
@@ -401,19 +440,18 @@ mod tests {
 
     #[test]
     fn injected_lidar_fault_maps_to_event() {
-        // Injected lidar fault maps to event.
+        // Description:
+        //     Injected lidar fault maps to event.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::hardware_monitor::injected_lidar_fault_maps_to_event();
+
+        //     let result = spanda_hal::hardware_monitor::injected_lidar_fault_maps_to_event();
 
         let mut monitor = HardwareMonitor::default();
         monitor.register_sensor("lidar", "Lidar");

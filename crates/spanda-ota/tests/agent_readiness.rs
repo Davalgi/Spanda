@@ -9,6 +9,19 @@ use std::time::Duration;
 
 #[test]
 fn agent_readiness_after_program_upload() {
+    // Description:
+    //     Agent readiness after program upload.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent_readiness::agent_readiness_after_program_upload();
+
     let target = deploy_target_key("RoverProgram", "JetsonOrin");
     let (port, _handle) = spawn_test_agent(&target, None).expect("spawn test agent");
     thread::sleep(Duration::from_millis(50));

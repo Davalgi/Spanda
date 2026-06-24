@@ -5,19 +5,17 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
-    // Main.
+    // Description:
+    //     Main.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::build::main();
+    //     let result = spanda_bridge::build::main();
 
     // Compute manifest dir for the following logic.
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());

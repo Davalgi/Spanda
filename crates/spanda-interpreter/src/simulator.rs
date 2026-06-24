@@ -20,18 +20,18 @@ pub struct SimulatorConfig {
 
 impl Default for SimulatorConfig {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_interpreter::simulator::default();
+        //     let result = spanda_interpreter::simulator::default();
 
         // Assemble the struct fields and return it.
         Self {
@@ -84,19 +84,19 @@ pub struct Simulator {
 
 impl Simulator {
     pub fn new(config: SimulatorConfig) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `config` — input value
+        // Inputs:
+        //     config: SimulatorConfig
+        //         Caller-supplied config.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_interpreter::simulator::new(config);
+        //     let value = spanda_interpreter::simulator::new(config);
 
         // Assemble the struct fields and return it.
         Self {
@@ -121,109 +121,114 @@ impl Simulator {
     }
 
     pub fn get_event_log(&self) -> Vec<String> {
+        // Description:
+        //     Get event log.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `get_event_log`.
         //
         // Example:
-        // let result = instance.get_event_log();
+        //     let result = spanda_interpreter::simulator::get_event_log(&self);
 
         // Call clone on the current instance.
         self.event_log.clone()
     }
 
     pub fn get_arm_position(&self) -> (f64, f64, f64) {
+        // Description:
+        //     Get arm position.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // (f64, f64, f64).
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: (f64, f64, f64)
+        //         Return value from `get_arm_position`.
         //
         // Example:
-        // let result = instance.get_arm_position();
+        //     let result = spanda_interpreter::simulator::get_arm_position(&self);
 
         // Call arm position on the current instance.
         self.arm_position
     }
 
     pub fn get_service_log(&self) -> Vec<String> {
+        // Description:
+        //     Get service log.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `get_service_log`.
         //
         // Example:
-        // let result = instance.get_service_log();
+        //     let result = spanda_interpreter::simulator::get_service_log(&self);
 
         // Call clone on the current instance.
         self.service_log.clone()
     }
 
     pub fn get_action_log(&self) -> Vec<String> {
+        // Description:
+        //     Get action log.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `get_action_log`.
         //
         // Example:
-        // let result = instance.get_action_log();
+        //     let result = spanda_interpreter::simulator::get_action_log(&self);
 
         // Call clone on the current instance.
         self.action_log.clone()
     }
 
     pub fn get_published_topics(&self) -> Vec<PublishedMessage> {
+        // Description:
+        //     Get published topics.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<PublishedMessage>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<PublishedMessage>
+        //         Return value from `get_published_topics`.
         //
         // Example:
-        // let result = instance.get_published_topics();
+        //     let result = spanda_interpreter::simulator::get_published_topics(&self);
 
         // Call clone on the current instance.
         self.published.clone()
     }
 
     fn simulate_lidar(&self) -> f64 {
-        // Simulate lidar.
+        // Description:
+        //     Simulate lidar.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: f64
+        //         Return value from `simulate_lidar`.
         //
         // Example:
-        // let result = instance.simulate_lidar();
+        //     let result = spanda_interpreter::simulator::simulate_lidar(&self);
 
         // Create mutable nearest for accumulating results.
         let mut nearest = self.lidar_range;
@@ -256,22 +261,25 @@ impl RobotBackend for Simulator {
         sensor_type: &str,
         _topic: Option<&str>,
     ) -> RuntimeValue {
-        // Read sensor.
+        // Description:
+        //     Read sensor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_sensor_name` — input value
-        // - `sensor_type` — input value
-        // - `_topic` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _sensor_name: &str
+        //         Caller-supplied sensor name.
+        //     sensor_type: &str
+        //         Caller-supplied sensor type.
+        //     _topic: Option<&str>
+        //         Caller-supplied topic.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `read_sensor`.
         //
         // Example:
-        // let result = instance.read_sensor(_sensor_name, sensor_type, _topic);
+        //     let result = spanda_interpreter::simulator::read_sensor(&mut self, _sensor_name, sensor_type, _topic);
 
         // Import the items needed by the logic below.
         use spanda_ast::nodes::UnitKind;
@@ -356,22 +364,24 @@ impl RobotBackend for Simulator {
     }
 
     fn publish_topic(&mut self, topic_path: &str, message_type: &str, value: RuntimeValue) {
-        // Publish topic.
+        // Description:
+        //     Publish topic.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `message_type` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish_topic(topic_path, message_type, value);
+        //     let result = spanda_interpreter::simulator::publish_topic(&mut self, opic_path, essage_type, value);
 
         // take this path when let RuntimeValue::Velocity { linear, angular } = &value.
         if let RuntimeValue::Velocity { linear, angular } = &value {
@@ -390,21 +400,23 @@ impl RobotBackend for Simulator {
     }
 
     fn call_service(&mut self, service_name: &str, service_type: &str) -> RuntimeValue {
-        // Call service.
+        // Description:
+        //     Call service.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `service_name` — input value
-        // - `service_type` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     service_name: &str
+        //         Caller-supplied service name.
+        //     service_type: &str
+        //         Caller-supplied service type.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `call_service`.
         //
         // Example:
-        // let result = instance.call_service(service_name, service_type);
+        //     let result = spanda_interpreter::simulator::call_service(&mut self, service_name, service_type);
 
         // Call service log on the current instance.
         self.service_log
@@ -419,22 +431,25 @@ impl RobotBackend for Simulator {
         action_type: &str,
         goal: RuntimeValue,
     ) -> RuntimeValue {
-        // Send action.
+        // Description:
+        //     Send action.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `action_name` — input value
-        // - `action_type` — input value
-        // - `goal` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     action_name: &str
+        //         Caller-supplied action name.
+        //     action_type: &str
+        //         Caller-supplied action type.
+        //     goal: RuntimeValue
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `send_action`.
         //
         // Example:
-        // let result = instance.send_action(action_name, action_type, goal);
+        //     let result = spanda_interpreter::simulator::send_action(&mut self, action_name, action_type, goal);
 
         // Append into self.
         self.action_log.push(format!("{action_name}:{action_type}"));
@@ -459,20 +474,20 @@ impl RobotBackend for Simulator {
     }
 
     fn execute_motion(&mut self, cmd: MotionCommand) {
-        // Execute motion.
+        // Description:
+        //     Execute motion.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `cmd` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     cmd: MotionCommand
+        //         Caller-supplied cmd.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.execute_motion(cmd);
+        //     let result = spanda_interpreter::simulator::execute_motion(&mut self, cmd);
 
         // keep entries that match the expected pattern.
         if self.emergency_stop && !matches!(cmd, MotionCommand::Stop { .. }) {
@@ -537,20 +552,20 @@ impl RobotBackend for Simulator {
     }
 
     fn tick(&mut self, dt_ms: f64) {
-        // Tick.
+        // Description:
+        //     Tick.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `dt_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     dt_ms: f64
+        //         Caller-supplied dt ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.tick(dt_ms);
+        //     let result = spanda_interpreter::simulator::tick(&mut self, dt_ms);
 
         // take this path when self.emergency stop.
         if self.emergency_stop {
@@ -602,18 +617,19 @@ impl RobotBackend for Simulator {
     }
 
     fn get_state(&self) -> RobotState {
+        // Description:
+        //     Get state.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // RobotState.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RobotState
+        //         Return value from `get_state`.
         //
         // Example:
-        // let result = instance.get_state();
+        //     let result = spanda_interpreter::simulator::get_state(&self);
 
         // Produce RobotState as the result.
         RobotState {
@@ -624,20 +640,20 @@ impl RobotBackend for Simulator {
     }
 
     fn set_emergency_stop(&mut self, value: bool) {
-        // Set emergency stop.
+        // Description:
+        //     Set emergency stop.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     value: bool
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_emergency_stop(value);
+        //     let result = spanda_interpreter::simulator::set_emergency_stop(&mut self, value);
 
         // Call emergency stop = value; on the current instance.
         self.emergency_stop = value;
@@ -653,37 +669,38 @@ impl RobotBackend for Simulator {
     }
 
     fn get_hal(&mut self) -> Option<&mut dyn HalBackend> {
+        // Description:
+        //     Get hal.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&mut dyn HalBackend>
+        //         Return value from `get_hal`.
         //
         // Example:
-        // let result = instance.get_hal();
+        //     let result = spanda_interpreter::simulator::get_hal(&mut self);
 
         // Produce hal) as the result.
         Some(&mut self.hal)
     }
 
     fn event_log(&self) -> Vec<String> {
-        // Event log.
+        // Description:
+        //     Event log.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `event_log`.
         //
         // Example:
-        // let result = instance.event_log();
+        //     let result = spanda_interpreter::simulator::event_log(&self);
 
         // Call get event log on the current instance.
         self.get_event_log()
@@ -691,19 +708,19 @@ impl RobotBackend for Simulator {
 }
 
 pub fn create_default_simulator(config: SimulatorConfig) -> Simulator {
-    // Create default simulator.
+    // Description:
+    //     Create default simulator.
     //
-    // Parameters:
-    // - `config` — input value
+    // Inputs:
+    //     config: SimulatorConfig
+    //         Caller-supplied config.
     //
-    // Returns:
-    // Simulator.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Simulator
+    //         Return value from `create_default_simulator`.
     //
     // Example:
-    // let result = spanda_interpreter::simulator::create_default_simulator(config);
+    //     let result = spanda_interpreter::simulator::create_default_simulator(config);
 
     // Produce new as the result.
     Simulator::new(config)
@@ -711,7 +728,20 @@ pub fn create_default_simulator(config: SimulatorConfig) -> Simulator {
 
 impl spanda_runtime::replay::ReplayStateTarget for Simulator {
     fn apply_replay_state(&mut self, snapshot: &spanda_runtime::replay::ReplayStateSnapshot) {
-        // Apply a recorded snapshot during frame-by-frame mission playback.
+        // Description:
+        //     Apply replay state.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     snapsho: &spanda_runtime::replay::ReplayStateSnapshot
+        //         Caller-supplied snapsho.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_interpreter::simulator::apply_replay_state(&mut self, snapsho);
         self.pose = snapshot.pose.clone();
         self.velocity = snapshot.velocity.clone();
         self.emergency_stop = snapshot.emergency_stop;
@@ -726,19 +756,18 @@ mod tests {
 
     #[test]
     fn updates_pose_on_drive() {
-        // Updates pose on drive.
+        // Description:
+        //     Updates pose on drive.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::updates_pose_on_drive();
+
+        //     let result = spanda_interpreter::simulator::updates_pose_on_drive();
 
         let mut sim = create_default_simulator(SimulatorConfig::default());
         sim.execute_motion(MotionCommand::Drive {
@@ -752,19 +781,18 @@ mod tests {
 
     #[test]
     fn simulates_lidar_nearest_distance() {
-        // Simulates lidar nearest distance.
+        // Description:
+        //     Simulates lidar nearest distance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::simulates_lidar_nearest_distance();
+
+        //     let result = spanda_interpreter::simulator::simulates_lidar_nearest_distance();
 
         let mut sim = create_default_simulator(SimulatorConfig {
             initial_pose: PoseState {
@@ -790,19 +818,18 @@ mod tests {
 
     #[test]
     fn stops_motion_on_emergency_stop() {
-        // Stops motion on emergency stop.
+        // Description:
+        //     Stops motion on emergency stop.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::stops_motion_on_emergency_stop();
+
+        //     let result = spanda_interpreter::simulator::stops_motion_on_emergency_stop();
 
         let mut sim = create_default_simulator(SimulatorConfig::default());
         sim.execute_motion(MotionCommand::Drive {
@@ -817,19 +844,18 @@ mod tests {
 
     #[test]
     fn simulates_drone_altitude_with_thrust() {
-        // Simulates drone altitude with thrust.
+        // Description:
+        //     Simulates drone altitude with thrust.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::simulates_drone_altitude_with_thrust();
+
+        //     let result = spanda_interpreter::simulator::simulates_drone_altitude_with_thrust();
 
         let mut sim = create_default_simulator(SimulatorConfig {
             initial_pose: PoseState {
@@ -850,19 +876,18 @@ mod tests {
 
     #[test]
     fn tracks_arm_move_to() {
-        // Tracks arm move to.
+        // Description:
+        //     Tracks arm move to.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::tracks_arm_move_to();
+
+        //     let result = spanda_interpreter::simulator::tracks_arm_move_to();
 
         let mut sim = create_default_simulator(SimulatorConfig::default());
         sim.execute_motion(MotionCommand::MoveTo {
@@ -876,19 +901,18 @@ mod tests {
 
     #[test]
     fn logs_motion_events() {
-        // Logs motion events.
+        // Description:
+        //     Logs motion events.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_interpreter::simulator::logs_motion_events();
+
+        //     let result = spanda_interpreter::simulator::logs_motion_events();
 
         let mut sim = create_default_simulator(SimulatorConfig::default());
         sim.execute_motion(MotionCommand::Stop {

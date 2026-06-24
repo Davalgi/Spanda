@@ -21,6 +21,20 @@ struct BridgeResponse {
 }
 
 fn python_cmd() -> Option<String> {
+    // Description:
+    //     Python cmd.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `python_cmd`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::python_bridge::python_cmd();
+
     for cmd in ["python3", "python"] {
         if Command::new(cmd)
             .arg("-c")
@@ -38,6 +52,20 @@ fn python_cmd() -> Option<String> {
 }
 
 fn bridge_script_path() -> Option<PathBuf> {
+    // Description:
+    //     Bridge script path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `bridge_script_path`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::python_bridge::bridge_script_path();
+
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
         let path = PathBuf::from(path);
         if path.is_file() {
@@ -55,6 +83,23 @@ fn bridge_script_path() -> Option<PathBuf> {
 }
 
 fn invoke_python_bridge(fn_name: &str, args: &[String]) -> bool {
+    // Description:
+    //     Invoke python bridge.
+    //
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `invoke_python_bridge`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::python_bridge::invoke_python_bridge(fn_name, args);
+
     let python = match python_cmd() {
         Some(cmd) => cmd,
         None => return false,
@@ -103,10 +148,41 @@ fn invoke_python_bridge(fn_name: &str, args: &[String]) -> bool {
 }
 
 pub fn mqtt_live_enabled() -> bool {
+    // Description:
+    //     Mqtt live enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `mqtt_live_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::python_bridge::mqtt_live_enabled();
+
     std::env::var("SPANDA_MQTT_LIVE").is_ok()
 }
 
 pub fn try_mqtt_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Try mqtt publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_mqtt_publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::python_bridge::try_mqtt_publish(opic, payload);
+
     if !mqtt_live_enabled() {
         return false;
     }

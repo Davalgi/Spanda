@@ -23,6 +23,21 @@ pub struct ProviderDispatchContext<'a> {
 
 /// Map a dotted module import path to its backing official package name.
 pub fn official_package_for_module(module_path: &str) -> Option<&'static str> {
+    // Description:
+    //     Official package for module.
+    //
+    // Inputs:
+    //     odule_path: &str
+    //         Caller-supplied odule path.
+    //
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `official_package_for_module`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_dispatch::official_package_for_module(odule_path);
+
     match module_path {
         "positioning.gps" => Some("spanda-gps"),
         "connectivity.wifi" => Some("spanda-wifi"),
@@ -64,10 +79,39 @@ pub fn official_package_for_module(module_path: &str) -> Option<&'static str> {
 }
 
 fn project_provider_key(package: &str) -> String {
+    // Description:
+    //     Project provider key.
+    //
+    // Inputs:
+    //     package: &str
+    //         Caller-supplied package.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `project_provider_key`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_dispatch::project_provider_key(package);
+
     format!("{package}::project")
 }
 
 fn ok_int() -> RuntimeValue {
+    // Description:
+    //     Ok int.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `ok_int`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_dispatch::ok_int();
+
     RuntimeValue::Number {
         value: 1.0,
         unit: spanda_ast::nodes::UnitKind::None,
@@ -86,6 +130,36 @@ fn record_call(
     started: Instant,
     failed: bool,
 ) {
+    // Description:
+    //     Record call.
+    //
+    // Inputs:
+    //     elemetry: Option<&mut RuntimeTelemetry>
+    //         Caller-supplied elemetry.
+    //     ission_trace: Option<&mut MissionTrace>
+    //         Caller-supplied ission trace.
+    //     sim_time_ms: f64
+    //         Caller-supplied sim time ms.
+    //     key: &str
+    //         Caller-supplied key.
+    //     category: &str
+    //         Caller-supplied category.
+    //     odule_path: &str
+    //         Caller-supplied odule path.
+    //     function_name: &str
+    //         Caller-supplied function name.
+    //     started: Instant
+    //         Caller-supplied started.
+    //     failed: bool
+    //         Caller-supplied failed.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_dispatch::record_call(elemetry, ission_trace, sim_time_ms, key, category, odule_path, function_name, started, failed);
+
     if let Some(telemetry) = telemetry {
         let duration_ms = started.elapsed().as_secs_f64() * 1000.0;
         telemetry.record_provider_call(key, category, duration_ms, failed);
@@ -115,6 +189,33 @@ pub fn dispatch_official_package_call(
     mission_trace: Option<&mut MissionTrace>,
     sim_time_ms: f64,
 ) -> Option<RuntimeValue> {
+    // Description:
+    //     Dispatch official package call.
+    //
+    // Inputs:
+    //     registry: &mut ProviderRegistry
+    //         Caller-supplied registry.
+    //     odule_path: &str
+    //         Caller-supplied odule path.
+    //     function_name: &str
+    //         Caller-supplied function name.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
+    //     elemetry: Option<&mut RuntimeTelemetry>
+    //         Caller-supplied elemetry.
+    //     ission_trace: Option<&mut MissionTrace>
+    //         Caller-supplied ission trace.
+    //     sim_time_ms: f64
+    //         Caller-supplied sim time ms.
+    //
+    // Outputs:
+    //     result: Option<RuntimeValue>
+    //         Return value from `dispatch_official_package_call`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_dispatch::dispatch_official_package_call(registry, odule_path, function_name, args, elemetry, ission_trace, sim_time_ms);
+
     let package = official_package_for_module(module_path)?;
     if !registry.has_official_package(package) {
         return None;

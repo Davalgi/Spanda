@@ -35,19 +35,19 @@ pub struct DependencyDetail {
 
 impl DependencySpec {
     pub fn parse_version_req(&self) -> PackageResult<Option<VersionReq>> {
-        // Parse version req.
+        // Description:
+        //     Parse version req.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // PackageResult<Option<VersionReq>>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Option<VersionReq>>
+        //         Return value from `parse_version_req`.
         //
         // Example:
-        // let result = instance.parse_version_req();
+        //     let result = spanda_package::dependency::parse_version_req(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -64,19 +64,19 @@ impl DependencySpec {
     }
 
     pub fn source_kind(&self) -> DependencySourceKind {
-        // Source kind.
+        // Description:
+        //     Source kind.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // DependencySourceKind.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: DependencySourceKind
+        //         Return value from `source_kind`.
         //
         // Example:
-        // let result = instance.source_kind();
+        //     let result = spanda_package::dependency::source_kind(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -95,20 +95,21 @@ impl DependencySpec {
     }
 
     pub fn local_path(&self, project_root: &std::path::Path) -> Option<PathBuf> {
-        // Local path.
+        // Description:
+        //     Local path.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `project_root` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     project_roo: &std::path::Path
+        //         Caller-supplied project roo.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<PathBuf>
+        //         Return value from `local_path`.
         //
         // Example:
-        // let result = instance.local_path(project_root);
+        //     let result = spanda_package::dependency::local_path(&self, project_roo);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -127,19 +128,19 @@ impl DependencySpec {
     }
 
     pub fn git_url(&self) -> Option<&str> {
-        // Git url.
+        // Description:
+        //     Git url.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&str>
+        //         Return value from `git_url`.
         //
         // Example:
-        // let result = instance.git_url();
+        //     let result = spanda_package::dependency::git_url(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -187,58 +188,59 @@ pub enum LockedSource {
 }
 
 pub fn parse_version_req(spec: &str) -> PackageResult<VersionReq> {
-    // Parse version req.
+    // Description:
+    //     Parse version req.
     //
-    // Parameters:
-    // - `spec` — input value
+    // Inputs:
+    //     spec: &str
+    //         Caller-supplied spec.
     //
-    // Returns:
-    // PackageResult<VersionReq>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<VersionReq>
+    //         Return value from `parse_version_req`.
     //
     // Example:
-    // let result = spanda_package::dependency::parse_version_req(spec);
+    //     let result = spanda_package::dependency::parse_version_req(spec);
 
     // Produce from) as the result.
     VersionReq::parse(spec).map_err(PackageError::from)
 }
 
 pub fn parse_version(spec: &str) -> PackageResult<Version> {
-    // Parse version.
+    // Description:
+    //     Parse version.
     //
-    // Parameters:
-    // - `spec` — input value
+    // Inputs:
+    //     spec: &str
+    //         Caller-supplied spec.
     //
-    // Returns:
-    // PackageResult<Version>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<Version>
+    //         Return value from `parse_version`.
     //
     // Example:
-    // let result = spanda_package::dependency::parse_version(spec);
+    //     let result = spanda_package::dependency::parse_version(spec);
 
     // Produce from) as the result.
     Version::parse(spec).map_err(PackageError::from)
 }
 
 pub fn version_satisfies(version: &Version, req: &VersionReq) -> bool {
-    // Version satisfies.
+    // Description:
+    //     Version satisfies.
     //
-    // Parameters:
-    // - `version` — input value
-    // - `req` — input value
+    // Inputs:
+    //     version: &Version
+    //         Caller-supplied version.
+    //     req: &VersionReq
+    //         Caller-supplied req.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `version_satisfies`.
     //
     // Example:
-    // let result = spanda_package::dependency::version_satisfies(version, req);
+    //     let result = spanda_package::dependency::version_satisfies(version, req);
 
     // Produce matches as the result.
     req.matches(version)
@@ -250,19 +252,18 @@ mod tests {
 
     #[test]
     fn parses_version_constraint() {
-        // Parses version constraint.
+        // Description:
+        //     Parses version constraint.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::dependency::parses_version_constraint();
+
+        //     let result = spanda_package::dependency::parses_version_constraint();
 
         let req = parse_version_req("^0.1.0").unwrap();
         assert!(version_satisfies(&Version::new(0, 1, 5), &req));
@@ -271,19 +272,18 @@ mod tests {
 
     #[test]
     fn detects_local_dependency() {
-        // Detects local dependency.
+        // Description:
+        //     Detects local dependency.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::dependency::detects_local_dependency();
+
+        //     let result = spanda_package::dependency::detects_local_dependency();
 
         let spec = DependencySpec::Detail(DependencyDetail {
             version: None,
@@ -298,19 +298,18 @@ mod tests {
 
     #[test]
     fn detects_git_dependency() {
-        // Detects git dependency.
+        // Description:
+        //     Detects git dependency.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::dependency::detects_git_dependency();
+
+        //     let result = spanda_package::dependency::detects_git_dependency();
 
         let spec = DependencySpec::Detail(DependencyDetail {
             version: None,

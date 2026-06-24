@@ -15,20 +15,19 @@ use std::collections::BTreeMap;
 
 /// Generate the full Spanda language reference as Markdown.
 pub fn generate_language_reference() -> String {
-    // Build the language reference document from compiler metadata.
+    // Description:
+    //     Generate language reference.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Markdown document string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `generate_language_reference`.
     //
     // Example:
-    // let md = spanda_core::language_reference::generate_language_reference();
-    // assert!(md.contains("# Spanda Language Reference"));
+
+    //     let result = spanda_docs::language_reference::generate_language_reference();
 
     let mut out = String::new();
     render_header(&mut out);
@@ -47,6 +46,20 @@ pub fn generate_language_reference() -> String {
 }
 
 fn render_header(out: &mut String) {
+    // Description:
+    //     Render header.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_header(o);
+
     out.push_str("# Spanda Language Reference\n\n");
     out.push_str(
         "Complete reference for the Spanda language (`.sd`): reserved words, triggers, \
@@ -68,6 +81,20 @@ fn render_header(out: &mut String) {
 }
 
 fn render_toc(out: &mut String) {
+    // Description:
+    //     Render toc.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_toc(o);
+
     out.push_str("## Contents\n\n");
     out.push_str("- [Keywords](#keywords)\n");
     out.push_str("- [Triggers](#triggers)\n");
@@ -82,6 +109,20 @@ fn render_toc(out: &mut String) {
 }
 
 fn render_keywords(out: &mut String) {
+    // Description:
+    //     Render keywords.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_keywords(o);
+
     out.push_str("## Keywords\n\n");
     out.push_str(
         "Reserved words recognized by the Spanda lexer. Identifiers cannot reuse these names.\n\n",
@@ -215,6 +256,20 @@ fn render_keywords(out: &mut String) {
 }
 
 fn render_triggers(out: &mut String) {
+    // Description:
+    //     Render triggers.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_triggers(o);
+
     out.push_str("## Triggers\n\n");
     out.push_str(
         "Unified reactive handlers on robots and agents. See [triggers.md](./triggers.md).\n\n",
@@ -238,6 +293,21 @@ fn render_triggers(out: &mut String) {
 }
 
 fn namespace_summary(ns: &str) -> &'static str {
+    // Description:
+    //     Namespace summary.
+    //
+    // Inputs:
+    //     ns: &str
+    //         Caller-supplied ns.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `namespace_summary`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::namespace_summary(ns);
+
     match ns {
         "std.core" => "Foundation types: results, options, errors.",
         "std.time" => "Time, duration, timestamps, and intervals.",
@@ -267,6 +337,20 @@ fn namespace_summary(ns: &str) -> &'static str {
 }
 
 fn render_std_library(out: &mut String) {
+    // Description:
+    //     Render std library.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_std_library(o);
+
     out.push_str("## Standard library (`std.*`)\n\n");
     out.push_str(
         "Import with `import std.robotics;` (or any namespace below). Types resolve with or \
@@ -305,6 +389,21 @@ fn render_std_library(out: &mut String) {
 }
 
 fn format_named_params(named: &BTreeMap<String, String>) -> String {
+    // Description:
+    //     Format named params.
+    //
+    // Inputs:
+    //     named: &BTreeMap<String, String>
+    //         Caller-supplied named.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_named_params`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::format_named_params(named);
+
     named
         .iter()
         .map(|(k, v)| format!("{k}: {v}"))
@@ -313,6 +412,25 @@ fn format_named_params(named: &BTreeMap<String, String>) -> String {
 }
 
 fn format_fn_sig(name: &str, named: &BTreeMap<String, String>, returns: &str) -> String {
+    // Description:
+    //     Format fn sig.
+    //
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     named: &BTreeMap<String, String>
+    //         Caller-supplied named.
+    //     returns: &str
+    //         Caller-supplied returns.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_fn_sig`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::format_fn_sig(name, named, returns);
+
     let params = format_named_params(named);
     if params.is_empty() {
         format!("fn {name}() -> {returns}")
@@ -328,6 +446,29 @@ fn format_method_sig(
     named: &BTreeMap<String, String>,
     returns: &str,
 ) -> String {
+    // Description:
+    //     Format method sig.
+    //
+    // Inputs:
+    //     receiver: &str
+    //         Caller-supplied receiver.
+    //     name: &str
+    //         Caller-supplied name.
+    //     positional: &[String]
+    //         Caller-supplied positional.
+    //     named: &BTreeMap<String, String>
+    //         Caller-supplied named.
+    //     returns: &str
+    //         Caller-supplied returns.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_method_sig`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::format_method_sig(receiver, name, positional, named, returns);
+
     let mut parts = positional.to_vec();
     for (k, v) in named {
         parts.push(format!("{k}: {v}"));
@@ -337,6 +478,21 @@ fn format_method_sig(
 }
 
 fn collect_method_sig(method: &MethodSig) -> (Vec<String>, BTreeMap<String, String>, String) {
+    // Description:
+    //     Collect method sig.
+    //
+    // Inputs:
+    //     ethod: &MethodSig
+    //         Caller-supplied ethod.
+    //
+    // Outputs:
+    //     result: (Vec<String>, BTreeMap<String, String>, String)
+    //         Return value from `collect_method_sig`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::collect_method_sig(ethod);
+
     let positional: Vec<String> = method.params().iter().map(format_type_name).collect();
     let named: BTreeMap<String, String> = method
         .named_params()
@@ -347,6 +503,21 @@ fn collect_method_sig(method: &MethodSig) -> (Vec<String>, BTreeMap<String, Stri
 }
 
 fn fn_description(name: &str) -> &'static str {
+    // Description:
+    //     Fn description.
+    //
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `fn_description`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::fn_description(name);
+
     match name {
         "pose" => "Construct a `Pose` from coordinates (optional `z`).",
         "velocity" => "Construct a `Velocity` from linear and angular components.",
@@ -368,6 +539,23 @@ fn fn_description(name: &str) -> &'static str {
 }
 
 fn method_description(type_name: &str, method: &str) -> &'static str {
+    // Description:
+    //     Method description.
+    //
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
+    //     ethod: &str
+    //         Caller-supplied ethod.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `method_description`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::method_description(ype_name, ethod);
+
     match (type_name, method) {
         ("Robot", "pose") => "Current robot pose.",
         ("Robot", "velocity") => "Current robot velocity.",
@@ -388,6 +576,20 @@ fn method_description(type_name: &str, method: &str) -> &'static str {
 }
 
 fn render_global_functions(out: &mut String) {
+    // Description:
+    //     Render global functions.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_global_functions(o);
+
     out.push_str("## Global functions\n\n");
     out.push_str("Top-level functions available in every Spanda program.\n\n");
 
@@ -412,6 +614,20 @@ fn render_global_functions(out: &mut String) {
 }
 
 fn render_robot_methods(out: &mut String) {
+    // Description:
+    //     Render robot methods.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_robot_methods(o);
+
     out.push_str("## Robot methods\n\n");
     out.push_str("Methods on the implicit `robot` receiver inside `behavior` blocks.\n\n");
 
@@ -433,6 +649,20 @@ fn render_robot_methods(out: &mut String) {
 }
 
 fn render_type_methods(out: &mut String) {
+    // Description:
+    //     Render type methods.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_type_methods(o);
+
     out.push_str("## Type methods\n\n");
     out.push_str(
         "Built-in methods on sensor, actuator, AI, safety, and twin types. \
@@ -475,6 +705,20 @@ fn render_type_methods(out: &mut String) {
 }
 
 fn render_object_properties(out: &mut String) {
+    // Description:
+    //     Render object properties.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_object_properties(o);
+
     out.push_str("## Object properties\n\n");
     out.push_str("Fields on structured runtime values returned by sensors and AI.\n\n");
 
@@ -499,6 +743,20 @@ fn render_object_properties(out: &mut String) {
 }
 
 fn render_scan_properties(out: &mut String) {
+    // Description:
+    //     Render scan properties.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_scan_properties(o);
+
     out.push_str("## Scan properties\n\n");
     out.push_str("Fields on LiDAR `Scan` values.\n\n");
     out.push_str("| Field | Type |\n|-------|------|\n");
@@ -509,6 +767,20 @@ fn render_scan_properties(out: &mut String) {
 }
 
 fn render_hardware_libraries(out: &mut String) {
+    // Description:
+    //     Render hardware libraries.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_hardware_libraries(o);
+
     out.push_str("## Hardware sensor libraries\n\n");
     out.push_str(
         "Vendor sensor drivers registered in the runtime. Each sensor type exposes \
@@ -824,6 +1096,20 @@ const CLI_COMMANDS: &[CliCommand] = &[
 ];
 
 fn render_cli_reference(out: &mut String) {
+    // Description:
+    //     Render cli reference.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_cli_reference(o);
+
     out.push_str("## CLI reference (man pages)\n\n");
     out.push_str(
         "Manual-page style reference for the `spanda` command-line tool. \
@@ -852,6 +1138,21 @@ fn render_cli_reference(out: &mut String) {
 }
 
 fn render_single_man(cmd: &CliCommand) -> String {
+    // Description:
+    //     Render single man.
+    //
+    // Inputs:
+    //     cmd: &CliCommand
+    //         Caller-supplied cmd.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `render_single_man`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::language_reference::render_single_man(cmd);
+
     let short = cmd.name.strip_prefix("spanda-").unwrap_or(cmd.name);
     let anchor = short;
     let mut out = String::new();
@@ -892,20 +1193,19 @@ fn render_single_man(cmd: &CliCommand) -> String {
 
 /// Generate standalone man-page markdown files for CLI commands.
 pub fn generate_cli_man_pages() -> Vec<(String, String)> {
-    // Build man-page markdown files for each CLI subcommand.
+    // Description:
+    //     Generate cli man pages.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Pairs of `(filename, markdown body)`.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<(String, String)>
+    //         Return value from `generate_cli_man_pages`.
     //
     // Example:
-    // let pages = spanda_core::language_reference::generate_cli_man_pages();
-    // assert!(pages.iter().any(|(n, _)| n == "spanda-check.md"));
+
+    //     let result = spanda_docs::language_reference::generate_cli_man_pages();
 
     let mut pages = Vec::new();
 
@@ -972,19 +1272,18 @@ mod tests {
 
     #[test]
     fn language_reference_contains_core_sections() {
-        // Language reference contains core sections.
+        // Description:
+        //     Language reference contains core sections.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // spanda_core::language_reference::tests::language_reference_contains_core_sections();
+
+        //     let result = spanda_docs::language_reference::language_reference_contains_core_sections();
 
         let md = generate_language_reference();
         assert!(md.contains("# Spanda Language Reference"));

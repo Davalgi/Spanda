@@ -21,20 +21,21 @@ pub struct PublishReport {
 
 /// Create a `.tar.gz` bundle containing manifest, lockfile, and source files.
 pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<PublishReport> {
-    // Bundle package.
+    // Description:
+    //     Bundle package.
     //
-    // Parameters:
-    // - `root` — input value
-    // - `manifest` — input value
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
     //
-    // Returns:
-    // PackageResult<PublishReport>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<PublishReport>
+    //         Return value from `bundle_package`.
     //
     // Example:
-    // let result = spanda_package::publish::bundle_package(root, manifest);
+    //     let result = spanda_package::publish::bundle_package(roo, anifes);
 
     // Compute sources for the following logic.
     let sources = collect_source_files(root)?;
@@ -83,20 +84,21 @@ pub fn bundle_package(root: &Path, manifest: &PackageManifest) -> PackageResult<
 
 /// Bundle the package and optionally upload to `SPANDA_REGISTRY_URL`.
 pub fn publish_package(root: &Path, manifest: &PackageManifest) -> PackageResult<PublishReport> {
-    // Publish package.
+    // Description:
+    //     Publish package.
     //
-    // Parameters:
-    // - `root` — input value
-    // - `manifest` — input value
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
     //
-    // Returns:
-    // PackageResult<PublishReport>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<PublishReport>
+    //         Return value from `publish_package`.
     //
     // Example:
-    // let result = spanda_package::publish::publish_package(root, manifest);
+    //     let result = spanda_package::publish::publish_package(roo, anifes);
 
     // Create mutable report for accumulating results.
     let mut report = bundle_package(root, manifest)?;
@@ -144,6 +146,25 @@ pub fn mirror_bundle_to_local_registry(
     manifest: &PackageManifest,
     bundle: &Path,
 ) -> PackageResult<Option<PathBuf>> {
+    // Description:
+    //     Mirror bundle to local registry.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     bundle: &Path
+    //         Caller-supplied bundle.
+    //
+    // Outputs:
+    //     result: PackageResult<Option<PathBuf>>
+    //         Return value from `mirror_bundle_to_local_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_package::publish::mirror_bundle_to_local_registry(roo, anifes, bundle);
+
     let mirror_root = std::env::var("SPANDA_REGISTRY_MIRROR")
         .ok()
         .map(PathBuf::from)
@@ -168,21 +189,23 @@ pub fn mirror_bundle_to_local_registry(
 }
 
 fn create_tar_gz(output: &Path, root: &Path, files: &[PathBuf]) -> PackageResult<()> {
-    // Create tar gz.
+    // Description:
+    //     Create tar gz.
     //
-    // Parameters:
-    // - `output` — input value
-    // - `root` — input value
-    // - `files` — input value
+    // Inputs:
+    //     outp: &Path
+    //         Caller-supplied outp.
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     files: &[PathBuf]
+    //         Caller-supplied files.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `create_tar_gz`.
     //
     // Example:
-    // let result = spanda_package::publish::create_tar_gz(output, root, files);
+    //     let result = spanda_package::publish::create_tar_gz(outp, roo, files);
 
     // Compute rel paths for the following logic.
     let rel_paths: Vec<String> = files
@@ -210,20 +233,21 @@ fn create_tar_gz(output: &Path, root: &Path, files: &[PathBuf]) -> PackageResult
 }
 
 fn upload_bundle(bundle: &Path, url: &str) -> Result<(), String> {
-    // Upload bundle.
+    // Description:
+    //     Upload bundle.
     //
-    // Parameters:
-    // - `bundle` — input value
-    // - `url` — input value
+    // Inputs:
+    //     bundle: &Path
+    //         Caller-supplied bundle.
+    //     url: &str
+    //         Caller-supplied url.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `upload_bundle`.
     //
     // Example:
-    // let result = spanda_package::publish::upload_bundle(bundle, url);
+    //     let result = spanda_package::publish::upload_bundle(bundle, rl);
 
     // Start building the generated output buffer.
     let output = Command::new("curl")
@@ -258,20 +282,25 @@ fn update_registry_index(
     sha256: Option<&str>,
     signature: Option<&crate::registry_sign::RegistryVersionSignature>,
 ) -> Result<(), String> {
-    // Update registry index.
+    // Description:
+    //     Update registry index.
     //
-    // Parameters:
-    // - `base` — input value
-    // - `manifest` — input value
+    // Inputs:
+    //     base: &str
+    //         Caller-supplied base.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     sha256: Option<&str>
+    //         Caller-supplied sha256.
+    //     signature: Option<&crate::registry_sign::RegistryVersionSignature>
+    //         Caller-supplied signature.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `update_registry_index`.
     //
     // Example:
-    // let result = spanda_package::publish::update_registry_index(base, manifest);
+    //     let result = spanda_package::publish::update_registry_index(base, anifes, sha256, signature);
 
     // Compute index url for the following logic.
     let index_url = format!("{base}/index.json");
@@ -333,20 +362,21 @@ fn update_registry_index(
 }
 
 fn upload_json(url: &str, body: &str) -> Result<(), String> {
-    // Upload json.
+    // Description:
+    //     Upload json.
     //
-    // Parameters:
-    // - `url` — input value
-    // - `body` — input value
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
+    //     body: &str
+    //         Caller-supplied body.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `upload_json`.
     //
     // Example:
-    // let result = spanda_package::publish::upload_json(url, body);
+    //     let result = spanda_package::publish::upload_json(rl, body);
 
     // Start building the generated output buffer.
     let output = Command::new("curl")
@@ -393,19 +423,18 @@ mod tests {
 
     #[test]
     fn bundles_manifest_and_sources() {
-        // Bundles manifest and sources.
+        // Description:
+        //     Bundles manifest and sources.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::publish::bundles_manifest_and_sources();
+
+        //     let result = spanda_package::publish::bundles_manifest_and_sources();
 
         let dir = tempfile::tempdir().expect("tempdir");
         let root = dir.path();

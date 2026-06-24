@@ -16,19 +16,18 @@ pub enum SafetyLevel {
 
 impl SafetyLevel {
     pub fn all() -> &'static [SafetyLevel] {
-        // All.
+        // Description:
+        //     All.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // &'static [SafetyLevel].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static [SafetyLevel]
+        //         Return value from `all`.
         //
         // Example:
-        // let result = spanda_package::safety::all();
+        //     let result = spanda_package::safety::all();
 
         // Return the static list of known values.
         &[
@@ -40,18 +39,19 @@ impl SafetyLevel {
     }
 
     pub fn as_str(&self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = spanda_package::safety::as_str(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -64,19 +64,19 @@ impl SafetyLevel {
 
     /// Whether this level may control physical actuators on real hardware.
     pub fn can_control_actuators_default(&self) -> bool {
-        // Can control actuators default.
+        // Description:
+        //     Can control actuators default.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `can_control_actuators_default`.
         //
         // Example:
-        // let result = instance.can_control_actuators_default();
+        //     let result = spanda_package::safety::can_control_actuators_default(&self);
 
         // Produce Certified) as the result.
         matches!(self, Self::HardwareSafe | Self::Certified)
@@ -84,19 +84,19 @@ impl SafetyLevel {
 
     /// Whether packages at this level require manual review before deployment.
     pub fn requires_review_default(&self) -> bool {
-        // Requires review default.
+        // Description:
+        //     Requires review default.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `requires_review_default`.
         //
         // Example:
-        // let result = instance.requires_review_default();
+        //     let result = spanda_package::safety::requires_review_default(&self);
 
         // Produce SimulationOnly) as the result.
         matches!(self, Self::Experimental | Self::SimulationOnly)
@@ -107,19 +107,19 @@ impl FromStr for SafetyLevel {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // Construct from str.
+        // Description:
+        //     From str.
         //
-        // Parameters:
-        // - `s` — input value
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
         //
         // Example:
-        // let result = spanda_package::safety::from_str(s);
+        //     let result = spanda_package::safety::from_str(s);
 
         // Match on s and handle each case.
         match s {
@@ -144,19 +144,18 @@ pub struct SafetyMetadata {
 }
 
 fn default_true() -> bool {
-    // Default true.
+    // Description:
+    //     Default true.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `default_true`.
     //
     // Example:
-    // let result = spanda_package::safety::default_true();
+    //     let result = spanda_package::safety::default_true();
 
     // Produce true as the result.
     true
@@ -164,18 +163,18 @@ fn default_true() -> bool {
 
 impl Default for SafetyMetadata {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_package::safety::default();
+        //     let result = spanda_package::safety::default();
 
         // Compute level for the following logic.
         let level = SafetyLevel::Experimental;
@@ -189,19 +188,18 @@ impl Default for SafetyMetadata {
 
 impl SafetyMetadata {
     pub fn normalize(&mut self) {
-        // Normalize the value.
+        // Description:
+        //     Normalize.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.normalize();
+        //     let result = spanda_package::safety::normalize(&mut self);
 
         // take the branch when level equals can control actuators.
         if self.level == SafetyLevel::default() && !self.can_control_actuators {

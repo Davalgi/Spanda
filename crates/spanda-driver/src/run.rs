@@ -13,20 +13,22 @@ use crate::compile::{compile, compile_with_registry};
 
 /// Compile, certify (when enabled), and execute Spanda source.
 pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
-    // Compile source, apply runtime gates, and execute via the interpreter.
+    // Description:
+    //     Run.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `options` — run options including certify and FFI registry overrides
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     options: RunOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Interpreter run result, or a compile/certify/runtime error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RunResult, SpandaError>
+    //         Return value from `run`.
     //
     // Example:
-    // let result = run(source, RunOptions::default())?;
+
+    //     let result = spanda_driver::run::run(source, options);
 
     let program = if let Some(registry) = &options.module_registry {
         compile_with_registry(source, registry)?.program
@@ -38,6 +40,23 @@ pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> 
 
 /// Apply certify and FFI defaults, then execute a type-checked program.
 pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
+    // Description:
+    //     Run program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: RunOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Result<RunResult, SpandaError>
+    //         Return value from `run_program`.
+    //
+    // Example:
+
+    //     let result = spanda_driver::run::run_program(progra, options);
+
     let mut options = options;
     // Wire default FFI bridges and certification gate before interpreter execution.
     //
@@ -70,20 +89,22 @@ pub fn run_tests_with_registry(
     source: &str,
     registry: &ModuleRegistry,
 ) -> Result<spanda_interpreter::TestRunResult, SpandaError> {
-    // Compile with project modules and delegate test execution to the interpreter.
+    // Description:
+    //     Run tests with registry.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `registry` — loaded project modules
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Test pass/fail summary from the interpreter.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<spanda_interpreter::TestRunResult, SpandaError>
+    //         Return value from `run_tests_with_registry`.
     //
     // Example:
-    // let summary = run_tests_with_registry(source, &registry)?;
+
+    //     let result = spanda_driver::run::run_tests_with_registry(source, registry);
 
     let program = compile_with_registry(source, registry)?.program;
     spanda_interpreter::run_tests_with_registry(&program, registry)

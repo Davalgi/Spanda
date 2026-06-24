@@ -9,6 +9,19 @@ use spanda_security::{
 
 #[test]
 fn secure_bus_block_parses() {
+    // Description:
+    //     Secure bus block parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secure_bus_block_parses();
+
     let source = r#"
 robot R {
   bus robot_mesh {
@@ -24,6 +37,19 @@ robot R {
 
 #[test]
 fn secure_topic_new_syntax_parses() {
+    // Description:
+    //     Secure topic new syntax parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secure_topic_new_syntax_parses();
+
     let source = r#"
 robot R {
   topic lidar_scan: Topic<LidarScan> {
@@ -42,6 +68,19 @@ robot R {
 
 #[test]
 fn secure_service_block_parses() {
+    // Description:
+    //     Secure service block parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secure_service_block_parses();
+
     let source = r#"
 robot R {
   identity RoverIdentity { id: "r1"; public_key: "k1"; }
@@ -63,6 +102,19 @@ robot R {
 
 #[test]
 fn identity_with_cert_parses() {
+    // Description:
+    //     Identity with cert parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::identity_with_cert_parses();
+
     let source = r#"
 robot R {
   identity RoverIdentity {
@@ -78,6 +130,19 @@ robot R {
 
 #[test]
 fn secrets_block_from_env_and_file() {
+    // Description:
+    //     Secrets block from env and file.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secrets_block_from_env_and_file();
+
     let source = r#"
 robot R {
   permissions [ secret.read ];
@@ -93,6 +158,19 @@ robot R {
 
 #[test]
 fn secure_comm_policy_parses() {
+    // Description:
+    //     Secure comm policy parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secure_comm_policy_parses();
+
     let source = r#"
 robot R {
   secure_comm {
@@ -108,6 +186,19 @@ robot R {
 
 #[test]
 fn trust_boundary_declarations_parse() {
+    // Description:
+    //     Trust boundary declarations parse.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::trust_boundary_declarations_parse();
+
     let source = r#"
 robot R {
   trust_boundary robot_internal;
@@ -122,6 +213,19 @@ robot R {
 
 #[test]
 fn encrypted_message_type_requires_decrypt() {
+    // Description:
+    //     Encrypted message type requires decrypt.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::encrypted_message_type_requires_decrypt();
+
     let mut msg =
         EncryptedMessage::<String>::encrypt(&"payload".to_string(), "test-session").unwrap();
     assert_eq!(msg.decrypt().unwrap(), "payload");
@@ -129,6 +233,19 @@ fn encrypted_message_type_requires_decrypt() {
 
 #[test]
 fn trust_boundary_robot_to_robot_requires_encryption() {
+    // Description:
+    //     Trust boundary robot to robot requires encryption.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::trust_boundary_robot_to_robot_requires_encryption();
+
     let reg = TrustBoundaryRegistry::new();
     let err = reg
         .validate_channel(
@@ -144,6 +261,19 @@ fn trust_boundary_robot_to_robot_requires_encryption() {
 
 #[test]
 fn security_check_rejects_secure_topic_without_identity() {
+    // Description:
+    //     Security check rejects secure topic without identity.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::security_check_rejects_secure_topic_without_identity();
+
     let source = r#"
 robot R {
   topic cmd: Velocity publish on "/cmd" secure {
@@ -159,6 +289,19 @@ robot R {
 
 #[test]
 fn security_check_rejects_encrypted_bus_without_secrets() {
+    // Description:
+    //     Security check rejects encrypted bus without secrets.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::security_check_rejects_encrypted_bus_without_secrets();
+
     let source = r#"
 robot R {
   bus mesh {
@@ -174,6 +317,19 @@ robot R {
 
 #[test]
 fn insecure_motion_command_detected() {
+    // Description:
+    //     Insecure motion command detected.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::insecure_motion_command_detected();
+
     let source = r#"
 robot R {
   identity RoverIdentity { id: "r1"; public_key: "k1"; }
@@ -188,6 +344,19 @@ robot R {
 
 #[test]
 fn signed_policy_retains_backward_compat() {
+    // Description:
+    //     Signed policy retains backward compat.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::signed_policy_retains_backward_compat();
+
     let policy = SecurePolicy::signed_trusted();
     assert!(policy.signed);
     assert_eq!(policy.encryption, EncryptionMode::None);
@@ -195,6 +364,19 @@ fn signed_policy_retains_backward_compat() {
 
 #[test]
 fn invalid_signature_example_parses_faults() {
+    // Description:
+    //     Invalid signature example parses faults.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::invalid_signature_example_parses_faults();
+
     let source = include_str!("../../../examples/security/invalid_signature.sd");
     let tokens = tokenize(source).expect("tokenize");
     parse(tokens).expect("invalid signature example should parse");
@@ -202,6 +384,19 @@ fn invalid_signature_example_parses_faults() {
 
 #[test]
 fn untrusted_source_rejected_at_publish() {
+    // Description:
+    //     Untrusted source rejected at publish.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::untrusted_source_rejected_at_publish();
+
     let source = r#"
 robot R {
   trust trusted;
@@ -252,6 +447,19 @@ robot R {
 
 #[test]
 fn transport_wire_frame_with_source_id() {
+    // Description:
+    //     Transport wire frame with source id.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::transport_wire_frame_with_source_id();
+
     use spanda_comm::{CommBus, TransportKind};
     use spanda_runtime::value::RuntimeValue;
     use spanda_security::{AuthenticationMode, EncryptionMode, IntegrityMode};
@@ -295,6 +503,19 @@ fn transport_wire_frame_with_source_id() {
 
 #[test]
 fn inbound_trusted_source_enforced() {
+    // Description:
+    //     Inbound trusted source enforced.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::inbound_trusted_source_enforced();
+
     use spanda_security::{SecurePolicy, SecurityContext};
     let mut ctx = SecurityContext::new();
     ctx.capabilities.grant("secure_topic.subscribe");
@@ -316,6 +537,19 @@ fn inbound_trusted_source_enforced() {
 
 #[test]
 fn runtime_trust_boundary_rejects_unencrypted_robot_to_robot_publish() {
+    // Description:
+    //     Runtime trust boundary rejects unencrypted robot to robot publish.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::runtime_trust_boundary_rejects_unencrypted_robot_to_robot_publish();
+
     let source = r#"
 robot R {
   trust trusted;
@@ -345,6 +579,19 @@ robot R {
 
 #[test]
 fn bus_url_field_parses() {
+    // Description:
+    //     Bus url field parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::bus_url_field_parses();
+
     let source = r#"
 robot R {
   bus mesh {
@@ -367,6 +614,19 @@ robot R {
 
 #[test]
 fn timed_security_fault_parses() {
+    // Description:
+    //     Timed security fault parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::timed_security_fault_parses();
+
     let source = include_str!("../../../examples/security/invalid_signature.sd");
     let tokens = tokenize(source).expect("tokenize");
     let program = parse(tokens).expect("parse timed faults");
@@ -385,6 +645,19 @@ fn timed_security_fault_parses() {
 
 #[test]
 fn secret_without_capability_flagged() {
+    // Description:
+    //     Secret without capability flagged.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::security_comm::secret_without_capability_flagged();
+
     let source = r#"
 robot R {
   secrets { api_key from env "API_KEY"; }

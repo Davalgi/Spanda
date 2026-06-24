@@ -10,20 +10,20 @@ use spanda_comm::CommBus;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn define_topic(&mut self, topic: &TopicDecl) {
-        // Define topic.
+        // Description:
+        //     Define topic.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic: &TopicDecl
+        //         Caller-supplied opic.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define_topic(topic);
+        //     let result = spanda_interpreter::runtime_declarations::define_topic(&mut self, opic);
 
         // Compute TopicDecl for the following logic.
         let TopicDecl::TopicDecl {
@@ -62,20 +62,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn define_service(&mut self, service: &ServiceDecl) {
-        // Define service.
+        // Description:
+        //     Define service.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `service` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     service: &ServiceDecl
+        //         Caller-supplied service.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define_service(service);
+        //     let result = spanda_interpreter::runtime_declarations::define_service(&mut self, service);
 
         // Compute ServiceDecl for the following logic.
         let ServiceDecl::ServiceDecl {
@@ -108,20 +108,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn define_action(&mut self, action: &ActionDecl) {
-        // Define action.
+        // Description:
+        //     Define action.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `action` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     action: &ActionDecl
+        //         Caller-supplied action.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define_action(action);
+        //     let result = spanda_interpreter::runtime_declarations::define_action(&mut self, action);
 
         // Compute ActionDecl for the following logic.
         let ActionDecl::ActionDecl {
@@ -152,20 +152,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn define_sensor(&mut self, sensor: &SensorDecl) {
-        // Define sensor.
+        // Description:
+        //     Define sensor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `sensor` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sensor: &SensorDecl
+        //         Caller-supplied sensor.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define_sensor(sensor);
+        //     let result = spanda_interpreter::runtime_declarations::define_sensor(&mut self, sensor);
 
         // Compute SensorDecl for the following logic.
         let SensorDecl::SensorDecl {
@@ -195,20 +195,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn define_actuator(&mut self, actuator: &ActuatorDecl) {
-        // Define actuator.
+        // Description:
+        //     Define actuator.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `actuator` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     actuator: &ActuatorDecl
+        //         Caller-supplied actuator.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define_actuator(actuator);
+        //     let result = spanda_interpreter::runtime_declarations::define_actuator(&mut self, actuator);
 
         // Compute ActuatorDecl for the following logic.
         let ActuatorDecl::ActuatorDecl {
@@ -228,20 +228,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn setup_agent(&mut self, agent_decl: &AgentDecl) {
-        // Setup agent.
+        // Description:
+        //     Setup agent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent_decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agent_decl: &AgentDecl
+        //         Caller-supplied agent decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.setup_agent(agent_decl);
+        //     let result = spanda_interpreter::runtime_declarations::setup_agent(&mut self, agent_decl);
 
         // Compute AgentDecl for the following logic.
         let AgentDecl::AgentDecl {

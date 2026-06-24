@@ -4,19 +4,18 @@ use spanda_core::{run, RunOptions};
 
 #[test]
 fn twin_sync_parses_and_mirrors_telemetry() {
-    // Twin sync parses and mirrors telemetry.
+    // Description:
+    //     Twin sync parses and mirrors telemetry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::twin_replay::twin_sync_parses_and_mirrors_telemetry();
+
+    //     let result = spanda_core::twin_replay::twin_sync_parses_and_mirrors_telemetry();
 
     let source = r#"
 robot R {
@@ -52,19 +51,18 @@ robot R {
 
 #[test]
 fn twin_frame_count_grows_during_task() {
-    // Twin frame count grows during task.
+    // Description:
+    //     Twin frame count grows during task.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::twin_replay::twin_frame_count_grows_during_task();
+
+    //     let result = spanda_core::twin_replay::twin_frame_count_grows_during_task();
 
     let source = r#"
 robot R {
@@ -106,19 +104,18 @@ robot R {
 
 #[test]
 fn twin_pose_returns_current_shadow() {
-    // Twin pose returns current shadow.
+    // Description:
+    //     Twin pose returns current shadow.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::twin_replay::twin_pose_returns_current_shadow();
+
+    //     let result = spanda_core::twin_replay::twin_pose_returns_current_shadow();
 
     let source = r#"
 robot R {
@@ -148,19 +145,18 @@ robot R {
 
 #[test]
 fn twin_replay_returns_historical_frame() {
-    // Twin replay returns historical frame.
+    // Description:
+    //     Twin replay returns historical frame.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::twin_replay::twin_replay_returns_historical_frame();
+
+    //     let result = spanda_core::twin_replay::twin_replay_returns_historical_frame();
 
     let source = r#"
 robot R {
@@ -193,19 +189,18 @@ robot R {
 
 #[test]
 fn twin_replay_disabled_errors_at_runtime() {
-    // Twin replay disabled errors at runtime.
+    // Description:
+    //     Twin replay disabled errors at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::twin_replay::twin_replay_disabled_errors_at_runtime();
+
+    //     let result = spanda_core::twin_replay::twin_replay_disabled_errors_at_runtime();
 
     let source = r#"
 robot R {

@@ -12,6 +12,23 @@ pub fn evaluate_twin_readiness(
     program: &Program,
     twin_trace_path: Option<&Path>,
 ) -> TwinReadinessStatus {
+    // Description:
+    //     Evaluate twin readiness.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     win_trace_path: Option<&Path>
+    //         Caller-supplied win trace path.
+    //
+    // Outputs:
+    //     result: TwinReadinessStatus
+    //         Return value from `evaluate_twin_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::twin::evaluate_twin_readiness(progra, win_trace_path);
+
     let physical = evaluate_readiness(program, &ReadinessOptions::default());
     let caps = infer_robot_capabilities(program);
 

@@ -73,6 +73,21 @@ const FAILURE_SCENARIOS: &[(&str, &str, &str, &str)] = &[
 
 /// Analyze failure impacts for robots in a program.
 pub fn analyze_failure(program: &Program) -> FailureAnalysisReport {
+    // Description:
+    //     Analyze failure.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: FailureAnalysisReport
+    //         Return value from `analyze_failure`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::failure::analyze_failure(progra);
+
     let Program::Program { robots, .. } = program;
     let robot_name = robots.first().map(|r| {
         let spanda_ast::nodes::RobotDecl::RobotDecl { name, .. } = r;
@@ -118,6 +133,21 @@ pub fn analyze_failure(program: &Program) -> FailureAnalysisReport {
 pub fn analyze_failure_source(
     source: &str,
 ) -> Result<FailureAnalysisReport, spanda_error::SpandaError> {
+    // Description:
+    //     Analyze failure source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<FailureAnalysisReport, spanda_error::SpandaError>
+    //         Return value from `analyze_failure_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::failure::analyze_failure_source(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(analyze_failure(&program))

@@ -20,25 +20,31 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Execute actuator method.
+        // Description:
+        //     Execute actuator method.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `_actuator_type` — input value
-        // - `method` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     _actuator_type: &str
+        //         Caller-supplied actuator type.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `execute_actuator_method`.
         //
         // Example:
-        // let result = instance.execute_actuator_method(name, _actuator_type, method, args, named_args, line);
+        //     let result = spanda_interpreter::runtime_actuators::execute_actuator_method(&mut self, name, _actuator_type, ethod, args, named_args, line);
 
         // Compute motion methods for the following logic.
         let motion_methods = [

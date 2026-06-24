@@ -12,19 +12,21 @@ pub struct ProviderId {
 
 impl ProviderId {
     pub fn new(package: impl Into<String>, name: impl Into<String>) -> Self {
-        // Build a provider id from package and implementation name.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `package` — owning package name (e.g. `spanda-gps`)
-        // - `name` — provider implementation name within the package
+        // Inputs:
+        //     package: impl Into<String>
+        //         Caller-supplied package.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Stable provider identifier.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
+        //     let value = spanda_runtime::provider_types::new(package, name);
 
         // let id = ProviderId::new("spanda-gps", "nmea");
 
@@ -41,6 +43,21 @@ pub struct ProviderCapability(pub String);
 
 impl ProviderCapability {
     pub fn new(value: impl Into<String>) -> Self {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     value: impl Into<String>
+        //         Caller-supplied value.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_runtime::provider_types::new(value);
+
         Self(value.into())
     }
 }
@@ -73,6 +90,23 @@ pub struct ProviderError {
 
 impl ProviderError {
     pub fn new(provider: ProviderId, message: impl Into<String>) -> Self {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     provider: ProviderId
+        //         Caller-supplied provider.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_runtime::provider_types::new(provider, essage);
+
         Self {
             provider,
             message: message.into(),
@@ -90,20 +124,82 @@ pub struct ProviderCapabilitySet {
 
 impl ProviderCapabilitySet {
     pub fn new() -> Self {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_runtime::provider_types::new();
+
         Self {
             inner: HashSet::new(),
         }
     }
 
     pub fn insert(&mut self, cap: impl Into<String>) {
+        // Description:
+        //     Insert.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     cap: impl Into<String>
+        //         Caller-supplied cap.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::provider_types::insert(&mut self, cap);
+
         self.inner.insert(cap.into());
     }
 
     pub fn contains(&self, cap: &str) -> bool {
+        // Description:
+        //     Contains.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     cap: &str
+        //         Caller-supplied cap.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `contains`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::provider_types::contains(&self, cap);
+
         self.inner.contains(cap)
     }
 
     pub fn iter(&self) -> impl Iterator<Item = &String> {
+        // Description:
+        //     Iter.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: impl Iterator<Item = &String>
+        //         Return value from `iter`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::provider_types::iter(&self);
+
         self.inner.iter()
     }
 }

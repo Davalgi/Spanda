@@ -21,76 +21,76 @@ pub struct HardwareRequirements {
 impl HardwareRequirements {
     /// Parse memory string like `">=2GB"` into megabytes.
     pub fn memory_mb_min(&self) -> Option<f64> {
-        // Memory mb min.
+        // Description:
+        //     Memory mb min.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `memory_mb_min`.
         //
         // Example:
-        // let result = instance.memory_mb_min();
+        //     let result = spanda_package::hardware_req::memory_mb_min(&self);
 
         // Transform self and continue the chain.
         self.memory.as_ref().and_then(|s| parse_memory_mb(s))
     }
 
     pub fn storage_mb_min(&self) -> Option<f64> {
-        // Storage mb min.
+        // Description:
+        //     Storage mb min.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `storage_mb_min`.
         //
         // Example:
-        // let result = instance.storage_mb_min();
+        //     let result = spanda_package::hardware_req::storage_mb_min(&self);
 
         // Transform self and continue the chain.
         self.storage.as_ref().and_then(|s| parse_memory_mb(s))
     }
 
     pub fn gpu_tops_min(&self) -> Option<f64> {
-        // Gpu tops min.
+        // Description:
+        //     Gpu tops min.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `gpu_tops_min`.
         //
         // Example:
-        // let result = instance.gpu_tops_min();
+        //     let result = spanda_package::hardware_req::gpu_tops_min(&self);
 
         // Transform self and continue the chain.
         self.gpu.as_ref().and_then(|s| parse_gpu_tops(s))
     }
 
     pub fn gpu_required(&self) -> bool {
-        // Gpu required.
+        // Description:
+        //     Gpu required.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `gpu_required`.
         //
         // Example:
-        // let result = instance.gpu_required();
+        //     let result = spanda_package::hardware_req::gpu_required(&self);
 
         // Call is some on the current instance.
         self.gpu.is_some()
@@ -98,19 +98,19 @@ impl HardwareRequirements {
 }
 
 fn parse_memory_mb(s: &str) -> Option<f64> {
-    // Parse memory mb.
+    // Description:
+    //     Parse memory mb.
     //
-    // Parameters:
-    // - `s` — input value
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `parse_memory_mb`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::parse_memory_mb(s);
+    //     let result = spanda_package::hardware_req::parse_memory_mb(s);
 
     // Compute s for the following logic.
     let s = s.trim();
@@ -147,19 +147,19 @@ fn parse_memory_mb(s: &str) -> Option<f64> {
 }
 
 fn parse_gpu_tops(s: &str) -> Option<f64> {
-    // Parse gpu tops.
+    // Description:
+    //     Parse gpu tops.
     //
-    // Parameters:
-    // - `s` — input value
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `parse_gpu_tops`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::parse_gpu_tops(s);
+    //     let result = spanda_package::hardware_req::parse_gpu_tops(s);
 
     // Compute s for the following logic.
     let s = s.trim();
@@ -182,19 +182,19 @@ pub struct CapabilityRequirements {
 
 impl CapabilityRequirements {
     pub fn all(&self) -> impl Iterator<Item = &str> {
-        // All.
+        // Description:
+        //     All.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // impl Iterator<Item = &str>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: impl Iterator<Item = &str>
+        //         Return value from `all`.
         //
         // Example:
-        // let result = instance.all();
+        //     let result = spanda_package::hardware_req::all(&self);
 
         // Call uses on the current instance.
         self.uses
@@ -206,19 +206,18 @@ impl CapabilityRequirements {
 
 /// Known capability identifiers for validation.
 pub fn known_capabilities() -> &'static [&'static str] {
-    // Known capabilities.
+    // Description:
+    //     Known capabilities.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static [&'static str].
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static [&'static str]
+    //         Return value from `known_capabilities`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::known_capabilities();
+    //     let result = spanda_package::hardware_req::known_capabilities();
 
     // Return the static list of known values.
     &[
@@ -282,19 +281,18 @@ pub fn known_capabilities() -> &'static [&'static str] {
 
 /// Capabilities that require explicit application approval.
 pub fn high_risk_capabilities() -> &'static [&'static str] {
-    // High risk capabilities.
+    // Description:
+    //     High risk capabilities.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static [&'static str].
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static [&'static str]
+    //         Return value from `high_risk_capabilities`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::high_risk_capabilities();
+    //     let result = spanda_package::hardware_req::high_risk_capabilities();
 
     // Return the static list of known values.
     &[
@@ -307,37 +305,38 @@ pub fn high_risk_capabilities() -> &'static [&'static str] {
 }
 
 pub fn is_high_risk_capability(cap: &str) -> bool {
+    // Description:
+    //     Is high risk capability.
     //
-    // Parameters:
-    // - `cap` — input value
+    // Inputs:
+    //     cap: &str
+    //         Caller-supplied cap.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_high_risk_capability`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::is_high_risk_capability(cap);
+    //     let result = spanda_package::hardware_req::is_high_risk_capability(cap);
 
     // Produce contains as the result.
     high_risk_capabilities().contains(&cap)
 }
 
 pub fn validate_capability(cap: &str) -> PackageResult<()> {
-    // Validate capability.
+    // Description:
+    //     Validate capability.
     //
-    // Parameters:
-    // - `cap` — input value
+    // Inputs:
+    //     cap: &str
+    //         Caller-supplied cap.
     //
-    // Returns:
-    // PackageResult<()>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<()>
+    //         Return value from `validate_capability`.
     //
     // Example:
-    // let result = spanda_package::hardware_req::validate_capability(cap);
+    //     let result = spanda_package::hardware_req::validate_capability(cap);
 
     // Check membership before continuing.
     if known_capabilities().contains(&cap) {
@@ -356,19 +355,18 @@ mod tests {
 
     #[test]
     fn parses_memory_gb() {
-        // Parses memory gb.
+        // Description:
+        //     Parses memory gb.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::hardware_req::parses_memory_gb();
+
+        //     let result = spanda_package::hardware_req::parses_memory_gb();
 
         let req = HardwareRequirements {
             memory: Some(">=2GB".into()),
@@ -379,19 +377,18 @@ mod tests {
 
     #[test]
     fn parses_gpu_tops() {
-        // Parses gpu tops.
+        // Description:
+        //     Parses gpu tops.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::hardware_req::parses_gpu_tops();
+
+        //     let result = spanda_package::hardware_req::parses_gpu_tops();
 
         let req = HardwareRequirements {
             gpu: Some(">=1 TOPS".into()),

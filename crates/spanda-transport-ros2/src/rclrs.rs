@@ -9,7 +9,31 @@ use crate::live_bridge::{
 use crate::native;
 
 fn payload_string(value: &RuntimeValue) -> String {
-    // Serialize a runtime value into a plain string for ROS2 wire payloads.
+    // Description:
+
+    //     Payload string.
+
+    //
+
+    // Inputs:
+
+    //     value: &RuntimeValue
+
+    //         Caller-supplied value.
+
+    //
+
+    // Outputs:
+
+    //     result: String
+
+    //         Return value from `payload_string`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::rclrs::payload_string(value);
     match value {
         RuntimeValue::String { value } => value.clone(),
         RuntimeValue::Number { value, .. } => value.to_string(),
@@ -20,20 +44,21 @@ fn payload_string(value: &RuntimeValue) -> String {
 
 /// Publish on ROS2 when `SPANDA_ROS2_RCLRS` is set, trying native, daemon, then bridge.
 pub fn try_rclrs_publish(topic: &str, value: &RuntimeValue) -> bool {
-    // Try rclrs publish.
+    // Description:
+    //     Try rclrs publish.
     //
-    // Parameters:
-    // - `topic` — ROS2 topic path
-    // - `value` — runtime payload
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // `true` when a backend handled the publish.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_rclrs_publish`.
     //
     // Example:
-    // let ok = try_rclrs_publish("/scan", &value);
+    //     let result = spanda_transport_ros2::rclrs::try_rclrs_publish(opic, value);
 
     // Skip when in-process ROS2 transport is disabled.
     if !crate::rclrs_enabled() {
@@ -53,19 +78,19 @@ pub fn try_rclrs_publish(topic: &str, value: &RuntimeValue) -> bool {
 
 /// Subscribe on ROS2 when `SPANDA_ROS2_RCLRS` is set.
 pub fn try_rclrs_subscribe(topic: &str) -> bool {
-    // Try rclrs subscribe.
+    // Description:
+    //     Try rclrs subscribe.
     //
-    // Parameters:
-    // - `topic` — ROS2 topic path
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
     //
-    // Returns:
-    // `true` when a backend handled the subscribe.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_rclrs_subscribe`.
     //
     // Example:
-    // let ok = try_rclrs_subscribe("/scan");
+    //     let result = spanda_transport_ros2::rclrs::try_rclrs_subscribe(opic);
 
     // Skip when in-process ROS2 transport is disabled.
     if !crate::rclrs_enabled() {
@@ -84,21 +109,23 @@ pub fn try_rclrs_subscribe(topic: &str) -> bool {
 
 /// Call a ROS2 service when `SPANDA_ROS2_RCLRS` is set.
 pub fn try_rclrs_service_call(service: &str, service_type: &str, request: &str) -> bool {
-    // Try rclrs service call.
+    // Description:
+    //     Try rclrs service call.
     //
-    // Parameters:
-    // - `service` — service name
-    // - `service_type` — ROS2 service type
-    // - `request` — serialized request payload
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
     //
-    // Returns:
-    // `true` when a backend handled the call.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_rclrs_service_call`.
     //
     // Example:
-    // let ok = try_rclrs_service_call("/trigger", "std_srvs/srv/Trigger", "{}");
+    //     let result = spanda_transport_ros2::rclrs::try_rclrs_service_call(service, service_type, reques);
 
     // Skip when in-process ROS2 transport is disabled.
     if !crate::rclrs_enabled() {
@@ -119,6 +146,19 @@ pub fn try_rclrs_service_call(service: &str, service_type: &str, request: &str) 
 mod tests {
     #[test]
     fn rclrs_off_by_default() {
+        // Description:
+        //     Rclrs off by default.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport_ros2::rclrs::rclrs_off_by_default();
+
         std::env::remove_var("SPANDA_ROS2_RCLRS");
         assert!(!crate::rclrs_enabled());
     }

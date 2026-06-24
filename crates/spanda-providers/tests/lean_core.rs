@@ -11,6 +11,19 @@ use spanda_transport_ros2::Ros2TransportAdapter;
 
 #[test]
 fn official_package_list_is_non_empty() {
+    // Description:
+    //     Official package list is non empty.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::official_package_list_is_non_empty();
+
     let names = official_package_names();
     assert!(names.contains(&"spanda-gps"));
     assert!(names.contains(&"spanda-ros2"));
@@ -19,6 +32,19 @@ fn official_package_list_is_non_empty() {
 
 #[test]
 fn module_classifications_include_core_and_shims() {
+    // Description:
+    //     Module classifications include core and shims.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::module_classifications_include_core_and_shims();
+
     let table = module_classifications();
     assert!(table
         .iter()
@@ -30,6 +56,19 @@ fn module_classifications_include_core_and_shims() {
 
 #[test]
 fn transport_adapter_provider_wraps_legacy_adapter() {
+    // Description:
+    //     Transport adapter provider wraps legacy adapter.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::transport_adapter_provider_wraps_legacy_adapter();
+
     let mut registry = spanda_runtime::providers::ProviderRegistry::new();
     let adapter =
         TransportAdapterProvider::new("spanda-ros2", "project", Ros2TransportAdapter::default());
@@ -52,6 +91,19 @@ fn transport_adapter_provider_wraps_legacy_adapter() {
 
 #[test]
 fn bootstrap_registers_default_transports() {
+    // Description:
+    //     Bootstrap registers default transports.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::bootstrap_registers_default_transports();
+
     let registry = bootstrap_default_providers();
     assert_eq!(registry.transport_count(), 2);
     let ids = registry.list_transports();
@@ -61,6 +113,19 @@ fn bootstrap_registers_default_transports() {
 
 #[test]
 fn bootstrap_providers_for_ros2_only() {
+    // Description:
+    //     Bootstrap providers for ros2 only.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::bootstrap_providers_for_ros2_only();
+
     let registry = bootstrap_providers_for_packages(&["spanda-ros2"]);
     assert_eq!(registry.transport_count(), 1);
     assert!(registry.has_official_package("spanda-ros2"));
@@ -69,6 +134,19 @@ fn bootstrap_providers_for_ros2_only() {
 
 #[test]
 fn bootstrap_registers_fleet_when_installed() {
+    // Description:
+    //     Bootstrap registers fleet when installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::bootstrap_registers_fleet_when_installed();
+
     let registry = bootstrap_providers_for_packages(&["spanda-fleet"]);
     let ids = registry.list_fleet();
     assert_eq!(ids.len(), 1);
@@ -77,6 +155,19 @@ fn bootstrap_registers_fleet_when_installed() {
 
 #[test]
 fn bootstrap_registers_positioning_when_gps_installed() {
+    // Description:
+    //     Bootstrap registers positioning when gps installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::bootstrap_registers_positioning_when_gps_installed();
+
     let registry = bootstrap_providers_for_packages(&["spanda-gps"]);
     let ids = registry.list_positioning();
     assert_eq!(ids.len(), 1);
@@ -85,6 +176,19 @@ fn bootstrap_registers_positioning_when_gps_installed() {
 
 #[test]
 fn bootstrap_registers_connectivity_when_wifi_installed() {
+    // Description:
+    //     Bootstrap registers connectivity when wifi installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::bootstrap_registers_connectivity_when_wifi_installed();
+
     let registry = bootstrap_providers_for_packages(&["spanda-wifi"]);
     assert_eq!(registry.connectivity_count(), 1);
     assert!(registry.has_capability("connectivity.wifi"));
@@ -92,6 +196,19 @@ fn bootstrap_registers_connectivity_when_wifi_installed() {
 
 #[test]
 fn dispatch_gps_read_when_package_installed() {
+    // Description:
+    //     Dispatch gps read when package installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::dispatch_gps_read_when_package_installed();
+
     use spanda_providers::dispatch_official_package_call;
     let mut registry = bootstrap_providers_for_packages(&["spanda-gps"]);
     let value = dispatch_official_package_call(
@@ -114,6 +231,19 @@ fn dispatch_gps_read_when_package_installed() {
 
 #[test]
 fn dispatch_slam_localize_when_installed() {
+    // Description:
+    //     Dispatch slam localize when installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::dispatch_slam_localize_when_installed();
+
     use spanda_providers::dispatch_official_package_call;
     let mut registry = bootstrap_providers_for_packages(&["spanda-slam"]);
     let value = dispatch_official_package_call(
@@ -136,6 +266,19 @@ fn dispatch_slam_localize_when_installed() {
 
 #[test]
 fn dispatch_skips_when_package_not_installed() {
+    // Description:
+    //     Dispatch skips when package not installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::dispatch_skips_when_package_not_installed();
+
     use spanda_providers::dispatch_official_package_call;
     let mut registry = bootstrap_providers_for_packages(&[]);
     assert!(dispatch_official_package_call(
@@ -152,6 +295,19 @@ fn dispatch_skips_when_package_not_installed() {
 
 #[test]
 fn ledger_package_append_dispatches() {
+    // Description:
+    //     Ledger package append dispatches.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::ledger_package_append_dispatches();
+
     use spanda_providers::dispatch_official_package_call;
     let mut registry = bootstrap_providers_for_packages(&["spanda-ledger"]);
     let value = dispatch_official_package_call(
@@ -176,6 +332,19 @@ fn ledger_package_append_dispatches() {
 
 #[test]
 fn iot_core_package_dispatches() {
+    // Description:
+    //     Iot core package dispatches.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::iot_core_package_dispatches();
+
     use spanda_providers::dispatch_official_package_call;
     use spanda_providers::hub_stats;
     use spanda_runtime::value::RuntimeValue;
@@ -210,6 +379,19 @@ fn iot_core_package_dispatches() {
 
 #[test]
 fn modbus_register_reads_seeded_value() {
+    // Description:
+    //     Modbus register reads seeded value.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::modbus_register_reads_seeded_value();
+
     use spanda_providers::dispatch_official_package_call;
     use spanda_runtime::value::RuntimeValue;
 
@@ -235,6 +417,19 @@ fn modbus_register_reads_seeded_value() {
 
 #[test]
 fn fusion_package_dispatches_weights() {
+    // Description:
+    //     Fusion package dispatches weights.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::lean_core::fusion_package_dispatches_weights();
+
     use spanda_providers::dispatch_official_package_call;
     use spanda_runtime::value::RuntimeValue;
 

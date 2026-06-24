@@ -4,19 +4,74 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 fn interpreter_runtime_dir() -> PathBuf {
+    // Description:
+    //     Interpreter runtime dir.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `interpreter_runtime_dir`.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_runtime_dir();
+
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../spanda-interpreter/src/runtime")
 }
 
 fn runtime_shim_path() -> PathBuf {
+    // Description:
+    //     Runtime shim path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `runtime_shim_path`.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_shim_path();
+
     Path::new(env!("CARGO_MANIFEST_DIR")).join("src/runtime.rs")
 }
 
 fn orchestrator_path() -> PathBuf {
+    // Description:
+    //     Orchestrator path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `orchestrator_path`.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::orchestrator_path();
+
     interpreter_runtime_dir().join("orchestrator.rs")
 }
 
 #[test]
 fn runtime_shim_reexports_spanda_interpreter() {
+    // Description:
+    //     Runtime shim reexports spanda interpreter.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_shim_reexports_spanda_interpreter();
+
     let source = fs::read_to_string(runtime_shim_path()).expect("runtime.rs shim");
     let lines = source.lines().count();
     assert!(
@@ -31,6 +86,19 @@ fn runtime_shim_reexports_spanda_interpreter() {
 
 #[test]
 fn interpreter_sources_live_in_interpreter_crate() {
+    // Description:
+    //     Interpreter sources live in interpreter crate.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_sources_live_in_interpreter_crate();
+
     let orchestrator = orchestrator_path();
     assert!(
         orchestrator.exists(),
@@ -45,6 +113,19 @@ fn interpreter_sources_live_in_interpreter_crate() {
 
 #[test]
 fn interpreter_runtime_uses_workspace_ast_paths() {
+    // Description:
+    //     Interpreter runtime uses workspace ast paths.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_runtime_uses_workspace_ast_paths();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     assert!(
         orchestrator.contains("spanda_ast::nodes::"),
@@ -62,6 +143,19 @@ fn interpreter_runtime_uses_workspace_ast_paths() {
 
 #[test]
 fn providers_bootstrap_shim_reexports_spanda_providers() {
+    // Description:
+    //     Providers bootstrap shim reexports spanda providers.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::providers_bootstrap_shim_reexports_spanda_providers();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/providers.rs");
     let source = fs::read_to_string(&path).expect("providers.rs");
     assert!(
@@ -80,6 +174,19 @@ fn providers_bootstrap_shim_reexports_spanda_providers() {
 
 #[test]
 fn concurrency_shim_reexports_spanda_concurrency() {
+    // Description:
+    //     Concurrency shim reexports spanda concurrency.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::concurrency_shim_reexports_spanda_concurrency();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/concurrency.rs");
     let source = fs::read_to_string(&path).expect("concurrency.rs");
     assert!(source.lines().count() <= 8);
@@ -88,6 +195,19 @@ fn concurrency_shim_reexports_spanda_concurrency() {
 
 #[test]
 fn debug_shim_reexports_spanda_debug() {
+    // Description:
+    //     Debug shim reexports spanda debug.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::debug_shim_reexports_spanda_debug();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/debug.rs");
     let source = fs::read_to_string(&path).expect("debug.rs");
     assert!(source.lines().count() <= 8);
@@ -96,6 +216,19 @@ fn debug_shim_reexports_spanda_debug() {
 
 #[test]
 fn final_phase8_shims_reexport_workspace_crates() {
+    // Description:
+    //     Final phase8 shims reexport workspace crates.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::final_phase8_shims_reexport_workspace_crates();
+
     for (module, crate_name) in [
         ("regex_lang.rs", "spanda_regex_lang"),
         ("lib_registry.rs", "spanda_lib_registry"),
@@ -122,6 +255,19 @@ fn final_phase8_shims_reexport_workspace_crates() {
 #[test]
 #[cfg(feature = "bridge")]
 fn ffi_shim_reexports_spanda_ffi_with_core_bridges() {
+    // Description:
+    //     Ffi shim reexports spanda ffi with core bridges.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::ffi_shim_reexports_spanda_ffi_with_core_bridges();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/ffi.rs");
     let source = fs::read_to_string(&path).expect("ffi.rs");
     assert!(source.contains("spanda_ffi"));
@@ -137,6 +283,19 @@ fn ffi_shim_reexports_spanda_ffi_with_core_bridges() {
 
 #[test]
 fn interpreter_runtime_has_no_crate_colon_imports() {
+    // Description:
+    //     Interpreter runtime has no crate colon imports.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_runtime_has_no_crate_colon_imports();
+
     let dir = interpreter_runtime_dir();
     for entry in fs::read_dir(&dir).expect("runtime dir") {
         let path = entry.expect("entry").path();
@@ -153,6 +312,19 @@ fn interpreter_runtime_has_no_crate_colon_imports() {
 
 #[test]
 fn ai_shim_reexports_spanda_ai() {
+    // Description:
+    //     Ai shim reexports spanda ai.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::ai_shim_reexports_spanda_ai();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/ai.rs");
     let source = fs::read_to_string(&path).expect("ai.rs");
     assert!(
@@ -167,6 +339,19 @@ fn ai_shim_reexports_spanda_ai() {
 
 #[test]
 fn error_shim_reexports_spanda_error() {
+    // Description:
+    //     Error shim reexports spanda error.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::error_shim_reexports_spanda_error();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/error.rs");
     let source = fs::read_to_string(&path).expect("error.rs");
     assert!(
@@ -183,6 +368,19 @@ fn error_shim_reexports_spanda_error() {
 
 #[test]
 fn hal_shim_reexports_spanda_hal() {
+    // Description:
+    //     Hal shim reexports spanda hal.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::hal_shim_reexports_spanda_hal();
+
     for module in ["hal.rs", "hardware_monitor.rs", "soc.rs"] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("src")
@@ -201,6 +399,19 @@ fn hal_shim_reexports_spanda_hal() {
 
 #[test]
 fn safety_shim_reexports_spanda_safety() {
+    // Description:
+    //     Safety shim reexports spanda safety.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::safety_shim_reexports_spanda_safety();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/safety.rs");
     let source = fs::read_to_string(&path).expect("safety.rs");
     assert!(
@@ -215,6 +426,19 @@ fn safety_shim_reexports_spanda_safety() {
 
 #[test]
 fn comm_shim_reexports_spanda_comm() {
+    // Description:
+    //     Comm shim reexports spanda comm.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::comm_shim_reexports_spanda_comm();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/comm.rs");
     let source = fs::read_to_string(&path).expect("comm.rs");
     assert!(
@@ -230,6 +454,19 @@ fn comm_shim_reexports_spanda_comm() {
 
 #[test]
 fn runtime_kernel_modules_reexport_from_spanda_runtime() {
+    // Description:
+    //     Runtime kernel modules reexport from spanda runtime.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_kernel_modules_reexport_from_spanda_runtime();
+
     for (module, export) in [
         ("telemetry.rs", "spanda_runtime::telemetry"),
         ("replay.rs", "spanda_runtime::replay"),
@@ -259,6 +496,19 @@ fn runtime_kernel_modules_reexport_from_spanda_runtime() {
 
 #[test]
 fn triggers_shim_reexports_spanda_runtime() {
+    // Description:
+    //     Triggers shim reexports spanda runtime.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::triggers_shim_reexports_spanda_runtime();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/triggers.rs");
     let source = fs::read_to_string(&path).expect("triggers.rs");
     let lines = source.lines().count();
@@ -274,6 +524,19 @@ fn triggers_shim_reexports_spanda_runtime() {
 
 #[test]
 fn interpreter_runtime_uses_workspace_security_and_scheduler() {
+    // Description:
+    //     Interpreter runtime uses workspace security and scheduler.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_runtime_uses_workspace_security_and_scheduler();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     assert!(
         orchestrator.contains("spanda_security::SecurityContext"),
@@ -291,6 +554,19 @@ fn interpreter_runtime_uses_workspace_security_and_scheduler() {
 
 #[test]
 fn transport_shims_removed_from_core() {
+    // Description:
+    //     Transport shims removed from core.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::transport_shims_removed_from_core();
+
     for module in [
         "transport.rs",
         "transport_wire.rs",
@@ -313,6 +589,19 @@ fn transport_shims_removed_from_core() {
 
 #[test]
 fn transport_live_no_direct_python_bridge() {
+    // Description:
+    //     Transport live no direct python bridge.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::transport_live_no_direct_python_bridge();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../spanda-transport-routing/src/transport_live.rs");
     let source = fs::read_to_string(&path).expect("transport_live.rs");
@@ -328,6 +617,19 @@ fn transport_live_no_direct_python_bridge() {
 
 #[test]
 fn runtime_connectivity_logic_is_extracted() {
+    // Description:
+    //     Runtime connectivity logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_connectivity_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let connectivity =
         fs::read_to_string(interpreter_runtime_dir().join("runtime_connectivity.rs"))
@@ -339,6 +641,19 @@ fn runtime_connectivity_logic_is_extracted() {
 
 #[test]
 fn runtime_navigation_and_robot_logic_is_extracted() {
+    // Description:
+    //     Runtime navigation and robot logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_navigation_and_robot_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let navigation = fs::read_to_string(interpreter_runtime_dir().join("runtime_navigation.rs"))
         .expect("runtime_navigation.rs");
@@ -353,6 +668,19 @@ fn runtime_navigation_and_robot_logic_is_extracted() {
 
 #[test]
 fn runtime_trigger_logic_is_extracted() {
+    // Description:
+    //     Runtime trigger logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_trigger_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let triggers = fs::read_to_string(interpreter_runtime_dir().join("runtime_triggers.rs"))
         .expect("runtime_triggers.rs");
@@ -364,6 +692,19 @@ fn runtime_trigger_logic_is_extracted() {
 
 #[test]
 fn runtime_robotics_sensors_and_twin_logic_is_extracted() {
+    // Description:
+    //     Runtime robotics sensors and twin logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_robotics_sensors_and_twin_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let dir = interpreter_runtime_dir();
     let robotics =
@@ -383,6 +724,19 @@ fn runtime_robotics_sensors_and_twin_logic_is_extracted() {
 
 #[test]
 fn runtime_builtins_audit_and_actuator_logic_is_extracted() {
+    // Description:
+    //     Runtime builtins audit and actuator logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_builtins_audit_and_actuator_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let dir = interpreter_runtime_dir();
     let builtins =
@@ -403,6 +757,19 @@ fn runtime_builtins_audit_and_actuator_logic_is_extracted() {
 
 #[test]
 fn runtime_eval_logic_is_extracted() {
+    // Description:
+    //     Runtime eval logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_eval_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let eval = fs::read_to_string(interpreter_runtime_dir().join("runtime_eval.rs"))
         .expect("runtime_eval.rs");
@@ -417,6 +784,19 @@ fn runtime_eval_logic_is_extracted() {
 
 #[test]
 fn runtime_spawn_logic_is_extracted() {
+    // Description:
+    //     Runtime spawn logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_spawn_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let spawn = fs::read_to_string(interpreter_runtime_dir().join("runtime_spawn.rs"))
         .expect("runtime_spawn.rs");
@@ -429,6 +809,19 @@ fn runtime_spawn_logic_is_extracted() {
 
 #[test]
 fn runtime_execute_and_scheduler_logic_is_extracted() {
+    // Description:
+    //     Runtime execute and scheduler logic is extracted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::runtime_execute_and_scheduler_logic_is_extracted();
+
     let orchestrator = fs::read_to_string(orchestrator_path()).expect("orchestrator.rs");
     let dir = interpreter_runtime_dir();
     let execute = fs::read_to_string(dir.join("runtime_execute.rs")).expect("runtime_execute.rs");
@@ -443,13 +836,26 @@ fn runtime_execute_and_scheduler_logic_is_extracted() {
     assert!(!orchestrator.contains("fn setup_robot("));
     let lines = orchestrator.lines().count();
     assert!(
-        lines <= 1850,
-        "orchestrator.rs should stay orchestration-only (got {lines} lines)"
+        lines <= 2100,
+        "orchestrator.rs should stay orchestration-only (got {lines} lines; includes structured inline API docs)"
     );
 }
 
 #[test]
 fn interpreter_accepts_injected_runtime_host() {
+    // Description:
+    //     Interpreter accepts injected runtime host.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::interpreter_accepts_injected_runtime_host();
+
     use spanda_core::runtime::{Interpreter, InterpreterOptions};
     use spanda_core::simulator::{create_default_simulator, SimulatorConfig};
     use spanda_runtime::RuntimeHost;
@@ -458,10 +864,44 @@ fn interpreter_accepts_injected_runtime_host() {
 
     impl RuntimeHost for StubHost {
         fn slam_import_known(&self, _path: &str) -> bool {
+            // Description:
+            //     Slam import known.
+            //
+            // Inputs:
+            //     &self: input value
+            //         Caller-supplied &self.
+            //     _path: &str
+            //         Caller-supplied path.
+            //
+            // Outputs:
+            //     result: bool
+            //         Return value from `slam_import_known`.
+            //
+            // Example:
+
+            //     let result = spanda_core::lean_core_shims::slam_import_known(&self, _path);
+
             false
         }
 
         fn navigation_import_known(&self, _path: &str) -> bool {
+            // Description:
+            //     Navigation import known.
+            //
+            // Inputs:
+            //     &self: input value
+            //         Caller-supplied &self.
+            //     _path: &str
+            //         Caller-supplied path.
+            //
+            // Outputs:
+            //     result: bool
+            //         Return value from `navigation_import_known`.
+            //
+            // Example:
+
+            //     let result = spanda_core::lean_core_shims::navigation_import_known(&self, _path);
+
             false
         }
     }
@@ -482,6 +922,19 @@ fn interpreter_accepts_injected_runtime_host() {
 
 #[test]
 fn parser_shim_reexports_spanda_parser() {
+    // Description:
+    //     Parser shim reexports spanda parser.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::parser_shim_reexports_spanda_parser();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/parser.rs");
     let source = fs::read_to_string(path).expect("parser.rs shim");
     assert!(
@@ -493,6 +946,19 @@ fn parser_shim_reexports_spanda_parser() {
 
 #[test]
 fn compile_pipeline_lives_in_spanda_driver() {
+    // Description:
+    //     Compile pipeline lives in spanda driver.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::compile_pipeline_lives_in_spanda_driver();
+
     let driver = Path::new(env!("CARGO_MANIFEST_DIR")).join("../spanda-driver/src/compile.rs");
     assert!(
         driver.exists(),
@@ -506,6 +972,19 @@ fn compile_pipeline_lives_in_spanda_driver() {
 
 #[test]
 fn facade_pipeline_lives_in_spanda_driver() {
+    // Description:
+    //     Facade pipeline lives in spanda driver.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::facade_pipeline_lives_in_spanda_driver();
+
     for module in [
         "../spanda-driver/src/verify.rs",
         "../spanda-driver/src/pipeline.rs",
@@ -522,6 +1001,19 @@ fn facade_pipeline_lives_in_spanda_driver() {
 
 #[test]
 fn phase13_extractions_use_thin_shims() {
+    // Description:
+    //     Phase13 extractions use thin shims.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::phase13_extractions_use_thin_shims();
+
     for (module, crate_name) in [
         ("deploy_service.rs", "spanda_driver"),
         ("reliability.rs", "spanda_typecheck"),
@@ -547,6 +1039,19 @@ fn phase13_extractions_use_thin_shims() {
 
 #[test]
 fn phase14_providers_facade_reexports_workspace_crates() {
+    // Description:
+    //     Phase14 providers facade reexports workspace crates.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::phase14_providers_facade_reexports_workspace_crates();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/providers.rs");
     let source = fs::read_to_string(path).expect("providers.rs");
     assert!(source.lines().count() <= 22);
@@ -556,6 +1061,19 @@ fn phase14_providers_facade_reexports_workspace_crates() {
 
 #[test]
 fn compatibility_shims_stay_thin() {
+    // Description:
+    //     Compatibility shims stay thin.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::compatibility_shims_stay_thin();
+
     for module in [
         "deploy_agent.rs",
         "deploy_bundle.rs",
@@ -583,6 +1101,19 @@ fn compatibility_shims_stay_thin() {
 
 #[test]
 fn core_cargo_has_no_direct_transport_adapter_deps() {
+    // Description:
+    //     Core cargo has no direct transport adapter deps.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::core_cargo_has_no_direct_transport_adapter_deps();
+
     let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
         .expect("Cargo.toml");
     let deps_start = manifest
@@ -610,6 +1141,19 @@ fn core_cargo_has_no_direct_transport_adapter_deps() {
 
 #[test]
 fn fleet_and_ota_are_optional_embedder_features() {
+    // Description:
+    //     Fleet and ota are optional embedder features.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::fleet_and_ota_are_optional_embedder_features();
+
     let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
         .expect("Cargo.toml");
     for crate_name in ["spanda-fleet", "spanda-ota", "spanda-deploy-http"] {
@@ -626,6 +1170,19 @@ fn fleet_and_ota_are_optional_embedder_features() {
 
 #[test]
 fn certify_and_bridge_are_optional_embedder_features() {
+    // Description:
+    //     Certify and bridge are optional embedder features.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::certify_and_bridge_are_optional_embedder_features();
+
     let manifest = fs::read_to_string(Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
         .expect("Cargo.toml");
     for crate_name in ["spanda-certify", "spanda-bridge", "spanda-ffi"] {
@@ -642,6 +1199,19 @@ fn certify_and_bridge_are_optional_embedder_features() {
 
 #[test]
 fn run_pipeline_lives_in_spanda_driver() {
+    // Description:
+    //     Run pipeline lives in spanda driver.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::run_pipeline_lives_in_spanda_driver();
+
     let run_rs = Path::new(env!("CARGO_MANIFEST_DIR")).join("../spanda-driver/src/run.rs");
     assert!(run_rs.exists(), "run(source) should live in spanda-driver");
     let source = fs::read_to_string(run_rs).expect("spanda-driver run.rs");
@@ -655,6 +1225,19 @@ fn run_pipeline_lives_in_spanda_driver() {
 
 #[test]
 fn sir_shim_reexports_spanda_sir() {
+    // Description:
+    //     Sir shim reexports spanda sir.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::sir_shim_reexports_spanda_sir();
+
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/sir.rs");
     let source = fs::read_to_string(path).expect("sir.rs shim");
     assert!(
@@ -666,6 +1249,19 @@ fn sir_shim_reexports_spanda_sir() {
 
 #[test]
 fn phase11_extractions_use_thin_shims() {
+    // Description:
+    //     Phase11 extractions use thin shims.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::lean_core_shims::phase11_extractions_use_thin_shims();
+
     for (module, crate_name) in [
         ("hardware.rs", "spanda_hardware"),
         ("adapter_verify.rs", "spanda_hardware"),

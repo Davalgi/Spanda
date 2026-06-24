@@ -37,18 +37,18 @@ pub struct ConcurrencyRuntime {
 
 impl Default for ConcurrencyRuntime {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::concurrency::default();
+        //     let result = spanda_concurrency::default();
 
         // Build the result via new.
         Self::new()
@@ -57,19 +57,18 @@ impl Default for ConcurrencyRuntime {
 
 impl ConcurrencyRuntime {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::concurrency::new();
+        //     let value = spanda_concurrency::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -85,22 +84,24 @@ impl ConcurrencyRuntime {
     }
 
     pub fn register_agent_route(&mut self, from: &str, to: &str, message_type: &str) {
-        // Register agent route.
+        // Description:
+        //     Register agent route.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `from` — input value
-        // - `to` — input value
-        // - `message_type` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     fro: &str
+        //         Caller-supplied fro.
+        //     o: &str
+        //         Caller-supplied o.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_agent_route(from, to, message_type);
+        //     let result = spanda_concurrency::register_agent_route(&mut self, fro, o, essage_type);
 
         // Append into self.
         self.agent_routes.push(AgentRoute {
@@ -117,23 +118,27 @@ impl ConcurrencyRuntime {
         value: RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
-        // Send agent.
+        // Description:
+        //     Send agent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `from` — input value
-        // - `to` — input value
-        // - `value` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     fro: &str
+        //         Caller-supplied fro.
+        //     o: &str
+        //         Caller-supplied o.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `send_agent`.
         //
         // Example:
-        // let result = instance.send_agent(from, to, value, line);
+        //     let result = spanda_concurrency::send_agent(&mut self, fro, o, value, line);
 
         // Compute allowed for the following logic.
         let allowed = self
@@ -180,21 +185,23 @@ impl ConcurrencyRuntime {
     }
 
     pub fn try_recv_agent(&mut self, agent: &str, _line: u32) -> Option<RuntimeValue> {
-        // Try recv agent.
+        // Description:
+        //     Try recv agent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent` — input value
-        // - `_line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agen: &str
+        //         Caller-supplied agen.
+        //     _line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<RuntimeValue>
+        //         Return value from `try_recv_agent`.
         //
         // Example:
-        // let result = instance.try_recv_agent(agent, _line);
+        //     let result = spanda_concurrency::try_recv_agent(&mut self, agen, _line);
 
         // Call agent inboxes on the current instance.
         self.agent_inboxes
@@ -203,20 +210,21 @@ impl ConcurrencyRuntime {
     }
 
     pub fn agent_inbox_len(&self, agent: &str) -> usize {
-        // Agent inbox len.
+        // Description:
+        //     Agent inbox len.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     agen: &str
+        //         Caller-supplied agen.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `agent_inbox_len`.
         //
         // Example:
-        // let result = instance.agent_inbox_len(agent);
+        //     let result = spanda_concurrency::agent_inbox_len(&self, agen);
 
         // Call agent inboxes on the current instance.
         self.agent_inboxes
@@ -226,19 +234,19 @@ impl ConcurrencyRuntime {
     }
 
     pub fn create_channel(&mut self) -> RuntimeValue {
-        // Create channel.
+        // Description:
+        //     Create channel.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `create_channel`.
         //
         // Example:
-        // let result = instance.create_channel();
+        //     let result = spanda_concurrency::create_channel(&mut self);
 
         // Compute id for the following logic.
         let id = self.next_channel_id;
@@ -254,22 +262,25 @@ impl ConcurrencyRuntime {
         value: RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
-        // Send.
+        // Description:
+        //     Send.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `channel` — input value
-        // - `value` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     channel: &RuntimeValue
+        //         Caller-supplied channel.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `send`.
         //
         // Example:
-        // let result = instance.send(channel, value, line);
+        //     let result = spanda_concurrency::send(&self, channel, value, line);
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Channel { id } = channel else {
@@ -303,21 +314,23 @@ impl ConcurrencyRuntime {
         channel: &RuntimeValue,
         line: u32,
     ) -> Result<Option<RuntimeValue>, SpandaError> {
-        // Try recv.
+        // Description:
+        //     Try recv.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `channel` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     channel: &RuntimeValue
+        //         Caller-supplied channel.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Option<RuntimeValue>, SpandaError>
+        //         Return value from `try_recv`.
         //
         // Example:
-        // let result = instance.try_recv(channel, line);
+        //     let result = spanda_concurrency::try_recv(&self, channel, line);
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Channel { id } = channel else {
@@ -337,21 +350,23 @@ impl ConcurrencyRuntime {
         func_name: String,
         args: Vec<RuntimeValue>,
     ) -> RuntimeValue {
-        // Create task handle.
+        // Description:
+        //     Create task handle.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func_name` — input value
-        // - `args` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     func_name: String
+        //         Caller-supplied func name.
+        //     args: Vec<RuntimeValue>
+        //         Caller-supplied args.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `create_task_handle`.
         //
         // Example:
-        // let result = instance.create_task_handle(func_name, args);
+        //     let result = spanda_concurrency::create_task_handle(&mut self, func_name, args);
 
         // Compute id for the following logic.
         let id = self.next_handle_id;
@@ -368,21 +383,22 @@ impl ConcurrencyRuntime {
     }
 
     pub fn queue_fire_and_forget(&mut self, func_name: String, args: Vec<RuntimeValue>) {
-        // Queue fire and forget.
+        // Description:
+        //     Queue fire and forget.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func_name` — input value
-        // - `args` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     func_name: String
+        //         Caller-supplied func name.
+        //     args: Vec<RuntimeValue>
+        //         Caller-supplied args.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.queue_fire_and_forget(func_name, args);
+        //     let result = spanda_concurrency::queue_fire_and_forget(&mut self, func_name, args);
 
         // Compute handle for the following logic.
         let handle = self.create_task_handle(func_name, args);
@@ -394,62 +410,64 @@ impl ConcurrencyRuntime {
     }
 
     pub fn handle(&self, id: u64) -> Option<&SpawnHandle> {
-        // Handle.
+        // Description:
+        //     Handle.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     id: u64
+        //         Caller-supplied id.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&SpawnHandle>
+        //         Return value from `handle`.
         //
         // Example:
-        // let result = instance.handle(id);
+        //     let result = spanda_concurrency::handle(&self, id);
 
         // Call get on the current instance.
         self.handles.get(&id)
     }
 
     pub fn handle_mut(&mut self, id: u64) -> Option<&mut SpawnHandle> {
-        // Handle mut.
+        // Description:
+        //     Handle mut.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     id: u64
+        //         Caller-supplied id.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&mut SpawnHandle>
+        //         Return value from `handle_mut`.
         //
         // Example:
-        // let result = instance.handle_mut(id);
+        //     let result = spanda_concurrency::handle_mut(&mut self, id);
 
         // Call get mut on the current instance.
         self.handles.get_mut(&id)
     }
 
     pub fn set_handle_result(&mut self, id: u64, result: RuntimeValue) {
-        // Set handle result.
+        // Description:
+        //     Set handle result.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
-        // - `result` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     id: u64
+        //         Caller-supplied id.
+        //     resul: RuntimeValue
+        //         Caller-supplied resul.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_handle_result(id, result);
-
+        //     let result = spanda_concurrency::set_handle_result(&mut self, id, resul);
         // use handle when get mut is present.
 
         // Emit output when get mut provides a handle.
@@ -459,19 +477,19 @@ impl ConcurrencyRuntime {
     }
 
     pub fn drain_fire_and_forget_queue(&mut self) -> Vec<u64> {
-        // Drain fire and forget queue.
+        // Description:
+        //     Drain fire and forget queue.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Vec<u64>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<u64>
+        //         Return value from `drain_fire_and_forget_queue`.
         //
         // Example:
-        // let result = instance.drain_fire_and_forget_queue();
+        //     let result = spanda_concurrency::drain_fire_and_forget_queue(&mut self);
 
         // Move out the stored value and leave a default behind.
         std::mem::take(&mut self.fire_and_forget_queue)
@@ -483,22 +501,25 @@ impl ConcurrencyRuntime {
         value: &RuntimeValue,
         line: u32,
     ) -> Result<(), SpandaError> {
-        // Bind channel type.
+        // Description:
+        //     Bind channel type.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `channel` — input value
-        // - `value` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     channel: &RuntimeValue
+        //         Caller-supplied channel.
+        //     value: &RuntimeValue
+        //         Caller-supplied value.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `bind_channel_type`.
         //
         // Example:
-        // let result = instance.bind_channel_type(channel, value, line);
+        //     let result = spanda_concurrency::bind_channel_type(&mut self, channel, value, line);
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Channel { id } = channel else {
@@ -526,19 +547,19 @@ impl ConcurrencyRuntime {
 }
 
 fn runtime_type_tag(value: &RuntimeValue) -> String {
-    // Runtime type tag.
+    // Description:
+    //     Runtime type tag.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `runtime_type_tag`.
     //
     // Example:
-    // let result = spanda_core::concurrency::runtime_type_tag(value);
+    //     let result = spanda_concurrency::runtime_type_tag(value);
 
     // Match on value and handle each case.
     match value {

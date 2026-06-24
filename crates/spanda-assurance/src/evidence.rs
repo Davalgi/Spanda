@@ -25,6 +25,21 @@ pub struct AssuranceReport {
 }
 
 fn evidence_kind(source: &str) -> EvidenceKind {
+    // Description:
+    //     Evidence kind.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: EvidenceKind
+    //         Return value from `evidence_kind`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::evidence::evidence_kind(source);
+
     match source {
         s if s.contains("hardware") => EvidenceKind::Hardware,
         s if s.contains("capability") || s.contains("traceability") => EvidenceKind::Capability,
@@ -37,6 +52,23 @@ fn evidence_kind(source: &str) -> EvidenceKind {
 
 /// Build assurance report from program declarations and existing verification.
 pub fn build_assurance_report(program: &Program, source_label: &str) -> AssuranceReport {
+    // Description:
+    //     Build assurance report.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     source_label: &str
+    //         Caller-supplied source label.
+    //
+    // Outputs:
+    //     result: AssuranceReport
+    //         Return value from `build_assurance_report`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::evidence::build_assurance_report(progra, source_label);
+
     let Program::Program {
         assurance_cases, ..
     } = program;

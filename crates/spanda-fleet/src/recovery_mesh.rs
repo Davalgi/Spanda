@@ -10,7 +10,19 @@ pub use spanda_deploy_http::{
 
 /// Build peer deliveries for a fleet recovery command.
 pub fn recovery_deliveries_for_request(request: &FleetRecoveryRequest) -> Vec<PeerDelivery> {
-    // Turn a mesh recovery request into per-robot peer deliveries.
+    // Description:
+    //     Recovery deliveries for request.
+    //
+    // Inputs:
+    //     request: &FleetRecoveryRequest
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: Vec<PeerDelivery>
+    //         Return value from `recovery_deliveries_for_request`.
+    //
+    // Example:
+    //     let result = spanda_fleet::recovery_mesh::recovery_deliveries_for_request(reques);
     let from_robot = request
         .from_robot
         .clone()
@@ -37,7 +49,21 @@ pub fn relay_fleet_recovery(
     request: &FleetRecoveryRequest,
     registry: &FleetAgentRegistry,
 ) -> FleetRecoveryResponse {
-    // Fan out recovery peer messages to every targeted fleet agent.
+    // Description:
+    //     Relay fleet recovery.
+    //
+    // Inputs:
+    //     request: &FleetRecoveryRequest
+    //         Caller-supplied request.
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: FleetRecoveryResponse
+    //         Return value from `relay_fleet_recovery`.
+    //
+    // Example:
+    //     let result = spanda_fleet::recovery_mesh::relay_fleet_recovery(reques, registry);
     let deliveries = recovery_deliveries_for_request(request);
     if deliveries.is_empty() {
         return FleetRecoveryResponse {
@@ -61,6 +87,21 @@ pub fn relay_fleet_recovery(
 }
 
 fn recovery_http_response(response: &FleetRecoveryResponse) -> HttpResponse {
+    // Description:
+    //     Recovery http response.
+    //
+    // Inputs:
+    //     response: &FleetRecoveryResponse
+    //         Caller-supplied response.
+    //
+    // Outputs:
+    //     result: HttpResponse
+    //         Return value from `recovery_http_response`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_mesh::recovery_http_response(response);
+
     HttpResponse {
         status: 200,
         body: serde_json::to_string(response).unwrap_or_else(|_| "{}".into()),
@@ -69,7 +110,21 @@ fn recovery_http_response(response: &FleetRecoveryResponse) -> HttpResponse {
 
 /// Handle `POST /v1/fleet/recovery` on the mesh coordinator.
 pub fn handle_fleet_recovery_post(body: &str, registry: &FleetAgentRegistry) -> HttpResponse {
-    // Parse the recovery payload and relay it to fleet agents.
+    // Description:
+    //     Handle fleet recovery post.
+    //
+    // Inputs:
+    //     body: &str
+    //         Caller-supplied body.
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: HttpResponse
+    //         Return value from `handle_fleet_recovery_post`.
+    //
+    // Example:
+    //     let result = spanda_fleet::recovery_mesh::handle_fleet_recovery_post(body, registry);
     let Ok(request) = serde_json::from_str::<FleetRecoveryRequest>(body) else {
         return HttpResponse {
             status: 400,
@@ -91,6 +146,23 @@ pub fn registered_recovery_members(
     members: &[String],
     registry: &FleetAgentRegistry,
 ) -> Vec<String> {
+    // Description:
+    //     Registered recovery members.
+    //
+    // Inputs:
+    //     embers: &[String]
+    //         Caller-supplied embers.
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `registered_recovery_members`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_mesh::registered_recovery_members(embers, registry);
+
     members
         .iter()
         .filter(|member| lookup_fleet_agent(registry, member).is_some())

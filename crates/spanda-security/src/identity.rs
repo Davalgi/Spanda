@@ -13,20 +13,21 @@ pub struct RobotIdentity {
 
 impl RobotIdentity {
     pub fn new(id: impl Into<String>, public_key: impl Into<String>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `id` — input value
-        // - `public_key` — input value
+        // Inputs:
+        //     id: impl Into<String>
+        //         Caller-supplied id.
+        //     public_key: impl Into<String>
+        //         Caller-supplied public key.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::identity::new(id, public_key);
+        //     let value = spanda_security::identity::new(id, public_key);
 
         // Assemble the struct fields and return it.
         Self {
@@ -36,19 +37,21 @@ impl RobotIdentity {
     }
 
     pub fn with_trust(mut self, trust: TrustLevel) -> Self {
+        // Description:
+        //     With trust.
         //
-        // Parameters:
-        // - `mut self` — input value
-        // - `trust` — input value
+        // Inputs:
+        //     mut self: input value
+        //         Caller-supplied mut self.
+        //     rus: TrustLevel
+        //         Caller-supplied rus.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `with_trust`.
         //
         // Example:
-        // let result = spanda_security::identity::with_trust(mut self, trust);
+        //     let result = spanda_security::identity::with_trust(mut self, rus);
 
         // Call trust = trust; on the current instance.
         self.trust = trust;
@@ -56,57 +59,57 @@ impl RobotIdentity {
     }
 
     pub fn id(&self) -> &str {
-        // Id.
+        // Description:
+        //     Id.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &str
+        //         Return value from `id`.
         //
         // Example:
-        // let result = instance.id();
+        //     let result = spanda_security::identity::id(&self);
 
         // Return id from this handle.
         &self.device.id
     }
 
     pub fn public_key(&self) -> &str {
-        // Public key.
+        // Description:
+        //     Public key.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &str
+        //         Return value from `public_key`.
         //
         // Example:
-        // let result = instance.public_key();
+        //     let result = spanda_security::identity::public_key(&self);
 
         // Return public key from this handle.
         &self.device.public_key
     }
 
     pub fn signing_key(&self) -> String {
-        // Signing key.
+        // Description:
+        //     Signing key.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `signing_key`.
         //
         // Example:
-        // let result = instance.signing_key();
+        //     let result = spanda_security::identity::signing_key(&self);
 
         // Call default key on the current instance.
         self.device.default_key()
@@ -115,19 +118,19 @@ impl RobotIdentity {
 
 impl From<DeviceIdentity> for RobotIdentity {
     fn from(device: DeviceIdentity) -> Self {
-        // From.
+        // Description:
+        //     From.
         //
-        // Parameters:
-        // - `device` — input value
+        // Inputs:
+        //     device: DeviceIdentity
+        //         Caller-supplied device.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
         //
         // Example:
-        // let result = spanda_security::identity::from(device);
+        //     let result = spanda_security::identity::from(device);
 
         // Assemble the struct fields and return it.
         Self {

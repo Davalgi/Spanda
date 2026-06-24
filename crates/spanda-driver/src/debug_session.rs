@@ -43,20 +43,21 @@ pub struct DebugMachine {
 
 impl DebugMachine {
     pub fn start(source: &str, options: DebugOptions) -> Result<Self, SpandaError> {
-        // Start.
+        // Description:
+        //     Start.
         //
-        // Parameters:
-        // - `source` — input value
-        // - `options` — input value
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //     options: DebugOptions
+        //         Caller-supplied options.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, SpandaError>
+        //         Return value from `start`.
         //
         // Example:
-        // let result = spanda_core::debug_session::start(source, options);
+        //     let result = spanda_driver::debug_session::start(source, options);
 
         // Parse and type-check the source program.
         let program = compile_program(source)?;
@@ -100,75 +101,76 @@ impl DebugMachine {
     }
 
     pub fn is_finished(&self) -> bool {
+        // Description:
+        //     Is finished.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_finished`.
         //
         // Example:
-        // let result = instance.is_finished();
+        //     let result = spanda_driver::debug_session::is_finished(&self);
 
         // Call finished on the current instance.
         self.finished
     }
 
     pub fn source_path(&self) -> Option<&str> {
-        // Source path.
+        // Description:
+        //     Source path.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&str>
+        //         Return value from `source_path`.
         //
         // Example:
-        // let result = instance.source_path();
+        //     let result = spanda_driver::debug_session::source_path(&self);
 
         // Call as deref on the current instance.
         self.source_path.as_deref()
     }
 
     pub fn pauses(&self) -> Vec<DebugPause> {
-        // Pauses.
+        // Description:
+        //     Pauses.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<DebugPause>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<DebugPause>
+        //         Return value from `pauses`.
         //
         // Example:
-        // let result = instance.pauses();
+        //     let result = spanda_driver::debug_session::pauses(&self);
 
         // Call pauses on the current instance.
         self.controller.pauses().borrow().clone()
     }
 
     pub fn stack_trace(&self) -> Vec<(String, u32)> {
-        // Stack trace.
+        // Description:
+        //     Stack trace.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<(String, u32)>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<(String, u32)>
+        //         Return value from `stack_trace`.
         //
         // Example:
-        // let result = instance.stack_trace();
+        //     let result = spanda_driver::debug_session::stack_trace(&self);
 
         // Call stack trace frames on the current instance.
         self.stack_trace_frames()
@@ -178,19 +180,19 @@ impl DebugMachine {
     }
 
     pub fn stack_trace_frames(&self) -> Vec<DebugStackFrame> {
-        // Stack trace frames.
+        // Description:
+        //     Stack trace frames.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<DebugStackFrame>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<DebugStackFrame>
+        //         Return value from `stack_trace_frames`.
         //
         // Example:
-        // let result = instance.stack_trace_frames();
+        //     let result = spanda_driver::debug_session::stack_trace_frames(&self);
 
         // Call frames on the current instance.
         self.frames
@@ -209,20 +211,21 @@ impl DebugMachine {
     }
 
     pub fn frame_variables(&self, frame_id: usize) -> HashMap<String, String> {
-        // Frame variables.
+        // Description:
+        //     Frame variables.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `frame_id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     frame_id: usize
+        //         Caller-supplied frame id.
         //
-        // Returns:
-        // HashMap<String, String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: HashMap<String, String>
+        //         Return value from `frame_variables`.
         //
         // Example:
-        // let result = instance.frame_variables(frame_id);
+        //     let result = spanda_driver::debug_session::frame_variables(&self, frame_id);
 
         // take the branch when frame id equals 0.
         if frame_id == 0 {
@@ -236,21 +239,23 @@ impl DebugMachine {
     }
 
     pub fn set_variable(&mut self, name: &str, value: &str) -> Result<(), SpandaError> {
-        // Set variable.
+        // Description:
+        //     Set variable.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     value: &str
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `set_variable`.
         //
         // Example:
-        // let result = instance.set_variable(name, value);
+        //     let result = spanda_driver::debug_session::set_variable(&mut self, name, value);
 
         // Call interpreter on the current instance.
         self.interpreter
@@ -265,20 +270,21 @@ impl DebugMachine {
     }
 
     pub fn run_until_pause(&mut self, step: DebugStepKind) -> Result<DebugSession, SpandaError> {
-        // Run until pause.
+        // Description:
+        //     Run until pause.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `step` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     step: DebugStepKind
+        //         Caller-supplied step.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<DebugSession, SpandaError>
+        //         Return value from `run_until_pause`.
         //
         // Example:
-        // let result = instance.run_until_pause(step);
+        //     let result = spanda_driver::debug_session::run_until_pause(&mut self, step);
 
         // Call step kind = step; on the current instance.
         self.step_kind = step;
@@ -372,20 +378,18 @@ impl DebugMachine {
     }
 
     fn sync_top_locals(&mut self) {
-        // Sync top locals.
+        // Description:
+        //     Sync top locals.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.sync_top_locals();
-
+        //     let result = spanda_driver::debug_session::sync_top_locals(&mut self);
         // use frame when last mut is present.
 
         // Emit output when last mut provides a frame.
@@ -395,21 +399,22 @@ impl DebugMachine {
     }
 
     fn record_pause_at_top(&mut self, line: u32, reason: &str) {
-        // Record pause at top.
+        // Description:
+        //     Record pause at top.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `line` — input value
-        // - `reason` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     line: u32
+        //         Caller-supplied line.
+        //     reason: &str
+        //         Caller-supplied reason.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_pause_at_top(line, reason);
+        //     let result = spanda_driver::debug_session::record_pause_at_top(&mut self, line, reason);
 
         // Call sync top locals on the current instance.
         self.sync_top_locals();
@@ -428,23 +433,27 @@ impl DebugMachine {
         frame_top: usize,
         line: u32,
     ) -> Result<bool, SpandaError> {
-        // Try enter inner.
+        // Description:
+        //     Try enter inner.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `step` — input value
-        // - `stmt` — input value
-        // - `frame_top` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     step: DebugStepKind
+        //         Caller-supplied step.
+        //     s: &Stmt
+        //         Caller-supplied s.
+        //     frame_top: usize
+        //         Caller-supplied frame top.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `try_enter_inner`.
         //
         // Example:
-        // let result = instance.try_enter_inner(step, stmt, frame_top, line);
+        //     let result = spanda_driver::debug_session::try_enter_inner(&mut self, step, s, frame_top, line);
 
         // take the branch when step differs from StepIn.
         if step != DebugStepKind::StepIn {
@@ -486,6 +495,21 @@ impl DebugMachine {
 }
 
 fn debug_entry_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaError> {
+    // Description:
+    //     Debug entry body.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: Result<(String, Vec<Stmt>), SpandaError>
+    //         Return value from `debug_entry_body`.
+    //
+    // Example:
+
+    //     let result = spanda_driver::debug_session::debug_entry_body(robo);
+
     use spanda_ast::foundations::{TaskDecl, TriggerHandlerDecl, TriggerKind};
     use spanda_ast::nodes::BehaviorDecl;
 
@@ -517,8 +541,22 @@ fn debug_entry_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaErro
 
 #[cfg(test)]
 fn behavior_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaError> {
-    use spanda_ast::nodes::BehaviorDecl;
+    // Description:
+    //     Behavior body.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: Result<(String, Vec<Stmt>), SpandaError>
+    //         Return value from `behavior_body`.
+    //
+    // Example:
 
+    //     let result = spanda_driver::debug_session::behavior_body(robo);
+
+    use spanda_ast::nodes::BehaviorDecl;
     // Behavior body.
     //
     // Parameters:
@@ -544,19 +582,19 @@ fn behavior_body(robot: &RobotDecl) -> Result<(String, Vec<Stmt>), SpandaError> 
 }
 
 fn inner_block(stmt: &Stmt) -> Option<Vec<Stmt>> {
-    // Inner block.
+    // Description:
+    //     Inner block.
     //
-    // Parameters:
-    // - `stmt` — input value
+    // Inputs:
+    //     s: &Stmt
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<Vec<Stmt>>
+    //         Return value from `inner_block`.
     //
     // Example:
-    // let result = spanda_core::debug_session::inner_block(stmt);
+    //     let result = spanda_driver::debug_session::inner_block(s);
 
     // Match on stmt and handle each case.
     match stmt {
@@ -567,19 +605,19 @@ fn inner_block(stmt: &Stmt) -> Option<Vec<Stmt>> {
 }
 
 fn stmt_kind_label(stmt: &Stmt) -> &'static str {
-    // Stmt kind label.
+    // Description:
+    //     Stmt kind label.
     //
-    // Parameters:
-    // - `stmt` — input value
+    // Inputs:
+    //     s: &Stmt
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `stmt_kind_label`.
     //
     // Example:
-    // let result = spanda_core::debug_session::stmt_kind_label(stmt);
+    //     let result = spanda_driver::debug_session::stmt_kind_label(s);
 
     // Match on stmt and handle each case.
     match stmt {
@@ -590,19 +628,19 @@ fn stmt_kind_label(stmt: &Stmt) -> &'static str {
 }
 
 fn pause_reason(step: DebugStepKind) -> &'static str {
-    // Pause reason.
+    // Description:
+    //     Pause reason.
     //
-    // Parameters:
-    // - `step` — input value
+    // Inputs:
+    //     step: DebugStepKind
+    //         Caller-supplied step.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `pause_reason`.
     //
     // Example:
-    // let result = spanda_core::debug_session::pause_reason(step);
+    //     let result = spanda_driver::debug_session::pause_reason(step);
 
     // Match on step and handle each case.
     match step {
@@ -614,19 +652,19 @@ fn pause_reason(step: DebugStepKind) -> &'static str {
 }
 
 fn parse_debug_value(text: &str) -> RuntimeValue {
-    // Parse debug value.
+    // Description:
+    //     Parse debug value.
     //
-    // Parameters:
-    // - `text` — input value
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `parse_debug_value`.
     //
     // Example:
-    // let result = spanda_core::debug_session::parse_debug_value(text);
+    //     let result = spanda_driver::debug_session::parse_debug_value(ex);
 
     // Compute t for the following logic.
     let t = text.trim();
@@ -654,19 +692,20 @@ fn parse_debug_value(text: &str) -> RuntimeValue {
 }
 
 fn compile_program(source: &str) -> Result<Program, SpandaError> {
-    // Type-check and parse source for debug sessions via the compile driver.
+    // Description:
+    //     Compile program.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Type-checked program, or a compile diagnostic error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Program, SpandaError>
+    //         Return value from `compile_program`.
     //
     // Example:
-    // let program = compile_program(source)?;
+
+    //     let result = spanda_driver::debug_session::compile_program(source);
 
     Ok(crate::compile(source)?.program)
 }
@@ -679,19 +718,18 @@ mod tests {
 
     #[test]
     fn resumable_debug_steps_and_sets_variable() {
-        // Resumable debug steps and sets variable.
+        // Description:
+        //     Resumable debug steps and sets variable.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::resumable_debug_steps_and_sets_variable();
+
+        //     let result = spanda_driver::debug_session::resumable_debug_steps_and_sets_variable();
 
         let source = r#"
 robot R {
@@ -725,19 +763,18 @@ robot R {
 
     #[test]
     fn step_out_returns_to_caller_frame() {
-        // Step out returns to caller frame.
+        // Description:
+        //     Step out returns to caller frame.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::step_out_returns_to_caller_frame();
+
+        //     let result = spanda_driver::debug_session::step_out_returns_to_caller_frame();
 
         let source = r#"
 robot R {
@@ -773,19 +810,18 @@ robot R {
 
     #[test]
     fn resolve_sync_call_finds_export_fn_in_var_decl() {
-        // Resolve sync call finds export fn in var decl.
+        // Description:
+        //     Resolve sync call finds export fn in var decl.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::resolve_sync_call_finds_export_fn_in_var_decl();
+
+        //     let result = spanda_driver::debug_session::resolve_sync_call_finds_export_fn_in_var_decl();
 
         let source = r#"
 module demo;
@@ -810,19 +846,18 @@ robot R {
 
     #[test]
     fn step_in_enters_module_function_call() {
-        // Step in enters module function call.
+        // Description:
+        //     Step in enters module function call.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::step_in_enters_module_function_call();
+
+        //     let result = spanda_driver::debug_session::step_in_enters_module_function_call();
 
         let source = r#"
 module demo;
@@ -859,19 +894,18 @@ robot R {
 
     #[test]
     fn step_over_skips_into_function_without_entering() {
-        // Step over skips into function without entering.
+        // Description:
+        //     Step over skips into function without entering.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::step_over_skips_into_function_without_entering();
+
+        //     let result = spanda_driver::debug_session::step_over_skips_into_function_without_entering();
 
         let source = r#"
 module demo;
@@ -905,19 +939,18 @@ robot R {
 
     #[test]
     fn frame_variables_snapshot_per_stack_frame() {
-        // Frame variables snapshot per stack frame.
+        // Description:
+        //     Frame variables snapshot per stack frame.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::debug_session::frame_variables_snapshot_per_stack_frame();
+
+        //     let result = spanda_driver::debug_session::frame_variables_snapshot_per_stack_frame();
 
         let source = r#"
 module demo;

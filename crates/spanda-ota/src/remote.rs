@@ -61,10 +61,39 @@ pub struct AgentRolloutResponse {
 }
 
 pub fn default_agents_path() -> PathBuf {
+    // Description:
+    //     Default agents path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_agents_path`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::default_agents_path();
+
     PathBuf::from(".spanda/deploy-agents.json")
 }
 
 pub fn load_agent_registry(path: &Path) -> DeployAgentRegistry {
+    // Description:
+    //     Load agent registry.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: DeployAgentRegistry
+    //         Return value from `load_agent_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::load_agent_registry(path);
+
     if !path.exists() {
         return DeployAgentRegistry::default();
     }
@@ -75,6 +104,23 @@ pub fn load_agent_registry(path: &Path) -> DeployAgentRegistry {
 }
 
 pub fn save_agent_registry(path: &Path, registry: &DeployAgentRegistry) -> Result<(), String> {
+    // Description:
+    //     Save agent registry.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     registry: &DeployAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `save_agent_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::save_agent_registry(path, registry);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -88,7 +134,43 @@ pub fn register_agent(
     url: String,
     token: Option<String>,
 ) -> Result<(), String> {
-    // Validate URL shape before recording the agent endpoint.
+    // Description:
+
+    //     Register agent.
+
+    //
+
+    // Inputs:
+
+    //     registry: &mut DeployAgentRegistry
+
+    //         Caller-supplied registry.
+
+    //     arge: String
+
+    //         Caller-supplied arge.
+
+    //     url: String
+
+    //         Caller-supplied url.
+
+    //     token: Option<String>
+
+    //         Caller-supplied token.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `register_agent`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::remote::register_agent(registry, arge, rl, oken);
     parse_http_url(&url)?;
     registry.agents.retain(|entry| entry.target != target);
     registry
@@ -106,6 +188,23 @@ pub fn lookup_agent<'a>(
 }
 
 fn agent_endpoint(base_url: &str, path: &str) -> Result<String, String> {
+    // Description:
+    //     Agent endpoint.
+    //
+    // Inputs:
+    //     base_url: &str
+    //         Caller-supplied base url.
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `agent_endpoint`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_endpoint(base_url, path);
+
     let parsed = parse_http_url(base_url)?;
     Ok(format!(
         "{}://{}:{}{}",
@@ -114,6 +213,21 @@ fn agent_endpoint(base_url: &str, path: &str) -> Result<String, String> {
 }
 
 fn decode_response<T: for<'de> Deserialize<'de>>(response: HttpResponse) -> Result<T, String> {
+    // Description:
+    //     Decode response.
+    //
+    // Inputs:
+    //     response: HttpResponse
+    //         Caller-supplied response.
+    //
+    // Outputs:
+    //     result: Result<T, String>
+    //         Return value from `decode_response`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::decode_response(response);
+
     if response.status >= 400 {
         return Err(format!("agent HTTP {}: {}", response.status, response.body));
     }
@@ -121,6 +235,21 @@ fn decode_response<T: for<'de> Deserialize<'de>>(response: HttpResponse) -> Resu
 }
 
 pub fn agent_health(entry: &DeployAgentEntry) -> Result<bool, String> {
+    // Description:
+    //     Agent health.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //
+    // Outputs:
+    //     result: Result<bool, String>
+    //         Return value from `agent_health`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_health(entry);
+
     let url = agent_endpoint(&entry.url, "/v1/health")?;
     let response = http_request("GET", &url, None, entry.token.as_deref())?;
     let body: serde_json::Value = decode_response(response)?;
@@ -133,6 +262,25 @@ pub fn agent_readiness(
     runtime: bool,
     inject_health_faults: bool,
 ) -> Result<serde_json::Value, String> {
+    // Description:
+    //     Agent readiness.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //     runtime: bool
+    //         Caller-supplied runtime.
+    //     inject_health_faults: bool
+    //         Caller-supplied inject health faults.
+    //
+    // Outputs:
+    //     result: Result<serde_json::Value, String>
+    //         Return value from `agent_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_readiness(entry, runtime, inject_health_faults);
+
     let mut url = agent_endpoint(&entry.url, "/v1/readiness")?;
     let mut query = Vec::new();
     if runtime {
@@ -150,6 +298,23 @@ pub fn agent_readiness(
 }
 
 pub fn agent_upload_program(entry: &DeployAgentEntry, program: &str) -> Result<(), String> {
+    // Description:
+    //     Agent upload program.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //     progra: &str
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `agent_upload_program`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_upload_program(entry, progra);
+
     let url = agent_endpoint(&entry.url, "/v1/program")?;
     let payload = serde_json::json!({ "program": program }).to_string();
     let response = http_request("POST", &url, Some(&payload), entry.token.as_deref())?;
@@ -166,6 +331,21 @@ pub fn agent_upload_program(entry: &DeployAgentEntry, program: &str) -> Result<(
 }
 
 pub fn agent_status(entry: &DeployAgentEntry) -> Result<AgentStatusResponse, String> {
+    // Description:
+    //     Agent status.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //
+    // Outputs:
+    //     result: Result<AgentStatusResponse, String>
+    //         Return value from `agent_status`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_status(entry);
+
     let url = agent_endpoint(&entry.url, "/v1/status")?;
     let response = http_request("GET", &url, None, entry.token.as_deref())?;
     decode_response(response)
@@ -176,6 +356,25 @@ pub fn agent_rollout(
     bundle: &DeployArtifactBundle,
     certification_proof: Option<&CertificationProofSummary>,
 ) -> Result<AgentRolloutResponse, String> {
+    // Description:
+    //     Agent rollout.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //     bundle: &DeployArtifactBundle
+    //         Caller-supplied bundle.
+    //     certification_proof: Option<&CertificationProofSummary>
+    //         Caller-supplied certification proof.
+    //
+    // Outputs:
+    //     result: Result<AgentRolloutResponse, String>
+    //         Return value from `agent_rollout`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_rollout(entry, bundle, certification_proof);
+
     let url = agent_endpoint(&entry.url, "/v1/rollout")?;
     let payload = serde_json::to_string(&RolloutRequest {
         target: entry.target.clone(),
@@ -194,6 +393,21 @@ pub fn agent_rollout(
 }
 
 pub fn agent_rollback(entry: &DeployAgentEntry) -> Result<AgentRolloutResponse, String> {
+    // Description:
+    //     Agent rollback.
+    //
+    // Inputs:
+    //     entry: &DeployAgentEntry
+    //         Caller-supplied entry.
+    //
+    // Outputs:
+    //     result: Result<AgentRolloutResponse, String>
+    //         Return value from `agent_rollback`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::agent_rollback(entry);
+
     let url = agent_endpoint(&entry.url, "/v1/rollback")?;
     let payload = serde_json::to_string(&serde_json::json!({
         "target": entry.target,
@@ -209,7 +423,43 @@ pub fn execute_remote_rollout(
     registry: &DeployAgentRegistry,
     bundle: &DeployArtifactBundle,
 ) -> RolloutResult {
-    // Plan rollout steps locally, then push updates to registered deploy agents.
+    // Description:
+
+    //     Execute remote rollout.
+
+    //
+
+    // Inputs:
+
+    //     plan: &DeployPlan
+
+    //         Caller-supplied plan.
+
+    //     options: &RolloutOptions
+
+    //         Caller-supplied options.
+
+    //     registry: &DeployAgentRegistry
+
+    //         Caller-supplied registry.
+
+    //     bundle: &DeployArtifactBundle
+
+    //         Caller-supplied bundle.
+
+    //
+
+    // Outputs:
+
+    //     result: RolloutResult
+
+    //         Return value from `execute_remote_rollout`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::remote::execute_remote_rollout(plan, options, registry, bundle);
     let local = plan_rollout(plan, options);
     if options.dry_run {
         return local;
@@ -264,6 +514,23 @@ pub fn execute_remote_rollout(
 }
 
 pub fn execute_remote_rollback(plan: &DeployPlan, registry: &DeployAgentRegistry) -> RolloutResult {
+    // Description:
+    //     Execute remote rollback.
+    //
+    // Inputs:
+    //     plan: &DeployPlan
+    //         Caller-supplied plan.
+    //     registry: &DeployAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: RolloutResult
+    //         Return value from `execute_remote_rollback`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::execute_remote_rollback(plan, registry);
+
     let mut steps = Vec::new();
     let mut success = false;
     for assignment in &plan.assignments {
@@ -309,6 +576,23 @@ pub fn execute_remote_rollback(plan: &DeployPlan, registry: &DeployAgentRegistry
 }
 
 pub fn missing_remote_targets(plan: &DeployPlan, registry: &DeployAgentRegistry) -> Vec<String> {
+    // Description:
+    //     Missing remote targets.
+    //
+    // Inputs:
+    //     plan: &DeployPlan
+    //         Caller-supplied plan.
+    //     registry: &DeployAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `missing_remote_targets`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::missing_remote_targets(plan, registry);
+
     let mut missing = Vec::new();
     for assignment in &plan.assignments {
         let key = deploy_target_key(&assignment.robot_name, &assignment.hardware);
@@ -320,6 +604,21 @@ pub fn missing_remote_targets(plan: &DeployPlan, registry: &DeployAgentRegistry)
 }
 
 pub fn registry_by_target(registry: &DeployAgentRegistry) -> HashMap<String, DeployAgentEntry> {
+    // Description:
+    //     Registry by target.
+    //
+    // Inputs:
+    //     registry: &DeployAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: HashMap<String, DeployAgentEntry>
+    //         Return value from `registry_by_target`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote::registry_by_target(registry);
+
     registry
         .agents
         .iter()

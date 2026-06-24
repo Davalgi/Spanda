@@ -12,19 +12,18 @@ struct PrettyPrinter {
 
 impl PrettyPrinter {
     fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::pretty::new();
+        //     let value = spanda_format::pretty::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -35,19 +34,19 @@ impl PrettyPrinter {
     }
 
     fn finish(mut self) -> String {
-        // Finish.
+        // Description:
+        //     Finish.
         //
-        // Parameters:
-        // - `mut self` — input value
+        // Inputs:
+        //     mut self: input value
+        //         Caller-supplied mut self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `finish`.
         //
         // Example:
-        // let result = spanda_core::pretty::finish(mut self);
+        //     let result = spanda_format::pretty::finish(mut self);
 
         // Repeat while self.out.ends with('\n').
         while self.out.ends_with('\n') {
@@ -58,19 +57,18 @@ impl PrettyPrinter {
     }
 
     fn write_indent(&mut self) {
-        // Write indent.
+        // Description:
+        //     Write indent.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.write_indent();
+        //     let result = spanda_format::pretty::write_indent(&mut self);
 
         // take this path when self.at line start.
         if self.at_line_start {
@@ -83,20 +81,20 @@ impl PrettyPrinter {
     }
 
     fn write(&mut self, text: &str) {
-        // Write.
+        // Description:
+        //     Write.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `text` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ex: &str
+        //         Caller-supplied ex.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.write(text);
+        //     let result = spanda_format::pretty::write(&mut self, ex);
 
         // Call write indent on the current instance.
         self.write_indent();
@@ -104,19 +102,18 @@ impl PrettyPrinter {
     }
 
     fn space(&mut self) {
-        // Space.
+        // Description:
+        //     Space.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.space();
+        //     let result = spanda_format::pretty::space(&mut self);
 
         // take the branch when ends with is false.
         if !self.at_line_start && !self.out.ends_with(' ') && !self.out.ends_with('\n') {
@@ -125,19 +122,18 @@ impl PrettyPrinter {
     }
 
     fn newline(&mut self) {
-        // Newline.
+        // Description:
+        //     Newline.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.newline();
+        //     let result = spanda_format::pretty::newline(&mut self);
 
         // Append into self.
         self.out.push('\n');
@@ -145,20 +141,20 @@ impl PrettyPrinter {
     }
 
     fn write_line(&mut self, text: &str) {
-        // Write line.
+        // Description:
+        //     Write line.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `text` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ex: &str
+        //         Caller-supplied ex.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.write_line(text);
+        //     let result = spanda_format::pretty::write_line(&mut self, ex);
 
         // Call write on the current instance.
         self.write(text);
@@ -166,20 +162,20 @@ impl PrettyPrinter {
     }
 
     fn open_block(&mut self, header: &str) {
-        // Open block.
+        // Description:
+        //     Open block.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `header` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     header: &str
+        //         Caller-supplied header.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.open_block(header);
+        //     let result = spanda_format::pretty::open_block(&mut self, header);
 
         // Call write line on the current instance.
         self.write_line(&format!("{header} {{"));
@@ -187,20 +183,20 @@ impl PrettyPrinter {
     }
 
     fn close_block(&mut self, suffix: &str) {
-        // Close block.
+        // Description:
+        //     Close block.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `suffix` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     suffix: &str
+        //         Caller-supplied suffix.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.close_block(suffix);
+        //     let result = spanda_format::pretty::close_block(&mut self, suffix);
 
         // Call saturating sub on the current instance.
         self.indent = self.indent.saturating_sub(1);
@@ -208,21 +204,22 @@ impl PrettyPrinter {
     }
 
     fn emit_source_span(&mut self, source: &str, span: &Span) {
-        // Emit source span.
+        // Description:
+        //     Emit source span.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `source` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     source: &str
+        //         Caller-supplied source.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.emit_source_span(source, span);
+        //     let result = spanda_format::pretty::emit_source_span(&mut self, source, span);
 
         // Compute Some for the following logic.
         let Some(chunk) = source.get(span.start.offset..span.end.offset) else {
@@ -236,20 +233,20 @@ impl PrettyPrinter {
     }
 
     fn print_type(&mut self, ty: &SpandaType) {
-        // Print type.
+        // Description:
+        //     Print type.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `ty` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     y: &SpandaType
+        //         Caller-supplied y.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_type(ty);
+        //     let result = spanda_format::pretty::print_type(&mut self, y);
 
         // Match on ty and handle each case.
         match ty {
@@ -308,19 +305,19 @@ impl PrettyPrinter {
     }
 
     fn visibility_prefix(v: Visibility) -> &'static str {
-        // Visibility prefix.
+        // Description:
+        //     Visibility prefix.
         //
-        // Parameters:
-        // - `v` — input value
+        // Inputs:
+        //     v: Visibility
+        //         Caller-supplied v.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `visibility_prefix`.
         //
         // Example:
-        // let result = spanda_core::pretty::visibility_prefix(v);
+        //     let result = spanda_format::pretty::visibility_prefix(v);
 
         // Match on v and handle each case.
         match v {
@@ -331,21 +328,22 @@ impl PrettyPrinter {
     }
 
     fn print_program(&mut self, source: &str, program: &Program) {
-        // Print program.
+        // Description:
+        //     Print program.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `source` — input value
-        // - `program` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     source: &str
+        //         Caller-supplied source.
+        //     progra: &Program
+        //         Caller-supplied progra.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_program(source, program);
+        //     let result = spanda_format::pretty::print_program(&mut self, source, progra);
 
         // Destructure the program into its top-level sections.
         let Program::Program {
@@ -554,20 +552,20 @@ impl PrettyPrinter {
     }
 
     fn print_module_fn(&mut self, func: &spanda_ast::foundations::ModuleFnDecl) {
-        // Print module fn.
+        // Description:
+        //     Print module fn.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     func: &spanda_ast::foundations::ModuleFnDecl
+        //         Caller-supplied func.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_module_fn(func);
+        //     let result = spanda_format::pretty::print_module_fn(&mut self, func);
 
         // Create mutable header for accumulating results.
         let mut header = String::new();
@@ -611,20 +609,20 @@ impl PrettyPrinter {
     }
 
     fn print_test(&mut self, test: &spanda_ast::foundations::TestDecl) {
-        // Print test.
+        // Description:
+        //     Print test.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `test` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     es: &spanda_ast::foundations::TestDecl
+        //         Caller-supplied es.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_test(test);
+        //     let result = spanda_format::pretty::print_test(&mut self, es);
 
         // Call open block on the current instance.
         self.open_block(&format!("test \"{}\"", test.name));
@@ -633,20 +631,20 @@ impl PrettyPrinter {
     }
 
     fn print_struct(&mut self, decl: &spanda_ast::foundations::StructDecl) {
-        // Print struct.
+        // Description:
+        //     Print struct.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &spanda_ast::foundations::StructDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_struct(decl);
+        //     let result = spanda_format::pretty::print_struct(&mut self, decl);
 
         // Compute crate for the following logic.
         let spanda_ast::foundations::StructDecl::StructDecl { name, fields, .. } = decl;
@@ -660,20 +658,20 @@ impl PrettyPrinter {
     }
 
     fn print_enum(&mut self, decl: &spanda_ast::foundations::EnumDecl) {
-        // Print enum.
+        // Description:
+        //     Print enum.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &spanda_ast::foundations::EnumDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_enum(decl);
+        //     let result = spanda_format::pretty::print_enum(&mut self, decl);
 
         // Compute crate for the following logic.
         let spanda_ast::foundations::EnumDecl::EnumDecl { name, variants, .. } = decl;
@@ -698,20 +696,20 @@ impl PrettyPrinter {
     }
 
     fn print_trait(&mut self, decl: &spanda_ast::foundations::TraitDecl) {
-        // Print trait.
+        // Description:
+        //     Print trait.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &spanda_ast::foundations::TraitDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_trait(decl);
+        //     let result = spanda_format::pretty::print_trait(&mut self, decl);
 
         // Compute crate for the following logic.
         let spanda_ast::foundations::TraitDecl::TraitDecl { name, methods, .. } = decl;
@@ -735,21 +733,22 @@ impl PrettyPrinter {
     }
 
     fn print_robot(&mut self, source: &str, robot: &RobotDecl) {
-        // Print robot.
+        // Description:
+        //     Print robot.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `source` — input value
-        // - `robot` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     source: &str
+        //         Caller-supplied source.
+        //     robo: &RobotDecl
+        //         Caller-supplied robo.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_robot(source, robot);
+        //     let result = spanda_format::pretty::print_robot(&mut self, source, robo);
 
         // Compute RobotDecl for the following logic.
         let RobotDecl::RobotDecl {
@@ -1021,20 +1020,20 @@ impl PrettyPrinter {
     }
 
     fn print_stmts(&mut self, stmts: &[Stmt]) {
-        // Print stmts.
+        // Description:
+        //     Print stmts.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmts` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     stmts: &[Stmt]
+        //         Caller-supplied stmts.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_stmts(stmts);
+        //     let result = spanda_format::pretty::print_stmts(&mut self, stmts);
 
         // Execute each statement in sequence.
         for stmt in stmts {
@@ -1043,20 +1042,20 @@ impl PrettyPrinter {
     }
 
     fn print_stmt(&mut self, stmt: &Stmt) {
-        // Print stmt.
+        // Description:
+        //     Print stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     s: &Stmt
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_stmt(stmt);
+        //     let result = spanda_format::pretty::print_stmt(&mut self, s);
 
         // Match on stmt and handle each case.
         match stmt {
@@ -1275,20 +1274,20 @@ impl PrettyPrinter {
     }
 
     fn print_expr(&mut self, expr: &Expr) {
-        // Print expr.
+        // Description:
+        //     Print expr.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.print_expr(expr);
+        //     let result = spanda_format::pretty::print_expr(&mut self, expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -1467,19 +1466,19 @@ impl PrettyPrinter {
 }
 
 fn span_of<T: HasSpan>(value: &T) -> &Span {
-    // Span of.
+    // Description:
+    //     Span of.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &T
+    //         Caller-supplied value.
     //
-    // Returns:
-    // &Span.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &Span
+    //         Return value from `span_of`.
     //
     // Example:
-    // let result = spanda_core::pretty::span_of(value);
+    //     let result = spanda_format::pretty::span_of(value);
 
     // Produce span as the result.
     value.span()
@@ -1491,19 +1490,19 @@ trait HasSpan {
 
 impl HasSpan for spanda_ast::foundations::HardwareDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1514,19 +1513,19 @@ impl HasSpan for spanda_ast::foundations::HardwareDecl {
 
 impl HasSpan for spanda_ast::foundations::DeployDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1537,19 +1536,19 @@ impl HasSpan for spanda_ast::foundations::DeployDecl {
 
 impl HasSpan for spanda_ast::foundations::RequiresHardwareDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1562,19 +1561,19 @@ impl HasSpan for spanda_ast::foundations::RequiresHardwareDecl {
 
 impl HasSpan for spanda_ast::foundations::RequiresNetworkDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1585,19 +1584,19 @@ impl HasSpan for spanda_ast::foundations::RequiresNetworkDecl {
 
 impl HasSpan for spanda_ast::foundations::SimulateCompatibilityDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1611,19 +1610,19 @@ impl HasSpan for spanda_ast::foundations::SimulateCompatibilityDecl {
 
 impl HasSpan for spanda_comm::MessageDecl {
     fn span(&self) -> &Span {
-        // Span.
+        // Description:
+        //     Span.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
         //
         // Example:
-        // let result = instance.span();
+        //     let result = spanda_format::pretty::span(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1634,6 +1633,21 @@ impl HasSpan for spanda_comm::MessageDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::KnowledgeModelDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::KnowledgeModelDecl::KnowledgeModelDecl { span, .. } => span,
         }
@@ -1642,6 +1656,21 @@ impl HasSpan for spanda_ast::assurance_decl::KnowledgeModelDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::StateEstimatorDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::StateEstimatorDecl::StateEstimatorDecl { span, .. } => span,
         }
@@ -1650,6 +1679,21 @@ impl HasSpan for spanda_ast::assurance_decl::StateEstimatorDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::AnomalyDetectorDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::AnomalyDetectorDecl::AnomalyDetectorDecl {
                 span, ..
@@ -1660,6 +1704,21 @@ impl HasSpan for spanda_ast::assurance_decl::AnomalyDetectorDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::AnomalyHandlerDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::AnomalyHandlerDecl::AnomalyHandlerDecl { span, .. } => span,
         }
@@ -1668,6 +1727,21 @@ impl HasSpan for spanda_ast::assurance_decl::AnomalyHandlerDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::PrognosticsDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::PrognosticsDecl::PrognosticsDecl { span, .. } => span,
         }
@@ -1676,6 +1750,21 @@ impl HasSpan for spanda_ast::assurance_decl::PrognosticsDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::MitigationDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::MitigationDecl::MitigationDecl { span, .. } => span,
         }
@@ -1684,6 +1773,21 @@ impl HasSpan for spanda_ast::assurance_decl::MitigationDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::OperatingModeDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::OperatingModeDecl::OperatingModeDecl { span, .. } => span,
         }
@@ -1692,6 +1796,21 @@ impl HasSpan for spanda_ast::assurance_decl::OperatingModeDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::MissionPlanDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::MissionPlanDecl::MissionPlanDecl { span, .. } => span,
         }
@@ -1700,6 +1819,21 @@ impl HasSpan for spanda_ast::assurance_decl::MissionPlanDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::ResiliencePolicyDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::ResiliencePolicyDecl::ResiliencePolicyDecl {
                 span, ..
@@ -1710,6 +1844,21 @@ impl HasSpan for spanda_ast::assurance_decl::ResiliencePolicyDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::RecoveryPolicyDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::RecoveryPolicyDecl::RecoveryPolicyDecl { span, .. } => span,
         }
@@ -1718,6 +1867,21 @@ impl HasSpan for spanda_ast::assurance_decl::RecoveryPolicyDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::AssuranceCaseDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::assurance_decl::AssuranceCaseDecl::AssuranceCaseDecl { span, .. } => span,
         }
@@ -1726,6 +1890,21 @@ impl HasSpan for spanda_ast::assurance_decl::AssuranceCaseDecl {
 
 impl HasSpan for spanda_ast::foundations::KillSwitchDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::foundations::KillSwitchDecl::KillSwitchDecl { span, .. } => span,
         }
@@ -1734,6 +1913,21 @@ impl HasSpan for spanda_ast::foundations::KillSwitchDecl {
 
 impl HasSpan for spanda_ast::foundations::HealthCheckDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::foundations::HealthCheckDecl::HealthCheckDecl { span, .. } => span,
         }
@@ -1742,6 +1936,21 @@ impl HasSpan for spanda_ast::foundations::HealthCheckDecl {
 
 impl HasSpan for spanda_ast::foundations::HealthPolicyDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         match self {
             spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl { span, .. } => span,
         }
@@ -1750,25 +1959,39 @@ impl HasSpan for spanda_ast::foundations::HealthPolicyDecl {
 
 impl HasSpan for spanda_ast::foundations::RequiresCapabilityDecl {
     fn span(&self) -> &Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::span(&self);
+
         &self.span
     }
 }
 
 fn format_capability(cap: &CapabilityDecl) -> String {
-    // Format capability.
+    // Description:
+    //     Format capability.
     //
-    // Parameters:
-    // - `cap` — input value
+    // Inputs:
+    //     cap: &CapabilityDecl
+    //         Caller-supplied cap.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `format_capability`.
     //
     // Example:
-    // let result = spanda_core::pretty::format_capability(cap);
-
+    //     let result = spanda_format::pretty::format_capability(cap);
     // use target when target is present.
 
     // Emit output when target provides a target.
@@ -1780,19 +2003,19 @@ fn format_capability(cap: &CapabilityDecl) -> String {
 }
 
 fn format_discover_target(target: DiscoverTarget) -> &'static str {
-    // Format discover target.
+    // Description:
+    //     Format discover target.
     //
-    // Parameters:
-    // - `target` — input value
+    // Inputs:
+    //     arge: DiscoverTarget
+    //         Caller-supplied arge.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `format_discover_target`.
     //
     // Example:
-    // let result = spanda_core::pretty::format_discover_target(target);
+    //     let result = spanda_format::pretty::format_discover_target(arge);
 
     // Match on target and handle each case.
     match target {
@@ -1803,20 +2026,19 @@ fn format_discover_target(target: DiscoverTarget) -> &'static str {
 }
 
 fn format_discover_filter(filter: &DiscoverFilter) -> String {
-    // Format discover filter.
+    // Description:
+    //     Format discover filter.
     //
-    // Parameters:
-    // - `filter` — input value
+    // Inputs:
+    //     filter: &DiscoverFilter
+    //         Caller-supplied filter.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `format_discover_filter`.
     //
     // Example:
-    // let result = spanda_core::pretty::format_discover_filter(filter);
-
+    //     let result = spanda_format::pretty::format_discover_filter(filter);
     // use cap when capability is present.
 
     // Emit output when capability provides a cap.
@@ -1828,19 +2050,19 @@ fn format_discover_filter(filter: &DiscoverFilter) -> String {
 }
 
 fn format_number(n: f64) -> String {
-    // Format number.
+    // Description:
+    //     Format number.
     //
-    // Parameters:
-    // - `n` — input value
+    // Inputs:
+    //     n: f64
+    //         Caller-supplied n.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `format_number`.
     //
     // Example:
-    // let result = spanda_core::pretty::format_number(n);
+    //     let result = spanda_format::pretty::format_number(n);
 
     // take this path when (n - n.round()).abs() < f64::EPSILON.
     if (n - n.round()).abs() < f64::EPSILON {
@@ -1851,39 +2073,40 @@ fn format_number(n: f64) -> String {
 }
 
 fn escape_string(s: &str) -> String {
-    // Escape string.
+    // Description:
+    //     Escape string.
     //
-    // Parameters:
-    // - `s` — input value
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `escape_string`.
     //
     // Example:
-    // let result = spanda_core::pretty::escape_string(s);
+    //     let result = spanda_format::pretty::escape_string(s);
 
     // Produce replace as the result.
     s.replace('\\', "\\\\").replace('"', "\\\"")
 }
 
 pub fn pretty_print_program(source: &str, program: &Program) -> String {
-    // Pretty print program.
+    // Description:
+    //     Pretty print program.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `program` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     progra: &Program
+    //         Caller-supplied progra.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `pretty_print_program`.
     //
     // Example:
-    // let result = spanda_core::pretty::pretty_print_program(source, program);
+    //     let result = spanda_format::pretty::pretty_print_program(source, progra);
 
     // Create mutable printer for accumulating results.
     let mut printer = PrettyPrinter::new();
@@ -1900,19 +2123,18 @@ mod tests {
 
     #[test]
     fn pretty_print_normalizes_module_fn() {
-        // Pretty print normalizes module fn.
+        // Description:
+        //     Pretty print normalizes module fn.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::pretty::pretty_print_normalizes_module_fn();
+
+        //     let result = spanda_format::pretty::pretty_print_normalizes_module_fn();
 
         let source = r#"module math;
 export fn add(x:Int,y:Int)->Int{return x;}
@@ -1926,19 +2148,18 @@ export fn add(x:Int,y:Int)->Int{return x;}
 
     #[test]
     fn format_ast_round_trip_parseable() {
-        // Format ast round trip parseable.
+        // Description:
+        //     Format ast round trip parseable.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::pretty::format_ast_round_trip_parseable();
+
+        //     let result = spanda_format::pretty::format_ast_round_trip_parseable();
 
         let source = r#"
 module demo;
@@ -1962,6 +2183,19 @@ robot R {
 
     #[test]
     fn format_preserves_assurance_block_closing_braces() {
+        // Description:
+        //     Format preserves assurance block closing braces.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::format_preserves_assurance_block_closing_braces();
+
         let source = r#"hardware RoverV1 {
     sensors [GPS];
     actuators [DifferentialDrive];
@@ -1985,6 +2219,19 @@ robot Rover {
 
     #[test]
     fn format_robot_max_speed_does_not_duplicate_unit() {
+        // Description:
+        //     Format robot max speed does not duplicate unit.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_format::pretty::format_robot_max_speed_does_not_duplicate_unit();
+
         let source = r#"robot Rover {
     sensor gps: GPS;
     safety {

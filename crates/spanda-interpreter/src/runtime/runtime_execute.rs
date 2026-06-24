@@ -14,20 +14,21 @@ use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
-        // Execute block.
+        // Description:
+        //     Execute block.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmts` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     stmts: &[Stmt]
+        //         Caller-supplied stmts.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_block`.
         //
         // Example:
-        // let result = instance.execute_block(stmts);
+        //     let result = spanda_interpreter::runtime_execute::execute_block(&mut self, stmts);
 
         // Execute each statement in sequence.
         for stmt in stmts {
@@ -37,21 +38,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SpandaError> {
-        // Execute stmt.
+        // Description:
+        //     Execute stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     s: &Stmt
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_stmt`.
         //
         // Example:
-        // let result = instance.execute_stmt(stmt);
-
+        //     let result = spanda_interpreter::runtime_execute::execute_stmt(&mut self, s);
         // use debug when debug is present.
 
         // Emit output when debug provides a debug.
@@ -542,6 +543,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 )?;
             }
             Stmt::ExpectCompileErrorStmt { .. } => {
+
                 // Validated during test setup; no runtime execution.
             }
         }
@@ -552,20 +554,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         stmts: &[Stmt],
     ) -> Result<Option<RuntimeValue>, SpandaError> {
-        // Execute block with return.
+        // Description:
+        //     Execute block with return.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmts` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     stmts: &[Stmt]
+        //         Caller-supplied stmts.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Option<RuntimeValue>, SpandaError>
+        //         Return value from `execute_block_with_return`.
         //
         // Example:
-        // let result = instance.execute_block_with_return(stmts);
+        //     let result = spanda_interpreter::runtime_execute::execute_block_with_return(&mut self, stmts);
 
         // Execute each statement in sequence.
         for stmt in stmts {
@@ -581,20 +584,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         stmt: &Stmt,
     ) -> Result<Option<RuntimeValue>, SpandaError> {
-        // Execute stmt with return.
+        // Description:
+        //     Execute stmt with return.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     s: &Stmt
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Option<RuntimeValue>, SpandaError>
+        //         Return value from `execute_stmt_with_return`.
         //
         // Example:
-        // let result = instance.execute_stmt_with_return(stmt);
+        //     let result = spanda_interpreter::runtime_execute::execute_stmt_with_return(&mut self, s);
 
         // Match on stmt and handle each case.
         match stmt {

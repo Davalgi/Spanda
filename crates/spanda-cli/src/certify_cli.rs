@@ -8,6 +8,21 @@ use std::io::{self, Write};
 use std::process;
 
 fn read_source(path: &str) -> String {
+    // Description:
+    //     Read source.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_source`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::certify_cli::read_source(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {path}: {e}");
         process::exit(1);
@@ -15,6 +30,20 @@ fn read_source(path: &str) -> String {
 }
 
 pub fn certify_dispatch(args: &[String]) {
+    // Description:
+    //     Certify dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::certify_cli::certify_dispatch(args);
+
     if args.first().map(String::as_str) != Some("prove") {
         eprintln!("Usage: spanda certify prove [--json] [--strict] [--out <file>] <file.sd>");
         process::exit(1);
@@ -23,6 +52,20 @@ pub fn certify_dispatch(args: &[String]) {
 }
 
 fn cmd_prove(args: &[String]) {
+    // Description:
+    //     Cmd prove.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::certify_cli::cmd_prove(args);
+
     let mut json = false;
     let mut strict = false;
     let mut out_path: Option<String> = None;

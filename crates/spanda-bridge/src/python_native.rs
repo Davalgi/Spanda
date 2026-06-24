@@ -13,12 +13,19 @@ use super::protocol::{json_to_runtime_value, runtime_value_to_json};
 use super::python::bridge_script_path;
 
 pub fn native_available() -> bool {
-    // Returns `true` when the Python bridge script is available for in-process use.
+    // Description:
+    //     Reports whether the in-process Python bridge can load its handler script.
     //
-    // Returns:
+    // Inputs:
+    //     None.
     //
+    // Outputs:
+    //     available: bool
+    //         `true` if `bridge_script_path()` resolves to an on-disk script.
+    //
+    // Example:
+    //     if spanda_bridge::python_native::native_available() { /* use PyO3 bridge */ }
 
-    // `true` if [`super::python::bridge_script_path`] resolves.
     bridge_script_path().is_some()
 }
 
@@ -26,19 +33,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
-    // Invoke a Python extern via PyO3 in-process bridge.
+    // Description:
+    //     Call extern.
     //
-    // Parameters:
+    // Inputs:
+    //     decl: &ExternFnDecl
+    //         Caller-supplied decl.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // - `decl` — `extern python fn` declaration.
-    // - `args` — Runtime arguments.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `call_extern`.
     //
-    // Returns:
-    //
-    // Handler result, or [`SpandaError`] on load/execution failure.
-    //
-    // Options:
-    //
+    // Example:
+    //     let result = spanda_bridge::python_native::call_extern(decl, args);
 
     // Requires `python-native` Cargo feature and bridge script on disk.
     let line = decl.span.start.line;
@@ -113,19 +122,19 @@ mod tests {
     use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
-        // Test decl.
+        // Description:
+        //     Test decl.
         //
-        // Parameters:
-        // - `name` — input value
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // ExternFnDecl.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: ExternFnDecl
+        //         Return value from `test_decl`.
         //
         // Example:
-        // let result = spanda_core::python_native::test_decl(name);
+        //     let result = spanda_bridge::python_native::test_decl(name);
 
         // Produce ExternFnDecl as the result.
         ExternFnDecl {
@@ -151,19 +160,18 @@ mod tests {
 
     #[test]
     fn native_py_add_when_available() {
-        // Native py add when available.
+        // Description:
+        //     Native py add when available.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::python_native::native_py_add_when_available();
+
+        //     let result = spanda_bridge::python_native::native_py_add_when_available();
 
         if !native_available() {
             return;

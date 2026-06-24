@@ -10,6 +10,21 @@ use spanda_parser::parse;
 use spanda_readiness::ReportFormat;
 
 fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_source`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::parse_source(source);
+
     parse(tokenize(source).unwrap()).unwrap()
 }
 
@@ -17,6 +32,19 @@ const SELF_HEALING: &str = include_str!("../../../examples/showcase/self_healing
 
 #[test]
 fn recovery_policy_parses_from_showcase() {
+    // Description:
+    //     Recovery policy parses from showcase.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::recovery_policy_parses_from_showcase();
+
     let program = parse_source(SELF_HEALING);
     let policies = extract_recovery_policies(&program);
     assert!(!policies.is_empty());
@@ -25,6 +53,19 @@ fn recovery_policy_parses_from_showcase() {
 
 #[test]
 fn heal_workflow_produces_passing_report() {
+    // Description:
+    //     Heal workflow produces passing report.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::heal_workflow_produces_passing_report();
+
     let program = parse_source(SELF_HEALING);
     let report = evaluate_recovery(&program, None);
     assert!(!report.plans.is_empty());
@@ -38,6 +79,19 @@ fn heal_workflow_produces_passing_report() {
 
 #[test]
 fn inject_gps_failure_simulation() {
+    // Description:
+    //     Inject gps failure simulation.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::inject_gps_failure_simulation();
+
     let program = parse_source(SELF_HEALING);
     let report = simulate_failure_recovery(&program, "gps");
     assert_eq!(report.plans[0].diagnosis, "Satellite lock lost");
@@ -46,6 +100,19 @@ fn inject_gps_failure_simulation() {
 
 #[test]
 fn recovery_readiness_evaluated() {
+    // Description:
+    //     Recovery readiness evaluated.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::recovery_readiness_evaluated();
+
     let program = parse_source(SELF_HEALING);
     let ctx = RecoveryContext {
         issue: "gps.failed".into(),
@@ -59,6 +126,19 @@ fn recovery_readiness_evaluated() {
 
 #[test]
 fn merged_knowledge_informs_recovery_plan() {
+    // Description:
+    //     Merged knowledge informs recovery plan.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::merged_knowledge_informs_recovery_plan();
+
     let program = parse_source(
         "robot Rover { sensor gps: GPS; actuator w: DifferentialDrive; safety { max_speed = 1 m/s; } behavior b() {} }",
     );
@@ -101,6 +181,19 @@ fn merged_knowledge_informs_recovery_plan() {
 
 #[test]
 fn recovery_diagnostics_flag_high_risk_without_approval() {
+    // Description:
+    //     Recovery diagnostics flag high risk without approval.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::recovery_diagnostics_flag_high_risk_without_approval();
+
     let program = parse_source(
         r#"
 recovery_policy Risky {
@@ -120,6 +213,19 @@ robot R {
 
 #[test]
 fn fleet_showcase_recovery_report_passes() {
+    // Description:
+    //     Fleet showcase recovery report passes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_tests::fleet_showcase_recovery_report_passes();
+
     let program = parse_source(include_str!(
         "../../../examples/showcase/fleet_recovery/fleet.sd"
     ));

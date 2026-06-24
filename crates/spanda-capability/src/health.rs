@@ -52,6 +52,21 @@ pub struct HealthTraceRow {
 
 /// Evaluate static health checks from program declarations.
 pub fn evaluate_health_checks(program: &Program) -> HealthReport {
+    // Description:
+    //     Evaluate health checks.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: HealthReport
+    //         Return value from `evaluate_health_checks`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::health::evaluate_health_checks(progra);
+
     let Program::Program {
         health_checks,
         health_policies,
@@ -153,6 +168,25 @@ pub fn evaluate_runtime_health(
     active_events: &[String],
     program: &Program,
 ) -> HealthReport {
+    // Description:
+    //     Evaluate runtime health.
+    //
+    // Inputs:
+    //     faults: &[String]
+    //         Caller-supplied faults.
+    //     active_events: &[String]
+    //         Caller-supplied active events.
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: HealthReport
+    //         Return value from `evaluate_runtime_health`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::health::evaluate_runtime_health(faults, active_events, progra);
+
     let mut report = evaluate_health_checks(program);
     let fault_lower: Vec<String> = faults.iter().map(|f| f.to_ascii_lowercase()).collect();
     let event_lower: Vec<String> = active_events
@@ -196,21 +230,25 @@ pub fn apply_fleet_health_checks(
     fleets: &spanda_runtime::robotics::FleetRegistry,
     faults: &[String],
 ) {
-    // Refine fleet-target health checks using fleet membership and runtime faults.
+    // Description:
+    //     Apply fleet health checks.
     //
-    // Parameters:
-    // - `report` — mutable health report
-    // - `fleets` — declared fleet groupings
-    // - `faults` — active runtime fault labels
+    // Inputs:
+    //     repor: &mut HealthReport
+    //         Caller-supplied repor.
+    //     _progra: &Program
+    //         Caller-supplied progra.
+    //     fleets: &spanda_runtime::robotics::FleetRegistry
+    //         Caller-supplied fleets.
+    //     faults: &[String]
+    //         Caller-supplied faults.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // apply_fleet_health_checks(&mut report, &fleets, &faults);
+
+    //     let result = spanda_capability::health::apply_fleet_health_checks(repor, _progra, fleets, faults);
 
     let fault_lower: Vec<String> = faults.iter().map(|f| f.to_ascii_lowercase()).collect();
     for check in &mut report.checks {
@@ -283,6 +321,25 @@ fn evaluate_fleet_requirement(
     members: &[String],
     faults: &[String],
 ) -> HealthStatus {
+    // Description:
+    //     Evaluate fleet requirement.
+    //
+    // Inputs:
+    //     requiremen: &str
+    //         Caller-supplied requiremen.
+    //     embers: &[String]
+    //         Caller-supplied embers.
+    //     faults: &[String]
+    //         Caller-supplied faults.
+    //
+    // Outputs:
+    //     result: HealthStatus
+    //         Return value from `evaluate_fleet_requirement`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::health::evaluate_fleet_requirement(requiremen, embers, faults);
+
     let req = requirement.to_ascii_lowercase();
     if req.contains("no robot unsafe") || req.contains("no robot critical") {
         let hit = members.iter().any(|member| {
@@ -337,6 +394,25 @@ fn evaluate_fleet_requirement(
 }
 
 fn runtime_status_for_metric(metric: &str, faults: &[String], events: &[String]) -> HealthStatus {
+    // Description:
+    //     Runtime status for metric.
+    //
+    // Inputs:
+    //     etric: &str
+    //         Caller-supplied etric.
+    //     faults: &[String]
+    //         Caller-supplied faults.
+    //     events: &[String]
+    //         Caller-supplied events.
+    //
+    // Outputs:
+    //     result: HealthStatus
+    //         Return value from `runtime_status_for_metric`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::health::runtime_status_for_metric(etric, faults, events);
+
     let metric_lower = metric.to_ascii_lowercase();
     let signals: Vec<&str> = faults
         .iter()
@@ -401,6 +477,21 @@ fn runtime_status_for_metric(metric: &str, faults: &[String], events: &[String])
 
 /// Generate health traceability matrix.
 pub fn health_traceability(program: &Program) -> Vec<HealthTraceRow> {
+    // Description:
+    //     Health traceability.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<HealthTraceRow>
+    //         Return value from `health_traceability`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::health::health_traceability(progra);
+
     let report = evaluate_health_checks(program);
     let Program::Program {
         health_policies, ..
@@ -448,11 +539,39 @@ mod tests {
     use spanda_parser::parse;
 
     fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+        // Description:
+        //     Parse source.
+        //
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Program
+        //         Return value from `parse_source`.
+        //
+        // Example:
+
+        //     let result = spanda_capability::health::parse_source(source);
+
         parse(tokenize(source).expect("tokenize")).expect("parse")
     }
 
     #[test]
     fn health_check_parsing_and_report() {
+        // Description:
+        //     Health check parsing and report.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::health::health_check_parsing_and_report();
+
         let source = r#"
 health_check RoverHealth for robot Rover {
     check battery.level > 20%;
@@ -472,6 +591,19 @@ health_policy SafetyPolicy {
 
     #[test]
     fn runtime_health_marks_gps_fault_degraded() {
+        // Description:
+        //     Runtime health marks gps fault degraded.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::health::runtime_health_marks_gps_fault_degraded();
+
         let source = r#"
 health_check RoverHealth for robot Rover {
     check gps.status == Healthy;
@@ -487,6 +619,19 @@ health_check RoverHealth for robot Rover {
 
     #[test]
     fn fleet_requirement_percent_marks_degraded_when_below_threshold() {
+        // Description:
+        //     Fleet requirement percent marks degraded when below threshold.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::health::fleet_requirement_percent_marks_degraded_when_below_threshold();
+
         let status = super::evaluate_fleet_requirement(
             "at_least 80% robots Healthy",
             &["A".into(), "B".into(), "C".into(), "D".into(), "E".into()],

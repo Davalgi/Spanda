@@ -7,6 +7,20 @@ use std::path::{Path, PathBuf};
 use std::process::{self, Command};
 
 fn bundled_examples_root() -> Option<PathBuf> {
+    // Description:
+    //     Bundled examples root.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `bundled_examples_root`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::bundled_examples_root();
+
     let bundled = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("bundled-examples");
     if bundled.join("examples/showcase/README.md").is_file() {
         Some(bundled)
@@ -16,19 +30,19 @@ fn bundled_examples_root() -> Option<PathBuf> {
 }
 
 fn repo_root() -> PathBuf {
-    // Resolve the Spanda repository root for bundled showcase examples.
+    // Description:
+    //     Repo root.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Path to repo root, or bundled examples root, or current working directory.
-    //
-    // Options:
-    // Honors `SPANDA_ROOT` when set.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `repo_root`.
     //
     // Example:
-    // let root = repo_root();
+
+    //     let result = spanda_cli::demo_cli::repo_root();
 
     if let Some(bundled) = bundled_examples_root() {
         return bundled;
@@ -70,6 +84,23 @@ fn repo_root() -> PathBuf {
 }
 
 fn showcase(root: &Path, parts: &[&str]) -> PathBuf {
+    // Description:
+    //     Showcase.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     parts: &[&str]
+    //         Caller-supplied parts.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `showcase`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::showcase(roo, parts);
+
     let mut path = root.join("examples/showcase");
     for part in parts {
         path.push(part);
@@ -78,6 +109,21 @@ fn showcase(root: &Path, parts: &[&str]) -> PathBuf {
 }
 
 fn require_file(path: &Path) -> &Path {
+    // Description:
+    //     Require file.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: &Path
+    //         Return value from `require_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::require_file(path);
+
     if !path.is_file() {
         eprintln!(
             "Demo file not found: {}\n\
@@ -90,6 +136,21 @@ fn require_file(path: &Path) -> &Path {
 }
 
 fn read_source(path: &Path) -> String {
+    // Description:
+    //     Read source.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_source`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::read_source(path);
+
     std::fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {}: {e}", path.display());
         process::exit(1);
@@ -97,6 +158,20 @@ fn read_source(path: &Path) -> String {
 }
 
 fn spanda_bin() -> String {
+    // Description:
+    //     Spanda bin.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `spanda_bin`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::spanda_bin();
+
     if let Ok(bin) = env::var("SPANDA_BIN") {
         return bin;
     }
@@ -107,6 +182,24 @@ fn spanda_bin() -> String {
 }
 
 fn run_spanda(subcommand: &str, file: &Path, extra: &[&str]) {
+    // Description:
+    //     Run spanda.
+    //
+    // Inputs:
+    //     subcommand: &str
+    //         Caller-supplied subcommand.
+    //     file: &Path
+    //         Caller-supplied file.
+    //     extra: &[&str]
+    //         Caller-supplied extra.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::run_spanda(subcommand, file, extra);
+
     let spanda = spanda_bin();
     let mut cmd = Command::new(&spanda);
     cmd.arg(subcommand).arg(file);
@@ -123,6 +216,20 @@ fn run_spanda(subcommand: &str, file: &Path, extra: &[&str]) {
 }
 
 fn run_spanda_args(args: &[&str]) {
+    // Description:
+    //     Run spanda args.
+    //
+    // Inputs:
+    //     args: &[&str]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::run_spanda_args(args);
+
     let spanda = spanda_bin();
     let status = Command::new(&spanda)
         .args(args)
@@ -137,11 +244,39 @@ fn run_spanda_args(args: &[&str]) {
 }
 
 fn run_spanda_args_allow_fail(args: &[&str]) {
+    // Description:
+    //     Run spanda args allow fail.
+    //
+    // Inputs:
+    //     args: &[&str]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::run_spanda_args_allow_fail(args);
+
     let spanda = spanda_bin();
     let _ = Command::new(&spanda).args(args).status();
 }
 
 fn expect_check_fail(file: &Path) {
+    // Description:
+    //     Expect check fail.
+    //
+    // Inputs:
+    //     file: &Path
+    //         Caller-supplied file.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::expect_check_fail(file);
+
     let source = read_source(file);
     if check(&source).is_ok() {
         eprintln!(
@@ -157,6 +292,20 @@ fn expect_check_fail(file: &Path) {
 }
 
 fn demo_rover(root: &Path) {
+    // Description:
+    //     Demo rover.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_rover(roo);
+
     let rover_dir = root.join("examples/showcase/autonomous_rover");
     let rover_path = rover_dir.join("src/rover.sd");
     let rover_sd = require_file(&rover_path);
@@ -195,6 +344,20 @@ fn demo_rover(root: &Path) {
 }
 
 fn demo_safety(root: &Path) {
+    // Description:
+    //     Demo safety.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_safety(roo);
+
     let unsafe_path = showcase(root, &["unsafe_ai", "unsafe.sd"]);
     let safe_path = showcase(root, &["unsafe_ai", "safe.sd"]);
     let unsafe_sd = require_file(&unsafe_path);
@@ -211,6 +374,20 @@ fn demo_safety(root: &Path) {
 }
 
 fn demo_verify(root: &Path) {
+    // Description:
+    //     Demo verify.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_verify(roo);
+
     let fail_path = showcase(root, &["hardware_verification", "mission_missing_lidar.sd"]);
     let pass_path = showcase(root, &["hardware_verification", "mission_with_lidar.sd"]);
     let fail_sd = require_file(&fail_path);
@@ -238,6 +415,20 @@ fn demo_verify(root: &Path) {
 }
 
 fn demo_fleet(root: &Path) {
+    // Description:
+    //     Demo fleet.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_fleet(roo);
+
     let fleet_path = showcase(root, &["fleet_management", "fleet.sd"]);
     let fleet_sd = require_file(&fleet_path);
 
@@ -249,6 +440,20 @@ fn demo_fleet(root: &Path) {
 }
 
 fn demo_health(root: &Path) {
+    // Description:
+    //     Demo health.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_health(roo);
+
     let health_path = showcase(root, &["health_monitoring", "rover.sd"]);
     let health_sd = require_file(&health_path);
 
@@ -272,6 +477,20 @@ fn demo_health(root: &Path) {
 }
 
 fn demo_readiness(root: &Path) {
+    // Description:
+    //     Demo readiness.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_readiness(roo);
+
     let readiness_path = showcase(root, &["readiness", "rover.sd"]);
     let readiness_sd = require_file(&readiness_path);
 
@@ -300,6 +519,20 @@ fn demo_readiness(root: &Path) {
 }
 
 fn demo_self_healing(root: &Path) {
+    // Description:
+    //     Demo self healing.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_self_healing(roo);
+
     let healing_path = showcase(root, &["self_healing", "rover.sd"]);
     let fleet_path = showcase(root, &["fleet_recovery", "fleet.sd"]);
     let healing_sd = require_file(&healing_path);
@@ -320,6 +553,20 @@ fn demo_self_healing(root: &Path) {
 }
 
 fn demo_assurance(root: &Path) {
+    // Description:
+    //     Demo assurance.
+    //
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::demo_cli::demo_assurance(roo);
+
     let assurance_path = showcase(root, &["assurance", "rover.sd"]);
     let assurance_sd = require_file(&assurance_path);
     let file = assurance_sd.to_str().unwrap();
@@ -339,19 +586,19 @@ fn demo_assurance(root: &Path) {
 }
 
 pub fn demo_dispatch(args: &[String]) {
-    // Run a bundled showcase demo by name.
+    // Description:
+    //     Demo dispatch.
     //
-    // Parameters:
-    // - `args` — demo name plus optional flags (reserved)
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing; exits the process on failure.
-    //
-    // Options:
-    // Set `SPANDA_ROOT` or run from a cloned repository.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // demo_dispatch(&["rover".into()]);
+
+    //     let result = spanda_cli::demo_cli::demo_dispatch(args);
 
     let root = repo_root();
     let name = args.first().map(String::as_str).unwrap_or("");

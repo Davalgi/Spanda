@@ -8,20 +8,21 @@ use spanda_security::signed::SignedMessage;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn cache_kill_switches(&mut self, program: &Program) {
-        // Cache kill switch declarations for runtime activation checks.
+        // Description:
+        //     Cache kill switches.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — parsed program
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     progra: &Program
+        //         Caller-supplied progra.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.cache_kill_switches(program);
+
+        //     let result = spanda_interpreter::runtime_kill_switch::cache_kill_switches(&mut self, progra);
 
         self.kill_switch_defs.clear();
         let Program::Program {
@@ -46,20 +47,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn activate_kill_switch(&mut self, name: &str) -> Result<(), SpandaError> {
-        // Activate a kill switch after optional remote signature verification.
+        // Description:
+        //     Activate kill switch.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — kill switch name
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Ok when activation succeeds, or an error when verification fails.
-        //
-        // Options:
-        // - `RunOptions::kill_switch_signature` supplies JSON for remote_signed switches.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `activate_kill_switch`.
         //
         // Example:
-        // interpreter.activate_kill_switch("EmergencyStop")?;
+
+        //     let result = spanda_interpreter::runtime_kill_switch::activate_kill_switch(&mut self, name);
 
         let Some(decl) = self.kill_switch_defs.get(name).cloned() else {
             return Err(SpandaError::Runtime {
@@ -122,20 +125,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn dispatch_kill_switch_handlers(&mut self, name: &str) -> Result<(), SpandaError> {
-        // Dispatch registered `on kill_switch` trigger handlers.
+        // Description:
+        //     Dispatch kill switch handlers.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — kill switch name
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Ok when handlers complete.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_kill_switch_handlers`.
         //
         // Example:
-        // interpreter.dispatch_kill_switch_handlers("EmergencyStop")?;
+
+        //     let result = spanda_interpreter::runtime_kill_switch::dispatch_kill_switch_handlers(&mut self, name);
 
         let handlers: Vec<_> = self
             .trigger_registry

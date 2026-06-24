@@ -16,6 +16,7 @@ use spanda_readiness::{
     analyze_failure, default_deploy_target, evaluate_readiness, verify_approvals,
     FailureAnalysisReport, ReadinessOptions,
 };
+
 /// Outcome status for a recovery attempt.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
@@ -32,12 +33,16 @@ pub enum RecoveryStatus {
 pub enum RecoveryLevel {
     /// Detection only — no automated recovery.
     Level0DetectionOnly = 0,
+
     /// Recommend recovery actions to operator.
     Level1Recommend = 1,
+
     /// Automatic low-risk recovery without approval.
     Level2AutomaticLowRisk = 2,
+
     /// Automatic recovery after safety validation.
     Level3AutomaticWithValidation = 3,
+
     /// High-risk recovery requires human approval.
     Level4HumanApproval = 4,
 }
@@ -111,6 +116,20 @@ pub enum OperationalMode {
 impl OperationalMode {
     /// Map operational mode to assurance `ModeKind`.
     pub fn to_mode_kind(self) -> ModeKind {
+        // Description:
+        //     To mode kind.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: ModeKind
+        //         Return value from `to_mode_kind`.
+        //
+        // Example:
+
+        //     let result = instance.to_mode_kind();
+
         match self {
             Self::NormalMode => ModeKind::Normal,
             Self::DegradedMode => ModeKind::Degraded,
@@ -292,6 +311,23 @@ pub struct RecoveryPlanner;
 impl RecoveryPlanner {
     /// Generate a recovery plan for the given context and program.
     pub fn plan(program: &Program, context: &RecoveryContext) -> RecoveryPlan {
+        // Description:
+        //     Plan.
+        //
+        // Inputs:
+        //     progra: &Program
+        //         Caller-supplied progra.
+        //     contex: &RecoveryContext
+        //         Caller-supplied contex.
+        //
+        // Outputs:
+        //     result: RecoveryPlan
+        //         Return value from `plan`.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::plan(progra, contex);
+
         let classification = context
             .classification
             .unwrap_or_else(|| classify_failure(&context.issue));
@@ -328,6 +364,21 @@ impl RecoveryPlanner {
 
 /// Classify a failure description into a failure category.
 pub fn classify_failure(issue: &str) -> FailureClassification {
+    // Description:
+    //     Classify failure.
+    //
+    // Inputs:
+    //     issue: &str
+    //         Caller-supplied issue.
+    //
+    // Outputs:
+    //     result: FailureClassification
+    //         Return value from `classify_failure`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::classify_failure(issue);
+
     let lower = issue.to_lowercase();
     if lower.contains("gps")
         || lower.contains("camera")
@@ -365,6 +416,21 @@ pub fn classify_failure(issue: &str) -> FailureClassification {
 
 /// Extract recovery policies from program declarations.
 pub fn extract_recovery_policies(program: &Program) -> Vec<RecoveryPolicySpec> {
+    // Description:
+    //     Extract recovery policies.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<RecoveryPolicySpec>
+    //         Return value from `extract_recovery_policies`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::extract_recovery_policies(progra);
+
     let Program::Program {
         recovery_policies,
         mitigations,
@@ -401,6 +467,23 @@ pub fn extract_recovery_policies(program: &Program) -> Vec<RecoveryPolicySpec> {
 
 /// Validate recovery actions through safety, hardware, capability, and readiness gates.
 pub fn validate_recovery_plan(program: &Program, plan: &RecoveryPlan) -> Vec<SafeRecoveryAction> {
+    // Description:
+    //     Validate recovery plan.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     plan: &RecoveryPlan
+    //         Caller-supplied plan.
+    //
+    // Outputs:
+    //     result: Vec<SafeRecoveryAction>
+    //         Return value from `validate_recovery_plan`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::validate_recovery_plan(progra, plan);
+
     let options = ReadinessOptions {
         target: default_deploy_target(program),
         ..Default::default()
@@ -488,6 +571,23 @@ pub fn validate_recovery_plan(program: &Program, plan: &RecoveryPlan) -> Vec<Saf
 
 /// Evaluate whether recovery can be attempted.
 pub fn evaluate_recovery_readiness(program: &Program, plan: &RecoveryPlan) -> RecoveryReadiness {
+    // Description:
+    //     Evaluate recovery readiness.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     plan: &RecoveryPlan
+    //         Caller-supplied plan.
+    //
+    // Outputs:
+    //     result: RecoveryReadiness
+    //         Return value from `evaluate_recovery_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::evaluate_recovery_readiness(progra, plan);
+
     let options = ReadinessOptions {
         target: default_deploy_target(program),
         ..Default::default()
@@ -523,6 +623,23 @@ pub fn evaluate_recovery_readiness(program: &Program, plan: &RecoveryPlan) -> Re
 
 /// Execute recovery plan (static simulation — no uncontrolled autonomous behavior).
 pub fn execute_recovery_plan(program: &Program, plan: &RecoveryPlan) -> RecoveryResult {
+    // Description:
+    //     Execute recovery plan.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     plan: &RecoveryPlan
+    //         Caller-supplied plan.
+    //
+    // Outputs:
+    //     result: RecoveryResult
+    //         Return value from `execute_recovery_plan`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::execute_recovery_plan(progra, plan);
+
     let safe_actions = validate_recovery_plan(program, plan);
     let mut executed = Vec::new();
     let mut failed = Vec::new();
@@ -588,6 +705,21 @@ pub fn execute_recovery_plan(program: &Program, plan: &RecoveryPlan) -> Recovery
 
 /// Build recovery audit records from results.
 pub fn build_recovery_audit(results: &[RecoveryResult]) -> Vec<RecoveryAuditRecord> {
+    // Description:
+    //     Build recovery audit.
+    //
+    // Inputs:
+    //     results: &[RecoveryResult]
+    //         Caller-supplied results.
+    //
+    // Outputs:
+    //     result: Vec<RecoveryAuditRecord>
+    //         Return value from `build_recovery_audit`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::build_recovery_audit(results);
+
     results
         .iter()
         .map(|r| RecoveryAuditRecord {
@@ -605,6 +737,21 @@ pub fn build_recovery_audit(results: &[RecoveryResult]) -> Vec<RecoveryAuditReco
 
 /// Build traceability chain from recovery results.
 pub fn build_recovery_traceability(results: &[RecoveryResult]) -> Vec<RecoveryTraceChain> {
+    // Description:
+    //     Build recovery traceability.
+    //
+    // Inputs:
+    //     results: &[RecoveryResult]
+    //         Caller-supplied results.
+    //
+    // Outputs:
+    //     result: Vec<RecoveryTraceChain>
+    //         Return value from `build_recovery_traceability`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::build_recovery_traceability(results);
+
     results
         .iter()
         .map(|r| RecoveryTraceChain {
@@ -621,6 +768,23 @@ pub fn build_recovery_traceability(results: &[RecoveryResult]) -> Vec<RecoveryTr
 
 /// Plan fleet recovery actions.
 pub fn plan_fleet_recovery(program: &Program, failed_robot: &str) -> Vec<FleetRecoveryPlan> {
+    // Description:
+    //     Plan fleet recovery.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     failed_robo: &str
+    //         Caller-supplied failed robo.
+    //
+    // Outputs:
+    //     result: Vec<FleetRecoveryPlan>
+    //         Return value from `plan_fleet_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::plan_fleet_recovery(progra, failed_robo);
+
     let Program::Program { fleets, .. } = program;
     fleets
         .iter()
@@ -643,6 +807,21 @@ pub fn plan_fleet_recovery(program: &Program, failed_robot: &str) -> Vec<FleetRe
 
 /// Build recovery knowledge base from historical patterns.
 pub fn build_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBase {
+    // Description:
+    //     Build recovery knowledge.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: RecoveryKnowledgeBase
+    //         Return value from `build_recovery_knowledge`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::build_recovery_knowledge(progra);
+
     let failure_report = analyze_failure(program);
     let entries: Vec<RecoveryKnowledgeEntry> = failure_report
         .impacts
@@ -664,11 +843,40 @@ pub fn build_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBase {
 
 /// Default on-disk path for the recovery knowledge store.
 pub fn default_knowledge_store_path() -> std::path::PathBuf {
+    // Description:
+    //     Default knowledge store path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `default_knowledge_store_path`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::default_knowledge_store_path();
+
     std::path::PathBuf::from(".spanda/recovery_knowledge.json")
 }
 
 /// Load persisted recovery knowledge from disk.
 pub fn load_recovery_knowledge_store(path: &std::path::Path) -> RecoveryKnowledgeBase {
+    // Description:
+    //     Load recovery knowledge store.
+    //
+    // Inputs:
+    //     path: &std::path::Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: RecoveryKnowledgeBase
+    //         Return value from `load_recovery_knowledge_store`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::load_recovery_knowledge_store(path);
+
     std::fs::read_to_string(path)
         .ok()
         .and_then(|content| serde_json::from_str(&content).ok())
@@ -680,6 +888,23 @@ pub fn save_recovery_knowledge_store(
     path: &std::path::Path,
     kb: &RecoveryKnowledgeBase,
 ) -> std::io::Result<()> {
+    // Description:
+    //     Save recovery knowledge store.
+    //
+    // Inputs:
+    //     path: &std::path::Path
+    //         Caller-supplied path.
+    //     kb: &RecoveryKnowledgeBase
+    //         Caller-supplied kb.
+    //
+    // Outputs:
+    //     result: std::io::Result<()>
+    //         Return value from `save_recovery_knowledge_store`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::save_recovery_knowledge_store(path, kb);
+
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)?;
     }
@@ -688,6 +913,22 @@ pub fn save_recovery_knowledge_store(
 
 /// Update knowledge base from a recovery outcome (recommendations only).
 pub fn record_recovery_outcome(kb: &mut RecoveryKnowledgeBase, result: &RecoveryResult) {
+    // Description:
+    //     Record recovery outcome.
+    //
+    // Inputs:
+    //     kb: &mut RecoveryKnowledgeBase
+    //         Caller-supplied kb.
+    //     resul: &RecoveryResult
+    //         Caller-supplied resul.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::record_recovery_outcome(kb, resul);
+
     let success = matches!(
         result.status,
         RecoveryStatus::Success | RecoveryStatus::PartialSuccess
@@ -718,6 +959,23 @@ pub fn merge_recovery_knowledge(
     program: &Program,
     persisted: &RecoveryKnowledgeBase,
 ) -> RecoveryKnowledgeBase {
+    // Description:
+    //     Merge recovery knowledge.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     persisted: &RecoveryKnowledgeBase
+    //         Caller-supplied persisted.
+    //
+    // Outputs:
+    //     result: RecoveryKnowledgeBase
+    //         Return value from `merge_recovery_knowledge`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::merge_recovery_knowledge(progra, persisted);
+
     let mut kb = build_recovery_knowledge(program);
     for entry in &persisted.entries {
         if let Some(existing) = kb
@@ -760,12 +1018,44 @@ pub fn best_knowledge_entry<'a>(
 
 /// Load merged recovery knowledge for a program (static + persisted store).
 pub fn load_merged_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBase {
+    // Description:
+    //     Load merged recovery knowledge.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: RecoveryKnowledgeBase
+    //         Return value from `load_merged_recovery_knowledge`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::load_merged_recovery_knowledge(progra);
+
     let persisted = load_recovery_knowledge_store(&default_knowledge_store_path());
     merge_recovery_knowledge(program, &persisted)
 }
 
 /// Simulate failure injection for recovery testing.
 pub fn simulate_failure_recovery(program: &Program, failure_kind: &str) -> RecoveryReport {
+    // Description:
+    //     Simulate failure recovery.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     failure_kind: &str
+    //         Caller-supplied failure kind.
+    //
+    // Outputs:
+    //     result: RecoveryReport
+    //         Return value from `simulate_failure_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::simulate_failure_recovery(progra, failure_kind);
+
     let context = RecoveryContext {
         issue: format!("{failure_kind} failure"),
         diagnosis: Some(infer_diagnosis(
@@ -780,6 +1070,23 @@ pub fn simulate_failure_recovery(program: &Program, failure_kind: &str) -> Recov
 
 /// Run full recovery framework analysis on a program.
 pub fn evaluate_recovery(program: &Program, context: Option<&RecoveryContext>) -> RecoveryReport {
+    // Description:
+    //     Evaluate recovery.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     contex: Option<&RecoveryContext>
+    //         Caller-supplied contex.
+    //
+    // Outputs:
+    //     result: RecoveryReport
+    //         Return value from `evaluate_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::evaluate_recovery(progra, contex);
+
     let policies = extract_recovery_policies(program);
     let contexts: Vec<RecoveryContext> = if let Some(ctx) = context {
         vec![ctx.clone()]
@@ -857,6 +1164,23 @@ pub fn evaluate_recovery(program: &Program, context: Option<&RecoveryContext>) -
 
 /// Integrate recovery with diagnosis report.
 pub fn recovery_from_diagnosis(program: &Program, diagnosis: &DiagnosisReport) -> RecoveryReport {
+    // Description:
+    //     Recovery from diagnosis.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     diagnosis: &DiagnosisReport
+    //         Caller-supplied diagnosis.
+    //
+    // Outputs:
+    //     result: RecoveryReport
+    //         Return value from `recovery_from_diagnosis`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::recovery_from_diagnosis(progra, diagnosis);
+
     let mut contexts = Vec::new();
     for d in &diagnosis.static_diagnoses {
         for rc in &d.root_causes {
@@ -936,6 +1260,21 @@ pub fn recovery_from_diagnosis(program: &Program, diagnosis: &DiagnosisReport) -
 
 /// Extend failure analysis with recovery plan details.
 pub fn analyze_failure_with_recovery(program: &Program) -> FailureAnalysisWithRecovery {
+    // Description:
+    //     Analyze failure with recovery.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: FailureAnalysisWithRecovery
+    //         Return value from `analyze_failure_with_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::analyze_failure_with_recovery(progra);
+
     let failure = analyze_failure(program);
     let recovery = evaluate_recovery(program, None);
     FailureAnalysisWithRecovery {
@@ -954,6 +1293,21 @@ pub struct FailureAnalysisWithRecovery {
 }
 
 fn default_recovery_contexts(program: &Program) -> Vec<RecoveryContext> {
+    // Description:
+    //     Default recovery contexts.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<RecoveryContext>
+    //         Return value from `default_recovery_contexts`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::default_recovery_contexts(progra);
+
     let policies = extract_recovery_policies(program);
     if policies.is_empty() {
         return vec![RecoveryContext {
@@ -977,6 +1331,23 @@ fn default_recovery_contexts(program: &Program) -> Vec<RecoveryContext> {
 }
 
 fn infer_diagnosis(issue: &str, classification: FailureClassification) -> String {
+    // Description:
+    //     Infer diagnosis.
+    //
+    // Inputs:
+    //     issue: &str
+    //         Caller-supplied issue.
+    //     classification: FailureClassification
+    //         Caller-supplied classification.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_diagnosis`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::infer_diagnosis(issue, classification);
+
     let lower = issue.to_lowercase();
     if lower.contains("gps") {
         "Satellite lock lost".into()
@@ -1005,6 +1376,23 @@ fn actions_from_policies(
     policies: &[RecoveryPolicySpec],
     issue: &str,
 ) -> Vec<PlannedRecoveryAction> {
+    // Description:
+    //     Actions from policies.
+    //
+    // Inputs:
+    //     policies: &[RecoveryPolicySpec]
+    //         Caller-supplied policies.
+    //     issue: &str
+    //         Caller-supplied issue.
+    //
+    // Outputs:
+    //     result: Vec<PlannedRecoveryAction>
+    //         Return value from `actions_from_policies`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::actions_from_policies(policies, issue);
+
     let lower = issue.to_lowercase();
     let mut actions = Vec::new();
     let mut order = 0u32;
@@ -1024,11 +1412,45 @@ fn actions_from_policies(
 }
 
 fn condition_matches(issue: &str, condition: &str) -> bool {
+    // Description:
+    //     Condition matches.
+    //
+    // Inputs:
+    //     issue: &str
+    //         Caller-supplied issue.
+    //     condition: &str
+    //         Caller-supplied condition.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `condition_matches`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::condition_matches(issue, condition);
+
     let parts: Vec<&str> = condition.split('.').collect();
     parts.iter().all(|p| issue.contains(p))
 }
 
 fn parse_action_text(text: &str, order: u32) -> PlannedRecoveryAction {
+    // Description:
+    //     Parse action text.
+    //
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
+    //     order: u32
+    //         Caller-supplied order.
+    //
+    // Outputs:
+    //     result: PlannedRecoveryAction
+    //         Return value from `parse_action_text`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::parse_action_text(ex, order);
+
     let lower = text.to_lowercase();
     let (strategy, correction) = if lower.contains("visual_odometry") || lower.contains("switch_to")
     {
@@ -1105,6 +1527,23 @@ fn default_actions_for_classification(
     classification: FailureClassification,
     issue: &str,
 ) -> Vec<PlannedRecoveryAction> {
+    // Description:
+    //     Default actions for classification.
+    //
+    // Inputs:
+    //     classification: FailureClassification
+    //         Caller-supplied classification.
+    //     issue: &str
+    //         Caller-supplied issue.
+    //
+    // Outputs:
+    //     result: Vec<PlannedRecoveryAction>
+    //         Return value from `default_actions_for_classification`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::default_actions_for_classification(classification, issue);
+
     let defaults: &[&str] = match classification {
         FailureClassification::SensorFailure if issue.to_lowercase().contains("gps") => &[
             "switch_to visual_odometry",
@@ -1135,6 +1574,21 @@ fn default_actions_for_classification(
 }
 
 fn infer_target_mode(actions: &[PlannedRecoveryAction]) -> Option<OperationalMode> {
+    // Description:
+    //     Infer target mode.
+    //
+    // Inputs:
+    //     actions: &[PlannedRecoveryAction]
+    //         Caller-supplied actions.
+    //
+    // Outputs:
+    //     result: Option<OperationalMode>
+    //         Return value from `infer_target_mode`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::infer_target_mode(actions);
+
     for action in actions {
         if let Some(SelfCorrectionAction::EnterMode { mode }) = &action.correction {
             return Some(match mode.to_lowercase().as_str() {
@@ -1150,6 +1604,21 @@ fn infer_target_mode(actions: &[PlannedRecoveryAction]) -> Option<OperationalMod
 }
 
 fn assess_plan_risk(actions: &[PlannedRecoveryAction]) -> String {
+    // Description:
+    //     Assess plan risk.
+    //
+    // Inputs:
+    //     actions: &[PlannedRecoveryAction]
+    //         Caller-supplied actions.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `assess_plan_risk`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::assess_plan_risk(actions);
+
     if actions
         .iter()
         .any(|a| a.risk.eq_ignore_ascii_case("critical"))
@@ -1168,11 +1637,41 @@ fn assess_plan_risk(actions: &[PlannedRecoveryAction]) -> String {
 }
 
 fn sanitize_name(s: &str) -> String {
+    // Description:
+    //     Sanitize name.
+    //
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `sanitize_name`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::sanitize_name(s);
+
     s.replace(['.', ' '], "_")
 }
 
 /// Validate mode transitions for recovery.
 pub fn validate_mode_transitions(program: &Program) -> Vec<String> {
+    // Description:
+    //     Validate mode transitions.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `validate_mode_transitions`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::validate_mode_transitions(progra);
+
     let modes = extract_operating_modes(program);
     let mut issues = validate_modes(program);
     let has_recovery = modes.iter().any(|m| m.kind == ModeKind::Recovery);
@@ -1184,6 +1683,21 @@ pub fn validate_mode_transitions(program: &Program) -> Vec<String> {
 
 /// Parse self-correction action from text.
 pub fn parse_self_correction(text: &str) -> SelfCorrectionAction {
+    // Description:
+    //     Parse self correction.
+    //
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
+    //
+    // Outputs:
+    //     result: SelfCorrectionAction
+    //         Return value from `parse_self_correction`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::parse_self_correction(ex);
+
     parse_action_text(text, 0)
         .correction
         .unwrap_or(SelfCorrectionAction::Custom {
@@ -1193,6 +1707,21 @@ pub fn parse_self_correction(text: &str) -> SelfCorrectionAction {
 
 /// Map operational modes from program declarations.
 pub fn operational_modes_from_program(program: &Program) -> Vec<OperationalMode> {
+    // Description:
+    //     Operational modes from program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<OperationalMode>
+    //         Return value from `operational_modes_from_program`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery::operational_modes_from_program(progra);
+
     extract_operating_modes(program)
         .iter()
         .map(|m| match m.kind {
@@ -1212,6 +1741,21 @@ mod tests {
     use spanda_parser::parse;
 
     fn parse_source(source: &str) -> Program {
+        // Description:
+        //     Parse source.
+        //
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //
+        // Outputs:
+        //     result: Program
+        //         Return value from `parse_source`.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::parse_source(source);
+
         parse(tokenize(source).unwrap()).unwrap()
     }
 
@@ -1247,6 +1791,19 @@ robot Rover {
 
     #[test]
     fn classifies_gps_failure() {
+        // Description:
+        //     Classifies gps failure.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::classifies_gps_failure();
+
         assert_eq!(
             classify_failure("gps.failed"),
             FailureClassification::SensorFailure
@@ -1255,6 +1812,19 @@ robot Rover {
 
     #[test]
     fn extracts_recovery_policy() {
+        // Description:
+        //     Extracts recovery policy.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::extracts_recovery_policy();
+
         let program = parse_source(RECOVERY_ROVER);
         let policies = extract_recovery_policies(&program);
         assert!(!policies.is_empty());
@@ -1263,6 +1833,19 @@ robot Rover {
 
     #[test]
     fn planner_generates_gps_recovery_plan() {
+        // Description:
+        //     Planner generates gps recovery plan.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::planner_generates_gps_recovery_plan();
+
         let program = parse_source(RECOVERY_ROVER);
         let ctx = RecoveryContext {
             issue: "gps.failed".into(),
@@ -1278,6 +1861,19 @@ robot Rover {
 
     #[test]
     fn validation_gates_run() {
+        // Description:
+        //     Validation gates run.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::validation_gates_run();
+
         let program = parse_source(RECOVERY_ROVER);
         let ctx = RecoveryContext {
             issue: "gps.failed".into(),
@@ -1293,6 +1889,19 @@ robot Rover {
 
     #[test]
     fn execute_recovery_produces_evidence() {
+        // Description:
+        //     Execute recovery produces evidence.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::execute_recovery_produces_evidence();
+
         let program = parse_source(RECOVERY_ROVER);
         let report = simulate_failure_recovery(&program, "gps");
         assert!(!report.results.is_empty());
@@ -1301,6 +1910,19 @@ robot Rover {
 
     #[test]
     fn knowledge_store_round_trip() {
+        // Description:
+        //     Knowledge store round trip.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::knowledge_store_round_trip();
+
         let dir = std::env::temp_dir().join("spanda_recovery_kb_test");
         let _ = std::fs::remove_dir_all(&dir);
         let path = dir.join("knowledge.json");
@@ -1320,6 +1942,19 @@ robot Rover {
 
     #[test]
     fn planner_prefers_persisted_knowledge() {
+        // Description:
+        //     Planner prefers persisted knowledge.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery::planner_prefers_persisted_knowledge();
+
         let program = parse_source(
             "robot Rover { sensor gps: GPS; actuator w: DifferentialDrive; safety { max_speed = 1 m/s; } behavior b() {} }",
         );

@@ -20,6 +20,20 @@ struct BridgeResponse {
 }
 
 fn python_cmd() -> Option<String> {
+    // Description:
+    //     Python cmd.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `python_cmd`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::python_bridge::python_cmd();
+
     for cmd in ["python3", "python"] {
         if Command::new(cmd)
             .arg("-c")
@@ -37,10 +51,38 @@ fn python_cmd() -> Option<String> {
 }
 
 pub fn python_available() -> bool {
+    // Description:
+    //     Python available.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `python_available`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::python_bridge::python_available();
+
     python_cmd().is_some()
 }
 
 pub fn bridge_script_path() -> Option<PathBuf> {
+    // Description:
+    //     Bridge script path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `bridge_script_path`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::python_bridge::bridge_script_path();
+
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
         let path = PathBuf::from(path);
         if path.is_file() {
@@ -58,6 +100,23 @@ pub fn bridge_script_path() -> Option<PathBuf> {
 }
 
 pub fn invoke_python_bridge(fn_name: &str, args: &[String]) -> bool {
+    // Description:
+    //     Invoke python bridge.
+    //
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `invoke_python_bridge`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::python_bridge::invoke_python_bridge(fn_name, args);
+
     if !python_available() {
         return false;
     }

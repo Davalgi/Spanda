@@ -23,19 +23,19 @@ struct RunResponse {
 }
 
 fn to_js<T: Serialize>(value: &T) -> JsValue {
-    // Convert to js.
+    // Description:
+    //     To js.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &T
+    //         Caller-supplied value.
     //
-    // Returns:
-    // JsValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: JsValue
+    //         Return value from `to_js`.
     //
     // Example:
-    // let result = spanda_wasm::to_js(value);
+    //     let result = spanda_wasm::to_js(value);
 
     // Produce NULL) as the result.
     serde_wasm_bindgen::to_value(value).unwrap_or(JsValue::NULL)
@@ -43,19 +43,19 @@ fn to_js<T: Serialize>(value: &T) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_check(source: &str) -> JsValue {
-    // Wasm check.
+    // Description:
+    //     Wasm check.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // JsValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: JsValue
+    //         Return value from `wasm_check`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_check(source);
+    //     let result = spanda_wasm::wasm_check(source);
 
     // Compute resp for the following logic.
     let resp = match check(source) {
@@ -73,20 +73,21 @@ pub fn wasm_check(source: &str) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
-    // Wasm run.
+    // Description:
+    //     Wasm run.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `max_loop_iterations` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     ax_loop_iterations: u32
+    //         Caller-supplied ax loop iterations.
     //
-    // Returns:
-    // JsValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: JsValue
+    //         Return value from `wasm_run`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_run(source, max_loop_iterations);
+    //     let result = spanda_wasm::wasm_run(source, ax_loop_iterations);
 
     // Compute resp for the following logic.
     let resp = match run(
@@ -112,19 +113,19 @@ pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_ir(source: &str) -> JsValue {
-    // Wasm ir.
+    // Description:
+    //     Wasm ir.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // JsValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: JsValue
+    //         Return value from `wasm_ir`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_ir(source);
+    //     let result = spanda_wasm::wasm_ir(source);
 
     // Match on lower to sir and handle each case.
     match lower_to_sir(source) {
@@ -138,19 +139,19 @@ pub fn wasm_ir(source: &str) -> JsValue {
 
 #[wasm_bindgen]
 pub fn wasm_fmt(source: &str) -> String {
-    // Wasm fmt.
+    // Description:
+    //     Wasm fmt.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `wasm_fmt`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_fmt(source);
+    //     let result = spanda_wasm::wasm_fmt(source);
 
     // Produce format source as the result.
     format_source(source)
@@ -158,19 +159,18 @@ pub fn wasm_fmt(source: &str) -> String {
 
 #[wasm_bindgen]
 pub fn wasm_version() -> String {
-    // Wasm version.
+    // Description:
+    //     Wasm version.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `wasm_version`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_version();
+    //     let result = spanda_wasm::wasm_version();
 
     // Produce to string as the result.
     env!("CARGO_PKG_VERSION").to_string()
@@ -185,19 +185,19 @@ struct VerifyResponse {
 
 #[wasm_bindgen]
 pub fn wasm_verify(source: &str) -> JsValue {
-    // Wasm verify.
+    // Description:
+    //     Wasm verify.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // JsValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: JsValue
+    //         Return value from `wasm_verify`.
     //
     // Example:
-    // let result = spanda_wasm::wasm_verify(source);
+    //     let result = spanda_wasm::wasm_verify(source);
 
     // Compute resp for the following logic.
     let resp = match verify_compatibility(source, &VerifyOptions::default()) {

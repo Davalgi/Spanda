@@ -4,19 +4,18 @@ use spanda_core::{check, run, run_tests, RunOptions};
 
 #[test]
 fn serialize_json_round_trip() {
-    // Serialize json round trip.
+    // Description:
+    //     Serialize json round trip.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::serialize_json_round_trip();
+
+    //     let result = spanda_core::p1_features::serialize_json_round_trip();
 
     let source = r#"
 module telemetry;
@@ -42,19 +41,18 @@ robot R {
 
 #[test]
 fn in_language_test_block_runs() {
-    // In language test block runs.
+    // Description:
+    //     In language test block runs.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::in_language_test_block_runs();
+
+    //     let result = spanda_core::p1_features::in_language_test_block_runs();
 
     let source = r#"
 module math;
@@ -74,19 +72,18 @@ test "double returns input" {
 
 #[test]
 fn expect_compile_error_in_test_block() {
-    // Expect compile error in test block.
+    // Description:
+    //     Expect compile error in test block.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::expect_compile_error_in_test_block();
+
+    //     let result = spanda_core::p1_features::expect_compile_error_in_test_block();
 
     let source = r#"
 module math;
@@ -105,19 +102,18 @@ test "rejects bad assignment" {
 
 #[test]
 fn module_function_return_type_mismatch_rejected() {
-    // Module function return type mismatch rejected.
+    // Description:
+    //     Module function return type mismatch rejected.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::module_function_return_type_mismatch_rejected();
+
+    //     let result = spanda_core::p1_features::module_function_return_type_mismatch_rejected();
 
     let source = r#"
 module math;
@@ -138,19 +134,18 @@ export fn bad() -> Int {
 
 #[test]
 fn module_function_missing_return_value_rejected() {
-    // Module function missing return value rejected.
+    // Description:
+    //     Module function missing return value rejected.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::module_function_missing_return_value_rejected();
+
+    //     let result = spanda_core::p1_features::module_function_missing_return_value_rejected();
 
     let source = r#"
 module math;
@@ -171,19 +166,18 @@ export fn bad() -> Int {
 
 #[test]
 fn async_await_module_function() {
-    // Async await module function.
+    // Description:
+    //     Async await module function.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::async_await_module_function();
+
+    //     let result = spanda_core::p1_features::async_await_module_function();
 
     let source = r#"
 module maps;
@@ -207,19 +201,18 @@ robot R {
 
 #[test]
 fn spawn_channel_select() {
-    // Spawn channel select.
+    // Description:
+    //     Spawn channel select.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::spawn_channel_select();
+
+    //     let result = spanda_core::p1_features::spawn_channel_select();
 
     let source = r#"
 module comm;
@@ -246,19 +239,18 @@ robot R {
 
 #[test]
 fn typed_channel_rejects_mismatched_payloads() {
-    // Typed channel rejects mismatched payloads.
+    // Description:
+    //     Typed channel rejects mismatched payloads.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::typed_channel_rejects_mismatched_payloads();
+
+    //     let result = spanda_core::p1_features::typed_channel_rejects_mismatched_payloads();
 
     let source = r#"
 module comm;
@@ -285,19 +277,18 @@ robot R {
 
 #[test]
 fn priority_task_without_every_is_allowed() {
-    // Priority task without every is allowed.
+    // Description:
+    //     Priority task without every is allowed.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::priority_task_without_every_is_allowed();
+
+    //     let result = spanda_core::p1_features::priority_task_without_every_is_allowed();
 
     let source = r#"
 robot R {
@@ -312,19 +303,18 @@ robot R {
 
 #[test]
 fn parallel_block_runs_and_waits_for_spawned_calls() {
-    // Parallel block runs and waits for spawned calls.
+    // Description:
+    //     Parallel block runs and waits for spawned calls.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::parallel_block_runs_and_waits_for_spawned_calls();
+
+    //     let result = spanda_core::p1_features::parallel_block_runs_and_waits_for_spawned_calls();
 
     let source = r#"
 module comm;
@@ -357,19 +347,18 @@ robot R {
 
 #[test]
 fn join_future_returns_inner_value() {
-    // Join future returns inner value.
+    // Description:
+    //     Join future returns inner value.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::join_future_returns_inner_value();
+
+    //     let result = spanda_core::p1_features::join_future_returns_inner_value();
 
     let source = r#"
 module comm;
@@ -392,19 +381,18 @@ robot R {
 
 #[test]
 fn spawn_handle_join_returns_result() {
-    // Spawn handle join returns result.
+    // Description:
+    //     Spawn handle join returns result.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::spawn_handle_join_returns_result();
+
+    //     let result = spanda_core::p1_features::spawn_handle_join_returns_result();
 
     let source = r#"
 module comm;
@@ -427,19 +415,18 @@ robot R {
 
 #[test]
 fn parallel_aggregates_spawn_handles() {
-    // Parallel aggregates spawn handles.
+    // Description:
+    //     Parallel aggregates spawn handles.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::p1_features::parallel_aggregates_spawn_handles();
+
+    //     let result = spanda_core::p1_features::parallel_aggregates_spawn_handles();
 
     let source = r#"
 module comm;

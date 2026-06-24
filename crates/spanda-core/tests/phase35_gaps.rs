@@ -12,6 +12,19 @@ use std::path::PathBuf;
 
 #[test]
 fn fleet_requirement_at_least_percent_evaluates() {
+    // Description:
+    //     Fleet requirement at least percent evaluates.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::fleet_requirement_at_least_percent_evaluates();
+
     let source = r#"
 fleet Patrol {
     RoverA;
@@ -41,6 +54,19 @@ health_check PatrolHealth for fleet Patrol {
 
 #[test]
 fn remote_kill_switch_unsigned_policy_is_verification_error() {
+    // Description:
+    //     Remote kill switch unsigned policy is verification error.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::remote_kill_switch_unsigned_policy_is_verification_error();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -61,6 +87,19 @@ kill_switch EmergencyStop {
 
 #[test]
 fn debugger_steps_into_task_every_body() {
+    // Description:
+    //     Debugger steps into task every body.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::debugger_steps_into_task_every_body();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -81,12 +120,38 @@ robot Rover {
 
 #[test]
 fn onnx_provider_uses_mock_without_model_path() {
+    // Description:
+    //     Onnx provider uses mock without model path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::onnx_provider_uses_mock_without_model_path();
+
     std::env::remove_var("SPANDA_ONNX_MODEL_PATH");
     assert!(!spanda_ai::live::live_onnx_enabled());
 }
 
 #[test]
 fn publish_mirrors_bundle_to_local_registry_when_present() {
+    // Description:
+    //     Publish mirrors bundle to local registry when present.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::publish_mirrors_bundle_to_local_registry_when_present();
+
     let dir = tempfile::tempdir().expect("tempdir");
     let root = dir.path();
     let registry_root = root.join("registry/packages");
@@ -129,6 +194,19 @@ fn publish_mirrors_bundle_to_local_registry_when_present() {
 
 #[test]
 fn live_zigbee_env_gate_defaults_off() {
+    // Description:
+    //     Live zigbee env gate defaults off.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase35_gaps::live_zigbee_env_gate_defaults_off();
+
     std::env::remove_var("SPANDA_LIVE_ZIGBEE");
     assert!(!spanda_providers::iot_live::live_zigbee_enabled());
 }

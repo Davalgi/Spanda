@@ -249,19 +249,19 @@ pub struct SirExtern {
 }
 
 pub fn lower_program(program: &Program) -> SirProgram {
-    // Lower program.
+    // Description:
+    //     Lower program.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
     //
-    // Returns:
-    // SirProgram.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirProgram
+    //         Return value from `lower_program`.
     //
     // Example:
-    // let result = spanda_core::sir::lower_program(program);
+    //     let result = spanda_sir::lower_program(progra);
 
     // Compute ctx for the following logic.
     let ctx = LowerCtx::new(program);
@@ -343,20 +343,21 @@ pub fn lower_program(program: &Program) -> SirProgram {
 }
 
 fn lower_function(func: &ModuleFnDecl, ctx: &LowerCtx) -> SirFunction {
-    // Lower function.
+    // Description:
+    //     Lower function.
     //
-    // Parameters:
-    // - `func` — input value
-    // - `ctx` — input value
+    // Inputs:
+    //     func: &ModuleFnDecl
+    //         Caller-supplied func.
+    //     ctx: &LowerCtx
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // SirFunction.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirFunction
+    //         Return value from `lower_function`.
     //
     // Example:
-    // let result = spanda_core::sir::lower_function(func, ctx);
+    //     let result = spanda_sir::lower_function(func, ctx);
 
     // Compute ModuleFnDecl for the following logic.
     let ModuleFnDecl {
@@ -397,19 +398,19 @@ struct LowerCtx<'a> {
 
 impl LowerCtx<'_> {
     fn new(program: &Program) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `program` — input value
+        // Inputs:
+        //     progra: &Program
+        //         Caller-supplied progra.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::sir::new(program);
+        //     let value = spanda_sir::new(progra);
 
         // Create mutable variant index for accumulating results.
         let mut variant_index = HashMap::new();
@@ -431,60 +432,63 @@ impl LowerCtx<'_> {
     }
 
     fn lower_function(&self, func: &ModuleFnDecl) -> SirFunction {
-        // Lower function.
+        // Description:
+        //     Lower function.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     func: &ModuleFnDecl
+        //         Caller-supplied func.
         //
-        // Returns:
-        // SirFunction.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SirFunction
+        //         Return value from `lower_function`.
         //
         // Example:
-        // let result = instance.lower_function(func);
+        //     let result = spanda_sir::lower_function(&self, func);
 
         // Produce lower function as the result.
         lower_function(func, self)
     }
 
     fn lower_stmts(&self, stmts: &[Stmt]) -> Vec<SirStmt> {
-        // Lower stmts.
+        // Description:
+        //     Lower stmts.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmts` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     stmts: &[Stmt]
+        //         Caller-supplied stmts.
         //
-        // Returns:
-        // Vec<SirStmt>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<SirStmt>
+        //         Return value from `lower_stmts`.
         //
         // Example:
-        // let result = instance.lower_stmts(stmts);
+        //     let result = spanda_sir::lower_stmts(&self, stmts);
 
         // Collect filtered entries into a new list.
         stmts.iter().map(|stmt| self.lower_stmt(stmt)).collect()
     }
 
     fn lower_stmt(&self, stmt: &Stmt) -> SirStmt {
-        // Lower stmt.
+        // Description:
+        //     Lower stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     s: &Stmt
+        //         Caller-supplied s.
         //
-        // Returns:
-        // SirStmt.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SirStmt
+        //         Return value from `lower_stmt`.
         //
         // Example:
-        // let result = instance.lower_stmt(stmt);
+        //     let result = spanda_sir::lower_stmt(&self, s);
 
         // Match on stmt and handle each case.
         match stmt {
@@ -597,22 +601,25 @@ impl LowerCtx<'_> {
         then_branch: &[Stmt],
         else_branch: Option<&Vec<Stmt>>,
     ) -> SirStmt {
-        // Lower if stmt.
+        // Description:
+        //     Lower if stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `condition` — input value
-        // - `then_branch` — input value
-        // - `else_branch` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     condition: &Expr
+        //         Caller-supplied condition.
+        //     hen_branch: &[Stmt]
+        //         Caller-supplied hen branch.
+        //     else_branch: Option<&Vec<Stmt>>
+        //         Caller-supplied else branch.
         //
-        // Returns:
-        // SirStmt.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SirStmt
+        //         Return value from `lower_if_stmt`.
         //
         // Example:
-        // let result = instance.lower_if_stmt(condition, then_branch, else_branch);
+        //     let result = spanda_sir::lower_if_stmt(&self, condition, hen_branch, else_branch);
 
         // Compute then body for the following logic.
         let then_body = self.lower_stmts(then_branch);
@@ -803,20 +810,21 @@ impl LowerCtx<'_> {
     }
 
     fn lower_expr_stmt(&self, expr: &Expr) -> SirStmt {
-        // Lower expr stmt.
+        // Description:
+        //     Lower expr stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // SirStmt.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SirStmt
+        //         Return value from `lower_expr_stmt`.
         //
         // Example:
-        // let result = instance.lower_expr_stmt(expr);
+        //     let result = spanda_sir::lower_expr_stmt(&self, expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -875,20 +883,21 @@ impl LowerCtx<'_> {
     }
 
     fn resolve_enum_unit(&self, expr: &Expr) -> Option<(String, String, u32)> {
-        // Resolve enum unit.
+        // Description:
+        //     Resolve enum unit.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<(String, String, u32)>
+        //         Return value from `resolve_enum_unit`.
         //
         // Example:
-        // let result = instance.resolve_enum_unit(expr);
+        //     let result = spanda_sir::resolve_enum_unit(&self, expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -921,20 +930,21 @@ impl LowerCtx<'_> {
     }
 
     fn resolve_enum_payload(&self, expr: &Expr) -> Option<(String, String, u32, Vec<f64>)> {
-        // Resolve enum payload.
+        // Description:
+        //     Resolve enum payload.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<(String, String, u32, Vec<f64>)>
+        //         Return value from `resolve_enum_payload`.
         //
         // Example:
-        // let result = instance.resolve_enum_payload(expr);
+        //     let result = spanda_sir::resolve_enum_payload(&self, expr);
 
         // Compute Expr for the following logic.
         let Expr::CallExpr { callee, args, .. } = expr else {
@@ -960,19 +970,19 @@ impl LowerCtx<'_> {
 }
 
 fn compare_bool_literal(expr: &Expr) -> Option<(String, bool)> {
-    // Compare bool literal.
+    // Description:
+    //     Compare bool literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(String, bool)>
+    //         Return value from `compare_bool_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::compare_bool_literal(expr);
+    //     let result = spanda_sir::compare_bool_literal(expr);
 
     // Compute Expr for the following logic.
     let Expr::BinaryExpr {
@@ -1005,19 +1015,19 @@ fn compare_bool_literal(expr: &Expr) -> Option<(String, bool)> {
 }
 
 fn compare_bool_ne_literal(expr: &Expr) -> Option<(String, bool)> {
-    // Compare bool ne literal.
+    // Description:
+    //     Compare bool ne literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(String, bool)>
+    //         Return value from `compare_bool_ne_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::compare_bool_ne_literal(expr);
+    //     let result = spanda_sir::compare_bool_ne_literal(expr);
 
     // Compute Expr for the following logic.
     let Expr::BinaryExpr {
@@ -1050,19 +1060,19 @@ fn compare_bool_ne_literal(expr: &Expr) -> Option<(String, bool)> {
 }
 
 fn lower_return(value: Option<&Expr>) -> SirStmt {
-    // Lower return.
+    // Description:
+    //     Lower return.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: Option<&Expr>
+    //         Caller-supplied value.
     //
-    // Returns:
-    // SirStmt.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirStmt
+    //         Return value from `lower_return`.
     //
     // Example:
-    // let result = spanda_core::sir::lower_return(value);
+    //     let result = spanda_sir::lower_return(value);
 
     // Match on value and handle each case.
     match value {
@@ -1083,20 +1093,21 @@ fn lower_return(value: Option<&Expr>) -> SirStmt {
 }
 
 fn lower_actuator_call(callee: &Expr, named_args: &[NamedArg]) -> SirStmt {
-    // Lower actuator call.
+    // Description:
+    //     Lower actuator call.
     //
-    // Parameters:
-    // - `callee` — input value
-    // - `named_args` — input value
+    // Inputs:
+    //     callee: &Expr
+    //         Caller-supplied callee.
+    //     named_args: &[NamedArg]
+    //         Caller-supplied named args.
     //
-    // Returns:
-    // SirStmt.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirStmt
+    //         Return value from `lower_actuator_call`.
     //
     // Example:
-    // let result = spanda_core::sir::lower_actuator_call(callee, named_args);
+    //     let result = spanda_sir::lower_actuator_call(callee, named_args);
 
     // Compute Expr for the following logic.
     let Expr::MemberExpr {
@@ -1131,20 +1142,21 @@ fn lower_actuator_call(callee: &Expr, named_args: &[NamedArg]) -> SirStmt {
 }
 
 fn named_arg_f64(args: &[NamedArg], name: &str) -> Option<f64> {
-    // Named arg f64.
+    // Description:
+    //     Named arg f64.
     //
-    // Parameters:
-    // - `args` — input value
-    // - `name` — input value
+    // Inputs:
+    //     args: &[NamedArg]
+    //         Caller-supplied args.
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `named_arg_f64`.
     //
     // Example:
-    // let result = spanda_core::sir::named_arg_f64(args, name);
+    //     let result = spanda_sir::named_arg_f64(args, name);
 
     // Iterate over args.
     args.iter()
@@ -1153,19 +1165,19 @@ fn named_arg_f64(args: &[NamedArg], name: &str) -> Option<f64> {
 }
 
 fn numeric_value(expr: &Expr) -> Option<f64> {
-    // Numeric value.
+    // Description:
+    //     Numeric value.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `numeric_value`.
     //
     // Example:
-    // let result = spanda_core::sir::numeric_value(expr);
+    //     let result = spanda_sir::numeric_value(expr);
 
     // Match on expr and handle each case.
     match expr {
@@ -1179,39 +1191,40 @@ fn numeric_value(expr: &Expr) -> Option<f64> {
 }
 
 fn unit_scalar(value: f64, _unit: &UnitKind) -> f64 {
-    // Unit scalar.
+    // Description:
+    //     Unit scalar.
     //
-    // Parameters:
-    // - `value` — input value
-    // - `_unit` — input value
+    // Inputs:
+    //     value: f64
+    //         Caller-supplied value.
+    //     _uni: &UnitKind
+    //         Caller-supplied uni.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `unit_scalar`.
     //
     // Example:
-    // let result = spanda_core::sir::unit_scalar(value, _unit);
+    //     let result = spanda_sir::unit_scalar(value, _uni);
 
     // Produce value as the result.
     value
 }
 
 fn int_literal(expr: &Expr) -> Option<i64> {
-    // Int literal.
+    // Description:
+    //     Int literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<i64>
+    //         Return value from `int_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::int_literal(expr);
+    //     let result = spanda_sir::int_literal(expr);
 
     // Match on expr and handle each case.
     match expr {
@@ -1224,38 +1237,38 @@ fn int_literal(expr: &Expr) -> Option<i64> {
 }
 
 fn float_literal(expr: &Expr) -> Option<f64> {
-    // Float literal.
+    // Description:
+    //     Float literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `float_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::float_literal(expr);
+    //     let result = spanda_sir::float_literal(expr);
 
     // Produce numeric value as the result.
     numeric_value(expr)
 }
 
 fn bool_literal(expr: &Expr) -> Option<bool> {
-    // Bool literal.
+    // Description:
+    //     Bool literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<bool>
+    //         Return value from `bool_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::bool_literal(expr);
+    //     let result = spanda_sir::bool_literal(expr);
 
     // Match on expr and handle each case.
     match expr {
@@ -1268,19 +1281,19 @@ fn bool_literal(expr: &Expr) -> Option<bool> {
 }
 
 fn string_literal(expr: &Expr) -> Option<String> {
-    // String literal.
+    // Description:
+    //     String literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `string_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::string_literal(expr);
+    //     let result = spanda_sir::string_literal(expr);
 
     // Match on expr and handle each case.
     match expr {
@@ -1297,19 +1310,19 @@ fn string_literal(expr: &Expr) -> Option<String> {
 }
 
 fn stmt_kind(stmt: &Stmt) -> String {
-    // Stmt kind.
+    // Description:
+    //     Stmt kind.
     //
-    // Parameters:
-    // - `stmt` — input value
+    // Inputs:
+    //     s: &Stmt
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `stmt_kind`.
     //
     // Example:
-    // let result = spanda_core::sir::stmt_kind(stmt);
+    //     let result = spanda_sir::stmt_kind(s);
 
     // Match on stmt and handle each case.
     match stmt {
@@ -1333,19 +1346,19 @@ fn stmt_kind(stmt: &Stmt) -> String {
 }
 
 fn binary_op_to_compare(op: spanda_ast::nodes::BinaryOp) -> Option<SirCompareOp> {
-    // Binary op to compare.
+    // Description:
+    //     Binary op to compare.
     //
-    // Parameters:
-    // - `op` — input value
+    // Inputs:
+    //     op: spanda_ast::nodes::BinaryOp
+    //         Caller-supplied op.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SirCompareOp>
+    //         Return value from `binary_op_to_compare`.
     //
     // Example:
-    // let result = spanda_core::sir::binary_op_to_compare(op);
+    //     let result = spanda_sir::binary_op_to_compare(op);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::BinaryOp;
@@ -1363,19 +1376,19 @@ fn binary_op_to_compare(op: spanda_ast::nodes::BinaryOp) -> Option<SirCompareOp>
 }
 
 fn reverse_compare(op: SirCompareOp) -> SirCompareOp {
-    // Reverse compare.
+    // Description:
+    //     Reverse compare.
     //
-    // Parameters:
-    // - `op` — input value
+    // Inputs:
+    //     op: SirCompareOp
+    //         Caller-supplied op.
     //
-    // Returns:
-    // SirCompareOp.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirCompareOp
+    //         Return value from `reverse_compare`.
     //
     // Example:
-    // let result = spanda_core::sir::reverse_compare(op);
+    //     let result = spanda_sir::reverse_compare(op);
 
     // Match on op and handle each case.
     match op {
@@ -1388,21 +1401,23 @@ fn reverse_compare(op: SirCompareOp) -> SirCompareOp {
 }
 
 fn eval_double_compare(op: SirCompareOp, left: f64, right: f64) -> bool {
-    // Eval double compare.
+    // Description:
+    //     Eval double compare.
     //
-    // Parameters:
-    // - `op` — input value
-    // - `left` — input value
-    // - `right` — input value
+    // Inputs:
+    //     op: SirCompareOp
+    //         Caller-supplied op.
+    //     lef: f64
+    //         Caller-supplied lef.
+    //     righ: f64
+    //         Caller-supplied righ.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `eval_double_compare`.
     //
     // Example:
-    // let result = spanda_core::sir::eval_double_compare(op, left, right);
+    //     let result = spanda_sir::eval_double_compare(op, lef, righ);
 
     // Match on op and handle each case.
     match op {
@@ -1416,19 +1431,19 @@ fn eval_double_compare(op: SirCompareOp, left: f64, right: f64) -> bool {
 }
 
 fn extract_double_compare(expr: &Expr) -> Option<(String, SirCompareOp, f64)> {
-    // Extract double compare.
+    // Description:
+    //     Extract double compare.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(String, SirCompareOp, f64)>
+    //         Return value from `extract_double_compare`.
     //
     // Example:
-    // let result = spanda_core::sir::extract_double_compare(expr);
+    //     let result = spanda_sir::extract_double_compare(expr);
 
     // Compute Expr for the following logic.
     let Expr::BinaryExpr {
@@ -1459,19 +1474,19 @@ fn extract_double_compare(expr: &Expr) -> Option<(String, SirCompareOp, f64)> {
 }
 
 fn extract_scan_distance_compare(expr: &Expr) -> Option<(String, SirCompareOp, f64)> {
-    // Extract scan distance compare.
+    // Description:
+    //     Extract scan distance compare.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(String, SirCompareOp, f64)>
+    //         Return value from `extract_scan_distance_compare`.
     //
     // Example:
-    // let result = spanda_core::sir::extract_scan_distance_compare(expr);
+    //     let result = spanda_sir::extract_scan_distance_compare(expr);
 
     // Compute Expr for the following logic.
     let Expr::BinaryExpr {
@@ -1502,20 +1517,19 @@ fn extract_scan_distance_compare(expr: &Expr) -> Option<(String, SirCompareOp, f
 }
 
 fn eval_const_bool(expr: &Expr) -> Option<bool> {
-    // Eval const bool.
+    // Description:
+    //     Eval const bool.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<bool>
+    //         Return value from `eval_const_bool`.
     //
     // Example:
-    // let result = spanda_core::sir::eval_const_bool(expr);
-
+    //     let result = spanda_sir::eval_const_bool(expr);
     // use value when bool literal is present.
 
     // Emit output when bool literal provides a value.
@@ -1572,19 +1586,19 @@ fn eval_const_bool(expr: &Expr) -> Option<bool> {
 }
 
 pub fn serialize_expr_condition(expr: &Expr) -> String {
-    // Serialize expr condition.
+    // Description:
+    //     Serialize expr condition.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `serialize_expr_condition`.
     //
     // Example:
-    // let result = spanda_core::sir::serialize_expr_condition(expr);
+    //     let result = spanda_sir::serialize_expr_condition(expr);
 
     // Produce unwrap or else as the result.
     serde_json::to_string(&expr_to_condition(expr)).unwrap_or_else(|_| {
@@ -1593,20 +1607,19 @@ pub fn serialize_expr_condition(expr: &Expr) -> String {
 }
 
 fn expr_to_condition(expr: &Expr) -> SirCondition {
-    // Expr to condition.
+    // Description:
+    //     Expr to condition.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // SirCondition.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirCondition
+    //         Return value from `expr_to_condition`.
     //
     // Example:
-    // let result = spanda_core::sir::expr_to_condition(expr);
-
+    //     let result = spanda_sir::expr_to_condition(expr);
     // use value when bool literal is present.
 
     // Emit output when bool literal provides a value.
@@ -1697,19 +1710,19 @@ fn expr_to_condition(expr: &Expr) -> SirCondition {
 }
 
 fn compare_string_literal(expr: &Expr) -> Option<(String, String)> {
-    // Compare string literal.
+    // Description:
+    //     Compare string literal.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(String, String)>
+    //         Return value from `compare_string_literal`.
     //
     // Example:
-    // let result = spanda_core::sir::compare_string_literal(expr);
+    //     let result = spanda_sir::compare_string_literal(expr);
 
     // Compute Expr for the following logic.
     let Expr::BinaryExpr {
@@ -1742,19 +1755,19 @@ fn compare_string_literal(expr: &Expr) -> Option<(String, String)> {
 }
 
 fn lower_extern(ext: &ExternFnDecl) -> SirExtern {
-    // Lower extern.
+    // Description:
+    //     Lower extern.
     //
-    // Parameters:
-    // - `ext` — input value
+    // Inputs:
+    //     ex: &ExternFnDecl
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // SirExtern.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SirExtern
+    //         Return value from `lower_extern`.
     //
     // Example:
-    // let result = spanda_core::sir::lower_extern(ext);
+    //     let result = spanda_sir::lower_extern(ex);
 
     // Produce SirExtern as the result.
     SirExtern {
@@ -1774,19 +1787,19 @@ fn lower_extern(ext: &ExternFnDecl) -> SirExtern {
 }
 
 fn type_to_string(ty: &SpandaType) -> String {
-    // Type to string.
+    // Description:
+    //     Type to string.
     //
-    // Parameters:
-    // - `ty` — input value
+    // Inputs:
+    //     y: &SpandaType
+    //         Caller-supplied y.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `type_to_string`.
     //
     // Example:
-    // let result = spanda_core::sir::type_to_string(ty);
+    //     let result = spanda_sir::type_to_string(y);
 
     // Match on ty and handle each case.
     match ty {
@@ -1830,19 +1843,18 @@ mod tests {
 
     #[test]
     fn lowers_module_and_externs() {
-        // Lowers module and externs.
+        // Description:
+        //     Lowers module and externs.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_module_and_externs();
+
+        //     let result = spanda_sir::lowers_module_and_externs();
 
         let source = r#"
 module demo;
@@ -1883,19 +1895,18 @@ robot R {
 
     #[test]
     fn lowers_drive_and_return_stmts() {
-        // Lowers drive and return stmts.
+        // Description:
+        //     Lowers drive and return stmts.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_drive_and_return_stmts();
+
+        //     let result = spanda_sir::lowers_drive_and_return_stmts();
 
         let source = r#"
 module demo;
@@ -1923,19 +1934,18 @@ robot R {
 
     #[test]
     fn lowers_loop_and_publish_stmts() {
-        // Lowers loop and publish stmts.
+        // Description:
+        //     Lowers loop and publish stmts.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_loop_and_publish_stmts();
+
+        //     let result = spanda_sir::lowers_loop_and_publish_stmts();
 
         let source = r#"
 robot R {
@@ -1963,19 +1973,18 @@ robot R {
 
     #[test]
     fn lowers_if_bool_and_subscribe_stmts() {
-        // Lowers if bool and subscribe stmts.
+        // Description:
+        //     Lowers if bool and subscribe stmts.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_if_bool_and_subscribe_stmts();
+
+        //     let result = spanda_sir::lowers_if_bool_and_subscribe_stmts();
 
         let source = r#"
 robot R {
@@ -2004,19 +2013,18 @@ robot R {
 
     #[test]
     fn lowers_if_var_and_match_enum_unit() {
-        // Lowers if var and match enum unit.
+        // Description:
+        //     Lowers if var and match enum unit.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_if_var_and_match_enum_unit();
+
+        //     let result = spanda_sir::lowers_if_var_and_match_enum_unit();
 
         let source = r#"
 enum RobotState { Idle, Navigating }
@@ -2045,19 +2053,18 @@ robot R {
 
     #[test]
     fn lowers_enum_payload_if_compare_and_if_not() {
-        // Lowers enum payload if compare and if not.
+        // Description:
+        //     Lowers enum payload if compare and if not.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_enum_payload_if_compare_and_if_not();
+
+        //     let result = spanda_sir::lowers_enum_payload_if_compare_and_if_not();
 
         let source = r#"
 enum DriveCmd { Stop, Drive(Float, Float) }
@@ -2094,19 +2101,18 @@ robot R {
 
     #[test]
     fn lowers_if_double_and_scan_distance_compare() {
-        // Lowers if double and scan distance compare.
+        // Description:
+        //     Lowers if double and scan distance compare.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_if_double_and_scan_distance_compare();
+
+        //     let result = spanda_sir::lowers_if_double_and_scan_distance_compare();
 
         let source = r#"
 robot R {
@@ -2146,19 +2152,18 @@ robot R {
 
     #[test]
     fn lowers_unsupported_if_to_runtime_condition() {
-        // Lowers unsupported if to runtime condition.
+        // Description:
+        //     Lowers unsupported if to runtime condition.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_unsupported_if_to_runtime_condition();
+
+        //     let result = spanda_sir::lowers_unsupported_if_to_runtime_condition();
 
         let source = r#"
 robot R {
@@ -2179,19 +2184,18 @@ robot R {
 
     #[test]
     fn lowers_string_let_for_runtime_if() {
-        // Lowers string let for runtime if.
+        // Description:
+        //     Lowers string let for runtime if.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::sir::lowers_string_let_for_runtime_if();
+
+        //     let result = spanda_sir::lowers_string_let_for_runtime_if();
 
         let source = r#"
 robot R {

@@ -7,20 +7,22 @@ use spanda_hardware::CompatSeverity;
 
 /// Fail fast when deploy/certify metadata does not satisfy runtime enforcement.
 pub fn enforce_certification_runtime(program: &Program, strict: bool) -> Result<(), SpandaError> {
-    // Block run/sim when certification proof checklist reports errors.
+    // Description:
+    //     Enforce certification runtime.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `strict` — treat checklist gaps as runtime errors
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     stric: bool
+    //         Caller-supplied stric.
     //
-    // Returns:
-    // Ok when enforcement passes, or a SpandaError describing the first gap.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `enforce_certification_runtime`.
     //
     // Example:
-    // enforce_certification_runtime(&program, true)?;
+
+    //     let result = spanda_certify::runtime::enforce_certification_runtime(progra, stric);
 
     if !strict {
         return Ok(());
@@ -41,6 +43,20 @@ pub fn enforce_certification_runtime(program: &Program, strict: bool) -> Result<
 
 /// Return true when runtime certification enforcement is enabled via environment.
 pub fn certification_runtime_enabled_from_env() -> bool {
+    // Description:
+    //     Certification runtime enabled from env.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `certification_runtime_enabled_from_env`.
+    //
+    // Example:
+
+    //     let result = spanda_certify::runtime::certification_runtime_enabled_from_env();
+
     matches!(
         std::env::var("SPANDA_ENFORCE_CERTIFY").ok().as_deref(),
         Some("1") | Some("true") | Some("yes")

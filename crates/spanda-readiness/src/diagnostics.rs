@@ -12,6 +12,23 @@ pub fn collect_readiness_diagnostics(
     program: &Program,
     options: &ReadinessOptions,
 ) -> Vec<VerificationDiagnostic> {
+    // Description:
+    //     Collect readiness diagnostics.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Vec<VerificationDiagnostic>
+    //         Return value from `collect_readiness_diagnostics`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::diagnostics::collect_readiness_diagnostics(progra, options);
+
     let runtime = if options.include_runtime {
         Some(build_runtime_context(program, options.inject_health_faults))
     } else {
@@ -36,6 +53,21 @@ pub fn collect_readiness_diagnostics(
 }
 
 fn severity_label(severity: ReadinessSeverity) -> &'static str {
+    // Description:
+    //     Severity label.
+    //
+    // Inputs:
+    //     severity: ReadinessSeverity
+    //         Caller-supplied severity.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `severity_label`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::diagnostics::severity_label(severity);
+
     match severity {
         ReadinessSeverity::Critical => "error",
         ReadinessSeverity::High => "error",

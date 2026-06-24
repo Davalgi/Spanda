@@ -24,6 +24,23 @@ pub struct MissionVerificationReport {
 
 /// Verify that declared missions are achievable on configured robots.
 pub fn verify_mission(program: &Program, target: Option<&str>) -> Vec<MissionVerificationReport> {
+    // Description:
+    //     Verify mission.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     arge: Option<&str>
+    //         Caller-supplied arge.
+    //
+    // Outputs:
+    //     result: Vec<MissionVerificationReport>
+    //         Return value from `verify_mission`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::mission::verify_mission(progra, arge);
+
     let Program::Program { robots, .. } = program;
     let mut reports = Vec::new();
     let verify_opts = VerifyOptions {
@@ -147,6 +164,23 @@ pub fn verify_mission_source(
     source: &str,
     target: Option<&str>,
 ) -> Result<Vec<MissionVerificationReport>, spanda_error::SpandaError> {
+    // Description:
+    //     Verify mission source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     arge: Option<&str>
+    //         Caller-supplied arge.
+    //
+    // Outputs:
+    //     result: Result<Vec<MissionVerificationReport>, spanda_error::SpandaError>
+    //         Return value from `verify_mission_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::mission::verify_mission_source(source, arge);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(verify_mission(&program, target))

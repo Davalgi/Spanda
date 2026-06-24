@@ -35,12 +35,47 @@ pub struct SecurityReport {
 
 impl SecurityReport {
     pub fn has_errors(&self) -> bool {
+        // Description:
+        //     Has errors.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `has_errors`.
+        //
+        // Example:
+
+        //     let result = spanda_security::validate::has_errors(&self);
+
         self.findings
             .iter()
             .any(|f| f.severity == SecuritySeverity::Error)
     }
 
     pub fn push_error(&mut self, message: impl Into<String>, line: u32, column: u32) {
+        // Description:
+        //     Push error.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::validate::push_error(&mut self, essage, line, column);
+
         self.findings.push(SecurityFinding {
             severity: SecuritySeverity::Error,
             message: message.into(),
@@ -50,6 +85,26 @@ impl SecurityReport {
     }
 
     pub fn push_warning(&mut self, message: impl Into<String>, line: u32, column: u32) {
+        // Description:
+        //     Push warning.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::validate::push_warning(&mut self, essage, line, column);
+
         self.findings.push(SecurityFinding {
             severity: SecuritySeverity::Warning,
             message: message.into(),
@@ -59,6 +114,26 @@ impl SecurityReport {
     }
 
     pub fn push_info(&mut self, message: impl Into<String>, line: u32, column: u32) {
+        // Description:
+        //     Push info.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::validate::push_info(&mut self, essage, line, column);
+
         self.findings.push(SecurityFinding {
             severity: SecuritySeverity::Info,
             message: message.into(),
@@ -70,6 +145,21 @@ impl SecurityReport {
 
 /// Run static security validation on Spanda source.
 pub fn security_check(source: &str) -> Result<SecurityReport, spanda_error::SpandaError> {
+    // Description:
+    //     Security check.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<SecurityReport, spanda_error::SpandaError>
+    //         Return value from `security_check`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::security_check(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = parse(tokens)?;
     Ok(analyze_program(&program))
@@ -77,6 +167,21 @@ pub fn security_check(source: &str) -> Result<SecurityReport, spanda_error::Span
 
 /// Produce an audit-oriented security report (includes informational events).
 pub fn security_audit(source: &str) -> Result<SecurityReport, spanda_error::SpandaError> {
+    // Description:
+    //     Security audit.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<SecurityReport, spanda_error::SpandaError>
+    //         Return value from `security_audit`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::security_audit(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = parse(tokens)?;
     let mut report = analyze_program(&program);
@@ -85,6 +190,21 @@ pub fn security_audit(source: &str) -> Result<SecurityReport, spanda_error::Span
 }
 
 fn analyze_program(program: &Program) -> SecurityReport {
+    // Description:
+    //     Analyze program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: SecurityReport
+    //         Return value from `analyze_program`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::analyze_program(progra);
+
     let mut report = SecurityReport::default();
     let Program::Program { robots, .. } = program;
 
@@ -95,6 +215,22 @@ fn analyze_program(program: &Program) -> SecurityReport {
 }
 
 fn analyze_robot(robot: &RobotDecl, report: &mut SecurityReport) {
+    // Description:
+    //     Analyze robot.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::analyze_robot(robo, repor);
+
     let RobotDecl::RobotDecl {
         identity,
         secrets,
@@ -200,6 +336,21 @@ fn analyze_robot(robot: &RobotDecl, report: &mut SecurityReport) {
 }
 
 fn secret_is_crypto_material(secret: &SecretDecl) -> bool {
+    // Description:
+    //     Secret is crypto material.
+    //
+    // Inputs:
+    //     secre: &SecretDecl
+    //         Caller-supplied secre.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `secret_is_crypto_material`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::secret_is_crypto_material(secre);
+
     let SecretDecl::SecretDecl { name, source, .. } = secret;
     name.contains("key")
         || name.contains("cert")
@@ -210,6 +361,22 @@ fn secret_is_crypto_material(secret: &SecretDecl) -> bool {
 }
 
 fn validate_secure_comm(sc: &SecureCommPolicyDecl, report: &mut SecurityReport) {
+    // Description:
+    //     Validate secure comm.
+    //
+    // Inputs:
+    //     sc: &SecureCommPolicyDecl
+    //         Caller-supplied sc.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::validate_secure_comm(sc, repor);
+
     let SecureCommPolicyDecl::SecureCommPolicyDecl {
         encryption,
         authentication,
@@ -234,6 +401,24 @@ fn validate_secure_comm(sc: &SecureCommPolicyDecl, report: &mut SecurityReport) 
 }
 
 fn validate_bus(bus: &BusDecl, has_key_or_cert: bool, report: &mut SecurityReport) {
+    // Description:
+    //     Validate bus.
+    //
+    // Inputs:
+    //     bus: &BusDecl
+    //         Caller-supplied bus.
+    //     has_key_or_cer: bool
+    //         Caller-supplied has key or cer.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::validate_bus(bus, has_key_or_cer, repor);
+
     let BusDecl::BusDecl {
         name,
         transport,
@@ -268,6 +453,20 @@ fn validate_bus(bus: &BusDecl, has_key_or_cert: bool, report: &mut SecurityRepor
 }
 
 fn boundaries_default_robot_to_robot() -> bool {
+    // Description:
+    //     Boundaries default robot to robot.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `boundaries_default_robot_to_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::boundaries_default_robot_to_robot();
+
     false
 }
 
@@ -278,6 +477,28 @@ fn validate_secure_endpoint_topic(
     boundaries: &TrustBoundaryRegistry,
     report: &mut SecurityReport,
 ) {
+    // Description:
+    //     Validate secure endpoint topic.
+    //
+    // Inputs:
+    //     opic: &TopicDecl
+    //         Caller-supplied opic.
+    //     has_identity: bool
+    //         Caller-supplied has identity.
+    //     has_key_or_cer: bool
+    //         Caller-supplied has key or cer.
+    //     boundaries: &TrustBoundaryRegistry
+    //         Caller-supplied boundaries.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::validate_secure_endpoint_topic(opic, has_identity, has_key_or_cer, boundaries, repor);
+
     let TopicDecl::TopicDecl {
         name,
         message_type,
@@ -333,6 +554,30 @@ fn validate_secure_block_endpoint(
     column: u32,
     report: &mut SecurityReport,
 ) {
+    // Description:
+    //     Validate secure block endpoint.
+    //
+    // Inputs:
+    //     block: &SecureBlockDecl
+    //         Caller-supplied block.
+    //     has_identity: bool
+    //         Caller-supplied has identity.
+    //     kind: &str
+    //         Caller-supplied kind.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::validate_secure_block_endpoint(block, has_identity, kind, line, column, repor);
+
     let needs_identity = block.signed
         || block.encryption.as_deref() == Some("required")
         || block.authentication.as_deref() == Some("mutual");
@@ -373,6 +618,23 @@ fn validate_secure_block_endpoint(
 }
 
 fn parse_mode(field: &str, value: &str) -> Result<(), String> {
+    // Description:
+    //     Parse mode.
+    //
+    // Inputs:
+    //     field: &str
+    //         Caller-supplied field.
+    //     value: &str
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `parse_mode`.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::parse_mode(field, value);
+
     match field {
         "encryption" => value.parse::<EncryptionMode>().map(|_| ()),
         "authentication" => value.parse::<AuthenticationMode>().map(|_| ()),
@@ -383,6 +645,22 @@ fn parse_mode(field: &str, value: &str) -> Result<(), String> {
 }
 
 fn collect_audit_hints(program: &Program, report: &mut SecurityReport) {
+    // Description:
+    //     Collect audit hints.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     repor: &mut SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::validate::collect_audit_hints(progra, repor);
+
     let Program::Program { robots, .. } = program;
     for robot in robots {
         let RobotDecl::RobotDecl {
@@ -416,6 +694,19 @@ mod tests {
 
     #[test]
     fn detects_secure_topic_without_identity() {
+        // Description:
+        //     Detects secure topic without identity.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::validate::detects_secure_topic_without_identity();
+
         let source = r#"
 robot R {
   topic cmd: Velocity publish on "/cmd" secure {

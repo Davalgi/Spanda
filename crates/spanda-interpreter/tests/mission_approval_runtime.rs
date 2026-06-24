@@ -6,6 +6,19 @@ use spanda_parser::parse;
 
 #[test]
 fn mission_advance_requires_operator_approval() {
+    // Description:
+    //     Mission advance requires operator approval.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::mission_approval_runtime::mission_advance_requires_operator_approval();
+
     let source = r#"
 robot GateBot {
     topic gate_approval: Approval subscribe on "/gate/approval";

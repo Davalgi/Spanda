@@ -4,6 +4,19 @@ use spanda_transport_ros2::daemon_script_path;
 
 #[test]
 fn daemon_script_resolves_in_repo() {
+    // Description:
+    //     Daemon script resolves in repo.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::daemon_script_resolves_in_repo();
+
     if std::env::var("CARGO_MANIFEST_DIR").is_ok() {
         assert!(daemon_script_path().is_ok());
     }
@@ -11,6 +24,19 @@ fn daemon_script_resolves_in_repo() {
 
 #[test]
 fn rclrs_disabled_by_default() {
+    // Description:
+    //     Rclrs disabled by default.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::rclrs_disabled_by_default();
+
     std::env::remove_var("SPANDA_ROS2_RCLRS");
     assert!(!spanda_transport_ros2::rclrs_enabled());
 }

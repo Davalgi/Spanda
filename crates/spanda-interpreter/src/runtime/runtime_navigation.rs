@@ -18,6 +18,31 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Description:
+        //     Eval navigation method.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     goal: &mut Option<String>
+        //         Caller-supplied goal.
+        //     property: &str
+        //         Caller-supplied property.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
+        //
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_navigation_method`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_navigation::eval_navigation_method(&mut self, goal, property, args, named_args, line);
+
         match property {
             "goal" => {
                 let text = if !args.is_empty() {
@@ -116,6 +141,25 @@ impl<B: RobotBackend> Interpreter<B> {
         property: &str,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Description:
+        //     Eval slam method.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     property: &str
+        //         Caller-supplied property.
+        //     line: u32
+        //         Caller-supplied line.
+        //
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_slam_method`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_navigation::eval_slam_method(&mut self, property, line);
+
         match property {
             "localize" => {
                 let state = self.backend.get_state();

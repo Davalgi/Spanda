@@ -41,32 +41,24 @@ pub struct StateMachineRuntime {
 
 impl StateMachineRuntime {
     pub fn new(name: String, states: Vec<String>, transitions: Vec<(String, String)>) -> Self {
-        // Builds a state machine runtime starting in the first declared state.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
+        // Inputs:
+        //     name: String
+        //         Caller-supplied name.
+        //     states: Vec<String>
+        //         Caller-supplied states.
+        //     ransitions: Vec<(String, String)>
+        //         Caller-supplied ransitions.
         //
-        // * `name` — Machine identifier from the declaration.
-        // * `states` — Ordered list of valid state names.
-        // * `transitions` — Allowed `(from, to)` edges.
-        //
-        // Returns:
-        //
-        // A new runtime whose [`Self::current`] is the first state, or empty if
-        // `states` is empty.
-        //
-        // Options:
-        //
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        //
-        // use spanda_runtime::state_machine::StateMachineRuntime;
-        // let sm = StateMachineRuntime::new(
-        // "Flow".into(),
-        // vec!["A".into(), "B".into()],
-        // vec![],
-        // );
-        // assert_eq!(sm.current, "A");
+
+        //     let value = spanda_runtime::state_machine::new(name, states, ransitions);
         let current = states.first().cloned().unwrap_or_default();
         Self {
             name,
@@ -77,31 +69,22 @@ impl StateMachineRuntime {
     }
 
     pub fn try_enter(&mut self, target: &str) -> Option<String> {
-        // Attempts a transition to `target` when allowed from the current state.
+        // Description:
+        //     Try enter.
         //
-        // Parameters:
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     arge: &str
+        //         Caller-supplied arge.
         //
-        // * `target` — Desired next state name.
-        //
-        // Returns:
-        //
-        // `Some(previous_state)` on success after updating [`Self::current`], or
-        // `None` if `target` is unknown or the transition is not declared.
-        //
-        // Options:
-        //
-        // None.
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `try_enter`.
         //
         // Example:
-        //
-        // use spanda_runtime::state_machine::StateMachineRuntime;
-        // let mut sm = StateMachineRuntime::new(
-        // "Flow".into(),
-        // vec!["Idle".into(), "Loading".into()],
-        // vec![("Idle".into(), "Loading".into())],
-        // );
-        // assert_eq!(sm.try_enter("Loading"), Some("Idle".into()));
-        // assert_eq!(sm.current, "Loading");
+
+        //     let result = spanda_runtime::state_machine::try_enter(&mut self, arge);
         if !self.states.iter().any(|s| s == target) {
             return None;
         }
@@ -126,19 +109,18 @@ mod tests {
 
     #[test]
     fn try_enter_follows_declared_transitions() {
-        // Try enter follows declared transitions.
+        // Description:
+        //     Try enter follows declared transitions.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_runtime::state_machine::try_enter_follows_declared_transitions();
+
+        //     let result = spanda_runtime::state_machine::try_enter_follows_declared_transitions();
 
         let mut sm = StateMachineRuntime::new(
             "Flow".into(),

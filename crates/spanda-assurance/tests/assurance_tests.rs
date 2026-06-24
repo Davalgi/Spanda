@@ -8,6 +8,21 @@ use spanda_lexer::tokenize;
 use spanda_parser::parse;
 
 fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_source`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::parse_source(source);
+
     parse(tokenize(source).unwrap()).unwrap()
 }
 
@@ -62,6 +77,19 @@ robot Rover {
 
 #[test]
 fn parses_and_analyzes_knowledge_model() {
+    // Description:
+    //     Parses and analyzes knowledge model.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::parses_and_analyzes_knowledge_model();
+
     let program = parse_source(ROVER);
     let kb = extract_knowledge_base(&program);
     assert_eq!(kb.models.len(), 1);
@@ -70,6 +98,19 @@ fn parses_and_analyzes_knowledge_model() {
 
 #[test]
 fn anomaly_scan_finds_detectors() {
+    // Description:
+    //     Anomaly scan finds detectors.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::anomaly_scan_finds_detectors();
+
     let program = parse_source(ROVER);
     let report = scan_anomalies(&program);
     assert_eq!(report.detectors.len(), 1);
@@ -78,6 +119,19 @@ fn anomaly_scan_finds_detectors() {
 
 #[test]
 fn assurance_report_links_evidence() {
+    // Description:
+    //     Assurance report links evidence.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::assurance_report_links_evidence();
+
     let program = parse_source(ROVER);
     let report = build_assurance_report(&program, "test.sd");
     assert_eq!(report.cases.len(), 1);
@@ -86,6 +140,19 @@ fn assurance_report_links_evidence() {
 
 #[test]
 fn prognostics_evaluates_rules() {
+    // Description:
+    //     Prognostics evaluates rules.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::prognostics_evaluates_rules();
+
     let program = parse_source(ROVER);
     let report = evaluate_prognostics(&program);
     assert_eq!(report.models.len(), 1);
@@ -93,6 +160,19 @@ fn prognostics_evaluates_rules() {
 
 #[test]
 fn resilience_check_runs() {
+    // Description:
+    //     Resilience check runs.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::resilience_check_runs();
+
     let program = parse_source(ROVER);
     let report = check_resilience(&program);
     assert!(report.readiness_score > 0 || !report.recovery.is_empty());
@@ -100,6 +180,19 @@ fn resilience_check_runs() {
 
 #[test]
 fn showcase_assurance_passes() {
+    // Description:
+    //     Showcase assurance passes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::showcase_assurance_passes();
+
     let source = include_str!("../../../examples/showcase/assurance/rover.sd");
     let program = parse_source(source);
     let summary = assure_program(&program, "rover.sd");
@@ -112,6 +205,19 @@ fn showcase_assurance_passes() {
 
 #[test]
 fn assure_program_composes() {
+    // Description:
+    //     Assure program composes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::assure_program_composes();
+
     let program = parse_source(ROVER);
     let summary = assure_program(&program, "test.sd");
     assert!(!summary.assurance.cases.is_empty());
@@ -119,6 +225,19 @@ fn assure_program_composes() {
 
 #[test]
 fn mission_assurance_parses_plans() {
+    // Description:
+    //     Mission assurance parses plans.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::mission_assurance_parses_plans();
+
     let source = r#"
 hardware H { sensors [GPS]; actuators [DifferentialDrive]; }
 mission_plan P { step a; constraint battery.level >= 10%; }
@@ -131,6 +250,19 @@ robot R { sensor gps: GPS; actuator w: DifferentialDrive; safety { max_speed = 1
 
 #[test]
 fn learned_models_detect_package_import() {
+    // Description:
+    //     Learned models detect package import.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::learned_models_detect_package_import();
+
     use spanda_assurance::learned_models;
     let source = r#"
 import assurance.anomaly;
@@ -155,6 +287,19 @@ robot R {
 
 #[test]
 fn learned_models_detect_explicit_backend() {
+    // Description:
+    //     Learned models detect explicit backend.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::learned_models_detect_explicit_backend();
+
     use spanda_assurance::learned_models;
     let source = r#"
 anomaly_detector NavML {
@@ -177,6 +322,19 @@ robot R {
 
 #[test]
 fn anomaly_scan_includes_learned_models() {
+    // Description:
+    //     Anomaly scan includes learned models.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::anomaly_scan_includes_learned_models();
+
     use spanda_assurance::scan_anomalies;
     let source = r#"
 anomaly_detector NavML {
@@ -202,6 +360,19 @@ robot R {
 
 #[test]
 fn state_assurance_evaluates_estimators() {
+    // Description:
+    //     State assurance evaluates estimators.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::assurance_tests::state_assurance_evaluates_estimators();
+
     use spanda_assurance::evaluate_state_assurance;
     let source = r#"
 state_estimator RoverState {

@@ -4,19 +4,18 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn trait_impl_binds_agent_method() {
-    // Trait impl binds agent method.
+    // Description:
+    //     Trait impl binds agent method.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::trait_impl::trait_impl_binds_agent_method();
+
+    //     let result = spanda_core::trait_impl::trait_impl_binds_agent_method();
 
     let source = r#"
 struct Pose {
@@ -40,19 +39,19 @@ robot R {
 
   impl Navigator for Nav {
     fn plan(goal: Pose) -> Path {
-        // Plan.
+        // Description:
+        //     Plan.
         //
-        // Parameters:
-        // - `goal` — input value
+        // Inputs:
+        //     goal: Pose
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // Path.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Path
+        //         Return value from `plan`.
         //
         // Example:
-        // let result = spanda_core::trait_impl::plan(goal);
+        //     let result = spanda_core::trait_impl::plan(goal);
 
       // Produce stop as the result.
       wheels.stop();
@@ -70,19 +69,18 @@ robot R {
 
 #[test]
 fn trait_impl_unknown_trait_rejected() {
-    // Trait impl unknown trait rejected.
+    // Description:
+    //     Trait impl unknown trait rejected.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::trait_impl::trait_impl_unknown_trait_rejected();
+
+    //     let result = spanda_core::trait_impl::trait_impl_unknown_trait_rejected();
 
     let source = r#"
 robot R {

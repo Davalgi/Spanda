@@ -22,19 +22,19 @@ pub struct SecretHandle {
 
 impl SecretHandle {
     pub fn resolve(&self) -> SecurityResult<String> {
-        // Resolve.
+        // Description:
+        //     Resolve.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // SecurityResult<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<String>
+        //         Return value from `resolve`.
         //
         // Example:
-        // let result = instance.resolve();
+        //     let result = spanda_security::secrets::resolve(&self);
 
         // Match on source and handle each case.
         match &self.source {
@@ -49,19 +49,19 @@ impl SecretHandle {
 
     /// Redacted representation safe for audit logs.
     pub fn redacted_label(&self) -> String {
-        // Redacted label.
+        // Description:
+        //     Redacted label.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `redacted_label`.
         //
         // Example:
-        // let result = instance.redacted_label();
+        //     let result = spanda_security::secrets::redacted_label(&self);
 
         // Produce name) as the result.
         format!("secret:{}", self.name)
@@ -76,59 +76,59 @@ pub struct SecretStore {
 
 impl SecretStore {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::secrets::new();
+        //     let value = spanda_security::secrets::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn register(&mut self, handle: SecretHandle) {
-        // Register the value.
+        // Description:
+        //     Register.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `handle` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     handle: SecretHandle
+        //         Caller-supplied handle.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register(handle);
+        //     let result = spanda_security::secrets::register(&mut self, handle);
 
         // Append into self.
         self.secrets.insert(handle.name.clone(), handle);
     }
 
     pub fn get(&self, name: &str) -> SecurityResult<&SecretHandle> {
-        // Get.
+        // Description:
+        //     Get.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // SecurityResult<&SecretHandle>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<&SecretHandle>
+        //         Return value from `get`.
         //
         // Example:
-        // let result = instance.get(name);
+        //     let result = spanda_security::secrets::get(&self, name);
 
         // Call secrets on the current instance.
         self.secrets
@@ -137,39 +137,40 @@ impl SecretStore {
     }
 
     pub fn resolve(&self, name: &str) -> SecurityResult<String> {
-        // Resolve.
+        // Description:
+        //     Resolve.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // SecurityResult<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<String>
+        //         Return value from `resolve`.
         //
         // Example:
-        // let result = instance.resolve(name);
+        //     let result = spanda_security::secrets::resolve(&self, name);
 
         // Call get on the current instance.
         self.get(name)?.resolve()
     }
 
     pub fn names(&self) -> impl Iterator<Item = &str> {
-        // Names.
+        // Description:
+        //     Names.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // impl Iterator<Item = &str>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: impl Iterator<Item = &str>
+        //         Return value from `names`.
         //
         // Example:
-        // let result = instance.names();
+        //     let result = spanda_security::secrets::names(&self);
 
         // Transform self and continue the chain.
         self.secrets.keys().map(String::as_str)
@@ -182,19 +183,18 @@ mod tests {
 
     #[test]
     fn literal_secret_roundtrip() {
-        // Literal secret roundtrip.
+        // Description:
+        //     Literal secret roundtrip.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_security::secrets::literal_secret_roundtrip();
+
+        //     let result = spanda_security::secrets::literal_secret_roundtrip();
 
         let mut store = SecretStore::new();
         store.register(SecretHandle {

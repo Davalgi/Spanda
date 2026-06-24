@@ -13,19 +13,20 @@ const FFI_BRIDGE_IMPORTS: &[&str] = &[
 ];
 
 pub fn resolve_ffi_import(path: &str) -> bool {
-    // Resolve whether a dotted import path refers to a known FFI bridge namespace.
+    // Description:
+    //     Resolve ffi import.
     //
-    // Parameters:
-    // - `path` — import path (e.g. `python.torch`)
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // true when the path matches a known or well-formed FFI bridge prefix.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `resolve_ffi_import`.
     //
     // Example:
-    // assert!(resolve_ffi_import("python.torch"));
+
+    //     let result = spanda_ffi::ffi_imports::resolve_ffi_import(path);
 
     if FFI_BRIDGE_IMPORTS.contains(&path) {
         return true;
@@ -53,12 +54,38 @@ mod tests {
 
     #[test]
     fn known_ffi_imports_resolve() {
+        // Description:
+        //     Known ffi imports resolve.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_ffi::ffi_imports::known_ffi_imports_resolve();
+
         assert!(resolve_ffi_import("python.torch"));
         assert!(resolve_ffi_import("cpp.ros2"));
     }
 
     #[test]
     fn unknown_imports_do_not_resolve() {
+        // Description:
+        //     Unknown imports do not resolve.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_ffi::ffi_imports::unknown_imports_do_not_resolve();
+
         assert!(!resolve_ffi_import("java.awt"));
     }
 }

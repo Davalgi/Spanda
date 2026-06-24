@@ -5,6 +5,19 @@ use spanda_driver::{compile, run, RunOptions};
 
 #[test]
 fn enforce_certify_blocks_deploy_without_metadata() {
+    // Description:
+    //     Enforce certify blocks deploy without metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::runtime_gate::enforce_certify_blocks_deploy_without_metadata();
+
     let source = r#"
 hardware Tiny { actuators [ DifferentialDrive ]; }
 robot Rover {
@@ -20,6 +33,19 @@ deploy Rover to Tiny;
 
 #[test]
 fn certified_example_passes_runtime_gate() {
+    // Description:
+    //     Certified example passes runtime gate.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::runtime_gate::certified_example_passes_runtime_gate();
+
     let source = include_str!("../../../examples/robotics/certified_deployment.sd");
     let program = compile(source).expect("compile").program;
     enforce_certification_runtime(&program, true).expect("certified example should pass");
@@ -27,6 +53,19 @@ fn certified_example_passes_runtime_gate() {
 
 #[test]
 fn run_with_enforce_certify_flag_fails_for_ota_example() {
+    // Description:
+    //     Run with enforce certify flag fails for ota example.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::runtime_gate::run_with_enforce_certify_flag_fails_for_ota_example();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let result = run(
         source,

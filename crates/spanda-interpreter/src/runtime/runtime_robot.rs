@@ -16,6 +16,27 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         _named_args: &[spanda_ast::nodes::NamedArg],
     ) -> Result<RuntimeValue, SpandaError> {
+        // Description:
+        //     Eval robot method.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     _named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_robot_method`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_robot::eval_robot_method(&mut self, ethod, args, _named_args);
+
         let state = self.backend.get_state();
         match method {
             "pose" => Ok(pose_from_state(&state.pose)),

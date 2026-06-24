@@ -6,6 +6,19 @@ use spanda_hardware::CompatSeverity;
 
 #[test]
 fn certified_example_proof_passes() {
+    // Description:
+    //     Certified example proof passes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::prover_integration::certified_example_proof_passes();
+
     let source = include_str!("../../../examples/robotics/certified_deployment.sd");
     let program = compile(source).expect("compile").program;
     let proof = build_certification_proof(&program, "certified_deployment.sd", true);
@@ -16,6 +29,19 @@ fn certified_example_proof_passes() {
 
 #[test]
 fn ota_example_proof_fails_under_strict() {
+    // Description:
+    //     Ota example proof fails under strict.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::prover_integration::ota_example_proof_fails_under_strict();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let program = compile(source).expect("compile").program;
     let proof = build_certification_proof(&program, "ota_deployment.sd", true);
@@ -28,6 +54,19 @@ fn ota_example_proof_fails_under_strict() {
 
 #[test]
 fn proof_includes_program_hash_for_existing_file() {
+    // Description:
+    //     Proof includes program hash for existing file.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_certify::prover_integration::proof_includes_program_hash_for_existing_file();
+
     let path = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/robotics/certified_deployment.sd"

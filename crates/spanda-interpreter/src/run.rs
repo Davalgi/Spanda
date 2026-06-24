@@ -14,6 +14,23 @@ use std::rc::Rc;
 
 /// Execute a type-checked program with simulation and optional provider wiring.
 pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
+    // Description:
+    //     Run program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: RunOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Result<RunResult, SpandaError>
+    //         Return value from `run_program`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::run::run_program(progra, options);
+
     let obstacles: Vec<Obstacle> = options
         .obstacles
         .iter()
@@ -136,6 +153,23 @@ pub fn run_tests_with_registry(
     program: &Program,
     registry: &ModuleRegistry,
 ) -> Result<TestRunResult, SpandaError> {
+    // Description:
+    //     Run tests with registry.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Result<TestRunResult, SpandaError>
+    //         Return value from `run_tests_with_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::run::run_tests_with_registry(progra, registry);
+
     let sim = create_default_simulator(SimulatorConfig::default());
     let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
     let logs_cb = logs.clone();

@@ -33,40 +33,40 @@ pub struct TriggerRegistry {
 
 impl TriggerRegistry {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_runtime::triggers::new();
+        //     let value = spanda_runtime::triggers::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn register(&mut self, decl: &TriggerHandlerDecl, agent: Option<String>) {
-        // Register the value.
+        // Description:
+        //     Register.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
-        // - `agent` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &TriggerHandlerDecl
+        //         Caller-supplied decl.
+        //     agen: Option<String>
+        //         Caller-supplied agen.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register(decl, agent);
+        //     let result = spanda_runtime::triggers::register(&mut self, decl, agen);
 
         // Compute TriggerHandlerDecl for the following logic.
         let TriggerHandlerDecl::TriggerHandlerDecl {
@@ -96,21 +96,22 @@ impl TriggerRegistry {
     }
 
     pub fn register_legacy_event(&mut self, event_name: String, body: Vec<Stmt>) {
-        // Register legacy event.
+        // Description:
+        //     Register legacy event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event_name` — input value
-        // - `body` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     event_name: String
+        //         Caller-supplied event name.
+        //     body: Vec<Stmt>
+        //         Caller-supplied body.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_legacy_event(event_name, body);
+        //     let result = spanda_runtime::triggers::register_legacy_event(&mut self, event_name, body);
 
         // Register the value handler.
         self.register(
@@ -128,77 +129,80 @@ impl TriggerRegistry {
     }
 
     pub fn handler_count(&self) -> usize {
+        // Description:
+        //     Handler count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `handler_count`.
         //
         // Example:
-        // let result = instance.handler_count();
+        //     let result = spanda_runtime::triggers::handler_count(&self);
 
         // Call len on the current instance.
         self.handlers.len()
     }
 
     pub fn all(&self) -> &[RegisteredTrigger] {
-        // All.
+        // Description:
+        //     All.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[RegisteredTrigger].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[RegisteredTrigger]
+        //         Return value from `all`.
         //
         // Example:
-        // let result = instance.all();
+        //     let result = spanda_runtime::triggers::all(&self);
 
         // Return handlers from this handle.
         &self.handlers
     }
 
     pub fn get(&self, id: usize) -> Option<&RegisteredTrigger> {
-        // Get.
+        // Description:
+        //     Get.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     id: usize
+        //         Caller-supplied id.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&RegisteredTrigger>
+        //         Return value from `get`.
         //
         // Example:
-        // let result = instance.get(id);
+        //     let result = spanda_runtime::triggers::get(&self, id);
 
         // Iterate over handlers.
         self.handlers.iter().find(|h| h.id == id)
     }
 
     pub fn event_handler_body(&self, event_name: &str) -> Option<&[Stmt]> {
-        // Event handler body.
+        // Description:
+        //     Event handler body.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event_name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     event_name: &str
+        //         Caller-supplied event name.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&[Stmt]>
+        //         Return value from `event_handler_body`.
         //
         // Example:
-        // let result = instance.event_handler_body(event_name);
+        //     let result = spanda_runtime::triggers::event_handler_body(&self, event_name);
 
         // Call event index on the current instance.
         self.event_index
@@ -208,20 +212,21 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_event(&self, event_name: &str) -> Vec<&RegisteredTrigger> {
-        // Handlers for event.
+        // Description:
+        //     Handlers for event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event_name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     event_name: &str
+        //         Caller-supplied event name.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_event`.
         //
         // Example:
-        // let result = instance.handlers_for_event(event_name);
+        //     let result = spanda_runtime::triggers::handlers_for_event(&self, event_name);
 
         // Call handlers on the current instance.
         self.handlers
@@ -235,21 +240,23 @@ impl TriggerRegistry {
         topic_name: &str,
         topic_path: &str,
     ) -> Vec<&RegisteredTrigger> {
-        // Handlers for message.
+        // Description:
+        //     Handlers for message.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_name` — input value
-        // - `topic_path` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic_name: &str
+        //         Caller-supplied opic name.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_message`.
         //
         // Example:
-        // let result = instance.handlers_for_message(topic_name, topic_path);
+        //     let result = spanda_runtime::triggers::handlers_for_message(&self, opic_name, opic_path);
 
         // Call handlers on the current instance.
         self.handlers
@@ -267,19 +274,19 @@ impl TriggerRegistry {
     }
 
     pub fn timer_handlers(&self) -> Vec<&RegisteredTrigger> {
-        // Timer handlers.
+        // Description:
+        //     Timer handlers.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `timer_handlers`.
         //
         // Example:
-        // let result = instance.timer_handlers();
+        //     let result = spanda_runtime::triggers::timer_handlers(&self);
 
         // Call handlers on the current instance.
         self.handlers
@@ -289,19 +296,19 @@ impl TriggerRegistry {
     }
 
     pub fn condition_handlers(&self) -> Vec<&RegisteredTrigger> {
-        // Condition handlers.
+        // Description:
+        //     Condition handlers.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `condition_handlers`.
         //
         // Example:
-        // let result = instance.condition_handlers();
+        //     let result = spanda_runtime::triggers::condition_handlers(&self);
 
         // Call handlers on the current instance.
         self.handlers
@@ -311,20 +318,21 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_state_entered(&self, state: &str) -> Vec<&RegisteredTrigger> {
-        // Handlers for state entered.
+        // Description:
+        //     Handlers for state entered.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `state` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     state: &str
+        //         Caller-supplied state.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_state_entered`.
         //
         // Example:
-        // let result = instance.handlers_for_state_entered(state);
+        //     let result = spanda_runtime::triggers::handlers_for_state_entered(&self, state);
 
         // Call handlers on the current instance.
         self.handlers
@@ -339,20 +347,21 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_state_exited(&self, state: &str) -> Vec<&RegisteredTrigger> {
-        // Handlers for state exited.
+        // Description:
+        //     Handlers for state exited.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `state` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     state: &str
+        //         Caller-supplied state.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_state_exited`.
         //
         // Example:
-        // let result = instance.handlers_for_state_exited(state);
+        //     let result = spanda_runtime::triggers::handlers_for_state_exited(&self, state);
 
         // Call handlers on the current instance.
         self.handlers
@@ -371,21 +380,23 @@ impl TriggerRegistry {
         category: SystemTriggerCategory,
         event: &str,
     ) -> Vec<&RegisteredTrigger> {
-        // Handlers for category.
+        // Description:
+        //     Handlers for category.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `category` — input value
-        // - `event` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     category: SystemTriggerCategory
+        //         Caller-supplied category.
+        //     even: &str
+        //         Caller-supplied even.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_category`.
         //
         // Example:
-        // let result = instance.handlers_for_category(category, event);
+        //     let result = spanda_runtime::triggers::handlers_for_category(&self, category, even);
 
         // Call handlers on the current instance.
         self.handlers
@@ -404,6 +415,25 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_connectivity(&self, domain: &str, event: &str) -> Vec<&RegisteredTrigger> {
+        // Description:
+        //     Handlers for connectivity.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     domain: &str
+        //         Caller-supplied domain.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_connectivity`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::triggers::handlers_for_connectivity(&self, domain, even);
+
         self.handlers
             .iter()
             .filter(|h| {
@@ -417,6 +447,25 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_geofence(&self, name: &str, phase: &str) -> Vec<&RegisteredTrigger> {
+        // Description:
+        //     Handlers for geofence.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     phase: &str
+        //         Caller-supplied phase.
+        //
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_geofence`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::triggers::handlers_for_geofence(&self, name, phase);
+
         self.handlers
             .iter()
             .filter(|h| {
@@ -430,6 +479,23 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_kill_switch(&self, name: &str) -> Vec<&RegisteredTrigger> {
+        // Description:
+        //     Handlers for kill switch.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_kill_switch`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::triggers::handlers_for_kill_switch(&self, name);
+
         self.handlers
             .iter()
             .filter(|h| {
@@ -442,6 +508,25 @@ impl TriggerRegistry {
     }
 
     pub fn handlers_for_sensor_event(&self, sensor: &str, event: &str) -> Vec<&RegisteredTrigger> {
+        // Description:
+        //     Handlers for sensor event.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     sensor: &str
+        //         Caller-supplied sensor.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `handlers_for_sensor_event`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::triggers::handlers_for_sensor_event(&self, sensor, even);
+
         self.handlers
             .iter()
             .filter(|h| {
@@ -455,19 +540,19 @@ impl TriggerRegistry {
     }
 
     pub fn sorted_by_priority(handlers: Vec<&RegisteredTrigger>) -> Vec<&RegisteredTrigger> {
-        // Sorted by priority.
+        // Description:
+        //     Sorted by priority.
         //
-        // Parameters:
-        // - `handlers` — input value
+        // Inputs:
+        //     handlers: Vec<&RegisteredTrigger>
+        //         Caller-supplied handlers.
         //
-        // Returns:
-        // Vec<&RegisteredTrigger>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RegisteredTrigger>
+        //         Return value from `sorted_by_priority`.
         //
         // Example:
-        // let result = spanda_runtime::triggers::sorted_by_priority(handlers);
+        //     let result = spanda_runtime::triggers::sorted_by_priority(handlers);
 
         // Create mutable sorted for accumulating results.
         let mut sorted = handlers;
@@ -486,19 +571,19 @@ pub enum SystemTriggerCategory {
 }
 
 pub fn priority_rank(priority: TaskPriority) -> u8 {
-    // Priority rank.
+    // Description:
+    //     Priority rank.
     //
-    // Parameters:
-    // - `priority` — input value
+    // Inputs:
+    //     priority: TaskPriority
+    //         Caller-supplied priority.
     //
-    // Returns:
-    // u8.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: u8
+    //         Return value from `priority_rank`.
     //
     // Example:
-    // let result = spanda_runtime::triggers::priority_rank(priority);
+    //     let result = spanda_runtime::triggers::priority_rank(priority);
 
     // Match on priority and handle each case.
     match priority {
@@ -510,20 +595,21 @@ pub fn priority_rank(priority: TaskPriority) -> u8 {
 }
 
 pub fn trigger_display_name(kind: &TriggerKind, agent: Option<&str>) -> String {
-    // Trigger display name.
+    // Description:
+    //     Trigger display name.
     //
-    // Parameters:
-    // - `kind` — input value
-    // - `agent` — input value
+    // Inputs:
+    //     kind: &TriggerKind
+    //         Caller-supplied kind.
+    //     agen: Option<&str>
+    //         Caller-supplied agen.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `trigger_display_name`.
     //
     // Example:
-    // let result = spanda_runtime::triggers::trigger_display_name(kind, agent);
+    //     let result = spanda_runtime::triggers::trigger_display_name(kind, agen);
 
     // Compute base for the following logic.
     let base = match kind {
@@ -566,19 +652,19 @@ pub struct TriggerTimerSchedule {
 
 impl TriggerTimerSchedule {
     pub fn from_handler(handler: &RegisteredTrigger) -> Option<Self> {
-        // Construct from handler.
+        // Description:
+        //     From handler.
         //
-        // Parameters:
-        // - `handler` — input value
+        // Inputs:
+        //     handler: &RegisteredTrigger
+        //         Caller-supplied handler.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `from_handler`.
         //
         // Example:
-        // let result = spanda_runtime::triggers::from_handler(handler);
+        //     let result = spanda_runtime::triggers::from_handler(handler);
 
         // take this path when let TriggerKind::Timer { interval ms } = handler.kind.
         if let TriggerKind::Timer { interval_ms } = handler.kind {
@@ -601,21 +687,23 @@ pub struct ConditionTriggerState {
 
 impl ConditionTriggerState {
     pub fn should_fire(&mut self, trigger_id: usize, active: bool) -> bool {
-        // Should fire.
+        // Description:
+        //     Should fire.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `trigger_id` — input value
-        // - `active` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     rigger_id: usize
+        //         Caller-supplied rigger id.
+        //     active: bool
+        //         Caller-supplied active.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `should_fire`.
         //
         // Example:
-        // let result = instance.should_fire(trigger_id, active);
+        //     let result = spanda_runtime::triggers::should_fire(&mut self, rigger_id, active);
 
         // Compute was for the following logic.
         let was = self.was_active.contains(&trigger_id);
@@ -631,19 +719,21 @@ impl ConditionTriggerState {
     }
 
     pub fn is_level_active(&self, trigger_id: usize) -> bool {
+        // Description:
+        //     Is level active.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `trigger_id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     rigger_id: usize
+        //         Caller-supplied rigger id.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_level_active`.
         //
         // Example:
-        // let result = instance.is_level_active(trigger_id);
+        //     let result = spanda_runtime::triggers::is_level_active(&self, rigger_id);
 
         // Call contains on the current instance.
         self.was_active.contains(&trigger_id)
@@ -657,19 +747,18 @@ mod tests {
 
     #[test]
     fn registers_and_sorts_by_priority() {
-        // Registers and sorts by priority.
+        // Description:
+        //     Registers and sorts by priority.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_runtime::triggers::registers_and_sorts_by_priority();
+
+        //     let result = spanda_runtime::triggers::registers_and_sorts_by_priority();
 
         let mut registry = TriggerRegistry::new();
         registry.register(
@@ -705,19 +794,18 @@ mod tests {
 
     #[test]
     fn condition_edge_detection() {
-        // Condition edge detection.
+        // Description:
+        //     Condition edge detection.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_runtime::triggers::condition_edge_detection();
+
+        //     let result = spanda_runtime::triggers::condition_edge_detection();
 
         let mut state = ConditionTriggerState::default();
         assert!(state.should_fire(1, true));

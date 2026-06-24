@@ -23,6 +23,7 @@ pub fn installed_official_packages<'a>(
     // None.
     //
     // Example:
+
     // let names = installed_official_packages(["spanda-ros2", "my-local-lib"]);
 
     let official: HashSet<&str> = framework_packages().iter().map(|p| p.name).collect();
@@ -37,25 +38,41 @@ pub fn installed_official_packages<'a>(
 
 /// Whether a package name is a registered official framework package.
 pub fn is_official_package(name: &str) -> bool {
-    // Check if a package name is in the official framework catalog.
+    // Description:
+    //     Is official package.
     //
-    // Parameters:
-    // - `name` — candidate package name
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // True when the name appears in `framework_packages()`.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_official_package`.
     //
     // Example:
-    // assert!(is_official_package("spanda-gps"));
+
+    //     let result = spanda_package::official::is_official_package(name);
 
     framework_packages().iter().any(|p| p.name == name)
 }
 
 /// Resolve official packages declared in a project manifest.
 pub fn official_packages_from_manifest(manifest: &PackageManifest) -> Vec<String> {
+    // Description:
+    //     Official packages from manifest.
+    //
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `official_packages_from_manifest`.
+    //
+    // Example:
+
+    //     let result = spanda_package::official::official_packages_from_manifest(anifes);
+
     installed_official_packages(manifest.dependencies.keys().map(String::as_str))
         .into_iter()
         .map(str::to_string)
@@ -64,6 +81,21 @@ pub fn official_packages_from_manifest(manifest: &PackageManifest) -> Vec<String
 
 /// Resolve official packages from a resolved lockfile.
 pub fn official_packages_from_lockfile(lockfile: &Lockfile) -> Vec<String> {
+    // Description:
+    //     Official packages from lockfile.
+    //
+    // Inputs:
+    //     lockfile: &Lockfile
+    //         Caller-supplied lockfile.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `official_packages_from_lockfile`.
+    //
+    // Example:
+
+    //     let result = spanda_package::official::official_packages_from_lockfile(lockfile);
+
     installed_official_packages(lockfile.dependencies.keys().map(String::as_str))
         .into_iter()
         .map(str::to_string)
@@ -72,19 +104,20 @@ pub fn official_packages_from_lockfile(lockfile: &Lockfile) -> Vec<String> {
 
 /// Load official package names for a project directory (prefers lockfile over manifest).
 pub fn load_official_packages_for_project(root: &Path) -> PackageResult<Vec<String>> {
-    // Load official package dependency names for a Spanda project root.
+    // Description:
+    //     Load official packages for project.
     //
-    // Parameters:
-    // - `root` — directory containing `spanda.toml`
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
     //
-    // Returns:
-    // Official package names from lockfile when present, otherwise manifest deps.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<Vec<String>>
+    //         Return value from `load_official_packages_for_project`.
     //
     // Example:
-    // let names = load_official_packages_for_project(project_root)?;
+
+    //     let result = spanda_package::official::load_official_packages_for_project(roo);
 
     let lock_path = root.join(LOCKFILE_FILENAME);
     if lock_path.is_file() {
@@ -104,19 +137,20 @@ pub fn load_official_packages_for_project(root: &Path) -> PackageResult<Vec<Stri
 
 /// Resolve official packages for a source file by walking up to the project root.
 pub fn load_official_packages_for_source(source: &Path) -> Vec<String> {
-    // Resolve official packages for a `.sd` source path.
+    // Description:
+    //     Load official packages for source.
     //
-    // Parameters:
-    // - `source` — path to a Spanda source file or directory
+    // Inputs:
+    //     source: &Path
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Official package names when a project root is found; empty otherwise.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `load_official_packages_for_source`.
     //
     // Example:
-    // let names = load_official_packages_for_source(Path::new("examples/packages/basic_project/src/main.sd"));
+
+    //     let result = spanda_package::official::load_official_packages_for_source(source);
 
     let start = if source.is_dir() {
         source.to_path_buf()

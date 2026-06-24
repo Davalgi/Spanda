@@ -31,7 +31,24 @@ impl<B: RobotBackend> Interpreter<B> {
         program_safety_zones: &[spanda_ast::robotics_decl::ProgramSafetyZoneDecl],
         certifications: &[spanda_ast::robotics_decl::CertifyDecl],
     ) {
-        // Load fleet groupings, safety zone policies, and certification metadata.
+        // Description:
+        //     Load robotics platform metadata.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     fleets: &[spanda_ast::robotics_decl::FleetDecl]
+        //         Caller-supplied fleets.
+        //     program_safety_zones: &[spanda_ast::robotics_decl::ProgramSafetyZoneDecl]
+        //         Caller-supplied program safety zones.
+        //     certifications: &[spanda_ast::robotics_decl::CertifyDecl]
+        //         Caller-supplied certifications.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_interpreter::runtime_setup::load_robotics_platform_metadata(&mut self, fleets, program_safety_zones, certifications);
         use spanda_ast::robotics_decl::{CertifyDecl, FleetDecl, ProgramSafetyZoneDecl};
         self.fleets = spanda_runtime::robotics::FleetRegistry::default();
         self.program_safety_zones = spanda_runtime::robotics::ProgramSafetyZoneRegistry::default();
@@ -82,20 +99,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn setup_robot(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
-        // Setup robot.
+        // Description:
+        //     Setup robot.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `robot` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     robo: &RobotDecl
+        //         Caller-supplied robo.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `setup_robot`.
         //
         // Example:
-        // let result = instance.setup_robot(robot);
+        //     let result = spanda_interpreter::runtime_setup::setup_robot(&mut self, robo);
 
         // Compute RobotDecl for the following logic.
         let RobotDecl::RobotDecl {

@@ -32,19 +32,19 @@ pub struct RegexPattern {
 
 impl RegexPattern {
     pub fn compile(&self) -> Result<Regex, RegexCompileError> {
-        // Compile the regex pattern into a Rust regex engine instance.
+        // Description:
+        //     Compile.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Compiled regex, or a syntax error diagnostic.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Regex, RegexCompileError>
+        //         Return value from `compile`.
         //
         // Example:
-        // let re = pattern.compile()?;
+        //     let result = spanda_ast::regex::compile(&self);
 
         // Build the final pattern string with supported inline flags.
         let mut pattern = self.source.clone();

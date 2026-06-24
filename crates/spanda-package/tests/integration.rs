@@ -12,19 +12,18 @@ use tempfile::TempDir;
 
 #[test]
 fn spanda_toml_parsing_full() {
-    // Spanda toml parsing full.
+    // Description:
+    //     Spanda toml parsing full.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::spanda_toml_parsing_full();
+
+    //     let result = spanda_package::integration::spanda_toml_parsing_full();
 
     let content = r#"
 [package]
@@ -69,19 +68,18 @@ categories = ["robotics", "navigation"]
 
 #[test]
 fn dependency_parsing_local_and_git() {
-    // Dependency parsing local and git.
+    // Description:
+    //     Dependency parsing local and git.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::dependency_parsing_local_and_git();
+
+    //     let result = spanda_package::integration::dependency_parsing_local_and_git();
 
     let spec = DependencySpec::Detail(DependencyDetail {
         version: None,
@@ -112,19 +110,18 @@ fn dependency_parsing_local_and_git() {
 
 #[test]
 fn version_constraint_validation() {
-    // Version constraint validation.
+    // Description:
+    //     Version constraint validation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::version_constraint_validation();
+
+    //     let result = spanda_package::integration::version_constraint_validation();
 
     let req = parse_version_req("^0.1.0").unwrap();
     assert!(version_satisfies(&Version::new(0, 1, 9), &req));
@@ -133,19 +130,18 @@ fn version_constraint_validation() {
 
 #[test]
 fn lockfile_generation_roundtrip() {
-    // Lockfile generation roundtrip.
+    // Description:
+    //     Lockfile generation roundtrip.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::lockfile_generation_roundtrip();
+
+    //     let result = spanda_package::integration::lockfile_generation_roundtrip();
 
     let root = TempDir::new().unwrap();
     let content = r#"
@@ -170,19 +166,18 @@ spanda-ros2 = "0.1.0"
 
 #[test]
 fn capability_validation_known_and_unknown() {
-    // Capability validation known and unknown.
+    // Description:
+    //     Capability validation known and unknown.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::capability_validation_known_and_unknown();
+
+    //     let result = spanda_package::integration::capability_validation_known_and_unknown();
 
     assert!(validate_capability("camera.read").is_ok());
     assert!(validate_capability("unknown.cap").is_err());
@@ -190,19 +185,18 @@ fn capability_validation_known_and_unknown() {
 
 #[test]
 fn package_safety_level_validation() {
-    // Package safety level validation.
+    // Description:
+    //     Package safety level validation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::package_safety_level_validation();
+
+    //     let result = spanda_package::integration::package_safety_level_validation();
 
     let manifest = PackageManifest::parse_str(
         r#"
@@ -222,19 +216,18 @@ can_control_actuators = true
 
 #[test]
 fn find_project_root_walks_up() {
-    // Find project root walks up.
+    // Description:
+    //     Find project root walks up.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::integration::find_project_root_walks_up();
+
+    //     let result = spanda_package::integration::find_project_root_walks_up();
 
     let root = TempDir::new().unwrap();
     fs::write(

@@ -13,7 +13,18 @@ pub struct MessageRegistry {
 
 impl MessageRegistry {
     pub fn new() -> Self {
-        // Seed built-in message type names used by comm declarations.
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+        //     let value = spanda_typecheck::message_registry::new();
         let mut reg = Self::default();
         for name in ["Velocity", "Pose", "Scan", "String"] {
             reg.builtin.insert(name.into());
@@ -22,6 +33,22 @@ impl MessageRegistry {
     }
 
     pub fn register(&mut self, decl: &MessageDecl) {
+        // Description:
+        //     Register.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &MessageDecl
+        //         Caller-supplied decl.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::message_registry::register(&mut self, decl);
+
         let MessageDecl::MessageDecl {
             name,
             fields,
@@ -42,6 +69,23 @@ impl MessageRegistry {
     }
 
     pub fn from_program(messages: &[MessageDecl], structs: &[StructDecl]) -> Self {
+        // Description:
+        //     From program.
+        //
+        // Inputs:
+        //     essages: &[MessageDecl]
+        //         Caller-supplied essages.
+        //     structs: &[StructDecl]
+        //         Caller-supplied structs.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_program`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::message_registry::from_program(essages, structs);
+
         let mut reg = Self::new();
         for msg in messages {
             reg.register(msg);
@@ -64,14 +108,65 @@ impl MessageRegistry {
     }
 
     pub fn is_known(&self, name: &str) -> bool {
+        // Description:
+        //     Is known.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_known`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::message_registry::is_known(&self, name);
+
         self.builtin.contains(name) || self.schemas.contains_key(name)
     }
 
     pub fn get(&self, name: &str) -> Option<&MessageSchema> {
+        // Description:
+        //     Get.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: Option<&MessageSchema>
+        //         Return value from `get`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::message_registry::get(&self, name);
+
         self.schemas.get(name)
     }
 
     pub fn resolve_type(&self, name: &str) -> Option<SpandaType> {
+        // Description:
+        //     Resolve type.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: Option<SpandaType>
+        //         Return value from `resolve_type`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::message_registry::resolve_type(&self, name);
+
         match name {
             "Velocity" => Some(SpandaType::Velocity),
             "Pose" => Some(SpandaType::Pose),
@@ -108,5 +203,20 @@ impl MessageRegistry {
 pub const COMM_CAPABILITIES: &[&str] = &["subscribe", "publish", "call", "execute", "discover"];
 
 pub fn is_comm_capability(action: &str) -> bool {
+    // Description:
+    //     Is comm capability.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_comm_capability`.
+    //
+    // Example:
+
+    //     let result = spanda_typecheck::message_registry::is_comm_capability(action);
+
     COMM_CAPABILITIES.contains(&action)
 }

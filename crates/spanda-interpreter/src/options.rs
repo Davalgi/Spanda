@@ -69,6 +69,7 @@ pub struct RunOptions {
     #[serde(default)]
     pub kill_switch_signature: Option<String>,
     pub inject_health_faults: bool,
+
     /// Inbound comm payloads queued before each recovery approval poll (test/sim hook).
     #[serde(default)]
     pub inbound_comm_messages: Vec<(String, String)>,
@@ -77,10 +78,38 @@ pub struct RunOptions {
 }
 
 fn default_max_loop_iterations() -> usize {
+    // Description:
+    //     Default max loop iterations.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: usize
+    //         Return value from `default_max_loop_iterations`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::options::default_max_loop_iterations();
+
     10
 }
 
 fn default_lidar_range() -> f64 {
+    // Description:
+    //     Default lidar range.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: f64
+    //         Return value from `default_lidar_range`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::options::default_lidar_range();
+
     10.0
 }
 

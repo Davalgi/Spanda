@@ -12,19 +12,18 @@ use super::protocol::call_subprocess_bridge;
 
 /// Resolve the C++ bridge executable path.
 pub fn bridge_binary_path() -> Option<PathBuf> {
-    // Bridge binary path.
+    // Description:
+    //     Bridge binary path.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `bridge_binary_path`.
     //
     // Example:
-    // let result = spanda_bridge::cpp::bridge_binary_path();
+    //     let result = spanda_bridge::cpp::bridge_binary_path();
 
     // handle the success value from var.
     if let Ok(path) = std::env::var("SPANDA_CPP_BRIDGE") {
@@ -41,19 +40,18 @@ pub fn bridge_binary_path() -> Option<PathBuf> {
 }
 
 fn candidate_binary_paths() -> Vec<PathBuf> {
-    // Candidate binary paths.
+    // Description:
+    //     Candidate binary paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<PathBuf>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<PathBuf>
+    //         Return value from `candidate_binary_paths`.
     //
     // Example:
-    // let result = spanda_bridge::cpp::candidate_binary_paths();
+    //     let result = spanda_bridge::cpp::candidate_binary_paths();
 
     // Create mutable paths for accumulating results.
     let mut paths = Vec::new();
@@ -73,19 +71,18 @@ fn candidate_binary_paths() -> Vec<PathBuf> {
 }
 
 pub fn bridge_available() -> bool {
-    // Bridge available.
+    // Description:
+    //     Bridge available.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `bridge_available`.
     //
     // Example:
-    // let result = spanda_bridge::cpp::bridge_available();
+    //     let result = spanda_bridge::cpp::bridge_available();
 
     // Produce is some as the result.
     bridge_binary_path().is_some()
@@ -95,20 +92,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
-    // Call extern.
+    // Description:
+    //     Call extern.
     //
-    // Parameters:
-    // - `decl` — input value
-    // - `args` — input value
+    // Inputs:
+    //     decl: &ExternFnDecl
+    //         Caller-supplied decl.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `call_extern`.
     //
     // Example:
-    // let result = spanda_bridge::cpp::call_extern(decl, args);
+    //     let result = spanda_bridge::cpp::call_extern(decl, args);
 
     // Produce #[cfg as the result.
     #[cfg(feature = "cpp-native")]
@@ -136,19 +134,19 @@ mod tests {
     use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
-        // Test decl.
+        // Description:
+        //     Test decl.
         //
-        // Parameters:
-        // - `name` — input value
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // ExternFnDecl.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: ExternFnDecl
+        //         Return value from `test_decl`.
         //
         // Example:
-        // let result = spanda_bridge::cpp::test_decl(name);
+        //     let result = spanda_bridge::cpp::test_decl(name);
 
         // Produce ExternFnDecl as the result.
         ExternFnDecl {
@@ -174,19 +172,18 @@ mod tests {
 
     #[test]
     fn subprocess_cpp_add_when_binary_available() {
-        // Subprocess cpp add when binary available.
+        // Description:
+        //     Subprocess cpp add when binary available.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_bridge::cpp::subprocess_cpp_add_when_binary_available();
+
+        //     let result = spanda_bridge::cpp::subprocess_cpp_add_when_binary_available();
 
         if !bridge_available() {
             return;
@@ -214,19 +211,18 @@ mod tests {
 
     #[test]
     fn subprocess_unknown_fn_errors() {
-        // Subprocess unknown fn errors.
+        // Description:
+        //     Subprocess unknown fn errors.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_bridge::cpp::subprocess_unknown_fn_errors();
+
+        //     let result = spanda_bridge::cpp::subprocess_unknown_fn_errors();
 
         if !bridge_available() {
             return;

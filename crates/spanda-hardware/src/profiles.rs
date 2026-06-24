@@ -22,19 +22,18 @@ pub struct HardwareProfile {
 }
 
 pub fn builtin_profiles() -> HashMap<String, HardwareProfile> {
-    // Builtin profiles.
+    // Description:
+    //     Builtin profiles.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, HardwareProfile>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, HardwareProfile>
+    //         Return value from `builtin_profiles`.
     //
     // Example:
-    // let result = spanda_core::hardware::builtin_profiles();
+    //     let result = spanda_hardware::profiles::builtin_profiles();
 
     // Produce from as the result.
     HashMap::from([
@@ -138,31 +137,45 @@ fn profile(
     min_control_period_ms: f64,
     power_draw_w: f64,
 ) -> (String, HardwareProfile) {
-    // Profile.
+    // Description:
+    //     Profile.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `cpu` — input value
-    // - `memory_mb` — input value
-    // - `storage_mb` — input value
-    // - `gpu_tops` — input value
-    // - `gpu_required` — input value
-    // - `sensors` — input value
-    // - `actuators` — input value
-    // - `battery_wh` — input value
-    // - `network_bandwidth_mbps` — input value
-    // - `network_latency_ms` — input value
-    // - `min_control_period_ms` — input value
-    // - `power_draw_w` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     cp: &str
+    //         Caller-supplied cp.
+    //     emory_mb: f64
+    //         Caller-supplied emory mb.
+    //     storage_mb: f64
+    //         Caller-supplied storage mb.
+    //     gpu_tops: Option<f64>
+    //         Caller-supplied gpu tops.
+    //     gpu_required: bool
+    //         Caller-supplied gpu required.
+    //     sensors: Vec<&str>
+    //         Caller-supplied sensors.
+    //     actuators: Vec<&str>
+    //         Caller-supplied actuators.
+    //     connectivity: Vec<&str>
+    //         Caller-supplied connectivity.
+    //     battery_wh: Option<f64>
+    //         Caller-supplied battery wh.
+    //     network_bandwidth_mbps: Option<f64>
+    //         Caller-supplied network bandwidth mbps.
+    //     network_latency_ms: Option<f64>
+    //         Caller-supplied network latency ms.
+    //     in_control_period_ms: f64
+    //         Caller-supplied in control period ms.
+    //     power_draw_w: f64
+    //         Caller-supplied power draw w.
     //
-    // Returns:
-    // (String, HardwareProfile).
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: (String, HardwareProfile)
+    //         Return value from `profile`.
     //
     // Example:
-    // let result = spanda_core::hardware::profile(name, cpu, memory_mb, storage_mb, gpu_tops, gpu_required, sensors, actuators, battery_wh, network_bandwidth_mbps, network_latency_ms, min_control_period_ms, power_draw_w);
+    //     let result = spanda_hardware::profiles::profile(name, cp, emory_mb, storage_mb, gpu_tops, gpu_required, sensors, actuators, connectivity, battery_wh, network_bandwidth_mbps, network_latency_ms, in_control_period_ms, power_draw_w);
 
     // Produce value as the result.
     (
@@ -188,19 +201,18 @@ fn profile(
 }
 
 pub fn list_hardware_profiles() -> Vec<String> {
-    // List hardware profiles.
+    // Description:
+    //     List hardware profiles.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `list_hardware_profiles`.
     //
     // Example:
-    // let result = spanda_core::hardware::list_hardware_profiles();
+    //     let result = spanda_hardware::profiles::list_hardware_profiles();
 
     // Create mutable names for accumulating results.
     let mut names: Vec<_> = builtin_profiles().into_keys().collect();

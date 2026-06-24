@@ -20,12 +20,19 @@ extern "C" {
 }
 
 pub fn native_available() -> bool {
-    // Returns `true` when the C++ native bridge was compiled in.
+    // Description:
+    //     Reports whether the C++ native bridge was compiled into this binary.
     //
-    // Returns:
+    // Inputs:
+    //     None.
     //
+    // Outputs:
+    //     available: bool
+    //         `true` when `SPANDA_CPP_NATIVE` was set at compile time.
+    //
+    // Example:
+    //     if spanda_bridge::cpp_native::native_available() { /* use in-process bridge */ }
 
-    // `true` when `SPANDA_CPP_NATIVE` was set at compile time.
     option_env!("SPANDA_CPP_NATIVE").is_some()
 }
 
@@ -33,19 +40,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
-    // Invoke a C++ extern via in-process C ABI bridge.
+    // Description:
+    //     Call extern.
     //
-    // Parameters:
+    // Inputs:
+    //     decl: &ExternFnDecl
+    //         Caller-supplied decl.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // - `decl` — `extern cpp fn` declaration.
-    // - `args` — Runtime arguments.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `call_extern`.
     //
-    // Returns:
-    //
-    // Handler result, or [`SpandaError`] on ABI/JSON failure.
-    //
-    // Options:
-    //
+    // Example:
+    //     let result = spanda_bridge::cpp_native::call_extern(decl, args);
 
     // Requires `cpp-native` Cargo feature.
     let line = decl.span.start.line;
@@ -120,19 +129,19 @@ mod tests {
     use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
-        // Test decl.
+        // Description:
+        //     Test decl.
         //
-        // Parameters:
-        // - `name` — input value
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // ExternFnDecl.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: ExternFnDecl
+        //         Return value from `test_decl`.
         //
         // Example:
-        // let result = spanda_core::cpp_native::test_decl(name);
+        //     let result = spanda_bridge::cpp_native::test_decl(name);
 
         // Produce ExternFnDecl as the result.
         ExternFnDecl {
@@ -158,19 +167,18 @@ mod tests {
 
     #[test]
     fn native_cpp_add_when_available() {
-        // Native cpp add when available.
+        // Description:
+        //     Native cpp add when available.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::cpp_native::native_cpp_add_when_available();
+
+        //     let result = spanda_bridge::cpp_native::native_cpp_add_when_available();
 
         if !native_available() {
             return;

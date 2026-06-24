@@ -42,19 +42,19 @@ pub enum PhysicalCategory {
 const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
 pub fn unit_category(unit: UnitKind) -> PhysicalCategory {
-    // Unit category.
+    // Description:
+    //     Unit category.
     //
-    // Parameters:
-    // - `unit` — input value
+    // Inputs:
+    //     ni: UnitKind
+    //         Caller-supplied ni.
     //
-    // Returns:
-    // PhysicalCategory.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PhysicalCategory
+    //         Return value from `unit_category`.
     //
     // Example:
-    // let result = spanda_core::units::unit_category(unit);
+    //     let result = spanda_typecheck::units::unit_category(ni);
 
     // Match on unit and handle each case.
     match unit {
@@ -104,20 +104,21 @@ pub fn unit_category(unit: UnitKind) -> PhysicalCategory {
 }
 
 pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
-    // Units compatible.
+    // Description:
+    //     Units compatible.
     //
-    // Parameters:
-    // - `a` — input value
-    // - `b` — input value
+    // Inputs:
+    //     a: UnitKind
+    //         Caller-supplied a.
+    //     b: UnitKind
+    //         Caller-supplied b.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `units_compatible`.
     //
     // Example:
-    // let result = spanda_core::units::units_compatible(a, b);
+    //     let result = spanda_typecheck::units::units_compatible(a, b);
 
     // take the branch when a equals b.
     if a == b {
@@ -132,20 +133,21 @@ pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
 }
 
 pub fn unit_matches_named_type(type_name: &str, unit: UnitKind) -> bool {
-    // Unit matches named type.
+    // Description:
+    //     Unit matches named type.
     //
-    // Parameters:
-    // - `type_name` — input value
-    // - `unit` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
+    //     ni: UnitKind
+    //         Caller-supplied ni.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `unit_matches_named_type`.
     //
     // Example:
-    // let result = spanda_core::units::unit_matches_named_type(type_name, unit);
+    //     let result = spanda_typecheck::units::unit_matches_named_type(ype_name, ni);
 
     // Match on type name and handle each case.
     match type_name {
@@ -185,20 +187,21 @@ pub fn unit_matches_named_type(type_name: &str, unit: UnitKind) -> bool {
 
 /// Convert `value` in `unit` to the canonical unit for its physical category.
 pub fn to_canonical(value: f64, unit: UnitKind) -> (f64, UnitKind) {
-    // Convert to canonical.
+    // Description:
+    //     To canonical.
     //
-    // Parameters:
-    // - `value` — input value
-    // - `unit` — input value
+    // Inputs:
+    //     value: f64
+    //         Caller-supplied value.
+    //     ni: UnitKind
+    //         Caller-supplied ni.
     //
-    // Returns:
-    // (f64, UnitKind).
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: (f64, UnitKind)
+    //         Return value from `to_canonical`.
     //
     // Example:
-    // let result = spanda_core::units::to_canonical(value, unit);
+    //     let result = spanda_typecheck::units::to_canonical(value, ni);
 
     // Compute category for the following logic.
     let category = unit_category(unit);
@@ -207,19 +210,19 @@ pub fn to_canonical(value: f64, unit: UnitKind) -> (f64, UnitKind) {
 }
 
 pub fn canonical_unit(category: PhysicalCategory) -> UnitKind {
-    // Canonical unit.
+    // Description:
+    //     Canonical unit.
     //
-    // Parameters:
-    // - `category` — input value
+    // Inputs:
+    //     category: PhysicalCategory
+    //         Caller-supplied category.
     //
-    // Returns:
-    // UnitKind.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: UnitKind
+    //         Return value from `canonical_unit`.
     //
     // Example:
-    // let result = spanda_core::units::canonical_unit(category);
+    //     let result = spanda_typecheck::units::canonical_unit(category);
 
     // Match on category and handle each case.
     match category {
@@ -259,21 +262,23 @@ pub fn canonical_unit(category: PhysicalCategory) -> UnitKind {
 }
 
 pub fn convert_value(value: f64, from: UnitKind, to: UnitKind) -> Option<f64> {
-    // Convert value.
+    // Description:
+    //     Convert value.
     //
-    // Parameters:
-    // - `value` — input value
-    // - `from` — input value
-    // - `to` — input value
+    // Inputs:
+    //     value: f64
+    //         Caller-supplied value.
+    //     fro: UnitKind
+    //         Caller-supplied fro.
+    //     o: UnitKind
+    //         Caller-supplied o.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `convert_value`.
     //
     // Example:
-    // let result = spanda_core::units::convert_value(value, from, to);
+    //     let result = spanda_typecheck::units::convert_value(value, fro, o);
 
     // take the branch when from equals to.
     if from == to {
@@ -290,21 +295,23 @@ pub fn convert_value(value: f64, from: UnitKind, to: UnitKind) -> Option<f64> {
 }
 
 fn from_canonical(value: f64, category: PhysicalCategory, to: UnitKind) -> f64 {
-    // Construct from canonical.
+    // Description:
+    //     From canonical.
     //
-    // Parameters:
-    // - `value` — input value
-    // - `category` — input value
-    // - `to` — input value
+    // Inputs:
+    //     value: f64
+    //         Caller-supplied value.
+    //     category: PhysicalCategory
+    //         Caller-supplied category.
+    //     o: UnitKind
+    //         Caller-supplied o.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `from_canonical`.
     //
     // Example:
-    // let result = spanda_core::units::from_canonical(value, category, to);
+    //     let result = spanda_typecheck::units::from_canonical(value, category, o);
 
     // Match on category and handle each case.
     match category {
@@ -474,20 +481,21 @@ fn from_canonical(value: f64, category: PhysicalCategory, to: UnitKind) -> f64 {
 }
 
 fn to_canonical_linear(value: f64, unit: UnitKind) -> f64 {
-    // Convert to canonical linear.
+    // Description:
+    //     To canonical linear.
     //
-    // Parameters:
-    // - `value` — input value
-    // - `unit` — input value
+    // Inputs:
+    //     value: f64
+    //         Caller-supplied value.
+    //     ni: UnitKind
+    //         Caller-supplied ni.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `to_canonical_linear`.
     //
     // Example:
-    // let result = spanda_core::units::to_canonical_linear(value, unit);
+    //     let result = spanda_typecheck::units::to_canonical_linear(value, ni);
 
     // Match on unit and handle each case.
     match unit {
@@ -570,22 +578,25 @@ pub fn align_for_binary(
     right: f64,
     right_unit: UnitKind,
 ) -> Option<(f64, f64, UnitKind)> {
-    // Align for binary.
+    // Description:
+    //     Align for binary.
     //
-    // Parameters:
-    // - `left` — input value
-    // - `left_unit` — input value
-    // - `right` — input value
-    // - `right_unit` — input value
+    // Inputs:
+    //     lef: f64
+    //         Caller-supplied lef.
+    //     left_uni: UnitKind
+    //         Caller-supplied left uni.
+    //     righ: f64
+    //         Caller-supplied righ.
+    //     right_uni: UnitKind
+    //         Caller-supplied right uni.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(f64, f64, UnitKind)>
+    //         Return value from `align_for_binary`.
     //
     // Example:
-    // let result = spanda_core::units::align_for_binary(left, left_unit, right, right_unit);
+    //     let result = spanda_typecheck::units::align_for_binary(lef, left_uni, righ, right_uni);
 
     // take the branch when units compatible is false.
     if !units_compatible(left_unit, right_unit) {
@@ -606,19 +617,18 @@ mod tests {
 
     #[test]
     fn converts_distance_units() {
-        // Converts distance units.
+        // Description:
+        //     Converts distance units.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::units::converts_distance_units();
+
+        //     let result = spanda_typecheck::units::converts_distance_units();
 
         assert!((convert_value(100.0, UnitKind::Cm, UnitKind::M).unwrap() - 1.0).abs() < 1e-9);
         assert!((convert_value(1.0, UnitKind::Km, UnitKind::M).unwrap() - 1000.0).abs() < 1e-6);
@@ -626,19 +636,18 @@ mod tests {
 
     #[test]
     fn converts_mixed_duration_addition() {
-        // Converts mixed duration addition.
+        // Description:
+        //     Converts mixed duration addition.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::units::converts_mixed_duration_addition();
+
+        //     let result = spanda_typecheck::units::converts_mixed_duration_addition();
 
         let (l, r, _) = align_for_binary(500.0, UnitKind::Ms, 0.5, UnitKind::S).unwrap();
         assert!((l - 500.0).abs() < 1e-9);
@@ -647,19 +656,18 @@ mod tests {
 
     #[test]
     fn converts_temperature() {
-        // Converts temperature.
+        // Description:
+        //     Converts temperature.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::units::converts_temperature();
+
+        //     let result = spanda_typecheck::units::converts_temperature();
 
         assert!(
             (convert_value(32.0, UnitKind::Fahrenheit, UnitKind::Celsius).unwrap()).abs() < 1e-9
@@ -672,19 +680,18 @@ mod tests {
 
     #[test]
     fn rejects_incompatible_units() {
-        // Rejects incompatible units.
+        // Description:
+        //     Rejects incompatible units.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::units::rejects_incompatible_units();
+
+        //     let result = spanda_typecheck::units::rejects_incompatible_units();
 
         assert!(!units_compatible(UnitKind::M, UnitKind::Kg));
         assert!(convert_value(1.0, UnitKind::M, UnitKind::Kg).is_none());
@@ -693,19 +700,18 @@ mod tests {
 
     #[test]
     fn converts_sensor_units() {
-        // Converts sensor units.
+        // Description:
+        //     Converts sensor units.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::units::converts_sensor_units();
+
+        //     let result = spanda_typecheck::units::converts_sensor_units();
 
         assert!(
             (convert_value(65.0, UnitKind::PercentRh, UnitKind::Rh).unwrap() - 65.0).abs() < 1e-9

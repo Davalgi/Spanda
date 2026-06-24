@@ -19,19 +19,18 @@ pub struct ApplicationPermissions {
 
 impl ApplicationPermissions {
     pub fn permissive() -> Self {
-        // Permissive.
+        // Description:
+        //     Permissive.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `permissive`.
         //
         // Example:
-        // let result = spanda_package::validation::permissive();
+        //     let result = spanda_package::validation::permissive();
 
         // Assemble the struct fields and return it.
         Self {
@@ -70,19 +69,19 @@ pub struct ValidationReport {
 
 impl ValidationReport {
     pub fn ok(&self) -> bool {
-        // Ok.
+        // Description:
+        //     Ok.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `ok`.
         //
         // Example:
-        // let result = instance.ok();
+        //     let result = spanda_package::validation::ok(&self);
 
         // Produce !self as the result.
         !self
@@ -92,21 +91,22 @@ impl ValidationReport {
     }
 
     pub fn push_error(&mut self, category: &str, message: impl Into<String>) {
-        // Push error.
+        // Description:
+        //     Push error.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `category` — input value
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     category: &str
+        //         Caller-supplied category.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.push_error(category, message);
+        //     let result = spanda_package::validation::push_error(&mut self, category, essage);
 
         // Append into self.
         self.issues.push(ValidationIssue {
@@ -117,21 +117,22 @@ impl ValidationReport {
     }
 
     pub fn push_warning(&mut self, category: &str, message: impl Into<String>) {
-        // Push warning.
+        // Description:
+        //     Push warning.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `category` — input value
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     category: &str
+        //         Caller-supplied category.
+        //     essage: impl Into<String>
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.push_warning(category, message);
+        //     let result = spanda_package::validation::push_warning(&mut self, category, essage);
 
         // Compute msg for the following logic.
         let msg = message.into();
@@ -149,20 +150,21 @@ pub fn validate_package(
     manifest: &PackageManifest,
     app_perms: &ApplicationPermissions,
 ) -> PackageResult<ValidationReport> {
-    // Validate package.
+    // Description:
+    //     Validate package.
     //
-    // Parameters:
-    // - `manifest` — input value
-    // - `app_perms` — input value
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     app_perms: &ApplicationPermissions
+    //         Caller-supplied app perms.
     //
-    // Returns:
-    // PackageResult<ValidationReport>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<ValidationReport>
+    //         Return value from `validate_package`.
     //
     // Example:
-    // let result = spanda_package::validation::validate_package(manifest, app_perms);
+    //     let result = spanda_package::validation::validate_package(anifes, app_perms);
 
     // Create mutable report for accumulating results.
     let mut report = ValidationReport::default();
@@ -197,20 +199,20 @@ pub fn validate_package(
 }
 
 fn validate_version(version: &str, report: &mut ValidationReport) {
-    // Validate version.
+    // Description:
+    //     Validate version.
     //
-    // Parameters:
-    // - `version` — input value
-    // - `report` — input value
+    // Inputs:
+    //     version: &str
+    //         Caller-supplied version.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_version(version, report);
+    //     let result = spanda_package::validation::validate_version(version, repor);
 
     // take this path when crate::dependency::parse version(version).is err().
     if crate::dependency::parse_version(version).is_err() {
@@ -219,20 +221,20 @@ fn validate_version(version: &str, report: &mut ValidationReport) {
 }
 
 fn validate_capabilities(caps: &CapabilityRequirements, report: &mut ValidationReport) {
-    // Validate capabilities.
+    // Description:
+    //     Validate capabilities.
     //
-    // Parameters:
-    // - `caps` — input value
-    // - `report` — input value
+    // Inputs:
+    //     caps: &CapabilityRequirements
+    //         Caller-supplied caps.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_capabilities(caps, report);
+    //     let result = spanda_package::validation::validate_capabilities(caps, repor);
 
     // Validate each requested capability.
     for cap in caps.all() {
@@ -244,21 +246,20 @@ fn validate_capabilities(caps: &CapabilityRequirements, report: &mut ValidationR
 }
 
 fn validate_hardware_requirements(req: &HardwareRequirements, report: &mut ValidationReport) {
-    // Validate hardware requirements.
+    // Description:
+    //     Validate hardware requirements.
     //
-    // Parameters:
-    // - `req` — input value
-    // - `report` — input value
+    // Inputs:
+    //     req: &HardwareRequirements
+    //         Caller-supplied req.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_hardware_requirements(req, report);
-
+    //     let result = spanda_package::validation::validate_hardware_requirements(req, repor);
     // use mem when memory is present.
 
     // Emit output when memory provides a mem.
@@ -289,21 +290,22 @@ fn validate_hardware_targets(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
-    // Validate hardware targets.
+    // Description:
+    //     Validate hardware targets.
     //
-    // Parameters:
-    // - `manifest` — input value
-    // - `app_perms` — input value
-    // - `report` — input value
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     app_perms: &ApplicationPermissions
+    //         Caller-supplied app perms.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_hardware_targets(manifest, app_perms, report);
+    //     let result = spanda_package::validation::validate_hardware_targets(anifes, app_perms, repor);
 
     // Compute known for the following logic.
     let known = list_hardware_profiles();
@@ -333,21 +335,22 @@ fn validate_safety(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
-    // Validate safety.
+    // Description:
+    //     Validate safety.
     //
-    // Parameters:
-    // - `safety` — input value
-    // - `app_perms` — input value
-    // - `report` — input value
+    // Inputs:
+    //     safety: &SafetyMetadata
+    //         Caller-supplied safety.
+    //     app_perms: &ApplicationPermissions
+    //         Caller-supplied app perms.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_safety(safety, app_perms, report);
+    //     let result = spanda_package::validation::validate_safety(safety, app_perms, repor);
 
     // Check membership before continuing.
     if !app_perms.allowed_safety_levels.contains(&safety.level) {
@@ -385,22 +388,22 @@ fn validate_license(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
-    // Validate license.
+    // Description:
+    //     Validate license.
     //
-    // Parameters:
-    // - `manifest` — input value
-    // - `app_perms` — input value
-    // - `report` — input value
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     app_perms: &ApplicationPermissions
+    //         Caller-supplied app perms.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_license(manifest, app_perms, report);
-
+    //     let result = spanda_package::validation::validate_license(anifes, app_perms, repor);
     // use license when license is present.
 
     // Emit output when license provides a license.
@@ -430,20 +433,20 @@ fn validate_license(
 }
 
 fn validate_adapter(manifest: &PackageManifest, report: &mut ValidationReport) {
-    // Validate adapter.
+    // Description:
+    //     Validate adapter.
     //
-    // Parameters:
-    // - `manifest` — input value
-    // - `report` — input value
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_adapter(manifest, report);
+    //     let result = spanda_package::validation::validate_adapter(anifes, repor);
 
     // Process each require.
     for req in &manifest.adapter.requires {
@@ -463,20 +466,20 @@ fn validate_adapter(manifest: &PackageManifest, report: &mut ValidationReport) {
 }
 
 fn validate_dependencies(manifest: &PackageManifest, report: &mut ValidationReport) {
-    // Validate dependencies.
+    // Description:
+    //     Validate dependencies.
     //
-    // Parameters:
-    // - `manifest` — input value
-    // - `report` — input value
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::validate_dependencies(manifest, report);
+    //     let result = spanda_package::validation::validate_dependencies(anifes, repor);
 
     // Iterate over all dependencies with destructured elements.
     for (name, spec) in manifest.all_dependencies() {
@@ -507,21 +510,22 @@ fn check_capability_excess(
     app_perms: &ApplicationPermissions,
     report: &mut ValidationReport,
 ) {
-    // Check capability excess.
+    // Description:
+    //     Check capability excess.
     //
-    // Parameters:
-    // - `caps` — input value
-    // - `app_perms` — input value
-    // - `report` — input value
+    // Inputs:
+    //     caps: &CapabilityRequirements
+    //         Caller-supplied caps.
+    //     app_perms: &ApplicationPermissions
+    //         Caller-supplied app perms.
+    //     repor: &mut ValidationReport
+    //         Caller-supplied repor.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::validation::check_capability_excess(caps, app_perms, report);
+    //     let result = spanda_package::validation::check_capability_excess(caps, app_perms, repor);
 
     // Validate each requested capability.
     for cap in caps.uses.iter().chain(caps.required.iter()) {
@@ -563,19 +567,18 @@ mod tests {
 
     #[test]
     fn validates_safety_level_conflict() {
-        // Validates safety level conflict.
+        // Description:
+        //     Validates safety level conflict.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::validation::validates_safety_level_conflict();
+
+        //     let result = spanda_package::validation::validates_safety_level_conflict();
 
         let manifest = PackageManifest::parse_str(
             r#"
@@ -596,19 +599,18 @@ can_control_actuators = true
 
     #[test]
     fn warns_on_capability_excess() {
-        // Warns on capability excess.
+        // Description:
+        //     Warns on capability excess.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::validation::warns_on_capability_excess();
+
+        //     let result = spanda_package::validation::warns_on_capability_excess();
 
         let manifest = PackageManifest::parse_str(
             r#"
@@ -632,19 +634,18 @@ uses = ["camera.read"]
 
     #[test]
     fn validates_hardware_metadata() {
-        // Validates hardware metadata.
+        // Description:
+        //     Validates hardware metadata.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::validation::validates_hardware_metadata();
+
+        //     let result = spanda_package::validation::validates_hardware_metadata();
 
         let manifest = PackageManifest::parse_str(
             r#"

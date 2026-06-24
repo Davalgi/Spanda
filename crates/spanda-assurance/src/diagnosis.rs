@@ -17,6 +17,21 @@ pub struct DiagnosisReport {
 
 /// Diagnose from a mission trace file.
 pub fn diagnose_from_trace(trace_path: &Path) -> Result<DiagnosisReport, SpandaError> {
+    // Description:
+    //     Diagnose from trace.
+    //
+    // Inputs:
+    //     race_path: &Path
+    //         Caller-supplied race path.
+    //
+    // Outputs:
+    //     result: Result<DiagnosisReport, SpandaError>
+    //         Return value from `diagnose_from_trace`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::diagnosis::diagnose_from_trace(race_path);
+
     let trace = diagnose_trace(trace_path)?;
     Ok(DiagnosisReport {
         static_diagnoses: Vec::new(),
@@ -31,6 +46,21 @@ pub fn diagnose_from_trace(trace_path: &Path) -> Result<DiagnosisReport, SpandaE
 
 /// Static diagnosis from program declarations (mitigations, anomaly handlers).
 pub fn diagnose_program(program: &Program) -> DiagnosisReport {
+    // Description:
+    //     Diagnose program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: DiagnosisReport
+    //         Return value from `diagnose_program`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::diagnosis::diagnose_program(progra);
+
     let Program::Program {
         mitigations,
         anomaly_handlers,

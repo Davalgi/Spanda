@@ -7,19 +7,19 @@ use spanda_ast::nodes::Program;
 use spanda_error::{Diagnostic, SpandaError};
 use std::path::Path;
 pub fn load_project_modules(project_root: &Path) -> Result<ModuleRegistry, SpandaError> {
-    // Load project modules.
+    // Description:
+    //     Load project modules.
     //
-    // Parameters:
-    // - `project_root` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<ModuleRegistry, SpandaError>
+    //         Return value from `load_project_modules`.
     //
     // Example:
-    // let result = spanda_core::modules::load_project_modules(project_root);
+    //     let result = spanda_modules::load_project_modules(project_roo);
 
     // Create mutable entries for accumulating results.
     let mut entries = Vec::new();
@@ -68,20 +68,21 @@ pub fn load_project_modules(project_root: &Path) -> Result<ModuleRegistry, Spand
 }
 
 fn collect_modules(dir: &Path, out: &mut Vec<(String, Program)>) -> Result<(), SpandaError> {
-    // Collect modules.
+    // Description:
+    //     Collect modules.
     //
-    // Parameters:
-    // - `dir` — input value
-    // - `out` — input value
+    // Inputs:
+    //     dir: &Path
+    //         Caller-supplied dir.
+    //     o: &mut Vec<(String, Program)>
+    //         Caller-supplied o.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `collect_modules`.
     //
     // Example:
-    // let result = spanda_core::modules::collect_modules(dir, out);
+    //     let result = spanda_modules::collect_modules(dir, o);
 
     // Process each registry entry.
     for entry in std::fs::read_dir(dir).map_err(|e| SpandaError::Runtime {
@@ -131,19 +132,19 @@ fn collect_modules(dir: &Path, out: &mut Vec<(String, Program)>) -> Result<(), S
 
 /// Infer module name from file path when `module` declaration is absent (single-file mode).
 pub fn module_name_from_path(path: &Path) -> String {
-    // Module name from path.
+    // Description:
+    //     Module name from path.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `module_name_from_path`.
     //
     // Example:
-    // let result = spanda_core::modules::module_name_from_path(path);
+    //     let result = spanda_modules::module_name_from_path(path);
 
     // Produce file stem as the result.
     path.file_stem()
@@ -159,19 +160,18 @@ mod tests {
     use spanda_ast::nodes::{Span, SpandaType, Stmt};
 
     fn empty_span() -> Span {
-        // Empty span.
+        // Description:
+        //     Empty span.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Span
+        //         Return value from `empty_span`.
         //
         // Example:
-        // let result = spanda_core::modules::empty_span();
+        //     let result = spanda_modules::empty_span();
 
         // Produce Span as the result.
         Span {
@@ -189,19 +189,19 @@ mod tests {
     }
 
     fn sample_program(functions: Vec<ModuleFnDecl>) -> Program {
-        // Sample program.
+        // Description:
+        //     Sample program.
         //
-        // Parameters:
-        // - `functions` — input value
+        // Inputs:
+        //     functions: Vec<ModuleFnDecl>
+        //         Caller-supplied functions.
         //
-        // Returns:
-        // Program.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Program
+        //         Return value from `sample_program`.
         //
         // Example:
-        // let result = spanda_core::modules::sample_program(functions);
+        //     let result = spanda_modules::sample_program(functions);
 
         // Produce Program as the result.
         Program::Program {
@@ -250,19 +250,18 @@ mod tests {
 
     #[test]
     fn registry_exports_public_functions_only() {
-        // Registry exports public functions only.
+        // Description:
+        //     Registry exports public functions only.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::modules::registry_exports_public_functions_only();
+
+        //     let result = spanda_modules::registry_exports_public_functions_only();
 
         let funcs = vec![
             ModuleFnDecl {

@@ -17,19 +17,19 @@ pub enum TransportKind {
 
 impl TransportKind {
     pub fn from_ident(s: &str) -> Option<Self> {
-        // Construct from ident.
+        // Description:
+        //     From ident.
         //
-        // Parameters:
-        // - `s` — input value
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `from_ident`.
         //
         // Example:
-        // let result = spanda_core::comm::from_ident(s);
+        //     let result = spanda_ast::comm_decl::from_ident(s);
 
         // Match on s and handle each case.
         match s {
@@ -47,18 +47,18 @@ impl TransportKind {
     }
 
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -72,6 +72,20 @@ impl TransportKind {
     }
 
     pub fn supports_encryption(self) -> bool {
+        // Description:
+        //     Supports encryption.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `supports_encryption`.
+        //
+        // Example:
+
+        //     let result = instance.supports_encryption();
+
         !matches!(self, Self::Local | Self::Sim)
     }
 }
@@ -120,6 +134,7 @@ pub struct MessageSchema {
     pub fields: Vec<(String, String)>,
     pub version: Option<u32>,
 }
+
 // ── Communication declarations ─────────────────────────────────────────────
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

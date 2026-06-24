@@ -5,14 +5,59 @@ use std::process::{Command, Stdio};
 use crate::python_bridge;
 
 pub fn ros2_live_enabled() -> bool {
+    // Description:
+    //     Ros2 live enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `ros2_live_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::ros2_live_enabled();
+
     std::env::var("SPANDA_ROS2_LIVE").is_ok() || std::env::var("SPANDA_ROS2_RCLRS").is_ok()
 }
 
 pub fn ros2_native_enabled() -> bool {
+    // Description:
+    //     Ros2 native enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `ros2_native_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::ros2_native_enabled();
+
     std::env::var("SPANDA_ROS2_NATIVE").is_ok()
 }
 
 pub fn try_ros2_native_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Try ros2 native publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_native_publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_native_publish(opic, payload);
+
     if !ros2_native_enabled() {
         return false;
     }
@@ -37,6 +82,21 @@ pub fn try_ros2_native_publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn try_ros2_native_subscribe(topic: &str) -> bool {
+    // Description:
+    //     Try ros2 native subscribe.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_native_subscribe`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_native_subscribe(opic);
+
     if !ros2_native_enabled() {
         return false;
     }
@@ -50,6 +110,25 @@ pub fn try_ros2_native_subscribe(topic: &str) -> bool {
 }
 
 pub fn try_ros2_native_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+    //     Try ros2 native service call.
+    //
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_native_service_call`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_native_service_call(service, service_type, reques);
+
     if !ros2_native_enabled() {
         return false;
     }
@@ -63,6 +142,23 @@ pub fn try_ros2_native_service_call(service: &str, service_type: &str, request: 
 }
 
 pub fn try_ros2_bridge_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Try ros2 bridge publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_bridge_publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_bridge_publish(opic, payload);
+
     if !ros2_live_enabled() {
         return false;
     }
@@ -70,6 +166,21 @@ pub fn try_ros2_bridge_publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn try_ros2_bridge_subscribe(topic: &str) -> bool {
+    // Description:
+    //     Try ros2 bridge subscribe.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_bridge_subscribe`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_bridge_subscribe(opic);
+
     if !ros2_live_enabled() {
         return false;
     }
@@ -77,6 +188,25 @@ pub fn try_ros2_bridge_subscribe(topic: &str) -> bool {
 }
 
 pub fn try_ros2_bridge_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+    //     Try ros2 bridge service call.
+    //
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_bridge_service_call`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_bridge_service_call(service, service_type, reques);
+
     if !ros2_live_enabled() {
         return false;
     }
@@ -91,6 +221,23 @@ pub fn try_ros2_bridge_service_call(service: &str, service_type: &str, request: 
 }
 
 pub fn try_ros2_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Try ros2 publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_publish(opic, payload);
+
     if ros2_native_enabled() {
         return try_ros2_native_publish(topic, payload);
     }
@@ -98,6 +245,21 @@ pub fn try_ros2_publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn try_ros2_subscribe(topic: &str) -> bool {
+    // Description:
+    //     Try ros2 subscribe.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_subscribe`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_subscribe(opic);
+
     if ros2_native_enabled() {
         return try_ros2_native_subscribe(topic);
     }
@@ -105,6 +267,25 @@ pub fn try_ros2_subscribe(topic: &str) -> bool {
 }
 
 pub fn try_ros2_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+    //     Try ros2 service call.
+    //
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `try_ros2_service_call`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::live_bridge::try_ros2_service_call(service, service_type, reques);
+
     if ros2_native_enabled() {
         return try_ros2_native_service_call(service, service_type, request);
     }
@@ -120,6 +301,19 @@ mod tests {
 
     #[test]
     fn live_flags_default_off() {
+        // Description:
+        //     Live flags default off.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport_ros2::live_bridge::live_flags_default_off();
+
         let _lock = ENV_LOCK.lock().unwrap();
         std::env::remove_var("SPANDA_ROS2_LIVE");
         std::env::remove_var("SPANDA_ROS2_NATIVE");
@@ -129,6 +323,19 @@ mod tests {
 
     #[test]
     fn native_uses_ros2_cli_when_enabled() {
+        // Description:
+        //     Native uses ros2 cli when enabled.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport_ros2::live_bridge::native_uses_ros2_cli_when_enabled();
+
         let _lock = ENV_LOCK.lock().unwrap();
         std::env::set_var("SPANDA_ROS2_NATIVE", "1");
         assert!(ros2_native_enabled());

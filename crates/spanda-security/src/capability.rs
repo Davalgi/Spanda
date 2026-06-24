@@ -6,19 +6,18 @@ use std::collections::HashSet;
 
 /// Known package/runtime capability identifiers.
 pub fn known_capabilities() -> &'static [&'static str] {
-    // Known capabilities.
+    // Description:
+    //     Known capabilities.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static [&'static str].
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static [&'static str]
+    //         Return value from `known_capabilities`.
     //
     // Example:
-    // let result = spanda_security::capability::known_capabilities();
+    //     let result = spanda_security::capability::known_capabilities();
 
     // Return the static list of known values.
     &[
@@ -81,18 +80,19 @@ pub fn known_capabilities() -> &'static [&'static str] {
 }
 
 pub fn is_known_capability(cap: &str) -> bool {
+    // Description:
+    //     Is known capability.
     //
-    // Parameters:
-    // - `cap` — input value
+    // Inputs:
+    //     cap: &str
+    //         Caller-supplied cap.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_known_capability`.
     //
     // Example:
-    // let result = spanda_security::capability::is_known_capability(cap);
+    //     let result = spanda_security::capability::is_known_capability(cap);
 
     // Produce contains as the result.
     known_capabilities().contains(&cap)
@@ -106,19 +106,19 @@ pub struct Permission {
 
 impl Permission {
     pub fn new(capability: impl Into<String>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `capability` — input value
+        // Inputs:
+        //     capability: impl Into<String>
+        //         Caller-supplied capability.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::capability::new(capability);
+        //     let value = spanda_security::capability::new(capability);
 
         // Assemble the struct fields and return it.
         Self {
@@ -136,38 +136,36 @@ pub struct CapabilitySet {
 
 impl CapabilitySet {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::capability::new();
+        //     let value = spanda_security::capability::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn permissive() -> Self {
-        // Permissive.
+        // Description:
+        //     Permissive.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `permissive`.
         //
         // Example:
-        // let result = spanda_security::capability::permissive();
+        //     let result = spanda_security::capability::permissive();
 
         // Assemble the struct fields and return it.
         Self {
@@ -180,40 +178,40 @@ impl CapabilitySet {
     }
 
     pub fn grant(&mut self, capability: impl Into<String>) {
-        // Grant.
+        // Description:
+        //     Grant.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `capability` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     capability: impl Into<String>
+        //         Caller-supplied capability.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.grant(capability);
+        //     let result = spanda_security::capability::grant(&mut self, capability);
 
         // Append into self.
         self.granted.insert(capability.into());
     }
 
     pub fn grant_all(&mut self, caps: impl IntoIterator<Item = impl Into<String>>) {
-        // Grant all.
+        // Description:
+        //     Grant all.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `caps` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     caps: impl IntoIterator<Item = impl Into<String>>
+        //         Caller-supplied caps.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.grant_all(caps);
+        //     let result = spanda_security::capability::grant_all(&mut self, caps);
 
         // Validate each requested capability.
         for cap in caps {
@@ -222,40 +220,42 @@ impl CapabilitySet {
     }
 
     pub fn has(&self, capability: &str) -> bool {
-        // Has.
+        // Description:
+        //     Has.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `capability` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     capability: &str
+        //         Caller-supplied capability.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `has`.
         //
         // Example:
-        // let result = instance.has(capability);
+        //     let result = spanda_security::capability::has(&self, capability);
 
         // Call contains on the current instance.
         self.permissive || self.granted.contains(capability)
     }
 
     pub fn require(&self, capability: &str) -> SecurityResult<()> {
-        // Require.
+        // Description:
+        //     Require.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `capability` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     capability: &str
+        //         Caller-supplied capability.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `require`.
         //
         // Example:
-        // let result = instance.require(capability);
+        //     let result = spanda_security::capability::require(&self, capability);
 
         // take this path when self.has(capability).
         if self.has(capability) {
@@ -266,19 +266,19 @@ impl CapabilitySet {
     }
 
     pub fn granted(&self) -> impl Iterator<Item = &str> {
-        // Granted.
+        // Description:
+        //     Granted.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // impl Iterator<Item = &str>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: impl Iterator<Item = &str>
+        //         Return value from `granted`.
         //
         // Example:
-        // let result = instance.granted();
+        //     let result = spanda_security::capability::granted(&self);
 
         // Iterate over granted.
         self.granted.iter().map(String::as_str)
@@ -287,19 +287,19 @@ impl CapabilitySet {
 
 /// Maps high-level runtime operations to required package capabilities.
 pub fn capability_for_operation(operation: &str) -> Option<&'static str> {
-    // Capability for operation.
+    // Description:
+    //     Capability for operation.
     //
-    // Parameters:
-    // - `operation` — input value
+    // Inputs:
+    //     operation: &str
+    //         Caller-supplied operation.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `capability_for_operation`.
     //
     // Example:
-    // let result = spanda_security::capability::capability_for_operation(operation);
+    //     let result = spanda_security::capability::capability_for_operation(operation);
 
     // Match on operation and handle each case.
     match operation {
@@ -326,19 +326,18 @@ mod tests {
 
     #[test]
     fn capability_enforcement() {
-        // Capability enforcement.
+        // Description:
+        //     Capability enforcement.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_security::capability::capability_enforcement();
+
+        //     let result = spanda_security::capability::capability_enforcement();
 
         let mut caps = CapabilitySet::new();
         caps.grant("audit.write");

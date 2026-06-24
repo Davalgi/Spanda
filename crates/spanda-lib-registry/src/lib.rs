@@ -18,18 +18,18 @@ pub enum SensorInterface {
 
 impl SensorInterface {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -86,20 +86,21 @@ pub struct LibrarySensorTypeInfo {
 }
 
 fn scan_reading(ctx: &DriverContext, range: f64) -> RuntimeValue {
-    // Scan reading.
+    // Description:
+    //     Scan reading.
     //
-    // Parameters:
-    // - `ctx` — input value
-    // - `range` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
+    //     range: f64
+    //         Caller-supplied range.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `scan_reading`.
     //
     // Example:
-    // let result = spanda_lib_registry::scan_reading(ctx, range);
+    //     let result = spanda_lib_registry::scan_reading(ctx, range);
 
     // Compute x for the following logic.
     let x = ctx.sim_state.as_ref().map(|s| s.pose.x).unwrap_or(0.0);
@@ -110,19 +111,19 @@ fn scan_reading(ctx: &DriverContext, range: f64) -> RuntimeValue {
 }
 
 fn imu_reading(yaw: f64) -> RuntimeValue {
-    // Imu reading.
+    // Description:
+    //     Imu reading.
     //
-    // Parameters:
-    // - `yaw` — input value
+    // Inputs:
+    //     yaw: f64
+    //         Caller-supplied yaw.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `imu_reading`.
     //
     // Example:
-    // let result = spanda_lib_registry::imu_reading(yaw);
+    //     let result = spanda_lib_registry::imu_reading(yaw);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -155,20 +156,24 @@ fn imu_reading(yaw: f64) -> RuntimeValue {
 }
 
 fn gps_fix_reading(lat: f64, lon: f64, alt: f64) -> RuntimeValue {
-    // Build a GpsFix object from WGS84 coordinates.
+    // Description:
+    //     Gps fix reading.
     //
-    // Parameters:
-    // - `lat`, `lon` — degrees
-    // - `alt` — altitude in meters
+    // Inputs:
+    //     la: f64
+    //         Caller-supplied la.
+    //     lon: f64
+    //         Caller-supplied lon.
+    //     al: f64
+    //         Caller-supplied al.
     //
-    // Returns:
-    // GpsFix runtime object.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `gps_fix_reading`.
     //
     // Example:
-    // let fix = gps_fix_reading(30.0, -97.0, 150.0);
+
+    //     let result = spanda_lib_registry::gps_fix_reading(la, lon, al);
 
     use spanda_ast::nodes::UnitKind;
     RuntimeValue::Object {
@@ -207,19 +212,20 @@ fn gps_fix_reading(lat: f64, lon: f64, alt: f64) -> RuntimeValue {
 }
 
 fn read_ublox_neo_m8n(ctx: &DriverContext) -> RuntimeValue {
-    // Read u-blox NEO-M8N GNSS fix via UART NMEA stub.
+    // Description:
+    //     Read ublox neo m8n.
     //
-    // Parameters:
-    // - `ctx` — driver context with optional HAL and simulation pose
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // GpsFix runtime object.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_ublox_neo_m8n`.
     //
     // Example:
-    // let fix = read_ublox_neo_m8n(&ctx);
+
+    //     let result = spanda_lib_registry::read_ublox_neo_m8n(ctx);
 
     let lat = ctx.sim_state.as_ref().map(|s| s.pose.x).unwrap_or(0.0);
     let lon = ctx.sim_state.as_ref().map(|s| s.pose.y).unwrap_or(0.0);
@@ -232,95 +238,95 @@ fn read_ublox_neo_m8n(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_velodyne_vlp16(ctx: &DriverContext) -> RuntimeValue {
-    // Read velodyne vlp16.
+    // Description:
+    //     Read velodyne vlp16.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_velodyne_vlp16`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_velodyne_vlp16(ctx);
+    //     let result = spanda_lib_registry::read_velodyne_vlp16(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 100.0)
 }
 
 fn read_velodyne_vlp32(ctx: &DriverContext) -> RuntimeValue {
-    // Read velodyne vlp32.
+    // Description:
+    //     Read velodyne vlp32.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_velodyne_vlp32`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_velodyne_vlp32(ctx);
+    //     let result = spanda_lib_registry::read_velodyne_vlp32(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 200.0)
 }
 
 fn read_hokuyo_ust10(ctx: &DriverContext) -> RuntimeValue {
-    // Read hokuyo ust10.
+    // Description:
+    //     Read hokuyo ust10.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_hokuyo_ust10`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_hokuyo_ust10(ctx);
+    //     let result = spanda_lib_registry::read_hokuyo_ust10(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 10.0)
 }
 
 fn read_hokuyo_utm30(ctx: &DriverContext) -> RuntimeValue {
-    // Read hokuyo utm30.
+    // Description:
+    //     Read hokuyo utm30.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_hokuyo_utm30`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_hokuyo_utm30(ctx);
+    //     let result = spanda_lib_registry::read_hokuyo_utm30(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 30.0)
 }
 
 fn read_bosch_bno055(ctx: &DriverContext) -> RuntimeValue {
-    // Read bosch bno055.
+    // Description:
+    //     Read bosch bno055.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_bosch_bno055`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_bosch_bno055(ctx);
+    //     let result = spanda_lib_registry::read_bosch_bno055(ctx);
 
     // Compute yaw for the following logic.
     let yaw = ctx.sim_state.as_ref().map(|s| s.pose.theta).unwrap_or(0.0);
@@ -336,19 +342,19 @@ fn read_bosch_bno055(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_bosch_bmp388(ctx: &DriverContext) -> RuntimeValue {
-    // Read bosch bmp388.
+    // Description:
+    //     Read bosch bmp388.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_bosch_bmp388`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_bosch_bmp388(ctx);
+    //     let result = spanda_lib_registry::read_bosch_bmp388(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -360,19 +366,19 @@ fn read_bosch_bmp388(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_bosch_bme280_humidity(ctx: &DriverContext) -> RuntimeValue {
-    // Read bosch bme280 humidity.
+    // Description:
+    //     Read bosch bme280 humidity.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_bosch_bme280_humidity`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_bosch_bme280_humidity(ctx);
+    //     let result = spanda_lib_registry::read_bosch_bme280_humidity(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -385,19 +391,19 @@ fn read_bosch_bme280_humidity(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_adafruit_bh1750(ctx: &DriverContext) -> RuntimeValue {
-    // Read adafruit bh1750.
+    // Description:
+    //     Read adafruit bh1750.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_adafruit_bh1750`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_adafruit_bh1750(ctx);
+    //     let result = spanda_lib_registry::read_adafruit_bh1750(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -410,19 +416,19 @@ fn read_adafruit_bh1750(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_adafruit_veml6075(ctx: &DriverContext) -> RuntimeValue {
-    // Read adafruit veml6075.
+    // Description:
+    //     Read adafruit veml6075.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_adafruit_veml6075`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_adafruit_veml6075(ctx);
+    //     let result = spanda_lib_registry::read_adafruit_veml6075(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -435,19 +441,19 @@ fn read_adafruit_veml6075(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_atlas_ph(ctx: &DriverContext) -> RuntimeValue {
-    // Read atlas ph.
+    // Description:
+    //     Read atlas ph.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_atlas_ph`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_atlas_ph(ctx);
+    //     let result = spanda_lib_registry::read_atlas_ph(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -460,19 +466,19 @@ fn read_atlas_ph(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_sparkfun_ec(ctx: &DriverContext) -> RuntimeValue {
-    // Read sparkfun ec.
+    // Description:
+    //     Read sparkfun ec.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_sparkfun_ec`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_sparkfun_ec(ctx);
+    //     let result = spanda_lib_registry::read_sparkfun_ec(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -485,19 +491,19 @@ fn read_sparkfun_ec(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_plantower_pms5003(ctx: &DriverContext) -> RuntimeValue {
-    // Read plantower pms5003.
+    // Description:
+    //     Read plantower pms5003.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_plantower_pms5003`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_plantower_pms5003(ctx);
+    //     let result = spanda_lib_registry::read_plantower_pms5003(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -510,19 +516,19 @@ fn read_plantower_pms5003(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_dfrobot_turbidity(ctx: &DriverContext) -> RuntimeValue {
-    // Read dfrobot turbidity.
+    // Description:
+    //     Read dfrobot turbidity.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_dfrobot_turbidity`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_dfrobot_turbidity(ctx);
+    //     let result = spanda_lib_registry::read_dfrobot_turbidity(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -535,19 +541,19 @@ fn read_dfrobot_turbidity(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_atlas_salinity(ctx: &DriverContext) -> RuntimeValue {
-    // Read atlas salinity.
+    // Description:
+    //     Read atlas salinity.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_atlas_salinity`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_atlas_salinity(ctx);
+    //     let result = spanda_lib_registry::read_atlas_salinity(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -560,19 +566,19 @@ fn read_atlas_salinity(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_gq_gmc(ctx: &DriverContext) -> RuntimeValue {
-    // Read gq gmc.
+    // Description:
+    //     Read gq gmc.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_gq_gmc`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_gq_gmc(ctx);
+    //     let result = spanda_lib_registry::read_gq_gmc(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -585,19 +591,19 @@ fn read_gq_gmc(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_vegetronix_soil(ctx: &DriverContext) -> RuntimeValue {
-    // Read vegetronix soil.
+    // Description:
+    //     Read vegetronix soil.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_vegetronix_soil`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_vegetronix_soil(ctx);
+    //     let result = spanda_lib_registry::read_vegetronix_soil(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -610,114 +616,114 @@ fn read_vegetronix_soil(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_intel_d435(ctx: &DriverContext) -> RuntimeValue {
-    // Read intel d435.
+    // Description:
+    //     Read intel d435.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_intel_d435`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_intel_d435(ctx);
+    //     let result = spanda_lib_registry::read_intel_d435(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 5.0)
 }
 
 fn read_intel_d455(ctx: &DriverContext) -> RuntimeValue {
-    // Read intel d455.
+    // Description:
+    //     Read intel d455.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_intel_d455`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_intel_d455(ctx);
+    //     let result = spanda_lib_registry::read_intel_d455(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 8.0)
 }
 
 fn read_ydlidar_x4(ctx: &DriverContext) -> RuntimeValue {
-    // Read ydlidar x4.
+    // Description:
+    //     Read ydlidar x4.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_ydlidar_x4`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_ydlidar_x4(ctx);
+    //     let result = spanda_lib_registry::read_ydlidar_x4(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 6.0)
 }
 
 fn read_ydlidar_g4(ctx: &DriverContext) -> RuntimeValue {
-    // Read ydlidar g4.
+    // Description:
+    //     Read ydlidar g4.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_ydlidar_g4`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_ydlidar_g4(ctx);
+    //     let result = spanda_lib_registry::read_ydlidar_g4(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 16.0)
 }
 
 fn read_ouster_os1(ctx: &DriverContext) -> RuntimeValue {
-    // Read ouster os1.
+    // Description:
+    //     Read ouster os1.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_ouster_os1`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_ouster_os1(ctx);
+    //     let result = spanda_lib_registry::read_ouster_os1(ctx);
 
     // Produce 0) as the result.
     scan_reading(ctx, 120.0)
 }
 
 fn read_adafruit_vl53l0x(ctx: &DriverContext) -> RuntimeValue {
-    // Read adafruit vl53l0x.
+    // Description:
+    //     Read adafruit vl53l0x.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_adafruit_vl53l0x`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_adafruit_vl53l0x(ctx);
+    //     let result = spanda_lib_registry::read_adafruit_vl53l0x(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -730,19 +736,19 @@ fn read_adafruit_vl53l0x(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_sparkfun_lsm9ds1(ctx: &DriverContext) -> RuntimeValue {
-    // Read sparkfun lsm9ds1.
+    // Description:
+    //     Read sparkfun lsm9ds1.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_sparkfun_lsm9ds1`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_sparkfun_lsm9ds1(ctx);
+    //     let result = spanda_lib_registry::read_sparkfun_lsm9ds1(ctx);
 
     // Compute yaw for the following logic.
     let yaw = ctx.sim_state.as_ref().map(|s| s.pose.theta).unwrap_or(0.0);
@@ -750,19 +756,19 @@ fn read_sparkfun_lsm9ds1(ctx: &DriverContext) -> RuntimeValue {
 }
 
 fn read_waveshare_uwmf(ctx: &DriverContext) -> RuntimeValue {
-    // Read waveshare uwmf.
+    // Description:
+    //     Read waveshare uwmf.
     //
-    // Parameters:
-    // - `ctx` — input value
+    // Inputs:
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_waveshare_uwmf`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_waveshare_uwmf(ctx);
+    //     let result = spanda_lib_registry::read_waveshare_uwmf(ctx);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::UnitKind;
@@ -783,25 +789,31 @@ fn sensor(
     methods: &[&str],
     read: SensorReadFn,
 ) -> SensorDriverDef {
-    // Sensor.
+    // Description:
+    //     Sensor.
     //
-    // Parameters:
-    // - `sensor_type` — input value
-    // - `vendor` — input value
-    // - `model` — input value
-    // - `interfaces` — input value
-    // - `default_bus` — input value
-    // - `methods` — input value
-    // - `read` — input value
+    // Inputs:
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
+    //     vendor: &str
+    //         Caller-supplied vendor.
+    //     odel: &str
+    //         Caller-supplied odel.
+    //     interfaces: &[SensorInterface]
+    //         Caller-supplied interfaces.
+    //     default_bus: Option<SensorInterface>
+    //         Caller-supplied default bus.
+    //     ethods: &[&str]
+    //         Caller-supplied ethods.
+    //     read: SensorReadFn
+    //         Caller-supplied read.
     //
-    // Returns:
-    // SensorDriverDef.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SensorDriverDef
+    //         Return value from `sensor`.
     //
     // Example:
-    // let result = spanda_lib_registry::sensor(sensor_type, vendor, model, interfaces, default_bus, methods, read);
+    //     let result = spanda_lib_registry::sensor(sensor_type, vendor, odel, interfaces, default_bus, ethods, read);
 
     // Produce SensorDriverDef as the result.
     SensorDriverDef {
@@ -822,23 +834,27 @@ fn lib(
     description: &str,
     sensors: HashMap<String, SensorDriverDef>,
 ) -> LibModule {
-    // Lib.
+    // Description:
+    //     Lib.
     //
-    // Parameters:
-    // - `id` — input value
-    // - `vendor` — input value
-    // - `name` — input value
-    // - `description` — input value
-    // - `sensors` — input value
+    // Inputs:
+    //     id: &str
+    //         Caller-supplied id.
+    //     vendor: &str
+    //         Caller-supplied vendor.
+    //     name: &str
+    //         Caller-supplied name.
+    //     description: &str
+    //         Caller-supplied description.
+    //     sensors: HashMap<String, SensorDriverDef>
+    //         Caller-supplied sensors.
     //
-    // Returns:
-    // LibModule.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: LibModule
+    //         Return value from `lib`.
     //
     // Example:
-    // let result = spanda_lib_registry::lib(id, vendor, name, description, sensors);
+    //     let result = spanda_lib_registry::lib(id, vendor, name, description, sensors);
 
     // Produce LibModule as the result.
     LibModule {
@@ -852,19 +868,18 @@ fn lib(
 }
 
 fn build_registry() -> HashMap<String, LibModule> {
-    // Build registry.
+    // Description:
+    //     Build registry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, LibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, LibModule>
+    //         Return value from `build_registry`.
     //
     // Example:
-    // let result = spanda_lib_registry::build_registry();
+    //     let result = spanda_lib_registry::build_registry();
 
     // Produce from as the result.
     HashMap::from([
@@ -1392,57 +1407,58 @@ fn build_registry() -> HashMap<String, LibModule> {
 static LIB_REGISTRY: OnceLock<HashMap<String, LibModule>> = OnceLock::new();
 
 fn registry() -> &'static HashMap<String, LibModule> {
-    // Registry.
+    // Description:
+    //     Registry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static HashMap<String, LibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static HashMap<String, LibModule>
+    //         Return value from `registry`.
     //
     // Example:
-    // let result = spanda_lib_registry::registry();
+    //     let result = spanda_lib_registry::registry();
 
     // Produce get or init as the result.
     LIB_REGISTRY.get_or_init(build_registry)
 }
 
 pub fn resolve_import(path: &str) -> Option<&'static LibModule> {
-    // Resolve import.
+    // Description:
+    //     Resolve import.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static LibModule>
+    //         Return value from `resolve_import`.
     //
     // Example:
-    // let result = spanda_lib_registry::resolve_import(path);
+    //     let result = spanda_lib_registry::resolve_import(path);
 
     // Produce get as the result.
     registry().get(path)
 }
 
 pub fn get_sensor_driver(library_id: &str, sensor_type: &str) -> Option<SensorDriverDef> {
+    // Description:
+    //     Get sensor driver.
     //
-    // Parameters:
-    // - `library_id` — input value
-    // - `sensor_type` — input value
+    // Inputs:
+    //     library_id: &str
+    //         Caller-supplied library id.
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SensorDriverDef>
+    //         Return value from `get_sensor_driver`.
     //
     // Example:
-    // let result = spanda_lib_registry::get_sensor_driver(library_id, sensor_type);
+    //     let result = spanda_lib_registry::get_sensor_driver(library_id, sensor_type);
 
     // Produce registry as the result.
     registry()
@@ -1452,38 +1468,39 @@ pub fn get_sensor_driver(library_id: &str, sensor_type: &str) -> Option<SensorDr
 }
 
 pub fn get_sensor_type_from_lib(library_id: &str, sensor_type: &str) -> bool {
+    // Description:
+    //     Get sensor type from lib.
     //
-    // Parameters:
-    // - `library_id` — input value
-    // - `sensor_type` — input value
+    // Inputs:
+    //     library_id: &str
+    //         Caller-supplied library id.
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `get_sensor_type_from_lib`.
     //
     // Example:
-    // let result = spanda_lib_registry::get_sensor_type_from_lib(library_id, sensor_type);
+    //     let result = spanda_lib_registry::get_sensor_type_from_lib(library_id, sensor_type);
 
     // Produce is some as the result.
     get_sensor_driver(library_id, sensor_type).is_some()
 }
 
 pub fn all_library_sensor_types() -> HashMap<String, LibrarySensorTypeInfo> {
-    // All library sensor types.
+    // Description:
+    //     All library sensor types.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, LibrarySensorTypeInfo>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, LibrarySensorTypeInfo>
+    //         Return value from `all_library_sensor_types`.
     //
     // Example:
-    // let result = spanda_lib_registry::all_library_sensor_types();
+    //     let result = spanda_lib_registry::all_library_sensor_types();
 
     // Create mutable result for accumulating results.
     let mut result = HashMap::new();
@@ -1507,38 +1524,37 @@ pub fn all_library_sensor_types() -> HashMap<String, LibrarySensorTypeInfo> {
 }
 
 pub fn list_libraries() -> Vec<&'static LibModule> {
-    // List libraries.
+    // Description:
+    //     List libraries.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<&'static LibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static LibModule>
+    //         Return value from `list_libraries`.
     //
     // Example:
-    // let result = spanda_lib_registry::list_libraries();
+    //     let result = spanda_lib_registry::list_libraries();
 
     // Collect filtered entries into a new list.
     registry().values().collect()
 }
 
 pub fn list_libraries_by_vendor(vendor: &str) -> Vec<&'static LibModule> {
-    // List libraries by vendor.
+    // Description:
+    //     List libraries by vendor.
     //
-    // Parameters:
-    // - `vendor` — input value
+    // Inputs:
+    //     vendor: &str
+    //         Caller-supplied vendor.
     //
-    // Returns:
-    // Vec<&'static LibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static LibModule>
+    //         Return value from `list_libraries_by_vendor`.
     //
     // Example:
-    // let result = spanda_lib_registry::list_libraries_by_vendor(vendor);
+    //     let result = spanda_lib_registry::list_libraries_by_vendor(vendor);
 
     // Compute vendor lower for the following logic.
     let vendor_lower = vendor.to_lowercase();
@@ -1549,20 +1565,21 @@ pub fn list_libraries_by_vendor(vendor: &str) -> Vec<&'static LibModule> {
 }
 
 pub fn read_with_driver(driver: &SensorDriverDef, ctx: &DriverContext) -> RuntimeValue {
-    // Read with driver.
+    // Description:
+    //     Read with driver.
     //
-    // Parameters:
-    // - `driver` — input value
-    // - `ctx` — input value
+    // Inputs:
+    //     driver: &SensorDriverDef
+    //         Caller-supplied driver.
+    //     ctx: &DriverContext
+    //         Caller-supplied ctx.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `read_with_driver`.
     //
     // Example:
-    // let result = spanda_lib_registry::read_with_driver(driver, ctx);
+    //     let result = spanda_lib_registry::read_with_driver(driver, ctx);
 
     // Produce read) as the result.
     (driver.read)(ctx)
@@ -1574,19 +1591,18 @@ mod tests {
 
     #[test]
     fn resolves_vendor_libraries() {
-        // Resolves vendor libraries.
+        // Description:
+        //     Resolves vendor libraries.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_lib_registry::resolves_vendor_libraries();
+
+        //     let result = spanda_lib_registry::resolves_vendor_libraries();
 
         assert_eq!(resolve_import("bosch.bno055").unwrap().vendor, "Bosch");
         assert_eq!(resolve_import("ublox.neo_m8n").unwrap().vendor, "u-blox");
@@ -1606,19 +1622,18 @@ mod tests {
 
     #[test]
     fn lists_libraries_by_vendor() {
-        // Lists libraries by vendor.
+        // Description:
+        //     Lists libraries by vendor.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_lib_registry::lists_libraries_by_vendor();
+
+        //     let result = spanda_lib_registry::lists_libraries_by_vendor();
 
         assert_eq!(list_libraries_by_vendor("Hokuyo").len(), 2);
         assert!(list_libraries().len() >= 10);
@@ -1626,19 +1641,18 @@ mod tests {
 
     #[test]
     fn scan_reading_uses_sim_pose() {
-        // Scan reading uses sim pose.
+        // Description:
+        //     Scan reading uses sim pose.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_lib_registry::scan_reading_uses_sim_pose();
+
+        //     let result = spanda_lib_registry::scan_reading_uses_sim_pose();
 
         let ctx = DriverContext {
             hal: None,
@@ -1662,19 +1676,18 @@ mod tests {
 
     #[test]
     fn bosch_imu_reads_hal_i2c() {
-        // Bosch imu reads hal i2c.
+        // Description:
+        //     Bosch imu reads hal i2c.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_lib_registry::bosch_imu_reads_hal_i2c();
+
+        //     let result = spanda_lib_registry::bosch_imu_reads_hal_i2c();
 
         use spanda_hal::hal::{create_sim_hal, HalMemberConfig};
         let mut hal = create_sim_hal();

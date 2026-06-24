@@ -17,6 +17,21 @@ pub struct ResilienceReport {
 
 /// Check resilience policies and readiness integration.
 pub fn check_resilience(program: &Program) -> ResilienceReport {
+    // Description:
+    //     Check resilience.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: ResilienceReport
+    //         Return value from `check_resilience`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::resilience::check_resilience(progra);
+
     let Program::Program {
         resilience_policies,
         mitigations,

@@ -4,6 +4,19 @@ use spanda_core::{invoke_nav2_bridge, invoke_slam_bridge};
 
 #[test]
 fn nav2_bridge_invokes_configured_command() {
+    // Description:
+    //     Nav2 bridge invokes configured command.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::adapter_bridge::nav2_bridge_invokes_configured_command();
+
     let script = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/adapters/nav2_bridge.sh"
@@ -22,6 +35,19 @@ fn nav2_bridge_invokes_configured_command() {
 
 #[test]
 fn slam_bridge_invokes_configured_command() {
+    // Description:
+    //     Slam bridge invokes configured command.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::adapter_bridge::slam_bridge_invokes_configured_command();
+
     let script = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/adapters/slam_bridge.sh"

@@ -13,6 +13,21 @@ use crate::resilience::ResilienceReport;
 use crate::state::StateAssuranceReport;
 
 fn html_escape(s: &str) -> String {
+    // Description:
+    //     Html escape.
+    //
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `html_escape`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::html_escape(s);
+
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
@@ -20,6 +35,23 @@ fn html_escape(s: &str) -> String {
 
 /// Format assurance report for CLI output.
 pub fn format_assurance(report: &AssuranceReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format assurance.
+    //
+    // Inputs:
+    //     repor: &AssuranceReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_assurance`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_assurance(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!(
@@ -41,6 +73,23 @@ pub fn format_assurance(report: &AssuranceReport, format: ReportFormat) -> Strin
 
 /// Format anomaly scan report.
 pub fn format_anomaly(report: &AnomalyReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format anomaly.
+    //
+    // Inputs:
+    //     repor: &AnomalyReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_anomaly`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_anomaly(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => {
@@ -81,6 +130,23 @@ pub fn format_anomaly(report: &AnomalyReport, format: ReportFormat) -> String {
 
 /// Format diagnosis report.
 pub fn format_diagnosis(report: &DiagnosisReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format diagnosis.
+    //
+    // Inputs:
+    //     repor: &DiagnosisReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_diagnosis`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_diagnosis(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!("# Diagnosis Report\n\n**Passed:** {}\n", report.passed),
@@ -94,6 +160,23 @@ pub fn format_diagnosis(report: &DiagnosisReport, format: ReportFormat) -> Strin
 
 /// Format prognostics report.
 pub fn format_prognostics(report: &PrognosticsReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format prognostics.
+    //
+    // Inputs:
+    //     repor: &PrognosticsReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_prognostics`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_prognostics(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!(
@@ -115,6 +198,23 @@ pub fn format_prognostics(report: &PrognosticsReport, format: ReportFormat) -> S
 
 /// Format mitigation plan report.
 pub fn format_mitigation(report: &MitigationReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format mitigation.
+    //
+    // Inputs:
+    //     repor: &MitigationReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_mitigation`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_mitigation(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => {
@@ -130,6 +230,23 @@ pub fn format_mitigation(report: &MitigationReport, format: ReportFormat) -> Str
 
 /// Format mission assurance report.
 pub fn format_mission_assurance(report: &MissionAssuranceReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format mission assurance.
+    //
+    // Inputs:
+    //     repor: &MissionAssuranceReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_mission_assurance`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_mission_assurance(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!(
@@ -151,6 +268,23 @@ pub fn format_mission_assurance(report: &MissionAssuranceReport, format: ReportF
 
 /// Format resilience check report.
 pub fn format_resilience(report: &ResilienceReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format resilience.
+    //
+    // Inputs:
+    //     repor: &ResilienceReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_resilience`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_resilience(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!(
@@ -170,6 +304,23 @@ pub fn format_resilience(report: &ResilienceReport, format: ReportFormat) -> Str
 
 /// Format state estimation assurance report.
 pub fn format_state(report: &StateAssuranceReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format state.
+    //
+    // Inputs:
+    //     repor: &StateAssuranceReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_state`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_state(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => format!(
@@ -205,6 +356,23 @@ pub fn format_state(report: &StateAssuranceReport, format: ReportFormat) -> Stri
 
 /// Format recovery framework report for CLI output.
 pub fn format_recovery(report: &RecoveryReport, format: ReportFormat) -> String {
+    // Description:
+    //     Format recovery.
+    //
+    // Inputs:
+    //     repor: &RecoveryReport
+    //         Caller-supplied repor.
+    //     forma: ReportFormat
+    //         Caller-supplied forma.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::report::format_recovery(repor, forma);
+
     match format {
         ReportFormat::Json => serde_json::to_string_pretty(report).unwrap_or_default(),
         ReportFormat::Markdown => {

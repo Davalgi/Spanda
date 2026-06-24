@@ -29,21 +29,24 @@ pub(super) fn task_budget_violation_kind(
     duration_ms: f64,
     interval_ms: f64,
 ) -> Option<&'static str> {
-    // Classify which resource budget limit a task execution violated.
+    // Description:
+    //     Task budget violation kind.
     //
-    // Parameters:
-    // - `budget` — declared task resource limits
-    // - `duration_ms` — measured execution time
-    // - `interval_ms` — task scheduling interval
+    // Inputs:
+    //     budge: &spanda_ast::foundations::ResourceBudgetDecl
+    //         Caller-supplied budge.
+    //     duration_ms: f64
+    //         Caller-supplied duration ms.
+    //     interval_ms: f64
+    //         Caller-supplied interval ms.
     //
-    // Returns:
-    // `"cpu"`, `"battery"`, or none when no limit was exceeded.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `task_budget_violation_kind`.
     //
     // Example:
-    // let kind = task_budget_violation_kind(&budget, 12.0, 100.0);
+
+    //     let result = spanda_interpreter::runtime_decl_extensions::task_budget_violation_kind(budge, duration_ms, interval_ms);
 
     let spanda_ast::foundations::ResourceBudgetDecl::ResourceBudgetDecl {
         cpu_pct_max,
@@ -69,19 +72,20 @@ pub(super) fn task_budget_violation_kind(
 
 impl TaskSchedule {
     pub(super) fn priority_rank(&self) -> u8 {
-        // Rank scheduled tasks for preemption ordering.
+        // Description:
+        //     Priority rank.
         //
-        // Parameters:
-        // - `self` — task schedule metadata
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Lower values indicate higher preemption priority.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: u8
+        //         Return value from `priority_rank`.
         //
         // Example:
-        // let rank = schedule.priority_rank();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::priority_rank(&self);
 
         let isolation_rank = if self.isolated { 0 } else { 1 };
         let priority_rank = match self.priority {
@@ -95,19 +99,20 @@ impl TaskSchedule {
 }
 
 pub(super) fn priority_label(priority: TaskPriority) -> &'static str {
-    // Map a task priority enum to its diagnostic label.
+    // Description:
+    //     Priority label.
     //
-    // Parameters:
-    // - `priority` — task priority tier
+    // Inputs:
+    //     priority: TaskPriority
+    //         Caller-supplied priority.
     //
-    // Returns:
-    // Stable lowercase label for logs and telemetry.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `priority_label`.
     //
     // Example:
-    // let label = priority_label(TaskPriority::High);
+
+    //     let result = spanda_interpreter::runtime_decl_extensions::priority_label(priority);
 
     match priority {
         TaskPriority::Critical => "critical",
@@ -118,19 +123,20 @@ pub(super) fn priority_label(priority: TaskPriority) -> &'static str {
 }
 
 pub(super) fn trigger_category_label(kind: &TriggerKind) -> &'static str {
-    // Map a trigger kind to its diagnostic category label.
+    // Description:
+    //     Trigger category label.
     //
-    // Parameters:
-    // - `kind` — parsed trigger variant
+    // Inputs:
+    //     kind: &TriggerKind
+    //         Caller-supplied kind.
     //
-    // Returns:
-    // Stable lowercase label for logs and telemetry.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `trigger_category_label`.
     //
     // Example:
-    // let label = trigger_category_label(&trigger.kind);
+
+    //     let result = spanda_interpreter::runtime_decl_extensions::trigger_category_label(kind);
 
     match kind {
         TriggerKind::Event { .. } => "event",
@@ -162,19 +168,20 @@ pub(super) trait RobotDeclExt {
 
 impl RobotDeclExt for RobotDecl {
     fn first_behavior_name(&self) -> Option<String> {
-        // Return the first behavior or task name declared on a robot.
+        // Description:
+        //     First behavior name.
         //
-        // Parameters:
-        // - `self` — robot declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // First behavior name, or the first task name when no behavior exists.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `first_behavior_name`.
         //
         // Example:
-        // let name = robot.first_behavior_name();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::first_behavior_name(&self);
 
         let RobotDecl::RobotDecl {
             behaviors, tasks, ..
@@ -191,20 +198,22 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn behavior_with_contracts(&self, name: &str) -> Option<BehaviorContracts> {
-        // Look up a behavior body and contract clauses by name.
+        // Description:
+        //     Behavior with contracts.
         //
-        // Parameters:
-        // - `self` — robot declaration
-        // - `name` — behavior identifier
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Behavior body plus optional requires/ensures/invariant clauses.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<BehaviorContracts>
+        //         Return value from `behavior_with_contracts`.
         //
         // Example:
-        // let contracts = robot.behavior_with_contracts("run");
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::behavior_with_contracts(&self, name);
 
         let RobotDecl::RobotDecl { behaviors, .. } = self;
         behaviors.iter().find_map(|b| match b {
@@ -226,20 +235,22 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn task_with_contracts(&self, name: &str) -> Option<TaskContracts> {
-        // Look up a task body and contract clauses by name.
+        // Description:
+        //     Task with contracts.
         //
-        // Parameters:
-        // - `self` — robot declaration
-        // - `name` — task identifier
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Task body, interval, and optional contract clauses.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<TaskContracts>
+        //         Return value from `task_with_contracts`.
         //
         // Example:
-        // let contracts = robot.task_with_contracts("poll");
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::task_with_contracts(&self, name);
 
         let RobotDecl::RobotDecl { tasks, .. } = self;
         tasks.iter().find_map(|t| match t {
@@ -264,19 +275,20 @@ impl RobotDeclExt for RobotDecl {
     }
 
     fn all_task_schedules(&self) -> Vec<TaskSchedule> {
-        // Build runtime task schedules from robot task declarations.
+        // Description:
+        //     All task schedules.
         //
-        // Parameters:
-        // - `self` — robot declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Scheduler-ready metadata for every declared task.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<TaskSchedule>
+        //         Return value from `all_task_schedules`.
         //
         // Example:
-        // let schedules = robot.all_task_schedules();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::all_task_schedules(&self);
 
         let RobotDecl::RobotDecl { tasks, .. } = self;
         tasks
@@ -321,19 +333,20 @@ pub(super) trait SocDeclExt {
 
 impl SocDeclExt for spanda_ast::nodes::SocDecl {
     fn profile(&self) -> &str {
-        // Return the profile name from a SoC declaration.
+        // Description:
+        //     Profile.
         //
-        // Parameters:
-        // - `self` — SoC declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Profile identifier string.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &str
+        //         Return value from `profile`.
         //
         // Example:
-        // let profile = soc.profile();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::profile(&self);
 
         match self {
             spanda_ast::nodes::SocDecl::SocDecl { profile, .. } => profile,
@@ -347,19 +360,20 @@ pub(super) trait HalBlockExt {
 
 impl HalBlockExt for spanda_ast::nodes::HalBlock {
     fn members(&self) -> &[spanda_ast::nodes::HalMemberDecl] {
-        // Return HAL member declarations from a HAL block.
+        // Description:
+        //     Members.
         //
-        // Parameters:
-        // - `self` — HAL block declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Slice of declared HAL members.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[spanda_ast::nodes::HalMemberDecl]
+        //         Return value from `members`.
         //
         // Example:
-        // let members = hal.members();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::members(&self);
 
         match self {
             spanda_ast::nodes::HalBlock::HalBlock { members, .. } => members,
@@ -374,19 +388,20 @@ pub(super) trait SafetyBlockExt {
 
 impl SafetyBlockExt for spanda_ast::nodes::SafetyBlock {
     fn rules(&self) -> &[SafetyRule] {
-        // Return safety rules declared in a safety block.
+        // Description:
+        //     Rules.
         //
-        // Parameters:
-        // - `self` — safety block declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Slice of safety rules.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[SafetyRule]
+        //         Return value from `rules`.
         //
         // Example:
-        // let rules = safety.rules();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::rules(&self);
 
         match self {
             spanda_ast::nodes::SafetyBlock::SafetyBlock { rules, .. } => rules,
@@ -394,19 +409,20 @@ impl SafetyBlockExt for spanda_ast::nodes::SafetyBlock {
     }
 
     fn zones(&self) -> &[SafetyZoneDecl] {
-        // Return safety zones declared in a safety block.
+        // Description:
+        //     Zones.
         //
-        // Parameters:
-        // - `self` — safety block declaration
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Slice of safety zones.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[SafetyZoneDecl]
+        //         Return value from `zones`.
         //
         // Example:
-        // let zones = safety.zones();
+
+        //     let result = spanda_interpreter::runtime_decl_extensions::zones(&self);
 
         match self {
             spanda_ast::nodes::SafetyBlock::SafetyBlock { zones, .. } => zones,

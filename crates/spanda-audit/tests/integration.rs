@@ -7,19 +7,18 @@ use spanda_audit::{
 
 #[test]
 fn audit_record_creation_and_hashing() {
-    // Audit record creation and hashing.
+    // Description:
+    //     Audit record creation and hashing.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::audit_record_creation_and_hashing();
+
+    //     let result = spanda_audit::integration::audit_record_creation_and_hashing();
 
     let mut rt = AuditRuntime::new("MissionAudit", vec!["robot.pose".into()]);
     let id = rt
@@ -31,19 +30,18 @@ fn audit_record_creation_and_hashing() {
 
 #[test]
 fn signature_verification_with_identity() {
-    // Signature verification with identity.
+    // Description:
+    //     Signature verification with identity.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::signature_verification_with_identity();
+
+    //     let result = spanda_audit::integration::signature_verification_with_identity();
 
     let identity = DeviceIdentity::new("rover-001", "pub-key-abc");
     let mut rt = AuditRuntime::new("MissionAudit", vec![]).with_identity(identity);
@@ -53,19 +51,18 @@ fn signature_verification_with_identity() {
 
 #[test]
 fn provenance_record_creation() {
-    // Provenance record creation.
+    // Description:
+    //     Provenance record creation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::provenance_record_creation();
+
+    //     let result = spanda_audit::integration::provenance_record_creation();
 
     let identity = DeviceIdentity::new("rover-001", "device-key");
     let mut rt = AuditRuntime::new("MissionAudit", vec![])
@@ -79,19 +76,18 @@ fn provenance_record_creation() {
 
 #[test]
 fn mock_ledger_anchoring() {
-    // Mock ledger anchoring.
+    // Description:
+    //     Mock ledger anchoring.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::mock_ledger_anchoring();
+
+    //     let result = spanda_audit::integration::mock_ledger_anchoring();
 
     let mut ledger = MockLedgerBackend::new();
     let hash = sha256("mission-root");
@@ -102,19 +98,18 @@ fn mock_ledger_anchoring() {
 
 #[test]
 fn json_audit_export() {
-    // Json audit export.
+    // Description:
+    //     Json audit export.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::json_audit_export();
+
+    //     let result = spanda_audit::integration::json_audit_export();
 
     let mut backend = JsonAuditBackend::new();
     let record = spanda_audit::AuditRecord {
@@ -135,19 +130,18 @@ fn json_audit_export() {
 
 #[test]
 fn local_backend_chain_integrity() {
-    // Local backend chain integrity.
+    // Description:
+    //     Local backend chain integrity.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::local_backend_chain_integrity();
+
+    //     let result = spanda_audit::integration::local_backend_chain_integrity();
 
     let mut rt = AuditRuntime::new("Test", vec![]);
     let id1 = rt.record_event("e1", "a").unwrap();
@@ -159,19 +153,18 @@ fn local_backend_chain_integrity() {
 
 #[test]
 fn crypto_sign_verify() {
-    // Crypto sign verify.
+    // Description:
+    //     Crypto sign verify.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_audit::integration::crypto_sign_verify();
+
+    //     let result = spanda_audit::integration::crypto_sign_verify();
 
     let sig = sign("data", "key");
     assert!(verify_signature("data", &sig, "key"));

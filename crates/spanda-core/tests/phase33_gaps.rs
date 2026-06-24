@@ -4,6 +4,19 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn trigger_return_type_mismatch_fails_check() {
+    // Description:
+    //     Trigger return type mismatch fails check.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase33_gaps::trigger_return_type_mismatch_fails_check();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -29,6 +42,19 @@ robot Rover {
 
 #[test]
 fn trigger_return_type_match_passes_check() {
+    // Description:
+    //     Trigger return type match passes check.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase33_gaps::trigger_return_type_match_passes_check();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -44,12 +70,38 @@ robot Rover {
 
 #[test]
 fn live_modbus_env_gate_defaults_off() {
+    // Description:
+    //     Live modbus env gate defaults off.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase33_gaps::live_modbus_env_gate_defaults_off();
+
     std::env::remove_var("SPANDA_LIVE_MODBUS");
     assert!(!spanda_providers::iot_live::live_modbus_enabled());
 }
 
 #[test]
 fn live_ai_env_gate_requires_api_key() {
+    // Description:
+    //     Live ai env gate requires api key.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase33_gaps::live_ai_env_gate_requires_api_key();
+
     std::env::remove_var("OPENAI_API_KEY");
     std::env::remove_var("SPANDA_LIVE_AI");
     assert!(!spanda_ai::live::live_ai_enabled());
@@ -57,6 +109,19 @@ fn live_ai_env_gate_requires_api_key() {
 
 #[test]
 fn openai_provider_uses_mock_without_api_key() {
+    // Description:
+    //     Openai provider uses mock without api key.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase33_gaps::openai_provider_uses_mock_without_api_key();
+
     std::env::remove_var("OPENAI_API_KEY");
     let source = r#"
 robot Rover {

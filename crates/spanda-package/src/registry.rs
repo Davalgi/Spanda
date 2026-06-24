@@ -172,19 +172,19 @@ pub static LOCAL_REGISTRY: &[RegistryEntry] = &[
 ];
 
 pub fn search_registry(query: &str) -> Vec<&'static RegistryEntry> {
-    // Search registry.
+    // Description:
+    //     Search registry.
     //
-    // Parameters:
-    // - `query` — input value
+    // Inputs:
+    //     query: &str
+    //         Caller-supplied query.
     //
-    // Returns:
-    // Vec<&'static RegistryEntry>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static RegistryEntry>
+    //         Return value from `search_registry`.
     //
     // Example:
-    // let result = spanda_package::registry::search_registry(query);
+    //     let result = spanda_package::registry::search_registry(query);
 
     // Compute q for the following logic.
     let q = query.to_lowercase();
@@ -199,19 +199,19 @@ pub fn search_registry(query: &str) -> Vec<&'static RegistryEntry> {
 }
 
 pub fn search_registry_merged(query: &str) -> Vec<String> {
-    // Search registry merged.
+    // Description:
+    //     Search registry merged.
     //
-    // Parameters:
-    // - `query` — input value
+    // Inputs:
+    //     query: &str
+    //         Caller-supplied query.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `search_registry_merged`.
     //
     // Example:
-    // let result = spanda_package::registry::search_registry_merged(query);
+    //     let result = spanda_package::registry::search_registry_merged(query);
 
     // Create mutable names for accumulating results.
     let mut names: Vec<String> = search_registry(query)
@@ -231,19 +231,19 @@ pub fn search_registry_merged(query: &str) -> Vec<String> {
 }
 
 pub fn find_registry_entry(name: &str) -> Option<&'static RegistryEntry> {
-    // Find registry entry.
+    // Description:
+    //     Find registry entry.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static RegistryEntry>
+    //         Return value from `find_registry_entry`.
     //
     // Example:
-    // let result = spanda_package::registry::find_registry_entry(name);
+    //     let result = spanda_package::registry::find_registry_entry(name);
 
     // Iterate over LOCAL REGISTRY.
     LOCAL_REGISTRY.iter().find(|e| e.name == name)
@@ -251,19 +251,19 @@ pub fn find_registry_entry(name: &str) -> Option<&'static RegistryEntry> {
 
 /// Local source tree for a registry package (when shipped in-repo).
 pub fn registry_package_dir(name: &str) -> Option<std::path::PathBuf> {
-    // Registry package dir.
+    // Description:
+    //     Registry package dir.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<std::path::PathBuf>
+    //         Return value from `registry_package_dir`.
     //
     // Example:
-    // let result = spanda_package::registry::registry_package_dir(name);
+    //     let result = spanda_package::registry::registry_package_dir(name);
 
     // Produce find registry entry as the result.
     find_registry_entry(name)?;
@@ -279,19 +279,19 @@ pub fn registry_package_dir(name: &str) -> Option<std::path::PathBuf> {
 impl RegistryEntry {
     /// Default safety level for registry packages (until per-entry metadata is stored remotely).
     pub fn safety_level(&self) -> SafetyLevel {
-        // Safety level.
+        // Description:
+        //     Safety level.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // SafetyLevel.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SafetyLevel
+        //         Return value from `safety_level`.
         //
         // Example:
-        // let result = instance.safety_level();
+        //     let result = spanda_package::registry::safety_level(&self);
 
         // Match on name and handle each case.
         match self.name {
@@ -317,19 +317,19 @@ pub struct RegistryInfo {
 }
 
 pub fn registry_info(name: &str) -> Option<RegistryInfo> {
-    // Registry info.
+    // Description:
+    //     Registry info.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<RegistryInfo>
+    //         Return value from `registry_info`.
     //
     // Example:
-    // let result = spanda_package::registry::registry_info(name);
+    //     let result = spanda_package::registry::registry_info(name);
 
     // Produce find registry entry as the result.
     find_registry_entry(name)
@@ -361,19 +361,19 @@ pub fn registry_info(name: &str) -> Option<RegistryInfo> {
 }
 
 pub fn all_import_paths() -> Vec<&'static str> {
-    // All import paths.
+    // Description:
+    //     All import paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<&'static str>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static str>
+    //         Return value from `all_import_paths`.
     //
     // Example:
-    // let result = spanda_package::registry::all_import_paths();
+
+    //     let result = spanda_package::registry::all_import_paths();
 
     let mut paths: Vec<&'static str> = LOCAL_REGISTRY
         .iter()

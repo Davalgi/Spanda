@@ -31,6 +31,21 @@ struct BundleCanonicalBody {
 
 impl From<&DeployPlan> for BundleCanonicalBody {
     fn from(plan: &DeployPlan) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     plan: &DeployPlan
+        //         Caller-supplied plan.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_ota::bundle::from(plan);
+
         Self {
             version: plan.version.clone(),
             program: plan.program.clone(),
@@ -43,6 +58,21 @@ impl From<&DeployPlan> for BundleCanonicalBody {
 
 impl From<&DeployArtifactBundle> for BundleCanonicalBody {
     fn from(bundle: &DeployArtifactBundle) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     bundle: &DeployArtifactBundle
+        //         Caller-supplied bundle.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_ota::bundle::from(bundle);
+
         Self {
             version: bundle.version.clone(),
             program: bundle.program.clone(),
@@ -55,19 +85,20 @@ impl From<&DeployArtifactBundle> for BundleCanonicalBody {
 
 /// Build an unsigned artifact bundle from a deployment plan.
 pub fn build_deploy_bundle(plan: &DeployPlan) -> DeployArtifactBundle {
-    // Materialize the rollout manifest fields from a deploy plan.
+    // Description:
+    //     Build deploy bundle.
     //
-    // Parameters:
-    // - `plan` — parsed deployment plan
+    // Inputs:
+    //     plan: &DeployPlan
+    //         Caller-supplied plan.
     //
-    // Returns:
-    // Unsigned artifact bundle ready for optional signing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: DeployArtifactBundle
+    //         Return value from `build_deploy_bundle`.
     //
     // Example:
-    // let bundle = build_deploy_bundle(&plan);
+
+    //     let result = spanda_ota::bundle::build_deploy_bundle(plan);
 
     DeployArtifactBundle {
         version: plan.version.clone(),
@@ -82,7 +113,19 @@ pub fn build_deploy_bundle(plan: &DeployPlan) -> DeployArtifactBundle {
 
 /// Canonical JSON body used for Ed25519 signing and verification.
 pub fn bundle_canonical_json(bundle: &DeployArtifactBundle) -> Result<String, String> {
-    // Serialize the signed payload without signature metadata.
+    // Description:
+    //     Bundle canonical json.
+    //
+    // Inputs:
+    //     bundle: &DeployArtifactBundle
+    //         Caller-supplied bundle.
+    //
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `bundle_canonical_json`.
+    //
+    // Example:
+    //     let result = spanda_ota::bundle::bundle_canonical_json(bundle);
     let body = BundleCanonicalBody::from(bundle);
     serde_json::to_string(&body).map_err(|e| e.to_string())
 }
@@ -92,20 +135,22 @@ pub fn sign_deploy_bundle(
     bundle: &mut DeployArtifactBundle,
     key_material: &str,
 ) -> Result<(), String> {
-    // Attach a signature and derived public key to the bundle.
+    // Description:
+    //     Sign deploy bundle.
     //
-    // Parameters:
-    // - `bundle` — artifact bundle to sign in place
-    // - `key_material` — Ed25519 seed or signing passphrase
+    // Inputs:
+    //     bundle: &mut DeployArtifactBundle
+    //         Caller-supplied bundle.
+    //     key_material: &str
+    //         Caller-supplied key material.
     //
-    // Returns:
-    // Ok when signing succeeds.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `sign_deploy_bundle`.
     //
     // Example:
-    // sign_deploy_bundle(&mut bundle, "fleet-signing-key")?;
+
+    //     let result = spanda_ota::bundle::sign_deploy_bundle(bundle, key_material);
 
     let canonical = bundle_canonical_json(bundle)?;
     bundle.public_key = Some(public_key_from_material(key_material));
@@ -115,20 +160,22 @@ pub fn sign_deploy_bundle(
 
 /// Verify an artifact bundle signature against trusted key material.
 pub fn verify_deploy_bundle(bundle: &DeployArtifactBundle, key_material: &str) -> bool {
-    // Validate the bundle signature against trusted signing material.
+    // Description:
+    //     Verify deploy bundle.
     //
-    // Parameters:
-    // - `bundle` — signed artifact bundle
-    // - `key_material` — trusted public key hex or signing material
+    // Inputs:
+    //     bundle: &DeployArtifactBundle
+    //         Caller-supplied bundle.
+    //     key_material: &str
+    //         Caller-supplied key material.
     //
-    // Returns:
-    // true when the signature matches the canonical body.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `verify_deploy_bundle`.
     //
     // Example:
-    // verify_deploy_bundle(&bundle, trusted_key);
+
+    //     let result = spanda_ota::bundle::verify_deploy_bundle(bundle, key_material);
 
     let Some(signature) = bundle.signature.as_deref() else {
         return false;
@@ -149,7 +196,31 @@ pub fn verify_rollout_artifact(
     assignments: &[DeployAssignment],
     certifications: &[String],
 ) -> bool {
-    // Validate a remote rollout payload against a trusted signing key.
+    // Description:
+    //     Verify rollout artifact.
+    //
+    // Inputs:
+    //     version: &str
+    //         Caller-supplied version.
+    //     progra: &str
+    //         Caller-supplied progra.
+    //     program_hash: Option<&str>
+    //         Caller-supplied program hash.
+    //     signature: &str
+    //         Caller-supplied signature.
+    //     key_material: &str
+    //         Caller-supplied key material.
+    //     assignments: &[DeployAssignment]
+    //         Caller-supplied assignments.
+    //     certifications: &[String]
+    //         Caller-supplied certifications.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `verify_rollout_artifact`.
+    //
+    // Example:
+    //     let result = spanda_ota::bundle::verify_rollout_artifact(version, progra, program_hash, signature, key_material, assignments, certifications);
     let body = BundleCanonicalBody {
         version: version.to_string(),
         program: program.to_string(),

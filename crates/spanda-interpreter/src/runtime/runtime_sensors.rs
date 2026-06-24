@@ -15,20 +15,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         target: &RuntimeValue,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Read sensor value.
+        // Description:
+        //     Read sensor value.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `target` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     arge: &RuntimeValue
+        //         Caller-supplied arge.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `read_sensor_value`.
         //
         // Example:
-        // let result = instance.read_sensor_value(target);
+        //     let result = spanda_interpreter::runtime_sensors::read_sensor_value(&mut self, arge);
 
         // Compute RuntimeValue for the following logic.
         let RuntimeValue::Sensor {
@@ -84,21 +85,24 @@ impl<B: RobotBackend> Interpreter<B> {
         input_paths: &[String],
         estimator: Option<&str>,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Fuse live sensor readings using weighted confidence by sensor type.
+        // Description:
+        //     Read fused observation.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `input_paths` — sensor names or dotted paths (`gps.fix`)
-        // - `estimator` — optional state_estimator name for attribution
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     input_paths: &[String]
+        //         Caller-supplied input paths.
+        //     estimator: Option<&str>
+        //         Caller-supplied estimator.
         //
-        // Returns:
-        // `FusedObservation` with pose, confidence, and `state_estimate`.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `read_fused_observation`.
         //
         // Example:
-        // let fused = fusion.read();
+
+        //     let result = spanda_interpreter::runtime_sensors::read_fused_observation(&mut self, input_paths, estimator);
 
         let mut fields = HashMap::new();
         let mut sensor_types = Vec::new();

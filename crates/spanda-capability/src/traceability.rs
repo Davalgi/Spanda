@@ -44,6 +44,21 @@ pub struct TraceabilityReport {
 
 /// Generate hardware-to-code traceability matrix from a parsed program.
 pub fn hardware_traceability(program: &Program) -> TraceabilityReport {
+    // Description:
+    //     Hardware traceability.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: TraceabilityReport
+    //         Return value from `hardware_traceability`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::hardware_traceability(progra);
+
     let Program::Program {
         hardware_profiles,
         robots,
@@ -252,6 +267,21 @@ pub fn hardware_traceability(program: &Program) -> TraceabilityReport {
 
 /// Generate capability traceability matrix.
 pub fn capability_traceability(program: &Program) -> TraceabilityReport {
+    // Description:
+    //     Capability traceability.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: TraceabilityReport
+    //         Return value from `capability_traceability`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::capability_traceability(progra);
+
     let mut report = hardware_traceability(program);
     let Program::Program {
         robots,
@@ -295,6 +325,23 @@ pub fn capability_traceability(program: &Program) -> TraceabilityReport {
 }
 
 fn infer_provides(robot: &RobotDecl, capability: &str) -> bool {
+    // Description:
+    //     Infer provides.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     capability: &str
+    //         Caller-supplied capability.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `infer_provides`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::infer_provides(robo, capability);
+
     let RobotDecl::RobotDecl {
         sensors,
         actuators,
@@ -326,6 +373,21 @@ fn infer_provides(robot: &RobotDecl, capability: &str) -> bool {
 }
 
 fn infer_sensor_provider(sensor_type: &str) -> String {
+    // Description:
+    //     Infer sensor provider.
+    //
+    // Inputs:
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_sensor_provider`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::infer_sensor_provider(sensor_type);
+
     match sensor_type {
         "GPS" | "GNSS" => "PositioningProvider".into(),
         "Camera" => "VisionProvider".into(),
@@ -335,6 +397,21 @@ fn infer_sensor_provider(sensor_type: &str) -> String {
 }
 
 fn infer_actuator_provider(actuator_type: &str) -> String {
+    // Description:
+    //     Infer actuator provider.
+    //
+    // Inputs:
+    //     actuator_type: &str
+    //         Caller-supplied actuator type.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_actuator_provider`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::infer_actuator_provider(actuator_type);
+
     match actuator_type {
         t if t.contains("Drive") => "ActuatorProvider".into(),
         "Arm" | "Gripper" => "ManipulationProvider".into(),
@@ -343,6 +420,21 @@ fn infer_actuator_provider(actuator_type: &str) -> String {
 }
 
 fn infer_connectivity_provider(conn: &str) -> String {
+    // Description:
+    //     Infer connectivity provider.
+    //
+    // Inputs:
+    //     conn: &str
+    //         Caller-supplied conn.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_connectivity_provider`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::infer_connectivity_provider(conn);
+
     match conn {
         "WiFi" => "spanda-wifi".into(),
         "LTE" | "FiveG" | "Cellular" => "spanda-cellular".into(),
@@ -353,6 +445,23 @@ fn infer_connectivity_provider(conn: &str) -> String {
 }
 
 fn infer_component_provider(kind: &str, component_type: &str) -> String {
+    // Description:
+    //     Infer component provider.
+    //
+    // Inputs:
+    //     kind: &str
+    //         Caller-supplied kind.
+    //     component_type: &str
+    //         Caller-supplied component type.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_component_provider`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::traceability::infer_component_provider(kind, component_type);
+
     match kind {
         "sensor" => infer_sensor_provider(component_type),
         "actuator" => infer_actuator_provider(component_type),
@@ -369,11 +478,39 @@ mod tests {
     use spanda_parser::parse;
 
     fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+        // Description:
+        //     Parse source.
+        //
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Program
+        //         Return value from `parse_source`.
+        //
+        // Example:
+
+        //     let result = spanda_capability::traceability::parse_source(source);
+
         parse(tokenize(source).expect("tokenize")).expect("parse")
     }
 
     #[test]
     fn hardware_traceability_from_program() {
+        // Description:
+        //     Hardware traceability from program.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::traceability::hardware_traceability_from_program();
+
         let source = r#"
 hardware RoverV1 {
     sensors [GPS, Camera, Lidar];

@@ -5,6 +5,19 @@ use spanda_ota::{build_deploy_bundle, sign_deploy_bundle, verify_deploy_bundle};
 
 #[test]
 fn signed_deploy_bundle_verifies() {
+    // Description:
+    //     Signed deploy bundle verifies.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::bundle_integration::signed_deploy_bundle_verifies();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let program = compile(source).expect("compile").program;
     let program_path = concat!(
@@ -22,6 +35,19 @@ fn signed_deploy_bundle_verifies() {
 
 #[test]
 fn tampered_deploy_bundle_rejected() {
+    // Description:
+    //     Tampered deploy bundle rejected.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::bundle_integration::tampered_deploy_bundle_rejected();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let program = compile(source).expect("compile").program;
     let program_path = concat!(

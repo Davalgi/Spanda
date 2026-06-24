@@ -5,19 +5,18 @@ use crate::registry::all_import_paths;
 
 /// Built-in module import paths (Phase 1 module system).
 pub fn builtin_import_paths() -> &'static [&'static str] {
-    // Builtin import paths.
+    // Description:
+    //     Builtin import paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static [&'static str].
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static [&'static str]
+    //         Return value from `builtin_import_paths`.
     //
     // Example:
-    // let result = spanda_package::import::builtin_import_paths();
+    //     let result = spanda_package::import::builtin_import_paths();
 
     // Return the static list of known values.
     &[
@@ -75,19 +74,19 @@ pub fn builtin_import_paths() -> &'static [&'static str] {
 
 /// Resolve whether an import path is known (builtin, std, or package registry).
 pub fn resolve_package_import(path: &str) -> bool {
-    // Resolve package import.
+    // Description:
+    //     Resolve package import.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `resolve_package_import`.
     //
     // Example:
-    // let result = spanda_package::import::resolve_package_import(path);
+    //     let result = spanda_package::import::resolve_package_import(path);
 
     // Check membership before continuing.
     if builtin_import_paths().contains(&path) {
@@ -98,19 +97,18 @@ pub fn resolve_package_import(path: &str) -> bool {
 
 /// All registered import paths for tooling / LSP.
 pub fn all_registered_import_paths() -> Vec<String> {
-    // All registered import paths.
+    // Description:
+    //     All registered import paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `all_registered_import_paths`.
     //
     // Example:
-    // let result = spanda_package::import::all_registered_import_paths();
+    //     let result = spanda_package::import::all_registered_import_paths();
 
     // Create mutable paths for accumulating results.
     let mut paths: Vec<String> = builtin_import_paths()
@@ -130,19 +128,18 @@ mod tests {
 
     #[test]
     fn resolves_navigation_imports() {
-        // Resolves navigation imports.
+        // Description:
+        //     Resolves navigation imports.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::import::resolves_navigation_imports();
+
+        //     let result = spanda_package::import::resolves_navigation_imports();
 
         assert!(resolve_package_import("navigation.path_planning"));
         assert!(resolve_package_import("robotics.ros2"));

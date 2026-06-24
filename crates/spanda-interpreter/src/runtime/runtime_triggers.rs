@@ -14,6 +14,25 @@ impl<B: RobotBackend> Interpreter<B> {
         category: SystemTriggerCategory,
         event: &str,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch system trigger.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     category: SystemTriggerCategory
+        //         Caller-supplied category.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_system_trigger`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::dispatch_system_trigger(&mut self, category, even);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_category(category, event)
@@ -32,6 +51,25 @@ impl<B: RobotBackend> Interpreter<B> {
         topic_name: &str,
         topic_path: &str,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch message triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_name: &str
+        //         Caller-supplied opic name.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_message_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::dispatch_message_triggers(&mut self, opic_name, opic_path);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_message(topic_name, topic_path)
@@ -45,6 +83,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_condition_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run condition triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_condition_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::run_condition_triggers(&mut self);
+
         let handlers: Vec<(usize, Expr, bool)> = self
             .trigger_registry
             .condition_handlers()
@@ -75,6 +128,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_trigger_maintenance(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run trigger maintenance.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_trigger_maintenance`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::run_trigger_maintenance(&mut self);
+
         self.run_hardware_triggers()?;
         self.run_connectivity_triggers()?;
         self.run_geofence_triggers()?;
@@ -85,6 +153,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_hardware_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run hardware triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_hardware_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::run_hardware_triggers(&mut self);
+
         for event in self.hardware_monitor.poll_new_events() {
             self.dispatch_system_trigger(SystemTriggerCategory::Hardware, &event)?;
             if let Some((domain, evt)) = self.host.hardware_event_to_connectivity(&event) {
@@ -100,6 +183,25 @@ impl<B: RobotBackend> Interpreter<B> {
         sensor: &str,
         event: &str,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch sensor event trigger.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sensor: &str
+        //         Caller-supplied sensor.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_sensor_event_trigger`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::dispatch_sensor_event_trigger(&mut self, sensor, even);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_sensor_event(sensor, event)
@@ -114,6 +216,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn poll_transport_inbound_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Poll transport inbound triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `poll_transport_inbound_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::poll_transport_inbound_triggers(&mut self);
+
         let inbound = self.comm_bus.poll_inbound(self.default_transport);
         for (topic_path, envelope) in inbound {
             let payload = Self::runtime_value_payload(&envelope.value);
@@ -147,6 +264,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn run_twin_fault_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run twin fault triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_twin_fault_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::run_twin_fault_triggers(&mut self);
+
         for fault in self.comm_bus.active_faults() {
             let fault_lower = fault.to_ascii_lowercase();
             if (fault_lower.contains("fault")
@@ -166,6 +298,23 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_timer_triggers(&mut self, sim_time: f64) -> Result<(), SpandaError> {
+        // Description:
+        //     Run timer triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sim_time: f64
+        //         Caller-supplied sim time.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_timer_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_triggers::run_timer_triggers(&mut self, sim_time);
+
         let mut to_run = Vec::new();
         for schedule in &mut self.trigger_timers {
             if schedule.next_due_ms <= sim_time {

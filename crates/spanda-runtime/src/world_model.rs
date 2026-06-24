@@ -16,38 +16,41 @@ pub struct WorldModelRuntime {
 impl WorldModelRuntime {
     /// Create an empty world model.
     pub fn new() -> Self {
-        // Allocate an empty rolling observation buffer.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Empty `WorldModelRuntime`.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let model = WorldModelRuntime::new();
+
+        //     let value = spanda_runtime::world_model::new();
 
         Self::default()
     }
 
     /// Record one observation and refresh belief confidence.
     pub fn update(&mut self, observation: &RuntimeValue) -> f64 {
-        // Append an observation and recompute belief confidence.
+        // Description:
+        //     Update.
         //
-        // Parameters:
-        // - `observation` — runtime value from `observe` / fusion
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     observation: &RuntimeValue
+        //         Caller-supplied observation.
         //
-        // Returns:
-        // Updated belief confidence in `[0, 1]`.
-        //
-        // Options:
-        // Keeps the most recent `MAX_OBSERVATIONS` entries.
+        // Outputs:
+        //     result: f64
+        //         Return value from `update`.
         //
         // Example:
-        // let confidence = model.update(&obs);
+
+        //     let result = spanda_runtime::world_model::update(&mut self, observation);
 
         self.observations.push(runtime_value_to_json(observation));
         if self.observations.len() > MAX_OBSERVATIONS {
@@ -60,38 +63,40 @@ impl WorldModelRuntime {
 
     /// Return the current belief confidence.
     pub fn belief_confidence(&self) -> f64 {
-        // Return the latest belief confidence score.
+        // Description:
+        //     Belief confidence.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Confidence in `[0, 1]`.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: f64
+        //         Return value from `belief_confidence`.
         //
         // Example:
-        // let confidence = model.belief_confidence();
+
+        //     let result = spanda_runtime::world_model::belief_confidence(&self);
 
         self.belief_confidence
     }
 
     /// Export observations and belief for cloud upload or replay.
     pub fn export_json(&self) -> Value {
-        // Serialize observations and belief for telemetry export.
+        // Description:
+        //     Export json.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // JSON object with `observations` and `belief_confidence`.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Value
+        //         Return value from `export_json`.
         //
         // Example:
-        // let payload = model.export_json();
+
+        //     let result = spanda_runtime::world_model::export_json(&self);
 
         json!({
             "observations": self.observations,
@@ -100,6 +105,21 @@ impl WorldModelRuntime {
     }
 
     fn confidence_from_observations(observations: &[Value]) -> f64 {
+        // Description:
+        //     Confidence from observations.
+        //
+        // Inputs:
+        //     observations: &[Value]
+        //         Caller-supplied observations.
+        //
+        // Outputs:
+        //     result: f64
+        //         Return value from `confidence_from_observations`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::world_model::confidence_from_observations(observations);
+
         if observations.is_empty() {
             return 0.0;
         }
@@ -109,6 +129,21 @@ impl WorldModelRuntime {
 }
 
 fn runtime_value_to_json(value: &RuntimeValue) -> Value {
+    // Description:
+    //     Runtime value to json.
+    //
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Value
+    //         Return value from `runtime_value_to_json`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::world_model::runtime_value_to_json(value);
+
     match value {
         RuntimeValue::Number { value, unit } => {
             json!({ "kind": "number", "value": value, "unit": format!("{unit:?}") })
@@ -135,6 +170,19 @@ mod tests {
 
     #[test]
     fn update_increases_belief_with_observations() {
+        // Description:
+        //     Update increases belief with observations.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::world_model::update_increases_belief_with_observations();
+
         let mut model = WorldModelRuntime::new();
         assert_eq!(model.belief_confidence(), 0.0);
         let obs = RuntimeValue::Number {

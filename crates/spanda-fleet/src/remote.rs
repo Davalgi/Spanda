@@ -39,10 +39,39 @@ pub struct PeerRelayResponse {
 }
 
 pub fn default_fleet_agents_path() -> PathBuf {
+    // Description:
+    //     Default fleet agents path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_fleet_agents_path`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::default_fleet_agents_path();
+
     PathBuf::from(".spanda/fleet-agents.json")
 }
 
 pub fn load_fleet_agent_registry(path: &Path) -> FleetAgentRegistry {
+    // Description:
+    //     Load fleet agent registry.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: FleetAgentRegistry
+    //         Return value from `load_fleet_agent_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::load_fleet_agent_registry(path);
+
     if !path.exists() {
         return FleetAgentRegistry::default();
     }
@@ -53,6 +82,23 @@ pub fn load_fleet_agent_registry(path: &Path) -> FleetAgentRegistry {
 }
 
 pub fn save_fleet_agent_registry(path: &Path, registry: &FleetAgentRegistry) -> Result<(), String> {
+    // Description:
+    //     Save fleet agent registry.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `save_fleet_agent_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::save_fleet_agent_registry(path, registry);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -66,6 +112,27 @@ pub fn register_fleet_agent(
     url: String,
     token: Option<String>,
 ) -> Result<(), String> {
+    // Description:
+    //     Register fleet agent.
+    //
+    // Inputs:
+    //     registry: &mut FleetAgentRegistry
+    //         Caller-supplied registry.
+    //     robot_name: String
+    //         Caller-supplied robot name.
+    //     url: String
+    //         Caller-supplied url.
+    //     token: Option<String>
+    //         Caller-supplied token.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `register_fleet_agent`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::register_fleet_agent(registry, robot_name, rl, oken);
+
     parse_http_url(&url)?;
     registry
         .agents
@@ -92,6 +159,23 @@ pub fn lookup_fleet_agent<'a>(
 }
 
 fn agent_endpoint(base_url: &str, path: &str) -> Result<String, String> {
+    // Description:
+    //     Agent endpoint.
+    //
+    // Inputs:
+    //     base_url: &str
+    //         Caller-supplied base url.
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `agent_endpoint`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::agent_endpoint(base_url, path);
+
     let parsed = parse_http_url(base_url)?;
     Ok(format!(
         "{}://{}:{}{}",
@@ -100,6 +184,21 @@ fn agent_endpoint(base_url: &str, path: &str) -> Result<String, String> {
 }
 
 fn decode_response<T: for<'de> Deserialize<'de>>(response: HttpResponse) -> Result<T, String> {
+    // Description:
+    //     Decode response.
+    //
+    // Inputs:
+    //     response: HttpResponse
+    //         Caller-supplied response.
+    //
+    // Outputs:
+    //     result: Result<T, String>
+    //         Return value from `decode_response`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::decode_response(response);
+
     if response.status >= 400 {
         return Err(format!(
             "fleet agent HTTP {}: {}",
@@ -110,6 +209,21 @@ fn decode_response<T: for<'de> Deserialize<'de>>(response: HttpResponse) -> Resu
 }
 
 pub fn agent_health(entry: &FleetAgentEntry) -> Result<bool, String> {
+    // Description:
+    //     Agent health.
+    //
+    // Inputs:
+    //     entry: &FleetAgentEntry
+    //         Caller-supplied entry.
+    //
+    // Outputs:
+    //     result: Result<bool, String>
+    //         Return value from `agent_health`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::agent_health(entry);
+
     let url = agent_endpoint(&entry.url, "/v1/health")?;
     let response = http_request("GET", &url, None, entry.token.as_deref())?;
     let body: serde_json::Value = decode_response(response)?;
@@ -122,6 +236,25 @@ pub fn agent_readiness(
     runtime: bool,
     inject_health_faults: bool,
 ) -> Result<serde_json::Value, String> {
+    // Description:
+    //     Agent readiness.
+    //
+    // Inputs:
+    //     entry: &FleetAgentEntry
+    //         Caller-supplied entry.
+    //     runtime: bool
+    //         Caller-supplied runtime.
+    //     inject_health_faults: bool
+    //         Caller-supplied inject health faults.
+    //
+    // Outputs:
+    //     result: Result<serde_json::Value, String>
+    //         Return value from `agent_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::agent_readiness(entry, runtime, inject_health_faults);
+
     let mut url = agent_endpoint(&entry.url, "/v1/readiness")?;
     let mut query = Vec::new();
     if runtime {
@@ -140,6 +273,23 @@ pub fn agent_readiness(
 
 /// Push program source to a fleet agent (`POST /v1/program`).
 pub fn agent_upload_program(entry: &FleetAgentEntry, program: &str) -> Result<(), String> {
+    // Description:
+    //     Agent upload program.
+    //
+    // Inputs:
+    //     entry: &FleetAgentEntry
+    //         Caller-supplied entry.
+    //     progra: &str
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `agent_upload_program`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::agent_upload_program(entry, progra);
+
     let url = agent_endpoint(&entry.url, "/v1/program")?;
     let payload = serde_json::json!({ "program": program }).to_string();
     let response = http_request("POST", &url, Some(&payload), entry.token.as_deref())?;
@@ -159,6 +309,23 @@ pub fn relay_peer_delivery(
     entry: &FleetAgentEntry,
     delivery: &PeerDelivery,
 ) -> Result<PeerRelayResponse, String> {
+    // Description:
+    //     Relay peer delivery.
+    //
+    // Inputs:
+    //     entry: &FleetAgentEntry
+    //         Caller-supplied entry.
+    //     delivery: &PeerDelivery
+    //         Caller-supplied delivery.
+    //
+    // Outputs:
+    //     result: Result<PeerRelayResponse, String>
+    //         Return value from `relay_peer_delivery`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::relay_peer_delivery(entry, delivery);
+
     let url = agent_endpoint(&entry.url, "/v1/peer")?;
     let payload = serde_json::to_string(&PeerRelayRequest {
         from_robot: delivery.from_robot.clone(),
@@ -175,7 +342,35 @@ pub fn relay_peer_deliveries(
     deliveries: &[PeerDelivery],
     registry: &FleetAgentRegistry,
 ) -> (u32, u32) {
-    // Push peer mission steps to registered remote fleet agents.
+    // Description:
+
+    //     Relay peer deliveries.
+
+    //
+
+    // Inputs:
+
+    //     deliveries: &[PeerDelivery]
+
+    //         Caller-supplied deliveries.
+
+    //     registry: &FleetAgentRegistry
+
+    //         Caller-supplied registry.
+
+    //
+
+    // Outputs:
+
+    //     result: (u32, u32)
+
+    //         Return value from `relay_peer_deliveries`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::remote::relay_peer_deliveries(deliveries, registry);
     let mut relayed = 0u32;
     let mut failed = 0u32;
     for delivery in deliveries {
@@ -192,6 +387,21 @@ pub fn relay_peer_deliveries(
 }
 
 pub fn registry_by_robot(registry: &FleetAgentRegistry) -> HashMap<String, FleetAgentEntry> {
+    // Description:
+    //     Registry by robot.
+    //
+    // Inputs:
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: HashMap<String, FleetAgentEntry>
+    //         Return value from `registry_by_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote::registry_by_robot(registry);
+
     registry
         .agents
         .iter()

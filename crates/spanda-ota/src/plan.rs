@@ -12,21 +12,24 @@ pub fn build_deploy_plan_from_program(
     program_path: &str,
     version: &str,
 ) -> DeployPlan {
-    // Extract deploy targets and certification metadata from the program AST.
+    // Description:
+    //     Build deploy plan from program.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source file path for reporting
-    // - `version` — release version label
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     version: &str
+    //         Caller-supplied version.
     //
-    // Returns:
-    // Deployment plan with robot/hardware assignments.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: DeployPlan
+    //         Return value from `build_deploy_plan_from_program`.
     //
     // Example:
-    // let plan = build_deploy_plan_from_program(&program, "rover.sd", "1.2.0");
+
+    //     let result = spanda_ota::plan::build_deploy_plan_from_program(progra, program_path, version);
 
     let Program::Program {
         deployments,

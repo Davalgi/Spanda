@@ -33,19 +33,19 @@ pub struct DebugSession {
 
 impl DebugSession {
     pub fn paused(&self) -> bool {
-        // Paused.
+        // Description:
+        //     Paused.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `paused`.
         //
         // Example:
-        // let result = instance.paused();
+        //     let result = spanda_debug::paused(&self);
 
         // Produce is empty as the result.
         !self.pauses.is_empty()
@@ -61,19 +61,19 @@ pub struct DebugController {
 
 impl DebugController {
     pub fn new(options: DebugOptions) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `options` — input value
+        // Inputs:
+        //     options: DebugOptions
+        //         Caller-supplied options.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_debug::new(options);
+        //     let value = spanda_debug::new(options);
 
         // Assemble the struct fields and return it.
         Self {
@@ -84,39 +84,40 @@ impl DebugController {
     }
 
     pub fn pauses(&self) -> Rc<RefCell<Vec<DebugPause>>> {
-        // Pauses.
+        // Description:
+        //     Pauses.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Rc<RefCell<Vec<DebugPause>>>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Rc<RefCell<Vec<DebugPause>>>
+        //         Return value from `pauses`.
         //
         // Example:
-        // let result = instance.pauses();
+        //     let result = spanda_debug::pauses(&self);
 
         // Call clone on the current instance.
         self.pauses.clone()
     }
 
     pub fn should_pause(&self, line: u32) -> bool {
-        // Should pause.
+        // Description:
+        //     Should pause.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `line` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `should_pause`.
         //
         // Example:
-        // let result = instance.should_pause(line);
+        //     let result = spanda_debug::should_pause(&self, line);
 
         // take this path when *self.step.borrow().
         if *self.step.borrow() {
@@ -132,22 +133,24 @@ impl DebugController {
         reason: &str,
         variables: std::collections::HashMap<String, String>,
     ) {
-        // Record pause.
+        // Description:
+        //     Record pause.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `line` — input value
-        // - `reason` — input value
-        // - `variables` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     line: u32
+        //         Caller-supplied line.
+        //     reason: &str
+        //         Caller-supplied reason.
+        //     variables: std::collections::HashMap<String, String>
+        //         Caller-supplied variables.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_pause(line, reason, variables);
+        //     let result = spanda_debug::record_pause(&self, line, reason, variables);
 
         // Append into self.
         self.pauses.borrow_mut().push(DebugPause {
@@ -158,20 +161,20 @@ impl DebugController {
     }
 
     pub fn command(&self, cmd: DebugCommand) {
-        // Command.
+        // Description:
+        //     Command.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `cmd` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     cmd: DebugCommand
+        //         Caller-supplied cmd.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.command(cmd);
+        //     let result = spanda_debug::command(&self, cmd);
 
         // keep entries that match the expected pattern.
         if matches!(cmd, DebugCommand::Step) {
@@ -181,19 +184,19 @@ impl DebugController {
 }
 
 pub fn stmt_line(stmt: &spanda_ast::nodes::Stmt) -> u32 {
-    // Stmt line.
+    // Description:
+    //     Stmt line.
     //
-    // Parameters:
-    // - `stmt` — input value
+    // Inputs:
+    //     s: &spanda_ast::nodes::Stmt
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: u32
+    //         Return value from `stmt_line`.
     //
     // Example:
-    // let result = spanda_debug::stmt_line(stmt);
+    //     let result = spanda_debug::stmt_line(s);
 
     // Import the items needed by the logic below.
     use spanda_ast::nodes::Stmt;

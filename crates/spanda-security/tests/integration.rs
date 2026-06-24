@@ -7,19 +7,18 @@ use spanda_security::{
 
 #[test]
 fn full_security_context_flow() {
-    // Full security context flow.
+    // Description:
+    //     Full security context flow.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_security::integration::full_security_context_flow();
+
+    //     let result = spanda_security::integration::full_security_context_flow();
 
     let mut ctx = SecurityContext::with_permissions(&PackagePermissions::from_capabilities([
         "audit.write",
@@ -37,19 +36,18 @@ fn full_security_context_flow() {
 
 #[test]
 fn secret_store_env_and_literal() {
-    // Secret store env and literal.
+    // Description:
+    //     Secret store env and literal.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_security::integration::secret_store_env_and_literal();
+
+    //     let result = spanda_security::integration::secret_store_env_and_literal();
 
     let mut store = SecretStore::new();
     store.register(SecretHandle {
@@ -63,19 +61,18 @@ fn secret_store_env_and_literal() {
 
 #[test]
 fn capability_denial_blocks_audit() {
-    // Capability denial blocks audit.
+    // Description:
+    //     Capability denial blocks audit.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_security::integration::capability_denial_blocks_audit();
+
+    //     let result = spanda_security::integration::capability_denial_blocks_audit();
 
     let ctx = SecurityContext::new();
     let mut audit = spanda_audit::AuditRuntime::new("test", vec![]);
@@ -84,19 +81,18 @@ fn capability_denial_blocks_audit() {
 
 #[test]
 fn trust_level_blocks_restricted_endpoint() {
-    // Trust level blocks restricted endpoint.
+    // Description:
+    //     Trust level blocks restricted endpoint.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_security::integration::trust_level_blocks_restricted_endpoint();
+
+    //     let result = spanda_security::integration::trust_level_blocks_restricted_endpoint();
 
     let mut ctx = SecurityContext::new();
     ctx.set_identity(RobotIdentity::new("rover-1", "key").with_trust(TrustLevel::Restricted));
@@ -117,19 +113,18 @@ fn trust_level_blocks_restricted_endpoint() {
 
 #[test]
 fn signed_message_json_export() {
-    // Signed message json export.
+    // Description:
+    //     Signed message json export.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_security::integration::signed_message_json_export();
+
+    //     let result = spanda_security::integration::signed_message_json_export();
 
     let id = RobotIdentity::new("bot", "key");
     let msg = SignedMessage::sign("payload", &id);

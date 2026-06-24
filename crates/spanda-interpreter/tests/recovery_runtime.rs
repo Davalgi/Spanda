@@ -6,6 +6,19 @@ use spanda_parser::parse;
 
 #[test]
 fn recovery_policy_dispatches_degraded_mode_on_health_fault() {
+    // Description:
+    //     Recovery policy dispatches degraded mode on health fault.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::recovery_runtime::recovery_policy_dispatches_degraded_mode_on_health_fault();
+
     let source = r#"
 hardware H {
     sensors [GPS, Lidar];
@@ -63,6 +76,19 @@ robot Rover {
 
 #[test]
 fn approval_topic_grants_high_risk_recovery() {
+    // Description:
+    //     Approval topic grants high risk recovery.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::recovery_runtime::approval_topic_grants_high_risk_recovery();
+
     let source = r#"
 hardware H {
     sensors [GPS, Lidar];
@@ -114,6 +140,19 @@ robot Rover {
 
 #[test]
 fn fleet_recovery_publishes_mesh_command() {
+    // Description:
+    //     Fleet recovery publishes mesh command.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::recovery_runtime::fleet_recovery_publishes_mesh_command();
+
     let source = r#"
 hardware H {
     sensors [GPS];
@@ -170,6 +209,19 @@ robot RoverBeta {
 
 #[test]
 fn fleet_recovery_relays_to_mesh_coordinator() {
+    // Description:
+    //     Fleet recovery relays to mesh coordinator.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::recovery_runtime::fleet_recovery_relays_to_mesh_coordinator();
+
     use spanda_fleet::{
         register_fleet_agent, spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry,
     };

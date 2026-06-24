@@ -4,6 +4,19 @@ use spanda_lexer::{tokenize, TokenType};
 
 #[test]
 fn self_host_bootstrap_sample_tokenizes() {
+    // Description:
+    //     Self host bootstrap sample tokenizes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_lexer::self_host_parity::self_host_bootstrap_sample_tokenizes();
+
     let tokens = tokenize("robot Rover { }").expect("tokenize bootstrap sample");
     assert!(
         tokens
@@ -25,6 +38,19 @@ fn self_host_bootstrap_sample_tokenizes() {
 
 #[test]
 fn self_host_world_model_keyword_tokenizes() {
+    // Description:
+    //     Self host world model keyword tokenizes.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_lexer::self_host_parity::self_host_world_model_keyword_tokenizes();
+
     let tokens = tokenize("world_model { enabled; }").expect("tokenize world_model block");
     assert!(
         tokens.iter().any(|token| token.lexeme == "world_model"),

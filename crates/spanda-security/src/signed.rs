@@ -22,20 +22,21 @@ pub struct SignedMessage {
 
 impl SignedMessage {
     pub fn sign(payload: impl Into<String>, identity: &RobotIdentity) -> Self {
-        // Sign.
+        // Description:
+        //     Sign.
         //
-        // Parameters:
-        // - `payload` — input value
-        // - `identity` — input value
+        // Inputs:
+        //     payload: impl Into<String>
+        //         Caller-supplied payload.
+        //     identity: &RobotIdentity
+        //         Caller-supplied identity.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `sign`.
         //
         // Example:
-        // let result = spanda_security::signed::sign(payload, identity);
+        //     let result = spanda_security::signed::sign(payload, identity);
 
         // Compute payload for the following logic.
         let payload = payload.into();
@@ -52,20 +53,21 @@ impl SignedMessage {
     }
 
     pub fn verify(&self, identity: &RobotIdentity) -> SecurityResult<bool> {
-        // Verify.
+        // Description:
+        //     Verify.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `identity` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     identity: &RobotIdentity
+        //         Caller-supplied identity.
         //
-        // Returns:
-        // SecurityResult<bool>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<bool>
+        //         Return value from `verify`.
         //
         // Example:
-        // let result = instance.verify(identity);
+        //     let result = spanda_security::signed::verify(&self, identity);
 
         // take the branch when signer id differs from id.
         if self.signature.signer_id != identity.id() {
@@ -79,19 +81,19 @@ impl SignedMessage {
     }
 
     pub fn to_json(&self) -> SecurityResult<String> {
-        // Convert to json.
+        // Description:
+        //     To json.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // SecurityResult<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<String>
+        //         Return value from `to_json`.
         //
         // Example:
-        // let result = instance.to_json();
+        //     let result = spanda_security::signed::to_json(&self);
 
         // Produce to string as the result.
         serde_json::to_string(self)
@@ -105,19 +107,18 @@ mod tests {
 
     #[test]
     fn signed_message_roundtrip() {
-        // Signed message roundtrip.
+        // Description:
+        //     Signed message roundtrip.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_security::signed::signed_message_roundtrip();
+
+        //     let result = spanda_security::signed::signed_message_roundtrip();
 
         let id = RobotIdentity::new("rover-1", "key-abc");
         let msg = SignedMessage::sign("telemetry", &id);

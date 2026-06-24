@@ -21,6 +21,21 @@ pub struct FleetVerifyReport {
 
 /// Verify fleet programs for inter-robot conflicts.
 pub fn verify_fleet(program: &Program) -> FleetVerifyReport {
+    // Description:
+    //     Verify fleet.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: FleetVerifyReport
+    //         Return value from `verify_fleet`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::fleet_verify::verify_fleet(progra);
+
     let Program::Program {
         robots,
         fleets,
@@ -110,6 +125,21 @@ pub fn verify_fleet(program: &Program) -> FleetVerifyReport {
 
 /// Verify fleet from source.
 pub fn verify_fleet_source(source: &str) -> Result<FleetVerifyReport, spanda_error::SpandaError> {
+    // Description:
+    //     Verify fleet source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<FleetVerifyReport, spanda_error::SpandaError>
+    //         Return value from `verify_fleet_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::fleet_verify::verify_fleet_source(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(verify_fleet(&program))

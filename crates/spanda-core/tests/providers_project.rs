@@ -8,6 +8,19 @@ use std::path::Path;
 
 #[test]
 fn ros2_adapter_project_loads_official_packages() {
+    // Description:
+    //     Ros2 adapter project loads official packages.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::providers_project::ros2_adapter_project_loads_official_packages();
+
     let root =
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/packages/ros2_adapter_package");
     let packages = load_official_packages_for_project(&root).expect("manifest");
@@ -16,6 +29,19 @@ fn ros2_adapter_project_loads_official_packages() {
 
 #[test]
 fn interpreter_logs_official_packages_from_project_deps() {
+    // Description:
+    //     Interpreter logs official packages from project deps.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::providers_project::interpreter_logs_official_packages_from_project_deps();
+
     let root =
         Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/packages/ros2_adapter_package");
     let packages = load_official_packages_for_project(&root).expect("manifest");

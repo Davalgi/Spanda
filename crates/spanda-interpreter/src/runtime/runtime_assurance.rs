@@ -8,10 +8,40 @@ use spanda_providers::dispatch_official_package_call;
 use std::time::Instant;
 
 fn sensor_name_from_input(input: &str) -> String {
+    // Description:
+    //     Sensor name from input.
+    //
+    // Inputs:
+    //     inp: &str
+    //         Caller-supplied inp.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `sensor_name_from_input`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_assurance::sensor_name_from_input(inp);
+
     input.split('.').next().unwrap_or(input).to_string()
 }
 
 fn collect_learned_detectors(program: &Program) -> Vec<(String, String)> {
+    // Description:
+    //     Collect learned detectors.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<(String, String)>
+    //         Return value from `collect_learned_detectors`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_assurance::collect_learned_detectors(progra);
+
     let Program::Program {
         imports,
         anomaly_detectors,
@@ -40,6 +70,23 @@ fn collect_learned_detectors(program: &Program) -> Vec<(String, String)> {
 }
 
 fn observed_confidence(report: &HealthReport, detector: &str) -> f64 {
+    // Description:
+    //     Observed confidence.
+    //
+    // Inputs:
+    //     repor: &HealthReport
+    //         Caller-supplied repor.
+    //     detector: &str
+    //         Caller-supplied detector.
+    //
+    // Outputs:
+    //     result: f64
+    //         Return value from `observed_confidence`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_assurance::observed_confidence(repor, detector);
+
     for check in &report.checks {
         if (check.name == detector
             || check.metric.contains("confidence")
@@ -61,6 +108,20 @@ fn observed_confidence(report: &HealthReport, detector: &str) -> f64 {
 impl<B: RobotBackend> Interpreter<B> {
     /// Ensure the learned anomaly package is registered when detectors declare backends.
     pub(super) fn ensure_learned_anomaly_package(&self) {
+        // Description:
+        //     Ensure learned anomaly package.
+        //
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_assurance::ensure_learned_anomaly_package(&self);
+
         let mut registry = self.provider_registry.borrow_mut();
         if registry.has_official_package("spanda-anomaly") {
             registry.grant_capability("assurance.anomaly.scan");
@@ -74,6 +135,22 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Poll optional learned anomaly backends during health transitions.
     pub(super) fn poll_learned_anomaly_detectors(&mut self, report: &HealthReport) {
+        // Description:
+        //     Poll learned anomaly detectors.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     repor: &HealthReport
+        //         Caller-supplied repor.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_assurance::poll_learned_anomaly_detectors(&mut self, repor);
+
         let Some(program) = self.health_program.clone() else {
             return;
         };
@@ -155,6 +232,20 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Register `state_estimator` declarations as fusion runtime bindings.
     pub(super) fn setup_state_estimators(&mut self) {
+        // Description:
+        //     Setup state estimators.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_assurance::setup_state_estimators(&mut self);
+
         let Some(program) = self.health_program.clone() else {
             return;
         };
@@ -212,6 +303,22 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn apply_anomaly_handlers(&mut self, report: &HealthReport) {
+        // Description:
+        //     Apply anomaly handlers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     repor: &HealthReport
+        //         Caller-supplied repor.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_assurance::apply_anomaly_handlers(&mut self, repor);
+
         let Some(program) = self.health_program.clone() else {
             return;
         };

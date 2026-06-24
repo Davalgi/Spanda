@@ -10,6 +10,20 @@ use std::process::{Command, Stdio};
 
 /// Return true when live AI providers should be used instead of mock-only mode.
 pub fn live_ai_enabled() -> bool {
+    // Description:
+    //     Live ai enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_ai_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_ai::live::live_ai_enabled();
+
     std::env::var("SPANDA_LIVE_AI").ok().as_deref() != Some("0")
         && std::env::var("OPENAI_API_KEY")
             .ok()
@@ -18,6 +32,20 @@ pub fn live_ai_enabled() -> bool {
 
 /// Return true when live Anthropic providers should be used.
 pub fn live_anthropic_enabled() -> bool {
+    // Description:
+    //     Live anthropic enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_anthropic_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_ai::live::live_anthropic_enabled();
+
     std::env::var("SPANDA_LIVE_AI").ok().as_deref() != Some("0")
         && std::env::var("ANTHROPIC_API_KEY")
             .ok()
@@ -26,6 +54,20 @@ pub fn live_anthropic_enabled() -> bool {
 
 /// Return true when live ONNX inference should be used.
 pub fn live_onnx_enabled() -> bool {
+    // Description:
+    //     Live onnx enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_onnx_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_ai::live::live_onnx_enabled();
+
     std::env::var("SPANDA_LIVE_AI").ok().as_deref() != Some("0")
         && std::env::var("SPANDA_ONNX_MODEL_PATH")
             .ok()
@@ -34,19 +76,20 @@ pub fn live_onnx_enabled() -> bool {
 
 /// Select a runtime AI provider for the configured provider name.
 pub fn resolve_ai_provider(provider: &str) -> Box<dyn AiProvider> {
-    // Select a runtime AI provider for the configured provider name.
+    // Description:
+    //     Resolve ai provider.
     //
-    // Parameters:
-    // - `provider` — configured provider string from ai_model block
+    // Inputs:
+    //     provider: &str
+    //         Caller-supplied provider.
     //
-    // Returns:
-    // Boxed provider implementation.
-    //
-    // Options:
-    // - `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` + `SPANDA_LIVE_AI` enable live paths
+    // Outputs:
+    //     result: Box<dyn AiProvider>
+    //         Return value from `resolve_ai_provider`.
     //
     // Example:
-    // let backend = resolve_ai_provider("openai");
+
+    //     let result = spanda_ai::live::resolve_ai_provider(provider);
 
     match provider.to_ascii_lowercase().as_str() {
         "openai" if live_ai_enabled() => Box::new(OpenAiProvider),
@@ -60,20 +103,22 @@ pub struct OpenAiProvider;
 
 impl AiProvider for OpenAiProvider {
     fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
-        // Complete an LLM prompt through the live OpenAI bridge.
+        // Description:
+        //     Complete.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `request` — completion request
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &CompletionRequest
+        //         Caller-supplied request.
         //
-        // Returns:
-        // ActionProposal derived from model output.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `complete`.
         //
         // Example:
-        // let proposal = provider.complete(request);
+
+        //     let result = spanda_ai::live::complete(&self, reques);
 
         let prompt = build_prompt(&request.prompt, request.input.as_ref(), None);
         if let Some(text) = call_openai_complete(&prompt) {
@@ -83,10 +128,44 @@ impl AiProvider for OpenAiProvider {
     }
 
     fn detect(&self, request: &DetectionRequest) -> RuntimeValue {
+        // Description:
+        //     Detect.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &DetectionRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `detect`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::detect(&self, reques);
+
         MockAiProvider.detect(request)
     }
 
     fn embed(&self, request: &EmbedRequest) -> RuntimeValue {
+        // Description:
+        //     Embed.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &EmbedRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `embed`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::embed(&self, reques);
+
         MockAiProvider.embed(request)
     }
 }
@@ -95,6 +174,23 @@ pub struct AnthropicProvider;
 
 impl AiProvider for AnthropicProvider {
     fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
+        // Description:
+        //     Complete.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &CompletionRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `complete`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::complete(&self, reques);
+
         let prompt = build_prompt(&request.prompt, request.input.as_ref(), None);
         if let Some(text) = call_anthropic_complete(&prompt) {
             return proposal_from_completion(&text, request);
@@ -103,10 +199,44 @@ impl AiProvider for AnthropicProvider {
     }
 
     fn detect(&self, request: &DetectionRequest) -> RuntimeValue {
+        // Description:
+        //     Detect.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &DetectionRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `detect`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::detect(&self, reques);
+
         MockAiProvider.detect(request)
     }
 
     fn embed(&self, request: &EmbedRequest) -> RuntimeValue {
+        // Description:
+        //     Embed.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &EmbedRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `embed`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::embed(&self, reques);
+
         MockAiProvider.embed(request)
     }
 }
@@ -115,6 +245,23 @@ pub struct OnnxProvider;
 
 impl AiProvider for OnnxProvider {
     fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
+        // Description:
+        //     Complete.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &CompletionRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `complete`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::complete(&self, reques);
+
         let prompt = build_prompt(&request.prompt, request.input.as_ref(), None);
         if let Some(text) = call_onnx_complete(&prompt) {
             return proposal_from_completion(&text, request);
@@ -123,29 +270,65 @@ impl AiProvider for OnnxProvider {
     }
 
     fn detect(&self, request: &DetectionRequest) -> RuntimeValue {
+        // Description:
+        //     Detect.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &DetectionRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `detect`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::detect(&self, reques);
+
         MockAiProvider.detect(request)
     }
 
     fn embed(&self, request: &EmbedRequest) -> RuntimeValue {
+        // Description:
+        //     Embed.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &EmbedRequest
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `embed`.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::embed(&self, reques);
+
         MockAiProvider.embed(request)
     }
 }
 
 fn proposal_from_completion(text: &str, request: &CompletionRequest) -> RuntimeValue {
-    // Map OpenAI text output into an ActionProposal using safety heuristics.
+    // Description:
+    //     Proposal from completion.
     //
-    // Parameters:
-    // - `text` — model completion text
-    // - `request` — original completion request
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
+    //     request: &CompletionRequest
+    //         Caller-supplied request.
     //
-    // Returns:
-    // ActionProposal runtime value.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `proposal_from_completion`.
     //
     // Example:
-    // let proposal = proposal_from_completion("stop", request);
+
+    //     let result = spanda_ai::live::proposal_from_completion(ex, reques);
 
     let dist = scan_distance(request.input.as_ref());
     let lower = text.to_ascii_lowercase();
@@ -196,6 +379,21 @@ fn proposal_from_completion(text: &str, request: &CompletionRequest) -> RuntimeV
 }
 
 fn call_onnx_complete(prompt: &str) -> Option<String> {
+    // Description:
+    //     Call onnx complete.
+    //
+    // Inputs:
+    //     promp: &str
+    //         Caller-supplied promp.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `call_onnx_complete`.
+    //
+    // Example:
+
+    //     let result = spanda_ai::live::call_onnx_complete(promp);
+
     let response = call_python_bridge(
         "onnx_complete",
         vec![serde_json::Value::String(prompt.to_string())],
@@ -207,6 +405,21 @@ fn call_onnx_complete(prompt: &str) -> Option<String> {
 }
 
 fn call_anthropic_complete(prompt: &str) -> Option<String> {
+    // Description:
+    //     Call anthropic complete.
+    //
+    // Inputs:
+    //     promp: &str
+    //         Caller-supplied promp.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `call_anthropic_complete`.
+    //
+    // Example:
+
+    //     let result = spanda_ai::live::call_anthropic_complete(promp);
+
     let response = call_python_bridge(
         "anthropic_complete",
         vec![serde_json::Value::String(prompt.to_string())],
@@ -218,19 +431,20 @@ fn call_anthropic_complete(prompt: &str) -> Option<String> {
 }
 
 fn call_openai_complete(prompt: &str) -> Option<String> {
-    // Invoke the Python bridge openai_complete handler.
+    // Description:
+    //     Call openai complete.
     //
-    // Parameters:
-    // - `prompt` — user prompt text
+    // Inputs:
+    //     promp: &str
+    //         Caller-supplied promp.
     //
-    // Returns:
-    // Completion text when the bridge succeeds, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `call_openai_complete`.
     //
     // Example:
-    // let text = call_openai_complete("Plan a safe stop");
+
+    //     let result = spanda_ai::live::call_openai_complete(promp);
 
     let response = call_python_bridge(
         "openai_complete",
@@ -243,20 +457,22 @@ fn call_openai_complete(prompt: &str) -> Option<String> {
 }
 
 fn call_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<serde_json::Value> {
-    // Invoke `scripts/spanda_python_bridge.py` with a JSON request.
+    // Description:
+    //     Call python bridge.
     //
-    // Parameters:
-    // - `fn_name` — bridge handler name
-    // - `args` — handler arguments
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: Vec<serde_json::Value>
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Parsed JSON response when the bridge succeeds, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<serde_json::Value>
+    //         Return value from `call_python_bridge`.
     //
     // Example:
-    // let response = call_python_bridge("openai_complete", vec![]);
+
+    //     let result = spanda_ai::live::call_python_bridge(fn_name, args);
 
     let script = bridge_script_path()?;
     let python = std::env::var("SPANDA_PYTHON").unwrap_or_else(|_| "python3".into());
@@ -285,19 +501,19 @@ fn call_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<ser
 }
 
 fn bridge_script_path() -> Option<String> {
-    // Resolve the Python bridge script path from env or repo layout.
+    // Description:
+    //     Bridge script path.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Script path when found, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `bridge_script_path`.
     //
     // Example:
-    // let path = bridge_script_path();
+
+    //     let result = spanda_ai::live::bridge_script_path();
 
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
         if std::path::Path::new(&path).is_file() {
@@ -329,6 +545,19 @@ mod tests {
 
     #[test]
     fn live_ai_disabled_without_api_key() {
+        // Description:
+        //     Live ai disabled without api key.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_ai::live::live_ai_disabled_without_api_key();
+
         std::env::remove_var("OPENAI_API_KEY");
         std::env::remove_var("SPANDA_LIVE_AI");
         assert!(!live_ai_enabled());

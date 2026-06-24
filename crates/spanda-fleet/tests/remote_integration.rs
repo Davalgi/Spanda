@@ -11,6 +11,19 @@ use std::time::Duration;
 
 #[test]
 fn relays_peer_delivery_to_registered_fleet_agent() {
+    // Description:
+    //     Relays peer delivery to registered fleet agent.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote_integration::relays_peer_delivery_to_registered_fleet_agent();
+
     let (port, _handle) = spawn_test_fleet_agent("ScoutB", None).expect("spawn fleet agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -35,6 +48,19 @@ fn relays_peer_delivery_to_registered_fleet_agent() {
 
 #[test]
 fn orchestrate_remote_switches_to_distributed_peer_mesh() {
+    // Description:
+    //     Orchestrate remote switches to distributed peer mesh.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote_integration::orchestrate_remote_switches_to_distributed_peer_mesh();
+
     let (port, _handle) = spawn_test_fleet_agent("ScoutB", None).expect("spawn fleet agent");
     let source = r#"
 robot ScoutA {
@@ -69,6 +95,19 @@ fleet Recon { ScoutA; ScoutB; }
 
 #[test]
 fn fleet_agent_registry_round_trip() {
+    // Description:
+    //     Fleet agent registry round trip.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote_integration::fleet_agent_registry_round_trip();
+
     let path = PathBuf::from(".spanda/test-fleet-agents-roundtrip.json");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -87,6 +126,19 @@ fn fleet_agent_registry_round_trip() {
 
 #[test]
 fn fleet_entry_for_port_builds_local_url() {
+    // Description:
+    //     Fleet entry for port builds local url.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::remote_integration::fleet_entry_for_port_builds_local_url();
+
     let entry = fleet_entry_for_port("ScoutA", 9999, Some("tok".into()));
     assert_eq!(entry.url, "http://127.0.0.1:9999");
     assert_eq!(entry.robot_name, "ScoutA");

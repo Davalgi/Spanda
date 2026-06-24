@@ -4,19 +4,18 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn trait_object_var_and_method_dispatch() {
-    // Trait object var and method dispatch.
+    // Description:
+    //     Trait object var and method dispatch.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::trait_objects::trait_object_var_and_method_dispatch();
+
+    //     let result = spanda_core::trait_objects::trait_object_var_and_method_dispatch();
 
     let source = r#"
 trait Greeter {
@@ -32,19 +31,18 @@ robot R {
 
   impl Greeter for Nav {
     fn greet() -> Void {
-        // Greet.
+        // Description:
+        //     Greet.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Void.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Void
+        //         Return value from `greet`.
         //
         // Example:
-        // let result = spanda_core::trait_objects::greet();
+ // let result = spanda_core::trait_objects::greet();
  wheels.stop(); }
   }
 
@@ -60,19 +58,18 @@ robot R {
 
 #[test]
 fn trait_object_rejects_unimplemented_agent() {
-    // Trait object rejects unimplemented agent.
+    // Description:
+    //     Trait object rejects unimplemented agent.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::trait_objects::trait_object_rejects_unimplemented_agent();
+
+    //     let result = spanda_core::trait_objects::trait_object_rejects_unimplemented_agent();
 
     let source = r#"
 trait Worker {

@@ -46,6 +46,21 @@ pub struct MissionDashboard {
 
 impl ReadinessDashboard {
     pub fn from_reports(reports: Vec<ReadinessReport>) -> Self {
+        // Description:
+        //     From reports.
+        //
+        // Inputs:
+        //     reports: Vec<ReadinessReport>
+        //         Caller-supplied reports.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_reports`.
+        //
+        // Example:
+
+        //     let result = spanda_readiness::dashboard::from_reports(reports);
+
         let mission_ready_count = reports.iter().filter(|r| r.mission_ready).count() as u32;
         let degraded_count = reports
             .iter()
@@ -75,6 +90,21 @@ impl ReadinessDashboard {
 
 impl FleetDashboard {
     pub fn from_fleet_report(report: FleetReadinessReport) -> Self {
+        // Description:
+        //     From fleet report.
+        //
+        // Inputs:
+        //     repor: FleetReadinessReport
+        //         Caller-supplied repor.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_fleet_report`.
+        //
+        // Example:
+
+        //     let result = spanda_readiness::dashboard::from_fleet_report(repor);
+
         Self {
             fleet_score: report.fleet_score,
             healthy_robots: report.healthy_robots,

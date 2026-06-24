@@ -1,8 +1,8 @@
 //! Runtime recovery action dispatch, operator approval, and fleet coordination.
 
-use super::{Interpreter, RobotBackend};
 use super::super::super::options::{RecoveryRunOptions, RecoveryRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
+use super::{Interpreter, RobotBackend};
 use serde::{Deserialize, Serialize};
 use spanda_assurance::{
     classify_failure, default_knowledge_store_path, load_recovery_knowledge_store,
@@ -20,12 +20,42 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 fn parse_speed_cap(action: &str) -> Option<f64> {
+    // Description:
+    //     Parse speed cap.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `parse_speed_cap`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_recovery::parse_speed_cap(action);
+
     action
         .split_whitespace()
         .find_map(|part| part.parse::<f64>().ok())
 }
 
 fn normalize_mode_name(action: &str) -> Option<&'static str> {
+    // Description:
+    //     Normalize mode name.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `normalize_mode_name`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_recovery::normalize_mode_name(action);
+
     let lower = action.to_lowercase();
     if lower.contains("degraded") {
         Some("degraded")
@@ -45,6 +75,23 @@ fn normalize_mode_name(action: &str) -> Option<&'static str> {
 impl<B: RobotBackend> Interpreter<B> {
     /// Return true when operator approval is granted for a recovery action.
     pub(super) fn operator_approval_granted(&self, action: &str) -> bool {
+        // Description:
+        //     Operator approval granted.
+        //
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `operator_approval_granted`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::operator_approval_granted(&self, action);
+
         if self.granted_recovery_approvals.contains(action) {
             return true;
         }
@@ -66,6 +113,22 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Record that operator approval is required before executing an action.
     pub(super) fn request_operator_approval(&mut self, action: &str) {
+        // Description:
+        //     Request operator approval.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::request_operator_approval(&mut self, action);
+
         self.pending_recovery_approvals.insert(action.to_string());
         self.log(format!(
             "recovery: operator approval required for '{action}'"
@@ -78,6 +141,22 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Grant operator approval for a pending recovery action (comm topic / API hook).
     pub(super) fn grant_operator_approval(&mut self, action: &str) {
+        // Description:
+        //     Grant operator approval.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::grant_operator_approval(&mut self, action);
+
         self.pending_recovery_approvals.remove(action);
         self.granted_recovery_approvals.insert(action.to_string());
         self.log(format!(
@@ -91,6 +170,23 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Dispatch a single recovery action string at runtime.
     pub(super) fn dispatch_recovery_action(&mut self, action: &str) -> Result<bool, SpandaError> {
+        // Description:
+        //     Dispatch recovery action.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `dispatch_recovery_action`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::dispatch_recovery_action(&mut self, action);
+
         let lower = action.to_lowercase();
 
         if let Some(mode) = normalize_mode_name(action) {
@@ -144,6 +240,20 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Poll Approval topics and environment for operator grants.
     pub(super) fn poll_recovery_approvals(&mut self) {
+        // Description:
+        //     Poll recovery approvals.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::poll_recovery_approvals(&mut self);
+
         for (path, text) in &self.options.inbound_comm_messages {
             self.comm_bus.push_inbound(
                 path,
@@ -182,6 +292,23 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Return true when a mission step or action requires operator approval.
     pub(super) fn mission_action_requires_approval(&self, action: &str) -> bool {
+        // Description:
+        //     Mission action requires approval.
+        //
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `mission_action_requires_approval`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::mission_action_requires_approval(&self, action);
+
         self.mission_approval_actions.contains(action)
     }
 
@@ -191,6 +318,25 @@ impl<B: RobotBackend> Interpreter<B> {
         action: &str,
         line: u32,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Ensure mission operator approval.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     action: &str
+        //         Caller-supplied action.
+        //     line: u32
+        //         Caller-supplied line.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `ensure_mission_operator_approval`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::ensure_mission_operator_approval(&mut self, action, line);
+
         if !self.mission_action_requires_approval(action) {
             return Ok(());
         }
@@ -214,6 +360,23 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         issue: &str,
     ) -> Result<RecoveryResult, SpandaError> {
+        // Description:
+        //     Execute recovery runtime.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     issue: &str
+        //         Caller-supplied issue.
+        //
+        // Outputs:
+        //     result: Result<RecoveryResult, SpandaError>
+        //         Return value from `execute_recovery_runtime`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::execute_recovery_runtime(&mut self, issue);
+
         self.poll_recovery_approvals();
         let Some(program) = self.health_program.clone() else {
             return Ok(RecoveryResult {
@@ -324,6 +487,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn restart_active_connectivity(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Restart active connectivity.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `restart_active_connectivity`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::restart_active_connectivity(&mut self);
+
         let link = self.active_connectivity_link.clone();
         self.default_transport = self.host.connectivity_link_to_transport(&link);
         self.comm_bus.reconnect_transport(self.default_transport);
@@ -336,6 +514,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn pause_active_mission(&mut self) {
+        // Description:
+        //     Pause active mission.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::pause_active_mission(&mut self);
+
         let Some(RuntimeValue::MissionControl { mut runtime }) = self.env.get("mission").cloned()
         else {
             return;
@@ -348,6 +540,23 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn coordinate_fleet_recovery(&mut self, action: &str) -> Result<(), SpandaError> {
+        // Description:
+        //     Coordinate fleet recovery.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     action: &str
+        //         Caller-supplied action.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `coordinate_fleet_recovery`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::coordinate_fleet_recovery(&mut self, action);
+
         let fleet_names: Vec<String> = self.fleets.names().cloned().collect();
         let source = self.publish_source_id();
         self.comm_bus.publish(
@@ -409,6 +618,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn init_recovery_runtime(&mut self) {
+        // Description:
+        //     Init recovery runtime.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::init_recovery_runtime(&mut self);
+
         self.recovery_knowledge_path = default_knowledge_store_path();
         self.pending_recovery_approvals.clear();
         self.granted_recovery_approvals.clear();
@@ -421,6 +644,25 @@ impl<B: RobotBackend> Interpreter<B> {
         program: &Program,
         robot_name: Option<&str>,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Prepare recovery execution.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     progra: &Program
+        //         Caller-supplied progra.
+        //     robot_name: Option<&str>
+        //         Caller-supplied robot name.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `prepare_recovery_execution`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::prepare_recovery_execution(&mut self, progra, robot_name);
+
         let Program::Program {
             robots,
             geofences,
@@ -451,11 +693,43 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Execute a validated recovery plan for a failure issue through the runtime dispatcher.
     pub fn run_recovery_issue(&mut self, issue: &str) -> Result<RecoveryResult, SpandaError> {
+        // Description:
+        //     Run recovery issue.
+        //
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     issue: &str
+        //         Caller-supplied issue.
+        //
+        // Outputs:
+        //     result: Result<RecoveryResult, SpandaError>
+        //         Return value from `run_recovery_issue`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::run_recovery_issue(&mut self, issue);
+
         self.execute_recovery_runtime(issue)
     }
 
     /// Capture interpreter recovery side effects for fleet agent state sync.
     pub fn recovery_execution_snapshot(&self) -> RecoveryExecutionSnapshot {
+        // Description:
+        //     Recovery execution snapshot.
+        //
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: RecoveryExecutionSnapshot
+        //         Return value from `recovery_execution_snapshot`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::recovery_execution_snapshot(&self);
+
         let mission_paused = self
             .env()
             .get("mission")
@@ -489,6 +763,25 @@ pub fn execute_recovery_on_program(
     issue: &str,
     options: RecoveryRunOptions,
 ) -> Result<RecoveryRunResult, SpandaError> {
+    // Description:
+    //     Execute recovery on program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     issue: &str
+    //         Caller-supplied issue.
+    //     options: RecoveryRunOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Result<RecoveryRunResult, SpandaError>
+    //         Return value from `execute_recovery_on_program`.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::runtime_recovery::execute_recovery_on_program(progra, issue, options);
+
     let sim = create_default_simulator(SimulatorConfig::default());
     let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
     let logs_cb = logs.clone();
@@ -525,14 +818,27 @@ pub fn execute_recovery_on_program(
 
 #[cfg(test)]
 mod recovery_execute_tests {
+    use super::super::super::super::options::RecoveryRunOptions;
     use super::execute_recovery_on_program;
-    use super::super::super::options::RecoveryRunOptions;
     use spanda_assurance::RecoveryStatus;
     use spanda_lexer::tokenize;
     use spanda_parser::parse;
 
     #[test]
     fn interpreter_recovery_enters_degraded_mode() {
+        // Description:
+        //     Interpreter recovery enters degraded mode.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_recovery::interpreter_recovery_enters_degraded_mode();
+
         let source = r#"
 recovery_policy RoverRecovery {
     on gps.failed {

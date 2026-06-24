@@ -7,6 +7,27 @@ use spanda_connectivity::{connectivity_key_to_profile_tokens, ConnectivityRequir
 use std::collections::HashSet;
 
 fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Pass.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `pass`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::pass(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -17,6 +38,27 @@ fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Warn.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `warn`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::warn(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -27,6 +69,27 @@ fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn error(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
+    // Description:
+    //     Error.
+    //
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `error`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::error(category, essage, line, column);
+
     CompatItem {
         category: category.into(),
         message: message.into(),
@@ -41,6 +104,23 @@ pub fn verify_requires_connectivity(
     req: &RequiresConnectivityDecl,
     profile: &HardwareProfile,
 ) -> Vec<CompatItem> {
+    // Description:
+    //     Verify requires connectivity.
+    //
+    // Inputs:
+    //     req: &RequiresConnectivityDecl
+    //         Caller-supplied req.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
+    //
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_requires_connectivity`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::verify_requires_connectivity(req, profile);
+
     let RequiresConnectivityDecl::RequiresConnectivityDecl {
         channels,
         latency_ms_max,
@@ -170,6 +250,21 @@ pub fn verify_requires_connectivity(
 
 /// Validate geofence declaration geometry.
 pub fn validate_geofence(geofence: &GeofenceDecl) -> Vec<CompatItem> {
+    // Description:
+    //     Validate geofence.
+    //
+    // Inputs:
+    //     geofence: &GeofenceDecl
+    //         Caller-supplied geofence.
+    //
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `validate_geofence`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::validate_geofence(geofence);
+
     let GeofenceDecl::GeofenceDecl {
         name,
         center_lat,
@@ -215,6 +310,21 @@ pub fn validate_geofence(geofence: &GeofenceDecl) -> Vec<CompatItem> {
 
 /// Validate connectivity failover policy link names.
 pub fn validate_connectivity_policy(policy: &ConnectivityPolicyDecl) -> Vec<CompatItem> {
+    // Description:
+    //     Validate connectivity policy.
+    //
+    // Inputs:
+    //     policy: &ConnectivityPolicyDecl
+    //         Caller-supplied policy.
+    //
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `validate_connectivity_policy`.
+    //
+    // Example:
+
+    //     let result = spanda_hardware::connectivity_validate::validate_connectivity_policy(policy);
+
     let ConnectivityPolicyDecl::ConnectivityPolicyDecl {
         name,
         preferred,

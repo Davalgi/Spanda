@@ -4,19 +4,18 @@ use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn observe_block_type_checks_and_fuses_sensors() {
-    // Observe block type checks and fuses sensors.
+    // Description:
+    //     Observe block type checks and fuses sensors.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::fusion::observe_block_type_checks_and_fuses_sensors();
+
+    //     let result = spanda_core::fusion::observe_block_type_checks_and_fuses_sensors();
 
     let source = r#"
 robot R {
@@ -57,19 +56,18 @@ robot R {
 
 #[test]
 fn observe_unknown_sensor_rejected_at_typecheck() {
-    // Observe unknown sensor rejected at typecheck.
+    // Description:
+    //     Observe unknown sensor rejected at typecheck.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::fusion::observe_unknown_sensor_rejected_at_typecheck();
+
+    //     let result = spanda_core::fusion::observe_unknown_sensor_rejected_at_typecheck();
 
     let source = r#"
 robot R {
@@ -90,19 +88,18 @@ robot R {
 
 #[test]
 fn fusion_example_runs() {
-    // Fusion example runs.
+    // Description:
+    //     Fusion example runs.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::fusion::fusion_example_runs();
+
+    //     let result = spanda_core::fusion::fusion_example_runs();
 
     let source = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),

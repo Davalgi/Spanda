@@ -8,20 +8,22 @@ use tar::Archive;
 
 /// Extract a gzip-compressed tarball into `dest`, rejecting path traversal entries.
 pub fn extract_tarball_safe(tarball: &Path, dest: &Path) -> Result<(), String> {
-    // Extract a registry or publish bundle without tar-slip paths.
+    // Description:
+    //     Extract tarball safe.
     //
-    // Parameters:
-    // - `tarball` — `.tar.gz` file on disk
-    // - `dest` — output directory (created if missing)
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
+    //     des: &Path
+    //         Caller-supplied des.
     //
-    // Returns:
-    // Ok on success, or an error when the archive is invalid or unsafe.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `extract_tarball_safe`.
     //
     // Example:
-    // extract_tarball_safe(bundle_path, vendor_dir)?;
+
+    //     let result = spanda_package::tar_extract::extract_tarball_safe(arball, des);
 
     fs::create_dir_all(dest).map_err(|e| format!("create extract dir: {e}"))?;
     let base = fs::canonicalize(dest).map_err(|e| format!("canonicalize dest: {e}"))?;
@@ -54,20 +56,22 @@ pub fn extract_tarball_safe(tarball: &Path, dest: &Path) -> Result<(), String> {
 }
 
 fn safe_join(base: &Path, entry: &Path) -> Result<PathBuf, String> {
-    // Resolve a tarball member path under `base`, rejecting escapes.
+    // Description:
+    //     Safe join.
     //
-    // Parameters:
-    // - `base` — canonical extraction root
-    // - `entry` — path from the tar header
+    // Inputs:
+    //     base: &Path
+    //         Caller-supplied base.
+    //     entry: &Path
+    //         Caller-supplied entry.
     //
-    // Returns:
-    // Absolute destination path, or an error for unsafe entries.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<PathBuf, String>
+    //         Return value from `safe_join`.
     //
     // Example:
-    // let out = safe_join(&base, Path::new("src/main.sd"))?;
+
+    //     let result = spanda_package::tar_extract::safe_join(base, entry);
 
     let mut out = base.to_path_buf();
     for component in entry.components() {
@@ -102,6 +106,22 @@ mod tests {
     use tar::{Builder, Header};
 
     fn write_tarball(path: &Path, members: &[(&str, &[u8])]) {
+        // Description:
+        //     Write tarball.
+        //
+        // Inputs:
+        //     path: &Path
+        //         Caller-supplied path.
+        //     embers: &[(&str, &[u8])]
+        //         Caller-supplied embers.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::tar_extract::write_tarball(path, embers);
+
         let file = File::create(path).expect("create tarball");
         let encoder = GzEncoder::new(file, Compression::default());
         let mut builder = Builder::new(encoder);
@@ -121,6 +141,19 @@ mod tests {
 
     #[test]
     fn extracts_normal_members() {
+        // Description:
+        //     Extracts normal members.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::tar_extract::extracts_normal_members();
+
         let root = std::env::temp_dir().join(format!("spanda-tar-safe-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).expect("tmpdir");
@@ -134,6 +167,19 @@ mod tests {
 
     #[test]
     fn rejects_parent_traversal_paths() {
+        // Description:
+        //     Rejects parent traversal paths.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::tar_extract::rejects_parent_traversal_paths();
+
         let root = std::env::temp_dir().join(format!("spanda-tar-slip-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).expect("tmpdir");

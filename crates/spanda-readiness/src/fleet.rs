@@ -14,6 +14,23 @@ pub fn evaluate_fleet_readiness(
     program: &Program,
     options: &ReadinessOptions,
 ) -> FleetReadinessReport {
+    // Description:
+    //     Evaluate fleet readiness.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: FleetReadinessReport
+    //         Return value from `evaluate_fleet_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::fleet::evaluate_fleet_readiness(progra, options);
+
     let Program::Program { robots, fleets, .. } = program;
     let health = evaluate_health_checks(program);
 

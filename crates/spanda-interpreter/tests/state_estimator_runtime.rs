@@ -6,6 +6,19 @@ use spanda_parser::parse;
 
 #[test]
 fn state_estimator_registers_fusion_at_runtime() {
+    // Description:
+    //     State estimator registers fusion at runtime.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::state_estimator_runtime::state_estimator_registers_fusion_at_runtime();
+
     let source = r#"
 hardware H {
     sensors [GPS, Lidar];

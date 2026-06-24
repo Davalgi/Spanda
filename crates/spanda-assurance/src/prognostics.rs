@@ -19,6 +19,21 @@ pub struct PrognosticsReport {
 
 /// Evaluate prognostics declarations and emit warnings.
 pub fn evaluate_prognostics(program: &Program) -> PrognosticsReport {
+    // Description:
+    //     Evaluate prognostics.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: PrognosticsReport
+    //         Return value from `evaluate_prognostics`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::prognostics::evaluate_prognostics(progra);
+
     let Program::Program { prognostics, .. } = program;
     let mut models = Vec::new();
     let mut rul_predictions = Vec::new();

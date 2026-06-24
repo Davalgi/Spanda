@@ -10,6 +10,21 @@ use spanda_lexer::tokenize;
 use spanda_parser::parse;
 
 fn normalize_action(action: &str) -> String {
+    // Description:
+    //     Normalize action.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `normalize_action`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::normalize_action(action);
+
     action
         .to_ascii_lowercase()
         .chars()
@@ -18,6 +33,21 @@ fn normalize_action(action: &str) -> String {
 }
 
 fn infer_recovery_issue(action: &str) -> String {
+    // Description:
+    //     Infer recovery issue.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `infer_recovery_issue`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::infer_recovery_issue(action);
+
     let lower = action.to_ascii_lowercase();
     if lower.contains("gps") {
         return "gps.failed".into();
@@ -42,6 +72,23 @@ fn infer_recovery_issue(action: &str) -> String {
 }
 
 fn recovery_issue_for_action(program: &spanda_ast::nodes::Program, action: &str) -> String {
+    // Description:
+    //     Recovery issue for action.
+    //
+    // Inputs:
+    //     progra: &spanda_ast::nodes::Program
+    //         Caller-supplied progra.
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `recovery_issue_for_action`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::recovery_issue_for_action(progra, action);
+
     let normalized = normalize_action(action);
     for policy in extract_recovery_policies(program) {
         for (condition, actions) in &policy.triggers {
@@ -60,12 +107,42 @@ fn recovery_issue_for_action(program: &spanda_ast::nodes::Program, action: &str)
 }
 
 fn operator_approval_enabled() -> bool {
+    // Description:
+    //     Operator approval enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `operator_approval_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::operator_approval_enabled();
+
     std::env::var("SPANDA_OPERATOR_APPROVAL")
         .ok()
         .is_some_and(|value| value == "1" || value.eq_ignore_ascii_case("true"))
 }
 
 fn sync_agent_from_interpreter(state: &mut FleetAgentState, outcome: &RecoveryRunResult) {
+    // Description:
+    //     Sync agent from interpreter.
+    //
+    // Inputs:
+    //     state: &mut FleetAgentState
+    //         Caller-supplied state.
+    //     outcome: &RecoveryRunResult
+    //         Caller-supplied outcome.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::sync_agent_from_interpreter(state, outcome);
+
     if let Some(last) = outcome.recovery.executed_actions.last() {
         state.recovery_active = Some(last.clone());
     }
@@ -82,6 +159,23 @@ fn sync_agent_from_interpreter(state: &mut FleetAgentState, outcome: &RecoveryRu
 }
 
 fn validation_label_for_recovery(status: RecoveryStatus, report_passed: bool) -> &'static str {
+    // Description:
+    //     Validation label for recovery.
+    //
+    // Inputs:
+    //     status: RecoveryStatus
+    //         Caller-supplied status.
+    //     report_passed: bool
+    //         Caller-supplied report passed.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `validation_label_for_recovery`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::validation_label_for_recovery(status, report_passed);
+
     match status {
         RecoveryStatus::Success if report_passed => "PASS",
         RecoveryStatus::Success | RecoveryStatus::PartialSuccess => "PARTIAL",
@@ -95,6 +189,25 @@ pub fn execute_interpreter_recovery_on_agent(
     program_source: &str,
     trigger_action: &str,
 ) -> Result<RecoveryReport, String> {
+    // Description:
+    //     Execute interpreter recovery on agent.
+    //
+    // Inputs:
+    //     state: &mut FleetAgentState
+    //         Caller-supplied state.
+    //     program_source: &str
+    //         Caller-supplied program source.
+    //     rigger_action: &str
+    //         Caller-supplied rigger action.
+    //
+    // Outputs:
+    //     result: Result<RecoveryReport, String>
+    //         Return value from `execute_interpreter_recovery_on_agent`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::execute_interpreter_recovery_on_agent(state, program_source, rigger_action);
+
     let tokens = tokenize(program_source).map_err(|e| e.to_string())?;
     let program = parse(tokens).map_err(|e| e.to_string())?;
     let issue = recovery_issue_for_action(&program, trigger_action);
@@ -123,6 +236,25 @@ pub fn execute_assurance_recovery_on_agent(
     program_source: &str,
     trigger_action: &str,
 ) -> Result<RecoveryReport, String> {
+    // Description:
+    //     Execute assurance recovery on agent.
+    //
+    // Inputs:
+    //     state: &mut FleetAgentState
+    //         Caller-supplied state.
+    //     program_source: &str
+    //         Caller-supplied program source.
+    //     rigger_action: &str
+    //         Caller-supplied rigger action.
+    //
+    // Outputs:
+    //     result: Result<RecoveryReport, String>
+    //         Return value from `execute_assurance_recovery_on_agent`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::execute_assurance_recovery_on_agent(state, program_source, rigger_action);
+
     let tokens = tokenize(program_source).map_err(|e| e.to_string())?;
     let program = parse(tokens).map_err(|e| e.to_string())?;
     let issue = recovery_issue_for_action(&program, trigger_action);
@@ -168,6 +300,22 @@ pub fn execute_assurance_recovery_on_agent(
 
 /// Handle an inbound fleet recovery peer command on a deployed agent.
 pub fn handle_fleet_recovery_command(state: &mut FleetAgentState, action: &str) {
+    // Description:
+    //     Handle fleet recovery command.
+    //
+    // Inputs:
+    //     state: &mut FleetAgentState
+    //         Caller-supplied state.
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::recovery_agent::handle_fleet_recovery_command(state, action);
+
     state.last_recovery_commands.push(action.to_string());
     if let Some(program) = state.program.clone() {
         if execute_interpreter_recovery_on_agent(state, &program, action).is_ok() {
@@ -204,6 +352,19 @@ robot RoverAlpha {
 
     #[test]
     fn interpreter_recovery_applies_runtime_dispatch() {
+        // Description:
+        //     Interpreter recovery applies runtime dispatch.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_fleet::recovery_agent::interpreter_recovery_applies_runtime_dispatch();
+
         std::env::set_var("SPANDA_OPERATOR_APPROVAL", "1");
         let mut state = FleetAgentState {
             robot_name: "RoverAlpha".into(),
@@ -222,6 +383,19 @@ robot RoverAlpha {
 
     #[test]
     fn assurance_recovery_applies_validated_actions() {
+        // Description:
+        //     Assurance recovery applies validated actions.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_fleet::recovery_agent::assurance_recovery_applies_validated_actions();
+
         let program = r#"
 recovery_policy FleetRecovery {
     on fleet.failed { pause mission; }

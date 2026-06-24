@@ -9,27 +9,20 @@ use spanda_error::SpandaError;
 use std::path::{Path, PathBuf};
 
 pub fn generate_markdown(source: &str) -> Result<String, SpandaError> {
-    // Generate Markdown API documentation from Spanda source.
+    // Description:
+    //     Generate markdown.
     //
-    // Parameters:
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // - `source` — Full program source text.
-    //
-    // Returns:
-    //
-    // Markdown document string, or [`SpandaError`] if lexing/parsing fails.
+    // Outputs:
+    //     result: Result<String, SpandaError>
+    //         Return value from `generate_markdown`.
     //
     // Example:
-    //
-    // use spanda_core::docs::generate_markdown;
-    // let source = r#"
-    // module nav;
-    // export fn plan() -> Path { return trajectory(from: pose(x: 0.0 m, y: 0.0 m), to: pose(x: 1.0 m, y: 0.0 m), steps: 3); }
-    // robot R { actuator wheels: DifferentialDrive; behavior run() { wheels.stop(); } }
-    // "#;
-    // let md = generate_markdown(source).unwrap();
-    // assert!(md.contains("# Module `nav`"));
-    // assert!(md.contains("### `R`"));
+
+    //     let result = spanda_docs::program_docs::generate_markdown(source);
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(render_program_docs(&program))
@@ -37,6 +30,23 @@ pub fn generate_markdown(source: &str) -> Result<String, SpandaError> {
 
 /// Generate HTML API documentation from Spanda source.
 pub fn generate_html(source: &str, title: Option<&str>) -> Result<String, SpandaError> {
+    // Description:
+    //     Generate html.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     itle: Option<&str>
+    //         Caller-supplied itle.
+    //
+    // Outputs:
+    //     result: Result<String, SpandaError>
+    //         Return value from `generate_html`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::generate_html(source, itle);
+
     let markdown = generate_markdown(source)?;
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
@@ -59,6 +69,23 @@ pub struct DocJson {
 }
 
 pub fn generate_json_docs(source: &str, html: bool) -> Result<DocJson, SpandaError> {
+    // Description:
+    //     Generate json docs.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     html: bool
+    //         Caller-supplied html.
+    //
+    // Outputs:
+    //     result: Result<DocJson, SpandaError>
+    //         Return value from `generate_json_docs`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::generate_json_docs(source, html);
+
     if html {
         let content = generate_html(source, None)?;
         Ok(DocJson {
@@ -89,6 +116,25 @@ pub fn generate_docs_for_path(
     html: bool,
     out_dir: Option<&Path>,
 ) -> Result<DocBatchResult, SpandaError> {
+    // Description:
+    //     Generate docs for path.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     html: bool
+    //         Caller-supplied html.
+    //     out_dir: Option<&Path>
+    //         Caller-supplied out dir.
+    //
+    // Outputs:
+    //     result: Result<DocBatchResult, SpandaError>
+    //         Return value from `generate_docs_for_path`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::generate_docs_for_path(path, html, out_dir);
+
     if path.is_dir() {
         let mut result = DocBatchResult {
             outputs: Vec::new(),
@@ -135,6 +181,21 @@ pub fn generate_docs_for_path(
 }
 
 fn should_skip_path(path: &Path) -> bool {
+    // Description:
+    //     Should skip path.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `should_skip_path`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::should_skip_path(path);
+
     if path
         .file_name()
         .and_then(|n| n.to_str())
@@ -155,6 +216,27 @@ fn collect_sd_docs(
     out_dir: Option<&Path>,
     result: &mut DocBatchResult,
 ) -> Result<(), SpandaError> {
+    // Description:
+    //     Collect sd docs.
+    //
+    // Inputs:
+    //     dir: &Path
+    //         Caller-supplied dir.
+    //     html: bool
+    //         Caller-supplied html.
+    //     out_dir: Option<&Path>
+    //         Caller-supplied out dir.
+    //     resul: &mut DocBatchResult
+    //         Caller-supplied resul.
+    //
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `collect_sd_docs`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::collect_sd_docs(dir, html, out_dir, resul);
+
     for entry in std::fs::read_dir(dir).map_err(|e| SpandaError::Runtime {
         message: format!("read dir {}: {e}", dir.display()),
         line: 0,
@@ -180,6 +262,21 @@ fn collect_sd_docs(
 }
 
 fn render_doc_block(doc: &Option<String>) -> String {
+    // Description:
+    //     Render doc block.
+    //
+    // Inputs:
+    //     doc: &Option<String>
+    //         Caller-supplied doc.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `render_doc_block`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::program_docs::render_doc_block(doc);
+
     let Some(text) = doc else {
         return String::new();
     };
@@ -192,19 +289,19 @@ fn render_doc_block(doc: &Option<String>) -> String {
 }
 
 fn render_program_docs(program: &Program) -> String {
-    // Render program docs.
+    // Description:
+    //     Render program docs.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_program_docs`.
     //
     // Example:
-    // let result = spanda_core::docs::render_program_docs(program);
+    //     let result = spanda_docs::program_docs::render_program_docs(progra);
 
     // Destructure the program into its top-level sections.
     let Program::Program {
@@ -310,19 +407,19 @@ fn render_program_docs(program: &Program) -> String {
 }
 
 fn render_module_fn(func: &spanda_ast::foundations::ModuleFnDecl) -> String {
-    // Render module fn.
+    // Description:
+    //     Render module fn.
     //
-    // Parameters:
-    // - `func` — input value
+    // Inputs:
+    //     func: &spanda_ast::foundations::ModuleFnDecl
+    //         Caller-supplied func.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_module_fn`.
     //
     // Example:
-    // let result = spanda_core::docs::render_module_fn(func);
+    //     let result = spanda_docs::program_docs::render_module_fn(func);
 
     // Compute visibility for the following logic.
     let visibility = match func.visibility {
@@ -351,19 +448,19 @@ fn render_module_fn(func: &spanda_ast::foundations::ModuleFnDecl) -> String {
 }
 
 fn render_struct(decl: &spanda_ast::foundations::StructDecl) -> String {
-    // Render struct.
+    // Description:
+    //     Render struct.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &spanda_ast::foundations::StructDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_struct`.
     //
     // Example:
-    // let result = spanda_core::docs::render_struct(decl);
+    //     let result = spanda_docs::program_docs::render_struct(decl);
 
     // Compute crate for the following logic.
     let spanda_ast::foundations::StructDecl::StructDecl {
@@ -379,19 +476,19 @@ fn render_struct(decl: &spanda_ast::foundations::StructDecl) -> String {
 }
 
 fn render_enum(decl: &spanda_ast::foundations::EnumDecl) -> String {
-    // Render enum.
+    // Description:
+    //     Render enum.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &spanda_ast::foundations::EnumDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_enum`.
     //
     // Example:
-    // let result = spanda_core::docs::render_enum(decl);
+    //     let result = spanda_docs::program_docs::render_enum(decl);
 
     // Compute crate for the following logic.
     let spanda_ast::foundations::EnumDecl::EnumDecl {
@@ -419,19 +516,19 @@ fn render_enum(decl: &spanda_ast::foundations::EnumDecl) -> String {
 }
 
 fn render_trait(decl: &spanda_ast::foundations::TraitDecl) -> String {
-    // Render trait.
+    // Description:
+    //     Render trait.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &spanda_ast::foundations::TraitDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_trait`.
     //
     // Example:
-    // let result = spanda_core::docs::render_trait(decl);
+    //     let result = spanda_docs::program_docs::render_trait(decl);
 
     // Compute crate for the following logic.
     let spanda_ast::foundations::TraitDecl::TraitDecl {
@@ -456,19 +553,19 @@ fn render_trait(decl: &spanda_ast::foundations::TraitDecl) -> String {
 }
 
 fn render_robot(robot: &RobotDecl) -> String {
-    // Render robot.
+    // Description:
+    //     Render robot.
     //
-    // Parameters:
-    // - `robot` — input value
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `render_robot`.
     //
     // Example:
-    // let result = spanda_core::docs::render_robot(robot);
+    //     let result = spanda_docs::program_docs::render_robot(robo);
 
     // Compute RobotDecl for the following logic.
     let RobotDecl::RobotDecl {
@@ -553,19 +650,19 @@ fn render_robot(robot: &RobotDecl) -> String {
 }
 
 fn type_name(ty: &SpandaType) -> String {
-    // Type name.
+    // Description:
+    //     Type name.
     //
-    // Parameters:
-    // - `ty` — input value
+    // Inputs:
+    //     y: &SpandaType
+    //         Caller-supplied y.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `type_name`.
     //
     // Example:
-    // let result = spanda_core::docs::type_name(ty);
+    //     let result = spanda_docs::program_docs::type_name(y);
 
     // Match on ty and handle each case.
     match ty {
@@ -615,7 +712,21 @@ mod tests {
 
     #[test]
     fn renders_doc_comments_on_functions() {
+        // Description:
+        //     Renders doc comments on functions.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_docs::program_docs::renders_doc_comments_on_functions();
+
         let source = r#"
+
 /// Plans a safe path between two poses.
 export fn plan_path(start: Pose, goal: Pose) -> Path {
   return trajectory(from: start, to: goal, steps: 3);
@@ -628,19 +739,18 @@ export fn plan_path(start: Pose, goal: Pose) -> Path {
 
     #[test]
     fn generates_module_docs() {
-        // Generates module docs.
+        // Description:
+        //     Generates module docs.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::docs::generates_module_docs();
+
+        //     let result = spanda_docs::program_docs::generates_module_docs();
 
         let source = r#"
 module navigation;

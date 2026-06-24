@@ -49,18 +49,19 @@ pub enum BridgeKind {
 
 impl BridgeKind {
     pub fn as_str(&self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = spanda_ast::foundations::as_str(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -247,6 +248,20 @@ pub enum TaskDecl {
 }
 
 fn default_void_type() -> SpandaType {
+    // Description:
+    //     Default void type.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: SpandaType
+    //         Return value from `default_void_type`.
+    //
+    // Example:
+
+    //     let result = spanda_ast::foundations::default_void_type();
+
     SpandaType::Void
 }
 
@@ -263,19 +278,19 @@ pub enum TaskPriority {
 
 impl TaskPriority {
     pub fn from_ident(ident: &str) -> Option<Self> {
-        // Construct from ident.
+        // Description:
+        //     From ident.
         //
-        // Parameters:
-        // - `ident` — input value
+        // Inputs:
+        //     iden: &str
+        //         Caller-supplied iden.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `from_ident`.
         //
         // Example:
-        // let result = spanda_core::foundations::from_ident(ident);
+        //     let result = spanda_ast::foundations::from_ident(iden);
 
         // Match on ident and handle each case.
         match ident {
@@ -358,21 +373,25 @@ pub enum TriggerKind {
         field: String,
         pattern: RegexPattern,
     },
+
     /// Connectivity trigger: `on gps.lost`, `on network.disconnected`, etc.
     Connectivity {
         domain: String,
         event: String,
     },
+
     /// Geofence trigger: `on geofence SafeZone exited`.
     Geofence {
         name: String,
         phase: String,
     },
+
     /// Sensor event trigger: `on gps.fix`.
     SensorEvent {
         sensor: String,
         event: String,
     },
+
     /// Kill switch handler trigger: `on kill_switch EmergencyStop`.
     KillSwitch {
         name: String,
@@ -829,18 +848,18 @@ pub struct SecureBlockDecl {
 
 impl Default for SecureBlockDecl {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::foundations::default();
+        //     let result = spanda_ast::foundations::default();
 
         // Assemble the struct fields and return it.
         Self {
@@ -977,19 +996,19 @@ pub struct CapabilityDecl {
 
 /// Known code-module import paths (Phase 1 module system).
 pub fn resolve_module_import(path: &str) -> bool {
-    // Resolve module import.
+    // Description:
+    //     Resolve module import.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `resolve_module_import`.
     //
     // Example:
-    // let result = spanda_core::foundations::resolve_module_import(path);
+    //     let result = spanda_ast::foundations::resolve_module_import(path);
 
     // Produce matches! as the result.
     matches!(
@@ -1058,19 +1077,19 @@ pub fn resolve_module_import(path: &str) -> bool {
 
 /// Map user-facing type aliases to physical units / builtin types.
 pub fn resolve_type_alias(name: &str) -> Option<&'static str> {
-    // Resolve type alias.
+    // Description:
+    //     Resolve type alias.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `resolve_type_alias`.
     //
     // Example:
-    // let result = spanda_core::foundations::resolve_type_alias(name);
+    //     let result = spanda_ast::foundations::resolve_type_alias(name);
 
     // Match on name and handle each case.
     match name {

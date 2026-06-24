@@ -6,6 +6,19 @@ use spanda_parser::parse;
 
 #[test]
 fn learned_anomaly_backend_triggers_handler_on_health_fault() {
+    // Description:
+    //     Learned anomaly backend triggers handler on health fault.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_interpreter::learned_anomaly_runtime::learned_anomaly_backend_triggers_handler_on_health_fault();
+
     let source = r#"
 hardware H {
     sensors [GPS, Lidar];

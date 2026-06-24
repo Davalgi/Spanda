@@ -13,19 +13,18 @@ use super::protocol::call_subprocess_bridge;
 
 /// Resolve the Python bridge script path.
 pub fn bridge_script_path() -> Option<PathBuf> {
-    // Bridge script path.
+    // Description:
+    //     Bridge script path.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `bridge_script_path`.
     //
     // Example:
-    // let result = spanda_bridge::python::bridge_script_path();
+    //     let result = spanda_bridge::python::bridge_script_path();
 
     // handle the success value from var.
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
@@ -42,19 +41,18 @@ pub fn bridge_script_path() -> Option<PathBuf> {
 }
 
 fn candidate_script_paths() -> Vec<PathBuf> {
-    // Candidate script paths.
+    // Description:
+    //     Candidate script paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<PathBuf>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<PathBuf>
+    //         Return value from `candidate_script_paths`.
     //
     // Example:
-    // let result = spanda_bridge::python::candidate_script_paths();
+    //     let result = spanda_bridge::python::candidate_script_paths();
 
     // Create mutable paths for accumulating results.
     let mut paths = vec![
@@ -70,38 +68,36 @@ fn candidate_script_paths() -> Vec<PathBuf> {
 }
 
 pub fn python_available() -> bool {
-    // Python available.
+    // Description:
+    //     Python available.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `python_available`.
     //
     // Example:
-    // let result = spanda_bridge::python::python_available();
+    //     let result = spanda_bridge::python::python_available();
 
     // Produce is some as the result.
     python_command().is_some()
 }
 
 fn python_command() -> Option<String> {
-    // Python command.
+    // Description:
+    //     Python command.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `python_command`.
     //
     // Example:
-    // let result = spanda_bridge::python::python_command();
+    //     let result = spanda_bridge::python::python_command();
 
     // Iterate over ["python3", "python"].
     for cmd in ["python3", "python"] {
@@ -125,20 +121,21 @@ pub fn call_extern(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
-    // Call extern.
+    // Description:
+    //     Call extern.
     //
-    // Parameters:
-    // - `decl` — input value
-    // - `args` — input value
+    // Inputs:
+    //     decl: &ExternFnDecl
+    //         Caller-supplied decl.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `call_extern`.
     //
     // Example:
-    // let result = spanda_bridge::python::call_extern(decl, args);
+    //     let result = spanda_bridge::python::call_extern(decl, args);
 
     // Produce #[cfg as the result.
     #[cfg(feature = "python-native")]
@@ -175,19 +172,19 @@ mod tests {
     use spanda_ast::nodes::{SourceLocation, Span, SpandaType};
 
     fn test_decl(name: &str) -> ExternFnDecl {
-        // Test decl.
+        // Description:
+        //     Test decl.
         //
-        // Parameters:
-        // - `name` — input value
+        // Inputs:
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // ExternFnDecl.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: ExternFnDecl
+        //         Return value from `test_decl`.
         //
         // Example:
-        // let result = spanda_bridge::python::test_decl(name);
+        //     let result = spanda_bridge::python::test_decl(name);
 
         // Produce ExternFnDecl as the result.
         ExternFnDecl {
@@ -213,19 +210,18 @@ mod tests {
 
     #[test]
     fn subprocess_py_add_when_python_available() {
-        // Subprocess py add when python available.
+        // Description:
+        //     Subprocess py add when python available.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_bridge::python::subprocess_py_add_when_python_available();
+
+        //     let result = spanda_bridge::python::subprocess_py_add_when_python_available();
 
         if !python_available() || bridge_script_path().is_none() {
             return;
@@ -253,19 +249,18 @@ mod tests {
 
     #[test]
     fn subprocess_unknown_fn_errors() {
-        // Subprocess unknown fn errors.
+        // Description:
+        //     Subprocess unknown fn errors.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_bridge::python::subprocess_unknown_fn_errors();
+
+        //     let result = spanda_bridge::python::subprocess_unknown_fn_errors();
 
         if !python_available() || bridge_script_path().is_none() {
             return;

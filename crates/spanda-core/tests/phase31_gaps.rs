@@ -5,6 +5,19 @@ use spanda_driver::check_with_registry;
 
 #[test]
 fn health_policy_applies_on_critical_health() {
+    // Description:
+    //     Health policy applies on critical health.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase31_gaps::health_policy_applies_on_critical_health();
+
     let source = r#"
 health_check RoverHealth for robot Rover {
     check gps.status == Healthy;
@@ -55,6 +68,19 @@ robot Rover {
 
 #[test]
 fn behavior_return_type_mismatch_fails_check() {
+    // Description:
+    //     Behavior return type mismatch fails check.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase31_gaps::behavior_return_type_mismatch_fails_check();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -80,6 +106,19 @@ robot Rover {
 
 #[test]
 fn agent_plan_requires_safe_action_return() {
+    // Description:
+    //     Agent plan requires safe action return.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase31_gaps::agent_plan_requires_safe_action_return();
+
     let source = r#"
 robot Rover {
     ai_model planner: LLM { provider: "mock"; model: "test"; }

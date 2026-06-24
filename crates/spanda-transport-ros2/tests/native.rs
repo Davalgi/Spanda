@@ -6,6 +6,19 @@ mod native {
 
     #[test]
     fn missing_library_does_not_panic() {
+        // Description:
+        //     Missing library does not panic.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport_ros2::native::missing_library_does_not_panic();
+
         let available = native::sdk_available();
         let _ = native::publish("/x", "y");
         let _ = native::subscribe("/x");

@@ -6,6 +6,19 @@ use spanda_core::{
 
 #[test]
 fn gps_gnss_sensor_types_parse() {
+    // Description:
+    //     Gps gnss sensor types parse.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::gps_gnss_sensor_types_parse();
+
     let source = r#"
 robot Rover {
   sensor gps: GPS on "/gps";
@@ -19,6 +32,19 @@ robot Rover {
 
 #[test]
 fn positioning_types_and_geo_builtin() {
+    // Description:
+    //     Positioning types and geo builtin.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::positioning_types_and_geo_builtin();
+
     let source = r#"
 robot Rover {
   sensor gps: GPS on "/gps";
@@ -36,6 +62,19 @@ robot Rover {
 
 #[test]
 fn hardware_connectivity_block_parses() {
+    // Description:
+    //     Hardware connectivity block parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::hardware_connectivity_block_parses();
+
     let source = r#"
 hardware RoverV2 {
   connectivity [
@@ -63,6 +102,19 @@ deploy Rover to RoverV2;
 
 #[test]
 fn requires_connectivity_validation() {
+    // Description:
+    //     Requires connectivity validation.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::requires_connectivity_validation();
+
     let source = r#"
 requires_connectivity {
   gps: required;
@@ -95,6 +147,19 @@ deploy Rover to RoverV2;
 
 #[test]
 fn requires_connectivity_missing_cellular_fails() {
+    // Description:
+    //     Requires connectivity missing cellular fails.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::requires_connectivity_missing_cellular_fails();
+
     let source = r#"
 requires_connectivity {
   cellular: required;
@@ -125,6 +190,19 @@ deploy Rover to Tiny;
 
 #[test]
 fn geofence_parsing_and_validation() {
+    // Description:
+    //     Geofence parsing and validation.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::geofence_parsing_and_validation();
+
     let source = r#"
 geofence SafeZone {
   center: geo(30.2672, -97.7431);
@@ -147,6 +225,19 @@ robot Rover {
 
 #[test]
 fn connectivity_triggers_parse() {
+    // Description:
+    //     Connectivity triggers parse.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::connectivity_triggers_parse();
+
     let source = r#"
 robot Rover {
   sensor gps: GPS on "/gps";
@@ -169,6 +260,19 @@ robot Rover {
 
 #[test]
 fn connectivity_policy_parsing() {
+    // Description:
+    //     Connectivity policy parsing.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::connectivity_policy_parsing();
+
     let source = r#"
 connectivity_policy RoverNetwork {
   preferred: wifi;
@@ -188,6 +292,19 @@ robot Rover {
 
 #[test]
 fn bluetooth_and_ble_service_syntax() {
+    // Description:
+    //     Bluetooth and ble service syntax.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::bluetooth_and_ble_service_syntax();
+
     let source = r#"
 ble_service HeartRateSensor {
   uuid: "180D";
@@ -207,6 +324,19 @@ robot Rover {
 
 #[test]
 fn connectivity_modes_parse() {
+    // Description:
+    //     Connectivity modes parse.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::connectivity_modes_parse();
+
     let source = r#"
 robot Rover {
   actuator wheels: DifferentialDrive;
@@ -229,6 +359,19 @@ robot Rover {
 
 #[test]
 fn simulator_connectivity_faults() {
+    // Description:
+    //     Simulator connectivity faults.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::simulator_connectivity_faults();
+
     let source = r#"
 hardware RoverV2 {
   connectivity [ WiFi6, LTE, GPS ];
@@ -263,6 +406,19 @@ simulate_compatibility {
 
 #[test]
 fn geofence_runtime_in_geofence() {
+    // Description:
+    //     Geofence runtime in geofence.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::geofence_runtime_in_geofence();
+
     let source = r#"
 geofence Home {
   center: geo(30.0, -97.0);
@@ -284,6 +440,19 @@ robot Rover {
 
 #[test]
 fn robot_connectivity_link_method() {
+    // Description:
+    //     Robot connectivity link method.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::robot_connectivity_link_method();
+
     let source = r#"
 connectivity_policy Net {
   preferred: wifi;
@@ -304,6 +473,19 @@ robot Rover {
 
 #[test]
 fn security_connectivity_capabilities() {
+    // Description:
+    //     Security connectivity capabilities.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::security_connectivity_capabilities();
+
     let source = r#"
 robot Rover {
   permissions [
@@ -320,6 +502,19 @@ robot Rover {
 
 #[test]
 fn robot_sim_identity_method() {
+    // Description:
+    //     Robot sim identity method.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::connectivity_positioning::robot_sim_identity_method();
+
     let source = r#"
 robot Rover {
   permissions [ cellular.connect ];

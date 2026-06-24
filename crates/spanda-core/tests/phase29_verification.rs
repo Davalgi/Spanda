@@ -6,11 +6,39 @@ use spanda_lexer::tokenize;
 use spanda_parser::parse;
 
 fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_source`.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase29_verification::parse_source(source);
+
     parse(tokenize(source).expect("tokenize")).expect("parse")
 }
 
 #[test]
 fn remote_kill_switch_emits_verification_warning() {
+    // Description:
+    //     Remote kill switch emits verification warning.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase29_verification::remote_kill_switch_emits_verification_warning();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -40,6 +68,19 @@ robot Rover {
 
 #[test]
 fn trigger_kill_switch_sets_emergency_stop() {
+    // Description:
+    //     Trigger kill switch sets emergency stop.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase29_verification::trigger_kill_switch_sets_emergency_stop();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;

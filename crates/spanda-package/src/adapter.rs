@@ -24,19 +24,18 @@ pub struct FrameworkPackage {
 }
 
 pub fn framework_packages() -> &'static [FrameworkPackage] {
-    // Framework packages.
+    // Description:
+    //     Framework packages.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static [FrameworkPackage].
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static [FrameworkPackage]
+    //         Return value from `framework_packages`.
     //
     // Example:
-    // let result = spanda_package::adapter::framework_packages();
+    //     let result = spanda_package::adapter::framework_packages();
 
     // Return the static list of known values.
     &[
@@ -326,19 +325,18 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
 }
 
 pub fn framework_import_paths() -> Vec<&'static str> {
-    // Framework import paths.
+    // Description:
+    //     Framework import paths.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<&'static str>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static str>
+    //         Return value from `framework_import_paths`.
     //
     // Example:
-    // let result = spanda_package::adapter::framework_import_paths();
+    //     let result = spanda_package::adapter::framework_import_paths();
 
     // Produce framework packages as the result.
     framework_packages()
@@ -349,6 +347,20 @@ pub fn framework_import_paths() -> Vec<&'static str> {
 
 /// Nav2 adapter package metadata for registry stubs and verify.
 pub fn nav2_adapter_metadata() -> AdapterMetadata {
+    // Description:
+    //     Nav2 adapter metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: AdapterMetadata
+    //         Return value from `nav2_adapter_metadata`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::nav2_adapter_metadata();
+
     AdapterMetadata {
         provides: vec![
             "Nav2Adapter".into(),
@@ -366,6 +378,20 @@ pub fn nav2_adapter_metadata() -> AdapterMetadata {
 
 /// Cartographer SLAM adapter metadata for registry stubs and verify.
 pub fn cartographer_adapter_metadata() -> AdapterMetadata {
+    // Description:
+    //     Cartographer adapter metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: AdapterMetadata
+    //         Return value from `cartographer_adapter_metadata`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::cartographer_adapter_metadata();
+
     AdapterMetadata {
         provides: vec![
             "CartographerSlam".into(),
@@ -384,6 +410,20 @@ pub fn cartographer_adapter_metadata() -> AdapterMetadata {
 
 /// RTAB-Map SLAM adapter metadata for registry stubs and verify.
 pub fn rtabmap_adapter_metadata() -> AdapterMetadata {
+    // Description:
+    //     Rtabmap adapter metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: AdapterMetadata
+    //         Return value from `rtabmap_adapter_metadata`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::rtabmap_adapter_metadata();
+
     AdapterMetadata {
         provides: vec![
             "RtabmapSlam".into(),
@@ -402,6 +442,20 @@ pub fn rtabmap_adapter_metadata() -> AdapterMetadata {
 
 /// Generic SLAM adapter metadata for `navigation.slam` imports.
 pub fn slam_adapter_metadata() -> AdapterMetadata {
+    // Description:
+    //     Slam adapter metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: AdapterMetadata
+    //         Return value from `slam_adapter_metadata`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::slam_adapter_metadata();
+
     AdapterMetadata {
         provides: vec![
             "SlamAdapter".into(),
@@ -414,6 +468,21 @@ pub fn slam_adapter_metadata() -> AdapterMetadata {
 
 /// Resolve expected adapter metadata for a framework import path.
 pub fn adapter_metadata_for_import(import_path: &str) -> Option<AdapterMetadata> {
+    // Description:
+    //     Adapter metadata for import.
+    //
+    // Inputs:
+    //     import_path: &str
+    //         Caller-supplied import path.
+    //
+    // Outputs:
+    //     result: Option<AdapterMetadata>
+    //         Return value from `adapter_metadata_for_import`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::adapter_metadata_for_import(import_path);
+
     match import_path {
         "navigation.nav2" => Some(nav2_adapter_metadata()),
         "navigation.cartographer" => Some(cartographer_adapter_metadata()),
@@ -425,6 +494,21 @@ pub fn adapter_metadata_for_import(import_path: &str) -> Option<AdapterMetadata>
 
 /// Resolve expected adapter metadata for a registry package name.
 pub fn adapter_metadata_for_package(package_name: &str) -> Option<AdapterMetadata> {
+    // Description:
+    //     Adapter metadata for package.
+    //
+    // Inputs:
+    //     package_name: &str
+    //         Caller-supplied package name.
+    //
+    // Outputs:
+    //     result: Option<AdapterMetadata>
+    //         Return value from `adapter_metadata_for_package`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter::adapter_metadata_for_package(package_name);
+
     match package_name {
         "spanda-nav2" | "spanda-nav" => Some(nav2_adapter_metadata()),
         "spanda-cartographer" => Some(cartographer_adapter_metadata()),

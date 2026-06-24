@@ -4,19 +4,18 @@ use spanda_core::{check, check_with_registry, compile, run, ModuleRegistry, RunO
 
 #[test]
 fn export_fn_in_module_type_checks() {
-    // Export fn in module type checks.
+    // Description:
+    //     Export fn in module type checks.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::export_fn_in_module_type_checks();
+
+    //     let result = spanda_core::modules_result::export_fn_in_module_type_checks();
 
     let source = r#"
 module navigation.path_planning;
@@ -40,19 +39,18 @@ robot R {
 
 #[test]
 fn cross_module_import_resolves_export() {
-    // Cross module import resolves export.
+    // Description:
+    //     Cross module import resolves export.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::cross_module_import_resolves_export();
+
+    //     let result = spanda_core::modules_result::cross_module_import_resolves_export();
 
     let planning = r#"
 module navigation.path_planning;
@@ -88,19 +86,18 @@ robot R {
 
 #[test]
 fn private_fn_not_exported_to_importer() {
-    // Private fn not exported to importer.
+    // Description:
+    //     Private fn not exported to importer.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::private_fn_not_exported_to_importer();
+
+    //     let result = spanda_core::modules_result::private_fn_not_exported_to_importer();
 
     let planning = r#"
 module navigation.path_planning;
@@ -136,19 +133,18 @@ robot R {
 
 #[test]
 fn generic_export_fn_with_type_param() {
-    // Generic export fn with type param.
+    // Description:
+    //     Generic export fn with type param.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::generic_export_fn_with_type_param();
+
+    //     let result = spanda_core::modules_result::generic_export_fn_with_type_param();
 
     let source = r#"
 module std.collections;
@@ -171,19 +167,18 @@ robot R {
 
 #[test]
 fn result_ok_err_match() {
-    // Result ok err match.
+    // Description:
+    //     Result ok err match.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::result_ok_err_match();
+
+    //     let result = spanda_core::modules_result::result_ok_err_match();
 
     let source = r#"
 module navigation;
@@ -211,19 +206,18 @@ robot R {
 
 #[test]
 fn option_some_none_match() {
-    // Option some none match.
+    // Description:
+    //     Option some none match.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::option_some_none_match();
+
+    //     let result = spanda_core::modules_result::option_some_none_match();
 
     let source = r#"
 module sensors;
@@ -247,19 +241,18 @@ robot R {
 
 #[test]
 fn result_generic_type_annotation() {
-    // Result generic type annotation.
+    // Description:
+    //     Result generic type annotation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::modules_result::result_generic_type_annotation();
+
+    //     let result = spanda_core::modules_result::result_generic_type_annotation();
 
     let source = r#"
 robot R {

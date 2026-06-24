@@ -4,6 +4,19 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn task_return_type_mismatch_fails_check() {
+    // Description:
+    //     Task return type mismatch fails check.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase32_gaps::task_return_type_mismatch_fails_check();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -29,6 +42,19 @@ robot Rover {
 
 #[test]
 fn empty_can_denies_propose_motion_at_runtime() {
+    // Description:
+    //     Empty can denies propose motion at runtime.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase32_gaps::empty_can_denies_propose_motion_at_runtime();
+
     let source = r#"
 robot Rover {
     sensor lidar: Lidar on "/scan";

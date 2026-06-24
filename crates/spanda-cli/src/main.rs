@@ -48,6 +48,23 @@ use std::path::Path;
 use std::process;
 
 fn run_options_for_file(file: &str, opts: RunOptions) -> RunOptions {
+    // Description:
+    //     Run options for file.
+    //
+    // Inputs:
+    //     file: &str
+    //         Caller-supplied file.
+    //     opts: RunOptions
+    //         Caller-supplied opts.
+    //
+    // Outputs:
+    //     result: RunOptions
+    //         Return value from `run_options_for_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::run_options_for_file(file, opts);
+
     let mut opts = opts;
     let path = Path::new(file);
     opts.official_packages = package::official_packages_for_source(path);
@@ -59,6 +76,20 @@ fn run_options_for_file(file: &str, opts: RunOptions) -> RunOptions {
 
 #[cfg(not(feature = "llvm"))]
 fn llvm_unavailable() -> ! {
+    // Description:
+    //     Llvm unavailable.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: !
+    //         Return value from `llvm_unavailable`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::llvm_unavailable();
+
     eprintln!("LLVM commands require the `llvm` feature (enabled by default)");
     eprintln!("Rebuild with: cargo build -p spanda --features llvm");
     process::exit(1);
@@ -122,19 +153,17 @@ struct IrResponse {
 }
 
 fn usage() {
-    // Usage.
+    // Description:
+    //     Usage.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::usage();
+    //     let result = spanda_cli::main::usage();
 
     // Produce eprintln! as the result.
     eprintln!(
@@ -190,19 +219,19 @@ fn usage() {
 }
 
 fn read_source(path: &str) -> String {
-    // Read source.
+    // Description:
+    //     Read source.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `read_source`.
     //
     // Example:
-    // let result = spanda_cli::main::read_source(path);
+    //     let result = spanda_cli::main::read_source(path);
 
     // Produce unwrap or else as the result.
     fs::read_to_string(path).unwrap_or_else(|e| {
@@ -217,20 +246,24 @@ fn print_check_json(
     readiness: Option<spanda_readiness::ReadinessReport>,
     readiness_diagnostics: Option<Vec<spanda_capability::VerificationDiagnostic>>,
 ) {
-    // Print check json.
+    // Description:
+    //     Print check json.
     //
-    // Parameters:
-    // - `err` — input value
-    // - `verification` — optional capability/traceability diagnostics
+    // Inputs:
+    //     err: Option<SpandaError>
+    //         Caller-supplied err.
+    //     verification: Option<Vec<spanda_capability::VerificationDiagnostic>>
+    //         Caller-supplied verification.
+    //     readiness: Option<spanda_readiness::ReadinessReport>
+    //         Caller-supplied readiness.
+    //     readiness_diagnostics: Option<Vec<spanda_capability::VerificationDiagnostic>>
+    //         Caller-supplied readiness diagnostics.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::print_check_json(err, verification);
+    //     let result = spanda_cli::main::print_check_json(err, verification, readiness, readiness_diagnostics);
 
     // Compute resp for the following logic.
     let resp = match err {
@@ -253,19 +286,18 @@ fn print_check_json(
 }
 
 fn print_run_json(result: Result<RunResult, SpandaError>) {
-    // Print run json.
+    // Description:
+    //     Print run json.
     //
-    // Parameters:
-    // - `result` — input value
+    // Inputs:
+    //     resul: Result<RunResult, SpandaError>
+    //         Caller-supplied resul.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::print_run_json(result);
+    //     let result = spanda_cli::main::print_run_json(resul);
 
     // Compute resp for the following logic.
     let resp = match result {
@@ -284,20 +316,20 @@ fn print_run_json(result: Result<RunResult, SpandaError>) {
 }
 
 fn human_check(source: &str, file: &str) {
-    // Human check.
+    // Description:
+    //     Human check.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `file` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::human_check(source, file);
+    //     let result = spanda_cli::main::human_check(source, file);
 
     // Match on check and handle each case.
     match check(source) {
@@ -323,6 +355,28 @@ fn human_replay(
     playback: bool,
     as_json: bool,
 ) {
+    // Description:
+    //     Human replay.
+    //
+    // Inputs:
+    //     race_file: &str
+    //         Caller-supplied race file.
+    //     fro: Option<&str>
+    //         Caller-supplied fro.
+    //     deterministic: bool
+    //         Caller-supplied deterministic.
+    //     playback: bool
+    //         Caller-supplied playback.
+    //     as_json: bool
+    //         Caller-supplied as json.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::human_replay(race_file, fro, deterministic, playback, as_json);
+
     let trace = MissionTrace::load(trace_file).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -460,20 +514,21 @@ fn human_replay(
 }
 
 fn resolve_trace_source(trace_file: &str, source: &str) -> String {
-    // Resolve a trace source label to a readable `.sd` path.
+    // Description:
+    //     Resolve trace source.
     //
-    // Parameters:
-    // - `trace_file` — path to the `.trace` file
-    // - `source` — source label stored in the trace
+    // Inputs:
+    //     race_file: &str
+    //         Caller-supplied race file.
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Best-effort source path for replay verification.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `resolve_trace_source`.
     //
     // Example:
-    // let path = resolve_trace_source("mission.trace", "rover.sd");
+    //     let result = spanda_cli::main::resolve_trace_source(race_file, source);
 
     // Prefer an existing path verbatim when available.
     if Path::new(source).is_file() {
@@ -491,25 +546,24 @@ fn resolve_trace_source(trace_file: &str, source: &str) -> String {
 }
 
 fn human_run(source: &str, file: &str, command: &str, opts: RunOptions) {
-    // Human run.
+    // Description:
+    //     Human run.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `file` — input value
-    // - `verbose` — input value
-    // - `trace_scheduler` — input value
-    // - `trace_tasks` — input value
-    // - `trace_triggers` — input value
-    // - `trace_events` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
+    //     command: &str
+    //         Caller-supplied command.
+    //     opts: RunOptions
+    //         Caller-supplied opts.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::human_run(source, file, verbose, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+    //     let result = spanda_cli::main::human_run(source, file, command, opts);
 
     // Compute max loop iterations for the following logic.
     let verbose = opts.max_loop_iterations > 10;
@@ -680,21 +734,22 @@ fn human_run(source: &str, file: &str, command: &str, opts: RunOptions) {
 }
 
 fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
-    // Human verify.
+    // Description:
+    //     Human verify.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `file` — input value
-    // - `options` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
+    //     options: &VerifyOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::human_verify(source, file, options);
+    //     let result = spanda_cli::main::human_verify(source, file, options);
 
     // Match on verify compatibility and handle each case.
     let registry = package::module_registry_for_source(Path::new(file));
@@ -753,19 +808,18 @@ fn human_verify(source: &str, file: &str, options: &VerifyOptions) {
 }
 
 fn print_verify_json(result: Result<CompatibilityReport, SpandaError>) {
-    // Print verify json.
+    // Description:
+    //     Print verify json.
     //
-    // Parameters:
-    // - `result` — input value
+    // Inputs:
+    //     resul: Result<CompatibilityReport, SpandaError>
+    //         Caller-supplied resul.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::print_verify_json(result);
+    //     let result = spanda_cli::main::print_verify_json(resul);
 
     // Compute resp for the following logic.
     let resp = match result {
@@ -798,18 +852,19 @@ fn print_verify_json(result: Result<CompatibilityReport, SpandaError>) {
 }
 
 fn is_package_command(cmd: &str) -> bool {
+    // Description:
+    //     Is package command.
     //
-    // Parameters:
-    // - `cmd` — input value
+    // Inputs:
+    //     cmd: &str
+    //         Caller-supplied cmd.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_package_command`.
     //
     // Example:
-    // let result = spanda_cli::main::is_package_command(cmd);
+    //     let result = spanda_cli::main::is_package_command(cmd);
 
     // Produce matches! as the result.
     matches!(
@@ -828,19 +883,19 @@ fn is_package_command(cmd: &str) -> bool {
 }
 
 fn twin_dispatch(args: &[String]) {
-    // Twin dispatch.
+    // Description:
+    //     Twin dispatch.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::twin_dispatch(args);
+
+    //     let result = spanda_cli::main::twin_dispatch(args);
 
     if args.first().map(String::as_str) == Some("readiness") {
         readiness_cli::cmd_twin_readiness(&args[1..]);
@@ -923,19 +978,18 @@ fn twin_dispatch(args: &[String]) {
 }
 
 fn fleet_dispatch(args: &[String]) {
-    // Fleet dispatch.
+    // Description:
+    //     Fleet dispatch.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::fleet_dispatch(args);
+    //     let result = spanda_cli::main::fleet_dispatch(args);
 
     // take the branch when as str) differs from Some.
     if args.first().map(String::as_str) == Some("readiness") {
@@ -1022,24 +1076,28 @@ fn human_fleet_run(
     trace_triggers: bool,
     trace_events: bool,
 ) {
-    // Human fleet run.
+    // Description:
+    //     Human fleet run.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `file` — input value
-    // - `trace_scheduler` — input value
-    // - `trace_tasks` — input value
-    // - `trace_triggers` — input value
-    // - `trace_events` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
+    //     race_scheduler: bool
+    //         Caller-supplied race scheduler.
+    //     race_tasks: bool
+    //         Caller-supplied race tasks.
+    //     race_triggers: bool
+    //         Caller-supplied race triggers.
+    //     race_events: bool
+    //         Caller-supplied race events.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::human_fleet_run(source, file, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+    //     let result = spanda_cli::main::human_fleet_run(source, file, race_scheduler, race_tasks, race_triggers, race_events);
 
     // Import the items needed by the logic below.
     println!("\n🛰️  Fleet run from {file}\n");
@@ -1158,24 +1216,28 @@ fn print_fleet_json(
     trace_triggers: bool,
     trace_events: bool,
 ) {
-    // Print fleet json.
+    // Description:
+    //     Print fleet json.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `_file` — input value
-    // - `trace_scheduler` — input value
-    // - `trace_tasks` — input value
-    // - `trace_triggers` — input value
-    // - `trace_events` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     _file: &str
+    //         Caller-supplied file.
+    //     race_scheduler: bool
+    //         Caller-supplied race scheduler.
+    //     race_tasks: bool
+    //         Caller-supplied race tasks.
+    //     race_triggers: bool
+    //         Caller-supplied race triggers.
+    //     race_events: bool
+    //         Caller-supplied race events.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::print_fleet_json(source, _file, trace_scheduler, trace_tasks, trace_triggers, trace_events);
+    //     let result = spanda_cli::main::print_fleet_json(source, _file, race_scheduler, race_tasks, race_triggers, race_events);
 
     // Compute opts for the following logic.
     let opts = run_options_for_file(
@@ -1194,6 +1256,20 @@ fn print_fleet_json(
 }
 
 fn security_dispatch(rest: &[String]) {
+    // Description:
+    //     Security dispatch.
+    //
+    // Inputs:
+    //     res: &[String]
+    //         Caller-supplied res.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::security_dispatch(res);
+
     let sub = rest.first().map(String::as_str).unwrap_or("");
     if sub != "check" && sub != "audit" {
         eprintln!("Usage: spanda security check|audit [--json] <file.sd>");
@@ -1261,6 +1337,21 @@ struct SecurityFindingJson {
 
 impl From<&SecurityReport> for SecurityReportJson {
     fn from(report: &SecurityReport) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     repor: &SecurityReport
+        //         Caller-supplied repor.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_cli::main::from(repor);
+
         Self {
             ok: !report.has_errors(),
             findings: report
@@ -1282,6 +1373,24 @@ impl From<&SecurityReport> for SecurityReportJson {
 }
 
 fn human_security_report(file: &str, mode: &str, report: &SecurityReport) {
+    // Description:
+    //     Human security report.
+    //
+    // Inputs:
+    //     file: &str
+    //         Caller-supplied file.
+    //     ode: &str
+    //         Caller-supplied ode.
+    //     repor: &SecurityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::human_security_report(file, ode, repor);
+
     if report.findings.is_empty() {
         println!("✓ {file} — no security {mode} findings");
         return;
@@ -1302,6 +1411,20 @@ fn human_security_report(file: &str, mode: &str, report: &SecurityReport) {
 }
 
 fn dispatch_man(args: &[String]) {
+    // Description:
+    //     Dispatch man.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::main::dispatch_man(args);
+
     let mut roff = false;
     let mut query: Option<String> = None;
     for arg in args {
@@ -1337,19 +1460,20 @@ fn dispatch_man(args: &[String]) {
 }
 
 fn dispatch_package(command: &str, rest: &[String]) {
+    // Description:
+    //     Dispatch package.
     //
-    // Parameters:
-    // - `command` — input value
-    // - `rest` — input value
+    // Inputs:
+    //     command: &str
+    //         Caller-supplied command.
+    //     res: &[String]
+    //         Caller-supplied res.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::dispatch_package(command, rest);
+    //     let result = spanda_cli::main::dispatch_package(command, res);
 
     // Match on command and handle each case.
     match command {
@@ -1379,19 +1503,17 @@ fn dispatch_package(command: &str, rest: &[String]) {
 }
 
 fn main() {
-    // Main.
+    // Description:
+    //     Main.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::main::main();
+    //     let result = spanda_cli::main::main();
 
     // Compute args for the following logic.
     let args: Vec<String> = env::args().collect();

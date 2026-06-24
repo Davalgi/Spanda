@@ -25,6 +25,25 @@ impl TransportSecurityConfig {
         authentication: Option<&str>,
         integrity: Option<&str>,
     ) -> Result<Self, String> {
+        // Description:
+        //     From bus fields.
+        //
+        // Inputs:
+        //     encryption: Option<&str>
+        //         Caller-supplied encryption.
+        //     authentication: Option<&str>
+        //         Caller-supplied authentication.
+        //     integrity: Option<&str>
+        //         Caller-supplied integrity.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `from_bus_fields`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::from_bus_fields(encryption, authentication, integrity);
+
         Ok(Self {
             encryption: parse_encryption(encryption)?,
             authentication: parse_authentication(authentication)?,
@@ -36,12 +55,46 @@ impl TransportSecurityConfig {
     }
 
     pub fn with_secrets(mut self, cert_path: Option<String>, key_secret: Option<String>) -> Self {
+        // Description:
+        //     With secrets.
+        //
+        // Inputs:
+        //     mut self: input value
+        //         Caller-supplied mut self.
+        //     cert_path: Option<String>
+        //         Caller-supplied cert path.
+        //     key_secre: Option<String>
+        //         Caller-supplied key secre.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `with_secrets`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::with_secrets(mut self, cert_path, key_secre);
+
         self.cert_path = cert_path;
         self.key_secret = key_secret;
         self
     }
 
     pub fn session_material(&self) -> String {
+        // Description:
+        //     Session material.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: String
+        //         Return value from `session_material`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::session_material(&self);
+
         format!(
             "{}:{}",
             self.cert_path.as_deref().unwrap_or("spanda-local"),
@@ -50,6 +103,23 @@ impl TransportSecurityConfig {
     }
 
     pub fn validate(&self, transport: &str) -> Result<(), String> {
+        // Description:
+        //     Validate.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     ranspor: &str
+        //         Caller-supplied ranspor.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `validate`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::validate(&self, ranspor);
+
         if self.encryption == EncryptionMode::Required
             && self.cert_path.is_none()
             && self.key_secret.is_none()
@@ -63,6 +133,21 @@ impl TransportSecurityConfig {
 
     /// Resolve broker URL from bus declaration or `SPANDA_BROKER_URL` environment variable.
     pub fn resolve_broker_url(bus_url: Option<&str>) -> Option<String> {
+        // Description:
+        //     Resolve broker url.
+        //
+        // Inputs:
+        //     bus_url: Option<&str>
+        //         Caller-supplied bus url.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `resolve_broker_url`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::resolve_broker_url(bus_url);
+
         if let Some(url) = bus_url {
             if !url.is_empty() {
                 return Some(url.to_string());
@@ -75,6 +160,21 @@ impl TransportSecurityConfig {
 
     /// True when broker URL implies TLS (`mqtts://`, `wss://`, etc.).
     pub fn url_requires_tls(broker_url: Option<&str>) -> bool {
+        // Description:
+        //     Url requires tls.
+        //
+        // Inputs:
+        //     broker_url: Option<&str>
+        //         Caller-supplied broker url.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `url_requires_tls`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::url_requires_tls(broker_url);
+
         broker_url.is_some_and(|url| {
             let lower = url.to_ascii_lowercase();
             lower.starts_with("mqtts://")
@@ -104,6 +204,25 @@ impl TlsTransportSession {
         config: &TransportSecurityConfig,
         broker_url: Option<&str>,
     ) -> Result<(), String> {
+        // Description:
+        //     Connect.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     config: &TransportSecurityConfig
+        //         Caller-supplied config.
+        //     broker_url: Option<&str>
+        //         Caller-supplied broker url.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `connect`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::connect(&mut self, config, broker_url);
+
         config.validate("tls")?;
         if config.encryption == EncryptionMode::None {
             self.negotiated = false;
@@ -172,6 +291,23 @@ impl TlsTransportSession {
     }
 
     pub fn encrypt_frame(&self, plaintext: &str) -> Result<String, String> {
+        // Description:
+        //     Encrypt frame.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     plaintex: &str
+        //         Caller-supplied plaintex.
+        //
+        // Outputs:
+        //     result: Result<String, String>
+        //         Return value from `encrypt_frame`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::encrypt_frame(&self, plaintex);
+
         if !self.negotiated {
             return Ok(plaintext.to_string());
         }
@@ -184,6 +320,23 @@ impl TlsTransportSession {
     }
 
     pub fn decrypt_frame(&self, ciphertext: &str) -> Result<String, String> {
+        // Description:
+        //     Decrypt frame.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     ciphertex: &str
+        //         Caller-supplied ciphertex.
+        //
+        // Outputs:
+        //     result: Result<String, String>
+        //         Return value from `decrypt_frame`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::decrypt_frame(&self, ciphertex);
+
         if !self.negotiated {
             return Ok(ciphertext.to_string());
         }
@@ -196,6 +349,7 @@ impl TlsTransportSession {
             let plain = session.decrypt(&bytes)?;
             return String::from_utf8(plain).map_err(|e| format!("utf8 decode failed: {e}"));
         }
+
         // Legacy simulation prefix from earlier stub builds.
         if let Some(stripped) = ciphertext.strip_prefix(&format!("tls:{}:", self.cipher_suite)) {
             return Ok(stripped.to_string());
@@ -209,6 +363,23 @@ pub fn effective_transport_policy(
     robot: &SecureCommPolicy,
     bus: &TransportSecurityConfig,
 ) -> TransportSecurityConfig {
+    // Description:
+    //     Effective transport policy.
+    //
+    // Inputs:
+    //     robo: &SecureCommPolicy
+    //         Caller-supplied robo.
+    //     bus: &TransportSecurityConfig
+    //         Caller-supplied bus.
+    //
+    // Outputs:
+    //     result: TransportSecurityConfig
+    //         Return value from `effective_transport_policy`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::security::effective_transport_policy(robo, bus);
+
     TransportSecurityConfig {
         encryption: if bus.encryption != EncryptionMode::None {
             bus.encryption
@@ -232,6 +403,21 @@ pub fn effective_transport_policy(
 }
 
 fn parse_encryption(value: Option<&str>) -> Result<EncryptionMode, String> {
+    // Description:
+    //     Parse encryption.
+    //
+    // Inputs:
+    //     value: Option<&str>
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Result<EncryptionMode, String>
+    //         Return value from `parse_encryption`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::security::parse_encryption(value);
+
     match value {
         None => Ok(EncryptionMode::None),
         Some(v) => v.parse().map_err(|e: String| e),
@@ -239,6 +425,21 @@ fn parse_encryption(value: Option<&str>) -> Result<EncryptionMode, String> {
 }
 
 fn parse_authentication(value: Option<&str>) -> Result<AuthenticationMode, String> {
+    // Description:
+    //     Parse authentication.
+    //
+    // Inputs:
+    //     value: Option<&str>
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Result<AuthenticationMode, String>
+    //         Return value from `parse_authentication`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::security::parse_authentication(value);
+
     match value {
         None => Ok(AuthenticationMode::None),
         Some(v) => v.parse().map_err(|e: String| e),
@@ -246,6 +447,21 @@ fn parse_authentication(value: Option<&str>) -> Result<AuthenticationMode, Strin
 }
 
 fn parse_integrity(value: Option<&str>) -> Result<IntegrityMode, String> {
+    // Description:
+    //     Parse integrity.
+    //
+    // Inputs:
+    //     value: Option<&str>
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Result<IntegrityMode, String>
+    //         Return value from `parse_integrity`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::security::parse_integrity(value);
+
     match value {
         None => Ok(IntegrityMode::None),
         Some(v) => v.parse().map_err(|e: String| e),
@@ -253,7 +469,31 @@ fn parse_integrity(value: Option<&str>) -> Result<IntegrityMode, String> {
 }
 
 fn validate_cert_pem(path: &str) -> Result<(), String> {
-    // Parse a PEM certificate file to verify TLS credential material is present.
+    // Description:
+
+    //     Validate cert pem.
+
+    //
+
+    // Inputs:
+
+    //     path: &str
+
+    //         Caller-supplied path.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `validate_cert_pem`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport::security::validate_cert_pem(path);
     #[cfg(feature = "tls")]
     {
         use std::fs::File;
@@ -280,6 +520,19 @@ mod tests {
 
     #[test]
     fn tls_session_negotiates_aes_gcm() {
+        // Description:
+        //     Tls session negotiates aes gcm.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::tls_session_negotiates_aes_gcm();
+
         let mut tls = TlsTransportSession::default();
         let cfg = TransportSecurityConfig {
             encryption: EncryptionMode::Required,
@@ -300,6 +553,19 @@ mod tests {
 
     #[test]
     fn url_scheme_detects_tls() {
+        // Description:
+        //     Url scheme detects tls.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::security::url_scheme_detects_tls();
+
         assert!(TransportSecurityConfig::url_requires_tls(Some(
             "mqtts://broker.example:8883"
         )));

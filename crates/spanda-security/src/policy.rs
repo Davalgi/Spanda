@@ -17,6 +17,21 @@ impl FromStr for EncryptionMode {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Description:
+        //     From str.
+        //
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
+        //
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::from_str(s);
+
         match s {
             "none" => Ok(Self::None),
             "optional" => Ok(Self::Optional),
@@ -40,6 +55,21 @@ impl FromStr for AuthenticationMode {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Description:
+        //     From str.
+        //
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
+        //
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::from_str(s);
+
         match s {
             "none" => Ok(Self::None),
             "signed" => Ok(Self::Signed),
@@ -62,6 +92,21 @@ impl FromStr for IntegrityMode {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Description:
+        //     From str.
+        //
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
+        //
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::from_str(s);
+
         match s {
             "none" => Ok(Self::None),
             "required" => Ok(Self::Required),
@@ -80,6 +125,20 @@ pub struct SecureCommPolicy {
 
 impl SecureCommPolicy {
     pub fn dev_default() -> Self {
+        // Description:
+        //     Dev default.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `dev_default`.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::dev_default();
+
         Self {
             encryption: EncryptionMode::Optional,
             authentication: AuthenticationMode::None,
@@ -88,6 +147,23 @@ impl SecureCommPolicy {
     }
 
     pub fn merge_bus(&self, bus: &BusSecurityConfig) -> Self {
+        // Description:
+        //     Merge bus.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     bus: &BusSecurityConfig
+        //         Caller-supplied bus.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `merge_bus`.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::merge_bus(&self, bus);
+
         Self {
             encryption: bus.encryption.unwrap_or(self.encryption),
             authentication: bus.authentication.unwrap_or(self.authentication),
@@ -110,6 +186,19 @@ mod tests {
 
     #[test]
     fn encryption_mode_parsing() {
+        // Description:
+        //     Encryption mode parsing.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::policy::encryption_mode_parsing();
+
         assert_eq!(
             "required".parse::<EncryptionMode>().unwrap(),
             EncryptionMode::Required

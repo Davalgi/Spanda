@@ -14,6 +14,23 @@ pub fn verify_compatibility(
     source: &str,
     options: &VerifyOptions,
 ) -> Result<CompatibilityReport, SpandaError> {
+    // Description:
+    //     Verify compatibility.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     options: &VerifyOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Result<CompatibilityReport, SpandaError>
+    //         Return value from `verify_compatibility`.
+    //
+    // Example:
+
+    //     let result = spanda_driver::verify::verify_compatibility(source, options);
+
     verify_compatibility_with_registry(source, options, None)
 }
 
@@ -22,21 +39,24 @@ pub fn verify_compatibility_with_registry(
     options: &VerifyOptions,
     registry: Option<&ModuleRegistry>,
 ) -> Result<CompatibilityReport, SpandaError> {
-    // Compile source and verify hardware plus certification compatibility.
+    // Description:
+    //     Verify compatibility with registry.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `options` — verify targets, simulation, and strict certify flags
-    // - `registry` — optional project module registry for package imports
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     options: &VerifyOptions
+    //         Caller-supplied options.
+    //     registry: Option<&ModuleRegistry>
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Compatibility report with merged hardware and certification items.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<CompatibilityReport, SpandaError>
+    //         Return value from `verify_compatibility_with_registry`.
     //
     // Example:
-    // let report = verify_compatibility_with_registry(source, &options, Some(&registry))?;
+
+    //     let result = spanda_driver::verify::verify_compatibility_with_registry(source, options, registry);
 
     let program = if let Some(registry) = registry {
         compile_with_registry(source, registry)?.program
@@ -59,20 +79,22 @@ pub fn verify_compatibility_target(
     source: &str,
     target: Option<&str>,
 ) -> Result<CompatibilityReport, SpandaError> {
-    // Verify compatibility against a single named hardware target.
+    // Description:
+    //     Verify compatibility target.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `target` — optional hardware profile name
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     arge: Option<&str>
+    //         Caller-supplied arge.
     //
-    // Returns:
-    // Compatibility report for the selected target.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<CompatibilityReport, SpandaError>
+    //         Return value from `verify_compatibility_target`.
     //
     // Example:
-    // let report = verify_compatibility_target(source, Some("RoverV1"))?;
+
+    //     let result = spanda_driver::verify::verify_compatibility_target(source, arge);
 
     verify_compatibility(
         source,

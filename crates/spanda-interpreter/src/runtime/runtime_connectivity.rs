@@ -12,6 +12,24 @@ impl<B: RobotBackend> Interpreter<B> {
         geofences: &[spanda_ast::foundations::GeofenceDecl],
         policies: &[spanda_ast::foundations::ConnectivityPolicyDecl],
     ) {
+        // Description:
+        //     Load connectivity metadata.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     geofences: &[spanda_ast::foundations::GeofenceDecl]
+        //         Caller-supplied geofences.
+        //     policies: &[spanda_ast::foundations::ConnectivityPolicyDecl]
+        //         Caller-supplied policies.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::load_connectivity_metadata(&mut self, geofences, policies);
+
         self.geofences = geofences.iter().map(geofence_from_decl).collect();
         self.connectivity_policies = policies.iter().map(connectivity_policy_from_decl).collect();
         if let Some(policy) = self.connectivity_policies.first() {
@@ -27,6 +45,25 @@ impl<B: RobotBackend> Interpreter<B> {
         domain: &str,
         event: &str,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch connectivity trigger.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     domain: &str
+        //         Caller-supplied domain.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_connectivity_trigger`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::dispatch_connectivity_trigger(&mut self, domain, even);
+
         let key = format!("{domain}.{event}");
         let ids: Vec<usize> = self
             .trigger_registry
@@ -46,6 +83,25 @@ impl<B: RobotBackend> Interpreter<B> {
         name: &str,
         phase: &str,
     ) -> Result<(), SpandaError> {
+        // Description:
+        //     Dispatch geofence trigger.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     phase: &str
+        //         Caller-supplied phase.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `dispatch_geofence_trigger`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::dispatch_geofence_trigger(&mut self, name, phase);
+
         let ids: Vec<usize> = self
             .trigger_registry
             .handlers_for_geofence(name, phase)
@@ -60,6 +116,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_connectivity_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run connectivity triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_connectivity_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::run_connectivity_triggers(&mut self);
+
         for fault in self.comm_bus.active_faults() {
             if let Some((domain, event)) = self.host.fault_to_connectivity(&fault) {
                 let key = format!("fault:{domain}.{event}");
@@ -86,6 +157,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn active_connectivity_faults(&self) -> std::collections::HashSet<String> {
+        // Description:
+        //     Active connectivity faults.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: std::collections::HashSet<String>
+        //         Return value from `active_connectivity_faults`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::active_connectivity_faults(&self);
+
         let mut faults = self.hardware_monitor.injected_faults().clone();
         for fault in self.comm_bus.active_faults() {
             faults.insert(fault);
@@ -94,6 +180,26 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn activate_connectivity_link(&mut self, policy_name: &str, link: &str, reason: &str) {
+        // Description:
+        //     Activate connectivity link.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     policy_name: &str
+        //         Caller-supplied policy name.
+        //     link: &str
+        //         Caller-supplied link.
+        //     reason: &str
+        //         Caller-supplied reason.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::activate_connectivity_link(&mut self, policy_name, link, reason);
+
         self.active_connectivity_link = link.to_string();
         self.default_transport = self.host.connectivity_link_to_transport(link);
         self.comm_bus.reconnect_transport(self.default_transport);
@@ -104,6 +210,24 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn apply_connectivity_failover(&mut self, domain: &str, event: &str) {
+        // Description:
+        //     Apply connectivity failover.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     domain: &str
+        //         Caller-supplied domain.
+        //     even: &str
+        //         Caller-supplied even.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::apply_connectivity_failover(&mut self, domain, even);
+
         if domain != "network" || event != "disconnected" {
             return;
         }
@@ -146,6 +270,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn current_gps_lat_lon(&self) -> (f64, f64) {
+        // Description:
+        //     Current gps lat lon.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: (f64, f64)
+        //         Return value from `current_gps_lat_lon`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::current_gps_lat_lon(&self);
+
         let state = self.backend.get_state();
         let faults = self.hardware_monitor.injected_faults();
         let (lat, lon, _) = self.host.apply_gps_position_faults(
@@ -158,6 +297,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_geofence_triggers(&mut self) -> Result<(), SpandaError> {
+        // Description:
+        //     Run geofence triggers.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_geofence_triggers`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_connectivity::run_geofence_triggers(&mut self);
+
         if self.geofences.is_empty() {
             return Ok(());
         }

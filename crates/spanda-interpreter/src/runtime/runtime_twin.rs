@@ -10,20 +10,22 @@ use spanda_runtime::twin::TwinRuntime;
 
 impl<B: RobotBackend> Interpreter<B> {
     fn twin_runtime(&self, line: u32) -> Result<&TwinRuntime, SpandaError> {
-        // Borrow the configured twin runtime or return a structured error.
+        // Description:
+        //     Twin runtime.
         //
-        // Parameters:
-        // - `self` — interpreter state
-        // - `line` — source line for diagnostics
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Twin runtime reference when configured.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<&TwinRuntime, SpandaError>
+        //         Return value from `twin_runtime`.
         //
         // Example:
-        // let twin = self.twin_runtime(line)?;
+
+        //     let result = spanda_interpreter::runtime_twin::twin_runtime(&self, line);
 
         self.twin
             .as_ref()
@@ -37,23 +39,27 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval twin method.
+        // Description:
+        //     Eval twin method.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `method` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_twin_method`.
         //
         // Example:
-        // let result = instance.eval_twin_method(method, args, named_args, line);
+        //     let result = spanda_interpreter::runtime_twin::eval_twin_method(&mut self, ethod, args, named_args, line);
 
         // Require a configured twin before dispatching methods.
         let _ = self.twin_runtime(line)?;
@@ -83,6 +89,7 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             "replay" => {
                 let twin = self.twin_runtime(line)?;
+
                 // Take the branch when replay is false.
                 if !twin.replay {
                     return Err(RuntimeError::new(
@@ -107,6 +114,7 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             method => {
                 let twin = self.twin_runtime(line)?;
+
                 // Take this path when the twin mirrors the requested field.
                 if twin.mirrors.iter().any(|m| m == method) {
                     twin.shadow_field(method).cloned().ok_or_else(|| {
@@ -129,22 +137,25 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<String, SpandaError> {
-        // Twin field name.
+        // Description:
+        //     Twin field name.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `twin_field_name`.
         //
         // Example:
-        // let result = instance.twin_field_name(args, named_args, line);
+        //     let result = spanda_interpreter::runtime_twin::twin_field_name(&mut self, args, named_args, line);
 
         // Apply each command-line argument.
         for arg in named_args {
@@ -162,21 +173,23 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn twin_field_from_expr(&mut self, expr: &Expr, _line: u32) -> Result<String, SpandaError> {
-        // Twin field from expr.
+        // Description:
+        //     Twin field from expr.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
-        // - `_line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
+        //     _line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `twin_field_from_expr`.
         //
         // Example:
-        // let result = instance.twin_field_from_expr(expr, _line);
+        //     let result = spanda_interpreter::runtime_twin::twin_field_from_expr(&mut self, expr, _line);
 
         // Match on expr and handle each case.
         match expr {

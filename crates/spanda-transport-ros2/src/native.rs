@@ -27,6 +27,20 @@ struct NativeLib {
 static NATIVE: OnceLock<Option<NativeLib>> = OnceLock::new();
 
 fn library_candidates() -> Vec<PathBuf> {
+    // Description:
+    //     Library candidates.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Vec<PathBuf>
+    //         Return value from `library_candidates`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::library_candidates();
+
     let mut paths = Vec::new();
     if let Ok(path) = std::env::var("SPANDA_ROS2_RCLRS_LIB") {
         paths.push(PathBuf::from(path));
@@ -49,6 +63,21 @@ fn library_candidates() -> Vec<PathBuf> {
 }
 
 fn load_library(path: &Path) -> Option<NativeLib> {
+    // Description:
+    //     Load library.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Option<NativeLib>
+    //         Return value from `load_library`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::load_library(path);
+
     let library = unsafe { libloading::Library::new(path).ok()? };
     unsafe {
         let sdk_available = *library.get(b"spanda_ros2_rclrs_sdk_available").ok()?;
@@ -68,6 +97,20 @@ fn load_library(path: &Path) -> Option<NativeLib> {
 }
 
 fn native() -> Option<&'static NativeLib> {
+    // Description:
+    //     Native.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<&'static NativeLib>
+    //         Return value from `native`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::native();
+
     NATIVE
         .get_or_init(|| {
             for path in library_candidates() {
@@ -83,16 +126,60 @@ fn native() -> Option<&'static NativeLib> {
 }
 
 fn c_string(value: &str) -> Option<CString> {
+    // Description:
+    //     C string.
+    //
+    // Inputs:
+    //     value: &str
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Option<CString>
+    //         Return value from `c_string`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::c_string(value);
+
     CString::new(value).ok()
 }
 
 pub fn sdk_available() -> bool {
+    // Description:
+    //     Sdk available.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `sdk_available`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::sdk_available();
+
     native()
         .map(|lib| unsafe { (lib.sdk_available)() })
         .unwrap_or(false)
 }
 
 pub fn init_node(name: &str) -> Result<(), String> {
+    // Description:
+    //     Init node.
+    //
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `init_node`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::init_node(name);
+
     let Some(lib) = native() else {
         return Err("native rclrs library not loaded — set SPANDA_ROS2_RCLRS_LIB".into());
     };
@@ -106,6 +193,23 @@ pub fn init_node(name: &str) -> Result<(), String> {
 }
 
 pub fn publish(topic: &str, payload: &str) -> bool {
+    // Description:
+    //     Publish.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `publish`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::publish(opic, payload);
+
     let Some(lib) = native() else {
         return false;
     };
@@ -119,6 +223,21 @@ pub fn publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn subscribe(topic: &str) -> bool {
+    // Description:
+    //     Subscribe.
+    //
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `subscribe`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::subscribe(opic);
+
     let Some(lib) = native() else {
         return false;
     };
@@ -129,6 +248,25 @@ pub fn subscribe(topic: &str) -> bool {
 }
 
 pub fn service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+    //     Service call.
+    //
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `service_call`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::native::service_call(service, service_type, reques);
+
     let Some(lib) = native() else {
         return false;
     };

@@ -38,19 +38,18 @@ pub struct SimHalBackend {
 
 impl SimHalBackend {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_hal::hal::new();
+        //     let value = spanda_hal::hal::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -64,63 +63,66 @@ impl SimHalBackend {
     }
 
     pub fn simulate_uart_data(&mut self, name: &str, data: &str) {
-        // Simulate uart data.
+        // Description:
+        //     Simulate uart data.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `data` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     data: &str
+        //         Caller-supplied data.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.simulate_uart_data(name, data);
+        //     let result = spanda_hal::hal::simulate_uart_data(&mut self, name, data);
 
         // Append into self.
         self.uart_buffers.insert(name.to_string(), data.to_string());
     }
 
     pub fn set_adc_value(&mut self, name: &str, value: f64) {
-        // Set adc value.
+        // Description:
+        //     Set adc value.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     value: f64
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_adc_value(name, value);
+        //     let result = spanda_hal::hal::set_adc_value(&mut self, name, value);
 
         // Append into self.
         self.adc_values.insert(name.to_string(), value);
     }
 
     pub fn seed_imu_registers(&mut self, bus_name: &str, yaw: f64) {
-        // Seed imu registers.
+        // Description:
+        //     Seed imu registers.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `bus_name` — input value
-        // - `yaw` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     bus_name: &str
+        //         Caller-supplied bus name.
+        //     yaw: f64
+        //         Caller-supplied yaw.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.seed_imu_registers(bus_name, yaw);
+        //     let result = spanda_hal::hal::seed_imu_registers(&mut self, bus_name, yaw);
 
         // Compute yaw int for the following logic.
         let yaw_int = yaw.floor() as i32 * 100;
@@ -134,18 +136,18 @@ impl SimHalBackend {
 
 impl Default for SimHalBackend {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_hal::hal::default();
+        //     let result = spanda_hal::hal::default();
 
         // Build the result via new.
         Self::new()
@@ -154,20 +156,20 @@ impl Default for SimHalBackend {
 
 impl HalBackend for SimHalBackend {
     fn configure(&mut self, members: &[HalMemberConfig]) {
-        // Configure.
+        // Description:
+        //     Configure.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `members` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     embers: &[HalMemberConfig]
+        //         Caller-supplied embers.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.configure(members);
+        //     let result = spanda_hal::hal::configure(&mut self, embers);
 
         // Call clear on the current instance.
         self.members.clear();
@@ -212,63 +214,68 @@ impl HalBackend for SimHalBackend {
     }
 
     fn read_gpio(&self, name: &str) -> bool {
-        // Read gpio.
+        // Description:
+        //     Read gpio.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `read_gpio`.
         //
         // Example:
-        // let result = instance.read_gpio(name);
+        //     let result = spanda_hal::hal::read_gpio(&self, name);
 
         // Call get on the current instance.
         self.gpio_state.get(name).copied().unwrap_or(false)
     }
 
     fn write_gpio(&mut self, name: &str, value: bool) {
-        // Write gpio.
+        // Description:
+        //     Write gpio.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     value: bool
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.write_gpio(name, value);
+        //     let result = spanda_hal::hal::write_gpio(&mut self, name, value);
 
         // Append into self.
         self.gpio_state.insert(name.to_string(), value);
     }
 
     fn read_i2c(&self, name: &str, register: u8, length: usize) -> Vec<u8> {
-        // Read i2c.
+        // Description:
+        //     Read i2c.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `register` — input value
-        // - `length` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     register: u8
+        //         Caller-supplied register.
+        //     length: usize
+        //         Caller-supplied length.
         //
-        // Returns:
-        // Vec<u8>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<u8>
+        //         Return value from `read_i2c`.
         //
         // Example:
-        // let result = instance.read_i2c(name, register, length);
+        //     let result = spanda_hal::hal::read_i2c(&self, name, register, length);
 
         // Compute regs for the following logic.
         let regs = self.i2c_registers.get(name);
@@ -286,22 +293,24 @@ impl HalBackend for SimHalBackend {
     }
 
     fn write_i2c(&mut self, name: &str, register: u8, data: &[u8]) {
-        // Write i2c.
+        // Description:
+        //     Write i2c.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `register` — input value
-        // - `data` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     register: u8
+        //         Caller-supplied register.
+        //     data: &[u8]
+        //         Caller-supplied data.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.write_i2c(name, register, data);
+        //     let result = spanda_hal::hal::write_i2c(&mut self, name, register, data);
 
         // Compute regs for the following logic.
         let regs = self.i2c_registers.entry(name.to_string()).or_default();
@@ -313,82 +322,87 @@ impl HalBackend for SimHalBackend {
     }
 
     fn transfer_spi(&self, _name: &str, data: &[u8]) -> Vec<u8> {
-        // Transfer spi.
+        // Description:
+        //     Transfer spi.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_name` — input value
-        // - `data` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     _name: &str
+        //         Caller-supplied name.
+        //     data: &[u8]
+        //         Caller-supplied data.
         //
-        // Returns:
-        // Vec<u8>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<u8>
+        //         Return value from `transfer_spi`.
         //
         // Example:
-        // let result = instance.transfer_spi(_name, data);
+        //     let result = spanda_hal::hal::transfer_spi(&self, _name, data);
 
         // Collect filtered entries into a new list.
         data.iter().map(|b| b ^ 0xff).collect()
     }
 
     fn read_uart(&self, name: &str) -> String {
-        // Read uart.
+        // Description:
+        //     Read uart.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `read_uart`.
         //
         // Example:
-        // let result = instance.read_uart(name);
+        //     let result = spanda_hal::hal::read_uart(&self, name);
 
         // Call get on the current instance.
         self.uart_buffers.get(name).cloned().unwrap_or_default()
     }
 
     fn read_adc(&self, name: &str) -> f64 {
-        // Read adc.
+        // Description:
+        //     Read adc.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: f64
+        //         Return value from `read_adc`.
         //
         // Example:
-        // let result = instance.read_adc(name);
+        //     let result = spanda_hal::hal::read_adc(&self, name);
 
         // Call get on the current instance.
         self.adc_values.get(name).copied().unwrap_or(0.0)
     }
 
     fn set_pwm(&mut self, name: &str, duty_cycle: f64) {
-        // Set pwm.
+        // Description:
+        //     Set pwm.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `duty_cycle` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     duty_cycle: f64
+        //         Caller-supplied duty cycle.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_pwm(name, duty_cycle);
+        //     let result = spanda_hal::hal::set_pwm(&mut self, name, duty_cycle);
 
         // Call pwm duty on the current instance.
         self.pwm_duty
@@ -396,38 +410,40 @@ impl HalBackend for SimHalBackend {
     }
 
     fn get_member(&self, name: &str) -> Option<HalMemberConfig> {
+        // Description:
+        //     Get member.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<HalMemberConfig>
+        //         Return value from `get_member`.
         //
         // Example:
-        // let result = instance.get_member(name);
+        //     let result = spanda_hal::hal::get_member(&self, name);
 
         // Call get on the current instance.
         self.members.get(name).cloned()
     }
 
     fn list_members(&self) -> Vec<HalMemberConfig> {
-        // List members.
+        // Description:
+        //     List members.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<HalMemberConfig>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<HalMemberConfig>
+        //         Return value from `list_members`.
         //
         // Example:
-        // let result = instance.list_members();
+        //     let result = spanda_hal::hal::list_members(&self);
 
         // Collect filtered entries into a new list.
         self.members.values().cloned().collect()
@@ -435,38 +451,37 @@ impl HalBackend for SimHalBackend {
 }
 
 pub fn create_sim_hal() -> SimHalBackend {
-    // Create sim hal.
+    // Description:
+    //     Create sim hal.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // SimHalBackend.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SimHalBackend
+    //         Return value from `create_sim_hal`.
     //
     // Example:
-    // let result = spanda_hal::hal::create_sim_hal();
+    //     let result = spanda_hal::hal::create_sim_hal();
 
     // Produce new as the result.
     SimHalBackend::new()
 }
 
 pub fn hal_member_from_decl(decl: &HalMemberDecl) -> HalMemberConfig {
-    // Hal member from decl.
+    // Description:
+    //     Hal member from decl.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &HalMemberDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // HalMemberConfig.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HalMemberConfig
+    //         Return value from `hal_member_from_decl`.
     //
     // Example:
-    // let result = spanda_hal::hal::hal_member_from_decl(decl);
+    //     let result = spanda_hal::hal::hal_member_from_decl(decl);
 
     // Match on decl and handle each case.
     match decl {
@@ -521,19 +536,18 @@ mod tests {
 
     #[test]
     fn simulates_i2c() {
-        // Simulates i2c.
+        // Description:
+        //     Simulates i2c.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_hal::hal::simulates_i2c();
+
+        //     let result = spanda_hal::hal::simulates_i2c();
 
         let mut hal = create_sim_hal();
         hal.configure(&[HalMemberConfig::I2c {

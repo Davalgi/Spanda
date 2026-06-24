@@ -4,19 +4,18 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn generic_struct_type_params_type_check() {
-    // Generic struct type params type check.
+    // Description:
+    //     Generic struct type params type check.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::generic_structs::generic_struct_type_params_type_check();
+
+    //     let result = spanda_core::generic_structs::generic_struct_type_params_type_check();
 
     let source = r#"
 struct Box<T> {
@@ -32,19 +31,18 @@ robot R {
 
 #[test]
 fn generic_struct_literal_instantiates_fields() {
-    // Generic struct literal instantiates fields.
+    // Description:
+    //     Generic struct literal instantiates fields.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::generic_structs::generic_struct_literal_instantiates_fields();
+
+    //     let result = spanda_core::generic_structs::generic_struct_literal_instantiates_fields();
 
     let source = r#"
 struct Box<T> {
@@ -66,19 +64,18 @@ robot R {
 
 #[test]
 fn generic_struct_literal_arity_mismatch_rejected() {
-    // Generic struct literal arity mismatch rejected.
+    // Description:
+    //     Generic struct literal arity mismatch rejected.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::generic_structs::generic_struct_literal_arity_mismatch_rejected();
+
+    //     let result = spanda_core::generic_structs::generic_struct_literal_arity_mismatch_rejected();
 
     let source = r#"
 struct Box<T> {

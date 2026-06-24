@@ -44,7 +44,30 @@ pub struct DeployAgentTls {
 }
 
 pub fn parse_http_url(url: &str) -> Result<ParsedUrl, String> {
-    // Parse an http(s)://host:port/path URL for deploy agent calls.
+    // Description:
+
+    //     Parse http url.
+
+    //
+
+    // Inputs:
+
+    //     url: &str
+    //         Deploy agent URL string (`http://` or `https://`).
+
+    //
+
+    // Outputs:
+
+    //     result: Result<ParsedUrl, String>
+
+    //         Return value from `parse_http_url`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::parse_http_url(url);
     let (scheme, rest) = if let Some(tail) = url.strip_prefix("https://") {
         ("https", tail)
     } else if let Some(tail) = url.strip_prefix("http://") {
@@ -78,6 +101,21 @@ pub fn parse_http_url(url: &str) -> Result<ParsedUrl, String> {
 }
 
 fn load_pem_certs(path: &Path) -> Result<Vec<CertificateDer<'static>>, String> {
+    // Description:
+    //     Load pem certs.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<Vec<CertificateDer<'static>>, String>
+    //         Return value from `load_pem_certs`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::load_pem_certs(path);
+
     let file = File::open(path).map_err(|e| format!("open cert '{}': {e}", path.display()))?;
     let mut reader = BufReader::new(file);
     certs(&mut reader)
@@ -86,6 +124,21 @@ fn load_pem_certs(path: &Path) -> Result<Vec<CertificateDer<'static>>, String> {
 }
 
 fn load_pem_key(path: &Path) -> Result<PrivateKeyDer<'static>, String> {
+    // Description:
+    //     Load pem key.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<PrivateKeyDer<'static>, String>
+    //         Return value from `load_pem_key`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::load_pem_key(path);
+
     let file = File::open(path).map_err(|e| format!("open key '{}': {e}", path.display()))?;
     let mut reader = BufReader::new(file);
     private_key(&mut reader)
@@ -94,7 +147,29 @@ fn load_pem_key(path: &Path) -> Result<PrivateKeyDer<'static>, String> {
 }
 
 pub fn build_deploy_client_config() -> Result<Arc<ClientConfig>, String> {
-    // Build a rustls client config using the public WebPKI trust store.
+    // Description:
+
+    //     Build deploy client config.
+
+    //
+
+    // Inputs:
+
+    //     None.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<Arc<ClientConfig>, String>
+
+    //         Return value from `build_deploy_client_config`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::build_deploy_client_config();
     let mut roots = RootCertStore::empty();
     roots.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
     Ok(Arc::new(
@@ -105,7 +180,31 @@ pub fn build_deploy_client_config() -> Result<Arc<ClientConfig>, String> {
 }
 
 pub fn build_deploy_server_config(tls: &DeployAgentTls) -> Result<Arc<ServerConfig>, String> {
-    // Load PEM server credentials for HTTPS deploy agents.
+    // Description:
+
+    //     Build deploy server config.
+
+    //
+
+    // Inputs:
+
+    //     ls: &DeployAgentTls
+
+    //         Caller-supplied ls.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<Arc<ServerConfig>, String>
+
+    //         Return value from `build_deploy_server_config`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::build_deploy_server_config(ls);
     let certs = load_pem_certs(Path::new(&tls.cert_path))?;
     let key = load_pem_key(Path::new(&tls.key_path))?;
     Ok(Arc::new(
@@ -122,7 +221,42 @@ pub fn http_request(
     body: Option<&str>,
     token: Option<&str>,
 ) -> Result<HttpResponse, String> {
-    // Issue a single HTTP/1.1 request and return the response body.
+    // Description:
+
+    //     Http request.
+
+    //
+
+    // Inputs:
+
+    //     ethod: &str
+
+    //         Caller-supplied ethod.
+
+    //     url: &str
+    //         Deploy agent URL string (`http://` or `https://`).
+
+    //     body: Option<&str>
+
+    //         Caller-supplied body.
+
+    //     token: Option<&str>
+
+    //         Caller-supplied token.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<HttpResponse, String>
+
+    //         Return value from `http_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::http_request(ethod, rl, body, oken);
     let parsed = parse_http_url(url)?;
     let payload = body.unwrap_or("");
     let mut request = format!(
@@ -192,7 +326,31 @@ pub fn http_request(
 }
 
 pub fn parse_http_response(raw: &str) -> Result<HttpResponse, String> {
-    // Split an HTTP response into status code and body.
+    // Description:
+
+    //     Parse http response.
+
+    //
+
+    // Inputs:
+
+    //     raw: &str
+
+    //         Caller-supplied raw.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<HttpResponse, String>
+
+    //         Return value from `parse_http_response`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::parse_http_response(raw);
     let (head, body) = raw
         .split_once("\r\n\r\n")
         .ok_or_else(|| "invalid HTTP response".to_string())?;
@@ -213,7 +371,31 @@ pub fn parse_http_response(raw: &str) -> Result<HttpResponse, String> {
 }
 
 pub fn parse_http_request(raw: &str) -> Result<HttpRequest, String> {
-    // Parse a minimal HTTP/1.1 request for the deploy agent server.
+    // Description:
+
+    //     Parse http request.
+
+    //
+
+    // Inputs:
+
+    //     raw: &str
+
+    //         Caller-supplied raw.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<HttpRequest, String>
+
+    //         Return value from `parse_http_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::parse_http_request(raw);
     let (head, body) = raw
         .split_once("\r\n\r\n")
         .ok_or_else(|| "invalid HTTP request".to_string())?;
@@ -245,6 +427,23 @@ pub fn parse_http_request(raw: &str) -> Result<HttpRequest, String> {
 }
 
 pub fn http_response(status: u16, body: &str) -> String {
+    // Description:
+    //     Http response.
+    //
+    // Inputs:
+    //     status: u16
+    //         Caller-supplied status.
+    //     body: &str
+    //         Caller-supplied body.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `http_response`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::http_response(status, body);
+
     format!(
         "HTTP/1.1 {status} OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
         body.len()
@@ -255,7 +454,31 @@ pub fn serve_once(
     listener: &TcpListener,
     handler: impl Fn(HttpRequest) -> HttpResponse,
 ) -> Result<(), String> {
-    // Accept one HTTP connection and write the handler response.
+    // Description:
+
+    //     Serve once.
+
+    //
+
+    // Inputs:
+
+    //     listener: &TcpListener
+
+    //         Caller-supplied listener.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `serve_once`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::serve_once(listener);
     let (mut stream, _) = listener
         .accept()
         .map_err(|e| format!("accept failed: {e}"))?;
@@ -273,6 +496,21 @@ pub fn serve_once(
 }
 
 pub fn read_plain_request(stream: &mut TcpStream) -> Result<String, String> {
+    // Description:
+    //     Read plain request.
+    //
+    // Inputs:
+    //     strea: &mut TcpStream
+    //         Caller-supplied strea.
+    //
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `read_plain_request`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::read_plain_request(strea);
+
     let _ = stream.set_read_timeout(Some(Duration::from_secs(30)));
     let mut raw = String::new();
     stream
@@ -282,6 +520,23 @@ pub fn read_plain_request(stream: &mut TcpStream) -> Result<String, String> {
 }
 
 pub fn write_plain_response(stream: &mut TcpStream, response: &HttpResponse) -> Result<(), String> {
+    // Description:
+    //     Write plain response.
+    //
+    // Inputs:
+    //     strea: &mut TcpStream
+    //         Caller-supplied strea.
+    //     response: &HttpResponse
+    //         Caller-supplied response.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `write_plain_response`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::write_plain_response(strea, response);
+
     let encoded = http_response(response.status, &response.body);
     stream
         .write_all(encoded.as_bytes())
@@ -296,7 +551,35 @@ pub fn serve_tls_connection(
     stream: TcpStream,
     handler: impl FnOnce(HttpRequest) -> HttpResponse,
 ) -> Result<(), String> {
-    // Complete one HTTPS request/response cycle on an accepted TCP connection.
+    // Description:
+
+    //     Serve tls connection.
+
+    //
+
+    // Inputs:
+
+    //     server_config: &Arc<ServerConfig>
+
+    //         Caller-supplied server config.
+
+    //     strea: TcpStream
+
+    //         Caller-supplied strea.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `serve_tls_connection`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_deploy_http::serve_tls_connection(server_config, strea);
     let conn = ServerConnection::new(Arc::clone(server_config))
         .map_err(|e| format!("TLS server connection: {e}"))?;
     let mut tls = StreamOwned::new(conn, stream);
@@ -316,19 +599,20 @@ pub fn serve_tls_connection(
 
 /// Return true when the bind address listens on a non-loopback interface.
 pub fn bind_requires_agent_token(bind: &str) -> bool {
-    // Decide whether an HTTP agent must require a bearer token.
+    // Description:
+    //     Bind requires agent token.
     //
-    // Parameters:
-    // - `bind` — `host:port` listen address
+    // Inputs:
+    //     bind: &str
+    //         Caller-supplied bind.
     //
-    // Returns:
-    // true for public interfaces (`0.0.0.0`, LAN IPs, etc.).
-    //
-    // Options:
-    // Loopback hosts (`127.0.0.1`, `localhost`, `::1`) return false.
+    // Outputs:
+    //     result: bool
+    //         Return value from `bind_requires_agent_token`.
     //
     // Example:
-    // if bind_requires_agent_token(&bind) && token.is_none() { ... }
+
+    //     let result = spanda_deploy_http::bind_requires_agent_token(bind);
 
     !is_loopback_host(bind_host(bind))
 }
@@ -339,21 +623,24 @@ pub fn ensure_agent_auth(
     token: &Option<String>,
     allow_unauthenticated: bool,
 ) -> Result<(), String> {
-    // Enforce `--token` (or explicit lab opt-out) on public binds.
+    // Description:
+    //     Ensure agent auth.
     //
-    // Parameters:
-    // - `bind` — listen address
-    // - `token` — optional bearer token
-    // - `allow_unauthenticated` — explicit insecure override
+    // Inputs:
+    //     bind: &str
+    //         Caller-supplied bind.
+    //     token: &Option<String>
+    //         Caller-supplied token.
+    //     allow_unauthenticated: bool
+    //         Caller-supplied allow unauthenticated.
     //
-    // Returns:
-    // Ok when auth policy is satisfied, otherwise an error message.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `ensure_agent_auth`.
     //
     // Example:
-    // ensure_agent_auth(&bind, &token, allow_unauthenticated)?;
+
+    //     let result = spanda_deploy_http::ensure_agent_auth(bind, oken, allow_unauthenticated);
 
     if bind_requires_agent_token(bind) && token.is_none() && !allow_unauthenticated {
         return Err(format!(
@@ -364,11 +651,41 @@ pub fn ensure_agent_auth(
 }
 
 fn bind_host(bind: &str) -> &str {
+    // Description:
+    //     Bind host.
+    //
+    // Inputs:
+    //     bind: &str
+    //         Caller-supplied bind.
+    //
+    // Outputs:
+    //     result: &str
+    //         Return value from `bind_host`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::bind_host(bind);
+
     let host = bind.rsplit_once(':').map(|(h, _)| h).unwrap_or(bind);
     host.trim_matches(|c| c == '[' || c == ']')
 }
 
 fn is_loopback_host(host: &str) -> bool {
+    // Description:
+    //     Is loopback host.
+    //
+    // Inputs:
+    //     hos: &str
+    //         Caller-supplied hos.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_loopback_host`.
+    //
+    // Example:
+
+    //     let result = spanda_deploy_http::is_loopback_host(hos);
+
     matches!(host, "127.0.0.1" | "localhost" | "::1")
 }
 
@@ -378,12 +695,38 @@ mod agent_bind_tests {
 
     #[test]
     fn loopback_bind_allows_missing_token() {
+        // Description:
+        //     Loopback bind allows missing token.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_deploy_http::loopback_bind_allows_missing_token();
+
         assert!(!bind_requires_agent_token("127.0.0.1:8765"));
         assert!(ensure_agent_auth("127.0.0.1:8765", &None, false).is_ok());
     }
 
     #[test]
     fn public_bind_requires_token() {
+        // Description:
+        //     Public bind requires token.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_deploy_http::public_bind_requires_token();
+
         assert!(bind_requires_agent_token("0.0.0.0:8765"));
         assert!(ensure_agent_auth("0.0.0.0:8765", &None, false).is_err());
         assert!(ensure_agent_auth("0.0.0.0:8765", &None, true).is_ok());

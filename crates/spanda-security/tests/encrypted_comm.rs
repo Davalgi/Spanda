@@ -7,6 +7,19 @@ use spanda_security::{
 
 #[test]
 fn secure_comm_policy_merge_bus() {
+    // Description:
+    //     Secure comm policy merge bus.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted_comm::secure_comm_policy_merge_bus();
+
     let base = SecureCommPolicy {
         encryption: EncryptionMode::Optional,
         authentication: AuthenticationMode::None,
@@ -23,6 +36,19 @@ fn secure_comm_policy_merge_bus() {
 
 #[test]
 fn encrypted_message_roundtrip() {
+    // Description:
+    //     Encrypted message roundtrip.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted_comm::encrypted_message_roundtrip();
+
     let mut msg =
         EncryptedMessage::<String>::encrypt(&"data".to_string(), "sess-material").unwrap();
     assert_eq!(msg.decrypt().unwrap(), "data");
@@ -30,6 +56,19 @@ fn encrypted_message_roundtrip() {
 
 #[test]
 fn operator_boundary_requires_mutual_auth() {
+    // Description:
+    //     Operator boundary requires mutual auth.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted_comm::operator_boundary_requires_mutual_auth();
+
     assert_eq!(
         TrustBoundaryKind::OperatorToRobot.required_authentication(),
         AuthenticationMode::Mutual
@@ -38,6 +77,19 @@ fn operator_boundary_requires_mutual_auth() {
 
 #[test]
 fn encrypted_signed_policy() {
+    // Description:
+    //     Encrypted signed policy.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted_comm::encrypted_signed_policy();
+
     let policy = SecurePolicy::encrypted_signed();
     assert!(policy.signed);
     assert_eq!(policy.encryption, EncryptionMode::Required);

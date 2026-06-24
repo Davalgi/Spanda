@@ -20,23 +20,27 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval builtin function.
+        // Description:
+        //     Eval builtin function.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_builtin_function`.
         //
         // Example:
-        // let result = instance.eval_builtin_function(name, args, named_args, line);
+        //     let result = spanda_interpreter::runtime_builtins::eval_builtin_function(&mut self, name, args, named_args, line);
 
         // Match on name and handle each case.
         match name {

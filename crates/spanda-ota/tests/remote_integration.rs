@@ -12,6 +12,19 @@ use std::time::Duration;
 
 #[test]
 fn remote_rollout_updates_agent_state() {
+    // Description:
+    //     Remote rollout updates agent state.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote_integration::remote_rollout_updates_agent_state();
+
     let target = deploy_target_key("RoverProgram", "JetsonOrin");
     let (port, _handle) = spawn_test_agent(&target, None).expect("spawn test agent");
     thread::sleep(Duration::from_millis(50));
@@ -59,6 +72,19 @@ fn remote_rollout_updates_agent_state() {
 
 #[test]
 fn agent_registry_persists_entries() {
+    // Description:
+    //     Agent registry persists entries.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::remote_integration::agent_registry_persists_entries();
+
     let path = std::env::temp_dir().join("spanda-deploy-agents-test.json");
     let mut registry = DeployAgentRegistry::default();
     register_agent(

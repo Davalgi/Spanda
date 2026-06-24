@@ -27,19 +27,20 @@ pub struct MtlsHandshakeResult {
 
 /// Parse broker URLs into TLS-capable endpoints.
 pub fn parse_tls_endpoint(url: &str) -> Option<TlsEndpoint> {
-    // Parse mqtts, wss, dds+sec, and plain mqtt/ws URLs into host/port.
+    // Description:
+    //     Parse tls endpoint.
     //
-    // Parameters:
-    // - `url` — broker URL from transport config
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
     //
-    // Returns:
-    // Some endpoint when the URL is recognized.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<TlsEndpoint>
+    //         Return value from `parse_tls_endpoint`.
     //
     // Example:
-    // let ep = parse_tls_endpoint("mqtts://broker:8883");
+
+    //     let result = spanda_transport::tls::parse_tls_endpoint(rl);
 
     let lower = url.to_ascii_lowercase();
     let (use_tls, stripped, default_port) = if let Some(rest) = lower.strip_prefix("mqtts://") {
@@ -69,6 +70,21 @@ pub fn parse_tls_endpoint(url: &str) -> Option<TlsEndpoint> {
 }
 
 fn load_pem_certs(path: &str) -> Result<Vec<CertificateDer<'static>>, String> {
+    // Description:
+    //     Load pem certs.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<Vec<CertificateDer<'static>>, String>
+    //         Return value from `load_pem_certs`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::tls::load_pem_certs(path);
+
     let file = File::open(path).map_err(|e| format!("open cert '{path}': {e}"))?;
     let mut reader = BufReader::new(file);
     rustls_pemfile::certs(&mut reader)
@@ -77,6 +93,21 @@ fn load_pem_certs(path: &str) -> Result<Vec<CertificateDer<'static>>, String> {
 }
 
 fn load_pem_key(path: &str) -> Result<PrivateKeyDer<'static>, String> {
+    // Description:
+    //     Load pem key.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<PrivateKeyDer<'static>, String>
+    //         Return value from `load_pem_key`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::tls::load_pem_key(path);
+
     let file = File::open(path).map_err(|e| format!("open key '{path}': {e}"))?;
     let mut reader = BufReader::new(file);
     rustls_pemfile::private_key(&mut reader)
@@ -86,20 +117,22 @@ fn load_pem_key(path: &str) -> Result<PrivateKeyDer<'static>, String> {
 
 /// Build a rustls client configuration with optional client authentication.
 pub fn build_client_config(cert_path: &str, key_path: &str) -> Result<Arc<ClientConfig>, String> {
-    // Load PEM client credentials and trust store for server verification.
+    // Description:
+    //     Build client config.
     //
-    // Parameters:
-    // - `cert_path` — client certificate PEM path
-    // - `key_path` — client private key PEM path
+    // Inputs:
+    //     cert_path: &str
+    //         Caller-supplied cert path.
+    //     key_path: &str
+    //         Caller-supplied key path.
     //
-    // Returns:
-    // Shared rustls client config.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Arc<ClientConfig>, String>
+    //         Return value from `build_client_config`.
     //
     // Example:
-    // let cfg = build_client_config("certs/client.pem", "certs/client.key")?;
+
+    //     let result = spanda_transport::tls::build_client_config(cert_path, key_path);
 
     let certs = load_pem_certs(cert_path)?;
     let key = load_pem_key(key_path)?;
@@ -113,7 +146,35 @@ pub fn build_client_config(cert_path: &str, key_path: &str) -> Result<Arc<Client
 }
 
 fn complete_handshake(conn: &mut ClientConnection, tcp: &mut TcpStream) -> Result<(), String> {
-    // Drive the TLS handshake until connected or an error occurs.
+    // Description:
+
+    //     Complete handshake.
+
+    //
+
+    // Inputs:
+
+    //     conn: &mut ClientConnection
+
+    //         Caller-supplied conn.
+
+    //     cp: &mut TcpStream
+
+    //         Caller-supplied cp.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `complete_handshake`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport::tls::complete_handshake(conn, cp);
     while conn.is_handshaking() {
         if conn.wants_write() {
             conn.write_tls(tcp).map_err(|e| format!("tls write: {e}"))?;
@@ -131,7 +192,35 @@ fn complete_handshake(conn: &mut ClientConnection, tcp: &mut TcpStream) -> Resul
 }
 
 fn session_material_from_peer(conn: &ClientConnection, endpoint: &TlsEndpoint) -> String {
-    // Derive wire session material from peer certificate digest and endpoint identity.
+    // Description:
+
+    //     Session material from peer.
+
+    //
+
+    // Inputs:
+
+    //     conn: &ClientConnection
+
+    //         Caller-supplied conn.
+
+    //     endpoin: &TlsEndpoint
+
+    //         Caller-supplied endpoin.
+
+    //
+
+    // Outputs:
+
+    //     result: String
+
+    //         Return value from `session_material_from_peer`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport::tls::session_material_from_peer(conn, endpoin);
     let peer = conn
         .peer_certificates()
         .and_then(|certs| certs.first())
@@ -149,20 +238,22 @@ pub fn perform_mtls_handshake(
     endpoint: &TlsEndpoint,
     client_config: Arc<ClientConfig>,
 ) -> Result<MtlsHandshakeResult, String> {
-    // Connect via TCP and complete a rustls client handshake.
+    // Description:
+    //     Perform mtls handshake.
     //
-    // Parameters:
-    // - `endpoint` — parsed broker host/port
-    // - `client_config` — rustls client configuration with client auth
+    // Inputs:
+    //     endpoin: &TlsEndpoint
+    //         Caller-supplied endpoin.
+    //     client_config: Arc<ClientConfig>
+    //         Caller-supplied client config.
     //
-    // Returns:
-    // Handshake metadata including derived wire session material.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<MtlsHandshakeResult, String>
+    //         Return value from `perform_mtls_handshake`.
     //
     // Example:
-    // let result = perform_mtls_handshake(&ep, client_cfg)?;
+
+    //     let result = spanda_transport::tls::perform_mtls_handshake(endpoin, client_config);
 
     let addr = format!("{}:{}", endpoint.host, endpoint.port);
     let socket_addr = addr
@@ -207,6 +298,19 @@ mod tests {
 
     #[test]
     fn parses_mqtts_endpoint() {
+        // Description:
+        //     Parses mqtts endpoint.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::tls::parses_mqtts_endpoint();
+
         let ep = parse_tls_endpoint("mqtts://broker.example:8883").unwrap();
         assert!(ep.use_tls);
         assert_eq!(ep.host, "broker.example");
@@ -215,6 +319,19 @@ mod tests {
 
     #[test]
     fn parses_wss_endpoint() {
+        // Description:
+        //     Parses wss endpoint.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::tls::parses_wss_endpoint();
+
         let ep = parse_tls_endpoint("wss://hub.local:9090").unwrap();
         assert!(ep.use_tls);
         assert_eq!(ep.port, 9090);

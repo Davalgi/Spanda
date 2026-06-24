@@ -23,6 +23,21 @@ pub struct LiveDdsBridge {
 
 impl LiveDdsBridge {
     pub fn connect(domain_id: u32) -> Result<Self, String> {
+        // Description:
+        //     Connect.
+        //
+        // Inputs:
+        //     domain_id: u32
+        //         Caller-supplied domain id.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `connect`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::live::connect(domain_id);
+
         let port = 7400_u16.saturating_add(domain_id as u16);
         let octet = domain_id.min(255) as u8;
         let group = Ipv4Addr::new(239, 255, 0, octet);
@@ -69,6 +84,25 @@ impl LiveDdsBridge {
     }
 
     pub fn publish(&self, topic: &str, payload: &str) -> Result<(), String> {
+        // Description:
+        //     Publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `publish`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::live::publish(&self, opic, payload);
+
         let envelope = DdsWireEnvelope {
             topic: topic.to_string(),
             payload: payload.to_string(),
@@ -83,10 +117,44 @@ impl LiveDdsBridge {
     }
 
     pub fn subscribe(&self, _topic: &str) -> Result<(), String> {
+        // Description:
+        //     Subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     _topic: &str
+        //         Caller-supplied topic.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::live::subscribe(&self, _topic);
+
         Ok(())
     }
 
     pub fn receive(&self, topic: &str) -> Option<String> {
+        // Description:
+        //     Receive.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `receive`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::live::receive(&self, opic);
+
         let mut map = self.inbound.lock().ok()?;
         map.get_mut(topic).and_then(|q| q.pop_front())
     }

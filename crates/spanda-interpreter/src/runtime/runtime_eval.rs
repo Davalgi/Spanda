@@ -14,20 +14,21 @@ use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn eval_expr(&mut self, expr: &Expr) -> Result<RuntimeValue, SpandaError> {
-        // Eval expr.
+        // Description:
+        //     Eval expr.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_expr`.
         //
         // Example:
-        // let result = instance.eval_expr(expr);
+        //     let result = spanda_interpreter::runtime_eval::eval_expr(&mut self, expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -241,22 +242,25 @@ impl<B: RobotBackend> Interpreter<B> {
         fields: &[spanda_ast::nodes::StructFieldInit],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval struct literal.
+        // Description:
+        //     Eval struct literal.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `type_name` — input value
-        // - `fields` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ype_name: &str
+        //         Caller-supplied ype name.
+        //     fields: &[spanda_ast::nodes::StructFieldInit]
+        //         Caller-supplied fields.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_struct_literal`.
         //
         // Example:
-        // let result = instance.eval_struct_literal(type_name, fields, line);
+        //     let result = spanda_interpreter::runtime_eval::eval_struct_literal(&mut self, ype_name, fields, line);
 
         // Create mutable values for accumulating results.
         let mut values = HashMap::new();
@@ -300,21 +304,23 @@ impl<B: RobotBackend> Interpreter<B> {
         obj: &RuntimeValue,
         property: &str,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval member.
+        // Description:
+        //     Eval member.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `obj` — input value
-        // - `property` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     obj: &RuntimeValue
+        //         Caller-supplied obj.
+        //     property: &str
+        //         Caller-supplied property.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_member`.
         //
         // Example:
-        // let result = instance.eval_member(obj, property);
+        //     let result = spanda_interpreter::runtime_eval::eval_member(&mut self, obj, property);
 
         // Match on obj and handle each case.
         match obj {
@@ -437,7 +443,47 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Evaluate string regex helper methods: matches, find, replace, split, capture.
+        // Description:
+
+        //     Eval string regex method.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     ethod: &str
+
+        //         Caller-supplied ethod.
+
+        //     ex: &str
+
+        //         Caller-supplied ex.
+
+        //     args: &[Expr]
+
+        //         Caller-supplied args.
+
+        //     line: u32
+
+        //         Caller-supplied line.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RuntimeValue, SpandaError>
+
+        //         Return value from `eval_string_regex_method`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_eval::eval_string_regex_method(&mut self, ethod, ex, args, line);
         let pattern_val = args.first().ok_or_else(|| {
             RuntimeError::new("Regex method requires pattern argument", line).into_spanda()
         })?;
@@ -501,23 +547,28 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval call.
+        // Description:
+        //     Eval call.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `callee` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     callee: &Expr
+        //         Caller-supplied callee.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_call`.
         //
         // Example:
-        // let result = instance.eval_call(callee, args, named_args, line);
+
+        //     let result = spanda_interpreter::runtime_eval::eval_call(&mut self, callee, args, named_args, line);
 
         if let Expr::IdentExpr { name, .. } = callee {
             if let Some(ext) = self.extern_functions.get(name).cloned() {
@@ -691,20 +742,21 @@ impl<B: RobotBackend> Interpreter<B> {
                 }
                 impl<B: RobotBackend> PlanExecutor for PlanRunner<'_, B> {
                     fn execute_block(&mut self, stmts: &[Stmt]) -> Result<(), SpandaError> {
-                        // Execute block.
+                        // Description:
+                        //     Execute block.
                         //
-                        // Parameters:
-                        // - `self` — method receiver
-                        // - `stmts` — input value
+                        // Inputs:
+                        //     &mut self: input value
+                        //         Caller-supplied &mut self.
+                        //     stmts: &[Stmt]
+                        //         Caller-supplied stmts.
                         //
-                        // Returns:
-                        // Success value on completion, or an error.
-                        //
-                        // Options:
-                        // None.
+                        // Outputs:
+                        //     result: Result<(), SpandaError>
+                        //         Return value from `execute_block`.
                         //
                         // Example:
-                        // let result = instance.execute_block(stmts);
+                        //     let result = spanda_interpreter::runtime_eval::execute_block(&mut self, stmts);
 
                         // Call current agent = Some on the current instance.
                         self.interp.current_agent = Some(self.agent_name.clone());
@@ -769,20 +821,23 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         name: &str,
     ) -> Result<RuntimeValue, SpandaError> {
+        // Description:
+        //     Get named arg value.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `named_args` — input value
-        // - `name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `get_named_arg_value`.
         //
         // Example:
-        // let result = instance.get_named_arg_value(named_args, name);
+        //     let result = spanda_interpreter::runtime_eval::get_named_arg_value(&mut self, named_args, name);
 
         // Apply each command-line argument.
         for arg in named_args {
@@ -801,23 +856,27 @@ impl<B: RobotBackend> Interpreter<B> {
         right: RuntimeValue,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval binary.
+        // Description:
+        //     Eval binary.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `op` — input value
-        // - `left` — input value
-        // - `right` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     op: BinaryOp
+        //         Caller-supplied op.
+        //     lef: RuntimeValue
+        //         Caller-supplied lef.
+        //     righ: RuntimeValue
+        //         Caller-supplied righ.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_binary`.
         //
         // Example:
-        // let result = instance.eval_binary(op, left, right, line);
+        //     let result = spanda_interpreter::runtime_eval::eval_binary(&self, op, lef, righ, line);
 
         // Match on op and handle each case.
         match op {

@@ -56,19 +56,19 @@ pub struct SafetyMonitor {
 
 impl SafetyMonitor {
     pub fn new(config: SafetyConfig) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `config` — input value
+        // Inputs:
+        //     config: SafetyConfig
+        //         Caller-supplied config.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_safety::new(config);
+        //     let value = spanda_safety::new(config);
 
         // Assemble the struct fields and return it.
         Self {
@@ -78,21 +78,23 @@ impl SafetyMonitor {
     }
 
     pub fn evaluate_before_motion(&mut self, env: &Environment, pose: &Pose2d) -> SafetyEvaluation {
-        // Evaluate before motion.
+        // Description:
+        //     Evaluate before motion.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `env` — input value
-        // - `pose` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     env: &Environment
+        //         Caller-supplied env.
+        //     pose: &Pose2d
+        //         Caller-supplied pose.
         //
-        // Returns:
-        // SafetyEvaluation.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SafetyEvaluation
+        //         Return value from `evaluate_before_motion`.
         //
         // Example:
-        // let result = instance.evaluate_before_motion(env, pose);
+        //     let result = spanda_safety::evaluate_before_motion(&mut self, env, pose);
 
         // Compute peek for the following logic.
         let peek = self.peek_before_motion(env, pose);
@@ -105,21 +107,23 @@ impl SafetyMonitor {
     }
 
     pub fn peek_before_motion(&self, env: &Environment, pose: &Pose2d) -> SafetyEvaluation {
-        // Peek before motion.
+        // Description:
+        //     Peek before motion.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `env` — input value
-        // - `pose` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     env: &Environment
+        //         Caller-supplied env.
+        //     pose: &Pose2d
+        //         Caller-supplied pose.
         //
-        // Returns:
-        // SafetyEvaluation.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SafetyEvaluation
+        //         Return value from `peek_before_motion`.
         //
         // Example:
-        // let result = instance.peek_before_motion(env, pose);
+        //     let result = spanda_safety::peek_before_motion(&self, env, pose);
 
         // take this path when self.emergency stop.
         if self.emergency_stop {
@@ -171,23 +175,27 @@ impl SafetyMonitor {
         env: &Environment,
         pose: &Pose2d,
     ) -> ValidateActionResult {
-        // Validate action proposal.
+        // Description:
+        //     Validate action proposal.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `linear` — input value
-        // - `angular` — input value
-        // - `env` — input value
-        // - `pose` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     linear: f64
+        //         Caller-supplied linear.
+        //     angular: f64
+        //         Caller-supplied angular.
+        //     env: &Environment
+        //         Caller-supplied env.
+        //     pose: &Pose2d
+        //         Caller-supplied pose.
         //
-        // Returns:
-        // ValidateActionResult.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: ValidateActionResult
+        //         Return value from `validate_action_proposal`.
         //
         // Example:
-        // let result = instance.validate_action_proposal(linear, angular, env, pose);
+        //     let result = spanda_safety::validate_action_proposal(&self, linear, angular, env, pose);
 
         // Compute peek for the following logic.
         let peek = self.peek_before_motion(env, pose);
@@ -207,7 +215,35 @@ impl SafetyMonitor {
     }
 
     pub fn effective_max_speed(&self, pose: &Pose2d) -> f64 {
-        // Compute the active speed cap from global max and program zone policies.
+        // Description:
+
+        //     Effective max speed.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     pose: &Pose2d
+
+        //         Caller-supplied pose.
+
+        //
+
+        // Outputs:
+
+        //     result: f64
+
+        //         Return value from `effective_max_speed`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_safety::effective_max_speed(&self, pose);
         let mut cap = self.config.max_speed;
         for zone in &self.config.zones {
             if Self::is_point_in_zone(pose.x, pose.y, zone) {
@@ -220,7 +256,39 @@ impl SafetyMonitor {
     }
 
     pub fn clamp_speed_at_pose(&self, requested: f64, pose: &Pose2d) -> f64 {
-        // Clamp requested linear speed to the effective cap at the current pose.
+        // Description:
+
+        //     Clamp speed at pose.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     requested: f64
+
+        //         Caller-supplied requested.
+
+        //     pose: &Pose2d
+
+        //         Caller-supplied pose.
+
+        //
+
+        // Outputs:
+
+        //     result: f64
+
+        //         Return value from `clamp_speed_at_pose`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_safety::clamp_speed_at_pose(&self, requested, pose);
         let sign = if requested == 0.0 {
             1.0
         } else {
@@ -230,20 +298,23 @@ impl SafetyMonitor {
     }
 
     pub fn is_in_zone(&self, zone_name: &str, pose: &Pose2d) -> bool {
+        // Description:
+        //     Is in zone.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `zone_name` — input value
-        // - `pose` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     zone_name: &str
+        //         Caller-supplied zone name.
+        //     pose: &Pose2d
+        //         Caller-supplied pose.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_in_zone`.
         //
         // Example:
-        // let result = instance.is_in_zone(zone_name, pose);
+        //     let result = spanda_safety::is_in_zone(&self, zone_name, pose);
 
         // Compute Some for the following logic.
         let Some(zone) = self.config.zones.iter().find(|z| z.name == zone_name) else {
@@ -253,102 +324,133 @@ impl SafetyMonitor {
     }
 
     pub fn clamp_speed(&self, requested: f64) -> f64 {
-        // Clamp speed using the global max when pose is unavailable.
+        // Description:
+
+        //     Clamp speed.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     requested: f64
+
+        //         Caller-supplied requested.
+
+        //
+
+        // Outputs:
+
+        //     result: f64
+
+        //         Return value from `clamp_speed`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_safety::clamp_speed(&self, requested);
         self.clamp_speed_at_pose(requested, &Pose2d { x: 0.0, y: 0.0 })
     }
 
     pub fn is_emergency_stop(&self) -> bool {
+        // Description:
+        //     Is emergency stop.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_emergency_stop`.
         //
         // Example:
-        // let result = instance.is_emergency_stop();
+        //     let result = spanda_safety::is_emergency_stop(&self);
 
         // Call emergency stop on the current instance.
         self.emergency_stop
     }
 
     pub fn set_emergency_stop(&mut self, active: bool) {
-        // Set emergency stop.
+        // Description:
+        //     Set emergency stop.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `active` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     active: bool
+        //         Caller-supplied active.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_emergency_stop(active);
+        //     let result = spanda_safety::set_emergency_stop(&mut self, active);
 
         // Call emergency stop = active; on the current instance.
         self.emergency_stop = active;
     }
 
     pub fn apply_speed_cap(&mut self, cap_mps: f64) {
-        // Lower the configured max speed cap for degraded recovery.
+        // Description:
+        //     Apply speed cap.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `cap_mps` — maximum linear speed in m/s
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     cap_mps: f64
+        //         Caller-supplied cap mps.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // monitor.apply_speed_cap(0.5);
+        //     let result = spanda_safety::apply_speed_cap(&mut self, cap_mps);
 
         // Keep the lower of the current cap and the recovery limit.
         self.config.max_speed = self.config.max_speed.min(cap_mps);
     }
 
     pub fn reset(&mut self) {
-        // Reset the value.
+        // Description:
+        //     Reset.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.reset();
+        //     let result = spanda_safety::reset(&mut self);
 
         // Call emergency stop = false; on the current instance.
         self.emergency_stop = false;
     }
 
     fn is_point_in_zone(x: f64, y: f64, zone: &SafetyZoneRuntime) -> bool {
+        // Description:
+        //     Is point in zone.
         //
-        // Parameters:
-        // - `x` — input value
-        // - `y` — input value
-        // - `zone` — input value
+        // Inputs:
+        //     x: f64
+        //         Caller-supplied x.
+        //     y: f64
+        //         Caller-supplied y.
+        //     zone: &SafetyZoneRuntime
+        //         Caller-supplied zone.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_point_in_zone`.
         //
         // Example:
-        // let result = spanda_safety::is_point_in_zone(x, y, zone);
+        //     let result = spanda_safety::is_point_in_zone(x, y, zone);
 
         // Match on shape and handle each case.
         match zone.shape {
@@ -394,22 +496,25 @@ pub fn create_safety_config_from_robot(
     zones: Vec<SafetyZoneRuntime>,
     zone_speed_caps: HashMap<String, f64>,
 ) -> SafetyConfig {
-    // Create safety config from robot.
+    // Description:
+    //     Create safety config from robot.
     //
-    // Parameters:
-    // - `max_speed` — input value
-    // - `stop_if_rules` — input value
-    // - `zones` — input value
-    // - `zone_speed_caps` — program-level caps keyed by zone name
+    // Inputs:
+    //     ax_speed: f64
+    //         Caller-supplied ax speed.
+    //     stop_if_rules: Vec<StopIfRule>
+    //         Caller-supplied stop if rules.
+    //     zones: Vec<SafetyZoneRuntime>
+    //         Caller-supplied zones.
+    //     zone_speed_caps: HashMap<String, f64>
+    //         Caller-supplied zone speed caps.
     //
-    // Returns:
-    // SafetyConfig.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SafetyConfig
+    //         Return value from `create_safety_config_from_robot`.
     //
     // Example:
-    // let result = spanda_safety::create_safety_config_from_robot(max_speed, stop_if_rules, zones, zone_speed_caps);
+    //     let result = spanda_safety::create_safety_config_from_robot(ax_speed, stop_if_rules, zones, zone_speed_caps);
 
     // Produce SafetyConfig as the result.
     SafetyConfig {
@@ -421,19 +526,19 @@ pub fn create_safety_config_from_robot(
 }
 
 pub fn apply_emergency_stop(state: RobotState) -> RobotState {
-    // Apply emergency stop.
+    // Description:
+    //     Apply emergency stop.
     //
-    // Parameters:
-    // - `state` — input value
+    // Inputs:
+    //     state: RobotState
+    //         Caller-supplied state.
     //
-    // Returns:
-    // RobotState.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RobotState
+    //         Return value from `apply_emergency_stop`.
     //
     // Example:
-    // let result = spanda_safety::apply_emergency_stop(state);
+    //     let result = spanda_safety::apply_emergency_stop(state);
 
     // Produce RobotState as the result.
     RobotState {
@@ -451,21 +556,23 @@ pub fn interpolate_poses(
     to: &spanda_runtime::robot_state::PoseState,
     steps: f64,
 ) -> Vec<Pose3d> {
-    // Interpolate poses.
+    // Description:
+    //     Interpolate poses.
     //
-    // Parameters:
-    // - `from` — input value
-    // - `to` — input value
-    // - `steps` — input value
+    // Inputs:
+    //     fro: &spanda_runtime::robot_state::PoseState
+    //         Caller-supplied fro.
+    //     o: &spanda_runtime::robot_state::PoseState
+    //         Caller-supplied o.
+    //     steps: f64
+    //         Caller-supplied steps.
     //
-    // Returns:
-    // Vec<Pose3d>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Pose3d>
+    //         Return value from `interpolate_poses`.
     //
     // Example:
-    // let result = spanda_safety::interpolate_poses(from, to, steps);
+    //     let result = spanda_safety::interpolate_poses(fro, o, steps);
 
     // Compute count for the following logic.
     let count = steps.max(2.0).floor() as usize;
@@ -494,19 +601,18 @@ mod tests {
 
     #[test]
     fn blocks_motion_when_stop_if_triggers() {
-        // Blocks motion when stop if triggers.
+        // Description:
+        //     Blocks motion when stop if triggers.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_safety::blocks_motion_when_stop_if_triggers();
+
+        //     let result = spanda_safety::blocks_motion_when_stop_if_triggers();
 
         let mut env = Environment::new();
         env.define("obstacle", RuntimeValue::number(0.3, UnitKind::M));
@@ -530,19 +636,18 @@ mod tests {
 
     #[test]
     fn allows_motion_when_rules_pass() {
-        // Allows motion when rules pass.
+        // Description:
+        //     Allows motion when rules pass.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_safety::allows_motion_when_rules_pass();
+
+        //     let result = spanda_safety::allows_motion_when_rules_pass();
 
         let mut env = Environment::new();
         env.define("obstacle", RuntimeValue::number(2.0, UnitKind::M));
@@ -565,19 +670,18 @@ mod tests {
 
     #[test]
     fn detects_safety_zone_entry() {
-        // Detects safety zone entry.
+        // Description:
+        //     Detects safety zone entry.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_safety::detects_safety_zone_entry();
+
+        //     let result = spanda_safety::detects_safety_zone_entry();
 
         let monitor = SafetyMonitor::new(create_safety_config_from_robot(
             1.5,
@@ -599,19 +703,18 @@ mod tests {
 
     #[test]
     fn clamps_speed_to_max() {
-        // Clamps speed to max.
+        // Description:
+        //     Clamps speed to max.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_safety::clamps_speed_to_max();
+
+        //     let result = spanda_safety::clamps_speed_to_max();
 
         let monitor = SafetyMonitor::new(create_safety_config_from_robot(
             1.0,
@@ -625,7 +728,17 @@ mod tests {
 
     #[test]
     fn clamps_speed_to_program_zone_cap() {
-        // Clamps speed to program zone cap when robot is inside the zone.
+        // Description:
+        //     Clamps speed to program zone cap.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_safety::clamps_speed_to_program_zone_cap();
         let mut caps = HashMap::new();
         caps.insert("HumanArea".into(), 0.5);
         let monitor = SafetyMonitor::new(create_safety_config_from_robot(
@@ -650,7 +763,17 @@ mod tests {
 
     #[test]
     fn allows_motion_inside_speed_cap_zone() {
-        // Speed-cap zones permit motion; clamping applies instead of hard stop.
+        // Description:
+        //     Allows motion inside speed cap zone.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_safety::allows_motion_inside_speed_cap_zone();
         let mut caps = HashMap::new();
         caps.insert("HumanArea".into(), 0.5);
         let mut monitor = SafetyMonitor::new(create_safety_config_from_robot(

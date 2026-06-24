@@ -5,19 +5,18 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn spanda_bin() -> PathBuf {
-    // Spanda bin.
+    // Description:
+    //     Spanda bin.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `spanda_bin`.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::spanda_bin();
+    //     let result = spanda_cli::verify_cli::spanda_bin();
 
     // Produce var os as the result.
     std::env::var_os("CARGO_BIN_EXE_spanda")
@@ -26,38 +25,37 @@ fn spanda_bin() -> PathBuf {
 }
 
 fn rover_deploy() -> PathBuf {
-    // Rover deploy.
+    // Description:
+    //     Rover deploy.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `rover_deploy`.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::rover_deploy();
+    //     let result = spanda_cli::verify_cli::rover_deploy();
 
     // Produce sd") as the result.
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/hardware/rover_deploy.sd")
 }
 
 fn run_verify(args: &[&str]) -> (std::process::Output, PathBuf) {
-    // Run verify.
+    // Description:
+    //     Run verify.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[&str]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // (std::process::Output, PathBuf).
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: (std::process::Output, PathBuf)
+    //         Return value from `run_verify`.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::run_verify(args);
+    //     let result = spanda_cli::verify_cli::run_verify(args);
 
     // Compute file for the following logic.
     let file = rover_deploy();
@@ -74,19 +72,18 @@ fn run_verify(args: &[&str]) -> (std::process::Output, PathBuf) {
 
 #[test]
 fn verify_rover_deploy_passes_by_default() {
-    // Verify rover deploy passes by default.
+    // Description:
+    //     Verify rover deploy passes by default.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_rover_deploy_passes_by_default();
+
+    //     let result = spanda_cli::verify_cli::verify_rover_deploy_passes_by_default();
 
     let (output, _) = run_verify(&[]);
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -102,19 +99,18 @@ fn verify_rover_deploy_passes_by_default() {
 
 #[test]
 fn verify_with_target_rover_v1() {
-    // Verify with target rover v1.
+    // Description:
+    //     Verify with target rover v1.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_with_target_rover_v1();
+
+    //     let result = spanda_cli::verify_cli::verify_with_target_rover_v1();
 
     let (output, _) = run_verify(&["--target", "RoverV1"]);
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -125,19 +121,18 @@ fn verify_with_target_rover_v1() {
 
 #[test]
 fn verify_with_target_esp32_fails() {
-    // Verify with target esp32 fails.
+    // Description:
+    //     Verify with target esp32 fails.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_with_target_esp32_fails();
+
+    //     let result = spanda_cli::verify_cli::verify_with_target_esp32_fails();
 
     let (output, _) = run_verify(&["--target", "ESP32"]);
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -148,19 +143,18 @@ fn verify_with_target_esp32_fails() {
 
 #[test]
 fn verify_all_targets_prints_matrix() {
-    // Verify all targets prints matrix.
+    // Description:
+    //     Verify all targets prints matrix.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_all_targets_prints_matrix();
+
+    //     let result = spanda_cli::verify_cli::verify_all_targets_prints_matrix();
 
     let (output, _) = run_verify(&["--all-targets"]);
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -173,19 +167,18 @@ fn verify_all_targets_prints_matrix() {
 
 #[test]
 fn verify_json_output_shape() {
-    // Verify json output shape.
+    // Description:
+    //     Verify json output shape.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_json_output_shape();
+
+    //     let result = spanda_cli::verify_cli::verify_json_output_shape();
 
     let (output, _) = run_verify(&["--json"]);
     assert!(output.status.success());
@@ -203,19 +196,18 @@ fn verify_json_output_shape() {
 
 #[test]
 fn verify_json_esp32_fails_with_exit_code() {
-    // Verify json esp32 fails with exit code.
+    // Description:
+    //     Verify json esp32 fails with exit code.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_json_esp32_fails_with_exit_code();
+
+    //     let result = spanda_cli::verify_cli::verify_json_esp32_fails_with_exit_code();
 
     let (output, _) = run_verify(&["--json", "--target", "ESP32"]);
     assert!(!output.status.success());
@@ -229,19 +221,18 @@ fn verify_json_esp32_fails_with_exit_code() {
 
 #[test]
 fn verify_json_all_targets_includes_matrix() {
-    // Verify json all targets includes matrix.
+    // Description:
+    //     Verify json all targets includes matrix.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::verify_json_all_targets_includes_matrix();
+
+    //     let result = spanda_cli::verify_cli::verify_json_all_targets_includes_matrix();
 
     let (output, _) = run_verify(&["--json", "--all-targets"]);
     assert!(output.status.success());
@@ -260,19 +251,18 @@ fn verify_json_all_targets_includes_matrix() {
 
 #[test]
 fn compatibility_alias_matches_verify() {
-    // Compatibility alias matches verify.
+    // Description:
+    //     Compatibility alias matches verify.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::verify_cli::compatibility_alias_matches_verify();
+
+    //     let result = spanda_cli::verify_cli::compatibility_alias_matches_verify();
 
     let file = rover_deploy();
     let verify = Command::new(spanda_bin())

@@ -20,6 +20,19 @@ robot Bench {
 #[test]
 #[ignore]
 fn pipeline_bench_check_only() {
+    // Description:
+    //     Pipeline bench check only.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_driver::pipeline_bench::pipeline_bench_check_only();
+
     let start = Instant::now();
     check(SAMPLE).expect("check");
     eprintln!("pipeline check: {} ms", start.elapsed().as_millis());

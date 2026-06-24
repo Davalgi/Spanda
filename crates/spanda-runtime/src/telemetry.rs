@@ -101,22 +101,25 @@ impl RuntimeTelemetry {
         priority: TaskPriority,
         interval_ms: f64,
     ) -> &mut TaskMetrics {
-        // Task mut.
+        // Description:
+        //     Task mut.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
         //
-        // Returns:
-        // &mut TaskMetrics.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &mut TaskMetrics
+        //         Return value from `task_mut`.
         //
         // Example:
-        // let result = instance.task_mut(name, priority, interval_ms);
+        //     let result = spanda_runtime::telemetry::task_mut(&mut self, name, priority, interval_ms);
 
         // Call tasks on the current instance.
         self.tasks
@@ -130,22 +133,24 @@ impl RuntimeTelemetry {
     }
 
     pub fn record_task_tick(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
-        // Record task tick.
+        // Description:
+        //     Record task tick.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_task_tick(name, priority, interval_ms);
+        //     let result = spanda_runtime::telemetry::record_task_tick(&mut self, name, priority, interval_ms);
 
         // Call task mut on the current instance.
         self.task_mut(name, priority, interval_ms).ticks += 1;
@@ -158,23 +163,26 @@ impl RuntimeTelemetry {
         interval_ms: f64,
         duration_ms: f64,
     ) {
-        // Record task duration.
+        // Description:
+        //     Record task duration.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
-        // - `duration_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
+        //     duration_ms: f64
+        //         Caller-supplied duration ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_task_duration(name, priority, interval_ms, duration_ms);
+        //     let result = spanda_runtime::telemetry::record_task_duration(&mut self, name, priority, interval_ms, duration_ms);
 
         // Compute entry for the following logic.
         let entry = self.task_mut(name, priority, interval_ms);
@@ -192,22 +200,24 @@ impl RuntimeTelemetry {
         priority: TaskPriority,
         interval_ms: f64,
     ) {
-        // Record budget violation.
+        // Description:
+        //     Record budget violation.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_budget_violation(name, priority, interval_ms);
+        //     let result = spanda_runtime::telemetry::record_budget_violation(&mut self, name, priority, interval_ms);
 
         // Call task mut on the current instance.
         self.task_mut(name, priority, interval_ms).budget_violations += 1;
@@ -221,24 +231,28 @@ impl RuntimeTelemetry {
         jitter_ms: f64,
         max_jitter_ms: f64,
     ) {
-        // Record per-task release jitter against the declared bound.
+        // Description:
+        //     Record task jitter.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — task name
-        // - `priority` — task priority
-        // - `interval_ms` — task period
-        // - `jitter_ms` — observed lateness in milliseconds
-        // - `max_jitter_ms` — declared jitter ceiling
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
+        //     jitter_ms: f64
+        //         Caller-supplied jitter ms.
+        //     ax_jitter_ms: f64
+        //         Caller-supplied ax jitter ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // telemetry.record_task_jitter("sense", TaskPriority::High, 10.0, 0.5, 1.0);
+        //     let result = spanda_runtime::telemetry::record_task_jitter(&mut self, name, priority, interval_ms, jitter_ms, ax_jitter_ms);
 
         // Update jitter peaks and violation counts.
         let entry = self.task_mut(name, priority, interval_ms);
@@ -251,65 +265,70 @@ impl RuntimeTelemetry {
     }
 
     pub fn record_task_skip(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
-        // Record task skip.
+        // Description:
+        //     Record task skip.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_task_skip(name, priority, interval_ms);
+        //     let result = spanda_runtime::telemetry::record_task_skip(&mut self, name, priority, interval_ms);
 
         // Call task mut on the current instance.
         self.task_mut(name, priority, interval_ms).skipped += 1;
     }
 
     pub fn record_missed_deadline(&mut self, name: &str, priority: TaskPriority, interval_ms: f64) {
-        // Record missed deadline.
+        // Description:
+        //     Record missed deadline.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `priority` — input value
-        // - `interval_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     interval_ms: f64
+        //         Caller-supplied interval ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_missed_deadline(name, priority, interval_ms);
+        //     let result = spanda_runtime::telemetry::record_missed_deadline(&mut self, name, priority, interval_ms);
 
         // Call task mut on the current instance.
         self.task_mut(name, priority, interval_ms).missed_deadlines += 1;
     }
 
     pub fn record_scheduler_start(&mut self, task_count: u64, base_tick_ms: f64) {
-        // Record scheduler start.
+        // Description:
+        //     Record scheduler start.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `task_count` — input value
-        // - `base_tick_ms` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ask_coun: u64
+        //         Caller-supplied ask coun.
+        //     base_tick_ms: f64
+        //         Caller-supplied base tick ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_scheduler_start(task_count, base_tick_ms);
+        //     let result = spanda_runtime::telemetry::record_scheduler_start(&mut self, ask_coun, base_tick_ms);
 
         // Call multiplexed tasks = task count; on the current instance.
         self.scheduler.multiplexed_tasks = task_count;
@@ -317,134 +336,128 @@ impl RuntimeTelemetry {
     }
 
     pub fn record_scheduler_tick(&mut self) {
-        // Record scheduler tick.
+        // Description:
+        //     Record scheduler tick.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_scheduler_tick();
+        //     let result = spanda_runtime::telemetry::record_scheduler_tick(&mut self);
 
         // Call scheduler ticks += 1; on the current instance.
         self.scheduler.scheduler_ticks += 1;
     }
 
     pub fn record_emergency_stop(&mut self) {
-        // Record emergency stop.
+        // Description:
+        //     Record emergency stop.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_emergency_stop();
+        //     let result = spanda_runtime::telemetry::record_emergency_stop(&mut self);
 
         // Call emergency stops += 1; on the current instance.
         self.scheduler.emergency_stops += 1;
     }
 
     pub fn record_spawn(&mut self) {
-        // Record spawn.
+        // Description:
+        //     Record spawn.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_spawn();
+        //     let result = spanda_runtime::telemetry::record_spawn(&mut self);
 
         // Call spawns += 1; on the current instance.
         self.execution.spawns += 1;
     }
 
     pub fn record_fire_and_forget_spawn(&mut self) {
-        // Record fire and forget spawn.
+        // Description:
+        //     Record fire and forget spawn.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_fire_and_forget_spawn();
+        //     let result = spanda_runtime::telemetry::record_fire_and_forget_spawn(&mut self);
 
         // Call fire and forget spawns += 1; on the current instance.
         self.execution.fire_and_forget_spawns += 1;
     }
 
     pub fn record_join(&mut self) {
-        // Record join.
+        // Description:
+        //     Record join.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_join();
+        //     let result = spanda_runtime::telemetry::record_join(&mut self);
 
         // Call joins += 1; on the current instance.
         self.execution.joins += 1;
     }
 
     pub fn record_parallel_block(&mut self) {
-        // Record parallel block.
+        // Description:
+        //     Record parallel block.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_parallel_block();
+        //     let result = spanda_runtime::telemetry::record_parallel_block(&mut self);
 
         // Call parallel blocks += 1; on the current instance.
         self.execution.parallel_blocks += 1;
     }
 
     pub fn record_replay_frames(&mut self, count: u64) {
-        // Record replay frames.
+        // Description:
+        //     Record replay frames.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `count` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     coun: u64
+        //         Caller-supplied coun.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_replay_frames(count);
+        //     let result = spanda_runtime::telemetry::record_replay_frames(&mut self, coun);
 
         // Call replay frames = count; on the current instance.
         self.replay_frames = count;
@@ -456,22 +469,25 @@ impl RuntimeTelemetry {
         category: &str,
         priority: TaskPriority,
     ) -> &mut TriggerMetrics {
-        // Trigger mut.
+        // Description:
+        //     Trigger mut.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `category` — input value
-        // - `priority` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     category: &str
+        //         Caller-supplied category.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
         //
-        // Returns:
-        // &mut TriggerMetrics.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &mut TriggerMetrics
+        //         Return value from `trigger_mut`.
         //
         // Example:
-        // let result = instance.trigger_mut(name, category, priority);
+        //     let result = spanda_runtime::telemetry::trigger_mut(&mut self, name, category, priority);
 
         // Call triggers on the current instance.
         self.triggers
@@ -492,24 +508,28 @@ impl RuntimeTelemetry {
         duration_ms: f64,
         failed: bool,
     ) {
-        // Record trigger execution.
+        // Description:
+        //     Record trigger execution.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `category` — input value
-        // - `priority` — input value
-        // - `duration_ms` — input value
-        // - `failed` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     category: &str
+        //         Caller-supplied category.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
+        //     duration_ms: f64
+        //         Caller-supplied duration ms.
+        //     failed: bool
+        //         Caller-supplied failed.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_trigger_execution(name, category, priority, duration_ms, failed);
+        //     let result = spanda_runtime::telemetry::record_trigger_execution(&mut self, name, category, priority, duration_ms, failed);
 
         // Compute entry for the following logic.
         let entry = self.trigger_mut(name, category, priority);
@@ -533,28 +553,49 @@ impl RuntimeTelemetry {
         category: &str,
         priority: TaskPriority,
     ) {
-        // Record trigger missed deadline.
+        // Description:
+        //     Record trigger missed deadline.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `category` — input value
-        // - `priority` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     category: &str
+        //         Caller-supplied category.
+        //     priority: TaskPriority
+        //         Caller-supplied priority.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_trigger_missed_deadline(name, category, priority);
+        //     let result = spanda_runtime::telemetry::record_trigger_missed_deadline(&mut self, name, category, priority);
 
         // Call trigger mut on the current instance.
         self.trigger_mut(name, category, priority).missed_deadlines += 1;
     }
 
     pub fn pipeline_mut(&mut self, name: &str, budget_ms: f64) -> &mut PipelineMetrics {
+        // Description:
+        //     Pipeline mut.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     budget_ms: f64
+        //         Caller-supplied budget ms.
+        //
+        // Outputs:
+        //     result: &mut PipelineMetrics
+        //         Return value from `pipeline_mut`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::telemetry::pipeline_mut(&mut self, name, budget_ms);
+
         self.pipelines
             .entry(name.to_string())
             .or_insert_with(|| PipelineMetrics {
@@ -571,6 +612,28 @@ impl RuntimeTelemetry {
         duration_ms: f64,
         slow_stage: bool,
     ) {
+        // Description:
+        //     Record pipeline execution.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     budget_ms: f64
+        //         Caller-supplied budget ms.
+        //     duration_ms: f64
+        //         Caller-supplied duration ms.
+        //     slow_stage: bool
+        //         Caller-supplied slow stage.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::telemetry::record_pipeline_execution(&mut self, name, budget_ms, duration_ms, slow_stage);
+
         let metrics = self.pipeline_mut(name, budget_ms);
         metrics.executions += 1;
         metrics.total_duration_ms += duration_ms;
@@ -583,6 +646,23 @@ impl RuntimeTelemetry {
     }
 
     pub fn watchdog_mut(&mut self, name: &str) -> &mut WatchdogMetrics {
+        // Description:
+        //     Watchdog mut.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //
+        // Outputs:
+        //     result: &mut WatchdogMetrics
+        //         Return value from `watchdog_mut`.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::telemetry::watchdog_mut(&mut self, name);
+
         self.watchdogs
             .entry(name.to_string())
             .or_insert_with(|| WatchdogMetrics {
@@ -592,28 +672,48 @@ impl RuntimeTelemetry {
     }
 
     pub fn record_watchdog_timeout(&mut self, name: &str, sim_time_ms: f64) {
+        // Description:
+        //     Record watchdog timeout.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     sim_time_ms: f64
+        //         Caller-supplied sim time ms.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::telemetry::record_watchdog_timeout(&mut self, name, sim_time_ms);
+
         let metrics = self.watchdog_mut(name);
         metrics.timeouts += 1;
         metrics.last_timeout_ms = sim_time_ms;
     }
 
     pub fn record_topic_deadline_miss(&mut self, path: &str, elapsed_ms: f64, deadline_ms: f64) {
-        // Record a topic QoS deadline violation.
+        // Description:
+        //     Record topic deadline miss.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — topic path
-        // - `elapsed_ms` — time since last publish
-        // - `deadline_ms` — declared deadline
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     elapsed_ms: f64
+        //         Caller-supplied elapsed ms.
+        //     deadline_ms: f64
+        //         Caller-supplied deadline ms.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // telemetry.record_topic_deadline_miss("/scan", 75.0, 50.0);
+        //     let result = spanda_runtime::telemetry::record_topic_deadline_miss(&mut self, path, elapsed_ms, deadline_ms);
 
         // Update per-topic miss counters and last observed lateness.
         let entry = self
@@ -635,23 +735,26 @@ impl RuntimeTelemetry {
         duration_ms: f64,
         failed: bool,
     ) {
-        // Record a provider registry dispatch for observability.
+        // Description:
+        //     Record provider call.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `provider_key` — registry lookup key
-        // - `category` — provider trait category (positioning, transport, …)
-        // - `duration_ms` — call duration in milliseconds
-        // - `failed` — whether the call returned an error
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     provider_key: &str
+        //         Caller-supplied provider key.
+        //     category: &str
+        //         Caller-supplied category.
+        //     duration_ms: f64
+        //         Caller-supplied duration ms.
+        //     failed: bool
+        //         Caller-supplied failed.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // telemetry.record_provider_call("spanda-gps::project", "positioning", 1.2, false);
+        //     let result = spanda_runtime::telemetry::record_provider_call(&mut self, provider_key, category, duration_ms, failed);
 
         // Accumulate per-provider call counts and latency peaks.
         let entry = self
@@ -674,19 +777,19 @@ impl RuntimeTelemetry {
 }
 
 fn priority_label(priority: TaskPriority) -> String {
-    // Priority label.
+    // Description:
+    //     Priority label.
     //
-    // Parameters:
-    // - `priority` — input value
+    // Inputs:
+    //     priority: TaskPriority
+    //         Caller-supplied priority.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `priority_label`.
     //
     // Example:
-    // let result = spanda_runtime::telemetry::priority_label(priority);
+    //     let result = spanda_runtime::telemetry::priority_label(priority);
 
     // Match on priority and handle each case.
     match priority {
@@ -703,19 +806,18 @@ mod tests {
 
     #[test]
     fn aggregates_task_and_scheduler_metrics() {
-        // Aggregates task and scheduler metrics.
+        // Description:
+        //     Aggregates task and scheduler metrics.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_runtime::telemetry::aggregates_task_and_scheduler_metrics();
+
+        //     let result = spanda_runtime::telemetry::aggregates_task_and_scheduler_metrics();
 
         let mut telemetry = RuntimeTelemetry::default();
         telemetry.record_scheduler_start(2, 50.0);

@@ -5,6 +5,21 @@ use spanda_ast::nodes::{Program, RobotDecl, TopicDecl};
 use spanda_capability::VerificationDiagnostic;
 
 fn normalize_action(action: &str) -> String {
+    // Description:
+    //     Normalize action.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `normalize_action`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_diagnostics::normalize_action(action);
+
     action
         .to_ascii_lowercase()
         .chars()
@@ -13,6 +28,21 @@ fn normalize_action(action: &str) -> String {
 }
 
 fn action_is_high_risk(action: &str) -> bool {
+    // Description:
+    //     Action is high risk.
+    //
+    // Inputs:
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `action_is_high_risk`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_diagnostics::action_is_high_risk(action);
+
     let lower = normalize_action(action);
     lower.contains("resumemission")
         || lower.contains("restartfleet")
@@ -21,6 +51,21 @@ fn action_is_high_risk(action: &str) -> bool {
 }
 
 fn robot_has_approval_topic(robot: &RobotDecl) -> bool {
+    // Description:
+    //     Robot has approval topic.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `robot_has_approval_topic`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_diagnostics::robot_has_approval_topic(robo);
+
     let RobotDecl::RobotDecl { topics, .. } = robot;
     topics.iter().any(|topic| {
         let TopicDecl::TopicDecl { message_type, .. } = topic;
@@ -29,12 +74,42 @@ fn robot_has_approval_topic(robot: &RobotDecl) -> bool {
 }
 
 fn program_has_approval_path(program: &Program) -> bool {
+    // Description:
+    //     Program has approval path.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `program_has_approval_path`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_diagnostics::program_has_approval_path(progra);
+
     let Program::Program { robots, .. } = program;
     robots.iter().any(robot_has_approval_topic)
 }
 
 /// Collect recovery-policy diagnostics for static analysis and IDE hints.
 pub fn collect_recovery_diagnostics(program: &Program) -> Vec<VerificationDiagnostic> {
+    // Description:
+    //     Collect recovery diagnostics.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<VerificationDiagnostic>
+    //         Return value from `collect_recovery_diagnostics`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::recovery_diagnostics::collect_recovery_diagnostics(progra);
+
     let Program::Program {
         recovery_policies,
         mitigations,
@@ -139,6 +214,21 @@ trait HasSpan {
 
 impl HasSpan for spanda_ast::foundations::HealthCheckDecl {
     fn span(&self) -> spanda_ast::nodes::Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery_diagnostics::span(&self);
+
         let spanda_ast::foundations::HealthCheckDecl::HealthCheckDecl { span, .. } = self;
         *span
     }
@@ -146,6 +236,21 @@ impl HasSpan for spanda_ast::foundations::HealthCheckDecl {
 
 impl HasSpan for spanda_ast::foundations::HealthPolicyDecl {
     fn span(&self) -> spanda_ast::nodes::Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery_diagnostics::span(&self);
+
         let spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl { span, .. } = self;
         *span
     }
@@ -153,6 +258,21 @@ impl HasSpan for spanda_ast::foundations::HealthPolicyDecl {
 
 impl HasSpan for spanda_ast::assurance_decl::AnomalyHandlerDecl {
     fn span(&self) -> spanda_ast::nodes::Span {
+        // Description:
+        //     Span.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Span
+        //         Return value from `span`.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery_diagnostics::span(&self);
+
         let spanda_ast::assurance_decl::AnomalyHandlerDecl::AnomalyHandlerDecl { span, .. } = self;
         *span
     }
@@ -166,6 +286,19 @@ mod tests {
 
     #[test]
     fn warns_when_high_risk_action_lacks_approval_topic() {
+        // Description:
+        //     Warns when high risk action lacks approval topic.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_assurance::recovery_diagnostics::warns_when_high_risk_action_lacks_approval_topic();
+
         let program = parse(tokenize(
             r#"
 recovery_policy Risky {

@@ -7,19 +7,18 @@ use spanda_package::{
 
 #[test]
 fn registry_includes_blockchain_packages() {
-    // Registry includes blockchain packages.
+    // Description:
+    //     Registry includes blockchain packages.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::audit_packages::registry_includes_blockchain_packages();
+
+    //     let result = spanda_package::audit_packages::registry_includes_blockchain_packages();
 
     let ledger = search_registry("ledger");
     assert!(ledger.iter().any(|e| e.name == "spanda-ledger"));
@@ -32,19 +31,18 @@ fn registry_includes_blockchain_packages() {
 
 #[test]
 fn high_risk_capability_detection() {
-    // High risk capability detection.
+    // Description:
+    //     High risk capability detection.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::audit_packages::high_risk_capability_detection();
+
+    //     let result = spanda_package::audit_packages::high_risk_capability_detection();
 
     assert!(is_high_risk_capability("ledger.anchor"));
     assert!(is_high_risk_capability("identity.sign"));
@@ -54,19 +52,18 @@ fn high_risk_capability_detection() {
 
 #[test]
 fn audit_package_manifest_validation() {
-    // Audit package manifest validation.
+    // Description:
+    //     Audit package manifest validation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_package::audit_packages::audit_package_manifest_validation();
+
+    //     let result = spanda_package::audit_packages::audit_package_manifest_validation();
 
     let manifest = PackageManifest::parse_str(
         r#"

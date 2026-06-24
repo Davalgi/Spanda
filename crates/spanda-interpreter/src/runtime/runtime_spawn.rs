@@ -13,22 +13,25 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         _line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Call module function.
+        // Description:
+        //     Call module function.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func` — input value
-        // - `args` — input value
-        // - `_line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     func: &spanda_ast::foundations::ModuleFnDecl
+        //         Caller-supplied func.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     _line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `call_module_function`.
         //
         // Example:
-        // let result = instance.call_module_function(func, args, _line);
+        //     let result = spanda_interpreter::runtime_spawn::call_module_function(&mut self, func, args, _line);
 
         // Evaluate call arguments before provider dispatch or stub execution.
         let mut arg_values = Vec::new();
@@ -88,21 +91,23 @@ impl<B: RobotBackend> Interpreter<B> {
         future: RuntimeValue,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Resolve future.
+        // Description:
+        //     Resolve future.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `future` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     future: RuntimeValue
+        //         Caller-supplied future.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `resolve_future`.
         //
         // Example:
-        // let result = instance.resolve_future(future, line);
+        //     let result = spanda_interpreter::runtime_spawn::resolve_future(&mut self, future, line);
 
         // Match on future and handle each case.
         match future {
@@ -150,22 +155,25 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         line: u32,
     ) -> Result<(String, Vec<RuntimeValue>), SpandaError> {
-        // Eval spawn target.
+        // Description:
+        //     Eval spawn target.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `callee` — input value
-        // - `args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     callee: &Expr
+        //         Caller-supplied callee.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(String, Vec<RuntimeValue>), SpandaError>
+        //         Return value from `eval_spawn_target`.
         //
         // Example:
-        // let result = instance.eval_spawn_target(callee, args, line);
+        //     let result = spanda_interpreter::runtime_spawn::eval_spawn_target(&mut self, callee, args, line);
 
         // Create mutable arg values for accumulating results.
         let mut arg_values = Vec::new();
@@ -187,22 +195,25 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[RuntimeValue],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Execute spawn job.
+        // Description:
+        //     Execute spawn job.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func_name` — input value
-        // - `args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     func_name: &str
+        //         Caller-supplied func name.
+        //     args: &[RuntimeValue]
+        //         Caller-supplied args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `execute_spawn_job`.
         //
         // Example:
-        // let result = instance.execute_spawn_job(func_name, args, line);
+        //     let result = spanda_interpreter::runtime_spawn::execute_spawn_job(&mut self, func_name, args, line);
 
         // Compute func for the following logic.
         let func = self
@@ -234,22 +245,23 @@ impl<B: RobotBackend> Interpreter<B> {
         id: u64,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Resolve task handle.
+        // Description:
+        //     Resolve task handle.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     id: u64
+        //         Caller-supplied id.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `resolve_task_handle`.
         //
         // Example:
-        // let result = instance.resolve_task_handle(id, line);
-
+        //     let result = spanda_interpreter::runtime_spawn::resolve_task_handle(&mut self, id, line);
         // use result when clone is present.
 
         // Emit output when clone provides a result.
@@ -263,22 +275,23 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_spawn_handle(&mut self, id: u64, line: u32) -> Result<RuntimeValue, SpandaError> {
-        // Execute spawn handle.
+        // Description:
+        //     Execute spawn handle.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `id` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     id: u64
+        //         Caller-supplied id.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `execute_spawn_handle`.
         //
         // Example:
-        // let result = instance.execute_spawn_handle(id, line);
-
+        //     let result = spanda_interpreter::runtime_spawn::execute_spawn_handle(&mut self, id, line);
         // use result when clone is present.
 
         // Emit output when clone provides a result.
@@ -297,19 +310,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn process_spawn_queue(&mut self) -> Result<(), SpandaError> {
-        // Process spawn queue.
+        // Description:
+        //     Process spawn queue.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `process_spawn_queue`.
         //
         // Example:
-        // let result = instance.process_spawn_queue();
+        //     let result = spanda_interpreter::runtime_spawn::process_spawn_queue(&mut self);
 
         // Compute ids for the following logic.
         let ids = self.concurrency.drain_fire_and_forget_queue();

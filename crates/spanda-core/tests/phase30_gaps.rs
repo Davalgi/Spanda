@@ -4,6 +4,19 @@ use spanda_core::{run, RunOptions};
 
 #[test]
 fn continuous_health_polls_during_trigger_loop() {
+    // Description:
+    //     Continuous health polls during trigger loop.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase30_gaps::continuous_health_polls_during_trigger_loop();
+
     let source = r#"
 health_check RoverHealth for robot Rover {
     check gps.status == Healthy;

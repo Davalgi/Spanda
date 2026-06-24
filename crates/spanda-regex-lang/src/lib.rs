@@ -6,20 +6,21 @@ use spanda_error::SpandaError;
 use std::collections::HashMap;
 
 pub fn regex_matches(pattern: &RegexPattern, text: &str) -> Result<bool, SpandaError> {
-    // Return whether text fully matches the regex pattern.
+    // Description:
+    //     Regex matches.
     //
-    // Parameters:
-    // - `pattern` — compiled regex source
-    // - `text` — haystack string
+    // Inputs:
+    //     pattern: &RegexPattern
+    //         Caller-supplied pattern.
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // Boolean match result, or regex compile error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<bool, SpandaError>
+    //         Return value from `regex_matches`.
     //
     // Example:
-    // let ok = regex_matches(&pattern, "robot-123")?;
+    //     let result = spanda_regex_lang::regex_matches(pattern, ex);
 
     // Compile once and test the entire input string.
     let re = pattern.compile()?;
@@ -27,20 +28,21 @@ pub fn regex_matches(pattern: &RegexPattern, text: &str) -> Result<bool, SpandaE
 }
 
 pub fn regex_find(pattern: &RegexPattern, text: &str) -> Result<Option<String>, SpandaError> {
-    // Return the first substring matched by the pattern.
+    // Description:
+    //     Regex find.
     //
-    // Parameters:
-    // - `pattern` — compiled regex source
-    // - `text` — haystack string
+    // Inputs:
+    //     pattern: &RegexPattern
+    //         Caller-supplied pattern.
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // First match text if present.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Option<String>, SpandaError>
+    //         Return value from `regex_find`.
     //
     // Example:
-    // let found = regex_find(&pattern, log_line)?;
+    //     let result = spanda_regex_lang::regex_find(pattern, ex);
 
     // Compile once and return the first match slice as owned text.
     let re = pattern.compile()?;
@@ -52,21 +54,23 @@ pub fn regex_replace(
     text: &str,
     replacement: &str,
 ) -> Result<String, SpandaError> {
-    // Replace all regex matches in text with replacement.
+    // Description:
+    //     Regex replace.
     //
-    // Parameters:
-    // - `pattern` — compiled regex source
-    // - `text` — input string
-    // - `replacement` — replacement text
+    // Inputs:
+    //     pattern: &RegexPattern
+    //         Caller-supplied pattern.
+    //     ex: &str
+    //         Caller-supplied ex.
+    //     replacemen: &str
+    //         Caller-supplied replacemen.
     //
-    // Returns:
-    // Transformed string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<String, SpandaError>
+    //         Return value from `regex_replace`.
     //
     // Example:
-    // let cleaned = regex_replace(&pattern, line, "_")?;
+    //     let result = spanda_regex_lang::regex_replace(pattern, ex, replacemen);
 
     // Compile once and apply global replacement.
     let re = pattern.compile()?;
@@ -74,20 +78,21 @@ pub fn regex_replace(
 }
 
 pub fn regex_split(pattern: &RegexPattern, text: &str) -> Result<Vec<String>, SpandaError> {
-    // Split text on regex matches.
+    // Description:
+    //     Regex split.
     //
-    // Parameters:
-    // - `pattern` — compiled regex source
-    // - `text` — input string
+    // Inputs:
+    //     pattern: &RegexPattern
+    //         Caller-supplied pattern.
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // Split segments including empty segments between consecutive delimiters.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Vec<String>, SpandaError>
+    //         Return value from `regex_split`.
     //
     // Example:
-    // let parts = regex_split(&pattern, "a,b,c")?;
+    //     let result = spanda_regex_lang::regex_split(pattern, ex);
 
     // Compile once and split on every match boundary.
     let re = pattern.compile()?;
@@ -98,20 +103,21 @@ pub fn regex_capture(
     pattern: &RegexPattern,
     text: &str,
 ) -> Result<Option<CaptureResult>, SpandaError> {
-    // Capture the first regex match and named groups.
+    // Description:
+    //     Regex capture.
     //
-    // Parameters:
-    // - `pattern` — compiled regex source
-    // - `text` — haystack string
+    // Inputs:
+    //     pattern: &RegexPattern
+    //         Caller-supplied pattern.
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // Full match and named capture map when a match exists.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Option<CaptureResult>, SpandaError>
+    //         Return value from `regex_capture`.
     //
     // Example:
-    // let cap = regex_capture(&pattern, log_line)?;
+    //     let result = spanda_regex_lang::regex_capture(pattern, ex);
 
     // Compile once and extract the first match with named groups.
     let re = pattern.compile()?;
@@ -132,21 +138,23 @@ pub fn regex_capture(
 }
 
 pub fn validate_regex_literal(source: &str, flags: &str, span: Span) -> Result<(), SpandaError> {
-    // Validate regex literal syntax at compile time.
+    // Description:
+    //     Validate regex literal.
     //
-    // Parameters:
-    // - `source` — pattern body without slashes
-    // - `flags` — trailing flag letters
-    // - `span` — source span for diagnostics
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     flags: &str
+    //         Caller-supplied flags.
+    //     span: Span
+    //         Caller-supplied span.
     //
-    // Returns:
-    // Ok when syntax is valid.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `validate_regex_literal`.
     //
     // Example:
-    // validate_regex_literal("robot-[0-9]+", "", span)?;
+    //     let result = spanda_regex_lang::validate_regex_literal(source, flags, span);
 
     // Compile through the shared helper so diagnostics stay consistent.
     let pattern = RegexPattern {

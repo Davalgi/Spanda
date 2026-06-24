@@ -11,38 +11,36 @@ pub struct PackagePermissions {
 
 impl PackagePermissions {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::permissions::new();
+        //     let value = spanda_security::permissions::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn permissive() -> Self {
-        // Permissive.
+        // Description:
+        //     Permissive.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `permissive`.
         //
         // Example:
-        // let result = spanda_security::permissions::permissive();
+        //     let result = spanda_security::permissions::permissive();
 
         // Assemble the struct fields and return it.
         Self {
@@ -51,19 +49,19 @@ impl PackagePermissions {
     }
 
     pub fn from_capabilities(caps: impl IntoIterator<Item = impl Into<String>>) -> Self {
-        // Construct from capabilities.
+        // Description:
+        //     From capabilities.
         //
-        // Parameters:
-        // - `caps` — input value
+        // Inputs:
+        //     caps: impl IntoIterator<Item = impl Into<String>>
+        //         Caller-supplied caps.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_capabilities`.
         //
         // Example:
-        // let result = spanda_security::permissions::from_capabilities(caps);
+        //     let result = spanda_security::permissions::from_capabilities(caps);
 
         // Create mutable set for accumulating results.
         let mut set = CapabilitySet::new();

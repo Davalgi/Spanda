@@ -5,19 +5,20 @@ use spanda_ast::foundations::{ResourceBudgetDecl, TaskDecl, TaskPriority};
 use spanda_ast::nodes::Span;
 
 pub fn validate_task_timing(task: &TaskDecl) -> Vec<Diagnostic> {
-    // Validate periodic task period, deadline, and jitter constraints.
+    // Description:
+    //     Validate task timing.
     //
-    // Parameters:
-    // - `task` — task declaration to inspect
+    // Inputs:
+    //     ask: &TaskDecl
+    //         Caller-supplied ask.
     //
-    // Returns:
-    // Diagnostics for invalid timing configuration.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_task_timing`.
     //
     // Example:
-    // let diags = validate_task_timing(&task);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_task_timing(ask);
 
     let TaskDecl::TaskDecl {
         name,
@@ -80,19 +81,20 @@ pub fn validate_task_timing(task: &TaskDecl) -> Vec<Diagnostic> {
 }
 
 pub fn validate_task_priority(task: &TaskDecl) -> Vec<Diagnostic> {
-    // Validate priority/isolation combinations for safety-critical tasks.
+    // Description:
+    //     Validate task priority.
     //
-    // Parameters:
-    // - `task` — task declaration to inspect
+    // Inputs:
+    //     ask: &TaskDecl
+    //         Caller-supplied ask.
     //
-    // Returns:
-    // Diagnostics for invalid priority configuration.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_task_priority`.
     //
     // Example:
-    // let diags = validate_task_priority(&task);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_task_priority(ask);
 
     let TaskDecl::TaskDecl {
         name,
@@ -116,20 +118,22 @@ pub fn validate_task_priority(task: &TaskDecl) -> Vec<Diagnostic> {
 }
 
 pub fn validate_resource_budget(budget: &ResourceBudgetDecl, span: Span) -> Vec<Diagnostic> {
-    // Validate per-task resource budget ceilings for conflicts and invalid values.
+    // Description:
+    //     Validate resource budget.
     //
-    // Parameters:
-    // - `budget` — resource budget block
-    // - `span` — enclosing task span for diagnostics
+    // Inputs:
+    //     budge: &ResourceBudgetDecl
+    //         Caller-supplied budge.
+    //     span: Span
+    //         Caller-supplied span.
     //
-    // Returns:
-    // Diagnostics for invalid or conflicting budgets.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_resource_budget`.
     //
     // Example:
-    // let diags = validate_resource_budget(&budget, task_span);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_resource_budget(budge, span);
 
     let ResourceBudgetDecl::ResourceBudgetDecl {
         battery_pct_max,
@@ -187,19 +191,20 @@ pub fn validate_resource_budget(budget: &ResourceBudgetDecl, span: Span) -> Vec<
 }
 
 pub fn validate_pipeline(pipeline: &spanda_ast::foundations::PipelineDecl) -> Vec<Diagnostic> {
-    // Validate pipeline latency budget configuration.
+    // Description:
+    //     Validate pipeline.
     //
-    // Parameters:
-    // - `pipeline` — pipeline declaration
+    // Inputs:
+    //     pipeline: &spanda_ast::foundations::PipelineDecl
+    //         Caller-supplied pipeline.
     //
-    // Returns:
-    // Diagnostics for invalid pipeline budgets.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_pipeline`.
     //
     // Example:
-    // let diags = validate_pipeline(&pipeline);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_pipeline(pipeline);
 
     use spanda_ast::foundations::PipelineDecl;
 
@@ -225,20 +230,22 @@ pub fn validate_watchdog(
     watchdog: &spanda_ast::foundations::WatchdogDecl,
     task_names: &[String],
 ) -> Vec<Diagnostic> {
-    // Validate watchdog timeout and monitored task target.
+    // Description:
+    //     Validate watchdog.
     //
-    // Parameters:
-    // - `watchdog` — watchdog declaration
-    // - `task_names` — known task names in the robot block
+    // Inputs:
+    //     watchdog: &spanda_ast::foundations::WatchdogDecl
+    //         Caller-supplied watchdog.
+    //     ask_names: &[String]
+    //         Caller-supplied ask names.
     //
-    // Returns:
-    // Diagnostics for invalid watchdog configuration.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_watchdog`.
     //
     // Example:
-    // let diags = validate_watchdog(&watchdog, &task_names);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_watchdog(watchdog, ask_names);
 
     use spanda_ast::foundations::WatchdogDecl;
 
@@ -274,19 +281,20 @@ pub fn validate_watchdog(
 }
 
 pub fn validate_recover(recover: &spanda_ast::foundations::RecoverDecl) -> Vec<Diagnostic> {
-    // Validate recovery handler safety requirements.
+    // Description:
+    //     Validate recover.
     //
-    // Parameters:
-    // - `recover` — recovery handler declaration
+    // Inputs:
+    //     recover: &spanda_ast::foundations::RecoverDecl
+    //         Caller-supplied recover.
     //
-    // Returns:
-    // Diagnostics when recovery blocks omit safety actions for runtime errors.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<Diagnostic>
+    //         Return value from `validate_recover`.
     //
     // Example:
-    // let diags = validate_recover(&recover);
+
+    //     let result = spanda_typecheck::reliability_validation::validate_recover(recover);
 
     use spanda_ast::foundations::RecoverDecl;
     use spanda_ast::nodes::Stmt;
@@ -318,19 +326,20 @@ pub fn validate_recover(recover: &spanda_ast::foundations::RecoverDecl) -> Vec<D
 }
 
 pub fn resolve_std_import(path: &str) -> bool {
-    // Check whether an import path refers to a registered std module namespace.
+    // Description:
+    //     Resolve std import.
     //
-    // Parameters:
-    // - `path` — import path (e.g. `std.time`)
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // true when the path is a known std namespace key.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `resolve_std_import`.
     //
     // Example:
-    // assert!(resolve_std_import("std.time"));
+
+    //     let result = spanda_typecheck::reliability_validation::resolve_std_import(path);
 
     crate::type_system::std_namespaces().contains_key(path)
 }

@@ -15,39 +15,40 @@ use std::collections::{BTreeSet, HashSet};
 pub use compile::{compile_native, CompileNativeOptions, CompileNativeResult};
 
 pub fn emit_module_ir(sir: &SirProgram) -> String {
-    // Emit module ir.
+    // Description:
+    //     Emit module ir.
     //
-    // Parameters:
-    // - `sir` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_module_ir`.
     //
     // Example:
-    // let result = spanda_llvm::emit_module_ir(sir);
+    //     let result = spanda_llvm::emit_module_ir(sir);
 
     // Produce emit module ir with options as the result.
     emit_module_ir_with_options(sir, None, None)
 }
 
 pub fn emit_module_ir_with_triple(sir: &SirProgram, target_triple: Option<&str>) -> String {
-    // Emit module ir with triple.
+    // Description:
+    //     Emit module ir with triple.
     //
-    // Parameters:
-    // - `sir` — input value
-    // - `target_triple` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
+    //     arget_triple: Option<&str>
+    //         Caller-supplied arget triple.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_module_ir_with_triple`.
     //
     // Example:
-    // let result = spanda_llvm::emit_module_ir_with_triple(sir, target_triple);
+    //     let result = spanda_llvm::emit_module_ir_with_triple(sir, arget_triple);
 
     // Produce emit module ir with options as the result.
     emit_module_ir_with_options(sir, target_triple, None)
@@ -58,21 +59,23 @@ pub fn emit_module_ir_with_options(
     target_triple: Option<&str>,
     hal_profile: Option<&str>,
 ) -> String {
-    // Emit module ir with options.
+    // Description:
+    //     Emit module ir with options.
     //
-    // Parameters:
-    // - `sir` — input value
-    // - `target_triple` — input value
-    // - `hal_profile` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
+    //     arget_triple: Option<&str>
+    //         Caller-supplied arget triple.
+    //     hal_profile: Option<&str>
+    //         Caller-supplied hal profile.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_module_ir_with_options`.
     //
     // Example:
-    // let result = spanda_llvm::emit_module_ir_with_options(sir, target_triple, hal_profile);
+    //     let result = spanda_llvm::emit_module_ir_with_options(sir, arget_triple, hal_profile);
 
     // Compute hal for the following logic.
     let hal = hal_emit_config(hal_profile);
@@ -201,19 +204,19 @@ struct HalEmitConfig {
 }
 
 fn hal_emit_config(profile: Option<&str>) -> HalEmitConfig {
-    // Hal emit config.
+    // Description:
+    //     Hal emit config.
     //
-    // Parameters:
-    // - `profile` — input value
+    // Inputs:
+    //     profile: Option<&str>
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // HalEmitConfig.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HalEmitConfig
+    //         Return value from `hal_emit_config`.
     //
     // Example:
-    // let result = spanda_llvm::hal_emit_config(profile);
+    //     let result = spanda_llvm::hal_emit_config(profile);
 
     // Match on unwrap or and handle each case.
     match profile.unwrap_or("") {
@@ -240,18 +243,19 @@ fn hal_emit_config(profile: Option<&str>) -> HalEmitConfig {
 }
 
 fn has_export_main(sir: &SirProgram) -> bool {
+    // Description:
+    //     Has export main.
     //
-    // Parameters:
-    // - `sir` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `has_export_main`.
     //
     // Example:
-    // let result = spanda_llvm::has_export_main(sir);
+    //     let result = spanda_llvm::has_export_main(sir);
 
     // Iterate over functions.
     sir.functions.iter().any(|f| {
@@ -260,20 +264,19 @@ fn has_export_main(sir: &SirProgram) -> bool {
 }
 
 fn emit_native_main(sir: &SirProgram) -> String {
-    // Emit native main.
+    // Description:
+    //     Emit native main.
     //
-    // Parameters:
-    // - `sir` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_native_main`.
     //
     // Example:
-    // let result = spanda_llvm::emit_native_main(sir);
-
+    //     let result = spanda_llvm::emit_native_main(sir);
     // use robot when first is present.
 
     // Emit output when first provides a robot.
@@ -290,19 +293,19 @@ fn emit_native_main(sir: &SirProgram) -> String {
 }
 
 fn collect_string_literals(sir: &SirProgram) -> Vec<String> {
-    // Collect string literals.
+    // Description:
+    //     Collect string literals.
     //
-    // Parameters:
-    // - `sir` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `collect_string_literals`.
     //
     // Example:
-    // let result = spanda_llvm::collect_string_literals(sir);
+    //     let result = spanda_llvm::collect_string_literals(sir);
 
     // Create mutable set for accumulating results.
     let mut set = BTreeSet::new();
@@ -324,20 +327,20 @@ fn collect_string_literals(sir: &SirProgram) -> Vec<String> {
 }
 
 fn collect_stmt_strings(stmts: &[SirStmt], set: &mut BTreeSet<String>) {
-    // Collect stmt strings.
+    // Description:
+    //     Collect stmt strings.
     //
-    // Parameters:
-    // - `stmts` — input value
-    // - `set` — input value
+    // Inputs:
+    //     stmts: &[SirStmt]
+    //         Caller-supplied stmts.
+    //     se: &mut BTreeSet<String>
+    //         Caller-supplied se.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_llvm::collect_stmt_strings(stmts, set);
+    //     let result = spanda_llvm::collect_stmt_strings(stmts, se);
 
     // Execute each statement in sequence.
     for stmt in stmts {
@@ -462,19 +465,18 @@ fn collect_stmt_strings(stmts: &[SirStmt], set: &mut BTreeSet<String>) {
 }
 
 pub fn default_target_triple_for_host() -> &'static str {
-    // Default target triple for host.
+    // Description:
+    //     Default target triple for host.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `default_target_triple_for_host`.
     //
     // Example:
-    // let result = spanda_llvm::default_target_triple_for_host();
+    //     let result = spanda_llvm::default_target_triple_for_host();
 
     // take this path when cfg!(target os = "macos").
     if cfg!(target_os = "macos") {
@@ -497,39 +499,40 @@ pub fn default_target_triple_for_host() -> &'static str {
 }
 
 fn string_global_name(idx: usize) -> String {
-    // String global name.
+    // Description:
+    //     String global name.
     //
-    // Parameters:
-    // - `idx` — input value
+    // Inputs:
+    //     idx: usize
+    //         Caller-supplied idx.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `string_global_name`.
     //
     // Example:
-    // let result = spanda_llvm::string_global_name(idx);
+    //     let result = spanda_llvm::string_global_name(idx);
 
     // Produce format! as the result.
     format!("@spanda_str_{idx}")
 }
 
 fn string_global_ptr_for(text: &str, strings: &[String]) -> String {
-    // String global ptr for.
+    // Description:
+    //     String global ptr for.
     //
-    // Parameters:
-    // - `text` — input value
-    // - `strings` — input value
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
+    //     strings: &[String]
+    //         Caller-supplied strings.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `string_global_ptr_for`.
     //
     // Example:
-    // let result = spanda_llvm::string_global_ptr_for(text, strings);
+    //     let result = spanda_llvm::string_global_ptr_for(ex, strings);
 
     // Compute idx for the following logic.
     let idx = strings
@@ -544,20 +547,21 @@ fn string_global_ptr_for(text: &str, strings: &[String]) -> String {
 }
 
 fn string_global_def(idx: usize, text: &str) -> String {
-    // String global def.
+    // Description:
+    //     String global def.
     //
-    // Parameters:
-    // - `idx` — input value
-    // - `text` — input value
+    // Inputs:
+    //     idx: usize
+    //         Caller-supplied idx.
+    //     ex: &str
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `string_global_def`.
     //
     // Example:
-    // let result = spanda_llvm::string_global_def(idx, text);
+    //     let result = spanda_llvm::string_global_def(idx, ex);
 
     // Compute len for the following logic.
     let len = text.len() + 1;
@@ -570,20 +574,20 @@ fn string_global_def(idx: usize, text: &str) -> String {
 }
 
 fn collect_actuator_globals(sir: &SirProgram, out: &mut String) {
-    // Collect actuator globals.
+    // Description:
+    //     Collect actuator globals.
     //
-    // Parameters:
-    // - `sir` — input value
-    // - `out` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
+    //     o: &mut String
+    //         Caller-supplied o.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_llvm::collect_actuator_globals(sir, out);
+    //     let result = spanda_llvm::collect_actuator_globals(sir, o);
 
     // Create mutable names for accumulating results.
     let mut names = Vec::new();
@@ -609,20 +613,20 @@ fn collect_actuator_globals(sir: &SirProgram, out: &mut String) {
 }
 
 fn collect_actuator_names(stmts: &[SirStmt], names: &mut Vec<String>) {
-    // Collect actuator names.
+    // Description:
+    //     Collect actuator names.
     //
-    // Parameters:
-    // - `stmts` — input value
-    // - `names` — input value
+    // Inputs:
+    //     stmts: &[SirStmt]
+    //         Caller-supplied stmts.
+    //     names: &mut Vec<String>
+    //         Caller-supplied names.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_llvm::collect_actuator_names(stmts, names);
+    //     let result = spanda_llvm::collect_actuator_names(stmts, names);
 
     // Execute each statement in sequence.
     for stmt in stmts {
@@ -671,38 +675,38 @@ fn collect_actuator_names(stmts: &[SirStmt], names: &mut Vec<String>) {
 }
 
 fn actuator_global_name(actuator: &str) -> String {
-    // Actuator global name.
+    // Description:
+    //     Actuator global name.
     //
-    // Parameters:
-    // - `actuator` — input value
+    // Inputs:
+    //     actuator: &str
+    //         Caller-supplied actuator.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `actuator_global_name`.
     //
     // Example:
-    // let result = spanda_llvm::actuator_global_name(actuator);
+    //     let result = spanda_llvm::actuator_global_name(actuator);
 
     // Produce format! as the result.
     format!("@spanda_actuator_{actuator}")
 }
 
 fn actuator_global_def(actuator: &str) -> String {
-    // Actuator global def.
+    // Description:
+    //     Actuator global def.
     //
-    // Parameters:
-    // - `actuator` — input value
+    // Inputs:
+    //     actuator: &str
+    //         Caller-supplied actuator.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `actuator_global_def`.
     //
     // Example:
-    // let result = spanda_llvm::actuator_global_def(actuator);
+    //     let result = spanda_llvm::actuator_global_def(actuator);
 
     // Compute len for the following logic.
     let len = actuator.len() + 1;
@@ -715,19 +719,19 @@ fn actuator_global_def(actuator: &str) -> String {
 }
 
 fn actuator_global_ptr(actuator: &str) -> String {
-    // Actuator global ptr.
+    // Description:
+    //     Actuator global ptr.
     //
-    // Parameters:
-    // - `actuator` — input value
+    // Inputs:
+    //     actuator: &str
+    //         Caller-supplied actuator.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `actuator_global_ptr`.
     //
     // Example:
-    // let result = spanda_llvm::actuator_global_ptr(actuator);
+    //     let result = spanda_llvm::actuator_global_ptr(actuator);
 
     // Produce format! as the result.
     format!(
@@ -738,19 +742,19 @@ fn actuator_global_ptr(actuator: &str) -> String {
 }
 
 fn escape_llvm_string(s: &str) -> String {
-    // Escape llvm string.
+    // Description:
+    //     Escape llvm string.
     //
-    // Parameters:
-    // - `s` — input value
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `escape_llvm_string`.
     //
     // Example:
-    // let result = spanda_llvm::escape_llvm_string(s);
+    //     let result = spanda_llvm::escape_llvm_string(s);
 
     // Produce chars as the result.
     s.chars()
@@ -769,22 +773,25 @@ fn emit_behavior_fn(
     strings: &[String],
     hal: &HalEmitConfig,
 ) -> String {
-    // Emit behavior fn.
+    // Description:
+    //     Emit behavior fn.
     //
-    // Parameters:
-    // - `robot` — input value
-    // - `behavior` — input value
-    // - `strings` — input value
-    // - `hal` — input value
+    // Inputs:
+    //     robo: &str
+    //         Caller-supplied robo.
+    //     behavior: &SirBehavior
+    //         Caller-supplied behavior.
+    //     strings: &[String]
+    //         Caller-supplied strings.
+    //     hal: &HalEmitConfig
+    //         Caller-supplied hal.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_behavior_fn`.
     //
     // Example:
-    // let result = spanda_llvm::emit_behavior_fn(robot, behavior, strings, hal);
+    //     let result = spanda_llvm::emit_behavior_fn(robo, behavior, strings, hal);
 
     // Create mutable loop id for accumulating results.
     let mut loop_id = 0usize;
@@ -818,38 +825,38 @@ struct EmitLocals {
 }
 
 fn double_slot(name: &str) -> String {
-    // Double slot.
+    // Description:
+    //     Double slot.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `double_slot`.
     //
     // Example:
-    // let result = spanda_llvm::double_slot(name);
+    //     let result = spanda_llvm::double_slot(name);
 
     // Produce format! as the result.
     format!("spanda_double_{name}")
 }
 
 fn compare_op_fcmp(op: SirCompareOp) -> &'static str {
-    // Compare op fcmp.
+    // Description:
+    //     Compare op fcmp.
     //
-    // Parameters:
-    // - `op` — input value
+    // Inputs:
+    //     op: SirCompareOp
+    //         Caller-supplied op.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `compare_op_fcmp`.
     //
     // Example:
-    // let result = spanda_llvm::compare_op_fcmp(op);
+    //     let result = spanda_llvm::compare_op_fcmp(op);
 
     // Match on op and handle each case.
     match op {
@@ -863,78 +870,80 @@ fn compare_op_fcmp(op: SirCompareOp) -> &'static str {
 }
 
 fn bool_slot(name: &str) -> String {
-    // Bool slot.
+    // Description:
+    //     Bool slot.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `bool_slot`.
     //
     // Example:
-    // let result = spanda_llvm::bool_slot(name);
+    //     let result = spanda_llvm::bool_slot(name);
 
     // Produce format! as the result.
     format!("spanda_bool_{name}")
 }
 
 fn enum_slot(name: &str) -> String {
-    // Enum slot.
+    // Description:
+    //     Enum slot.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `enum_slot`.
     //
     // Example:
-    // let result = spanda_llvm::enum_slot(name);
+    //     let result = spanda_llvm::enum_slot(name);
 
     // Produce format! as the result.
     format!("spanda_enum_{name}")
 }
 
 fn enum_payload_slot(name: &str, index: usize) -> String {
-    // Enum payload slot.
+    // Description:
+    //     Enum payload slot.
     //
-    // Parameters:
-    // - `name` — input value
-    // - `index` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     index: usize
+    //         Caller-supplied index.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `enum_payload_slot`.
     //
     // Example:
-    // let result = spanda_llvm::enum_payload_slot(name, index);
+    //     let result = spanda_llvm::enum_payload_slot(name, index);
 
     // Produce format! as the result.
     format!("spanda_enum_{name}_p{index}")
 }
 
 fn emit_match_enum_arm_bindings(scrutinee: &str, arm: &SirMatchArm) -> String {
-    // Emit match enum arm bindings.
+    // Description:
+    //     Emit match enum arm bindings.
     //
-    // Parameters:
-    // - `scrutinee` — input value
-    // - `arm` — input value
+    // Inputs:
+    //     scrutinee: &str
+    //         Caller-supplied scrutinee.
+    //     ar: &SirMatchArm
+    //         Caller-supplied ar.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_match_enum_arm_bindings`.
     //
     // Example:
-    // let result = spanda_llvm::emit_match_enum_arm_bindings(scrutinee, arm);
+    //     let result = spanda_llvm::emit_match_enum_arm_bindings(scrutinee, ar);
 
     // Start the generated output buffer.
     let mut out = String::new();
@@ -959,25 +968,31 @@ fn emit_stmts(
     locals: &mut EmitLocals,
     hal: &HalEmitConfig,
 ) -> String {
-    // Emit stmts.
+    // Description:
+    //     Emit stmts.
     //
-    // Parameters:
-    // - `stmts` — input value
-    // - `return_kind` — input value
-    // - `strings` — input value
-    // - `loop_id` — input value
-    // - `branch_id` — input value
-    // - `locals` — input value
-    // - `hal` — input value
+    // Inputs:
+    //     stmts: &[SirStmt]
+    //         Caller-supplied stmts.
+    //     return_kind: &str
+    //         Caller-supplied return kind.
+    //     strings: &[String]
+    //         Caller-supplied strings.
+    //     loop_id: &mut usize
+    //         Caller-supplied loop id.
+    //     branch_id: &mut usize
+    //         Caller-supplied branch id.
+    //     locals: &mut EmitLocals
+    //         Caller-supplied locals.
+    //     hal: &HalEmitConfig
+    //         Caller-supplied hal.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_stmts`.
     //
     // Example:
-    // let result = spanda_llvm::emit_stmts(stmts, return_kind, strings, loop_id, branch_id, locals, hal);
+    //     let result = spanda_llvm::emit_stmts(stmts, return_kind, strings, loop_id, branch_id, locals, hal);
 
     // Start the generated output buffer.
     let mut out = String::new();
@@ -1006,25 +1021,31 @@ fn emit_stmt(
     locals: &mut EmitLocals,
     hal: &HalEmitConfig,
 ) -> String {
-    // Emit stmt.
+    // Description:
+    //     Emit stmt.
     //
-    // Parameters:
-    // - `stmt` — input value
-    // - `return_kind` — input value
-    // - `strings` — input value
-    // - `loop_id` — input value
-    // - `branch_id` — input value
-    // - `locals` — input value
-    // - `hal` — input value
+    // Inputs:
+    //     s: &SirStmt
+    //         Caller-supplied s.
+    //     return_kind: &str
+    //         Caller-supplied return kind.
+    //     strings: &[String]
+    //         Caller-supplied strings.
+    //     loop_id: &mut usize
+    //         Caller-supplied loop id.
+    //     branch_id: &mut usize
+    //         Caller-supplied branch id.
+    //     locals: &mut EmitLocals
+    //         Caller-supplied locals.
+    //     hal: &HalEmitConfig
+    //         Caller-supplied hal.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_stmt`.
     //
     // Example:
-    // let result = spanda_llvm::emit_stmt(stmt, return_kind, strings, loop_id, branch_id, locals, hal);
+    //     let result = spanda_llvm::emit_stmt(s, return_kind, strings, loop_id, branch_id, locals, hal);
 
     // Match on stmt and handle each case.
     match stmt {
@@ -1502,19 +1523,19 @@ fn emit_stmt(
 }
 
 fn llvm_type(type_name: &str) -> &'static str {
-    // Llvm type.
+    // Description:
+    //     Llvm type.
     //
-    // Parameters:
-    // - `type_name` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `llvm_type`.
     //
     // Example:
-    // let result = spanda_llvm::llvm_type(type_name);
+    //     let result = spanda_llvm::llvm_type(ype_name);
 
     // Match on type name and handle each case.
     match type_name {
@@ -1528,19 +1549,19 @@ fn llvm_type(type_name: &str) -> &'static str {
 }
 
 fn emit_extern_decl(ext: &SirExtern) -> String {
-    // Emit extern decl.
+    // Description:
+    //     Emit extern decl.
     //
-    // Parameters:
-    // - `ext` — input value
+    // Inputs:
+    //     ex: &SirExtern
+    //         Caller-supplied ex.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_extern_decl`.
     //
     // Example:
-    // let result = spanda_llvm::emit_extern_decl(ext);
+    //     let result = spanda_llvm::emit_extern_decl(ex);
 
     // Compute ret for the following logic.
     let ret = llvm_type(&ext.return_type);
@@ -1563,20 +1584,21 @@ fn emit_extern_decl(ext: &SirExtern) -> String {
 }
 
 fn emit_function(func: &SirFunction, strings: &[String]) -> String {
-    // Emit function.
+    // Description:
+    //     Emit function.
     //
-    // Parameters:
-    // - `func` — input value
-    // - `strings` — input value
+    // Inputs:
+    //     func: &SirFunction
+    //         Caller-supplied func.
+    //     strings: &[String]
+    //         Caller-supplied strings.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `emit_function`.
     //
     // Example:
-    // let result = spanda_llvm::emit_function(func, strings);
+    //     let result = spanda_llvm::emit_function(func, strings);
 
     // Compute ret for the following logic.
     let ret = llvm_type(&func.return_type);
@@ -1626,19 +1648,18 @@ mod tests {
 
     #[test]
     fn emits_llvm_ir_for_module_functions() {
-        // Emits llvm ir for module functions.
+        // Description:
+        //     Emits llvm ir for module functions.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_llvm_ir_for_module_functions();
+
+        //     let result = spanda_llvm::emits_llvm_ir_for_module_functions();
 
         let source = r#"
 module demo;
@@ -1669,19 +1690,18 @@ robot R {
 
     #[test]
     fn emits_drive_rt_call_for_behavior() {
-        // Emits drive rt call for behavior.
+        // Description:
+        //     Emits drive rt call for behavior.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_drive_rt_call_for_behavior();
+
+        //     let result = spanda_llvm::emits_drive_rt_call_for_behavior();
 
         let source = r#"
 robot R {
@@ -1697,19 +1717,18 @@ robot R {
 
     #[test]
     fn emits_loop_and_publish_calls() {
-        // Emits loop and publish calls.
+        // Description:
+        //     Emits loop and publish calls.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_loop_and_publish_calls();
+
+        //     let result = spanda_llvm::emits_loop_and_publish_calls();
 
         let source = r#"
 robot R {
@@ -1730,19 +1749,18 @@ robot R {
 
     #[test]
     fn emits_if_subscribe_and_custom_triple() {
-        // Emits if subscribe and custom triple.
+        // Description:
+        //     Emits if subscribe and custom triple.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_if_subscribe_and_custom_triple();
+
+        //     let result = spanda_llvm::emits_if_subscribe_and_custom_triple();
 
         let source = r#"
 robot R {
@@ -1764,19 +1782,18 @@ robot R {
 
     #[test]
     fn emits_if_var_and_match_switch() {
-        // Emits if var and match switch.
+        // Description:
+        //     Emits if var and match switch.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_if_var_and_match_switch();
+
+        //     let result = spanda_llvm::emits_if_var_and_match_switch();
 
         let source = r#"
 enum RobotState { Idle, Navigating }
@@ -1804,19 +1821,18 @@ robot R {
 
     #[test]
     fn emits_enum_payload_if_compare_and_hal_profile_comment() {
-        // Emits enum payload if compare and hal profile comment.
+        // Description:
+        //     Emits enum payload if compare and hal profile comment.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::emits_enum_payload_if_compare_and_hal_profile_comment();
+
+        //     let result = spanda_llvm::emits_enum_payload_if_compare_and_hal_profile_comment();
 
         let source = r#"
 enum DriveCmd { Stop, Drive(Float, Float) }

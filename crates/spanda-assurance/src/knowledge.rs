@@ -8,6 +8,21 @@ use spanda_ast::nodes::Program;
 
 /// Extract system models from program knowledge_model declarations.
 pub fn extract_knowledge_base(program: &Program) -> MissionKnowledgeBase {
+    // Description:
+    //     Extract knowledge base.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: MissionKnowledgeBase
+    //         Return value from `extract_knowledge_base`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::knowledge::extract_knowledge_base(progra);
+
     let Program::Program {
         knowledge_models, ..
     } = program;
@@ -42,6 +57,21 @@ pub fn extract_knowledge_base(program: &Program) -> MissionKnowledgeBase {
 
 /// Build capability ontology from knowledge model dependencies.
 pub fn capability_ontology(program: &Program) -> Vec<CapabilityOntology> {
+    // Description:
+    //     Capability ontology.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<CapabilityOntology>
+    //         Return value from `capability_ontology`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::knowledge::capability_ontology(progra);
+
     let kb = extract_knowledge_base(program);
     kb.models
         .iter()
@@ -59,6 +89,21 @@ pub fn capability_ontology(program: &Program) -> Vec<CapabilityOntology> {
 
 /// Validate knowledge model completeness against declared robot sensors/actuators.
 pub fn validate_knowledge_models(program: &Program) -> Vec<String> {
+    // Description:
+    //     Validate knowledge models.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `validate_knowledge_models`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::knowledge::validate_knowledge_models(progra);
+
     let mut issues = Vec::new();
     let kb = extract_knowledge_base(program);
     let Program::Program { robots, .. } = program;

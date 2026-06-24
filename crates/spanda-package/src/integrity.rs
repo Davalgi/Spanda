@@ -8,19 +8,20 @@ use std::path::Path;
 
 /// Compute lowercase hex SHA-256 of a file.
 pub fn sha256_file(path: &Path) -> Result<String, String> {
-    // Hash a tarball or sidecar file on disk.
+    // Description:
+    //     Sha256 file.
     //
-    // Parameters:
-    // - `path` — file to hash
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
     //
-    // Returns:
-    // Lowercase hex digest, or an I/O error string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `sha256_file`.
     //
     // Example:
-    // let digest = sha256_file(bundle_path)?;
+
+    //     let result = spanda_package::integrity::sha256_file(path);
 
     let mut file = File::open(path).map_err(|e| format!("open {}: {e}", path.display()))?;
     let mut hasher = Sha256::new();
@@ -39,19 +40,20 @@ pub fn sha256_file(path: &Path) -> Result<String, String> {
 
 /// Sidecar path for a tarball checksum (`bundle.tar.gz.sha256`).
 pub fn checksum_sidecar_path(tarball: &Path) -> std::path::PathBuf {
-    // Derive the checksum sidecar filename for a bundle.
+    // Description:
+    //     Checksum sidecar path.
     //
-    // Parameters:
-    // - `tarball` — `.tar.gz` bundle path
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
     //
-    // Returns:
-    // Adjacent `.sha256` path.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `checksum_sidecar_path`.
     //
     // Example:
-    // let sidecar = checksum_sidecar_path(&bundle);
+
+    //     let result = spanda_package::integrity::checksum_sidecar_path(arball);
 
     let name = tarball
         .file_name()
@@ -62,19 +64,20 @@ pub fn checksum_sidecar_path(tarball: &Path) -> std::path::PathBuf {
 
 /// Write `{tarball}.sha256` and return the digest.
 pub fn write_checksum_sidecar(tarball: &Path) -> Result<String, String> {
-    // Publish-time helper: hash bundle and write sidecar file.
+    // Description:
+    //     Write checksum sidecar.
     //
-    // Parameters:
-    // - `tarball` — `.tar.gz` bundle path
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
     //
-    // Returns:
-    // Hex digest written to the sidecar.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `write_checksum_sidecar`.
     //
     // Example:
-    // let digest = write_checksum_sidecar(&report.bundle_path)?;
+
+    //     let result = spanda_package::integrity::write_checksum_sidecar(arball);
 
     let digest = sha256_file(tarball)?;
     let sidecar = checksum_sidecar_path(tarball);
@@ -86,19 +89,20 @@ pub fn write_checksum_sidecar(tarball: &Path) -> Result<String, String> {
 
 /// Read expected digest from a `.sha256` sidecar when present.
 pub fn read_checksum_sidecar(tarball: &Path) -> Option<String> {
-    // Load a checksum sidecar adjacent to a local tarball.
+    // Description:
+    //     Read checksum sidecar.
     //
-    // Parameters:
-    // - `tarball` — `.tar.gz` bundle path
+    // Inputs:
+    //     arball: &Path
+    //         Caller-supplied arball.
     //
-    // Returns:
-    // Hex digest when the sidecar exists and is non-empty.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_checksum_sidecar`.
     //
     // Example:
-    // let expected = read_checksum_sidecar(&bundle_path);
+
+    //     let result = spanda_package::integrity::read_checksum_sidecar(arball);
 
     let sidecar = checksum_sidecar_path(tarball);
     let text = std::fs::read_to_string(&sidecar).ok()?;
@@ -112,20 +116,22 @@ pub fn read_checksum_sidecar(tarball: &Path) -> Option<String> {
 
 /// Compare a file digest to an expected hex string.
 pub fn verify_sha256(path: &Path, expected: &str) -> Result<(), String> {
-    // Verify tarball bytes against a registry or sidecar digest.
+    // Description:
+    //     Verify sha256.
     //
-    // Parameters:
-    // - `path` — file on disk
-    // - `expected` — lowercase hex SHA-256
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     expected: &str
+    //         Caller-supplied expected.
     //
-    // Returns:
-    // Ok when digests match, otherwise an error string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `verify_sha256`.
     //
     // Example:
-    // verify_sha256(&tarball, &entry.version_checksums["0.1.0"])?;
+
+    //     let result = spanda_package::integrity::verify_sha256(path, expected);
 
     let actual = sha256_file(path)?;
     let expected = expected.trim().to_ascii_lowercase();
@@ -141,19 +147,19 @@ pub fn verify_sha256(path: &Path, expected: &str) -> Result<(), String> {
 
 /// Return true when `SPANDA_REGISTRY_REQUIRE_CHECKSUM=1`.
 pub fn registry_require_checksum() -> bool {
-    // Whether remote installs must have a known checksum.
+    // Description:
+    //     Registry require checksum.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true when strict checksum mode is enabled.
-    //
-    // Options:
-    // Reads `SPANDA_REGISTRY_REQUIRE_CHECKSUM`.
+    // Outputs:
+    //     result: bool
+    //         Return value from `registry_require_checksum`.
     //
     // Example:
-    // if registry_require_checksum() && expected.is_none() { ... }
+
+    //     let result = spanda_package::integrity::registry_require_checksum();
 
     matches!(
         std::env::var("SPANDA_REGISTRY_REQUIRE_CHECKSUM").as_deref(),
@@ -168,6 +174,19 @@ mod tests {
 
     #[test]
     fn sidecar_round_trip() {
+        // Description:
+        //     Sidecar round trip.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::integrity::sidecar_round_trip();
+
         let root = std::env::temp_dir().join(format!("spanda-sha-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         std::fs::create_dir_all(&root).expect("tmpdir");

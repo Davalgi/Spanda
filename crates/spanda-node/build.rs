@@ -3,19 +3,17 @@
 extern crate napi_build;
 
 fn main() {
-    // Main.
+    // Description:
+    //     Main.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_node::build::main();
+    //     let result = spanda_node::build::main();
 
     // Produce setup as the result.
     napi_build::setup();

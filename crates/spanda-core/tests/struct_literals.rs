@@ -4,19 +4,18 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn struct_literal_constructs_pose() {
-    // Struct literal constructs pose.
+    // Description:
+    //     Struct literal constructs pose.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::struct_literals::struct_literal_constructs_pose();
+
+    //     let result = spanda_core::struct_literals::struct_literal_constructs_pose();
 
     let source = r#"
 struct Pose {
@@ -40,19 +39,18 @@ robot R {
 
 #[test]
 fn struct_literal_requires_all_fields() {
-    // Struct literal requires all fields.
+    // Description:
+    //     Struct literal requires all fields.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::struct_literals::struct_literal_requires_all_fields();
+
+    //     let result = spanda_core::struct_literals::struct_literal_requires_all_fields();
 
     let source = r#"
 struct Pose {

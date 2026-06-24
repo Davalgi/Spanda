@@ -29,21 +29,23 @@ pub fn resolve_dependencies(
     manifest: &PackageManifest,
     options: &ResolveOptions,
 ) -> PackageResult<ResolveResult> {
-    // Resolve dependencies.
+    // Description:
+    //     Resolve dependencies.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `manifest` — input value
-    // - `options` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     options: &ResolveOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // PackageResult<ResolveResult>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<ResolveResult>
+    //         Return value from `resolve_dependencies`.
     //
     // Example:
-    // let result = spanda_package::resolver::resolve_dependencies(project_root, manifest, options);
+    //     let result = spanda_package::resolver::resolve_dependencies(project_roo, anifes, options);
 
     // Create mutable lockfile deps for accumulating results.
     let mut lockfile_deps = BTreeMap::new();
@@ -96,22 +98,25 @@ fn resolve_one(
     spec: &DependencySpec,
     _options: &ResolveOptions,
 ) -> PackageResult<LockedDependency> {
-    // Resolve one.
+    // Description:
+    //     Resolve one.
     //
-    // Parameters:
-    // - `project_root` — input value
-    // - `name` — input value
-    // - `spec` — input value
-    // - `_options` — input value
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     name: &str
+    //         Caller-supplied name.
+    //     spec: &DependencySpec
+    //         Caller-supplied spec.
+    //     _options: &ResolveOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // PackageResult<LockedDependency>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<LockedDependency>
+    //         Return value from `resolve_one`.
     //
     // Example:
-    // let result = spanda_package::resolver::resolve_one(project_root, name, spec, _options);
+    //     let result = spanda_package::resolver::resolve_one(project_roo, name, spec, _options);
 
     // Match on source kind and handle each case.
     match spec.source_kind() {
@@ -180,6 +185,23 @@ fn resolve_one(
 }
 
 fn package_root_for_locked(project_root: &Path, locked: &LockedDependency) -> std::path::PathBuf {
+    // Description:
+    //     Package root for locked.
+    //
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     locked: &LockedDependency
+    //         Caller-supplied locked.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `package_root_for_locked`.
+    //
+    // Example:
+
+    //     let result = spanda_package::resolver::package_root_for_locked(project_roo, locked);
+
     match &locked.source {
         LockedSource::Local { path } => {
             if path.is_absolute() {
@@ -198,20 +220,22 @@ fn manifest_for_locked_dep(
     project_root: &Path,
     locked: &LockedDependency,
 ) -> Option<PackageManifest> {
-    // Load a dependency manifest for transitive resolution when available.
+    // Description:
+    //     Manifest for locked dep.
     //
-    // Parameters:
-    // - `project_root` — enclosing project root
-    // - `locked` — resolved dependency entry
+    // Inputs:
+    //     project_roo: &Path
+    //         Caller-supplied project roo.
+    //     locked: &LockedDependency
+    //         Caller-supplied locked.
     //
-    // Returns:
-    // Parsed dependency manifest, or `None` for git-only sources.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PackageManifest>
+    //         Return value from `manifest_for_locked_dep`.
     //
     // Example:
-    // let manifest = manifest_for_locked_dep(root, &locked)?;
+
+    //     let result = spanda_package::resolver::manifest_for_locked_dep(project_roo, locked);
 
     match &locked.source {
         LockedSource::Local { path } => {
@@ -229,19 +253,19 @@ fn manifest_for_locked_dep(
 }
 
 fn load_dep_manifest(path: &Path) -> PackageResult<PackageManifest> {
-    // Load dep manifest.
+    // Description:
+    //     Load dep manifest.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
     //
-    // Returns:
-    // PackageResult<PackageManifest>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<PackageManifest>
+    //         Return value from `load_dep_manifest`.
     //
     // Example:
-    // let result = spanda_package::resolver::load_dep_manifest(path);
+    //     let result = spanda_package::resolver::load_dep_manifest(path);
 
     // Compute manifest path for the following logic.
     let manifest_path = path.join(MANIFEST_FILENAME);
@@ -260,20 +284,21 @@ fn select_registry_version(
     entry: &RegistryEntryLookup,
     req: &semver::VersionReq,
 ) -> PackageResult<Version> {
-    // Select registry version.
+    // Description:
+    //     Select registry version.
     //
-    // Parameters:
-    // - `entry` — input value
-    // - `req` — input value
+    // Inputs:
+    //     entry: &RegistryEntryLookup
+    //         Caller-supplied entry.
+    //     req: &semver::VersionReq
+    //         Caller-supplied req.
     //
-    // Returns:
-    // PackageResult<Version>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageResult<Version>
+    //         Return value from `select_registry_version`.
     //
     // Example:
-    // let result = spanda_package::resolver::select_registry_version(entry, req);
+    //     let result = spanda_package::resolver::select_registry_version(entry, req);
 
     // Create mutable candidates for accumulating results.
     let mut candidates: Vec<Version> = entry
@@ -301,21 +326,22 @@ mod tests {
     use tempfile::TempDir;
 
     fn write_manifest(dir: &Path, name: &str, version: &str) {
-        // Write manifest.
+        // Description:
+        //     Write manifest.
         //
-        // Parameters:
-        // - `dir` — input value
-        // - `name` — input value
-        // - `version` — input value
+        // Inputs:
+        //     dir: &Path
+        //         Caller-supplied dir.
+        //     name: &str
+        //         Caller-supplied name.
+        //     version: &str
+        //         Caller-supplied version.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::resolver::write_manifest(dir, name, version);
+        //     let result = spanda_package::resolver::write_manifest(dir, name, version);
 
         // Compute content for the following logic.
         let content = format!(
@@ -330,19 +356,18 @@ version = "{version}"
 
     #[test]
     fn resolves_local_dependency() {
-        // Resolves local dependency.
+        // Description:
+        //     Resolves local dependency.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::resolver::resolves_local_dependency();
+
+        //     let result = spanda_package::resolver::resolves_local_dependency();
 
         let root = TempDir::new().unwrap();
         let lib = root.path().join("lib");
@@ -372,19 +397,18 @@ version = "{version}"
 
     #[test]
     fn resolves_registry_dependency() {
-        // Resolves registry dependency.
+        // Description:
+        //     Resolves registry dependency.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::resolver::resolves_registry_dependency();
+
+        //     let result = spanda_package::resolver::resolves_registry_dependency();
 
         let root = TempDir::new().unwrap();
         write_manifest(root.path(), "app", "0.1.0");
@@ -403,6 +427,19 @@ version = "{version}"
 
     #[test]
     fn resolves_transitive_local_dependencies() {
+        // Description:
+        //     Resolves transitive local dependencies.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::resolver::resolves_transitive_local_dependencies();
+
         let root = TempDir::new().unwrap();
         let shared = root.path().join("shared");
         let lib = root.path().join("lib");
@@ -444,19 +481,18 @@ shared_utils = {{ path = "../shared" }}
 
     #[test]
     fn parses_git_dependency() {
-        // Parses git dependency.
+        // Description:
+        //     Parses git dependency.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::resolver::parses_git_dependency();
+
+        //     let result = spanda_package::resolver::parses_git_dependency();
 
         let root = TempDir::new().unwrap();
         write_manifest(root.path(), "app", "0.1.0");

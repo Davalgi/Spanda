@@ -17,21 +17,23 @@ pub struct TwinRuntime {
 
 impl TwinRuntime {
     pub fn new(name: String, mirrors: Vec<String>, replay: bool) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `name` — input value
-        // - `mirrors` — input value
-        // - `replay` — input value
+        // Inputs:
+        //     name: String
+        //         Caller-supplied name.
+        //     irrors: Vec<String>
+        //         Caller-supplied irrors.
+        //     replay: bool
+        //         Caller-supplied replay.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_runtime::twin::new(name, mirrors, replay);
+        //     let value = spanda_runtime::twin::new(name, irrors, replay);
 
         // Assemble the struct fields and return it.
         Self {
@@ -47,22 +49,27 @@ impl TwinRuntime {
     }
 
     pub fn with_sync(mut self, telemetry: bool, replay: bool, faults: bool, events: bool) -> Self {
+        // Description:
+        //     With sync.
         //
-        // Parameters:
-        // - `mut self` — input value
-        // - `telemetry` — input value
-        // - `replay` — input value
-        // - `faults` — input value
-        // - `events` — input value
+        // Inputs:
+        //     mut self: input value
+        //         Caller-supplied mut self.
+        //     elemetry: bool
+        //         Caller-supplied elemetry.
+        //     replay: bool
+        //         Caller-supplied replay.
+        //     faults: bool
+        //         Caller-supplied faults.
+        //     events: bool
+        //         Caller-supplied events.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `with_sync`.
         //
         // Example:
-        // let result = spanda_runtime::twin::with_sync(mut self, telemetry, replay, faults, events);
+        //     let result = spanda_runtime::twin::with_sync(mut self, elemetry, replay, faults, events);
 
         // Call telemetry sync = telemetry; on the current instance.
         self.telemetry_sync = telemetry;
@@ -88,21 +95,22 @@ impl TwinRuntime {
     }
 
     pub fn snapshot(&mut self, field: &str, value: RuntimeValue) {
-        // Snapshot.
+        // Description:
+        //     Snapshot.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `field` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     field: &str
+        //         Caller-supplied field.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.snapshot(field, value);
+        //     let result = spanda_runtime::twin::snapshot(&mut self, field, value);
 
         // take the branch when any equals field).
         if self.mirrors.iter().any(|m| m == field) {
@@ -111,19 +119,18 @@ impl TwinRuntime {
     }
 
     pub fn commit_frame(&mut self) {
-        // Commit frame.
+        // Description:
+        //     Commit frame.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.commit_frame();
+        //     let result = spanda_runtime::twin::commit_frame(&mut self);
 
         // skip further work when shadow is empty.
         if self.replay && !self.shadow.is_empty() {
@@ -132,38 +139,40 @@ impl TwinRuntime {
     }
 
     pub fn replay_frame_count(&self) -> usize {
+        // Description:
+        //     Replay frame count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `replay_frame_count`.
         //
         // Example:
-        // let result = instance.replay_frame_count();
+        //     let result = spanda_runtime::twin::replay_frame_count(&self);
 
         // Call len on the current instance.
         self.replay_buffer.len()
     }
 
     pub fn shadow_field(&self, field: &str) -> Option<&RuntimeValue> {
-        // Shadow field.
+        // Description:
+        //     Shadow field.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `field` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     field: &str
+        //         Caller-supplied field.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&RuntimeValue>
+        //         Return value from `shadow_field`.
         //
         // Example:
-        // let result = instance.shadow_field(field);
+        //     let result = spanda_runtime::twin::shadow_field(&self, field);
 
         // take the branch when any equals field).
         if self.mirrors.iter().any(|m| m == field) {
@@ -174,21 +183,23 @@ impl TwinRuntime {
     }
 
     pub fn replay_field(&self, index: usize, field: &str) -> Option<&RuntimeValue> {
-        // Replay field.
+        // Description:
+        //     Replay field.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `index` — input value
-        // - `field` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     index: usize
+        //         Caller-supplied index.
+        //     field: &str
+        //         Caller-supplied field.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&RuntimeValue>
+        //         Return value from `replay_field`.
         //
         // Example:
-        // let result = instance.replay_field(index, field);
+        //     let result = spanda_runtime::twin::replay_field(&self, index, field);
 
         // take the branch when any equals field).
         if !self.replay || !self.mirrors.iter().any(|m| m == field) {
@@ -199,21 +210,23 @@ impl TwinRuntime {
 
     /// Compare previous shadow against live mirrored values; true when divergence exceeds threshold.
     pub fn detect_divergence(&self, live: &HashMap<String, RuntimeValue>, threshold: f64) -> bool {
-        // Detect divergence.
+        // Description:
+        //     Detect divergence.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `live` — input value
-        // - `threshold` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     live: &HashMap<String, RuntimeValue>
+        //         Caller-supplied live.
+        //     hreshold: f64
+        //         Caller-supplied hreshold.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `detect_divergence`.
         //
         // Example:
-        // let result = instance.detect_divergence(live, threshold);
+        //     let result = spanda_runtime::twin::detect_divergence(&self, live, hreshold);
 
         // Check each struct field.
         for field in &self.mirrors {
@@ -237,7 +250,39 @@ impl TwinRuntime {
         velocity: (f64, f64),
         mirrors: &[String],
     ) -> HashMap<String, RuntimeValue> {
-        // Create mutable live for accumulating results.
+        // Description:
+
+        //     Live mirrored fields.
+
+        //
+
+        // Inputs:
+
+        //     pose: (f64, f64, f64, f64)
+
+        //         Caller-supplied pose.
+
+        //     velocity: (f64, f64)
+
+        //         Caller-supplied velocity.
+
+        //     irrors: &[String]
+
+        //         Caller-supplied irrors.
+
+        //
+
+        // Outputs:
+
+        //     result: HashMap<String, RuntimeValue>
+
+        //         Return value from `live_mirrored_fields`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_runtime::twin::live_mirrored_fields(pose, velocity, irrors);
         let mut live = HashMap::new();
 
         // Take the branch when any equals "pose").
@@ -268,20 +313,21 @@ impl TwinRuntime {
 }
 
 fn value_distance(a: &RuntimeValue, b: &RuntimeValue) -> f64 {
-    // Value distance.
+    // Description:
+    //     Value distance.
     //
-    // Parameters:
-    // - `a` — input value
-    // - `b` — input value
+    // Inputs:
+    //     a: &RuntimeValue
+    //         Caller-supplied a.
+    //     b: &RuntimeValue
+    //         Caller-supplied b.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `value_distance`.
     //
     // Example:
-    // let result = spanda_runtime::twin::value_distance(a, b);
+    //     let result = spanda_runtime::twin::value_distance(a, b);
 
     // Match on value and handle each case.
     match (a, b) {
@@ -327,19 +373,20 @@ fn value_distance(a: &RuntimeValue, b: &RuntimeValue) -> f64 {
 
 impl TwinRuntime {
     pub fn export_replay_json(&self) -> serde_json::Value {
-        // Serialize the twin replay buffer for post-incident review.
+        // Description:
+        //     Export replay json.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // JSON object with twin name, mirrors, and per-frame field snapshots.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: serde_json::Value
+        //         Return value from `export_replay_json`.
         //
         // Example:
-        // let json = twin.export_replay_json();
+
+        //     let result = spanda_runtime::twin::export_replay_json(&self);
 
         use crate::serialize::runtime_to_json;
         let frames: Vec<serde_json::Value> = self
@@ -370,19 +417,18 @@ mod tests {
 
     #[test]
     fn replay_field_returns_historical_snapshot() {
-        // Replay field returns historical snapshot.
+        // Description:
+        //     Replay field returns historical snapshot.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_runtime::twin::replay_field_returns_historical_snapshot();
+
+        //     let result = spanda_runtime::twin::replay_field_returns_historical_snapshot();
 
         let mut twin = TwinRuntime::new("T".into(), vec!["pose".into()], true);
         twin.snapshot(

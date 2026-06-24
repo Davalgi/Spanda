@@ -16,6 +16,21 @@ pub struct StateAssuranceReport {
 
 /// Evaluate state estimator declarations and synthesize belief state.
 pub fn evaluate_state_assurance(program: &Program) -> StateAssuranceReport {
+    // Description:
+    //     Evaluate state assurance.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: StateAssuranceReport
+    //         Return value from `evaluate_state_assurance`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::state::evaluate_state_assurance(progra);
+
     let estimators = extract_sensor_fusion(program);
     let belief = build_belief_state(program);
     let issues = validate_state_estimators(program);
@@ -29,6 +44,21 @@ pub fn evaluate_state_assurance(program: &Program) -> StateAssuranceReport {
 
 /// Extract state estimators and build weighted fusion previews.
 pub fn extract_sensor_fusion(program: &Program) -> Vec<SensorFusionState> {
+    // Description:
+    //     Extract sensor fusion.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<SensorFusionState>
+    //         Return value from `extract_sensor_fusion`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::state::extract_sensor_fusion(progra);
+
     let Program::Program {
         state_estimators, ..
     } = program;
@@ -58,6 +88,21 @@ pub fn extract_sensor_fusion(program: &Program) -> Vec<SensorFusionState> {
 
 /// Aggregate estimates into a belief state.
 pub fn build_belief_state(program: &Program) -> BeliefState {
+    // Description:
+    //     Build belief state.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: BeliefState
+    //         Return value from `build_belief_state`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::state::build_belief_state(progra);
+
     let fusion = extract_sensor_fusion(program);
     BeliefState {
         estimates: fusion.into_iter().filter_map(|f| f.fused).collect(),
@@ -66,6 +111,21 @@ pub fn build_belief_state(program: &Program) -> BeliefState {
 
 /// Validate state estimator declarations.
 pub fn validate_state_estimators(program: &Program) -> Vec<String> {
+    // Description:
+    //     Validate state estimators.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `validate_state_estimators`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::state::validate_state_estimators(progra);
+
     let mut issues = Vec::new();
     let Program::Program {
         state_estimators, ..

@@ -15,6 +15,21 @@ use std::process;
 const MINIMAL_PROGRAM: &str = "robot Placeholder { behavior idle() {} }";
 
 fn read_file(path: &str) -> String {
+    // Description:
+    //     Read file.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::read_file(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Failed to read {path}: {e}");
         process::exit(1);
@@ -22,6 +37,21 @@ fn read_file(path: &str) -> String {
 }
 
 fn parse_program(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::parse_program(source);
+
     let tokens = tokenize(source).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -33,6 +63,21 @@ fn parse_program(source: &str) -> spanda_ast::nodes::Program {
 }
 
 fn parse_format(args: &[String]) -> ReportFormat {
+    // Description:
+    //     Parse format.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: ReportFormat
+    //         Return value from `parse_format`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::parse_format(args);
+
     if args.iter().any(|a| a == "--json") {
         ReportFormat::Json
     } else if args.iter().any(|a| a == "--markdown") {
@@ -45,6 +90,21 @@ fn parse_format(args: &[String]) -> ReportFormat {
 }
 
 fn file_arg(args: &[String]) -> String {
+    // Description:
+    //     File arg.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `file_arg`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::file_arg(args);
+
     args.iter()
         .find(|a| !a.starts_with('-'))
         .cloned()
@@ -55,12 +115,44 @@ fn file_arg(args: &[String]) -> String {
 }
 
 fn failure_arg(args: &[String]) -> Option<String> {
+    // Description:
+    //     Failure arg.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `failure_arg`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::failure_arg(args);
+
     args.iter()
         .position(|a| a == "--inject-failure" || a == "--failure")
         .and_then(|i| args.get(i + 1).cloned())
 }
 
 fn build_report(file: &str, args: &[String]) -> RecoveryReport {
+    // Description:
+    //     Build report.
+    //
+    // Inputs:
+    //     file: &str
+    //         Caller-supplied file.
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: RecoveryReport
+    //         Return value from `build_report`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::build_report(file, args);
+
     if file.ends_with(".trace") {
         let diagnosis = diagnose_from_trace(Path::new(file)).unwrap_or_else(|e| {
             eprintln!("{e}");
@@ -86,6 +178,20 @@ fn build_report(file: &str, args: &[String]) -> RecoveryReport {
 
 /// `spanda heal <file.sd|mission.trace> [--json|--markdown|--html] [--failure <kind>]`
 pub fn cmd_heal(args: &[String]) {
+    // Description:
+    //     Cmd heal.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::cmd_heal(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let report = build_report(&file, args);
@@ -97,6 +203,20 @@ pub fn cmd_heal(args: &[String]) {
 
 /// `spanda recover <file.sd> [--json] [--failure <kind>]`
 pub fn cmd_recover(args: &[String]) {
+    // Description:
+    //     Cmd recover.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::cmd_recover(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -120,6 +240,20 @@ pub fn cmd_recover(args: &[String]) {
 
 /// `spanda recovery-report <file.sd> [--json|--markdown|--html]`
 pub fn cmd_recovery_report(args: &[String]) {
+    // Description:
+    //     Cmd recovery report.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::cmd_recovery_report(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -133,6 +267,20 @@ pub fn cmd_recovery_report(args: &[String]) {
 
 /// `spanda recovery knowledge <file.sd> [--json]`
 pub fn cmd_recovery_knowledge(args: &[String]) {
+    // Description:
+    //     Cmd recovery knowledge.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::cmd_recovery_knowledge(args);
+
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);
@@ -157,6 +305,20 @@ pub fn cmd_recovery_knowledge(args: &[String]) {
 
 /// Dispatch `spanda recovery` subcommands.
 pub fn recovery_dispatch(args: &[String]) {
+    // Description:
+    //     Recovery dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::recovery_dispatch(args);
+
     match args.first().map(String::as_str).unwrap_or("") {
         "plan" | "report" => cmd_recovery_report(&args[1..]),
         "knowledge" => cmd_recovery_knowledge(&args[1..]),
@@ -169,6 +331,20 @@ pub fn recovery_dispatch(args: &[String]) {
 
 /// Extended failure analysis with recovery planning (`--with-recovery`).
 pub fn cmd_analyze_failure_recovery(args: &[String]) {
+    // Description:
+    //     Cmd analyze failure recovery.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::recovery_cli::cmd_analyze_failure_recovery(args);
+
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);

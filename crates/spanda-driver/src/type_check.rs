@@ -12,37 +12,61 @@ pub use spanda_typecheck::{
 };
 
 pub fn type_check(program: &Program) -> Result<(), SpandaError> {
-    // Type-check a parsed program with the default runtime host.
+    // Description:
+
+    //     Type check.
+
     //
-    // Parameters:
-    // - `program` — parsed Spanda AST
+
+    // Inputs:
+
+    //     progra: &Program
+
+    //         Caller-supplied progra.
+
     //
-    // Returns:
-    // Unit on success, or a type diagnostic error.
+
+    // Outputs:
+
+    //     result: Result<(), SpandaError>
+
+    //         Return value from `type_check`.
+
     //
-    // Options:
-    // None.
-    //
+
     // Example:
-    // type_check(&program)?;
+
+    //     let result = spanda_driver::type_check::type_check(progra);
 
     spanda_typecheck::type_check(program, core_type_check_host()).map_err(type_check_error)
 }
 
 pub fn check(program: &Program) -> Result<(), SpandaError> {
-    // Validate a parsed program without retaining checker state.
+    // Description:
+
+    //     Check.
+
     //
-    // Parameters:
-    // - `program` — parsed Spanda AST
+
+    // Inputs:
+
+    //     progra: &Program
+
+    //         Caller-supplied progra.
+
     //
-    // Returns:
-    // Unit on success, or a type diagnostic error.
+
+    // Outputs:
+
+    //     result: Result<(), SpandaError>
+
+    //         Return value from `check`.
+
     //
-    // Options:
-    // None.
-    //
+
     // Example:
-    // check(&program)?;
+
+    //     let result = spanda_driver::type_check::check(progra);
 
     spanda_typecheck::check(program, core_type_check_host()).map_err(type_check_error)
 }
@@ -51,26 +75,67 @@ pub fn check_with_registry(
     program: &Program,
     registry: &ModuleRegistry,
 ) -> Result<(), SpandaError> {
-    // Type-check with a project module registry for import resolution.
+    // Description:
+
+    //     Check with registry.
+
     //
-    // Parameters:
-    // - `program` — parsed Spanda AST
-    // - `registry` — loaded project modules
+
+    // Inputs:
+
+    //     progra: &Program
+
+    //         Caller-supplied progra.
+
+    //     registry: &ModuleRegistry
+
+    //         Caller-supplied registry.
+
     //
-    // Returns:
-    // Unit on success, or a type diagnostic error.
+
+    // Outputs:
+
+    //     result: Result<(), SpandaError>
+
+    //         Return value from `check_with_registry`.
+
     //
-    // Options:
-    // None.
-    //
+
     // Example:
-    // check_with_registry(&program, &registry)?;
+
+    //     let result = spanda_driver::type_check::check_with_registry(progra, registry);
 
     spanda_typecheck::check_with_registry(program, registry, core_type_check_host())
         .map_err(type_check_error)
 }
 
 fn type_check_error(err: TypeCheckError) -> SpandaError {
+    // Description:
+
+    //     Type check error.
+
+    //
+
+    // Inputs:
+
+    //     err: TypeCheckError
+
+    //         Caller-supplied err.
+
+    //
+
+    // Outputs:
+
+    //     result: SpandaError
+
+    //         Return value from `type_check_error`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_driver::type_check::type_check_error(err);
+
     SpandaError::TypeCheck {
         diagnostics: err.diagnostics,
     }
@@ -80,15 +145,67 @@ fn type_check_error(err: TypeCheckError) -> SpandaError {
 pub fn BUILTIN_METHODS(
 ) -> std::collections::HashMap<String, std::collections::HashMap<String, spanda_typecheck::MethodSig>>
 {
+    // Description:
+    //     BUILTIN METHODS.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::collections::HashMap<String, std::collections::HashMap<String, spanda_typecheck::MethodSig>>
+    //         Return value from `BUILTIN_METHODS`.
+    //
+    // Example:
+    //     let result = spanda_driver::type_check::BUILTIN_METHODS();
+
     spanda_typecheck::BUILTIN_METHODS(core_type_check_host())
 }
 
 #[allow(non_snake_case)]
 pub fn SENSOR_TYPES() -> std::collections::HashMap<String, spanda_ast::nodes::SpandaType> {
+    // Description:
+    //     SENSOR TYPES.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::collections::HashMap<String, spanda_ast::nodes::SpandaType>
+    //         Return value from `SENSOR_TYPES`.
+    //
+    // Example:
+    //     let result = spanda_driver::type_check::SENSOR_TYPES();
+
     spanda_typecheck::SENSOR_TYPES(core_type_check_host())
 }
 
 pub fn get_library_for_sensor_type(sensor_type: &str) -> Option<String> {
+    // Description:
+
+    //     Get library for sensor type.
+
+    //
+
+    // Inputs:
+
+    //     sensor_type: &str
+
+    //         Caller-supplied sensor type.
+
+    //
+
+    // Outputs:
+
+    //     result: Option<String>
+
+    //         Return value from `get_library_for_sensor_type`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_driver::type_check::get_library_for_sensor_type(sensor_type);
+
     spanda_typecheck::get_library_for_sensor_type(sensor_type, core_type_check_host())
 }
 
@@ -98,5 +215,29 @@ pub fn merge_library_methods(
         std::collections::HashMap<String, spanda_typecheck::MethodSig>,
     >,
 ) {
+    // Description:
+
+    //     Merge library methods.
+
+    //
+
+    // Inputs:
+
+    //     ethods: &mut std::collections::HashMap< String, std::collections::HashMap<String, spanda_typecheck::MethodSig>, >
+
+    //         Caller-supplied ethods.
+
+    //
+
+    // Outputs:
+
+    //     None.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_driver::type_check::merge_library_methods(ethods);
+
     spanda_typecheck::merge_library_methods(methods, core_type_check_host());
 }

@@ -16,6 +16,21 @@ pub struct AnomalyReport {
 }
 
 fn parse_severity(raw: &str) -> AnomalySeverity {
+    // Description:
+    //     Parse severity.
+    //
+    // Inputs:
+    //     raw: &str
+    //         Caller-supplied raw.
+    //
+    // Outputs:
+    //     result: AnomalySeverity
+    //         Return value from `parse_severity`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::anomaly::parse_severity(raw);
+
     match raw.to_lowercase().as_str() {
         "critical" => AnomalySeverity::Critical,
         "high" => AnomalySeverity::High,
@@ -26,6 +41,21 @@ fn parse_severity(raw: &str) -> AnomalySeverity {
 
 /// Scan program for anomaly detector coverage and static violations.
 pub fn scan_anomalies(program: &Program) -> AnomalyReport {
+    // Description:
+    //     Scan anomalies.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: AnomalyReport
+    //         Return value from `scan_anomalies`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::anomaly::scan_anomalies(progra);
+
     let Program::Program {
         anomaly_detectors,
         anomaly_handlers,
@@ -134,6 +164,21 @@ pub fn scan_anomalies(program: &Program) -> AnomalyReport {
 
 /// List learned behavior model placeholders (optional package backends).
 pub fn learned_models(program: &Program) -> Vec<LearnedBehaviorModel> {
+    // Description:
+    //     Learned models.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<LearnedBehaviorModel>
+    //         Return value from `learned_models`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::anomaly::learned_models(progra);
+
     let Program::Program {
         imports,
         anomaly_detectors,
@@ -166,10 +211,40 @@ pub fn learned_models(program: &Program) -> Vec<LearnedBehaviorModel> {
 
 /// Parse severity from handler declaration.
 pub fn handler_severity(raw: &str) -> AnomalySeverity {
+    // Description:
+    //     Handler severity.
+    //
+    // Inputs:
+    //     raw: &str
+    //         Caller-supplied raw.
+    //
+    // Outputs:
+    //     result: AnomalySeverity
+    //         Return value from `handler_severity`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::anomaly::handler_severity(raw);
+
     parse_severity(raw)
 }
 
 /// Format expected behavior for reports.
 pub fn format_expected(e: &ExpectedBehavior) -> String {
+    // Description:
+    //     Format expected.
+    //
+    // Inputs:
+    //     e: &ExpectedBehavior
+    //         Caller-supplied e.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_expected`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::anomaly::format_expected(e);
+
     format!("{} {} {}", e.metric, e.operator, e.threshold)
 }

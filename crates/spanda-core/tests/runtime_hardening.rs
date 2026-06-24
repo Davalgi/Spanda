@@ -4,19 +4,18 @@ use spanda_core::{check, run, RunOptions};
 
 #[test]
 fn capability_denied_when_agent_lacks_read() {
-    // Capability denied when agent lacks read.
+    // Description:
+    //     Capability denied when agent lacks read.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_read();
+
+    //     let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_read();
 
     let source = r#"
 robot R {
@@ -68,19 +67,18 @@ robot R {
 
 #[test]
 fn capability_denied_when_agent_lacks_summarize() {
-    // Capability denied when agent lacks summarize.
+    // Description:
+    //     Capability denied when agent lacks summarize.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_summarize();
+
+    //     let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_summarize();
 
     let source = r#"
 robot R {
@@ -117,19 +115,18 @@ robot R {
 
 #[test]
 fn reasoning_trace_from_action_proposal() {
-    // Reasoning trace from action proposal.
+    // Description:
+    //     Reasoning trace from action proposal.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::reasoning_trace_from_action_proposal();
+
+    //     let result = spanda_core::runtime_hardening::reasoning_trace_from_action_proposal();
 
     let source = r#"
 robot R {
@@ -150,19 +147,18 @@ robot R {
 
 #[test]
 fn capability_denied_when_agent_lacks_propose_motion() {
-    // Capability denied when agent lacks propose motion.
+    // Description:
+    //     Capability denied when agent lacks propose motion.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_propose_motion();
+
+    //     let result = spanda_core::runtime_hardening::capability_denied_when_agent_lacks_propose_motion();
 
     let source = r#"
 robot R {
@@ -214,19 +210,18 @@ robot R {
 
 #[test]
 fn behavior_requires_contract_fails_at_runtime() {
-    // Behavior requires contract fails at runtime.
+    // Description:
+    //     Behavior requires contract fails at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::behavior_requires_contract_fails_at_runtime();
+
+    //     let result = spanda_core::runtime_hardening::behavior_requires_contract_fails_at_runtime();
 
     let source = r#"
 robot R {
@@ -254,19 +249,18 @@ robot R {
 
 #[test]
 fn behavior_ensures_contract_fails_at_runtime() {
-    // Behavior ensures contract fails at runtime.
+    // Description:
+    //     Behavior ensures contract fails at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::behavior_ensures_contract_fails_at_runtime();
+
+    //     let result = spanda_core::runtime_hardening::behavior_ensures_contract_fails_at_runtime();
 
     let source = r#"
 robot R {
@@ -294,19 +288,18 @@ robot R {
 
 #[test]
 fn task_requires_skips_iteration_without_aborting() {
-    // Task requires skips iteration without aborting.
+    // Description:
+    //     Task requires skips iteration without aborting.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::task_requires_skips_iteration_without_aborting();
+
+    //     let result = spanda_core::runtime_hardening::task_requires_skips_iteration_without_aborting();
 
     let source = r#"
 robot R {
@@ -342,19 +335,18 @@ robot R {
 
 #[test]
 fn task_ensures_contract_fails_at_runtime() {
-    // Task ensures contract fails at runtime.
+    // Description:
+    //     Task ensures contract fails at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::task_ensures_contract_fails_at_runtime();
+
+    //     let result = spanda_core::runtime_hardening::task_ensures_contract_fails_at_runtime();
 
     let source = r#"
 robot R {
@@ -382,19 +374,18 @@ robot R {
 
 #[test]
 fn twin_unknown_mirror_field_rejected_at_typecheck() {
-    // Twin unknown mirror field rejected at typecheck.
+    // Description:
+    //     Twin unknown mirror field rejected at typecheck.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::twin_unknown_mirror_field_rejected_at_typecheck();
+
+    //     let result = spanda_core::runtime_hardening::twin_unknown_mirror_field_rejected_at_typecheck();
 
     let source = r#"
 robot R {
@@ -416,19 +407,18 @@ robot R {
 
 #[test]
 fn match_non_exhaustive_enum_rejected_at_typecheck() {
-    // Match non exhaustive enum rejected at typecheck.
+    // Description:
+    //     Match non exhaustive enum rejected at typecheck.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::match_non_exhaustive_enum_rejected_at_typecheck();
+
+    //     let result = spanda_core::runtime_hardening::match_non_exhaustive_enum_rejected_at_typecheck();
 
     let source = r#"
 enum Mode {
@@ -460,19 +450,18 @@ robot R {
 
 #[test]
 fn verify_rule_fails_at_runtime() {
-    // Verify rule fails at runtime.
+    // Description:
+    //     Verify rule fails at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::verify_rule_fails_at_runtime();
+
+    //     let result = spanda_core::runtime_hardening::verify_rule_fails_at_runtime();
 
     let source = r#"
 robot R {
@@ -498,19 +487,18 @@ robot R {
 
 #[test]
 fn verify_non_bool_rejected_at_typecheck() {
-    // Verify non bool rejected at typecheck.
+    // Description:
+    //     Verify non bool rejected at typecheck.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::runtime_hardening::verify_non_bool_rejected_at_typecheck();
+
+    //     let result = spanda_core::runtime_hardening::verify_non_bool_rejected_at_typecheck();
 
     let source = r#"
 robot R {

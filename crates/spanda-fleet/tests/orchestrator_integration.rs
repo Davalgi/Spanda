@@ -6,6 +6,19 @@ use spanda_fleet::orchestrate_fleets;
 
 #[test]
 fn orchestrates_robotics_fleet_example() {
+    // Description:
+    //     Orchestrates robotics fleet example.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator_integration::orchestrates_robotics_fleet_example();
+
     let source = include_str!("../../../examples/robotics/fleet_management.sd");
     check(source).expect("fleet example should type-check");
     let program = compile(source).expect("compile").program;
@@ -18,6 +31,19 @@ fn orchestrates_robotics_fleet_example() {
 
 #[test]
 fn peer_fleet_emits_handoff_messages() {
+    // Description:
+    //     Peer fleet emits handoff messages.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator_integration::peer_fleet_emits_handoff_messages();
+
     let source = r#"
 robot ScoutA {
   robot ScoutB;
@@ -43,6 +69,19 @@ fleet Recon { ScoutA; ScoutB; }
 
 #[test]
 fn deploy_agent_urls_accept_https() {
+    // Description:
+    //     Deploy agent urls accept https.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator_integration::deploy_agent_urls_accept_https();
+
     let parsed = parse_http_url("https://agent.local:9443/v1").expect("parse https url");
     assert!(parsed.use_tls);
     assert_eq!(parsed.port, 9443);

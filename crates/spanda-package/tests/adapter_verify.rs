@@ -7,6 +7,19 @@ use spanda_package::{
 
 #[test]
 fn nav2_example_package_matches_registry_metadata() {
+    // Description:
+    //     Nav2 example package matches registry metadata.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::nav2_example_package_matches_registry_metadata();
+
     let manifest = PackageManifest::parse_str(include_str!(
         "../../../examples/packages/nav2_adapter_package/spanda.toml"
     ))
@@ -17,6 +30,19 @@ fn nav2_example_package_matches_registry_metadata() {
 
 #[test]
 fn missing_adapter_section_fails_verify() {
+    // Description:
+    //     Missing adapter section fails verify.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::missing_adapter_section_fails_verify();
+
     let manifest = PackageManifest::parse_str(
         r#"
 [package]
@@ -33,6 +59,19 @@ version = "0.1.0"
 
 #[test]
 fn verify_adapter_package_by_import_path() {
+    // Description:
+    //     Verify adapter package by import path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::verify_adapter_package_by_import_path();
+
     let manifest = PackageManifest::parse_str(include_str!(
         "../../../examples/packages/nav2_adapter_package/spanda.toml"
     ))

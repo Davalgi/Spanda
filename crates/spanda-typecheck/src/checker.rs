@@ -28,38 +28,42 @@ pub struct TypeCheckError {
 }
 
 pub fn type_check(program: &Program, host: &dyn TypeCheckHost) -> Result<(), TypeCheckError> {
-    // Type check.
+    // Description:
+    //     Type check.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), TypeCheckError>
+    //         Return value from `type_check`.
     //
     // Example:
-    // let result = spanda_core::types::type_check(program);
+    //     let result = spanda_typecheck::checker::type_check(progra, hos);
 
     // Produce check as the result.
     check(program, host)
 }
 
 pub fn check(program: &Program, host: &dyn TypeCheckHost) -> Result<(), TypeCheckError> {
-    // Check input.
+    // Description:
+    //     Check.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), TypeCheckError>
+    //         Return value from `check`.
     //
     // Example:
-    // let result = spanda_core::types::check(program);
+    //     let result = spanda_typecheck::checker::check(progra, hos);
 
     // Produce new as the result.
     check_with_registry(program, &ModuleRegistry::new(), host)
@@ -70,20 +74,23 @@ pub fn check_with_registry(
     registry: &ModuleRegistry,
     host: &dyn TypeCheckHost,
 ) -> Result<(), TypeCheckError> {
-    // Check with registry.
+    // Description:
+    //     Check with registry.
     //
-    // Parameters:
-    // - `program` — input value
-    // - `registry` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), TypeCheckError>
+    //         Return value from `check_with_registry`.
     //
     // Example:
-    // let result = spanda_core::types::check_with_registry(program, registry);
+    //     let result = spanda_typecheck::checker::check_with_registry(progra, registry, hos);
 
     // Create mutable checker for accumulating results.
     let mut checker = TypeChecker::new(host);
@@ -101,40 +108,42 @@ pub fn check_with_registry(
 }
 
 pub fn units_compatible(a: UnitKind, b: UnitKind) -> bool {
-    // Units compatible.
+    // Description:
+    //     Units compatible.
     //
-    // Parameters:
-    // - `a` — input value
-    // - `b` — input value
+    // Inputs:
+    //     a: UnitKind
+    //         Caller-supplied a.
+    //     b: UnitKind
+    //         Caller-supplied b.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `units_compatible`.
     //
     // Example:
-    // let result = spanda_core::types::units_compatible(a, b);
+    //     let result = spanda_typecheck::checker::units_compatible(a, b);
 
     // Produce units compatible as the result.
     units::units_compatible(a, b)
 }
 
 fn physical_types_compatible(left: &SpandaType, right: &SpandaType) -> bool {
-    // Physical types compatible.
+    // Description:
+    //     Physical types compatible.
     //
-    // Parameters:
-    // - `left` — input value
-    // - `right` — input value
+    // Inputs:
+    //     lef: &SpandaType
+    //         Caller-supplied lef.
+    //     righ: &SpandaType
+    //         Caller-supplied righ.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `physical_types_compatible`.
     //
     // Example:
-    // let result = spanda_core::types::physical_types_compatible(left, right);
+    //     let result = spanda_typecheck::checker::physical_types_compatible(lef, righ);
 
     // Compute cat l for the following logic.
     let cat_l = physical_category(left);
@@ -143,20 +152,21 @@ fn physical_types_compatible(left: &SpandaType, right: &SpandaType) -> bool {
 }
 
 fn result_number_for_physical(left: &SpandaType, right: &SpandaType) -> Option<SpandaType> {
-    // Result number for physical.
+    // Description:
+    //     Result number for physical.
     //
-    // Parameters:
-    // - `left` — input value
-    // - `right` — input value
+    // Inputs:
+    //     lef: &SpandaType
+    //         Caller-supplied lef.
+    //     righ: &SpandaType
+    //         Caller-supplied righ.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `result_number_for_physical`.
     //
     // Example:
-    // let result = spanda_core::types::result_number_for_physical(left, right);
+    //     let result = spanda_typecheck::checker::result_number_for_physical(lef, righ);
 
     // take this path when let SpandaType::Number { unit, .. } = left.
     if let SpandaType::Number { unit, .. } = left {
@@ -187,19 +197,19 @@ fn result_number_for_physical(left: &SpandaType, right: &SpandaType) -> Option<S
 }
 
 fn named_type_default_unit(name: &str) -> Option<UnitKind> {
-    // Named type default unit.
+    // Description:
+    //     Named type default unit.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<UnitKind>
+    //         Return value from `named_type_default_unit`.
     //
     // Example:
-    // let result = spanda_core::types::named_type_default_unit(name);
+    //     let result = spanda_typecheck::checker::named_type_default_unit(name);
 
     // Produce canonical unit as the result.
     Some(units::canonical_unit(match name {
@@ -242,21 +252,23 @@ pub fn result_unit_for_binary(
     left: &SpandaType,
     right: &SpandaType,
 ) -> Option<SpandaType> {
-    // Result unit for binary.
+    // Description:
+    //     Result unit for binary.
     //
-    // Parameters:
-    // - `op` — input value
-    // - `left` — input value
-    // - `right` — input value
+    // Inputs:
+    //     op: BinaryOp
+    //         Caller-supplied op.
+    //     lef: &SpandaType
+    //         Caller-supplied lef.
+    //     righ: &SpandaType
+    //         Caller-supplied righ.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `result_unit_for_binary`.
     //
     // Example:
-    // let result = spanda_core::types::result_unit_for_binary(op, left, right);
+    //     let result = spanda_typecheck::checker::result_unit_for_binary(op, lef, righ);
 
     // Match on op and handle each case.
     match op {
@@ -348,14 +360,59 @@ pub struct MethodSig {
 
 impl MethodSig {
     pub fn params(&self) -> &[SpandaType] {
+        // Description:
+        //     Params.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &[SpandaType]
+        //         Return value from `params`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::checker::params(&self);
+
         &self.params
     }
 
     pub fn named_params(&self) -> &HashMap<String, SpandaType> {
+        // Description:
+        //     Named params.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &HashMap<String, SpandaType>
+        //         Return value from `named_params`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::checker::named_params(&self);
+
         &self.named_params
     }
 
     pub fn returns(&self) -> &SpandaType {
+        // Description:
+        //     Returns.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &SpandaType
+        //         Return value from `returns`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::checker::returns(&self);
+
         &self.returns
     }
 }
@@ -462,20 +519,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     pub fn check_program(&mut self, program: &Program) {
-        // Check program.
+        // Description:
+        //     Check program.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     progra: &Program
+        //         Caller-supplied progra.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_program(program);
+        //     let result = spanda_typecheck::checker::check_program(&mut self, progra);
 
         // Destructure the program into its top-level sections.
         let Program::Program {
@@ -657,22 +714,24 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn validate_type_annotation(&mut self, ty: &SpandaType, line: u32, column: u32) {
-        // Validate type annotation.
+        // Description:
+        //     Validate type annotation.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `ty` — input value
-        // - `line` — input value
-        // - `column` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     y: &SpandaType
+        //         Caller-supplied y.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.validate_type_annotation(ty, line, column);
+        //     let result = spanda_typecheck::checker::validate_type_annotation(&mut self, y, line, column);
 
         // Match on ty and handle each case.
         match ty {
@@ -709,20 +768,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_module_functions(&mut self, functions: &[ModuleFnDecl]) {
-        // Check module functions.
+        // Description:
+        //     Check module functions.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `functions` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     functions: &[ModuleFnDecl]
+        //         Caller-supplied functions.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_module_functions(functions);
+        //     let result = spanda_typecheck::checker::check_module_functions(&mut self, functions);
 
         // Generate code for each module function.
         for func in functions {
@@ -780,20 +839,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_extern_functions(&mut self, functions: &[ExternFnDecl]) {
-        // Check extern functions.
+        // Description:
+        //     Check extern functions.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `functions` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     functions: &[ExternFnDecl]
+        //         Caller-supplied functions.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_extern_functions(functions);
+        //     let result = spanda_typecheck::checker::check_extern_functions(&mut self, functions);
 
         // Generate code for each module function.
         for func in functions {
@@ -812,19 +871,19 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn future_type(inner: SpandaType) -> SpandaType {
-        // Future type.
+        // Description:
+        //     Future type.
         //
-        // Parameters:
-        // - `inner` — input value
+        // Inputs:
+        //     inner: SpandaType
+        //         Caller-supplied inner.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `future_type`.
         //
         // Example:
-        // let result = spanda_core::types::future_type(inner);
+        //     let result = spanda_typecheck::checker::future_type(inner);
 
         // Produce Generic as the result.
         SpandaType::Generic {
@@ -834,19 +893,19 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn task_handle_type(inner: SpandaType) -> SpandaType {
-        // Task handle type.
+        // Description:
+        //     Task handle type.
         //
-        // Parameters:
-        // - `inner` — input value
+        // Inputs:
+        //     inner: SpandaType
+        //         Caller-supplied inner.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `task_handle_type`.
         //
         // Example:
-        // let result = spanda_core::types::task_handle_type(inner);
+        //     let result = spanda_typecheck::checker::task_handle_type(inner);
 
         // Produce Generic as the result.
         SpandaType::Generic {
@@ -856,20 +915,21 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn resolve_type_ann(&self, ty: &SpandaType) -> SpandaType {
-        // Resolve type ann.
+        // Description:
+        //     Resolve type ann.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `ty` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     y: &SpandaType
+        //         Caller-supplied y.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `resolve_type_ann`.
         //
         // Example:
-        // let result = instance.resolve_type_ann(ty);
+        //     let result = spanda_typecheck::checker::resolve_type_ann(&self, y);
 
         // Match on ty and handle each case.
         match ty {
@@ -885,20 +945,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_message(&mut self, decl: &comm::MessageDecl) {
-        // Check message.
+        // Description:
+        //     Check message.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &comm::MessageDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_message(decl);
+        //     let result = spanda_typecheck::checker::check_message(&mut self, decl);
 
         // Compute comm for the following logic.
         let comm::MessageDecl::MessageDecl {
@@ -939,20 +999,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_struct(&mut self, decl: &StructDecl) {
-        // Check struct.
+        // Description:
+        //     Check struct.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &StructDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_struct(decl);
+        //     let result = spanda_typecheck::checker::check_struct(&mut self, decl);
 
         // Compute StructDecl for the following logic.
         let StructDecl::StructDecl {
@@ -1009,20 +1069,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_enum(&mut self, decl: &EnumDecl) {
-        // Check enum.
+        // Description:
+        //     Check enum.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &EnumDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_enum(decl);
+        //     let result = spanda_typecheck::checker::check_enum(&mut self, decl);
 
         // Compute EnumDecl for the following logic.
         let EnumDecl::EnumDecl {
@@ -1081,20 +1141,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_trait(&mut self, decl: &TraitDecl) {
-        // Check trait.
+        // Description:
+        //     Check trait.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &TraitDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_trait(decl);
+        //     let result = spanda_typecheck::checker::check_trait(&mut self, decl);
 
         // Compute TraitDecl for the following logic.
         let TraitDecl::TraitDecl {
@@ -1132,20 +1192,21 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn type_name_to_spanda(&self, type_name: &str) -> SpandaType {
-        // Type name to spanda.
+        // Description:
+        //     Type name to spanda.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `type_name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     ype_name: &str
+        //         Caller-supplied ype name.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `type_name_to_spanda`.
         //
         // Example:
-        // let result = instance.type_name_to_spanda(type_name);
+        //     let result = spanda_typecheck::checker::type_name_to_spanda(&self, ype_name);
 
         // Produce Named as the result.
         resolve_type_name(type_name).unwrap_or(SpandaType::Named {
@@ -1154,21 +1215,22 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_robot(&mut self, robot: &RobotDecl, imported: &std::collections::HashSet<String>) {
-        // Check robot.
+        // Description:
+        //     Check robot.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `robot` — input value
-        // - `imported` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     robo: &RobotDecl
+        //         Caller-supplied robo.
+        //     imported: &std::collections::HashSet<String>
+        //         Caller-supplied imported.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_robot(robot, imported);
+        //     let result = spanda_typecheck::checker::check_robot(&mut self, robo, imported);
 
         // Compute RobotDecl for the following logic.
         let RobotDecl::RobotDecl {
@@ -2210,24 +2272,30 @@ impl<'h> TypeChecker<'h> {
         agents: &[AgentDecl],
         kill_switch_names: &std::collections::HashSet<String>,
     ) {
-        // Check trigger handlers.
+        // Description:
+        //     Check trigger handlers.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `trigger_handlers` — input value
-        // - `events` — input value
-        // - `topics` — input value
-        // - `state_machines` — input value
-        // - `agents` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     rigger_handlers: &[TriggerHandlerDecl]
+        //         Caller-supplied rigger handlers.
+        //     events: &[EventDecl]
+        //         Caller-supplied events.
+        //     opics: &[TopicDecl]
+        //         Caller-supplied opics.
+        //     state_machines: &[StateMachineDecl]
+        //         Caller-supplied state machines.
+        //     agents: &[AgentDecl]
+        //         Caller-supplied agents.
+        //     kill_switch_names: &std::collections::HashSet<String>
+        //         Caller-supplied kill switch names.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_trigger_handlers(trigger_handlers, events, topics, state_machines, agents);
+        //     let result = spanda_typecheck::checker::check_trigger_handlers(&mut self, rigger_handlers, events, opics, state_machines, agents, kill_switch_names);
 
         // Compute event names for the following logic.
         let event_names: std::collections::HashSet<_> = events
@@ -2387,20 +2455,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_topic(&mut self, topic: &TopicDecl) {
-        // Check topic.
+        // Description:
+        //     Check topic.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic: &TopicDecl
+        //         Caller-supplied opic.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_topic(topic);
+        //     let result = spanda_typecheck::checker::check_topic(&mut self, opic);
 
         // Compute TopicDecl for the following logic.
         let TopicDecl::TopicDecl {
@@ -2485,20 +2553,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_service(&mut self, service: &ServiceDecl) {
-        // Check service.
+        // Description:
+        //     Check service.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `service` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     service: &ServiceDecl
+        //         Caller-supplied service.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_service(service);
+        //     let result = spanda_typecheck::checker::check_service(&mut self, service);
 
         // Compute ServiceDecl for the following logic.
         let ServiceDecl::ServiceDecl {
@@ -2564,20 +2632,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_action(&mut self, action: &ActionDecl) {
-        // Check action.
+        // Description:
+        //     Check action.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `action` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     action: &ActionDecl
+        //         Caller-supplied action.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_action(action);
+        //     let result = spanda_typecheck::checker::check_action(&mut self, action);
 
         // Compute ActionDecl for the following logic.
         let ActionDecl::ActionDecl {
@@ -2636,20 +2704,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_secure_block(&mut self, block: &SecureBlockDecl) {
-        // Check secure block.
+        // Description:
+        //     Check secure block.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `block` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     block: &SecureBlockDecl
+        //         Caller-supplied block.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_secure_block(block);
+        //     let result = spanda_typecheck::checker::check_secure_block(&mut self, block);
 
         // Validate encryption/authentication/integrity modes in secure blocks.
         for (field, value) in [
@@ -2705,22 +2773,24 @@ impl<'h> TypeChecker<'h> {
         imported: &std::collections::HashSet<String>,
         hal_bus_names: &std::collections::HashSet<String>,
     ) {
-        // Check sensor.
+        // Description:
+        //     Check sensor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `sensor` — input value
-        // - `imported` — input value
-        // - `hal_bus_names` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     sensor: &SensorDecl
+        //         Caller-supplied sensor.
+        //     imported: &std::collections::HashSet<String>
+        //         Caller-supplied imported.
+        //     hal_bus_names: &std::collections::HashSet<String>
+        //         Caller-supplied hal bus names.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_sensor(sensor, imported, hal_bus_names);
+        //     let result = spanda_typecheck::checker::check_sensor(&mut self, sensor, imported, hal_bus_names);
 
         // Compute SensorDecl for the following logic.
         let SensorDecl::SensorDecl {
@@ -2789,20 +2859,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_actuator(&mut self, actuator: &ActuatorDecl) {
-        // Check actuator.
+        // Description:
+        //     Check actuator.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `actuator` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     actuator: &ActuatorDecl
+        //         Caller-supplied actuator.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_actuator(actuator);
+        //     let result = spanda_typecheck::checker::check_actuator(&mut self, actuator);
 
         // Compute ActuatorDecl for the following logic.
         let ActuatorDecl::ActuatorDecl {
@@ -2834,20 +2904,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_safety_rule(&mut self, rule: &SafetyRule) {
-        // Check safety rule.
+        // Description:
+        //     Check safety rule.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `rule` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     rule: &SafetyRule
+        //         Caller-supplied rule.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_safety_rule(rule);
+        //     let result = spanda_typecheck::checker::check_safety_rule(&mut self, rule);
 
         // Match on rule and handle each case.
         match rule {
@@ -2879,20 +2949,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_safety_zone(&mut self, zone: &SafetyZoneDecl) {
-        // Check safety zone.
+        // Description:
+        //     Check safety zone.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `zone` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     zone: &SafetyZoneDecl
+        //         Caller-supplied zone.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_safety_zone(zone);
+        //     let result = spanda_typecheck::checker::check_safety_zone(&mut self, zone);
 
         // Compute SafetyZoneDecl for the following logic.
         let SafetyZoneDecl::SafetyZoneDecl {
@@ -2961,20 +3031,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_trait_impl(&mut self, decl: &TraitImplDecl) {
-        // Check trait impl.
+        // Description:
+        //     Check trait impl.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     decl: &TraitImplDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_trait_impl(decl);
+        //     let result = spanda_typecheck::checker::check_trait_impl(&mut self, decl);
 
         // Compute TraitImplDecl for the following logic.
         let TraitImplDecl::TraitImplDecl {
@@ -3090,20 +3160,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_ai_model(&mut self, model: &AiModelDecl) {
-        // Check ai model.
+        // Description:
+        //     Check ai model.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `model` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     odel: &AiModelDecl
+        //         Caller-supplied odel.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_ai_model(model);
+        //     let result = spanda_typecheck::checker::check_ai_model(&mut self, odel);
 
         // Compute AiModelDecl for the following logic.
         let AiModelDecl::AiModelDecl {
@@ -3142,21 +3212,22 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_capability(&mut self, agent_name: &str, cap: &CapabilityDecl) {
-        // Check capability.
+        // Description:
+        //     Check capability.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent_name` — input value
-        // - `cap` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agent_name: &str
+        //         Caller-supplied agent name.
+        //     cap: &CapabilityDecl
+        //         Caller-supplied cap.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_capability(agent_name, cap);
+        //     let result = spanda_typecheck::checker::check_capability(&mut self, agent_name, cap);
 
         // Compute allowed for the following logic.
         let allowed = [
@@ -3220,20 +3291,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_agent(&mut self, agent: &AgentDecl) {
-        // Check agent.
+        // Description:
+        //     Check agent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agent` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agen: &AgentDecl
+        //         Caller-supplied agen.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_agent(agent);
+        //     let result = spanda_typecheck::checker::check_agent(&mut self, agen);
 
         // Compute AgentDecl for the following logic.
         let AgentDecl::AgentDecl {
@@ -3321,21 +3392,22 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_behavior(&mut self, body: &[Stmt], return_type: &SpandaType) {
-        // Check behavior.
+        // Description:
+        //     Check behavior.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `body` — input value
-        // - `return_type` — declared behavior return type
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     body: &[Stmt]
+        //         Caller-supplied body.
+        //     return_type: &SpandaType
+        //         Caller-supplied return type.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_behavior(body, return_type);
+        //     let result = spanda_typecheck::checker::check_behavior(&mut self, body, return_type);
 
         // Compute parent for the following logic.
         let parent = self.symbols.clone();
@@ -3365,20 +3437,20 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_stmt(&mut self, stmt: &Stmt) {
-        // Check stmt.
+        // Description:
+        //     Check stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     s: &Stmt
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_stmt(stmt);
+        //     let result = spanda_typecheck::checker::check_stmt(&mut self, s);
 
         // Match on stmt and handle each case.
         match stmt {
@@ -3590,6 +3662,7 @@ impl<'h> TypeChecker<'h> {
                 }
             }
             Stmt::ExpectCompileErrorStmt { .. } => {
+
                 // compile-fail bodies are validated by the test runner, not program check
             }
             Stmt::SubscribeStmt {
@@ -3722,20 +3795,21 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_expr(&mut self, expr: &Expr) -> SpandaType {
-        // Check expr.
+        // Description:
+        //     Check expr.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expr` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_expr`.
         //
         // Example:
-        // let result = instance.check_expr(expr);
+        //     let result = spanda_typecheck::checker::check_expr(&mut self, expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -3970,22 +4044,25 @@ impl<'h> TypeChecker<'h> {
         fields: &[StructFieldInit],
         span: &Span,
     ) -> SpandaType {
-        // Check struct literal.
+        // Description:
+        //     Check struct literal.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `type_name` — input value
-        // - `fields` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ype_name: &str
+        //         Caller-supplied ype name.
+        //     fields: &[StructFieldInit]
+        //         Caller-supplied fields.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_struct_literal`.
         //
         // Example:
-        // let result = instance.check_struct_literal(type_name, fields, span);
+        //     let result = spanda_typecheck::checker::check_struct_literal(&mut self, ype_name, fields, span);
 
         // Bind a local value for the next steps.
         let (base_name, type_arg_names) = split_instantiated_type_name(type_name);
@@ -4082,22 +4159,25 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_match(&mut self, scrutinee: &Expr, arms: &[MatchArm], span: &Span) -> SpandaType {
-        // Check match.
+        // Description:
+        //     Check match.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `scrutinee` — input value
-        // - `arms` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     scrutinee: &Expr
+        //         Caller-supplied scrutinee.
+        //     arms: &[MatchArm]
+        //         Caller-supplied arms.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_match`.
         //
         // Example:
-        // let result = instance.check_match(scrutinee, arms, span);
+        //     let result = spanda_typecheck::checker::check_match(&mut self, scrutinee, arms, span);
 
         // Compute scrutinee type for the following logic.
         let scrutinee_type = self.check_expr(scrutinee);
@@ -4186,22 +4266,24 @@ impl<'h> TypeChecker<'h> {
         scrutinee_type: &SpandaType,
         span: &Span,
     ) {
-        // Check match exhaustiveness.
+        // Description:
+        //     Check match exhaustiveness.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `arms` — input value
-        // - `scrutinee_type` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     arms: &[MatchArm]
+        //         Caller-supplied arms.
+        //     scrutinee_type: &SpandaType
+        //         Caller-supplied scrutinee type.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.check_match_exhaustiveness(arms, scrutinee_type, span);
+        //     let result = spanda_typecheck::checker::check_match_exhaustiveness(&mut self, arms, scrutinee_type, span);
 
         // Import the items needed by the logic below.
         use std::collections::HashSet;
@@ -4271,22 +4353,26 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_result_option_ctor(&mut self, name: &str, args: &[Expr], span: &Span) -> SpandaType {
-        // Check result option ctor.
+        // Description:
+        //     Check result option ctor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `args` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_result_option_ctor`.
         //
         // Example:
-        // let result = instance.check_result_option_ctor(name, args, span);
+
+        //     let result = spanda_typecheck::checker::check_result_option_ctor(&mut self, name, args, span);
 
         if let Some(SpandaType::Generic {
             name: generic_name,
@@ -4416,22 +4502,25 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn check_member(&mut self, object: &Expr, property: &str, span: &Span) -> SpandaType {
-        // Check member.
+        // Description:
+        //     Check member.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `object` — input value
-        // - `property` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     objec: &Expr
+        //         Caller-supplied objec.
+        //     property: &str
+        //         Caller-supplied property.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_member`.
         //
         // Example:
-        // let result = instance.check_member(object, property, span);
+        //     let result = spanda_typecheck::checker::check_member(&mut self, objec, property, span);
 
         // take this path when let Expr::IdentExpr { name, .. } = object.
         if let Expr::IdentExpr { name, .. } = object {
@@ -4552,23 +4641,27 @@ impl<'h> TypeChecker<'h> {
         named_args: &[NamedArg],
         span: &Span,
     ) -> SpandaType {
-        // Check call.
+        // Description:
+        //     Check call.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `callee` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `span` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     callee: &Expr
+        //         Caller-supplied callee.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[NamedArg]
+        //         Caller-supplied named args.
+        //     span: &Span
+        //         Caller-supplied span.
         //
-        // Returns:
-        // SpandaType.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SpandaType
+        //         Return value from `check_call`.
         //
         // Example:
-        // let result = instance.check_call(callee, args, named_args, span);
+        //     let result = spanda_typecheck::checker::check_call(&mut self, callee, args, named_args, span);
 
         // take this path when let Expr::IdentExpr { name, .. } = callee.
         if let Expr::IdentExpr { name, .. } = callee {
@@ -5151,21 +5244,23 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn types_compatible(&self, expected: &SpandaType, actual: &SpandaType) -> bool {
-        // Types compatible.
+        // Description:
+        //     Types compatible.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expected` — input value
-        // - `actual` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     expected: &SpandaType
+        //         Caller-supplied expected.
+        //     actual: &SpandaType
+        //         Caller-supplied actual.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `types_compatible`.
         //
         // Example:
-        // let result = instance.types_compatible(expected, actual);
+        //     let result = spanda_typecheck::checker::types_compatible(&self, expected, actual);
 
         // take the branch when discriminant equals discriminant.
         if std::mem::discriminant(expected) == std::mem::discriminant(actual) {
@@ -5286,23 +5381,26 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn assert_named_type(&mut self, actual: &SpandaType, type_name: &str, line: u32, column: u32) {
-        // Assert named type.
+        // Description:
+        //     Assert named type.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `actual` — input value
-        // - `type_name` — input value
-        // - `line` — input value
-        // - `column` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     actual: &SpandaType
+        //         Caller-supplied actual.
+        //     ype_name: &str
+        //         Caller-supplied ype name.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.assert_named_type(actual, type_name, line, column);
+        //     let result = spanda_typecheck::checker::assert_named_type(&mut self, actual, ype_name, line, column);
 
         // take this path when let SpandaType::Named { name } = actual.
         if let SpandaType::Named { name } = actual {
@@ -5325,23 +5423,26 @@ impl<'h> TypeChecker<'h> {
         line: u32,
         column: u32,
     ) {
-        // Assert compatible.
+        // Description:
+        //     Assert compatible.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `expected` — input value
-        // - `actual` — input value
-        // - `line` — input value
-        // - `column` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     expected: &SpandaType
+        //         Caller-supplied expected.
+        //     actual: &SpandaType
+        //         Caller-supplied actual.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.assert_compatible(expected, actual, line, column);
+        //     let result = spanda_typecheck::checker::assert_compatible(&mut self, expected, actual, line, column);
 
         // keep entries that match the expected pattern.
         if matches!(expected, SpandaType::Void) && matches!(actual, SpandaType::Void) {
@@ -5378,22 +5479,24 @@ impl<'h> TypeChecker<'h> {
     }
 
     fn error(&mut self, message: String, line: u32, column: u32) {
-        // Error.
+        // Description:
+        //     Error.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        // - `line` — input value
-        // - `column` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: String
+        //         Caller-supplied essage.
+        //     line: u32
+        //         Caller-supplied line.
+        //     column: u32
+        //         Caller-supplied column.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.error(message, line, column);
+        //     let result = spanda_typecheck::checker::error(&mut self, essage, line, column);
 
         // Append into self.
         self.errors.push(Diagnostic {
@@ -5410,20 +5513,19 @@ trait SpandaTypeExt {
 }
 
 fn split_instantiated_type_name(type_name: &str) -> (String, Vec<String>) {
-    // Split instantiated type name.
+    // Description:
+    //     Split instantiated type name.
     //
-    // Parameters:
-    // - `type_name` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
     //
-    // Returns:
-    // (String, Vec<String>).
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: (String, Vec<String>)
+    //         Return value from `split_instantiated_type_name`.
     //
     // Example:
-    // let result = spanda_core::types::split_instantiated_type_name(type_name);
-
+    //     let result = spanda_typecheck::checker::split_instantiated_type_name(ype_name);
     // use lt when find is present.
 
     // Emit output when find provides a lt.
@@ -5443,20 +5545,21 @@ fn split_instantiated_type_name(type_name: &str) -> (String, Vec<String>) {
 }
 
 fn instantiate_type_name(type_name: &str, substitutions: &HashMap<String, String>) -> String {
-    // Instantiate type name.
+    // Description:
+    //     Instantiate type name.
     //
-    // Parameters:
-    // - `type_name` — input value
-    // - `substitutions` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
+    //     substitutions: &HashMap<String, String>
+    //         Caller-supplied substitutions.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `instantiate_type_name`.
     //
     // Example:
-    // let result = spanda_core::types::instantiate_type_name(type_name, substitutions);
+    //     let result = spanda_typecheck::checker::instantiate_type_name(ype_name, substitutions);
 
     // Produce substitutions as the result.
     substitutions
@@ -5466,19 +5569,19 @@ fn instantiate_type_name(type_name: &str, substitutions: &HashMap<String, String
 }
 
 fn type_name_from_spanda(ty: &SpandaType) -> String {
-    // Type name from spanda.
+    // Description:
+    //     Type name from spanda.
     //
-    // Parameters:
-    // - `ty` — input value
+    // Inputs:
+    //     y: &SpandaType
+    //         Caller-supplied y.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `type_name_from_spanda`.
     //
     // Example:
-    // let result = spanda_core::types::type_name_from_spanda(ty);
+    //     let result = spanda_typecheck::checker::type_name_from_spanda(y);
 
     // Match on ty and handle each case.
     match ty {
@@ -5500,19 +5603,19 @@ fn type_name_from_spanda(ty: &SpandaType) -> String {
 }
 
 fn display_type(ty: &SpandaType) -> String {
-    // Display type.
+    // Description:
+    //     Display type.
     //
-    // Parameters:
-    // - `ty` — input value
+    // Inputs:
+    //     y: &SpandaType
+    //         Caller-supplied y.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `display_type`.
     //
     // Example:
-    // let result = spanda_core::types::display_type(ty);
+    //     let result = spanda_typecheck::checker::display_type(y);
 
     // Match on ty and handle each case.
     match ty {
@@ -5547,19 +5650,19 @@ fn display_type(ty: &SpandaType) -> String {
 
 impl SpandaTypeExt for SpandaType {
     fn unit(&self) -> UnitKind {
-        // Unit.
+        // Description:
+        //     Unit.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // UnitKind.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: UnitKind
+        //         Return value from `unit`.
         //
         // Example:
-        // let result = instance.unit();
+        //     let result = spanda_typecheck::checker::unit(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -5569,19 +5672,19 @@ impl SpandaTypeExt for SpandaType {
     }
 
     fn kind_name(&self) -> &'static str {
-        // Kind name.
+        // Description:
+        //     Kind name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `kind_name`.
         //
         // Example:
-        // let result = instance.kind_name();
+        //     let result = spanda_typecheck::checker::kind_name(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -5627,19 +5730,19 @@ trait HalMemberDeclExt {
 
 impl HalMemberDeclExt for HalMemberDecl {
     fn name(&self) -> &str {
-        // Name.
+        // Description:
+        //     Name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &str
+        //         Return value from `name`.
         //
         // Example:
-        // let result = instance.name();
+        //     let result = spanda_typecheck::checker::name(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -5660,19 +5763,19 @@ trait SafetyBlockRules {
 
 impl SafetyBlockRules for SafetyBlock {
     fn rules(&self) -> &[SafetyRule] {
-        // Rules.
+        // Description:
+        //     Rules.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[SafetyRule].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[SafetyRule]
+        //         Return value from `rules`.
         //
         // Example:
-        // let result = instance.rules();
+        //     let result = spanda_typecheck::checker::rules(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -5681,19 +5784,19 @@ impl SafetyBlockRules for SafetyBlock {
     }
 
     fn zones(&self) -> &[SafetyZoneDecl] {
-        // Zones.
+        // Description:
+        //     Zones.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[SafetyZoneDecl].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[SafetyZoneDecl]
+        //         Return value from `zones`.
         //
         // Example:
-        // let result = instance.zones();
+        //     let result = spanda_typecheck::checker::zones(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -5709,34 +5812,80 @@ pub struct FnSig {
 
 impl FnSig {
     pub fn named_params(&self) -> &HashMap<String, SpandaType> {
+        // Description:
+        //     Named params.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &HashMap<String, SpandaType>
+        //         Return value from `named_params`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::checker::named_params(&self);
+
         &self.named_params
     }
 
     pub fn returns(&self) -> &SpandaType {
+        // Description:
+        //     Returns.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &SpandaType
+        //         Return value from `returns`.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::checker::returns(&self);
+
         &self.returns
     }
 }
 
 /// Format a [`SpandaType`] for documentation and diagnostics.
 pub fn format_type_name(ty: &SpandaType) -> String {
+    // Description:
+    //     Format type name.
+    //
+    // Inputs:
+    //     y: &SpandaType
+    //         Caller-supplied y.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `format_type_name`.
+    //
+    // Example:
+
+    //     let result = spanda_typecheck::checker::format_type_name(y);
+
     display_type(ty)
 }
 
 fn resolve_message_type(registry: &MessageRegistry, name: &str) -> Option<SpandaType> {
-    // Resolve message type.
+    // Description:
+    //     Resolve message type.
     //
-    // Parameters:
-    // - `registry` — input value
-    // - `name` — input value
+    // Inputs:
+    //     registry: &MessageRegistry
+    //         Caller-supplied registry.
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `resolve_message_type`.
     //
     // Example:
-    // let result = spanda_core::types::resolve_message_type(registry, name);
+    //     let result = spanda_typecheck::checker::resolve_message_type(registry, name);
 
     // Produce registry as the result.
     registry
@@ -5745,19 +5894,19 @@ fn resolve_message_type(registry: &MessageRegistry, name: &str) -> Option<Spanda
 }
 
 fn message_type_for(name: &str) -> Option<SpandaType> {
-    // Message type for.
+    // Description:
+    //     Message type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `message_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::message_type_for(name);
+    //     let result = spanda_typecheck::checker::message_type_for(name);
 
     // Match on name and handle each case.
     match name {
@@ -5770,19 +5919,19 @@ fn message_type_for(name: &str) -> Option<SpandaType> {
 }
 
 fn service_type_for(name: &str) -> Option<SpandaType> {
-    // Service type for.
+    // Description:
+    //     Service type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `service_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::service_type_for(name);
+    //     let result = spanda_typecheck::checker::service_type_for(name);
 
     // Match on name and handle each case.
     match name {
@@ -5794,19 +5943,19 @@ fn service_type_for(name: &str) -> Option<SpandaType> {
 }
 
 fn action_type_for(name: &str) -> Option<SpandaType> {
-    // Action type for.
+    // Description:
+    //     Action type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `action_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::action_type_for(name);
+    //     let result = spanda_typecheck::checker::action_type_for(name);
 
     // Match on name and handle each case.
     match name {
@@ -5816,19 +5965,21 @@ fn action_type_for(name: &str) -> Option<SpandaType> {
 }
 
 fn sensor_type_for(name: &str, host: &dyn TypeCheckHost) -> Option<SpandaType> {
-    // Sensor type for.
+    // Description:
+    //     Sensor type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `sensor_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::sensor_type_for(name);
+    //     let result = spanda_typecheck::checker::sensor_type_for(name, hos);
 
     // Compute base for the following logic.
     let base = match name {
@@ -5852,19 +6003,19 @@ fn sensor_type_for(name: &str, host: &dyn TypeCheckHost) -> Option<SpandaType> {
 }
 
 fn actuator_type_for(name: &str) -> Option<SpandaType> {
-    // Actuator type for.
+    // Description:
+    //     Actuator type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `actuator_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::actuator_type_for(name);
+    //     let result = spanda_typecheck::checker::actuator_type_for(name);
 
     // Match on name and handle each case.
     match name {
@@ -5876,19 +6027,19 @@ fn actuator_type_for(name: &str) -> Option<SpandaType> {
 }
 
 fn ai_model_type_for(name: &str) -> Option<SpandaType> {
-    // Ai model type for.
+    // Description:
+    //     Ai model type for.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `ai_model_type_for`.
     //
     // Example:
-    // let result = spanda_core::types::ai_model_type_for(name);
+    //     let result = spanda_typecheck::checker::ai_model_type_for(name);
 
     // Match on name and handle each case.
     match name {
@@ -5898,19 +6049,19 @@ fn ai_model_type_for(name: &str) -> Option<SpandaType> {
 }
 
 fn pose_property(name: &str) -> Option<SpandaType> {
-    // Pose property.
+    // Description:
+    //     Pose property.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `pose_property`.
     //
     // Example:
-    // let result = spanda_core::types::pose_property(name);
+    //     let result = spanda_typecheck::checker::pose_property(name);
 
     // Match on name and handle each case.
     match name {
@@ -5923,19 +6074,19 @@ fn pose_property(name: &str) -> Option<SpandaType> {
 }
 
 fn velocity_property(name: &str) -> Option<SpandaType> {
-    // Velocity property.
+    // Description:
+    //     Velocity property.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `velocity_property`.
     //
     // Example:
-    // let result = spanda_core::types::velocity_property(name);
+    //     let result = spanda_typecheck::checker::velocity_property(name);
 
     // Match on name and handle each case.
     match name {
@@ -5950,20 +6101,21 @@ fn velocity_property(name: &str) -> Option<SpandaType> {
 }
 
 fn object_property(type_name: &str, property: &str) -> Option<SpandaType> {
-    // Object property.
+    // Description:
+    //     Object property.
     //
-    // Parameters:
-    // - `type_name` — input value
-    // - `property` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
+    //     property: &str
+    //         Caller-supplied property.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SpandaType>
+    //         Return value from `object_property`.
     //
     // Example:
-    // let result = spanda_core::types::object_property(type_name, property);
+    //     let result = spanda_typecheck::checker::object_property(ype_name, property);
 
     // Match on value and handle each case.
     match (type_name, property) {
@@ -6023,19 +6175,18 @@ fn object_property(type_name: &str, property: &str) -> Option<SpandaType> {
 }
 
 fn builtin_functions() -> HashMap<&'static str, FnSig> {
-    // Builtin functions.
+    // Description:
+    //     Builtin functions.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<&'static str, FnSig>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, FnSig>
+    //         Return value from `builtin_functions`.
     //
     // Example:
-    // let result = spanda_core::types::builtin_functions();
+    //     let result = spanda_typecheck::checker::builtin_functions();
 
     // Produce from as the result.
     HashMap::from([
@@ -6197,19 +6348,18 @@ fn builtin_functions() -> HashMap<&'static str, FnSig> {
 }
 
 fn robot_methods() -> HashMap<&'static str, MethodSig> {
-    // Robot methods.
+    // Description:
+    //     Robot methods.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<&'static str, MethodSig>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, MethodSig>
+    //         Return value from `robot_methods`.
     //
     // Example:
-    // let result = spanda_core::types::robot_methods();
+    //     let result = spanda_typecheck::checker::robot_methods();
 
     // Produce from as the result.
     HashMap::from([
@@ -6280,19 +6430,21 @@ fn builtin_methods(
     type_name: &str,
     host: &dyn TypeCheckHost,
 ) -> Option<HashMap<&'static str, MethodSig>> {
-    // Builtin methods.
+    // Description:
+    //     Builtin methods.
     //
-    // Parameters:
-    // - `type_name` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<HashMap<&'static str, MethodSig>>
+    //         Return value from `builtin_methods`.
     //
     // Example:
-    // let result = spanda_core::types::builtin_methods(type_name);
+    //     let result = spanda_typecheck::checker::builtin_methods(ype_name, hos);
 
     // Compute m for the following logic.
     let m = |params: Vec<SpandaType>, named: HashMap<&str, SpandaType>, returns: SpandaType| {
@@ -6791,19 +6943,19 @@ fn builtin_methods(
 }
 
 fn infer_read_return(type_name: &str) -> SpandaType {
-    // Infer read return.
+    // Description:
+    //     Infer read return.
     //
-    // Parameters:
-    // - `type_name` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
     //
-    // Returns:
-    // SpandaType.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SpandaType
+    //         Return value from `infer_read_return`.
     //
     // Example:
-    // let result = spanda_core::types::infer_read_return(type_name);
+    //     let result = spanda_typecheck::checker::infer_read_return(ype_name);
 
     // Check membership before continuing.
     if type_name.contains("Lidar")
@@ -6900,19 +7052,20 @@ pub fn merge_library_methods(
     methods: &mut HashMap<String, HashMap<String, MethodSig>>,
     host: &dyn TypeCheckHost,
 ) {
-    // Merge library methods.
+    // Description:
+    //     Merge library methods.
     //
-    // Parameters:
-    // - `methods` — input value
+    // Inputs:
+    //     ethods: &mut HashMap<String, HashMap<String, MethodSig>>
+    //         Caller-supplied ethods.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::types::merge_library_methods(methods);
+    //     let result = spanda_typecheck::checker::merge_library_methods(ethods, hos);
 
     // Iterate over all library sensor types with destructured elements.
     for (type_name, robo_type) in host.library_sensor_robo_types() {
@@ -6944,19 +7097,19 @@ pub fn merge_library_methods(
 }
 
 fn library_sensor_methods(type_name: &str) -> HashMap<&'static str, MethodSig> {
-    // Library sensor methods.
+    // Description:
+    //     Library sensor methods.
     //
-    // Parameters:
-    // - `type_name` — input value
+    // Inputs:
+    //     ype_name: &str
+    //         Caller-supplied ype name.
     //
-    // Returns:
-    // HashMap<&'static str, MethodSig>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, MethodSig>
+    //         Return value from `library_sensor_methods`.
     //
     // Example:
-    // let result = spanda_core::types::library_sensor_methods(type_name);
+    //     let result = spanda_typecheck::checker::library_sensor_methods(ype_name);
 
     // Produce from as the result.
     HashMap::from([
@@ -6980,18 +7133,21 @@ fn library_sensor_methods(type_name: &str) -> HashMap<&'static str, MethodSig> {
 }
 
 pub fn get_library_for_sensor_type(sensor_type: &str, host: &dyn TypeCheckHost) -> Option<String> {
+    // Description:
+    //     Get library for sensor type.
     //
-    // Parameters:
-    // - `sensor_type` — input value
+    // Inputs:
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `get_library_for_sensor_type`.
     //
     // Example:
-    // let result = spanda_core::types::get_library_for_sensor_type(sensor_type);
+    //     let result = spanda_typecheck::checker::get_library_for_sensor_type(sensor_type, hos);
 
     // Produce all library sensor types as the result.
     host.library_for_sensor_type(sensor_type)
@@ -6999,19 +7155,18 @@ pub fn get_library_for_sensor_type(sensor_type: &str, host: &dyn TypeCheckHost) 
 
 #[allow(non_snake_case)]
 pub fn MESSAGE_TYPES() -> HashMap<String, SpandaType> {
-    // MESSAGE TYPES.
+    // Description:
+    //     MESSAGE TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `MESSAGE_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::MESSAGE_TYPES();
+    //     let result = spanda_typecheck::checker::MESSAGE_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7024,19 +7179,18 @@ pub fn MESSAGE_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn SERVICE_TYPES() -> HashMap<String, SpandaType> {
-    // SERVICE TYPES.
+    // Description:
+    //     SERVICE TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `SERVICE_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::SERVICE_TYPES();
+    //     let result = spanda_typecheck::checker::SERVICE_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7063,19 +7217,18 @@ pub fn SERVICE_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn ACTION_TYPES() -> HashMap<String, SpandaType> {
-    // ACTION TYPES.
+    // Description:
+    //     ACTION TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `ACTION_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::ACTION_TYPES();
+    //     let result = spanda_typecheck::checker::ACTION_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7102,19 +7255,19 @@ pub fn ACTION_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn SENSOR_TYPES(host: &dyn TypeCheckHost) -> HashMap<String, SpandaType> {
-    // SENSOR TYPES.
+    // Description:
+    //     SENSOR TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `SENSOR_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::SENSOR_TYPES();
+    //     let result = spanda_typecheck::checker::SENSOR_TYPES(hos);
 
     // Create mutable map for accumulating results.
     let mut map = HashMap::from([
@@ -7161,19 +7314,18 @@ pub fn SENSOR_TYPES(host: &dyn TypeCheckHost) -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn ACTUATOR_TYPES() -> HashMap<String, SpandaType> {
-    // ACTUATOR TYPES.
+    // Description:
+    //     ACTUATOR TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `ACTUATOR_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::ACTUATOR_TYPES();
+    //     let result = spanda_typecheck::checker::ACTUATOR_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7206,19 +7358,18 @@ pub fn ACTUATOR_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn AI_MODEL_TYPES() -> HashMap<String, SpandaType> {
-    // AI MODEL TYPES.
+    // Description:
+    //     AI MODEL TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `AI_MODEL_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::AI_MODEL_TYPES();
+    //     let result = spanda_typecheck::checker::AI_MODEL_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7240,19 +7391,18 @@ pub fn AI_MODEL_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn AI_VALUE_TYPES() -> HashMap<String, SpandaType> {
-    // AI VALUE TYPES.
+    // Description:
+    //     AI VALUE TYPES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `AI_VALUE_TYPES`.
     //
     // Example:
-    // let result = spanda_core::types::AI_VALUE_TYPES();
+    //     let result = spanda_typecheck::checker::AI_VALUE_TYPES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7328,19 +7478,18 @@ pub fn AI_VALUE_TYPES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn BUILTIN_FUNCTIONS() -> HashMap<&'static str, FnSig> {
-    // BUILTIN FUNCTIONS.
+    // Description:
+    //     BUILTIN FUNCTIONS.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<&'static str, FnSig>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, FnSig>
+    //         Return value from `BUILTIN_FUNCTIONS`.
     //
     // Example:
-    // let result = spanda_core::types::BUILTIN_FUNCTIONS();
+    //     let result = spanda_typecheck::checker::BUILTIN_FUNCTIONS();
 
     // Produce builtin functions as the result.
     builtin_functions()
@@ -7348,19 +7497,18 @@ pub fn BUILTIN_FUNCTIONS() -> HashMap<&'static str, FnSig> {
 
 #[allow(non_snake_case)]
 pub fn ROBOT_METHODS() -> HashMap<&'static str, MethodSig> {
-    // ROBOT METHODS.
+    // Description:
+    //     ROBOT METHODS.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<&'static str, MethodSig>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, MethodSig>
+    //         Return value from `ROBOT_METHODS`.
     //
     // Example:
-    // let result = spanda_core::types::ROBOT_METHODS();
+    //     let result = spanda_typecheck::checker::ROBOT_METHODS();
 
     // Produce robot methods as the result.
     robot_methods()
@@ -7368,19 +7516,19 @@ pub fn ROBOT_METHODS() -> HashMap<&'static str, MethodSig> {
 
 #[allow(non_snake_case)]
 pub fn BUILTIN_METHODS(host: &dyn TypeCheckHost) -> HashMap<String, HashMap<String, MethodSig>> {
-    // BUILTIN METHODS.
+    // Description:
+    //     BUILTIN METHODS.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     hos: &dyn TypeCheckHost
+    //         Caller-supplied hos.
     //
-    // Returns:
-    // HashMap<String, HashMap<String, MethodSig>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, HashMap<String, MethodSig>>
+    //         Return value from `BUILTIN_METHODS`.
     //
     // Example:
-    // let result = spanda_core::types::BUILTIN_METHODS();
+    //     let result = spanda_typecheck::checker::BUILTIN_METHODS(hos);
 
     // Create mutable map for accumulating results.
     let mut map: HashMap<String, HashMap<String, MethodSig>> = HashMap::new();
@@ -7415,19 +7563,18 @@ pub fn BUILTIN_METHODS(host: &dyn TypeCheckHost) -> HashMap<String, HashMap<Stri
 
 #[allow(non_snake_case)]
 pub fn SCAN_PROPERTIES() -> HashMap<String, SpandaType> {
-    // SCAN PROPERTIES.
+    // Description:
+    //     SCAN PROPERTIES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `SCAN_PROPERTIES`.
     //
     // Example:
-    // let result = spanda_core::types::SCAN_PROPERTIES();
+    //     let result = spanda_typecheck::checker::SCAN_PROPERTIES();
 
     // Produce from as the result.
     HashMap::from([(
@@ -7438,19 +7585,18 @@ pub fn SCAN_PROPERTIES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn OBJECT_PROPERTIES() -> HashMap<String, HashMap<String, SpandaType>> {
-    // OBJECT PROPERTIES.
+    // Description:
+    //     OBJECT PROPERTIES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, HashMap<String, SpandaType>>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, HashMap<String, SpandaType>>
+    //         Return value from `OBJECT_PROPERTIES`.
     //
     // Example:
-    // let result = spanda_core::types::OBJECT_PROPERTIES();
+    //     let result = spanda_typecheck::checker::OBJECT_PROPERTIES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7510,19 +7656,18 @@ pub fn OBJECT_PROPERTIES() -> HashMap<String, HashMap<String, SpandaType>> {
 
 #[allow(non_snake_case)]
 pub fn POSE_PROPERTIES() -> HashMap<String, SpandaType> {
-    // POSE PROPERTIES.
+    // Description:
+    //     POSE PROPERTIES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `POSE_PROPERTIES`.
     //
     // Example:
-    // let result = spanda_core::types::POSE_PROPERTIES();
+    //     let result = spanda_typecheck::checker::POSE_PROPERTIES();
 
     // Produce from as the result.
     HashMap::from([
@@ -7540,19 +7685,18 @@ pub fn POSE_PROPERTIES() -> HashMap<String, SpandaType> {
 
 #[allow(non_snake_case)]
 pub fn VELOCITY_PROPERTIES() -> HashMap<String, SpandaType> {
-    // VELOCITY PROPERTIES.
+    // Description:
+    //     VELOCITY PROPERTIES.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, SpandaType>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, SpandaType>
+    //         Return value from `VELOCITY_PROPERTIES`.
     //
     // Example:
-    // let result = spanda_core::types::VELOCITY_PROPERTIES();
+    //     let result = spanda_typecheck::checker::VELOCITY_PROPERTIES();
 
     // Produce from as the result.
     HashMap::from([

@@ -34,18 +34,18 @@ pub struct SimNetworkConfig {
 
 impl Default for SimNetworkConfig {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_comm::default();
+        //     let result = spanda_comm::default();
 
         // Assemble the struct fields and return it.
         Self {
@@ -103,19 +103,18 @@ pub struct InMemoryCommBus {
 
 impl InMemoryCommBus {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_comm::new();
+        //     let value = spanda_comm::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -127,120 +126,122 @@ impl InMemoryCommBus {
     }
 
     pub fn register_robot(&mut self, name: impl Into<String>) {
-        // Register robot.
+        // Description:
+        //     Register robot.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_robot(name);
+        //     let result = spanda_comm::register_robot(&mut self, name);
 
         // Append into self.
         self.discovered_robots.push(name.into());
     }
 
     pub fn register_agent(&mut self, name: impl Into<String>) {
-        // Register agent.
+        // Description:
+        //     Register agent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_agent(name);
+        //     let result = spanda_comm::register_agent(&mut self, name);
 
         // Append into self.
         self.discovered_agents.push(name.into());
     }
 
     pub fn register_device(&mut self, name: impl Into<String>) {
-        // Register device.
+        // Description:
+        //     Register device.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_device(name);
+        //     let result = spanda_comm::register_device(&mut self, name);
 
         // Append into self.
         self.discovered_devices.push(name.into());
     }
 
     pub fn active_faults(&self) -> Vec<String> {
-        // Active faults.
+        // Description:
+        //     Active faults.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `active_faults`.
         //
         // Example:
-        // let result = instance.active_faults();
+        //     let result = spanda_comm::active_faults(&self);
 
         // Call clone on the current instance.
         self.faults.clone()
     }
 
     pub fn subscription_paths(&self) -> Vec<String> {
-        // Subscription paths.
+        // Description:
+        //     Subscription paths.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `subscription_paths`.
         //
         // Example:
-        // let result = instance.subscription_paths();
+        //     let result = spanda_comm::subscription_paths(&self);
 
         // Collect filtered entries into a new list.
         self.subscriptions.keys().cloned().collect()
     }
 
     pub fn push_inbound(&mut self, topic_path: &str, value: RuntimeValue, source_id: Option<&str>) {
-        // Push inbound.
+        // Description:
+        //     Push inbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `value` — input value
-        // - `source_id` — optional publisher identity
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.push_inbound(topic_path, value, source_id);
+        //     let result = spanda_comm::push_inbound(&mut self, opic_path, value, source_id);
 
         // Queue the inbound envelope for subscribers.
         self.buffers
@@ -261,24 +262,28 @@ impl InMemoryCommBus {
         transport: TransportKind,
         source_id: Option<&str>,
     ) {
-        // Publish peer.
+        // Description:
+        //     Publish peer.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `peer` — input value
-        // - `topic` — input value
-        // - `value` — input value
-        // - `transport` — input value
-        // - `source_id` — optional sender identity
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     peer: &str
+        //         Caller-supplied peer.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish_peer(peer, topic, value, transport, source_id);
+        //     let result = spanda_comm::publish_peer(&mut self, peer, opic, value, ranspor, source_id);
 
         // Resolve the filesystem path for the next step.
         let path = format!("/{peer}/{topic}");
@@ -301,24 +306,28 @@ impl CommBus for InMemoryCommBus {
         transport: TransportKind,
         source_id: Option<&str>,
     ) {
-        // Publish.
+        // Description:
+        //     Publish.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `message_type` — input value
-        // - `value` — input value
-        // - `transport` — input value
-        // - `source_id` — optional publisher identity
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish(topic_path, message_type, value, transport, source_id);
+        //     let result = spanda_comm::publish(&mut self, opic_path, essage_type, value, ranspor, source_id);
 
         // take the branch when any equals "NetworkOutage").
         if self.faults.iter().any(|f| f == "NetworkOutage") {
@@ -352,21 +361,22 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn subscribe(&mut self, topic_path: &str, handler: &str) {
-        // Subscribe.
+        // Description:
+        //     Subscribe.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `handler` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     handler: &str
+        //         Caller-supplied handler.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.subscribe(topic_path, handler);
+        //     let result = spanda_comm::subscribe(&mut self, opic_path, handler);
 
         // Call subscriptions on the current instance.
         self.subscriptions
@@ -377,20 +387,21 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn receive(&mut self, topic_path: &str) -> Option<RuntimeValue> {
-        // Receive.
+        // Description:
+        //     Receive.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<RuntimeValue>
+        //         Return value from `receive`.
         //
         // Example:
-        // let result = instance.receive(topic_path);
+        //     let result = spanda_comm::receive(&mut self, opic_path);
 
         // Transform self and continue the chain.
         self.buffers
@@ -400,20 +411,21 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn receive_envelope(&mut self, topic_path: &str) -> Option<CommEnvelope> {
-        // Receive envelope.
+        // Description:
+        //     Receive envelope.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
         //
-        // Returns:
-        // Some envelope on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<CommEnvelope>
+        //         Return value from `receive_envelope`.
         //
         // Example:
-        // let result = instance.receive_envelope(topic_path);
+        //     let result = spanda_comm::receive_envelope(&mut self, opic_path);
 
         // Pop the next queued envelope for this topic path.
         self.buffers.get_mut(topic_path).and_then(|q| q.pop_front())
@@ -425,22 +437,25 @@ impl CommBus for InMemoryCommBus {
         service_type: &str,
         _request: Option<RuntimeValue>,
     ) -> RuntimeValue {
-        // Call service.
+        // Description:
+        //     Call service.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_service_name` — input value
-        // - `service_type` — input value
-        // - `_request` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _service_name: &str
+        //         Caller-supplied service name.
+        //     service_type: &str
+        //         Caller-supplied service type.
+        //     request: Option<RuntimeValue>
+        //         Caller-supplied request.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `call_service`.
         //
         // Example:
-        // let result = instance.call_service(_service_name, service_type, _request);
+        //     let result = spanda_comm::call_service(&mut self, _service_name, service_type, _reques);
 
         // Build a Object runtime value.
         RuntimeValue::Object {
@@ -455,22 +470,25 @@ impl CommBus for InMemoryCommBus {
         action_type: &str,
         _goal: RuntimeValue,
     ) -> RuntimeValue {
-        // Send action.
+        // Description:
+        //     Send action.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_action_name` — input value
-        // - `action_type` — input value
-        // - `_goal` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _action_name: &str
+        //         Caller-supplied action name.
+        //     action_type: &str
+        //         Caller-supplied action type.
+        //     _goal: RuntimeValue
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `send_action`.
         //
         // Example:
-        // let result = instance.send_action(_action_name, action_type, _goal);
+        //     let result = spanda_comm::send_action(&mut self, _action_name, action_type, _goal);
 
         // Build a Object runtime value.
         RuntimeValue::Object {
@@ -480,21 +498,23 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn discover(&self, target: DiscoverTarget, filter: &DiscoverFilter) -> Vec<String> {
-        // Discover.
+        // Description:
+        //     Discover.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `target` — input value
-        // - `filter` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     arge: DiscoverTarget
+        //         Caller-supplied arge.
+        //     filter: &DiscoverFilter
+        //         Caller-supplied filter.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `discover`.
         //
         // Example:
-        // let result = instance.discover(target, filter);
+        //     let result = spanda_comm::discover(&self, arge, filter);
 
         // Compute base for the following logic.
         let base = match target {
@@ -514,119 +534,121 @@ impl CommBus for InMemoryCommBus {
     }
 
     fn published_messages(&self) -> Vec<PublishedCommMessage> {
-        // Published messages.
+        // Description:
+        //     Published messages.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<PublishedCommMessage>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<PublishedCommMessage>
+        //         Return value from `published_messages`.
         //
         // Example:
-        // let result = instance.published_messages();
+        //     let result = spanda_comm::published_messages(&self);
 
         // Call clone on the current instance.
         self.published.clone()
     }
 
     fn inject_fault(&mut self, fault: &str) {
-        // Inject fault.
+        // Description:
+        //     Inject fault.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `fault` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     faul: &str
+        //         Caller-supplied faul.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.inject_fault(fault);
+        //     let result = spanda_comm::inject_fault(&mut self, faul);
 
         // Append into self.
         self.faults.push(fault.to_string());
     }
 
     fn set_network_config(&mut self, config: SimNetworkConfig) {
-        // Set network config.
+        // Description:
+        //     Set network config.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `config` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     config: SimNetworkConfig
+        //         Caller-supplied config.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_network_config(config);
+        //     let result = spanda_comm::set_network_config(&mut self, config);
 
         // Call network = config; on the current instance.
         self.network = config;
     }
 
     fn active_faults(&self) -> Vec<String> {
-        // Active faults.
+        // Description:
+        //     Active faults.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `active_faults`.
         //
         // Example:
-        // let result = instance.active_faults();
+        //     let result = spanda_comm::active_faults(&self);
 
         // Call clone on the current instance.
         self.faults.clone()
     }
 
     fn subscription_paths(&self) -> Vec<String> {
-        // Subscription paths.
+        // Description:
+        //     Subscription paths.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `subscription_paths`.
         //
         // Example:
-        // let result = instance.subscription_paths();
+        //     let result = spanda_comm::subscription_paths(&self);
 
         // Collect filtered entries into a new list.
         self.subscriptions.keys().cloned().collect()
     }
 
     fn push_inbound(&mut self, topic_path: &str, value: RuntimeValue, source_id: Option<&str>) {
-        // Push inbound.
+        // Description:
+        //     Push inbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `value` — input value
-        // - `source_id` — optional publisher identity
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.push_inbound(topic_path, value, source_id);
+        //     let result = spanda_comm::push_inbound(&mut self, opic_path, value, source_id);
 
         // Queue the inbound envelope for subscribers.
         self.buffers
@@ -653,20 +675,21 @@ pub fn validate_comm_safety_chain(
     stage: CommSafetyStage,
     value: &RuntimeValue,
 ) -> Result<(), String> {
-    // Validate comm safety chain.
+    // Description:
+    //     Validate comm safety chain.
     //
-    // Parameters:
-    // - `stage` — input value
-    // - `value` — input value
+    // Inputs:
+    //     stage: CommSafetyStage
+    //         Caller-supplied stage.
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `validate_comm_safety_chain`.
     //
     // Example:
-    // let result = spanda_comm::validate_comm_safety_chain(stage, value);
+    //     let result = spanda_comm::validate_comm_safety_chain(stage, value);
 
     // Match on stage and handle each case.
     match stage {
@@ -699,39 +722,40 @@ pub fn validate_comm_safety_chain(
 // ── Network bandwidth estimation from QoS ────────────────────────────────────
 
 pub fn estimate_topic_bandwidth_mbps(rate_hz: f64, message_size_bytes: f64) -> f64 {
-    // Estimate topic bandwidth mbps.
+    // Description:
+    //     Estimate topic bandwidth mbps.
     //
-    // Parameters:
-    // - `rate_hz` — input value
-    // - `message_size_bytes` — input value
+    // Inputs:
+    //     rate_hz: f64
+    //         Caller-supplied rate hz.
+    //     essage_size_bytes: f64
+    //         Caller-supplied essage size bytes.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `estimate_topic_bandwidth_mbps`.
     //
     // Example:
-    // let result = spanda_comm::estimate_topic_bandwidth_mbps(rate_hz, message_size_bytes);
+    //     let result = spanda_comm::estimate_topic_bandwidth_mbps(rate_hz, essage_size_bytes);
 
     // Produce 0 as the result.
     (rate_hz * message_size_bytes * 8.0) / 1_000_000.0
 }
 
 pub fn default_message_size(message_type: &str) -> f64 {
-    // Default message size.
+    // Description:
+    //     Default message size.
     //
-    // Parameters:
-    // - `message_type` — input value
+    // Inputs:
+    //     essage_type: &str
+    //         Caller-supplied essage type.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `default_message_size`.
     //
     // Example:
-    // let result = spanda_comm::default_message_size(message_type);
+    //     let result = spanda_comm::default_message_size(essage_type);
 
     // Match on message type and handle each case.
     match message_type {
@@ -743,19 +767,19 @@ pub fn default_message_size(message_type: &str) -> f64 {
 }
 
 pub fn qos_to_spanda_type(qos: &QosDecl) -> SpandaType {
-    // Qos to spanda type.
+    // Description:
+    //     Qos to spanda type.
     //
-    // Parameters:
-    // - `qos` — input value
+    // Inputs:
+    //     qos: &QosDecl
+    //         Caller-supplied qos.
     //
-    // Returns:
-    // SpandaType.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SpandaType
+    //         Return value from `qos_to_spanda_type`.
     //
     // Example:
-    // let result = spanda_comm::qos_to_spanda_type(qos);
+    //     let result = spanda_comm::qos_to_spanda_type(qos);
 
     // Compute value for the following logic.
     let _ = qos;
@@ -770,19 +794,18 @@ mod tests {
 
     #[test]
     fn message_registry_builtin_and_custom() {
-        // Message registry builtin and custom.
+        // Description:
+        //     Message registry builtin and custom.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_comm::message_registry_builtin_and_custom();
+
+        //     let result = spanda_comm::message_registry_builtin_and_custom();
 
         let mut reg = MessageRegistry::new();
         assert!(reg.is_known("Velocity"));
@@ -824,19 +847,18 @@ mod tests {
 
     #[test]
     fn in_memory_bus_pub_sub() {
-        // In memory bus pub sub.
+        // Description:
+        //     In memory bus pub sub.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_comm::in_memory_bus_pub_sub();
+
+        //     let result = spanda_comm::in_memory_bus_pub_sub();
 
         let mut bus = InMemoryCommBus::new();
         bus.subscribe("/scan", "handler");
@@ -856,19 +878,18 @@ mod tests {
 
     #[test]
     fn discover_robots_with_capability() {
-        // Discover robots with capability.
+        // Description:
+        //     Discover robots with capability.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_comm::discover_robots_with_capability();
+
+        //     let result = spanda_comm::discover_robots_with_capability();
 
         let bus = InMemoryCommBus::new();
         let results = bus.discover(
@@ -882,19 +903,18 @@ mod tests {
 
     #[test]
     fn bandwidth_estimate() {
-        // Bandwidth estimate.
+        // Description:
+        //     Bandwidth estimate.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_comm::bandwidth_estimate();
+
+        //     let result = spanda_comm::bandwidth_estimate();
 
         let mbps = estimate_topic_bandwidth_mbps(20.0, 64000.0);
         assert!(mbps > 10.0);

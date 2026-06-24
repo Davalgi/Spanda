@@ -21,6 +21,21 @@ struct ParsedReadinessCli {
 }
 
 fn read_file(path: &str) -> String {
+    // Description:
+    //     Read file.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::read_file(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Failed to read {path}: {e}");
         process::exit(1);
@@ -28,6 +43,21 @@ fn read_file(path: &str) -> String {
 }
 
 fn parse_program(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::parse_program(source);
+
     let tokens = tokenize(source).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -39,6 +69,21 @@ fn parse_program(source: &str) -> spanda_ast::nodes::Program {
 }
 
 fn parse_format(args: &[String]) -> ReportFormat {
+    // Description:
+    //     Parse format.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: ReportFormat
+    //         Return value from `parse_format`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::parse_format(args);
+
     if args.iter().any(|a| a == "--json") {
         ReportFormat::Json
     } else if args.iter().any(|a| a == "--markdown") {
@@ -51,6 +96,21 @@ fn parse_format(args: &[String]) -> ReportFormat {
 }
 
 fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
+    // Description:
+    //     Parse readiness cli.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: ParsedReadinessCli
+    //         Return value from `parse_readiness_cli`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::parse_readiness_cli(args);
+
     let format = parse_format(args);
     let mut target: Option<String> = None;
     let mut include_runtime = false;
@@ -116,6 +176,23 @@ fn evaluate_with_options(
     program: &spanda_ast::nodes::Program,
     options: &ReadinessOptions,
 ) -> spanda_readiness::ReadinessReport {
+    // Description:
+    //     Evaluate with options.
+    //
+    // Inputs:
+    //     progra: &spanda_ast::nodes::Program
+    //         Caller-supplied progra.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: spanda_readiness::ReadinessReport
+    //         Return value from `evaluate_with_options`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::evaluate_with_options(progra, options);
+
     let runtime = options
         .include_runtime
         .then(|| build_runtime_context(program, options.inject_health_faults));
@@ -124,6 +201,20 @@ fn evaluate_with_options(
 
 /// `spanda readiness <file.sd> [--target T] [--runtime] [--inject-health-faults] [--json|--agent-json]`
 pub fn cmd_readiness(args: &[String]) {
+    // Description:
+    //     Cmd readiness.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_readiness(args);
+
     let parsed = parse_readiness_cli(args);
     let source = read_file(&parsed.file);
 
@@ -160,6 +251,20 @@ pub fn cmd_readiness(args: &[String]) {
 
 /// `spanda verify mission <file.sd> [--target T] [--json]`
 pub fn cmd_verify_mission(args: &[String]) {
+    // Description:
+    //     Cmd verify mission.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_verify_mission(args);
+
     let parsed = parse_readiness_cli(args);
     let source = read_file(&parsed.file);
     let program = parse_program(&source);
@@ -176,6 +281,20 @@ pub fn cmd_verify_mission(args: &[String]) {
 
 /// `spanda analyze-failure <file.sd>`
 pub fn cmd_analyze_failure(args: &[String]) {
+    // Description:
+    //     Cmd analyze failure.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_analyze_failure(args);
+
     let json = args.iter().any(|a| a == "--json");
     let file = args
         .iter()
@@ -197,6 +316,20 @@ pub fn cmd_analyze_failure(args: &[String]) {
 
 /// `spanda safety-report <file.sd>`
 pub fn cmd_safety_report(args: &[String]) {
+    // Description:
+    //     Cmd safety report.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_safety_report(args);
+
     let parsed = parse_readiness_cli(args);
     let source = read_file(&parsed.file);
     let program = parse_program(&source);
@@ -209,6 +342,20 @@ pub fn cmd_safety_report(args: &[String]) {
 
 /// `spanda twin readiness <file.sd> [--trace <path>]`
 pub fn cmd_twin_readiness(args: &[String]) {
+    // Description:
+    //     Cmd twin readiness.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_twin_readiness(args);
+
     let json = args.iter().any(|a| a == "--json");
     let file = args
         .iter()
@@ -234,6 +381,20 @@ pub fn cmd_twin_readiness(args: &[String]) {
 
 /// `spanda fleet readiness <file.sd> [--target T] [--runtime]`
 pub fn cmd_fleet_readiness(args: &[String]) {
+    // Description:
+    //     Cmd fleet readiness.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_fleet_readiness(args);
+
     let parsed = parse_readiness_cli(args);
     let source = read_file(&parsed.file);
     let program = parse_program(&source);
@@ -247,6 +408,20 @@ pub fn cmd_fleet_readiness(args: &[String]) {
 
 /// `spanda audit <file.sd>`
 pub fn cmd_audit(args: &[String]) {
+    // Description:
+    //     Cmd audit.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_audit(args);
+
     let json = args.iter().any(|a| a == "--json");
     let file = args
         .iter()
@@ -271,6 +446,20 @@ pub fn cmd_audit(args: &[String]) {
 
 /// `spanda verify-fleet <file.sd>`
 pub fn cmd_verify_fleet(args: &[String]) {
+    // Description:
+    //     Cmd verify fleet.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_verify_fleet(args);
+
     let json = args.iter().any(|a| a == "--json");
     let file = args
         .iter()
@@ -297,6 +486,20 @@ pub fn cmd_verify_fleet(args: &[String]) {
 
 /// `spanda verify-approval <file.sd>`
 pub fn cmd_verify_approval(args: &[String]) {
+    // Description:
+    //     Cmd verify approval.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::cmd_verify_approval(args);
+
     let json = args.iter().any(|a| a == "--json");
     let file = args
         .iter()
@@ -336,22 +539,26 @@ pub fn evaluate_agent_readiness_json(
     include_runtime: bool,
     inject_health_faults: bool,
 ) -> Result<String, String> {
-    // Delegate to the shared readiness crate used by deploy and fleet agents.
+    // Description:
+    //     Evaluate agent readiness json.
     //
-    // Parameters:
-    // - `source` — deployed `.sd` program text
-    // - `target` — optional hardware/deploy profile override
-    // - `include_runtime` — fold live runtime health into the score
-    // - `inject_health_faults` — simulate degraded sensors (requires runtime)
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     arge: Option<&str>
+    //         Caller-supplied arge.
+    //     include_runtime: bool
+    //         Caller-supplied include runtime.
+    //     inject_health_faults: bool
+    //         Caller-supplied inject health faults.
     //
-    // Returns:
-    // JSON `{"ok":true,"mission_ready":...,"readiness":...}` or an error string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `evaluate_agent_readiness_json`.
     //
     // Example:
-    // let body = evaluate_agent_readiness_json(program, Some("RoverV1"), true, false)?;
+
+    //     let result = spanda_cli::readiness_cli::evaluate_agent_readiness_json(source, arge, include_runtime, inject_health_faults);
 
     spanda_readiness::evaluate_agent_readiness_json(
         source,
@@ -363,6 +570,20 @@ pub fn evaluate_agent_readiness_json(
 
 /// Top-level readiness dispatch for subcommands.
 pub fn readiness_dispatch(args: &[String]) {
+    // Description:
+    //     Readiness dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::readiness_cli::readiness_dispatch(args);
+
     if args.is_empty() {
         eprintln!(
             "Usage: spanda readiness <file.sd> [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]"

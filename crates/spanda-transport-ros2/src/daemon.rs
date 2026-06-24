@@ -15,6 +15,19 @@ struct Ros2Daemon {
 
 impl Ros2Daemon {
     fn start() -> Result<Self, String> {
+        // Description:
+        //     Start.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `start`.
+        //
+        // Example:
+        //     let result = spanda_transport_ros2::daemon::start();
+
         let script = daemon_script_path()?;
         let python = python_cmd().ok_or_else(|| "python3 not found for ROS2 daemon".to_string())?;
         let mut child = Command::new(&python)
@@ -40,6 +53,40 @@ impl Ros2Daemon {
     }
 
     fn request(&mut self, op: &str, args: &[String]) -> bool {
+        // Description:
+
+        //     Request.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     op: &str
+
+        //         Caller-supplied op.
+
+        //     args: &[String]
+
+        //         Caller-supplied args.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `request`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_ros2::daemon::request(&mut self, op, args);
+
         let payload = serde_json::json!({ "op": op, "args": args });
         let line = match serde_json::to_string(&payload) {
             Ok(text) => text,
@@ -63,6 +110,30 @@ impl Ros2Daemon {
 }
 
 fn python_cmd() -> Option<String> {
+    // Description:
+
+    //     Python cmd.
+
+    //
+
+    // Inputs:
+
+    //     None.
+
+    //
+
+    // Outputs:
+
+    //     result: Option<String>
+
+    //         Return value from `python_cmd`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::python_cmd();
+
     for cmd in ["python3", "python"] {
         if Command::new(cmd)
             .arg("-c")
@@ -80,10 +151,58 @@ fn python_cmd() -> Option<String> {
 }
 
 pub fn python_available() -> bool {
+    // Description:
+
+    //     Python available.
+
+    //
+
+    // Inputs:
+
+    //     None.
+
+    //
+
+    // Outputs:
+
+    //     result: bool
+
+    //         Return value from `python_available`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::python_available();
+
     python_cmd().is_some()
 }
 
 pub fn daemon_script_path() -> Result<PathBuf, String> {
+    // Description:
+
+    //     Daemon script path.
+
+    //
+
+    // Inputs:
+
+    //     None.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<PathBuf, String>
+
+    //         Return value from `daemon_script_path`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::daemon_script_path();
+
     if let Ok(path) = std::env::var("SPANDA_ROS2_DAEMON_SCRIPT") {
         let path = PathBuf::from(path);
         if path.is_file() {
@@ -112,6 +231,32 @@ fn with_daemon<F>(f: F) -> bool
 where
     F: FnOnce(&mut Ros2Daemon) -> bool,
 {
+    // Description:
+
+    //     With daemon.
+
+    //
+
+    // Inputs:
+
+    //     f: F
+
+    //         Caller-supplied f.
+
+    //
+
+    // Outputs:
+
+    //     result: bool where F: FnOnce(&mut Ros2Daemon) -> bool,
+
+    //         Return value from `with_daemon`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::with_daemon(f);
+
     if !python_available() {
         return false;
     }
@@ -139,14 +284,104 @@ where
 }
 
 pub fn daemon_publish(topic: &str, payload: &str) -> bool {
+    // Description:
+
+    //     Daemon publish.
+
+    //
+
+    // Inputs:
+
+    //     opic: &str
+
+    //         Caller-supplied opic.
+
+    //     payload: &str
+
+    //         Caller-supplied payload.
+
+    //
+
+    // Outputs:
+
+    //     result: bool
+
+    //         Return value from `daemon_publish`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::daemon_publish(opic, payload);
+
     with_daemon(|daemon| daemon.request("publish", &[topic.to_string(), payload.to_string()]))
 }
 
 pub fn daemon_subscribe(topic: &str) -> bool {
+    // Description:
+
+    //     Daemon subscribe.
+
+    //
+
+    // Inputs:
+
+    //     opic: &str
+
+    //         Caller-supplied opic.
+
+    //
+
+    // Outputs:
+
+    //     result: bool
+
+    //         Return value from `daemon_subscribe`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::daemon_subscribe(opic);
+
     with_daemon(|daemon| daemon.request("subscribe", &[topic.to_string()]))
 }
 
 pub fn daemon_service_call(service: &str, service_type: &str, request: &str) -> bool {
+    // Description:
+
+    //     Daemon service call.
+
+    //
+
+    // Inputs:
+
+    //     service: &str
+
+    //         Caller-supplied service.
+
+    //     service_type: &str
+
+    //         Caller-supplied service type.
+
+    //     request: &str
+
+    //         Caller-supplied request.
+
+    //
+
+    // Outputs:
+
+    //     result: bool
+
+    //         Return value from `daemon_service_call`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_ros2::daemon::daemon_service_call(service, service_type, reques);
+
     with_daemon(|daemon| {
         daemon.request(
             "service_call",

@@ -57,19 +57,19 @@ pub struct HardwareSection {
 
 impl PackageManifest {
     pub fn parse_str(content: &str) -> PackageResult<Self> {
-        // Parse str.
+        // Description:
+        //     Parse str.
         //
-        // Parameters:
-        // - `content` — input value
+        // Inputs:
+        //     conten: &str
+        //         Caller-supplied conten.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `parse_str`.
         //
         // Example:
-        // let result = spanda_package::manifest::parse_str(content);
+        //     let result = spanda_package::manifest::parse_str(conten);
 
         // Create mutable manifest for accumulating results.
         let mut manifest: Self = toml::from_str(content)?;
@@ -78,19 +78,19 @@ impl PackageManifest {
     }
 
     pub fn load(path: &Path) -> PackageResult<Self> {
-        // Load the value.
+        // Description:
+        //     Load.
         //
-        // Parameters:
-        // - `path` — input value
+        // Inputs:
+        //     path: &Path
+        //         Caller-supplied path.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `load`.
         //
         // Example:
-        // let result = spanda_package::manifest::load(path);
+        //     let result = spanda_package::manifest::load(path);
 
         // Compute content for the following logic.
         let content = std::fs::read_to_string(path).map_err(PackageError::from)?;
@@ -98,39 +98,40 @@ impl PackageManifest {
     }
 
     pub fn load_from_dir(dir: &Path) -> PackageResult<Self> {
-        // Load from dir.
+        // Description:
+        //     Load from dir.
         //
-        // Parameters:
-        // - `dir` — input value
+        // Inputs:
+        //     dir: &Path
+        //         Caller-supplied dir.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `load_from_dir`.
         //
         // Example:
-        // let result = spanda_package::manifest::load_from_dir(dir);
+        //     let result = spanda_package::manifest::load_from_dir(dir);
 
         // Build the result via join.
         Self::load(&dir.join(MANIFEST_FILENAME))
     }
 
     pub fn save(&self, path: &Path) -> PackageResult<()> {
-        // Save the value.
+        // Description:
+        //     Save.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &Path
+        //         Caller-supplied path.
         //
-        // Returns:
-        // PackageResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<()>
+        //         Return value from `save`.
         //
         // Example:
-        // let result = instance.save(path);
+        //     let result = spanda_package::manifest::save(&self, path);
 
         // Compute content for the following logic.
         let content = toml::to_string_pretty(self)?;
@@ -139,38 +140,38 @@ impl PackageManifest {
     }
 
     pub fn version(&self) -> PackageResult<Version> {
-        // Version.
+        // Description:
+        //     Version.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // PackageResult<Version>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Version>
+        //         Return value from `version`.
         //
         // Example:
-        // let result = instance.version();
+        //     let result = spanda_package::manifest::version(&self);
 
         // Produce version) as the result.
         crate::dependency::parse_version(&self.package.version)
     }
 
     pub fn all_dependencies(&self) -> impl Iterator<Item = (&str, &DependencySpec)> {
-        // All dependencies.
+        // Description:
+        //     All dependencies.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // impl Iterator<Item = (&str, &DependencySpec)>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: impl Iterator<Item = (&str, &DependencySpec)>
+        //         Return value from `all_dependencies`.
         //
         // Example:
-        // let result = instance.all_dependencies();
+        //     let result = spanda_package::manifest::all_dependencies(&self);
 
         // Call dependencies on the current instance.
         self.dependencies
@@ -182,19 +183,19 @@ impl PackageManifest {
 
 /// Find the project root by walking up from `start` looking for spanda.toml.
 pub fn find_project_root(start: &Path) -> Option<PathBuf> {
-    // Find project root.
+    // Description:
+    //     Find project root.
     //
-    // Parameters:
-    // - `start` — input value
+    // Inputs:
+    //     star: &Path
+    //         Caller-supplied star.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PathBuf>
+    //         Return value from `find_project_root`.
     //
     // Example:
-    // let result = spanda_package::manifest::find_project_root(start);
+    //     let result = spanda_package::manifest::find_project_root(star);
 
     // Create mutable dir for accumulating results.
     let mut dir = if start.is_file() {
@@ -247,19 +248,18 @@ required = [
 
     #[test]
     fn parses_warehouse_manifest() {
-        // Parses warehouse manifest.
+        // Description:
+        //     Parses warehouse manifest.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_package::manifest::parses_warehouse_manifest();
+
+        //     let result = spanda_package::manifest::parses_warehouse_manifest();
 
         let m = PackageManifest::parse_str(WAREHOUSE).unwrap();
         assert_eq!(m.package.name, "warehouse_robot");

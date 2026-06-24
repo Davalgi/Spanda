@@ -23,6 +23,21 @@ pub struct LiveWebsocketBridge {
 
 impl LiveWebsocketBridge {
     pub fn connect(broker_url: &str) -> Result<Self, String> {
+        // Description:
+        //     Connect.
+        //
+        // Inputs:
+        //     broker_url: &str
+        //         Caller-supplied broker url.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `connect`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_websocket::live::connect(broker_url);
+
         let (socket, _response) =
             connect(broker_url).map_err(|e| format!("websocket connect failed: {e}"))?;
         Ok(Self {
@@ -32,6 +47,20 @@ impl LiveWebsocketBridge {
     }
 
     fn poll_inbound(&self) {
+        // Description:
+        //     Poll inbound.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport_websocket::live::poll_inbound(&self);
+
         let mut guard = match self.socket.lock() {
             Ok(g) => g,
             Err(_) => return,
@@ -47,6 +76,25 @@ impl LiveWebsocketBridge {
     }
 
     pub fn publish(&self, topic: &str, payload: &str) -> Result<(), String> {
+        // Description:
+        //     Publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `publish`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_websocket::live::publish(&self, opic, payload);
+
         self.poll_inbound();
         let envelope = WireEnvelope {
             topic: topic.to_string(),
@@ -64,6 +112,23 @@ impl LiveWebsocketBridge {
     }
 
     pub fn subscribe(&self, topic: &str) -> Result<(), String> {
+        // Description:
+        //     Subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_websocket::live::subscribe(&self, opic);
+
         let envelope = WireEnvelope {
             topic: topic.to_string(),
             payload: "__subscribe__".into(),
@@ -80,6 +145,23 @@ impl LiveWebsocketBridge {
     }
 
     pub fn receive(&self, topic: &str) -> Option<String> {
+        // Description:
+        //     Receive.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `receive`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_websocket::live::receive(&self, opic);
+
         self.poll_inbound();
         let mut map = self.inbound.lock().ok()?;
         map.get_mut(topic).and_then(|q| q.pop_front())

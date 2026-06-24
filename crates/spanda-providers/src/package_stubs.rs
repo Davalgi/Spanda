@@ -12,6 +12,25 @@ use spanda_runtime::robot_state::RobotState;
 use spanda_runtime::value::{runtime_pose, RuntimeValue};
 
 fn package_metadata(package: &str, name: &str, description: &str) -> ProviderMetadata {
+    // Description:
+    //     Package metadata.
+    //
+    // Inputs:
+    //     package: &str
+    //         Caller-supplied package.
+    //     name: &str
+    //         Caller-supplied name.
+    //     description: &str
+    //         Caller-supplied description.
+    //
+    // Outputs:
+    //     result: ProviderMetadata
+    //         Return value from `package_metadata`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::package_metadata(package, name, description);
+
     ProviderMetadata {
         id: ProviderId::new(package, name),
         description: description.into(),
@@ -29,6 +48,20 @@ pub struct ConnectivityPackageStub {
 
 impl ConnectivityPackageStub {
     pub fn wifi() -> Self {
+        // Description:
+        //     Wifi.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `wifi`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::wifi();
+
         Self {
             package: "spanda-wifi",
             channel: "wifi",
@@ -36,6 +69,20 @@ impl ConnectivityPackageStub {
     }
 
     pub fn ble() -> Self {
+        // Description:
+        //     Ble.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `ble`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::ble();
+
         Self {
             package: "spanda-ble",
             channel: "ble",
@@ -43,6 +90,20 @@ impl ConnectivityPackageStub {
     }
 
     pub fn cellular() -> Self {
+        // Description:
+        //     Cellular.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `cellular`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::cellular();
+
         Self {
             package: "spanda-cellular",
             channel: "cellular",
@@ -52,6 +113,21 @@ impl ConnectivityPackageStub {
 
 impl ConnectivityProvider for ConnectivityPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             self.package,
             "project",
@@ -60,19 +136,86 @@ impl ConnectivityProvider for ConnectivityPackageStub {
     }
 
     fn connect(&mut self, channel: &str) -> ProviderResult<()> {
+        // Description:
+        //     Connect.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     channel: &str
+        //         Caller-supplied channel.
+        //
+        // Outputs:
+        //     result: ProviderResult<()>
+        //         Return value from `connect`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::connect(&mut self, channel);
+
         let _ = channel;
         Ok(())
     }
 
     fn disconnect(&mut self, channel: &str) {
+        // Description:
+        //     Disconnect.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     channel: &str
+        //         Caller-supplied channel.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::disconnect(&mut self, channel);
+
         let _ = channel;
     }
 
     fn is_connected(&self, channel: &str) -> bool {
+        // Description:
+        //     Is connected.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     channel: &str
+        //         Caller-supplied channel.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_connected`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::is_connected(&self, channel);
+
         channel == self.channel
     }
 
     fn signal_strength_dbm(&self, channel: &str) -> Option<f64> {
+        // Description:
+        //     Signal strength dbm.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     channel: &str
+        //         Caller-supplied channel.
+        //
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `signal_strength_dbm`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::signal_strength_dbm(&self, channel);
+
         if channel == self.channel {
             Some(-55.0)
         } else {
@@ -86,6 +229,21 @@ pub struct GpsPositioningStub;
 
 impl PositioningProvider for GpsPositioningStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-gps",
             "project",
@@ -94,6 +252,21 @@ impl PositioningProvider for GpsPositioningStub {
     }
 
     fn read_fix(&mut self) -> RuntimeValue {
+        // Description:
+        //     Read fix.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `read_fix`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::read_fix(&mut self);
+
         RuntimeValue::Object {
             type_name: "GeoPoint".into(),
             fields: [
@@ -118,6 +291,21 @@ impl PositioningProvider for GpsPositioningStub {
     }
 
     fn accuracy_meters(&self) -> Option<f64> {
+        // Description:
+        //     Accuracy meters.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `accuracy_meters`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::accuracy_meters(&self);
+
         Some(5.0)
     }
 }
@@ -127,6 +315,21 @@ pub struct NavNavigationStub;
 
 impl NavigationProvider for NavNavigationStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-nav",
             "project",
@@ -135,15 +338,60 @@ impl NavigationProvider for NavNavigationStub {
     }
 
     fn navigate_to(&mut self, goal: RuntimeValue) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Navigate to.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     goal: RuntimeValue
+        //         Caller-supplied goal.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `navigate_to`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::navigate_to(&mut self, goal);
+
         Ok(RuntimeValue::Object {
             type_name: "NavigationGoal".into(),
             fields: [("goal".into(), goal)].into_iter().collect(),
         })
     }
 
-    fn cancel_navigation(&mut self) {}
+    fn cancel_navigation(&mut self) {
+        // Description:
+        //     Cancel navigation.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        // let result = spanda_providers::package_stubs::cancel_navigation(&mut self);
+    }
 
     fn navigation_status(&self) -> RuntimeValue {
+        // Description:
+        //     Navigation status.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `navigation_status`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::navigation_status(&self);
+
         RuntimeValue::Object {
             type_name: "Trajectory".into(),
             fields: [(
@@ -163,6 +411,21 @@ pub struct SlamPackageStub;
 
 impl SlamProvider for SlamPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-slam",
             "project",
@@ -171,6 +434,21 @@ impl SlamProvider for SlamPackageStub {
     }
 
     fn localize(&mut self) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Localize.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `localize`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::localize(&mut self);
+
         Ok(RuntimeValue::Object {
             type_name: "LocalizationEstimate".into(),
             fields: [
@@ -189,6 +467,23 @@ impl SlamProvider for SlamPackageStub {
     }
 
     fn update_map(&mut self, _sensor_frame: RuntimeValue) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Update map.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _sensor_frame: RuntimeValue
+        //         Caller-supplied sensor frame.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `update_map`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::update_map(&mut self, _sensor_frame);
+
         Ok(RuntimeValue::Object {
             type_name: "OccupancyGrid".into(),
             fields: [(
@@ -204,6 +499,21 @@ impl SlamProvider for SlamPackageStub {
     }
 
     fn export_map(&self) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Export map.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `export_map`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::export_map(&self);
+
         Ok(RuntimeValue::Object {
             type_name: "OccupancyGrid".into(),
             fields: [(
@@ -224,6 +534,21 @@ pub struct FleetPackageStub;
 
 impl FleetProvider for FleetPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-fleet",
             "project",
@@ -232,6 +557,25 @@ impl FleetProvider for FleetPackageStub {
     }
 
     fn register_member(&mut self, member_id: &str, _metadata: RuntimeValue) -> ProviderResult<()> {
+        // Description:
+        //     Register member.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ember_id: &str
+        //         Caller-supplied ember id.
+        //     _metadata: RuntimeValue
+        //         Caller-supplied metadata.
+        //
+        // Outputs:
+        //     result: ProviderResult<()>
+        //         Return value from `register_member`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::register_member(&mut self, ember_id, _metadata);
+
         let _ = member_id;
         Ok(())
     }
@@ -241,6 +585,25 @@ impl FleetProvider for FleetPackageStub {
         member_id: &str,
         task: RuntimeValue,
     ) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Dispatch task.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ember_id: &str
+        //         Caller-supplied ember id.
+        //     ask: RuntimeValue
+        //         Caller-supplied ask.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `dispatch_task`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::dispatch_task(&mut self, ember_id, ask);
+
         Ok(RuntimeValue::Object {
             type_name: "FleetTask".into(),
             fields: [
@@ -258,6 +621,23 @@ impl FleetProvider for FleetPackageStub {
     }
 
     fn member_status(&self, member_id: &str) -> Option<RuntimeValue> {
+        // Description:
+        //     Member status.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     ember_id: &str
+        //         Caller-supplied ember id.
+        //
+        // Outputs:
+        //     result: Option<RuntimeValue>
+        //         Return value from `member_status`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::member_status(&self, ember_id);
+
         Some(RuntimeValue::String {
             value: format!("{member_id}:idle"),
         })
@@ -271,6 +651,20 @@ pub struct LedgerPackageStub {
 
 impl Default for LedgerPackageStub {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::default();
+
         Self {
             backend: MockLedgerBackend::new(),
         }
@@ -279,6 +673,21 @@ impl Default for LedgerPackageStub {
 
 impl LedgerProvider for LedgerPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-ledger",
             "project",
@@ -287,6 +696,23 @@ impl LedgerProvider for LedgerPackageStub {
     }
 
     fn append(&mut self, record: RuntimeValue) -> ProviderResult<String> {
+        // Description:
+        //     Append.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     record: RuntimeValue
+        //         Caller-supplied record.
+        //
+        // Outputs:
+        //     result: ProviderResult<String>
+        //         Return value from `append`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::append(&mut self, record);
+
         let payload = runtime_value_summary(&record);
         let digest = sha256(&payload);
         let tx = self
@@ -297,6 +723,23 @@ impl LedgerProvider for LedgerPackageStub {
     }
 
     fn anchor(&mut self, digest: &[u8]) -> ProviderResult<String> {
+        // Description:
+        //     Anchor.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     diges: &[u8]
+        //         Caller-supplied diges.
+        //
+        // Outputs:
+        //     result: ProviderResult<String>
+        //         Return value from `anchor`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::anchor(&mut self, diges);
+
         let hash = Hash(hex_encode(digest));
         let tx = self
             .backend
@@ -310,14 +753,59 @@ impl LedgerProvider for LedgerPackageStub {
 pub struct CloudPackageStub;
 
 fn ledger_err(message: impl Into<String>) -> ProviderError {
+    // Description:
+    //     Ledger err.
+    //
+    // Inputs:
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //
+    // Outputs:
+    //     result: ProviderError
+    //         Return value from `ledger_err`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::ledger_err(essage);
+
     ProviderError::new(ProviderId::new("spanda-ledger", "project"), message)
 }
 
 fn cloud_err(message: impl Into<String>) -> ProviderError {
+    // Description:
+    //     Cloud err.
+    //
+    // Inputs:
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //
+    // Outputs:
+    //     result: ProviderError
+    //         Return value from `cloud_err`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::cloud_err(essage);
+
     ProviderError::new(ProviderId::new("spanda-cloud", "project"), message)
 }
 
 fn runtime_value_summary(value: &RuntimeValue) -> String {
+    // Description:
+    //     Runtime value summary.
+    //
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `runtime_value_summary`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::runtime_value_summary(value);
+
     match value {
         RuntimeValue::String { value } => value.clone(),
         RuntimeValue::Number { value, .. } => value.to_string(),
@@ -327,10 +815,39 @@ fn runtime_value_summary(value: &RuntimeValue) -> String {
 }
 
 fn hex_encode(bytes: &[u8]) -> String {
+    // Description:
+    //     Hex encode.
+    //
+    // Inputs:
+    //     bytes: &[u8]
+    //         Caller-supplied bytes.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `hex_encode`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::hex_encode(bytes);
+
     bytes.iter().map(|byte| format!("{byte:02x}")).collect()
 }
 
 fn cloud_upload_url() -> Option<String> {
+    // Description:
+    //     Cloud upload url.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `cloud_upload_url`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::cloud_upload_url();
+
     std::env::var("SPANDA_CLOUD_UPLOAD_URL")
         .ok()
         .map(|value| value.trim().to_string())
@@ -338,6 +855,23 @@ fn cloud_upload_url() -> Option<String> {
 }
 
 fn post_json(url: &str, body: &str) -> Result<(), String> {
+    // Description:
+    //     Post json.
+    //
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
+    //     body: &str
+    //         Caller-supplied body.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `post_json`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::package_stubs::post_json(rl, body);
+
     let output = std::process::Command::new("curl")
         .args([
             "-fsS",
@@ -363,6 +897,21 @@ fn post_json(url: &str, body: &str) -> Result<(), String> {
 
 impl CloudProvider for CloudPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-cloud",
             "project",
@@ -371,6 +920,25 @@ impl CloudProvider for CloudPackageStub {
     }
 
     fn upload(&mut self, path: &str, payload: RuntimeValue) -> ProviderResult<()> {
+        // Description:
+        //     Upload.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     payload: RuntimeValue
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: ProviderResult<()>
+        //         Return value from `upload`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::upload(&mut self, path, payload);
+
         let body = serde_json::json!({
             "path": path,
             "payload": runtime_value_summary(&payload),
@@ -383,6 +951,25 @@ impl CloudProvider for CloudPackageStub {
     }
 
     fn invoke(&mut self, endpoint: &str, request: RuntimeValue) -> ProviderResult<RuntimeValue> {
+        // Description:
+        //     Invoke.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     endpoin: &str
+        //         Caller-supplied endpoin.
+        //     request: RuntimeValue
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: ProviderResult<RuntimeValue>
+        //         Return value from `invoke`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::invoke(&mut self, endpoin, reques);
+
         Ok(RuntimeValue::Object {
             type_name: "CloudResponse".into(),
             fields: [
@@ -405,6 +992,21 @@ pub struct MaintenancePackageStub;
 
 impl MaintenanceProvider for MaintenancePackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             "spanda-maintenance",
             "project",
@@ -412,9 +1014,43 @@ impl MaintenanceProvider for MaintenancePackageStub {
         )
     }
 
-    fn record_metric(&mut self, _component: &str, _metric: RuntimeValue) {}
+    fn record_metric(&mut self, _component: &str, _metric: RuntimeValue) {
+        // Description:
+        //     Record metric.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _componen: &str
+        //         Caller-supplied componen.
+        //     _metric: RuntimeValue
+        //         Caller-supplied metric.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        // let result = spanda_providers::package_stubs::record_metric(&mut self, _componen, _metric);
+    }
 
     fn health_report(&self, component: &str) -> RuntimeValue {
+        // Description:
+        //     Health report.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     componen: &str
+        //         Caller-supplied componen.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `health_report`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::health_report(&self, componen);
+
         RuntimeValue::Object {
             type_name: "HealthReport".into(),
             fields: [(
@@ -436,12 +1072,40 @@ pub struct VisionPackageStub {
 
 impl VisionPackageStub {
     pub fn opencv() -> Self {
+        // Description:
+        //     Opencv.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `opencv`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::opencv();
+
         Self {
             package: "spanda-opencv",
         }
     }
 
     pub fn yolo() -> Self {
+        // Description:
+        //     Yolo.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `yolo`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::yolo();
+
         Self {
             package: "spanda-yolo",
         }
@@ -450,6 +1114,21 @@ impl VisionPackageStub {
 
 impl VisionProvider for VisionPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             self.package,
             "project",
@@ -458,6 +1137,23 @@ impl VisionProvider for VisionPackageStub {
     }
 
     fn detect(&mut self, request: RuntimeValue) -> RuntimeValue {
+        // Description:
+        //     Detect.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     request: RuntimeValue
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `detect`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::detect(&mut self, reques);
+
         RuntimeValue::Object {
             type_name: "Detections".into(),
             fields: [("input".into(), request)].into_iter().collect(),
@@ -465,6 +1161,23 @@ impl VisionProvider for VisionPackageStub {
     }
 
     fn classify(&mut self, request: RuntimeValue) -> RuntimeValue {
+        // Description:
+        //     Classify.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     request: RuntimeValue
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `classify`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::classify(&mut self, reques);
+
         RuntimeValue::Object {
             type_name: "Classification".into(),
             fields: [("input".into(), request)].into_iter().collect(),
@@ -472,6 +1185,23 @@ impl VisionProvider for VisionPackageStub {
     }
 
     fn embed(&mut self, request: RuntimeValue) -> RuntimeValue {
+        // Description:
+        //     Embed.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     request: RuntimeValue
+        //         Caller-supplied request.
+        //
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `embed`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::embed(&mut self, reques);
+
         RuntimeValue::Object {
             type_name: "Embedding".into(),
             fields: [("input".into(), request)].into_iter().collect(),
@@ -486,12 +1216,40 @@ pub struct SimulationPackageStub {
 
 impl SimulationPackageStub {
     pub fn gazebo() -> Self {
+        // Description:
+        //     Gazebo.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `gazebo`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::gazebo();
+
         Self {
             package: "spanda-gazebo",
         }
     }
 
     pub fn webots() -> Self {
+        // Description:
+        //     Webots.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `webots`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::webots();
+
         Self {
             package: "spanda-webots",
         }
@@ -500,6 +1258,21 @@ impl SimulationPackageStub {
 
 impl SimulationProvider for SimulationPackageStub {
     fn metadata(&self) -> ProviderMetadata {
+        // Description:
+        //     Metadata.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: ProviderMetadata
+        //         Return value from `metadata`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::metadata(&self);
+
         package_metadata(
             self.package,
             "project",
@@ -507,11 +1280,54 @@ impl SimulationProvider for SimulationPackageStub {
         )
     }
 
-    fn reset(&mut self) {}
+    fn reset(&mut self) {
+        // Description:
+        //     Reset.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        // let result = spanda_providers::package_stubs::reset(&mut self);
+    }
 
-    fn step(&mut self, _dt_ms: f64) {}
+    fn step(&mut self, _dt_ms: f64) {
+        // Description:
+        //     Step.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     _dt_ms: f64
+        //         Caller-supplied dt ms.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        // let result = spanda_providers::package_stubs::step(&mut self, _dt_ms);
+    }
 
     fn observe(&self) -> RobotState {
+        // Description:
+        //     Observe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: RobotState
+        //         Return value from `observe`.
+        //
+        // Example:
+
+        //     let result = spanda_providers::package_stubs::observe(&self);
+
         RobotState {
             pose: spanda_runtime::robot_state::PoseState {
                 x: 0.0,

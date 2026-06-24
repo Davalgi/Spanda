@@ -14,21 +14,24 @@ pub struct RegistryVersionSignature {
 
 /// Build the canonical string signed for a registry tarball.
 pub fn registry_signature_payload(name: &str, version: &str, sha256: &str) -> String {
-    // Canonicalize name, version, and digest for Ed25519 signing.
+    // Description:
+    //     Registry signature payload.
     //
-    // Parameters:
-    // - `name` — package name
-    // - `version` — semver string
-    // - `sha256` — lowercase hex digest of the tarball
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     sha256: &str
+    //         Caller-supplied sha256.
     //
-    // Returns:
-    // UTF-8 payload passed to `sign` / `verify_signature`.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `registry_signature_payload`.
     //
     // Example:
-    // let payload = registry_signature_payload("spanda-mqtt", "0.1.0", &digest);
+
+    //     let result = spanda_package::registry_sign::registry_signature_payload(name, version, sha256);
 
     format!("spanda-registry-v1\n{name}@{version}\n{sha256}\n")
 }
@@ -40,22 +43,26 @@ pub fn sign_registry_tarball(
     sha256: &str,
     sign_key_material: &str,
 ) -> RegistryVersionSignature {
-    // Sign publish metadata for a registry bundle.
+    // Description:
+    //     Sign registry tarball.
     //
-    // Parameters:
-    // - `name` — package name
-    // - `version` — semver string
-    // - `sha256` — tarball digest
-    // - `sign_key_material` — Ed25519 seed or signing passphrase
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     sha256: &str
+    //         Caller-supplied sha256.
+    //     sign_key_material: &str
+    //         Caller-supplied sign key material.
     //
-    // Returns:
-    // Public key and signature hex strings for the registry index.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RegistryVersionSignature
+    //         Return value from `sign_registry_tarball`.
     //
     // Example:
-    // let sig = sign_registry_tarball("demo", "0.1.0", &digest, key)?;
+
+    //     let result = spanda_package::registry_sign::sign_registry_tarball(name, version, sha256, sign_key_material);
 
     let payload = registry_signature_payload(name, version, sha256);
     RegistryVersionSignature {
@@ -72,23 +79,28 @@ pub fn verify_registry_signature(
     signature: &RegistryVersionSignature,
     trust_key_material: &str,
 ) -> bool {
-    // Validate a registry index signature for one package version.
+    // Description:
+    //     Verify registry signature.
     //
-    // Parameters:
-    // - `name` — package name
-    // - `version` — semver string
-    // - `sha256` — expected tarball digest
-    // - `signature` — index metadata
-    // - `trust_key_material` — trusted public key hex or signing material
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //     version: &str
+    //         Caller-supplied version.
+    //     sha256: &str
+    //         Caller-supplied sha256.
+    //     signature: &RegistryVersionSignature
+    //         Caller-supplied signature.
+    //     rust_key_material: &str
+    //         Caller-supplied rust key material.
     //
-    // Returns:
-    // true when the signature matches the canonical payload.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `verify_registry_signature`.
     //
     // Example:
-    // verify_registry_signature(name, version, &digest, &sig, trust_key);
+
+    //     let result = spanda_package::registry_sign::verify_registry_signature(name, version, sha256, signature, rust_key_material);
 
     let payload = registry_signature_payload(name, version, sha256);
     verify_signature(&payload, &signature.signature, trust_key_material)
@@ -96,19 +108,19 @@ pub fn verify_registry_signature(
 
 /// Return true when `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1`.
 pub fn registry_require_signature() -> bool {
-    // Whether remote installs must carry a valid registry signature.
+    // Description:
+    //     Registry require signature.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true when strict signature mode is enabled.
-    //
-    // Options:
-    // Reads `SPANDA_REGISTRY_REQUIRE_SIGNATURE`.
+    // Outputs:
+    //     result: bool
+    //         Return value from `registry_require_signature`.
     //
     // Example:
-    // if registry_require_signature() && sig.is_none() { ... }
+
+    //     let result = spanda_package::registry_sign::registry_require_signature();
 
     matches!(
         std::env::var("SPANDA_REGISTRY_REQUIRE_SIGNATURE").as_deref(),
@@ -118,19 +130,19 @@ pub fn registry_require_signature() -> bool {
 
 /// Resolve trusted signing material from `SPANDA_REGISTRY_TRUST_KEY`.
 pub fn registry_trust_key() -> Option<String> {
-    // Load the trusted registry public key from the environment.
+    // Description:
+    //     Registry trust key.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Key material when `SPANDA_REGISTRY_TRUST_KEY` is set.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `registry_trust_key`.
     //
     // Example:
-    // if let Some(key) = registry_trust_key() { verify... }
+
+    //     let result = spanda_package::registry_sign::registry_trust_key();
 
     std::env::var("SPANDA_REGISTRY_TRUST_KEY")
         .ok()
@@ -140,19 +152,19 @@ pub fn registry_trust_key() -> Option<String> {
 
 /// Resolve signing material from `SPANDA_REGISTRY_SIGN_KEY`.
 pub fn registry_sign_key() -> Option<String> {
-    // Load the registry signing key from the environment.
+    // Description:
+    //     Registry sign key.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Signing material when `SPANDA_REGISTRY_SIGN_KEY` is set.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `registry_sign_key`.
     //
     // Example:
-    // if let Some(key) = registry_sign_key() { sign... }
+
+    //     let result = spanda_package::registry_sign::registry_sign_key();
 
     std::env::var("SPANDA_REGISTRY_SIGN_KEY")
         .ok()
@@ -168,6 +180,19 @@ mod tests {
 
     #[test]
     fn sign_and_verify_round_trip() {
+        // Description:
+        //     Sign and verify round trip.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_package::registry_sign::sign_and_verify_round_trip();
+
         let digest = "abc123";
         let key = "registry-test-signing-key";
         let signed = sign_registry_tarball("demo-pkg", "0.1.0", digest, key);

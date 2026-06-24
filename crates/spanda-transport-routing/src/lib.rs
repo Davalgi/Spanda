@@ -25,6 +25,32 @@ use spanda_transport::security::TransportSecurityConfig;
 use spanda_transport::wire::{decode_wire_value, encode_wire_value};
 
 fn adapter_config_to_runtime(config: &TransportConfig) -> RuntimeTransportConfig {
+    // Description:
+
+    //     Adapter config to runtime.
+
+    //
+
+    // Inputs:
+
+    //     config: &TransportConfig
+
+    //         Caller-supplied config.
+
+    //
+
+    // Outputs:
+
+    //     result: RuntimeTransportConfig
+
+    //         Return value from `adapter_config_to_runtime`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_transport_routing::adapter_config_to_runtime(config);
+
     RuntimeTransportConfig {
         broker_url: config.broker_url.clone(),
         node_name: config.node_name.clone(),
@@ -58,41 +84,36 @@ impl std::fmt::Debug for RoutingCommBus {
 
 impl Default for RoutingCommBus {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::transport::default();
-
-        // Build the result via new.
+        //     let result = spanda_transport_routing::default();
         Self::new()
     }
 }
 
 impl RoutingCommBus {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::transport::new();
-
-        // Assemble the struct fields and return it.
+        //     let value = spanda_transport_routing::new();
         Self {
             memory: InMemoryCommBus::new(),
             ros2: Ros2TransportAdapter::default(),
@@ -107,24 +128,168 @@ impl RoutingCommBus {
     }
 
     pub fn attach_provider_registry(&mut self, registry: Rc<RefCell<ProviderRegistry>>) {
+        // Description:
+
+        //     Attach provider registry.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     registry: Rc<RefCell<ProviderRegistry>>
+
+        //         Caller-supplied registry.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::attach_provider_registry(&mut self, registry);
+
         self.providers = Some(registry);
     }
 
     pub fn mark_registry_backed(&mut self, kind: TransportKind, key: String) {
+        // Description:
+
+        //     Mark registry backed.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     key: String
+
+        //         Caller-supplied key.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::mark_registry_backed(&mut self, kind, key);
+
         self.registry_backed.insert(kind);
         self.registry_keys.insert(kind, key);
     }
 
     pub fn clear_registry_backed(&mut self) {
+        // Description:
+
+        //     Clear registry backed.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::clear_registry_backed(&mut self);
+
         self.registry_backed.clear();
         self.registry_keys.clear();
     }
 
     pub fn is_registry_backed(&self, kind: TransportKind) -> bool {
+        // Description:
+
+        //     Is registry backed.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `is_registry_backed`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::is_registry_backed(&self, kind);
+
         self.registry_backed.contains(&kind)
     }
 
     fn uses_registry_transport(&self, kind: TransportKind) -> bool {
+        // Description:
+
+        //     Uses registry transport.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `uses_registry_transport`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::uses_registry_transport(&self, kind);
+
         self.registry_backed.contains(&kind) && self.providers.is_some()
     }
 
@@ -132,6 +297,40 @@ impl RoutingCommBus {
     where
         F: FnOnce(&mut dyn TransportProvider) -> R,
     {
+        // Description:
+
+        //     With registry transport.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     f: F
+
+        //         Caller-supplied f.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<R> where F: FnOnce(&mut dyn TransportProvider) -> R,
+
+        //         Return value from `with_registry_transport`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::with_registry_transport(&self, kind, f);
+
         if !self.uses_registry_transport(kind) {
             return None;
         }
@@ -147,6 +346,46 @@ impl RoutingCommBus {
         message_type: &str,
         value: RuntimeValue,
     ) {
+        // Description:
+
+        //     Publish external.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //     essage_type: &str
+
+        //         Caller-supplied essage type.
+
+        //     value: RuntimeValue
+
+        //         Caller-supplied value.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::publish_external(&mut self, kind, opic_path, essage_type, value);
+
         if self.uses_registry_transport(kind) {
             let _ = self.with_registry_transport(kind, |provider| {
                 if provider.is_connected() {
@@ -161,6 +400,38 @@ impl RoutingCommBus {
     }
 
     fn subscribe_external(&mut self, kind: TransportKind, topic_path: &str) {
+        // Description:
+
+        //     Subscribe external.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::subscribe_external(&mut self, kind, opic_path);
+
         if let Some(()) = self.with_registry_transport(kind, |provider| {
             provider.subscribe(topic_path);
         }) {
@@ -172,6 +443,40 @@ impl RoutingCommBus {
     }
 
     fn receive_external(&mut self, kind: TransportKind, topic_path: &str) -> Option<RuntimeValue> {
+        // Description:
+
+        //     Receive external.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<RuntimeValue>
+
+        //         Return value from `receive_external`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::receive_external(&mut self, kind, opic_path);
+
         if let Some(value) = self
             .with_registry_transport(kind, |provider| {
                 if provider.is_connected() {
@@ -193,6 +498,38 @@ impl RoutingCommBus {
     }
 
     fn connect_external(&mut self, kind: TransportKind, config: &TransportConfig) {
+        // Description:
+
+        //     Connect external.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //     config: &TransportConfig
+
+        //         Caller-supplied config.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::connect_external(&mut self, kind, config);
+
         if let Some(()) = self.with_registry_transport(kind, |provider| {
             let runtime_config = adapter_config_to_runtime(config);
             let _ = provider.connect(&runtime_config);
@@ -209,6 +546,34 @@ impl RoutingCommBus {
     }
 
     fn disconnect_external(&mut self, kind: TransportKind) {
+        // Description:
+
+        //     Disconnect external.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::disconnect_external(&mut self, kind);
+
         if let Some(()) = self.with_registry_transport(kind, |provider| {
             provider.disconnect();
         }) {
@@ -224,20 +589,35 @@ impl RoutingCommBus {
     }
 
     pub fn configure(&mut self, config: TransportConfig) -> Result<(), String> {
-        // Configure.
+        // Description:
+
+        //     Configure.
+
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `config` — input value
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     config: TransportConfig
+
+        //         Caller-supplied config.
+
         //
-        // Returns:
-        // Success value on completion, or an error.
+
+        // Outputs:
+
+        //     result: Result<(), String>
+
+        //         Return value from `configure`.
+
         //
-        // Options:
-        // None.
-        //
+
         // Example:
-        // let result = instance.configure(config);
+
+        //     let result = spanda_transport_routing::configure(&mut self, config);
 
         let mut config = config;
         if TransportSecurityConfig::url_requires_tls(config.broker_url.as_deref())
@@ -274,22 +654,35 @@ impl RoutingCommBus {
     }
 
     pub fn adapter(&self, kind: TransportKind) -> Option<&dyn TransportAdapter> {
-        // Adapter.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `kind` — input value
-        //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.adapter(kind);
+        // Description:
 
-        // Match on kind and handle each case.
+        //     Adapter.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<&dyn TransportAdapter>
+
+        //         Return value from `adapter`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::adapter(&self, kind);
         if self.uses_registry_transport(kind) {
             return None;
         }
@@ -303,22 +696,35 @@ impl RoutingCommBus {
     }
 
     pub fn adapter_mut(&mut self, kind: TransportKind) -> Option<&mut dyn TransportAdapter> {
-        // Adapter mut.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `kind` — input value
-        //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.adapter_mut(kind);
+        // Description:
 
-        // Match on kind and handle each case.
+        //     Adapter mut.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<&mut dyn TransportAdapter>
+
+        //         Return value from `adapter_mut`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::adapter_mut(&mut self, kind);
         if self.uses_registry_transport(kind) {
             return None;
         }
@@ -332,44 +738,94 @@ impl RoutingCommBus {
     }
 
     pub fn memory(&self) -> &InMemoryCommBus {
-        // Memory.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &InMemoryCommBus.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.memory();
+        // Description:
 
-        // Return memory from this handle.
+        //     Memory.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: &InMemoryCommBus
+
+        //         Return value from `memory`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::memory(&self);
         &self.memory
     }
 
     pub fn memory_mut(&mut self) -> &mut InMemoryCommBus {
-        // Memory mut.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &mut InMemoryCommBus.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.memory_mut();
+        // Description:
 
-        // Produce memory as the result.
+        //     Memory mut.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: &mut InMemoryCommBus
+
+        //         Return value from `memory_mut`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::memory_mut(&mut self);
         &mut self.memory
     }
 
     fn is_external_connected(&self, kind: TransportKind) -> bool {
+        // Description:
+
+        //     Is external connected.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     kind: TransportKind
+
+        //         Caller-supplied kind.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `is_external_connected`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::is_external_connected(&self, kind);
+
         if let Some(connected) =
             self.with_registry_transport(kind, |provider| provider.is_connected())
         {
@@ -381,62 +837,95 @@ impl RoutingCommBus {
     }
 
     pub fn register_robot(&mut self, name: impl Into<String>) {
-        // Register robot.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.register_robot(name);
+        // Description:
 
-        // Call register robot on the current instance.
+        //     Register robot.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     name: impl Into<String>
+
+        //         Caller-supplied name.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::register_robot(&mut self, name);
         self.memory.register_robot(name);
     }
 
     pub fn register_agent(&mut self, name: impl Into<String>) {
-        // Register agent.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.register_agent(name);
+        // Description:
 
-        // Call register agent on the current instance.
+        //     Register agent.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     name: impl Into<String>
+
+        //         Caller-supplied name.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::register_agent(&mut self, name);
         self.memory.register_agent(name);
     }
 
     pub fn register_device(&mut self, name: impl Into<String>) {
-        // Register device.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.register_device(name);
+        // Description:
 
-        // Call register device on the current instance.
+        //     Register device.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     name: impl Into<String>
+
+        //         Caller-supplied name.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::register_device(&mut self, name);
         self.memory.register_device(name);
     }
 
@@ -448,48 +937,70 @@ impl RoutingCommBus {
         transport: TransportKind,
         source_id: Option<&str>,
     ) {
-        // Publish peer.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `peer` — input value
-        // - `topic` — input value
-        // - `value` — input value
-        // - `transport` — input value
-        // - `source_id` — optional sender identity
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.publish_peer(peer, topic, value, transport, source_id);
+        // Description:
 
-        // Call publish peer on the current instance.
+        //     Publish peer.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     peer: &str
+
+        //         Caller-supplied peer.
+
+        //     opic: &str
+
+        //         Caller-supplied opic.
+
+        //     value: RuntimeValue
+
+        //         Caller-supplied value.
+
+        //     ranspor: TransportKind
+
+        //         Caller-supplied ranspor.
+
+        //     source_id: Option<&str>
+
+        //         Caller-supplied source id.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::publish_peer(&mut self, peer, opic, value, ranspor, source_id);
         self.memory
             .publish_peer(peer, topic, value, transport, source_id);
     }
 
     /// Poll external transport adapters for inbound messages on subscribed topics.
     pub fn poll_inbound(&mut self, transport: TransportKind) -> Vec<(String, CommEnvelope)> {
-        // Poll inbound.
+        // Description:
+        //     Poll inbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `transport` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
         //
-        // Returns:
-        // Vec<(String, CommEnvelope)>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<(String, CommEnvelope)>
+        //         Return value from `poll_inbound`.
         //
         // Example:
-        // let result = instance.poll_inbound(transport);
-
-        // Compute paths for the following logic.
+        //     let result = spanda_transport_routing::poll_inbound(&mut self, ranspor);
         let paths = self.memory.subscription_paths();
         let mut inbound = Vec::new();
         let kinds = [
@@ -534,20 +1045,20 @@ impl RoutingCommBus {
 
     /// Connect the active transport adapter and resubscribe all in-memory topic paths.
     pub fn reconnect_transport(&mut self, transport: TransportKind) {
-        // Reconnect transport.
+        // Description:
+        //     Reconnect transport.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `transport` — transport kind to activate after connectivity failover
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.reconnect_transport(transport);
+        //     let result = spanda_transport_routing::reconnect_transport(&mut self, ranspor);
 
         let paths = self.memory.subscription_paths();
         let config = self.config.clone();
@@ -623,25 +1134,28 @@ impl CommBus for RoutingCommBus {
         transport: TransportKind,
         source_id: Option<&str>,
     ) {
-        // Publish.
+        // Description:
+        //     Publish.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `message_type` — input value
-        // - `value` — input value
-        // - `transport` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     opic_path: &str
+        //         Caller-supplied opic path.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish(topic_path, message_type, value, transport);
-
-        // Call memory on the current instance.
+        //     let result = spanda_transport_routing::publish(&mut self, opic_path, essage_type, value, ranspor, source_id);
         self.memory.publish(
             topic_path,
             message_type,
@@ -668,63 +1182,103 @@ impl CommBus for RoutingCommBus {
     }
 
     fn subscribe(&mut self, topic_path: &str, handler: &str) {
-        // Subscribe.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `handler` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.subscribe(topic_path, handler);
+        // Description:
 
-        // Call subscribe on the current instance.
+        //     Subscribe.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //     handler: &str
+
+        //         Caller-supplied handler.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::subscribe(&mut self, opic_path, handler);
         self.memory.subscribe(topic_path, handler);
     }
 
     fn receive(&mut self, topic_path: &str) -> Option<RuntimeValue> {
-        // Receive.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.receive(topic_path);
+        // Description:
 
-        // Call receive on the current instance.
+        //     Receive.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<RuntimeValue>
+
+        //         Return value from `receive`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::receive(&mut self, opic_path);
         self.memory.receive(topic_path)
     }
 
     fn receive_envelope(&mut self, topic_path: &str) -> Option<CommEnvelope> {
-        // Receive envelope.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        //
-        // Returns:
-        // Some envelope on success, otherwise none.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.receive_envelope(topic_path);
+        // Description:
 
-        // Call receive envelope on the current instance.
+        //     Receive envelope.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<CommEnvelope>
+
+        //         Return value from `receive_envelope`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::receive_envelope(&mut self, opic_path);
         self.memory.receive_envelope(topic_path)
     }
 
@@ -734,24 +1288,43 @@ impl CommBus for RoutingCommBus {
         service_type: &str,
         request: Option<RuntimeValue>,
     ) -> RuntimeValue {
-        // Call service.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `service_name` — input value
-        // - `service_type` — input value
-        // - `request` — input value
-        //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.call_service(service_name, service_type, request);
+        // Description:
 
-        // Call memory on the current instance.
+        //     Call service.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     service_name: &str
+
+        //         Caller-supplied service name.
+
+        //     service_type: &str
+
+        //         Caller-supplied service type.
+
+        //     request: Option<RuntimeValue>
+
+        //         Caller-supplied request.
+
+        //
+
+        // Outputs:
+
+        //     result: RuntimeValue
+
+        //         Return value from `call_service`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::call_service(&mut self, service_name, service_type, reques);
         self.memory
             .call_service(service_name, service_type, request.clone())
     }
@@ -762,164 +1335,268 @@ impl CommBus for RoutingCommBus {
         action_type: &str,
         goal: RuntimeValue,
     ) -> RuntimeValue {
-        // Send action.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `action_name` — input value
-        // - `action_type` — input value
-        // - `goal` — input value
-        //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.send_action(action_name, action_type, goal);
+        // Description:
 
-        // Call send action on the current instance.
+        //     Send action.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     action_name: &str
+
+        //         Caller-supplied action name.
+
+        //     action_type: &str
+
+        //         Caller-supplied action type.
+
+        //     goal: RuntimeValue
+
+        //         Caller-supplied goal.
+
+        //
+
+        // Outputs:
+
+        //     result: RuntimeValue
+
+        //         Return value from `send_action`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::send_action(&mut self, action_name, action_type, goal);
         self.memory.send_action(action_name, action_type, goal)
     }
 
     fn discover(&self, target: DiscoverTarget, filter: &DiscoverFilter) -> Vec<String> {
-        // Discover.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `target` — input value
-        // - `filter` — input value
-        //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.discover(target, filter);
+        // Description:
 
-        // Call discover on the current instance.
+        //     Discover.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     arge: DiscoverTarget
+
+        //         Caller-supplied arge.
+
+        //     filter: &DiscoverFilter
+
+        //         Caller-supplied filter.
+
+        //
+
+        // Outputs:
+
+        //     result: Vec<String>
+
+        //         Return value from `discover`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::discover(&self, arge, filter);
         self.memory.discover(target, filter)
     }
 
     fn published_messages(&self) -> Vec<PublishedCommMessage> {
-        // Published messages.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // Vec<PublishedCommMessage>.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.published_messages();
+        // Description:
 
-        // Call published messages on the current instance.
+        //     Published messages.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: Vec<PublishedCommMessage>
+
+        //         Return value from `published_messages`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::published_messages(&self);
         self.memory.published_messages()
     }
 
     fn inject_fault(&mut self, fault: &str) {
-        // Inject fault.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `fault` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.inject_fault(fault);
+        // Description:
 
-        // Call inject fault on the current instance.
+        //     Inject fault.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     faul: &str
+
+        //         Caller-supplied faul.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::inject_fault(&mut self, faul);
         self.memory.inject_fault(fault);
     }
 
     fn set_network_config(&mut self, config: SimNetworkConfig) {
-        // Set network config.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `config` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.set_network_config(config);
+        // Description:
 
-        // Call set network config on the current instance.
+        //     Set network config.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     config: SimNetworkConfig
+
+        //         Caller-supplied config.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::set_network_config(&mut self, config);
         self.memory.set_network_config(config);
     }
 
     fn active_faults(&self) -> Vec<String> {
-        // Active faults.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.active_faults();
+        // Description:
 
-        // Call active faults on the current instance.
+        //     Active faults.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: Vec<String>
+
+        //         Return value from `active_faults`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::active_faults(&self);
         self.memory.active_faults()
     }
 
     fn subscription_paths(&self) -> Vec<String> {
-        // Subscription paths.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.subscription_paths();
+        // Description:
 
-        // Call subscription paths on the current instance.
+        //     Subscription paths.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: Vec<String>
+
+        //         Return value from `subscription_paths`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::subscription_paths(&self);
         self.memory.subscription_paths()
     }
 
     fn push_inbound(&mut self, topic_path: &str, value: RuntimeValue, source_id: Option<&str>) {
-        // Push inbound.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic_path` — input value
-        // - `value` — input value
-        // - `source_id` — optional publisher identity
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.push_inbound(topic_path, value, source_id);
+        // Description:
 
-        // Call push inbound on the current instance.
+        //     Push inbound.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     opic_path: &str
+
+        //         Caller-supplied opic path.
+
+        //     value: RuntimeValue
+
+        //         Caller-supplied value.
+
+        //     source_id: Option<&str>
+
+        //         Caller-supplied source id.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_transport_routing::push_inbound(&mut self, opic_path, value, source_id);
         self.memory.push_inbound(topic_path, value, source_id);
     }
 }
@@ -930,19 +1607,17 @@ mod tests {
 
     #[test]
     fn ros2_adapter_publish_when_connected() {
-        // Ros2 adapter publish when connected.
+        // Description:
+        //     Ros2 adapter publish when connected.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::transport::ros2_adapter_publish_when_connected();
+        //     let result = spanda_transport_routing::ros2_adapter_publish_when_connected();
 
         let mut adapter = Ros2TransportAdapter::default();
         assert!(!adapter.is_connected());
@@ -959,19 +1634,17 @@ mod tests {
 
     #[test]
     fn routing_bus_delegates_ros2_publish() {
-        // Routing bus delegates ros2 publish.
+        // Description:
+        //     Routing bus delegates ros2 publish.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::transport::routing_bus_delegates_ros2_publish();
+        //     let result = spanda_transport_routing::routing_bus_delegates_ros2_publish();
 
         let mut bus = RoutingCommBus::new();
         bus.configure(TransportConfig {
@@ -992,19 +1665,17 @@ mod tests {
 
     #[test]
     fn sim_transport_stays_in_memory_only() {
-        // Sim transport stays in memory only.
+        // Description:
+        //     Sim transport stays in memory only.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::transport::sim_transport_stays_in_memory_only();
+        //     let result = spanda_transport_routing::sim_transport_stays_in_memory_only();
 
         let mut bus = RoutingCommBus::new();
         bus.publish(
@@ -1020,6 +1691,18 @@ mod tests {
 
     #[test]
     fn reconnect_transport_disconnects_inactive_adapters() {
+        // Description:
+        //     Reconnect transport disconnects inactive adapters.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_transport_routing::reconnect_transport_disconnects_inactive_adapters();
+
         let mut bus = RoutingCommBus::new();
         bus.configure(TransportConfig::default()).unwrap();
         bus.subscribe("/scan", "handler");
@@ -1032,6 +1715,18 @@ mod tests {
 
     #[test]
     fn reconnect_transport_resubscribes_on_dds() {
+        // Description:
+        //     Reconnect transport resubscribes on dds.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+        //     let result = spanda_transport_routing::reconnect_transport_resubscribes_on_dds();
+
         let mut bus = RoutingCommBus::new();
         bus.configure(TransportConfig::default()).unwrap();
         bus.subscribe("/scan", "handler");

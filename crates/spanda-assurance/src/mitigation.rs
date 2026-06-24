@@ -14,6 +14,21 @@ pub struct MitigationReport {
 
 /// Extract mitigation plans from program declarations.
 pub fn extract_mitigations(program: &Program) -> MitigationReport {
+    // Description:
+    //     Extract mitigations.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: MitigationReport
+    //         Return value from `extract_mitigations`.
+    //
+    // Example:
+
+    //     let result = spanda_assurance::mitigation::extract_mitigations(progra);
+
     let Program::Program {
         mitigations,
         operating_modes,

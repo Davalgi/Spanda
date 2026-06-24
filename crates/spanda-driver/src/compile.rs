@@ -16,41 +16,58 @@ pub struct CompileResult {
 
 /// Tokenize Spanda source (maps lexer diagnostics to `SpandaError`).
 pub fn tokenize(source: &str) -> Result<Vec<Token>, SpandaError> {
-    // Tokenize source text for tooling that needs tokens without full compile.
+    // Description:
+    //     Tokenize.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Token vector, or a lexer diagnostic error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Vec<Token>, SpandaError>
+    //         Return value from `tokenize`.
     //
     // Example:
-    // let tokens = tokenize(source)?;
+
+    //     let result = spanda_driver::compile::tokenize(source);
 
     tokenize_source(source)
 }
 
 fn tokenize_source(source: &str) -> Result<Vec<Token>, SpandaError> {
+    // Description:
+    //     Tokenize source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<Vec<Token>, SpandaError>
+    //         Return value from `tokenize_source`.
+    //
+    // Example:
+
+    //     let result = spanda_driver::compile::tokenize_source(source);
+
     spanda_lexer::tokenize(source).map_err(SpandaError::from)
 }
 
 pub fn compile(source: &str) -> Result<CompileResult, SpandaError> {
-    // Tokenize, parse, and type-check a Spanda source program.
+    // Description:
+    //     Compile.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Compiled program and source snapshot, or a lexer/parser/type error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<CompileResult, SpandaError>
+    //         Return value from `compile`.
     //
     // Example:
-    // let compiled = compile(source)?;
+
+    //     let result = spanda_driver::compile::compile(source);
 
     let tokens = tokenize_source(source)?;
     let program = parse(tokens)?;
@@ -62,19 +79,20 @@ pub fn compile(source: &str) -> Result<CompileResult, SpandaError> {
 }
 
 pub fn check(source: &str) -> Result<(), SpandaError> {
-    // Type-check source without retaining the parsed program.
+    // Description:
+    //     Check.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Unit on success, or a compile diagnostic error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `check`.
     //
     // Example:
-    // check(source)?;
+
+    //     let result = spanda_driver::compile::check(source);
 
     let tokens = tokenize_source(source)?;
     let program = parse(tokens)?;
@@ -82,20 +100,22 @@ pub fn check(source: &str) -> Result<(), SpandaError> {
 }
 
 pub fn check_with_registry(source: &str, registry: &ModuleRegistry) -> Result<(), SpandaError> {
-    // Type-check source with a project module registry for import resolution.
+    // Description:
+    //     Check with registry.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `registry` — loaded project modules
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Unit on success, or a compile diagnostic error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), SpandaError>
+    //         Return value from `check_with_registry`.
     //
     // Example:
-    // check_with_registry(source, &registry)?;
+
+    //     let result = spanda_driver::compile::check_with_registry(source, registry);
 
     let tokens = tokenize_source(source)?;
     let program = parse(tokens)?;
@@ -107,20 +127,22 @@ pub fn compile_with_registry(
     source: &str,
     registry: &ModuleRegistry,
 ) -> Result<CompileResult, SpandaError> {
-    // Compile source with a project module registry for import resolution.
+    // Description:
+    //     Compile with registry.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `registry` — loaded project modules
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     registry: &ModuleRegistry
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Compiled program and source snapshot, or a compile error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<CompileResult, SpandaError>
+    //         Return value from `compile_with_registry`.
     //
     // Example:
-    // let compiled = compile_with_registry(source, &registry)?;
+
+    //     let result = spanda_driver::compile::compile_with_registry(source, registry);
 
     let tokens = tokenize_source(source)?;
     let program = parse(tokens)?;
@@ -133,6 +155,21 @@ pub fn compile_with_registry(
 }
 
 fn type_check_error(err: TypeCheckError) -> SpandaError {
+    // Description:
+    //     Type check error.
+    //
+    // Inputs:
+    //     err: TypeCheckError
+    //         Caller-supplied err.
+    //
+    // Outputs:
+    //     result: SpandaError
+    //         Return value from `type_check_error`.
+    //
+    // Example:
+
+    //     let result = spanda_driver::compile::type_check_error(err);
+
     SpandaError::TypeCheck {
         diagnostics: err.diagnostics,
     }

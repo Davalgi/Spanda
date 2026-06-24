@@ -4,6 +4,19 @@ use spanda_core::{check, lexer, parser, types};
 
 #[test]
 fn parses_task_deadline_and_jitter() {
+    // Description:
+    //     Parses task deadline and jitter.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::parses_task_deadline_and_jitter();
+
     let source = r#"
 robot R {
     task safety_monitor critical every 5ms deadline 2ms jitter <= 1ms {
@@ -18,6 +31,19 @@ robot R {
 
 #[test]
 fn rejects_deadline_greater_than_period() {
+    // Description:
+    //     Rejects deadline greater than period.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::rejects_deadline_greater_than_period();
+
     let source = r#"
 robot R {
     task bad every 10ms deadline 20ms {
@@ -34,6 +60,19 @@ robot R {
 
 #[test]
 fn parses_watchdog_and_pipeline() {
+    // Description:
+    //     Parses watchdog and pipeline.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::parses_watchdog_and_pipeline();
+
     let source = r#"
 robot R {
     task SafetyMonitor critical every 10ms {
@@ -56,6 +95,19 @@ robot R {
 
 #[test]
 fn parses_regex_literal_and_validate_rule() {
+    // Description:
+    //     Parses regex literal and validate rule.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::parses_regex_literal_and_validate_rule();
+
     let source = r#"
 validate RobotId {
     value matches /^robot-[0-9]{3}$/;
@@ -75,6 +127,19 @@ robot R {
 
 #[test]
 fn rejects_invalid_regex_literal() {
+    // Description:
+    //     Rejects invalid regex literal.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::rejects_invalid_regex_literal();
+
     let source = r#"
 robot R {
     task t every 10ms {
@@ -94,6 +159,19 @@ robot R {
 
 #[test]
 fn parses_subscribe_filter_and_log_trigger() {
+    // Description:
+    //     Parses subscribe filter and log trigger.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::parses_subscribe_filter_and_log_trigger();
+
     let source = r#"
 robot R {
     on log matches /EMERGENCY_STOP|MOTOR_FAULT/ {
@@ -110,6 +188,19 @@ robot R {
 
 #[test]
 fn watchdog_runtime_keeps_heartbeats_when_task_runs() {
+    // Description:
+    //     Watchdog runtime keeps heartbeats when task runs.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::watchdog_runtime_keeps_heartbeats_when_task_runs();
+
     let source = include_str!("../../../examples/realtime/watchdog.sd");
     let result = spanda_core::run(
         source,
@@ -133,6 +224,19 @@ fn watchdog_runtime_keeps_heartbeats_when_task_runs() {
 
 #[test]
 fn pipeline_runtime_records_execution_via_run_pipeline() {
+    // Description:
+    //     Pipeline runtime records execution via run pipeline.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::pipeline_runtime_records_execution_via_run_pipeline();
+
     let source = r#"
 robot R {
     pipeline obstacle_avoidance budget 30ms {
@@ -162,6 +266,19 @@ robot R {
 
 #[test]
 fn mission_trace_records_scheduler_frames() {
+    // Description:
+    //     Mission trace records scheduler frames.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::mission_trace_records_scheduler_frames();
+
     let source = r#"
 robot R {
     task sense every 10ms {
@@ -185,6 +302,19 @@ robot R {
 
 #[test]
 fn verify_traces_detects_event_mismatch() {
+    // Description:
+    //     Verify traces detects event mismatch.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::verify_traces_detects_event_mismatch();
+
     use spanda_core::replay::{verify_traces, MissionTrace};
     let mut expected = MissionTrace::new("test.sd");
     expected.record(10.0, "scheduler_tick", serde_json::json!({}));
@@ -197,6 +327,19 @@ fn verify_traces_detects_event_mismatch() {
 
 #[test]
 fn mission_trace_includes_state_snapshots() {
+    // Description:
+    //     Mission trace includes state snapshots.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::mission_trace_includes_state_snapshots();
+
     let source = r#"
 robot R {
     task sense every 10ms {
@@ -220,6 +363,19 @@ robot R {
 
 #[test]
 fn playback_applies_recorded_state() {
+    // Description:
+    //     Playback applies recorded state.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::realtime_regex::playback_applies_recorded_state();
+
     use spanda_core::replay::playback_frames;
     use spanda_core::simulator::{create_default_simulator, SimulatorConfig};
     let source = r#"

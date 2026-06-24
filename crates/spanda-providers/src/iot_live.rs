@@ -5,6 +5,20 @@ use std::process::{Command, Stdio};
 
 /// Return true when live Modbus hardware reads are enabled.
 pub fn live_modbus_enabled() -> bool {
+    // Description:
+    //     Live modbus enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_modbus_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_modbus_enabled();
+
     std::env::var("SPANDA_LIVE_MODBUS")
         .ok()
         .as_deref()
@@ -13,6 +27,20 @@ pub fn live_modbus_enabled() -> bool {
 
 /// Return true when live OPC-UA bridge reads are enabled.
 pub fn live_opcua_enabled() -> bool {
+    // Description:
+    //     Live opcua enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_opcua_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_opcua_enabled();
+
     std::env::var("SPANDA_LIVE_OPCUA")
         .ok()
         .as_deref()
@@ -21,19 +49,19 @@ pub fn live_opcua_enabled() -> bool {
 
 /// Read a Modbus holding register from live TCP hardware when enabled.
 pub fn read_modbus_register_live(address: u16) -> Option<f64> {
-    // Read a Modbus holding register from live TCP hardware when enabled.
+    // Description:
+    //     Read modbus register live.
     //
-    // Parameters:
-    // - `address` — register address (40001-style values are normalized)
+    // Inputs:
+    //     address: u16
+    //         Caller-supplied address.
     //
-    // Returns:
-    // Register value when live read succeeds, otherwise none.
-    //
-    // Options:
-    // - `SPANDA_LIVE_MODBUS=1`, `SPANDA_MODBUS_HOST`, `SPANDA_MODBUS_PORT`, `SPANDA_MODBUS_UNIT`
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `read_modbus_register_live`.
     //
     // Example:
-    // let value = read_modbus_register_live(40001);
+    //     let result = spanda_providers::iot_live::read_modbus_register_live(address);
 
     // Skip live path when the env gate is off.
     if !live_modbus_enabled() {
@@ -54,19 +82,19 @@ pub fn read_modbus_register_live(address: u16) -> Option<f64> {
 
 /// Read an OPC-UA node via the Python bridge when enabled.
 pub fn read_opcua_node_live(node: &str) -> Option<String> {
-    // Read an OPC-UA node via the Python bridge when enabled.
+    // Description:
+    //     Read opcua node live.
     //
-    // Parameters:
-    // - `node` — OPC-UA node id string
+    // Inputs:
+    //     node: &str
+    //         Caller-supplied node.
     //
-    // Returns:
-    // Node value when live read succeeds, otherwise none.
-    //
-    // Options:
-    // - `SPANDA_LIVE_OPCUA=1`, `SPANDA_OPCUA_ENDPOINT`
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_opcua_node_live`.
     //
     // Example:
-    // let value = read_opcua_node_live("ns=2;s=Temperature");
+    //     let result = spanda_providers::iot_live::read_opcua_node_live(node);
 
     // Skip live path when the env gate is off.
     if !live_opcua_enabled() {
@@ -77,6 +105,21 @@ pub fn read_opcua_node_live(node: &str) -> Option<String> {
 }
 
 fn live_iot_flag(name: &str) -> bool {
+    // Description:
+    //     Live iot flag.
+    //
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_iot_flag`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_iot_flag(name);
+
     std::env::var(name)
         .ok()
         .as_deref()
@@ -85,25 +128,98 @@ fn live_iot_flag(name: &str) -> bool {
 
 /// Return true when live Zigbee bridge reads are enabled.
 pub fn live_zigbee_enabled() -> bool {
+    // Description:
+    //     Live zigbee enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_zigbee_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_zigbee_enabled();
+
     live_iot_flag("SPANDA_LIVE_ZIGBEE")
 }
 
 /// Return true when live LoRa bridge reads are enabled.
 pub fn live_lora_enabled() -> bool {
+    // Description:
+    //     Live lora enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_lora_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_lora_enabled();
+
     live_iot_flag("SPANDA_LIVE_LORA")
 }
 
 /// Return true when live Matter bridge reads are enabled.
 pub fn live_matter_enabled() -> bool {
+    // Description:
+    //     Live matter enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_matter_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_matter_enabled();
+
     live_iot_flag("SPANDA_LIVE_MATTER")
 }
 
 /// Return true when live CAN bus bridge reads are enabled.
 pub fn live_canbus_enabled() -> bool {
+    // Description:
+    //     Live canbus enabled.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `live_canbus_enabled`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::live_canbus_enabled();
+
     live_iot_flag("SPANDA_LIVE_CANBUS")
 }
 
 pub fn read_zigbee_attribute_live(device: &str, cluster: &str) -> Option<String> {
+    // Description:
+    //     Read zigbee attribute live.
+    //
+    // Inputs:
+    //     device: &str
+    //         Caller-supplied device.
+    //     cluster: &str
+    //         Caller-supplied cluster.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_zigbee_attribute_live`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_zigbee_attribute_live(device, cluster);
+
     if !live_zigbee_enabled() {
         return None;
     }
@@ -117,6 +233,21 @@ pub fn read_zigbee_attribute_live(device: &str, cluster: &str) -> Option<String>
 }
 
 pub fn read_lora_payload_live(device_id: &str) -> Option<String> {
+    // Description:
+    //     Read lora payload live.
+    //
+    // Inputs:
+    //     device_id: &str
+    //         Caller-supplied device id.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_lora_payload_live`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_lora_payload_live(device_id);
+
     if !live_lora_enabled() {
         return None;
     }
@@ -127,6 +258,23 @@ pub fn read_lora_payload_live(device_id: &str) -> Option<String> {
 }
 
 pub fn read_matter_cluster_live(node: &str, cluster: &str) -> Option<f64> {
+    // Description:
+    //     Read matter cluster live.
+    //
+    // Inputs:
+    //     node: &str
+    //         Caller-supplied node.
+    //     cluster: &str
+    //         Caller-supplied cluster.
+    //
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `read_matter_cluster_live`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_matter_cluster_live(node, cluster);
+
     if !live_matter_enabled() {
         return None;
     }
@@ -140,6 +288,21 @@ pub fn read_matter_cluster_live(node: &str, cluster: &str) -> Option<f64> {
 }
 
 pub fn read_canbus_frame_live(can_id: u32) -> Option<f64> {
+    // Description:
+    //     Read canbus frame live.
+    //
+    // Inputs:
+    //     can_id: u32
+    //         Caller-supplied can id.
+    //
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `read_canbus_frame_live`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_canbus_frame_live(can_id);
+
     if !live_canbus_enabled() {
         return None;
     }
@@ -150,6 +313,23 @@ pub fn read_canbus_frame_live(can_id: u32) -> Option<f64> {
 }
 
 fn read_string_via_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<String> {
+    // Description:
+    //     Read string via python bridge.
+    //
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: Vec<serde_json::Value>
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_string_via_python_bridge`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_string_via_python_bridge(fn_name, args);
+
     match call_python_bridge(fn_name, args)?.get("result") {
         Some(serde_json::Value::String(text)) if !text.is_empty() => Some(text.clone()),
         _ => None,
@@ -157,6 +337,23 @@ fn read_string_via_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) ->
 }
 
 fn read_number_via_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<f64> {
+    // Description:
+    //     Read number via python bridge.
+    //
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: Vec<serde_json::Value>
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `read_number_via_python_bridge`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::iot_live::read_number_via_python_bridge(fn_name, args);
+
     match call_python_bridge(fn_name, args)?.get("result") {
         Some(serde_json::Value::Number(n)) => n.as_f64(),
         Some(serde_json::Value::String(text)) => text.parse().ok(),
@@ -166,19 +363,20 @@ fn read_number_via_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) ->
 
 #[cfg(feature = "live-iot")]
 fn read_modbus_tcp(address: u16) -> Result<f64, String> {
-    // Read one holding register over Modbus TCP using the pure-Rust client.
+    // Description:
+    //     Read modbus tcp.
     //
-    // Parameters:
-    // - `address` — register address
+    // Inputs:
+    //     address: u16
+    //         Caller-supplied address.
     //
-    // Returns:
-    // Register value as f64, or an error string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<f64, String>
+    //         Return value from `read_modbus_tcp`.
     //
     // Example:
-    // let value = read_modbus_tcp(40001)?;
+
+    //     let result = spanda_providers::iot_live::read_modbus_tcp(address);
 
     use modbus::{tcp, Client};
 
@@ -207,19 +405,20 @@ fn read_modbus_tcp(address: u16) -> Result<f64, String> {
 }
 
 fn read_modbus_via_python_bridge(address: u16) -> Option<f64> {
-    // Ask the Python IoT bridge to read a Modbus register.
+    // Description:
+    //     Read modbus via python bridge.
     //
-    // Parameters:
-    // - `address` — register address
+    // Inputs:
+    //     address: u16
+    //         Caller-supplied address.
     //
-    // Returns:
-    // Register value when the bridge succeeds, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<f64>
+    //         Return value from `read_modbus_via_python_bridge`.
     //
     // Example:
-    // let value = read_modbus_via_python_bridge(40001);
+
+    //     let result = spanda_providers::iot_live::read_modbus_via_python_bridge(address);
 
     let host = std::env::var("SPANDA_MODBUS_HOST").unwrap_or_else(|_| "127.0.0.1".into());
     let port = std::env::var("SPANDA_MODBUS_PORT").unwrap_or_else(|_| "502".into());
@@ -238,19 +437,20 @@ fn read_modbus_via_python_bridge(address: u16) -> Option<f64> {
 }
 
 fn read_opcua_via_python_bridge(node: &str) -> Option<String> {
-    // Ask the Python IoT bridge to read an OPC-UA node.
+    // Description:
+    //     Read opcua via python bridge.
     //
-    // Parameters:
-    // - `node` — OPC-UA node id
+    // Inputs:
+    //     node: &str
+    //         Caller-supplied node.
     //
-    // Returns:
-    // Node value when the bridge succeeds, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `read_opcua_via_python_bridge`.
     //
     // Example:
-    // let value = read_opcua_via_python_bridge("ns=2;s=Temperature");
+
+    //     let result = spanda_providers::iot_live::read_opcua_via_python_bridge(node);
 
     let endpoint = std::env::var("SPANDA_OPCUA_ENDPOINT")
         .unwrap_or_else(|_| "opc.tcp://127.0.0.1:4840".into());
@@ -269,20 +469,22 @@ fn read_opcua_via_python_bridge(node: &str) -> Option<String> {
 }
 
 fn call_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<serde_json::Value> {
-    // Invoke `scripts/spanda_python_bridge.py` with a JSON request.
+    // Description:
+    //     Call python bridge.
     //
-    // Parameters:
-    // - `fn_name` — bridge handler name
-    // - `args` — handler arguments
+    // Inputs:
+    //     fn_name: &str
+    //         Caller-supplied fn name.
+    //     args: Vec<serde_json::Value>
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Parsed JSON response when the bridge succeeds, otherwise none.
-    //
-    // Options:
-    // - `SPANDA_PYTHON_BRIDGE` overrides script path
+    // Outputs:
+    //     result: Option<serde_json::Value>
+    //         Return value from `call_python_bridge`.
     //
     // Example:
-    // let response = call_python_bridge("modbus_read_register", vec![]);
+
+    //     let result = spanda_providers::iot_live::call_python_bridge(fn_name, args);
 
     let script = bridge_script_path()?;
     let python = std::env::var("SPANDA_PYTHON").unwrap_or_else(|_| "python3".into());
@@ -311,19 +513,19 @@ fn call_python_bridge(fn_name: &str, args: Vec<serde_json::Value>) -> Option<ser
 }
 
 fn bridge_script_path() -> Option<String> {
-    // Resolve the Python bridge script path from env or repo layout.
+    // Description:
+    //     Bridge script path.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Script path when found, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `bridge_script_path`.
     //
     // Example:
-    // let path = bridge_script_path();
+
+    //     let result = spanda_providers::iot_live::bridge_script_path();
 
     if let Ok(path) = std::env::var("SPANDA_PYTHON_BRIDGE") {
         if std::path::Path::new(&path).is_file() {
@@ -355,6 +557,19 @@ mod tests {
 
     #[test]
     fn live_modbus_disabled_by_default() {
+        // Description:
+        //     Live modbus disabled by default.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_providers::iot_live::live_modbus_disabled_by_default();
+
         std::env::remove_var("SPANDA_LIVE_MODBUS");
         assert!(!live_modbus_enabled());
         assert!(read_modbus_register_live(40001).is_none());

@@ -238,18 +238,18 @@ pub enum UnitKind {
 
 impl UnitKind {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -334,19 +334,19 @@ impl UnitKind {
     }
 
     pub fn from_lexeme(lexeme: &str) -> Self {
-        // Construct from lexeme.
+        // Description:
+        //     From lexeme.
         //
-        // Parameters:
-        // - `lexeme` — input value
+        // Inputs:
+        //     lexeme: &str
+        //         Caller-supplied lexeme.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_lexeme`.
         //
         // Example:
-        // let result = spanda_core::ast::from_lexeme(lexeme);
+        //     let result = spanda_ast::nodes::from_lexeme(lexeme);
 
         // Match on lexeme and handle each case.
         match lexeme {
@@ -915,6 +915,20 @@ pub enum BehaviorDecl {
 }
 
 fn default_void_spanda_type() -> SpandaType {
+    // Description:
+    //     Default void spanda type.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: SpandaType
+    //         Return value from `default_void_spanda_type`.
+    //
+    // Example:
+
+    //     let result = spanda_ast::nodes::default_void_spanda_type();
+
     SpandaType::Void
 }
 
@@ -1167,19 +1181,19 @@ pub enum BinaryOp {
 
 impl BinaryOp {
     pub fn from_lexeme(lexeme: &str) -> Option<Self> {
-        // Construct from lexeme.
+        // Description:
+        //     From lexeme.
         //
-        // Parameters:
-        // - `lexeme` — input value
+        // Inputs:
+        //     lexeme: &str
+        //         Caller-supplied lexeme.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<Self>
+        //         Return value from `from_lexeme`.
         //
         // Example:
-        // let result = spanda_core::ast::from_lexeme(lexeme);
+        //     let result = spanda_ast::nodes::from_lexeme(lexeme);
 
         // Match on lexeme and handle each case.
         match lexeme {
@@ -1200,18 +1214,18 @@ impl BinaryOp {
     }
 
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1246,19 +1260,19 @@ pub const ACTION_TYPES: &[&str] = &["NavigateTo", "FollowPath", "PickObject"];
 // Helpers to access inner fields ergonomically
 impl Program {
     pub fn imports(&self) -> &[ImportDecl] {
-        // Imports.
+        // Description:
+        //     Imports.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[ImportDecl].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[ImportDecl]
+        //         Return value from `imports`.
         //
         // Example:
-        // let result = instance.imports();
+        //     let result = spanda_ast::nodes::imports(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1267,19 +1281,19 @@ impl Program {
     }
 
     pub fn robots(&self) -> &[RobotDecl] {
-        // Robots.
+        // Description:
+        //     Robots.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[RobotDecl].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[RobotDecl]
+        //         Return value from `robots`.
         //
         // Example:
-        // let result = instance.robots();
+        //     let result = spanda_ast::nodes::robots(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -1290,19 +1304,19 @@ impl Program {
 
 impl RobotDecl {
     pub fn name(&self) -> &str {
-        // Name.
+        // Description:
+        //     Name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &str
+        //         Return value from `name`.
         //
         // Example:
-        // let result = instance.name();
+        //     let result = spanda_ast::nodes::name(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {

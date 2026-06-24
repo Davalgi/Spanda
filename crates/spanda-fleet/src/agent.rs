@@ -49,16 +49,69 @@ pub struct FleetAgentState {
 }
 
 pub fn default_fleet_agent_state_path() -> PathBuf {
+    // Description:
+    //     Default fleet agent state path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_fleet_agent_state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::default_fleet_agent_state_path();
+
     PathBuf::from(".spanda/fleet-agent-state.json")
 }
 
 pub fn fleet_agent_state_path_for(robot_name: &str) -> PathBuf {
-    // Keep one state file per robot so concurrent agents do not clobber identity.
+    // Description:
+
+    //     Fleet agent state path for.
+
+    //
+
+    // Inputs:
+
+    //     robot_name: &str
+
+    //         Caller-supplied robot name.
+
+    //
+
+    // Outputs:
+
+    //     result: PathBuf
+
+    //         Return value from `fleet_agent_state_path_for`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::agent::fleet_agent_state_path_for(robot_name);
     let safe_name = robot_name.replace(['/', '\\'], "_");
     PathBuf::from(format!(".spanda/fleet-agent-state/{safe_name}.json"))
 }
 
 pub fn load_fleet_agent_state(path: &Path) -> FleetAgentState {
+    // Description:
+    //     Load fleet agent state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: FleetAgentState
+    //         Return value from `load_fleet_agent_state`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::load_fleet_agent_state(path);
+
     if !path.exists() {
         return FleetAgentState::default();
     }
@@ -69,6 +122,23 @@ pub fn load_fleet_agent_state(path: &Path) -> FleetAgentState {
 }
 
 pub fn save_fleet_agent_state(path: &Path, state: &FleetAgentState) -> Result<(), String> {
+    // Description:
+    //     Save fleet agent state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     state: &FleetAgentState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `save_fleet_agent_state`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::save_fleet_agent_state(path, state);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -77,6 +147,23 @@ pub fn save_fleet_agent_state(path: &Path, state: &FleetAgentState) -> Result<()
 }
 
 fn unauthorized(request: &HttpRequest, state: &FleetAgentState) -> bool {
+    // Description:
+    //     Unauthorized.
+    //
+    // Inputs:
+    //     request: &HttpRequest
+    //         Caller-supplied request.
+    //     state: &FleetAgentState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `unauthorized`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::unauthorized(reques, state);
+
     match (&state.token, &request.authorization) {
         (Some(expected), Some(provided)) => expected != provided,
         (Some(_), None) => true,
@@ -85,7 +172,33 @@ fn unauthorized(request: &HttpRequest, state: &FleetAgentState) -> bool {
 }
 
 fn clear_fleet_agent_on_identity_change(state: &mut FleetAgentState, new_robot_name: &str) {
-    // Drop stale peer history when the on-disk identity does not match startup robot.
+    // Description:
+
+    //     Clear fleet agent on identity change.
+
+    //
+
+    // Inputs:
+
+    //     state: &mut FleetAgentState
+
+    //         Caller-supplied state.
+
+    //     new_robot_name: &str
+
+    //         Caller-supplied new robot name.
+
+    //
+
+    // Outputs:
+
+    //     None.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::agent::clear_fleet_agent_on_identity_change(state, new_robot_name);
     if !state.robot_name.is_empty() && state.robot_name != new_robot_name {
         state.last_peer_messages.clear();
         state.token = None;
@@ -103,6 +216,22 @@ fn clear_fleet_agent_on_identity_change(state: &mut FleetAgentState, new_robot_n
 }
 
 pub(crate) fn apply_recovery_action(state: &mut FleetAgentState, action: &str) {
+    // Description:
+    //     Apply recovery action.
+    //
+    // Inputs:
+    //     state: &mut FleetAgentState
+    //         Caller-supplied state.
+    //     action: &str
+    //         Caller-supplied action.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::apply_recovery_action(state, action);
+
     state.recovery_active = Some(action.to_string());
     state.recovery_actions_applied.push(action.to_string());
     let lower = action.to_ascii_lowercase();
@@ -117,6 +246,23 @@ pub(crate) fn apply_recovery_action(state: &mut FleetAgentState, action: &str) {
 }
 
 fn query_flag(path: &str, key: &str) -> bool {
+    // Description:
+    //     Query flag.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //     key: &str
+    //         Caller-supplied key.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `query_flag`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::query_flag(path, key);
+
     path.split('?').nth(1).is_some_and(|query| {
         query.split('&').any(|pair| {
             pair == key
@@ -128,6 +274,21 @@ fn query_flag(path: &str, key: &str) -> bool {
 }
 
 fn readiness_path_base(path: &str) -> &str {
+    // Description:
+    //     Readiness path base.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: &str
+    //         Return value from `readiness_path_base`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::readiness_path_base(path);
+
     path.split('?').next().unwrap_or(path)
 }
 
@@ -135,7 +296,35 @@ pub fn handle_fleet_agent_request(
     state: &mut FleetAgentState,
     request: HttpRequest,
 ) -> HttpResponse {
-    // Route fleet peer relay protocol requests.
+    // Description:
+
+    //     Handle fleet agent request.
+
+    //
+
+    // Inputs:
+
+    //     state: &mut FleetAgentState
+
+    //         Caller-supplied state.
+
+    //     request: HttpRequest
+
+    //         Caller-supplied request.
+
+    //
+
+    // Outputs:
+
+    //     result: HttpResponse
+
+    //         Return value from `handle_fleet_agent_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::agent::handle_fleet_agent_request(state, reques);
     if unauthorized(&request, state) {
         return HttpResponse {
             status: 401,
@@ -346,6 +535,26 @@ fn handle_connection(
     mut stream: TcpStream,
     tls: Option<Arc<rustls::ServerConfig>>,
 ) {
+    // Description:
+    //     Handle connection.
+    //
+    // Inputs:
+    //     state: Arc<Mutex<FleetAgentState>>
+    //         Caller-supplied state.
+    //     state_path: PathBuf
+    //         Caller-supplied state path.
+    //     strea: TcpStream
+    //         Caller-supplied strea.
+    //     ls: Option<Arc<rustls::ServerConfig>>
+    //         Caller-supplied ls.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::handle_connection(state, state_path, strea, ls);
+
     if let Some(server_config) = tls {
         let shared = Arc::clone(&state);
         let path = state_path.clone();
@@ -397,7 +606,47 @@ pub fn run_fleet_agent_server(
     state_path: &Path,
     tls: Option<DeployAgentTls>,
 ) -> Result<(), String> {
-    // Run the fleet peer relay agent until interrupted.
+    // Description:
+
+    //     Run fleet agent server.
+
+    //
+
+    // Inputs:
+
+    //     bind: &str
+
+    //         Caller-supplied bind.
+
+    //     robot_name: &str
+
+    //         Caller-supplied robot name.
+
+    //     token: Option<String>
+
+    //         Caller-supplied token.
+
+    //     state_path: &Path
+
+    //         Caller-supplied state path.
+
+    //     ls: Option<DeployAgentTls>
+
+    //         Caller-supplied ls.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `run_fleet_agent_server`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::agent::run_fleet_agent_server(bind, robot_name, oken, state_path, ls);
     let mut state = load_fleet_agent_state(state_path);
     clear_fleet_agent_on_identity_change(&mut state, robot_name);
     state.robot_name = robot_name.to_string();
@@ -429,6 +678,23 @@ pub fn spawn_test_fleet_agent(
     robot_name: &str,
     token: Option<String>,
 ) -> Result<(u16, thread::JoinHandle<()>), String> {
+    // Description:
+    //     Spawn test fleet agent.
+    //
+    // Inputs:
+    //     robot_name: &str
+    //         Caller-supplied robot name.
+    //     token: Option<String>
+    //         Caller-supplied token.
+    //
+    // Outputs:
+    //     result: Result<(u16, thread::JoinHandle<()>), String>
+    //         Return value from `spawn_test_fleet_agent`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::spawn_test_fleet_agent(robot_name, oken);
+
     let listener = TcpListener::bind("127.0.0.1:0").map_err(|e| e.to_string())?;
     let port = listener.local_addr().map_err(|e| e.to_string())?.port();
     let state = FleetAgentState {
@@ -448,6 +714,25 @@ pub fn spawn_test_fleet_agent(
 }
 
 pub fn fleet_entry_for_port(robot_name: &str, port: u16, token: Option<String>) -> FleetAgentEntry {
+    // Description:
+    //     Fleet entry for port.
+    //
+    // Inputs:
+    //     robot_name: &str
+    //         Caller-supplied robot name.
+    //     por: u16
+    //         Caller-supplied por.
+    //     token: Option<String>
+    //         Caller-supplied token.
+    //
+    // Outputs:
+    //     result: FleetAgentEntry
+    //         Return value from `fleet_entry_for_port`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent::fleet_entry_for_port(robot_name, por, oken);
+
     FleetAgentEntry {
         robot_name: robot_name.to_string(),
         url: format!("http://127.0.0.1:{port}"),
@@ -461,6 +746,19 @@ mod agent_state_path_tests {
 
     #[test]
     fn distinct_robots_use_distinct_paths() {
+        // Description:
+        //     Distinct robots use distinct paths.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_fleet::agent::distinct_robots_use_distinct_paths();
+
         assert_ne!(
             fleet_agent_state_path_for("ScoutB"),
             fleet_agent_state_path_for("ScoutC")

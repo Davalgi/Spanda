@@ -24,6 +24,21 @@ pub struct ApprovalVerifyReport {
 
 /// Verify human approval requirements on missions.
 pub fn verify_approvals(program: &Program) -> ApprovalVerifyReport {
+    // Description:
+    //     Verify approvals.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: ApprovalVerifyReport
+    //         Return value from `verify_approvals`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::approval::verify_approvals(progra);
+
     let Program::Program { robots, .. } = program;
     let mut rows = Vec::new();
 
@@ -94,6 +109,21 @@ pub fn verify_approvals(program: &Program) -> ApprovalVerifyReport {
 pub fn verify_approvals_source(
     source: &str,
 ) -> Result<ApprovalVerifyReport, spanda_error::SpandaError> {
+    // Description:
+    //     Verify approvals source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<ApprovalVerifyReport, spanda_error::SpandaError>
+    //         Return value from `verify_approvals_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::approval::verify_approvals_source(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(verify_approvals(&program))

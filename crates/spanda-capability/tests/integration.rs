@@ -8,17 +8,58 @@ use spanda_lexer::tokenize;
 use spanda_parser::parse;
 
 fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_source`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::parse_source(source);
+
     parse(tokenize(source).expect("tokenize")).expect("parse")
 }
 
 #[test]
 fn capability_registry_lookup() {
+    // Description:
+    //     Capability registry lookup.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::capability_registry_lookup();
+
     assert!(lookup_capability("gps_navigation").is_some());
     assert!(lookup_capability("emergency_stop").is_some());
 }
 
 #[test]
 fn hardware_traceability_matrix() {
+    // Description:
+    //     Hardware traceability matrix.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::hardware_traceability_matrix();
+
     let source = r#"
 hardware RoverV1 {
     sensors [GPS, Lidar];
@@ -38,6 +79,19 @@ robot Rover {
 
 #[test]
 fn robot_capability_inference() {
+    // Description:
+    //     Robot capability inference.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::robot_capability_inference();
+
     let source = r#"
 robot Rover {
     sensor gps: GPS;
@@ -56,6 +110,19 @@ robot Rover {
 
 #[test]
 fn minimum_capability_check_fails_without_lidar() {
+    // Description:
+    //     Minimum capability check fails without lidar.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::minimum_capability_check_fails_without_lidar();
+
     let source = r#"
 robot Rover {
     sensor gps: GPS;
@@ -70,6 +137,19 @@ robot Rover {
 
 #[test]
 fn health_check_parsing() {
+    // Description:
+    //     Health check parsing.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::health_check_parsing();
+
     let source = r#"
 health_check RoverHealth for robot Rover {
     check battery.level > 20%;
@@ -87,6 +167,19 @@ health_policy SafetyPolicy {
 
 #[test]
 fn kill_switch_traceability() {
+    // Description:
+    //     Kill switch traceability.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::kill_switch_traceability();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -103,6 +196,19 @@ kill_switch EmergencyStop {
 
 #[test]
 fn capability_traceability_json_shape() {
+    // Description:
+    //     Capability traceability json shape.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_capability::integration::capability_traceability_json_shape();
+
     let source = r#"
 requires_capability gps_navigation {
     any_of sensors [GPS, GNSS];

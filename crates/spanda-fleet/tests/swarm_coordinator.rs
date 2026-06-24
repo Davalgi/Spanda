@@ -6,6 +6,19 @@ use spanda_fleet::{coordinate_swarms, load_swarm_state, save_swarm_state, SwarmS
 
 #[test]
 fn swarm_round_robin_advances_one_member_per_tick() {
+    // Description:
+    //     Swarm round robin advances one member per tick.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::swarm_round_robin_advances_one_member_per_tick();
+
     let source = include_str!("../../../examples/robotics/swarm_coordination.sd");
     check(source).expect("swarm example should type-check");
     let program = compile(source).expect("compile").program;
@@ -34,6 +47,19 @@ fn swarm_round_robin_advances_one_member_per_tick() {
 
 #[test]
 fn swarm_broadcast_advances_all_members() {
+    // Description:
+    //     Swarm broadcast advances all members.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::swarm_broadcast_advances_all_members();
+
     let source = include_str!("../../../examples/robotics/swarm_coordination.sd");
     let program = compile(source).expect("compile").program;
     let mut state = SwarmState::default();
@@ -49,6 +75,19 @@ fn swarm_broadcast_advances_all_members() {
 
 #[test]
 fn swarm_state_persists_round_robin_cursor() {
+    // Description:
+    //     Swarm state persists round robin cursor.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::swarm_coordinator::swarm_state_persists_round_robin_cursor();
+
     let path = std::env::temp_dir().join("spanda-swarm-state-test.json");
     let mut state = SwarmState::default();
     state.round_robin_cursor.insert("ReconSwarm".into(), 2);

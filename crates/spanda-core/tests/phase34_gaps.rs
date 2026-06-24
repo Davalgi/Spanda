@@ -8,6 +8,19 @@ use spanda_security::signed::SignedMessage;
 
 #[test]
 fn event_handler_return_type_mismatch_fails_check() {
+    // Description:
+    //     Event handler return type mismatch fails check.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::event_handler_return_type_mismatch_fails_check();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -35,6 +48,19 @@ robot Rover {
 
 #[test]
 fn kill_switch_handler_requires_declared_switch() {
+    // Description:
+    //     Kill switch handler requires declared switch.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::kill_switch_handler_requires_declared_switch();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;
@@ -60,6 +86,19 @@ robot Rover {
 
 #[test]
 fn remote_signed_kill_switch_requires_signature_at_runtime() {
+    // Description:
+    //     Remote signed kill switch requires signature at runtime.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::remote_signed_kill_switch_requires_signature_at_runtime();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -91,6 +130,19 @@ robot Rover {
 
 #[test]
 fn remote_signed_kill_switch_accepts_valid_signature() {
+    // Description:
+    //     Remote signed kill switch accepts valid signature.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::remote_signed_kill_switch_accepts_valid_signature();
+
     let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -123,6 +175,19 @@ robot Rover {
 
 #[test]
 fn fleet_health_check_degrades_on_member_fault() {
+    // Description:
+    //     Fleet health check degrades on member fault.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::fleet_health_check_degrades_on_member_fault();
+
     let source = r#"
 fleet Patrol {
     Rover;
@@ -163,6 +228,19 @@ robot Rover {
 
 #[test]
 fn debugger_step_in_and_step_out_pause() {
+    // Description:
+    //     Debugger step in and step out pause.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::phase34_gaps::debugger_step_in_and_step_out_pause();
+
     let source = r#"
 robot Rover {
     actuator wheels: DifferentialDrive;

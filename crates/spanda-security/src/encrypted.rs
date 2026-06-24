@@ -47,6 +47,23 @@ pub struct EncryptedMessage<T> {
 
 impl<T: Clone + Serialize + for<'de> Deserialize<'de>> EncryptedMessage<T> {
     pub fn encrypt(payload: &T, session_material: &str) -> SecurityResult<Self> {
+        // Description:
+        //     Encrypt.
+        //
+        // Inputs:
+        //     payload: &T
+        //         Caller-supplied payload.
+        //     session_material: &str
+        //         Caller-supplied session material.
+        //
+        // Outputs:
+        //     result: SecurityResult<Self>
+        //         Return value from `encrypt`.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::encrypt(payload, session_material);
+
         let plaintext = serde_json::to_string(payload)
             .map_err(|e| SecurityError::Other(format!("serialize failed: {e}")))?;
         let ciphertext = wire_encrypt_string(&plaintext, session_material);
@@ -58,6 +75,21 @@ impl<T: Clone + Serialize + for<'de> Deserialize<'de>> EncryptedMessage<T> {
     }
 
     pub fn decrypt(&mut self) -> SecurityResult<&T> {
+        // Description:
+        //     Decrypt.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: SecurityResult<&T>
+        //         Return value from `decrypt`.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::decrypt(&mut self);
+
         if self.decrypted.is_none() {
             let plaintext = wire_decrypt_string(&self.ciphertext, &self.session_key_id)?;
             let value: T = serde_json::from_str(&plaintext)
@@ -68,6 +100,21 @@ impl<T: Clone + Serialize + for<'de> Deserialize<'de>> EncryptedMessage<T> {
     }
 
     pub fn ciphertext(&self) -> &str {
+        // Description:
+        //     Ciphertext.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: &str
+        //         Return value from `ciphertext`.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::ciphertext(&self);
+
         &self.ciphertext
     }
 }
@@ -82,6 +129,21 @@ pub struct VerifiedMessage<T> {
 
 impl<T: Clone + for<'de> Deserialize<'de>> VerifiedMessage<T> {
     pub fn from_signed(signed: SignedMessage) -> Self {
+        // Description:
+        //     From signed.
+        //
+        // Inputs:
+        //     signed: SignedMessage
+        //         Caller-supplied signed.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_signed`.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::from_signed(signed);
+
         Self {
             signed,
             verified: None,
@@ -89,6 +151,23 @@ impl<T: Clone + for<'de> Deserialize<'de>> VerifiedMessage<T> {
     }
 
     pub fn verify_and_open(&mut self, identity: &RobotIdentity) -> SecurityResult<&T> {
+        // Description:
+        //     Verify and open.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     identity: &RobotIdentity
+        //         Caller-supplied identity.
+        //
+        // Outputs:
+        //     result: SecurityResult<&T>
+        //         Return value from `verify_and_open`.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::verify_and_open(&mut self, identity);
+
         if self.verified.is_none() {
             if !self.signed.verify(identity)? {
                 return Err(SecurityError::SignatureInvalid);
@@ -102,6 +181,23 @@ impl<T: Clone + for<'de> Deserialize<'de>> VerifiedMessage<T> {
 }
 
 fn wire_encrypt_string(plaintext: &str, session_material: &str) -> String {
+    // Description:
+    //     Wire encrypt string.
+    //
+    // Inputs:
+    //     plaintex: &str
+    //         Caller-supplied plaintex.
+    //     session_material: &str
+    //         Caller-supplied session material.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `wire_encrypt_string`.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted::wire_encrypt_string(plaintex, session_material);
+
     let session = WireCryptoSession::from_material(session_material);
     let encrypted = session
         .encrypt(plaintext.as_bytes())
@@ -110,6 +206,23 @@ fn wire_encrypt_string(plaintext: &str, session_material: &str) -> String {
 }
 
 fn wire_decrypt_string(ciphertext: &str, session_material: &str) -> SecurityResult<String> {
+    // Description:
+    //     Wire decrypt string.
+    //
+    // Inputs:
+    //     ciphertex: &str
+    //         Caller-supplied ciphertex.
+    //     session_material: &str
+    //         Caller-supplied session material.
+    //
+    // Outputs:
+    //     result: SecurityResult<String>
+    //         Return value from `wire_decrypt_string`.
+    //
+    // Example:
+
+    //     let result = spanda_security::encrypted::wire_decrypt_string(ciphertex, session_material);
+
     let prefix = format!("enc:{session_material}:");
     let hex_payload = ciphertext
         .strip_prefix(&prefix)
@@ -134,6 +247,19 @@ mod tests {
 
     #[test]
     fn encrypted_message_requires_decrypt() {
+        // Description:
+        //     Encrypted message requires decrypt.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::encrypted::encrypted_message_requires_decrypt();
+
         let session_material = "sess-1";
         let mut msg =
             EncryptedMessage::<String>::encrypt(&"hello".to_string(), session_material).unwrap();

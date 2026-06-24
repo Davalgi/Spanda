@@ -16,39 +16,39 @@ use std::time::Duration;
 const STRING_MSG: &str = "std_msgs/msg/String";
 
 fn string_message_type() -> Option<MessageTypeName> {
-    // String message type.
+    // Description:
+    //     String message type.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<MessageTypeName>
+    //         Return value from `string_message_type`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::string_message_type();
+    //     let result = spanda_ros2_rclrs_native::string_message_type();
 
     // Produce ok as the result.
     MessageTypeName::try_from(STRING_MSG).ok()
 }
 
 fn set_string_payload(message: &mut DynamicMessage, payload: &str) -> bool {
-    // Set string payload.
+    // Description:
+    //     Set string payload.
     //
-    // Parameters:
-    // - `message` — input value
-    // - `payload` — input value
+    // Inputs:
+    //     essage: &mut DynamicMessage
+    //         Caller-supplied essage.
+    //     payload: &str
+    //         Caller-supplied payload.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `set_string_payload`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::set_string_payload(message, payload);
+    //     let result = spanda_ros2_rclrs_native::set_string_payload(essage, payload);
 
     // Compute Some for the following logic.
     let Some(ValueMut::Simple(SimpleValueMut::BoundedString(mut field))) = message.get_mut("data")
@@ -59,38 +59,37 @@ fn set_string_payload(message: &mut DynamicMessage, payload: &str) -> bool {
 }
 
 pub fn sdk_available() -> bool {
-    // Sdk available.
+    // Description:
+    //     Sdk available.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `sdk_available`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::sdk_available();
+    //     let result = spanda_ros2_rclrs_native::sdk_available();
 
     // Produce is ok as the result.
     Context::default_from_env().is_ok()
 }
 
 pub fn init_node(name: &str) -> Result<(), String> {
-    // Init node.
+    // Description:
+    //     Init node.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `init_node`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::init_node(name);
+    //     let result = spanda_ros2_rclrs_native::init_node(name);
 
     // Compute context for the following logic.
     let context = Context::default_from_env().map_err(|e: RclrsError| e.to_string())?;
@@ -102,20 +101,21 @@ pub fn init_node(name: &str) -> Result<(), String> {
 }
 
 pub fn publish(topic: &str, payload: &str) -> bool {
-    // Publish.
+    // Description:
+    //     Publish.
     //
-    // Parameters:
-    // - `topic` — input value
-    // - `payload` — input value
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     payload: &str
+    //         Caller-supplied payload.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `publish`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::publish(topic, payload);
+    //     let result = spanda_ros2_rclrs_native::publish(opic, payload);
 
     // Compute Some for the following logic.
     let Some(type_name) = string_message_type() else {
@@ -143,19 +143,19 @@ pub fn publish(topic: &str, payload: &str) -> bool {
 }
 
 pub fn subscribe(topic: &str) -> bool {
-    // Subscribe.
+    // Description:
+    //     Subscribe.
     //
-    // Parameters:
-    // - `topic` — input value
+    // Inputs:
+    //     opic: &str
+    //         Caller-supplied opic.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `subscribe`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::subscribe(topic);
+    //     let result = spanda_ros2_rclrs_native::subscribe(opic);
 
     // Compute Some for the following logic.
     let Some(type_name) = string_message_type() else {
@@ -181,21 +181,23 @@ pub fn subscribe(topic: &str) -> bool {
 }
 
 pub fn service_call(service: &str, service_type: &str, request: &str) -> bool {
-    // Service call.
+    // Description:
+    //     Service call.
     //
-    // Parameters:
-    // - `service` — input value
-    // - `service_type` — input value
-    // - `request` — input value
+    // Inputs:
+    //     service: &str
+    //         Caller-supplied service.
+    //     service_type: &str
+    //         Caller-supplied service type.
+    //     request: &str
+    //         Caller-supplied request.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `service_call`.
     //
     // Example:
-    // let result = spanda_ros2_rclrs_native::service_call(service, service_type, request);
+    //     let result = spanda_ros2_rclrs_native::service_call(service, service_type, reques);
 
     // Produce new as the result.
     Command::new("ros2")
@@ -271,38 +273,36 @@ mod tests {
 
     #[test]
     fn sdk_probe_does_not_panic_without_ros() {
-        // Sdk probe does not panic without ros.
+        // Description:
+        //     Sdk probe does not panic without ros.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ros2_rclrs_native::sdk_probe_does_not_panic_without_ros();
+
+        //     let result = spanda_ros2_rclrs_native::sdk_probe_does_not_panic_without_ros();
 
         let _ = sdk_available();
     }
 
     #[test]
     fn string_message_type_parses() {
-        // String message type parses.
+        // Description:
+        //     String message type parses.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ros2_rclrs_native::string_message_type_parses();
+
+        //     let result = spanda_ros2_rclrs_native::string_message_type_parses();
 
         assert!(string_message_type().is_some());
     }

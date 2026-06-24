@@ -15,18 +15,18 @@ pub struct PoseValue {
 
 impl Default for PoseValue {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::runtime::default();
+        //     let result = spanda_runtime::value::default();
 
         // Assemble the struct fields and return it.
         Self {
@@ -154,6 +154,7 @@ pub enum RuntimeValue {
     SensorFusion {
         sensors: Vec<String>,
         estimator: Option<String>,
+
         /// Full fusion input paths from `state_estimator` (e.g. `gps.fix`); empty for `observe { }`.
         fusion_inputs: Vec<String>,
     },
@@ -202,39 +203,40 @@ pub enum RuntimeValue {
 
 impl RuntimeValue {
     pub fn number(value: f64, unit: UnitKind) -> Self {
-        // Number.
+        // Description:
+        //     Number.
         //
-        // Parameters:
-        // - `value` — input value
-        // - `unit` — input value
+        // Inputs:
+        //     value: f64
+        //         Caller-supplied value.
+        //     ni: UnitKind
+        //         Caller-supplied ni.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `number`.
         //
         // Example:
-        // let result = spanda_core::runtime::number(value, unit);
+        //     let result = spanda_runtime::value::number(value, ni);
 
         // Build a Number runtime value.
         RuntimeValue::Number { value, unit }
     }
 
     pub fn string(value: impl Into<String>) -> Self {
-        // String.
+        // Description:
+        //     String.
         //
-        // Parameters:
-        // - `value` — input value
+        // Inputs:
+        //     value: impl Into<String>
+        //         Caller-supplied value.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `string`.
         //
         // Example:
-        // let result = spanda_core::runtime::string(value);
+        //     let result = spanda_runtime::value::string(value);
 
         // Build a String runtime value.
         RuntimeValue::String {
@@ -243,20 +245,21 @@ impl RuntimeValue {
     }
 
     pub fn object(type_name: impl Into<String>, fields: HashMap<String, RuntimeValue>) -> Self {
-        // Object.
+        // Description:
+        //     Object.
         //
-        // Parameters:
-        // - `type_name` — input value
-        // - `fields` — input value
+        // Inputs:
+        //     ype_name: impl Into<String>
+        //         Caller-supplied ype name.
+        //     fields: HashMap<String, RuntimeValue>
+        //         Caller-supplied fields.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `object`.
         //
         // Example:
-        // let result = spanda_core::runtime::object(type_name, fields);
+        //     let result = spanda_runtime::value::object(ype_name, fields);
 
         // Build a Object runtime value.
         RuntimeValue::Object {
@@ -266,37 +269,38 @@ impl RuntimeValue {
     }
 
     pub fn scan(nearest_distance: f64) -> Self {
-        // Scan.
+        // Description:
+        //     Scan.
         //
-        // Parameters:
-        // - `nearest_distance` — input value
+        // Inputs:
+        //     nearest_distance: f64
+        //         Caller-supplied nearest distance.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `scan`.
         //
         // Example:
-        // let result = spanda_core::runtime::scan(nearest_distance);
+        //     let result = spanda_runtime::value::scan(nearest_distance);
 
         // Build a Scan runtime value.
         RuntimeValue::Scan { nearest_distance }
     }
 
     pub fn as_number(&self) -> Option<f64> {
+        // Description:
+        //     As number.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<f64>
+        //         Return value from `as_number`.
         //
         // Example:
-        // let result = instance.as_number();
+        //     let result = spanda_runtime::value::as_number(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -306,18 +310,19 @@ impl RuntimeValue {
     }
 
     pub fn as_string(&self) -> Option<&str> {
+        // Description:
+        //     As string.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&str>
+        //         Return value from `as_string`.
         //
         // Example:
-        // let result = instance.as_string();
+        //     let result = spanda_runtime::value::as_string(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -365,19 +370,19 @@ pub enum MotionCommand {
     },
 }
 pub fn format_runtime_value(value: &RuntimeValue) -> String {
-    // Format runtime value.
+    // Description:
+    //     Format runtime value.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `format_runtime_value`.
     //
     // Example:
-    // let result = spanda_core::runtime::format_runtime_value(value);
+    //     let result = spanda_runtime::value::format_runtime_value(value);
 
     // Match on value and handle each case.
     match value {
@@ -425,78 +430,83 @@ pub fn format_runtime_value(value: &RuntimeValue) -> String {
     }
 }
 pub fn runtime_pose(x: f64, y: f64, theta: f64, z: f64) -> RuntimeValue {
-    // Runtime pose.
+    // Description:
+    //     Runtime pose.
     //
-    // Parameters:
-    // - `x` — input value
-    // - `y` — input value
-    // - `theta` — input value
-    // - `z` — input value
+    // Inputs:
+    //     x: f64
+    //         Caller-supplied x.
+    //     y: f64
+    //         Caller-supplied y.
+    //     heta: f64
+    //         Caller-supplied heta.
+    //     z: f64
+    //         Caller-supplied z.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `runtime_pose`.
     //
     // Example:
-    // let result = spanda_core::runtime::runtime_pose(x, y, theta, z);
+    //     let result = spanda_runtime::value::runtime_pose(x, y, heta, z);
 
     // Build a Pose runtime value.
     RuntimeValue::Pose { x, y, theta, z }
 }
 
 pub fn runtime_velocity(linear: f64, angular: f64) -> RuntimeValue {
-    // Runtime velocity.
+    // Description:
+    //     Runtime velocity.
     //
-    // Parameters:
-    // - `linear` — input value
-    // - `angular` — input value
+    // Inputs:
+    //     linear: f64
+    //         Caller-supplied linear.
+    //     angular: f64
+    //         Caller-supplied angular.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `runtime_velocity`.
     //
     // Example:
-    // let result = spanda_core::runtime::runtime_velocity(linear, angular);
+    //     let result = spanda_runtime::value::runtime_velocity(linear, angular);
 
     // Build a Velocity runtime value.
     RuntimeValue::Velocity { linear, angular }
 }
 
 pub fn runtime_trajectory(waypoints: Vec<PoseValue>) -> RuntimeValue {
-    // Runtime trajectory.
+    // Description:
+    //     Runtime trajectory.
     //
-    // Parameters:
-    // - `waypoints` — input value
+    // Inputs:
+    //     waypoints: Vec<PoseValue>
+    //         Caller-supplied waypoints.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `runtime_trajectory`.
     //
     // Example:
-    // let result = spanda_core::runtime::runtime_trajectory(waypoints);
+    //     let result = spanda_runtime::value::runtime_trajectory(waypoints);
 
     // Build a Trajectory runtime value.
     RuntimeValue::Trajectory { waypoints }
 }
 pub fn get_pose_fields(val: &RuntimeValue) -> Option<PoseValue> {
+    // Description:
+    //     Get pose fields.
     //
-    // Parameters:
-    // - `val` — input value
+    // Inputs:
+    //     val: &RuntimeValue
+    //         Caller-supplied val.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<PoseValue>
+    //         Return value from `get_pose_fields`.
     //
     // Example:
-    // let result = spanda_core::runtime::get_pose_fields(val);
+    //     let result = spanda_runtime::value::get_pose_fields(val);
 
     // Match on val and handle each case.
     match val {
@@ -511,18 +521,19 @@ pub fn get_pose_fields(val: &RuntimeValue) -> Option<PoseValue> {
 }
 
 pub fn get_velocity_fields(val: &RuntimeValue) -> Option<(f64, f64)> {
+    // Description:
+    //     Get velocity fields.
     //
-    // Parameters:
-    // - `val` — input value
+    // Inputs:
+    //     val: &RuntimeValue
+    //         Caller-supplied val.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<(f64, f64)>
+    //         Return value from `get_velocity_fields`.
     //
     // Example:
-    // let result = spanda_core::runtime::get_velocity_fields(val);
+    //     let result = spanda_runtime::value::get_velocity_fields(val);
 
     // Match on val and handle each case.
     match val {
@@ -532,18 +543,19 @@ pub fn get_velocity_fields(val: &RuntimeValue) -> Option<(f64, f64)> {
 }
 
 pub fn get_trajectory_waypoints(val: &RuntimeValue) -> Option<Vec<PoseValue>> {
+    // Description:
+    //     Get trajectory waypoints.
     //
-    // Parameters:
-    // - `val` — input value
+    // Inputs:
+    //     val: &RuntimeValue
+    //         Caller-supplied val.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<Vec<PoseValue>>
+    //         Return value from `get_trajectory_waypoints`.
     //
     // Example:
-    // let result = spanda_core::runtime::get_trajectory_waypoints(val);
+    //     let result = spanda_runtime::value::get_trajectory_waypoints(val);
 
     // Match on val and handle each case.
     match val {
@@ -553,38 +565,42 @@ pub fn get_trajectory_waypoints(val: &RuntimeValue) -> Option<Vec<PoseValue>> {
 }
 
 pub fn get_number(val: &RuntimeValue, default: f64) -> f64 {
+    // Description:
+    //     Get number.
     //
-    // Parameters:
-    // - `val` — input value
-    // - `default` — input value
+    // Inputs:
+    //     val: &RuntimeValue
+    //         Caller-supplied val.
+    //     defaul: f64
+    //         Caller-supplied defaul.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `get_number`.
     //
     // Example:
-    // let result = spanda_core::runtime::get_number(val, default);
+    //     let result = spanda_runtime::value::get_number(val, defaul);
 
     // Produce unwrap or as the result.
     val.as_number().unwrap_or(default)
 }
 
 pub fn get_string(val: &RuntimeValue, default: &str) -> String {
+    // Description:
+    //     Get string.
     //
-    // Parameters:
-    // - `val` — input value
-    // - `default` — input value
+    // Inputs:
+    //     val: &RuntimeValue
+    //         Caller-supplied val.
+    //     defaul: &str
+    //         Caller-supplied defaul.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `get_string`.
     //
     // Example:
-    // let result = spanda_core::runtime::get_string(val, default);
+    //     let result = spanda_runtime::value::get_string(val, defaul);
 
     // Produce to string as the result.
     val.as_string().unwrap_or(default).to_string()

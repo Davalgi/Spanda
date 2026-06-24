@@ -16,18 +16,18 @@ pub enum AiRuntimeKind {
 
 impl AiRuntimeKind {
     pub fn as_str(self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = instance.as_str();
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -50,19 +50,18 @@ pub struct AiLibModule {
 }
 
 fn build_ai_registry() -> HashMap<String, AiLibModule> {
-    // Build ai registry.
+    // Description:
+    //     Build ai registry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<String, AiLibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, AiLibModule>
+    //         Return value from `build_ai_registry`.
     //
     // Example:
-    // let result = spanda_ai::build_ai_registry();
+    //     let result = spanda_ai::build_ai_registry();
 
     // Produce from as the result.
     HashMap::from([
@@ -116,76 +115,73 @@ fn build_ai_registry() -> HashMap<String, AiLibModule> {
 static AI_REGISTRY: std::sync::OnceLock<HashMap<String, AiLibModule>> = std::sync::OnceLock::new();
 
 pub fn ai_lib_registry() -> &'static HashMap<String, AiLibModule> {
-    // Ai lib registry.
+    // Description:
+    //     Ai lib registry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static HashMap<String, AiLibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static HashMap<String, AiLibModule>
+    //         Return value from `ai_lib_registry`.
     //
     // Example:
-    // let result = spanda_ai::ai_lib_registry();
+    //     let result = spanda_ai::ai_lib_registry();
 
     // Produce get or init as the result.
     AI_REGISTRY.get_or_init(build_ai_registry)
 }
 
 pub fn resolve_ai_import(path: &str) -> Option<&'static AiLibModule> {
-    // Resolve ai import.
+    // Description:
+    //     Resolve ai import.
     //
-    // Parameters:
-    // - `path` — input value
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static AiLibModule>
+    //         Return value from `resolve_ai_import`.
     //
     // Example:
-    // let result = spanda_ai::resolve_ai_import(path);
+    //     let result = spanda_ai::resolve_ai_import(path);
 
     // Produce get as the result.
     ai_lib_registry().get(path)
 }
 
 pub fn ai_lib_registry_export() -> &'static HashMap<String, AiLibModule> {
-    // Ai lib registry export.
+    // Description:
+    //     Ai lib registry export.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // &'static HashMap<String, AiLibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static HashMap<String, AiLibModule>
+    //         Return value from `ai_lib_registry_export`.
     //
     // Example:
-    // let result = spanda_ai::ai_lib_registry_export();
+    //     let result = spanda_ai::ai_lib_registry_export();
 
     // Produce ai lib registry as the result.
     ai_lib_registry()
 }
 
 pub fn list_ai_libraries() -> Vec<&'static AiLibModule> {
-    // List ai libraries.
+    // Description:
+    //     List ai libraries.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<&'static AiLibModule>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<&'static AiLibModule>
+    //         Return value from `list_ai_libraries`.
     //
     // Example:
-    // let result = spanda_ai::list_ai_libraries();
+    //     let result = spanda_ai::list_ai_libraries();
 
     // Collect filtered entries into a new list.
     ai_lib_registry().values().collect()
@@ -222,19 +218,19 @@ pub trait AiProvider: Send + Sync {
 }
 
 pub(crate) fn scan_distance(input: Option<&RuntimeValue>) -> f64 {
-    // Scan distance.
+    // Description:
+    //     Scan distance.
     //
-    // Parameters:
-    // - `input` — input value
+    // Inputs:
+    //     inp: Option<&RuntimeValue>
+    //         Caller-supplied inp.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `scan_distance`.
     //
     // Example:
-    // let result = spanda_ai::scan_distance(input);
+    //     let result = spanda_ai::scan_distance(inp);
 
     // Match on input and handle each case.
     match input {
@@ -257,22 +253,25 @@ pub(crate) fn action_proposal(
     source: impl Into<String>,
     trace: Vec<String>,
 ) -> RuntimeValue {
-    // Action proposal.
+    // Description:
+    //     Action proposal.
     //
-    // Parameters:
-    // - `linear` — input value
-    // - `angular` — input value
-    // - `source` — input value
-    // - `trace` — input value
+    // Inputs:
+    //     linear: f64
+    //         Caller-supplied linear.
+    //     angular: f64
+    //         Caller-supplied angular.
+    //     source: impl Into<String>
+    //         Caller-supplied source.
+    //     race: Vec<String>
+    //         Caller-supplied race.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `action_proposal`.
     //
     // Example:
-    // let result = spanda_ai::action_proposal(linear, angular, source, trace);
+    //     let result = spanda_ai::action_proposal(linear, angular, source, race);
 
     // Build a ActionProposal runtime value.
     RuntimeValue::ActionProposal {
@@ -287,20 +286,21 @@ pub struct MockAiProvider;
 
 impl AiProvider for MockAiProvider {
     fn complete(&self, request: &CompletionRequest) -> RuntimeValue {
-        // Complete.
+        // Description:
+        //     Complete.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `request` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &CompletionRequest
+        //         Caller-supplied request.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `complete`.
         //
         // Example:
-        // let result = instance.complete(request);
+        //     let result = spanda_ai::complete(&self, reques);
 
         // Compute prompt for the following logic.
         let prompt = request.prompt.clone();
@@ -355,20 +355,21 @@ impl AiProvider for MockAiProvider {
     }
 
     fn detect(&self, request: &DetectionRequest) -> RuntimeValue {
-        // Detect.
+        // Description:
+        //     Detect.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `request` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &DetectionRequest
+        //         Caller-supplied request.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `detect`.
         //
         // Example:
-        // let result = instance.detect(request);
+        //     let result = spanda_ai::detect(&self, reques);
 
         // Compute dist for the following logic.
         let dist = scan_distance(Some(&request.frame));
@@ -393,20 +394,21 @@ impl AiProvider for MockAiProvider {
     }
 
     fn embed(&self, request: &EmbedRequest) -> RuntimeValue {
-        // Embed.
+        // Description:
+        //     Embed.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `request` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     request: &EmbedRequest
+        //         Caller-supplied request.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `embed`.
         //
         // Example:
-        // let result = instance.embed(request);
+        //     let result = spanda_ai::embed(&self, reques);
 
         // Compute vector for the following logic.
         let vector: Vec<f64> = (0..8)
@@ -420,19 +422,19 @@ impl AiProvider for MockAiProvider {
 }
 
 fn regex_stop_halt_wait(prompt: &str) -> bool {
-    // Regex stop halt wait.
+    // Description:
+    //     Regex stop halt wait.
     //
-    // Parameters:
-    // - `prompt` — input value
+    // Inputs:
+    //     promp: &str
+    //         Caller-supplied promp.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `regex_stop_halt_wait`.
     //
     // Example:
-    // let result = spanda_ai::regex_stop_halt_wait(prompt);
+    //     let result = spanda_ai::regex_stop_halt_wait(promp);
 
     // Compute lower for the following logic.
     let lower = prompt.to_lowercase();
@@ -440,19 +442,19 @@ fn regex_stop_halt_wait(prompt: &str) -> bool {
 }
 
 fn regex_turn_avoid_obstacle(prompt: &str) -> bool {
-    // Regex turn avoid obstacle.
+    // Description:
+    //     Regex turn avoid obstacle.
     //
-    // Parameters:
-    // - `prompt` — input value
+    // Inputs:
+    //     promp: &str
+    //         Caller-supplied promp.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `regex_turn_avoid_obstacle`.
     //
     // Example:
-    // let result = spanda_ai::regex_turn_avoid_obstacle(prompt);
+    //     let result = spanda_ai::regex_turn_avoid_obstacle(promp);
 
     // Compute lower for the following logic.
     let lower = prompt.to_lowercase();
@@ -460,20 +462,21 @@ fn regex_turn_avoid_obstacle(prompt: &str) -> bool {
 }
 
 pub fn mock_summarize(input: Option<&RuntimeValue>, model: &str) -> RuntimeValue {
-    // Mock summarize.
+    // Description:
+    //     Mock summarize.
     //
-    // Parameters:
-    // - `input` — input value
-    // - `model` — input value
+    // Inputs:
+    //     inp: Option<&RuntimeValue>
+    //         Caller-supplied inp.
+    //     odel: &str
+    //         Caller-supplied odel.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `mock_summarize`.
     //
     // Example:
-    // let result = spanda_ai::mock_summarize(input, model);
+    //     let result = spanda_ai::mock_summarize(inp, odel);
 
     // Compute summary for the following logic.
     let summary = match input {
@@ -496,20 +499,21 @@ pub fn mock_summarize(input: Option<&RuntimeValue>, model: &str) -> RuntimeValue
 }
 
 pub fn mock_analyze_frame(frame: Option<&RuntimeValue>, _model: &str) -> RuntimeValue {
-    // Mock analyze frame.
+    // Description:
+    //     Mock analyze frame.
     //
-    // Parameters:
-    // - `frame` — input value
-    // - `_model` — input value
+    // Inputs:
+    //     frame: Option<&RuntimeValue>
+    //         Caller-supplied frame.
+    //     _model: &str
+    //         Caller-supplied model.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `mock_analyze_frame`.
     //
     // Example:
-    // let result = spanda_ai::mock_analyze_frame(frame, _model);
+    //     let result = spanda_ai::mock_analyze_frame(frame, _model);
 
     // Compute dist for the following logic.
     let dist = scan_distance(frame);
@@ -534,19 +538,18 @@ pub fn mock_analyze_frame(frame: Option<&RuntimeValue>, _model: &str) -> Runtime
 }
 
 pub fn mock_camera_frame() -> RuntimeValue {
-    // Mock camera frame.
+    // Description:
+    //     Mock camera frame.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `mock_camera_frame`.
     //
     // Example:
-    // let result = spanda_ai::mock_camera_frame();
+    //     let result = spanda_ai::mock_camera_frame();
 
     // Create mutable fields for accumulating results.
     let mut fields = HashMap::new();
@@ -566,21 +569,23 @@ pub fn mock_camera_frame() -> RuntimeValue {
 }
 
 pub fn build_prompt(base: &str, input: Option<&RuntimeValue>, goal: Option<&str>) -> String {
-    // Build prompt.
+    // Description:
+    //     Build prompt.
     //
-    // Parameters:
-    // - `base` — input value
-    // - `input` — input value
-    // - `goal` — input value
+    // Inputs:
+    //     base: &str
+    //         Caller-supplied base.
+    //     inp: Option<&RuntimeValue>
+    //         Caller-supplied inp.
+    //     goal: Option<&str>
+    //         Caller-supplied goal.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `build_prompt`.
     //
     // Example:
-    // let result = spanda_ai::build_prompt(base, input, goal);
+    //     let result = spanda_ai::build_prompt(base, inp, goal);
 
     // Create mutable header for accumulating results.
     let mut header = String::new();
@@ -610,19 +615,19 @@ pub fn build_prompt(base: &str, input: Option<&RuntimeValue>, goal: Option<&str>
 }
 
 fn summarize_input(input: Option<&RuntimeValue>) -> String {
-    // Summarize input.
+    // Description:
+    //     Summarize input.
     //
-    // Parameters:
-    // - `input` — input value
+    // Inputs:
+    //     inp: Option<&RuntimeValue>
+    //         Caller-supplied inp.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `summarize_input`.
     //
     // Example:
-    // let result = spanda_ai::summarize_input(input);
+    //     let result = spanda_ai::summarize_input(inp);
 
     // Match on input and handle each case.
     match input {
@@ -657,19 +662,19 @@ fn summarize_input(input: Option<&RuntimeValue>) -> String {
 }
 
 fn runtime_value_kind(value: &RuntimeValue) -> &'static str {
-    // Runtime value kind.
+    // Description:
+    //     Runtime value kind.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `runtime_value_kind`.
     //
     // Example:
-    // let result = spanda_ai::runtime_value_kind(value);
+    //     let result = spanda_ai::runtime_value_kind(value);
 
     // Match on value and handle each case.
     match value {
@@ -739,20 +744,21 @@ pub struct AiModel {
 
 impl AiModel {
     pub fn new(decl: &AiModelDecl, provider: Option<Box<dyn AiProvider>>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `decl` — input value
-        // - `provider` — input value
+        // Inputs:
+        //     decl: &AiModelDecl
+        //         Caller-supplied decl.
+        //     provider: Option<Box<dyn AiProvider>>
+        //         Caller-supplied provider.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_ai::new(decl, provider);
+        //     let value = spanda_ai::new(decl, provider);
 
         // Assemble the struct fields and return it.
         let config = parse_config(decl);
@@ -774,22 +780,25 @@ impl AiModel {
         input: Option<RuntimeValue>,
         goal: Option<&str>,
     ) -> Result<RuntimeValue, String> {
-        // Reason.
+        // Description:
+        //     Reason.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `prompt` — input value
-        // - `input` — input value
-        // - `goal` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     promp: &str
+        //         Caller-supplied promp.
+        //     inp: Option<RuntimeValue>
+        //         Caller-supplied inp.
+        //     goal: Option<&str>
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, String>
+        //         Return value from `reason`.
         //
         // Example:
-        // let result = instance.reason(prompt, input, goal);
+        //     let result = spanda_ai::reason(&self, promp, inp, goal);
 
         // take the branch when model type differs from "LLM".
         if self.model_type != "LLM" {
@@ -809,20 +818,21 @@ impl AiModel {
     }
 
     pub fn summarize(&self, input: Option<RuntimeValue>) -> Result<RuntimeValue, String> {
-        // Summarize.
+        // Description:
+        //     Summarize.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `input` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     inp: Option<RuntimeValue>
+        //         Caller-supplied inp.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, String>
+        //         Return value from `summarize`.
         //
         // Example:
-        // let result = instance.summarize(input);
+        //     let result = spanda_ai::summarize(&self, inp);
 
         // take the branch when model type differs from "LLM".
         if self.model_type != "LLM" {
@@ -835,20 +845,21 @@ impl AiModel {
     }
 
     pub fn detect(&self, frame: RuntimeValue) -> Result<RuntimeValue, String> {
-        // Detect.
+        // Description:
+        //     Detect.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `frame` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     frame: RuntimeValue
+        //         Caller-supplied frame.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, String>
+        //         Return value from `detect`.
         //
         // Example:
-        // let result = instance.detect(frame);
+        //     let result = spanda_ai::detect(&self, frame);
 
         // take the branch when model type differs from "VisionModel".
         if self.model_type != "VisionModel" {
@@ -865,19 +876,19 @@ impl AiModel {
     }
 
     pub fn to_runtime_value(&self) -> RuntimeValue {
-        // Convert to runtime value.
+        // Description:
+        //     To runtime value.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `to_runtime_value`.
         //
         // Example:
-        // let result = instance.to_runtime_value();
+        //     let result = spanda_ai::to_runtime_value(&self);
 
         // Build a AiModel runtime value.
         RuntimeValue::AiModel {
@@ -889,19 +900,19 @@ impl AiModel {
 }
 
 fn parse_config(decl: &AiModelDecl) -> AiModelConfig {
-    // Parse config.
+    // Description:
+    //     Parse config.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &AiModelDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // AiModelConfig.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: AiModelConfig
+    //         Return value from `parse_config`.
     //
     // Example:
-    // let result = spanda_ai::parse_config(decl);
+    //     let result = spanda_ai::parse_config(decl);
 
     // Compute AiModelDecl for the following logic.
     let AiModelDecl::AiModelDecl { config, name, .. } = decl;
@@ -918,21 +929,23 @@ fn parse_config(decl: &AiModelDecl) -> AiModelConfig {
 }
 
 fn config_string(map: &HashMap<String, ConfigValue>, key: &str, default: &str) -> String {
-    // Config string.
+    // Description:
+    //     Config string.
     //
-    // Parameters:
-    // - `map` — input value
-    // - `key` — input value
-    // - `default` — input value
+    // Inputs:
+    //     ap: &HashMap<String, ConfigValue>
+    //         Caller-supplied ap.
+    //     key: &str
+    //         Caller-supplied key.
+    //     defaul: &str
+    //         Caller-supplied defaul.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `config_string`.
     //
     // Example:
-    // let result = spanda_ai::config_string(map, key, default);
+    //     let result = spanda_ai::config_string(ap, key, defaul);
 
     // Match on get and handle each case.
     match map.get(key) {
@@ -944,21 +957,23 @@ fn config_string(map: &HashMap<String, ConfigValue>, key: &str, default: &str) -
 }
 
 fn config_number(map: &HashMap<String, ConfigValue>, key: &str, default: f64) -> f64 {
-    // Config number.
+    // Description:
+    //     Config number.
     //
-    // Parameters:
-    // - `map` — input value
-    // - `key` — input value
-    // - `default` — input value
+    // Inputs:
+    //     ap: &HashMap<String, ConfigValue>
+    //         Caller-supplied ap.
+    //     key: &str
+    //         Caller-supplied key.
+    //     defaul: f64
+    //         Caller-supplied defaul.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `config_number`.
     //
     // Example:
-    // let result = spanda_ai::config_number(map, key, default);
+    //     let result = spanda_ai::config_number(ap, key, defaul);
 
     // Match on get and handle each case.
     match map.get(key) {
@@ -969,19 +984,19 @@ fn config_number(map: &HashMap<String, ConfigValue>, key: &str, default: f64) ->
 }
 
 pub fn create_ai_model(decl: &AiModelDecl) -> AiModel {
-    // Create ai model.
+    // Description:
+    //     Create ai model.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &AiModelDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // AiModel.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: AiModel
+    //         Return value from `create_ai_model`.
     //
     // Example:
-    // let result = spanda_ai::create_ai_model(decl);
+    //     let result = spanda_ai::create_ai_model(decl);
 
     // Produce new as the result.
     AiModel::new(decl, None)
@@ -994,39 +1009,40 @@ pub struct AgentRuntime {
 }
 
 pub fn create_agent_runtime(decl: AgentDecl, memory: Option<MemoryStore>) -> AgentRuntime {
-    // Create agent runtime.
+    // Description:
+    //     Create agent runtime.
     //
-    // Parameters:
-    // - `decl` — input value
-    // - `memory` — input value
+    // Inputs:
+    //     decl: AgentDecl
+    //         Caller-supplied decl.
+    //     emory: Option<MemoryStore>
+    //         Caller-supplied emory.
     //
-    // Returns:
-    // AgentRuntime.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: AgentRuntime
+    //         Return value from `create_agent_runtime`.
     //
     // Example:
-    // let result = spanda_ai::create_agent_runtime(decl, memory);
+    //     let result = spanda_ai::create_agent_runtime(decl, emory);
 
     // Produce AgentRuntime { decl, memory } as the result.
     AgentRuntime { decl, memory }
 }
 
 pub fn agent_tool_names(decl: &AgentDecl) -> Vec<String> {
-    // Agent tool names.
+    // Description:
+    //     Agent tool names.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &AgentDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `agent_tool_names`.
     //
     // Example:
-    // let result = spanda_ai::agent_tool_names(decl);
+    //     let result = spanda_ai::agent_tool_names(decl);
 
     // Match on decl and handle each case.
     match decl {
@@ -1035,19 +1051,19 @@ pub fn agent_tool_names(decl: &AgentDecl) -> Vec<String> {
 }
 
 pub fn agent_uses_models(decl: &AgentDecl) -> Vec<String> {
-    // Agent uses models.
+    // Description:
+    //     Agent uses models.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &AgentDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // Vec<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `agent_uses_models`.
     //
     // Example:
-    // let result = spanda_ai::agent_uses_models(decl);
+    //     let result = spanda_ai::agent_uses_models(decl);
 
     // Match on decl and handle each case.
     match decl {
@@ -1063,20 +1079,21 @@ pub fn execute_agent_plan(
     agent: &AgentRuntime,
     executor: &mut dyn PlanExecutor,
 ) -> Result<(), spanda_error::SpandaError> {
-    // Execute agent plan.
+    // Description:
+    //     Execute agent plan.
     //
-    // Parameters:
-    // - `agent` — input value
-    // - `executor` — input value
+    // Inputs:
+    //     agen: &AgentRuntime
+    //         Caller-supplied agen.
+    //     executor: &mut dyn PlanExecutor
+    //         Caller-supplied executor.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), spanda_error::SpandaError>
+    //         Return value from `execute_agent_plan`.
     //
     // Example:
-    // let result = spanda_ai::execute_agent_plan(agent, executor);
+    //     let result = spanda_ai::execute_agent_plan(agen, executor);
 
     // Compute plan body for the following logic.
     let plan_body = match &agent.decl {
@@ -1093,19 +1110,19 @@ pub enum AiMemoryKind {
 
 impl From<MemoryKind> for AiMemoryKind {
     fn from(kind: MemoryKind) -> Self {
-        // From.
+        // Description:
+        //     From.
         //
-        // Parameters:
-        // - `kind` — input value
+        // Inputs:
+        //     kind: MemoryKind
+        //         Caller-supplied kind.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
         //
         // Example:
-        // let result = spanda_ai::from(kind);
+        //     let result = spanda_ai::from(kind);
 
         // Match on kind and handle each case.
         match kind {
@@ -1132,20 +1149,21 @@ struct MemoryEntry {
 
 impl MemoryStore {
     pub fn new(kind: AiMemoryKind, limit: Option<usize>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `kind` — input value
-        // - `limit` — input value
+        // Inputs:
+        //     kind: AiMemoryKind
+        //         Caller-supplied kind.
+        //     limi: Option<usize>
+        //         Caller-supplied limi.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_ai::new(kind, limit);
+        //     let value = spanda_ai::new(kind, limi);
 
         // Compute default limit for the following logic.
         let default_limit = match kind {
@@ -1160,21 +1178,22 @@ impl MemoryStore {
     }
 
     pub fn remember(&mut self, key: impl Into<String>, value: RuntimeValue) {
-        // Remember.
+        // Description:
+        //     Remember.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `key` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     key: impl Into<String>
+        //         Caller-supplied key.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.remember(key, value);
+        //     let result = spanda_ai::remember(&mut self, key, value);
 
         // Append into self.
         self.entries.push(MemoryEntry {
@@ -1193,20 +1212,21 @@ impl MemoryStore {
     }
 
     pub fn recall(&self, key: &str) -> Option<&RuntimeValue> {
-        // Recall.
+        // Description:
+        //     Recall.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `key` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     key: &str
+        //         Caller-supplied key.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&RuntimeValue>
+        //         Return value from `recall`.
         //
         // Example:
-        // let result = instance.recall(key);
+        //     let result = spanda_ai::recall(&self, key);
 
         // Call entries on the current instance.
         self.entries
@@ -1217,20 +1237,21 @@ impl MemoryStore {
     }
 
     pub fn recent(&self, count: usize) -> Vec<&RuntimeValue> {
-        // Recent.
+        // Description:
+        //     Recent.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `count` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     coun: usize
+        //         Caller-supplied coun.
         //
-        // Returns:
-        // Vec<&RuntimeValue>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<&RuntimeValue>
+        //         Return value from `recent`.
         //
         // Example:
-        // let result = instance.recent(count);
+        //     let result = spanda_ai::recent(&self, coun);
 
         // Call entries on the current instance.
         self.entries
@@ -1245,38 +1266,37 @@ impl MemoryStore {
     }
 
     pub fn clear(&mut self) {
-        // Clear the value.
+        // Description:
+        //     Clear.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.clear();
+        //     let result = spanda_ai::clear(&mut self);
 
         // Call clear on the current instance.
         self.entries.clear();
     }
 
     pub fn summary_for_prompt(&self) -> Option<String> {
-        // Summary for prompt.
+        // Description:
+        //     Summary for prompt.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `summary_for_prompt`.
         //
         // Example:
-        // let result = instance.summary_for_prompt();
+        //     let result = spanda_ai::summary_for_prompt(&self);
 
         // skip further work when entries is empty.
         if self.entries.is_empty() {
@@ -1298,20 +1318,21 @@ impl MemoryStore {
 }
 
 pub fn runtime_safe_action(linear: f64, angular: f64) -> RuntimeValue {
-    // Runtime safe action.
+    // Description:
+    //     Runtime safe action.
     //
-    // Parameters:
-    // - `linear` — input value
-    // - `angular` — input value
+    // Inputs:
+    //     linear: f64
+    //         Caller-supplied linear.
+    //     angular: f64
+    //         Caller-supplied angular.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `runtime_safe_action`.
     //
     // Example:
-    // let result = spanda_ai::runtime_safe_action(linear, angular);
+    //     let result = spanda_ai::runtime_safe_action(linear, angular);
 
     // Build a SafeAction runtime value.
     RuntimeValue::SafeAction { linear, angular }
@@ -1322,21 +1343,23 @@ pub fn runtime_action_proposal(
     angular: f64,
     source: impl Into<String>,
 ) -> RuntimeValue {
-    // Runtime action proposal.
+    // Description:
+    //     Runtime action proposal.
     //
-    // Parameters:
-    // - `linear` — input value
-    // - `angular` — input value
-    // - `source` — input value
+    // Inputs:
+    //     linear: f64
+    //         Caller-supplied linear.
+    //     angular: f64
+    //         Caller-supplied angular.
+    //     source: impl Into<String>
+    //         Caller-supplied source.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `runtime_action_proposal`.
     //
     // Example:
-    // let result = spanda_ai::runtime_action_proposal(linear, angular, source);
+    //     let result = spanda_ai::runtime_action_proposal(linear, angular, source);
 
     // Build a ActionProposal runtime value.
     RuntimeValue::ActionProposal {
@@ -1348,18 +1371,19 @@ pub fn runtime_action_proposal(
 }
 
 pub fn is_action_proposal(value: &RuntimeValue) -> bool {
+    // Description:
+    //     Is action proposal.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_action_proposal`.
     //
     // Example:
-    // let result = spanda_ai::is_action_proposal(value);
+    //     let result = spanda_ai::is_action_proposal(value);
 
     // Produce }) as the result.
     matches!(value, RuntimeValue::ActionProposal { .. })
@@ -1367,19 +1391,19 @@ pub fn is_action_proposal(value: &RuntimeValue) -> bool {
 
 /// Estimate model confidence from an ActionProposal (0.0–1.0).
 pub fn proposal_confidence(value: &RuntimeValue) -> f64 {
-    // Proposal confidence.
+    // Description:
+    //     Proposal confidence.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `proposal_confidence`.
     //
     // Example:
-    // let result = spanda_ai::proposal_confidence(value);
+    //     let result = spanda_ai::proposal_confidence(value);
 
     // Match on value and handle each case.
     match value {
@@ -1415,18 +1439,19 @@ pub fn proposal_confidence(value: &RuntimeValue) -> f64 {
 pub const AI_CONFIDENCE_LOW_THRESHOLD: f64 = 0.5;
 
 pub fn is_safe_action(value: &RuntimeValue) -> bool {
+    // Description:
+    //     Is safe action.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_safe_action`.
     //
     // Example:
-    // let result = spanda_ai::is_safe_action(value);
+    //     let result = spanda_ai::is_safe_action(value);
 
     // Produce }) as the result.
     matches!(value, RuntimeValue::SafeAction { .. })
@@ -1440,19 +1465,19 @@ pub struct ActionProposalFields {
 }
 
 pub fn proposal_from_value(value: &RuntimeValue) -> Option<ActionProposalFields> {
-    // Proposal from value.
+    // Description:
+    //     Proposal from value.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<ActionProposalFields>
+    //         Return value from `proposal_from_value`.
     //
     // Example:
-    // let result = spanda_ai::proposal_from_value(value);
+    //     let result = spanda_ai::proposal_from_value(value);
 
     // Match on value and handle each case.
     match value {
@@ -1491,40 +1516,42 @@ pub fn proposal_from_value(value: &RuntimeValue) -> Option<ActionProposalFields>
 }
 
 pub fn safe_action_from_proposal(linear: f64, angular: f64) -> RuntimeValue {
-    // Safe action from proposal.
+    // Description:
+    //     Safe action from proposal.
     //
-    // Parameters:
-    // - `linear` — input value
-    // - `angular` — input value
+    // Inputs:
+    //     linear: f64
+    //         Caller-supplied linear.
+    //     angular: f64
+    //         Caller-supplied angular.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `safe_action_from_proposal`.
     //
     // Example:
-    // let result = spanda_ai::safe_action_from_proposal(linear, angular);
+    //     let result = spanda_ai::safe_action_from_proposal(linear, angular);
 
     // Produce runtime safe action as the result.
     runtime_safe_action(linear, angular)
 }
 
 pub fn wrap_completion(text: impl Into<String>, model: impl Into<String>) -> RuntimeValue {
-    // Wrap completion.
+    // Description:
+    //     Wrap completion.
     //
-    // Parameters:
-    // - `text` — input value
-    // - `model` — input value
+    // Inputs:
+    //     ex: impl Into<String>
+    //         Caller-supplied ex.
+    //     odel: impl Into<String>
+    //         Caller-supplied odel.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `wrap_completion`.
     //
     // Example:
-    // let result = spanda_ai::wrap_completion(text, model);
+    //     let result = spanda_ai::wrap_completion(ex, odel);
 
     // Build a Completion runtime value.
     RuntimeValue::Completion {
@@ -1534,21 +1561,23 @@ pub fn wrap_completion(text: impl Into<String>, model: impl Into<String>) -> Run
 }
 
 pub fn wrap_detection(label: &str, confidence: f64, nearest_distance: f64) -> RuntimeValue {
-    // Wrap detection.
+    // Description:
+    //     Wrap detection.
     //
-    // Parameters:
-    // - `label` — input value
-    // - `confidence` — input value
-    // - `nearest_distance` — input value
+    // Inputs:
+    //     label: &str
+    //         Caller-supplied label.
+    //     confidence: f64
+    //         Caller-supplied confidence.
+    //     nearest_distance: f64
+    //         Caller-supplied nearest distance.
     //
-    // Returns:
-    // RuntimeValue.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `wrap_detection`.
     //
     // Example:
-    // let result = spanda_ai::wrap_detection(label, confidence, nearest_distance);
+    //     let result = spanda_ai::wrap_detection(label, confidence, nearest_distance);
 
     // Create mutable fields for accumulating results.
     let mut fields = HashMap::new();
@@ -1570,19 +1599,18 @@ mod tests {
 
     #[test]
     fn mock_provider_proposes_motion() {
-        // Mock provider proposes motion.
+        // Description:
+        //     Mock provider proposes motion.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::mock_provider_proposes_motion();
+
+        //     let result = spanda_ai::mock_provider_proposes_motion();
 
         let provider = MockAiProvider;
         let result = provider.complete(&CompletionRequest {
@@ -1598,19 +1626,18 @@ mod tests {
 
     #[test]
     fn mock_provider_stops_on_halt_prompt() {
-        // Mock provider stops on halt prompt.
+        // Description:
+        //     Mock provider stops on halt prompt.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::mock_provider_stops_on_halt_prompt();
+
+        //     let result = spanda_ai::mock_provider_stops_on_halt_prompt();
 
         let provider = MockAiProvider;
         let result = provider.complete(&CompletionRequest {
@@ -1634,19 +1661,18 @@ mod tests {
 
     #[test]
     fn mock_summarize_scan() {
-        // Mock summarize scan.
+        // Description:
+        //     Mock summarize scan.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::mock_summarize_scan();
+
+        //     let result = spanda_ai::mock_summarize_scan();
 
         let summary = mock_summarize(Some(&RuntimeValue::scan(1.25)), "mock");
         if let RuntimeValue::Completion { text, .. } = summary {
@@ -1658,19 +1684,18 @@ mod tests {
 
     #[test]
     fn memory_store_recalls_latest() {
-        // Memory store recalls latest.
+        // Description:
+        //     Memory store recalls latest.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::memory_store_recalls_latest();
+
+        //     let result = spanda_ai::memory_store_recalls_latest();
 
         let mut store = MemoryStore::new(AiMemoryKind::ShortTerm, None);
         store.remember("a", RuntimeValue::number(1.0, UnitKind::None));
@@ -1683,19 +1708,18 @@ mod tests {
 
     #[test]
     fn resolves_ai_imports() {
-        // Resolves ai imports.
+        // Description:
+        //     Resolves ai imports.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::resolves_ai_imports();
+
+        //     let result = spanda_ai::resolves_ai_imports();
 
         assert!(resolve_ai_import("onnx.runtime").is_some());
         assert!(resolve_ai_import("openvino.runtime").is_some());
@@ -1704,19 +1728,18 @@ mod tests {
 
     #[test]
     fn proposal_from_velocity() {
-        // Proposal from velocity.
+        // Description:
+        //     Proposal from velocity.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ai::proposal_from_velocity();
+
+        //     let result = spanda_ai::proposal_from_velocity();
 
         let proposal = proposal_from_value(&RuntimeValue::Velocity {
             linear: 0.5,

@@ -2,6 +2,19 @@
 //!
 #[test]
 fn package_manifest_has_no_spanda_core_dependency() {
+    // Description:
+    //     Package manifest has no spanda core dependency.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_cycle::package_manifest_has_no_spanda_core_dependency();
+
     let manifest = std::fs::read_to_string(
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
     )
@@ -14,6 +27,19 @@ fn package_manifest_has_no_spanda_core_dependency() {
 
 #[test]
 fn package_dependency_tree_excludes_spanda_core() {
+    // Description:
+    //     Package dependency tree excludes spanda core.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_cycle::package_dependency_tree_excludes_spanda_core();
+
     let output = std::process::Command::new("cargo")
         .args(["tree", "-p", "spanda-package", "--prefix", "none"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))
@@ -29,6 +55,19 @@ fn package_dependency_tree_excludes_spanda_core() {
 
 #[test]
 fn permissive_permissions_use_hardware_catalog() {
+    // Description:
+    //     Permissive permissions use hardware catalog.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::lean_core_cycle::permissive_permissions_use_hardware_catalog();
+
     let perms = spanda_package::validation::ApplicationPermissions::permissive();
     assert!(perms.hardware_targets.iter().any(|t| t == "JetsonOrin"));
 }

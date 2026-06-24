@@ -111,19 +111,19 @@ pub struct RunOptionsJs {
 }
 
 fn map_diagnostics(err: &SpandaError) -> Vec<DiagnosticJs> {
-    // Map diagnostics.
+    // Description:
+    //     Map diagnostics.
     //
-    // Parameters:
-    // - `err` — input value
+    // Inputs:
+    //     err: &SpandaError
+    //         Caller-supplied err.
     //
-    // Returns:
-    // Vec<DiagnosticJs>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<DiagnosticJs>
+    //         Return value from `map_diagnostics`.
     //
     // Example:
-    // let result = spanda_node::map_diagnostics(err);
+    //     let result = spanda_node::map_diagnostics(err);
 
     // Produce diagnostics as the result.
     err.diagnostics()
@@ -138,19 +138,19 @@ fn map_diagnostics(err: &SpandaError) -> Vec<DiagnosticJs> {
 
 #[napi]
 pub fn check_source(source: String) -> CheckResultJs {
-    // Check source.
+    // Description:
+    //     Check source.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: String
+    //         Caller-supplied source.
     //
-    // Returns:
-    // CheckResultJs.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CheckResultJs
+    //         Return value from `check_source`.
     //
     // Example:
-    // let result = spanda_node::check_source(source);
+    //     let result = spanda_node::check_source(source);
 
     // Match on check and handle each case.
     match check(&source) {
@@ -167,20 +167,21 @@ pub fn check_source(source: String) -> CheckResultJs {
 
 #[napi]
 pub fn run_source(source: String, options: Option<RunOptionsJs>) -> Result<RunResultJs> {
-    // Run source.
+    // Description:
+    //     Run source.
     //
-    // Parameters:
-    // - `source` — input value
-    // - `options` — input value
+    // Inputs:
+    //     source: String
+    //         Caller-supplied source.
+    //     options: Option<RunOptionsJs>
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RunResultJs>
+    //         Return value from `run_source`.
     //
     // Example:
-    // let result = spanda_node::run_source(source, options);
+    //     let result = spanda_node::run_source(source, options);
 
     // Compute opts for the following logic.
     let opts = options.unwrap_or(RunOptionsJs {
@@ -254,19 +255,18 @@ pub fn run_source(source: String, options: Option<RunOptionsJs>) -> Result<RunRe
 
 #[napi]
 pub fn core_version() -> String {
-    // Core version.
+    // Description:
+    //     Core version.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `core_version`.
     //
     // Example:
-    // let result = spanda_node::core_version();
+    //     let result = spanda_node::core_version();
 
     // Produce to string as the result.
     env!("CARGO_PKG_VERSION").to_string()
@@ -290,19 +290,19 @@ pub struct VerifyResultJs {
 
 #[napi]
 pub fn verify_source(source: String) -> VerifyResultJs {
-    // Verify source.
+    // Description:
+    //     Verify source.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: String
+    //         Caller-supplied source.
     //
-    // Returns:
-    // VerifyResultJs.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: VerifyResultJs
+    //         Return value from `verify_source`.
     //
     // Example:
-    // let result = spanda_node::verify_source(source);
+    //     let result = spanda_node::verify_source(source);
 
     // Match on default and handle each case.
     match verify_compatibility(&source, &VerifyOptions::default()) {
@@ -340,19 +340,19 @@ pub fn verify_source(source: String) -> VerifyResultJs {
 
 #[napi]
 pub fn sir_source(source: String) -> Result<String> {
-    // Sir source.
+    // Description:
+    //     Sir source.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: String
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<String>
+    //         Return value from `sir_source`.
     //
     // Example:
-    // let result = spanda_node::sir_source(source);
+    //     let result = spanda_node::sir_source(source);
 
     // Produce lower to sir as the result.
     lower_to_sir(&source)
@@ -362,19 +362,19 @@ pub fn sir_source(source: String) -> Result<String> {
 
 #[napi]
 pub fn fmt_source(source: String) -> String {
-    // Fmt source.
+    // Description:
+    //     Fmt source.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: String
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `fmt_source`.
     //
     // Example:
-    // let result = spanda_node::fmt_source(source);
+    //     let result = spanda_node::fmt_source(source);
 
     // Produce format source as the result.
     format_source(&source)

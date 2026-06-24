@@ -62,16 +62,69 @@ struct RolloutResponse {
 }
 
 pub fn default_agent_state_path() -> PathBuf {
+    // Description:
+    //     Default agent state path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_agent_state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::default_agent_state_path();
+
     PathBuf::from(".spanda/agent-state.json")
 }
 
 pub fn agent_state_path_for(target: &str) -> PathBuf {
-    // Keep one state file per deploy target so concurrent agents do not clobber identity.
+    // Description:
+
+    //     Agent state path for.
+
+    //
+
+    // Inputs:
+
+    //     arge: &str
+
+    //         Caller-supplied arge.
+
+    //
+
+    // Outputs:
+
+    //     result: PathBuf
+
+    //         Return value from `agent_state_path_for`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::agent::agent_state_path_for(arge);
     let safe_target = target.replace(['/', '\\', '@', ':'], "_");
     PathBuf::from(format!(".spanda/agent-state/{safe_target}.json"))
 }
 
 pub fn load_agent_state(path: &Path) -> AgentState {
+    // Description:
+    //     Load agent state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: AgentState
+    //         Return value from `load_agent_state`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::load_agent_state(path);
+
     if !path.exists() {
         return AgentState::default();
     }
@@ -82,6 +135,23 @@ pub fn load_agent_state(path: &Path) -> AgentState {
 }
 
 pub fn save_agent_state(path: &Path, state: &AgentState) -> Result<(), String> {
+    // Description:
+    //     Save agent state.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //     state: &AgentState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `save_agent_state`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::save_agent_state(path, state);
+
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -90,6 +160,23 @@ pub fn save_agent_state(path: &Path, state: &AgentState) -> Result<(), String> {
 }
 
 fn unauthorized(request: &HttpRequest, state: &AgentState) -> bool {
+    // Description:
+    //     Unauthorized.
+    //
+    // Inputs:
+    //     request: &HttpRequest
+    //         Caller-supplied request.
+    //     state: &AgentState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `unauthorized`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::unauthorized(reques, state);
+
     match (&state.token, &request.authorization) {
         (Some(expected), Some(provided)) => expected != provided,
         (Some(_), None) => true,
@@ -98,7 +185,33 @@ fn unauthorized(request: &HttpRequest, state: &AgentState) -> bool {
 }
 
 fn clear_agent_deployment_on_identity_change(state: &mut AgentState, new_target: &str) {
-    // Drop stale rollout fields when the on-disk identity does not match startup target.
+    // Description:
+
+    //     Clear agent deployment on identity change.
+
+    //
+
+    // Inputs:
+
+    //     state: &mut AgentState
+
+    //         Caller-supplied state.
+
+    //     new_targe: &str
+
+    //         Caller-supplied new targe.
+
+    //
+
+    // Outputs:
+
+    //     None.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::agent::clear_agent_deployment_on_identity_change(state, new_targe);
     if !state.target.is_empty() && state.target != new_target {
         state.current_version = "0.0.0".into();
         state.previous_version = None;
@@ -113,6 +226,23 @@ fn clear_agent_deployment_on_identity_change(state: &mut AgentState, new_target:
 }
 
 fn query_flag(path: &str, key: &str) -> bool {
+    // Description:
+    //     Query flag.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //     key: &str
+    //         Caller-supplied key.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `query_flag`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::query_flag(path, key);
+
     path.split('?').nth(1).is_some_and(|query| {
         query
             .split('&')
@@ -121,11 +251,54 @@ fn query_flag(path: &str, key: &str) -> bool {
 }
 
 fn readiness_path_base(path: &str) -> &str {
+    // Description:
+    //     Readiness path base.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: &str
+    //         Return value from `readiness_path_base`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::readiness_path_base(path);
+
     path.split('?').next().unwrap_or(path)
 }
 
 pub fn handle_agent_request(state: &mut AgentState, request: HttpRequest) -> HttpResponse {
-    // Route deploy agent protocol requests to local state transitions.
+    // Description:
+
+    //     Handle agent request.
+
+    //
+
+    // Inputs:
+
+    //     state: &mut AgentState
+
+    //         Caller-supplied state.
+
+    //     request: HttpRequest
+
+    //         Caller-supplied request.
+
+    //
+
+    // Outputs:
+
+    //     result: HttpResponse
+
+    //         Return value from `handle_agent_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::agent::handle_agent_request(state, reques);
     if unauthorized(&request, state) {
         return HttpResponse {
             status: 401,
@@ -305,6 +478,26 @@ fn handle_connection(
     mut stream: TcpStream,
     tls: Option<Arc<rustls::ServerConfig>>,
 ) {
+    // Description:
+    //     Handle connection.
+    //
+    // Inputs:
+    //     state: Arc<Mutex<AgentState>>
+    //         Caller-supplied state.
+    //     state_path: PathBuf
+    //         Caller-supplied state path.
+    //     strea: TcpStream
+    //         Caller-supplied strea.
+    //     ls: Option<Arc<rustls::ServerConfig>>
+    //         Caller-supplied ls.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::handle_connection(state, state_path, strea, ls);
+
     let respond = |locked: &mut AgentState, request: HttpRequest| -> HttpResponse {
         let response = handle_agent_request(locked, request);
         let _ = save_agent_state(&state_path, locked);
@@ -368,19 +561,20 @@ pub struct DeployAgentServerOptions {
 }
 
 pub fn run_deploy_agent_server(options: &DeployAgentServerOptions) -> Result<(), String> {
-    // Run the deploy agent until the listener is interrupted.
+    // Description:
+    //     Run deploy agent server.
     //
-    // Parameters:
-    // - `options` — bind address, target robot, TLS, and verification policy
+    // Inputs:
+    //     options: &DeployAgentServerOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Ok when the listener shuts down cleanly, or an error string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `run_deploy_agent_server`.
     //
     // Example:
-    // run_deploy_agent_server(&DeployAgentServerOptions { bind: "0.0.0.0:8787".into(), .. })?;
+
+    //     let result = spanda_ota::agent::run_deploy_agent_server(options);
 
     let DeployAgentServerOptions {
         bind,
@@ -431,6 +625,23 @@ pub fn spawn_test_agent(
     target: &str,
     token: Option<String>,
 ) -> Result<(u16, thread::JoinHandle<()>), String> {
+    // Description:
+    //     Spawn test agent.
+    //
+    // Inputs:
+    //     arge: &str
+    //         Caller-supplied arge.
+    //     token: Option<String>
+    //         Caller-supplied token.
+    //
+    // Outputs:
+    //     result: Result<(u16, thread::JoinHandle<()>), String>
+    //         Return value from `spawn_test_agent`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::spawn_test_agent(arge, oken);
+
     spawn_test_agent_with_options(target, token, false)
 }
 
@@ -439,7 +650,39 @@ pub fn spawn_test_agent_with_options(
     token: Option<String>,
     require_certify: bool,
 ) -> Result<(u16, thread::JoinHandle<()>), String> {
-    // Start a background deploy agent for integration tests.
+    // Description:
+
+    //     Spawn test agent with options.
+
+    //
+
+    // Inputs:
+
+    //     arge: &str
+
+    //         Caller-supplied arge.
+
+    //     token: Option<String>
+
+    //         Caller-supplied token.
+
+    //     require_certify: bool
+
+    //         Caller-supplied require certify.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(u16, thread::JoinHandle<()>), String>
+
+    //         Return value from `spawn_test_agent_with_options`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_ota::agent::spawn_test_agent_with_options(arge, oken, require_certify);
     let listener = TcpListener::bind("127.0.0.1:0").map_err(|e| e.to_string())?;
     let port = listener.local_addr().map_err(|e| e.to_string())?.port();
     let state = AgentState {
@@ -462,6 +705,25 @@ pub fn spawn_test_agent_with_options(
 }
 
 pub fn agent_entry_for_port(target: &str, port: u16, token: Option<String>) -> DeployAgentEntry {
+    // Description:
+    //     Agent entry for port.
+    //
+    // Inputs:
+    //     arge: &str
+    //         Caller-supplied arge.
+    //     por: u16
+    //         Caller-supplied por.
+    //     token: Option<String>
+    //         Caller-supplied token.
+    //
+    // Outputs:
+    //     result: DeployAgentEntry
+    //         Return value from `agent_entry_for_port`.
+    //
+    // Example:
+
+    //     let result = spanda_ota::agent::agent_entry_for_port(arge, por, oken);
+
     DeployAgentEntry {
         target: target.to_string(),
         url: format!("http://127.0.0.1:{port}"),
@@ -475,6 +737,19 @@ mod agent_state_path_tests {
 
     #[test]
     fn distinct_targets_use_distinct_paths() {
+        // Description:
+        //     Distinct targets use distinct paths.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_ota::agent::distinct_targets_use_distinct_paths();
+
         assert_ne!(
             agent_state_path_for("Rover@JetsonOrin"),
             agent_state_path_for("Scout@Pi4")

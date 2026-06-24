@@ -9,11 +9,37 @@ static ENV_LOCK: Mutex<()> = Mutex::new(());
 
 #[test]
 fn native_sdk_reports_unavailable_without_ros_by_default() {
+    // Description:
+    //     Native sdk reports unavailable without ros by default.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::rclrs_env::native_sdk_reports_unavailable_without_ros_by_default();
+
     assert!(!native_sdk_available());
 }
 
 #[test]
 fn rclrs_transport_chain_respects_env_flag() {
+    // Description:
+    //     Rclrs transport chain respects env flag.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_transport_ros2::rclrs_env::rclrs_transport_chain_respects_env_flag();
+
     let _lock = ENV_LOCK.lock().unwrap();
     std::env::remove_var("SPANDA_ROS2_RCLRS");
     assert!(!rclrs_enabled());

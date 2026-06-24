@@ -49,42 +49,79 @@ pub trait IntoSpandaError {
 
 impl IntoSpandaError for RuntimeError {
     fn into_spanda(self) -> SpandaError {
+        // Description:
+        //     Into spanda.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: SpandaError
+        //         Return value from `into_spanda`.
+        //
+        // Example:
+        //     let result = instance.into_spanda();
+
         SpandaError::from(self)
     }
 }
 
 pub fn pose_from_state(state: &PoseState) -> RuntimeValue {
-    // Build a pose runtime value from HAL pose state.
+    // Description:
+
+    //     Pose from state.
+
     //
-    // Parameters:
-    // - `state` — robot pose snapshot from the HAL layer
+
+    // Inputs:
+
+    //     state: &PoseState
+
+    //         Caller-supplied state.
+
     //
-    // Returns:
-    // Pose `RuntimeValue` with optional Z defaulting to zero.
+
+    // Outputs:
+
+    //     result: RuntimeValue
+
+    //         Return value from `pose_from_state`.
+
     //
-    // Options:
-    // None.
-    //
+
     // Example:
-    // let pose = pose_from_state(&hal_state.pose);
+
+    //     let result = spanda_interpreter::orchestrator::pose_from_state(state);
 
     runtime_pose(state.x, state.y, state.theta, state.z.unwrap_or(0.0))
 }
 
 pub fn velocity_from_state(state: &VelocityState) -> RuntimeValue {
-    // Build a velocity runtime value from HAL velocity state.
+    // Description:
+
+    //     Velocity from state.
+
     //
-    // Parameters:
-    // - `state` — robot velocity snapshot from the HAL layer
+
+    // Inputs:
+
+    //     state: &VelocityState
+
+    //         Caller-supplied state.
+
     //
-    // Returns:
-    // Velocity `RuntimeValue`.
+
+    // Outputs:
+
+    //     result: RuntimeValue
+
+    //         Return value from `velocity_from_state`.
+
     //
-    // Options:
-    // None.
-    //
+
     // Example:
-    // let vel = velocity_from_state(&hal_state.velocity);
+
+    //     let result = spanda_interpreter::orchestrator::velocity_from_state(state);
 
     runtime_velocity(state.linear, state.angular)
 }
@@ -100,57 +137,59 @@ pub trait RobotBackend {
     fn tick(&mut self, dt_ms: f64);
     fn get_state(&self) -> RobotState;
     fn set_emergency_stop(&mut self, _active: bool) {
-        // Set emergency stop.
+        // Description:
+        //     Set emergency stop.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_active` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     _active: bool
+        //         Caller-supplied active.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_emergency_stop(_active);
+        //     let result = spanda_interpreter::orchestrator::set_emergency_stop(&mut self, _active);
     }
     fn publish_topic(&mut self, _topic_path: &str, _message_type: &str, _value: RuntimeValue) {
-        // Publish topic.
+        // Description:
+        //     Publish topic.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_topic_path` — input value
-        // - `_message_type` — input value
-        // - `_value` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     _topic_path: &str
+        //         Caller-supplied topic path.
+        //     _message_type: &str
+        //         Caller-supplied message type.
+        //     _value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish_topic(_topic_path, _message_type, _value);
+        //     let result = spanda_interpreter::orchestrator::publish_topic(&mut self, _topic_path, _message_type, _value);
     }
     fn call_service(&mut self, _service_name: &str, _service_type: &str) -> RuntimeValue {
-        // Call service.
+        // Description:
+        //     Call service.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_service_name` — input value
-        // - `_service_type` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     _service_name: &str
+        //         Caller-supplied service name.
+        //     _service_type: &str
+        //         Caller-supplied service type.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `call_service`.
         //
         // Example:
-        // let result = instance.call_service(_service_name, _service_type);
-
-        // Build a Bool runtime value.
+        //     let result = spanda_interpreter::orchestrator::call_service(&mut self, _service_name, _service_type);
         RuntimeValue::Bool { value: true }
     }
     fn send_action(
@@ -159,59 +198,57 @@ pub trait RobotBackend {
         _action_type: &str,
         _goal: RuntimeValue,
     ) -> RuntimeValue {
-        // Send action.
+        // Description:
+        //     Send action.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `_action_name` — input value
-        // - `_action_type` — input value
-        // - `_goal` — input value
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
+        //     _action_name: &str
+        //         Caller-supplied action name.
+        //     _action_type: &str
+        //         Caller-supplied action type.
+        //     _goal: RuntimeValue
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `send_action`.
         //
         // Example:
-        // let result = instance.send_action(_action_name, _action_type, _goal);
-
-        // Build a Bool runtime value.
+        //     let result = spanda_interpreter::orchestrator::send_action(&mut self, _action_name, _action_type, _goal);
         RuntimeValue::Bool { value: true }
     }
     fn get_hal(&mut self) -> Option<&mut dyn HalBackend> {
+        // Description:
+        //     Get hal.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&mut dyn HalBackend>
+        //         Return value from `get_hal`.
         //
         // Example:
-        // let result = instance.get_hal();
-
-        // Return no value for this path.
+        //     let result = spanda_interpreter::orchestrator::get_hal(&mut self);
         None
     }
     fn event_log(&self) -> Vec<String> {
-        // Event log.
+        // Description:
+        //     Event log.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Vec<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<String>
+        //         Return value from `event_log`.
         //
         // Example:
-        // let result = instance.event_log();
-
-        // Return an empty list.
+        //     let result = spanda_interpreter::orchestrator::event_log(&self);
         Vec::new()
     }
 }
@@ -270,20 +307,18 @@ pub struct InterpreterOptions {
 
 impl Default for InterpreterOptions {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::runtime::default();
-
-        // Assemble the struct fields and return it.
+        //     let result = spanda_interpreter::orchestrator::default();
         Self {
             max_loop_iterations: 10,
             on_motion_blocked: None,
@@ -403,22 +438,21 @@ pub struct Interpreter<B: RobotBackend> {
 
 impl<B: RobotBackend> Interpreter<B> {
     pub fn new(backend: B, mut options: InterpreterOptions) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `backend` — input value
-        // - `options` — input value
+        // Inputs:
+        //     backend: B
+        //         Caller-supplied backend.
+        //     options: InterpreterOptions
+        //         Caller-supplied options.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::runtime::new(backend, options);
-
-        // Assemble the struct fields and return it.
+        //     let value = spanda_interpreter::orchestrator::new(backend, options);
         let provider_registry = Rc::new(RefCell::new(
             options.provider_registry.take().unwrap_or_else(|| {
                 bootstrap_providers_for_packages(
@@ -521,81 +555,151 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn runtime_host(&self) -> &dyn RuntimeHost {
+        // Description:
+
+        //     Runtime host.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: &dyn RuntimeHost
+
+        //         Return value from `runtime_host`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::runtime_host(&self);
+
         self.host
     }
 
     pub fn telemetry(&self) -> &spanda_runtime::telemetry::RuntimeTelemetry {
-        // Telemetry.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &spanda_runtime::telemetry::RuntimeTelemetry.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.telemetry();
+        // Description:
 
-        // Return telemetry from this handle.
+        //     Telemetry.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: &spanda_runtime::telemetry::RuntimeTelemetry
+
+        //         Return value from `telemetry`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::telemetry(&self);
         &self.telemetry
     }
 
     pub fn provider_registry(
         &self,
     ) -> std::cell::Ref<'_, spanda_runtime::providers::ProviderRegistry> {
-        // Return the domain provider registry active for this interpreter session.
+        // Description:
+
+        //     Provider registry.
+
         //
-        // Parameters:
-        // - `self` — method receiver
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
         //
-        // Returns:
-        // Reference to the installed provider registry (includes bootstrap shims).
+
+        // Outputs:
+
+        //     result: std::cell::Ref<'_, spanda_runtime::providers::ProviderRegistry>
+
+        //         Return value from `provider_registry`.
+
         //
-        // Options:
-        // None.
-        //
+
         // Example:
-        // let count = interp.provider_registry().transport_count();
+
+        //     let result = spanda_interpreter::orchestrator::provider_registry(&self);
 
         self.provider_registry.borrow()
     }
 
     pub fn take_telemetry(&mut self) -> spanda_runtime::telemetry::RuntimeTelemetry {
-        // Take telemetry.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // spanda_runtime::telemetry::RuntimeTelemetry.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.take_telemetry();
+        // Description:
 
-        // Move out the stored value and leave a default behind.
+        //     Take telemetry.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: spanda_runtime::telemetry::RuntimeTelemetry
+
+        //         Return value from `take_telemetry`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::take_telemetry(&mut self);
         std::mem::take(&mut self.telemetry)
     }
 
     pub fn twin_replay_export(&self) -> Option<serde_json::Value> {
-        // Export digital twin replay frames as JSON when replay is enabled.
+        // Description:
+
+        //     Twin replay export.
+
         //
-        // Parameters:
-        // None.
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
         //
-        // Returns:
-        // Replay JSON or none when no twin replay buffer exists.
+
+        // Outputs:
+
+        //     result: Option<serde_json::Value>
+
+        //         Return value from `twin_replay_export`.
+
         //
-        // Options:
-        // None.
-        //
+
         // Example:
-        // let export = interp.twin_replay_export();
+
+        //     let result = spanda_interpreter::orchestrator::twin_replay_export(&self);
 
         self.twin
             .as_ref()
@@ -604,228 +708,349 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn take_mission_trace(&mut self) -> Option<MissionTrace> {
-        // Take the recorded mission trace, if any.
-        //
-        // Parameters:
-        // None.
-        //
-        // Returns:
-        // Recorded trace or none when recording was disabled.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let trace = interp.take_mission_trace();
+        // Description:
 
-        // Move out the stored trace container.
+        //     Take mission trace.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<MissionTrace>
+
+        //         Return value from `take_mission_trace`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::take_mission_trace(&mut self);
         self.mission_trace.take()
     }
 
     fn trace_scheduler_log(&self, message: impl Into<String>) {
-        // Trace scheduler log.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.trace_scheduler_log(message);
+        // Description:
 
-        // Log scheduler decisions when scheduler tracing is enabled.
+        //     Trace scheduler log.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: impl Into<String>
+
+        //         Caller-supplied essage.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::trace_scheduler_log(&self, essage);
         if self.options.trace_scheduler {
             self.log(format!("trace-scheduler: {}", message.into()));
         }
     }
 
     fn trace_task_log(&self, message: impl Into<String>) {
-        // Trace task log.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.trace_task_log(message);
+        // Description:
 
-        // Log task lifecycle events when task tracing is enabled.
+        //     Trace task log.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: impl Into<String>
+
+        //         Caller-supplied essage.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::trace_task_log(&self, essage);
         if self.options.trace_tasks {
             self.log(format!("trace-task: {}", message.into()));
         }
     }
 
     fn trace_trigger_log(&self, message: impl Into<String>) {
-        // Trace trigger log.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.trace_trigger_log(message);
+        // Description:
 
-        // Log trigger evaluation when trigger tracing is enabled.
+        //     Trace trigger log.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: impl Into<String>
+
+        //         Caller-supplied essage.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::trace_trigger_log(&self, essage);
         if self.options.trace_triggers {
             self.log(format!("trace-trigger: {}", message.into()));
         }
     }
 
     fn trace_event_log(&self, message: impl Into<String>) {
-        // Trace event log.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.trace_event_log(message);
+        // Description:
 
-        // Log trigger evaluation when trigger tracing is enabled.
+        //     Trace event log.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: impl Into<String>
+
+        //         Caller-supplied essage.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::trace_event_log(&self, essage);
         if self.options.trace_events || self.options.trace_triggers {
             self.log(format!("trace-event: {}", message.into()));
         }
     }
 
     fn trace_replay_log(&self, message: impl Into<String>) {
-        // Trace replay log.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.trace_replay_log(message);
+        // Description:
 
-        // Record replay output when trace replay mode is active.
+        //     Trace replay log.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: impl Into<String>
+
+        //         Caller-supplied essage.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::trace_replay_log(&self, essage);
         if self.options.replay_trace {
             self.log(format!("trace-replay: {}", message.into()));
         }
     }
 
     pub fn robot_backend(&self) -> &B {
-        // Robot backend.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &B.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.robot_backend();
+        // Description:
 
-        // Return backend from this handle.
+        //     Robot backend.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: &B
+
+        //         Return value from `robot_backend`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::robot_backend(&self);
         &self.backend
     }
 
     pub fn env(&self) -> &Environment {
-        // Env.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &Environment.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.env();
+        // Description:
 
-        // Return env from this handle.
+        //     Env.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: &Environment
+
+        //         Return value from `env`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::env(&self);
         &self.env
     }
 
     pub fn env_mut(&mut self) -> &mut Environment {
-        // Env mut.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // &mut Environment.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.env_mut();
+        // Description:
 
-        // Produce env as the result.
+        //     Env mut.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: &mut Environment
+
+        //         Return value from `env_mut`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::env_mut(&mut self);
         &mut self.env
     }
 
     pub fn setup_robot_for_debug(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
-        // Setup robot for debug.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `robot` — input value
-        //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.setup_robot_for_debug(robot);
+        // Description:
 
-        // Call setup robot on the current instance.
+        //     Setup robot for debug.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     robo: &RobotDecl
+
+        //         Caller-supplied robo.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `setup_robot_for_debug`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::setup_robot_for_debug(&mut self, robo);
         self.setup_robot(robot)
     }
 
     pub fn debug_execute_stmt(&mut self, stmt: &Stmt) -> Result<(), SpandaError> {
-        // Debug execute stmt.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
-        //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.debug_execute_stmt(stmt);
+        // Description:
 
-        // Call execute stmt on the current instance.
+        //     Debug execute stmt.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     s: &Stmt
+
+        //         Caller-supplied s.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `debug_execute_stmt`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::debug_execute_stmt(&mut self, s);
         self.execute_stmt(stmt)
     }
 
@@ -837,22 +1062,35 @@ impl<B: RobotBackend> Interpreter<B> {
         spanda_ast::foundations::ModuleFnDecl,
         Vec<spanda_ast::nodes::Expr>,
     )> {
-        // Resolve sync call.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `stmt` — input value
-        //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.resolve_sync_call(stmt);
+        // Description:
 
-        // Import the items needed by the logic below.
+        //     Resolve sync call.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     s: &Stmt
+
+        //         Caller-supplied s.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<( String, spanda_ast::foundations::ModuleFnDecl, Vec<spanda_ast::nodes::Expr>, )>
+
+        //         Return value from `resolve_sync_call`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::resolve_sync_call(&self, s);
         use spanda_ast::nodes::{Expr, Stmt};
         let expr = match stmt {
             Stmt::VarDecl {
@@ -888,23 +1126,39 @@ impl<B: RobotBackend> Interpreter<B> {
         func: &spanda_ast::foundations::ModuleFnDecl,
         args: &[spanda_ast::nodes::Expr],
     ) -> Result<Environment, SpandaError> {
-        // Bind call args.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `func` — input value
-        // - `args` — input value
-        //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.bind_call_args(func, args);
+        // Description:
 
-        // Save current variable bindings before the call.
+        //     Bind call args.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     func: &spanda_ast::foundations::ModuleFnDecl
+
+        //         Caller-supplied func.
+
+        //     args: &[spanda_ast::nodes::Expr]
+
+        //         Caller-supplied args.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<Environment, SpandaError>
+
+        //         Return value from `bind_call_args`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::bind_call_args(&mut self, func, args);
         let saved = self.env.clone_bindings();
 
         // Bind each formal parameter to its call argument.
@@ -919,22 +1173,33 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn restore_env(&mut self, env: Environment) {
-        // Restore env.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `env` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.restore_env(env);
+        // Description:
 
-        // Call env = env; on the current instance.
+        //     Restore env.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     env: Environment
+
+        //         Caller-supplied env.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::restore_env(&mut self, env);
         self.env = env;
     }
 
@@ -943,23 +1208,39 @@ impl<B: RobotBackend> Interpreter<B> {
         program: &Program,
         entry_behavior: Option<&str>,
     ) -> Result<RobotState, SpandaError> {
-        // Run the operation.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — input value
-        // - `entry_behavior` — input value
-        //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.run(program, entry_behavior);
+        // Description:
 
-        // Destructure the program into its top-level sections.
+        //     Run.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     progra: &Program
+
+        //         Caller-supplied progra.
+
+        //     entry_behavior: Option<&str>
+
+        //         Caller-supplied entry behavior.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RobotState, SpandaError>
+
+        //         Return value from `run`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::run(&mut self, progra, entry_behavior);
         let Program::Program {
             robots,
             geofences,
@@ -1081,22 +1362,43 @@ impl<B: RobotBackend> Interpreter<B> {
         entry_behavior: Option<&str>,
         sim_faults: &[String],
     ) -> Result<(), SpandaError> {
-        // Run one robot's tasks/behaviors after setup_robot has bound its env.
+        // Description:
+
+        //     Execute robot entry.
+
         //
-        // Parameters:
-        // - `self` — interpreter
-        // - `robot` — robot declaration to execute
-        // - `entry_behavior` — optional behavior override from debug/CLI
-        // - `sim_faults` — simulate_compatibility fault names
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     robo: &RobotDecl
+
+        //         Caller-supplied robo.
+
+        //     entry_behavior: Option<&str>
+
+        //         Caller-supplied entry behavior.
+
+        //     sim_faults: &[String]
+
+        //         Caller-supplied sim faults.
+
         //
-        // Returns:
-        // Ok when execution completes, or a runtime error.
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `execute_robot_entry`.
+
         //
-        // Options:
-        // None.
-        //
+
         // Example:
-        // interpreter.execute_robot_entry(robot, None, &[])?;
+
+        //     let result = spanda_interpreter::orchestrator::execute_robot_entry(&mut self, robo, entry_behavior, sim_faults);
 
         for fault in sim_faults {
             self.hardware_monitor.inject_fault(fault.clone());
@@ -1174,22 +1476,35 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn run_tests(&mut self, program: &Program) -> Result<(), SpandaError> {
-        // Run tests.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — input value
-        //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.run_tests(program);
+        // Description:
 
-        // Extract test blocks from the parsed program.
+        //     Run tests.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     progra: &Program
+
+        //         Caller-supplied progra.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `run_tests`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::run_tests(&mut self, progra);
         let Program::Program { tests, .. } = program;
         self.load_program_metadata(program);
 
@@ -1211,6 +1526,36 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn execute_test_block(&mut self, body: &[Stmt]) -> Result<(), SpandaError> {
+        // Description:
+
+        //     Execute test block.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     body: &[Stmt]
+
+        //         Caller-supplied body.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `execute_test_block`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::execute_test_block(&mut self, body);
+
         for stmt in body {
             if matches!(stmt, Stmt::ExpectCompileErrorStmt { .. }) {
                 continue;
@@ -1221,6 +1566,40 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn verify_expect_compile_error(&self, body: &[Stmt], line: u32) -> Result<(), SpandaError> {
+        // Description:
+
+        //     Verify expect compile error.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     body: &[Stmt]
+
+        //         Caller-supplied body.
+
+        //     line: u32
+
+        //         Caller-supplied line.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `verify_expect_compile_error`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::verify_expect_compile_error(&self, body, line);
+
         use spanda_ast::foundations::{ModuleFnDecl, Visibility};
         use spanda_ast::nodes::{Program, SpandaType};
         use spanda_runtime_host::core_type_check_host;
@@ -1291,22 +1670,33 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub fn load_program_metadata(&mut self, program: &Program) {
-        // Load program metadata.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — input value
-        //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.load_program_metadata(program);
+        // Description:
 
-        // Import the items needed by the logic below.
+        //     Load program metadata.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     progra: &Program
+
+        //         Caller-supplied progra.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::load_program_metadata(&mut self, progra);
         use spanda_ast::foundations::{EnumDecl, ModuleFnDecl, StructDecl, TraitDecl, Visibility};
         let Program::Program {
             structs,
@@ -1417,21 +1807,31 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn check_safety_before_motion(&mut self) -> bool {
-        // Check safety before motion.
-        //
-        // Parameters:
-        // - `self` — method receiver
-        //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
-        //
-        // Example:
-        // let result = instance.check_safety_before_motion();
+        // Description:
 
-        // Compute state for the following logic.
+        //     Check safety before motion.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `check_safety_before_motion`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::orchestrator::check_safety_before_motion(&mut self);
         let state = self.backend.get_state();
 
         // Take this path when self.evaluate stop if(&self.env.clone bindings()).
@@ -1472,24 +1872,33 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn log(&self, message: String) {
-        // Log.
+        // Description:
+
+        //     Log.
+
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     essage: String
+
+        //         Caller-supplied essage.
+
         //
-        // Returns:
-        // Nothing.
+
+        // Outputs:
+
+        //     None.
+
         //
-        // Options:
-        // None.
-        //
+
         // Example:
-        // let result = instance.log(message);
 
-        // use cb when on log is present.
-
-        // Emit output when on log provides a cb.
+        //     let result = spanda_interpreter::orchestrator::log(&self, essage);
         if let Some(cb) = &self.options.on_log {
             cb(message);
         }
@@ -1497,21 +1906,31 @@ impl<B: RobotBackend> Interpreter<B> {
 }
 
 fn pose_value_to_state(pose: &PoseValue) -> PoseState {
-    // Pose value to state.
-    //
-    // Parameters:
-    // - `pose` — input value
-    //
-    // Returns:
-    // PoseState.
-    //
-    // Options:
-    // None.
-    //
-    // Example:
-    // let result = spanda_core::runtime::pose_value_to_state(pose);
+    // Description:
 
-    // Produce PoseState as the result.
+    //     Pose value to state.
+
+    //
+
+    // Inputs:
+
+    //     pose: &PoseValue
+
+    //         Caller-supplied pose.
+
+    //
+
+    // Outputs:
+
+    //     result: PoseState
+
+    //         Return value from `pose_value_to_state`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_interpreter::orchestrator::pose_value_to_state(pose);
     PoseState {
         x: pose.x,
         y: pose.y,

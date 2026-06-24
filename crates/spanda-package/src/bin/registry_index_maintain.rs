@@ -34,16 +34,59 @@ struct IndexEntry {
 }
 
 fn repo_root() -> PathBuf {
+    // Description:
+    //     Repo root.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `repo_root`.
+    //
+    // Example:
+
+    //     let result = spanda_package::registry_index_maintain::repo_root();
+
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
 }
 
 fn sha256_file(path: &Path) -> Result<String, String> {
+    // Description:
+    //     Sha256 file.
+    //
+    // Inputs:
+    //     path: &Path
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: Result<String, String>
+    //         Return value from `sha256_file`.
+    //
+    // Example:
+
+    //     let result = spanda_package::registry_index_maintain::sha256_file(path);
+
     use sha2::{Digest, Sha256};
     let bytes = fs::read(path).map_err(|err| format!("read {}: {err}", path.display()))?;
     Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn signing_material() -> String {
+    // Description:
+    //     Signing material.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `signing_material`.
+    //
+    // Example:
+
+    //     let result = spanda_package::registry_index_maintain::signing_material();
+
     env::var("SPANDA_REGISTRY_SIGN_KEY")
         .ok()
         .map(|value| value.trim().to_string())
@@ -52,6 +95,21 @@ fn signing_material() -> String {
 }
 
 fn maintain(verify_only: bool) -> Result<(), String> {
+    // Description:
+    //     Maintain.
+    //
+    // Inputs:
+    //     verify_only: bool
+    //         Caller-supplied verify only.
+    //
+    // Outputs:
+    //     result: Result<(), String>
+    //         Return value from `maintain`.
+    //
+    // Example:
+
+    //     let result = spanda_package::registry_index_maintain::maintain(verify_only);
+
     let root = repo_root();
     let index_path = root.join("registry/index.json");
     let packages_dir = root.join("registry/packages");
@@ -138,6 +196,19 @@ fn maintain(verify_only: bool) -> Result<(), String> {
 }
 
 fn main() {
+    // Description:
+    //     Main.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::registry_index_maintain::main();
+
     let verify_only = env::args().any(|arg| arg == "--verify");
     if let Err(err) = maintain(verify_only) {
         eprintln!("registry-index-maintain: {err}");

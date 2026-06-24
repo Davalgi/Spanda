@@ -11,20 +11,21 @@ impl<B: RobotBackend> Interpreter<B> {
         &mut self,
         zone: &SafetyZoneDecl,
     ) -> Result<SafetyZoneRuntime, SpandaError> {
-        // Eval safety zone.
+        // Description:
+        //     Eval safety zone.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `zone` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     zone: &SafetyZoneDecl
+        //         Caller-supplied zone.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SafetyZoneRuntime, SpandaError>
+        //         Return value from `eval_safety_zone`.
         //
         // Example:
-        // let result = instance.eval_safety_zone(zone);
+        //     let result = spanda_interpreter::runtime_safety::eval_safety_zone(&mut self, zone);
 
         // Compute SafetyZoneDecl for the following logic.
         let SafetyZoneDecl::SafetyZoneDecl {

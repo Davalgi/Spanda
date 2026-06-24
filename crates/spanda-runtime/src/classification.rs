@@ -34,6 +34,20 @@ pub struct ModuleClassification {
 
 /// Static audit table used by docs and migration tooling.
 pub fn module_classifications() -> &'static [ModuleClassification] {
+    // Description:
+    //     Module classifications.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: &'static [ModuleClassification]
+    //         Return value from `module_classifications`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::classification::module_classifications();
+
     &[
         ModuleClassification {
             module: "lexer",
@@ -166,6 +180,20 @@ pub fn module_classifications() -> &'static [ModuleClassification] {
 
 /// Official first-party package names recognized by the lean-core model.
 pub fn official_package_names() -> &'static [&'static str] {
+    // Description:
+    //     Official package names.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: &'static [&'static str]
+    //         Return value from `official_package_names`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::classification::official_package_names();
+
     &[
         "spanda-gps",
         "spanda-wifi",

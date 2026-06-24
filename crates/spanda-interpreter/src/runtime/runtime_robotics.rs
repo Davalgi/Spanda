@@ -20,24 +20,29 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval ai method.
+        // Description:
+        //     Eval ai method.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `target_name` — input value
-        // - `method` — input value
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     arget_name: &str
+        //         Caller-supplied arget name.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_ai_method`.
         //
         // Example:
-        // let result = instance.eval_ai_method(target_name, method, args, named_args, line);
+        //     let result = spanda_interpreter::runtime_robotics::eval_ai_method(&mut self, arget_name, ethod, args, named_args, line);
 
         // Match on method and handle each case.
         match method {
@@ -140,7 +145,43 @@ impl<B: RobotBackend> Interpreter<B> {
         property: &str,
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Dispatch mission lifecycle methods on the active mission controller.
+        // Description:
+
+        //     Eval mission method.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     runtime: &mut spanda_runtime::robotics::MissionRuntime
+
+        //         Caller-supplied runtime.
+
+        //     property: &str
+
+        //         Caller-supplied property.
+
+        //     line: u32
+
+        //         Caller-supplied line.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RuntimeValue, SpandaError>
+
+        //         Return value from `eval_mission_method`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_robotics::eval_mission_method(&mut self, runtime, property, line);
         match property {
             "start" => {
                 if let Some(step) = runtime.steps.first() {
@@ -205,7 +246,47 @@ impl<B: RobotBackend> Interpreter<B> {
         args: &[Expr],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Dispatch fleet coordination helpers for member lookup.
+        // Description:
+
+        //     Eval fleet method.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     registry: &spanda_runtime::robotics::FleetRegistry
+
+        //         Caller-supplied registry.
+
+        //     property: &str
+
+        //         Caller-supplied property.
+
+        //     args: &[Expr]
+
+        //         Caller-supplied args.
+
+        //     line: u32
+
+        //         Caller-supplied line.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RuntimeValue, SpandaError>
+
+        //         Return value from `eval_fleet_method`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_robotics::eval_fleet_method(&mut self, registry, property, args, line);
         match property {
             "members" => {
                 let fleet_name = if !args.is_empty() {
@@ -242,22 +323,25 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval safety validate.
+        // Description:
+        //     Eval safety validate.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `args` — input value
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_safety_validate`.
         //
         // Example:
-        // let result = instance.eval_safety_validate(args, named_args, line);
+        //     let result = spanda_interpreter::runtime_robotics::eval_safety_validate(&mut self, args, named_args, line);
 
         // Compute arg for the following logic.
         let arg = if let Some(first) = args.first() {

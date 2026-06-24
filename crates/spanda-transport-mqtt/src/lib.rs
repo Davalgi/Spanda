@@ -26,20 +26,22 @@ impl std::fmt::Debug for LiveMqttBridge {
 
 impl LiveMqttBridge {
     pub fn connect(broker_url: &str, client_id: &str) -> Result<Self, String> {
-        // Connect to a live MQTT broker when the live feature is enabled.
+        // Description:
+        //     Connect.
         //
-        // Parameters:
-        // - `broker_url` — broker URL (`mqtt://host:port`)
-        // - `client_id` — MQTT client identifier
+        // Inputs:
+        //     broker_url: &str
+        //         Caller-supplied broker url.
+        //     client_id: &str
+        //         Caller-supplied client id.
         //
-        // Returns:
-        // Connected bridge, or an error when live support is disabled.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `connect`.
         //
         // Example:
-        // let bridge = LiveMqttBridge::connect("mqtt://localhost:1883", "spanda")?;
+
+        //     let result = spanda_transport_mqtt::connect(broker_url, client_id);
 
         #[cfg(feature = "live")]
         {
@@ -58,6 +60,25 @@ impl LiveMqttBridge {
     }
 
     pub fn publish(&self, topic: &str, payload: &str) -> Result<(), String> {
+        // Description:
+        //     Publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `publish`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::publish(&self, opic, payload);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.publish(topic, payload);
@@ -67,6 +88,23 @@ impl LiveMqttBridge {
     }
 
     pub fn subscribe(&self, topic: &str) -> Result<(), String> {
+        // Description:
+        //     Subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::subscribe(&self, opic);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.subscribe(topic);
@@ -76,6 +114,23 @@ impl LiveMqttBridge {
     }
 
     pub fn receive(&self, topic: &str) -> Option<String> {
+        // Description:
+        //     Receive.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `receive`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::receive(&self, opic);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.receive(topic);

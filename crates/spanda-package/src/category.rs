@@ -30,19 +30,18 @@ pub enum PackageCategory {
 
 impl PackageCategory {
     pub fn all() -> &'static [PackageCategory] {
-        // All.
+        // Description:
+        //     All.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // &'static [PackageCategory].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static [PackageCategory]
+        //         Return value from `all`.
         //
         // Example:
-        // let result = spanda_package::category::all();
+        //     let result = spanda_package::category::all();
 
         // Return the static list of known values.
         &[
@@ -69,18 +68,19 @@ impl PackageCategory {
     }
 
     pub fn as_str(&self) -> &'static str {
+        // Description:
+        //     As str.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &'static str
+        //         Return value from `as_str`.
         //
         // Example:
-        // let result = instance.as_str();
+        //     let result = spanda_package::category::as_str(&self);
 
         // Dispatch based on the enum variant or current state.
         match self {
@@ -111,19 +111,19 @@ impl FromStr for PackageCategory {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // Construct from str.
+        // Description:
+        //     From str.
         //
-        // Parameters:
-        // - `s` — input value
+        // Inputs:
+        //     s: &str
+        //         Caller-supplied s.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, Self::Err>
+        //         Return value from `from_str`.
         //
         // Example:
-        // let result = spanda_package::category::from_str(s);
+        //     let result = spanda_package::category::from_str(s);
 
         // Match on s and handle each case.
         match s {

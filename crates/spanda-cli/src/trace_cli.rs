@@ -10,6 +10,22 @@ use std::fs;
 use std::process;
 
 pub fn cmd_trace(sub: &str, args: &[String]) {
+    // Description:
+    //     Cmd trace.
+    //
+    // Inputs:
+    //     sub: &str
+    //         Caller-supplied sub.
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::cmd_trace(sub, args);
+
     let (json, file) = parse_file_and_json(args);
     let file = file.unwrap_or_else(|| {
         eprintln!("Usage: spanda trace {sub} <file.sd> [--json]");
@@ -69,6 +85,22 @@ pub fn cmd_trace(sub: &str, args: &[String]) {
 }
 
 pub fn cmd_health(sub: &str, args: &[String]) {
+    // Description:
+    //     Cmd health.
+    //
+    // Inputs:
+    //     sub: &str
+    //         Caller-supplied sub.
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::cmd_health(sub, args);
+
     let (json, file) = parse_file_and_json(args);
     match sub {
         "robot" | "report" => {
@@ -103,6 +135,20 @@ pub fn cmd_health(sub: &str, args: &[String]) {
 }
 
 pub fn cmd_hardware_capabilities(args: &[String]) {
+    // Description:
+    //     Cmd hardware capabilities.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::cmd_hardware_capabilities(args);
+
     let (json, file) = parse_file_and_json(args);
     let file = file.unwrap_or_else(|| {
         eprintln!("Usage: spanda hardware capabilities <file.sd> [--json]");
@@ -122,6 +168,20 @@ pub fn cmd_hardware_capabilities(args: &[String]) {
 }
 
 pub fn cmd_robot_capabilities(args: &[String]) {
+    // Description:
+    //     Cmd robot capabilities.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::cmd_robot_capabilities(args);
+
     let (json, file) = parse_file_and_json(args);
     let file = file.unwrap_or_else(|| {
         eprintln!("Usage: spanda robot capabilities <file.sd> [--json]");
@@ -150,6 +210,20 @@ pub fn cmd_robot_capabilities(args: &[String]) {
 }
 
 pub fn cmd_safety_check(args: &[String]) {
+    // Description:
+    //     Cmd safety check.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::cmd_safety_check(args);
+
     let (json, file) = parse_file_and_json(args);
     let capabilities = args.iter().any(|a| a == "--capabilities");
     let file = file.unwrap_or_else(|| {
@@ -193,6 +267,30 @@ pub fn verify_extensions(
     minimum: bool,
     json: bool,
 ) {
+    // Description:
+    //     Verify extensions.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     raceability: bool
+    //         Caller-supplied raceability.
+    //     capabilities: bool
+    //         Caller-supplied capabilities.
+    //     health: bool
+    //         Caller-supplied health.
+    //     ini: bool
+    //         Caller-supplied ini.
+    //     json: bool
+    //         Caller-supplied json.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::verify_extensions(source, raceability, capabilities, health, ini, json);
+
     let program = parse_program(source);
     let mut failed = false;
 
@@ -252,6 +350,20 @@ pub fn verify_extensions(
 }
 
 fn print_hardware_trace(report: &spanda_capability::TraceabilityReport) {
+    // Description:
+    //     Print hardware trace.
+    //
+    // Inputs:
+    //     repor: &spanda_capability::TraceabilityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::print_hardware_trace(repor);
+
     if report.hardware_rows.is_empty() {
         println!("No hardware traceability rows.");
         return;
@@ -284,6 +396,20 @@ fn print_hardware_trace(report: &spanda_capability::TraceabilityReport) {
 }
 
 fn print_capability_trace(report: &spanda_capability::TraceabilityReport) {
+    // Description:
+    //     Print capability trace.
+    //
+    // Inputs:
+    //     repor: &spanda_capability::TraceabilityReport
+    //         Caller-supplied repor.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::print_capability_trace(repor);
+
     if report.capability_rows.is_empty() {
         return;
     }
@@ -306,6 +432,21 @@ fn print_capability_trace(report: &spanda_capability::TraceabilityReport) {
 }
 
 pub fn parse_program(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::parse_program(source);
+
     let tokens = tokenize(source).unwrap_or_else(|e| {
         eprintln!("Lexer error: {e}");
         process::exit(1);
@@ -317,6 +458,21 @@ pub fn parse_program(source: &str) -> spanda_ast::nodes::Program {
 }
 
 fn parse_file_and_json(args: &[String]) -> (bool, Option<String>) {
+    // Description:
+    //     Parse file and json.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: (bool, Option<String>)
+    //         Return value from `parse_file_and_json`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::parse_file_and_json(args);
+
     let mut json = false;
     let mut file = None;
     for arg in args {
@@ -330,6 +486,21 @@ fn parse_file_and_json(args: &[String]) -> (bool, Option<String>) {
 }
 
 fn read_file(path: &str) -> String {
+    // Description:
+    //     Read file.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::trace_cli::read_file(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {path}: {e}");
         process::exit(1);

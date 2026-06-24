@@ -6,20 +6,22 @@ use spanda_error::SpandaError;
 use crate::debug_session::{DebugMachine, DebugStepKind};
 
 pub fn run_debug(source: &str, options: DebugOptions) -> Result<DebugSession, SpandaError> {
-    // Start a debug session and run until the first pause or completion.
+    // Description:
+    //     Run debug.
     //
-    // Parameters:
-    // - `source` — full `.sd` source text
-    // - `options` — breakpoints and step flags
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     options: DebugOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Debug session with recorded pauses.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<DebugSession, SpandaError>
+    //         Return value from `run_debug`.
     //
     // Example:
-    // let session = run_debug(source, DebugOptions::default())?;
+
+    //     let result = spanda_driver::debug_run::run_debug(source, options);
 
     let step = if options.step {
         DebugStepKind::StepOver

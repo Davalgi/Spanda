@@ -21,19 +21,101 @@ pub struct FleetPeerMesh {
 
 impl FleetPeerMesh {
     pub fn new() -> Self {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_fleet::orchestrator::new();
+
         Self::default()
     }
 
     pub fn register_robot(&mut self, _name: impl AsRef<str>) {
-        // Robot registration is tracked for API parity with runtime comm buses.
+
+        // Description:
+
+        //     Register robot.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     _name: impl AsRef<str>
+
+        //         Caller-supplied name.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_fleet::orchestrator::register_robot(&mut self, _name);
     }
 
     pub fn publish_peer(&mut self, peer: &str, topic: &str, from_robot: &str) {
+        // Description:
+        //     Publish peer.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     peer: &str
+        //         Caller-supplied peer.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     from_robo: &str
+        //         Caller-supplied from robo.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_fleet::orchestrator::publish_peer(&mut self, peer, opic, from_robo);
+
         let path = format!("/{peer}/{topic}");
         self.published.push((path, Some(from_robot.to_string())));
     }
 
     fn was_delivered(&self, peer: &str, topic: &str, from_robot: &str) -> bool {
+        // Description:
+        //     Was delivered.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     peer: &str
+        //         Caller-supplied peer.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     from_robo: &str
+        //         Caller-supplied from robo.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `was_delivered`.
+        //
+        // Example:
+
+        //     let result = spanda_fleet::orchestrator::was_delivered(&self, peer, opic, from_robo);
+
         let path = format!("/{peer}/{topic}");
         self.published.iter().any(|(topic_path, source_id)| {
             topic_path == &path && source_id.as_deref() == Some(from_robot)
@@ -83,6 +165,21 @@ fn robot_by_name<'a>(robots: &'a [RobotDecl], name: &str) -> Option<&'a RobotDec
 }
 
 fn mission_for_robot(robot: &RobotDecl) -> Option<MissionRuntime> {
+    // Description:
+    //     Mission for robot.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: Option<MissionRuntime>
+    //         Return value from `mission_for_robot`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator::mission_for_robot(robo);
+
     let RobotDecl::RobotDecl { mission, .. } = robot;
     let mission = mission.as_ref()?;
     let MissionDecl::MissionDecl {
@@ -99,6 +196,25 @@ fn mission_for_robot(robot: &RobotDecl) -> Option<MissionRuntime> {
 }
 
 pub fn peer_handoffs(member_name: &str, step: &str, peer_robots: &[PeerRobotDecl]) -> Vec<String> {
+    // Description:
+    //     Peer handoffs.
+    //
+    // Inputs:
+    //     ember_name: &str
+    //         Caller-supplied ember name.
+    //     step: &str
+    //         Caller-supplied step.
+    //     peer_robots: &[PeerRobotDecl]
+    //         Caller-supplied peer robots.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `peer_handoffs`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator::peer_handoffs(ember_name, step, peer_robots);
+
     if step.is_empty() || peer_robots.is_empty() {
         return Vec::new();
     }
@@ -117,6 +233,27 @@ pub fn deliver_peer_steps(
     step: &str,
     peer_robots: &[PeerRobotDecl],
 ) -> Vec<PeerDelivery> {
+    // Description:
+    //     Deliver peer steps.
+    //
+    // Inputs:
+    //     esh: &mut FleetPeerMesh
+    //         Caller-supplied esh.
+    //     from_robo: &str
+    //         Caller-supplied from robo.
+    //     step: &str
+    //         Caller-supplied step.
+    //     peer_robots: &[PeerRobotDecl]
+    //         Caller-supplied peer robots.
+    //
+    // Outputs:
+    //     result: Vec<PeerDelivery>
+    //         Return value from `deliver_peer_steps`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator::deliver_peer_steps(esh, from_robo, step, peer_robots);
+
     if step.is_empty() || peer_robots.is_empty() {
         return Vec::new();
     }
@@ -139,6 +276,21 @@ pub fn deliver_peer_steps(
 
 /// Build fleet registry from program declarations.
 pub fn fleet_registry_from_program(program: &Program) -> FleetRegistry {
+    // Description:
+    //     Fleet registry from program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: FleetRegistry
+    //         Return value from `fleet_registry_from_program`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::orchestrator::fleet_registry_from_program(progra);
+
     let Program::Program { fleets, .. } = program;
     let mut registry = FleetRegistry::default();
     for fleet in fleets {
@@ -150,20 +302,22 @@ pub fn fleet_registry_from_program(program: &Program) -> FleetRegistry {
 
 /// Orchestrate fleet members by advancing missions in round-robin order.
 pub fn orchestrate_fleets(program: &Program, program_path: &str) -> FleetOrchestrationResult {
-    // Coordinate declared fleet groups using each member robot's mission controller.
+    // Description:
+    //     Orchestrate fleets.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for reporting
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
     //
-    // Returns:
-    // Orchestration report with per-member mission states.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: FleetOrchestrationResult
+    //         Return value from `orchestrate_fleets`.
     //
     // Example:
-    // let result = orchestrate_fleets(&program, "fleet.sd");
+
+    //     let result = spanda_fleet::orchestrator::orchestrate_fleets(progra, program_path);
 
     let Program::Program { fleets, robots, .. } = program;
     let mut reports = Vec::new();
@@ -264,21 +418,24 @@ pub fn orchestrate_fleets_remote(
     program_path: &str,
     registry: &FleetAgentRegistry,
 ) -> FleetOrchestrationResult {
-    // Coordinate locally, then push peer mission steps to remote fleet agents.
+    // Description:
+    //     Orchestrate fleets remote.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for reporting
-    // - `registry` — registered remote fleet agents by robot name
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Orchestration report with remote relay counters.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: FleetOrchestrationResult
+    //         Return value from `orchestrate_fleets_remote`.
     //
     // Example:
-    // let result = orchestrate_fleets_remote(&program, "fleet.sd", &registry);
+
+    //     let result = spanda_fleet::orchestrator::orchestrate_fleets_remote(progra, program_path, registry);
 
     let mut result = orchestrate_fleets(program, program_path);
     let mut success = result.success;
@@ -304,22 +461,26 @@ pub fn orchestrate_fleets_mesh(
     mesh_url: &str,
     token: Option<&str>,
 ) -> FleetOrchestrationResult {
-    // Coordinate locally, then push peer mission steps to a fleet mesh coordinator.
+    // Description:
+    //     Orchestrate fleets mesh.
     //
-    // Parameters:
-    // - `program` — parsed Spanda program
-    // - `program_path` — source path for reporting
-    // - `mesh_url` — mesh coordinator base URL
-    // - `token` — optional bearer token for the mesh coordinator
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     program_path: &str
+    //         Caller-supplied program path.
+    //     mesh_url: &str
+    //         Caller-supplied mesh url.
+    //     token: Option<&str>
+    //         Caller-supplied token.
     //
-    // Returns:
-    // Orchestration report with remote relay counters.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: FleetOrchestrationResult
+    //         Return value from `orchestrate_fleets_mesh`.
     //
     // Example:
-    // let result = orchestrate_fleets_mesh(&program, "fleet.sd", "http://mesh:8767", None);
+
+    //     let result = spanda_fleet::orchestrator::orchestrate_fleets_mesh(progra, program_path, esh_url, oken);
 
     let mut result = orchestrate_fleets(program, program_path);
     let mut success = result.success;

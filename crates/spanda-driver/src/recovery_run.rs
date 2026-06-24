@@ -15,21 +15,24 @@ pub fn execute_recovery_source(
     issue: &str,
     options: RecoveryRunOptions,
 ) -> Result<RecoveryRunResult, SpandaError> {
-    // Compile source and run interpreter-backed recovery for a failure issue.
+    // Description:
+    //     Execute recovery source.
     //
-    // Parameters:
-    // - `source` — deployed `.sd` program text
-    // - `issue` — failure trigger such as `fleet.failed`
-    // - `options` — robot binding and approval hooks
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     issue: &str
+    //         Caller-supplied issue.
+    //     options: RecoveryRunOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Recovery outcome with runtime logs and interpreter snapshot fields.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RecoveryRunResult, SpandaError>
+    //         Return value from `execute_recovery_source`.
     //
     // Example:
-    // let outcome = execute_recovery_source(source, "fleet.failed", RecoveryRunOptions::default())?;
+
+    //     let result = spanda_driver::recovery_run::execute_recovery_source(source, issue, options);
 
     let program = compile(source)?.program;
     execute_recovery_on_program(&program, issue, options)
@@ -41,21 +44,24 @@ pub fn execute_recovery_on_program(
     issue: &str,
     options: RecoveryRunOptions,
 ) -> Result<RecoveryRunResult, SpandaError> {
-    // Run interpreter-backed recovery on an already parsed program.
+    // Description:
+    //     Execute recovery on program.
     //
-    // Parameters:
-    // - `program` — parsed program deployed on a fleet agent
-    // - `issue` — failure trigger such as `fleet.failed`
-    // - `options` — robot binding and approval hooks
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     issue: &str
+    //         Caller-supplied issue.
+    //     options: RecoveryRunOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Recovery outcome with runtime logs and interpreter snapshot fields.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RecoveryRunResult, SpandaError>
+    //         Return value from `execute_recovery_on_program`.
     //
     // Example:
-    // let outcome = execute_recovery_on_program(&program, "fleet.failed", RecoveryRunOptions::default())?;
+
+    //     let result = spanda_driver::recovery_run::execute_recovery_on_program(progra, issue, options);
 
     interpreter_execute_recovery_on_program(program, issue, options)
 }

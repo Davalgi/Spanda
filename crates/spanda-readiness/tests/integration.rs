@@ -10,6 +10,21 @@ use spanda_readiness::{
 };
 
 fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::parse_source(source);
+
     parse(tokenize(source).expect("tokenize")).expect("parse")
 }
 
@@ -54,6 +69,19 @@ const FLEET: &str = include_str!("../../../examples/showcase/fleet_readiness/war
 
 #[test]
 fn agent_readiness_json_matches_http_envelope() {
+    // Description:
+    //     Agent readiness json matches http envelope.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::agent_readiness_json_matches_http_envelope();
+
     let json =
         evaluate_agent_readiness_json(ROVER, None, false, false).expect("agent readiness json");
     let value: serde_json::Value = serde_json::from_str(&json).expect("parse json");
@@ -64,6 +92,19 @@ fn agent_readiness_json_matches_http_envelope() {
 
 #[test]
 fn readiness_engine_produces_score() {
+    // Description:
+    //     Readiness engine produces score.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::readiness_engine_produces_score();
+
     let program = parse_source(ROVER);
     let report = evaluate_readiness(&program, &ReadinessOptions::default());
     assert!(report.score.total > 0);
@@ -72,6 +113,19 @@ fn readiness_engine_produces_score() {
 
 #[test]
 fn readiness_runtime_injects_health_faults() {
+    // Description:
+    //     Readiness runtime injects health faults.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::readiness_runtime_injects_health_faults();
+
     let program = parse_source(ROVER);
     let options = ReadinessOptions {
         include_runtime: true,
@@ -97,6 +151,19 @@ fn readiness_runtime_injects_health_faults() {
 
 #[test]
 fn readiness_target_flag_selects_deploy_profile() {
+    // Description:
+    //     Readiness target flag selects deploy profile.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::readiness_target_flag_selects_deploy_profile();
+
     let program = parse_source(FLEET);
     let options =
         readiness_options_from_flags(&program, Some("edge".into()), false, false, false, false);
@@ -107,6 +174,19 @@ fn readiness_target_flag_selects_deploy_profile() {
 
 #[test]
 fn mission_verification_achievable() {
+    // Description:
+    //     Mission verification achievable.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::mission_verification_achievable();
+
     let program = parse_source(WAREHOUSE_MISSION);
     let reports = verify_mission(&program, None);
     assert!(!reports.is_empty());
@@ -117,6 +197,19 @@ fn mission_verification_achievable() {
 
 #[test]
 fn failure_analysis_lists_impacts() {
+    // Description:
+    //     Failure analysis lists impacts.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::failure_analysis_lists_impacts();
+
     let program = parse_source(ROVER);
     let report = analyze_failure(&program);
     assert!(!report.impacts.is_empty());
@@ -125,6 +218,19 @@ fn failure_analysis_lists_impacts() {
 
 #[test]
 fn fleet_readiness_aggregates() {
+    // Description:
+    //     Fleet readiness aggregates.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::fleet_readiness_aggregates();
+
     let program = parse_source(FLEET);
     let report = evaluate_fleet_readiness(&program, &ReadinessOptions::default());
     assert_eq!(
@@ -135,6 +241,19 @@ fn fleet_readiness_aggregates() {
 
 #[test]
 fn safety_auditor_flags_missing_kill_switch() {
+    // Description:
+    //     Safety auditor flags missing kill switch.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::safety_auditor_flags_missing_kill_switch();
+
     let program = parse_source(ROVER);
     let report = audit_program(&program, ROVER);
     assert!(report.critical_count >= 1);
@@ -142,6 +261,19 @@ fn safety_auditor_flags_missing_kill_switch() {
 
 #[test]
 fn approval_verification_passes_with_topic() {
+    // Description:
+    //     Approval verification passes with topic.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::approval_verification_passes_with_topic();
+
     let program = parse_source(APPROVAL_MISSION);
     let report = verify_approvals(&program);
     assert!(report.compatible);
@@ -149,6 +281,19 @@ fn approval_verification_passes_with_topic() {
 
 #[test]
 fn fleet_verify_detects_multi_robot() {
+    // Description:
+    //     Fleet verify detects multi robot.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::fleet_verify_detects_multi_robot();
+
     let program = parse_source(FLEET);
     let report = verify_fleet(&program);
     assert!(!report.findings.is_empty());
@@ -156,6 +301,19 @@ fn fleet_verify_detects_multi_robot() {
 
 #[test]
 fn readiness_traceability_has_rows() {
+    // Description:
+    //     Readiness traceability has rows.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::readiness_traceability_has_rows();
+
     let program = parse_source(ROVER);
     let rows = readiness_traceability(&program);
     assert!(!rows.is_empty());
@@ -163,6 +321,19 @@ fn readiness_traceability_has_rows() {
 
 #[test]
 fn root_cause_diagnose_trace() {
+    // Description:
+    //     Root cause diagnose trace.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::integration::root_cause_diagnose_trace();
+
     let trace = include_str!("../../../examples/showcase/root_cause_analysis/mission.trace");
     let path = std::env::temp_dir().join("spanda_test_mission.trace");
     std::fs::write(&path, trace).unwrap();

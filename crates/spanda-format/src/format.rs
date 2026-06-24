@@ -7,22 +7,19 @@ use crate::pretty::pretty_print_program;
 use spanda_error::SpandaError;
 
 pub fn format_source(source: &str) -> String {
-    // Format Spanda source, using the AST formatter when possible.
+    // Description:
+    //     Format source.
     //
-    // Parameters:
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // - `source` — Raw program text.
-    //
-    // Returns:
-    //
-    // Formatted source string. On parse failure, returns whitespace-normalized input
-    // (never panics or returns an error).
+    // Outputs:
+    //     result: String
+    //         Return value from `format_source`.
     //
     // Example:
-    //
-    // use spanda_core::format::format_source;
-    // let input = "module m;\nexport fn f(x:Int)->Int{return x;}\n";
-    // let out = format_source(input);
+    //     let result = spanda_format::format::format_source(source);
 
     // assert!(out.contains("export fn f(x: Int) -> Int"));
     match format_ast(source) {
@@ -32,21 +29,19 @@ pub fn format_source(source: &str) -> String {
 }
 
 pub fn format_ast(source: &str) -> Result<String, SpandaError> {
-    // Format Spanda source via parse + pretty print (strict mode).
+    // Description:
+    //     Format ast.
     //
-    // Parameters:
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // - `source` — Program text that must parse successfully.
-    //
-    // Returns:
-    //
-    // Pretty-printed source, or [`SpandaError`] if lexing or parsing fails.
+    // Outputs:
+    //     result: Result<String, SpandaError>
+    //         Return value from `format_ast`.
     //
     // Example:
-    //
-    // use spanda_core::format::format_ast;
-    // let input = "module m;\nexport fn f() -> Int { return 0; }\n";
-    // let out = format_ast(input).unwrap();
+    //     let result = spanda_format::format::format_ast(source);
 
     // assert!(out.contains("export fn f()"));
     let tokens = spanda_lexer::tokenize(source)?;
@@ -55,19 +50,19 @@ pub fn format_ast(source: &str) -> Result<String, SpandaError> {
 }
 
 fn normalize_whitespace(source: &str) -> String {
-    // Normalize whitespace.
+    // Description:
+    //     Normalize whitespace.
     //
-    // Parameters:
-    // - `source` — input value
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `normalize_whitespace`.
     //
     // Example:
-    // let result = spanda_core::format::normalize_whitespace(source);
+    //     let result = spanda_format::format::normalize_whitespace(source);
 
     // Start the generated output buffer.
     let mut out = String::new();
@@ -96,19 +91,18 @@ mod tests {
 
     #[test]
     fn trims_trailing_whitespace_and_adds_final_newline() {
-        // Trims trailing whitespace and adds final newline.
+        // Description:
+        //     Trims trailing whitespace and adds final newline.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::format::trims_trailing_whitespace_and_adds_final_newline();
+
+        //     let result = spanda_format::format::trims_trailing_whitespace_and_adds_final_newline();
 
         let input = "robot R {  \n  actuator wheels: DifferentialDrive; \n}\n\n";
         let formatted = format_source(input);
@@ -118,19 +112,18 @@ mod tests {
 
     #[test]
     fn ast_format_normalizes_module_function() {
-        // Ast format normalizes module function.
+        // Description:
+        //     Ast format normalizes module function.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::format::ast_format_normalizes_module_function();
+
+        //     let result = spanda_format::format::ast_format_normalizes_module_function();
 
         let input = "module m;\nexport fn f(x:Int)->Int{return x;}\n";
         let formatted = format_source(input);

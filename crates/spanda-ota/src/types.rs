@@ -95,6 +95,20 @@ pub struct RolloutOptions {
 
 impl Default for RolloutOptions {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
+        //
+        // Example:
+
+        //     let result = spanda_ota::types::default();
+
         Self {
             strategy: RolloutStrategy::All,
             canary_percent: 10,

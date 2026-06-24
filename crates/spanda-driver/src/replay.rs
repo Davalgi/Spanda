@@ -16,21 +16,24 @@ pub fn replay_mission(
     trace_path: &str,
     mut options: RunOptions,
 ) -> Result<(RunResult, TraceVerification), SpandaError> {
-    // Re-run a program and verify the recorded mission trace matches a reference trace.
+    // Description:
+    //     Replay mission.
     //
-    // Parameters:
-    // - `source` — `.sd` program source text
-    // - `trace_path` — reference `.trace` file path
-    // - `options` — run options; `replay_from_ms` selects comparison offset
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     race_path: &str
+    //         Caller-supplied race path.
+    //     options: RunOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Run result plus deterministic trace verification report.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(RunResult, TraceVerification), SpandaError>
+    //         Return value from `replay_mission`.
     //
     // Example:
-    // let (result, report) = replay_mission(source, "mission.trace", RunOptions::default())?;
+
+    //     let result = spanda_driver::replay::replay_mission(source, race_path, options);
 
     let expected = MissionTrace::load(trace_path)?;
     let from_ms = options.replay_from_ms.unwrap_or(0.0);
@@ -55,20 +58,22 @@ pub fn playback_mission(
     trace_path: &str,
     options: RunOptions,
 ) -> Result<(PlaybackReport, RobotState), SpandaError> {
-    // Play back recorded mission frames without re-executing program logic.
+    // Description:
+    //     Playback mission.
     //
-    // Parameters:
-    // - `trace_path` — input `.trace` file
-    // - `options` — playback offset and wall-clock pacing options
+    // Inputs:
+    //     race_path: &str
+    //         Caller-supplied race path.
+    //     options: RunOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // Playback report and final robot state after applying snapshots.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<(PlaybackReport, RobotState), SpandaError>
+    //         Return value from `playback_mission`.
     //
     // Example:
-    // let (report, state) = playback_mission("mission.trace", RunOptions::default())?;
+
+    //     let result = spanda_driver::replay::playback_mission(race_path, options);
 
     let trace = MissionTrace::load(trace_path)?;
     let from_ms = options.replay_from_ms.unwrap_or(0.0);

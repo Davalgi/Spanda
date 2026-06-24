@@ -24,20 +24,21 @@ pub struct DeviceIdentity {
 
 impl DeviceIdentity {
     pub fn new(id: impl Into<String>, public_key: impl Into<String>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `id` — input value
-        // - `public_key` — input value
+        // Inputs:
+        //     id: impl Into<String>
+        //         Caller-supplied id.
+        //     public_key: impl Into<String>
+        //         Caller-supplied public key.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_audit::record::new(id, public_key);
+        //     let value = spanda_audit::record::new(id, public_key);
 
         // Assemble the struct fields and return it.
         Self {
@@ -47,19 +48,19 @@ impl DeviceIdentity {
     }
 
     pub fn signing_material(&self) -> String {
-        // Signing material.
+        // Description:
+        //     Signing material.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `signing_material`.
         //
         // Example:
-        // let result = instance.signing_material();
+        //     let result = spanda_audit::record::signing_material(&self);
 
         // Material used to derive the Ed25519 signing key.
         if self.public_key.is_empty() || crate::crypto::is_hex_public_key(&self.public_key) {
@@ -70,19 +71,19 @@ impl DeviceIdentity {
     }
 
     pub fn verifying_key_hex(&self) -> String {
-        // Verifying key hex.
+        // Description:
+        //     Verifying key hex.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `verifying_key_hex`.
         //
         // Example:
-        // let result = instance.verifying_key_hex();
+        //     let result = spanda_audit::record::verifying_key_hex(&self);
 
         // Hex-encoded Ed25519 public key for signature verification.
         if crate::crypto::is_hex_public_key(&self.public_key) {
@@ -93,19 +94,19 @@ impl DeviceIdentity {
     }
 
     pub fn default_key(&self) -> String {
-        // Default key.
+        // Description:
+        //     Default key.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `default_key`.
         //
         // Example:
-        // let result = instance.default_key();
+        //     let result = spanda_audit::record::default_key(&self);
 
         // Backward-compatible alias for signing material.
         self.signing_material()
@@ -128,19 +129,19 @@ pub struct AuditRecord {
 
 impl AuditRecord {
     pub fn canonical_body(&self) -> String {
-        // Canonical body.
+        // Description:
+        //     Canonical body.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `canonical_body`.
         //
         // Example:
-        // let result = instance.canonical_body();
+        //     let result = spanda_audit::record::canonical_body(&self);
 
         // Produce format! as the result.
         format!(

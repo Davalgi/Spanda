@@ -13,6 +13,19 @@ use std::time::Duration;
 
 #[test]
 fn mesh_coordinator_relays_to_registered_agents() {
+    // Description:
+    //     Mesh coordinator relays to registered agents.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh_integration::mesh_coordinator_relays_to_registered_agents();
+
     let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -42,6 +55,19 @@ fn mesh_coordinator_relays_to_registered_agents() {
 
 #[test]
 fn mesh_coordinator_relays_fleet_recovery_to_agents() {
+    // Description:
+    //     Mesh coordinator relays fleet recovery to agents.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh_integration::mesh_coordinator_relays_fleet_recovery_to_agents();
+
     let (port_a, _agent_a) = spawn_test_fleet_agent("RoverAlpha", None).expect("spawn A");
     let (port_b, _agent_b) = spawn_test_fleet_agent("RoverBeta", None).expect("spawn B");
     let mut registry = FleetAgentRegistry::default();
@@ -127,6 +153,19 @@ robot RoverBeta {
 
 #[test]
 fn orchestrate_mesh_mode_reports_distributed_peer_mesh() {
+    // Description:
+    //     Orchestrate mesh mode reports distributed peer mesh.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh_integration::orchestrate_mesh_mode_reports_distributed_peer_mesh();
+
     let (port, _agent) = spawn_test_fleet_agent("ScoutB", None).expect("spawn agent");
     let mut registry = FleetAgentRegistry::default();
     register_fleet_agent(
@@ -161,7 +200,17 @@ fleet Recon { ScoutA; ScoutB; }
 
 #[test]
 fn fleet_agent_forwards_to_downstream_peer() {
-    // Isolate registry lookup from any SPANDA_FLEET_AGENTS left in the shell environment.
+    // Description:
+    //     Fleet agent forwards to downstream peer.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+    //     let result = spanda_fleet::mesh_integration::fleet_agent_forwards_to_downstream_peer();
     unsafe {
         std::env::remove_var("SPANDA_FLEET_AGENTS");
     }

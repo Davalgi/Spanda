@@ -9,6 +9,23 @@ use spanda_ast::nodes::Program;
 
 /// Resolve a display line/column for a readiness issue factor.
 pub fn line_column_for_factor(program: &Program, factor: &str) -> (u32, u32) {
+    // Description:
+    //     Line column for factor.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     factor: &str
+    //         Caller-supplied factor.
+    //
+    // Outputs:
+    //     result: (u32, u32)
+    //         Return value from `line_column_for_factor`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::line_column_for_factor(progra, factor);
+
     match factor {
         "Hardware" | "Battery" | "Connectivity" | "Storage" | "Compute" | "Packages"
         | "Providers" => deploy_span(program).unwrap_or_else(|| first_robot_span(program)),
@@ -25,6 +42,23 @@ pub fn line_column_for_factor(program: &Program, factor: &str) -> (u32, u32) {
 
 /// Resolve a precise line/column for a readiness issue using message context.
 pub fn line_column_for_issue(program: &Program, issue: &ReadinessIssue) -> (u32, u32) {
+    // Description:
+    //     Line column for issue.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     issue: &ReadinessIssue
+    //         Caller-supplied issue.
+    //
+    // Outputs:
+    //     result: (u32, u32)
+    //         Return value from `line_column_for_issue`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::line_column_for_issue(progra, issue);
+
     if issue.factor == "Assurance" {
         if let Some(name) = extract_quoted_name(&issue.message, "Anomaly detector '") {
             if let Some(span) = anomaly_detector_span(program, &name) {
@@ -59,12 +93,44 @@ pub fn line_column_for_issue(program: &Program, issue: &ReadinessIssue) -> (u32,
 }
 
 fn extract_quoted_name(message: &str, prefix: &str) -> Option<String> {
+    // Description:
+    //     Extract quoted name.
+    //
+    // Inputs:
+    //     essage: &str
+    //         Caller-supplied essage.
+    //     prefix: &str
+    //         Caller-supplied prefix.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `extract_quoted_name`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::extract_quoted_name(essage, prefix);
+
     let rest = message.strip_prefix(prefix)?;
     let end = rest.find('\'')?;
     Some(rest[..end].to_string())
 }
 
 fn assurance_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     Assurance span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `assurance_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::assurance_span(progra);
+
     first_assurance_case_span(program)
         .or_else(|| first_knowledge_model_span(program))
         .or_else(|| first_state_estimator_span(program))
@@ -73,10 +139,40 @@ fn assurance_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn span_coords(span: &spanda_ast::nodes::Span) -> (u32, u32) {
+    // Description:
+    //     Span coords.
+    //
+    // Inputs:
+    //     span: &spanda_ast::nodes::Span
+    //         Caller-supplied span.
+    //
+    // Outputs:
+    //     result: (u32, u32)
+    //         Return value from `span_coords`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::span_coords(span);
+
     (span.start.line, span.start.column)
 }
 
 fn first_assurance_case_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First assurance case span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_assurance_case_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_assurance_case_span(progra);
+
     let Program::Program {
         assurance_cases, ..
     } = program;
@@ -87,6 +183,21 @@ fn first_assurance_case_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_assurance_case_without_evidence(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First assurance case without evidence.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_assurance_case_without_evidence`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_assurance_case_without_evidence(progra);
+
     let Program::Program {
         assurance_cases, ..
     } = program;
@@ -101,6 +212,21 @@ fn first_assurance_case_without_evidence(program: &Program) -> Option<(u32, u32)
 }
 
 fn first_knowledge_model_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First knowledge model span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_knowledge_model_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_knowledge_model_span(progra);
+
     let Program::Program {
         knowledge_models, ..
     } = program;
@@ -111,6 +237,21 @@ fn first_knowledge_model_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_empty_knowledge_model(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First empty knowledge model.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_empty_knowledge_model`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_empty_knowledge_model(progra);
+
     let Program::Program {
         knowledge_models, ..
     } = program;
@@ -127,6 +268,21 @@ fn first_empty_knowledge_model(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_anomaly_detector_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First anomaly detector span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_anomaly_detector_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_anomaly_detector_span(progra);
+
     let Program::Program {
         anomaly_detectors, ..
     } = program;
@@ -137,6 +293,23 @@ fn first_anomaly_detector_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn anomaly_detector_span(program: &Program, name: &str) -> Option<(u32, u32)> {
+    // Description:
+    //     Anomaly detector span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `anomaly_detector_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::anomaly_detector_span(progra, name);
+
     let Program::Program {
         anomaly_detectors, ..
     } = program;
@@ -153,6 +326,21 @@ fn anomaly_detector_span(program: &Program, name: &str) -> Option<(u32, u32)> {
 }
 
 fn first_mitigation_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First mitigation span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_mitigation_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_mitigation_span(progra);
+
     let Program::Program { mitigations, .. } = program;
     mitigations.first().map(|decl| {
         let spanda_ast::assurance_decl::MitigationDecl::MitigationDecl { span, .. } = decl;
@@ -161,6 +349,21 @@ fn first_mitigation_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_state_estimator_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First state estimator span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_state_estimator_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_state_estimator_span(progra);
+
     let Program::Program {
         state_estimators, ..
     } = program;
@@ -171,6 +374,21 @@ fn first_state_estimator_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_empty_state_estimator(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First empty state estimator.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_empty_state_estimator`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_empty_state_estimator(progra);
+
     let Program::Program {
         state_estimators, ..
     } = program;
@@ -185,6 +403,23 @@ fn first_empty_state_estimator(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn state_estimator_span(program: &Program, name: &str) -> Option<(u32, u32)> {
+    // Description:
+    //     State estimator span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     name: &str
+    //         Caller-supplied name.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `state_estimator_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::state_estimator_span(progra, name);
+
     let Program::Program {
         state_estimators, ..
     } = program;
@@ -201,6 +436,21 @@ fn state_estimator_span(program: &Program, name: &str) -> Option<(u32, u32)> {
 }
 
 fn deploy_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     Deploy span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `deploy_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::deploy_span(progra);
+
     let Program::Program { deployments, .. } = program;
     deployments.first().map(|deploy| {
         let DeployDecl::DeployDecl { span, .. } = deploy;
@@ -209,6 +459,21 @@ fn deploy_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_robot_span(program: &Program) -> (u32, u32) {
+    // Description:
+    //     First robot span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: (u32, u32)
+    //         Return value from `first_robot_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_robot_span(progra);
+
     let Program::Program { robots, .. } = program;
     robots
         .first()
@@ -220,6 +485,21 @@ fn first_robot_span(program: &Program) -> (u32, u32) {
 }
 
 fn first_health_check_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First health check span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_health_check_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_health_check_span(progra);
+
     let Program::Program { health_checks, .. } = program;
     health_checks.first().map(|hc| {
         let HealthCheckDecl::HealthCheckDecl { span, .. } = hc;
@@ -228,6 +508,21 @@ fn first_health_check_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn mission_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     Mission span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `mission_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::mission_span(progra);
+
     let Program::Program { robots, .. } = program;
     for robot in robots {
         let spanda_ast::nodes::RobotDecl::RobotDecl { mission, .. } = robot;
@@ -240,6 +535,21 @@ fn mission_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_robot_safety_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First robot safety span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_robot_safety_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_robot_safety_span(progra);
+
     let Program::Program { robots, .. } = program;
     for robot in robots {
         let spanda_ast::nodes::RobotDecl::RobotDecl { safety, .. } = robot;
@@ -251,6 +561,21 @@ fn first_robot_safety_span(program: &Program) -> Option<(u32, u32)> {
 }
 
 fn first_fleet_span(program: &Program) -> Option<(u32, u32)> {
+    // Description:
+    //     First fleet span.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Option<(u32, u32)>
+    //         Return value from `first_fleet_span`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::spans::first_fleet_span(progra);
+
     let Program::Program { fleets, .. } = program;
     fleets.first().map(|fleet| {
         let spanda_ast::robotics_decl::FleetDecl::FleetDecl { span, .. } = fleet;

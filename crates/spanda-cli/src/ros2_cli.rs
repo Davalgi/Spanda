@@ -17,7 +17,6 @@ struct Ros2CheckResponse {
     items: Vec<Ros2CheckItem>,
     hint: String,
 }
-
 /// Validate ROS 2 prerequisites for live transport (`SPANDA_ROS2_LIVE=1`).
 ///
 /// Parameters:

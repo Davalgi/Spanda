@@ -10,19 +10,18 @@ pub struct Environment {
 
 impl Environment {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::runtime::new();
+        //     let value = spanda_runtime::environment::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -31,100 +30,105 @@ impl Environment {
     }
 
     pub fn define(&mut self, name: impl Into<String>, value: RuntimeValue) {
-        // Define.
+        // Description:
+        //     Define.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.define(name, value);
+        //     let result = spanda_runtime::environment::define(&mut self, name, value);
 
         // Append into self.
         self.bindings.insert(name.into(), value);
     }
 
     pub fn get(&self, name: &str) -> Option<&RuntimeValue> {
-        // Get.
+        // Description:
+        //     Get.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&RuntimeValue>
+        //         Return value from `get`.
         //
         // Example:
-        // let result = instance.get(name);
+        //     let result = spanda_runtime::environment::get(&self, name);
 
         // Call get on the current instance.
         self.bindings.get(name)
     }
 
     pub fn remove(&mut self, name: &str) -> Option<RuntimeValue> {
-        // Remove a binding from the environment.
+        // Description:
+        //     Remove.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — binding name to drop
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Removed value when the binding existed.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<RuntimeValue>
+        //         Return value from `remove`.
         //
         // Example:
-        // let old = env.remove("counter");
+
+        //     let result = spanda_runtime::environment::remove(&mut self, name);
 
         self.bindings.remove(name)
     }
 
     pub fn set(&mut self, name: impl Into<String>, value: RuntimeValue) {
-        // Set.
+        // Description:
+        //     Set.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: impl Into<String>
+        //         Caller-supplied name.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set(name, value);
+        //     let result = spanda_runtime::environment::set(&mut self, name, value);
 
         // Append into self.
         self.bindings.insert(name.into(), value);
     }
 
     pub fn clone_bindings(&self) -> Self {
-        // Clone bindings.
+        // Description:
+        //     Clone bindings.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `clone_bindings`.
         //
         // Example:
-        // let result = instance.clone_bindings();
+        //     let result = spanda_runtime::environment::clone_bindings(&self);
 
         // Assemble the struct fields and return it.
         Self {
@@ -133,19 +137,19 @@ impl Environment {
     }
 
     pub fn snapshot_display(&self) -> std::collections::HashMap<String, String> {
-        // Snapshot display.
+        // Description:
+        //     Snapshot display.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // std::collections::HashMap<String, String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: std::collections::HashMap<String, String>
+        //         Return value from `snapshot_display`.
         //
         // Example:
-        // let result = instance.snapshot_display();
+        //     let result = spanda_runtime::environment::snapshot_display(&self);
 
         // Call bindings on the current instance.
         self.bindings
@@ -157,18 +161,18 @@ impl Environment {
 
 impl Default for Environment {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_core::runtime::default();
+        //     let result = spanda_runtime::environment::default();
 
         // Build the result via new.
         Self::new()

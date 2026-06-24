@@ -27,6 +27,21 @@ pub struct MinimumCapabilityReport {
 
 /// Verify that robots satisfy minimum hardware for declared capabilities.
 pub fn check_minimum_capabilities(program: &Program) -> MinimumCapabilityReport {
+    // Description:
+    //     Check minimum capabilities.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: MinimumCapabilityReport
+    //         Return value from `check_minimum_capabilities`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::minimum::check_minimum_capabilities(progra);
+
     let Program::Program {
         requires_capabilities,
         robots,
@@ -139,6 +154,23 @@ fn check_requirement(
     req: &RequiresCapabilityDecl,
     robot_reports: &[crate::robot::RobotCapabilityReport],
 ) -> MinimumCapabilityRow {
+    // Description:
+    //     Check requirement.
+    //
+    // Inputs:
+    //     req: &RequiresCapabilityDecl
+    //         Caller-supplied req.
+    //     robot_reports: &[crate::robot::RobotCapabilityReport]
+    //         Caller-supplied robot reports.
+    //
+    // Outputs:
+    //     result: MinimumCapabilityRow
+    //         Return value from `check_requirement`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::minimum::check_requirement(req, robot_reports);
+
     let Some(def) = lookup_capability(&req.capability) else {
         return MinimumCapabilityRow {
             capability: req.capability.clone(),
@@ -174,6 +206,23 @@ fn compute_missing(
     req: &crate::registry::CapabilityRequirement,
     _existing: &[String],
 ) -> Vec<String> {
+    // Description:
+    //     Compute missing.
+    //
+    // Inputs:
+    //     req: &crate::registry::CapabilityRequirement
+    //         Caller-supplied req.
+    //     _existing: &[String]
+    //         Caller-supplied existing.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `compute_missing`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::minimum::compute_missing(req, _existing);
+
     let mut missing = Vec::new();
     if !req.any_of_sensors.is_empty() {
         missing.push(format!("sensor: {}", req.any_of_sensors.join(" OR ")));
@@ -197,6 +246,23 @@ fn compute_missing(
 }
 
 fn suggest_fixes(capability: &str, missing: &[String]) -> Vec<String> {
+    // Description:
+    //     Suggest fixes.
+    //
+    // Inputs:
+    //     capability: &str
+    //         Caller-supplied capability.
+    //     issing: &[String]
+    //         Caller-supplied issing.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `suggest_fixes`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::minimum::suggest_fixes(capability, issing);
+
     let mut fixes = Vec::new();
     for m in missing {
         if m.contains("Lidar") {
@@ -222,11 +288,39 @@ mod tests {
     use spanda_parser::parse;
 
     fn parse_source(source: &str) -> spanda_ast::nodes::Program {
+        // Description:
+        //     Parse source.
+        //
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //
+        // Outputs:
+        //     result: spanda_ast::nodes::Program
+        //         Return value from `parse_source`.
+        //
+        // Example:
+
+        //     let result = spanda_capability::minimum::parse_source(source);
+
         parse(tokenize(source).expect("tokenize")).expect("parse")
     }
 
     #[test]
     fn patrol_mission_missing_lidar_fails() {
+        // Description:
+        //     Patrol mission missing lidar fails.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::minimum::patrol_mission_missing_lidar_fails();
+
         let source = r#"
 hardware RoverV1 {
     sensors [GPS];

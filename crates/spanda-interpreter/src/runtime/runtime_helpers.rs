@@ -8,19 +8,19 @@ use spanda_error::SpandaError;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn goal_text_from_value(value: &RuntimeValue) -> Option<String> {
-        // Goal text from value.
+        // Description:
+        //     Goal text from value.
         //
-        // Parameters:
-        // - `value` — input value
+        // Inputs:
+        //     value: &RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `goal_text_from_value`.
         //
         // Example:
-        // let result = spanda_core::runtime::goal_text_from_value(value);
+        //     let result = spanda_interpreter::runtime_helpers::goal_text_from_value(value);
 
         // Match on value and handle each case.
         match value {
@@ -35,21 +35,23 @@ impl<B: RobotBackend> Interpreter<B> {
         named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<Option<String>, SpandaError> {
-        // Resolve reason goal.
+        // Description:
+        //     Resolve reason goal.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Option<String>, SpandaError>
+        //         Return value from `resolve_reason_goal`.
         //
         // Example:
-        // let result = instance.resolve_reason_goal(named_args, line);
+        //     let result = spanda_interpreter::runtime_helpers::resolve_reason_goal(&mut self, named_args, line);
 
         // handle the success value from get named arg value.
         if let Ok(value) = self.get_named_arg_value(named_args, "goal") {
@@ -78,20 +80,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn enrich_reason_goal(&self, goal: Option<String>) -> Option<String> {
-        // Enrich reason goal.
+        // Description:
+        //     Enrich reason goal.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `goal` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     goal: Option<String>
+        //         Caller-supplied goal.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `enrich_reason_goal`.
         //
         // Example:
-        // let result = instance.enrich_reason_goal(goal);
+        //     let result = spanda_interpreter::runtime_helpers::enrich_reason_goal(&self, goal);
 
         // Create mutable parts for accumulating results.
         let mut parts = Vec::new();
@@ -123,19 +126,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn expr_path_string(expr: &Expr) -> String {
-        // Expr path string.
+        // Description:
+        //     Expr path string.
         //
-        // Parameters:
-        // - `expr` — input value
+        // Inputs:
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `expr_path_string`.
         //
         // Example:
-        // let result = spanda_core::runtime::expr_path_string(expr);
+        //     let result = spanda_interpreter::runtime_helpers::expr_path_string(expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -150,19 +153,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn runtime_value_payload(value: &RuntimeValue) -> String {
-        // Runtime value payload.
+        // Description:
+        //     Runtime value payload.
         //
-        // Parameters:
-        // - `value` — input value
+        // Inputs:
+        //     value: &RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `runtime_value_payload`.
         //
         // Example:
-        // let result = spanda_core::runtime::runtime_value_payload(value);
+        //     let result = spanda_interpreter::runtime_helpers::runtime_value_payload(value);
 
         // Match on value and handle each case.
         match value {

@@ -19,6 +19,23 @@ use spanda_runtime::scheduler::SchedulerClock;
 impl<B: RobotBackend> Interpreter<B> {
     /// Validate recovery through the assurance framework before executing handlers.
     fn recovery_allowed_for_issue(&self, issue: &str) -> bool {
+        // Description:
+        //     Recovery allowed for issue.
+        //
+        // Inputs:
+        //     &self: value
+        //         Caller-supplied &self.
+        //     issue: &str
+        //         Caller-supplied issue.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `recovery_allowed_for_issue`.
+        //
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_reliability::recovery_allowed_for_issue(&self, issue);
+
         let Some(program) = self.health_program.as_ref() else {
             return true;
         };
@@ -37,20 +54,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn load_reliability_config(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
-        // Load watchdog, pipeline, retry, and recovery runtime state from a robot block.
+        // Description:
+        //     Load reliability config.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `robot` — parsed robot declaration
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     robo: &RobotDecl
+        //         Caller-supplied robo.
         //
-        // Returns:
-        // Ok when configuration is loaded.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `load_reliability_config`.
         //
         // Example:
-        // interp.load_reliability_config(robot)?;
+        //     let result = spanda_interpreter::runtime_reliability::load_reliability_config(&mut self, robo);
 
         // Reset reliability runtime containers for this robot.
         self.watchdogs.clear();
@@ -107,20 +125,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn enter_mode(&mut self, mode: &str) -> Result<(), SpandaError> {
-        // Switch the active operating mode and run its configuration body.
+        // Description:
+        //     Enter mode.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `mode` — mode name without `_mode` suffix
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ode: &str
+        //         Caller-supplied ode.
         //
-        // Returns:
-        // Ok when the mode body completes.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `enter_mode`.
         //
         // Example:
-        // interp.enter_mode("degraded")?;
+        //     let result = spanda_interpreter::runtime_reliability::enter_mode(&mut self, ode);
 
         // Update active mode and execute the declared body when present.
         self.active_mode = mode.to_string();
@@ -136,19 +155,18 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn check_topic_qos_deadlines(&mut self) {
-        // Detect topic publish deadline misses against declared QoS.
+        // Description:
+        //     Check topic qos deadlines.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // interp.check_topic_qos_deadlines();
+        //     let result = spanda_interpreter::runtime_reliability::check_topic_qos_deadlines(&mut self);
 
         // Compare elapsed sim time since the last publish for each topic.
         let snapshots: Vec<(String, f64, f64)> = self
@@ -189,19 +207,20 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn capture_replay_state(&self) -> spanda_runtime::replay::ReplayStateSnapshot {
-        // Capture the current robot snapshot for mission trace playback.
+        // Description:
+        //     Capture replay state.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Pose, velocity, safety, and mode snapshot.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: spanda_runtime::replay::ReplayStateSnapshot
+        //         Return value from `capture_replay_state`.
         //
         // Example:
-        // let snapshot = interp.capture_replay_state();
+
+        //     let result = spanda_interpreter::runtime_reliability::capture_replay_state(&self);
 
         let state = self.backend.get_state();
         spanda_runtime::replay::ReplayStateSnapshot {
@@ -217,21 +236,22 @@ impl<B: RobotBackend> Interpreter<B> {
         event: impl Into<String>,
         payload: serde_json::Value,
     ) {
-        // Append one frame to the mission trace when recording is enabled.
+        // Description:
+        //     Record mission event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event` — event label
-        // - `payload` — structured payload
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     even: impl Into<String>
+        //         Caller-supplied even.
+        //     payload: serde_json::Value
+        //         Caller-supplied payload.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // interp.record_mission_event("task_tick", json!({"task":"sense"}));
+        //     let result = spanda_interpreter::runtime_reliability::record_mission_event(&mut self, even, payload);
 
         // Skip when trace recording is disabled.
         if self.mission_trace.is_some() {
@@ -244,25 +264,49 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn uses_wall_scheduler(&self) -> bool {
-        // Report whether the scheduler should sleep on wall-clock deadlines.
+        // Description:
+
+        //     Uses wall scheduler.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: bool
+
+        //         Return value from `uses_wall_scheduler`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_reliability::uses_wall_scheduler(&self);
         self.options.scheduler_clock == SchedulerClock::Wall && !self.options.replay_deterministic
     }
 
     pub(super) fn touch_task_heartbeat(&mut self, task_name: &str) {
-        // Record the latest heartbeat time for watchdog evaluation.
+        // Description:
+        //     Touch task heartbeat.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `task_name` — watched task name
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ask_name: &str
+        //         Caller-supplied ask name.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // interp.touch_task_heartbeat("SafetyMonitor");
+        //     let result = spanda_interpreter::runtime_reliability::touch_task_heartbeat(&mut self, ask_name);
 
         // Store the current simulation time as the task heartbeat.
         self.task_heartbeats
@@ -270,19 +314,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn check_watchdogs(&mut self) -> Result<(), SpandaError> {
-        // Evaluate watchdog timeouts against task heartbeats at the current sim time.
+        // Description:
+        //     Check watchdogs.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Ok when watchdog bodies finish, or an execution error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `check_watchdogs`.
         //
         // Example:
-        // interp.check_watchdogs()?;
+        //     let result = spanda_interpreter::runtime_reliability::check_watchdogs(&mut self);
 
         // Evaluate each declared watchdog handler.
         for index in 0..self.watchdogs.len() {
@@ -325,7 +369,47 @@ impl<B: RobotBackend> Interpreter<B> {
         angular: Option<&Expr>,
         line: u32,
     ) -> Result<(), SpandaError> {
-        // Execute navigate { goal: ... } sugar over navigation.goal/navigate.
+        // Description:
+
+        //     Execute navigate stmt.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     goal: &Expr
+
+        //         Caller-supplied goal.
+
+        //     linear: Option<&Expr>
+
+        //         Caller-supplied linear.
+
+        //     angular: Option<&Expr>
+
+        //         Caller-supplied angular.
+
+        //     line: u32
+
+        //         Caller-supplied line.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<(), SpandaError>
+
+        //         Return value from `execute_navigate_stmt`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_interpreter::runtime_reliability::execute_navigate_stmt(&mut self, goal, linear, angular, line);
         let goal_text = match self.eval_expr(goal)? {
             RuntimeValue::String { value } => value,
             RuntimeValue::Number { value, .. } => value.to_string(),
@@ -394,20 +478,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn execute_pipeline(&mut self, name: &str) -> Result<(), SpandaError> {
-        // Execute a named pipeline and record latency-budget telemetry.
+        // Description:
+        //     Execute pipeline.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — pipeline name
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // Ok when the pipeline body completes.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `execute_pipeline`.
         //
         // Example:
-        // interp.execute_pipeline("obstacle_avoidance")?;
+        //     let result = spanda_interpreter::runtime_reliability::execute_pipeline(&mut self, name);
 
         // Resolve the pipeline body and budget from runtime state.
         let Some(pipeline) = self.pipelines.get(name).cloned() else {
@@ -443,19 +528,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn run_retry_policies(&mut self) -> Result<(), SpandaError> {
-        // Run robot-level retry policies when injected hardware faults are active.
+        // Description:
+        //     Run retry policies.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Ok when retry and fallback blocks finish.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `run_retry_policies`.
         //
         // Example:
-        // interp.run_retry_policies()?;
+        //     let result = spanda_interpreter::runtime_reliability::run_retry_policies(&mut self);
 
         // Skip when no retry policies or faults are present.
         if self.retries.is_empty() || !self.hardware_monitor.has_injected_faults() {
@@ -503,20 +588,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn try_invoke_recovery(&mut self, err: &SpandaError) -> Result<bool, SpandaError> {
-        // Attempt a declared recovery handler for a runtime error.
+        // Description:
+        //     Try invoke recovery.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `err` — runtime error to match
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     err: &SpandaError
+        //         Caller-supplied err.
         //
-        // Returns:
-        // true when a recovery handler ran successfully.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<bool, SpandaError>
+        //         Return value from `try_invoke_recovery`.
         //
         // Example:
-        // if interp.try_invoke_recovery(&err)? { ... }
+        //     let result = spanda_interpreter::runtime_reliability::try_invoke_recovery(&mut self, err);
 
         // Only runtime errors participate in recovery dispatch.
         let SpandaError::Runtime { message, .. } = err else {
@@ -552,20 +638,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn invoke_recovery_for_event(&mut self, event: &str) -> Result<(), SpandaError> {
-        // Run a recovery handler keyed by hardware event name.
+        // Description:
+        //     Invoke recovery for event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `event` — hardware event label
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     even: &str
+        //         Caller-supplied even.
         //
-        // Returns:
-        // Ok when a handler completes or none matched.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `invoke_recovery_for_event`.
         //
         // Example:
-        // interp.invoke_recovery_for_event("LidarFailure")?;
+        //     let result = spanda_interpreter::runtime_reliability::invoke_recovery_for_event(&mut self, even);
 
         // Prefer an exact event match, then generic sensor failure handlers.
         let handler_key = if self.recovers.contains_key(event) {
@@ -600,20 +687,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn evaluate_stop_if(&mut self, env: &Environment) -> bool {
-        // Evaluate stop if.
+        // Description:
+        //     Evaluate stop if.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `env` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     env: &Environment
+        //         Caller-supplied env.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `evaluate_stop_if`.
         //
         // Example:
-        // let result = instance.evaluate_stop_if(env);
+        //     let result = spanda_interpreter::runtime_reliability::evaluate_stop_if(&mut self, env);
 
         // Iterate over clone.
         for condition in &self.stop_if_conditions.clone() {

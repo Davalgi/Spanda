@@ -7,19 +7,18 @@ use spanda_security::{
 
 #[test]
 fn security_example_type_checks() {
-    // Security example type checks.
+    // Description:
+    //     Security example type checks.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::security_example_type_checks();
+
+    //     let result = spanda_core::stdlib_security::security_example_type_checks();
 
     let source = include_str!("../../../examples/std/security.sd");
     check(source).expect("security example should type-check");
@@ -27,19 +26,18 @@ fn security_example_type_checks() {
 
 #[test]
 fn security_example_runs_with_permissions() {
-    // Security example runs with permissions.
+    // Description:
+    //     Security example runs with permissions.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::security_example_runs_with_permissions();
+
+    //     let result = spanda_core::stdlib_security::security_example_runs_with_permissions();
 
     let source = include_str!("../../../examples/std/security.sd");
     let result = run(source, RunOptions::default()).expect("security example should run");
@@ -48,19 +46,18 @@ fn security_example_runs_with_permissions() {
 
 #[test]
 fn package_capability_set_denies_unknown_ops() {
-    // Package capability set denies unknown ops.
+    // Description:
+    //     Package capability set denies unknown ops.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::package_capability_set_denies_unknown_ops();
+
+    //     let result = spanda_core::stdlib_security::package_capability_set_denies_unknown_ops();
 
     let caps = spanda_security::CapabilitySet::new();
     assert!(caps.require("identity.sign").is_err());
@@ -68,19 +65,18 @@ fn package_capability_set_denies_unknown_ops() {
 
 #[test]
 fn secure_topic_requires_identity_at_publish() {
-    // Secure topic requires identity at publish.
+    // Description:
+    //     Secure topic requires identity at publish.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::secure_topic_requires_identity_at_publish();
+
+    //     let result = spanda_core::stdlib_security::secure_topic_requires_identity_at_publish();
 
     let source = r#"
 robot R {
@@ -106,19 +102,18 @@ robot R {
 
 #[test]
 fn secret_declaration_registers_handle() {
-    // Secret declaration registers handle.
+    // Description:
+    //     Secret declaration registers handle.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::secret_declaration_registers_handle();
+
+    //     let result = spanda_core::stdlib_security::secret_declaration_registers_handle();
 
     let source = r#"
 robot R {
@@ -134,19 +129,18 @@ robot R {
 
 #[test]
 fn trust_level_validation() {
-    // Trust level validation.
+    // Description:
+    //     Trust level validation.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::trust_level_validation();
+
+    //     let result = spanda_core::stdlib_security::trust_level_validation();
 
     let source = r#"
 robot R {
@@ -167,19 +161,18 @@ robot R {
 
 #[test]
 fn agent_comm_capability_runtime_enforcement() {
-    // Agent comm capability runtime enforcement.
+    // Description:
+    //     Agent comm capability runtime enforcement.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::agent_comm_capability_runtime_enforcement();
+
+    //     let result = spanda_core::stdlib_security::agent_comm_capability_runtime_enforcement();
 
     let source = r#"
 robot R {
@@ -217,19 +210,18 @@ robot R {
 
 #[test]
 fn spanda_security_crate_api() {
-    // Spanda security crate api.
+    // Description:
+    //     Spanda security crate api.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::spanda_security_crate_api();
+
+    //     let result = spanda_core::stdlib_security::spanda_security_crate_api();
 
     let mut ctx = SecurityContext::with_permissions(&PackagePermissions::from_capabilities([
         "audit.write",
@@ -250,19 +242,18 @@ fn spanda_security_crate_api() {
 
 #[test]
 fn permissions_block_grants_package_caps() {
-    // Permissions block grants package caps.
+    // Description:
+    //     Permissions block grants package caps.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::permissions_block_grants_package_caps();
+
+    //     let result = spanda_core::stdlib_security::permissions_block_grants_package_caps();
 
     let source = r#"
 robot R {
@@ -276,19 +267,18 @@ robot R {
 
 #[test]
 fn strict_permissions_blocks_auto_granted_audit() {
-    // Strict permissions blocks auto granted audit.
+    // Description:
+    //     Strict permissions blocks auto granted audit.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::strict_permissions_blocks_auto_granted_audit();
+
+    //     let result = spanda_core::stdlib_security::strict_permissions_blocks_auto_granted_audit();
 
     let source = r#"
 robot R {
@@ -307,19 +297,18 @@ robot R {
 
 #[test]
 fn create_provenance_requires_sign_capability() {
-    // Create provenance requires sign capability.
+    // Description:
+    //     Create provenance requires sign capability.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::stdlib_security::create_provenance_requires_sign_capability();
+
+    //     let result = spanda_core::stdlib_security::create_provenance_requires_sign_capability();
 
     let source = r#"
 robot R {

@@ -25,20 +25,21 @@ pub struct LockPackageInfo {
 
 impl Lockfile {
     pub fn new(manifest: &PackageManifest, deps: BTreeMap<String, LockedDependency>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `manifest` — input value
-        // - `deps` — input value
+        // Inputs:
+        //     anifes: &PackageManifest
+        //         Caller-supplied anifes.
+        //     deps: BTreeMap<String, LockedDependency>
+        //         Caller-supplied deps.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_package::lockfile::new(manifest, deps);
+        //     let value = spanda_package::lockfile::new(anifes, deps);
 
         // Assemble the struct fields and return it.
         Self {
@@ -52,38 +53,38 @@ impl Lockfile {
     }
 
     pub fn parse_str(content: &str) -> PackageResult<Self> {
-        // Parse str.
+        // Description:
+        //     Parse str.
         //
-        // Parameters:
-        // - `content` — input value
+        // Inputs:
+        //     conten: &str
+        //         Caller-supplied conten.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `parse_str`.
         //
         // Example:
-        // let result = spanda_package::lockfile::parse_str(content);
+        //     let result = spanda_package::lockfile::parse_str(conten);
 
         // Produce to string as the result.
         serde_json::from_str(content).map_err(|e| PackageError::Lockfile(e.to_string()))
     }
 
     pub fn load(path: &Path) -> PackageResult<Self> {
-        // Load the value.
+        // Description:
+        //     Load.
         //
-        // Parameters:
-        // - `path` — input value
+        // Inputs:
+        //     path: &Path
+        //         Caller-supplied path.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `load`.
         //
         // Example:
-        // let result = spanda_package::lockfile::load(path);
+        //     let result = spanda_package::lockfile::load(path);
 
         // Compute content for the following logic.
         let content = std::fs::read_to_string(path).map_err(PackageError::from)?;
@@ -91,39 +92,40 @@ impl Lockfile {
     }
 
     pub fn load_from_dir(dir: &Path) -> PackageResult<Self> {
-        // Load from dir.
+        // Description:
+        //     Load from dir.
         //
-        // Parameters:
-        // - `dir` — input value
+        // Inputs:
+        //     dir: &Path
+        //         Caller-supplied dir.
         //
-        // Returns:
-        // PackageResult<Self>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<Self>
+        //         Return value from `load_from_dir`.
         //
         // Example:
-        // let result = spanda_package::lockfile::load_from_dir(dir);
+        //     let result = spanda_package::lockfile::load_from_dir(dir);
 
         // Build the result via join.
         Self::load(&dir.join(LOCKFILE_FILENAME))
     }
 
     pub fn save(&self, path: &Path) -> PackageResult<()> {
-        // Save the value.
+        // Description:
+        //     Save.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &Path
+        //         Caller-supplied path.
         //
-        // Returns:
-        // PackageResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<()>
+        //         Return value from `save`.
         //
         // Example:
-        // let result = instance.save(path);
+        //     let result = spanda_package::lockfile::save(&self, path);
 
         // Compute content for the following logic.
         let content = serde_json::to_string_pretty(self)
@@ -133,20 +135,21 @@ impl Lockfile {
     }
 
     pub fn save_to_dir(&self, dir: &Path) -> PackageResult<()> {
-        // Save to dir.
+        // Description:
+        //     Save to dir.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `dir` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     dir: &Path
+        //         Caller-supplied dir.
         //
-        // Returns:
-        // PackageResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: PackageResult<()>
+        //         Return value from `save_to_dir`.
         //
         // Example:
-        // let result = instance.save_to_dir(dir);
+        //     let result = spanda_package::lockfile::save_to_dir(&self, dir);
 
         // Call save on the current instance.
         self.save(&dir.join(LOCKFILE_FILENAME))

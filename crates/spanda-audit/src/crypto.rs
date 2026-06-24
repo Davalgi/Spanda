@@ -13,37 +13,38 @@ fn seed_bytes(material: &str) -> [u8; 32] {
 }
 
 fn signing_key_from_material(material: &str) -> SigningKey {
-    // Signing key from material.
+    // Description:
+    //     Signing key from material.
     //
-    // Parameters:
-    // - `material` — input value
+    // Inputs:
+    //     aterial: &str
+    //         Caller-supplied aterial.
     //
-    // Returns:
-    // SigningKey.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SigningKey
+    //         Return value from `signing_key_from_material`.
     //
     // Example:
-    // let result = spanda_audit::crypto::signing_key_from_material(material);
+    //     let result = spanda_audit::crypto::signing_key_from_material(aterial);
 
     // Produce from bytes as the result.
     SigningKey::from_bytes(&seed_bytes(material))
 }
 
 pub(crate) fn is_hex_public_key(key: &str) -> bool {
+    // Description:
+    //     Is hex public key.
     //
-    // Parameters:
-    // - `key` — input value
+    // Inputs:
+    //     key: &str
+    //         Caller-supplied key.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_hex_public_key`.
     //
     // Example:
-    // let result = spanda_audit::crypto::is_hex_public_key(key);
+    //     let result = spanda_audit::crypto::is_hex_public_key(key);
 
     // Produce is ascii hexdigit as the result.
     key.len() == 64 && key.chars().all(|c| c.is_ascii_hexdigit())
@@ -51,19 +52,19 @@ pub(crate) fn is_hex_public_key(key: &str) -> bool {
 
 /// Derive hex-encoded Ed25519 public key from signing material.
 pub fn public_key_from_material(material: &str) -> String {
-    // Public key from material.
+    // Description:
+    //     Public key from material.
     //
-    // Parameters:
-    // - `material` — input value
+    // Inputs:
+    //     aterial: &str
+    //         Caller-supplied aterial.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `public_key_from_material`.
     //
     // Example:
-    // let result = spanda_audit::crypto::public_key_from_material(material);
+    //     let result = spanda_audit::crypto::public_key_from_material(aterial);
 
     // Produce encode as the result.
     hex::encode(
@@ -75,19 +76,19 @@ pub fn public_key_from_material(material: &str) -> String {
 
 /// Compute SHA-256 hash of UTF-8 data, returned as hex string.
 pub fn sha256(data: &str) -> Hash {
-    // Sha256.
+    // Description:
+    //     Sha256.
     //
-    // Parameters:
-    // - `data` — input value
+    // Inputs:
+    //     data: &str
+    //         Caller-supplied data.
     //
-    // Returns:
-    // Hash.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Hash
+    //         Return value from `sha256`.
     //
     // Example:
-    // let result = spanda_audit::crypto::sha256(data);
+    //     let result = spanda_audit::crypto::sha256(data);
 
     // Create mutable hasher for accumulating results.
     let mut hasher = Sha256::new();
@@ -97,20 +98,21 @@ pub fn sha256(data: &str) -> Hash {
 
 /// Sign data with Ed25519 using signing material or hex-encoded private seed.
 pub fn sign(data: &str, key_material: &str) -> String {
-    // Sign.
+    // Description:
+    //     Sign.
     //
-    // Parameters:
-    // - `data` — input value
-    // - `key_material` — input value
+    // Inputs:
+    //     data: &str
+    //         Caller-supplied data.
+    //     key_material: &str
+    //         Caller-supplied key material.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `sign`.
     //
     // Example:
-    // let result = spanda_audit::crypto::sign(data, key_material);
+    //     let result = spanda_audit::crypto::sign(data, key_material);
 
     // Compute sk for the following logic.
     let sk = if key_material.len() == 64 && key_material.chars().all(|c| c.is_ascii_hexdigit()) {
@@ -134,21 +136,23 @@ pub fn sign(data: &str, key_material: &str) -> String {
 ///
 /// `key` may be a hex-encoded public key (64 hex chars) or signing material (derives public key).
 pub fn verify_signature(data: &str, signature: &str, key: &str) -> bool {
-    // Verify signature.
+    // Description:
+    //     Verify signature.
     //
-    // Parameters:
-    // - `data` — input value
-    // - `signature` — input value
-    // - `key` — input value
+    // Inputs:
+    //     data: &str
+    //         Caller-supplied data.
+    //     signature: &str
+    //         Caller-supplied signature.
+    //     key: &str
+    //         Caller-supplied key.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `verify_signature`.
     //
     // Example:
-    // let result = spanda_audit::crypto::verify_signature(data, signature, key);
+    //     let result = spanda_audit::crypto::verify_signature(data, signature, key);
 
     // Compute sig bytes for the following logic.
     let sig_bytes = match hex::decode(signature) {
@@ -185,19 +189,18 @@ mod tests {
 
     #[test]
     fn sha256_is_deterministic() {
-        // Sha256 is deterministic.
+        // Description:
+        //     Sha256 is deterministic.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_audit::crypto::sha256_is_deterministic();
+
+        //     let result = spanda_audit::crypto::sha256_is_deterministic();
 
         let h1 = sha256("hello");
         let h2 = sha256("hello");
@@ -207,19 +210,18 @@ mod tests {
 
     #[test]
     fn sign_and_verify_roundtrip_with_material() {
-        // Sign and verify roundtrip with material.
+        // Description:
+        //     Sign and verify roundtrip with material.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_audit::crypto::sign_and_verify_roundtrip_with_material();
+
+        //     let result = spanda_audit::crypto::sign_and_verify_roundtrip_with_material();
 
         let sig = sign("payload", "device-key-001");
         assert_eq!(sig.len(), 128);
@@ -229,19 +231,18 @@ mod tests {
 
     #[test]
     fn verify_with_derived_public_key() {
-        // Verify with derived public key.
+        // Description:
+        //     Verify with derived public key.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_audit::crypto::verify_with_derived_public_key();
+
+        //     let result = spanda_audit::crypto::verify_with_derived_public_key();
 
         let material = "device-key-001";
         let sig = sign("payload", material);
@@ -251,19 +252,18 @@ mod tests {
 
     #[test]
     fn signatures_differ_from_legacy_hmac() {
-        // Signatures differ from legacy hmac.
+        // Description:
+        //     Signatures differ from legacy hmac.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_audit::crypto::signatures_differ_from_legacy_hmac();
+
+        //     let result = spanda_audit::crypto::signatures_differ_from_legacy_hmac();
 
         let sig = sign("payload", "device-key-001");
         assert_ne!(sig.len(), 64);

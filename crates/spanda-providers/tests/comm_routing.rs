@@ -8,6 +8,19 @@ use std::rc::Rc;
 
 #[test]
 fn sync_comm_bus_routes_mqtt_through_provider_registry() {
+    // Description:
+    //     Sync comm bus routes mqtt through provider registry.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::comm_routing::sync_comm_bus_routes_mqtt_through_provider_registry();
+
     let registry = Rc::new(RefCell::new(bootstrap_providers_for_packages(&[
         "spanda-mqtt",
     ])));
@@ -20,6 +33,19 @@ fn sync_comm_bus_routes_mqtt_through_provider_registry() {
 
 #[test]
 fn sync_comm_bus_routes_ros2_when_official_package_installed() {
+    // Description:
+    //     Sync comm bus routes ros2 when official package installed.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::comm_routing::sync_comm_bus_routes_ros2_when_official_package_installed();
+
     let registry = Rc::new(RefCell::new(bootstrap_providers_for_packages(&[
         "spanda-ros2",
     ])));

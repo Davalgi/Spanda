@@ -13,21 +13,28 @@ impl<B: RobotBackend> Interpreter<B> {
         _named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Dispatch `world_model.update`, `belief`, and `export` calls.
+        // Description:
+        //     Eval world model method.
         //
-        // Parameters:
-        // - `method` — method name on `world_model`
-        // - `args` — call arguments
-        // - `line` — source line for diagnostics
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     _named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Method result or a runtime error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_world_model_method`.
         //
         // Example:
-        // world_model.update(observation);
+
+        //     let result = spanda_interpreter::runtime_world_model::eval_world_model_method(&mut self, ethod, args, _named_args, line);
 
         match method {
             "update" => {

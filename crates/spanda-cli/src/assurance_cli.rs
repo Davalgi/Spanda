@@ -14,6 +14,21 @@ use std::path::Path;
 use std::process;
 
 fn read_file(path: &str) -> String {
+    // Description:
+    //     Read file.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_file`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::read_file(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Failed to read {path}: {e}");
         process::exit(1);
@@ -21,6 +36,21 @@ fn read_file(path: &str) -> String {
 }
 
 fn parse_program(source: &str) -> spanda_ast::nodes::Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: spanda_ast::nodes::Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::parse_program(source);
+
     let tokens = tokenize(source).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
@@ -32,6 +62,21 @@ fn parse_program(source: &str) -> spanda_ast::nodes::Program {
 }
 
 fn parse_format(args: &[String]) -> ReportFormat {
+    // Description:
+    //     Parse format.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: ReportFormat
+    //         Return value from `parse_format`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::parse_format(args);
+
     if args.iter().any(|a| a == "--json") {
         ReportFormat::Json
     } else if args.iter().any(|a| a == "--markdown") {
@@ -44,6 +89,21 @@ fn parse_format(args: &[String]) -> ReportFormat {
 }
 
 fn file_arg(args: &[String]) -> String {
+    // Description:
+    //     File arg.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `file_arg`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::file_arg(args);
+
     args.iter()
         .find(|a| !a.starts_with('-'))
         .cloned()
@@ -55,6 +115,20 @@ fn file_arg(args: &[String]) -> String {
 
 /// `spanda assure <file.sd> [--json|--markdown|--html]`
 pub fn cmd_assure(args: &[String]) {
+    // Description:
+    //     Cmd assure.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_assure(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -72,6 +146,20 @@ pub fn cmd_assure(args: &[String]) {
 
 /// `spanda anomaly scan <file.sd> [--json|--markdown|--html]`
 pub fn cmd_anomaly_scan(args: &[String]) {
+    // Description:
+    //     Cmd anomaly scan.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_anomaly_scan(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -85,6 +173,20 @@ pub fn cmd_anomaly_scan(args: &[String]) {
 
 /// `spanda diagnose <mission.trace|file.sd> [--json|--markdown|--html]`
 pub fn cmd_diagnose_assurance(args: &[String]) {
+    // Description:
+    //     Cmd diagnose assurance.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_diagnose_assurance(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let report = if file.ends_with(".trace") {
@@ -105,6 +207,20 @@ pub fn cmd_diagnose_assurance(args: &[String]) {
 
 /// `spanda prognostics <file.sd> [--json|--markdown|--html]`
 pub fn cmd_prognostics(args: &[String]) {
+    // Description:
+    //     Cmd prognostics.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_prognostics(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -118,6 +234,20 @@ pub fn cmd_prognostics(args: &[String]) {
 
 /// `spanda mission verify <file.sd> [--json|--markdown|--html]`
 pub fn cmd_mission_verify(args: &[String]) {
+    // Description:
+    //     Cmd mission verify.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_mission_verify(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -131,6 +261,20 @@ pub fn cmd_mission_verify(args: &[String]) {
 
 /// `spanda resilience check <file.sd> [--json|--markdown|--html]`
 pub fn cmd_resilience_check(args: &[String]) {
+    // Description:
+    //     Cmd resilience check.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_resilience_check(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -144,6 +288,20 @@ pub fn cmd_resilience_check(args: &[String]) {
 
 /// Dispatch `spanda anomaly` subcommands.
 pub fn anomaly_dispatch(args: &[String]) {
+    // Description:
+    //     Anomaly dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::anomaly_dispatch(args);
+
     let sub = args.first().map(String::as_str).unwrap_or("");
     match sub {
         "scan" => cmd_anomaly_scan(&args[1..]),
@@ -156,6 +314,20 @@ pub fn anomaly_dispatch(args: &[String]) {
 
 /// Dispatch `spanda mission` subcommands.
 pub fn mission_dispatch(args: &[String]) {
+    // Description:
+    //     Mission dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::mission_dispatch(args);
+
     let sub = args.first().map(String::as_str).unwrap_or("");
     match sub {
         "verify" => cmd_mission_verify(&args[1..]),
@@ -168,6 +340,20 @@ pub fn mission_dispatch(args: &[String]) {
 
 /// Dispatch `spanda resilience` subcommands.
 pub fn resilience_dispatch(args: &[String]) {
+    // Description:
+    //     Resilience dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::resilience_dispatch(args);
+
     let sub = args.first().map(String::as_str).unwrap_or("");
     match sub {
         "check" => cmd_resilience_check(&args[1..]),
@@ -180,6 +366,20 @@ pub fn resilience_dispatch(args: &[String]) {
 
 /// `spanda mitigation plan <file.sd> [--json|--markdown|--html]`
 pub fn cmd_mitigation_plan(args: &[String]) {
+    // Description:
+    //     Cmd mitigation plan.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_mitigation_plan(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -190,6 +390,20 @@ pub fn cmd_mitigation_plan(args: &[String]) {
 
 /// `spanda state estimate <file.sd> [--json|--markdown|--html]`
 pub fn cmd_state_estimate(args: &[String]) {
+    // Description:
+    //     Cmd state estimate.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::cmd_state_estimate(args);
+
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
@@ -203,6 +417,20 @@ pub fn cmd_state_estimate(args: &[String]) {
 
 /// Dispatch `spanda state` subcommands.
 pub fn state_dispatch(args: &[String]) {
+    // Description:
+    //     State dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::state_dispatch(args);
+
     let sub = args.first().map(String::as_str).unwrap_or("");
     match sub {
         "estimate" => cmd_state_estimate(&args[1..]),
@@ -215,6 +443,20 @@ pub fn state_dispatch(args: &[String]) {
 
 /// Dispatch `spanda mitigation` subcommands.
 pub fn mitigation_dispatch(args: &[String]) {
+    // Description:
+    //     Mitigation dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::assurance_cli::mitigation_dispatch(args);
+
     let sub = args.first().map(String::as_str).unwrap_or("");
     match sub {
         "plan" => cmd_mitigation_plan(&args[1..]),

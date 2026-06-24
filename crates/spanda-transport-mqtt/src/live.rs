@@ -13,20 +13,22 @@ pub struct LiveMqttBridge {
 
 impl LiveMqttBridge {
     pub fn connect(broker_url: &str, client_id: &str) -> Result<Self, String> {
-        // Open a background MQTT client loop and inbound queue.
+        // Description:
+        //     Connect.
         //
-        // Parameters:
-        // - `broker_url` — broker URL
-        // - `client_id` — MQTT client identifier
+        // Inputs:
+        //     broker_url: &str
+        //         Caller-supplied broker url.
+        //     client_id: &str
+        //         Caller-supplied client id.
         //
-        // Returns:
-        // Connected bridge handle.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `connect`.
         //
         // Example:
-        // let bridge = LiveMqttBridge::connect("mqtt://localhost:1883", "spanda")?;
+
+        //     let result = spanda_transport_mqtt::live::connect(broker_url, client_id);
 
         let (host, port) = parse_broker_url(broker_url)?;
         let mut options = MqttOptions::new(client_id, host, port);
@@ -55,24 +57,92 @@ impl LiveMqttBridge {
     }
 
     pub fn publish(&self, topic: &str, payload: &str) -> Result<(), String> {
+        // Description:
+        //     Publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `publish`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::live::publish(&self, opic, payload);
+
         self.client
             .publish(topic, QoS::AtMostOnce, false, payload.as_bytes())
             .map_err(|e| format!("mqtt publish failed: {e}"))
     }
 
     pub fn subscribe(&self, topic: &str) -> Result<(), String> {
+        // Description:
+        //     Subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::live::subscribe(&self, opic);
+
         self.client
             .subscribe(topic, QoS::AtMostOnce)
             .map_err(|e| format!("mqtt subscribe failed: {e}"))
     }
 
     pub fn receive(&self, topic: &str) -> Option<String> {
+        // Description:
+        //     Receive.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `receive`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_mqtt::live::receive(&self, opic);
+
         let mut map = self.inbound.lock().ok()?;
         map.get_mut(topic).and_then(|q| q.pop_front())
     }
 }
 
 fn parse_broker_url(url: &str) -> Result<(String, u16), String> {
+    // Description:
+    //     Parse broker url.
+    //
+    // Inputs:
+    //     url: &str
+    //         Caller-supplied url.
+    //
+    // Outputs:
+    //     result: Result<(String, u16), String>
+    //         Return value from `parse_broker_url`.
+    //
+    // Example:
+
+    //     let result = spanda_transport_mqtt::live::parse_broker_url(rl);
+
     let stripped = url
         .trim_start_matches("mqtts://")
         .trim_start_matches("mqtt://")

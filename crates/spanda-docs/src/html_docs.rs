@@ -2,20 +2,22 @@
 
 /// Wrap markdown body in a minimal HTML document shell.
 pub fn markdown_to_html(title: &str, markdown_body: &str) -> String {
-    // Convert a markdown API page into a standalone HTML document.
+    // Description:
+    //     Markdown to html.
     //
-    // Parameters:
-    // - `title` — page title
-    // - `markdown_body` — markdown fragment
+    // Inputs:
+    //     itle: &str
+    //         Caller-supplied itle.
+    //     arkdown_body: &str
+    //         Caller-supplied arkdown body.
     //
-    // Returns:
-    // Full HTML document string.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `markdown_to_html`.
     //
     // Example:
-    // let html = markdown_to_html("nav", "# Module `nav`");
+
+    //     let result = spanda_docs::html_docs::markdown_to_html(itle, arkdown_body);
 
     let body = render_markdown_fragment(markdown_body);
     format!(
@@ -43,7 +45,31 @@ pub fn markdown_to_html(title: &str, markdown_body: &str) -> String {
 }
 
 fn render_markdown_fragment(md: &str) -> String {
-    // Render a small markdown subset to HTML without external dependencies.
+    // Description:
+
+    //     Render markdown fragment.
+
+    //
+
+    // Inputs:
+
+    //     d: &str
+
+    //         Caller-supplied d.
+
+    //
+
+    // Outputs:
+
+    //     result: String
+
+    //         Return value from `render_markdown_fragment`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_docs::html_docs::render_markdown_fragment(d);
     let mut out = String::new();
     let mut in_code = false;
     let mut list_open = false;
@@ -98,6 +124,22 @@ fn render_markdown_fragment(md: &str) -> String {
 }
 
 fn close_list(out: &mut String, list_open: &mut bool) {
+    // Description:
+    //     Close list.
+    //
+    // Inputs:
+    //     o: &mut String
+    //         Caller-supplied o.
+    //     list_open: &mut bool
+    //         Caller-supplied list open.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_docs::html_docs::close_list(o, list_open);
+
     if *list_open {
         out.push_str("</ul>\n");
         *list_open = false;
@@ -106,6 +148,21 @@ fn close_list(out: &mut String, list_open: &mut bool) {
 
 #[allow(clippy::while_let_on_iterator)]
 fn inline_md(text: &str) -> String {
+    // Description:
+    //     Inline md.
+    //
+    // Inputs:
+    //     ex: &str
+    //         Caller-supplied ex.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `inline_md`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::html_docs::inline_md(ex);
+
     let mut out = String::new();
     let mut chars = text.chars().peekable();
     while let Some(ch) = chars.next() {
@@ -148,6 +205,21 @@ fn inline_md(text: &str) -> String {
 }
 
 fn html_escape(s: &str) -> String {
+    // Description:
+    //     Html escape.
+    //
+    // Inputs:
+    //     s: &str
+    //         Caller-supplied s.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `html_escape`.
+    //
+    // Example:
+
+    //     let result = spanda_docs::html_docs::html_escape(s);
+
     s.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
@@ -159,6 +231,19 @@ mod tests {
 
     #[test]
     fn html_wraps_title_and_headings() {
+        // Description:
+        //     Html wraps title and headings.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_docs::html_docs::html_wraps_title_and_headings();
+
         let html = markdown_to_html("nav", "# Module `nav`\n\n## Functions");
         assert!(html.contains("<title>nav — Spanda API</title>"));
         assert!(html.contains("<h1>"));

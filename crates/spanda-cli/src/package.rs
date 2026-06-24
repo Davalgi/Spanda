@@ -15,19 +15,17 @@ use std::path::{Path, PathBuf};
 use std::process;
 
 pub fn usage_package() {
-    // Usage package.
+    // Description:
+    //     Usage package.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::usage_package();
+    //     let result = spanda_cli::package::usage_package();
 
     // Produce eprintln! as the result.
     eprintln!(
@@ -47,19 +45,18 @@ pub fn usage_package() {
 }
 
 fn project_root_from_cwd() -> PathBuf {
-    // Project root from cwd.
+    // Description:
+    //     Project root from cwd.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `project_root_from_cwd`.
     //
     // Example:
-    // let result = spanda_cli::package::project_root_from_cwd();
+    //     let result = spanda_cli::package::project_root_from_cwd();
 
     // Compute cwd for the following logic.
     let cwd = env::current_dir().unwrap_or_else(|e| {
@@ -73,19 +70,19 @@ fn project_root_from_cwd() -> PathBuf {
 }
 
 fn load_project(root: &Path) -> PackageManifest {
-    // Load project.
+    // Description:
+    //     Load project.
     //
-    // Parameters:
-    // - `root` — input value
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
     //
-    // Returns:
-    // PackageManifest.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PackageManifest
+    //         Return value from `load_project`.
     //
     // Example:
-    // let result = spanda_cli::package::load_project(root);
+    //     let result = spanda_cli::package::load_project(roo);
 
     // Produce unwrap or else as the result.
     PackageManifest::load_from_dir(root).unwrap_or_else(|e| {
@@ -95,19 +92,18 @@ fn load_project(root: &Path) -> PackageManifest {
 }
 
 pub fn cmd_init(args: &[String]) {
-    // Cmd init.
+    // Description:
+    //     Cmd init.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_init(args);
+    //     let result = spanda_cli::package::cmd_init(args);
 
     // Create mutable name for accumulating results.
     let mut name: Option<String> = None;
@@ -150,19 +146,18 @@ pub fn cmd_init(args: &[String]) {
 }
 
 pub fn cmd_build(args: &[String]) {
-    // Cmd build.
+    // Description:
+    //     Cmd build.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_build(args);
+    //     let result = spanda_cli::package::cmd_build(args);
 
     // Compute root for the following logic.
     let root = parse_project_arg(args);
@@ -207,19 +202,18 @@ pub fn cmd_build(args: &[String]) {
 }
 
 pub fn cmd_check_project(args: &[String]) {
-    // Cmd check project.
+    // Description:
+    //     Cmd check project.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_check_project(args);
+    //     let result = spanda_cli::package::cmd_check_project(args);
 
     // Compute root for the following logic.
     let root = parse_project_arg(args);
@@ -272,19 +266,19 @@ pub fn cmd_check_project(args: &[String]) {
 }
 
 pub fn cmd_test(args: &[String]) {
-    // Cmd test.
+    // Description:
+    //     Cmd test.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_test(args);
+
+    //     let result = spanda_cli::package::cmd_test(args);
 
     let mut json = false;
     let mut compile_fail = false;
@@ -490,19 +484,18 @@ pub fn cmd_test(args: &[String]) {
 }
 
 pub fn cmd_add(args: &[String]) {
-    // Cmd add.
+    // Description:
+    //     Cmd add.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_add(args);
+    //     let result = spanda_cli::package::cmd_add(args);
 
     // skip further work when args is empty.
     if args.is_empty() {
@@ -568,19 +561,18 @@ pub fn cmd_add(args: &[String]) {
 }
 
 pub fn cmd_remove(args: &[String]) {
-    // Cmd remove.
+    // Description:
+    //     Cmd remove.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_remove(args);
+    //     let result = spanda_cli::package::cmd_remove(args);
 
     // skip further work when args is empty.
     if args.is_empty() {
@@ -605,19 +597,18 @@ pub fn cmd_remove(args: &[String]) {
 }
 
 pub fn cmd_install(args: &[String]) {
-    // Cmd install.
+    // Description:
+    //     Cmd install.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_install(args);
+    //     let result = spanda_cli::package::cmd_install(args);
 
     // Compute root for the following logic.
     let root = parse_project_arg(args);
@@ -626,19 +617,18 @@ pub fn cmd_install(args: &[String]) {
 }
 
 pub fn cmd_update(args: &[String]) {
-    // Cmd update — refresh spanda.lock and vendored packages to latest compatible versions.
+    // Description:
+    //     Cmd update.
     //
-    // Parameters:
-    // - `args` — optional `--project <dir>`
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_update(args);
+    //     let result = spanda_cli::package::cmd_update(args);
 
     // Resolve project root and re-run dependency resolution.
     let root = parse_project_arg(args);
@@ -652,21 +642,23 @@ pub fn cmd_update(args: &[String]) {
 }
 
 fn run_install_inner(root: &Path, manifest: &PackageManifest, verbose: bool) -> Lockfile {
-    // Run install inner.
+    // Description:
+    //     Run install inner.
     //
-    // Parameters:
-    // - `root` — input value
-    // - `manifest` — input value
-    // - `verbose` — input value
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     verbose: bool
+    //         Caller-supplied verbose.
     //
-    // Returns:
-    // Lockfile.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Lockfile
+    //         Return value from `run_install_inner`.
     //
     // Example:
-    // let result = spanda_cli::package::run_install_inner(root, manifest, verbose);
+    //     let result = spanda_cli::package::run_install_inner(roo, anifes, verbose);
 
     // Produce validate project as the result.
     validate_project(root, manifest);
@@ -722,23 +714,38 @@ fn run_install_inner(root: &Path, manifest: &PackageManifest, verbose: bool) -> 
 
 /// Resolve official lean-core package names for a source file path.
 pub fn official_packages_for_source(source: &Path) -> Vec<String> {
+    // Description:
+    //     Official packages for source.
+    //
+    // Inputs:
+    //     source: &Path
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `official_packages_for_source`.
+    //
+    // Example:
+    //     let result = spanda_cli::package::official_packages_for_source(source);
+
     load_official_packages_for_source(source)
 }
 
 pub fn module_registry_for_source(source: &Path) -> Option<spanda_typecheck::ModuleRegistry> {
-    // Load vendored project modules when the source file belongs to a package project.
+    // Description:
+    //     Module registry for source.
     //
-    // Parameters:
-    // - `source` — path to a `.sd` source file
+    // Inputs:
+    //     source: &Path
+    //         Caller-supplied source.
     //
-    // Returns:
-    // Module registry when a project root with modules is found.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<spanda_typecheck::ModuleRegistry>
+    //         Return value from `module_registry_for_source`.
     //
     // Example:
-    // let registry = module_registry_for_source(Path::new("src/rover.sd"));
+
+    //     let result = spanda_cli::package::module_registry_for_source(source);
 
     let start = if source.is_file() {
         source.parent()?
@@ -750,19 +757,18 @@ pub fn module_registry_for_source(source: &Path) -> Option<spanda_typecheck::Mod
 }
 
 pub fn cmd_publish(args: &[String]) {
-    // Cmd publish.
+    // Description:
+    //     Cmd publish.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_publish(args);
+    //     let result = spanda_cli::package::cmd_publish(args);
 
     // Compute root for the following logic.
     let root = parse_project_arg(args);
@@ -800,19 +806,18 @@ pub fn cmd_publish(args: &[String]) {
 }
 
 pub fn cmd_registry_search(args: &[String]) {
-    // Cmd registry search.
+    // Description:
+    //     Cmd registry search.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_registry_search(args);
+    //     let result = spanda_cli::package::cmd_registry_search(args);
 
     // skip further work when args is empty.
     if args.is_empty() {
@@ -856,19 +861,18 @@ pub fn cmd_registry_search(args: &[String]) {
 }
 
 pub fn cmd_registry_info(args: &[String]) {
-    // Cmd registry info.
+    // Description:
+    //     Cmd registry info.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::cmd_registry_info(args);
+    //     let result = spanda_cli::package::cmd_registry_info(args);
 
     // skip further work when args is empty.
     if args.is_empty() {
@@ -890,20 +894,20 @@ pub fn cmd_registry_info(args: &[String]) {
 }
 
 fn validate_project(root: &Path, manifest: &PackageManifest) {
-    // Validate project.
+    // Description:
+    //     Validate project.
     //
-    // Parameters:
-    // - `root` — input value
-    // - `manifest` — input value
+    // Inputs:
+    //     roo: &Path
+    //         Caller-supplied roo.
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_cli::package::validate_project(root, manifest);
+    //     let result = spanda_cli::package::validate_project(roo, anifes);
 
     // Compute perms for the following logic.
     let perms = ApplicationPermissions::permissive();
@@ -925,19 +929,19 @@ fn validate_project(root: &Path, manifest: &PackageManifest) {
 }
 
 fn parse_project_arg(args: &[String]) -> PathBuf {
-    // Parse project arg.
+    // Description:
+    //     Parse project arg.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `parse_project_arg`.
     //
     // Example:
-    // let result = spanda_cli::package::parse_project_arg(args);
+    //     let result = spanda_cli::package::parse_project_arg(args);
 
     // Create mutable project for accumulating results.
     let mut project: Option<PathBuf> = None;
@@ -956,7 +960,29 @@ fn parse_project_arg(args: &[String]) -> PathBuf {
 }
 
 pub fn cmd_verify_adapter(args: &[String]) {
-    // Validate a project package adapter section against registry metadata.
+    // Description:
+
+    //     Cmd verify adapter.
+
+    //
+
+    // Inputs:
+
+    //     args: &[String]
+
+    //         Caller-supplied args.
+
+    //
+
+    // Outputs:
+
+    //     None.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_cli::package::cmd_verify_adapter(args);
     let root = parse_project_arg(args);
     let manifest = load_project(&root);
     let mut import_path: Option<String> = None;

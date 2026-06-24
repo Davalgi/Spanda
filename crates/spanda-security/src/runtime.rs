@@ -37,18 +37,18 @@ pub struct SecurityContext {
 
 impl Default for SecurityContext {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_security::runtime::default();
+        //     let result = spanda_security::runtime::default();
 
         // Build the result via new.
         Self::new()
@@ -57,19 +57,18 @@ impl Default for SecurityContext {
 
 impl SecurityContext {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::runtime::new();
+        //     let value = spanda_security::runtime::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -93,39 +92,38 @@ impl SecurityContext {
     }
 
     pub fn enable_strict_permissions(&mut self) {
-        // Enable strict permissions.
+        // Description:
+        //     Enable strict permissions.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.enable_strict_permissions();
+        //     let result = spanda_security::runtime::enable_strict_permissions(&mut self);
 
         // Call strict permissions = true; on the current instance.
         self.strict_permissions = true;
     }
 
     pub fn grant_if_not_strict(&mut self, capability: impl Into<String>) {
-        // Grant if not strict.
+        // Description:
+        //     Grant if not strict.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `capability` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     capability: impl Into<String>
+        //         Caller-supplied capability.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.grant_if_not_strict(capability);
+        //     let result = spanda_security::runtime::grant_if_not_strict(&mut self, capability);
 
         // take the branch when strict permissions is false.
         if !self.strict_permissions {
@@ -134,18 +132,19 @@ impl SecurityContext {
     }
 
     pub fn with_permissions(perms: &PackagePermissions) -> Self {
+        // Description:
+        //     With permissions.
         //
-        // Parameters:
-        // - `perms` — input value
+        // Inputs:
+        //     perms: &PackagePermissions
+        //         Caller-supplied perms.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `with_permissions`.
         //
         // Example:
-        // let result = spanda_security::runtime::with_permissions(perms);
+        //     let result = spanda_security::runtime::with_permissions(perms);
 
         // Assemble the struct fields and return it.
         Self {
@@ -155,20 +154,20 @@ impl SecurityContext {
     }
 
     pub fn set_identity(&mut self, identity: RobotIdentity) {
-        // Set identity.
+        // Description:
+        //     Set identity.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `identity` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     identity: RobotIdentity
+        //         Caller-supplied identity.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.set_identity(identity);
+        //     let result = spanda_security::runtime::set_identity(&mut self, identity);
 
         // Call trust; on the current instance.
         self.trust = identity.trust;
@@ -176,21 +175,21 @@ impl SecurityContext {
     }
 
     pub fn require_operation(&self, operation: &str) -> SecurityResult<()> {
-        // Require operation.
+        // Description:
+        //     Require operation.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `operation` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     operation: &str
+        //         Caller-supplied operation.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `require_operation`.
         //
         // Example:
-        // let result = instance.require_operation(operation);
-
+        //     let result = spanda_security::runtime::require_operation(&self, operation);
         // use cap when capability for operation is present.
 
         // Emit output when capability for operation provides a cap.
@@ -201,21 +200,22 @@ impl SecurityContext {
     }
 
     pub fn register_secure_endpoint(&mut self, path: impl Into<String>, policy: SecurePolicy) {
-        // Register secure endpoint.
+        // Description:
+        //     Register secure endpoint.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
-        // - `policy` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: impl Into<String>
+        //         Caller-supplied path.
+        //     policy: SecurePolicy
+        //         Caller-supplied policy.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register_secure_endpoint(path, policy);
+        //     let result = spanda_security::runtime::register_secure_endpoint(&mut self, path, policy);
 
         // Call register on the current instance.
         self.secure_endpoints.register(path, policy);
@@ -228,6 +228,28 @@ impl SecurityContext {
         authentication: AuthenticationMode,
         integrity: IntegrityMode,
     ) {
+        // Description:
+        //     Set transport context.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     boundary: Option<TrustBoundaryKind>
+        //         Caller-supplied boundary.
+        //     encryption: EncryptionMode
+        //         Caller-supplied encryption.
+        //     authentication: AuthenticationMode
+        //         Caller-supplied authentication.
+        //     integrity: IntegrityMode
+        //         Caller-supplied integrity.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::set_transport_context(&mut self, boundary, encryption, authentication, integrity);
+
         self.transport_boundary = boundary;
         self.bus_encryption = encryption;
         self.bus_authentication = authentication;
@@ -239,6 +261,25 @@ impl SecurityContext {
         message_type: &str,
         endpoint: &SecurePolicy,
     ) -> SecurityResult<()> {
+        // Description:
+        //     Enforce trust boundary.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     endpoin: &SecurePolicy
+        //         Caller-supplied endpoin.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `enforce_trust_boundary`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::enforce_trust_boundary(&self, essage_type, endpoin);
+
         let Some(boundary) = self.transport_boundary else {
             return Ok(());
         };
@@ -274,21 +315,23 @@ impl SecurityContext {
         path: &str,
         payload: &str,
     ) -> SecurityResult<Option<SignedMessage>> {
-        // Sign outbound.
+        // Description:
+        //     Sign outbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
-        // - `payload` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     payload: &str
+        //         Caller-supplied payload.
         //
-        // Returns:
-        // SecurityResult<Option<SignedMessage>>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<Option<SignedMessage>>
+        //         Return value from `sign_outbound`.
         //
         // Example:
-        // let result = instance.sign_outbound(path, payload);
+        //     let result = spanda_security::runtime::sign_outbound(&self, path, payload);
 
         // Compute policy for the following logic.
         let policy = self.secure_endpoints.policy_or_open(path);
@@ -301,22 +344,25 @@ impl SecurityContext {
         signed: Option<&SignedMessage>,
         source_id: Option<&str>,
     ) -> SecurityResult<()> {
-        // Verify inbound.
+        // Description:
+        //     Verify inbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
-        // - `signed` — input value
-        // - `source_id` — optional publisher identity for trusted-source checks
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     signed: Option<&SignedMessage>
+        //         Caller-supplied signed.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `verify_inbound`.
         //
         // Example:
-        // let result = instance.verify_inbound(path, signed, source_id);
+        //     let result = spanda_security::runtime::verify_inbound(&self, path, signed, source_id);
 
         // Compute policy for the following logic.
         let policy = self.secure_endpoints.policy_or_open(path);
@@ -330,6 +376,23 @@ impl SecurityContext {
     }
 
     pub fn authorize_subscribe(&self, path: &str) -> SecurityResult<()> {
+        // Description:
+        //     Authorize subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `authorize_subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::authorize_subscribe(&self, path);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         if policy.encryption != crate::policy::EncryptionMode::None
             || policy.signed
@@ -349,6 +412,31 @@ impl SecurityContext {
         signed: Option<&SignedMessage>,
         message_type: &str,
     ) -> SecurityResult<()> {
+        // Description:
+        //     Verify inbound message.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
+        //     signed: Option<&SignedMessage>
+        //         Caller-supplied signed.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `verify_inbound_message`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::verify_inbound_message(&mut self, path, payload, source_id, signed, essage_type);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         self.enforce_trust_boundary(message_type, &policy)?;
         self.authorize_subscribe(path)?;
@@ -357,10 +445,45 @@ impl SecurityContext {
     }
 
     pub fn inject_security_fault(&mut self, fault: impl Into<String>) {
+        // Description:
+        //     Inject security fault.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     faul: impl Into<String>
+        //         Caller-supplied faul.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::inject_security_fault(&mut self, faul);
+
         self.security_faults_active.insert(fault.into());
     }
 
     pub fn authorize_publish(&self, path: &str, source_id: &str) -> SecurityResult<()> {
+        // Description:
+        //     Authorize publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     source_id: &str
+        //         Caller-supplied source id.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `authorize_publish`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::authorize_publish(&self, path, source_id);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         if !policy.trusted_sources.is_empty() {
             policy.check_trusted_source(source_id)?;
@@ -375,6 +498,25 @@ impl SecurityContext {
     }
 
     pub fn check_security_faults(&mut self, path: &str, payload: &str) -> SecurityResult<()> {
+        // Description:
+        //     Check security faults.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `check_security_faults`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::check_security_faults(&mut self, path, payload);
+
         if self.security_faults_active.contains("InvalidSignature") {
             return Err(SecurityError::SignatureInvalid);
         }
@@ -422,13 +564,67 @@ impl SecurityContext {
         cert_path: Option<String>,
         key_secret: Option<String>,
     ) {
-        // Store cert path and key secret name for wire encryption session derivation.
+        // Description:
+
+        //     Configure wire session.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //     cert_path: Option<String>
+
+        //         Caller-supplied cert path.
+
+        //     key_secre: Option<String>
+
+        //         Caller-supplied key secre.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_security::runtime::configure_wire_session(&mut self, cert_path, key_secre);
         self.wire_cert_path = cert_path;
         self.wire_key_secret = key_secret;
     }
 
     pub fn wire_session_material(&self) -> String {
-        // Derive session key material from configured cert path and resolved key secret.
+        // Description:
+
+        //     Wire session material.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //
+
+        // Outputs:
+
+        //     result: String
+
+        //         Return value from `wire_session_material`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_security::runtime::wire_session_material(&self);
         let key = self
             .wire_key_secret
             .as_ref()
@@ -448,6 +644,29 @@ impl SecurityContext {
         source_id: &str,
         message_type: &str,
     ) -> SecurityResult<Option<SignedMessage>> {
+        // Description:
+        //     Prepare publish.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: &str
+        //         Caller-supplied path.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //     source_id: &str
+        //         Caller-supplied source id.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //
+        // Outputs:
+        //     result: SecurityResult<Option<SignedMessage>>
+        //         Return value from `prepare_publish`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::prepare_publish(&mut self, path, payload, source_id, essage_type);
+
         let policy = self.secure_endpoints.policy_or_open(path);
         self.enforce_trust_boundary(message_type, &policy)?;
         self.authorize_publish(path, source_id)?;
@@ -467,6 +686,27 @@ impl SecurityContext {
         event_type: &str,
         detail: &str,
     ) -> SecurityResult<()> {
+        // Description:
+        //     Audit security event.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     audi: &mut AuditRuntime
+        //         Caller-supplied audi.
+        //     event_type: &str
+        //         Caller-supplied event type.
+        //     detail: &str
+        //         Caller-supplied detail.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `audit_security_event`.
+        //
+        // Example:
+
+        //     let result = spanda_security::runtime::audit_security_event(&self, audi, event_type, detail);
+
         self.audit_event(audit, event_type, detail)
     }
 
@@ -477,22 +717,25 @@ impl SecurityContext {
         event_type: &str,
         detail: &str,
     ) -> SecurityResult<()> {
-        // Audit event.
+        // Description:
+        //     Audit event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `audit` — input value
-        // - `event_type` — input value
-        // - `detail` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     audi: &mut AuditRuntime
+        //         Caller-supplied audi.
+        //     event_type: &str
+        //         Caller-supplied event type.
+        //     detail: &str
+        //         Caller-supplied detail.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `audit_event`.
         //
         // Example:
-        // let result = instance.audit_event(audit, event_type, detail);
+        //     let result = spanda_security::runtime::audit_event(&self, audi, event_type, detail);
 
         // take the branch when audit security events is false.
         if !self.audit_security_events {
@@ -519,19 +762,19 @@ pub struct SecuritySnapshot {
 
 impl SecurityContext {
     pub fn snapshot(&self) -> SecuritySnapshot {
-        // Snapshot.
+        // Description:
+        //     Snapshot.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // SecuritySnapshot.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecuritySnapshot
+        //         Return value from `snapshot`.
         //
         // Example:
-        // let result = instance.snapshot();
+        //     let result = spanda_security::runtime::snapshot(&self);
 
         // Produce SecuritySnapshot as the result.
         SecuritySnapshot {

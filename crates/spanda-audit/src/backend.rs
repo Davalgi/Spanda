@@ -27,57 +27,56 @@ pub struct LocalAuditBackend {
 
 impl LocalAuditBackend {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_audit::backend::new();
+        //     let value = spanda_audit::backend::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn records(&self) -> &[AuditRecord] {
-        // Records.
+        // Description:
+        //     Records.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &[AuditRecord].
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &[AuditRecord]
+        //         Return value from `records`.
         //
         // Example:
-        // let result = instance.records();
+        //     let result = spanda_audit::backend::records(&self);
 
         // Return records from this handle.
         &self.records
     }
 
     pub fn last_hash(&self) -> Option<Hash> {
-        // Last hash.
+        // Description:
+        //     Last hash.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<Hash>
+        //         Return value from `last_hash`.
         //
         // Example:
-        // let result = instance.last_hash();
+        //     let result = spanda_audit::backend::last_hash(&self);
 
         // Transform self and continue the chain.
         self.records.last().map(|r| r.hash.clone())
@@ -86,20 +85,21 @@ impl LocalAuditBackend {
 
 impl AuditBackend for LocalAuditBackend {
     fn append(&mut self, record: AuditRecord) -> AuditResult<RecordId> {
-        // Append.
+        // Description:
+        //     Append.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     record: AuditRecord
+        //         Caller-supplied record.
         //
-        // Returns:
-        // AuditResult<RecordId>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<RecordId>
+        //         Return value from `append`.
         //
         // Example:
-        // let result = instance.append(record);
+        //     let result = spanda_audit::backend::append(&mut self, record);
 
         // Compute id for the following logic.
         let id = record.id.clone();
@@ -108,20 +108,21 @@ impl AuditBackend for LocalAuditBackend {
     }
 
     fn verify(&self, record_id: &RecordId) -> AuditResult<bool> {
-        // Verify.
+        // Description:
+        //     Verify.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record_id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     record_id: &RecordId
+        //         Caller-supplied record id.
         //
-        // Returns:
-        // AuditResult<bool>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<bool>
+        //         Return value from `verify`.
         //
         // Example:
-        // let result = instance.verify(record_id);
+        //     let result = spanda_audit::backend::verify(&self, record_id);
 
         // Compute record for the following logic.
         let record = self
@@ -153,19 +154,19 @@ impl AuditBackend for LocalAuditBackend {
     }
 
     fn export(&self) -> AuditResult<AuditExport> {
-        // Export.
+        // Description:
+        //     Export.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // AuditResult<AuditExport>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<AuditExport>
+        //         Return value from `export`.
         //
         // Example:
-        // let result = instance.export();
+        //     let result = spanda_audit::backend::export(&self);
 
         // Return the success value to the caller.
         Ok(AuditExport {
@@ -177,18 +178,19 @@ impl AuditBackend for LocalAuditBackend {
     }
 
     fn record_count(&self) -> usize {
+        // Description:
+        //     Record count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `record_count`.
         //
         // Example:
-        // let result = instance.record_count();
+        //     let result = spanda_audit::backend::record_count(&self);
 
         // Call len on the current instance.
         self.records.len()
@@ -203,38 +205,37 @@ pub struct JsonAuditBackend {
 
 impl JsonAuditBackend {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_audit::backend::new();
+        //     let value = spanda_audit::backend::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn export_json(&self) -> AuditResult<String> {
-        // Export json.
+        // Description:
+        //     Export json.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // AuditResult<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<String>
+        //         Return value from `export_json`.
         //
         // Example:
-        // let result = instance.export_json();
+        //     let result = spanda_audit::backend::export_json(&self);
 
         // Compute export for the following logic.
         let export = self.export()?;
@@ -242,19 +243,19 @@ impl JsonAuditBackend {
     }
 
     pub fn export_json_compact(&self) -> AuditResult<String> {
-        // Export json compact.
+        // Description:
+        //     Export json compact.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // AuditResult<String>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<String>
+        //         Return value from `export_json_compact`.
         //
         // Example:
-        // let result = instance.export_json_compact();
+        //     let result = spanda_audit::backend::export_json_compact(&self);
 
         // Compute export for the following logic.
         let export = self.export()?;
@@ -264,77 +265,80 @@ impl JsonAuditBackend {
 
 impl AuditBackend for JsonAuditBackend {
     fn append(&mut self, record: AuditRecord) -> AuditResult<RecordId> {
-        // Append.
+        // Description:
+        //     Append.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     record: AuditRecord
+        //         Caller-supplied record.
         //
-        // Returns:
-        // AuditResult<RecordId>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<RecordId>
+        //         Return value from `append`.
         //
         // Example:
-        // let result = instance.append(record);
+        //     let result = spanda_audit::backend::append(&mut self, record);
 
         // Call append on the current instance.
         self.inner.append(record)
     }
 
     fn verify(&self, record_id: &RecordId) -> AuditResult<bool> {
-        // Verify.
+        // Description:
+        //     Verify.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record_id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     record_id: &RecordId
+        //         Caller-supplied record id.
         //
-        // Returns:
-        // AuditResult<bool>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<bool>
+        //         Return value from `verify`.
         //
         // Example:
-        // let result = instance.verify(record_id);
+        //     let result = spanda_audit::backend::verify(&self, record_id);
 
         // Call verify on the current instance.
         self.inner.verify(record_id)
     }
 
     fn export(&self) -> AuditResult<AuditExport> {
-        // Export.
+        // Description:
+        //     Export.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // AuditResult<AuditExport>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<AuditExport>
+        //         Return value from `export`.
         //
         // Example:
-        // let result = instance.export();
+        //     let result = spanda_audit::backend::export(&self);
 
         // Call export on the current instance.
         self.inner.export()
     }
 
     fn record_count(&self) -> usize {
+        // Description:
+        //     Record count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `record_count`.
         //
         // Example:
-        // let result = instance.record_count();
+        //     let result = spanda_audit::backend::record_count(&self);
 
         // Call record count on the current instance.
         self.inner.record_count()
@@ -351,19 +355,18 @@ pub struct MockLedgerBackend {
 
 impl MockLedgerBackend {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_audit::backend::new();
+        //     let value = spanda_audit::backend::new();
 
         // Assemble the struct fields and return it.
         Self {
@@ -373,18 +376,19 @@ impl MockLedgerBackend {
     }
 
     pub fn anchored_count(&self) -> usize {
+        // Description:
+        //     Anchored count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `anchored_count`.
         //
         // Example:
-        // let result = instance.anchored_count();
+        //     let result = spanda_audit::backend::anchored_count(&self);
 
         // Call len on the current instance.
         self.anchors.len()
@@ -393,77 +397,80 @@ impl MockLedgerBackend {
 
 impl AuditBackend for MockLedgerBackend {
     fn append(&mut self, record: AuditRecord) -> AuditResult<RecordId> {
-        // Append.
+        // Description:
+        //     Append.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     record: AuditRecord
+        //         Caller-supplied record.
         //
-        // Returns:
-        // AuditResult<RecordId>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<RecordId>
+        //         Return value from `append`.
         //
         // Example:
-        // let result = instance.append(record);
+        //     let result = spanda_audit::backend::append(&mut self, record);
 
         // Call append on the current instance.
         self.audit.append(record)
     }
 
     fn verify(&self, record_id: &RecordId) -> AuditResult<bool> {
-        // Verify.
+        // Description:
+        //     Verify.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `record_id` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     record_id: &RecordId
+        //         Caller-supplied record id.
         //
-        // Returns:
-        // AuditResult<bool>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<bool>
+        //         Return value from `verify`.
         //
         // Example:
-        // let result = instance.verify(record_id);
+        //     let result = spanda_audit::backend::verify(&self, record_id);
 
         // Call verify on the current instance.
         self.audit.verify(record_id)
     }
 
     fn export(&self) -> AuditResult<AuditExport> {
-        // Export.
+        // Description:
+        //     Export.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // AuditResult<AuditExport>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<AuditExport>
+        //         Return value from `export`.
         //
         // Example:
-        // let result = instance.export();
+        //     let result = spanda_audit::backend::export(&self);
 
         // Call export on the current instance.
         self.audit.export()
     }
 
     fn record_count(&self) -> usize {
+        // Description:
+        //     Record count.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `record_count`.
         //
         // Example:
-        // let result = instance.record_count();
+        //     let result = spanda_audit::backend::record_count(&self);
 
         // Call record count on the current instance.
         self.audit.record_count()
@@ -472,20 +479,21 @@ impl AuditBackend for MockLedgerBackend {
 
 impl LedgerBackend for MockLedgerBackend {
     fn anchor_hash(&mut self, hash: &Hash) -> AuditResult<TransactionId> {
-        // Anchor hash.
+        // Description:
+        //     Anchor hash.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `hash` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     hash: &Hash
+        //         Caller-supplied hash.
         //
-        // Returns:
-        // AuditResult<TransactionId>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<TransactionId>
+        //         Return value from `anchor_hash`.
         //
         // Example:
-        // let result = instance.anchor_hash(hash);
+        //     let result = spanda_audit::backend::anchor_hash(&mut self, hash);
 
         // Compute tx for the following logic.
         let tx = TransactionId(format!("mock-tx-{}", self.next_tx));
@@ -495,20 +503,21 @@ impl LedgerBackend for MockLedgerBackend {
     }
 
     fn verify_anchor(&self, hash: &Hash) -> AuditResult<bool> {
-        // Verify anchor.
+        // Description:
+        //     Verify anchor.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `hash` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     hash: &Hash
+        //         Caller-supplied hash.
         //
-        // Returns:
-        // AuditResult<bool>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: AuditResult<bool>
+        //         Return value from `verify_anchor`.
         //
         // Example:
-        // let result = instance.verify_anchor(hash);
+        //     let result = spanda_audit::backend::verify_anchor(&self, hash);
 
         // Return the success value to the caller.
         Ok(self.anchors.iter().any(|(h, _)| h == hash))

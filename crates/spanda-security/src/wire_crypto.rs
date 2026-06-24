@@ -14,6 +14,21 @@ pub struct WireCryptoSession {
 impl WireCryptoSession {
     /// Derive a 256-bit session key from configured cert/key material.
     pub fn from_material(material: &str) -> Self {
+        // Description:
+        //     From material.
+        //
+        // Inputs:
+        //     aterial: &str
+        //         Caller-supplied aterial.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_material`.
+        //
+        // Example:
+
+        //     let result = spanda_security::wire_crypto::from_material(aterial);
+
         let digest = Sha256::digest(material.as_bytes());
         let mut key = [0u8; 32];
         key.copy_from_slice(&digest);
@@ -24,6 +39,23 @@ impl WireCryptoSession {
     }
 
     pub fn encrypt(&self, plaintext: &[u8]) -> Result<Vec<u8>, String> {
+        // Description:
+        //     Encrypt.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     plaintex: &[u8]
+        //         Caller-supplied plaintex.
+        //
+        // Outputs:
+        //     result: Result<Vec<u8>, String>
+        //         Return value from `encrypt`.
+        //
+        // Example:
+
+        //     let result = spanda_security::wire_crypto::encrypt(&self, plaintex);
+
         let cipher =
             Aes256Gcm::new_from_slice(&self.key).map_err(|e| format!("cipher init failed: {e}"))?;
         let mut nonce_bytes = [0u8; 12];
@@ -39,6 +71,23 @@ impl WireCryptoSession {
     }
 
     pub fn decrypt(&self, data: &[u8]) -> Result<Vec<u8>, String> {
+        // Description:
+        //     Decrypt.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     data: &[u8]
+        //         Caller-supplied data.
+        //
+        // Outputs:
+        //     result: Result<Vec<u8>, String>
+        //         Return value from `decrypt`.
+        //
+        // Example:
+
+        //     let result = spanda_security::wire_crypto::decrypt(&self, data);
+
         if data.len() < 13 {
             return Err("ciphertext too short".into());
         }
@@ -58,6 +107,19 @@ mod tests {
 
     #[test]
     fn aead_roundtrip() {
+        // Description:
+        //     Aead roundtrip.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_security::wire_crypto::aead_roundtrip();
+
         let session = WireCryptoSession::from_material("rover-cert:rover-key");
         let plain = br#"{"v":1,"topic":"/cmd"}"#;
         let enc = session.encrypt(plain).unwrap();

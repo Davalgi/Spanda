@@ -27,6 +27,29 @@ impl TransportWireFrame {
         source_id: Option<&str>,
         transport: TransportKind,
     ) -> Result<Self, String> {
+        // Description:
+        //     Construct a new instance.
+        //
+        // Inputs:
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     value: &RuntimeValue
+        //         Caller-supplied value.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
+        //     ranspor: TransportKind
+        //         Caller-supplied ranspor.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `new`.
+        //
+        // Example:
+
+        //     let value = spanda_transport::wire::new(opic, essage_type, value, source_id, ranspor);
+
         Ok(Self {
             v: 1,
             topic: topic.to_string(),
@@ -38,6 +61,21 @@ impl TransportWireFrame {
     }
 
     pub fn decode_payload(&self) -> Result<RuntimeValue, String> {
+        // Description:
+        //     Decode payload.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: Result<RuntimeValue, String>
+        //         Return value from `decode_payload`.
+        //
+        // Example:
+
+        //     let result = spanda_transport::wire::decode_payload(&self);
+
         runtime_from_json_string(&self.payload).map_err(|e| e.to_string())
     }
 }
@@ -50,6 +88,31 @@ pub fn encode_wire_value(
     source_id: Option<&str>,
     transport: TransportKind,
 ) -> Result<RuntimeValue, String> {
+    // Description:
+    //     Encode wire value.
+    //
+    // Inputs:
+    //     config: &TransportConfig
+    //         Caller-supplied config.
+    //     opic: &str
+    //         Caller-supplied opic.
+    //     essage_type: &str
+    //         Caller-supplied essage type.
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
+    //     source_id: Option<&str>
+    //         Caller-supplied source id.
+    //     ranspor: TransportKind
+    //         Caller-supplied ranspor.
+    //
+    // Outputs:
+    //     result: Result<RuntimeValue, String>
+    //         Return value from `encode_wire_value`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::wire::encode_wire_value(config, opic, essage_type, value, source_id, ranspor);
+
     let frame = TransportWireFrame::new(topic, message_type, value, source_id, transport)?;
     let json = serde_json::to_string(&frame).map_err(|e| e.to_string())?;
     if config.security.encryption == EncryptionMode::None {
@@ -63,6 +126,23 @@ pub fn decode_wire_value(
     config: &TransportConfig,
     value: RuntimeValue,
 ) -> Result<(RuntimeValue, Option<String>), String> {
+    // Description:
+    //     Decode wire value.
+    //
+    // Inputs:
+    //     config: &TransportConfig
+    //         Caller-supplied config.
+    //     value: RuntimeValue
+    //         Caller-supplied value.
+    //
+    // Outputs:
+    //     result: Result<(RuntimeValue, Option<String>), String>
+    //         Return value from `decode_wire_value`.
+    //
+    // Example:
+
+    //     let result = spanda_transport::wire::decode_wire_value(config, value);
+
     let wire_text = match value {
         RuntimeValue::String { value } => {
             if config.security.encryption == EncryptionMode::None {
@@ -88,6 +168,19 @@ mod tests {
 
     #[test]
     fn wire_frame_roundtrip_with_encryption() {
+        // Description:
+        //     Wire frame roundtrip with encryption.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::wire::wire_frame_roundtrip_with_encryption();
+
         let mut tls = TlsTransportSession::default();
         let security = TransportSecurityConfig {
             encryption: EncryptionMode::Required,

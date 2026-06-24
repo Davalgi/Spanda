@@ -16,6 +16,21 @@ pub struct LiveDdsBridge {
 
 impl LiveDdsBridge {
     pub fn connect(domain_id: u32) -> Result<Self, String> {
+        // Description:
+        //     Connect.
+        //
+        // Inputs:
+        //     domain_id: u32
+        //         Caller-supplied domain id.
+        //
+        // Outputs:
+        //     result: Result<Self, String>
+        //         Return value from `connect`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::connect(domain_id);
+
         #[cfg(feature = "live")]
         {
             return Ok(Self {
@@ -33,6 +48,25 @@ impl LiveDdsBridge {
     }
 
     pub fn publish(&self, topic: &str, payload: &str) -> Result<(), String> {
+        // Description:
+        //     Publish.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `publish`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::publish(&self, opic, payload);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.publish(topic, payload);
@@ -42,6 +76,23 @@ impl LiveDdsBridge {
     }
 
     pub fn subscribe(&self, topic: &str) -> Result<(), String> {
+        // Description:
+        //     Subscribe.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Result<(), String>
+        //         Return value from `subscribe`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::subscribe(&self, opic);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.subscribe(topic);
@@ -51,6 +102,23 @@ impl LiveDdsBridge {
     }
 
     pub fn receive(&self, topic: &str) -> Option<String> {
+        // Description:
+        //     Receive.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //
+        // Outputs:
+        //     result: Option<String>
+        //         Return value from `receive`.
+        //
+        // Example:
+
+        //     let result = spanda_transport_dds::receive(&self, opic);
+
         #[cfg(feature = "live")]
         if let Some(inner) = &self.inner {
             return inner.receive(topic);

@@ -3,6 +3,21 @@
 use std::process::Command;
 
 fn bridge_command(env_key: &str) -> Option<String> {
+    // Description:
+    //     Bridge command.
+    //
+    // Inputs:
+    //     env_key: &str
+    //         Caller-supplied env key.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `bridge_command`.
+    //
+    // Example:
+
+    //     let result = spanda_connectivity::adapter_bridge::bridge_command(env_key);
+
     std::env::var(env_key)
         .ok()
         .map(|value| value.trim().to_string())
@@ -11,19 +26,20 @@ fn bridge_command(env_key: &str) -> Option<String> {
 
 /// Invoke an external Nav2 bridge command when `SPANDA_NAV2_CMD` is configured.
 pub fn invoke_nav2_bridge(goal: &str) -> Option<String> {
-    // Spawn the configured Nav2 bridge process for a navigation goal.
+    // Description:
+    //     Invoke nav2 bridge.
     //
-    // Parameters:
-    // - `goal` — navigation goal label passed to the bridge
+    // Inputs:
+    //     goal: &str
+    //         Caller-supplied goal.
     //
-    // Returns:
-    // Bridge stdout on success, or None when no bridge is configured.
-    //
-    // Options:
-    // Environment variable `SPANDA_NAV2_CMD` — executable plus args template using `{goal}`.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `invoke_nav2_bridge`.
     //
     // Example:
-    // let output = invoke_nav2_bridge("Dock A");
+
+    //     let result = spanda_connectivity::adapter_bridge::invoke_nav2_bridge(goal);
 
     let template = bridge_command("SPANDA_NAV2_CMD")?;
     let command_line = template.replace("{goal}", goal);
@@ -40,19 +56,20 @@ pub fn invoke_nav2_bridge(goal: &str) -> Option<String> {
 
 /// Invoke an external SLAM bridge command when `SPANDA_SLAM_CMD` is configured.
 pub fn invoke_slam_bridge(operation: &str) -> Option<String> {
-    // Spawn the configured SLAM bridge process for localize/map operations.
+    // Description:
+    //     Invoke slam bridge.
     //
-    // Parameters:
-    // - `operation` — bridge operation name (e.g. `localize`, `map`)
+    // Inputs:
+    //     operation: &str
+    //         Caller-supplied operation.
     //
-    // Returns:
-    // Bridge stdout on success, or None when no bridge is configured.
-    //
-    // Options:
-    // Environment variable `SPANDA_SLAM_CMD` — executable plus args template using `{op}`.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `invoke_slam_bridge`.
     //
     // Example:
-    // let output = invoke_slam_bridge("localize");
+
+    //     let result = spanda_connectivity::adapter_bridge::invoke_slam_bridge(operation);
 
     let template = bridge_command("SPANDA_SLAM_CMD")?;
     let command_line = template.replace("{op}", operation);

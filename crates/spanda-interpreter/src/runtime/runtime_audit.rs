@@ -14,23 +14,27 @@ impl<B: RobotBackend> Interpreter<B> {
         _named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval audit method.
+        // Description:
+        //     Eval audit method.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `method` — input value
-        // - `args` — input value
-        // - `_named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     _named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_audit_method`.
         //
         // Example:
-        // let result = instance.eval_audit_method(method, args, _named_args, line);
+        //     let result = spanda_interpreter::runtime_audit::eval_audit_method(&mut self, ethod, args, _named_args, line);
 
         // Match on method and handle each case.
         match method {
@@ -182,23 +186,27 @@ impl<B: RobotBackend> Interpreter<B> {
         _named_args: &[spanda_ast::nodes::NamedArg],
         line: u32,
     ) -> Result<RuntimeValue, SpandaError> {
-        // Eval ledger method.
+        // Description:
+        //     Eval ledger method.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `method` — input value
-        // - `args` — input value
-        // - `_named_args` — input value
-        // - `line` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ethod: &str
+        //         Caller-supplied ethod.
+        //     args: &[Expr]
+        //         Caller-supplied args.
+        //     _named_args: &[spanda_ast::nodes::NamedArg]
+        //         Caller-supplied named args.
+        //     line: u32
+        //         Caller-supplied line.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `eval_ledger_method`.
         //
         // Example:
-        // let result = instance.eval_ledger_method(method, args, _named_args, line);
+        //     let result = spanda_interpreter::runtime_audit::eval_ledger_method(&mut self, ethod, args, _named_args, line);
 
         // Import the items needed by the logic below.
         use spanda_audit::LedgerBackend;

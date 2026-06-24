@@ -8,6 +8,19 @@ use spanda_ota::{
 
 #[test]
 fn ota_canary_rollout_from_example() {
+    // Description:
+    //     Ota canary rollout from example.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::service_integration::ota_canary_rollout_from_example();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     check(source).expect("ota example should type-check");
     let program = compile(source).expect("compile").program;
@@ -37,6 +50,19 @@ fn ota_canary_rollout_from_example() {
 
 #[test]
 fn ota_apply_rollout_updates_state() {
+    // Description:
+    //     Ota apply rollout updates state.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::service_integration::ota_apply_rollout_updates_state();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let program = compile(source).expect("compile").program;
     let plan = build_deploy_plan(&program, "ota.sd", "2.0.0");
@@ -55,6 +81,19 @@ fn ota_apply_rollout_updates_state() {
 
 #[test]
 fn require_certify_blocks_uncertified_rollout() {
+    // Description:
+    //     Require certify blocks uncertified rollout.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::service_integration::require_certify_blocks_uncertified_rollout();
+
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
     let program = compile(source).expect("compile").program;
     let plan = build_deploy_plan(&program, "ota_deployment.sd", "1.0.0");
@@ -70,6 +109,19 @@ fn require_certify_blocks_uncertified_rollout() {
 
 #[test]
 fn require_certify_allows_certified_program() {
+    // Description:
+    //     Require certify allows certified program.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_ota::service_integration::require_certify_allows_certified_program();
+
     let source = include_str!("../../../examples/robotics/certified_deployment.sd");
     let program = compile(source).expect("compile").program;
     let plan = build_deploy_plan(&program, "certified_deployment.sd", "1.0.0");

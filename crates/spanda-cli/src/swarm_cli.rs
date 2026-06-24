@@ -12,6 +12,21 @@ use std::io::{self, Write};
 use std::process;
 
 fn read_source(path: &str) -> String {
+    // Description:
+    //     Read source.
+    //
+    // Inputs:
+    //     path: &str
+    //         Caller-supplied path.
+    //
+    // Outputs:
+    //     result: String
+    //         Return value from `read_source`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::read_source(path);
+
     fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Error reading {path}: {e}");
         process::exit(1);
@@ -19,6 +34,23 @@ fn read_source(path: &str) -> String {
 }
 
 fn parse_program(source: &str, file: &str) -> Program {
+    // Description:
+    //     Parse program.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     file: &str
+    //         Caller-supplied file.
+    //
+    // Outputs:
+    //     result: Program
+    //         Return value from `parse_program`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::parse_program(source, file);
+
     compile(source)
         .unwrap_or_else(|e| {
             eprintln!("Error compiling {file}: {e}");
@@ -28,12 +60,40 @@ fn parse_program(source: &str, file: &str) -> Program {
 }
 
 fn swarm_state_path() -> std::path::PathBuf {
+    // Description:
+    //     Swarm state path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: std::path::PathBuf
+    //         Return value from `swarm_state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::swarm_state_path();
+
     env::var("SPANDA_SWARM_STATE")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| default_swarm_state_path())
 }
 
 pub fn swarm_dispatch(args: &[String]) {
+    // Description:
+    //     Swarm dispatch.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::swarm_dispatch(args);
+
     if args.is_empty() {
         usage();
         process::exit(1);
@@ -53,14 +113,55 @@ pub fn swarm_dispatch(args: &[String]) {
 }
 
 pub fn swarm_usage_lines() -> &'static str {
+    // Description:
+    //     Swarm usage lines.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `swarm_usage_lines`.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::swarm_usage_lines();
+
     "           spanda swarm coordinate [--json] [--mesh-url <http(s)://host:port>] [--mesh-token <t>] <file.sd>"
 }
 
 fn usage() {
+    // Description:
+    //     Usage.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::usage();
+
     eprintln!("Usage:\n{}", swarm_usage_lines());
 }
 
 fn cmd_coordinate(args: &[String]) {
+    // Description:
+    //     Cmd coordinate.
+    //
+    // Inputs:
+    //     args: &[String]
+    //         Caller-supplied args.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_cli::swarm_cli::cmd_coordinate(args);
+
     let mut json = false;
     let mut mesh_url: Option<String> = None;
     let mut mesh_token: Option<String> = None;

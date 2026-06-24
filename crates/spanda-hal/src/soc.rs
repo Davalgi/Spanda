@@ -41,19 +41,18 @@ pub struct SocValidationError {
 }
 
 fn build_profiles() -> HashMap<&'static str, SocProfile> {
-    // Build profiles.
+    // Description:
+    //     Build profiles.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // HashMap<&'static str, SocProfile>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<&'static str, SocProfile>
+    //         Return value from `build_profiles`.
     //
     // Example:
-    // let result = spanda_hal::soc::build_profiles();
+    //     let result = spanda_hal::soc::build_profiles();
 
     // Produce from as the result.
     HashMap::from([
@@ -286,37 +285,37 @@ fn build_profiles() -> HashMap<&'static str, SocProfile> {
 }
 
 pub fn get_soc_profile(name: &str) -> Option<SocProfile> {
+    // Description:
+    //     Get soc profile.
     //
-    // Parameters:
-    // - `name` — input value
+    // Inputs:
+    //     name: &str
+    //         Caller-supplied name.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<SocProfile>
+    //         Return value from `get_soc_profile`.
     //
     // Example:
-    // let result = spanda_hal::soc::get_soc_profile(name);
+    //     let result = spanda_hal::soc::get_soc_profile(name);
 
     // Produce remove as the result.
     build_profiles().remove(name)
 }
 
 pub fn list_soc_profiles() -> Vec<SocProfile> {
-    // List soc profiles.
+    // Description:
+    //     List soc profiles.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Vec<SocProfile>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<SocProfile>
+    //         Return value from `list_soc_profiles`.
     //
     // Example:
-    // let result = spanda_hal::soc::list_soc_profiles();
+    //     let result = spanda_hal::soc::list_soc_profiles();
 
     // Collect filtered entries into a new list.
     build_profiles().into_values().collect()
@@ -326,20 +325,21 @@ pub fn validate_hal_against_soc(
     profile: &SocProfile,
     hal_members: &[HalMemberConfig],
 ) -> Vec<SocValidationError> {
-    // Validate hal against soc.
+    // Description:
+    //     Validate hal against soc.
     //
-    // Parameters:
-    // - `profile` — input value
-    // - `hal_members` — input value
+    // Inputs:
+    //     profile: &SocProfile
+    //         Caller-supplied profile.
+    //     hal_members: &[HalMemberConfig]
+    //         Caller-supplied hal members.
     //
-    // Returns:
-    // Vec<SocValidationError>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<SocValidationError>
+    //         Return value from `validate_hal_against_soc`.
     //
     // Example:
-    // let result = spanda_hal::soc::validate_hal_against_soc(profile, hal_members);
+    //     let result = spanda_hal::soc::validate_hal_against_soc(profile, hal_members);
 
     // Create mutable errors for accumulating results.
     let mut errors = Vec::new();

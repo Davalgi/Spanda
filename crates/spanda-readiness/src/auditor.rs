@@ -30,6 +30,23 @@ pub struct SafetyAuditReport {
 
 /// Run autonomous safety audit on a program.
 pub fn audit_program(program: &Program, source: &str) -> SafetyAuditReport {
+    // Description:
+    //     Audit program.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: SafetyAuditReport
+    //         Return value from `audit_program`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::auditor::audit_program(progra, source);
+
     let mut findings = Vec::new();
     let Program::Program {
         robots,
@@ -174,6 +191,29 @@ fn finding(
     line: u32,
     column: u32,
 ) -> AuditFinding {
+    // Description:
+    //     Finding.
+    //
+    // Inputs:
+    //     severity: ReadinessSeverity
+    //         Caller-supplied severity.
+    //     category: impl Into<String>
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //
+    // Outputs:
+    //     result: AuditFinding
+    //         Return value from `finding`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::auditor::finding(severity, category, essage, line, column);
+
     AuditFinding {
         severity,
         category: category.into(),
@@ -185,6 +225,21 @@ fn finding(
 
 /// Audit from source.
 pub fn audit_program_source(source: &str) -> Result<SafetyAuditReport, spanda_error::SpandaError> {
+    // Description:
+    //     Audit program source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //
+    // Outputs:
+    //     result: Result<SafetyAuditReport, spanda_error::SpandaError>
+    //         Return value from `audit_program_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::auditor::audit_program_source(source);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     Ok(audit_program(&program, source))

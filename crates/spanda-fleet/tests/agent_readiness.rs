@@ -8,6 +8,19 @@ use std::time::Duration;
 
 #[test]
 fn fleet_agent_readiness_after_program_upload() {
+    // Description:
+    //     Fleet agent readiness after program upload.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::agent_readiness::fleet_agent_readiness_after_program_upload();
+
     let robot = "PickerA";
     let (port, _handle) = spawn_test_fleet_agent(robot, None).expect("spawn fleet agent");
     thread::sleep(Duration::from_millis(50));

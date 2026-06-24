@@ -24,6 +24,21 @@ pub struct TimelineEvent {
 
 /// Diagnose a mission failure from a recorded trace file.
 pub fn diagnose_trace(trace_path: &Path) -> Result<RootCauseReport, spanda_error::SpandaError> {
+    // Description:
+    //     Diagnose trace.
+    //
+    // Inputs:
+    //     race_path: &Path
+    //         Caller-supplied race path.
+    //
+    // Outputs:
+    //     result: Result<RootCauseReport, spanda_error::SpandaError>
+    //         Return value from `diagnose_trace`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::root_cause::diagnose_trace(race_path);
+
     let trace = MissionTrace::load(trace_path).map_err(SpandaError::from)?;
 
     let mut timeline = Vec::new();

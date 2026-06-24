@@ -4,19 +4,18 @@ use spanda_core::{check, compile, run, verify_compatibility_target, CompatSeveri
 
 #[test]
 fn message_parsing_and_registry() {
-    // Message parsing and registry.
+    // Description:
+    //     Message parsing and registry.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::message_parsing_and_registry();
+
+    //     let result = spanda_core::communication::message_parsing_and_registry();
 
     let source = r#"
 message LidarReading {
@@ -39,19 +38,18 @@ robot CommBot {
 
 #[test]
 fn topic_qos_and_transport() {
-    // Topic qos and transport.
+    // Description:
+    //     Topic qos and transport.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::topic_qos_and_transport();
+
+    //     let result = spanda_core::communication::topic_qos_and_transport();
 
     let source = r#"
 robot QosBot {
@@ -74,19 +72,18 @@ robot QosBot {
 
 #[test]
 fn service_and_action_typed() {
-    // Service and action typed.
+    // Description:
+    //     Service and action typed.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::service_and_action_typed();
+
+    //     let result = spanda_core::communication::service_and_action_typed();
 
     let source = r#"
 message BatteryStatus { level: String; }
@@ -114,19 +111,18 @@ robot ServiceBot {
 
 #[test]
 fn subscribe_and_publish_parens() {
-    // Subscribe and publish parens.
+    // Description:
+    //     Subscribe and publish parens.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::subscribe_and_publish_parens();
+
+    //     let result = spanda_core::communication::subscribe_and_publish_parens();
 
     let source = r#"
 robot PubSubBot {
@@ -153,19 +149,18 @@ robot PubSubBot {
 
 #[test]
 fn agent_communication_capabilities() {
-    // Agent communication capabilities.
+    // Description:
+    //     Agent communication capabilities.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::agent_communication_capabilities();
+
+    //     let result = spanda_core::communication::agent_communication_capabilities();
 
     let source = r#"
 robot AgentBot {
@@ -188,19 +183,18 @@ robot AgentBot {
 
 #[test]
 fn robot_peer_and_device_declarations() {
-    // Robot peer and device declarations.
+    // Description:
+    //     Robot peer and device declarations.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::robot_peer_and_device_declarations();
+
+    //     let result = spanda_core::communication::robot_peer_and_device_declarations();
 
     let source = r#"
 robot FleetBot {
@@ -221,19 +215,18 @@ robot FleetBot {
 
 #[test]
 fn discover_with_capability_filter() {
-    // Discover with capability filter.
+    // Description:
+    //     Discover with capability filter.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::discover_with_capability_filter();
+
+    //     let result = spanda_core::communication::discover_with_capability_filter();
 
     let source = r#"
 robot DiscoverBot {
@@ -249,19 +242,18 @@ robot DiscoverBot {
 
 #[test]
 fn event_with_payload_fields() {
-    // Event with payload fields.
+    // Description:
+    //     Event with payload fields.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::event_with_payload_fields();
+
+    //     let result = spanda_core::communication::event_with_payload_fields();
 
     let source = r#"
 message Alert { text: String; }
@@ -281,19 +273,18 @@ robot EventBot {
 
 #[test]
 fn topic_qos_bandwidth_verify() {
-    // Topic qos bandwidth verify.
+    // Description:
+    //     Topic qos bandwidth verify.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::topic_qos_bandwidth_verify();
+
+    //     let result = spanda_core::communication::topic_qos_bandwidth_verify();
 
     let source = r#"
 robot BandwidthBot {
@@ -324,19 +315,18 @@ deploy BandwidthBot to ESP32;
 
 #[test]
 fn transport_ros2_routing_at_runtime() {
-    // Transport ros2 routing at runtime.
+    // Description:
+    //     Transport ros2 routing at runtime.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::transport_ros2_routing_at_runtime();
+
+    //     let result = spanda_core::communication::transport_ros2_routing_at_runtime();
 
     let source = r#"
 robot RosBot {
@@ -361,19 +351,18 @@ robot RosBot {
 
 #[test]
 fn std_network_import_type_check() {
-    // Std network import type check.
+    // Description:
+    //     Std network import type check.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::std_network_import_type_check();
+
+    //     let result = spanda_core::communication::std_network_import_type_check();
 
     let source = r#"
 import std.network;
@@ -395,19 +384,18 @@ robot NetBot {
 
 #[test]
 fn requires_network_integration() {
-    // Requires network integration.
+    // Description:
+    //     Requires network integration.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::requires_network_integration();
+
+    //     let result = spanda_core::communication::requires_network_integration();
 
     let source = r#"
 requires_network {
@@ -431,19 +419,18 @@ robot NetBot {
 
 #[test]
 fn simulator_comm_bus_round_trip() {
-    // Simulator comm bus round trip.
+    // Description:
+    //     Simulator comm bus round trip.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::simulator_comm_bus_round_trip();
+
+    //     let result = spanda_core::communication::simulator_comm_bus_round_trip();
 
     let source = r#"
 robot SimBot {
@@ -471,19 +458,18 @@ robot SimBot {
 
 #[test]
 fn rejects_unknown_message_type_on_topic() {
-    // Rejects unknown message type on topic.
+    // Description:
+    //     Rejects unknown message type on topic.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::rejects_unknown_message_type_on_topic();
+
+    //     let result = spanda_core::communication::rejects_unknown_message_type_on_topic();
 
     let source = r#"
 robot BadBot {
@@ -498,19 +484,18 @@ robot BadBot {
 
 #[test]
 fn rejects_invalid_capability_target() {
-    // Rejects invalid capability target.
+    // Description:
+    //     Rejects invalid capability target.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Nothing.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     None.
     //
     // Example:
-    // let result = spanda_core::communication::rejects_invalid_capability_target();
+
+    //     let result = spanda_core::communication::rejects_invalid_capability_target();
 
     let source = r#"
 robot BadBot {

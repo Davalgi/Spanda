@@ -18,6 +18,23 @@ pub enum AdapterVerifySeverity {
 }
 
 fn missing_provides(expected: &AdapterMetadata, actual: &AdapterMetadata) -> Vec<String> {
+    // Description:
+    //     Missing provides.
+    //
+    // Inputs:
+    //     expected: &AdapterMetadata
+    //         Caller-supplied expected.
+    //     actual: &AdapterMetadata
+    //         Caller-supplied actual.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `missing_provides`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::missing_provides(expected, actual);
+
     expected
         .provides
         .iter()
@@ -27,6 +44,23 @@ fn missing_provides(expected: &AdapterMetadata, actual: &AdapterMetadata) -> Vec
 }
 
 fn missing_requires(expected: &AdapterMetadata, actual: &AdapterMetadata) -> Vec<String> {
+    // Description:
+    //     Missing requires.
+    //
+    // Inputs:
+    //     expected: &AdapterMetadata
+    //         Caller-supplied expected.
+    //     actual: &AdapterMetadata
+    //         Caller-supplied actual.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `missing_requires`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::missing_requires(expected, actual);
+
     expected
         .requires
         .iter()
@@ -40,20 +74,22 @@ pub fn verify_manifest_adapter(
     manifest: &PackageManifest,
     expected: &AdapterMetadata,
 ) -> Vec<AdapterVerifyIssue> {
-    // Check declared provides/requires against registry adapter metadata.
+    // Description:
+    //     Verify manifest adapter.
     //
-    // Parameters:
-    // - `manifest` — parsed package manifest
-    // - `expected` — registry metadata for the adapter family
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     expected: &AdapterMetadata
+    //         Caller-supplied expected.
     //
-    // Returns:
-    // Verification issues (pass/warning/error).
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<AdapterVerifyIssue>
+    //         Return value from `verify_manifest_adapter`.
     //
     // Example:
-    // let issues = verify_manifest_adapter(&manifest, &nav2_adapter_metadata());
+
+    //     let result = spanda_package::adapter_verify::verify_manifest_adapter(anifes, expected);
 
     let actual = &manifest.adapter;
     let mut issues = Vec::new();
@@ -117,7 +153,23 @@ pub fn verify_adapter_package(
     import_path: Option<&str>,
     package_name: Option<&str>,
 ) -> PackageResult<Vec<AdapterVerifyIssue>> {
-    // Resolve expected adapter metadata and validate the manifest adapter section.
+    // Description:
+    //     Verify adapter package.
+    //
+    // Inputs:
+    //     anifes: &PackageManifest
+    //         Caller-supplied anifes.
+    //     import_path: Option<&str>
+    //         Caller-supplied import path.
+    //     package_name: Option<&str>
+    //         Caller-supplied package name.
+    //
+    // Outputs:
+    //     result: PackageResult<Vec<AdapterVerifyIssue>>
+    //         Return value from `verify_adapter_package`.
+    //
+    // Example:
+    //     let result = spanda_package::adapter_verify::verify_adapter_package(anifes, import_path, package_name);
     let expected = import_path
         .and_then(adapter_metadata_for_import)
         .or_else(|| package_name.and_then(adapter_metadata_for_package))
@@ -131,6 +183,21 @@ pub fn verify_adapter_package(
 
 /// Return true when verification issues contain no errors.
 pub fn adapter_verify_ok(issues: &[AdapterVerifyIssue]) -> bool {
+    // Description:
+    //     Adapter verify ok.
+    //
+    // Inputs:
+    //     issues: &[AdapterVerifyIssue]
+    //         Caller-supplied issues.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `adapter_verify_ok`.
+    //
+    // Example:
+
+    //     let result = spanda_package::adapter_verify::adapter_verify_ok(issues);
+
     !issues
         .iter()
         .any(|issue| issue.severity == AdapterVerifySeverity::Error)

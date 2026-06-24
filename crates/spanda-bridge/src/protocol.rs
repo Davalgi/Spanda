@@ -39,21 +39,19 @@ pub struct BridgeResponse {
 }
 
 pub fn runtime_value_to_json(value: &RuntimeValue) -> serde_json::Value {
-    // Convert a [`RuntimeValue`] to JSON for bridge IPC.
+    // Description:
+    //     Runtime value to json.
     //
-    // Parameters:
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // - `value` — Runtime argument or result fragment.
-    //
-    // Returns:
-    //
-    // JSON value (numbers, bools, strings; opaque debug for other variants).
+    // Outputs:
+    //     result: serde_json::Value
+    //         Return value from `runtime_value_to_json`.
     //
     // Example:
-    //
-    // use spanda_bridge::protocol::runtime_value_to_json;
-    // use spanda_runtime::value::RuntimeValue;
-    // let json = runtime_value_to_json(&RuntimeValue::Bool { value: true });
+    //     let result = spanda_bridge::protocol::runtime_value_to_json(value);
 
     // assert_eq!(json, serde_json::json!(true));
     match value {
@@ -68,15 +66,21 @@ pub fn runtime_value_to_json(value: &RuntimeValue) -> serde_json::Value {
 }
 
 pub fn json_to_runtime_value(value: &serde_json::Value, return_type: &SpandaType) -> RuntimeValue {
-    // Convert bridge JSON back to a [`RuntimeValue`] using the declared return type.
+    // Description:
+    //     Json to runtime value.
     //
-    // Parameters:
+    // Inputs:
+    //     value: &serde_json::Value
+    //         Caller-supplied value.
+    //     return_type: &SpandaType
+    //         Caller-supplied return type.
     //
-    // - `value` — JSON result from the bridge.
-    // - `return_type` — Spanda type annotation for coercion.
+    // Outputs:
+    //     result: RuntimeValue
+    //         Return value from `json_to_runtime_value`.
     //
-    // Returns:
-    //
+    // Example:
+    //     let result = spanda_bridge::protocol::json_to_runtime_value(value, return_type);
 
     // Coerced [`RuntimeValue`] (defaults for missing fields).
     use spanda_ast::nodes::UnitKind;
@@ -112,27 +116,27 @@ pub fn call_subprocess_bridge(
     decl: &ExternFnDecl,
     args: &[RuntimeValue],
 ) -> Result<RuntimeValue, SpandaError> {
-    // Spawn a bridge executable, send a [`BridgeRequest`], and parse the response.
+    // Description:
+    //     Call subprocess bridge.
     //
-    // Parameters:
+    // Inputs:
+    //     bridge_label: &str
+    //         Caller-supplied bridge label.
+    //     executable: &Path
+    //         Caller-supplied executable.
+    //     extra_args: &[&str]
+    //         Caller-supplied extra args.
+    //     decl: &ExternFnDecl
+    //         Caller-supplied decl.
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // - `bridge_label` — Human label for error messages (`"Python"`, `"C++"`).
-    // - `executable` — Path to the bridge interpreter or binary.
-    // - `extra_args` — Additional argv entries (e.g. script path for Python).
-    // - `decl` — Extern declaration (name, return type, span for errors).
-    // - `args` — Runtime call arguments.
-    //
-    // Returns:
-    //
-    // Handler result as [`RuntimeValue`], or [`SpandaError`] on spawn/IO/JSON failure.
-    //
-    // Options:
-    //
-    // - Writes one JSON line to stdin and expects one JSON line on stdout.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `call_subprocess_bridge`.
     //
     // Example:
-    //
-    // use spanda_bridge::protocol::call_subprocess_bridge;
+    //     let result = spanda_bridge::protocol::call_subprocess_bridge(bridge_label, executable, extra_args, decl, args);
 
     // // Typically invoked via bridge::python::call_extern or bridge::cpp::call_extern.
     let line = decl.span.start.line;
@@ -205,19 +209,19 @@ pub fn call_subprocess_bridge(
 }
 
 fn bridge_timeout() -> Duration {
-    // Resolve subprocess bridge timeout from the environment.
+    // Description:
+    //     Bridge timeout.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Duration capped at one hour.
-    //
-    // Options:
-    // `SPANDA_BRIDGE_TIMEOUT_SECS` (default 30).
+    // Outputs:
+    //     result: Duration
+    //         Return value from `bridge_timeout`.
     //
     // Example:
-    // let timeout = bridge_timeout();
+
+    //     let result = spanda_bridge::protocol::bridge_timeout();
 
     let secs = std::env::var("SPANDA_BRIDGE_TIMEOUT_SECS")
         .ok()
@@ -232,21 +236,24 @@ fn wait_child_with_timeout(
     bridge_label: &str,
     line: u32,
 ) -> Result<std::process::Output, SpandaError> {
-    // Wait for a bridge child process, killing it on timeout.
+    // Description:
+    //     Wait child with timeout.
     //
-    // Parameters:
-    // - `child` — spawned bridge process
-    // - `bridge_label` — `"Python"` or `"C++"` for diagnostics
-    // - `line` — source line for error reporting
+    // Inputs:
+    //     child: Child
+    //         Caller-supplied child.
+    //     bridge_label: &str
+    //         Caller-supplied bridge label.
+    //     line: u32
+    //         Caller-supplied line.
     //
-    // Returns:
-    // Captured stdout/stderr on success.
-    //
-    // Options:
-    // Uses `bridge_timeout()`.
+    // Outputs:
+    //     result: Result<std::process::Output, SpandaError>
+    //         Return value from `wait_child_with_timeout`.
     //
     // Example:
-    // let output = wait_child_with_timeout(child, "Python", line)?;
+
+    //     let result = spanda_bridge::protocol::wait_child_with_timeout(child, bridge_label, line);
 
     let (tx, rx) = mpsc::channel();
     std::thread::spawn(move || {

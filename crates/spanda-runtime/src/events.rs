@@ -40,24 +40,18 @@ pub struct EventBus {
 
 impl EventBus {
     pub fn new() -> Self {
-        // Creates an empty event bus with no registered handlers.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
+        // Inputs:
+        //     None.
         //
-        // None.
-        //
-        // Returns:
-        //
-        // A new [`EventBus`] ready for [`Self::register`] calls.
-        //
-        // Options:
-        //
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        //
-        // use spanda_runtime::events::EventBus;
-        // let bus = EventBus::new();
+        //     let value = spanda_runtime::events::new();
 
         // assert!(bus.handler_body("any").is_none());
         Self {
@@ -66,49 +60,43 @@ impl EventBus {
     }
 
     pub fn register(&mut self, event: String, body: Vec<Stmt>) {
-        // Registers or replaces the handler body for an event name.
+        // Description:
+        //     Register.
         //
-        // Parameters:
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     even: String
+        //         Caller-supplied even.
+        //     body: Vec<Stmt>
+        //         Caller-supplied body.
         //
-        // * `event` — Declared event identifier (e.g. `"emergency_stop"`).
-        // * `body` — Statement block to execute when the event fires.
-        //
-        // Returns:
-        //
-        // Nothing; overwrites any prior handler for the same name.
-        //
-        // Options:
-        //
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        //
-        // use spanda_runtime::events::EventBus;
-        // let mut bus = EventBus::new();
+        //     let result = spanda_runtime::events::register(&mut self, even, body);
 
         // bus.register("tick".into(), vec![]);
         self.handlers.insert(event, body);
     }
 
     pub fn handler_body(&self, event: &str) -> Option<&[Stmt]> {
-        // Returns the handler statement slice for an event, if registered.
+        // Description:
+        //     Handler body.
         //
-        // Parameters:
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     even: &str
+        //         Caller-supplied even.
         //
-        // * `event` — Event name to look up.
-        //
-        // Returns:
-        //
-        // `Some` slice of handler [`Stmt`]s, or `None` when the event is unknown.
-        //
-        // Options:
-        //
-        // None.
+        // Outputs:
+        //     result: Option<&[Stmt]>
+        //         Return value from `handler_body`.
         //
         // Example:
-        //
-        // use spanda_runtime::events::EventBus;
-        // let bus = EventBus::new();
+        //     let result = spanda_runtime::events::handler_body(&self, even);
 
         // assert!(bus.handler_body("missing").is_none());
         self.handlers.get(event).map(|v| v.as_slice())
@@ -117,18 +105,18 @@ impl EventBus {
 
 impl Default for EventBus {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_runtime::events::default();
+        //     let result = spanda_runtime::events::default();
 
         // Build the result via new.
         Self::new()

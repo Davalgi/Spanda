@@ -7,19 +7,19 @@ use spanda_lexer::{unit_from_lexeme, Token, TokenType, TokenValue, UnitLexeme};
 use spanda_regex_lang::RegexPattern;
 
 pub fn parse(tokens: Vec<Token>) -> Result<Program, SpandaError> {
-    // Parse input.
+    // Description:
+    //     Parse.
     //
-    // Parameters:
-    // - `tokens` — input value
+    // Inputs:
+    //     okens: Vec<Token>
+    //         Caller-supplied okens.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<Program, SpandaError>
+    //         Return value from `parse`.
     //
     // Example:
-    // let result = spanda_core::parser::parse(tokens);
+    //     let result = spanda_parser::parse(okens);
 
     // Produce parse program as the result.
     Parser::new(tokens).parse_program()
@@ -35,19 +35,19 @@ type ContractClauses = (Option<Expr>, Option<Expr>, Option<Expr>);
 
 impl Parser {
     fn new(tokens: Vec<Token>) -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // - `tokens` — input value
+        // Inputs:
+        //     okens: Vec<Token>
+        //         Caller-supplied okens.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_core::parser::new(tokens);
+        //     let value = spanda_parser::new(okens);
 
         // Assemble the struct fields and return it.
         Self {
@@ -58,12 +58,58 @@ impl Parser {
     }
 
     fn take_doc(&mut self) -> Option<String> {
-        // Take accumulated doc comments for the next declaration.
+        // Description:
+
+        //     Take doc.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Option<String>
+
+        //         Return value from `take_doc`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::take_doc(&mut self);
         self.pending_doc.take()
     }
 
     fn accumulate_doc_comments(&mut self) {
-        // Merge consecutive `///` tokens into pending declaration docs.
+        // Description:
+
+        //     Accumulate doc comments.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     None.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::accumulate_doc_comments(&mut self);
         let mut lines = Vec::new();
         while self.check(TokenType::DocComment) {
             lines.push(self.advance().lexeme);
@@ -79,57 +125,57 @@ impl Parser {
     }
 
     fn peek(&self) -> &Token {
-        // Peek.
+        // Description:
+        //     Peek.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Token.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Token
+        //         Return value from `peek`.
         //
         // Example:
-        // let result = instance.peek();
+        //     let result = spanda_parser::peek(&self);
 
         // Return pos] from this handle.
         &self.tokens[self.pos]
     }
 
     fn previous(&self) -> &Token {
-        // Previous.
+        // Description:
+        //     Previous.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // &Token.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: &Token
+        //         Return value from `previous`.
         //
         // Example:
-        // let result = instance.previous();
+        //     let result = spanda_parser::previous(&self);
 
         // Return pos - 1] from this handle.
         &self.tokens[self.pos - 1]
     }
 
     fn advance(&mut self) -> Token {
-        // Advance.
+        // Description:
+        //     Advance.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Token.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Token
+        //         Return value from `advance`.
         //
         // Example:
-        // let result = instance.advance();
+        //     let result = spanda_parser::advance(&mut self);
 
         // take the branch when token type differs from Eof.
         if self.peek().token_type != TokenType::Eof {
@@ -139,40 +185,42 @@ impl Parser {
     }
 
     fn check(&self, ty: TokenType) -> bool {
-        // Check input.
+        // Description:
+        //     Check.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `ty` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     y: TokenType
+        //         Caller-supplied y.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `check`.
         //
         // Example:
-        // let result = instance.check(ty);
+        //     let result = spanda_parser::check(&self, y);
 
         // Call peek on the current instance.
         self.peek().token_type == ty
     }
 
     fn match_types(&mut self, types: &[TokenType]) -> bool {
-        // Match types.
+        // Description:
+        //     Match types.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `types` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     ypes: &[TokenType]
+        //         Caller-supplied ypes.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `match_types`.
         //
         // Example:
-        // let result = instance.match_types(types);
+        //     let result = spanda_parser::match_types(&mut self, ypes);
 
         // Process each type.
         for t in types {
@@ -186,21 +234,23 @@ impl Parser {
     }
 
     fn expect(&mut self, ty: TokenType, message: &str) -> Result<Token, SpandaError> {
-        // Expect.
+        // Description:
+        //     Expect.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `ty` — input value
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     y: TokenType
+        //         Caller-supplied y.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Token, SpandaError>
+        //         Return value from `expect`.
         //
         // Example:
-        // let result = instance.expect(ty, message);
+        //     let result = spanda_parser::expect(&mut self, y, essage);
 
         // take this path when self.check(ty).
         if self.check(ty) {
@@ -216,21 +266,23 @@ impl Parser {
     }
 
     fn span_from(&self, start: &Token, end: &Token) -> Span {
-        // Span from.
+        // Description:
+        //     Span from.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `start` — input value
-        // - `end` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     star: &Token
+        //         Caller-supplied star.
+        //     end: &Token
+        //         Caller-supplied end.
         //
-        // Returns:
-        // Span.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Span
+        //         Return value from `span_from`.
         //
         // Example:
-        // let result = instance.span_from(start, end);
+        //     let result = spanda_parser::span_from(&self, star, end);
 
         // End offset is exclusive so source slices include the full end token.
         let mut end_loc = loc(end);
@@ -242,20 +294,21 @@ impl Parser {
     }
 
     fn parse_binding_ident(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse binding ident.
+        // Description:
+        //     Parse binding ident.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_binding_ident`.
         //
         // Example:
-        // let result = instance.parse_binding_ident(message);
+        //     let result = spanda_parser::parse_binding_ident(&mut self, essage);
 
         // Compute t for the following logic.
         let t = self.peek();
@@ -311,20 +364,21 @@ impl Parser {
     }
 
     fn parse_label(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse label.
+        // Description:
+        //     Parse label.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_label`.
         //
         // Example:
-        // let result = instance.parse_label(message);
+        //     let result = spanda_parser::parse_label(&mut self, essage);
 
         // Compute t for the following logic.
         let t = self.peek();
@@ -387,20 +441,21 @@ impl Parser {
     }
 
     fn parse_hal_binding_name(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse hal binding name.
+        // Description:
+        //     Parse hal binding name.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_hal_binding_name`.
         //
         // Example:
-        // let result = instance.parse_hal_binding_name(message);
+        //     let result = spanda_parser::parse_hal_binding_name(&mut self, essage);
 
         // Compute t for the following logic.
         let t = self.peek();
@@ -433,20 +488,21 @@ impl Parser {
     }
 
     fn parse_type_name_part(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse type name part.
+        // Description:
+        //     Parse type name part.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_type_name_part`.
         //
         // Example:
-        // let result = instance.parse_type_name_part(message);
+        //     let result = spanda_parser::parse_type_name_part(&mut self, essage);
 
         // take this path when self.check(TokenType::Ident).
         if self.check(TokenType::Ident) {
@@ -456,19 +512,19 @@ impl Parser {
     }
 
     fn parse_type_name(&mut self) -> Result<String, SpandaError> {
-        // Parse type name.
+        // Description:
+        //     Parse type name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_type_name`.
         //
         // Example:
-        // let result = instance.parse_type_name();
+        //     let result = spanda_parser::parse_type_name(&mut self);
 
         // Create mutable name for accumulating results.
         let mut name = self.parse_type_name_part("Expected type name")?;
@@ -481,20 +537,21 @@ impl Parser {
     }
 
     fn finish_generic_type_name(&mut self, base: String) -> Result<String, SpandaError> {
-        // Finish generic type name.
+        // Description:
+        //     Finish generic type name.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `base` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     base: String
+        //         Caller-supplied base.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `finish_generic_type_name`.
         //
         // Example:
-        // let result = instance.finish_generic_type_name(base);
+        //     let result = spanda_parser::finish_generic_type_name(&mut self, base);
 
         // Call expect on the current instance.
         self.expect(TokenType::Lt, "Expected '<' to open generic type")?;
@@ -517,19 +574,19 @@ impl Parser {
     }
 
     fn parse_type_annotation(&mut self) -> Result<SpandaType, SpandaError> {
-        // Parse type annotation.
+        // Description:
+        //     Parse type annotation.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SpandaType, SpandaError>
+        //         Return value from `parse_type_annotation`.
         //
         // Example:
-        // let result = instance.parse_type_annotation();
+        //     let result = spanda_parser::parse_type_annotation(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_typecheck::type_system::{resolve_generic_type, resolve_type_name};
@@ -586,19 +643,19 @@ impl Parser {
     }
 
     fn parse_program(&mut self) -> Result<Program, SpandaError> {
-        // Parse program.
+        // Description:
+        //     Parse program.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Program, SpandaError>
+        //         Return value from `parse_program`.
         //
         // Example:
-        // let result = instance.parse_program();
+        //     let result = spanda_parser::parse_program(&mut self);
 
         // Compute start for the following logic.
         let start = self.peek().clone();
@@ -663,6 +720,7 @@ impl Parser {
                 self.accumulate_doc_comments();
                 continue;
             }
+
             // Take this path when self.is module fn start().
             if self.is_module_fn_start() {
                 functions.push(self.parse_module_fn()?);
@@ -793,19 +851,19 @@ impl Parser {
     }
 
     fn parse_hardware(&mut self) -> Result<HardwareDecl, SpandaError> {
-        // Parse hardware.
+        // Description:
+        //     Parse hardware.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<HardwareDecl, SpandaError>
+        //         Return value from `parse_hardware`.
         //
         // Example:
-        // let result = instance.parse_hardware();
+        //     let result = spanda_parser::parse_hardware(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::HardwareDecl;
@@ -975,20 +1033,21 @@ impl Parser {
     }
 
     fn parse_hardware_type_list(&mut self, kind: &str) -> Result<Vec<String>, SpandaError> {
-        // Parse hardware type list.
+        // Description:
+        //     Parse hardware type list.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `kind` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     kind: &str
+        //         Caller-supplied kind.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Vec<String>, SpandaError>
+        //         Return value from `parse_hardware_type_list`.
         //
         // Example:
-        // let result = instance.parse_hardware_type_list(kind);
+        //     let result = spanda_parser::parse_hardware_type_list(&mut self, kind);
 
         // Call expect on the current instance.
         self.expect(TokenType::Lbracket, &format!("Expected '[' after {kind}"))?;
@@ -1025,6 +1084,21 @@ impl Parser {
     fn parse_hardware_component(
         &mut self,
     ) -> Result<spanda_ast::foundations::HardwareComponentDecl, SpandaError> {
+        // Description:
+        //     Parse hardware component.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::HardwareComponentDecl, SpandaError>
+        //         Return value from `parse_hardware_component`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_hardware_component(&mut self);
+
         use spanda_ast::foundations::HardwareComponentDecl;
         let start = self.advance();
         let component_kind = start.lexeme.clone();
@@ -1072,6 +1146,21 @@ impl Parser {
     fn parse_kill_switch(
         &mut self,
     ) -> Result<spanda_ast::foundations::KillSwitchDecl, SpandaError> {
+        // Description:
+        //     Parse kill switch.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::KillSwitchDecl, SpandaError>
+        //         Return value from `parse_kill_switch`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_kill_switch(&mut self);
+
         use spanda_ast::foundations::KillSwitchDecl;
         let start = self.advance();
         let name = self.parse_label("Expected kill switch name")?;
@@ -1128,6 +1217,21 @@ impl Parser {
     fn parse_health_check(
         &mut self,
     ) -> Result<spanda_ast::foundations::HealthCheckDecl, SpandaError> {
+        // Description:
+        //     Parse health check.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::HealthCheckDecl, SpandaError>
+        //         Return value from `parse_health_check`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_health_check(&mut self);
+
         use spanda_ast::foundations::{HealthCheckCondition, HealthCheckDecl};
         let start = self.advance();
         let name = self.parse_label("Expected health check name")?;
@@ -1208,6 +1312,21 @@ impl Parser {
     fn parse_health_policy(
         &mut self,
     ) -> Result<spanda_ast::foundations::HealthPolicyDecl, SpandaError> {
+        // Description:
+        //     Parse health policy.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::HealthPolicyDecl, SpandaError>
+        //         Return value from `parse_health_policy`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_health_policy(&mut self);
+
         use spanda_ast::foundations::HealthPolicyDecl;
         let start = self.advance();
         let name = self.parse_label("Expected health policy name")?;
@@ -1241,6 +1360,21 @@ impl Parser {
     fn parse_requires_capability(
         &mut self,
     ) -> Result<spanda_ast::foundations::RequiresCapabilityDecl, SpandaError> {
+        // Description:
+        //     Parse requires capability.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::RequiresCapabilityDecl, SpandaError>
+        //         Return value from `parse_requires_capability`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_requires_capability(&mut self);
+
         use spanda_ast::foundations::{RequiresCapabilityDecl, RequiresCapabilitySeverity};
         let start = self.advance();
         let capability = self.parse_label("Expected capability name")?;
@@ -1315,19 +1449,19 @@ impl Parser {
     }
 
     fn parse_storage_amount(&mut self) -> Result<f64, SpandaError> {
-        // Parse storage amount.
+        // Description:
+        //     Parse storage amount.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_storage_amount`.
         //
         // Example:
-        // let result = instance.parse_storage_amount();
+        //     let result = spanda_parser::parse_storage_amount(&mut self);
 
         // Compute the value consumed by the next step.
         let value = self.parse_number_value()?;
@@ -1358,6 +1492,21 @@ impl Parser {
     }
 
     fn parse_signed_number_value(&mut self) -> Result<f64, SpandaError> {
+        // Description:
+        //     Parse signed number value.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_signed_number_value`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_signed_number_value(&mut self);
+
         let mut sign = 1.0;
         if self.match_types(&[TokenType::Minus]) {
             sign = -1.0;
@@ -1366,6 +1515,23 @@ impl Parser {
     }
 
     fn parse_connectivity_link(&mut self, message: &str) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse connectivity link.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_connectivity_link`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_connectivity_link(&mut self, essage);
+
         let t = self.peek();
         let name = match t.token_type {
             TokenType::Ident => self.advance().lexeme.clone(),
@@ -1389,23 +1555,38 @@ impl Parser {
     }
 
     fn parse_trigger_domain(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse trigger domain.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_trigger_domain`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_trigger_domain(&mut self);
+
         self.parse_connectivity_link("Expected trigger domain name")
     }
 
     fn parse_number_value(&mut self) -> Result<f64, SpandaError> {
-        // Parse number value.
+        // Description:
+        //     Parse number value.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_number_value`.
         //
         // Example:
-        // let result = instance.parse_number_value();
+        //     let result = spanda_parser::parse_number_value(&mut self);
 
         // Compute tok for the following logic.
         let tok = self.expect(TokenType::Number, "Expected number")?;
@@ -1422,19 +1603,19 @@ impl Parser {
     }
 
     fn parse_deploy(&mut self) -> Result<DeployDecl, SpandaError> {
-        // Parse deploy.
+        // Description:
+        //     Parse deploy.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<DeployDecl, SpandaError>
+        //         Return value from `parse_deploy`.
         //
         // Example:
-        // let result = instance.parse_deploy();
+        //     let result = spanda_parser::parse_deploy(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::DeployDecl;
@@ -1471,19 +1652,19 @@ impl Parser {
     }
 
     fn parse_network_amount(&mut self) -> Result<f64, SpandaError> {
-        // Parse network amount.
+        // Description:
+        //     Parse network amount.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_network_amount`.
         //
         // Example:
-        // let result = instance.parse_network_amount();
+        //     let result = spanda_parser::parse_network_amount(&mut self);
 
         // Compute the value consumed by the next step.
         let value = self.parse_number_value()?;
@@ -1510,19 +1691,19 @@ impl Parser {
     fn parse_requires_hardware(
         &mut self,
     ) -> Result<spanda_ast::foundations::RequiresHardwareDecl, SpandaError> {
-        // Parse requires hardware.
+        // Description:
+        //     Parse requires hardware.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::RequiresHardwareDecl, SpandaError>
+        //         Return value from `parse_requires_hardware`.
         //
         // Example:
-        // let result = instance.parse_requires_hardware();
+        //     let result = spanda_parser::parse_requires_hardware(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::RequiresHardwareDecl;
@@ -1612,19 +1793,19 @@ impl Parser {
     fn parse_requires_network(
         &mut self,
     ) -> Result<spanda_ast::foundations::RequiresNetworkDecl, SpandaError> {
-        // Parse requires network.
+        // Description:
+        //     Parse requires network.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::RequiresNetworkDecl, SpandaError>
+        //         Return value from `parse_requires_network`.
         //
         // Example:
-        // let result = instance.parse_requires_network();
+        //     let result = spanda_parser::parse_requires_network(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::RequiresNetworkDecl;
@@ -1670,6 +1851,21 @@ impl Parser {
     fn parse_requires_connectivity(
         &mut self,
     ) -> Result<spanda_ast::foundations::RequiresConnectivityDecl, SpandaError> {
+        // Description:
+        //     Parse requires connectivity.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::RequiresConnectivityDecl, SpandaError>
+        //         Return value from `parse_requires_connectivity`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_requires_connectivity(&mut self);
+
         use spanda_ast::foundations::RequiresConnectivityDecl;
         use spanda_connectivity_runtime::ConnectivityRequirement;
         let start = self.advance();
@@ -1744,6 +1940,21 @@ impl Parser {
     }
 
     fn parse_geofence(&mut self) -> Result<spanda_ast::foundations::GeofenceDecl, SpandaError> {
+        // Description:
+        //     Parse geofence.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::GeofenceDecl, SpandaError>
+        //         Return value from `parse_geofence`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_geofence(&mut self);
+
         use spanda_ast::foundations::GeofenceDecl;
         let start = self.advance();
         let name = self
@@ -1794,6 +2005,21 @@ impl Parser {
     fn parse_connectivity_policy(
         &mut self,
     ) -> Result<spanda_ast::foundations::ConnectivityPolicyDecl, SpandaError> {
+        // Description:
+        //     Parse connectivity policy.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::ConnectivityPolicyDecl, SpandaError>
+        //         Return value from `parse_connectivity_policy`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_connectivity_policy(&mut self);
+
         use spanda_ast::foundations::ConnectivityPolicyDecl;
         let start = self.advance();
         let name = self
@@ -1867,6 +2093,21 @@ impl Parser {
     fn parse_ble_service(
         &mut self,
     ) -> Result<spanda_ast::foundations::BleServiceDecl, SpandaError> {
+        // Description:
+        //     Parse ble service.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::BleServiceDecl, SpandaError>
+        //         Return value from `parse_ble_service`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_ble_service(&mut self);
+
         use spanda_ast::foundations::BleServiceDecl;
         let start = self.advance();
         let name = self
@@ -1901,6 +2142,21 @@ impl Parser {
     fn parse_bluetooth_config(
         &mut self,
     ) -> Result<spanda_ast::foundations::BluetoothConfigDecl, SpandaError> {
+        // Description:
+        //     Parse bluetooth config.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::BluetoothConfigDecl, SpandaError>
+        //         Return value from `parse_bluetooth_config`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_bluetooth_config(&mut self);
+
         use spanda_ast::foundations::BluetoothConfigDecl;
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after bluetooth")?;
@@ -1944,19 +2200,19 @@ impl Parser {
     fn parse_simulate_compatibility(
         &mut self,
     ) -> Result<spanda_ast::foundations::SimulateCompatibilityDecl, SpandaError> {
-        // Parse simulate compatibility.
+        // Description:
+        //     Parse simulate compatibility.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::SimulateCompatibilityDecl, SpandaError>
+        //         Return value from `parse_simulate_compatibility`.
         //
         // Example:
-        // let result = instance.parse_simulate_compatibility();
+        //     let result = spanda_parser::parse_simulate_compatibility(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::{SimFaultDecl, SimulateCompatibilityDecl};
@@ -2035,19 +2291,19 @@ impl Parser {
     }
 
     fn parse_mission(&mut self) -> Result<spanda_ast::foundations::MissionDecl, SpandaError> {
-        // Parse mission.
+        // Description:
+        //     Parse mission.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::MissionDecl, SpandaError>
+        //         Return value from `parse_mission`.
         //
         // Example:
-        // let result = instance.parse_mission();
+        //     let result = spanda_parser::parse_mission(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::MissionDecl;
@@ -2139,19 +2395,20 @@ impl Parser {
     }
 
     fn parse_fleet(&mut self) -> Result<spanda_ast::robotics_decl::FleetDecl, SpandaError> {
-        // Parse fleet.
+        // Description:
+        //     Parse fleet.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::robotics_decl::FleetDecl, SpandaError>
+        //         Return value from `parse_fleet`.
         //
         // Example:
-        // let result = instance.parse_fleet();
+
+        //     let result = spanda_parser::parse_fleet(&mut self);
 
         use spanda_ast::robotics_decl::FleetDecl;
         let start = self.advance();
@@ -2176,7 +2433,31 @@ impl Parser {
     }
 
     fn parse_swarm(&mut self) -> Result<spanda_ast::robotics_decl::SwarmDecl, SpandaError> {
-        // Parse a program-level swarm coordinator declaration.
+        // Description:
+
+        //     Parse swarm.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<spanda_ast::robotics_decl::SwarmDecl, SpandaError>
+
+        //         Return value from `parse_swarm`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_swarm(&mut self);
         use spanda_ast::robotics_decl::{SwarmDecl, SwarmPolicy};
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected swarm name")?.lexeme;
@@ -2234,19 +2515,20 @@ impl Parser {
     fn parse_program_safety_zone(
         &mut self,
     ) -> Result<spanda_ast::robotics_decl::ProgramSafetyZoneDecl, SpandaError> {
-        // Parse program safety zone.
+        // Description:
+        //     Parse program safety zone.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::robotics_decl::ProgramSafetyZoneDecl, SpandaError>
+        //         Return value from `parse_program_safety_zone`.
         //
         // Example:
-        // let result = instance.parse_program_safety_zone();
+
+        //     let result = spanda_parser::parse_program_safety_zone(&mut self);
 
         use spanda_ast::robotics_decl::ProgramSafetyZoneDecl;
         let start = self.advance();
@@ -2280,7 +2562,31 @@ impl Parser {
     }
 
     fn parse_certify(&mut self) -> Result<spanda_ast::robotics_decl::CertifyDecl, SpandaError> {
-        // Parse program-level certification metadata.
+        // Description:
+
+        //     Parse certify.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<spanda_ast::robotics_decl::CertifyDecl, SpandaError>
+
+        //         Return value from `parse_certify`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_certify(&mut self);
         use spanda_ast::robotics_decl::{CertificationStandard, CertifyDecl};
         let start = self.advance();
         let standard_name = self
@@ -2340,7 +2646,35 @@ impl Parser {
     }
 
     fn expr_to_mps(&self, expr: &Expr) -> Result<f64, SpandaError> {
-        // Convert a max_speed expression to meters per second.
+        // Description:
+
+        //     Expr to mps.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     expr: &Expr
+
+        //         Caller-supplied expr.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<f64, SpandaError>
+
+        //         Return value from `expr_to_mps`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::expr_to_mps(&self, expr);
         if let Expr::UnitLiteralExpr { value, unit, span } = expr {
             let mps = match unit {
                 UnitKind::MPerS => *value,
@@ -2381,19 +2715,19 @@ impl Parser {
     }
 
     fn parse_duration_hours(&mut self) -> Result<f64, SpandaError> {
-        // Parse duration hours.
+        // Description:
+        //     Parse duration hours.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_duration_hours`.
         //
         // Example:
-        // let result = instance.parse_duration_hours();
+        //     let result = spanda_parser::parse_duration_hours(&mut self);
 
         // take this path when self.check(TokenType::UnitLiteral).
         if self.check(TokenType::UnitLiteral) {
@@ -2438,20 +2772,21 @@ impl Parser {
     }
 
     fn duration_to_hours(value: f64, unit: UnitKind) -> f64 {
-        // Duration to hours.
+        // Description:
+        //     Duration to hours.
         //
-        // Parameters:
-        // - `value` — input value
-        // - `unit` — input value
+        // Inputs:
+        //     value: f64
+        //         Caller-supplied value.
+        //     ni: UnitKind
+        //         Caller-supplied ni.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: f64
+        //         Return value from `duration_to_hours`.
         //
         // Example:
-        // let result = spanda_core::parser::duration_to_hours(value, unit);
+        //     let result = spanda_parser::duration_to_hours(value, ni);
 
         // Match on unit and handle each case.
         match unit {
@@ -2465,19 +2800,19 @@ impl Parser {
     }
 
     fn parse_energy_wh_value(&mut self) -> Result<f64, SpandaError> {
-        // Parse energy wh value.
+        // Description:
+        //     Parse energy wh value.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_energy_wh_value`.
         //
         // Example:
-        // let result = instance.parse_energy_wh_value();
+        //     let result = spanda_parser::parse_energy_wh_value(&mut self);
 
         // take this path when self.check(TokenType::UnitLiteral).
         if self.check(TokenType::UnitLiteral) {
@@ -2516,19 +2851,19 @@ impl Parser {
     }
 
     fn parse_budget(&mut self) -> Result<spanda_ast::foundations::ResourceBudgetDecl, SpandaError> {
-        // Parse budget.
+        // Description:
+        //     Parse budget.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::ResourceBudgetDecl, SpandaError>
+        //         Return value from `parse_budget`.
         //
         // Example:
-        // let result = instance.parse_budget();
+        //     let result = spanda_parser::parse_budget(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::ResourceBudgetDecl;
@@ -2590,19 +2925,19 @@ impl Parser {
     }
 
     fn parse_percent_value(&mut self) -> Result<f64, SpandaError> {
-        // Parse percent value.
+        // Description:
+        //     Parse percent value.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_percent_value`.
         //
         // Example:
-        // let result = instance.parse_percent_value();
+        //     let result = spanda_parser::parse_percent_value(&mut self);
 
         // Compute the value consumed by the next step.
         let value = self.parse_number_value()?;
@@ -2616,20 +2951,21 @@ impl Parser {
     }
 
     fn parse_dotted_name(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse dotted name.
+        // Description:
+        //     Parse dotted name.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_dotted_name`.
         //
         // Example:
-        // let result = instance.parse_dotted_name(message);
+        //     let result = spanda_parser::parse_dotted_name(&mut self, essage);
 
         // Create mutable parts for accumulating results.
         let mut parts = vec![self.parse_import_segment(message)?];
@@ -2642,19 +2978,19 @@ impl Parser {
     }
 
     fn parse_import(&mut self) -> Result<ImportDecl, SpandaError> {
-        // Parse import.
+        // Description:
+        //     Parse import.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ImportDecl, SpandaError>
+        //         Return value from `parse_import`.
         //
         // Example:
-        // let result = instance.parse_import();
+        //     let result = spanda_parser::parse_import(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -2669,20 +3005,21 @@ impl Parser {
     }
 
     fn parse_import_segment(&mut self, message: &str) -> Result<String, SpandaError> {
-        // Parse import segment.
+        // Description:
+        //     Parse import segment.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_import_segment`.
         //
         // Example:
-        // let result = instance.parse_import_segment(message);
+        //     let result = spanda_parser::parse_import_segment(&mut self, essage);
 
         // take this path when self.check(TokenType::Ident).
         if self.check(TokenType::Ident) {
@@ -2705,18 +3042,19 @@ impl Parser {
     }
 
     fn is_module_fn_start(&self) -> bool {
+        // Description:
+        //     Is module fn start.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_module_fn_start`.
         //
         // Example:
-        // let result = instance.is_module_fn_start();
+        //     let result = spanda_parser::is_module_fn_start(&self);
 
         // Call check on the current instance.
         self.check(TokenType::Export)
@@ -2727,19 +3065,19 @@ impl Parser {
     }
 
     fn parse_type_params(&mut self) -> Result<Vec<String>, SpandaError> {
-        // Parse type params.
+        // Description:
+        //     Parse type params.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Vec<String>, SpandaError>
+        //         Return value from `parse_type_params`.
         //
         // Example:
-        // let result = instance.parse_type_params();
+        //     let result = spanda_parser::parse_type_params(&mut self);
 
         // take the branch when Lt]) is false.
         if !self.match_types(&[TokenType::Lt]) {
@@ -2761,19 +3099,19 @@ impl Parser {
     }
 
     fn parse_module_fn(&mut self) -> Result<spanda_ast::foundations::ModuleFnDecl, SpandaError> {
-        // Parse module fn.
+        // Description:
+        //     Parse module fn.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::ModuleFnDecl, SpandaError>
+        //         Return value from `parse_module_fn`.
         //
         // Example:
-        // let result = instance.parse_module_fn();
+        //     let result = spanda_parser::parse_module_fn(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::{ModuleFnDecl, ModuleParamDecl, Visibility};
@@ -2835,19 +3173,19 @@ impl Parser {
     }
 
     fn parse_extern_fn(&mut self) -> Result<spanda_ast::foundations::ExternFnDecl, SpandaError> {
-        // Parse extern fn.
+        // Description:
+        //     Parse extern fn.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::ExternFnDecl, SpandaError>
+        //         Return value from `parse_extern_fn`.
         //
         // Example:
-        // let result = instance.parse_extern_fn();
+        //     let result = spanda_parser::parse_extern_fn(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::{BridgeKind, ExternFnDecl, ModuleParamDecl};
@@ -2920,19 +3258,19 @@ impl Parser {
     }
 
     fn parse_test(&mut self) -> Result<spanda_ast::foundations::TestDecl, SpandaError> {
-        // Parse test.
+        // Description:
+        //     Parse test.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::TestDecl, SpandaError>
+        //         Return value from `parse_test`.
         //
         // Example:
-        // let result = instance.parse_test();
+        //     let result = spanda_parser::parse_test(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::TestDecl;
@@ -2956,19 +3294,19 @@ impl Parser {
     }
 
     fn parse_struct(&mut self) -> Result<StructDecl, SpandaError> {
-        // Parse struct.
+        // Description:
+        //     Parse struct.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<StructDecl, SpandaError>
+        //         Return value from `parse_struct`.
         //
         // Example:
-        // let result = instance.parse_struct();
+        //     let result = spanda_parser::parse_struct(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3005,19 +3343,19 @@ impl Parser {
     }
 
     fn parse_enum(&mut self) -> Result<EnumDecl, SpandaError> {
-        // Parse enum.
+        // Description:
+        //     Parse enum.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<EnumDecl, SpandaError>
+        //         Return value from `parse_enum`.
         //
         // Example:
-        // let result = instance.parse_enum();
+        //     let result = spanda_parser::parse_enum(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3065,19 +3403,19 @@ impl Parser {
     }
 
     fn parse_trait(&mut self) -> Result<TraitDecl, SpandaError> {
-        // Parse trait.
+        // Description:
+        //     Parse trait.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TraitDecl, SpandaError>
+        //         Return value from `parse_trait`.
         //
         // Example:
-        // let result = instance.parse_trait();
+        //     let result = spanda_parser::parse_trait(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3099,19 +3437,19 @@ impl Parser {
     }
 
     fn parse_trait_method(&mut self) -> Result<TraitMethodDecl, SpandaError> {
-        // Parse trait method.
+        // Description:
+        //     Parse trait method.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TraitMethodDecl, SpandaError>
+        //         Return value from `parse_trait_method`.
         //
         // Example:
-        // let result = instance.parse_trait_method();
+        //     let result = spanda_parser::parse_trait_method(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // fn
@@ -3155,38 +3493,40 @@ impl Parser {
     }
 
     fn is_robot_member_keyword(&self, kw: &str) -> bool {
+        // Description:
+        //     Is robot member keyword.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `kw` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     kw: &str
+        //         Caller-supplied kw.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_robot_member_keyword`.
         //
         // Example:
-        // let result = instance.is_robot_member_keyword(kw);
+        //     let result = spanda_parser::is_robot_member_keyword(&self, kw);
 
         // Call check on the current instance.
         self.check(TokenType::Ident) && self.peek().lexeme == kw
     }
 
     fn parse_robot(&mut self) -> Result<RobotDecl, SpandaError> {
-        // Parse robot.
+        // Description:
+        //     Parse robot.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RobotDecl, SpandaError>
+        //         Return value from `parse_robot`.
         //
         // Example:
-        // let result = instance.parse_robot();
+        //     let result = spanda_parser::parse_robot(&mut self);
 
         // Compute start for the following logic.
         let start = self.expect(TokenType::Robot, "Expected 'robot'")?;
@@ -3458,18 +3798,19 @@ impl Parser {
     }
 
     fn is_agent_shorthand(&mut self) -> bool {
+        // Description:
+        //     Is agent shorthand.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_agent_shorthand`.
         //
         // Example:
-        // let result = instance.is_agent_shorthand();
+        //     let result = spanda_parser::is_agent_shorthand(&mut self);
 
         // Create mutable idx for accumulating results.
         let mut idx = self.pos + 1;
@@ -3488,18 +3829,19 @@ impl Parser {
     }
 
     fn is_agent_channel(&self) -> bool {
+        // Description:
+        //     Is agent channel.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_agent_channel`.
         //
         // Example:
-        // let result = instance.is_agent_channel();
+        //     let result = spanda_parser::is_agent_channel(&self);
 
         // Compute idx for the following logic.
         let idx = self.pos;
@@ -3510,20 +3852,21 @@ impl Parser {
     }
 
     fn parse_agent_shorthand(&mut self, agents: &mut Vec<AgentDecl>) -> Result<(), SpandaError> {
-        // Parse agent shorthand.
+        // Description:
+        //     Parse agent shorthand.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `agents` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     agents: &mut Vec<AgentDecl>
+        //         Caller-supplied agents.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<(), SpandaError>
+        //         Return value from `parse_agent_shorthand`.
         //
         // Example:
-        // let result = instance.parse_agent_shorthand(agents);
+        //     let result = spanda_parser::parse_agent_shorthand(&mut self, agents);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3546,6 +3889,21 @@ impl Parser {
     }
 
     fn parse_bus(&mut self) -> Result<spanda_ast::comm_decl::BusDecl, SpandaError> {
+        // Description:
+        //     Parse bus.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::BusDecl, SpandaError>
+        //         Return value from `parse_bus`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_bus(&mut self);
+
         use spanda_ast::comm_decl::{BusDecl, TransportKind};
         let start = self.advance();
         let bus_name = self.expect(TokenType::Ident, "Expected bus name")?;
@@ -3628,19 +3986,19 @@ impl Parser {
     }
 
     fn parse_peer_robot(&mut self) -> Result<spanda_ast::comm_decl::PeerRobotDecl, SpandaError> {
-        // Parse peer robot.
+        // Description:
+        //     Parse peer robot.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::PeerRobotDecl, SpandaError>
+        //         Return value from `parse_peer_robot`.
         //
         // Example:
-        // let result = instance.parse_peer_robot();
+        //     let result = spanda_parser::parse_peer_robot(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::PeerRobotDecl;
@@ -3654,19 +4012,19 @@ impl Parser {
     }
 
     fn parse_device(&mut self) -> Result<spanda_ast::comm_decl::DeviceDecl, SpandaError> {
-        // Parse device.
+        // Description:
+        //     Parse device.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::DeviceDecl, SpandaError>
+        //         Return value from `parse_device`.
         //
         // Example:
-        // let result = instance.parse_device();
+        //     let result = spanda_parser::parse_device(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::DeviceDecl;
@@ -3688,19 +4046,19 @@ impl Parser {
     fn parse_agent_channel(
         &mut self,
     ) -> Result<spanda_ast::comm_decl::AgentChannelDecl, SpandaError> {
-        // Parse agent channel.
+        // Description:
+        //     Parse agent channel.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::AgentChannelDecl, SpandaError>
+        //         Return value from `parse_agent_channel`.
         //
         // Example:
-        // let result = instance.parse_agent_channel();
+        //     let result = spanda_parser::parse_agent_channel(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::AgentChannelDecl;
@@ -3728,18 +4086,19 @@ impl Parser {
     }
 
     fn is_twin_sync(&self) -> bool {
+        // Description:
+        //     Is twin sync.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_twin_sync`.
         //
         // Example:
-        // let result = instance.is_twin_sync();
+        //     let result = spanda_parser::is_twin_sync(&self);
 
         // Compute idx for the following logic.
         let idx = self.pos + 1;
@@ -3750,19 +4109,19 @@ impl Parser {
 
     #[allow(dead_code)]
     fn parse_twin_sync(&mut self) -> Result<spanda_ast::comm_decl::TwinSyncDecl, SpandaError> {
-        // Parse twin sync.
+        // Description:
+        //     Parse twin sync.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::TwinSyncDecl, SpandaError>
+        //         Return value from `parse_twin_sync`.
         //
         // Example:
-        // let result = instance.parse_twin_sync();
+        //     let result = spanda_parser::parse_twin_sync(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::TwinSyncDecl;
@@ -3815,19 +4174,19 @@ impl Parser {
     }
 
     fn parse_trait_impl(&mut self) -> Result<spanda_ast::foundations::TraitImplDecl, SpandaError> {
-        // Parse trait impl.
+        // Description:
+        //     Parse trait impl.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::TraitImplDecl, SpandaError>
+        //         Return value from `parse_trait_impl`.
         //
         // Example:
-        // let result = instance.parse_trait_impl();
+        //     let result = spanda_parser::parse_trait_impl(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::TraitImplDecl;
@@ -3854,19 +4213,19 @@ impl Parser {
     fn parse_trait_impl_method(
         &mut self,
     ) -> Result<spanda_ast::foundations::TraitImplMethodDecl, SpandaError> {
-        // Parse trait impl method.
+        // Description:
+        //     Parse trait impl method.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::TraitImplMethodDecl, SpandaError>
+        //         Return value from `parse_trait_impl_method`.
         //
         // Example:
-        // let result = instance.parse_trait_impl_method();
+        //     let result = spanda_parser::parse_trait_impl_method(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::TraitImplMethodDecl;
@@ -3921,19 +4280,19 @@ impl Parser {
     }
 
     fn parse_soc(&mut self) -> Result<SocDecl, SpandaError> {
-        // Parse soc.
+        // Description:
+        //     Parse soc.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SocDecl, SpandaError>
+        //         Return value from `parse_soc`.
         //
         // Example:
-        // let result = instance.parse_soc();
+        //     let result = spanda_parser::parse_soc(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3946,19 +4305,19 @@ impl Parser {
     }
 
     fn parse_hal(&mut self) -> Result<HalBlock, SpandaError> {
-        // Parse hal.
+        // Description:
+        //     Parse hal.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<HalBlock, SpandaError>
+        //         Return value from `parse_hal`.
         //
         // Example:
-        // let result = instance.parse_hal();
+        //     let result = spanda_parser::parse_hal(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -3977,19 +4336,19 @@ impl Parser {
     }
 
     fn parse_hal_member(&mut self) -> Result<HalMemberDecl, SpandaError> {
-        // Parse hal member.
+        // Description:
+        //     Parse hal member.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<HalMemberDecl, SpandaError>
+        //         Return value from `parse_hal_member`.
         //
         // Example:
-        // let result = instance.parse_hal_member();
+        //     let result = spanda_parser::parse_hal_member(&mut self);
 
         // Compute start for the following logic.
         let start = self.peek().clone();
@@ -4105,19 +4464,19 @@ impl Parser {
     }
 
     fn parse_frequency_hz(&mut self) -> Result<f64, SpandaError> {
-        // Parse frequency hz.
+        // Description:
+        //     Parse frequency hz.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_frequency_hz`.
         //
         // Example:
-        // let result = instance.parse_frequency_hz();
+        //     let result = spanda_parser::parse_frequency_hz(&mut self);
 
         // Compute tok for the following logic.
         let tok = self.peek().clone();
@@ -4146,19 +4505,19 @@ impl Parser {
     }
 
     fn parse_message(&mut self) -> Result<spanda_ast::comm_decl::MessageDecl, SpandaError> {
-        // Parse message.
+        // Description:
+        //     Parse message.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::MessageDecl, SpandaError>
+        //         Return value from `parse_message`.
         //
         // Example:
-        // let result = instance.parse_message();
+        //     let result = spanda_parser::parse_message(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::MessageDecl;
@@ -4199,19 +4558,19 @@ impl Parser {
     }
 
     fn parse_qos_block(&mut self) -> Result<spanda_ast::comm_decl::QosDecl, SpandaError> {
-        // Parse qos block.
+        // Description:
+        //     Parse qos block.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::QosDecl, SpandaError>
+        //         Return value from `parse_qos_block`.
         //
         // Example:
-        // let result = instance.parse_qos_block();
+        //     let result = spanda_parser::parse_qos_block(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::{QosDecl, QosReliability};
@@ -4265,19 +4624,19 @@ impl Parser {
     }
 
     fn parse_node(&mut self) -> Result<NodeDecl, SpandaError> {
-        // Parse node.
+        // Description:
+        //     Parse node.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<NodeDecl, SpandaError>
+        //         Return value from `parse_node`.
         //
         // Example:
-        // let result = instance.parse_node();
+        //     let result = spanda_parser::parse_node(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4299,19 +4658,19 @@ impl Parser {
     }
 
     fn parse_topic(&mut self) -> Result<TopicDecl, SpandaError> {
-        // Parse topic.
+        // Description:
+        //     Parse topic.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TopicDecl, SpandaError>
+        //         Return value from `parse_topic`.
         //
         // Example:
-        // let result = instance.parse_topic();
+        //     let result = spanda_parser::parse_topic(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::{TopicRole, TransportKind};
@@ -4397,19 +4756,19 @@ impl Parser {
     }
 
     fn parse_service(&mut self) -> Result<ServiceDecl, SpandaError> {
-        // Parse service.
+        // Description:
+        //     Parse service.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ServiceDecl, SpandaError>
+        //         Return value from `parse_service`.
         //
         // Example:
-        // let result = instance.parse_service();
+        //     let result = spanda_parser::parse_service(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4491,19 +4850,19 @@ impl Parser {
     }
 
     fn parse_action(&mut self) -> Result<ActionDecl, SpandaError> {
-        // Parse action.
+        // Description:
+        //     Parse action.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ActionDecl, SpandaError>
+        //         Return value from `parse_action`.
         //
         // Example:
-        // let result = instance.parse_action();
+        //     let result = spanda_parser::parse_action(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4589,19 +4948,19 @@ impl Parser {
     }
 
     fn parse_sensor(&mut self) -> Result<SensorDecl, SpandaError> {
-        // Parse sensor.
+        // Description:
+        //     Parse sensor.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SensorDecl, SpandaError>
+        //         Return value from `parse_sensor`.
         //
         // Example:
-        // let result = instance.parse_sensor();
+        //     let result = spanda_parser::parse_sensor(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4646,19 +5005,19 @@ impl Parser {
     }
 
     fn parse_actuator(&mut self) -> Result<ActuatorDecl, SpandaError> {
-        // Parse actuator.
+        // Description:
+        //     Parse actuator.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ActuatorDecl, SpandaError>
+        //         Return value from `parse_actuator`.
         //
         // Example:
-        // let result = instance.parse_actuator();
+        //     let result = spanda_parser::parse_actuator(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4677,19 +5036,19 @@ impl Parser {
     }
 
     fn parse_safety(&mut self) -> Result<SafetyBlock, SpandaError> {
-        // Parse safety.
+        // Description:
+        //     Parse safety.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SafetyBlock, SpandaError>
+        //         Return value from `parse_safety`.
         //
         // Example:
-        // let result = instance.parse_safety();
+        //     let result = spanda_parser::parse_safety(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4724,19 +5083,19 @@ impl Parser {
     }
 
     fn parse_verify(&mut self) -> Result<spanda_ast::foundations::VerifyDecl, SpandaError> {
-        // Parse verify.
+        // Description:
+        //     Parse verify.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::VerifyDecl, SpandaError>
+        //         Return value from `parse_verify`.
         //
         // Example:
-        // let result = instance.parse_verify();
+        //     let result = spanda_parser::parse_verify(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::VerifyDecl;
@@ -4764,19 +5123,19 @@ impl Parser {
     }
 
     fn parse_observe(&mut self) -> Result<spanda_ast::foundations::ObserveDecl, SpandaError> {
-        // Parse observe.
+        // Description:
+        //     Parse observe.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::ObserveDecl, SpandaError>
+        //         Return value from `parse_observe`.
         //
         // Example:
-        // let result = instance.parse_observe();
+        //     let result = spanda_parser::parse_observe(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::ObserveDecl;
@@ -4800,19 +5159,20 @@ impl Parser {
     fn parse_world_model(
         &mut self,
     ) -> Result<spanda_ast::foundations::WorldModelDecl, SpandaError> {
-        // Parse world_model block on a robot declaration.
+        // Description:
+        //     Parse world model.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Parsed world-model declaration.
-        //
-        // Options:
-        // Empty blocks default to enabled.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::WorldModelDecl, SpandaError>
+        //         Return value from `parse_world_model`.
         //
         // Example:
-        // let result = instance.parse_world_model();
+
+        //     let result = spanda_parser::parse_world_model(&mut self);
 
         use spanda_ast::foundations::WorldModelDecl;
         let start = self.advance();
@@ -4845,19 +5205,19 @@ impl Parser {
     }
 
     fn parse_identity(&mut self) -> Result<IdentityDecl, SpandaError> {
-        // Parse identity.
+        // Description:
+        //     Parse identity.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<IdentityDecl, SpandaError>
+        //         Return value from `parse_identity`.
         //
         // Example:
-        // let result = instance.parse_identity();
+        //     let result = spanda_parser::parse_identity(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4883,19 +5243,19 @@ impl Parser {
     }
 
     fn parse_audit(&mut self) -> Result<AuditDecl, SpandaError> {
-        // Parse audit.
+        // Description:
+        //     Parse audit.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<AuditDecl, SpandaError>
+        //         Return value from `parse_audit`.
         //
         // Example:
-        // let result = instance.parse_audit();
+        //     let result = spanda_parser::parse_audit(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4928,19 +5288,19 @@ impl Parser {
     }
 
     fn parse_provenance(&mut self) -> Result<ProvenanceDecl, SpandaError> {
-        // Parse provenance.
+        // Description:
+        //     Parse provenance.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ProvenanceDecl, SpandaError>
+        //         Return value from `parse_provenance`.
         //
         // Example:
-        // let result = instance.parse_provenance();
+        //     let result = spanda_parser::parse_provenance(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -4985,19 +5345,19 @@ impl Parser {
     }
 
     fn parse_signed_record(&mut self) -> Result<SignedRecordDecl, SpandaError> {
-        // Parse signed record.
+        // Description:
+        //     Parse signed record.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SignedRecordDecl, SpandaError>
+        //         Return value from `parse_signed_record`.
         //
         // Example:
-        // let result = instance.parse_signed_record();
+        //     let result = spanda_parser::parse_signed_record(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5019,19 +5379,19 @@ impl Parser {
     }
 
     fn parse_secret(&mut self) -> Result<spanda_ast::foundations::SecretDecl, SpandaError> {
-        // Parse secret.
+        // Description:
+        //     Parse secret.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::SecretDecl, SpandaError>
+        //         Return value from `parse_secret`.
         //
         // Example:
-        // let result = instance.parse_secret();
+        //     let result = spanda_parser::parse_secret(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::{SecretDecl, SecretSourceDecl};
@@ -5075,19 +5435,19 @@ impl Parser {
     }
 
     fn parse_trust(&mut self) -> Result<spanda_ast::foundations::TrustDecl, SpandaError> {
-        // Parse trust.
+        // Description:
+        //     Parse trust.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::TrustDecl, SpandaError>
+        //         Return value from `parse_trust`.
         //
         // Example:
-        // let result = instance.parse_trust();
+        //     let result = spanda_parser::parse_trust(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::TrustDecl;
@@ -5103,19 +5463,19 @@ impl Parser {
     }
 
     fn parse_dotted_capability(&mut self) -> Result<String, SpandaError> {
-        // Parse dotted capability.
+        // Description:
+        //     Parse dotted capability.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_dotted_capability`.
         //
         // Example:
-        // let result = instance.parse_dotted_capability();
+        //     let result = spanda_parser::parse_dotted_capability(&mut self);
 
         // Compute first for the following logic.
         let first = if self.check(TokenType::Network) {
@@ -5146,6 +5506,21 @@ impl Parser {
     }
 
     fn parse_capability_suffix(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse capability suffix.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_capability_suffix`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_capability_suffix(&mut self);
+
         if self.check(TokenType::Ident) && self.peek().lexeme == "scan" {
             self.advance();
             Ok("scan".to_string())
@@ -5178,19 +5553,19 @@ impl Parser {
     fn parse_permissions(
         &mut self,
     ) -> Result<spanda_ast::foundations::PermissionsDecl, SpandaError> {
-        // Parse permissions.
+        // Description:
+        //     Parse permissions.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::PermissionsDecl, SpandaError>
+        //         Return value from `parse_permissions`.
         //
         // Example:
-        // let result = instance.parse_permissions();
+        //     let result = spanda_parser::parse_permissions(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::foundations::PermissionsDecl;
@@ -5224,6 +5599,21 @@ impl Parser {
     fn parse_secure_block(
         &mut self,
     ) -> Result<spanda_ast::foundations::SecureBlockDecl, SpandaError> {
+        // Description:
+        //     Parse secure block.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::SecureBlockDecl, SpandaError>
+        //         Return value from `parse_secure_block`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_secure_block(&mut self);
+
         use spanda_ast::foundations::SecureBlockDecl;
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after secure")?;
@@ -5333,6 +5723,21 @@ impl Parser {
     fn parse_secure_comm_policy(
         &mut self,
     ) -> Result<spanda_ast::foundations::SecureCommPolicyDecl, SpandaError> {
+        // Description:
+        //     Parse secure comm policy.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::SecureCommPolicyDecl, SpandaError>
+        //         Return value from `parse_secure_comm_policy`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_secure_comm_policy(&mut self);
+
         use spanda_ast::foundations::SecureCommPolicyDecl;
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after secure_comm")?;
@@ -5373,6 +5778,21 @@ impl Parser {
     fn parse_trust_boundary(
         &mut self,
     ) -> Result<spanda_ast::foundations::TrustBoundaryDecl, SpandaError> {
+        // Description:
+        //     Parse trust boundary.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::foundations::TrustBoundaryDecl, SpandaError>
+        //         Return value from `parse_trust_boundary`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_trust_boundary(&mut self);
+
         use spanda_ast::foundations::TrustBoundaryDecl;
         let start = self.advance();
         let name = self
@@ -5391,6 +5811,21 @@ impl Parser {
     fn parse_secrets_block(
         &mut self,
     ) -> Result<Vec<spanda_ast::foundations::SecretDecl>, SpandaError> {
+        // Description:
+        //     Parse secrets block.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<Vec<spanda_ast::foundations::SecretDecl>, SpandaError>
+        //         Return value from `parse_secrets_block`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_secrets_block(&mut self);
+
         use spanda_ast::foundations::{SecretDecl, SecretSourceDecl};
         let start = self.advance();
         self.expect(TokenType::Lbrace, "Expected '{' after secrets")?;
@@ -5430,6 +5865,21 @@ impl Parser {
     }
 
     fn parse_type_name_with_generics(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse type name with generics.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_type_name_with_generics`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_type_name_with_generics(&mut self);
+
         let base = self.parse_label("Expected type name")?;
         if self.match_types(&[TokenType::Lt]) {
             let mut inner = String::new();
@@ -5451,19 +5901,19 @@ impl Parser {
     }
 
     fn parse_config_value_string(&mut self) -> Result<String, SpandaError> {
-        // Parse config value string.
+        // Description:
+        //     Parse config value string.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_config_value_string`.
         //
         // Example:
-        // let result = instance.parse_config_value_string();
+        //     let result = spanda_parser::parse_config_value_string(&mut self);
 
         // Compute tok for the following logic.
         let tok = self.advance();
@@ -5481,19 +5931,19 @@ impl Parser {
     }
 
     fn expr_path_string(expr: &Expr) -> String {
-        // Expr path string.
+        // Description:
+        //     Expr path string.
         //
-        // Parameters:
-        // - `expr` — input value
+        // Inputs:
+        //     expr: &Expr
+        //         Caller-supplied expr.
         //
-        // Returns:
-        // Text result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: String
+        //         Return value from `expr_path_string`.
         //
         // Example:
-        // let result = spanda_core::parser::expr_path_string(expr);
+        //     let result = spanda_parser::expr_path_string(expr);
 
         // Match on expr and handle each case.
         match expr {
@@ -5508,19 +5958,19 @@ impl Parser {
     }
 
     fn parse_ai_model(&mut self) -> Result<AiModelDecl, SpandaError> {
-        // Parse ai model.
+        // Description:
+        //     Parse ai model.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<AiModelDecl, SpandaError>
+        //         Return value from `parse_ai_model`.
         //
         // Example:
-        // let result = instance.parse_ai_model();
+        //     let result = spanda_parser::parse_ai_model(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5539,19 +5989,19 @@ impl Parser {
     }
 
     fn parse_ai_config_entries(&mut self) -> Result<Vec<AiConfigEntry>, SpandaError> {
-        // Parse ai config entries.
+        // Description:
+        //     Parse ai config entries.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Vec<AiConfigEntry>, SpandaError>
+        //         Return value from `parse_ai_config_entries`.
         //
         // Example:
-        // let result = instance.parse_ai_config_entries();
+        //     let result = spanda_parser::parse_ai_config_entries(&mut self);
 
         // Create mutable entries for accumulating results.
         let mut entries = Vec::new();
@@ -5576,19 +6026,19 @@ impl Parser {
     }
 
     fn parse_config_key_token(&mut self) -> Result<String, SpandaError> {
-        // Parse config key token.
+        // Description:
+        //     Parse config key token.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_config_key_token`.
         //
         // Example:
-        // let result = instance.parse_config_key_token();
+        //     let result = spanda_parser::parse_config_key_token(&mut self);
 
         // take this path when self.check(TokenType::Ident) || self.check(TokenType::Provider).
         if self.check(TokenType::Ident) || self.check(TokenType::Provider) {
@@ -5607,19 +6057,19 @@ impl Parser {
     }
 
     fn parse_config_value(&mut self) -> Result<ConfigValue, SpandaError> {
-        // Parse config value.
+        // Description:
+        //     Parse config value.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ConfigValue, SpandaError>
+        //         Return value from `parse_config_value`.
         //
         // Example:
-        // let result = instance.parse_config_value();
+        //     let result = spanda_parser::parse_config_value(&mut self);
 
         // take this path when self.match types(&[TokenType::String]).
         if self.match_types(&[TokenType::String]) {
@@ -5666,19 +6116,19 @@ impl Parser {
     }
 
     fn parse_agent(&mut self) -> Result<AgentDecl, SpandaError> {
-        // Parse agent.
+        // Description:
+        //     Parse agent.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<AgentDecl, SpandaError>
+        //         Return value from `parse_agent`.
         //
         // Example:
-        // let result = instance.parse_agent();
+        //     let result = spanda_parser::parse_agent(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5790,19 +6240,19 @@ impl Parser {
     }
 
     fn parse_capability(&mut self) -> Result<CapabilityDecl, SpandaError> {
-        // Parse capability.
+        // Description:
+        //     Parse capability.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<CapabilityDecl, SpandaError>
+        //         Return value from `parse_capability`.
         //
         // Example:
-        // let result = instance.parse_capability();
+        //     let result = spanda_parser::parse_capability(&mut self);
 
         // Compute start for the following logic.
         let start = self.peek().clone();
@@ -5838,19 +6288,19 @@ impl Parser {
     }
 
     fn parse_safety_zone(&mut self) -> Result<SafetyZoneDecl, SpandaError> {
-        // Parse safety zone.
+        // Description:
+        //     Parse safety zone.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SafetyZoneDecl, SpandaError>
+        //         Return value from `parse_safety_zone`.
         //
         // Example:
-        // let result = instance.parse_safety_zone();
+        //     let result = spanda_parser::parse_safety_zone(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5899,19 +6349,19 @@ impl Parser {
     }
 
     fn parse_max_speed_rule(&mut self) -> Result<SafetyRule, SpandaError> {
-        // Parse max speed rule.
+        // Description:
+        //     Parse max speed rule.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SafetyRule, SpandaError>
+        //         Return value from `parse_max_speed_rule`.
         //
         // Example:
-        // let result = instance.parse_max_speed_rule();
+        //     let result = spanda_parser::parse_max_speed_rule(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5933,19 +6383,19 @@ impl Parser {
     }
 
     fn parse_stop_if_rule(&mut self) -> Result<SafetyRule, SpandaError> {
-        // Parse stop if rule.
+        // Description:
+        //     Parse stop if rule.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<SafetyRule, SpandaError>
+        //         Return value from `parse_stop_if_rule`.
         //
         // Example:
-        // let result = instance.parse_stop_if_rule();
+        //     let result = spanda_parser::parse_stop_if_rule(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -5958,19 +6408,19 @@ impl Parser {
     }
 
     fn parse_contract_clauses(&mut self) -> Result<ContractClauses, SpandaError> {
-        // Parse contract clauses.
+        // Description:
+        //     Parse contract clauses.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<ContractClauses, SpandaError>
+        //         Return value from `parse_contract_clauses`.
         //
         // Example:
-        // let result = instance.parse_contract_clauses();
+        //     let result = spanda_parser::parse_contract_clauses(&mut self);
 
         // Create mutable requires for accumulating results.
         let mut requires = None;
@@ -5994,19 +6444,19 @@ impl Parser {
     }
 
     fn parse_behavior(&mut self) -> Result<BehaviorDecl, SpandaError> {
-        // Parse behavior.
+        // Description:
+        //     Parse behavior.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<BehaviorDecl, SpandaError>
+        //         Return value from `parse_behavior`.
         //
         // Example:
-        // let result = instance.parse_behavior();
+        //     let result = spanda_parser::parse_behavior(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -6035,19 +6485,19 @@ impl Parser {
     }
 
     fn parse_task(&mut self) -> Result<TaskDecl, SpandaError> {
-        // Parse task.
+        // Description:
+        //     Parse task.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TaskDecl, SpandaError>
+        //         Return value from `parse_task`.
         //
         // Example:
-        // let result = instance.parse_task();
+        //     let result = spanda_parser::parse_task(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -6137,7 +6587,31 @@ impl Parser {
     }
 
     fn parse_pipeline(&mut self) -> Result<PipelineDecl, SpandaError> {
-        // Parse latency-budgeted pipeline declaration.
+        // Description:
+
+        //     Parse pipeline.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<PipelineDecl, SpandaError>
+
+        //         Return value from `parse_pipeline`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_pipeline(&mut self);
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected pipeline name")?;
         self.expect(TokenType::Budget, "Expected 'budget' after pipeline name")?;
@@ -6154,7 +6628,31 @@ impl Parser {
     }
 
     fn parse_watchdog(&mut self) -> Result<WatchdogDecl, SpandaError> {
-        // Parse watchdog timeout handler.
+        // Description:
+
+        //     Parse watchdog.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<WatchdogDecl, SpandaError>
+
+        //         Return value from `parse_watchdog`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_watchdog(&mut self);
         let start = self.advance();
         let name = self.expect(TokenType::Ident, "Expected watchdog name")?;
         let mut target = None;
@@ -6185,7 +6683,31 @@ impl Parser {
     }
 
     fn parse_mode(&mut self) -> Result<ModeDecl, SpandaError> {
-        // Parse operating mode declaration.
+        // Description:
+
+        //     Parse mode.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<ModeDecl, SpandaError>
+
+        //         Return value from `parse_mode`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_mode(&mut self);
         let start = self.advance(); // mode
         let name = self.expect(TokenType::Ident, "Expected mode name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after mode name")?;
@@ -6199,7 +6721,31 @@ impl Parser {
     }
 
     fn parse_retry(&mut self) -> Result<RetryDecl, SpandaError> {
-        // Parse retry policy with optional fallback block.
+        // Description:
+
+        //     Parse retry.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RetryDecl, SpandaError>
+
+        //         Return value from `parse_retry`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_retry(&mut self);
         let start = self.advance();
         let attempts_tok = self.expect(TokenType::Number, "Expected retry attempt count")?;
         let attempts = match attempts_tok.value {
@@ -6237,7 +6783,31 @@ impl Parser {
     }
 
     fn parse_recover(&mut self) -> Result<RecoverDecl, SpandaError> {
-        // Parse recovery handler for a named error type.
+        // Description:
+
+        //     Parse recover.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RecoverDecl, SpandaError>
+
+        //         Return value from `parse_recover`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_recover(&mut self);
         let start = self.advance();
         self.expect(TokenType::From, "Expected 'from' after recover")?;
         let error_name = self.expect(TokenType::Ident, "Expected error name")?;
@@ -6252,7 +6822,31 @@ impl Parser {
     }
 
     fn parse_validate_rule(&mut self) -> Result<ValidateRuleDecl, SpandaError> {
-        // Parse top-level validate rule with regex pattern.
+        // Description:
+
+        //     Parse validate rule.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<ValidateRuleDecl, SpandaError>
+
+        //         Return value from `parse_validate_rule`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_validate_rule(&mut self);
         let start = self.advance(); // validate
         let name = self.expect(TokenType::Ident, "Expected validate rule name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after validate name")?;
@@ -6269,7 +6863,35 @@ impl Parser {
     }
 
     fn regex_from_token(&self, tok: &Token) -> Result<RegexPattern, SpandaError> {
-        // Convert a regex literal token into structured pattern data.
+        // Description:
+
+        //     Regex from token.
+
+        //
+
+        // Inputs:
+
+        //     &self: value
+
+        //         Caller-supplied &self.
+
+        //     ok: &Token
+
+        //         Caller-supplied ok.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RegexPattern, SpandaError>
+
+        //         Return value from `regex_from_token`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::regex_from_token(&self, ok);
         let raw = tok.lexeme.as_str();
         let body = raw
             .trim_start_matches('/')
@@ -6288,25 +6910,49 @@ impl Parser {
     }
 
     fn parse_regex_literal(&mut self) -> Result<RegexPattern, SpandaError> {
-        // Parse `/pattern/flags` regex literal token into structured pattern data.
+        // Description:
+
+        //     Parse regex literal.
+
+        //
+
+        // Inputs:
+
+        //     &mut self: value
+
+        //         Caller-supplied &mut self.
+
+        //
+
+        // Outputs:
+
+        //     result: Result<RegexPattern, SpandaError>
+
+        //         Return value from `parse_regex_literal`.
+
+        //
+
+        // Example:
+
+        //     let result = spanda_parser::parse_regex_literal(&mut self);
         let tok = self.expect(TokenType::RegexLiteral, "Expected regex literal")?;
         self.regex_from_token(&tok)
     }
 
     fn parse_state_machine(&mut self) -> Result<StateMachineDecl, SpandaError> {
-        // Parse state machine.
+        // Description:
+        //     Parse state machine.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<StateMachineDecl, SpandaError>
+        //         Return value from `parse_state_machine`.
         //
         // Example:
-        // let result = instance.parse_state_machine();
+        //     let result = spanda_parser::parse_state_machine(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -6352,19 +6998,19 @@ impl Parser {
     }
 
     fn parse_event(&mut self) -> Result<EventDecl, SpandaError> {
-        // Parse event.
+        // Description:
+        //     Parse event.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<EventDecl, SpandaError>
+        //         Return value from `parse_event`.
         //
         // Example:
-        // let result = instance.parse_event();
+        //     let result = spanda_parser::parse_event(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -6399,19 +7045,19 @@ impl Parser {
     }
 
     fn parse_on_trigger(&mut self) -> Result<TriggerHandlerDecl, SpandaError> {
-        // Parse on trigger.
+        // Description:
+        //     Parse on trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerHandlerDecl, SpandaError>
+        //         Return value from `parse_on_trigger`.
         //
         // Example:
-        // let result = instance.parse_on_trigger();
+        //     let result = spanda_parser::parse_on_trigger(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // on
@@ -6541,19 +7187,19 @@ impl Parser {
     }
 
     fn parse_state_trigger_kind(&mut self) -> Result<TriggerKind, SpandaError> {
-        // Parse state trigger kind.
+        // Description:
+        //     Parse state trigger kind.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerKind, SpandaError>
+        //         Return value from `parse_state_trigger_kind`.
         //
         // Example:
-        // let result = instance.parse_state_trigger_kind();
+        //     let result = spanda_parser::parse_state_trigger_kind(&mut self);
 
         // Compute phase for the following logic.
         let phase = self.expect(TokenType::Ident, "Expected Entered or Exited")?;
@@ -6582,19 +7228,19 @@ impl Parser {
     fn parse_optional_trigger_return_type(
         &mut self,
     ) -> Result<spanda_ast::nodes::SpandaType, SpandaError> {
-        // Parse optional return type on trigger handlers (`-> Type` before `{`).
+        // Description:
+        //     Parse optional trigger return type.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::nodes::SpandaType, SpandaError>
+        //         Return value from `parse_optional_trigger_return_type`.
         //
         // Example:
-        // let result = instance.parse_optional_trigger_return_type();
+        //     let result = spanda_parser::parse_optional_trigger_return_type(&mut self);
 
         // Take optional arrow return annotation when present.
         if self.check(TokenType::Arrow) {
@@ -6606,19 +7252,19 @@ impl Parser {
     }
 
     fn parse_optional_trigger_priority(&mut self) -> Result<TaskPriority, SpandaError> {
-        // Parse optional trigger priority.
+        // Description:
+        //     Parse optional trigger priority.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TaskPriority, SpandaError>
+        //         Return value from `parse_optional_trigger_priority`.
         //
         // Example:
-        // let result = instance.parse_optional_trigger_priority();
+        //     let result = spanda_parser::parse_optional_trigger_priority(&mut self);
 
         // take this path when self.match types(&[TokenType::Priority]).
         if self.match_types(&[TokenType::Priority]) {
@@ -6642,19 +7288,19 @@ impl Parser {
     }
 
     fn parse_every_trigger(&mut self) -> Result<TriggerHandlerDecl, SpandaError> {
-        // Parse every trigger.
+        // Description:
+        //     Parse every trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerHandlerDecl, SpandaError>
+        //         Return value from `parse_every_trigger`.
         //
         // Example:
-        // let result = instance.parse_every_trigger();
+        //     let result = spanda_parser::parse_every_trigger(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // every
@@ -6674,19 +7320,19 @@ impl Parser {
     }
 
     fn parse_when_trigger(&mut self) -> Result<TriggerHandlerDecl, SpandaError> {
-        // Parse when trigger.
+        // Description:
+        //     Parse when trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerHandlerDecl, SpandaError>
+        //         Return value from `parse_when_trigger`.
         //
         // Example:
-        // let result = instance.parse_when_trigger();
+        //     let result = spanda_parser::parse_when_trigger(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // when
@@ -6706,19 +7352,19 @@ impl Parser {
     }
 
     fn parse_while_trigger(&mut self) -> Result<TriggerHandlerDecl, SpandaError> {
-        // Parse while trigger.
+        // Description:
+        //     Parse while trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerHandlerDecl, SpandaError>
+        //         Return value from `parse_while_trigger`.
         //
         // Example:
-        // let result = instance.parse_while_trigger();
+        //     let result = spanda_parser::parse_while_trigger(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // while
@@ -6738,19 +7384,19 @@ impl Parser {
     }
 
     fn parse_agent_on_trigger(&mut self) -> Result<TriggerHandlerDecl, SpandaError> {
-        // Parse agent on trigger.
+        // Description:
+        //     Parse agent on trigger.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TriggerHandlerDecl, SpandaError>
+        //         Return value from `parse_agent_on_trigger`.
         //
         // Example:
-        // let result = instance.parse_agent_on_trigger();
+        //     let result = spanda_parser::parse_agent_on_trigger(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance(); // on
@@ -6772,19 +7418,19 @@ impl Parser {
     }
 
     fn parse_twin(&mut self) -> Result<TwinDecl, SpandaError> {
-        // Parse twin.
+        // Description:
+        //     Parse twin.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<TwinDecl, SpandaError>
+        //         Return value from `parse_twin`.
         //
         // Example:
-        // let result = instance.parse_twin();
+        //     let result = spanda_parser::parse_twin(&mut self);
 
         // Compute start for the following logic.
         let start = self.advance();
@@ -6826,19 +7472,19 @@ impl Parser {
     }
 
     fn parse_block(&mut self) -> Result<Vec<Stmt>, SpandaError> {
-        // Parse block.
+        // Description:
+        //     Parse block.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Vec<Stmt>, SpandaError>
+        //         Return value from `parse_block`.
         //
         // Example:
-        // let result = instance.parse_block();
+        //     let result = spanda_parser::parse_block(&mut self);
 
         // Create mutable stmts for accumulating results.
         let mut stmts = Vec::new();
@@ -6851,19 +7497,19 @@ impl Parser {
     }
 
     fn parse_stmt(&mut self) -> Result<Stmt, SpandaError> {
-        // Parse stmt.
+        // Description:
+        //     Parse stmt.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Stmt, SpandaError>
+        //         Return value from `parse_stmt`.
         //
         // Example:
-        // let result = instance.parse_stmt();
+        //     let result = spanda_parser::parse_stmt(&mut self);
 
         // Compute start for the following logic.
         let start = self.peek().clone();
@@ -7332,19 +7978,19 @@ impl Parser {
     }
 
     fn parse_subscribe_target(&mut self) -> Result<String, SpandaError> {
-        // Parse subscribe target.
+        // Description:
+        //     Parse subscribe target.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_subscribe_target`.
         //
         // Example:
-        // let result = instance.parse_subscribe_target();
+        //     let result = spanda_parser::parse_subscribe_target(&mut self);
 
         // Compute first for the following logic.
         let first = self.parse_label("Expected subscribe target")?;
@@ -7361,19 +8007,19 @@ impl Parser {
     fn parse_discover_target(
         &mut self,
     ) -> Result<spanda_ast::comm_decl::DiscoverTarget, SpandaError> {
-        // Parse discover target.
+        // Description:
+        //     Parse discover target.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<spanda_ast::comm_decl::DiscoverTarget, SpandaError>
+        //         Return value from `parse_discover_target`.
         //
         // Example:
-        // let result = instance.parse_discover_target();
+        //     let result = spanda_parser::parse_discover_target(&mut self);
 
         // Import the items needed by the logic below.
         use spanda_ast::comm_decl::DiscoverTarget;
@@ -7397,19 +8043,19 @@ impl Parser {
     fn parse_discover_filter(
         &mut self,
     ) -> Result<Option<spanda_ast::comm_decl::DiscoverFilter>, SpandaError> {
-        // Parse discover filter.
+        // Description:
+        //     Parse discover filter.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Option<spanda_ast::comm_decl::DiscoverFilter>, SpandaError>
+        //         Return value from `parse_discover_filter`.
         //
         // Example:
-        // let result = instance.parse_discover_filter();
+        //     let result = spanda_parser::parse_discover_filter(&mut self);
 
         // take the branch when Where]) is false.
         if !self.match_types(&[TokenType::Where]) {
@@ -7429,19 +8075,19 @@ impl Parser {
     }
 
     fn parse_duration(&mut self) -> Result<f64, SpandaError> {
-        // Parse duration.
+        // Description:
+        //     Parse duration.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<f64, SpandaError>
+        //         Return value from `parse_duration`.
         //
         // Example:
-        // let result = instance.parse_duration();
+        //     let result = spanda_parser::parse_duration(&mut self);
 
         // Compute tok for the following logic.
         let tok = self.peek().clone();
@@ -7479,19 +8125,19 @@ impl Parser {
     }
 
     fn parse_unit_suffix(&mut self) -> Result<UnitKind, SpandaError> {
-        // Parse unit suffix.
+        // Description:
+        //     Parse unit suffix.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<UnitKind, SpandaError>
+        //         Return value from `parse_unit_suffix`.
         //
         // Example:
-        // let result = instance.parse_unit_suffix();
+        //     let result = spanda_parser::parse_unit_suffix(&mut self);
 
         // Call try parse unit suffix on the current instance.
         self.try_parse_unit_suffix().ok_or_else(|| {
@@ -7505,19 +8151,19 @@ impl Parser {
     }
 
     fn try_parse_unit_suffix(&mut self) -> Option<UnitKind> {
-        // Try parse unit suffix.
+        // Description:
+        //     Try parse unit suffix.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<UnitKind>
+        //         Return value from `try_parse_unit_suffix`.
         //
         // Example:
-        // let result = instance.try_parse_unit_suffix();
+        //     let result = spanda_parser::try_parse_unit_suffix(&mut self);
 
         // take this path when self.check(TokenType::UnitLiteral).
         if self.check(TokenType::UnitLiteral) {
@@ -7559,38 +8205,38 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Result<Expr, SpandaError> {
-        // Parse expr.
+        // Description:
+        //     Parse expr.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_expr`.
         //
         // Example:
-        // let result = instance.parse_expr();
+        //     let result = spanda_parser::parse_expr(&mut self);
 
         // Call parse or on the current instance.
         self.parse_or()
     }
 
     fn parse_or(&mut self) -> Result<Expr, SpandaError> {
-        // Parse or.
+        // Description:
+        //     Parse or.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_or`.
         //
         // Example:
-        // let result = instance.parse_or();
+        //     let result = spanda_parser::parse_or(&mut self);
 
         // Create mutable left for accumulating results.
         let mut left = self.parse_and()?;
@@ -7610,19 +8256,19 @@ impl Parser {
     }
 
     fn parse_and(&mut self) -> Result<Expr, SpandaError> {
-        // Parse and.
+        // Description:
+        //     Parse and.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_and`.
         //
         // Example:
-        // let result = instance.parse_and();
+        //     let result = spanda_parser::parse_and(&mut self);
 
         // Create mutable left for accumulating results.
         let mut left = self.parse_comparison()?;
@@ -7642,19 +8288,19 @@ impl Parser {
     }
 
     fn parse_comparison(&mut self) -> Result<Expr, SpandaError> {
-        // Parse comparison.
+        // Description:
+        //     Parse comparison.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_comparison`.
         //
         // Example:
-        // let result = instance.parse_comparison();
+        //     let result = spanda_parser::parse_comparison(&mut self);
 
         // Create mutable left for accumulating results.
         let mut left = self.parse_additive()?;
@@ -7681,19 +8327,19 @@ impl Parser {
     }
 
     fn parse_additive(&mut self) -> Result<Expr, SpandaError> {
-        // Parse additive.
+        // Description:
+        //     Parse additive.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_additive`.
         //
         // Example:
-        // let result = instance.parse_additive();
+        //     let result = spanda_parser::parse_additive(&mut self);
 
         // Create mutable left for accumulating results.
         let mut left = self.parse_multiplicative()?;
@@ -7713,19 +8359,19 @@ impl Parser {
     }
 
     fn parse_multiplicative(&mut self) -> Result<Expr, SpandaError> {
-        // Parse multiplicative.
+        // Description:
+        //     Parse multiplicative.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_multiplicative`.
         //
         // Example:
-        // let result = instance.parse_multiplicative();
+        //     let result = spanda_parser::parse_multiplicative(&mut self);
 
         // Create mutable left for accumulating results.
         let mut left = self.parse_unary()?;
@@ -7745,19 +8391,19 @@ impl Parser {
     }
 
     fn parse_unary(&mut self) -> Result<Expr, SpandaError> {
-        // Parse unary.
+        // Description:
+        //     Parse unary.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_unary`.
         //
         // Example:
-        // let result = instance.parse_unary();
+        //     let result = spanda_parser::parse_unary(&mut self);
 
         // take this path when self.match types(&[TokenType::Await]).
         if self.match_types(&[TokenType::Await]) {
@@ -7820,19 +8466,19 @@ impl Parser {
     }
 
     fn parse_postfix(&mut self) -> Result<Expr, SpandaError> {
-        // Parse postfix.
+        // Description:
+        //     Parse postfix.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_postfix`.
         //
         // Example:
-        // let result = instance.parse_postfix();
+        //     let result = spanda_parser::parse_postfix(&mut self);
 
         // Create mutable expr for accumulating results.
         let mut expr = self.parse_primary()?;
@@ -7961,19 +8607,19 @@ impl Parser {
     }
 
     fn parse_primary(&mut self) -> Result<Expr, SpandaError> {
-        // Parse primary.
+        // Description:
+        //     Parse primary.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Expr, SpandaError>
+        //         Return value from `parse_primary`.
         //
         // Example:
-        // let result = instance.parse_primary();
+        //     let result = spanda_parser::parse_primary(&mut self);
 
         // Compute start for the following logic.
         let start = self.peek().clone();
@@ -8225,19 +8871,19 @@ impl Parser {
     }
 
     fn parse_property_name(&mut self) -> Result<Token, SpandaError> {
-        // Parse property name.
+        // Description:
+        //     Parse property name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Token, SpandaError>
+        //         Return value from `parse_property_name`.
         //
         // Example:
-        // let result = instance.parse_property_name();
+        //     let result = spanda_parser::parse_property_name(&mut self);
 
         // Allow common method names that overlap with reliability keywords.
         if self.match_types(&[TokenType::Matches]) {
@@ -8279,20 +8925,21 @@ impl Parser {
     }
 
     fn parse_local_name(&mut self, message: &str) -> Result<Token, SpandaError> {
-        // Parse local name.
+        // Description:
+        //     Parse local name.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `message` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     essage: &str
+        //         Caller-supplied essage.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<Token, SpandaError>
+        //         Return value from `parse_local_name`.
         //
         // Example:
-        // let result = instance.parse_local_name(message);
+        //     let result = spanda_parser::parse_local_name(&mut self, essage);
 
         // Compute lexeme for the following logic.
         let lexeme = self.parse_binding_ident(message)?;
@@ -8308,18 +8955,19 @@ impl Parser {
     }
 
     fn is_named_arg_start(&self) -> bool {
+        // Description:
+        //     Is named arg start.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_named_arg_start`.
         //
         // Example:
-        // let result = instance.is_named_arg_start();
+        //     let result = spanda_parser::is_named_arg_start(&self);
 
         // Transform self and continue the chain.
         self.tokens.get(self.pos + 1).map(|t| t.token_type) == Some(TokenType::Colon)
@@ -8330,19 +8978,19 @@ impl Parser {
     }
 
     fn parse_named_arg_name(&mut self) -> Result<String, SpandaError> {
-        // Parse named arg name.
+        // Description:
+        //     Parse named arg name.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_named_arg_name`.
         //
         // Example:
-        // let result = instance.parse_named_arg_name();
+        //     let result = spanda_parser::parse_named_arg_name(&mut self);
 
         // take this path when self.match types(&[TokenType::From]).
         if self.match_types(&[TokenType::From]) {
@@ -8357,6 +9005,21 @@ impl Parser {
     }
 
     fn is_anomaly_handler(&self) -> bool {
+        // Description:
+        //     Is anomaly handler.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_anomaly_handler`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::is_anomaly_handler(&self);
+
         self.tokens
             .get(self.pos + 1)
             .map(|t| t.lexeme == "anomaly")
@@ -8364,6 +9027,21 @@ impl Parser {
     }
 
     fn parse_comparison_op(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse comparison op.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_comparison_op`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_comparison_op(&mut self);
+
         if self.check(TokenType::Gte) {
             self.advance();
             Ok(">=".into())
@@ -8389,6 +9067,21 @@ impl Parser {
     }
 
     fn parse_threshold_value(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse threshold value.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_threshold_value`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_threshold_value(&mut self);
+
         let mut threshold = if self.check(TokenType::True) {
             self.advance();
             "true".into()
@@ -8426,6 +9119,21 @@ impl Parser {
     }
 
     fn parse_bracket_name_list(&mut self) -> Result<Vec<String>, SpandaError> {
+        // Description:
+        //     Parse bracket name list.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<Vec<String>, SpandaError>
+        //         Return value from `parse_bracket_name_list`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_bracket_name_list(&mut self);
+
         self.expect(TokenType::Lbracket, "Expected '['")?;
         let mut items = Vec::new();
         while !self.check(TokenType::Rbracket) && !self.check(TokenType::Eof) {
@@ -8441,6 +9149,21 @@ impl Parser {
     }
 
     fn parse_action_statement(&mut self) -> Result<String, SpandaError> {
+        // Description:
+        //     Parse action statement.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<String, SpandaError>
+        //         Return value from `parse_action_statement`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_action_statement(&mut self);
+
         let mut parts = Vec::new();
         while !self.check(TokenType::Semicolon)
             && !self.check(TokenType::Rbrace)
@@ -8470,6 +9193,21 @@ impl Parser {
     fn parse_knowledge_model(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::KnowledgeModelDecl, SpandaError> {
+        // Description:
+        //     Parse knowledge model.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::KnowledgeModelDecl, SpandaError>
+        //         Return value from `parse_knowledge_model`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_knowledge_model(&mut self);
+
         use spanda_ast::assurance_decl::{
             KnowledgeComponent, KnowledgeDependency, KnowledgeModelDecl,
         };
@@ -8518,6 +9256,21 @@ impl Parser {
     fn parse_state_estimator(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::StateEstimatorDecl, SpandaError> {
+        // Description:
+        //     Parse state estimator.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::StateEstimatorDecl, SpandaError>
+        //         Return value from `parse_state_estimator`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_state_estimator(&mut self);
+
         use spanda_ast::assurance_decl::StateEstimatorDecl;
         let start = self.advance();
         let name = self.parse_label("Expected state_estimator name")?;
@@ -8553,6 +9306,21 @@ impl Parser {
     fn parse_anomaly_detector(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::AnomalyDetectorDecl, SpandaError> {
+        // Description:
+        //     Parse anomaly detector.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::AnomalyDetectorDecl, SpandaError>
+        //         Return value from `parse_anomaly_detector`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_anomaly_detector(&mut self);
+
         use spanda_ast::assurance_decl::{AnomalyDetectorDecl, ExpectedBehavior};
         let start = self.advance();
         let name = self.parse_label("Expected anomaly_detector name")?;
@@ -8602,6 +9370,21 @@ impl Parser {
     fn parse_anomaly_handler(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::AnomalyHandlerDecl, SpandaError> {
+        // Description:
+        //     Parse anomaly handler.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::AnomalyHandlerDecl, SpandaError>
+        //         Return value from `parse_anomaly_handler`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_anomaly_handler(&mut self);
+
         use spanda_ast::assurance_decl::AnomalyHandlerDecl;
         let start = self.advance(); // on
         self.expect(TokenType::Ident, "Expected 'anomaly' after on")?;
@@ -8625,6 +9408,21 @@ impl Parser {
     fn parse_prognostics(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::PrognosticsDecl, SpandaError> {
+        // Description:
+        //     Parse prognostics.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::PrognosticsDecl, SpandaError>
+        //         Return value from `parse_prognostics`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_prognostics(&mut self);
+
         use spanda_ast::assurance_decl::{PrognosticRule, PrognosticsDecl};
         let start = self.advance();
         let name = self.parse_label("Expected prognostics name")?;
@@ -8661,6 +9459,21 @@ impl Parser {
     fn parse_mitigation(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::MitigationDecl, SpandaError> {
+        // Description:
+        //     Parse mitigation.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::MitigationDecl, SpandaError>
+        //         Return value from `parse_mitigation`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_mitigation(&mut self);
+
         use spanda_ast::assurance_decl::{MitigationBranch, MitigationDecl};
         let start = self.advance();
         let name = self.parse_label("Expected mitigation name")?;
@@ -8700,6 +9513,21 @@ impl Parser {
     fn parse_assurance_case(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::AssuranceCaseDecl, SpandaError> {
+        // Description:
+        //     Parse assurance case.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::AssuranceCaseDecl, SpandaError>
+        //         Return value from `parse_assurance_case`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_assurance_case(&mut self);
+
         use spanda_ast::assurance_decl::AssuranceCaseDecl;
         let start = self.advance();
         let name = self.parse_label("Expected assurance_case name")?;
@@ -8729,6 +9557,21 @@ impl Parser {
     fn parse_resilience_policy(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::ResiliencePolicyDecl, SpandaError> {
+        // Description:
+        //     Parse resilience policy.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::ResiliencePolicyDecl, SpandaError>
+        //         Return value from `parse_resilience_policy`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_resilience_policy(&mut self);
+
         use spanda_ast::assurance_decl::ResiliencePolicyDecl;
         let start = self.advance();
         let name = self.parse_label("Expected resilience_policy name")?;
@@ -8761,6 +9604,21 @@ impl Parser {
     fn parse_recovery_policy(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::RecoveryPolicyDecl, SpandaError> {
+        // Description:
+        //     Parse recovery policy.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::RecoveryPolicyDecl, SpandaError>
+        //         Return value from `parse_recovery_policy`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_recovery_policy(&mut self);
+
         use spanda_ast::assurance_decl::{RecoveryPolicyBranch, RecoveryPolicyDecl};
         let start = self.advance();
         let name = self.parse_label("Expected recovery_policy name")?;
@@ -8800,6 +9658,21 @@ impl Parser {
     fn parse_mission_plan(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::MissionPlanDecl, SpandaError> {
+        // Description:
+        //     Parse mission plan.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::MissionPlanDecl, SpandaError>
+        //         Return value from `parse_mission_plan`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_mission_plan(&mut self);
+
         use spanda_ast::assurance_decl::{MissionConstraintDecl, MissionPlanDecl, MissionStepDecl};
         let start = self.advance();
         let name = self.parse_label("Expected mission_plan name")?;
@@ -8846,6 +9719,21 @@ impl Parser {
     fn parse_operating_mode(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::OperatingModeDecl, SpandaError> {
+        // Description:
+        //     Parse operating mode.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //
+        // Outputs:
+        //     result: Result<spanda_ast::assurance_decl::OperatingModeDecl, SpandaError>
+        //         Return value from `parse_operating_mode`.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parse_operating_mode(&mut self);
+
         use spanda_ast::assurance_decl::OperatingModeDecl;
         let start = self.advance();
         let name = self.parse_label("Expected operating_mode name")?;
@@ -8867,19 +9755,19 @@ impl Parser {
 }
 
 fn loc(t: &Token) -> SourceLocation {
-    // Loc.
+    // Description:
+    //     Loc.
     //
-    // Parameters:
-    // - `t` — input value
+    // Inputs:
+    //     : &Token
+    //         Caller-supplied .
     //
-    // Returns:
-    // SourceLocation.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: SourceLocation
+    //         Return value from `loc`.
     //
     // Example:
-    // let result = spanda_core::parser::loc(t);
+    //     let result = spanda_parser::loc();
 
     // Produce SourceLocation as the result.
     SourceLocation {
@@ -8890,19 +9778,19 @@ fn loc(t: &Token) -> SourceLocation {
 }
 
 fn num(tok: &Token) -> f64 {
-    // Num.
+    // Description:
+    //     Num.
     //
-    // Parameters:
-    // - `tok` — input value
+    // Inputs:
+    //     ok: &Token
+    //         Caller-supplied ok.
     //
-    // Returns:
-    // Numeric result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: f64
+    //         Return value from `num`.
     //
     // Example:
-    // let result = spanda_core::parser::num(tok);
+    //     let result = spanda_parser::num(ok);
 
     // Match on value and handle each case.
     match &tok.value {
@@ -8912,19 +9800,19 @@ fn num(tok: &Token) -> f64 {
 }
 
 fn str_val(tok: &Token) -> String {
-    // Str val.
+    // Description:
+    //     Str val.
     //
-    // Parameters:
-    // - `tok` — input value
+    // Inputs:
+    //     ok: &Token
+    //         Caller-supplied ok.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `str_val`.
     //
     // Example:
-    // let result = spanda_core::parser::str_val(tok);
+    //     let result = spanda_parser::str_val(ok);
 
     // Match on value and handle each case.
     match &tok.value {
@@ -8934,37 +9822,38 @@ fn str_val(tok: &Token) -> String {
 }
 
 fn is_unit_ident(lexeme: &str) -> bool {
+    // Description:
+    //     Is unit ident.
     //
-    // Parameters:
-    // - `lexeme` — input value
+    // Inputs:
+    //     lexeme: &str
+    //         Caller-supplied lexeme.
     //
-    // Returns:
-    // true or false.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: bool
+    //         Return value from `is_unit_ident`.
     //
     // Example:
-    // let result = spanda_core::parser::is_unit_ident(lexeme);
+    //     let result = spanda_parser::is_unit_ident(lexeme);
 
     // Produce matches! as the result.
     matches!(lexeme, "m" | "s" | "ms" | "rad" | "deg" | "Hz")
 }
 
 fn expr_span(expr: &Expr) -> Span {
-    // Expr span.
+    // Description:
+    //     Expr span.
     //
-    // Parameters:
-    // - `expr` — input value
+    // Inputs:
+    //     expr: &Expr
+    //         Caller-supplied expr.
     //
-    // Returns:
-    // Span.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Span
+    //         Return value from `expr_span`.
     //
     // Example:
-    // let result = spanda_core::parser::expr_span(expr);
+    //     let result = spanda_parser::expr_span(expr);
 
     // Match on expr and handle each case.
     match expr {
@@ -8986,20 +9875,21 @@ fn expr_span(expr: &Expr) -> Span {
 }
 
 fn re_span_expr(expr: Expr, span: Span) -> Expr {
-    // Re span expr.
+    // Description:
+    //     Re span expr.
     //
-    // Parameters:
-    // - `expr` — input value
-    // - `span` — input value
+    // Inputs:
+    //     expr: Expr
+    //         Caller-supplied expr.
+    //     span: Span
+    //         Caller-supplied span.
     //
-    // Returns:
-    // Expr.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Expr
+    //         Return value from `re_span_expr`.
     //
     // Example:
-    // let result = spanda_core::parser::re_span_expr(expr, span);
+    //     let result = spanda_parser::re_span_expr(expr, span);
 
     // Match on expr and handle each case.
     match expr {
@@ -9079,19 +9969,18 @@ mod tests {
 
     #[test]
     fn parses_complete_robot() {
-        // Parses complete robot.
+        // Description:
+        //     Parses complete robot.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::parser::parses_complete_robot();
+
+        //     let result = spanda_parser::parses_complete_robot();
 
         let source = r#"
 robot Rover {
@@ -9146,19 +10035,18 @@ robot Rover {
 
     #[test]
     fn parses_loop_every() {
-        // Parses loop every.
+        // Description:
+        //     Parses loop every.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::parser::parses_loop_every();
+
+        //     let result = spanda_parser::parses_loop_every();
 
         let ast =
             parse(tokenize("robot R { behavior b() { loop every 50ms { } } }").unwrap()).unwrap();
@@ -9172,19 +10060,18 @@ robot Rover {
 
     #[test]
     fn parses_if_else() {
-        // Parses if else.
+        // Description:
+        //     Parses if else.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::parser::parses_if_else();
+
+        //     let result = spanda_parser::parses_if_else();
 
         let ast =
             parse(tokenize("robot R { behavior b() { if true { } else { } } }").unwrap()).unwrap();
@@ -9198,19 +10085,18 @@ robot Rover {
 
     #[test]
     fn parses_max_speed_rule() {
-        // Parses max speed rule.
+        // Description:
+        //     Parses max speed rule.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::parser::parses_max_speed_rule();
+
+        //     let result = spanda_parser::parses_max_speed_rule();
 
         let ast = parse(tokenize("robot R { safety { max_speed = 1.5 m/s; } }").unwrap()).unwrap();
         let RobotDecl::RobotDecl { safety, .. } = &ast.robots()[0];
@@ -9223,6 +10109,19 @@ robot Rover {
 
     #[test]
     fn parses_world_model_after_observe() {
+        // Description:
+        //     Parses world model after observe.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_parser::parses_world_model_after_observe();
+
         use spanda_ast::foundations::WorldModelDecl;
         let source = r#"robot R {
   bus sim;

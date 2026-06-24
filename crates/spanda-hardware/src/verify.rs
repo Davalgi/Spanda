@@ -38,19 +38,19 @@ pub struct CompatibilityReport {
 
 impl CompatibilityReport {
     pub fn errors(&self) -> impl Iterator<Item = &CompatItem> {
-        // Errors.
+        // Description:
+        //     Errors.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // impl Iterator<Item = &CompatItem>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: impl Iterator<Item = &CompatItem>
+        //         Return value from `errors`.
         //
         // Example:
-        // let result = instance.errors();
+        //     let result = spanda_hardware::verify::errors(&self);
 
         // Call items on the current instance.
         self.items
@@ -70,19 +70,19 @@ pub struct VerifyOptions {
 const ESTIMATED_TASK_COST_MS: f64 = 5.0;
 
 pub fn hardware_profile_from_decl(decl: &HardwareDecl) -> HardwareProfile {
-    // Hardware profile from decl.
+    // Description:
+    //     Hardware profile from decl.
     //
-    // Parameters:
-    // - `decl` — input value
+    // Inputs:
+    //     decl: &HardwareDecl
+    //         Caller-supplied decl.
     //
-    // Returns:
-    // HardwareProfile.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HardwareProfile
+    //         Return value from `hardware_profile_from_decl`.
     //
     // Example:
-    // let result = spanda_core::hardware::hardware_profile_from_decl(decl);
+    //     let result = spanda_hardware::verify::hardware_profile_from_decl(decl);
 
     // Compute HardwareDecl for the following logic.
     let HardwareDecl::HardwareDecl {
@@ -122,19 +122,19 @@ pub fn hardware_profile_from_decl(decl: &HardwareDecl) -> HardwareProfile {
 }
 
 pub fn build_profile_registry(program: &Program) -> HashMap<String, HardwareProfile> {
-    // Build profile registry.
+    // Description:
+    //     Build profile registry.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
     //
-    // Returns:
-    // HashMap<String, HardwareProfile>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashMap<String, HardwareProfile>
+    //         Return value from `build_profile_registry`.
     //
     // Example:
-    // let result = spanda_core::hardware::build_profile_registry(program);
+    //     let result = spanda_hardware::verify::build_profile_registry(progra);
 
     // Create mutable registry for accumulating results.
     let mut registry = builtin_profiles();
@@ -151,22 +151,25 @@ pub fn build_profile_registry(program: &Program) -> HashMap<String, HardwareProf
 }
 
 fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
-    // Pass.
+    // Description:
+    //     Pass.
     //
-    // Parameters:
-    // - `category` — input value
-    // - `message` — input value
-    // - `line` — input value
-    // - `column` — input value
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
     //
-    // Returns:
-    // CompatItem.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `pass`.
     //
     // Example:
-    // let result = spanda_core::hardware::pass(category, message, line, column);
+    //     let result = spanda_hardware::verify::pass(category, essage, line, column);
 
     // Produce CompatItem as the result.
     CompatItem {
@@ -179,22 +182,25 @@ fn pass(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
-    // Warn.
+    // Description:
+    //     Warn.
     //
-    // Parameters:
-    // - `category` — input value
-    // - `message` — input value
-    // - `line` — input value
-    // - `column` — input value
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
     //
-    // Returns:
-    // CompatItem.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `warn`.
     //
     // Example:
-    // let result = spanda_core::hardware::warn(category, message, line, column);
+    //     let result = spanda_hardware::verify::warn(category, essage, line, column);
 
     // Produce CompatItem as the result.
     CompatItem {
@@ -207,22 +213,25 @@ fn warn(category: &str, message: impl Into<String>, line: u32, column: u32) -> C
 }
 
 fn error(category: &str, message: impl Into<String>, line: u32, column: u32) -> CompatItem {
-    // Error.
+    // Description:
+    //     Error.
     //
-    // Parameters:
-    // - `category` — input value
-    // - `message` — input value
-    // - `line` — input value
-    // - `column` — input value
+    // Inputs:
+    //     category: &str
+    //         Caller-supplied category.
+    //     essage: impl Into<String>
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
     //
-    // Returns:
-    // CompatItem.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CompatItem
+    //         Return value from `error`.
     //
     // Example:
-    // let result = spanda_core::hardware::error(category, message, line, column);
+    //     let result = spanda_hardware::verify::error(category, essage, line, column);
 
     // Produce CompatItem as the result.
     CompatItem {
@@ -235,19 +244,19 @@ fn error(category: &str, message: impl Into<String>, line: u32, column: u32) -> 
 }
 
 fn sensor_adapter(sensor_type: &str) -> Option<&'static str> {
-    // Sensor adapter.
+    // Description:
+    //     Sensor adapter.
     //
-    // Parameters:
-    // - `sensor_type` — input value
+    // Inputs:
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `sensor_adapter`.
     //
     // Example:
-    // let result = spanda_core::hardware::sensor_adapter(sensor_type);
+    //     let result = spanda_hardware::verify::sensor_adapter(sensor_type);
 
     // Match on sensor type and handle each case.
     match sensor_type {
@@ -261,19 +270,19 @@ fn sensor_adapter(sensor_type: &str) -> Option<&'static str> {
 }
 
 fn actuator_adapter(actuator_type: &str) -> Option<&'static str> {
-    // Actuator adapter.
+    // Description:
+    //     Actuator adapter.
     //
-    // Parameters:
-    // - `actuator_type` — input value
+    // Inputs:
+    //     actuator_type: &str
+    //         Caller-supplied actuator type.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `actuator_adapter`.
     //
     // Example:
-    // let result = spanda_core::hardware::actuator_adapter(actuator_type);
+    //     let result = spanda_hardware::verify::actuator_adapter(actuator_type);
 
     // Match on actuator type and handle each case.
     match actuator_type {
@@ -286,20 +295,21 @@ fn actuator_adapter(actuator_type: &str) -> Option<&'static str> {
 }
 
 fn apply_fault(mut profile: HardwareProfile, fault_type: &str) -> HardwareProfile {
-    // Apply fault.
+    // Description:
+    //     Apply fault.
     //
-    // Parameters:
-    // - `mut profile` — input value
-    // - `fault_type` — input value
+    // Inputs:
+    //     profile: HardwareProfile
+    //         Caller-supplied profile.
+    //     fault_type: &str
+    //         Caller-supplied fault type.
     //
-    // Returns:
-    // HardwareProfile.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HardwareProfile
+    //         Return value from `apply_fault`.
     //
     // Example:
-    // let result = spanda_core::hardware::apply_fault(mut profile, fault_type);
+    //     let result = spanda_hardware::verify::apply_fault(profile, fault_type);
 
     // Match on fault type and handle each case.
     match fault_type {
@@ -369,19 +379,19 @@ fn apply_fault(mut profile: HardwareProfile, fault_type: &str) -> HardwareProfil
 }
 
 fn collect_loop_intervals(stmts: &[Stmt]) -> Vec<f64> {
-    // Collect loop intervals.
+    // Description:
+    //     Collect loop intervals.
     //
-    // Parameters:
-    // - `stmts` — input value
+    // Inputs:
+    //     stmts: &[Stmt]
+    //         Caller-supplied stmts.
     //
-    // Returns:
-    // Vec<f64>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<f64>
+    //         Return value from `collect_loop_intervals`.
     //
     // Example:
-    // let result = spanda_core::hardware::collect_loop_intervals(stmts);
+    //     let result = spanda_hardware::verify::collect_loop_intervals(stmts);
 
     // Create mutable intervals for accumulating results.
     let mut intervals = Vec::new();
@@ -415,7 +425,35 @@ fn collect_loop_intervals(stmts: &[Stmt]) -> Vec<f64> {
 }
 
 fn ai_config_number(config: &[(String, ConfigValue)], key: &str) -> Option<f64> {
-    // Iterate over config.
+    // Description:
+
+    //     Ai config number.
+
+    //
+
+    // Inputs:
+
+    //     config: &[(String, ConfigValue)]
+
+    //         Caller-supplied config.
+
+    //     key: &str
+
+    //         Caller-supplied key.
+
+    //
+
+    // Outputs:
+
+    //     result: Option<f64>
+
+    //         Return value from `ai_config_number`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_hardware::verify::ai_config_number(config, key);
     config.iter().find_map(|e| {
         // Take the branch when 0 equals key.
         if e.0 == key {
@@ -431,7 +469,35 @@ fn ai_config_number(config: &[(String, ConfigValue)], key: &str) -> Option<f64> 
 }
 
 fn ai_config_bool(config: &[(String, ConfigValue)], key: &str) -> bool {
-    // Iterate over config.
+    // Description:
+
+    //     Ai config bool.
+
+    //
+
+    // Inputs:
+
+    //     config: &[(String, ConfigValue)]
+
+    //         Caller-supplied config.
+
+    //     key: &str
+
+    //         Caller-supplied key.
+
+    //
+
+    // Outputs:
+
+    //     result: bool
+
+    //         Return value from `ai_config_bool`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_hardware::verify::ai_config_bool(config, key);
     config.iter().any(|(k, v)| {
         // Take the branch when k differs from key.
         if k != key {
@@ -451,20 +517,21 @@ fn verify_requires_hardware(
     req: &RequiresHardwareDecl,
     profile: &HardwareProfile,
 ) -> Vec<CompatItem> {
-    // Verify requires hardware.
+    // Description:
+    //     Verify requires hardware.
     //
-    // Parameters:
-    // - `req` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     req: &RequiresHardwareDecl
+    //         Caller-supplied req.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_requires_hardware`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_requires_hardware(req, profile);
+    //     let result = spanda_hardware::verify::verify_requires_hardware(req, profile);
 
     // Compute RequiresHardwareDecl for the following logic.
     let RequiresHardwareDecl::RequiresHardwareDecl {
@@ -642,20 +709,21 @@ fn verify_requires_network(
     req: &RequiresNetworkDecl,
     profile: &HardwareProfile,
 ) -> Vec<CompatItem> {
-    // Verify requires network.
+    // Description:
+    //     Verify requires network.
     //
-    // Parameters:
-    // - `req` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     req: &RequiresNetworkDecl
+    //         Caller-supplied req.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_requires_network`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_requires_network(req, profile);
+    //     let result = spanda_hardware::verify::verify_requires_network(req, profile);
 
     // Compute RequiresNetworkDecl for the following logic.
     let RequiresNetworkDecl::RequiresNetworkDecl {
@@ -732,21 +800,23 @@ fn verify_resource_budget(
     profile: &HardwareProfile,
     task_interval_ms: f64,
 ) -> Vec<CompatItem> {
-    // Verify resource budget.
+    // Description:
+    //     Verify resource budget.
     //
-    // Parameters:
-    // - `budget` — input value
-    // - `profile` — input value
-    // - `task_interval_ms` — input value
+    // Inputs:
+    //     budge: &ResourceBudgetDecl
+    //         Caller-supplied budge.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
+    //     ask_interval_ms: f64
+    //         Caller-supplied ask interval ms.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_resource_budget`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_resource_budget(budget, profile, task_interval_ms);
+    //     let result = spanda_hardware::verify::verify_resource_budget(budge, profile, ask_interval_ms);
 
     // Compute ResourceBudgetDecl for the following logic.
     let ResourceBudgetDecl::ResourceBudgetDecl {
@@ -905,20 +975,21 @@ fn verify_resource_budget(
 }
 
 fn verify_timing(robot: &RobotDecl, profile: &HardwareProfile) -> Vec<CompatItem> {
-    // Verify timing.
+    // Description:
+    //     Verify timing.
     //
-    // Parameters:
-    // - `robot` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_timing`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_timing(robot, profile);
+    //     let result = spanda_hardware::verify::verify_timing(robo, profile);
 
     // Compute RobotDecl for the following logic.
     let RobotDecl::RobotDecl {
@@ -1038,20 +1109,21 @@ fn verify_timing(robot: &RobotDecl, profile: &HardwareProfile) -> Vec<CompatItem
 }
 
 fn verify_ai_models(robot: &RobotDecl, profile: &HardwareProfile) -> Vec<CompatItem> {
-    // Verify ai models.
+    // Description:
+    //     Verify ai models.
     //
-    // Parameters:
-    // - `robot` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_ai_models`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_ai_models(robot, profile);
+    //     let result = spanda_hardware::verify::verify_ai_models(robo, profile);
 
     // Compute RobotDecl for the following logic.
     let RobotDecl::RobotDecl { ai_models, .. } = robot;
@@ -1126,20 +1198,21 @@ fn verify_ai_models(robot: &RobotDecl, profile: &HardwareProfile) -> Vec<CompatI
 }
 
 fn verify_battery_mission(mission: &MissionDecl, profile: &HardwareProfile) -> Vec<CompatItem> {
-    // Verify battery mission.
+    // Description:
+    //     Verify battery mission.
     //
-    // Parameters:
-    // - `mission` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     ission: &MissionDecl
+    //         Caller-supplied ission.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_battery_mission`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_battery_mission(mission, profile);
+    //     let result = spanda_hardware::verify::verify_battery_mission(ission, profile);
 
     // Compute MissionDecl for the following logic.
     let MissionDecl::MissionDecl {
@@ -1206,21 +1279,23 @@ fn verify_adapters(
     profile: &HardwareProfile,
     program_traits: &HashSet<String>,
 ) -> Vec<CompatItem> {
-    // Verify adapters.
+    // Description:
+    //     Verify adapters.
     //
-    // Parameters:
-    // - `robot` — input value
-    // - `profile` — input value
-    // - `program_traits` — input value
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
+    //     program_traits: &HashSet<String>
+    //         Caller-supplied program traits.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_adapters`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_adapters(robot, profile, program_traits);
+    //     let result = spanda_hardware::verify::verify_adapters(robo, profile, program_traits);
 
     // Compute RobotDecl for the following logic.
     let RobotDecl::RobotDecl {
@@ -1292,20 +1367,21 @@ fn verify_adapters(
 }
 
 fn verify_topic_bandwidth(topics: &[TopicDecl], profile: &HardwareProfile) -> Vec<CompatItem> {
-    // Verify topic bandwidth.
+    // Description:
+    //     Verify topic bandwidth.
     //
-    // Parameters:
-    // - `topics` — input value
-    // - `profile` — input value
+    // Inputs:
+    //     opics: &[TopicDecl]
+    //         Caller-supplied opics.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_topic_bandwidth`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_topic_bandwidth(topics, profile);
+    //     let result = spanda_hardware::verify::verify_topic_bandwidth(opics, profile);
 
     // Create mutable total mbps for accumulating results.
     let mut total_mbps = 0.0;
@@ -1387,25 +1463,33 @@ fn verify_robot_against_profile(
     span_line: u32,
     span_column: u32,
 ) -> Vec<CompatItem> {
-    // Verify robot against profile.
+    // Description:
+    //     Verify robot against profile.
     //
-    // Parameters:
-    // - `robot` — input value
-    // - `profile` — input value
-    // - `program_traits` — input value
-    // - `program_requires_hw` — input value
-    // - `program_requires_net` — input value
-    // - `span_line` — input value
-    // - `span_column` — input value
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //     profile: &HardwareProfile
+    //         Caller-supplied profile.
+    //     program_traits: &HashSet<String>
+    //         Caller-supplied program traits.
+    //     program_requires_hw: Option<&RequiresHardwareDecl>
+    //         Caller-supplied program requires hw.
+    //     program_requires_ne: Option<&RequiresNetworkDecl>
+    //         Caller-supplied program requires ne.
+    //     program_requires_conn: Option<&RequiresConnectivityDecl>
+    //         Caller-supplied program requires conn.
+    //     span_line: u32
+    //         Caller-supplied span line.
+    //     span_column: u32
+    //         Caller-supplied span column.
     //
-    // Returns:
-    // Vec<CompatItem>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<CompatItem>
+    //         Return value from `verify_robot_against_profile`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_robot_against_profile(robot, profile, program_traits, program_requires_hw, program_requires_net, span_line, span_column);
+    //     let result = spanda_hardware::verify::verify_robot_against_profile(robo, profile, program_traits, program_requires_hw, program_requires_ne, program_requires_conn, span_line, span_column);
 
     // Compute RobotDecl for the following logic.
     let RobotDecl::RobotDecl {
@@ -1574,19 +1658,19 @@ fn verify_robot_against_profile(
 }
 
 fn trait_names(program: &Program) -> HashSet<String> {
-    // Trait names.
+    // Description:
+    //     Trait names.
     //
-    // Parameters:
-    // - `program` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
     //
-    // Returns:
-    // HashSet<String>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: HashSet<String>
+    //         Return value from `trait_names`.
     //
     // Example:
-    // let result = spanda_core::hardware::trait_names(program);
+    //     let result = spanda_hardware::verify::trait_names(progra);
 
     // Destructure the program into its top-level sections.
     let Program::Program { traits, .. } = program;
@@ -1603,21 +1687,23 @@ fn resolve_targets(
     options: &VerifyOptions,
     registry: &HashMap<String, HardwareProfile>,
 ) -> Vec<(String, String, u32, u32)> {
-    // Resolve targets.
+    // Description:
+    //     Resolve targets.
     //
-    // Parameters:
-    // - `program` — input value
-    // - `options` — input value
-    // - `registry` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &VerifyOptions
+    //         Caller-supplied options.
+    //     registry: &HashMap<String, HardwareProfile>
+    //         Caller-supplied registry.
     //
-    // Returns:
-    // Vec<(String, String, u32, u32)>.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Vec<(String, String, u32, u32)>
+    //         Return value from `resolve_targets`.
     //
     // Example:
-    // let result = spanda_core::hardware::resolve_targets(program, options, registry);
+    //     let result = spanda_hardware::verify::resolve_targets(progra, options, registry);
 
     // Destructure the program into its top-level sections.
     let Program::Program {
@@ -1690,20 +1776,21 @@ pub fn verify_program_compatibility(
     program: &Program,
     options: &VerifyOptions,
 ) -> CompatibilityReport {
-    // Verify program compatibility.
+    // Description:
+    //     Verify program compatibility.
     //
-    // Parameters:
-    // - `program` — input value
-    // - `options` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &VerifyOptions
+    //         Caller-supplied options.
     //
-    // Returns:
-    // CompatibilityReport.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CompatibilityReport
+    //         Return value from `verify_program_compatibility`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_program_compatibility(program, options);
+    //     let result = spanda_hardware::verify::verify_program_compatibility(progra, options);
 
     // Compute registry for the following logic.
     let registry = build_profile_registry(program);
@@ -1892,20 +1979,21 @@ pub fn verify_program_compatibility_legacy(
     program: &Program,
     cli_target: Option<&str>,
 ) -> CompatibilityReport {
-    // Verify program compatibility legacy.
+    // Description:
+    //     Verify program compatibility legacy.
     //
-    // Parameters:
-    // - `program` — input value
-    // - `cli_target` — input value
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     cli_targe: Option<&str>
+    //         Caller-supplied cli targe.
     //
-    // Returns:
-    // CompatibilityReport.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: CompatibilityReport
+    //         Return value from `verify_program_compatibility_legacy`.
     //
     // Example:
-    // let result = spanda_core::hardware::verify_program_compatibility_legacy(program, cli_target);
+    //     let result = spanda_hardware::verify::verify_program_compatibility_legacy(progra, cli_targe);
 
     // Produce verify program compatibility as the result.
     verify_program_compatibility(
@@ -1927,19 +2015,18 @@ mod tests {
 
     #[test]
     fn rover_missing_lidar_fails_on_esp32() {
-        // Rover missing lidar fails on esp32.
+        // Description:
+        //     Rover missing lidar fails on esp32.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::hardware::rover_missing_lidar_fails_on_esp32();
+
+        //     let result = spanda_hardware::verify::rover_missing_lidar_fails_on_esp32();
 
         let source = r#"
 hardware Tiny {
@@ -1962,19 +2049,18 @@ deploy Rover to Tiny;
 
     #[test]
     fn timing_violation_detected() {
-        // Timing violation detected.
+        // Description:
+        //     Timing violation detected.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::hardware::timing_violation_detected();
+
+        //     let result = spanda_hardware::verify::timing_violation_detected();
 
         let source = r#"
 robot Rover {
@@ -1999,19 +2085,18 @@ robot Rover {
 
     #[test]
     fn battery_mission_exceeds_capacity() {
-        // Battery mission exceeds capacity.
+        // Description:
+        //     Battery mission exceeds capacity.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::hardware::battery_mission_exceeds_capacity();
+
+        //     let result = spanda_hardware::verify::battery_mission_exceeds_capacity();
 
         let source = r#"
 robot Rover {
@@ -2035,19 +2120,18 @@ robot Rover {
 
     #[test]
     fn fault_injection_removes_camera() {
-        // Fault injection removes camera.
+        // Description:
+        //     Fault injection removes camera.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_core::hardware::fault_injection_removes_camera();
+
+        //     let result = spanda_hardware::verify::fault_injection_removes_camera();
 
         let source = r#"
 robot Rover {

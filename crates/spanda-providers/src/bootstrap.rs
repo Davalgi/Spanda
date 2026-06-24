@@ -27,23 +27,38 @@ fn register_transport_stub(
 
 /// Register built-in transport shims so legacy programs work without installed packages.
 pub fn bootstrap_default_providers() -> ProviderRegistry {
+    // Description:
+    //     Bootstrap default providers.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: ProviderRegistry
+    //         Return value from `bootstrap_default_providers`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::bootstrap::bootstrap_default_providers();
+
     bootstrap_providers_for_packages(&[])
 }
 
 /// Build a provider registry from installed official package names.
 pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegistry {
-    // Build a provider registry from installed official package names.
+    // Description:
+    //     Bootstrap providers for packages.
     //
-    // Parameters:
-    // - `package_names` — dependency keys from `spanda.toml` / `spanda.lock`
+    // Inputs:
+    //     package_names: &[&str]
+    //         Caller-supplied package names.
     //
-    // Returns:
-    // Registry with default shims plus project-scoped transports for official packages.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: ProviderRegistry
+    //         Return value from `bootstrap_providers_for_packages`.
     //
     // Example:
+    //     let result = spanda_providers::bootstrap::bootstrap_providers_for_packages(package_names);
 
     // let registry = bootstrap_providers_for_packages(&["spanda-ros2"]);
 
@@ -207,6 +222,21 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
 
 /// Map a transport kind to the official package that backs it when installed.
 pub fn official_package_for_transport(kind: TransportKind) -> Option<&'static str> {
+    // Description:
+    //     Official package for transport.
+    //
+    // Inputs:
+    //     kind: TransportKind
+    //         Caller-supplied kind.
+    //
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `official_package_for_transport`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::bootstrap::official_package_for_transport(kind);
+
     match kind {
         TransportKind::Ros2 => Some("spanda-ros2"),
         TransportKind::Mqtt => Some("spanda-mqtt"),
@@ -223,6 +253,28 @@ fn connect_registry_transport(
     package: &str,
     config: &TransportConfig,
 ) {
+    // Description:
+    //     Connect registry transport.
+    //
+    // Inputs:
+    //     comm_bus: &mut RoutingCommBus
+    //         Caller-supplied comm bus.
+    //     registry: &mut ProviderRegistry
+    //         Caller-supplied registry.
+    //     kind: TransportKind
+    //         Caller-supplied kind.
+    //     package: &str
+    //         Caller-supplied package.
+    //     config: &TransportConfig
+    //         Caller-supplied config.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::bootstrap::connect_registry_transport(comm_bus, registry, kind, package, config);
+
     let key = transport_registry_key(package);
     if registry
         .with_transport(&key, |provider| provider.connect(config))
@@ -237,6 +289,22 @@ pub fn sync_comm_bus_for_official_packages(
     comm_bus: &mut RoutingCommBus,
     registry: &mut ProviderRegistry,
 ) {
+    // Description:
+    //     Sync comm bus for official packages.
+    //
+    // Inputs:
+    //     comm_bus: &mut RoutingCommBus
+    //         Caller-supplied comm bus.
+    //     registry: &mut ProviderRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::bootstrap::sync_comm_bus_for_official_packages(comm_bus, registry);
+
     comm_bus.clear_registry_backed();
     let base = TransportConfig::default();
     let packages: Vec<String> = registry.official_packages().to_vec();

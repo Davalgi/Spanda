@@ -24,38 +24,36 @@ pub struct SecurePolicy {
 
 impl SecurePolicy {
     pub fn open() -> Self {
-        // Open.
+        // Description:
+        //     Open.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `open`.
         //
         // Example:
-        // let result = spanda_security::secure_comm::open();
+        //     let result = spanda_security::secure_comm::open();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn signed_trusted() -> Self {
-        // Signed trusted.
+        // Description:
+        //     Signed trusted.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `signed_trusted`.
         //
         // Example:
-        // let result = spanda_security::secure_comm::signed_trusted();
+        //     let result = spanda_security::secure_comm::signed_trusted();
 
         // Assemble the struct fields and return it.
         Self {
@@ -71,6 +69,20 @@ impl SecurePolicy {
     }
 
     pub fn encrypted_signed() -> Self {
+        // Description:
+        //     Encrypted signed.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `encrypted_signed`.
+        //
+        // Example:
+
+        //     let result = spanda_security::secure_comm::encrypted_signed();
+
         Self {
             signed: true,
             encryption: EncryptionMode::Required,
@@ -81,21 +93,21 @@ impl SecurePolicy {
     }
 
     pub fn check_trust(&self, trust: TrustLevel) -> SecurityResult<()> {
-        // Check trust.
+        // Description:
+        //     Check trust.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `trust` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     rus: TrustLevel
+        //         Caller-supplied rus.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `check_trust`.
         //
         // Example:
-        // let result = instance.check_trust(trust);
-
+        //     let result = spanda_security::secure_comm::check_trust(&self, rus);
         // use required when min trust is present.
 
         // Emit output when min trust provides a required.
@@ -112,20 +124,21 @@ impl SecurePolicy {
     }
 
     pub fn check_capabilities(&self, caps: &CapabilitySet) -> SecurityResult<()> {
-        // Check capabilities.
+        // Description:
+        //     Check capabilities.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `caps` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     caps: &CapabilitySet
+        //         Caller-supplied caps.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `check_capabilities`.
         //
         // Example:
-        // let result = instance.check_capabilities(caps);
+        //     let result = spanda_security::secure_comm::check_capabilities(&self, caps);
 
         // Validate each requested capability.
         for cap in &self.requires {
@@ -141,23 +154,28 @@ impl SecurePolicy {
         caps: &CapabilitySet,
         endpoint: &str,
     ) -> SecurityResult<Option<SignedMessage>> {
-        // Prepare outbound.
+        // Description:
+        //     Prepare outbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `payload` — input value
-        // - `identity` — input value
-        // - `caps` — input value
-        // - `endpoint` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //     identity: Option<&RobotIdentity>
+        //         Caller-supplied identity.
+        //     caps: &CapabilitySet
+        //         Caller-supplied caps.
+        //     endpoin: &str
+        //         Caller-supplied endpoin.
         //
-        // Returns:
-        // SecurityResult<Option<SignedMessage>>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<Option<SignedMessage>>
+        //         Return value from `prepare_outbound`.
         //
         // Example:
-        // let result = instance.prepare_outbound(payload, identity, caps, endpoint);
+
+        //     let result = spanda_security::secure_comm::prepare_outbound(&self, payload, identity, caps, endpoin);
 
         let secured = self.signed
             || self.min_trust.is_some()
@@ -198,6 +216,27 @@ impl SecurePolicy {
         caps: &CapabilitySet,
         session_material: &str,
     ) -> SecurityResult<String> {
+        // Description:
+        //     Encrypt payload.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     payload: &str
+        //         Caller-supplied payload.
+        //     caps: &CapabilitySet
+        //         Caller-supplied caps.
+        //     session_material: &str
+        //         Caller-supplied session material.
+        //
+        // Outputs:
+        //     result: SecurityResult<String>
+        //         Return value from `encrypt_payload`.
+        //
+        // Example:
+
+        //     let result = spanda_security::secure_comm::encrypt_payload(&self, payload, caps, session_material);
+
         if self.encryption == EncryptionMode::None {
             return Ok(payload.to_string());
         }
@@ -216,23 +255,30 @@ impl SecurePolicy {
         endpoint: &str,
         source_id: Option<&str>,
     ) -> SecurityResult<()> {
-        // Verify inbound.
+        // Description:
+        //     Verify inbound.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `signed` — input value
-        // - `identity` — input value
-        // - `caps` — input value
-        // - `endpoint` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     signed: Option<&SignedMessage>
+        //         Caller-supplied signed.
+        //     identity: Option<&RobotIdentity>
+        //         Caller-supplied identity.
+        //     caps: &CapabilitySet
+        //         Caller-supplied caps.
+        //     endpoin: &str
+        //         Caller-supplied endpoin.
+        //     source_id: Option<&str>
+        //         Caller-supplied source id.
         //
-        // Returns:
-        // SecurityResult<()>.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `verify_inbound`.
         //
         // Example:
-        // let result = instance.verify_inbound(signed, identity, caps, endpoint);
+
+        //     let result = spanda_security::secure_comm::verify_inbound(&self, signed, identity, caps, endpoin, source_id);
 
         if !self.trusted_sources.is_empty() {
             let sid =
@@ -273,6 +319,23 @@ impl SecurePolicy {
     }
 
     pub fn check_trusted_source(&self, source_id: &str) -> SecurityResult<()> {
+        // Description:
+        //     Check trusted source.
+        //
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     source_id: &str
+        //         Caller-supplied source id.
+        //
+        // Outputs:
+        //     result: SecurityResult<()>
+        //         Return value from `check_trusted_source`.
+        //
+        // Example:
+
+        //     let result = spanda_security::secure_comm::check_trusted_source(&self, source_id);
+
         if self.trusted_sources.is_empty() {
             return Ok(());
         }
@@ -297,117 +360,120 @@ pub struct SecureEndpointRegistry {
 
 impl SecureEndpointRegistry {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_security::secure_comm::new();
+        //     let value = spanda_security::secure_comm::new();
 
         // Build the result via default.
         Self::default()
     }
 
     pub fn register(&mut self, path: impl Into<String>, policy: SecurePolicy) {
-        // Register the value.
+        // Description:
+        //     Register.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
-        // - `policy` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     path: impl Into<String>
+        //         Caller-supplied path.
+        //     policy: SecurePolicy
+        //         Caller-supplied policy.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register(path, policy);
+        //     let result = spanda_security::secure_comm::register(&mut self, path, policy);
 
         // Append into self.
         self.policies.insert(path.into(), policy);
     }
 
     pub fn get(&self, path: &str) -> Option<&SecurePolicy> {
-        // Get.
+        // Description:
+        //     Get.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<&SecurePolicy>
+        //         Return value from `get`.
         //
         // Example:
-        // let result = instance.get(path);
+        //     let result = spanda_security::secure_comm::get(&self, path);
 
         // Call get on the current instance.
         self.policies.get(path)
     }
 
     pub fn policy_or_open(&self, path: &str) -> SecurePolicy {
-        // Policy or open.
+        // Description:
+        //     Policy or open.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `path` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     path: &str
+        //         Caller-supplied path.
         //
-        // Returns:
-        // SecurePolicy.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: SecurePolicy
+        //         Return value from `policy_or_open`.
         //
         // Example:
-        // let result = instance.policy_or_open(path);
+        //     let result = spanda_security::secure_comm::policy_or_open(&self, path);
 
         // Call get on the current instance.
         self.get(path).cloned().unwrap_or_default()
     }
 
     pub fn len(&self) -> usize {
-        // Len.
+        // Description:
+        //     Len.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // Numeric result.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: usize
+        //         Return value from `len`.
         //
         // Example:
-        // let result = instance.len();
+        //     let result = spanda_security::secure_comm::len(&self);
 
         // Call len on the current instance.
         self.policies.len()
     }
 
     pub fn is_empty(&self) -> bool {
+        // Description:
+        //     Is empty.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `is_empty`.
         //
         // Example:
-        // let result = instance.is_empty();
+        //     let result = spanda_security::secure_comm::is_empty(&self);
 
         // Call is empty on the current instance.
         self.policies.is_empty()
@@ -421,19 +487,18 @@ mod tests {
 
     #[test]
     fn secure_topic_requires_identity() {
-        // Secure topic requires identity.
+        // Description:
+        //     Secure topic requires identity.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_security::secure_comm::secure_topic_requires_identity();
+
+        //     let result = spanda_security::secure_comm::secure_topic_requires_identity();
 
         let policy = SecurePolicy::signed_trusted();
         let mut caps = CapabilitySet::new();

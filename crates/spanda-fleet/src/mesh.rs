@@ -31,6 +31,20 @@ pub struct MeshRelayResponse {
 }
 
 pub fn default_fleet_mesh_state_path() -> PathBuf {
+    // Description:
+    //     Default fleet mesh state path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `default_fleet_mesh_state_path`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::default_fleet_mesh_state_path();
+
     PathBuf::from(".spanda/fleet-mesh-state.json")
 }
 
@@ -51,6 +65,23 @@ pub enum MeshRegistryBacking {
 }
 
 fn unauthorized(request: &HttpRequest, state: &FleetMeshState) -> bool {
+    // Description:
+    //     Unauthorized.
+    //
+    // Inputs:
+    //     request: &HttpRequest
+    //         Caller-supplied request.
+    //     state: &FleetMeshState
+    //         Caller-supplied state.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `unauthorized`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::unauthorized(reques, state);
+
     match (&state.token, &request.authorization) {
         (Some(expected), Some(provided)) => expected != provided,
         (Some(_), None) => true,
@@ -59,6 +90,21 @@ fn unauthorized(request: &HttpRequest, state: &FleetMeshState) -> bool {
 }
 
 fn load_registry(backing: &MeshRegistryBacking) -> FleetAgentRegistry {
+    // Description:
+    //     Load registry.
+    //
+    // Inputs:
+    //     backing: &MeshRegistryBacking
+    //         Caller-supplied backing.
+    //
+    // Outputs:
+    //     result: FleetAgentRegistry
+    //         Return value from `load_registry`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::load_registry(backing);
+
     match backing {
         MeshRegistryBacking::Path(path) => load_fleet_agent_registry(path),
         MeshRegistryBacking::Memory(registry) => (**registry).clone(),
@@ -66,6 +112,23 @@ fn load_registry(backing: &MeshRegistryBacking) -> FleetAgentRegistry {
 }
 
 fn mesh_relay_http_response(relayed: u32, failed: u32) -> HttpResponse {
+    // Description:
+    //     Mesh relay http response.
+    //
+    // Inputs:
+    //     relayed: u32
+    //         Caller-supplied relayed.
+    //     failed: u32
+    //         Caller-supplied failed.
+    //
+    // Outputs:
+    //     result: HttpResponse
+    //         Return value from `mesh_relay_http_response`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::mesh_relay_http_response(relayed, failed);
+
     let ok = failed == 0;
     HttpResponse {
         status: 200,
@@ -88,6 +151,25 @@ fn finish_mesh_relay(
     registry_backing: &MeshRegistryBacking,
     deliveries: &[PeerDelivery],
 ) -> HttpResponse {
+    // Description:
+    //     Finish mesh relay.
+    //
+    // Inputs:
+    //     state: &mut FleetMeshState
+    //         Caller-supplied state.
+    //     registry_backing: &MeshRegistryBacking
+    //         Caller-supplied registry backing.
+    //     deliveries: &[PeerDelivery]
+    //         Caller-supplied deliveries.
+    //
+    // Outputs:
+    //     result: HttpResponse
+    //         Return value from `finish_mesh_relay`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::finish_mesh_relay(state, registry_backing, deliveries);
+
     let registry = load_registry(registry_backing);
     let (relayed, failed) = relay_peer_deliveries(deliveries, &registry);
     state.relayed_total += relayed;
@@ -100,7 +182,39 @@ pub fn handle_fleet_mesh_request(
     registry_backing: &MeshRegistryBacking,
     request: HttpRequest,
 ) -> HttpResponse {
-    // Route mesh coordinator relay requests to registered fleet agents.
+    // Description:
+
+    //     Handle fleet mesh request.
+
+    //
+
+    // Inputs:
+
+    //     state: &mut FleetMeshState
+
+    //         Caller-supplied state.
+
+    //     registry_backing: &MeshRegistryBacking
+
+    //         Caller-supplied registry backing.
+
+    //     request: HttpRequest
+
+    //         Caller-supplied request.
+
+    //
+
+    // Outputs:
+
+    //     result: HttpResponse
+
+    //         Return value from `handle_fleet_mesh_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::mesh::handle_fleet_mesh_request(state, registry_backing, reques);
     if unauthorized(&request, state) {
         return HttpResponse {
             status: 401,
@@ -159,7 +273,39 @@ fn dispatch_mesh_request(
     registry_backing: &MeshRegistryBacking,
     request: HttpRequest,
 ) -> HttpResponse {
-    // Relay peer deliveries without holding the mesh mutex during outbound HTTP.
+    // Description:
+
+    //     Dispatch mesh request.
+
+    //
+
+    // Inputs:
+
+    //     state: Arc<Mutex<FleetMeshState>>
+
+    //         Caller-supplied state.
+
+    //     registry_backing: &MeshRegistryBacking
+
+    //         Caller-supplied registry backing.
+
+    //     request: HttpRequest
+
+    //         Caller-supplied request.
+
+    //
+
+    // Outputs:
+
+    //     result: HttpResponse
+
+    //         Return value from `dispatch_mesh_request`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::mesh::dispatch_mesh_request(state, registry_backing, reques);
     if request.method == "POST" && request.path == "/v1/mesh/relay" {
         let deliveries = {
             let locked = state.lock().expect("fleet mesh state lock");
@@ -214,6 +360,26 @@ fn handle_connection(
     mut stream: TcpStream,
     tls: Option<Arc<rustls::ServerConfig>>,
 ) {
+    // Description:
+    //     Handle connection.
+    //
+    // Inputs:
+    //     state: Arc<Mutex<FleetMeshState>>
+    //         Caller-supplied state.
+    //     registry_backing: MeshRegistryBacking
+    //         Caller-supplied registry backing.
+    //     strea: TcpStream
+    //         Caller-supplied strea.
+    //     ls: Option<Arc<rustls::ServerConfig>>
+    //         Caller-supplied ls.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::handle_connection(state, registry_backing, strea, ls);
+
     if let Some(server_config) = tls {
         let shared = Arc::clone(&state);
         let backing = registry_backing.clone();
@@ -256,7 +422,43 @@ pub fn run_fleet_mesh_coordinator(
     token: Option<String>,
     tls: Option<DeployAgentTls>,
 ) -> Result<(), String> {
-    // Run the fleet mesh coordinator until interrupted.
+    // Description:
+
+    //     Run fleet mesh coordinator.
+
+    //
+
+    // Inputs:
+
+    //     bind: &str
+
+    //         Caller-supplied bind.
+
+    //     registry_path: &Path
+
+    //         Caller-supplied registry path.
+
+    //     token: Option<String>
+
+    //         Caller-supplied token.
+
+    //     ls: Option<DeployAgentTls>
+
+    //         Caller-supplied ls.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<(), String>
+
+    //         Return value from `run_fleet_mesh_coordinator`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::mesh::run_fleet_mesh_coordinator(bind, registry_path, oken, ls);
     let registry = load_fleet_agent_registry(registry_path);
     let state = FleetMeshState {
         token,
@@ -295,7 +497,39 @@ pub fn relay_deliveries_via_mesh(
     deliveries: &[PeerDelivery],
     token: Option<&str>,
 ) -> Result<MeshRelayResponse, String> {
-    // Send peer deliveries to a fleet mesh coordinator endpoint.
+    // Description:
+
+    //     Relay deliveries via mesh.
+
+    //
+
+    // Inputs:
+
+    //     mesh_url: &str
+
+    //         Caller-supplied mesh url.
+
+    //     deliveries: &[PeerDelivery]
+
+    //         Caller-supplied deliveries.
+
+    //     token: Option<&str>
+
+    //         Caller-supplied token.
+
+    //
+
+    // Outputs:
+
+    //     result: Result<MeshRelayResponse, String>
+
+    //         Return value from `relay_deliveries_via_mesh`.
+
+    //
+
+    // Example:
+
+    //     let result = spanda_fleet::mesh::relay_deliveries_via_mesh(esh_url, deliveries, oken);
     let parsed = spanda_deploy_http::parse_http_url(mesh_url)?;
     let url = format!(
         "{}://{}:{}/v1/mesh/relay",
@@ -316,6 +550,20 @@ pub fn relay_deliveries_via_mesh(
 }
 
 pub fn mesh_registry_path() -> PathBuf {
+    // Description:
+    //     Mesh registry path.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `mesh_registry_path`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::mesh_registry_path();
+
     std::env::var("SPANDA_FLEET_AGENTS")
         .map(PathBuf::from)
         .unwrap_or_else(|_| default_fleet_agents_path())
@@ -324,6 +572,21 @@ pub fn mesh_registry_path() -> PathBuf {
 pub fn spawn_test_fleet_mesh(
     registry: &FleetAgentRegistry,
 ) -> Result<(u16, thread::JoinHandle<()>), String> {
+    // Description:
+    //     Spawn test fleet mesh.
+    //
+    // Inputs:
+    //     registry: &FleetAgentRegistry
+    //         Caller-supplied registry.
+    //
+    // Outputs:
+    //     result: Result<(u16, thread::JoinHandle<()>), String>
+    //         Return value from `spawn_test_fleet_mesh`.
+    //
+    // Example:
+
+    //     let result = spanda_fleet::mesh::spawn_test_fleet_mesh(registry);
+
     let listener = TcpListener::bind("127.0.0.1:0").map_err(|e| e.to_string())?;
     let port = listener.local_addr().map_err(|e| e.to_string())?.port();
     let shared_registry = Arc::new(registry.clone());

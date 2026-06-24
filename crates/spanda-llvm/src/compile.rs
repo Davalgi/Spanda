@@ -25,20 +25,21 @@ pub fn compile_native(
     sir: &SirProgram,
     opts: &CompileNativeOptions,
 ) -> Result<CompileNativeResult, String> {
-    // Compile native.
+    // Description:
+    //     Compile native.
     //
-    // Parameters:
-    // - `sir` — input value
-    // - `opts` — input value
+    // Inputs:
+    //     sir: &SirProgram
+    //         Caller-supplied sir.
+    //     opts: &CompileNativeOptions
+    //         Caller-supplied opts.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<CompileNativeResult, String>
+    //         Return value from `compile_native`.
     //
     // Example:
-    // let result = spanda_llvm::compile::compile_native(sir, opts);
+    //     let result = spanda_llvm::compile::compile_native(sir, opts);
 
     // Compute clang for the following logic.
     let clang =
@@ -100,19 +101,19 @@ pub fn compile_native(
 }
 
 fn hal_profile_triple(profile: Option<&str>) -> Option<&'static str> {
-    // Hal profile triple.
+    // Description:
+    //     Hal profile triple.
     //
-    // Parameters:
-    // - `profile` — input value
+    // Inputs:
+    //     profile: Option<&str>
+    //         Caller-supplied profile.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<&'static str>
+    //         Return value from `hal_profile_triple`.
     //
     // Example:
-    // let result = spanda_llvm::compile::hal_profile_triple(profile);
+    //     let result = spanda_llvm::compile::hal_profile_triple(profile);
 
     // Match on profile? and handle each case.
     match profile? {
@@ -123,19 +124,18 @@ fn hal_profile_triple(profile: Option<&str>) -> Option<&'static str> {
 }
 
 fn detect_clang() -> Option<String> {
-    // Detect clang.
+    // Description:
+    //     Detect clang.
     //
-    // Parameters:
-    // None.
+    // Inputs:
+    //     None.
     //
-    // Returns:
-    // Some value on success, otherwise none.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `detect_clang`.
     //
     // Example:
-    // let result = spanda_llvm::compile::detect_clang();
+    //     let result = spanda_llvm::compile::detect_clang();
 
     // Iterate over ["clang", "clang-18", "clang-17", "clang-16"].
     for candidate in ["clang", "clang-18", "clang-17", "clang-16"] {
@@ -153,19 +153,19 @@ fn detect_clang() -> Option<String> {
 }
 
 fn resolve_target_dir(workspace_root: &Path) -> PathBuf {
-    // Resolve target dir.
+    // Description:
+    //     Resolve target dir.
     //
-    // Parameters:
-    // - `workspace_root` — input value
+    // Inputs:
+    //     workspace_roo: &Path
+    //         Caller-supplied workspace roo.
     //
-    // Returns:
-    // PathBuf.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `resolve_target_dir`.
     //
     // Example:
-    // let result = spanda_llvm::compile::resolve_target_dir(workspace_root);
+    //     let result = spanda_llvm::compile::resolve_target_dir(workspace_roo);
 
     // Produce var as the result.
     std::env::var("CARGO_TARGET_DIR")
@@ -174,19 +174,19 @@ fn resolve_target_dir(workspace_root: &Path) -> PathBuf {
 }
 
 fn ensure_spanda_rt_staticlib(workspace_root: &Path) -> Result<PathBuf, String> {
-    // Ensure spanda rt staticlib.
+    // Description:
+    //     Ensure spanda rt staticlib.
     //
-    // Parameters:
-    // - `workspace_root` — input value
+    // Inputs:
+    //     workspace_roo: &Path
+    //         Caller-supplied workspace roo.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<PathBuf, String>
+    //         Return value from `ensure_spanda_rt_staticlib`.
     //
     // Example:
-    // let result = spanda_llvm::compile::ensure_spanda_rt_staticlib(workspace_root);
+    //     let result = spanda_llvm::compile::ensure_spanda_rt_staticlib(workspace_roo);
 
     // Compute target dir for the following logic.
     let target_dir = resolve_target_dir(workspace_root);
@@ -232,19 +232,18 @@ mod tests {
 
     #[test]
     fn compile_native_when_clang_available() {
-        // Compile native when clang available.
+        // Description:
+        //     Compile native when clang available.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_llvm::compile::compile_native_when_clang_available();
+
+        //     let result = spanda_llvm::compile::compile_native_when_clang_available();
 
         if detect_clang().is_none() {
             return;

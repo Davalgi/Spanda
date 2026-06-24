@@ -26,18 +26,18 @@ pub struct FfiRegistry {
 
 impl Default for FfiRegistry {
     fn default() -> Self {
+        // Description:
+        //     Provide the default value for this type.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `default`.
         //
         // Example:
-        // let value = spanda_ffi::default();
+        //     let result = spanda_ffi::default();
 
         // Build the result via new.
         Self::new()
@@ -46,19 +46,18 @@ impl Default for FfiRegistry {
 
 impl FfiRegistry {
     pub fn new() -> Self {
-        // Create a new instance.
+        // Description:
+        //     Construct a new instance.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // A new instance of this type.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `new`.
         //
         // Example:
-        // let value = spanda_ffi::new();
+        //     let value = spanda_ffi::new();
 
         // Create mutable registry for accumulating results.
         let mut registry = Self {
@@ -71,6 +70,21 @@ impl FfiRegistry {
     }
 
     pub fn with_bridges(bridges: ExternBridges) -> Self {
+        // Description:
+        //     With bridges.
+        //
+        // Inputs:
+        //     bridges: ExternBridges
+        //         Caller-supplied bridges.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `with_bridges`.
+        //
+        // Example:
+
+        //     let result = spanda_ffi::with_bridges(bridges);
+
         Self {
             bridges,
             ..Self::new()
@@ -78,44 +92,63 @@ impl FfiRegistry {
     }
 
     pub fn set_bridges(&mut self, bridges: ExternBridges) {
+        // Description:
+        //     Set bridges.
+        //
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     bridges: ExternBridges
+        //         Caller-supplied bridges.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_ffi::set_bridges(&mut self, bridges);
+
         self.bridges = bridges;
     }
 
     pub fn register(&mut self, name: &str, handler: FfiHandler) {
-        // Register the value.
+        // Description:
+        //     Register.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
-        // - `handler` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     name: &str
+        //         Caller-supplied name.
+        //     handler: FfiHandler
+        //         Caller-supplied handler.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.register(name, handler);
+        //     let result = spanda_ffi::register(&mut self, name, handler);
 
         // Append into self.
         self.handlers.insert(name.to_string(), handler);
     }
 
     pub fn has_handler(&self, name: &str) -> bool {
+        // Description:
+        //     Has handler.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `name` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     name: &str
+        //         Caller-supplied name.
         //
-        // Returns:
-        // true or false.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: bool
+        //         Return value from `has_handler`.
         //
         // Example:
-        // let result = instance.has_handler(name);
+        //     let result = spanda_ffi::has_handler(&self, name);
 
         // Call contains key on the current instance.
         self.handlers.contains_key(name)
@@ -126,21 +159,23 @@ impl FfiRegistry {
         decl: &ExternFnDecl,
         args: &[RuntimeValue],
     ) -> Result<RuntimeValue, SpandaError> {
-        // Call.
+        // Description:
+        //     Call.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `decl` — input value
-        // - `args` — input value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     decl: &ExternFnDecl
+        //         Caller-supplied decl.
+        //     args: &[RuntimeValue]
+        //         Caller-supplied args.
         //
-        // Returns:
-        // Success value on completion, or an error.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Result<RuntimeValue, SpandaError>
+        //         Return value from `call`.
         //
         // Example:
-        // let result = instance.call(decl, args);
+        //     let result = spanda_ffi::call(&self, decl, args);
 
         // keep entries that match the expected pattern.
         if matches!(decl.bridge, BridgeKind::Python) && !self.handlers.contains_key(&decl.name) {
@@ -173,38 +208,38 @@ impl FfiRegistry {
 }
 
 fn stub_echo(args: &[RuntimeValue]) -> Result<RuntimeValue, SpandaError> {
-    // Stub echo.
+    // Description:
+    //     Stub echo.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `stub_echo`.
     //
     // Example:
-    // let result = spanda_ffi::stub_echo(args);
+    //     let result = spanda_ffi::stub_echo(args);
 
     // Return the success value to the caller.
     Ok(args.first().cloned().unwrap_or(RuntimeValue::Void))
 }
 
 fn stub_add(args: &[RuntimeValue]) -> Result<RuntimeValue, SpandaError> {
-    // Stub add.
+    // Description:
+    //     Stub add.
     //
-    // Parameters:
-    // - `args` — input value
+    // Inputs:
+    //     args: &[RuntimeValue]
+    //         Caller-supplied args.
     //
-    // Returns:
-    // Success value on completion, or an error.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: Result<RuntimeValue, SpandaError>
+    //         Return value from `stub_add`.
     //
     // Example:
-    // let result = spanda_ffi::stub_add(args);
+    //     let result = spanda_ffi::stub_add(args);
 
     // Compute a for the following logic.
     let a = match args.first() {
@@ -228,19 +263,18 @@ mod tests {
 
     #[test]
     fn stub_add_sums_integers() {
-        // Stub add sums integers.
+        // Description:
+        //     Stub add sums integers.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ffi::stub_add_sums_integers();
+
+        //     let result = spanda_ffi::stub_add_sums_integers();
 
         let registry = FfiRegistry::new();
         let decl = ExternFnDecl {
@@ -288,19 +322,18 @@ mod tests {
 
     #[test]
     fn python_bridge_without_handler_errors_clearly() {
-        // Python bridge without handler errors clearly.
+        // Description:
+        //     Python bridge without handler errors clearly.
         //
-        // Parameters:
-        // None.
+        // Inputs:
+        //     None.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = spanda_ffi::python_bridge_without_handler_errors_clearly();
+
+        //     let result = spanda_ffi::python_bridge_without_handler_errors_clearly();
 
         let registry = FfiRegistry::new();
         let decl = ExternFnDecl {

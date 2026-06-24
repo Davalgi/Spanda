@@ -4,6 +4,19 @@ use spanda_core::{check, compile, run, RunOptions};
 
 #[test]
 fn mission_with_steps_parses_and_runs() {
+    // Description:
+    //     Mission with steps parses and runs.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::mission_with_steps_parses_and_runs();
+
     let source = r#"
 robot DeliveryBot {
   actuator wheels: DifferentialDrive;
@@ -41,6 +54,19 @@ robot DeliveryBot {
 
 #[test]
 fn fleet_decl_validates_members() {
+    // Description:
+    //     Fleet decl validates members.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::fleet_decl_validates_members();
+
     let source = r#"
 robot Picker1 {
   actuator wheels: DifferentialDrive;
@@ -72,6 +98,19 @@ robot Coordinator {
 
 #[test]
 fn fleet_coordinator_without_actuators_runs_member_behaviors() {
+    // Description:
+    //     Fleet coordinator without actuators runs member behaviors.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::fleet_coordinator_without_actuators_runs_member_behaviors();
+
     let source = r#"
 robot PickerA {
   actuator wheels: DifferentialDrive;
@@ -101,6 +140,19 @@ robot Coordinator {
 
 #[test]
 fn fleet_unknown_member_rejected() {
+    // Description:
+    //     Fleet unknown member rejected.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::fleet_unknown_member_rejected();
+
     let source = r#"
 robot Picker1 {
   actuator wheels: DifferentialDrive;
@@ -123,6 +175,19 @@ fleet Warehouse {
 
 #[test]
 fn program_safety_zone_parses() {
+    // Description:
+    //     Program safety zone parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::program_safety_zone_parses();
+
     let source = r#"
 safety_zone HumanArea {
   max_speed 0.5 m/s;
@@ -157,6 +222,19 @@ robot ZoneBot {
 
 #[test]
 fn fusion_returns_confidence() {
+    // Description:
+    //     Fusion returns confidence.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::fusion_returns_confidence();
+
     let source = r#"
 robot FusionBot {
   sensor camera: Camera on "/camera";
@@ -180,6 +258,19 @@ robot FusionBot {
 
 #[test]
 fn program_safety_zone_caps_motion() {
+    // Description:
+    //     Program safety zone caps motion.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::program_safety_zone_caps_motion();
+
     let source = r#"
 safety_zone HumanArea {
   max_speed 0.5 m/s;
@@ -203,6 +294,19 @@ robot ZoneBot {
 
 #[test]
 fn legacy_mission_duration_still_works() {
+    // Description:
+    //     Legacy mission duration still works.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::legacy_mission_duration_still_works();
+
     let source = r#"
 robot LegacyRover {
   actuator wheels: DifferentialDrive;
@@ -215,6 +319,19 @@ robot LegacyRover {
 
 #[test]
 fn certify_metadata_parses() {
+    // Description:
+    //     Certify metadata parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::certify_metadata_parses();
+
     let source = r#"
 certify ISO13849;
 
@@ -228,6 +345,19 @@ robot R {
 
 #[test]
 fn certify_unknown_standard_rejected() {
+    // Description:
+    //     Certify unknown standard rejected.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::certify_unknown_standard_rejected();
+
     let source = r#"
 certify UNKNOWN;
 
@@ -241,6 +371,19 @@ robot R {
 
 #[test]
 fn certify_duplicate_rejected() {
+    // Description:
+    //     Certify duplicate rejected.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::certify_duplicate_rejected();
+
     let source = r#"
 certify ISO13849;
 certify ISO13849;
@@ -255,6 +398,19 @@ robot R {
 
 #[test]
 fn navigate_statement_sugar_runs() {
+    // Description:
+    //     Navigate statement sugar runs.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::navigate_statement_sugar_runs();
+
     let source = r#"
 robot NavBot {
   topic cmd_vel: Velocity publish on "/cmd_vel";
@@ -290,6 +446,19 @@ robot NavBot {
 
 #[test]
 fn framework_import_verify_reports_adapter() {
+    // Description:
+    //     Framework import verify reports adapter.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::robotics_platform::framework_import_verify_reports_adapter();
+
     let source = r#"
 import navigation.nav2;
 

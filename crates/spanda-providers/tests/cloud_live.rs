@@ -8,11 +8,38 @@ use std::sync::{Mutex, OnceLock};
 static ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
 fn env_lock() -> &'static Mutex<()> {
+    // Description:
+    //     Env lock.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: &'static Mutex<()>
+    //         Return value from `env_lock`.
+    //
+    // Example:
+
+    //     let result = spanda_providers::cloud_live::env_lock();
+
     ENV_LOCK.get_or_init(|| Mutex::new(()))
 }
 
 #[test]
 fn cloud_upload_posts_when_url_set() {
+    // Description:
+    //     Cloud upload posts when url set.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_providers::cloud_live::cloud_upload_posts_when_url_set();
+
     let Ok(url) = std::env::var("SPANDA_CLOUD_UPLOAD_URL") else {
         return;
     };

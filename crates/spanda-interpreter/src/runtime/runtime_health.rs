@@ -8,20 +8,21 @@ use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn cache_health_program(&mut self, program: &Program) {
-        // Cache the program when it declares health checks for runtime polling.
+        // Description:
+        //     Cache health program.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `program` — parsed program
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     progra: &Program
+        //         Caller-supplied progra.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.cache_health_program(program);
+
+        //     let result = spanda_interpreter::runtime_health::cache_health_program(&mut self, progra);
 
         let Program::Program {
             health_checks,
@@ -52,19 +53,19 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn poll_runtime_health_changes(&mut self) {
-        // Re-evaluate health checks when monitor faults or events change.
+        // Description:
+        //     Poll runtime health changes.
         //
-        // Parameters:
-        // - `self` — method receiver
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.poll_runtime_health_changes();
+
+        //     let result = spanda_interpreter::runtime_health::poll_runtime_health_changes(&mut self);
 
         let Some(program) = self.health_program.clone() else {
             return;
@@ -104,20 +105,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn apply_swarm_health_coordination(&mut self, report: &HealthReport) {
-        // Log swarm coordination when fleet health degrades across declared swarms.
+        // Description:
+        //     Apply swarm health coordination.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `report` — runtime health evaluation result
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     repor: &HealthReport
+        //         Caller-supplied repor.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.apply_swarm_health_coordination(report);
+
+        //     let result = spanda_interpreter::runtime_health::apply_swarm_health_coordination(&mut self, repor);
 
         if !matches!(
             report.overall,
@@ -151,20 +153,21 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn apply_health_policy_reactions(&mut self, report: &HealthReport) {
-        // Execute matching health_policy reactions once per status transition.
+        // Description:
+        //     Apply health policy reactions.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `report` — runtime health evaluation result
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     repor: &HealthReport
+        //         Caller-supplied repor.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.apply_health_policy_reactions(report);
+
+        //     let result = spanda_interpreter::runtime_health::apply_health_policy_reactions(&mut self, repor);
 
         let Some(program) = self.health_program.clone() else {
             return;
@@ -221,22 +224,25 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn record_debug_event(&self, line: u32, reason: &str, vars: &[(&str, String)]) {
-        // Record a debugger pause/event when a debug session is attached.
+        // Description:
+        //     Record debug event.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `line` — source line for the event
-        // - `reason` — pause reason label
-        // - `vars` — variable snapshot entries
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
+        //     line: u32
+        //         Caller-supplied line.
+        //     reason: &str
+        //         Caller-supplied reason.
+        //     vars: &[(&str, String)]
+        //         Caller-supplied vars.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.record_debug_event(line, reason, vars);
+
+        //     let result = spanda_interpreter::runtime_health::record_debug_event(&self, line, reason, vars);
 
         let Some(debug) = &self.options.debug else {
             return;

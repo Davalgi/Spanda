@@ -5,6 +5,21 @@ use spanda_ast::nodes::{Program, RobotDecl, SensorDecl};
 
 /// Parsed fusion input path (`gps.fix` → sensor `gps`, field `fix`).
 pub fn parse_fusion_input(input: &str) -> (&str, Option<&str>) {
+    // Description:
+    //     Parse fusion input.
+    //
+    // Inputs:
+    //     inp: &str
+    //         Caller-supplied inp.
+    //
+    // Outputs:
+    //     result: (&str, Option<&str>)
+    //         Return value from `parse_fusion_input`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::fusion::parse_fusion_input(inp);
+
     match input.split_once('.') {
         Some((sensor, field)) => (sensor, Some(field)),
         None => (input, None),
@@ -13,6 +28,21 @@ pub fn parse_fusion_input(input: &str) -> (&str, Option<&str>) {
 
 /// Relative weight for a sensor type in weighted fusion.
 pub fn weight_for_sensor_type(sensor_type: &str) -> f64 {
+    // Description:
+    //     Weight for sensor type.
+    //
+    // Inputs:
+    //     sensor_type: &str
+    //         Caller-supplied sensor type.
+    //
+    // Outputs:
+    //     result: f64
+    //         Return value from `weight_for_sensor_type`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::fusion::weight_for_sensor_type(sensor_type);
+
     match sensor_type {
         "GPS" | "GNSS" => 0.35,
         "Lidar" => 0.25,
@@ -26,6 +56,21 @@ pub fn weight_for_sensor_type(sensor_type: &str) -> f64 {
 
 /// Compute normalized confidence from participating sensor types.
 pub fn weighted_confidence(sensor_types: &[&str]) -> f64 {
+    // Description:
+    //     Weighted confidence.
+    //
+    // Inputs:
+    //     sensor_types: &[&str]
+    //         Caller-supplied sensor types.
+    //
+    // Outputs:
+    //     result: f64
+    //         Return value from `weighted_confidence`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::fusion::weighted_confidence(sensor_types);
+
     if sensor_types.is_empty() {
         return 0.0;
     }
@@ -44,6 +89,21 @@ pub struct FusionPreview {
 
 /// Build a sensor-name → type map from all robots in a program.
 pub fn sensor_type_index(program: &Program) -> std::collections::HashMap<String, String> {
+    // Description:
+    //     Sensor type index.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: std::collections::HashMap<String, String>
+    //         Return value from `sensor_type_index`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::fusion::sensor_type_index(progra);
+
     let Program::Program { robots, .. } = program;
     let mut index = std::collections::HashMap::new();
     for robot in robots {
@@ -64,6 +124,25 @@ pub fn preview_fusion_inputs(
     inputs: &[String],
     output_type: &str,
 ) -> FusionPreview {
+    // Description:
+    //     Preview fusion inputs.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     inputs: &[String]
+    //         Caller-supplied inputs.
+    //     output_type: &str
+    //         Caller-supplied output type.
+    //
+    // Outputs:
+    //     result: FusionPreview
+    //         Return value from `preview_fusion_inputs`.
+    //
+    // Example:
+
+    //     let result = spanda_runtime::fusion::preview_fusion_inputs(progra, inputs, output_type);
+
     let index = sensor_type_index(program);
     let mut types = Vec::new();
     for input in inputs {
@@ -86,6 +165,19 @@ mod tests {
 
     #[test]
     fn weighted_confidence_favors_diverse_sensors() {
+        // Description:
+        //     Weighted confidence favors diverse sensors.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::fusion::weighted_confidence_favors_diverse_sensors();
+
         let gps_lidar = weighted_confidence(&["GPS", "Lidar"]);
         let unknown_only = weighted_confidence(&["Unknown"]);
         assert!(gps_lidar > unknown_only);
@@ -94,6 +186,19 @@ mod tests {
 
     #[test]
     fn parse_fusion_input_splits_field() {
+        // Description:
+        //     Parse fusion input splits field.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_runtime::fusion::parse_fusion_input_splits_field();
+
         let (sensor, field) = parse_fusion_input("gps.fix");
         assert_eq!(sensor, "gps");
         assert_eq!(field, Some("fix"));

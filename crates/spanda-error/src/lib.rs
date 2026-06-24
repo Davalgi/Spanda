@@ -27,6 +27,21 @@ pub enum SpandaError {
 
 impl From<spanda_runtime::RuntimeError> for SpandaError {
     fn from(err: spanda_runtime::RuntimeError) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     err: spanda_runtime::RuntimeError
+        //         Caller-supplied err.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_error::from(err);
+
         Self::Runtime {
             message: err.message,
             line: err.line,
@@ -36,19 +51,20 @@ impl From<spanda_runtime::RuntimeError> for SpandaError {
 
 impl SpandaError {
     pub fn diagnostics(&self) -> Vec<Diagnostic> {
-        // Collect human-readable diagnostics for this error.
+        // Description:
+        //     Diagnostics.
         //
-        // Parameters:
-        // - `self` — error value
+        // Inputs:
+        //     &self: input value
+        //         Caller-supplied &self.
         //
-        // Returns:
-        // One or more source diagnostics.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Vec<Diagnostic>
+        //         Return value from `diagnostics`.
         //
         // Example:
-        // let lines = err.diagnostics();
+
+        //     let result = spanda_error::diagnostics(&self);
 
         match self {
             SpandaError::Lexer {
@@ -86,6 +102,21 @@ impl SpandaError {
 
 impl From<spanda_lexer::LexerError> for SpandaError {
     fn from(err: spanda_lexer::LexerError) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     err: spanda_lexer::LexerError
+        //         Caller-supplied err.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_error::from(err);
+
         Self::Lexer {
             message: err.message,
             line: err.line,
@@ -96,6 +127,21 @@ impl From<spanda_lexer::LexerError> for SpandaError {
 
 impl From<spanda_ast::RegexCompileError> for SpandaError {
     fn from(err: spanda_ast::RegexCompileError) -> Self {
+        // Description:
+        //     From.
+        //
+        // Inputs:
+        //     err: spanda_ast::RegexCompileError
+        //         Caller-supplied err.
+        //
+        // Outputs:
+        //     result: Self
+        //         Return value from `from`.
+        //
+        // Example:
+
+        //     let result = spanda_error::from(err);
+
         Self::Parse {
             message: err.message,
             line: err.line,

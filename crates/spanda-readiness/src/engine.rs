@@ -15,6 +15,23 @@ use spanda_security::validate::{security_check, SecuritySeverity};
 
 /// Evaluate operational readiness for a parsed program.
 pub fn evaluate_readiness(program: &Program, options: &ReadinessOptions) -> ReadinessReport {
+    // Description:
+    //     Evaluate readiness.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: ReadinessReport
+    //         Return value from `evaluate_readiness`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::evaluate_readiness(progra, options);
+
     evaluate_readiness_with_runtime(program, options, None)
 }
 
@@ -24,6 +41,25 @@ pub fn evaluate_readiness_with_runtime(
     options: &ReadinessOptions,
     runtime: Option<&RuntimeReadinessContext>,
 ) -> ReadinessReport {
+    // Description:
+    //     Evaluate readiness with runtime.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //     runtime: Option<&RuntimeReadinessContext>
+    //         Caller-supplied runtime.
+    //
+    // Outputs:
+    //     result: ReadinessReport
+    //         Return value from `evaluate_readiness_with_runtime`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::evaluate_readiness_with_runtime(progra, options, runtime);
+
     let policy = options.policy.clone().unwrap_or_default();
     let mut issues = Vec::new();
     let mut factor_scores = Vec::new();
@@ -391,6 +427,23 @@ pub fn evaluate_readiness_source(
     source: &str,
     options: &ReadinessOptions,
 ) -> Result<ReadinessReport, spanda_error::SpandaError> {
+    // Description:
+    //     Evaluate readiness source.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     options: &ReadinessOptions
+    //         Caller-supplied options.
+    //
+    // Outputs:
+    //     result: Result<ReadinessReport, spanda_error::SpandaError>
+    //         Return value from `evaluate_readiness_source`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::evaluate_readiness_source(source, options);
+
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
     let runtime = options
@@ -404,6 +457,25 @@ pub fn evaluate_readiness_source(
 }
 
 fn factor_row(factor: &str, score: u32, weight: u32) -> ReadinessFactorScore {
+    // Description:
+    //     Factor row.
+    //
+    // Inputs:
+    //     factor: &str
+    //         Caller-supplied factor.
+    //     score: u32
+    //         Caller-supplied score.
+    //     weigh: u32
+    //         Caller-supplied weigh.
+    //
+    // Outputs:
+    //     result: ReadinessFactorScore
+    //         Return value from `factor_row`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::factor_row(factor, score, weigh);
+
     ReadinessFactorScore {
         factor: factor.into(),
         score,
@@ -413,6 +485,21 @@ fn factor_row(factor: &str, score: u32, weight: u32) -> ReadinessFactorScore {
 }
 
 fn compute_weighted_total(factors: &[ReadinessFactorScore]) -> u32 {
+    // Description:
+    //     Compute weighted total.
+    //
+    // Inputs:
+    //     factors: &[ReadinessFactorScore]
+    //         Caller-supplied factors.
+    //
+    // Outputs:
+    //     result: u32
+    //         Return value from `compute_weighted_total`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::compute_weighted_total(factors);
+
     let weight_sum: u32 = factors.iter().map(|f| f.weight).sum();
     if weight_sum == 0 {
         return 0;
@@ -422,6 +509,23 @@ fn compute_weighted_total(factors: &[ReadinessFactorScore]) -> u32 {
 }
 
 fn score_from_compatible(compatible: bool, error_count: usize) -> u32 {
+    // Description:
+    //     Score from compatible.
+    //
+    // Inputs:
+    //     compatible: bool
+    //         Caller-supplied compatible.
+    //     error_coun: usize
+    //         Caller-supplied error coun.
+    //
+    // Outputs:
+    //     result: u32
+    //         Return value from `score_from_compatible`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::score_from_compatible(compatible, error_coun);
+
     if compatible && error_count == 0 {
         100
     } else if compatible {
@@ -434,6 +538,23 @@ fn score_from_compatible(compatible: bool, error_count: usize) -> u32 {
 }
 
 fn score_from_errors(errors: usize, warnings: usize) -> u32 {
+    // Description:
+    //     Score from errors.
+    //
+    // Inputs:
+    //     errors: usize
+    //         Caller-supplied errors.
+    //     warnings: usize
+    //         Caller-supplied warnings.
+    //
+    // Outputs:
+    //     result: u32
+    //         Return value from `score_from_errors`.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::score_from_errors(errors, warnings);
+
     let base = 100u32;
     base.saturating_sub((errors * 25) as u32)
         .saturating_sub((warnings * 5) as u32)
@@ -442,6 +563,22 @@ fn score_from_errors(errors: usize, warnings: usize) -> u32 {
 
 /// Add security findings as readiness issues when evaluating with security context.
 pub fn append_security_issues(source: &str, issues: &mut Vec<ReadinessIssue>) {
+    // Description:
+    //     Append security issues.
+    //
+    // Inputs:
+    //     source: &str
+    //         Caller-supplied source.
+    //     issues: &mut Vec<ReadinessIssue>
+    //         Caller-supplied issues.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_readiness::engine::append_security_issues(source, issues);
+
     if let Ok(report) = security_check(source) {
         for finding in report.findings {
             let sev = match finding.severity {

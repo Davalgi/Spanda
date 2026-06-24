@@ -35,19 +35,19 @@ pub struct RetryRuntime {
 
 impl WatchdogRuntime {
     pub fn from_decl(decl: &WatchdogDecl) -> Self {
-        // Build runtime watchdog state from a parsed declaration.
+        // Description:
+        //     From decl.
         //
-        // Parameters:
-        // - `decl` — parsed watchdog block
+        // Inputs:
+        //     decl: &WatchdogDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Watchdog runtime entry.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_decl`.
         //
         // Example:
-        // let wd = WatchdogRuntime::from_decl(&watchdog_decl);
+        //     let result = spanda_runtime::reliability_runtime::from_decl(decl);
 
         // Copy declaration fields into the runtime container.
         let WatchdogDecl::WatchdogDecl {
@@ -69,19 +69,19 @@ impl WatchdogRuntime {
 
 impl PipelineRuntime {
     pub fn from_decl(decl: &PipelineDecl) -> Self {
-        // Build runtime pipeline state from a parsed declaration.
+        // Description:
+        //     From decl.
         //
-        // Parameters:
-        // - `decl` — parsed pipeline block
+        // Inputs:
+        //     decl: &PipelineDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Pipeline runtime entry.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_decl`.
         //
         // Example:
-        // let pipeline = PipelineRuntime::from_decl(&pipeline_decl);
+        //     let result = spanda_runtime::reliability_runtime::from_decl(decl);
 
         // Copy declaration fields into the runtime container.
         let PipelineDecl::PipelineDecl {
@@ -100,19 +100,19 @@ impl PipelineRuntime {
 
 impl RetryRuntime {
     pub fn from_decl(decl: &RetryDecl) -> Self {
-        // Build runtime retry state from a parsed declaration.
+        // Description:
+        //     From decl.
         //
-        // Parameters:
-        // - `decl` — parsed retry block
+        // Inputs:
+        //     decl: &RetryDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Retry runtime entry.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_decl`.
         //
         // Example:
-        // let retry = RetryRuntime::from_decl(&retry_decl);
+        //     let result = spanda_runtime::reliability_runtime::from_decl(decl);
 
         // Copy declaration fields into the runtime container.
         let RetryDecl::RetryDecl {
@@ -145,19 +145,19 @@ pub struct ModeRuntime {
 
 impl ModeRuntime {
     pub fn from_decl(decl: &spanda_ast::foundations::ModeDecl) -> Self {
-        // Build runtime mode state from a parsed declaration.
+        // Description:
+        //     From decl.
         //
-        // Parameters:
-        // - `decl` — parsed mode block
+        // Inputs:
+        //     decl: &spanda_ast::foundations::ModeDecl
+        //         Caller-supplied decl.
         //
-        // Returns:
-        // Mode runtime entry.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Self
+        //         Return value from `from_decl`.
         //
         // Example:
-        // let mode = ModeRuntime::from_decl(&mode_decl);
+        //     let result = spanda_runtime::reliability_runtime::from_decl(decl);
 
         // Copy declaration fields into the runtime container.
         let spanda_ast::foundations::ModeDecl::ModeDecl { name, body, .. } = decl;
@@ -169,19 +169,19 @@ impl ModeRuntime {
 }
 
 pub fn recover_handlers_from_decls(recovers: &[RecoverDecl]) -> RecoverHandlers {
-    // Index recovery handlers by declared error name.
+    // Description:
+    //     Recover handlers from decls.
     //
-    // Parameters:
-    // - `recovers` — parsed recover blocks
+    // Inputs:
+    //     recovers: &[RecoverDecl]
+    //         Caller-supplied recovers.
     //
-    // Returns:
-    // Map from error name to handler body statements.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: RecoverHandlers
+    //         Return value from `recover_handlers_from_decls`.
     //
     // Example:
-    // let handlers = recover_handlers_from_decls(&robot.recovers);
+    //     let result = spanda_runtime::reliability_runtime::recover_handlers_from_decls(recovers);
 
     // Build a lookup table for runtime dispatch.
     let mut handlers = HashMap::new();

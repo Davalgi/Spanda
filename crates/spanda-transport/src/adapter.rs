@@ -7,19 +7,19 @@ use std::collections::{HashMap, VecDeque};
 
 /// Serialize a runtime value into a ROS2-style service request payload string.
 pub fn payload_string_for_service(value: &RuntimeValue) -> String {
-    // Payload string for service.
+    // Description:
+    //     Payload string for service.
     //
-    // Parameters:
-    // - `value` — input value
+    // Inputs:
+    //     value: &RuntimeValue
+    //         Caller-supplied value.
     //
-    // Returns:
-    // Text result.
-    //
-    // Options:
-    // None.
+    // Outputs:
+    //     result: String
+    //         Return value from `payload_string_for_service`.
     //
     // Example:
-    // let result = payload_string_for_service(value);
+    //     let result = spanda_transport::adapter::payload_string_for_service(value);
 
     // Match on value and handle each case.
     match value {
@@ -85,22 +85,24 @@ pub struct StubTransportState {
 
 impl StubTransportState {
     pub fn publish(&mut self, topic: &str, message_type: &str, value: RuntimeValue) {
-        // Publish.
+        // Description:
+        //     Publish.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic` — input value
-        // - `message_type` — input value
-        // - `value` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic: &str
+        //         Caller-supplied opic.
+        //     essage_type: &str
+        //         Caller-supplied essage type.
+        //     value: RuntimeValue
+        //         Caller-supplied value.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.publish(topic, message_type, value);
+        //     let result = spanda_transport::adapter::publish(&mut self, opic, essage_type, value);
 
         // Append into self.
         self.published.push(AdapterMessage {
@@ -116,40 +118,41 @@ impl StubTransportState {
     }
 
     pub fn subscribe(&mut self, topic: &str) {
-        // Subscribe.
+        // Description:
+        //     Subscribe.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic: &str
+        //         Caller-supplied opic.
         //
-        // Returns:
-        // Nothing.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     None.
         //
         // Example:
-        // let result = instance.subscribe(topic);
+        //     let result = spanda_transport::adapter::subscribe(&mut self, opic);
 
         // Call entry on the current instance.
         self.subscriptions.entry(topic.to_string()).or_default();
     }
 
     pub fn receive(&mut self, topic: &str) -> Option<RuntimeValue> {
-        // Receive.
+        // Description:
+        //     Receive.
         //
-        // Parameters:
-        // - `self` — method receiver
-        // - `topic` — input value
+        // Inputs:
+        //     &mut self: input value
+        //         Caller-supplied &mut self.
+        //     opic: &str
+        //         Caller-supplied opic.
         //
-        // Returns:
-        // Some value on success, otherwise none.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: Option<RuntimeValue>
+        //         Return value from `receive`.
         //
         // Example:
-        // let result = instance.receive(topic);
+        //     let result = spanda_transport::adapter::receive(&mut self, opic);
 
         // Call subscriptions on the current instance.
         self.subscriptions
@@ -158,19 +161,19 @@ impl StubTransportState {
     }
 
     pub fn service_result(service_type: &str) -> RuntimeValue {
-        // Service result.
+        // Description:
+        //     Service result.
         //
-        // Parameters:
-        // - `service_type` — input value
+        // Inputs:
+        //     service_type: &str
+        //         Caller-supplied service type.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `service_result`.
         //
         // Example:
-        // let result = StubTransportState::service_result(service_type);
+        //     let result = spanda_transport::adapter::service_result(service_type);
 
         // Build a Object runtime value.
         RuntimeValue::Object {
@@ -180,19 +183,19 @@ impl StubTransportState {
     }
 
     pub fn action_result(action_type: &str) -> RuntimeValue {
-        // Action result.
+        // Description:
+        //     Action result.
         //
-        // Parameters:
-        // - `action_type` — input value
+        // Inputs:
+        //     action_type: &str
+        //         Caller-supplied action type.
         //
-        // Returns:
-        // RuntimeValue.
-        //
-        // Options:
-        // None.
+        // Outputs:
+        //     result: RuntimeValue
+        //         Return value from `action_result`.
         //
         // Example:
-        // let result = StubTransportState::action_result(action_type);
+        //     let result = spanda_transport::adapter::action_result(action_type);
 
         // Build a Object runtime value.
         RuntimeValue::Object {
@@ -213,39 +216,40 @@ macro_rules! stub_adapter {
 
         impl $crate::TransportAdapter for $name {
             fn kind(&self) -> spanda_ast::comm_decl::TransportKind {
-                // Kind.
+                // Description:
+                //     Kind.
                 //
-                // Parameters:
-                // - `self` — method receiver
+                // Inputs:
+                //     &self: input value
+                //         Caller-supplied &self.
                 //
-                // Returns:
-                // TransportKind.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: spanda_ast::comm_decl::TransportKind
+                //         Return value from `kind`.
                 //
                 // Example:
-                // let result = instance.kind();
+                //     let result = spanda_transport::adapter::kind(&self);
 
                 // Produce $kind as the result.
                 $kind
             }
 
             fn connect(&mut self, config: &$crate::TransportConfig) -> Result<(), String> {
-                // Connect.
+                // Description:
+                //     Connect.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `config` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     config: &$crate::TransportConfig
+                //         Caller-supplied config.
                 //
-                // Returns:
-                // Success value on completion, or an error.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: Result<(), String>
+                //         Return value from `connect`.
                 //
                 // Example:
-                // let result = instance.connect(config);
+                //     let result = spanda_transport::adapter::connect(&mut self, config);
 
                 // Call connected = true; on the current instance.
                 config.security.validate(self.kind().as_str())?;
@@ -263,37 +267,37 @@ macro_rules! stub_adapter {
             }
 
             fn disconnect(&mut self) {
-                // Disconnect.
+                // Description:
+                //     Disconnect.
                 //
-                // Parameters:
-                // - `self` — method receiver
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
                 //
-                // Returns:
-                // Nothing.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     None.
                 //
                 // Example:
-                // let result = instance.disconnect();
+                //     let result = spanda_transport::adapter::disconnect(&mut self);
 
                 // Call connected = false; on the current instance.
                 self.state.connected = false;
             }
 
             fn is_connected(&self) -> bool {
+                // Description:
+                //     Is connected.
                 //
-                // Parameters:
-                // - `self` — method receiver
+                // Inputs:
+                //     &self: input value
+                //         Caller-supplied &self.
                 //
-                // Returns:
-                // true or false.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: bool
+                //         Return value from `is_connected`.
                 //
                 // Example:
-                // let result = instance.is_connected();
+                //     let result = spanda_transport::adapter::is_connected(&self);
 
                 // Call connected on the current instance.
                 self.state.connected
@@ -305,22 +309,24 @@ macro_rules! stub_adapter {
                 message_type: &str,
                 value: spanda_runtime::RuntimeValue,
             ) {
-                // Publish.
+                // Description:
+                //     Publish.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `topic` — input value
-                // - `message_type` — input value
-                // - `value` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     opic: &str
+                //         Caller-supplied opic.
+                //     essage_type: &str
+                //         Caller-supplied essage type.
+                //     value: spanda_runtime::RuntimeValue
+                //         Caller-supplied value.
                 //
-                // Returns:
-                // Nothing.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     None.
                 //
                 // Example:
-                // let result = instance.publish(topic, message_type, value);
+                //     let result = spanda_transport::adapter::publish(&mut self, opic, essage_type, value);
 
                 // take this path when self.state.connected.
                 if self.state.connected {
@@ -329,20 +335,20 @@ macro_rules! stub_adapter {
             }
 
             fn subscribe(&mut self, topic: &str) {
-                // Subscribe.
+                // Description:
+                //     Subscribe.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `topic` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     opic: &str
+                //         Caller-supplied opic.
                 //
-                // Returns:
-                // Nothing.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     None.
                 //
                 // Example:
-                // let result = instance.subscribe(topic);
+                //     let result = spanda_transport::adapter::subscribe(&mut self, opic);
 
                 // take this path when self.state.connected.
                 if self.state.connected {
@@ -351,20 +357,21 @@ macro_rules! stub_adapter {
             }
 
             fn receive(&mut self, topic: &str) -> Option<spanda_runtime::RuntimeValue> {
-                // Receive.
+                // Description:
+                //     Receive.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `topic` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     opic: &str
+                //         Caller-supplied opic.
                 //
-                // Returns:
-                // Some value on success, otherwise none.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: Option<spanda_runtime::RuntimeValue>
+                //         Return value from `receive`.
                 //
                 // Example:
-                // let result = instance.receive(topic);
+                //     let result = spanda_transport::adapter::receive(&mut self, opic);
 
                 // take this path when self.state.connected.
                 if self.state.connected {
@@ -380,22 +387,25 @@ macro_rules! stub_adapter {
                 service_type: &str,
                 _request: Option<spanda_runtime::RuntimeValue>,
             ) -> spanda_runtime::RuntimeValue {
-                // Call service.
+                // Description:
+                //     Call service.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `_service` — input value
-                // - `service_type` — input value
-                // - `_request` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     _service: &str
+                //         Caller-supplied service.
+                //     service_type: &str
+                //         Caller-supplied service type.
+                //     request: Option<spanda_runtime::RuntimeValue>
+                //         Caller-supplied request.
                 //
-                // Returns:
-                // RuntimeValue.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: spanda_runtime::RuntimeValue
+                //         Return value from `call_service`.
                 //
                 // Example:
-                // let result = instance.call_service(_service, service_type, _request);
+                //     let result = spanda_transport::adapter::call_service(&mut self, _service, service_type, _reques);
 
                 // Produce service result as the result.
                 $crate::StubTransportState::service_result(service_type)
@@ -407,41 +417,44 @@ macro_rules! stub_adapter {
                 action_type: &str,
                 _goal: spanda_runtime::RuntimeValue,
             ) -> spanda_runtime::RuntimeValue {
-                // Send action.
+                // Description:
+                //     Send action.
                 //
-                // Parameters:
-                // - `self` — method receiver
-                // - `_action` — input value
-                // - `action_type` — input value
-                // - `_goal` — input value
+                // Inputs:
+                //     &mut self: input value
+                //         Caller-supplied &mut self.
+                //     _action: &str
+                //         Caller-supplied action.
+                //     action_type: &str
+                //         Caller-supplied action type.
+                //     _goal: spanda_runtime::RuntimeValue
+                //         Caller-supplied goal.
                 //
-                // Returns:
-                // RuntimeValue.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: spanda_runtime::RuntimeValue
+                //         Return value from `send_action`.
                 //
                 // Example:
-                // let result = instance.send_action(_action, action_type, _goal);
+                //     let result = spanda_transport::adapter::send_action(&mut self, _action, action_type, _goal);
 
                 // Produce action result as the result.
                 $crate::StubTransportState::action_result(action_type)
             }
 
             fn published(&self) -> Vec<$crate::AdapterMessage> {
-                // Published.
+                // Description:
+                //     Published.
                 //
-                // Parameters:
-                // - `self` — method receiver
+                // Inputs:
+                //     &self: input value
+                //         Caller-supplied &self.
                 //
-                // Returns:
-                // Vec<AdapterMessage>.
-                //
-                // Options:
-                // None.
+                // Outputs:
+                //     result: Vec<$crate::AdapterMessage>
+                //         Return value from `published`.
                 //
                 // Example:
-                // let result = instance.published();
+                //     let result = spanda_transport::adapter::published(&self);
 
                 // Call clone on the current instance.
                 self.state.published.clone()
@@ -456,6 +469,19 @@ mod tests {
 
     #[test]
     fn payload_string_for_string_value() {
+        // Description:
+        //     Payload string for string value.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_transport::adapter::payload_string_for_string_value();
+
         let value = RuntimeValue::String {
             value: "hello".into(),
         };

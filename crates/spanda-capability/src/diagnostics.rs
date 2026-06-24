@@ -24,6 +24,21 @@ pub struct VerificationDiagnostic {
 
 /// Collect capability, traceability, minimum-hardware, health, and kill-switch diagnostics.
 pub fn collect_verification_diagnostics(program: &Program) -> Vec<VerificationDiagnostic> {
+    // Description:
+    //     Collect verification diagnostics.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<VerificationDiagnostic>
+    //         Return value from `collect_verification_diagnostics`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::collect_verification_diagnostics(progra);
+
     let mut diags = Vec::new();
     let Program::Program {
         robots,
@@ -176,6 +191,31 @@ fn diag(
     category: &str,
     suggested_fix: Option<String>,
 ) -> VerificationDiagnostic {
+    // Description:
+    //     Diag.
+    //
+    // Inputs:
+    //     essage: String
+    //         Caller-supplied essage.
+    //     line: u32
+    //         Caller-supplied line.
+    //     column: u32
+    //         Caller-supplied column.
+    //     severity: &str
+    //         Caller-supplied severity.
+    //     category: &str
+    //         Caller-supplied category.
+    //     suggested_fix: Option<String>
+    //         Caller-supplied suggested fix.
+    //
+    // Outputs:
+    //     result: VerificationDiagnostic
+    //         Return value from `diag`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::diag(essage, line, column, severity, category, suggested_fix);
+
     VerificationDiagnostic {
         message,
         line,
@@ -192,6 +232,21 @@ const KILL_SWITCH_STUB: &str =
 const HEALTH_POLICY_STUB: &str = "health_policy SafetyPolicy {\n    on Critical { enter degraded_mode; }\n    on Unsafe { emergency_stop; }\n}";
 
 fn capability_fix_for(capability: &str) -> Option<String> {
+    // Description:
+    //     Capability fix for.
+    //
+    // Inputs:
+    //     capability: &str
+    //         Caller-supplied capability.
+    //
+    // Outputs:
+    //     result: Option<String>
+    //         Return value from `capability_fix_for`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::capability_fix_for(capability);
+
     match capability {
         "obstacle_avoidance" => Some("sensor lidar: Lidar;".into()),
         "gps_navigation" => Some("sensor gps: GPS;".into()),
@@ -201,6 +256,21 @@ fn capability_fix_for(capability: &str) -> Option<String> {
 }
 
 fn severity_for(severity: RequiresCapabilitySeverity) -> &'static str {
+    // Description:
+    //     Severity for.
+    //
+    // Inputs:
+    //     severity: RequiresCapabilitySeverity
+    //         Caller-supplied severity.
+    //
+    // Outputs:
+    //     result: &'static str
+    //         Return value from `severity_for`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::severity_for(severity);
+
     match severity {
         RequiresCapabilitySeverity::Error => "error",
         RequiresCapabilitySeverity::Warning => "warning",
@@ -213,6 +283,25 @@ fn map_traceability_error(
     robots: &[RobotDecl],
     requires: &[RequiresCapabilityDecl],
 ) -> Option<VerificationDiagnostic> {
+    // Description:
+    //     Map traceability error.
+    //
+    // Inputs:
+    //     err: &str
+    //         Caller-supplied err.
+    //     robots: &[RobotDecl]
+    //         Caller-supplied robots.
+    //     requires: &[RequiresCapabilityDecl]
+    //         Caller-supplied requires.
+    //
+    // Outputs:
+    //     result: Option<VerificationDiagnostic>
+    //         Return value from `map_traceability_error`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::map_traceability_error(err, robots, requires);
+
     if let Some(rest) = err.strip_prefix("Robot '") {
         if let Some((name, tail)) = rest.split_once("' uses undeclared hardware '") {
             if let Some(robot) = robots.iter().find(|r| robot_name(r) == name) {
@@ -248,6 +337,23 @@ fn map_traceability_error(
 }
 
 fn map_traceability_warning(warn: &str, robots: &[RobotDecl]) -> Option<VerificationDiagnostic> {
+    // Description:
+    //     Map traceability warning.
+    //
+    // Inputs:
+    //     warn: &str
+    //         Caller-supplied warn.
+    //     robots: &[RobotDecl]
+    //         Caller-supplied robots.
+    //
+    // Outputs:
+    //     result: Option<VerificationDiagnostic>
+    //         Return value from `map_traceability_warning`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::map_traceability_warning(warn, robots);
+
     if let Some(rest) = warn.strip_prefix("Actuator '") {
         if let Some((actuator, tail)) = rest.split_once("' on robot '") {
             if let Some(rname) = tail.strip_suffix("' has no safety gate") {
@@ -275,6 +381,27 @@ fn map_minimum_error(
     robots: &[RobotDecl],
     rows: &[MinimumCapabilityRow],
 ) -> Option<VerificationDiagnostic> {
+    // Description:
+    //     Map minimum error.
+    //
+    // Inputs:
+    //     err: &str
+    //         Caller-supplied err.
+    //     requires: &[RequiresCapabilityDecl]
+    //         Caller-supplied requires.
+    //     robots: &[RobotDecl]
+    //         Caller-supplied robots.
+    //     rows: &[MinimumCapabilityRow]
+    //         Caller-supplied rows.
+    //
+    // Outputs:
+    //     result: Option<VerificationDiagnostic>
+    //         Return value from `map_minimum_error`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::map_minimum_error(err, requires, robots, rows);
+
     let fix_from_rows = rows
         .iter()
         .find(|row| err.contains(&row.capability))
@@ -319,6 +446,23 @@ fn map_minimum_error(
 }
 
 fn kill_switch_diagnostics(ks: &KillSwitchDecl, program: &Program) -> Vec<VerificationDiagnostic> {
+    // Description:
+    //     Kill switch diagnostics.
+    //
+    // Inputs:
+    //     ks: &KillSwitchDecl
+    //         Caller-supplied ks.
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: Vec<VerificationDiagnostic>
+    //         Return value from `kill_switch_diagnostics`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::kill_switch_diagnostics(ks, progra);
+
     let KillSwitchDecl::KillSwitchDecl {
         name,
         remote_signed,
@@ -342,6 +486,21 @@ fn kill_switch_diagnostics(ks: &KillSwitchDecl, program: &Program) -> Vec<Verifi
 }
 
 fn program_has_signed_comm(program: &Program) -> bool {
+    // Description:
+    //     Program has signed comm.
+    //
+    // Inputs:
+    //     progra: &Program
+    //         Caller-supplied progra.
+    //
+    // Outputs:
+    //     result: bool
+    //         Return value from `program_has_signed_comm`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::program_has_signed_comm(progra);
+
     let Program::Program { robots, .. } = program;
     robots.iter().any(|robot| {
         let RobotDecl::RobotDecl {
@@ -362,11 +521,41 @@ fn program_has_signed_comm(program: &Program) -> bool {
 }
 
 fn robot_name(robot: &RobotDecl) -> &str {
+    // Description:
+    //     Robot name.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: &str
+    //         Return value from `robot_name`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::robot_name(robo);
+
     let RobotDecl::RobotDecl { name, .. } = robot;
     name
 }
 
 fn robot_span(robot: &RobotDecl) -> Span {
+    // Description:
+    //     Robot span.
+    //
+    // Inputs:
+    //     robo: &RobotDecl
+    //         Caller-supplied robo.
+    //
+    // Outputs:
+    //     result: Span
+    //         Return value from `robot_span`.
+    //
+    // Example:
+
+    //     let result = spanda_capability::diagnostics::robot_span(robo);
+
     let RobotDecl::RobotDecl { span, .. } = robot;
     *span
 }
@@ -378,11 +567,39 @@ mod tests {
     use spanda_parser::parse;
 
     fn parse_source(source: &str) -> Program {
+        // Description:
+        //     Parse source.
+        //
+        // Inputs:
+        //     source: &str
+        //         Caller-supplied source.
+        //
+        // Outputs:
+        //     result: Program
+        //         Return value from `parse_source`.
+        //
+        // Example:
+
+        //     let result = spanda_capability::diagnostics::parse_source(source);
+
         parse(tokenize(source).expect("tokenize")).expect("parse")
     }
 
     #[test]
     fn remote_kill_switch_without_signed_policy_warns() {
+        // Description:
+        //     Remote kill switch without signed policy warns.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::diagnostics::remote_kill_switch_without_signed_policy_warns();
+
         let source = r#"
 kill_switch EmergencyStop {
     priority: critical;
@@ -407,6 +624,19 @@ kill_switch EmergencyStop {
 
     #[test]
     fn undeclared_hardware_produces_spanned_error() {
+        // Description:
+        //     Undeclared hardware produces spanned error.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_capability::diagnostics::undeclared_hardware_produces_spanned_error();
+
         let source = r#"
 robot Rover {
     uses hardware MissingBoard;

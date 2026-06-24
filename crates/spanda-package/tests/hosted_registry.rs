@@ -5,10 +5,38 @@ use std::fs;
 use std::path::PathBuf;
 
 fn repo_root() -> PathBuf {
+    // Description:
+    //     Repo root.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: PathBuf
+    //         Return value from `repo_root`.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::repo_root();
+
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
 }
 
 fn hosted_scaffold_names() -> Vec<String> {
+    // Description:
+    //     Hosted scaffold names.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     result: Vec<String>
+    //         Return value from `hosted_scaffold_names`.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_scaffold_names();
+
     let mut names: Vec<String> = fs::read_dir(repo_root().join("packages/registry"))
         .expect("packages/registry")
         .filter_map(|entry| entry.ok())
@@ -21,6 +49,19 @@ fn hosted_scaffold_names() -> Vec<String> {
 
 #[test]
 fn hosted_registry_index_lists_all_official_packages() {
+    // Description:
+    //     Hosted registry index lists all official packages.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_registry_index_lists_all_official_packages();
+
     let expected = hosted_scaffold_names();
     let index_path = repo_root().join("registry/index.json");
     let body = fs::read_to_string(&index_path).expect("registry/index.json");
@@ -47,6 +88,19 @@ fn hosted_registry_index_lists_all_official_packages() {
 
 #[test]
 fn hosted_registry_tarballs_exist_for_each_index_entry() {
+    // Description:
+    //     Hosted registry tarballs exist for each index entry.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_registry_tarballs_exist_for_each_index_entry();
+
     let index_path = repo_root().join("registry/index.json");
     let body = fs::read_to_string(&index_path).expect("registry/index.json");
     let entries: Vec<RemoteRegistryEntry> =
@@ -72,6 +126,19 @@ fn hosted_registry_tarballs_exist_for_each_index_entry() {
 
 #[test]
 fn file_url_fetches_local_registry_index() {
+    // Description:
+    //     File url fetches local registry index.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::file_url_fetches_local_registry_index();
+
     let index_path = repo_root().join("registry/index.json");
     let url = format!("file://{}", index_path.display());
     let body = fetch_index_json(&url).expect("fetch local registry index via file://");
@@ -83,6 +150,19 @@ fn file_url_fetches_local_registry_index() {
 
 #[test]
 fn hosted_packages_match_registry_scaffolds() {
+    // Description:
+    //     Hosted packages match registry scaffolds.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_packages_match_registry_scaffolds();
+
     let scaffolds = hosted_scaffold_names();
 
     assert!(
@@ -105,6 +185,19 @@ fn hosted_packages_match_registry_scaffolds() {
 
 #[test]
 fn hosted_registry_tarballs_match_index_checksums() {
+    // Description:
+    //     Hosted registry tarballs match index checksums.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_registry_tarballs_match_index_checksums();
+
     let index_path = repo_root().join("registry/index.json");
     let body = fs::read_to_string(&index_path).expect("registry/index.json");
     let entries: Vec<RemoteRegistryEntry> =
@@ -125,6 +218,19 @@ fn hosted_registry_tarballs_match_index_checksums() {
 
 #[test]
 fn hosted_registry_index_carries_valid_signatures() {
+    // Description:
+    //     Hosted registry index carries valid signatures.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_package::hosted_registry::hosted_registry_index_carries_valid_signatures();
+
     use spanda_package::registry_sign::verify_registry_signature;
 
     let index_path = repo_root().join("registry/index.json");
