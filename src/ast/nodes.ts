@@ -198,6 +198,7 @@ export type Program = {
   operatingModes: import("../assurance_decl.js").OperatingModeDecl[];
   missionPlans: import("../assurance_decl.js").MissionPlanDecl[];
   resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[];
+  recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[];
   assuranceCases: import("../assurance_decl.js").AssuranceCaseDecl[];
   robots: RobotDecl[];
   span: Span;

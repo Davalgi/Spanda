@@ -79,6 +79,19 @@ export type MitigationDecl = {
   span: Span;
 };
 
+export type RecoveryPolicyBranch = {
+  condition: string;
+  actions: string[];
+  span: Span;
+};
+
+export type RecoveryPolicyDecl = {
+  kind: "RecoveryPolicyDecl";
+  name: string;
+  branches: RecoveryPolicyBranch[];
+  span: Span;
+};
+
 export type OperatingModeDecl = {
   kind: "OperatingModeDecl";
   name: string;

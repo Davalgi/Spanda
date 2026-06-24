@@ -34,6 +34,12 @@ import {
   formatDiagnosisReport,
   formatStateReport,
 } from "./assurance.js";
+import {
+  evaluateRecoveryTs,
+  formatRecoveryReport,
+  simulateFailureRecoveryTs,
+  type RecoveryContext,
+} from "./recovery.js";
 
 export type MissionVerificationReport = {
   achievable: boolean;
@@ -576,6 +582,41 @@ export function runOperationalCommand(
     };
   }
 
+  if (command === "heal" || command === "recover" || command === "recovery-report") {
+    const file = positional[0];
+    if (!file) throw new Error("Missing file path");
+    const program = parseProgramSource(readFileSync(file, "utf-8"));
+    const failure = typeof flags.get("failure") === "string" ? String(flags.get("failure")) : undefined;
+    const injectFailure =
+      typeof flags.get("inject-failure") === "string"
+        ? String(flags.get("inject-failure"))
+        : failure;
+    const context: RecoveryContext | undefined =
+      command === "recover" && !injectFailure
+        ? { issue: "gps.failed", diagnosis: "Satellite lock lost", level: 3 }
+        : injectFailure
+          ? { issue: `${injectFailure} failure`, level: 3 }
+          : undefined;
+    const report = injectFailure
+      ? simulateFailureRecoveryTs(program, injectFailure, options)
+      : evaluateRecoveryTs(program, context, options);
+    return {
+      exitCode: report.passed ? 0 : 1,
+      output: json ? JSON.stringify(report, null, 2) : formatRecoveryReport(report),
+    };
+  }
+
+  if (command === "recovery" && (positional[0] === "plan" || positional[0] === "report")) {
+    const file = positional[1];
+    if (!file) throw new Error("Missing file path");
+    const program = parseProgramSource(readFileSync(file, "utf-8"));
+    const report = evaluateRecoveryTs(program, undefined, options);
+    return {
+      exitCode: report.passed ? 0 : 1,
+      output: json ? JSON.stringify(report, null, 2) : formatRecoveryReport(report),
+    };
+  }
+
   const file = positional[0];
   if (!file) throw new Error("Missing file path");
   const source = readFileSync(file, "utf-8");
@@ -601,6 +642,20 @@ export function runOperationalCommand(
     }
     case "analyze-failure": {
       const report = analyzeFailureTs(program);
+      if (flags.has("with-recovery")) {
+        const recovery = evaluateRecoveryTs(program, undefined, options);
+        const output = json
+          ? JSON.stringify({ failure: report, recovery_plans: recovery.plans, risk: recovery.readiness.risk }, null, 2)
+          : `${formatFailureAnalysis(report)}\nRecovery Plans:\n${recovery.plans
+              .map(
+                (p) =>
+                  `  Failure: ${p.failure}\n  Diagnosis: ${p.diagnosis}\n  Risk: ${p.risk}\n${p.actions
+                    .map((a) => `    - ${a.description}`)
+                    .join("\n")}`,
+              )
+              .join("\n")}\nOverall Risk: ${recovery.readiness.risk}\n`;
+        return { exitCode: 0, output };
+      }
       return {
         exitCode: 0,
         output: json ? JSON.stringify(report, null, 2) : formatFailureAnalysis(report),

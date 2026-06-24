@@ -392,6 +392,10 @@ async function main(): Promise<void> {
       case "resilience":
       case "mitigation":
       case "state":
+      case "heal":
+      case "recover":
+      case "recovery-report":
+      case "recovery":
         handleReadinessNative(command, positional, flags);
         break;
       default:
