@@ -22,6 +22,7 @@ import {
   enforceCertificationRuntime,
 } from "./certify-runtime.js";
 import { configureSessionPersist, beginRunSession, endRunSession } from "./telemetry-store.js";
+import { resolveTraceOutputPath, saveMissionTrace } from "./replay.js";
 
 export type CompileBackend = "typescript" | "rust-native" | "rust-cli";
 
@@ -463,7 +464,19 @@ export function run(program: Program, options: RunOptions): RobotState {
   });
   const state = interpreter.run(program, options.entryBehavior);
   if (options.persistTelemetry) {
-    endRunSession();
+    const trace = interpreter.takeMissionTrace();
+    let missionTracePath: string | undefined;
+    let traceFrameCount = 0;
+    if (options.recordTrace && trace) {
+      missionTracePath = resolveTraceOutputPath(options.traceSource);
+      saveMissionTrace(trace, missionTracePath);
+      traceFrameCount = trace.frames.length;
+    }
+    endRunSession(
+      missionTracePath,
+      interpreter.collectRuntimeMetrics(traceFrameCount),
+      interpreter.getSimTimeMs(),
+    );
   }
   return state;
 }

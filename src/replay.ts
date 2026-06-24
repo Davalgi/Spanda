@@ -3,6 +3,9 @@
  * @module
  */
 
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+
 export type TraceFrame = {
   simTimeMs: number;
   event: string;
@@ -379,20 +382,25 @@ export function serializeMissionTrace(trace: MissionTrace): string {
 }
 
 export function deserializeMissionTrace(text: string): MissionTrace {
-  // Description:
-  //     DeserializeMissionTrace.
-  //
-  // Inputs:
-  //     text: string
-  //         Caller-supplied text.
-  //
-  // Outputs:
-  //     result: MissionTrace
-  //         Return value from `deserializeMissionTrace`.
-  //
-  // Example:
-
-  //     const result = deserializeMissionTrace(text);
-
   return JSON.parse(text) as MissionTrace;
+}
+
+export function loadMissionTrace(path: string): MissionTrace {
+  return deserializeMissionTrace(readFileSync(path, "utf8"));
+}
+
+export function resolveTraceOutputPath(traceSource?: string): string {
+  const source = traceSource ?? "program.sd";
+  if (source.endsWith(".sd")) {
+    return `${source.slice(0, -3)}.trace`;
+  }
+  return `${source}.trace`;
+}
+
+export function saveMissionTrace(trace: MissionTrace, path: string): void {
+  const parent = dirname(path);
+  if (!existsSync(parent)) {
+    mkdirSync(parent, { recursive: true });
+  }
+  writeFileSync(path, serializeMissionTrace(trace), "utf8");
 }

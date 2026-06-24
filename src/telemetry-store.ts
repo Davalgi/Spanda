@@ -6,6 +6,16 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { RuntimeValue } from "./runtime/interpreter.js";
+import {
+  envBackendSqlite,
+  resolveSqlitePath,
+  sqliteAppendEvent,
+  sqliteBackendAvailable,
+  sqliteCompact,
+  sqliteReadAll,
+  sqliteReadHeartbeatIndex,
+  sqliteUpsertHeartbeat,
+} from "./telemetry-sqlite.js";
 
 export type TelemetryEvent =
   | {
@@ -70,6 +80,7 @@ type HeartbeatIndex = {
 
 let sessionPersist = false;
 let activeSessionId: string | undefined;
+let maxEvents: number | undefined;
 const lastHeartbeatHistory = new Map<string, number>();
 const lastDeviceHeartbeatHistory = new Map<string, number>();
 
@@ -82,13 +93,19 @@ export function defaultHeartbeatIndexPath(): string {
 }
 
 export function resolveStorePath(): string {
+  if (envBackendSqlite()) {
+    return resolveSqlitePath();
+  }
   return process.env.SPANDA_TELEMETRY_STORE_PATH ?? defaultStorePath();
 }
 
 export function resolveHeartbeatIndexPath(storePath = resolveStorePath()): string {
+  if (envBackendSqlite()) {
+    return "";
+  }
   return (
     process.env.SPANDA_TELEMETRY_HEARTBEAT_PATH ??
-    dirname(storePath) + "/telemetry-heartbeats.json"
+    `${dirname(storePath)}/telemetry-heartbeats.json`
   );
 }
 
@@ -97,8 +114,24 @@ export function envPersistEnabled(): boolean {
   return value === "1" || value?.toLowerCase() === "true";
 }
 
+export function usesSqliteBackend(): boolean {
+  return envBackendSqlite();
+}
+
+function resolveMaxEvents(): number | undefined {
+  const raw = process.env.SPANDA_TELEMETRY_MAX_EVENTS;
+  if (!raw) {
+    return undefined;
+  }
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
 export function configureSessionPersist(enabled: boolean): void {
   sessionPersist = enabled;
+  if (enabled) {
+    maxEvents = resolveMaxEvents();
+  }
   if (!enabled) {
     activeSessionId = undefined;
   }
@@ -121,22 +154,50 @@ export function beginRunSession(source?: string): string {
   return sessionId;
 }
 
-export function endRunSession(missionTracePath?: string, timestampMs = Date.now()): void {
+export function endRunSession(
+  missionTracePath?: string,
+  metrics?: unknown,
+  timestampMs = Date.now(),
+): void {
   if (!persistEnabled() || !activeSessionId) {
     return;
   }
+  const sessionId = activeSessionId;
   appendEvent({
     kind: "session",
-    session_id: activeSessionId,
+    session_id: sessionId,
     phase: "end",
     mission_trace_path: missionTracePath,
     timestamp_ms: timestampMs,
   });
+  if (metrics !== undefined) {
+    appendEvent({
+      kind: "runtime_metrics",
+      session_id: sessionId,
+      metrics,
+      timestamp_ms: timestampMs,
+    });
+  }
   activeSessionId = undefined;
 }
 
 export function persistEnabled(): boolean {
   return sessionPersist || envPersistEnabled();
+}
+
+export function readAllEvents(): TelemetryEvent[] {
+  const storePath = resolveStorePath();
+  if (envBackendSqlite()) {
+    return sqliteReadAll(storePath);
+  }
+  if (!existsSync(storePath)) {
+    return [];
+  }
+  return readFileSync(storePath, "utf8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map((line) => JSON.parse(line) as TelemetryEvent);
 }
 
 function ensureParent(path: string): void {
@@ -146,9 +207,46 @@ function ensureParent(path: string): void {
   }
 }
 
+function maybeCompactJsonl(storePath: string): void {
+  const limit = maxEvents ?? resolveMaxEvents();
+  if (!limit) {
+    return;
+  }
+  const events = readAllEvents();
+  if (events.length <= limit) {
+    return;
+  }
+  const trimmed = events.slice(events.length - limit);
+  writeFileSync(
+    storePath,
+    `${trimmed.map((event) => JSON.stringify(event)).join("\n")}\n`,
+    "utf8",
+  );
+}
+
+function maybeCompactStore(storePath: string): void {
+  const limit = maxEvents ?? resolveMaxEvents();
+  if (!limit) {
+    return;
+  }
+  if (envBackendSqlite()) {
+    const events = sqliteReadAll(storePath);
+    if (events.length > limit) {
+      sqliteCompact(storePath, limit);
+    }
+    return;
+  }
+  maybeCompactJsonl(storePath);
+}
+
 function appendEvent(event: TelemetryEvent): void {
   if (!persistEnabled()) {
     return;
+  }
+  if (envBackendSqlite() && !sqliteBackendAvailable()) {
+    throw new Error(
+      "SPANDA_TELEMETRY_BACKEND=sqlite requires Node.js 22+ with node:sqlite, or use the native Rust CLI",
+    );
   }
   const stamped =
     activeSessionId &&
@@ -158,12 +256,18 @@ function appendEvent(event: TelemetryEvent): void {
       ? { ...event, session_id: activeSessionId }
       : event;
   const storePath = resolveStorePath();
+  if (envBackendSqlite()) {
+    sqliteAppendEvent(storePath, stamped);
+    maybeCompactStore(storePath);
+    return;
+  }
   ensureParent(storePath);
   appendFileSync(storePath, `${JSON.stringify(stamped)}\n`, "utf8");
+  maybeCompactStore(storePath);
 }
 
 function readHeartbeatIndex(path: string): HeartbeatIndex {
-  if (!existsSync(path)) {
+  if (!path || !existsSync(path)) {
     return { tasks: {}, devices: {} };
   }
   const parsed = JSON.parse(readFileSync(path, "utf8")) as HeartbeatIndex;
@@ -174,6 +278,35 @@ function readHeartbeatIndex(path: string): HeartbeatIndex {
 function writeHeartbeatIndex(path: string, index: HeartbeatIndex): void {
   ensureParent(path);
   writeFileSync(path, JSON.stringify(index, null, 2), "utf8");
+}
+
+function persistHeartbeatIndex(
+  storePath: string,
+  targetKind: "task" | "device",
+  targetId: string,
+  timestampMs: number,
+): void {
+  if (envBackendSqlite()) {
+    sqliteUpsertHeartbeat(storePath, targetKind, targetId, timestampMs);
+    return;
+  }
+  const heartbeatPath = resolveHeartbeatIndexPath(storePath);
+  const index = readHeartbeatIndex(heartbeatPath);
+  if (targetKind === "task") {
+    index.tasks[targetId] = timestampMs;
+  } else {
+    index.devices ??= {};
+    index.devices[targetId] = timestampMs;
+  }
+  writeHeartbeatIndex(heartbeatPath, index);
+}
+
+export function readHeartbeatIndexForStore(): HeartbeatIndex {
+  const storePath = resolveStorePath();
+  if (envBackendSqlite()) {
+    return sqliteReadHeartbeatIndex(storePath);
+  }
+  return readHeartbeatIndex(resolveHeartbeatIndexPath(storePath));
 }
 
 function runtimeValueToJson(value: RuntimeValue): unknown {
@@ -226,10 +359,8 @@ export function recordTaskHeartbeat(
   if (!persistEnabled()) {
     return;
   }
-  const heartbeatPath = resolveHeartbeatIndexPath();
-  const index = readHeartbeatIndex(heartbeatPath);
-  index.tasks[taskName] = timestampMs;
-  writeHeartbeatIndex(heartbeatPath, index);
+  const storePath = resolveStorePath();
+  persistHeartbeatIndex(storePath, "task", taskName, timestampMs);
 
   const last = lastHeartbeatHistory.get(taskName) ?? Number.NEGATIVE_INFINITY;
   if (timestampMs - last < historyIntervalMs) {
@@ -259,11 +390,8 @@ export function recordDeviceHeartbeat(
   if (!persistEnabled()) {
     return;
   }
-  const heartbeatPath = resolveHeartbeatIndexPath();
-  const index = readHeartbeatIndex(heartbeatPath);
-  index.devices ??= {};
-  index.devices[deviceId] = timestampMs;
-  writeHeartbeatIndex(heartbeatPath, index);
+  const storePath = resolveStorePath();
+  persistHeartbeatIndex(storePath, "device", deviceId, timestampMs);
 
   const last = lastDeviceHeartbeatHistory.get(deviceId) ?? Number.NEGATIVE_INFINITY;
   if (timestampMs - last < historyIntervalMs) {

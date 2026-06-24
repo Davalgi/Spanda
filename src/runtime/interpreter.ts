@@ -56,6 +56,7 @@ import {
 import { callExternBridge } from "../ffi/subprocess-bridge.js";
 import { ConcurrencyRuntime } from "../concurrency.js";
 import { recordSensorReading, recordTaskHeartbeat, recordTopicPublish } from "../telemetry-store.js";
+import type { MissionTrace } from "../replay.js";
 import { createHealthPollState, pollRuntimeHealthChanges, type HealthPollState } from "./health-runtime.js";
 import type { ModuleRegistry } from "../modules/index.js";
 import type { ExternFnDecl, ModuleFnDecl, ResourceBudgetDecl, TaskDecl, TaskPriority } from "../foundations.js";
@@ -413,6 +414,28 @@ export class Interpreter {
     }
     this.processSpawnQueue();
     return this.options.backend.getState();
+  }
+
+  getSimTimeMs(): number {
+    return this.reliability.simTimeMs;
+  }
+
+  takeMissionTrace(): MissionTrace | null {
+    return this.reliability.takeMissionTrace();
+  }
+
+  collectRuntimeMetrics(traceFrameCount = 0): Record<string, unknown> {
+    const tasks = [...this.reliability.taskHeartbeats.entries()].map(([name, lastMs]) => ({
+      name,
+      last_timestamp_ms: lastMs,
+    }));
+    return {
+      scheduler: {
+        sim_time_ms: this.reliability.simTimeMs,
+      },
+      tasks,
+      replay_frames: traceFrameCount,
+    };
   }
 
   runTests(program: Program): void {
