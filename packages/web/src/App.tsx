@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SOURCE, EXAMPLES } from "./examples";
 import { checkSource, runSource, type CheckResponse, type RunResponse } from "./spanda-wasm";
 import { OperationsPanel } from "./OperationsPanel";
+import { TelemetryPanel } from "./TelemetryPanel";
 
 type Backend = "wasm" | "unavailable";
 type View = "playground" | "operations";
@@ -12,6 +13,7 @@ export default function App() {
   const [backend, setBackend] = useState<Backend>("unavailable");
   const [diagnostics, setDiagnostics] = useState<CheckResponse["diagnostics"]>([]);
   const [runResult, setRunResult] = useState<RunResponse["result"] | null>(null);
+  const [telemetryRefresh, setTelemetryRefresh] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +46,7 @@ export default function App() {
       setDiagnostics(resp.diagnostics ?? []);
       if (resp.ok && resp.result) {
         setRunResult(resp.result);
+        setTelemetryRefresh((value) => value + 1);
       } else {
         setError(resp.diagnostics?.[0]?.message ?? "Run failed");
       }
@@ -121,7 +124,10 @@ export default function App() {
 
         <section className="output-pane">
           {view === "operations" ? (
-            <OperationsPanel source={source} />
+            <>
+              <OperationsPanel source={source} />
+              <TelemetryPanel refreshKey={telemetryRefresh} />
+            </>
           ) : (
             <>
               {error && <div className="error">{error}</div>}
@@ -162,6 +168,7 @@ export default function App() {
                     <h2>Simulation log</h2>
                     <pre>{runResult.events.join("\n") || "(no events)"}</pre>
                   </div>
+                  <TelemetryPanel refreshKey={telemetryRefresh} />
                 </>
               )}
             </>

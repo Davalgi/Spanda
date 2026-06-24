@@ -2019,6 +2019,17 @@ export class Interpreter {
     return true;
   }
 
+  private dispatchSystemTrigger(
+    category: "safety" | "ai" | "verification" | "twin" | "hardware",
+    event: string,
+  ): void {
+    const handlers = this.triggerRegistry.handlersForSystemCategory(category, event);
+    if (handlers.length === 0) {
+      return;
+    }
+    this.executeTriggerHandlers(handlers.map((handler) => handler.id));
+  }
+
   private runTimerTriggers(simTime: number): void {
     const toRun: number[] = [];
     for (const schedule of this.triggerTimers) {
@@ -2131,6 +2142,12 @@ export class Interpreter {
       const previous = sm.current;
       sm.current = stateName;
       this.options.onLog?.(`state_machine ${smName}: ${previous} -> ${stateName}`);
+      const exited = this.triggerRegistry.handlersForStateExited(previous);
+      const entered = this.triggerRegistry.handlersForStateEntered(stateName);
+      const stateHandlers = [...exited, ...entered];
+      if (stateHandlers.length > 0) {
+        this.executeTriggerHandlers(stateHandlers.map((handler) => handler.id));
+      }
       transitioned = true;
     }
 
@@ -3024,6 +3041,7 @@ export class Interpreter {
         this.safetyMonitor?.setEmergencyStop(true);
         this.options.backend.setEmergencyStop?.(true);
         this.options.backend.executeMotion({ kind: "stop", actuator: "all" });
+        this.dispatchSystemTrigger("safety", "EmergencyStop");
         this.reliability.recordEmergencyStop();
         this.options.onLog?.("EMERGENCY STOP triggered");
         break;

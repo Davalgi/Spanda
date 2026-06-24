@@ -14,6 +14,12 @@ export type TriggerKind =
   | { kind: "message"; topic: string }
   | { kind: "timer"; interval_ms: number }
   | { kind: "condition"; expr: Expr; level: boolean }
+  | { kind: "state_entered"; state: string }
+  | { kind: "state_exited"; state: string }
+  | { kind: "safety"; event: string }
+  | { kind: "ai"; event: string }
+  | { kind: "verification"; event: string }
+  | { kind: "twin"; event: string }
   | { kind: "hardware"; event: string }
   | { kind: "connectivity"; domain: string; event: string }
   | { kind: "geofence"; name: string; phase: string }
@@ -74,6 +80,24 @@ export function triggerDisplayName(kind: TriggerKind, agent?: string): string {
     case "condition":
       base = kind.level ? "while" : "when";
       break;
+    case "state_entered":
+      base = `state_entered:${kind.state}`;
+      break;
+    case "state_exited":
+      base = `state_exited:${kind.state}`;
+      break;
+    case "safety":
+      base = `safety:${kind.event}`;
+      break;
+    case "ai":
+      base = `ai:${kind.event}`;
+      break;
+    case "verification":
+      base = `verification:${kind.event}`;
+      break;
+    case "twin":
+      base = `twin:${kind.event}`;
+      break;
     case "hardware":
       base = `hardware:${kind.event}`;
       break;
@@ -109,6 +133,18 @@ export function triggerCategoryLabel(kind: TriggerKind): string {
       return "timer";
     case "condition":
       return "condition";
+    case "state_entered":
+      return "state_entered";
+    case "state_exited":
+      return "state_exited";
+    case "safety":
+      return "safety";
+    case "ai":
+      return "ai";
+    case "verification":
+      return "verification";
+    case "twin":
+      return "twin";
     case "hardware":
       return "hardware";
     case "connectivity":
@@ -268,6 +304,30 @@ export class TriggerRegistry {
 
   conditionHandlers(): RegisteredTrigger[] {
     return this.handlers.filter((handler) => handler.kind.kind === "condition");
+  }
+
+  handlersForStateEntered(state: string): RegisteredTrigger[] {
+    return this.handlers.filter(
+      (handler) => handler.kind.kind === "state_entered" && handler.kind.state === state,
+    );
+  }
+
+  handlersForStateExited(state: string): RegisteredTrigger[] {
+    return this.handlers.filter(
+      (handler) => handler.kind.kind === "state_exited" && handler.kind.state === state,
+    );
+  }
+
+  handlersForSystemCategory(
+    category: "safety" | "ai" | "verification" | "twin" | "hardware",
+    event: string,
+  ): RegisteredTrigger[] {
+    return this.handlers.filter((handler) => {
+      if (handler.kind.kind !== category) {
+        return false;
+      }
+      return handler.kind.event === event;
+    });
   }
 
   static sortedByPriority(handlers: RegisteredTrigger[]): RegisteredTrigger[] {

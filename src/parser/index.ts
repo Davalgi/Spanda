@@ -1797,7 +1797,11 @@ class Parser {
 
       // Otherwise, continue when this.check("ON").
       } else if (this.check("ON")) {
-        eventHandlers.push(this.parseOnTrigger());
+        if (this.isOnStateTrigger()) {
+          triggerHandlers.push(this.parseStateTrigger());
+        } else {
+          eventHandlers.push(this.parseOnTrigger());
+        }
       } else if (this.check("EVERY")) {
         triggerHandlers.push(this.parseEveryTrigger());
       } else if (this.check("WHEN")) {
@@ -7364,6 +7368,44 @@ class Parser {
     return {
       kind: "EventHandlerDecl",
       eventName,
+      returnType,
+      body,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private isOnStateTrigger(): boolean {
+    const next = this.tokens[this.pos + 1];
+    return next?.type === "IDENT" && next.lexeme.toLowerCase() === "state";
+  }
+
+  private parseStateTrigger(): import("../runtime/trigger-registry.js").TriggerHandlerDecl {
+    const start = this.advance();
+    this.expect("IDENT", "Expected 'state' after on");
+    const phase = this.expect("IDENT", "Expected Entered or Exited").lexeme.toLowerCase();
+    this.expect("LPAREN", "Expected '(' after state phase");
+    const stateName = this.expect("IDENT", "Expected state name").lexeme;
+    this.expect("RPAREN", "Expected ')' after state name");
+    let returnType: SpandaType = { kind: "void" };
+    if (this.check("ARROW")) {
+      this.advance();
+      returnType = this.parseTypeAnnotation();
+    }
+    this.expect("LBRACE", "Expected '{' after state trigger");
+    const body = this.parseBlock();
+    const end = this.expect("RBRACE", "Expected '}' to close state trigger");
+    const triggerKind =
+      phase === "entered"
+        ? { kind: "state_entered" as const, state: stateName }
+        : phase === "exited"
+          ? { kind: "state_exited" as const, state: stateName }
+          : (() => {
+              throw new ParseError("Expected Entered(State) or Exited(State)", start.line, start.column);
+            })();
+    return {
+      kind: "TriggerHandlerDecl",
+      triggerKind,
+      priority: "normal",
       returnType,
       body,
       span: this.spanFrom(start, end),

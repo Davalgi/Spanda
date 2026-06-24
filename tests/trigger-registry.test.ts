@@ -47,6 +47,32 @@ describe("trigger registry", () => {
     expect(state.shouldFire(1, false)).toBe(false);
     expect(state.shouldFire(1, true)).toBe(true);
   });
+
+  it("filters state and system category handlers", () => {
+    const registry = new TriggerRegistry();
+    const span = {
+      start: { line: 1, column: 1, offset: 0 },
+      end: { line: 1, column: 1, offset: 0 },
+    };
+    registry.register({
+      kind: "TriggerHandlerDecl",
+      triggerKind: { kind: "state_entered", state: "active" },
+      priority: "normal",
+      returnType: { kind: "void" },
+      body: [],
+      span,
+    });
+    registry.register({
+      kind: "TriggerHandlerDecl",
+      triggerKind: { kind: "safety", event: "EmergencyStop" },
+      priority: "critical",
+      returnType: { kind: "void" },
+      body: [],
+      span,
+    });
+    expect(registry.handlersForStateEntered("active")).toHaveLength(1);
+    expect(registry.handlersForSystemCategory("safety", "EmergencyStop")).toHaveLength(1);
+  });
 });
 
 describe("interpreter trigger registry", () => {
