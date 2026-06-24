@@ -99,6 +99,14 @@ fn resilience_check_runs() {
 }
 
 #[test]
+fn showcase_assurance_passes() {
+    let source = include_str!("../../../examples/showcase/assurance/rover.sd");
+    let program = parse_source(source);
+    let summary = assure_program(&program, "rover.sd");
+    assert!(summary.passed, "expected showcase assurance to pass: {:?}", summary.issues);
+}
+
+#[test]
 fn assure_program_composes() {
     let program = parse_source(ROVER);
     let summary = assure_program(&program, "test.sd");

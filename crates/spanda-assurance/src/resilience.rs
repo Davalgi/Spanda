@@ -3,7 +3,7 @@
 use crate::types::{FaultToleranceStrategy, RecoveryPolicy, RedundancyModel, ResiliencePolicy};
 use spanda_ast::assurance_decl::ResiliencePolicyDecl;
 use spanda_ast::nodes::Program;
-use spanda_readiness::{evaluate_readiness, ReadinessOptions};
+use spanda_readiness::{default_deploy_target, evaluate_readiness, ReadinessOptions};
 
 /// Resilience check report.
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -55,7 +55,9 @@ pub fn check_resilience(program: &Program) -> ResilienceReport {
         })
         .collect();
 
-    let readiness = evaluate_readiness(program, &ReadinessOptions::default());
+    let mut options = ReadinessOptions::default();
+    options.target = default_deploy_target(program);
+    let readiness = evaluate_readiness(program, &options);
     let passed = readiness.mission_ready && !policies.is_empty() || resilience_policies.is_empty();
 
     ResilienceReport {
