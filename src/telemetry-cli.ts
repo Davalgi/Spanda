@@ -357,6 +357,50 @@ function renderPrometheus(): string {
   return `${lines.join("\n")}\n`;
 }
 
+function renderOtlp(): string {
+  const stats = computeStats();
+  const index = readHeartbeatIndex();
+  const nowNano = `${Date.now()}000000`;
+  const metrics = [
+    ...[
+      ["device", stats.device_events],
+      ["sensor", stats.sensor_events],
+      ["heartbeat", stats.heartbeat_events],
+      ["device_heartbeat", stats.device_heartbeat_events],
+      ["health", stats.health_events],
+      ["session", stats.session_events],
+      ["runtime_metrics", stats.runtime_metrics_events],
+    ].map(([kind, count]) => ({
+      name: "spanda.telemetry.events",
+      gauge: {
+        dataPoints: [{
+          asDouble: count,
+          attributes: [{ key: "kind", value: { stringValue: kind } }],
+          timeUnixNano: nowNano,
+        }],
+      },
+    })),
+  ];
+  for (const [task, timestamp] of Object.entries(index.tasks)) {
+    metrics.push({
+      name: "spanda.task.heartbeat.last_timestamp_ms",
+      gauge: {
+        dataPoints: [{
+          asDouble: timestamp,
+          attributes: [{ key: "task", value: { stringValue: task } }],
+          timeUnixNano: nowNano,
+        }],
+      },
+    });
+  }
+  return JSON.stringify({
+    resourceMetrics: [{
+      resource: { attributes: [{ key: "service.name", value: { stringValue: "spanda" } }] },
+      scopeMetrics: [{ scope: { name: "spanda.telemetry" }, metrics }],
+    }],
+  }, null, 2);
+}
+
 export function runTelemetryCli(sub: string, args: string[]): number {
   try {
     switch (sub) {
@@ -522,6 +566,29 @@ export function runTelemetryCli(sub: string, args: string[]): number {
         }
         return 0;
       }
+      case "otlp": {
+        let out: string | undefined;
+        for (let i = 0; i < args.length; i += 1) {
+          if (args[i] === "--out") {
+            out = args[++i];
+          }
+        }
+        const body = renderOtlp();
+        if (out) {
+          const parent = dirname(out);
+          if (!existsSync(parent)) {
+            mkdirSync(parent, { recursive: true });
+          }
+          writeFileSync(out, body, "utf8");
+          console.log(`Exported OTLP metrics to ${out}`);
+        } else {
+          console.log(body);
+        }
+        return 0;
+      }
+      case "serve":
+        console.error("telemetry serve requires the native Rust CLI");
+        return 1;
       default:
         console.error(`Unknown telemetry subcommand: ${sub}`);
         return 1;

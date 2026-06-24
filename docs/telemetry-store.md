@@ -62,6 +62,8 @@ spanda telemetry devices [--json]
 spanda telemetry stats [--json]
 spanda telemetry export [--out <file.jsonl>]
 spanda telemetry prometheus [--out <file.prom>]
+spanda telemetry otlp [--out <file.json>]
+spanda telemetry serve [--bind <addr>] [--once]
 ```
 
 ## Example workflow
@@ -89,6 +91,30 @@ spanda telemetry prometheus --out metrics.prom
 ```
 
 Exports event totals, heartbeat timestamps, latest `runtime_metrics` scheduler/task counters, numeric device metrics, and health scores. Point Prometheus at a file written by `--out`, or pipe stdout into your collector.
+
+## OTLP export
+
+Emit OTLP/JSON metrics for OpenTelemetry collectors:
+
+```bash
+spanda telemetry otlp
+spanda telemetry otlp --out metrics.otlp.json
+```
+
+## HTTP scrape server
+
+Run a local metrics endpoint for Prometheus or OTLP polling:
+
+```bash
+spanda telemetry serve
+spanda telemetry serve --bind 0.0.0.0:9090
+```
+
+| Path | Format |
+|------|--------|
+| `GET /metrics` | Prometheus text |
+| `GET /otlp/v1/metrics` | OTLP/JSON |
+| `GET /healthz` | Liveness (`ok`) |
 
 Device liveness is recorded when:
 - `iot.device.register` succeeds

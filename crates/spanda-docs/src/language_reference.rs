@@ -921,10 +921,10 @@ const CLI_COMMANDS: &[CliCommand] = &[
     CliCommand {
         name: "spanda-telemetry",
         section: 1,
-        synopsis: "spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus [flags]",
+        synopsis: "spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|serve [flags]",
         description: "Query the persistent telemetry store written by `--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`.",
-        options: "`list` — filter by device, sensor, task, session, kind, since, limit\n`latest` — most recent device metric, sensor read, task heartbeat, or device liveness\n`heartbeats` / `devices` — index sidecar for tasks and devices\n`stats` — event counts (includes session and runtime_metrics)\n`export` — copy JSONL log\n`prometheus` — Prometheus text exposition for scraping",
-        examples: "spanda telemetry stats\nspanda telemetry list --kind sensor --json\nspanda telemetry latest --device Rover",
+        options: "`list` — filter by device, sensor, task, session, kind, since, limit\n`latest` — most recent device metric, sensor read, task heartbeat, or device liveness\n`heartbeats` / `devices` — index sidecar for tasks and devices\n`stats` — event counts (includes session and runtime_metrics)\n`export` — copy JSONL log\n`prometheus` — Prometheus text exposition\n`otlp` — OTLP/JSON metrics export\n`serve` — HTTP server (`/metrics`, `/otlp/v1/metrics`, `/healthz`)",
+        examples: "spanda telemetry stats\nspanda telemetry prometheus\nspanda telemetry serve --bind 127.0.0.1:9090",
         exit_status: "0 on success; 1 when the store cannot be read.",
         files: "`.spanda/telemetry-store.jsonl`, `.spanda/telemetry-heartbeats.json` (override with `SPANDA_TELEMETRY_STORE_PATH`).",
         see_also: "spanda-run(1), spanda-sim(1)",

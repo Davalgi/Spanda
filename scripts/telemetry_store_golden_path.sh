@@ -43,6 +43,11 @@ PROM="$("${SPANDA[@]}" telemetry prometheus)"
 echo "${PROM}" | head -5
 echo "${PROM}" | grep -q 'spanda_telemetry_events_total'
 
+echo "== telemetry otlp =="
+OTLP="$("${SPANDA[@]}" telemetry otlp)"
+echo "${OTLP}" | head -8
+echo "${OTLP}" | grep -q 'resourceMetrics'
+
 echo "== telemetry latest device publish =="
 LATEST="$("${SPANDA[@]}" telemetry latest --device TelemetryRover --metric /telemetry)"
 echo "${LATEST}"
