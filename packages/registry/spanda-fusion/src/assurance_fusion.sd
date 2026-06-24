@@ -1,0 +1,14 @@
+module assurance.fusion;
+
+/** Package-backed weighted fusion (lean core dispatches to spanda-runtime weights). */
+export fn weight_for_sensor(sensor_type: String) -> Float {
+    return 0.10;
+}
+
+export fn confidence_for_types(types: String) -> Float {
+    return 0.50;
+}
+
+export fn backend_name() -> String {
+    return "assurance.fusion";
+}

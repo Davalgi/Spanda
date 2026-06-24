@@ -232,3 +232,43 @@ fn modbus_register_reads_seeded_value() {
         other => panic!("expected number, got {other:?}"),
     }
 }
+
+#[test]
+fn fusion_package_dispatches_weights() {
+    use spanda_providers::dispatch_official_package_call;
+    use spanda_runtime::value::RuntimeValue;
+
+    let mut registry = bootstrap_providers_for_packages(&["spanda-fusion"]);
+    let weight = dispatch_official_package_call(
+        &mut registry,
+        "assurance.fusion",
+        "weight_for_sensor",
+        &[RuntimeValue::String {
+            value: "GPS".into(),
+        }],
+        None,
+        None,
+        0.0,
+    )
+    .expect("fusion weight dispatch");
+    match weight {
+        RuntimeValue::Number { value, .. } => assert!((value - 0.35).abs() < f64::EPSILON),
+        other => panic!("expected number, got {other:?}"),
+    }
+    let confidence = dispatch_official_package_call(
+        &mut registry,
+        "assurance.fusion",
+        "confidence_for_types",
+        &[RuntimeValue::String {
+            value: "GPS,Lidar".into(),
+        }],
+        None,
+        None,
+        0.0,
+    )
+    .expect("fusion confidence dispatch");
+    match confidence {
+        RuntimeValue::Number { value, .. } => assert!(value > 0.5),
+        other => panic!("expected number, got {other:?}"),
+    }
+}

@@ -65,6 +65,38 @@ def _canbus_read_frame(can_id: int) -> float:
     return float(can_id & 0xFF)
 
 
+def _onnx_anomaly_infer(features_json: str) -> float:
+    import json
+    import os
+
+    try:
+        features = json.loads(features_json)
+    except json.JSONDecodeError:
+        features = {}
+    observed = float(features.get("observed", 0.5))
+    volatility = float(features.get("volatility", 0.0))
+    model_path = os.environ.get("SPANDA_ANOMALY_ONNX_MODEL_PATH") or os.environ.get(
+        "SPANDA_ONNX_MODEL_PATH"
+    )
+    if not model_path or not os.path.isfile(model_path):
+        return 1.0 if observed < 0.85 or volatility > 0.25 else 0.0
+    try:
+        import numpy as np
+        import onnxruntime as ort
+    except ImportError:
+        return 1.0 if observed < 0.85 or volatility > 0.25 else 0.0
+    try:
+        session = ort.InferenceSession(model_path)
+        input_name = session.get_inputs()[0].name
+        tensor = np.array([[observed, volatility]], dtype=np.float32)
+        outputs = session.run(None, {input_name: tensor})
+        if outputs and len(outputs[0].flat) > 0:
+            return float(outputs[0].flat[0])
+    except Exception:
+        pass
+    return 1.0 if observed < 0.85 or volatility > 0.25 else 0.0
+
+
 def _onnx_complete(prompt: str) -> str:
     import os
 
@@ -245,6 +277,7 @@ HANDLERS: dict[str, Handler] = {
     "matter_read_cluster": _matter_read_cluster,
     "canbus_read_frame": _canbus_read_frame,
     "onnx_complete": _onnx_complete,
+    "onnx_anomaly_infer": _onnx_anomaly_infer,
     "openai_complete": _openai_complete,
     "anthropic_complete": _anthropic_complete,
 }

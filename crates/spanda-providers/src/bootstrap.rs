@@ -191,6 +191,9 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
     if include_all || names.contains("spanda-anomaly") {
         registry.grant_capability("assurance.anomaly.scan");
     }
+    if include_all || names.contains("spanda-fusion") {
+        registry.grant_capability("assurance.fusion.weight");
+    }
     if names.contains("spanda-zigbee")
         || names.contains("spanda-lora")
         || names.contains("spanda-matter")

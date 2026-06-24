@@ -1,5 +1,6 @@
 //! Official package provider bootstrap and transport adapter wiring.
 //!
+pub mod anomaly_onnx;
 pub mod bootstrap;
 pub mod iot_hub;
 pub mod iot_live;

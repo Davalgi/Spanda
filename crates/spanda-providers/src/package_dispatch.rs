@@ -1,10 +1,12 @@
 //! Runtime dispatch from official package module exports to provider registry backends.
 //!
+use crate::anomaly_onnx::scan_learned_score;
 use crate::iot_hub::{
     number_arg, publish_telemetry, read_canbus_frame, read_lora_payload, read_matter_cluster,
     read_modbus_register, read_opcua_node, read_zigbee_attribute, register_device, send_command,
     string_arg, update_shadow,
 };
+use spanda_runtime::fusion::{weight_for_sensor_type, weighted_confidence};
 use spanda_runtime::providers::{transport_registry_key, ProviderRegistry};
 use spanda_runtime::providers::{Command, DeviceShadow, IoTDevice, Telemetry};
 use spanda_runtime::replay::MissionTrace;
@@ -56,6 +58,7 @@ pub fn official_package_for_module(module_path: &str) -> Option<&'static str> {
         "assurance.prognostics" => Some("spanda-prognostics"),
         "assurance.mission" => Some("spanda-mission-planning"),
         "assurance.resilience" => Some("spanda-resilience"),
+        "assurance.fusion" => Some("spanda-fusion"),
         _ => None,
     }
 }
@@ -523,6 +526,7 @@ pub fn dispatch_official_package_call(
             })
         }
         ("assurance.anomaly", "scan_learned") if registry.has_capability("assurance.anomaly.scan") => {
+            let detector = string_arg(args, 0);
             let observed = if args.len() > 1 {
                 number_arg(args, 1)
             } else {
@@ -533,11 +537,7 @@ pub fn dispatch_official_package_call(
             } else {
                 0.0
             };
-            let score = if observed < 0.85 || volatility > 0.25 {
-                1.0
-            } else {
-                0.0
-            };
+            let score = scan_learned_score(&detector, observed, volatility);
             record_call(
                 telemetry,
                 mission_trace,
@@ -568,6 +568,71 @@ pub fn dispatch_official_package_call(
             );
             Some(RuntimeValue::String {
                 value: "assurance.anomaly".into(),
+            })
+        }
+        ("assurance.fusion", "weight_for_sensor")
+            if registry.has_capability("assurance.fusion.weight") =>
+        {
+            let sensor_type = string_arg(args, 0);
+            let value = weight_for_sensor_type(&sensor_type);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "assurance",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::Number {
+                value,
+                unit: spanda_ast::nodes::UnitKind::None,
+            })
+        }
+        ("assurance.fusion", "confidence_for_types")
+            if registry.has_capability("assurance.fusion.weight") =>
+        {
+            let types_csv = string_arg(args, 0);
+            let types: Vec<&str> = types_csv
+                .split(',')
+                .map(str::trim)
+                .filter(|part| !part.is_empty())
+                .collect();
+            let value = weighted_confidence(&types);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "assurance",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::Number {
+                value,
+                unit: spanda_ast::nodes::UnitKind::None,
+            })
+        }
+        ("assurance.fusion", "backend_name")
+            if registry.has_capability("assurance.fusion.weight") =>
+        {
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "assurance",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::String {
+                value: "assurance.fusion".into(),
             })
         }
         _ => None,

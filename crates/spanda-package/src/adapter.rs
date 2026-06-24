@@ -316,6 +316,12 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
             category: super::category::PackageCategory::Robotics,
             import_paths: &["assurance.resilience"],
         },
+        FrameworkPackage {
+            name: "spanda-fusion",
+            description: "Weighted sensor fusion backends",
+            category: super::category::PackageCategory::Robotics,
+            import_paths: &["assurance.fusion"],
+        },
     ]
 }
 

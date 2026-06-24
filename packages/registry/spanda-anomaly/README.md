@@ -19,6 +19,6 @@ anomaly_detector NavigationML {
 
 Run `spanda anomaly scan program.sd` — learned models appear in the report when a backend is declared or imported.
 
-At runtime, `scan_learned(detector, observed, volatility)` uses threshold + EMA volatility (full ONNX models are a future package upgrade).
+At runtime, `scan_learned(detector, observed, volatility)` uses threshold + EMA volatility. Set **`SPANDA_ANOMALY_ONNX_MODEL_PATH`** (or `SPANDA_ONNX_MODEL_PATH`) for ONNX inference via the Python bridge (`onnxruntime` optional; 2-feature input `[observed, volatility]`).
 
-See `examples/anomaly/learned_navigation.sd`.
+See `examples/anomaly/learned_navigation.sd` and `examples/showcase/assurance/rover.sd`.
