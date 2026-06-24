@@ -227,6 +227,15 @@ export function recordHealthEvent(target: string, status: string, timestampMs: n
   });
 }
 
+export function recordTopicPublish(
+  robotId: string | undefined,
+  topicPath: string,
+  value: RuntimeValue,
+  timestampMs: number,
+): void {
+  recordDeviceTelemetry(robotId ?? "robot", topicPath, value, timestampMs, robotId);
+}
+
 export function recordDeviceTelemetry(
   deviceId: string,
   metric: string,

@@ -112,7 +112,7 @@ Usage:
   spanda deploy agent list [--json]
   spanda deploy agent readiness <Robot@Hardware> [--runtime] [--inject-health-faults] [--json]
   spanda deploy --target wasm [--out <file.json>] <file.sd>
-  spanda fleet run [--json] [--trace-*] <file.sd>
+  spanda fleet run [--json] [--trace-*] [--persist-telemetry] <file.sd>
   spanda fleet orchestrate [--json] [--remote] [--mesh-url <url>] [--mesh-token <t>] <file.sd>
   spanda fleet mesh start [--bind <addr>] [--token <t>]
   spanda fleet agent start [--bind <addr>] [--robot <name>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>]
@@ -2143,24 +2143,8 @@ function handleFleet(
   }
 
   console.error(`Unknown fleet subcommand '${sub ?? ""}'`);
-  console.error("Usage: spanda fleet run [--json] [--trace-*] <file.sd>");
-  console.error("       spanda fleet orc
-  // Description:
-  //     HandleIr.
-  //
-  // Inputs:
-  //     filePath: string | undefined
-  //         Caller-supplied filePath.
-  //     json: boolean
-  //         Caller-supplied json.
-  //
-  // Outputs:
-  //     None.
-  //
-  // Example:
-
-// const result = handleIr(filePath, json);
-hestrate [--json] [--remote] <file.sd>");
+  console.error("Usage: spanda fleet run [--json] [--trace-*] [--persist-telemetry] <file.sd>");
+  console.error("       spanda fleet orchestrate [--json] [--remote] <file.sd>");
   console.error("       spanda fleet agent start|register|list");
   console.error("       spanda fleet mesh start [--bind <addr>] [--token <t>]");
   process.exit(1);

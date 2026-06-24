@@ -55,7 +55,8 @@ import {
 } from "./values.js";
 import { callExternBridge } from "../ffi/subprocess-bridge.js";
 import { ConcurrencyRuntime } from "../concurrency.js";
-import { recordSensorReading, recordTaskHeartbeat } from "../telemetry-store.js";
+import { recordSensorReading, recordTaskHeartbeat, recordTopicPublish } from "../telemetry-store.js";
+import { createHealthPollState, pollRuntimeHealthChanges, type HealthPollState } from "./health-runtime.js";
 import type { ModuleRegistry } from "../modules/index.js";
 import type { ExternFnDecl, ModuleFnDecl, ResourceBudgetDecl, TaskDecl, TaskPriority } from "../foundations.js";
 import type { CaptureResult, RegexPattern } from "../regex.js";
@@ -313,6 +314,7 @@ export class Interpreter {
   } | null = null;
   private currentRobot: RobotDecl | null = null;
   private currentProgram: Program | null = null;
+  private healthPollState = createHealthPollState();
   private enumVariants = new Map<string, string[]>();
   private variantOwner = new Map<string, string>();
   private structDefs = new Map<string, Array<{ name: string; typeName: string }>>();
@@ -1148,6 +1150,12 @@ export class Interpreter {
         break;
       }
       this.runVerifyRules();
+      pollRuntimeHealthChanges(
+        this.currentProgram,
+        this.injectedFaults,
+        this.reliability.simTimeMs,
+        this.healthPollState,
+      );
       this.updateTwinSnapshot();
       this.runConnectivityMaintenance();
     }
@@ -1341,7 +1349,7 @@ export class Interpreter {
         this.options.onLog?.(`task '${name}': ${kind} budget exceeded (${durationMs.toFixed(2)}ms)`);
       }
     }
-    this.reliability.touchHeartbeat(name, this.reliability.simTimeMs);
+    this.reliability.touchHeartbeat(name, this.reliability.simTimeMs, this.currentRobot?.name);
     return continueRunning;
 }
 
@@ -1502,6 +1510,12 @@ export class Interpreter {
       }
       this.processSpawnQueue();
       this.runVerifyRules();
+      pollRuntimeHealthChanges(
+        this.currentProgram,
+        this.injectedFaults,
+        simTime,
+        this.healthPollState,
+      );
       this.updateTwinSnapshot();
       this.reliability.checkWatchdogs(this.reliabilityHost());
       this.runConnectivityMaintenance();
@@ -1934,6 +1948,7 @@ export class Interpreter {
 
     // const result = setupRobot(robot);
     this.currentRobot = robot;
+    this.healthPollState = createHealthPollState();
     this.env = new Environment();
     if (this.fleets.names().length > 0) {
       this.env.define("fleet", { kind: "fleet_control", registry: this.fleets.clone() });
@@ -2647,6 +2662,12 @@ export class Interpreter {
             sourceId,
           );
           this.options.backend.publishTopic?.(topic.topicPath, topic.messageType, value);
+          recordTopicPublish(
+            this.currentRobot?.name,
+            topic.topicPath,
+            value,
+            this.reliability.simTimeMs,
+          );
           this.options.onLog?.(`publish ${topic.topicPath}`);
         }
         break;
@@ -3691,6 +3712,7 @@ export class Interpreter {
       target.sensorType,
       reading,
       this.reliability.simTimeMs,
+      this.currentRobot?.name,
     );
     return reading;
   }

@@ -97,9 +97,9 @@ export class ReliabilityRuntime {
     });
   }
 
-  touchHeartbeat(taskName: string, simTimeMs: number): void {
+  touchHeartbeat(taskName: string, simTimeMs: number, robotId?: string): void {
     this.taskHeartbeats.set(taskName, simTimeMs);
-    recordTaskHeartbeat(taskName, simTimeMs);
+    recordTaskHeartbeat(taskName, simTimeMs, robotId);
   }
 
   checkWatchdogs(host: ReliabilityHost): void {
