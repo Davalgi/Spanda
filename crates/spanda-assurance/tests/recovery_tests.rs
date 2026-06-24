@@ -1,8 +1,9 @@
 //! Integration tests for self-healing and recovery framework.
 
 use spanda_assurance::{
-    evaluate_recovery, extract_recovery_policies, format_recovery, simulate_failure_recovery,
-    RecoveryContext, RecoveryLevel, RecoveryStatus,
+    evaluate_recovery, extract_recovery_policies, format_recovery, load_merged_recovery_knowledge,
+    save_recovery_knowledge_store, simulate_failure_recovery, RecoveryContext, RecoveryKnowledgeBase,
+    RecoveryKnowledgeEntry, RecoveryLevel, RecoveryPlanner, RecoveryStatus,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
@@ -54,4 +55,43 @@ fn recovery_readiness_evaluated() {
     };
     let report = evaluate_recovery(&program, Some(&ctx));
     assert!(report.readiness.readiness_score > 0 || report.readiness.blockers.is_empty());
+}
+
+#[test]
+fn merged_knowledge_informs_recovery_plan() {
+    let program = parse_source(
+        "robot Rover { sensor gps: GPS; actuator w: DifferentialDrive; safety { max_speed = 1 m/s; } behavior b() {} }",
+    );
+    let store = std::path::PathBuf::from(".spanda/recovery_knowledge.json");
+    if let Some(parent) = store.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    save_recovery_knowledge_store(
+        &store,
+        &RecoveryKnowledgeBase {
+            entries: vec![RecoveryKnowledgeEntry {
+                failure_pattern: "gps".into(),
+                recovery_pattern: "switch_to visual_odometry".into(),
+                success_rate: 0.92,
+                recommendation: "Historical VO fallback".into(),
+            }],
+        },
+    )
+    .unwrap();
+    let kb = load_merged_recovery_knowledge(&program);
+    assert!(kb.entries.iter().any(|e| e.recovery_pattern.contains("visual")));
+    let plan = RecoveryPlanner::plan(
+        &program,
+        &RecoveryContext {
+            issue: "gps.failed".into(),
+            diagnosis: None,
+            classification: None,
+            level: RecoveryLevel::Level2AutomaticLowRisk,
+        },
+    );
+    assert!(plan
+        .actions
+        .iter()
+        .any(|a| a.description.contains("visual_odometry")));
+    let _ = std::fs::remove_file(&store);
 }
