@@ -152,7 +152,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | observe / fusion | **Stable** | Weighted fusion by sensor type; `state_estimator` runtime bindings |
 | mission assurance (static + CLI) | **Stable** | `spanda-assurance` crate; 8 official packages |
 | self-healing & recovery (static + CLI) | **Stable** | Recovery planner, validation gates, audit, knowledge store |
-| self-healing runtime dispatch | **Experimental** | Assurance-gated actions, Approval polling, fleet mesh relay (`SPANDA_FLEET_MESH_URL`), mission approval gating |
+| self-healing runtime dispatch | **Experimental** | Assurance-gated actions, Approval polling, fleet mesh relay (`SPANDA_FLEET_MESH_URL`), mission approval gating, fleet agent assurance recovery on deployed programs |
 | learned anomaly backends | **Experimental** | Runtime `scan_learned`; ONNX optional |
 | verify { } behavioral assertions | **Stable** | |
 | hardware / deploy | **Stable** | Rust verify CLI |

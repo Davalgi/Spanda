@@ -55,6 +55,8 @@ See [mission-assurance.md](./mission-assurance.md), [state-estimation.md](./stat
 | Runtime dispatch (modes, speed caps, connectivity, mission pause) | **Experimental** |
 | Operator approval (env, Approval topics, mission `requires approval`) | **Experimental** |
 | Fleet mesh recovery (`POST /v1/fleet/recovery`, `SPANDA_FLEET_MESH_URL`) | **Experimental** |
+| Fleet agent assurance recovery (`POST /v1/recovery/execute`, deployed program) | **Experimental** |
+| TypeScript recovery diagnostics (LSP fallback) | **Stable** |
 | `spanda demo self-healing` | **Stable** |
 
 See [self-healing.md](./self-healing.md), [recovery-policies.md](./recovery-policies.md).
