@@ -86,7 +86,9 @@ export function dispatchOfficialPackageCall(
     return null;
   }
 
+  // TODO: Wire project-scoped provider registry lookup via key for dispatch paths that need per-project backends.
   const key = projectProviderKey(packageName);
+  void key;
 
   if (modulePath === "positioning.gps" && functionName === "read") {
     if (!registry.hasCapability("positioning.read")) return null;
@@ -134,6 +136,5 @@ export function dispatchOfficialPackageCall(
     return okInt();
   }
 
-  void key;
   return null;
 }
