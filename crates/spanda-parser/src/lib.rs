@@ -9191,7 +9191,7 @@ impl Parser {
         if self.check(TokenType::Semicolon) {
             self.advance();
         }
-        Ok(parts.join(""))
+        Ok(parts.join(" "))
     }
 
     fn parse_knowledge_model(

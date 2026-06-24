@@ -508,6 +508,8 @@ impl<B: RobotBackend> Interpreter<B> {
         record_recovery_outcome(&mut knowledge, &result);
         let _ = save_recovery_knowledge_store(&self.recovery_knowledge_path, &knowledge);
 
+        let _ = self.try_invoke_continuity_for_event(issue);
+
         Ok(result)
     }
 

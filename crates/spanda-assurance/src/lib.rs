@@ -24,8 +24,9 @@ pub mod types;
 
 pub use analyze::{assure_program, diagnosis_report, mitigation_report, MissionAssuranceSummary};
 pub use continuity::{
-    evaluate_continuity, extract_continuity_policies, plan_delegation, plan_succession,
-    plan_takeover, parse_scope, parse_trigger, ContinuationDecision, ContinuationDecisionEngine,
+    evaluate_continuity, extract_continuity_policies, issue_to_continuity_trigger,
+    plan_delegation, plan_succession, plan_takeover, parse_scope, parse_trigger,
+    program_has_continuity_for_trigger, ContinuationDecision, ContinuationDecisionEngine,
     ContinuityContext, ContinuityEvidence, ContinuityPolicySpec, ContinuityTrigger,
     ContinuityTrustLevel, DelegationReport, MissionCheckpoint, MissionCheckpointManager,
     MissionContinuityManager, MissionContinuityReport, MissionContextTransfer,

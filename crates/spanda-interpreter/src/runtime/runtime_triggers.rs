@@ -174,6 +174,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.dispatch_connectivity_trigger(domain, evt)?;
             }
             self.invoke_recovery_for_event(&event)?;
+            let _ = self.try_invoke_continuity_for_event(&event);
         }
         Ok(())
     }

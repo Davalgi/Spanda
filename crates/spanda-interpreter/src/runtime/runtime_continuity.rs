@@ -5,8 +5,9 @@ use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
 use serde::{Deserialize, Serialize};
 use spanda_assurance::{
-    default_checkpoint_store_path, load_checkpoint, load_checkpoint_store, plan_takeover,
-    parse_trigger, record_checkpoint, save_checkpoint_store,
+    default_checkpoint_store_path, extract_continuity_policies, issue_to_continuity_trigger,
+    load_checkpoint, load_checkpoint_store, plan_takeover, parse_trigger,
+    program_has_continuity_for_trigger, record_checkpoint, save_checkpoint_store,
     ContinuityContext, SuccessionScope, TakeoverMode, TakeoverReport,
 };
 use spanda_ast::nodes::Program;
@@ -51,6 +52,99 @@ impl<B: RobotBackend> Interpreter<B> {
         load_checkpoint(&store, &report.mission, &report.failed_entity)
             .map(|snap| snap.progress_percent)
             .unwrap_or(report.state_transfer.snapshot.progress_percent)
+    }
+
+    fn mission_runtime_progress(&self) -> f64 {
+        self.env
+            .get("mission")
+            .and_then(|v| {
+                if let RuntimeValue::MissionControl { runtime } = v {
+                    if runtime.steps.is_empty() {
+                        Some(0.0)
+                    } else {
+                        Some((runtime.step_index as f64 / runtime.steps.len() as f64) * 100.0)
+                    }
+                } else {
+                    None
+                }
+            })
+            .unwrap_or(0.0)
+    }
+
+    fn mission_runtime_name(&self) -> String {
+        self.env
+            .get("mission")
+            .and_then(|v| {
+                if let RuntimeValue::MissionControl { runtime } = v {
+                    runtime.name.clone()
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_else(|| "default_mission".into())
+    }
+
+    /// Execute assurance-gated continuity when policies cover a runtime issue.
+    pub(super) fn execute_continuity_runtime(
+        &mut self,
+        issue: &str,
+    ) -> Result<Option<TakeoverReport>, SpandaError> {
+        let Some(program) = self.health_program.clone() else {
+            return Ok(None);
+        };
+        if extract_continuity_policies(&program).is_empty() {
+            return Ok(None);
+        }
+        let Some(trigger) = issue_to_continuity_trigger(issue) else {
+            return Ok(None);
+        };
+        if !program_has_continuity_for_trigger(&program, trigger) {
+            return Ok(None);
+        }
+        let failed = self
+            .active_robot_name
+            .clone()
+            .unwrap_or_else(|| issue.into());
+        let context = ContinuityContext {
+            mission: self.mission_runtime_name(),
+            failed_entity: failed,
+            trigger,
+            progress_percent: self.mission_runtime_progress(),
+            scope: if self.fleets.names().next().is_some() {
+                SuccessionScope::Fleet
+            } else {
+                SuccessionScope::Robot
+            },
+            current_step: None,
+            checkpoints: Vec::new(),
+        };
+        let options = ContinuityRunOptions {
+            robot_name: self.active_robot_name.clone(),
+            successor: None,
+            grant_operator_approval: false,
+            inbound_comm_messages: Vec::new(),
+        };
+        let report = self.run_continuity_takeover(&program, &context, &options)?;
+        self.log(format!(
+            "continuity: auto-triggered for '{issue}' -> successor '{}' mode {:?}",
+            report.successor, report.mode
+        ));
+        Ok(Some(report))
+    }
+
+    /// Attempt continuity takeover for a hardware or health event during run/sim.
+    pub(super) fn try_invoke_continuity_for_event(
+        &mut self,
+        event: &str,
+    ) -> Result<(), SpandaError> {
+        match self.execute_continuity_runtime(event) {
+            Ok(Some(_)) => Ok(()),
+            Ok(None) => Ok(()),
+            Err(err) => {
+                self.log(format!("continuity: auto-trigger skipped for '{event}': {err}"));
+                Ok(())
+            }
+        }
     }
 
     fn pause_mission_for_continuity(&mut self) {

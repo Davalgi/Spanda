@@ -281,6 +281,43 @@ pub fn extract_continuity_policies(program: &Program) -> Vec<ContinuityPolicySpe
         .collect()
 }
 
+/// Map a runtime fault or health event to a continuity trigger.
+pub fn issue_to_continuity_trigger(issue: &str) -> Option<ContinuityTrigger> {
+    let lower = issue.to_ascii_lowercase();
+    if lower.contains("swarm") {
+        Some(ContinuityTrigger::SwarmMemberLost)
+    } else if lower.contains("fleet") {
+        Some(ContinuityTrigger::FleetMemberOffline)
+    } else if lower.contains("battery") {
+        Some(ContinuityTrigger::BatteryCritical)
+    } else if lower.contains("disconnect") || lower.contains("offline") || lower.contains("camera") {
+        Some(ContinuityTrigger::DeviceDisconnected)
+    } else if lower.contains("degraded") || lower.contains("gps") {
+        Some(ContinuityTrigger::RobotDegraded)
+    } else if lower.contains("capability") {
+        Some(ContinuityTrigger::HardwareCapabilityLost)
+    } else if lower.contains("communication") || lower.contains("comm") {
+        Some(ContinuityTrigger::CommunicationInterrupted)
+    } else if lower.contains("robot") || lower.contains("critical") || lower.contains("failed") {
+        Some(ContinuityTrigger::RobotFailed)
+    } else {
+        None
+    }
+}
+
+/// Return true when the program declares `continuity_policy` for the trigger.
+pub fn program_has_continuity_for_trigger(program: &Program, trigger: ContinuityTrigger) -> bool {
+    let trigger_key = trigger_condition_key(trigger);
+    extract_continuity_policies(program)
+        .iter()
+        .any(|policy| {
+            policy
+                .triggers
+                .iter()
+                .any(|(condition, _)| condition_matches_trigger(condition, trigger_key))
+        })
+}
+
 /// Mission continuity evaluation report.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MissionContinuityReport {
@@ -1228,9 +1265,24 @@ robot R { behavior idle() {} }
             progress_percent: 50.0,
             ..Default::default()
         };
-        assert_eq!(
-            ContinuationDecisionEngine::infer_mode(&program, &context, false),
-            TakeoverMode::Resume
+        assert_eq!(ContinuationDecisionEngine::infer_mode(&program, &context, false), TakeoverMode::Resume
         );
+    }
+
+    #[test]
+    fn issue_to_continuity_trigger_maps_health_events() {
+        assert_eq!(
+            issue_to_continuity_trigger("RobotHealthCritical"),
+            Some(ContinuityTrigger::RobotFailed)
+        );
+        assert!(program_has_continuity_for_trigger(
+            &parse_sd(
+                r#"
+continuity_policy P { on robot.failed { resume from checkpoint; } }
+robot R { behavior idle() {} }
+"#,
+            ),
+            ContinuityTrigger::RobotFailed
+        ));
     }
 }

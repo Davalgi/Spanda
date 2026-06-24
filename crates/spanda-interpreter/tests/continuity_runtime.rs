@@ -165,3 +165,59 @@ robot RoverB { behavior patrol() { } }
         blocked.logs
     );
 }
+
+#[test]
+fn continuity_auto_triggers_during_run_on_health_fault() {
+    let source = r#"
+mission_plan Patrol {
+    step alpha;
+    step beta;
+}
+
+continuity_policy FleetContinuity {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+    }
+}
+
+fleet PatrolFleet {
+    RoverA;
+    RoverB;
+}
+
+robot RoverA {
+    behavior patrol() {
+        loop every 50ms {
+            let _ = 1;
+        }
+    }
+}
+
+robot RoverB {
+    behavior patrol() {
+        loop every 50ms {
+            let _ = 1;
+        }
+    }
+}
+"#;
+    let program = parse(tokenize(source).unwrap()).unwrap();
+    let result = spanda_interpreter::run_program(
+        &program,
+        spanda_interpreter::RunOptions {
+            inject_health_faults: true,
+            max_loop_iterations: 2,
+            ..Default::default()
+        },
+    )
+    .expect("run with continuity auto-trigger");
+    assert!(
+        result
+            .logs
+            .iter()
+            .any(|line| line.contains("continuity: auto-triggered")),
+        "expected auto continuity log, got: {:?}",
+        result.logs
+    );
+}

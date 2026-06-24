@@ -30,6 +30,7 @@ impl<B: RobotBackend> Interpreter<B> {
             anomaly_handlers,
             state_estimators,
             recovery_policies,
+            continuity_policies,
             mitigations,
             robots,
             ..
@@ -39,6 +40,7 @@ impl<B: RobotBackend> Interpreter<B> {
             || !anomaly_handlers.is_empty()
             || !state_estimators.is_empty()
             || !recovery_policies.is_empty()
+            || !continuity_policies.is_empty()
             || !mitigations.is_empty()
             || robots.iter().any(|robot| {
                 let RobotDecl::RobotDecl {
@@ -73,6 +75,12 @@ impl<B: RobotBackend> Interpreter<B> {
         };
         let faults = self.hardware_monitor.runtime_faults();
         let events = self.hardware_monitor.runtime_events();
+        for fault in &faults {
+            let _ = self.try_invoke_continuity_for_event(fault);
+        }
+        for event in &events {
+            let _ = self.try_invoke_continuity_for_event(event);
+        }
         let mut report = evaluate_runtime_health(&faults, &events, &program);
         spanda_capability::apply_fleet_health_checks(&mut report, &program, &self.fleets, &faults);
         let label = format!("{:?}", report.overall);
@@ -128,6 +136,12 @@ impl<B: RobotBackend> Interpreter<B> {
         self.apply_health_policy_reactions(&report);
         self.poll_learned_anomaly_detectors(&report);
         self.apply_anomaly_handlers(&report);
+        if matches!(
+            report.overall,
+            HealthStatus::Critical | HealthStatus::Unsafe | HealthStatus::Failed
+        ) {
+            let _ = self.try_invoke_continuity_for_event("RobotHealthCritical");
+        }
         self.apply_swarm_health_coordination(&report);
     }
 
