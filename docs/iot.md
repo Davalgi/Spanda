@@ -79,6 +79,6 @@ Golden path (mock fallback without hardware): `./scripts/live_iot_golden_path.sh
 
 ## Persistent storage
 
-Device telemetry published through `iot.telemetry.publish` is mirrored to the local append-only store when persistence is enabled (`--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`). Sensor reads and task heartbeats are recorded the same way.
+Device telemetry published through `iot.telemetry.publish` is mirrored to the local append-only store when persistence is enabled (`--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`). Sensor reads, task heartbeats, and device liveness (`heartbeat`/`liveness`/`alive`/`ping` metrics, device registration, fleet agent health) are recorded the same way.
 
 See [telemetry-store.md](./telemetry-store.md) for file layout and `spanda telemetry` CLI commands.
