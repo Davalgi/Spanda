@@ -313,3 +313,18 @@ export function readinessDashboardFromReports(reports: ReadinessReport[]): Readi
     reports,
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const not_ready_count = reports.filter((r) => r.status === "NotReady").length;
