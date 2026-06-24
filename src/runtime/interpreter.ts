@@ -824,7 +824,14 @@ export class Interpreter {
     // Dispatch message triggers for an inbound topic path when handlers exist.
     for (const [eventName, handler] of this.eventHandlers) {
       if (eventName === `message:${topicName}` || eventName === `message:${topicPath}`) {
+        const started = performance.now();
         this.executeBlock(handler);
+        this.reliability.recordTriggerExecution(
+          eventName,
+          "message",
+          "normal",
+          performance.now() - started,
+        );
       }
     }
   }
@@ -2705,6 +2712,7 @@ export class Interpreter {
             value,
             this.reliability.simTimeMs,
           );
+          this.reliability.recordTopicPublish(topic.topicPath, 0);
           this.reliability.recordMissionEvent(
             this.reliabilityHost(),
             "topic_publish",

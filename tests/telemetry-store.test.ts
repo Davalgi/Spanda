@@ -95,6 +95,11 @@ describe("runtime telemetry snapshot", () => {
     runtime.recordTaskTick("driver", "normal", 10, 5);
     runtime.recordSpawn(true);
     runtime.recordParallelBlock();
+    runtime.recordPipelineExecution("p", 30, 12, true);
+    runtime.recordWatchdogTimeout("w", 100);
+    runtime.recordTriggerExecution("message:/scan", "message", "normal", 2);
+    runtime.recordTopicPublish("/telemetry", 0);
+    runtime.recordProviderCall("nav2", "navigation", 4, false);
     const snapshot = runtime.snapshotRuntimeMetrics(4);
     expect(snapshot.scheduler).toMatchObject({
       multiplexed_tasks: 2,
@@ -108,5 +113,10 @@ describe("runtime telemetry snapshot", () => {
     });
     expect(snapshot.replay_frames).toBe(4);
     expect((snapshot.tasks as Record<string, { ticks: number }>).driver?.ticks).toBe(1);
+    expect((snapshot.pipelines as Record<string, { executions: number }>).p?.executions).toBe(1);
+    expect((snapshot.watchdogs as Record<string, { timeouts: number }>).w?.timeouts).toBe(1);
+    expect((snapshot.triggers as Record<string, { executions: number }>)["message:/scan"]?.executions).toBe(1);
+    expect((snapshot.topics as Record<string, { last_elapsed_ms: number }>)["/telemetry"]?.last_elapsed_ms).toBe(0);
+    expect((snapshot.providers as Record<string, { calls: number }>).nav2?.calls).toBe(1);
   });
 });

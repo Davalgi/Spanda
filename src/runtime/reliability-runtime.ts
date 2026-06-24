@@ -30,6 +30,47 @@ type TaskMetricState = {
   jitter_violations: number;
 };
 
+type PipelineMetricState = {
+  name: string;
+  budget_ms: number;
+  executions: number;
+  total_duration_ms: number;
+  deadline_misses: number;
+  slow_stages: number;
+};
+
+type WatchdogMetricState = {
+  name: string;
+  timeouts: number;
+  last_timeout_ms: number;
+};
+
+type TriggerMetricState = {
+  name: string;
+  category: string;
+  priority: string;
+  executions: number;
+  failures: number;
+  missed_deadlines: number;
+  last_duration_ms: number;
+  max_duration_ms: number;
+};
+
+type TopicMetricState = {
+  path: string;
+  deadline_misses: number;
+  last_elapsed_ms: number;
+};
+
+type ProviderMetricState = {
+  provider_key: string;
+  category: string;
+  calls: number;
+  failures: number;
+  last_duration_ms: number;
+  max_duration_ms: number;
+};
+
 export class ReliabilityRuntime {
   activeMode = "normal";
   simTimeMs = 0;
@@ -57,6 +98,11 @@ export class ReliabilityRuntime {
     parallel_blocks: 0,
     fire_and_forget_spawns: 0,
   };
+  private pipelineMetrics = new Map<string, PipelineMetricState>();
+  private watchdogMetrics = new Map<string, WatchdogMetricState>();
+  private triggerMetrics = new Map<string, TriggerMetricState>();
+  private topicMetrics = new Map<string, TopicMetricState>();
+  private providerMetrics = new Map<string, ProviderMetricState>();
 
   loadFromRobot(robot: RobotDecl, recordTrace: boolean, traceSource?: string): void {
 
@@ -78,6 +124,11 @@ export class ReliabilityRuntime {
       parallel_blocks: 0,
       fire_and_forget_spawns: 0,
     };
+    this.pipelineMetrics.clear();
+    this.watchdogMetrics.clear();
+    this.triggerMetrics.clear();
+    this.topicMetrics.clear();
+    this.providerMetrics.clear();
     this.activeMode = "normal";
     this.missionTrace = recordTrace ? createMissionTrace(traceSource ?? "program.sd") : null;
 
@@ -135,6 +186,7 @@ export class ReliabilityRuntime {
       durationMs,
       budgetMs: pipeline.budgetMs,
     });
+    this.recordPipelineExecution(name, pipeline.budgetMs, durationMs, durationMs > pipeline.budgetMs);
   }
 
   touchHeartbeat(taskName: string, simTimeMs: number, robotId?: string): void {
@@ -208,14 +260,142 @@ export class ReliabilityRuntime {
     this.executionMetrics.parallel_blocks += 1;
   }
 
+  recordPipelineExecution(
+    name: string,
+    budgetMs: number,
+    durationMs: number,
+    slowStage = false,
+  ): void {
+    const existing = this.pipelineMetrics.get(name) ?? {
+      name,
+      budget_ms: budgetMs,
+      executions: 0,
+      total_duration_ms: 0,
+      deadline_misses: 0,
+      slow_stages: 0,
+    };
+    existing.executions += 1;
+    existing.total_duration_ms += durationMs;
+    if (durationMs > budgetMs) {
+      existing.deadline_misses += 1;
+    }
+    if (slowStage) {
+      existing.slow_stages += 1;
+    }
+    this.pipelineMetrics.set(name, existing);
+  }
+
+  recordWatchdogTimeout(name: string, simTimeMs: number): void {
+    const existing = this.watchdogMetrics.get(name) ?? {
+      name,
+      timeouts: 0,
+      last_timeout_ms: 0,
+    };
+    existing.timeouts += 1;
+    existing.last_timeout_ms = simTimeMs;
+    this.watchdogMetrics.set(name, existing);
+  }
+
+  recordTriggerExecution(
+    name: string,
+    category: string,
+    priority: string,
+    durationMs: number,
+    failed = false,
+  ): void {
+    const existing = this.triggerMetrics.get(name) ?? {
+      name,
+      category,
+      priority,
+      executions: 0,
+      failures: 0,
+      missed_deadlines: 0,
+      last_duration_ms: 0,
+      max_duration_ms: 0,
+    };
+    existing.executions += 1;
+    if (failed) {
+      existing.failures += 1;
+    }
+    existing.last_duration_ms = durationMs;
+    existing.max_duration_ms = Math.max(existing.max_duration_ms, durationMs);
+    this.triggerMetrics.set(name, existing);
+  }
+
+  recordTopicPublish(path: string, elapsedMs: number, deadlineMiss = false): void {
+    const existing = this.topicMetrics.get(path) ?? {
+      path,
+      deadline_misses: 0,
+      last_elapsed_ms: 0,
+    };
+    existing.last_elapsed_ms = elapsedMs;
+    if (deadlineMiss) {
+      existing.deadline_misses += 1;
+    }
+    this.topicMetrics.set(path, existing);
+  }
+
+  recordProviderCall(
+    providerKey: string,
+    category: string,
+    durationMs: number,
+    failed = false,
+  ): void {
+    const existing = this.providerMetrics.get(providerKey) ?? {
+      provider_key: providerKey,
+      category,
+      calls: 0,
+      failures: 0,
+      last_duration_ms: 0,
+      max_duration_ms: 0,
+    };
+    existing.calls += 1;
+    if (failed) {
+      existing.failures += 1;
+    }
+    existing.last_duration_ms = durationMs;
+    existing.max_duration_ms = Math.max(existing.max_duration_ms, durationMs);
+    this.providerMetrics.set(providerKey, existing);
+  }
+
   snapshotRuntimeMetrics(replayFrames = 0): Record<string, unknown> {
     const tasks: Record<string, Omit<TaskMetricState, "name">> = {};
     for (const [name, body] of this.taskMetrics.entries()) {
       const { name: _ignored, ...metrics } = body;
       tasks[name] = metrics;
     }
+    const pipelines: Record<string, Omit<PipelineMetricState, "name">> = {};
+    for (const [name, body] of this.pipelineMetrics.entries()) {
+      const { name: _ignored, ...metrics } = body;
+      pipelines[name] = metrics;
+    }
+    const watchdogs: Record<string, Omit<WatchdogMetricState, "name">> = {};
+    for (const [name, body] of this.watchdogMetrics.entries()) {
+      const { name: _ignored, ...metrics } = body;
+      watchdogs[name] = metrics;
+    }
+    const triggers: Record<string, Omit<TriggerMetricState, "name">> = {};
+    for (const [name, body] of this.triggerMetrics.entries()) {
+      const { name: _ignored, ...metrics } = body;
+      triggers[name] = metrics;
+    }
+    const topics: Record<string, Omit<TopicMetricState, "path">> = {};
+    for (const [path, body] of this.topicMetrics.entries()) {
+      const { path: _ignored, ...metrics } = body;
+      topics[path] = metrics;
+    }
+    const providers: Record<string, Omit<ProviderMetricState, "provider_key">> = {};
+    for (const [key, body] of this.providerMetrics.entries()) {
+      const { provider_key: _ignored, ...metrics } = body;
+      providers[key] = metrics;
+    }
     return {
       tasks,
+      triggers,
+      pipelines,
+      watchdogs,
+      topics,
+      providers,
       scheduler: { ...this.schedulerMetrics, sim_time_ms: this.simTimeMs },
       execution: { ...this.executionMetrics },
       replay_frames: replayFrames,
@@ -238,6 +418,7 @@ export class ReliabilityRuntime {
         continue;
       }
       watchdog.lastFiredAtMs = host.getSimTimeMs();
+      this.recordWatchdogTimeout(watchdog.name, host.getSimTimeMs());
       this.recordEvent(host, "watchdog_timeout", {
         watchdog: watchdog.name,
         elapsedMs: elapsed,
@@ -281,20 +462,10 @@ export class ReliabilityRuntime {
 }
 
 export function pipelineFromDecl(decl: PipelineDecl): {
-  // Description:
-  //     PipelineFromDecl.
-  //
-  // Inputs:
-  //     decl: PipelineDecl
-  //         Caller-supplied decl.
-  //
-  // Outputs:
-  //     None.
-  //
-  // Example:
-
- // const result = pipelineFromDecl(decl);
- name: string; budgetMs: number; body: Stmt[] } {
+  name: string;
+  budgetMs: number;
+  body: Stmt[];
+} {
   return { name: decl.name, budgetMs: decl.budgetMs, body: decl.body };
 }
 
