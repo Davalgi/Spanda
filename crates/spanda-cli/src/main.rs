@@ -162,7 +162,7 @@ fn usage() {
            spanda llvm-ir [--out <file.ll>] [--target-triple <triple>] [--hal-profile <name>] <file.sd>\n\
            spanda compile-native [--out <binary>] [--target-triple <triple>] [--hal-profile <name>] <file.sd>\n\n\
          Demo commands:\n\
-           spanda demo <rover|safety|verify|fleet|health|readiness|assurance>\n\n\
+           spanda demo <rover|safety|verify|fleet|health|readiness|assurance|self-healing>\n\n\
          ROS 2 commands:\n\
            spanda ros2 check [--json]\n\n\
          Package commands:\n\
@@ -1872,9 +1872,10 @@ fn main() {
                             simulate,
                             strict_certify,
                         );
-                        Some(spanda_readiness::collect_readiness_diagnostics(
-                            &program, &options,
-                        ))
+                        let mut diags =
+                            spanda_readiness::collect_readiness_diagnostics(&program, &options);
+                        diags.extend(spanda_assurance::collect_recovery_diagnostics(&program));
+                        Some(diags)
                     } else {
                         None
                     };

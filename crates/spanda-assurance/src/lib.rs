@@ -13,6 +13,7 @@ pub mod mitigation;
 pub mod modes;
 pub mod prognostics;
 pub mod recovery;
+pub mod recovery_diagnostics;
 pub mod report;
 pub mod resilience;
 pub mod state;
@@ -41,6 +42,7 @@ pub use recovery::{
     RecoveryPlanner, RecoveryPolicySpec, RecoveryReadiness, RecoveryReport, RecoveryResult,
     RecoveryStatus, RecoveryStrategy, RecoveryTraceChain, SafeRecoveryAction,
 };
+pub use recovery_diagnostics::collect_recovery_diagnostics;
 pub use report::{
     format_anomaly, format_assurance, format_diagnosis, format_mission_assurance,
     format_mitigation, format_prognostics, format_recovery, format_resilience, format_state,
