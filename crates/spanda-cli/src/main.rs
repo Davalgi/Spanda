@@ -179,7 +179,7 @@ fn usage() {
            spanda sim [--json] [--replay] [--twin-export <replay.json>] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--enforce-certify] <file.sd>\n\
            spanda replay <mission.trace> [--from T+mm:ss] [--deterministic] [--playback]\n\
            spanda twin export <file.sd> --out <replay.json>\n\
-           spanda fleet run [--json] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] <file.sd>\n\
+           spanda fleet run [--json] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--persist-telemetry] <file.sd>\n\
            spanda fleet orchestrate [--json] [--remote] [--mesh-url <http(s)://host:port>] [--mesh-token <t>] <file.sd>\n\
            spanda swarm coordinate [--json] [--mesh-url <http(s)://host:port>] [--mesh-token <t>] <file.sd>\n\
            spanda fleet mesh start [--bind <addr>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>]\n\
@@ -1011,7 +1011,7 @@ fn fleet_dispatch(args: &[String]) {
         return;
     }
     if args.first().map(String::as_str) != Some("run") {
-        eprintln!("Usage: spanda fleet run [--json] [--trace-*] <file.sd>");
+        eprintln!("Usage: spanda fleet run [--json] [--trace-*] [--persist-telemetry] <file.sd>");
         eprintln!(
             "       spanda fleet orchestrate [--json] [--remote] [--mesh-url <url>] <file.sd>"
         );
@@ -1024,6 +1024,7 @@ fn fleet_dispatch(args: &[String]) {
     let mut trace_tasks = false;
     let mut trace_triggers = false;
     let mut trace_events = false;
+    let mut persist_telemetry = false;
     let mut file: Option<String> = None;
 
     // Apply each command-line argument.
@@ -1035,6 +1036,7 @@ fn fleet_dispatch(args: &[String]) {
             "--trace-tasks" => trace_tasks = true,
             "--trace-triggers" => trace_triggers = true,
             "--trace-events" => trace_events = true,
+            "--persist-telemetry" => persist_telemetry = true,
             other if !other.starts_with('-') && file.is_none() => file = Some(other.to_string()),
             other => {
                 eprintln!("Unknown argument: {other}");
@@ -1057,6 +1059,7 @@ fn fleet_dispatch(args: &[String]) {
             trace_tasks,
             trace_triggers,
             trace_events,
+            persist_telemetry,
         );
     } else {
         human_fleet_run(
@@ -1066,6 +1069,7 @@ fn fleet_dispatch(args: &[String]) {
             trace_tasks,
             trace_triggers,
             trace_events,
+            persist_telemetry,
         );
     }
 }
@@ -1077,6 +1081,7 @@ fn human_fleet_run(
     trace_tasks: bool,
     trace_triggers: bool,
     trace_events: bool,
+    persist_telemetry: bool,
 ) {
     // Description:
     //     Human fleet run.
@@ -1161,6 +1166,7 @@ fn human_fleet_run(
             trace_triggers,
             trace_events,
             replay_trace: true,
+            persist_telemetry,
             ..Default::default()
         },
     );
@@ -1217,6 +1223,7 @@ fn print_fleet_json(
     trace_tasks: bool,
     trace_triggers: bool,
     trace_events: bool,
+    persist_telemetry: bool,
 ) {
     // Description:
     //     Print fleet json.
@@ -1251,6 +1258,7 @@ fn print_fleet_json(
             trace_triggers,
             trace_events,
             replay_trace: true,
+            persist_telemetry,
             ..Default::default()
         },
     );

@@ -1758,6 +1758,7 @@ dependencies = [
  "spanda-deploy-http",
  "spanda-driver",
  "spanda-readiness",
+ "spanda-telemetry-store",
 ]
 
 [[package]]

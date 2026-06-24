@@ -253,7 +253,18 @@ pub fn agent_health(entry: &DeployAgentEntry) -> Result<bool, String> {
     let url = agent_endpoint(&entry.url, "/v1/health")?;
     let response = http_request("GET", &url, None, entry.token.as_deref())?;
     let body: serde_json::Value = decode_response(response)?;
-    Ok(body.get("ok").and_then(|v| v.as_bool()).unwrap_or(false))
+    let ok = body.get("ok").and_then(|v| v.as_bool()).unwrap_or(false);
+    if ok && spanda_telemetry_store::persist_enabled() {
+        let device_id = entry.target.clone();
+        let _ = spanda_telemetry_store::record_device_heartbeat(
+            &device_id,
+            spanda_telemetry_store::wall_timestamp_ms(),
+            None,
+            Some("deploy-agent"),
+            5000.0,
+        );
+    }
+    Ok(ok)
 }
 
 /// Fetch live readiness report from a deploy agent (`GET /v1/readiness`).
