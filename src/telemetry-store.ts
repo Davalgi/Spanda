@@ -31,6 +31,13 @@ export type TelemetryEvent =
       robot_id?: string;
     }
   | {
+      kind: "device_heartbeat";
+      device_id: string;
+      timestamp_ms: number;
+      robot_id?: string;
+      protocol?: string;
+    }
+  | {
       kind: "health";
       target: string;
       status: string;
@@ -39,10 +46,12 @@ export type TelemetryEvent =
 
 type HeartbeatIndex = {
   tasks: Record<string, number>;
+  devices?: Record<string, number>;
 };
 
 let sessionPersist = false;
 const lastHeartbeatHistory = new Map<string, number>();
+const lastDeviceHeartbeatHistory = new Map<string, number>();
 
 export function defaultStorePath(): string {
   return ".spanda/telemetry-store.jsonl";
@@ -94,9 +103,11 @@ function appendEvent(event: TelemetryEvent): void {
 
 function readHeartbeatIndex(path: string): HeartbeatIndex {
   if (!existsSync(path)) {
-    return { tasks: {} };
+    return { tasks: {}, devices: {} };
   }
-  return JSON.parse(readFileSync(path, "utf8")) as HeartbeatIndex;
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as HeartbeatIndex;
+  parsed.devices ??= {};
+  return parsed;
 }
 
 function writeHeartbeatIndex(path: string, index: HeartbeatIndex): void {
@@ -172,6 +183,41 @@ export function recordTaskHeartbeat(
   });
 }
 
+export function isHeartbeatMetric(metric: string): boolean {
+  const normalized = metric.toLowerCase();
+  return normalized === "heartbeat" || normalized === "liveness" || normalized === "alive" || normalized === "ping";
+}
+
+export function recordDeviceHeartbeat(
+  deviceId: string,
+  timestampMs: number,
+  robotId?: string,
+  protocol?: string,
+  historyIntervalMs = 5000,
+): void {
+  if (!persistEnabled()) {
+    return;
+  }
+  const heartbeatPath = resolveHeartbeatIndexPath();
+  const index = readHeartbeatIndex(heartbeatPath);
+  index.devices ??= {};
+  index.devices[deviceId] = timestampMs;
+  writeHeartbeatIndex(heartbeatPath, index);
+
+  const last = lastDeviceHeartbeatHistory.get(deviceId) ?? Number.NEGATIVE_INFINITY;
+  if (timestampMs - last < historyIntervalMs) {
+    return;
+  }
+  lastDeviceHeartbeatHistory.set(deviceId, timestampMs);
+  appendEvent({
+    kind: "device_heartbeat",
+    device_id: deviceId,
+    timestamp_ms: timestampMs,
+    robot_id: robotId,
+    protocol,
+  });
+}
+
 export function recordHealthEvent(target: string, status: string, timestampMs: number): void {
   appendEvent({
     kind: "health",
@@ -196,4 +242,7 @@ export function recordDeviceTelemetry(
     timestamp_ms: timestampMs,
     robot_id: robotId,
   });
+  if (isHeartbeatMetric(metric)) {
+    recordDeviceHeartbeat(deviceId, timestampMs, robotId);
+  }
 }
