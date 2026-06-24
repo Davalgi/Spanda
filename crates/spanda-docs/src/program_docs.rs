@@ -366,7 +366,9 @@ fn render_struct(decl: &spanda_ast::foundations::StructDecl) -> String {
     // let result = spanda_core::docs::render_struct(decl);
 
     // Compute crate for the following logic.
-    let spanda_ast::foundations::StructDecl::StructDecl { name, fields, doc, .. } = decl;
+    let spanda_ast::foundations::StructDecl::StructDecl {
+        name, fields, doc, ..
+    } = decl;
     let mut out = format!("{}### `{name}`\n\n", render_doc_block(doc));
 
     // Check each struct field.
@@ -392,7 +394,12 @@ fn render_enum(decl: &spanda_ast::foundations::EnumDecl) -> String {
     // let result = spanda_core::docs::render_enum(decl);
 
     // Compute crate for the following logic.
-    let spanda_ast::foundations::EnumDecl::EnumDecl { name, variants, doc, .. } = decl;
+    let spanda_ast::foundations::EnumDecl::EnumDecl {
+        name,
+        variants,
+        doc,
+        ..
+    } = decl;
     let mut out = format!("{}### `{name}`\n\n", render_doc_block(doc));
 
     // Handle each enum variant arm.
@@ -427,7 +434,9 @@ fn render_trait(decl: &spanda_ast::foundations::TraitDecl) -> String {
     // let result = spanda_core::docs::render_trait(decl);
 
     // Compute crate for the following logic.
-    let spanda_ast::foundations::TraitDecl::TraitDecl { name, methods, doc, .. } = decl;
+    let spanda_ast::foundations::TraitDecl::TraitDecl {
+        name, methods, doc, ..
+    } = decl;
     let mut out = format!("{}### `{name}`\n\n", render_doc_block(doc));
 
     // Process each method.

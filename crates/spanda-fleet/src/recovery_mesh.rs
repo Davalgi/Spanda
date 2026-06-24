@@ -4,7 +4,9 @@ use crate::remote::{lookup_fleet_agent, relay_peer_deliveries, FleetAgentRegistr
 use crate::PeerDelivery;
 use spanda_deploy_http::HttpResponse;
 
-pub use spanda_deploy_http::{relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse};
+pub use spanda_deploy_http::{
+    relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse,
+};
 
 /// Build peer deliveries for a fleet recovery command.
 pub fn recovery_deliveries_for_request(request: &FleetRecoveryRequest) -> Vec<PeerDelivery> {

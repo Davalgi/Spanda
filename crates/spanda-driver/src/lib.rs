@@ -6,8 +6,8 @@ pub mod debug_session;
 #[cfg(feature = "ota")]
 mod deploy_plan;
 pub mod pipeline;
-mod replay;
 mod recovery_run;
+mod replay;
 mod run;
 pub mod type_check;
 mod verify;
@@ -20,10 +20,12 @@ pub use debug_session::{DebugMachine, DebugStackFrame, DebugStepKind};
 #[cfg(feature = "ota")]
 pub use deploy_plan::build_deploy_plan;
 pub use pipeline::{lower_to_sir, run_tests};
-pub use replay::{playback_mission, replay_mission};
 pub use recovery_run::{execute_recovery_on_program, execute_recovery_source};
+pub use replay::{playback_mission, replay_mission};
 pub use run::{run, run_program, run_tests_with_registry};
-pub use spanda_interpreter::{RecoveryRunOptions, RecoveryRunResult, RunOptions, RunResult, TestRunResult};
+pub use spanda_interpreter::{
+    RecoveryRunOptions, RecoveryRunResult, RunOptions, RunResult, TestRunResult,
+};
 pub use verify::{
     verify_compatibility, verify_compatibility_target, verify_compatibility_with_registry,
 };

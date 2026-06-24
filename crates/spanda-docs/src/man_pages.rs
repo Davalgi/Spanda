@@ -41,7 +41,11 @@ pub fn list_man_pages() -> Vec<String> {
 pub fn markdown_man_to_roff(markdown: &str, page_name: &str) -> String {
     let section = "1";
     let mut out = String::new();
-    out.push_str(&format!(".TH \"{}\" \"{}\" \"Spanda\" \"Spanda CLI\"\n", page_name.to_uppercase(), section));
+    out.push_str(&format!(
+        ".TH \"{}\" \"{}\" \"Spanda\" \"Spanda CLI\"\n",
+        page_name.to_uppercase(),
+        section
+    ));
     let mut in_code = false;
     for line in markdown.lines() {
         if line.starts_with("```") {
@@ -71,7 +75,10 @@ pub fn markdown_man_to_roff(markdown: &str, page_name: &str) -> String {
 }
 
 fn normalize_man_query(query: &str) -> String {
-    let q = query.trim().trim_start_matches("spanda ").trim_start_matches("spanda-");
+    let q = query
+        .trim()
+        .trim_start_matches("spanda ")
+        .trim_start_matches("spanda-");
     if q.is_empty() || q == "spanda" {
         "spanda".into()
     } else {
@@ -91,10 +98,7 @@ mod tests {
     fn registered_commands_match_man_pages() {
         for cmd in CLI_COMMAND_NAMES {
             let key = cmd.strip_prefix("spanda-").unwrap_or(cmd);
-            assert!(
-                lookup_man_page(key).is_some(),
-                "missing man page for {cmd}"
-            );
+            assert!(lookup_man_page(key).is_some(), "missing man page for {cmd}");
         }
     }
 

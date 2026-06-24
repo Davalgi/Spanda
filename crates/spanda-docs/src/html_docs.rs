@@ -84,7 +84,10 @@ fn render_markdown_fragment(md: &str) -> String {
             close_list(&mut out, &mut list_open);
         } else {
             close_list(&mut out, &mut list_open);
-            out.push_str(&format!("<p class=\"doc-comment\">{}</p>\n", inline_md(line)));
+            out.push_str(&format!(
+                "<p class=\"doc-comment\">{}</p>\n",
+                inline_md(line)
+            ));
         }
     }
     if in_code {

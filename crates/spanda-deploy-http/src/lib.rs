@@ -390,6 +390,4 @@ mod agent_bind_tests {
     }
 }
 
-pub use fleet_recovery::{
-    relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse,
-};
+pub use fleet_recovery::{relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse};

@@ -121,10 +121,7 @@ robot RoverBeta {
     assert!(status.body.contains("recovery_active"));
     assert!(status.body.contains("recovery_validation"));
     assert!(status.body.contains("\"recovery_engine\":\"interpreter\""));
-    assert!(
-        status.body.contains("\"PASS\"")
-            || status.body.contains("\"PARTIAL\"")
-    );
+    assert!(status.body.contains("\"PASS\"") || status.body.contains("\"PARTIAL\""));
     assert!(status.body.contains("\"recovery_mode\":\"degraded\""));
 }
 
