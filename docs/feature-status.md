@@ -78,7 +78,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **FFI** | `extern python`/`extern cpp` subprocess bridges; optional `cpp-native` in-process | PyO3 path is Tier 2 adoption unlock |
 | **World models** | `world_model { }` block parser; `fusion.read()` → belief hook; `world_model.update` / `belief` / `export`; Rust + TS typecheck parity | Minimal belief buffer; see [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) |
 | **Ledger / provenance** | `spanda-ledger` provider → `MockLedgerBackend` | Mock chain only; no production blockchain adapters |
-| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; CI `mqtt-golden-path` | DDS is UDP JSON shim, not OMG middleware |
+| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; CI `mqtt-golden-path` | DDS is UDP JSON shim, not full DDS middleware |
 | **Self-hosting bootstrap** | `examples/self_host/lexer_keywords.sd`; Rust parity tests | Rust compiler remains authoritative |
 | **LSP** | Diagnostics, completion, hover, rename, verification quick-fixes | Requires built native CLI; VS Code extension with bundled LSP; CI builds VSIX |
 | **DAP debugger** | Breakpoints, step over/in/out, `every` trigger entry | VS Code + `spanda-dap`; tested in `phase34_gaps.rs` / `phase35_gaps.rs` |

@@ -37,7 +37,7 @@ Runtime telemetry (`RuntimeTelemetry`, mission traces, trigger metrics) remains 
 - Full world-model / knowledge-graph semantics
 - Production twin cloud SaaS
 - Full fleet planning / consensus
-- OMG DDS middleware (current DDS adapter is UDP JSON shim)
+- Full DDS middleware (current DDS adapter is UDP JSON shim)
 - Full ROS replacement
 - Complete self-hosted compiler
 

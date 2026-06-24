@@ -119,7 +119,7 @@ Per [product-strategy.md](./product-strategy.md), v1.0 **may** include optional 
 | **MQTT** | Live MQTT in robotics reference arch | End-to-end with ROS2/Nav2 example |
 | **World models** | `observe` → `world_model` → decision in one showcase | Rust + TS parity |
 
-**Not in v1.0:** LLVM as primary, production blockchain, full knowledge graphs, twin SaaS, OMG DDS, ROS replacement, full self-hosting.
+**Not in v1.0:** LLVM as primary, production blockchain, full knowledge graphs, twin SaaS, full DDS middleware, ROS replacement, full self-hosting.
 
 ---
 
@@ -132,7 +132,7 @@ Per [product-strategy.md](./product-strategy.md), v1.0 **may** include optional 
 | **World models** | `KnowledgeGraph`, `Belief`, `Policy` runtime | Builds on Phase 23 world-model work |
 | **Twin cloud** | Managed or self-hosted telemetry backend | Auth, replay integrity |
 | **Fleet** | Planning/consensus beyond round-robin | Certify + OTA + mesh proven in field |
-| **DDS** | Real OMG DDS or explicit “use ROS2 bridge” | Architecture decision |
+| **DDS** | Full DDS middleware or explicit “use ROS2 bridge” | Architecture decision |
 | **Self-hosting** | Roadmap milestones 4–5 (typecheck, codegen in Spanda) | `api-contract.json` stable |
 | **ROS replacement** | **Never** | Bridge only |
 

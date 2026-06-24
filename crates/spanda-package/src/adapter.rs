@@ -83,7 +83,7 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
         },
         FrameworkPackage {
             name: "spanda-cartographer",
-            description: "Google Cartographer SLAM adapter",
+            description: "Cartographer SLAM adapter",
             category: super::category::PackageCategory::Navigation,
             import_paths: &["navigation.cartographer"],
         },

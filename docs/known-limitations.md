@@ -16,7 +16,7 @@ Honest constraints for **v0.2.0** evaluators. For capability tiers see [feature-
 ## Connectivity and IoT
 
 - In-memory transport is the default. Live MQTT, WebSocket, DDS, Modbus, and OPC-UA require env flags and often `--features live-*` builds.
-- DDS support is a **UDP JSON shim**, not OMG DDS middleware.
+- DDS support is a **UDP JSON shim**, not full standards-compliant DDS middleware.
 
 ## Packages and registry
 

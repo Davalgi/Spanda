@@ -118,7 +118,7 @@ Weighted operational go/no-go scoring before deploy and during operations.
 
 ### Spanda Mission Assurance
 
-NASA-style autonomous operations assurance integrated with readiness and verification.
+Mission-grade autonomous operations assurance integrated with readiness and verification.
 
 - Language: `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`.
 - CLI: `spanda assure`, `anomaly scan`, `state estimate`, `diagnose`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`.

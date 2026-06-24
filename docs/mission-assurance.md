@@ -1,6 +1,6 @@
 # Mission Assurance
 
-Spanda provides NASA-style mission assurance as a **lean-core platform layer** integrated with existing readiness, health, traceability, and safety systems.
+Spanda provides mission-grade mission assurance as a **lean-core platform layer** integrated with existing readiness, health, traceability, and safety systems.
 
 ## Architecture
 

@@ -99,7 +99,7 @@ pub static LOCAL_REGISTRY: &[RegistryEntry] = &[
     },
     RegistryEntry {
         name: "spanda-cartographer",
-        description: "Google Cartographer SLAM adapter",
+        description: "Cartographer SLAM adapter",
         versions: &["0.1.0"],
         category: PackageCategory::Navigation,
         license: "Apache-2.0",

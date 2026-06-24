@@ -66,7 +66,7 @@ Topic guides: [dependency-graphs.md](./dependency-graphs.md) · [deployment-gate
 
 ## Mission assurance
 
-**NASA-style autonomous operations** — knowledge models, state estimation, anomaly detection, prognostics, mitigation, resilience, assurance cases.
+**Mission-grade autonomous operations** — knowledge models, state estimation, anomaly detection, prognostics, mitigation, resilience, assurance cases.
 
 | Item | Status |
 |------|--------|

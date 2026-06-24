@@ -488,7 +488,7 @@ Guides: [health-checks.md](./health-checks.md) · [kill-switch.md](./kill-switch
 
 ## Mission assurance (optional)
 
-NASA-style mission assurance: knowledge models, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
+Mission-grade mission assurance: knowledge models, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
 
 ```bash
 spanda demo assurance

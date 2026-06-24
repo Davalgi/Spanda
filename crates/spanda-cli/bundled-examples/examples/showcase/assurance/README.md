@@ -1,6 +1,6 @@
 # Mission assurance showcase
 
-NASA-style autonomous operations in one program: knowledge model, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
+Mission-grade autonomous operations in one program: knowledge model, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
 
 ## One command
 

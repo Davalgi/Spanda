@@ -1,6 +1,6 @@
 # Mission assurance showcase
 
-NASA-style autonomous operations in one program: knowledge model, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
+Mission-grade autonomous operations in one program: knowledge model, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
 
 Uses **`learned backend assurance.anomaly`** for the learned-detector package hook (no `import` required for standalone `.sd` examples). For weighted-fusion package APIs see **`spanda-fusion`** (`assurance.fusion`). Minimal learned-only variant: [learned_navigation.sd](../../anomaly/learned_navigation.sd).
 
