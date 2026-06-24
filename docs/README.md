@@ -6,6 +6,8 @@
 
 **Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.** Source files use the `.sd` extension.
 
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [overview/philosophy.md](./overview/philosophy.md).
+
 **Start here:** [platform-overview.md](./platform-overview.md) — platform vs language, component map, and workflow.
 
 **Project home (expanded README):** [overview/README.md](./overview/README.md) — philosophy, differentiators, CLI, code samples, demos.

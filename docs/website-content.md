@@ -45,6 +45,8 @@ AI models are the mind.
 Actuators are the muscles.  
 Spanda is the intelligent pulse that transforms perception into action.
 
+**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
+
 ### Value proposition (3 columns)
 
 **Safety-first AI**  

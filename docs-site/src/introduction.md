@@ -6,6 +6,8 @@
 
 **Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.** The `.sd` language, verification engine, simulation, replay, health framework, fleet tooling, and package registry ship as one lean-core, package-first toolchain.
 
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*. Philosophy and etymology: [Philosophy](../../docs/overview/philosophy.md).
+
 Platform overview: [Platform overview](../../docs/platform-overview.md)
 
 ## Quick links

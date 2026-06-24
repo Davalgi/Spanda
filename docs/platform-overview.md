@@ -8,6 +8,8 @@
 
 Short form: *The Autonomous Systems Platform.*
 
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [overview/philosophy.md](./overview/philosophy.md).
+
 This document explains how the **Spanda Platform** relates to the **Spanda Language**, what each major component does, and where to go next.
 
 ---

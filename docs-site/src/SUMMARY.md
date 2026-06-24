@@ -5,6 +5,7 @@
 # Getting Started
 
 - [Getting Started](../../docs/getting-started.md)
+- [Philosophy & Why Spanda](../../docs/overview/philosophy.md)
 - [Platform Overview](../../docs/platform-overview.md)
 - [Language Guide](../../docs/spanda-language.md)
 

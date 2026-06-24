@@ -28,6 +28,7 @@ Plain-English definitions. Alphabetical.
 | **SafeAction** | Safety-approved motion command — only type actuators accept from AI. |
 | **Safety block** | `safety { }` — max speed, stop conditions, zones. |
 | **Sensor** | Input device: lidar, camera, IMU. |
+| **Spanda** | The platform and language name; Sanskrit *the divine pulse*, pronounced **SPUN-duh** (/ˈspʌndə/). |
 | **sim** | Run with verbose simulation output. |
 | **spawn** | Queue a background function call. |
 | **Task** | Periodic scheduled work (`task foo every 50ms`). |

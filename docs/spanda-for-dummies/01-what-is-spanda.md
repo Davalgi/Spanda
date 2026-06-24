@@ -35,6 +35,8 @@ Think of a robot like a body:
 
 Spanda is the **pulse** — the thing that turns perception into action safely.
 
+The word **Spanda** is Sanskrit for *the divine pulse* — pronounced **SPUN-duh** (/ˈspʌndə/). It names the creative vibration that bridges stillness and movement; in software, that is the coordination layer between sensors, AI, safety, and actuators.
+
 ---
 
 ## What a `.sd` file is

@@ -103,7 +103,7 @@ gh repo edit Davalgi/Spanda \
 | **Spanda** name | Established; no user confusion |
 | **`.sd` extension** | Tied to tooling, CI, and examples |
 | **Pulse metaphor** | Distinctive; works for platform + language |
-| **Sanskrit meaning** in README | Brand depth; optional in technical docs |
+| **Sanskrit meaning & pronunciation** | Brand depth in README and [philosophy.md](./overview/philosophy.md); brief mention in getting-started, for-dummies, and doc index |
 | **Safety-Typed AI** | Lead differentiator in all tiers |
 
 ### Evolve
@@ -144,4 +144,5 @@ No. This is a positioning and documentation update only.
 
 ## Changelog
 
+- **2026-06-24** — Philosophy pronunciation guide (SPUN-duh /ˈspʌndə/) and expanded Sanskrit etymology synced across philosophy, vision, product-strategy, website-content, getting-started, for-dummies, tutorials index, doc index, and mdBook introduction.
 - **2026-06-22** — Initial platform positioning migration (README, platform-overview, roadmap, vision, product-strategy, website drafts).
