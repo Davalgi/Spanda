@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Roadmap audit (2026-06-24):** [docs/roadmap.md](docs/roadmap.md) — v0.5 beta milestone, post-v0.4.0 continuity/telemetry notes, differentiation docs-vs-code honesty, tooling/web updates; [roadmap-codebase-audit-2026-06.md](docs/roadmap-codebase-audit-2026-06.md) refreshed; [feature-status.md](docs/feature-status.md) telemetry OTLP/fleet row.
+
 - **Overview doc dedup:** Overview subpages link to canonical guides instead of repeating prose and tables; README and docs index consolidate navigation through [docs/overview/README.md](docs/overview/README.md).
 - **Roadmap sync:** Package count updated to 37 across roadmap and product strategy (matches hosted registry index).
 

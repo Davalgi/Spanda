@@ -224,15 +224,15 @@ Not needed: blockchain, self-hosting, fleet runtime.
 
 | Must have | Status |
 |-----------|--------|
-| Published VS Code extension with LSP | VSIX CI + local install; Marketplace pending `VSCE_PAT` |
-| One live AI path (OpenAI or local ONNX via Python bridge) | Done — OpenAI, Anthropic, ONNX (Phase 33–35) |
-| One documented ROS2 golden path | Done — `ros2_golden_path.sh` |
-| `spanda verify` CI integration guide | Done — [ci-verify.md](./ci-verify.md) |
-| Curated killer demo (`examples/showcase/killer_demo.sd`) | Done |
-| Package install from remote registry (small, curated) | Done — hosted index + `spanda publish` mirror |
+| Published VS Code extension with LSP | VSIX CI + local install; **only open blocker** — Marketplace pending `VSCE_PAT` |
+| One live AI path (OpenAI or local ONNX via Python bridge) | **Done** — OpenAI, Anthropic, ONNX (Phase 33–35) |
+| One documented ROS2 golden path | **Done** — `ros2_golden_path.sh` |
+| `spanda verify` CI integration guide | **Done** — [ci-verify.md](./ci-verify.md) |
+| Curated killer demo (`examples/showcase/killer_demo.sd`) | **Done** |
+| Package install from remote registry (small, curated) | **Done** — 38 packages; hosted index + `spanda publish` mirror |
+| Differentiation NOW (contracts, explain, audit trail, coverage) | **Planned** — topic guides shipped; crates not started |
 
-Optional: in-process PyO3, digital twin export, DAP debugger.  
-Not needed: LLVM as primary, blockchain, world models.
+P1 adoption enablers (CI verify, PyO3, LSP deploy hints, showcase trim, adoption quickstart) are **complete** — see [tier-3-priority-plan.md](./tier-3-priority-plan.md).
 
 ### v1.0 — target 2027
 

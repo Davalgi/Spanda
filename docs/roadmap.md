@@ -2,7 +2,9 @@
 
 Version plan organized by **platform area**. Tiers: **Stable** (CI-backed, documented), **Experimental** (usable with caveats), **Future** (planned, not shipped).
 
-Current release line: **v0.4.0**.
+Current release line: **v0.4.0** (tagged 2026-06-22). **Next:** v0.5 beta (Q4 2026).
+
+**Last audited:** 2026-06-24 — [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md)
 
 Platform overview: [platform-overview.md](./platform-overview.md) · Feature truth table: [feature-status.md](./feature-status.md)
 
@@ -10,20 +12,22 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Feature tru
 
 ## Platform areas at a glance
 
-| Area | Current focus (v0.4) | Next |
-|------|----------------------|------|
-| [Language](#language) | Stable core; typed handler I/O | Generics polish, self-hosting subset (future) |
-| [Runtime](#runtime) | Interpreter LTS; certify gate | Native codegen golden paths |
+| Area | Current focus (v0.4) | Next (v0.5+) |
+|------|----------------------|--------------|
+| [Language](#language) | Stable core; typed handler I/O | Generics polish; self-hosting subset (future) |
+| [Runtime](#runtime) | Interpreter LTS; certify gate | Native codegen golden paths (experimental) |
 | [Verification](#verification) | `spanda verify`, capability matrices | 5+ production hardware profiles (v1.0) |
-| [Safety](#safety) | ActionProposal → SafeAction stable | Stricter certify / ISO metadata workflows |
-| [Simulation](#simulation) | `spanda sim`, twins, fault injection | Deeper package bridges (Gazebo/Webots scaffolds) |
-| [Health](#health) | health_check, fleet require | Swarm quorum hardening |
-| [Fleet](#fleet) | In-process + HTTP agents | Distributed orchestration polish |
+| [Safety](#safety) | ActionProposal → SafeAction stable | Safety Coverage CLI; stricter certify workflows |
+| [Simulation](#simulation) | `spanda sim`, twins, replay, telemetry store | OTLP/fleet aggregation polish; Gazebo/Webots scaffolds |
+| [Health](#health) | health_check, readiness engine | Swarm quorum hardening |
+| [Fleet](#fleet) | In-process + HTTP agents + mesh telemetry | Distributed orchestration polish |
 | [Packages](#packages) | 38 official registry packages, publish mirror | Curated remote registry growth |
-| [Tooling](#tooling) | CLI, demos, CI golden paths | VS Code Marketplace, LSP polish |
-| [Mission assurance](#mission-assurance) | Lean-core analysis + CLI | Package-backed ML anomaly backends |
-| [Platform maturity](#platform-maturity) | Design specs + phased plan | P0: graph, explain, gates, package trust |
-| [Differentiation](#differentiation--signature-capabilities) | Mission contracts, explainability, coverage | NOW: contracts, explain, audit trail, coverage |
+| [Tooling](#tooling) | CLI, 9 bundled demos, CI golden paths | VS Code Marketplace (blocked on `VSCE_PAT`) |
+| [Mission assurance](#mission-assurance) | Static analysis + learned anomaly (experimental) | Package-backed ML anomaly backends |
+| [Mission continuity](#mission-continuity) | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Auto-trigger tuning; swarm hardening |
+| [Self-healing](#self-healing--recovery) | Recovery planner + CLI (**Stable**); runtime dispatch experimental | Recovery Coverage CLI |
+| [Platform maturity](#platform-maturity) | 16-area design specs + topic guides | Phase A: `spanda graph`, `explain`, gates, package trust |
+| [Differentiation](#differentiation--signature-capabilities) | Topic guides + architecture specs (docs) | NOW engineering: contracts, explain, audit trail, coverage |
 
 ---
 
@@ -92,13 +96,15 @@ Full analysis: [differentiation-roadmap.md](./differentiation-roadmap.md)
 
 ### NOW deliverables (v0.5+)
 
-| Item | CLI | Crate |
-|------|-----|-------|
-| Mission Contracts | `spanda contract verify` | `spanda-contract` |
-| Explainability | `spanda explain` | `spanda-explain` |
-| Decision Audit Trail | trace emission + `spanda audit decisions` | `spanda-decision` |
-| Safety Coverage | `spanda safety-coverage` | extends `spanda-readiness` |
-| Recovery Coverage | `spanda recovery-coverage` | extends `spanda-assurance` |
+Design specs and topic guides are **shipped**; CLI crates and commands are **not yet implemented** (no `spanda-contract`, `spanda-explain`, or `spanda-decision` in the workspace).
+
+| Item | CLI | Crate | Docs | Code |
+|------|-----|-------|------|------|
+| Mission Contracts | `spanda contract verify` | `spanda-contract` | [mission-contracts.md](./mission-contracts.md) | **Planned** |
+| Explainability | `spanda explain` | `spanda-explain` | [explainability.md](./explainability.md) | **Planned** |
+| Decision Audit Trail | trace emission + `spanda audit decisions` | `spanda-decision` | [decision-audit-trail.md](./decision-audit-trail.md) | **Planned** |
+| Safety Coverage | `spanda safety-coverage` | extends `spanda-readiness` | [safety-coverage.md](./safety-coverage.md) | **Planned** |
+| Recovery Coverage | `spanda recovery-coverage` | extends `spanda-assurance` | [recovery-coverage.md](./recovery-coverage.md) | **Planned** |
 
 **Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh`.
 
@@ -250,7 +256,7 @@ Foundation: Phases 1–35 complete — [lean-core-roadmap.md](./lean-core-roadma
 | `simulate_compatibility` fault injection | **Stable** |
 | Mission trace `--record` | **Stable** |
 | `spanda replay` (`--deterministic`, `--playback`) | **Stable** |
-| Persistent telemetry store (`--persist-telemetry`, `spanda telemetry`) | **Stable** — [telemetry-store.md](./telemetry-store.md) |
+| Persistent telemetry store (`--persist-telemetry`, `spanda telemetry`) | **Stable** — JSONL/SQLite, sessions, replay; OTLP `push`/`serve`, `fleet-push` mesh aggregation — [telemetry-store.md](./telemetry-store.md) |
 | Wall-clock sim mode | **Stable** — [realtime.md](./realtime.md), [replay.md](./replay.md) |
 | Twin cloud SaaS | **Future** |
 | Full physics (Gazebo/Isaac class) | **Out of scope** — package bridges only |
@@ -313,21 +319,22 @@ CLI, LSP, debugger, docs site, and contributor ergonomics.
 | Native CLI (`check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`) | **Stable** |
 | `cargo install spanda` | **Stable** |
 | Bundled `spanda demo {rover,safety,verify,fleet,health,readiness,assurance,self-healing,continuity}` | **Stable** |
-| Operations dashboard (`packages/web` Operations view) | **Experimental** |
+| Operations dashboard (`packages/web` Operations view) | **Experimental** — local readiness scoring, live agent fetch, continuity panel, WASM telemetry panel |
 | mdBook GitHub Pages | **Stable** |
 | LSP hover + SafeAction quick-fix | **Stable** |
 | VS Code snippets + VSIX CI | **Stable** |
-| VS Code Marketplace listing | **Partial** — pending `VSCE_PAT` |
+| VS Code Marketplace listing | **Partial** — CI + release workflow ready; listing blocked on maintainer `VSCE_PAT` |
 | DAP debugger | **Experimental** — [debugging.md](./debugging.md) |
-| WASM web playground | **Experimental** |
+| WASM web playground | **Experimental** — killer demo preset; Check/Run sim; Operations + telemetry when WASM built |
 
 ---
 
 ## Release milestones
 
-### v0.4 — Deploy path (current)
+### v0.4 — Deploy path (current tag)
 
-**Theme:** Native binaries, ROS2 polish, distributed fleet docs.
+**Theme:** Native binaries, ROS2 polish, distributed fleet docs.  
+**Tagged:** 2026-06-22. Post-tag work on `main` (continuity runtime hardening, telemetry OTLP/fleet, differentiation docs) ships toward **v0.5**.
 
 | Item | Status |
 |------|--------|
@@ -335,6 +342,30 @@ CLI, LSP, debugger, docs site, and contributor ergonomics.
 | `spanda compile-native` / LLVM golden paths | **Experimental** |
 | `spanda ros2 check` | **Stable** |
 | Distributed fleet guide | **Stable** |
+| Mission continuity runtime (takeover, checkpoints, fleet mesh) | **Stable** (post-v0.4.0 on `main`) |
+| Persistent telemetry + OTLP/fleet aggregation | **Stable** (post-v0.4.0 on `main`) |
+
+### v0.5 — Beta credibility (next)
+
+**Theme:** Close the last adoption blocker; implement differentiation NOW capabilities.  
+**Target:** Q4 2026.
+
+| Item | Status |
+|------|--------|
+| Killer demo + CI golden path | **Stable** |
+| Live AI (OpenAI, Anthropic, ONNX) + CI | **Stable** |
+| ROS2 rclpy golden path + CI | **Stable** |
+| Hosted registry (38 packages) + `spanda publish` mirror | **Stable** |
+| CI verify guide + adoption paths (P1 enablers) | **Stable** — [ci-verify.md](./ci-verify.md), [adoption-path.md](./adoption-path.md) |
+| VS Code Marketplace listing | **Partial** — only open P0 blocker; needs maintainer `VSCE_PAT` |
+| Mission Contracts (`spanda contract verify`) | **Planned** — docs shipped; crate not started |
+| Explainability (`spanda explain`) | **Planned** — docs shipped; crate not started |
+| Decision Audit Trail (`spanda audit decisions`) | **Planned** — docs shipped; crate not started |
+| Safety / Recovery Coverage CLIs | **Planned** — extends existing readiness/assurance crates |
+
+**Exit criteria:** Marketplace publish + `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (not yet implemented).
+
+See [product-strategy.md](./product-strategy.md) § v0.5 beta and [tier-3-priority-plan.md](./tier-3-priority-plan.md) § P0–P1.
 
 ### v0.3 — Tooling polish (complete)
 
