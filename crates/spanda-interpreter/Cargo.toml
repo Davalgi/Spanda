@@ -34,7 +34,7 @@ spanda-transport-routing = { path = "../spanda-transport-routing", default-featu
 spanda-typecheck = { path = "../spanda-typecheck" }
 spanda-capability = { path = "../spanda-capability" }
 spanda-assurance = { path = "../spanda-assurance" }
-spanda-fleet = { path = "../spanda-fleet" }
+spanda-deploy-http = { path = "../spanda-deploy-http" }
 
 [features]
 default = ["transport-tls"]

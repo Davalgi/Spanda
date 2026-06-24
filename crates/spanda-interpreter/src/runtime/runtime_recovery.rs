@@ -1,16 +1,23 @@
 //! Runtime recovery action dispatch, operator approval, and fleet coordination.
 
 use super::{Interpreter, RobotBackend};
+use crate::options::{RecoveryRunOptions, RecoveryRunResult};
+use crate::simulator::{create_default_simulator, SimulatorConfig};
 use spanda_assurance::{
     classify_failure, default_knowledge_store_path, load_recovery_knowledge_store,
     merge_recovery_knowledge, record_recovery_outcome, save_recovery_knowledge_store,
     validate_recovery_plan, RecoveryContext, RecoveryLevel, RecoveryPlanner, RecoveryResult,
     RecoveryStatus,
 };
+use spanda_ast::nodes::{Program, RobotDecl};
 use spanda_comm::CommBus;
+use spanda_deploy_http::{relay_recovery_via_mesh, FleetRecoveryRequest};
 use spanda_error::SpandaError;
-use spanda_fleet::{relay_recovery_via_mesh, FleetRecoveryRequest};
+use spanda_runtime::robotics::MissionState;
 use spanda_runtime::value::RuntimeValue;
+use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 fn parse_speed_cap(action: &str) -> Option<f64> {
     action
@@ -406,5 +413,158 @@ impl<B: RobotBackend> Interpreter<B> {
         self.pending_recovery_approvals.clear();
         self.granted_recovery_approvals.clear();
         self.recovery_speed_cap = None;
+    }
+
+    /// Prepare a robot runtime for assurance-gated recovery dispatch.
+    pub fn prepare_recovery_execution(
+        &mut self,
+        program: &Program,
+        robot_name: Option<&str>,
+    ) -> Result<(), SpandaError> {
+        let Program::Program {
+            robots,
+            geofences,
+            fleets,
+            program_safety_zones,
+            certifications,
+            connectivity_policies,
+            ..
+        } = program;
+        self.load_program_metadata(program);
+        self.cache_health_program(program);
+        self.load_connectivity_metadata(geofences, connectivity_policies);
+        self.load_robotics_platform_metadata(fleets, program_safety_zones, certifications);
+        let robot = robots
+            .iter()
+            .find(|robot| {
+                let RobotDecl::RobotDecl { name, .. } = robot;
+                robot_name.is_none_or(|wanted| wanted == name)
+            })
+            .or_else(|| robots.first())
+            .ok_or_else(|| SpandaError::Runtime {
+                message: "no robot declared for recovery execution".into(),
+                line: 0,
+            })?;
+        self.setup_robot(robot)?;
+        Ok(())
+    }
+
+    /// Execute a validated recovery plan for a failure issue through the runtime dispatcher.
+    pub fn run_recovery_issue(&mut self, issue: &str) -> Result<RecoveryResult, SpandaError> {
+        self.execute_recovery_runtime(issue)
+    }
+
+    /// Capture interpreter recovery side effects for fleet agent state sync.
+    pub fn recovery_execution_snapshot(&self) -> RecoveryExecutionSnapshot {
+        let mission_paused = self
+            .env()
+            .get("mission")
+            .and_then(|value| {
+                if let RuntimeValue::MissionControl { runtime } = value {
+                    Some(runtime.state == MissionState::Paused)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or(false);
+        RecoveryExecutionSnapshot {
+            active_mode: self.active_mode.clone(),
+            mission_paused,
+            recovery_speed_cap: self.recovery_speed_cap,
+        }
+    }
+}
+
+/// Snapshot of interpreter state after recovery dispatch.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct RecoveryExecutionSnapshot {
+    pub active_mode: String,
+    pub mission_paused: bool,
+    pub recovery_speed_cap: Option<f64>,
+}
+
+/// Run assurance-gated recovery actions through the live interpreter dispatcher.
+pub fn execute_recovery_on_program(
+    program: &Program,
+    issue: &str,
+    options: RecoveryRunOptions,
+) -> Result<RecoveryRunResult, SpandaError> {
+    let sim = create_default_simulator(SimulatorConfig::default());
+    let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
+    let logs_cb = logs.clone();
+    let grant_approval = options.grant_operator_approval;
+    let mut interp = Interpreter::new(
+        sim,
+        super::InterpreterOptions {
+            max_loop_iterations: 1,
+            inbound_comm_messages: options.inbound_comm_messages.clone(),
+            on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),
+            ..Default::default()
+        },
+    );
+    if grant_approval {
+        std::env::set_var("SPANDA_OPERATOR_APPROVAL", "1");
+    }
+    let run_result = (|| {
+        interp.prepare_recovery_execution(program, options.robot_name.as_deref())?;
+        let recovery = interp.run_recovery_issue(issue)?;
+        let snapshot = interp.recovery_execution_snapshot();
+        Ok(RecoveryRunResult {
+            recovery,
+            logs: logs.borrow().clone(),
+            active_mode: snapshot.active_mode,
+            mission_paused: snapshot.mission_paused,
+            speed_cap: snapshot.recovery_speed_cap,
+        })
+    })();
+    if grant_approval {
+        std::env::remove_var("SPANDA_OPERATOR_APPROVAL");
+    }
+    run_result
+}
+
+#[cfg(test)]
+mod recovery_execute_tests {
+    use super::execute_recovery_on_program;
+    use crate::options::RecoveryRunOptions;
+    use spanda_assurance::RecoveryStatus;
+    use spanda_lexer::tokenize;
+    use spanda_parser::parse;
+
+    #[test]
+    fn interpreter_recovery_enters_degraded_mode() {
+        let source = r#"
+recovery_policy RoverRecovery {
+    on gps.failed {
+        enter degraded_mode;
+        reduce_speed 0.4 m/s;
+    }
+}
+robot Rover {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() {}
+}
+"#;
+        let program = parse(tokenize(source).unwrap()).unwrap();
+        let outcome = execute_recovery_on_program(
+            &program,
+            "gps.failed",
+            RecoveryRunOptions {
+                robot_name: Some("Rover".into()),
+                grant_operator_approval: true,
+                ..RecoveryRunOptions::default()
+            },
+        )
+        .expect("recovery run");
+        assert_eq!(outcome.recovery.status, RecoveryStatus::Success);
+        assert_eq!(outcome.active_mode, "degraded");
+        assert!(outcome
+            .recovery
+            .executed_actions
+            .iter()
+            .any(|action| action.contains("degraded") || action.contains("reduce_speed")));
     }
 }

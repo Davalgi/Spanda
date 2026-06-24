@@ -1575,3 +1575,5 @@ mod runtime_triggers;
 mod runtime_twin;
 #[path = "runtime_world_model.rs"]
 mod runtime_world_model;
+
+pub use runtime_recovery::{execute_recovery_on_program, RecoveryExecutionSnapshot};

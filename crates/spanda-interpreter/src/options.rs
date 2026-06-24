@@ -110,3 +110,24 @@ pub struct TestRunResult {
     pub failed: usize,
     pub logs: Vec<String>,
 }
+
+/// Options for targeted interpreter recovery without a full program run loop.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct RecoveryRunOptions {
+    #[serde(default)]
+    pub robot_name: Option<String>,
+    #[serde(default)]
+    pub grant_operator_approval: bool,
+    #[serde(default)]
+    pub inbound_comm_messages: Vec<(String, String)>,
+}
+
+/// Outcome of interpreter-backed recovery execution.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecoveryRunResult {
+    pub recovery: spanda_assurance::RecoveryResult,
+    pub logs: Vec<String>,
+    pub active_mode: String,
+    pub mission_paused: bool,
+    pub speed_cap: Option<f64>,
+}
