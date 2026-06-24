@@ -18,4 +18,5 @@ spanda-readiness = { path = "../spanda-readiness" }
 spanda-runtime = { path = "../spanda-runtime" }
 
 [dev-dependencies]
+spanda-deploy-http = { path = "../spanda-deploy-http" }
 spanda-driver = { path = "../spanda-driver" }

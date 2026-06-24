@@ -1650,6 +1650,7 @@ dependencies = [
  "spanda-debug",
  "spanda-error",
  "spanda-ffi",
+ "spanda-fleet",
  "spanda-hal",
  "spanda-lexer",
  "spanda-lib-registry",

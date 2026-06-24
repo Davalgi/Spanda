@@ -3,6 +3,7 @@
 pub mod agent;
 pub mod mesh;
 pub mod orchestrator;
+pub mod recovery_mesh;
 pub mod remote;
 pub mod swarm_coordinator;
 mod types;
@@ -10,6 +11,7 @@ mod types;
 pub use agent::*;
 pub use mesh::*;
 pub use orchestrator::*;
+pub use recovery_mesh::*;
 pub use remote::*;
 pub use swarm_coordinator::*;
 pub use types::PeerDelivery;

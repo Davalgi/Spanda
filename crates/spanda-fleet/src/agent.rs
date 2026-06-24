@@ -26,6 +26,8 @@ pub struct FleetAgentState {
     pub program: Option<String>,
     #[serde(default)]
     pub last_peer_messages: Vec<String>,
+    #[serde(default)]
+    pub last_recovery_commands: Vec<String>,
 }
 
 pub fn default_fleet_agent_state_path() -> PathBuf {
@@ -151,6 +153,7 @@ pub fn handle_fleet_agent_request(
                 "ok": true,
                 "robot_name": state.robot_name,
                 "last_peer_messages": state.last_peer_messages,
+                "last_recovery_commands": state.last_recovery_commands,
                 "has_program": state.program.is_some(),
                 "healthy": true,
             }))
@@ -215,6 +218,9 @@ pub fn handle_fleet_agent_request(
                 payload.from_robot, payload.to_robot, payload.topic, payload.step
             );
             state.last_peer_messages.push(message);
+            if payload.topic == "fleet_recovery" {
+                state.last_recovery_commands.push(payload.step.clone());
+            }
             HttpResponse {
                 status: 200,
                 body: serde_json::to_string(&PeerRelayResponse {

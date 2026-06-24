@@ -138,7 +138,8 @@ pub use fleet_agent::{
 #[cfg(feature = "fleet")]
 pub use fleet_mesh::{
     default_fleet_mesh_state_path, mesh_registry_path, relay_deliveries_via_mesh,
-    run_fleet_mesh_coordinator, spawn_test_fleet_mesh, FleetMeshState, MeshRelayResponse,
+    relay_recovery_via_mesh, run_fleet_mesh_coordinator, spawn_test_fleet_mesh, FleetMeshState,
+    FleetRecoveryRequest, FleetRecoveryResponse, MeshRelayResponse,
 };
 #[cfg(feature = "fleet")]
 pub use fleet_orchestrator::{

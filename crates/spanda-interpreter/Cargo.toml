@@ -34,6 +34,7 @@ spanda-transport-routing = { path = "../spanda-transport-routing", default-featu
 spanda-typecheck = { path = "../spanda-typecheck" }
 spanda-capability = { path = "../spanda-capability" }
 spanda-assurance = { path = "../spanda-assurance" }
+spanda-fleet = { path = "../spanda-fleet" }
 
 [features]
 default = ["transport-tls"]
@@ -46,5 +47,6 @@ live-dds = ["spanda-transport-routing/live-dds"]
 live-transport = ["live-mqtt", "live-websocket", "live-dds"]
 
 [dev-dependencies]
+spanda-fleet = { path = "../spanda-fleet" }
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }

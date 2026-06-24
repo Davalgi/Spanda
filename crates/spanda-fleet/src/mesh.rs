@@ -1,5 +1,6 @@
 //! Multi-host fleet mesh coordinator for centralized peer relay routing.
 //!
+use crate::recovery_mesh::{handle_fleet_recovery_post, FleetRecoveryResponse};
 use crate::remote::{
     default_fleet_agents_path, load_fleet_agent_registry, relay_peer_deliveries, FleetAgentRegistry,
 };
@@ -36,6 +37,8 @@ pub fn default_fleet_mesh_state_path() -> PathBuf {
 pub struct FleetMeshState {
     pub relayed_total: u32,
     pub failed_total: u32,
+    pub recovery_relayed_total: u32,
+    pub recovery_failed_total: u32,
     #[serde(default)]
     pub token: Option<String>,
 }
@@ -118,6 +121,8 @@ pub fn handle_fleet_mesh_request(
                     "agents": registry.agents.len(),
                     "relayed_total": state.relayed_total,
                     "failed_total": state.failed_total,
+                    "recovery_relayed_total": state.recovery_relayed_total,
+                    "recovery_failed_total": state.recovery_failed_total,
                     "healthy": true,
                 }))
                 .unwrap_or_else(|_| "{}".into()),
@@ -131,6 +136,15 @@ pub fn handle_fleet_mesh_request(
                 };
             };
             finish_mesh_relay(state, registry_backing, &payload.deliveries)
+        }
+        ("POST", "/v1/fleet/recovery") => {
+            let registry = load_registry(registry_backing);
+            let response = handle_fleet_recovery_post(&request.body, &registry);
+            if let Ok(payload) = serde_json::from_str::<FleetRecoveryResponse>(&response.body) {
+                state.recovery_relayed_total += payload.relayed;
+                state.recovery_failed_total += payload.failed;
+            }
+            response
         }
         _ => HttpResponse {
             status: 404,
@@ -168,6 +182,25 @@ fn dispatch_mesh_request(
         locked.relayed_total += relayed;
         locked.failed_total += failed;
         return mesh_relay_http_response(relayed, failed);
+    }
+
+    if request.method == "POST" && request.path == "/v1/fleet/recovery" {
+        let locked = state.lock().expect("fleet mesh state lock");
+        if unauthorized(&request, &locked) {
+            return HttpResponse {
+                status: 401,
+                body: r#"{"ok":false,"error":"unauthorized"}"#.into(),
+            };
+        }
+        drop(locked);
+        let registry = load_registry(registry_backing);
+        let response = handle_fleet_recovery_post(&request.body, &registry);
+        if let Ok(payload) = serde_json::from_str::<FleetRecoveryResponse>(&response.body) {
+            let mut locked = state.lock().expect("fleet mesh state lock");
+            locked.recovery_relayed_total += payload.relayed;
+            locked.recovery_failed_total += payload.failed;
+        }
+        return response;
     }
 
     let mut locked = state.lock().expect("fleet mesh state lock");

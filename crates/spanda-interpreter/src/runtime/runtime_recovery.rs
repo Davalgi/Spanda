@@ -9,6 +9,7 @@ use spanda_assurance::{
 };
 use spanda_comm::CommBus;
 use spanda_error::SpandaError;
+use spanda_fleet::{relay_recovery_via_mesh, FleetRecoveryRequest};
 use spanda_runtime::value::RuntimeValue;
 
 fn parse_speed_cap(action: &str) -> Option<f64> {
@@ -172,6 +173,35 @@ impl<B: RobotBackend> Interpreter<B> {
         }
     }
 
+    /// Return true when a mission step or action requires operator approval.
+    pub(super) fn mission_action_requires_approval(&self, action: &str) -> bool {
+        self.mission_approval_actions.contains(action)
+    }
+
+    /// Block mission progression until operator approval is granted for an action.
+    pub(super) fn ensure_mission_operator_approval(
+        &mut self,
+        action: &str,
+        line: u32,
+    ) -> Result<(), SpandaError> {
+        if !self.mission_action_requires_approval(action) {
+            return Ok(());
+        }
+        self.poll_recovery_approvals();
+        if self.operator_approval_granted(action) {
+            return Ok(());
+        }
+        self.request_operator_approval(action);
+        self.record_mission_event(
+            "mission_approval_required",
+            serde_json::json!({ "action": action }),
+        );
+        Err(SpandaError::Runtime {
+            message: format!("mission: operator approval required for '{action}'"),
+            line,
+        })
+    }
+
     /// Execute a validated recovery plan at runtime for the given issue.
     pub(super) fn execute_recovery_runtime(
         &mut self,
@@ -322,20 +352,51 @@ impl<B: RobotBackend> Interpreter<B> {
             self.default_transport,
             Some(&source),
         );
+        let mesh_url = std::env::var("SPANDA_FLEET_MESH_URL").ok();
+        let mesh_token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
         for fleet_name in fleet_names {
-            if let Some(members) = self.fleets.members(&fleet_name) {
-                self.log(format!(
-                    "fleet_recovery: {action} for fleet {fleet_name} members={members:?}"
-                ));
-                self.record_mission_event(
-                    "fleet_recovery",
-                    serde_json::json!({
-                        "fleet": fleet_name,
-                        "action": action,
-                        "members": members,
-                    }),
-                );
+            let Some(members) = self.fleets.members(&fleet_name).map(|m| m.to_vec()) else {
+                continue;
+            };
+            self.log(format!(
+                "fleet_recovery: {action} for fleet {fleet_name} members={members:?}"
+            ));
+            if let Some(url) = mesh_url.as_deref() {
+                let request = FleetRecoveryRequest {
+                    action: action.to_string(),
+                    fleet_name: Some(fleet_name.clone()),
+                    from_robot: members.first().cloned(),
+                    members: members.clone(),
+                };
+                match relay_recovery_via_mesh(url, &request, mesh_token.as_deref()) {
+                    Ok(resp) => {
+                        self.log(format!(
+                            "fleet_mesh: recovery '{}' relayed={} failed={}",
+                            action, resp.relayed, resp.failed
+                        ));
+                        self.record_mission_event(
+                            "fleet_mesh_recovery",
+                            serde_json::json!({
+                                "fleet": fleet_name,
+                                "action": action,
+                                "relayed": resp.relayed,
+                                "failed": resp.failed,
+                            }),
+                        );
+                    }
+                    Err(err) => {
+                        self.log(format!("fleet_mesh: recovery relay failed: {err}"));
+                    }
+                }
             }
+            self.record_mission_event(
+                "fleet_recovery",
+                serde_json::json!({
+                    "fleet": fleet_name,
+                    "action": action,
+                    "members": members,
+                }),
+            );
         }
         Ok(())
     }

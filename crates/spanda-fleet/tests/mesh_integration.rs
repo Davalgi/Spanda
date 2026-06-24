@@ -1,10 +1,12 @@
 //! Fleet mesh coordinator integration tests.
 
+use spanda_deploy_http::http_request;
 use spanda_driver::compile;
 use spanda_fleet::{
     default_fleet_agents_path, fleet_entry_for_port, orchestrate_fleets_mesh, register_fleet_agent,
-    relay_deliveries_via_mesh, relay_peer_delivery, save_fleet_agent_registry,
-    spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry, PeerDelivery,
+    relay_deliveries_via_mesh, relay_peer_delivery, relay_recovery_via_mesh,
+    save_fleet_agent_registry, spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry,
+    FleetRecoveryRequest, PeerDelivery,
 };
 use std::thread;
 use std::time::Duration;
@@ -36,6 +38,51 @@ fn mesh_coordinator_relays_to_registered_agents() {
     .expect("mesh relay");
     assert!(resp.ok);
     assert_eq!(resp.relayed, 1);
+}
+
+#[test]
+fn mesh_coordinator_relays_fleet_recovery_to_agents() {
+    let (port_a, _agent_a) = spawn_test_fleet_agent("RoverAlpha", None).expect("spawn A");
+    let (port_b, _agent_b) = spawn_test_fleet_agent("RoverBeta", None).expect("spawn B");
+    let mut registry = FleetAgentRegistry::default();
+    register_fleet_agent(
+        &mut registry,
+        "RoverAlpha".into(),
+        format!("http://127.0.0.1:{port_a}"),
+        None,
+    )
+    .expect("register A");
+    register_fleet_agent(
+        &mut registry,
+        "RoverBeta".into(),
+        format!("http://127.0.0.1:{port_b}"),
+        None,
+    )
+    .expect("register B");
+    let (mesh_port, _mesh) = spawn_test_fleet_mesh(&registry).expect("spawn mesh");
+    thread::sleep(Duration::from_millis(30));
+    let resp = relay_recovery_via_mesh(
+        &format!("http://127.0.0.1:{mesh_port}"),
+        &FleetRecoveryRequest {
+            action: "reassign mission".into(),
+            fleet_name: Some("PatrolFleet".into()),
+            from_robot: Some("RoverAlpha".into()),
+            members: vec!["RoverAlpha".into(), "RoverBeta".into()],
+        },
+        None,
+    )
+    .expect("mesh recovery");
+    assert!(resp.ok);
+    assert_eq!(resp.relayed, 2);
+    let status = http_request(
+        "GET",
+        &format!("http://127.0.0.1:{port_b}/v1/status"),
+        None,
+        None,
+    )
+    .expect("agent status");
+    assert!(status.body.contains("reassign mission"));
+    assert!(status.body.contains("last_recovery_commands"));
 }
 
 #[test]
