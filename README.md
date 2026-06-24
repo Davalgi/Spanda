@@ -287,6 +287,7 @@ One-line pointers — details in [docs/platform-overview.md](docs/platform-overv
 | **Spanda Replay** | Mission trace capture and deterministic playback | [docs/replay.md](docs/replay.md) |
 | **Spanda Health** | Runtime health checks and fleet readiness requirements | [docs/health-checks.md](docs/health-checks.md) |
 | **Spanda Assurance** | Knowledge models, anomaly detection, prognostics, assurance cases | [docs/mission-assurance.md](docs/mission-assurance.md) |
+| **Mission continuity** | Takeover, delegation, succession, checkpoint resume | [docs/mission-continuity.md](docs/mission-continuity.md) |
 | **Spanda Diagnosis** | Root-cause analysis from mission traces and programs | [docs/diagnostics.md](docs/diagnostics.md) |
 | **Spanda Registry** | Package index, install, publish, signed tarballs | [docs/registry.md](docs/registry.md) |
 | **Spanda Providers** | Official package traits — ROS2, MQTT, vision, fleet, and more | [docs/how-providers-work.md](docs/how-providers-work.md) |
@@ -318,6 +319,8 @@ More samples: [docs/overview/code-samples.md](docs/overview/code-samples.md) · 
 | **Verification** | [docs/hardware-compatibility.md](docs/hardware-compatibility.md) · [docs/ci-verify.md](docs/ci-verify.md) |
 | **Readiness** | [docs/readiness.md](docs/readiness.md) |
 | **Assurance** | [docs/mission-assurance.md](docs/mission-assurance.md) |
+| **Mission continuity** | [docs/mission-continuity.md](docs/mission-continuity.md) |
+| **Self-healing** | [docs/self-healing.md](docs/self-healing.md) |
 | **Diagnosis** | [docs/diagnostics.md](docs/diagnostics.md) · [docs/root-cause-analysis.md](docs/root-cause-analysis.md) |
 | **Health** | [docs/health-checks.md](docs/health-checks.md) |
 | **Packages** | [docs/packages.md](docs/packages.md) · [docs/how-packages-work.md](docs/how-packages-work.md) |

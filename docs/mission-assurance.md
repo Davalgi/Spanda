@@ -26,6 +26,7 @@ Core defines **interfaces and data models**. Heavy algorithms (ML anomaly detect
 | `operating_mode` | Normal / degraded / safe / emergency |
 | `mission_plan` | Steps and constraints |
 | `resilience_policy` | Fault tolerance strategies |
+| `continuity_policy` | Takeover, delegation, and succession on robot/fleet failure |
 | `assurance_case` | Links evidence sources |
 
 At runtime, `state_estimator` wires `SensorFusion` bindings after robot sensors are registered. One estimator also aliases `fusion` for parity with `observe { }` programs.
@@ -41,6 +42,10 @@ spanda prognostics rover.sd
 spanda mission verify mission.sd
 spanda resilience check rover.sd
 spanda mitigation plan rover.sd
+spanda continuity rover.sd --failed RoverA --progress 72
+spanda takeover rover.sd --failed RoverA --successor RoverB
+spanda delegate rover.sd --failed RoverA --to RoverB
+spanda succession rover.sd --scope fleet
 ```
 
 All commands support `--json`, `--markdown`, and `--html`.
@@ -64,6 +69,7 @@ Runs `check`, `assure`, `anomaly scan`, `state estimate`, `prognostics`, `missio
 | `spanda-diagnosis` | `assurance.diagnosis` | Fault diagnosis |
 | `spanda-prognostics` | `assurance.prognostics` | RUL and degradation |
 | `spanda-mission-planning` | `assurance.mission` | Mission planning assurance |
+| `spanda-mission-continuity` | `assurance.continuity` | Mission continuity and takeover assurance |
 | `spanda-resilience` | `assurance.resilience` | Resilience and recovery |
 
 Lean core provides static analysis (`spanda-assurance` crate) and runtime wiring (fusion, learned anomaly polling). Packages extend algorithms via provider dispatch.
@@ -101,6 +107,7 @@ See [state-estimation.md](state-estimation.md).
 - **Mitigation plan** — recovery actions and mode transitions
 - **Mission assurance report** — plan verification + readiness mission checks
 - **Resilience report** — policies, recovery, readiness score
+- **Continuity report** — takeover mode, successor ranking, state transfer, validation gates
 
 ## Integration
 
@@ -131,6 +138,7 @@ Mission assurance **composes** with:
 | [`examples/prognostics/`](../examples/prognostics/README.md) | `battery_degradation.sd` | `spanda prognostics` |
 | [`examples/resilience/`](../examples/resilience/README.md) | `degraded_mode_recovery.sd` | `spanda resilience check`, `mitigation plan` |
 | [`examples/mission/`](../examples/mission/README.md) | `mission_assurance.sd` | `spanda mission verify` |
+| [`examples/showcase/continuity/`](../examples/showcase/continuity/) | `warehouse.sd` | `spanda continuity`, `takeover`, `delegate`, `succession` |
 
 ### Sensor fusion (related)
 

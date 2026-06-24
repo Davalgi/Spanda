@@ -19,7 +19,7 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Feature tru
 | [Simulation](#simulation) | `spanda sim`, twins, fault injection | Deeper package bridges (Gazebo/Webots scaffolds) |
 | [Health](#health) | health_check, fleet require | Swarm quorum hardening |
 | [Fleet](#fleet) | In-process + HTTP agents | Distributed orchestration polish |
-| [Packages](#packages) | 37 official registry packages, publish mirror | Curated remote registry growth |
+| [Packages](#packages) | 38 official registry packages, publish mirror | Curated remote registry growth |
 | [Tooling](#tooling) | CLI, demos, CI golden paths | VS Code Marketplace, LSP polish |
 | [Mission assurance](#mission-assurance) | Lean-core analysis + CLI | Package-backed ML anomaly backends |
 | [Platform maturity](#platform-maturity) | Design specs + phased plan | P0: graph, explain, gates, package trust |

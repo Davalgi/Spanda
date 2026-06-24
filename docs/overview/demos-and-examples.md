@@ -29,6 +29,7 @@ Walkthrough: [killer-demo.md](../killer-demo.md) · Video script: [demo-script.m
 | **Sim** | Patrol without hardware | `spanda sim examples/showcase/killer_demo.sd` |
 | **Platform** | Packages → providers → replay | `cd examples/showcase/autonomous_rover && spanda install && spanda run src/rover.sd --trace-providers` |
 | **Assurance** | Mission assurance CLI suite | `spanda demo assurance` |
+| **Continuity** | Takeover, delegation, succession | `spanda demo continuity` |
 
 Showcase index: [examples/showcase/README.md](../../examples/showcase/README.md)
 

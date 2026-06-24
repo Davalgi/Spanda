@@ -176,7 +176,7 @@ Ordered by **adoption impact × trust impact ÷ implementation risk**.
 | P0.1 | **Dependency graph** (`spanda graph`) | Immediate understandability; pure static analysis; no runtime risk |
 | P0.2 | **Deployment gates** | Extends readiness + certify; blocks unsafe deploy — core trust story |
 | P0.3 | **`spanda explain`** (static) | Unifies verify/readiness/safety failures; highest DX ROI |
-| P0.4 | **Package trust** (static scoring) | Registry already has 37 packages; leverages audit + signatures |
+| P0.4 | **Package trust** (static scoring) | Registry already has 38 packages; leverages audit + signatures |
 
 ### P1 — v0.6 operational excellence (Q1 2027)
 

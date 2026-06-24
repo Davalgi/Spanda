@@ -57,7 +57,8 @@ Work through tiers in order, or jump via [features/README.md](features/README.md
 | Testing & compile-fail | [`basics/12_compile_fail_tests.sd`](basics/12_compile_fail_tests.sd) | [testing.md](../docs/testing.md) |
 | Verification diagnostics | [`hardware/capability_verification.sd`](hardware/capability_verification.sd) | [verification-diagnostics.md](../docs/verification-diagnostics.md) |
 | Robotics platform | [`robotics/`](robotics/) | [robotics-platform.md](../docs/robotics-platform.md) |
-| **Mission assurance** | [`assurance/`](assurance/), [`anomaly/`](anomaly/), [`diagnostics/`](diagnostics/), [`prognostics/`](prognostics/), [`resilience/`](resilience/), [`mission/`](mission/), [`showcase/assurance/`](showcase/assurance/) | [mission-assurance.md](../docs/mission-assurance.md) |
+| **Mission assurance** | [`assurance/`](assurance/), [`anomaly/`](anomaly/), [`diagnostics/`](diagnostics/), [`prognostics/`](prognostics/), [`resilience/`](resilience/), [`mission/`](mission/), [`showcase/assurance/`](showcase/assurance/), [`showcase/continuity/`](showcase/continuity/) | [mission-assurance.md](../docs/mission-assurance.md) · [mission-continuity.md](../docs/mission-continuity.md) |
+| Self-healing & recovery | [`showcase/self_healing/`](showcase/self_healing/), [`showcase/fleet_recovery/`](showcase/fleet_recovery/) | [self-healing.md](../docs/self-healing.md) |
 | Readiness & go/no-go | [`showcase/readiness/`](showcase/readiness/) | [readiness.md](../docs/readiness.md) |
 | Regex | [`regex/`](regex/) | [regex.md](../docs/regex.md) |
 | Security | [`security/`](security/) | [secure-communication.md](../docs/secure-communication.md) |

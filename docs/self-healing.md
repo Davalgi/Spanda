@@ -66,12 +66,14 @@ Validated recovery actions dispatch at runtime:
 - `reduce_speed` — lowers safety monitor speed cap
 - `restart connectivity` — reconnects active link
 - `pause mission` — pauses mission controller
-- Fleet actions — `reassign mission`, `redistribute tasks`, `promote backup coordinator`
+- Fleet actions — `reassign mission`, `redistribute tasks`, `promote backup coordinator` (also relay **continuity takeover** via `POST /v1/fleet/continuity` when mesh URL is set)
 
 Runtime recovery actions publish fleet coordination commands on `/fleet/recovery`
 (Command) for in-process comm buses. When `SPANDA_FLEET_MESH_URL` is set, the runtime
 also posts the same action to the fleet mesh coordinator (`POST /v1/fleet/recovery`),
-which relays `fleet_recovery` peer messages to registered fleet agents. Deployed
+which relays `fleet_recovery` peer messages to registered fleet agents. Mission handoff
+actions additionally publish `/fleet/continuity` and relay through `POST /v1/fleet/continuity`
+for successor takeover. Deployed
 agents prefer **live interpreter recovery** (`execute_recovery_on_program`) when a
 program is loaded via `POST /v1/program`, running mode transitions, speed caps, mission
 pause, and connectivity restart through the same dispatcher as `spanda run`. Assurance-only
@@ -86,7 +88,7 @@ High-risk actions require operator approval via:
 - `Approval` topic messages received on subscribed comm topics
 - Mission `requires approval Operator for: <action>` gates `mission.start`, `mission.advance`, and `mission.resume` until approval is granted
 
-`spanda check --readiness-json` includes recovery-policy diagnostics (missing policies, fleet triggers without fleet, high-risk actions without Approval topics). The TypeScript LSP fallback (`scripts/lsp-readiness.mts`) mirrors the same recovery diagnostics when the native CLI is unavailable.
+`spanda check --readiness-json` includes recovery-policy diagnostics (missing policies, fleet triggers without fleet, high-risk actions without Approval topics) and continuity-policy diagnostics (`continuity:policy`, `continuity:fleet`, `continuity:approval`, `continuity:handoff`). The TypeScript LSP fallback (`scripts/lsp-readiness.mts`) mirrors the same recovery and continuity diagnostics when the native CLI is unavailable. See [mission-continuity.md](./mission-continuity.md).
 
 Recovery outcomes are recorded to `.spanda/recovery_knowledge.json` for future recommendations (no automatic code or safety rule changes).
 

@@ -120,11 +120,11 @@ Weighted operational go/no-go scoring before deploy and during operations.
 
 Mission-grade autonomous operations assurance integrated with readiness and verification.
 
-- Language: `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`.
-- CLI: `spanda assure`, `anomaly scan`, `state estimate`, `diagnose`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`.
-- Packages: `spanda-anomaly`, `spanda-fusion`, `spanda-diagnosis`, `spanda-prognostics`, `spanda-mission-planning`, `spanda-resilience`, `spanda-knowledge-model`, `spanda-assurance`.
-- Demo: `spanda demo assurance` on [`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd).
-- Reference: [mission-assurance.md](./mission-assurance.md), [state-estimation.md](./state-estimation.md), [anomaly-detection.md](./anomaly-detection.md).
+- Language: `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `continuity_policy`, `assurance_case`.
+- CLI: `spanda assure`, `anomaly scan`, `state estimate`, `diagnose`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`, `continuity`, `takeover`, `delegate`, `succession`.
+- Packages: `spanda-anomaly`, `spanda-fusion`, `spanda-diagnosis`, `spanda-prognostics`, `spanda-mission-planning`, `spanda-mission-continuity`, `spanda-resilience`, `spanda-knowledge-model`, `spanda-assurance`.
+- Demo: `spanda demo assurance` on [`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd); `spanda demo continuity` on [`examples/showcase/continuity/warehouse.sd`](../examples/showcase/continuity/warehouse.sd).
+- Reference: [mission-assurance.md](./mission-assurance.md), [mission-continuity.md](./mission-continuity.md), [state-estimation.md](./state-estimation.md), [anomaly-detection.md](./anomaly-detection.md).
 
 ### Spanda Fleet
 

@@ -109,9 +109,57 @@ Recovery fields on `GET /v1/status`:
 - `recovery_active`, `recovery_actions_applied`, `recovery_mode`, `mission_paused`
 - `last_recovery_runtime_logs`, `last_recovery_evidence`
 
-Deployed agents prefer **interpreter recovery** (`execute_recovery_on_program`) for mode transitions, speed caps, mission pause, and connectivity restart. Set `SPANDA_OPERATOR_APPROVAL=1` when testing high-risk actions without Approval topics.
+Deployed agents prefer **interpreter recovery** (`execute_recovery_on_program`) for mode transitions, speed caps, mission pause, and connectivity restart. Fleet handoff actions (`reassign mission`, `promote`, `replace`) also relay **continuity takeover** through the mesh when `SPANDA_FLEET_MESH_URL` is set. Set `SPANDA_OPERATOR_APPROVAL=1` when testing high-risk actions without Approval topics.
 
-See [self-healing.md](./self-healing.md).
+See [self-healing.md](./self-healing.md) and [mission-continuity.md](./mission-continuity.md).
+
+## Fleet continuity (mesh + agents)
+
+When programs declare `continuity_policy` or recovery performs mission handoff, takeover commands relay through the coordinator:
+
+```bash
+export SPANDA_FLEET_MESH_URL=http://coordinator:9700
+export SPANDA_FLEET_MESH_TOKEN="$FLEET_TOKEN"
+spanda continuity program.sd --failed RoverAlpha --progress 72
+```
+
+### Mesh coordinator
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /v1/fleet/continuity` | Relay takeover command to registered fleet agents (`fleet_takeover` peer topic) |
+
+Request body (JSON):
+
+```json
+{
+  "failed_robot": "RoverAlpha",
+  "successor": "RoverBeta",
+  "mission": "PatrolMission",
+  "progress_percent": 72.0,
+  "trigger": "robot_failed",
+  "fleet_name": "PatrolFleet",
+  "members": ["RoverAlpha", "RoverBeta"]
+}
+```
+
+### Fleet agent (deployed program)
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /v1/continuity/execute` | Execute takeover on deployed program (`FleetContinuityRequest` JSON) |
+| `POST /v1/continuity/ack` | Clear active continuity handoff state |
+| `GET /v1/status` | Agent state including continuity fields |
+
+Continuity fields on `GET /v1/status`:
+
+- `continuity_engine` — `interpreter` (live runtime dispatch), `assurance` (plan/validate fallback), or `fallback`
+- `continuity_validation` — `PASS`, `PARTIAL`, or `FAIL`
+- `continuity_successor`, `mission_progress_percent`, `continuity_active`
+
+Deployed agents prefer **interpreter continuity** (`execute_continuity_on_program`) for mission pause, successor resume, and checkpoint progress. Pair with `continuity_policy` in uploaded `.sd` source.
+
+See [mission-continuity.md](./mission-continuity.md).
 
 ## Golden path
 
