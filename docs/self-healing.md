@@ -68,6 +68,9 @@ Validated recovery actions dispatch at runtime:
 - `pause mission` — pauses mission controller
 - Fleet actions — `reassign mission`, `redistribute tasks`, `promote backup coordinator`
 
+Runtime recovery actions publish fleet coordination commands on `/fleet/recovery`
+(Command) for mesh coordinators and log per-fleet member assignments.
+
 High-risk actions require operator approval via:
 
 - `SPANDA_OPERATOR_APPROVAL=1` (simulation/testing)
