@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/image/low_res_logo.png" alt="Spanda — The Autonomous Systems Platform" width="360">
+  <img src="assets/image/banner.png" alt="Spanda — The Autonomous Systems Platform" width="640">
 </p>
 
 # Spanda
@@ -10,7 +10,205 @@
 
 Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed robot programs, safety gates, hardware verification, simulation, replay, fleet operations, mission assurance, and **37** official packages.
 
+**Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
+
+Spanda helps answer:
+
+- Can this robot safely perform this mission?
+- Does the hardware satisfy the required capabilities?
+- Is the system healthy enough to deploy?
+- Why should this deployment be trusted?
+- What happened when something failed?
+
 Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
+
+---
+
+## Table of contents
+
+- [Try Spanda in 5 Minutes](#try-spanda-in-5-minutes)
+- [Flagship Demos](#flagship-demos)
+- [Where Should I Start?](#where-should-i-start)
+- [What Spanda Is / Is Not](#what-spanda-is--is-not)
+- [Feature Status](#feature-status)
+- [Spanda Platform Map](#spanda-platform-map)
+- [Philosophy](#philosophy)
+- [What is Spanda?](#what-is-spanda)
+- [Why Spanda?](#why-spanda)
+- [Quick start](#quick-start)
+- [What you get](#what-you-get)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Try Spanda in 5 Minutes
+
+One path to evaluate Spanda from a fresh clone:
+
+```bash
+git clone https://github.com/Davalgi/Spanda.git
+cd Spanda
+cargo build --release
+./target/release/spanda demo rover
+./target/release/spanda demo safety
+./target/release/spanda demo verify
+```
+
+Optional — readiness, assurance, and diagnosis on showcase examples:
+
+```bash
+./target/release/spanda readiness examples/showcase/readiness/rover.sd
+./target/release/spanda assure examples/showcase/assurance/rover.sd
+./target/release/spanda diagnose examples/showcase/root_cause_analysis/mission.trace
+```
+
+Install on `PATH` instead: `./scripts/install.sh` or `cargo install --path crates/spanda-cli --locked` — then use `spanda` without the `./target/release/` prefix. See [docs/installation.md](docs/installation.md).
+
+---
+
+## Flagship Demos
+
+Three primary stories for new visitors. Other demos (`fleet`, `health`, `readiness`, `assurance`, `self-healing`, and more) remain in [Quick start](#quick-start) and [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md).
+
+### 1. Safety-Typed AI
+
+**Flow:** `ActionProposal` → Safety Validation → `SafeAction`
+
+```bash
+./target/release/spanda demo safety
+```
+
+**Expected:** unsafe program fails at compile time; safe program passes `safety.validate()` gate.
+
+**Example:** [examples/showcase/unsafe_ai/](examples/showcase/unsafe_ai/)
+
+### 2. Hardware + Capability Verification
+
+**Flow:** Mission → Capability → Hardware → Provider → Safety Rule
+
+```bash
+./target/release/spanda demo verify
+```
+
+**Expected:** mission without Lidar fails verification; complete robot passes with JSON report.
+
+**Example:** [examples/showcase/hardware_verification/](examples/showcase/hardware_verification/)
+
+### 3. Readiness / Assurance / Diagnosis
+
+**Questions:** Can the robot run? Why should we trust it? What happened and why?
+
+```bash
+./target/release/spanda readiness examples/showcase/readiness/rover.sd
+./target/release/spanda assure examples/showcase/assurance/rover.sd
+./target/release/spanda diagnose examples/showcase/root_cause_analysis/mission.trace
+```
+
+**Expected:** readiness score and go/no-go; assurance report with evidence cases; diagnosis report from mission trace.
+
+**Examples:** [examples/showcase/readiness/](examples/showcase/readiness/) · [examples/showcase/assurance/](examples/showcase/assurance/) · [examples/showcase/root_cause_analysis/](examples/showcase/root_cause_analysis/)
+
+---
+
+## Where Should I Start?
+
+**For developers**
+
+- Try the safety demo: `spanda demo safety`
+- Read the language guide: [docs/spanda-language.md](docs/spanda-language.md)
+
+**For robotics engineers**
+
+- Try hardware verification: `spanda demo verify`
+- Read capability verification: [docs/capability-traceability.md](docs/capability-traceability.md) · [docs/hardware-compatibility.md](docs/hardware-compatibility.md)
+
+**For safety / reliability engineers**
+
+- Try assurance and readiness: `spanda demo assurance` or the [Readiness / Assurance / Diagnosis](#3-readiness--assurance--diagnosis) commands above
+- Read traceability and safety: [docs/mission-assurance.md](docs/mission-assurance.md) · [docs/capability-traceability.md](docs/capability-traceability.md) · [docs/safety-reporting.md](docs/safety-reporting.md)
+
+**For contributors**
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md)
+- Run tests: `cargo test --workspace && npm test`
+- Pick a good first issue on [GitHub Issues](https://github.com/Davalgi/Spanda/issues)
+
+---
+
+## What Spanda Is / Is Not
+
+**Spanda is:**
+
+- an autonomous systems platform
+- a safety-first language and runtime
+- a verification and assurance layer
+- a simulation-first development workflow
+- a package / provider ecosystem
+
+**Spanda is not:**
+
+- a replacement for Python
+- a replacement for C++
+- a replacement for ROS2
+- a drone autopilot
+- a custom operating system
+- a blockchain platform
+
+Spanda **integrates with** existing ecosystems instead of replacing them. See [docs/ffi-and-ecosystem.md](docs/ffi-and-ecosystem.md) and [docs/platform-overview.md](docs/platform-overview.md#what-spanda-is-not).
+
+---
+
+## Feature Status
+
+Compact snapshot — full matrix: [docs/feature-status.md](docs/feature-status.md)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Spanda Language | **Stable** | `.sd` robot programs, units, safety types |
+| Parser | **Stable** | Rust authoritative; TypeScript mirror |
+| Type Checker | **Stable** | Physical units, `SafeAction` gate |
+| CLI | **Stable** | `check`, `verify`, `run`, `sim`, `demo`, packages |
+| Safety-Typed AI | **Stable** | `ActionProposal` → `safety.validate()` → `SafeAction` |
+| Hardware Verification | **Stable** | `spanda verify` against hardware profiles |
+| Capability Verification | **Stable** | Traceability, grants, minimum-hardware analysis |
+| Readiness | **Stable** | Weighted go/no-go scoring |
+| Assurance | **Stable** | `spanda assure`, assurance cases, mission assurance CLI |
+| Diagnosis | **Stable** | `spanda diagnose` on traces and programs |
+| Simulation | **Stable** | `spanda run` / `spanda sim`, physics-lite 2D |
+| Replay | **Stable** | Mission trace record, deterministic replay |
+| Health | **Stable** | `health_check`, fleet `require`, policies |
+| Security / Encryption | **Stable** | Capabilities, audit, AES-GCM wire frames; live TLS optional |
+| Package System | **Stable** | `spanda install`, `build`, `test`, hosted index |
+| Provider Registry | **Stable** | Official packages + dispatch; local mirror |
+| Fleet | **Experimental** | In-process sim stable; distributed HTTP agents experimental |
+| IoT | **Experimental** | Live Modbus/OPC-UA env-gated; hub fallback |
+| Debugger | **Experimental** | VS Code DAP via `spanda-dap` |
+| LLVM | **Experimental** | `spanda ir`, `compile-native` — interpreter is primary runtime |
+| WASM | **Experimental** | Browser check/run/verify; limited vs native CLI |
+| ROS2 | **Experimental** | rclrs/rclpy bridge; requires ROS Humble setup |
+| GitHub Pages / Docs Site | **Experimental** | mdBook under [docs-site/](docs-site/); build with `mdbook build docs-site` |
+
+---
+
+## Spanda Platform Map
+
+One-line pointers — details in [docs/platform-overview.md](docs/platform-overview.md).
+
+| Component | Summary | Doc |
+|-----------|---------|-----|
+| **Spanda Language** | Safety-first `.sd` programs with robot, sensor, actuator, and safety primitives | [docs/spanda-language.md](docs/spanda-language.md) |
+| **Spanda Runtime** | Interpreter, scheduler, HAL, provider dispatch after compile-time gates | [docs/architecture.md](docs/architecture.md) |
+| **Spanda Verify** | Hardware fit, capability traceability, behavioral `verify { }` blocks | [docs/hardware-compatibility.md](docs/hardware-compatibility.md) |
+| **Spanda Safety** | `SafeAction` type gate, safety zones, kill switch, emergency stop | [docs/agentic-programming.md](docs/agentic-programming.md) |
+| **Spanda Sim** | Simulation and digital twins without physical hardware | [docs/killer-demo.md](docs/killer-demo.md) |
+| **Spanda Replay** | Mission trace capture and deterministic playback | [docs/replay.md](docs/replay.md) |
+| **Spanda Health** | Runtime health checks and fleet readiness requirements | [docs/health-checks.md](docs/health-checks.md) |
+| **Spanda Assurance** | Knowledge models, anomaly detection, prognostics, assurance cases | [docs/mission-assurance.md](docs/mission-assurance.md) |
+| **Spanda Diagnosis** | Root-cause analysis from mission traces and programs | [docs/diagnostics.md](docs/diagnostics.md) |
+| **Spanda Registry** | Package index, install, publish, signed tarballs | [docs/registry.md](docs/registry.md) |
+| **Spanda Providers** | Official package traits — ROS2, MQTT, vision, fleet, and more | [docs/how-providers-work.md](docs/how-providers-work.md) |
 
 ---
 
@@ -107,6 +305,27 @@ More samples: [docs/overview/code-samples.md](docs/overview/code-samples.md) · 
 ---
 
 ## Documentation
+
+### Documentation by topic
+
+| Topic | Guide |
+|-------|--------|
+| **Getting Started** | [docs/getting-started.md](docs/getting-started.md) |
+| **Language Guide** | [docs/spanda-language.md](docs/spanda-language.md) · [docs/language-reference/](docs/language-reference/README.md) |
+| **Architecture** | [docs/architecture.md](docs/architecture.md) · [docs/overview/architecture.md](docs/overview/architecture.md) |
+| **Safety** | [docs/agentic-programming.md](docs/agentic-programming.md) · [docs/kill-switch.md](docs/kill-switch.md) |
+| **Verification** | [docs/hardware-compatibility.md](docs/hardware-compatibility.md) · [docs/ci-verify.md](docs/ci-verify.md) |
+| **Readiness** | [docs/readiness.md](docs/readiness.md) |
+| **Assurance** | [docs/mission-assurance.md](docs/mission-assurance.md) |
+| **Diagnosis** | [docs/diagnostics.md](docs/diagnostics.md) · [docs/root-cause-analysis.md](docs/root-cause-analysis.md) |
+| **Health** | [docs/health-checks.md](docs/health-checks.md) |
+| **Packages** | [docs/packages.md](docs/packages.md) · [docs/how-packages-work.md](docs/how-packages-work.md) |
+| **Providers** | [docs/how-providers-work.md](docs/how-providers-work.md) · [docs/official-packages.md](docs/official-packages.md) |
+| **Security** | [docs/security.md](docs/security.md) · [docs/security-architecture.md](docs/security-architecture.md) |
+| **Examples** | [examples/README.md](examples/README.md) · [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
+| **Roadmap** | [docs/roadmap.md](docs/roadmap.md) |
+
+Full index: [docs/README.md](docs/README.md)
 
 ### Reference
 
