@@ -13,6 +13,20 @@ export type MeshRelayResponse = {
   error?: string;
 };
 
+export type FleetRecoveryRequest = {
+  action: string;
+  fleet_name?: string;
+  from_robot?: string;
+  members?: string[];
+};
+
+export type FleetRecoveryResponse = {
+  ok: boolean;
+  relayed: number;
+  failed: number;
+  error?: string;
+};
+
 export function defaultFleetMeshUrl(): string | undefined {
   return process.env.SPANDA_FLEET_MESH_URL;
 }
@@ -54,4 +68,21 @@ export async function relayDeliveriesViaMesh(
   }
   const body = (await response.json()) as MeshRelayResponse;
   return body;
+}
+
+export async function relayRecoveryViaMesh(
+  meshUrl: string,
+  request: FleetRecoveryRequest,
+  token?: string,
+): Promise<FleetRecoveryResponse> {
+  const response = await meshFetch(
+    meshUrl,
+    "/v1/fleet/recovery",
+    JSON.stringify(request),
+    token,
+  );
+  if (!response.ok) {
+    throw new Error(`fleet mesh recovery HTTP ${response.status}: ${await response.text()}`);
+  }
+  return (await response.json()) as FleetRecoveryResponse;
 }

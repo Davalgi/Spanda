@@ -69,13 +69,16 @@ Validated recovery actions dispatch at runtime:
 - Fleet actions — `reassign mission`, `redistribute tasks`, `promote backup coordinator`
 
 Runtime recovery actions publish fleet coordination commands on `/fleet/recovery`
-(Command) for mesh coordinators and log per-fleet member assignments.
+(Command) for in-process comm buses. When `SPANDA_FLEET_MESH_URL` is set, the runtime
+also posts the same action to the fleet mesh coordinator (`POST /v1/fleet/recovery`),
+which relays `fleet_recovery` peer messages to registered fleet agents.
 
 High-risk actions require operator approval via:
 
 - `SPANDA_OPERATOR_APPROVAL=1` (simulation/testing)
 - `SPANDA_GRANT_RECOVERY_APPROVAL=<action substring>`
 - `Approval` topic messages received on subscribed comm topics
+- Mission `requires approval Operator for: <action>` gates `mission.start`, `mission.advance`, and `mission.resume` until approval is granted
 
 Recovery outcomes are recorded to `.spanda/recovery_knowledge.json` for future recommendations (no automatic code or safety rule changes).
 
