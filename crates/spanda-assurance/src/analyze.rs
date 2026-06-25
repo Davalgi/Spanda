@@ -1,12 +1,13 @@
 //! Top-level mission assurance composition.
 //!
 use spanda_ast::nodes::Program;
+use spanda_config::{assurance_policy, assurance_score_from_flags, ResolvedSystemConfig};
 
 use crate::anomaly::{scan_anomalies, AnomalyReport};
-use crate::diagnosis::{diagnose_program, DiagnosisReport};
+use crate::diagnosis::{diagnose_program_with_config, DiagnosisReport};
 use crate::evidence::{build_assurance_report, AssuranceReport};
 use crate::knowledge::validate_knowledge_models;
-use crate::mission::{verify_mission_assurance, MissionAssuranceReport};
+use crate::mission::{verify_mission_assurance_with_config, MissionAssuranceReport};
 use crate::mitigation::extract_mitigations;
 use crate::modes::validate_modes;
 use crate::prognostics::{evaluate_prognostics, PrognosticsReport};
@@ -30,6 +31,15 @@ pub struct MissionAssuranceSummary {
 
 /// Run full mission assurance analysis on a program.
 pub fn assure_program(program: &Program, source_label: &str) -> MissionAssuranceSummary {
+    assure_program_with_config(program, source_label, None)
+}
+
+/// Run mission assurance using optional resolved system configuration thresholds.
+pub fn assure_program_with_config(
+    program: &Program,
+    source_label: &str,
+    config: Option<&ResolvedSystemConfig>,
+) -> MissionAssuranceSummary {
     // Description:
     //     Assure program.
     //
@@ -51,7 +61,7 @@ pub fn assure_program(program: &Program, source_label: &str) -> MissionAssurance
     let anomalies = scan_anomalies(program);
     let prognostics = evaluate_prognostics(program);
     let resilience = check_resilience(program);
-    let mission = verify_mission_assurance(program);
+    let mission = verify_mission_assurance_with_config(program, config);
     let state = evaluate_state_assurance(program);
     let recovery = evaluate_recovery(program, None);
 
@@ -60,14 +70,36 @@ pub fn assure_program(program: &Program, source_label: &str) -> MissionAssurance
     issues.extend(state.issues.clone());
     issues.extend(validate_modes(program));
 
-    let passed = assurance.passed
-        && anomalies.passed
-        && prognostics.passed
-        && resilience.passed
-        && mission.passed
-        && state.passed
-        && recovery.passed
-        && issues.is_empty();
+    let passed_flags = [
+        assurance.passed,
+        anomalies.passed,
+        prognostics.passed,
+        resilience.passed,
+        mission.passed,
+        state.passed,
+        recovery.passed,
+    ];
+    let mut passed = passed_flags.iter().all(|p| *p) && issues.is_empty();
+
+    if let Some(cfg) = config {
+        let policy = assurance_policy(cfg);
+        let score = assurance_score_from_flags(&passed_flags);
+        if score < policy.minimum_score {
+            issues.push(format!(
+                "Assurance score {score} below configured minimum {}",
+                policy.minimum_score
+            ));
+            passed = false;
+        }
+        if policy.require_recovery && !recovery.passed {
+            issues.push("Recovery assurance required by configuration but failed".into());
+            passed = false;
+        }
+        if policy.require_resilience && !resilience.passed {
+            issues.push("Resilience assurance required by configuration but failed".into());
+            passed = false;
+        }
+    }
 
     MissionAssuranceSummary {
         assurance,
@@ -104,6 +136,14 @@ pub fn mitigation_report(program: &Program) -> crate::mitigation::MitigationRepo
 
 /// Re-export diagnosis for program-only path.
 pub fn diagnosis_report(program: &Program) -> DiagnosisReport {
+    diagnosis_report_with_config(program, None)
+}
+
+/// Diagnosis report with optional configuration policy.
+pub fn diagnosis_report_with_config(
+    program: &Program,
+    config: Option<&ResolvedSystemConfig>,
+) -> DiagnosisReport {
     // Description:
     //     Diagnosis report.
     //
@@ -119,5 +159,5 @@ pub fn diagnosis_report(program: &Program) -> DiagnosisReport {
 
     //     let result = spanda_assurance::analyze::diagnosis_report(progra);
 
-    diagnose_program(program)
+    diagnose_program_with_config(program, config)
 }

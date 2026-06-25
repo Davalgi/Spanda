@@ -23,7 +23,10 @@ pub mod resilience;
 pub mod state;
 pub mod types;
 
-pub use analyze::{assure_program, diagnosis_report, mitigation_report, MissionAssuranceSummary};
+pub use analyze::{
+    assure_program, assure_program_with_config, diagnosis_report, diagnosis_report_with_config,
+    mitigation_report, MissionAssuranceSummary,
+};
 pub use anomaly::{learned_models, scan_anomalies, AnomalyReport};
 pub use continuity::{
     evaluate_continuity, extract_continuity_policies, issue_to_continuity_trigger, parse_scope,
@@ -42,10 +45,14 @@ pub use continuity_checkpoint::{
     save_checkpoint_store, ContinuityCheckpointStore,
 };
 pub use continuity_diagnostics::collect_continuity_diagnostics;
-pub use diagnosis::{diagnose_from_trace, diagnose_program, DiagnosisReport};
+pub use diagnosis::{
+    diagnose_from_trace, diagnose_program, diagnose_program_with_config, DiagnosisReport,
+};
 pub use evidence::{build_assurance_report, AssuranceReport};
 pub use knowledge::{capability_ontology, extract_knowledge_base, validate_knowledge_models};
-pub use mission::{verify_mission_assurance, MissionAssuranceReport};
+pub use mission::{
+    verify_mission_assurance, verify_mission_assurance_with_config, MissionAssuranceReport,
+};
 pub use mitigation::{extract_mitigations, MitigationReport};
 pub use modes::{extract_operating_modes, validate_modes};
 pub use prognostics::{evaluate_prognostics, PrognosticsReport};
@@ -64,8 +71,8 @@ pub use recovery::{
     RecoveryStatus, RecoveryStrategy, RecoveryTraceChain, SafeRecoveryAction,
 };
 pub use recovery_coverage::{
-    evaluate_recovery_coverage, format_recovery_coverage, RecoveryCoverageReport,
-    RecoveryCoverageStatus, RecoveryGap, RecoveryPlanSummary,
+    evaluate_recovery_coverage, evaluate_recovery_coverage_with_config, format_recovery_coverage,
+    RecoveryCoverageReport, RecoveryCoverageStatus, RecoveryGap, RecoveryPlanSummary,
 };
 pub use recovery_diagnostics::collect_recovery_diagnostics;
 pub use report::{

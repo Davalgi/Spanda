@@ -2,6 +2,7 @@
 //!
 use crate::types::{CausalGraph, Confidence, Diagnosis, FaultTree, RootCause};
 use spanda_ast::nodes::Program;
+use spanda_config::{diagnosis_policy, ResolvedSystemConfig};
 use spanda_error::SpandaError;
 use spanda_readiness::diagnose_trace;
 use std::path::Path;
@@ -46,6 +47,14 @@ pub fn diagnose_from_trace(trace_path: &Path) -> Result<DiagnosisReport, SpandaE
 
 /// Static diagnosis from program declarations (mitigations, anomaly handlers).
 pub fn diagnose_program(program: &Program) -> DiagnosisReport {
+    diagnose_program_with_config(program, None)
+}
+
+/// Static diagnosis using optional configuration policy thresholds.
+pub fn diagnose_program_with_config(
+    program: &Program,
+    config: Option<&ResolvedSystemConfig>,
+) -> DiagnosisReport {
     // Description:
     //     Diagnose program.
     //
@@ -108,7 +117,17 @@ pub fn diagnose_program(program: &Program) -> DiagnosisReport {
         }
     }
 
-    let passed = !diagnoses.is_empty() || !anomaly_detectors.is_empty();
+    let mut passed = !diagnoses.is_empty() || !anomaly_detectors.is_empty();
+
+    if let Some(cfg) = config {
+        let policy = diagnosis_policy(cfg);
+        if policy.require_mitigations && mitigations.is_empty() {
+            passed = false;
+        }
+        if policy.require_anomaly_handlers && anomaly_handlers.is_empty() {
+            passed = false;
+        }
+    }
 
     DiagnosisReport {
         static_diagnoses: diagnoses,

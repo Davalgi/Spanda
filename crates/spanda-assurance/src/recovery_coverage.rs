@@ -6,6 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
+use spanda_config::{recovery_failure_catalog, ResolvedSystemConfig};
 
 /// Recovery coverage status for a failure mode.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -115,6 +116,15 @@ fn policy_matches_failure(policy_text: &str, failure: &str) -> bool {
 
 /// Evaluate recovery coverage for known failure modes.
 pub fn evaluate_recovery_coverage(program: &Program, source_label: &str) -> RecoveryCoverageReport {
+    evaluate_recovery_coverage_with_config(program, source_label, None)
+}
+
+/// Evaluate recovery coverage using configured failure catalog when available.
+pub fn evaluate_recovery_coverage_with_config(
+    program: &Program,
+    source_label: &str,
+    config: Option<&ResolvedSystemConfig>,
+) -> RecoveryCoverageReport {
     // Description:
     //     Score recovery path coverage from recovery and continuity policies.
     //
@@ -142,7 +152,12 @@ pub fn evaluate_recovery_coverage(program: &Program, source_label: &str) -> Reco
     let mut partially_covered = 0usize;
     let mut uncovered = 0usize;
 
-    for failure in KNOWN_FAILURES {
+    let known_failure_list: Vec<String> = config
+        .map(recovery_failure_catalog)
+        .unwrap_or_else(|| KNOWN_FAILURES.iter().map(|s| (*s).to_string()).collect());
+
+    for failure in &known_failure_list {
+        let failure = failure.as_str();
         let recovery_match = policy_matches_failure(&policy_blob, failure);
         let continuity_match = policy_matches_failure(&continuity_blob, failure);
         let status = if recovery_match {
@@ -163,26 +178,26 @@ pub fn evaluate_recovery_coverage(program: &Program, source_label: &str) -> Reco
             let plan = RecoveryPlanner::plan(
                 program,
                 &RecoveryContext {
-                    issue: (*failure).into(),
+                    issue: failure.to_string(),
                     diagnosis: None,
                     classification: None,
                     level: RecoveryLevel::Level2AutomaticLowRisk,
                 },
             );
             recovery_plans.push(RecoveryPlanSummary {
-                failure: (*failure).into(),
+                failure: failure.to_string(),
                 policy: Some(plan.name),
                 actions: plan.actions.iter().map(|a| a.description.clone()).collect(),
             });
         } else if status == RecoveryCoverageStatus::Uncovered {
             missing_paths.push(RecoveryGap {
-                failure: (*failure).into(),
+                failure: failure.to_string(),
                 recommendation: format!("Add recovery_policy or continuity_policy for {failure}"),
             });
         }
     }
 
-    let known_failures = KNOWN_FAILURES.len();
+    let known_failures = known_failure_list.len();
     let points = covered * 100 + partially_covered * 50;
     let coverage_pct = if known_failures == 0 {
         0

@@ -16,6 +16,7 @@ spanda-capability = { path = "../spanda-capability" }
 spanda-error = { path = "../spanda-error" }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-readiness = { path = "../spanda-readiness" }
+spanda-config = { path = "../spanda-config" }
 spanda-runtime = { path = "../spanda-runtime" }
 
 [dev-dependencies]
