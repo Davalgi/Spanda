@@ -47,4 +47,8 @@ echo "== showcase smoke: killer path =="
 chmod +x scripts/killer_demo_golden_path.sh
 ./scripts/killer_demo_golden_path.sh
 
+echo "== showcase smoke: differentiation =="
+chmod +x scripts/differentiation_smoke.sh
+./scripts/differentiation_smoke.sh
+
 echo "Showcase smoke tests passed."

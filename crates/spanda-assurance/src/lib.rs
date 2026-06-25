@@ -16,6 +16,7 @@ pub mod mitigation;
 pub mod modes;
 pub mod prognostics;
 pub mod recovery;
+pub mod recovery_coverage;
 pub mod recovery_diagnostics;
 pub mod report;
 pub mod resilience;
@@ -62,6 +63,10 @@ pub use continuity_checkpoint::{
     save_checkpoint_store, ContinuityCheckpointStore,
 };
 pub use continuity_diagnostics::collect_continuity_diagnostics;
+pub use recovery_coverage::{
+    evaluate_recovery_coverage, format_recovery_coverage, RecoveryCoverageReport, RecoveryCoverageStatus,
+    RecoveryGap, RecoveryPlanSummary,
+};
 pub use recovery_diagnostics::collect_recovery_diagnostics;
 pub use report::{
     format_anomaly, format_assurance, format_continuity, format_delegation, format_diagnosis,

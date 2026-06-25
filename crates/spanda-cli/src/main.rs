@@ -3,8 +3,11 @@
 mod assurance_cli;
 mod certify_cli;
 mod continuity_cli;
+mod contract_cli;
+mod decision_cli;
 mod demo_cli;
 mod deploy_ota;
+mod explain_cli;
 mod package;
 mod readiness_cli;
 mod recovery_cli;
@@ -1404,6 +1407,30 @@ fn main() {
         return;
     }
 
+    if command == "contract" {
+        contract_cli::contract_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "explain" {
+        explain_cli::explain_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "safety-coverage" {
+        readiness_cli::cmd_safety_coverage(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "recovery-coverage" {
+        assurance_cli::cmd_recovery_coverage(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
     if command == "assure" {
         assurance_cli::cmd_assure(&args[2..]);
         let _ = io::stdout().flush();
@@ -1521,7 +1548,11 @@ fn main() {
     }
 
     if command == "audit" {
-        readiness_cli::cmd_audit(&args[2..]);
+        if args.get(2).map(String::as_str) == Some("decisions") {
+            decision_cli::audit_dispatch(&args[2..]);
+        } else {
+            readiness_cli::cmd_audit(&args[2..]);
+        }
         let _ = io::stdout().flush();
         return;
     }

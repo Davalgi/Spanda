@@ -18,6 +18,7 @@ pub mod report;
 pub mod root_cause;
 pub mod runtime;
 pub mod safety_report;
+pub mod safety_coverage;
 pub mod spans;
 pub mod target;
 pub mod traceability;
@@ -40,6 +41,10 @@ pub use report::{
 };
 pub use root_cause::{diagnose_trace, RootCauseReport};
 pub use runtime::{build_runtime_context, seed_hardware_monitor, RuntimeReadinessContext};
+pub use safety_coverage::{
+    evaluate_safety_coverage, format_safety_coverage, CoverageStatus as SafetyCoverageStatus,
+    SafetyCoverageReport, SafetyScenarioReport,
+};
 pub use safety_report::{generate_safety_report, generate_safety_report_source, SafetyCaseReport};
 pub use target::{default_deploy_target, readiness_options_from_flags};
 pub use traceability::{readiness_traceability, ReadinessTraceRow};

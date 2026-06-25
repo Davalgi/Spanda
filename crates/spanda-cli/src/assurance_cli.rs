@@ -1,9 +1,10 @@
 //! CLI commands for mission assurance and autonomous operations.
 
 use spanda_assurance::{
-    assure_program, check_resilience, diagnose_from_trace, diagnose_program, evaluate_prognostics,
-    evaluate_state_assurance, format_anomaly, format_assurance, format_diagnosis,
-    format_mission_assurance, format_prognostics, format_resilience, format_state, scan_anomalies,
+    assure_program, check_resilience, diagnose_from_trace, diagnose_program,
+    evaluate_prognostics, evaluate_recovery_coverage, evaluate_state_assurance, format_anomaly,
+    format_assurance, format_diagnosis, format_mission_assurance, format_prognostics,
+    format_recovery_coverage, format_resilience, format_state, scan_anomalies,
     verify_mission_assurance,
 };
 use spanda_lexer::tokenize;
@@ -465,4 +466,18 @@ pub fn mitigation_dispatch(args: &[String]) {
             process::exit(1);
         }
     }
+}
+
+/// `spanda recovery-coverage <file.sd> [--json] [--format markdown]`
+pub fn cmd_recovery_coverage(args: &[String]) {
+    let json = args.iter().any(|a| a == "--json");
+    let markdown = args.iter().any(|a| a == "--markdown")
+        || args
+            .windows(2)
+            .any(|w| w[0] == "--format" && w[1] == "markdown");
+    let file = file_arg(args);
+    let source = read_file(&file);
+    let program = parse_program(&source);
+    let report = evaluate_recovery_coverage(&program, &file);
+    println!("{}", format_recovery_coverage(&report, json, markdown));
 }

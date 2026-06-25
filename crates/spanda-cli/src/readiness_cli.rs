@@ -4,7 +4,8 @@ use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_readiness::{
     analyze_failure, audit_program, build_runtime_context, evaluate_fleet_readiness,
-    evaluate_readiness_with_runtime, evaluate_twin_readiness, format_audit,
+    evaluate_readiness_with_runtime, evaluate_safety_coverage, evaluate_twin_readiness,
+    format_audit, format_safety_coverage,
     format_failure_analysis, format_fleet_readiness, format_mission_verification, format_readiness,
     format_safety_report, generate_safety_report, readiness_options_from_flags, verify_approvals,
     verify_fleet, verify_mission, ReadinessOptions, ReportFormat,
@@ -566,6 +567,25 @@ pub fn evaluate_agent_readiness_json(
         include_runtime,
         inject_health_faults,
     )
+}
+
+/// `spanda safety-coverage <file.sd> [--json] [--format markdown]`
+pub fn cmd_safety_coverage(args: &[String]) {
+    let json = args.iter().any(|a| a == "--json");
+    let markdown = args.iter().any(|a| a == "--format" && args.windows(2).any(|w| w[0] == "--format" && w[1] == "markdown"))
+        || args.iter().any(|a| a == "--markdown");
+    let file = args
+        .iter()
+        .find(|a| !a.starts_with('-') && *a != "markdown")
+        .cloned()
+        .unwrap_or_else(|| {
+            eprintln!("Missing file path");
+            process::exit(1);
+        });
+    let source = read_file(&file);
+    let program = parse_program(&source);
+    let report = evaluate_safety_coverage(&program, &file);
+    println!("{}", format_safety_coverage(&report, json, markdown));
 }
 
 /// Top-level readiness dispatch for subcommands.

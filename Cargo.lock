@@ -1360,11 +1360,14 @@ dependencies = [
  "spanda-capability",
  "spanda-certify",
  "spanda-codegen",
+ "spanda-contract",
  "spanda-debug",
+ "spanda-decision",
  "spanda-deploy-http",
  "spanda-docs",
  "spanda-driver",
  "spanda-error",
+ "spanda-explain",
  "spanda-fleet",
  "spanda-format",
  "spanda-hardware",
@@ -1522,6 +1525,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-contract"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-assurance",
+ "spanda-ast",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
+]
+
+[[package]]
 name = "spanda-core"
 version = "0.1.0"
 dependencies = [
@@ -1597,6 +1613,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "spanda-decision"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-runtime",
+]
+
+[[package]]
 name = "spanda-deploy-http"
 version = "0.4.0"
 dependencies = [
@@ -1651,6 +1676,23 @@ dependencies = [
  "spanda-runtime",
  "spanda-typecheck",
  "thiserror 2.0.18",
+]
+
+[[package]]
+name = "spanda-explain"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-assurance",
+ "spanda-ast",
+ "spanda-contract",
+ "spanda-decision",
+ "spanda-hardware",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
+ "spanda-runtime",
 ]
 
 [[package]]

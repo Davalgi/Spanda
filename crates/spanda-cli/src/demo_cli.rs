@@ -637,6 +637,22 @@ fn demo_assurance(root: &Path) {
     println!("\nDemo complete. See examples/showcase/assurance/README.md and examples/anomaly/learned_navigation.sd");
 }
 
+fn demo_differentiation(root: &Path) {
+    let path = showcase(root, &["differentiation", "warehouse.sd"]);
+    let file = require_file(&path);
+    let sd = file.to_str().unwrap();
+
+    println!("== Differentiation NOW — contracts, coverage, explainability ==\n");
+    run_spanda("check", file, &[]);
+    run_spanda_args(&["contract", "verify", sd]);
+    run_spanda_args(&["safety-coverage", sd]);
+    run_spanda_args(&["recovery-coverage", sd]);
+    run_spanda_args(&["explain", sd]);
+    run_spanda_args(&["explain", "readiness", "--file", sd]);
+
+    println!("\nDemo complete. See examples/showcase/differentiation/ and docs/differentiation-roadmap.md");
+}
+
 pub fn demo_dispatch(args: &[String]) {
     // Description:
     //     Demo dispatch.
@@ -665,6 +681,7 @@ pub fn demo_dispatch(args: &[String]) {
         "assurance" => demo_assurance(&root),
         "self-healing" | "selfhealing" | "healing" => demo_self_healing(&root),
         "continuity" | "takeover" | "succession" => demo_continuity(&root),
+        "differentiation" | "diff" => demo_differentiation(&root),
         "" | "list" | "--help" | "-h" => {
             eprintln!(
                 "Spanda showcase demos\n\n\
@@ -679,7 +696,8 @@ pub fn demo_dispatch(args: &[String]) {
                    readiness — operational go/no-go with runtime health\n\
                    assurance — mission assurance CLI suite (assure, anomaly, state)\n\
                    self-healing — recovery policies, heal/recover/sim, fleet recovery\n\
-                   continuity — mission continuity, takeover, delegation, succession\n\n\
+                   continuity — mission continuity, takeover, delegation, succession\n\
+                   differentiation — mission contracts, safety/recovery coverage, explain\n\n\
                  Set SPANDA_ROOT to the repository root if examples are not found.\n\
                  See examples/showcase/README.md"
             );

@@ -51,6 +51,9 @@ members = [
     "crates/spanda-interpreter",
     "crates/spanda-capability",
     "crates/spanda-readiness",
+    "crates/spanda-contract",
+    "crates/spanda-explain",
+    "crates/spanda-decision",
     "crates/spanda-telemetry-store",
     "crates/spanda-transport",
 ]
