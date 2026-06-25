@@ -288,7 +288,7 @@ Compact snapshot — full matrix: [docs/feature-status.md](docs/feature-status.m
 | Security / Encryption | **Stable** | Capabilities, audit, AES-GCM wire frames; live TLS optional |
 | Package System | **Stable** | `spanda install`, `build`, `test`, hosted index |
 | Provider Registry | **Stable** | Official packages + dispatch; local mirror |
-| Cascading configuration | **Experimental** | `spanda config`, device tree, `--config` on run/verify/readiness/replay |
+| Cascading configuration | **Experimental** | `spanda config`, device identity registry, `device discover`, `network scan`, `--config` on run/verify/readiness/replay |
 | Fleet | **Experimental** | In-process sim stable; distributed HTTP agents experimental |
 | IoT | **Experimental** | Live Modbus/OPC-UA env-gated; hub fallback |
 | Debugger | **Experimental** | VS Code DAP via `spanda-dap` |
@@ -323,7 +323,7 @@ One-line pointers — details in [docs/platform-overview.md](docs/platform-overv
 | **Spanda Language** | Safety-first `.sd` programs with robot, sensor, actuator, and safety primitives | [docs/spanda-language.md](docs/spanda-language.md) |
 | **Spanda Runtime** | Interpreter, scheduler, HAL, provider dispatch after compile-time gates | [docs/architecture.md](docs/architecture.md) |
 | **Spanda Verify** | Hardware fit, capability traceability, behavioral `verify { }` blocks | [docs/hardware-compatibility.md](docs/hardware-compatibility.md) |
-| **Spanda Config** | Cascading `spanda.toml`, device tree, validation, runtime integration | [docs/configuration.md](docs/configuration.md) |
+| **Spanda Config** | Cascading `spanda.toml`, device tree, device identity mapping, validation | [docs/configuration.md](docs/configuration.md) |
 | **Spanda Safety** | `SafeAction` type gate, safety zones, kill switch, emergency stop | [docs/agentic-programming.md](docs/agentic-programming.md) |
 | **Spanda Sim** | Simulation and digital twins without physical hardware | [docs/killer-demo.md](docs/killer-demo.md) |
 | **Spanda Replay** | Mission trace capture and deterministic playback | [docs/replay.md](docs/replay.md) |

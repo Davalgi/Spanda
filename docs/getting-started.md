@@ -482,7 +482,11 @@ Multi-file TOML configuration for fleets, devices, providers, health, readiness,
 ```bash
 spanda config validate
 spanda config resolve --json
+spanda config report --network
+spanda device discover --subnet 192.168.1.0/24
+spanda device inspect camera-front-001
 spanda device-tree graph --json
+spanda map verify rover.sd --config spanda.toml
 spanda verify rover.sd --config spanda.toml
 spanda readiness rover.sd --config spanda.toml
 ```
