@@ -2181,8 +2181,10 @@ dependencies = [
 name = "spanda-tamper"
 version = "0.4.0"
 dependencies = [
+ "hex",
  "serde",
  "serde_json",
+ "sha2",
  "spanda-ast",
  "spanda-lexer",
  "spanda-parser",
