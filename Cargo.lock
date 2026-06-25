@@ -1365,6 +1365,7 @@ dependencies = [
  "spanda-debug",
  "spanda-decision",
  "spanda-deploy-http",
+ "spanda-diff",
  "spanda-docs",
  "spanda-driver",
  "spanda-error",
@@ -1649,6 +1650,18 @@ dependencies = [
  "serde",
  "serde_json",
  "webpki-roots 0.26.11",
+]
+
+[[package]]
+name = "spanda-diff"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-ast",
+ "spanda-capability",
+ "spanda-lexer",
+ "spanda-parser",
 ]
 
 [[package]]

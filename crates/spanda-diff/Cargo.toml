@@ -1,0 +1,19 @@
+[package]
+name = "spanda-diff"
+version.workspace = true
+edition.workspace = true
+description = "Mission differencing and change-impact analysis for Spanda programs"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+spanda-ast = { path = "../spanda-ast" }
+spanda-capability = { path = "../spanda-capability" }
+
+[dev-dependencies]
+spanda-lexer = { path = "../spanda-lexer" }
+spanda-parser = { path = "../spanda-parser" }
