@@ -474,6 +474,7 @@ fn agent_drift_detects_program_hash_mismatch() {
         program_hash: Some("abc123".into()),
         firmware_by_device: HashMap::new(),
         packages: vec!["spanda-gps".into()],
+        attestation_contracts: Vec::new(),
     };
     let actual = AgentDriftSnapshot {
         agent_id: "Rover@JetsonOrin".into(),
@@ -485,4 +486,48 @@ fn agent_drift_detects_program_hash_mismatch() {
     };
     let findings = detect_agent_drift(&expected, &actual);
     assert!(findings.iter().any(|f| f.message.contains("program hash")));
+}
+
+#[test]
+fn agent_drift_detects_missing_secure_boot_attestation() {
+    let expected = ExpectedAgentState {
+        target_key: "Rover@Jetson".into(),
+        robot_name: "Rover".into(),
+        hardware_profile: Some("Jetson".into()),
+        program_hash: None,
+        firmware_by_device: HashMap::new(),
+        packages: Vec::new(),
+        attestation_contracts: vec!["trust.jetson".into()],
+    };
+    let actual = AgentDriftSnapshot {
+        agent_id: "Rover@Jetson".into(),
+        healthy: true,
+        ..AgentDriftSnapshot::default()
+    };
+    let findings = detect_agent_drift(&expected, &actual);
+    assert!(findings.iter().any(|f| f.message.contains("missing attestation")));
+}
+
+#[test]
+fn agent_drift_detects_failed_secure_boot_attestation() {
+    let expected = ExpectedAgentState {
+        target_key: "Rover@Jetson".into(),
+        robot_name: "Rover".into(),
+        hardware_profile: Some("Jetson".into()),
+        program_hash: None,
+        firmware_by_device: HashMap::new(),
+        packages: Vec::new(),
+        attestation_contracts: vec!["trust.jetson".into()],
+    };
+    let actual = AgentDriftSnapshot {
+        agent_id: "Rover@Jetson".into(),
+        healthy: true,
+        attestation_contract: Some("trust.jetson".into()),
+        attestation_verified: Some(false),
+        boot_state: Some("compromised".into()),
+        ..AgentDriftSnapshot::default()
+    };
+    let findings = detect_agent_drift(&expected, &actual);
+    assert!(findings.iter().any(|f| f.message.contains("verification failed")));
+    assert!(findings.iter().any(|f| f.message.contains("boot_state")));
 }

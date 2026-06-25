@@ -6,7 +6,7 @@ use crate::resolver::diff_configs;
 use crate::resolved::ResolvedSystemConfig;
 use serde::{Deserialize, Serialize};
 use spanda_ast::foundations::DeployDecl;
-use spanda_ast::nodes::{Program, RobotDecl};
+use spanda_ast::nodes::{ImportDecl, Program, RobotDecl};
 use std::collections::{BTreeSet, HashMap};
 
 /// Severity tier for a drift finding.
@@ -505,6 +505,8 @@ pub struct ExpectedAgentState {
     pub program_hash: Option<String>,
     pub firmware_by_device: HashMap<String, String>,
     pub packages: Vec<String>,
+    #[serde(default)]
+    pub attestation_contracts: Vec<String>,
 }
 
 /// Build expected agent states from deploy declarations and configuration.
@@ -532,8 +534,10 @@ pub fn expected_agent_states(
     let Program::Program {
         deployments,
         robots,
+        imports,
         ..
     } = program;
+    let attestation_contracts = secure_boot_contracts_from_imports(imports);
     let robot_names: Vec<String> = robots
         .iter()
         .map(|robot| {
@@ -555,6 +559,7 @@ pub fn expected_agent_states(
                 program_hash: hash.clone(),
                 firmware_by_device: firmware_for_robot(config, robot),
                 packages: packages.clone(),
+                attestation_contracts: attestation_contracts.clone(),
             });
         }
         return states;
@@ -573,6 +578,7 @@ pub fn expected_agent_states(
                 program_hash: hash.clone(),
                 firmware_by_device: firmware_for_robot(config, robot_name),
                 packages: packages.clone(),
+                attestation_contracts: attestation_contracts.clone(),
             });
         }
     }
@@ -687,6 +693,50 @@ pub fn detect_agent_drift(
         &expected.packages,
         &actual.packages,
     );
+    if !expected.attestation_contracts.is_empty() {
+        match actual.attestation_verified {
+            Some(true) => {}
+            Some(false) => findings.push(DriftFinding {
+                dimension: DriftDimension::Hardware,
+                severity: DriftSeverity::Critical,
+                message: format!("agent '{agent}' secure-boot attestation verification failed"),
+                path: Some(format!("agents.{agent}.attestation_verified")),
+            }),
+            None => findings.push(DriftFinding {
+                dimension: DriftDimension::Hardware,
+                severity: DriftSeverity::High,
+                message: format!(
+                    "agent '{agent}' missing attestation for contracts {:?}",
+                    expected.attestation_contracts
+                ),
+                path: Some(format!("agents.{agent}.attestation_verified")),
+            }),
+        }
+        if let Some(contract) = &actual.attestation_contract {
+            if !expected.attestation_contracts.iter().any(|expected| expected == contract) {
+                findings.push(DriftFinding {
+                    dimension: DriftDimension::Hardware,
+                    severity: DriftSeverity::Medium,
+                    message: format!(
+                        "agent '{agent}' attestation contract '{contract}' not declared in program"
+                    ),
+                    path: Some(format!("agents.{agent}.attestation_contract")),
+                });
+            }
+        }
+        if let Some(boot_state) = &actual.boot_state {
+            if matches!(boot_state.as_str(), "compromised" | "tampered" | "failed") {
+                findings.push(DriftFinding {
+                    dimension: DriftDimension::Hardware,
+                    severity: DriftSeverity::Critical,
+                    message: format!(
+                        "agent '{agent}' boot_state reports '{boot_state}'"
+                    ),
+                    path: Some(format!("agents.{agent}.boot_state")),
+                });
+            }
+        }
+    }
     findings
 }
 
@@ -699,6 +749,19 @@ pub fn append_agent_drift(report: &mut ConfigDriftReport, findings: Vec<DriftFin
 
 fn deploy_target_key(robot: &str, hardware: &str) -> String {
     format!("{robot}@{hardware}")
+}
+
+fn secure_boot_contracts_from_imports(imports: &[ImportDecl]) -> Vec<String> {
+    imports
+        .iter()
+        .filter_map(|import| {
+            let ImportDecl::ImportDecl { path, .. } = import;
+            match path.as_str() {
+                "trust.jetson" | "trust.pi" => Some(path.clone()),
+                _ => None,
+            }
+        })
+        .collect()
 }
 
 fn firmware_for_robot(
