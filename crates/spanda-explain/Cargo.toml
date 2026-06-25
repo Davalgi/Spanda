@@ -16,6 +16,8 @@ spanda-assurance = { path = "../spanda-assurance" }
 spanda-contract = { path = "../spanda-contract" }
 spanda-decision = { path = "../spanda-decision" }
 spanda-hardware = { path = "../spanda-hardware" }
+spanda-config = { path = "../spanda-config" }
+spanda-package = { path = "../spanda-package" }
 spanda-readiness = { path = "../spanda-readiness" }
 spanda-runtime = { path = "../spanda-runtime" }
 

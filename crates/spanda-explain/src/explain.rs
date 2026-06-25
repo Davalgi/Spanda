@@ -1,15 +1,24 @@
 //! Static and trace explainability builders.
 
 use spanda_ast::nodes::Program;
+use spanda_config::{detect_config_drift, format_drift_lines, ResolvedSystemConfig};
 use spanda_contract::verify_contract;
 use spanda_decision::audit_decisions_from_trace;
 use spanda_hardware::{verify_program_compatibility, VerifyOptions};
+use spanda_package::evaluate_package_trust;
 use spanda_readiness::{
-    evaluate_readiness, evaluate_safety_coverage, generate_safety_report, verify_mission,
-    ReadinessOptions,
+    evaluate_deployment_gates, evaluate_readiness, evaluate_safety_coverage, generate_safety_report,
+    verify_mission, DeploymentGatePolicy, ReadinessOptions,
 };
 
 use crate::report::{ExplainReport, ExplainSection};
+
+/// Optional configuration context for program explain reports.
+#[derive(Debug, Clone, Default)]
+pub struct ExplainProgramOptions<'a> {
+    pub system_config: Option<&'a ResolvedSystemConfig>,
+    pub baseline_config: Option<&'a ResolvedSystemConfig>,
+}
 
 fn program_structure(program: &Program) -> ExplainSection {
     // Description:
@@ -57,21 +66,30 @@ fn program_structure(program: &Program) -> ExplainSection {
 
 /// Explain program structure and linked operational surfaces.
 pub fn explain_program(program: &Program, source_label: &str) -> ExplainReport {
-    // Description:
-    //     Build a multi-section explainability report for a program.
+    explain_program_with_options(program, source_label, &ExplainProgramOptions::default())
+}
+
+/// Explain program structure with optional configuration, drift, and gate previews.
+pub fn explain_program_with_options(
+    program: &Program,
+    source_label: &str,
+    options: &ExplainProgramOptions<'_>,
+) -> ExplainReport {
+    // Build a multi-section explainability report for a program.
     //
     // Parameters:
     // - `program` — parsed program
     // - `source_label` — file label
+    // - `options` — optional resolved config and baseline for drift/gates
     //
     // Returns:
-    // Explainability report with structure, contract, readiness, verify, and safety sections.
+    // Explainability report with structure, contract, readiness, verify, safety, and optional config sections.
     //
     // Options:
-    // None.
+    // `ExplainProgramOptions::system_config`, `ExplainProgramOptions::baseline_config`.
     //
     // Example:
-    // let report = explain_program(&program, "rover.sd");
+    // let report = explain_program_with_options(&program, "rover.sd", &options);
 
     let mut sections = vec![program_structure(program)];
     sections.push(explain_readiness(program, source_label).sections[0].clone());
@@ -94,6 +112,97 @@ pub fn explain_program(program: &Program, source_label: &str) -> ExplainReport {
             .map(|check| format!("{}: {}", check.name, check.detail))
             .collect(),
     });
+    if let Some(cfg) = options.system_config {
+        let validation = &cfg.validation;
+        sections.push(ExplainSection {
+            topic: "configuration".into(),
+            summary: if validation.passed {
+                "Configuration validation passed".into()
+            } else {
+                format!(
+                    "Configuration validation failed ({} error(s))",
+                    validation.error_count()
+                )
+            },
+            details: validation
+                .findings
+                .iter()
+                .map(|issue| format!("[{:?}] {}", issue.severity, issue.message))
+                .collect(),
+        });
+        let readiness_options = ReadinessOptions {
+            system_config: Some(std::sync::Arc::new(cfg.clone())),
+            ..ReadinessOptions::default()
+        };
+        let gates = evaluate_deployment_gates(
+            program,
+            source_label,
+            &readiness_options,
+            &DeploymentGatePolicy::default(),
+        );
+        sections.push(ExplainSection {
+            topic: "deployment_gates".into(),
+            summary: if gates.passed {
+                "All deployment gates passed".into()
+            } else {
+                format!(
+                    "{} deployment gate(s) failed",
+                    gates.gates.iter().filter(|gate| !gate.passed).count()
+                )
+            },
+            details: gates
+                .gates
+                .iter()
+                .map(|gate| {
+                    format!(
+                        "{}: {}",
+                        gate.name,
+                        if gate.passed {
+                            gate.message.clone()
+                        } else {
+                            format!("FAIL — {}", gate.message)
+                        }
+                    )
+                })
+                .collect(),
+        });
+        if !cfg.packages.is_empty() {
+            let mut details = Vec::new();
+            let mut low = 0usize;
+            for package in &cfg.packages {
+                let trust = evaluate_package_trust(package, None, Some(&cfg.project_root));
+                if !trust.passed {
+                    low += 1;
+                }
+                details.push(format!(
+                    "{} v{} — {}/100 ({})",
+                    trust.package, trust.version, trust.score, trust.tier
+                ));
+            }
+            sections.push(ExplainSection {
+                topic: "package_trust".into(),
+                summary: if low == 0 {
+                    "Configured packages meet trust threshold".into()
+                } else {
+                    format!("{low} configured package(s) below trust threshold")
+                },
+                details,
+            });
+        }
+    }
+    if let (Some(baseline), Some(current)) = (options.baseline_config, options.system_config) {
+        let drift = detect_config_drift(baseline, current);
+        let lines = format_drift_lines(&drift);
+        sections.push(ExplainSection {
+            topic: "drift".into(),
+            summary: if drift.findings.is_empty() {
+                "No configuration drift from baseline".into()
+            } else {
+                format!("{} configuration drift finding(s)", drift.findings.len())
+            },
+            details: lines,
+        });
+    }
     ExplainReport {
         program: source_label.into(),
         sections,

@@ -1,13 +1,17 @@
 //! CLI commands for explainability reports.
 
+use crate::config_load::{ensure_config_valid, load_system_config};
+use spanda_config::ConfigResolver;
 use spanda_explain::{
-    explain_program, explain_readiness, explain_safety, explain_trace, explain_verify,
-    format_explain_report,
+    explain_program_with_options, explain_readiness, explain_safety, explain_trace, explain_verify,
+    format_explain_report, ExplainProgramOptions,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use std::fs;
+use std::path::Path;
 use std::process;
+use std::sync::Arc;
 
 fn read_file(path: &str) -> String {
     fs::read_to_string(path).unwrap_or_else(|e| {
@@ -41,12 +45,45 @@ fn json_flag(args: &[String]) -> bool {
     args.iter().any(|a| a == "--json")
 }
 
-/// `spanda explain <file.sd> [--json]`
+fn flag_value(args: &[String], flag: &str) -> Option<String> {
+    args.windows(2)
+        .find(|w| w[0] == flag)
+        .map(|w| w[1].clone())
+}
+
+fn resolve_baseline(path: &str) -> Arc<spanda_config::ResolvedSystemConfig> {
+    let p = Path::new(path);
+    let root = if p.is_dir() {
+        p.to_path_buf()
+    } else {
+        p.parent().unwrap_or(p).to_path_buf()
+    };
+    Arc::new(
+        ConfigResolver::new()
+            .resolve_from_dir(&root)
+            .unwrap_or_else(|e| {
+                eprintln!("{e}");
+                process::exit(1);
+            }),
+    )
+}
+
+/// `spanda explain <file.sd> [--json] [--config <spanda.toml>] [--baseline <dir|spanda.toml>]`
 pub fn cmd_explain_program(args: &[String]) {
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);
-    let report = explain_program(&program, &file);
+    let system_config = load_system_config(
+        Path::new(&file),
+        flag_value(args, "--config").as_deref().map(Path::new),
+    );
+    ensure_config_valid(system_config.as_ref().map(|arc| arc.as_ref()));
+    let baseline_config = flag_value(args, "--baseline").map(|path| resolve_baseline(&path));
+    let explain_options = ExplainProgramOptions {
+        system_config: system_config.as_deref(),
+        baseline_config: baseline_config.as_deref(),
+    };
+    let report = explain_program_with_options(&program, &file, &explain_options);
     println!("{}", format_explain_report(&report, json_flag(args)));
 }
 
@@ -122,7 +159,7 @@ pub fn explain_dispatch(args: &[String]) {
         "safety" => cmd_explain_safety(&args[1..]),
         "" => {
             eprintln!(
-                "Usage:\n  spanda explain <file.sd> [--json]\n  spanda explain readiness|verify|safety --file <file.sd> [--json]\n  spanda explain <mission.trace> [--json]"
+                "Usage:\n  spanda explain <file.sd> [--json] [--config <spanda.toml>] [--baseline <dir|spanda.toml>]\n  spanda explain readiness|verify|safety --file <file.sd> [--json]\n  spanda explain <mission.trace> [--json]"
             );
             process::exit(1);
         }
@@ -132,7 +169,7 @@ pub fn explain_dispatch(args: &[String]) {
         other if other.ends_with(".sd") => cmd_explain_program(args),
         _ => {
             eprintln!(
-                "Usage:\n  spanda explain <file.sd> [--json]\n  spanda explain readiness|verify|safety --file <file.sd> [--json]\n  spanda explain <mission.trace> [--json]"
+                "Usage:\n  spanda explain <file.sd> [--json] [--config <spanda.toml>] [--baseline <dir|spanda.toml>]\n  spanda explain readiness|verify|safety --file <file.sd> [--json]\n  spanda explain <mission.trace> [--json]"
             );
             process::exit(1);
         }
