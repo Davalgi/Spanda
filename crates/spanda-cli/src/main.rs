@@ -18,6 +18,7 @@ mod threat_model_cli;
 mod diff_cli;
 mod score_cli;
 mod chaos_cli;
+mod estimate_cli;
 mod fault_cli;
 mod network_cli;
 mod package;
@@ -186,7 +187,7 @@ fn usage() {
         "Spanda Programming Language\n\n\
          Usage:\n\
            spanda check [--json] [--verification-json] [<file.sd> | --project]\n\
-           spanda verify [--json] [--target <HardwareProfile>] [--policy <name>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
+           spanda verify [--json] [--target <HardwareProfile>] [--policy <name>] [--profile <name>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
            spanda certify prove [--json] [--strict] [--out <file.json>] <file.sd>\n\
            spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
            spanda run [--json] [--verbose] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--enforce-certify] <file.sd>\n\
@@ -251,7 +252,8 @@ fn usage() {
            spanda threat-model <file.sd> [--json]\n\
            spanda diff <baseline.sd> <candidate.sd> [--json]\n\
            spanda score <file.sd> [--json] [--format markdown] [--config <spanda.toml>]\n\
-           spanda chaos <file.sd> [--inject gps-failure,...] [--json]\n",
+           spanda chaos <file.sd> [--inject gps-failure,...] [--json]\n\
+           spanda estimate <file.sd> [--target <profile>] [--json]\n",
         deploy_ota::deploy_usage_lines()
     );
 }
@@ -695,6 +697,38 @@ fn print_verify_json(result: Result<CompatibilityReport, SpandaError>) {
         },
     };
     println!("{}", serde_json::to_string(&resp).unwrap());
+}
+
+fn run_compliance_verify(
+    source: &str,
+    file: &str,
+    profile_name: &str,
+    json: bool,
+    registry: Option<&spanda_modules::ModuleRegistry>,
+) -> bool {
+    let program = if let Some(reg) = registry {
+        compile_with_registry(source, reg).map(|result| result.program)
+    } else {
+        compile(source).map(|result| result.program)
+    };
+    match program {
+        Ok(program) => {
+            match spanda_compliance::evaluate_compliance_profile(&program, profile_name, file) {
+                Ok(report) => {
+                    println!("{}", spanda_compliance::format_compliance_report(&report, json));
+                    !report.passed
+                }
+                Err(error) => {
+                    eprintln!("{error}");
+                    true
+                }
+            }
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            true
+        }
+    }
 }
 
 fn run_policy_verify(
@@ -1567,6 +1601,12 @@ fn main() {
         return;
     }
 
+    if command == "estimate" {
+        estimate_cli::estimate_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
     if command == "diff" {
         diff_cli::diff_dispatch(&args[2..]);
         let _ = io::stdout().flush();
@@ -1850,6 +1890,7 @@ fn main() {
     let mut verify_health = false;
     let mut minimum_capabilities = false;
     let mut verify_policy: Option<String> = None;
+    let mut verify_profile: Option<String> = None;
     let mut verification_json = false;
     let mut readiness_json = false;
     let mut trigger_kill_switch: Option<String> = None;
@@ -1909,6 +1950,14 @@ fn main() {
                     process::exit(1);
                 }
                 verify_policy = Some(args[i].clone());
+            }
+            "--profile" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--profile requires a compliance profile name");
+                    process::exit(1);
+                }
+                verify_profile = Some(args[i].clone());
             }
             "--minimum-capabilities" => minimum_capabilities = true,
             "--trigger-kill-switch" => {
@@ -2212,6 +2261,18 @@ fn main() {
                     registry.as_ref(),
                 );
                 if policy_failed {
+                    process::exit(1);
+                }
+            }
+            if let Some(profile_name) = verify_profile {
+                let profile_failed = run_compliance_verify(
+                    &source,
+                    &file,
+                    &profile_name,
+                    json,
+                    registry.as_ref(),
+                );
+                if profile_failed {
                     process::exit(1);
                 }
             }

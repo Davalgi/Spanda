@@ -23,6 +23,7 @@ struct ParsedReadinessCli {
     options: ReadinessOptions,
     agent_json: bool,
     record: bool,
+    compliance_profile: Option<String>,
     history_path: Option<String>,
     system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
 }
@@ -129,6 +130,7 @@ fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
     let mut baseline_path: Option<String> = None;
     let mut history_path: Option<String> = None;
     let mut record = false;
+    let mut compliance_profile: Option<String> = None;
     let mut file: Option<String> = None;
     let mut i = 0usize;
     while i < args.len() {
@@ -154,6 +156,14 @@ fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
             "--simulate" => simulate = true,
             "--strict" => strict = true,
             "--record" => record = true,
+            "--profile" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--profile requires a compliance profile name");
+                    process::exit(1);
+                }
+                compliance_profile = Some(args[i].clone());
+            }
             "--history" => {
                 i += 1;
                 if i >= args.len() {
@@ -234,6 +244,7 @@ fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
         options,
         agent_json,
         record,
+        compliance_profile,
         history_path,
         system_config,
     }
@@ -327,6 +338,23 @@ pub fn cmd_readiness(args: &[String]) {
         }
     }
     println!("{}", format_readiness(&report, parsed.format));
+    if let Some(profile_name) = &parsed.compliance_profile {
+        match spanda_compliance::evaluate_compliance_profile(&program, profile_name, &parsed.file) {
+            Ok(compliance) => {
+                println!(
+                    "{}",
+                    spanda_compliance::format_compliance_report(&compliance, matches!(parsed.format, ReportFormat::Json))
+                );
+                if !compliance.passed {
+                    process::exit(1);
+                }
+            }
+            Err(error) => {
+                eprintln!("{error}");
+                process::exit(1);
+            }
+        }
+    }
     if !report.mission_ready {
         process::exit(1);
     }
@@ -753,7 +781,7 @@ pub fn readiness_dispatch(args: &[String]) {
 
     if args.is_empty() {
         eprintln!(
-            "Usage: spanda readiness <file.sd> [--record] [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]\n\
+            "Usage: spanda readiness <file.sd> [--record] [--profile <name>] [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]\n\
              spanda readiness trends <file.sd> [--forecast 7d] [--history <path>] [--json]"
         );
         process::exit(1);
