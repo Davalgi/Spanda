@@ -1359,6 +1359,7 @@ dependencies = [
  "spanda-ast",
  "spanda-capability",
  "spanda-certify",
+ "spanda-chaos",
  "spanda-codegen",
  "spanda-config",
  "spanda-contract",
@@ -1481,6 +1482,20 @@ dependencies = [
  "spanda-driver",
  "spanda-error",
  "spanda-hardware",
+]
+
+[[package]]
+name = "spanda-chaos"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-assurance",
+ "spanda-ast",
+ "spanda-capability",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
 ]
 
 [[package]]
