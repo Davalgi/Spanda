@@ -20,7 +20,18 @@ Readiness / Assurance / Diagnosis
 Runtime / Simulator
 ```
 
-Runtime, verifier, readiness, assurance, health, and package loading should consume **`ResolvedSystemConfig`**, not raw TOML/JSON files.
+Runtime, verifier, readiness, assurance, health, recovery, and package loading consume **`ResolvedSystemConfig`** via `spanda-config` integration helpers — not raw TOML/JSON files.
+
+### Auto-resolution
+
+Commands that accept a `.sd` file automatically resolve config from the nearest `spanda.toml`:
+
+- `spanda run` / `spanda sim` / `spanda fleet run` — `--config` optional; attaches config to `RunOptions`
+- `spanda verify` — merges config validation into compatibility report
+- `spanda readiness` — uses fleet hardware profile, readiness weights, robot alignment
+- `spanda assure` / `spanda diagnose` / `spanda heal` / `spanda recover` — validate config before evaluation
+
+Use `--config <path/to/spanda.toml>` to point at a non-default manifest.
 
 ## Root manifest
 
