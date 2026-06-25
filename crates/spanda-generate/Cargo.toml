@@ -1,0 +1,22 @@
+[package]
+name = "spanda-generate"
+version.workspace = true
+edition.workspace = true
+description = "Guardrailed template generation and program suggestions for Spanda"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+spanda-ast = { path = "../spanda-ast" }
+spanda-lexer = { path = "../spanda-lexer" }
+spanda-parser = { path = "../spanda-parser" }
+spanda-policy = { path = "../spanda-policy" }
+spanda-readiness = { path = "../spanda-readiness" }
+spanda-runtime-host = { path = "../spanda-runtime-host" }
+spanda-typecheck = { path = "../spanda-typecheck" }
+
+[dev-dependencies]
