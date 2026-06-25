@@ -185,7 +185,7 @@ fn usage() {
         "Spanda Programming Language\n\n\
          Usage:\n\
            spanda check [--json] [--verification-json] [<file.sd> | --project]\n\
-           spanda verify [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
+           spanda verify [--json] [--target <HardwareProfile>] [--policy <name>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
            spanda certify prove [--json] [--strict] [--out <file.json>] <file.sd>\n\
            spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
            spanda run [--json] [--verbose] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--enforce-certify] <file.sd>\n\
@@ -693,6 +693,36 @@ fn print_verify_json(result: Result<CompatibilityReport, SpandaError>) {
         },
     };
     println!("{}", serde_json::to_string(&resp).unwrap());
+}
+
+fn run_policy_verify(
+    source: &str,
+    file: &str,
+    policy_name: &str,
+    json: bool,
+    registry: Option<&spanda_modules::ModuleRegistry>,
+) -> bool {
+    let program = if let Some(reg) = registry {
+        compile_with_registry(source, reg).map(|result| result.program)
+    } else {
+        compile(source).map(|result| result.program)
+    };
+    match program {
+        Ok(program) => match spanda_policy::evaluate_policy(&program, policy_name, file) {
+            Ok(report) => {
+                println!("{}", spanda_policy::format_policy_report(&report, json));
+                !report.passed
+            }
+            Err(error) => {
+                eprintln!("{error}");
+                true
+            }
+        },
+        Err(error) => {
+            eprintln!("{error}");
+            true
+        }
+    }
 }
 
 fn is_package_command(cmd: &str) -> bool {
@@ -1811,6 +1841,7 @@ fn main() {
     let mut verify_capabilities = false;
     let mut verify_health = false;
     let mut minimum_capabilities = false;
+    let mut verify_policy: Option<String> = None;
     let mut verification_json = false;
     let mut readiness_json = false;
     let mut trigger_kill_switch: Option<String> = None;
@@ -1863,6 +1894,14 @@ fn main() {
                 json = true;
             }
             "--health" => verify_health = true,
+            "--policy" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--policy requires a policy name");
+                    process::exit(1);
+                }
+                verify_policy = Some(args[i].clone());
+            }
             "--minimum-capabilities" => minimum_capabilities = true,
             "--trigger-kill-switch" => {
                 i += 1;
@@ -2155,6 +2194,18 @@ fn main() {
                     minimum_capabilities,
                     json || traceability_json,
                 );
+            }
+            if let Some(policy_name) = verify_policy {
+                let policy_failed = run_policy_verify(
+                    &source,
+                    &file,
+                    &policy_name,
+                    json,
+                    registry.as_ref(),
+                );
+                if policy_failed {
+                    process::exit(1);
+                }
             }
         }
         "run" | "sim" => {

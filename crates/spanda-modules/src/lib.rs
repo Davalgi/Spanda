@@ -243,6 +243,7 @@ mod tests {
             resilience_policies: vec![],
             recovery_policies: vec![],
             continuity_policies: vec![],
+            operational_policies: vec![],
             assurance_cases: vec![],
             runtime_fault_triggers: vec![],
             robots: vec![],
