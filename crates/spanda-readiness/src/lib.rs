@@ -24,6 +24,7 @@ pub mod safety_report;
 pub mod spans;
 pub mod target;
 pub mod traceability;
+pub mod trends;
 pub mod twin;
 pub mod types;
 
@@ -56,8 +57,14 @@ pub use safety_coverage::{
 pub use safety_report::{generate_safety_report, generate_safety_report_source, SafetyCaseReport};
 pub use target::{default_deploy_target, readiness_options_from_flags};
 pub use traceability::{readiness_traceability, ReadinessTraceRow};
+pub use trends::{
+    analyze_readiness_trends, default_readiness_history_path, format_readiness_trends,
+    load_readiness_history, parse_forecast_horizon, record_readiness_snapshot,
+    save_readiness_history, ReadinessForecast, ReadinessHistory, ReadinessHistoryEntry,
+    ReadinessTrend, ReadinessTrendReport,
+};
 pub use twin::evaluate_twin_readiness;
 pub use types::{
-    FleetReadinessReport, ReadinessIssue, ReadinessOptions, ReadinessPolicy, ReadinessReport,
+    FleetReadinessReport, ReadinessFactorScore, ReadinessIssue, ReadinessOptions, ReadinessPolicy, ReadinessReport,
     ReadinessScore, ReadinessSeverity, ReadinessStatus, ReportFormat, TwinReadinessStatus,
 };
