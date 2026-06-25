@@ -69,5 +69,6 @@ pub fn readiness_options_from_flags(
         strict,
         include_runtime,
         inject_health_faults,
+        system_config: None,
     }
 }

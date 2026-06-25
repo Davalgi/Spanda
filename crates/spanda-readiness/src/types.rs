@@ -166,6 +166,10 @@ pub struct ReadinessOptions {
     /// When `include_runtime`, inject standard health fault scenarios.
     #[serde(default)]
     pub inject_health_faults: bool,
+
+    /// Resolved project configuration (when available).
+    #[serde(skip)]
+    pub system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
 }
 
 /// Twin readiness comparison status.

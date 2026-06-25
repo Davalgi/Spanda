@@ -1,6 +1,7 @@
 //! Runtime health context for live readiness evaluation.
 
 use spanda_ast::nodes::{Program, RobotDecl, SensorDecl};
+use spanda_config::{health_inject_faults, ResolvedSystemConfig};
 use spanda_hal::HardwareMonitor;
 
 /// Live fault and event signals used during readiness evaluation.
@@ -57,6 +58,15 @@ pub fn build_runtime_context(
     program: &Program,
     inject_health_faults: bool,
 ) -> RuntimeReadinessContext {
+    build_runtime_context_with_config(program, inject_health_faults, None)
+}
+
+/// Build runtime readiness context using per-robot `[health]` policies when configured.
+pub fn build_runtime_context_with_config(
+    program: &Program,
+    inject_health_faults: bool,
+    config: Option<&ResolvedSystemConfig>,
+) -> RuntimeReadinessContext {
     // Description:
     //     Build runtime context.
     //
@@ -77,13 +87,47 @@ pub fn build_runtime_context(
     let mut monitor = HardwareMonitor::default();
     seed_hardware_monitor(program, &mut monitor);
     if inject_health_faults {
-        for fault in DEFAULT_HEALTH_FAULTS {
-            monitor.inject_fault((*fault).to_string());
+        let faults = health_faults_for_runtime(program, config);
+        for fault in faults {
+            monitor.inject_fault(fault);
         }
     }
     RuntimeReadinessContext {
         faults: monitor.runtime_faults(),
         events: monitor.runtime_events(),
+    }
+}
+
+fn health_faults_for_runtime(
+    program: &Program,
+    config: Option<&ResolvedSystemConfig>,
+) -> Vec<String> {
+    let mut faults = Vec::new();
+    if let Some(cfg) = config {
+        let robot_ids: Vec<String> = if !cfg.robot_ids().is_empty() {
+            cfg.robot_ids().into_iter().map(str::to_owned).collect()
+        } else {
+            let Program::Program { robots, .. } = program;
+            robots
+                .iter()
+                .filter_map(|robot| match robot {
+                    RobotDecl::RobotDecl { name, .. } => Some(name.clone()),
+                })
+                .collect()
+        };
+        for id in robot_ids {
+            faults.extend(health_inject_faults(cfg, &id));
+        }
+        faults.sort();
+        faults.dedup();
+    }
+    if faults.is_empty() {
+        DEFAULT_HEALTH_FAULTS
+            .iter()
+            .map(|fault| (*fault).to_string())
+            .collect()
+    } else {
+        faults
     }
 }
 

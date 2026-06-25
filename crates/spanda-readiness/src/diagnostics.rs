@@ -1,7 +1,7 @@
 //! Readiness diagnostics for CLI, LSP, and CI integration.
 
 use crate::engine::evaluate_readiness_with_runtime;
-use crate::runtime::build_runtime_context;
+use crate::runtime::build_runtime_context_with_config;
 use crate::spans::line_column_for_issue;
 use crate::types::{ReadinessOptions, ReadinessSeverity};
 use spanda_ast::nodes::Program;
@@ -30,7 +30,11 @@ pub fn collect_readiness_diagnostics(
     //     let result = spanda_readiness::diagnostics::collect_readiness_diagnostics(progra, options);
 
     let runtime = if options.include_runtime {
-        Some(build_runtime_context(program, options.inject_health_faults))
+        Some(build_runtime_context_with_config(
+            program,
+            options.inject_health_faults,
+            options.system_config.as_deref(),
+        ))
     } else {
         None
     };

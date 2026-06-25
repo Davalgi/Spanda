@@ -1,7 +1,7 @@
 //! Fleet, swarm, group, and crowd readiness evaluation.
 
 use crate::engine::evaluate_readiness_with_runtime;
-use crate::runtime::build_runtime_context;
+use crate::runtime::build_runtime_context_with_config;
 use crate::types::{
     FleetReadinessReport, ReadinessIssue, ReadinessOptions, ReadinessReport, ReadinessSeverity,
     ReadinessStatus,
@@ -49,9 +49,13 @@ pub fn evaluate_fleet_readiness(
         });
     }
 
-    let runtime = options
-        .include_runtime
-        .then(|| build_runtime_context(program, options.inject_health_faults));
+    let runtime = options.include_runtime.then(|| {
+        build_runtime_context_with_config(
+            program,
+            options.inject_health_faults,
+            options.system_config.as_deref(),
+        )
+    });
     let shared_runtime = runtime.as_ref();
 
     for robot in robots {

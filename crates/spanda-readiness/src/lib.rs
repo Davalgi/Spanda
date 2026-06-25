@@ -7,6 +7,7 @@
 pub mod agent;
 pub mod approval;
 pub mod auditor;
+pub mod config;
 pub mod dashboard;
 pub mod diagnostics;
 pub mod engine;
@@ -40,7 +41,10 @@ pub use report::{
     format_readiness, format_root_cause, format_safety_report, format_twin_readiness,
 };
 pub use root_cause::{diagnose_trace, RootCauseReport};
-pub use runtime::{build_runtime_context, seed_hardware_monitor, RuntimeReadinessContext};
+pub use runtime::{
+    build_runtime_context, build_runtime_context_with_config, seed_hardware_monitor,
+    RuntimeReadinessContext,
+};
 pub use safety_coverage::{
     evaluate_safety_coverage, format_safety_coverage, CoverageStatus as SafetyCoverageStatus,
     SafetyCoverageReport, SafetyScenarioReport,

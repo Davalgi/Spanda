@@ -1,6 +1,6 @@
 //! Readiness evaluation engine composing verification subsystems.
 
-use crate::runtime::{build_runtime_context, RuntimeReadinessContext};
+use crate::runtime::{build_runtime_context_with_config, RuntimeReadinessContext};
 use crate::types::{
     ReadinessFactorScore, ReadinessIssue, ReadinessOptions, ReadinessReport, ReadinessScore,
     ReadinessSeverity, ReadinessStatus,
@@ -60,7 +60,16 @@ pub fn evaluate_readiness_with_runtime(
 
     //     let result = spanda_readiness::engine::evaluate_readiness_with_runtime(progra, options, runtime);
 
-    let policy = options.policy.clone().unwrap_or_default();
+    let policy = options
+        .policy
+        .clone()
+        .or_else(|| {
+            options
+                .system_config
+                .as_ref()
+                .and_then(|cfg| crate::config::policy_from_system_config(cfg))
+        })
+        .unwrap_or_default();
     let mut issues = Vec::new();
     let mut factor_scores = Vec::new();
 
@@ -74,12 +83,26 @@ pub fn evaluate_readiness_with_runtime(
         .collect();
 
     let verify_opts = VerifyOptions {
-        target: options.target.clone(),
-        all_targets: options.target.is_none(),
+        target: options.target.clone().or_else(|| {
+            options
+                .system_config
+                .as_ref()
+                .and_then(|cfg| spanda_config::default_verify_target(cfg))
+        }),
+        all_targets: options.target.is_none()
+            && options
+                .system_config
+                .as_ref()
+                .and_then(|cfg| spanda_config::default_verify_target(cfg))
+                .is_none(),
         simulate: options.simulate,
         strict_certify: options.strict,
     };
-    let hw_report = verify_program_compatibility(program, &verify_opts);
+    let hw_report = if let Some(ref cfg) = options.system_config {
+        spanda_config::verify_with_system_config(program, Some(cfg), verify_opts)
+    } else {
+        verify_program_compatibility(program, &verify_opts)
+    };
     let hw_score = score_from_compatible(hw_report.compatible, hw_report.errors().count());
     factor_scores.push(factor_row("Hardware", hw_score, policy.weights.hardware));
     for item in hw_report.errors() {
@@ -110,6 +133,32 @@ pub fn evaluate_readiness_with_runtime(
             message: item.message.clone(),
             suggested_action: None,
         });
+    }
+
+    if let Some(ref cfg) = options.system_config {
+        for (severity, message) in crate::config::config_robot_alignment_issues(cfg, &robot_names) {
+            issues.push(ReadinessIssue {
+                factor: "Configuration".into(),
+                severity,
+                message,
+                suggested_action: Some("Add robot to spanda.devices.toml fleet config".into()),
+            });
+        }
+        if !cfg.validation.passed {
+            for finding in cfg
+                .validation
+                .findings
+                .iter()
+                .filter(|f| matches!(f.severity, spanda_config::ValidationSeverity::Error))
+            {
+                issues.push(ReadinessIssue {
+                    factor: "Configuration".into(),
+                    severity: ReadinessSeverity::High,
+                    message: finding.message.clone(),
+                    suggested_action: Some("Run spanda config validate".into()),
+                });
+            }
+        }
     }
 
     let cap_report = check_minimum_capabilities(program);
@@ -446,9 +495,13 @@ pub fn evaluate_readiness_source(
 
     let tokens = spanda_lexer::tokenize(source)?;
     let program = spanda_parser::parse(tokens)?;
-    let runtime = options
-        .include_runtime
-        .then(|| build_runtime_context(&program, options.inject_health_faults));
+    let runtime = options.include_runtime.then(|| {
+        build_runtime_context_with_config(
+            &program,
+            options.inject_health_faults,
+            options.system_config.as_deref(),
+        )
+    });
     Ok(evaluate_readiness_with_runtime(
         &program,
         options,

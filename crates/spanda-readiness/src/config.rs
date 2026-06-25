@@ -1,0 +1,61 @@
+//! Readiness integration with resolved system configuration.
+//!
+use crate::types::{ReadinessPolicy, ReadinessWeights};
+use spanda_config::ResolvedSystemConfig;
+
+/// Build readiness scoring policy from merged `[readiness]` config.
+pub fn policy_from_system_config(cfg: &ResolvedSystemConfig) -> Option<ReadinessPolicy> {
+    let section = cfg.readiness_config()?;
+    let minimum_score = section
+        .get("minimum_score")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as u32)
+        .unwrap_or(80);
+    let weights_table = section.get("weights").and_then(|v| v.as_table());
+    let weight = |key: &str, default: u32| -> u32 {
+        weights_table
+            .and_then(|t| t.get(key))
+            .and_then(|v| v.as_integer())
+            .map(|v| v as u32)
+            .unwrap_or(default)
+    };
+    let default_weights = ReadinessWeights::default();
+    Some(ReadinessPolicy {
+        minimum_score,
+        weights: ReadinessWeights {
+            hardware: weight("hardware", default_weights.hardware),
+            capabilities: weight("capabilities", default_weights.capabilities),
+            health: weight("health", default_weights.health),
+            connectivity: weight("connectivity", default_weights.connectivity),
+            safety: weight("safety", default_weights.safety),
+            battery: weight("battery", default_weights.battery),
+            storage: weight("storage", default_weights.storage),
+            compute: weight("compute", default_weights.compute),
+            packages: weight("packages", default_weights.packages),
+            providers: weight("providers", default_weights.providers),
+            mission: weight("mission", default_weights.mission),
+            assurance: weight("assurance", default_weights.assurance),
+        },
+    })
+}
+
+/// Add readiness issues when program robots are missing from configured fleet.
+pub fn config_robot_alignment_issues(
+    cfg: &ResolvedSystemConfig,
+    program_robots: &[String],
+) -> Vec<(crate::types::ReadinessSeverity, String)> {
+    let configured = spanda_config::configured_robot_ids(cfg);
+    if configured.is_empty() {
+        return Vec::new();
+    }
+    let mut issues = Vec::new();
+    for robot in program_robots {
+        if !configured.iter().any(|id| id == robot) {
+            issues.push((
+                crate::types::ReadinessSeverity::Medium,
+                format!("program robot '{robot}' has no entry in resolved fleet config"),
+            ));
+        }
+    }
+    issues
+}

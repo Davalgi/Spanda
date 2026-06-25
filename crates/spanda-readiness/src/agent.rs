@@ -1,7 +1,7 @@
 //! Agent and service readiness evaluation from deployed program source.
 
 use crate::engine::evaluate_readiness_with_runtime;
-use crate::runtime::build_runtime_context;
+use crate::runtime::build_runtime_context_with_config;
 use crate::target::readiness_options_from_flags;
 use crate::types::ReadinessReport;
 use spanda_lexer::tokenize;
@@ -45,9 +45,13 @@ pub fn evaluate_agent_readiness(
         false,
         false,
     );
-    let runtime = options
-        .include_runtime
-        .then(|| build_runtime_context(&program, options.inject_health_faults));
+    let runtime = options.include_runtime.then(|| {
+        build_runtime_context_with_config(
+            &program,
+            options.inject_health_faults,
+            options.system_config.as_deref(),
+        )
+    });
     Ok(evaluate_readiness_with_runtime(
         &program,
         &options,

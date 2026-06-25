@@ -71,15 +71,16 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
     } else {
         options.scheduler_clock
     };
-    let provider_registry = if options.official_packages.is_empty() {
+    let package_names: Vec<String> = if let Some(ref cfg) = options.system_config {
+        spanda_config::provider_packages_for_runtime(cfg)
+    } else {
+        options.official_packages.clone()
+    };
+    let provider_registry = if package_names.is_empty() {
         None
     } else {
         Some(bootstrap_providers_for_packages(
-            &options
-                .official_packages
-                .iter()
-                .map(String::as_str)
-                .collect::<Vec<_>>(),
+            &package_names.iter().map(String::as_str).collect::<Vec<_>>(),
         ))
     };
     let ffi_registry = options.ffi_registry.clone().unwrap_or_default();
@@ -106,7 +107,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             kill_switch_signature: options.kill_switch_signature.clone(),
             inject_health_faults: options.inject_health_faults,
             inbound_comm_messages: options.inbound_comm_messages.clone(),
-            official_packages: options.official_packages.clone(),
+            official_packages: package_names,
             provider_registry,
             ffi_registry,
             ..Default::default()

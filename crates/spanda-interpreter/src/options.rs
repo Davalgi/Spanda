@@ -78,6 +78,8 @@ pub struct RunOptions {
     pub inbound_comm_messages: Vec<(String, String)>,
     #[serde(skip)]
     pub ffi_registry: Option<FfiRegistry>,
+    #[serde(skip)]
+    pub system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
 }
 
 fn default_max_loop_iterations() -> usize {
