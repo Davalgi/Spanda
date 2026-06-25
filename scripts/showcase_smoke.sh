@@ -71,4 +71,8 @@ echo "== showcase smoke: chaos =="
 chmod +x scripts/chaos_smoke.sh
 ./scripts/chaos_smoke.sh
 
+echo "== showcase smoke: readiness trends =="
+chmod +x scripts/readiness_trends_smoke.sh
+./scripts/readiness_trends_smoke.sh
+
 echo "Showcase smoke tests passed."

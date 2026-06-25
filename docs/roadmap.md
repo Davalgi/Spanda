@@ -48,7 +48,7 @@ Full analysis: [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
 | 7 | Explainability reports | Operate, Recover | P0.3 / P3.2 | **Experimental** |
 | 8 | Chaos engineering | Simulate, Recover | P2.1 | **Experimental** |
 | 9 | Mission resource estimation | Simulate, Deploy | P2.3 | **Planned** |
-| 10 | Readiness trend analysis | Operate | P2.2 | **Planned** |
+| 10 | Readiness trend analysis | Operate | P2.2 | **Experimental** |
 | 11 | Package trust framework | Verify, Build | P0.4 | **Experimental** |
 | 12 | Architecture decision records | Build | P2.5 | **Planned** |
 | 13 | Mission differencing | Build, Verify | P1.3 | **Experimental** |

@@ -25,7 +25,7 @@ Each area is classified by lifecycle phase, maturity tier, and primary outcome.
 | 7 | Explainability reports | Operate, Recover | Future | Decision transparency | `spanda-explain` |
 | 8 | Chaos engineering | Simulate, Recover | Planned | Resilience validation | `spanda-chaos` — **Experimental** |
 | 9 | Mission resource estimation | Simulate, Deploy | Planned | Pre-flight cost awareness | `spanda-estimate` |
-| 10 | Readiness trend analysis | Operate | Planned | Predictive degradation | extends `spanda-readiness` |
+| 10 | Readiness trend analysis | Operate | Planned | Predictive degradation | extends `spanda-readiness` — **Experimental** |
 | 11 | Package trust framework | Verify, Build | Planned | Ecosystem trust | `spanda-trust` |
 | 12 | Architecture decision records | Build | Planned | Design rationale capture | `spanda-adr` |
 | 13 | Mission differencing | Build, Verify | Planned | Change-impact analysis | `spanda-diff` |
