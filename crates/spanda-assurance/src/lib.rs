@@ -48,7 +48,7 @@ pub use continuity_diagnostics::collect_continuity_diagnostics;
 pub use diagnosis::{
     diagnose_from_trace, diagnose_program, diagnose_program_with_config, DiagnosisReport,
 };
-pub use evidence::{build_assurance_report, AssuranceReport};
+pub use evidence::{build_assurance_report, build_assurance_report_with_config, AssuranceReport};
 pub use knowledge::{capability_ontology, extract_knowledge_base, validate_knowledge_models};
 pub use mission::{
     verify_mission_assurance, verify_mission_assurance_with_config, MissionAssuranceReport,

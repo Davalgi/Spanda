@@ -5,7 +5,7 @@ use spanda_config::{assurance_policy, assurance_score_from_flags, ResolvedSystem
 
 use crate::anomaly::{scan_anomalies, AnomalyReport};
 use crate::diagnosis::{diagnose_program_with_config, DiagnosisReport};
-use crate::evidence::{build_assurance_report, AssuranceReport};
+use crate::evidence::{build_assurance_report_with_config, AssuranceReport};
 use crate::knowledge::validate_knowledge_models;
 use crate::mission::{verify_mission_assurance_with_config, MissionAssuranceReport};
 use crate::mitigation::extract_mitigations;
@@ -57,7 +57,7 @@ pub fn assure_program_with_config(
 
     //     let result = spanda_assurance::analyze::assure_program(progra, source_label);
 
-    let assurance = build_assurance_report(program, source_label);
+    let assurance = build_assurance_report_with_config(program, source_label, config);
     let anomalies = scan_anomalies(program);
     let prognostics = evaluate_prognostics(program);
     let resilience = check_resilience(program);

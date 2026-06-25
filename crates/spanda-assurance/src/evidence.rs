@@ -52,6 +52,15 @@ fn evidence_kind(source: &str) -> EvidenceKind {
 
 /// Build assurance report from program declarations and existing verification.
 pub fn build_assurance_report(program: &Program, source_label: &str) -> AssuranceReport {
+    build_assurance_report_with_config(program, source_label, None)
+}
+
+/// Build assurance report including device identity traceability from config.
+pub fn build_assurance_report_with_config(
+    program: &Program,
+    source_label: &str,
+    config: Option<&spanda_config::ResolvedSystemConfig>,
+) -> AssuranceReport {
     // Description:
     //     Build assurance report.
     //
@@ -132,11 +141,25 @@ pub fn build_assurance_report(program: &Program, source_label: &str) -> Assuranc
             .map(|r| format!("readiness: {}", r.mission_requirement)),
     );
 
-    let traceability = TraceabilityEvidence { rows: trace_rows };
-
-    let passed = verification.compatible
+    let mut passed = verification.compatible
         && health.overall != spanda_capability::HealthStatus::Failed
         && !cases.is_empty();
+
+    if let Some(cfg) = config {
+        for row in cfg.traceability_rows() {
+            trace_rows.push(format!(
+                "device:{} logical={:?} provider={:?} ip={:?} trust={:?}",
+                row.device_id, row.logical_name, row.provider, row.ip_address, row.trust_level
+            ));
+        }
+        for device in cfg.device_registry.network_devices() {
+            if device.security_identity.is_none() && device.certificate_fingerprint.is_none() {
+                passed = false;
+            }
+        }
+    }
+
+    let traceability = TraceabilityEvidence { rows: trace_rows };
 
     AssuranceReport {
         cases,

@@ -127,6 +127,24 @@ pub fn diagnose_program_with_config(
         if policy.require_anomaly_handlers && anomaly_handlers.is_empty() {
             passed = false;
         }
+        for device in cfg.device_registry.network_devices() {
+            if device.endpoint_url.is_none() && device.ip_address.is_none() {
+                diagnoses.push(Diagnosis {
+                    subject: device.id.clone(),
+                    root_causes: vec![RootCause {
+                        description: "network device missing endpoint or IP in configuration"
+                            .into(),
+                        confidence: Confidence(0.9),
+                        contributing: vec!["configuration".into()],
+                    }],
+                    fault_tree: FaultTree {
+                        top_event: device.id.clone(),
+                        gates: vec!["device.endpoint_missing".into()],
+                    },
+                });
+                passed = false;
+            }
+        }
     }
 
     DiagnosisReport {
