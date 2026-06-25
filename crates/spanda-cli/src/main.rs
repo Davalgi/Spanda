@@ -19,6 +19,7 @@ mod diff_cli;
 mod score_cli;
 mod chaos_cli;
 mod estimate_cli;
+mod adr_cli;
 mod fault_cli;
 mod network_cli;
 mod package;
@@ -253,7 +254,8 @@ fn usage() {
            spanda diff <baseline.sd> <candidate.sd> [--json]\n\
            spanda score <file.sd> [--json] [--format markdown] [--config <spanda.toml>]\n\
            spanda chaos <file.sd> [--inject gps-failure,...] [--json]\n\
-           spanda estimate <file.sd> [--target <profile>] [--json]\n",
+           spanda estimate <file.sd> [--target <profile>] [--json]\n\
+           spanda adr <file.sd> [--json] [--out <dir>]\n",
         deploy_ota::deploy_usage_lines()
     );
 }
@@ -1603,6 +1605,12 @@ fn main() {
 
     if command == "estimate" {
         estimate_cli::estimate_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "adr" {
+        adr_cli::adr_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }

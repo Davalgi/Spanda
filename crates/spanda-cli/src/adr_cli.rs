@@ -1,0 +1,77 @@
+//! CLI for architecture decision record generation.
+//!
+use spanda_adr::{format_adr_report, generate_adrs, AdrFormat};
+use spanda_lexer::tokenize;
+use spanda_parser::parse;
+use std::fs;
+use std::path::Path;
+use std::process;
+
+fn parse_program(path: &Path) -> spanda_ast::nodes::Program {
+    let source = fs::read_to_string(path).unwrap_or_else(|e| {
+        eprintln!("Failed to read {}: {e}", path.display());
+        process::exit(1);
+    });
+    let tokens = tokenize(&source).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        process::exit(1);
+    });
+    parse(tokens).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        process::exit(1);
+    })
+}
+
+fn file_arg(args: &[String]) -> String {
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--out" | "--format" => index += 2,
+            "--json" => index += 1,
+            other if !other.starts_with('-') => return other.to_string(),
+            _ => index += 1,
+        }
+    }
+    eprintln!("Usage: spanda adr <file.sd> [--json] [--out <dir>]");
+    process::exit(1);
+}
+
+fn parse_out_dir(args: &[String]) -> Option<String> {
+    for (index, arg) in args.iter().enumerate() {
+        if arg == "--out" {
+            return args.get(index + 1).cloned();
+        }
+    }
+    None
+}
+
+/// `spanda adr <file.sd> [--json] [--out <dir>]`
+pub fn adr_dispatch(args: &[String]) {
+    let file = file_arg(args);
+    let path = Path::new(&file);
+    let program = parse_program(path);
+    let report = generate_adrs(&program, &file);
+    let format = if args.iter().any(|a| a == "--json") {
+        AdrFormat::Json
+    } else {
+        AdrFormat::Markdown
+    };
+    let rendered = format_adr_report(&report, format);
+
+    if let Some(out_dir) = parse_out_dir(args) {
+        let dir = Path::new(&out_dir);
+        fs::create_dir_all(dir).unwrap_or_else(|e| {
+            eprintln!("Failed to create output directory: {e}");
+            process::exit(1);
+        });
+        let output = dir.join("architecture-decisions.md");
+        fs::write(&output, &rendered).unwrap_or_else(|e| {
+            eprintln!("Failed to write {}: {e}", output.display());
+            process::exit(1);
+        });
+        println!("Wrote {}", output.display());
+        return;
+    }
+
+    println!("{rendered}");
+}
