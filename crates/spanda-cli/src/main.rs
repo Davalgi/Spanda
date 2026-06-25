@@ -9,9 +9,11 @@ mod contract_cli;
 mod decision_cli;
 mod demo_cli;
 mod deploy_ota;
+mod device_cli;
 mod device_tree_cli;
 mod explain_cli;
 mod fault_cli;
+mod network_cli;
 mod package;
 mod readiness_cli;
 mod recovery_cli;
@@ -224,9 +226,12 @@ fn usage() {
            spanda config validate [--json] [--config <spanda.toml>]\n\
            spanda config graph [--json] [--config <spanda.toml>]\n\
            spanda config diff <base.toml> <other.toml> [--json]\n\
-           spanda config report [--json] [--config <spanda.toml>]\n\
+           spanda config report [--json] [--network] [--config <spanda.toml>]\n\
+           spanda device discover [--subnet CIDR] [--json] [--config <spanda.toml>]\n\
+           spanda device inspect <id> [--json] [--config <spanda.toml>]\n\
            spanda device-tree inspect <robot-id> [--json] [--config <spanda.toml>]\n\
            spanda device-tree graph [--json] [--config <spanda.toml>]\n\
+           spanda network scan --subnet <CIDR> [--json] [--ports 80,443,554]\n\
            spanda map verify <file.sd> [--config <spanda.toml>] [--json]\n\n\
          Security commands:\n\
            spanda security check [--json] <file.sd>\n\
@@ -1448,6 +1453,23 @@ fn main() {
 
     if command == "device-tree" {
         device_tree_cli::device_tree_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "device" {
+        device_cli::device_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "network" {
+        if args.get(2).map(String::as_str) == Some("scan") {
+            network_cli::cmd_network_scan(&args[3..]);
+        } else {
+            eprintln!("Usage: spanda network scan --subnet <CIDR> [--json] [--ports 80,443,554]");
+            process::exit(1);
+        }
         let _ = io::stdout().flush();
         return;
     }

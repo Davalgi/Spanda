@@ -138,8 +138,10 @@ Package commands (require native CLI: npm run build:rust):
   spanda verify-adapter [--project <dir>] [--import <path>] [--package <name>]
   spanda registry search <query>
 
-  spanda config resolve|validate|graph|diff|report [--json] [--config <spanda.toml>]
+  spanda config resolve|validate|graph|diff|report [--json] [--network] [--config <spanda.toml>]
+  spanda device discover|inspect <id> [--subnet CIDR] [--json] [--config <spanda.toml>]
   spanda device-tree inspect <robot-id>|graph [--json] [--config <spanda.toml>]
+  spanda network scan --subnet <CIDR> [--json] [--ports 80,443,554]
   spanda map verify <file.sd> [--config <spanda.toml>] [--json]
 
 Examples:
@@ -389,7 +391,9 @@ async function main(): Promise<void> {
         handleRegistry(positional, json);
         break;
       case "config":
+      case "device":
       case "device-tree":
+      case "network":
       case "map":
         handleConfigNative(command, positional, flags);
         break;

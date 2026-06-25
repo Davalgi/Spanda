@@ -1,7 +1,10 @@
 //! CLI commands for device tree inspection and mapping verification.
 
 use spanda_config::{generate_report_bundle, ConfigResolver, SpandaManifest};
+use spanda_lexer::tokenize;
+use spanda_parser::parse;
 use std::env;
+use std::fs;
 use std::path::PathBuf;
 use std::process;
 
@@ -106,9 +109,32 @@ fn cmd_graph(args: &[String]) {
 /// `spanda map verify <file.sd> [--config <spanda.toml>]`
 pub fn cmd_map_verify(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
+    let source_file = args
+        .iter()
+        .find(|a| !a.starts_with('-') && a.ends_with(".sd"))
+        .cloned();
     let root = project_root(args);
     let resolved = load_resolved(&root);
-    let issues = resolved.logical_map.verify();
+    let mut issues = resolved.logical_map.verify();
+    if let Some(ref file) = source_file {
+        let source = fs::read_to_string(file).unwrap_or_else(|e| {
+            eprintln!("Failed to read {file}: {e}");
+            process::exit(1);
+        });
+        let tokens = tokenize(&source).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            process::exit(1);
+        });
+        let program = parse(tokens).unwrap_or_else(|e| {
+            eprintln!("{e}");
+            process::exit(1);
+        });
+        issues.extend(
+            resolved
+                .logical_map
+                .verify_against_program(&program, &resolved.device_registry),
+        );
+    }
     if json {
         println!(
             "{}",

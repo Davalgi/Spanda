@@ -1,8 +1,8 @@
 //! CLI commands for configuration resolution, validation, and reporting.
 
 use spanda_config::{
-    diff_configs, format_report_text, generate_report_bundle, load_config_value, ConfigResolver,
-    SpandaManifest,
+    diff_configs, format_report_text_with_options, generate_report_bundle, load_config_value,
+    ConfigResolver, SpandaManifest,
 };
 use std::env;
 use std::path::{Path, PathBuf};
@@ -45,7 +45,7 @@ pub fn config_dispatch(args: &[String]) {
                  spanda config validate [--json] [--config <spanda.toml>]\n  \
                  spanda config graph [--json] [--config <spanda.toml>]\n  \
                  spanda config diff <base.toml> <other.toml> [--json]\n  \
-                 spanda config report [--json] [--config <spanda.toml>]"
+                 spanda config report [--json] [--network] [--config <spanda.toml>]"
             );
             process::exit(1);
         }
@@ -159,12 +159,17 @@ fn cmd_config_diff(args: &[String]) {
 
 fn cmd_config_report(args: &[String]) {
     let json = args.iter().any(|a| a == "--json");
+    let network_only = args.iter().any(|a| a == "--network");
     let root = project_root_from_args(args);
     let resolved = load_resolved(&root, true);
     let bundle = generate_report_bundle(&resolved);
     if json {
-        println!("{}", serde_json::to_string_pretty(&bundle).unwrap());
+        if network_only {
+            println!("{}", serde_json::to_string_pretty(&bundle.network).unwrap());
+        } else {
+            println!("{}", serde_json::to_string_pretty(&bundle).unwrap());
+        }
     } else {
-        println!("{}", format_report_text(&bundle));
+        println!("{}", format_report_text_with_options(&bundle, network_only));
     }
 }

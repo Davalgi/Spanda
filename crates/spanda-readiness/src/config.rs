@@ -59,3 +59,37 @@ pub fn config_robot_alignment_issues(
     }
     issues
 }
+
+/// Readiness issues for networked devices missing identity or endpoint metadata.
+pub fn config_device_identity_issues(
+    cfg: &ResolvedSystemConfig,
+) -> Vec<(crate::types::ReadinessSeverity, String)> {
+    let mut issues = Vec::new();
+    for device in &cfg.device_registry.devices {
+        if !device.is_networked() {
+            continue;
+        }
+        if device.endpoint_url.is_none() && device.ip_address.is_none() {
+            issues.push((
+                crate::types::ReadinessSeverity::High,
+                format!(
+                    "network device '{}' missing endpoint or IP in config",
+                    device.id
+                ),
+            ));
+        }
+        if device.security_identity.is_none() && device.certificate_fingerprint.is_none() {
+            issues.push((
+                crate::types::ReadinessSeverity::Medium,
+                format!("network device '{}' missing security identity", device.id),
+            ));
+        }
+        if device.trust_level_enum() == spanda_config::TrustLevel::Unknown {
+            issues.push((
+                crate::types::ReadinessSeverity::Low,
+                format!("network device '{}' has unknown trust_level", device.id),
+            ));
+        }
+    }
+    issues
+}

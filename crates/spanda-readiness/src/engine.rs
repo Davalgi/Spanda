@@ -144,6 +144,14 @@ pub fn evaluate_readiness_with_runtime(
                 suggested_action: Some("Add robot to spanda.devices.toml fleet config".into()),
             });
         }
+        for (severity, message) in crate::config::config_device_identity_issues(cfg) {
+            issues.push(ReadinessIssue {
+                factor: "Connectivity".into(),
+                severity,
+                message,
+                suggested_action: Some("Update device identity in spanda.toml fragments".into()),
+            });
+        }
         if !cfg.validation.passed {
             for finding in cfg
                 .validation
