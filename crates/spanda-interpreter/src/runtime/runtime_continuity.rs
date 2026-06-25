@@ -3,18 +3,16 @@
 use super::super::super::options::{ContinuityRunOptions, ContinuityRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
+use crate::fleet_http::{relay_continuity_via_mesh, FleetContinuityRequest};
 use serde::{Deserialize, Serialize};
 use spanda_assurance::{
     default_checkpoint_store_path, extract_continuity_policies, issue_to_continuity_trigger,
-    load_checkpoint, load_checkpoint_store, plan_takeover, parse_trigger,
+    load_checkpoint, load_checkpoint_store, parse_trigger, plan_takeover,
     program_has_continuity_for_trigger, record_checkpoint, save_checkpoint_store,
     ContinuityContext, SuccessionScope, TakeoverMode, TakeoverReport,
 };
 use spanda_ast::nodes::Program;
 use spanda_comm::CommBus;
-use crate::fleet_http::{
-    relay_continuity_via_mesh, FleetContinuityRequest,
-};
 use spanda_error::SpandaError;
 use spanda_runtime::robotics::MissionState;
 use spanda_runtime::value::RuntimeValue;
@@ -141,7 +139,9 @@ impl<B: RobotBackend> Interpreter<B> {
             Ok(Some(_)) => Ok(()),
             Ok(None) => Ok(()),
             Err(err) => {
-                self.log(format!("continuity: auto-trigger skipped for '{event}': {err}"));
+                self.log(format!(
+                    "continuity: auto-trigger skipped for '{event}': {err}"
+                ));
                 Ok(())
             }
         }
@@ -356,11 +356,7 @@ impl<B: RobotBackend> Interpreter<B> {
         context: &ContinuityContext,
         options: &ContinuityRunOptions,
     ) -> Result<TakeoverReport, SpandaError> {
-        let report = plan_takeover(
-            program,
-            context,
-            options.successor.as_deref(),
-        );
+        let report = plan_takeover(program, context, options.successor.as_deref());
         self.dispatch_continuity_takeover(&report, options.robot_name.as_deref())?;
 
         let fleet_names: Vec<String> = self.fleets.names().cloned().collect();
@@ -380,8 +376,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 from_robot: options.robot_name.clone(),
                 members,
             };
-            if std::env::var("SPANDA_FLEET_MESH_URL").ok().is_some()
-                || !request.members.is_empty()
+            if std::env::var("SPANDA_FLEET_MESH_URL").ok().is_some() || !request.members.is_empty()
             {
                 self.coordinate_fleet_takeover(&request)?;
             }

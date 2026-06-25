@@ -72,7 +72,8 @@ fn has_recovery_policies(program: &Program) -> bool {
 
 fn has_continuity_policies(program: &Program) -> bool {
     let Program::Program {
-        continuity_policies, ..
+        continuity_policies,
+        ..
     } = program;
     !continuity_policies.is_empty()
 }
@@ -103,12 +104,16 @@ fn has_battery_guard(program: &Program) -> bool {
     // Example:
     // let ok = has_battery_guard(&program);
 
-    let Program::Program { mission_plans, robots, .. } = program;
+    let Program::Program {
+        mission_plans,
+        robots,
+        ..
+    } = program;
     let plan_guard = mission_plans.iter().any(|plan| {
         let spanda_ast::assurance_decl::MissionPlanDecl::MissionPlanDecl { constraints, .. } = plan;
-        constraints.iter().any(|item| {
-            item.constraint.to_ascii_lowercase().contains("battery")
-        })
+        constraints
+            .iter()
+            .any(|item| item.constraint.to_ascii_lowercase().contains("battery"))
     });
     let robot_guard = robots.iter().any(|robot| {
         let RobotDecl::RobotDecl { safety, .. } = robot;
@@ -194,8 +199,9 @@ pub fn evaluate_safety_coverage(program: &Program, source_label: &str) -> Safety
         },
     });
     if !obstacle {
-        recommendations
-            .push("Add safety { stop_if ... } or lidar proximity rule for obstacle_avoidance".into());
+        recommendations.push(
+            "Add safety { stop_if ... } or lidar proximity rule for obstacle_avoidance".into(),
+        );
     }
 
     let gps_partial = has_gps_recovery(program);
@@ -230,9 +236,8 @@ pub fn evaluate_safety_coverage(program: &Program, source_label: &str) -> Safety
         },
     });
     if !gps_partial {
-        recommendations.push(
-            "Add recovery_policy on gps_loss with degraded navigation fallback".into(),
-        );
+        recommendations
+            .push("Add recovery_policy on gps_loss with degraded navigation fallback".into());
     }
 
     let battery = has_battery_guard(program);
@@ -321,9 +326,8 @@ pub fn evaluate_safety_coverage(program: &Program, source_label: &str) -> Safety
         },
     });
     if !continuity {
-        recommendations.push(
-            "Add continuity_policy with auto_takeover for takeover_failure".into(),
-        );
+        recommendations
+            .push("Add continuity_policy with auto_takeover for takeover_failure".into());
     }
 
     let recovery_ok = has_recovery_policies(program);

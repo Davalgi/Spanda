@@ -83,7 +83,10 @@ pub fn explain_program(program: &Program, source_label: &str) -> ExplainReport {
         summary: if contract.passed {
             "Mission contract verification passed".into()
         } else {
-            format!("Mission contract verification failed ({} issue(s))", contract.issues.len())
+            format!(
+                "Mission contract verification failed ({} issue(s))",
+                contract.issues.len()
+            )
         },
         details: contract
             .checks
@@ -117,7 +120,10 @@ pub fn explain_readiness(program: &Program, source_label: &str) -> ExplainReport
 
     let report = evaluate_readiness(program, &ReadinessOptions::default());
     let summary = if report.mission_ready {
-        format!("Mission ready with score {}/{}", report.score.total, report.score.maximum)
+        format!(
+            "Mission ready with score {}/{}",
+            report.score.total, report.score.maximum
+        )
     } else {
         format!(
             "Mission not ready — score {}/{}",

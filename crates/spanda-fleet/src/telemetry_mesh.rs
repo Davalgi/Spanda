@@ -20,10 +20,7 @@ pub struct FleetTelemetryIngestResponse {
 }
 
 /// Handle `POST /v1/fleet/telemetry/ingest` on the mesh coordinator.
-pub fn handle_fleet_telemetry_ingest_post(
-    body: &str,
-    state: &mut FleetMeshState,
-) -> HttpResponse {
+pub fn handle_fleet_telemetry_ingest_post(body: &str, state: &mut FleetMeshState) -> HttpResponse {
     let payload: FleetTelemetryIngestRequest = match serde_json::from_str(body) {
         Ok(value) => value,
         Err(_) => {
@@ -57,10 +54,7 @@ pub fn handle_fleet_telemetry_ingest_post(
 pub fn handle_fleet_telemetry_get(state: &FleetMeshState) -> HttpResponse {
     let shards = shards_from_map(&state.telemetry_shards);
     match merge_fleet_otlp_json(&shards) {
-        Ok(body) => HttpResponse {
-            status: 200,
-            body,
-        },
+        Ok(body) => HttpResponse { status: 200, body },
         Err(error) => HttpResponse {
             status: 500,
             body: format!(r#"{{"ok":false,"error":"{error}"}}"#),

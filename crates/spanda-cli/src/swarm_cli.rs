@@ -1,12 +1,12 @@
 //! Swarm coordinator CLI (`spanda swarm coordinate`).
 
 use spanda_ast::nodes::Program;
+use spanda_deploy_http::relay_continuity_via_mesh;
 use spanda_driver::compile;
 use spanda_fleet::{
     attach_swarm_continuity_handoff, continuity_request_from_handoff, coordinate_swarms,
     coordinate_swarms_mesh, default_swarm_state_path, load_swarm_state, save_swarm_state,
 };
-use spanda_deploy_http::relay_continuity_via_mesh;
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -211,13 +211,7 @@ fn cmd_coordinate(args: &[String]) {
         coordinate_swarms(&program, &file, &mut state)
     };
     if let Some(ref failed) = failed_member {
-        attach_swarm_continuity_handoff(
-            &program,
-            &mut result,
-            failed,
-            progress_percent,
-            None,
-        );
+        attach_swarm_continuity_handoff(&program, &mut result, failed, progress_percent, None);
         if let Some(ref url) = mesh_url {
             for swarm in &mut result.swarms {
                 if let Some(ref mut handoff) = swarm.continuity_handoff {

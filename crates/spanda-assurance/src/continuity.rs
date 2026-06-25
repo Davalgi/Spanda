@@ -4,12 +4,14 @@
 //! mission should resume or restart, and what evidence supports the decision.
 //! Composes with readiness, recovery, capability, hardware, and trust gates.
 
-use crate::recovery::{ValidationGateResult, RecoveryPlanner, RecoveryContext, RecoveryLevel};
+use crate::recovery::{RecoveryContext, RecoveryLevel, RecoveryPlanner, ValidationGateResult};
 use crate::types::MissionExecutionState;
 use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
 use spanda_ast::robotics_decl::FleetDecl;
-use spanda_readiness::{evaluate_readiness, evaluate_fleet_readiness, ReadinessOptions, ReadinessStatus};
+use spanda_readiness::{
+    evaluate_fleet_readiness, evaluate_readiness, ReadinessOptions, ReadinessStatus,
+};
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -259,7 +261,8 @@ pub struct ContinuityPolicySpec {
 /// Extract continuity policies from program declarations.
 pub fn extract_continuity_policies(program: &Program) -> Vec<ContinuityPolicySpec> {
     let Program::Program {
-        continuity_policies, ..
+        continuity_policies,
+        ..
     } = program;
 
     continuity_policies
@@ -290,7 +293,8 @@ pub fn issue_to_continuity_trigger(issue: &str) -> Option<ContinuityTrigger> {
         Some(ContinuityTrigger::FleetMemberOffline)
     } else if lower.contains("battery") {
         Some(ContinuityTrigger::BatteryCritical)
-    } else if lower.contains("disconnect") || lower.contains("offline") || lower.contains("camera") {
+    } else if lower.contains("disconnect") || lower.contains("offline") || lower.contains("camera")
+    {
         Some(ContinuityTrigger::DeviceDisconnected)
     } else if lower.contains("degraded") || lower.contains("gps") {
         Some(ContinuityTrigger::RobotDegraded)
@@ -308,14 +312,12 @@ pub fn issue_to_continuity_trigger(issue: &str) -> Option<ContinuityTrigger> {
 /// Return true when the program declares `continuity_policy` for the trigger.
 pub fn program_has_continuity_for_trigger(program: &Program, trigger: ContinuityTrigger) -> bool {
     let trigger_key = trigger_condition_key(trigger);
-    extract_continuity_policies(program)
-        .iter()
-        .any(|policy| {
-            policy
-                .triggers
-                .iter()
-                .any(|(condition, _)| condition_matches_trigger(condition, trigger_key))
-        })
+    extract_continuity_policies(program).iter().any(|policy| {
+        policy
+            .triggers
+            .iter()
+            .any(|(condition, _)| condition_matches_trigger(condition, trigger_key))
+    })
 }
 
 /// Mission continuity evaluation report.
@@ -385,7 +387,10 @@ pub struct MissionCheckpointManager;
 
 impl MissionCheckpointManager {
     /// Build checkpoints from context and program mission plans.
-    pub fn build_checkpoints(program: &Program, context: &ContinuityContext) -> Vec<MissionCheckpoint> {
+    pub fn build_checkpoints(
+        program: &Program,
+        context: &ContinuityContext,
+    ) -> Vec<MissionCheckpoint> {
         let Program::Program { mission_plans, .. } = program;
         let mut checkpoints = Vec::new();
 
@@ -395,8 +400,11 @@ impl MissionCheckpointManager {
 
         if checkpoints.is_empty() {
             for decl in mission_plans {
-                let spanda_ast::assurance_decl::MissionPlanDecl::MissionPlanDecl { steps, name, .. } =
-                    decl;
+                let spanda_ast::assurance_decl::MissionPlanDecl::MissionPlanDecl {
+                    steps,
+                    name,
+                    ..
+                } = decl;
                 for (i, step) in steps.iter().enumerate() {
                     let progress = ((i + 1) as f64 / steps.len().max(1) as f64) * 100.0;
                     checkpoints.push(MissionCheckpoint {
@@ -520,11 +528,14 @@ impl MissionStateTransferManager {
     ) -> MissionStateTransfer {
         let snapshot = Self::snapshot(program, context);
         let readiness = evaluate_readiness(program, &ReadinessOptions::default());
-        let transferable = readiness.status != ReadinessStatus::NotReady
-            && context.progress_percent > 0.0;
+        let transferable =
+            readiness.status != ReadinessStatus::NotReady && context.progress_percent > 0.0;
 
         let mut notes = vec![
-            format!("Transfer mission '{}' at {:.0}% progress", context.mission, context.progress_percent),
+            format!(
+                "Transfer mission '{}' at {:.0}% progress",
+                context.mission, context.progress_percent
+            ),
             format!("Completed steps: {}", snapshot.completed_steps.len()),
         ];
         if !transferable {
@@ -563,7 +574,11 @@ pub struct SuccessionPlanner;
 
 impl SuccessionPlanner {
     /// Enumerate successor candidates from fleet/swarm members.
-    pub fn candidates(program: &Program, failed: &str, scope: SuccessionScope) -> Vec<SuccessorCandidate> {
+    pub fn candidates(
+        program: &Program,
+        failed: &str,
+        scope: SuccessionScope,
+    ) -> Vec<SuccessorCandidate> {
         let Program::Program { robots, fleets, .. } = program;
         let mut names: Vec<String> = Vec::new();
 
@@ -706,8 +721,12 @@ impl TakeoverCoordinator {
         successor: &str,
         mode: TakeoverMode,
     ) -> TakeoverReport {
-        let transfer =
-            MissionStateTransferManager::plan_transfer(program, context, &context.failed_entity, successor);
+        let transfer = MissionStateTransferManager::plan_transfer(
+            program,
+            context,
+            &context.failed_entity,
+            successor,
+        );
         let safety_gates = Self::validate_takeover(program, successor);
         let all_passed = safety_gates.iter().all(|g| g.passed) && transfer.transferable;
 
@@ -829,7 +848,10 @@ impl MissionRecoveryPlanner {
     pub fn plan(program: &Program, context: &ContinuityContext) -> Vec<String> {
         let recovery_context = RecoveryContext {
             issue: format!("{:?} on {}", context.trigger, context.failed_entity),
-            diagnosis: Some(format!("Mission continuity disruption at {:.0}%", context.progress_percent)),
+            diagnosis: Some(format!(
+                "Mission continuity disruption at {:.0}%",
+                context.progress_percent
+            )),
             classification: None,
             level: RecoveryLevel::Level3AutomaticWithValidation,
         };
@@ -867,7 +889,11 @@ impl ContinuationDecisionEngine {
     }
 
     /// Infer takeover mode from trigger, progress, and declared continuity policies.
-    pub fn infer_mode(program: &Program, context: &ContinuityContext, has_shadow: bool) -> TakeoverMode {
+    pub fn infer_mode(
+        program: &Program,
+        context: &ContinuityContext,
+        has_shadow: bool,
+    ) -> TakeoverMode {
         if let Some(mode) = mode_from_policies(program, context) {
             return mode;
         }
@@ -931,7 +957,10 @@ fn mode_from_actions(actions: &[String]) -> Option<TakeoverMode> {
         if normalized.contains("coldtakeover") || a.contains("cold takeover") {
             return Some(TakeoverMode::ColdTakeover);
         }
-        if normalized.contains("humantakeover") || a.contains("human takeover") || a.contains("operator") {
+        if normalized.contains("humantakeover")
+            || a.contains("human takeover")
+            || a.contains("operator")
+        {
             return Some(TakeoverMode::HumanTakeover);
         }
         if normalized.contains("partialrestart") || a.contains("partial restart") {
@@ -954,7 +983,8 @@ impl MissionContinuityManager {
     /// Evaluate full mission continuity for a program and context.
     pub fn evaluate(program: &Program, context: &ContinuityContext) -> MissionContinuityReport {
         let policy = SuccessorSelectionPolicy::default();
-        let candidates = SuccessionPlanner::candidates(program, &context.failed_entity, context.scope);
+        let candidates =
+            SuccessionPlanner::candidates(program, &context.failed_entity, context.scope);
         let rankings = SuccessionPlanner::rank(&candidates, &policy);
         let successor = SuccessionPlanner::select(&rankings);
 
@@ -963,9 +993,9 @@ impl MissionContinuityManager {
             MissionCheckpointManager::nearest_checkpoint(&checkpoints, context.progress_percent);
 
         let mode = ContinuationDecisionEngine::infer_mode(program, context, false);
-        let takeover = successor.as_ref().map(|s| {
-            TakeoverCoordinator::coordinate(program, context, s, mode)
-        });
+        let takeover = successor
+            .as_ref()
+            .map(|s| TakeoverCoordinator::coordinate(program, context, s, mode));
 
         let safety_passed = takeover
             .as_ref()
@@ -973,7 +1003,8 @@ impl MissionContinuityManager {
             .unwrap_or(false);
 
         let decision = ContinuationDecisionEngine::decide(context, mode, safety_passed);
-        let can_continue = successor.is_some() && safety_passed && decision != ContinuationDecision::Abort;
+        let can_continue =
+            successor.is_some() && safety_passed && decision != ContinuationDecision::Abort;
 
         let state_transfer = successor.as_ref().map(|s| {
             MissionStateTransferManager::plan_transfer(program, context, &context.failed_entity, s)
@@ -1021,7 +1052,10 @@ impl MissionContinuityManager {
 // ---------------------------------------------------------------------------
 
 /// Evaluate mission continuity for a program.
-pub fn evaluate_continuity(program: &Program, context: &ContinuityContext) -> MissionContinuityReport {
+pub fn evaluate_continuity(
+    program: &Program,
+    context: &ContinuityContext,
+) -> MissionContinuityReport {
     MissionContinuityManager::evaluate(program, context)
 }
 
@@ -1033,7 +1067,8 @@ pub fn plan_takeover(
 ) -> TakeoverReport {
     let policy = SuccessorSelectionPolicy::default();
     let selected = successor.map(|s| s.to_string()).or_else(|| {
-        let candidates = SuccessionPlanner::candidates(program, &context.failed_entity, context.scope);
+        let candidates =
+            SuccessionPlanner::candidates(program, &context.failed_entity, context.scope);
         SuccessionPlanner::select(&SuccessionPlanner::rank(&candidates, &policy))
     });
 
@@ -1265,7 +1300,9 @@ robot R { behavior idle() {} }
             progress_percent: 50.0,
             ..Default::default()
         };
-        assert_eq!(ContinuationDecisionEngine::infer_mode(&program, &context, false), TakeoverMode::Resume
+        assert_eq!(
+            ContinuationDecisionEngine::infer_mode(&program, &context, false),
+            TakeoverMode::Resume
         );
     }
 

@@ -82,10 +82,7 @@ fn append_event_totals(out: &mut String, stats: &TelemetryStats) {
     );
 }
 
-fn append_heartbeat_gauges(
-    out: &mut String,
-    index: &crate::record::HeartbeatIndex,
-) {
+fn append_heartbeat_gauges(out: &mut String, index: &crate::record::HeartbeatIndex) {
     write_help_type(
         out,
         "spanda_task_heartbeat_last_timestamp_ms",
@@ -117,14 +114,10 @@ fn append_heartbeat_gauges(
 }
 
 fn append_latest_runtime_metrics(out: &mut String, events: &[TelemetryEvent]) {
-    let Some(metrics) = events
-        .iter()
-        .rev()
-        .find_map(|event| match event {
-            TelemetryEvent::RuntimeMetrics { metrics, .. } => Some(metrics),
-            _ => None,
-        })
-    else {
+    let Some(metrics) = events.iter().rev().find_map(|event| match event {
+        TelemetryEvent::RuntimeMetrics { metrics, .. } => Some(metrics),
+        _ => None,
+    }) else {
         return;
     };
 
@@ -334,10 +327,10 @@ mod tests {
                 metric: "battery".into(),
                 value: serde_json::json!({"kind":"number","value":82.0}),
                 timestamp_ms: 1.0,
-            robot_id: Some("Rover".into()),
-            session_id: None,
-        })
-        .unwrap();
+                robot_id: Some("Rover".into()),
+                session_id: None,
+            })
+            .unwrap();
         store
             .append(TelemetryEvent::RuntimeMetrics {
                 session_id: "run-1".into(),

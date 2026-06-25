@@ -114,7 +114,7 @@ pub fn wasm_run(source: &str, max_loop_iterations: u32) -> JsValue {
                 result: Some(result),
                 diagnostics: None,
             }
-        },
+        }
         Err(e) => RunResponse {
             ok: false,
             result: None,

@@ -53,9 +53,7 @@ pub fn contract_dispatch(args: &[String]) {
     match sub {
         "verify" => cmd_contract_verify(&args[1..]),
         _ => {
-            eprintln!(
-                "Usage:\n  spanda contract verify <file.sd> [--json]"
-            );
+            eprintln!("Usage:\n  spanda contract verify <file.sd> [--json]");
             process::exit(1);
         }
     }

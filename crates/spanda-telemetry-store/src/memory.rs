@@ -31,8 +31,14 @@ impl MemoryTelemetryStore {
     /// Append a parsed telemetry event and update heartbeat indexes when relevant.
     pub fn append(&mut self, event: TelemetryEvent) -> TelemetryStoreResult<()> {
         match &event {
-            TelemetryEvent::Heartbeat { task_name, timestamp_ms, .. } => {
-                self.heartbeat_index.tasks.insert(task_name.clone(), *timestamp_ms);
+            TelemetryEvent::Heartbeat {
+                task_name,
+                timestamp_ms,
+                ..
+            } => {
+                self.heartbeat_index
+                    .tasks
+                    .insert(task_name.clone(), *timestamp_ms);
             }
             TelemetryEvent::DeviceHeartbeat {
                 device_id,

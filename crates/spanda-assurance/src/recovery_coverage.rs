@@ -1,10 +1,10 @@
 //! Recovery path coverage reporting for known failure modes.
 
-use serde::{Deserialize, Serialize};
 use crate::{
     extract_continuity_policies, extract_recovery_policies, RecoveryContext, RecoveryLevel,
     RecoveryPlanner,
 };
+use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
 
 /// Recovery coverage status for a failure mode.

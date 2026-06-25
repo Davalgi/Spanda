@@ -125,7 +125,9 @@ pub fn verify_contract(program: &Program, source_label: &str) -> ContractVerific
                     Some(format!("health_check:{name}"))
                 })
                 .chain(health_policies.iter().filter_map(|hp| {
-                    let spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl { name, .. } = hp;
+                    let spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl {
+                        name, ..
+                    } = hp;
                     Some(format!("health_policy:{name}"))
                 }))
                 .collect(),

@@ -24,19 +24,24 @@ pub mod state;
 pub mod types;
 
 pub use analyze::{assure_program, diagnosis_report, mitigation_report, MissionAssuranceSummary};
+pub use anomaly::{learned_models, scan_anomalies, AnomalyReport};
 pub use continuity::{
-    evaluate_continuity, extract_continuity_policies, issue_to_continuity_trigger,
-    plan_delegation, plan_succession, plan_takeover, parse_scope, parse_trigger,
+    evaluate_continuity, extract_continuity_policies, issue_to_continuity_trigger, parse_scope,
+    parse_trigger, plan_delegation, plan_succession, plan_takeover,
     program_has_continuity_for_trigger, ContinuationDecision, ContinuationDecisionEngine,
     ContinuityContext, ContinuityEvidence, ContinuityPolicySpec, ContinuityTrigger,
     ContinuityTrustLevel, DelegationReport, MissionCheckpoint, MissionCheckpointManager,
-    MissionContinuityManager, MissionContinuityReport, MissionContextTransfer,
+    MissionContextTransfer, MissionContinuityManager, MissionContinuityReport,
     MissionDelegationManager, MissionRecoveryPlanner, MissionStateSnapshot, MissionStateTransfer,
     MissionStateTransferManager, SuccessionPlanner, SuccessionReport, SuccessionScope,
     SuccessorCandidate, SuccessorRanking, SuccessorSelectionPolicy, TakeoverCoordinator,
     TakeoverMode, TakeoverReport,
 };
-pub use anomaly::{learned_models, scan_anomalies, AnomalyReport};
+pub use continuity_checkpoint::{
+    default_checkpoint_store_path, load_checkpoint, load_checkpoint_store, record_checkpoint,
+    save_checkpoint_store, ContinuityCheckpointStore,
+};
+pub use continuity_diagnostics::collect_continuity_diagnostics;
 pub use diagnosis::{diagnose_from_trace, diagnose_program, DiagnosisReport};
 pub use evidence::{build_assurance_report, AssuranceReport};
 pub use knowledge::{capability_ontology, extract_knowledge_base, validate_knowledge_models};
@@ -58,14 +63,9 @@ pub use recovery::{
     RecoveryPlanner, RecoveryPolicySpec, RecoveryReadiness, RecoveryReport, RecoveryResult,
     RecoveryStatus, RecoveryStrategy, RecoveryTraceChain, SafeRecoveryAction,
 };
-pub use continuity_checkpoint::{
-    default_checkpoint_store_path, load_checkpoint, load_checkpoint_store, record_checkpoint,
-    save_checkpoint_store, ContinuityCheckpointStore,
-};
-pub use continuity_diagnostics::collect_continuity_diagnostics;
 pub use recovery_coverage::{
-    evaluate_recovery_coverage, format_recovery_coverage, RecoveryCoverageReport, RecoveryCoverageStatus,
-    RecoveryGap, RecoveryPlanSummary,
+    evaluate_recovery_coverage, format_recovery_coverage, RecoveryCoverageReport,
+    RecoveryCoverageStatus, RecoveryGap, RecoveryPlanSummary,
 };
 pub use recovery_diagnostics::collect_recovery_diagnostics;
 pub use report::{

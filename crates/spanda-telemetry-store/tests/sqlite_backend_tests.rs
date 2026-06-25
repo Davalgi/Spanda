@@ -1,6 +1,4 @@
-use spanda_telemetry_store::{
-    PersistentTelemetryStore, TelemetryEvent, TelemetryQuery,
-};
+use spanda_telemetry_store::{PersistentTelemetryStore, TelemetryEvent, TelemetryQuery};
 use tempfile::tempdir;
 
 #[test]

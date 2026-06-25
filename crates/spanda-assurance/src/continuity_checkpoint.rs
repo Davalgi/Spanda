@@ -29,11 +29,17 @@ pub fn load_checkpoint_store(path: &Path) -> ContinuityCheckpointStore {
 }
 
 /// Persist checkpoint store to disk.
-pub fn save_checkpoint_store(path: &Path, store: &ContinuityCheckpointStore) -> std::io::Result<()> {
+pub fn save_checkpoint_store(
+    path: &Path,
+    store: &ContinuityCheckpointStore,
+) -> std::io::Result<()> {
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)?;
     }
-    std::fs::write(path, serde_json::to_string_pretty(store).unwrap_or_default())
+    std::fs::write(
+        path,
+        serde_json::to_string_pretty(store).unwrap_or_default(),
+    )
 }
 
 /// Record a snapshot for a mission/robot pair.
@@ -43,9 +49,7 @@ pub fn record_checkpoint(
     robot: &str,
     snapshot: MissionStateSnapshot,
 ) {
-    store
-        .entries
-        .insert(store_key(mission, robot), snapshot);
+    store.entries.insert(store_key(mission, robot), snapshot);
 }
 
 /// Load a stored snapshot for a mission/robot pair.

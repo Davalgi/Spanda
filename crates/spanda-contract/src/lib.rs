@@ -7,5 +7,7 @@
 mod report;
 mod verify;
 
-pub use report::{format_contract_report, ContractCheck, ContractVerificationReport, MissionContractReport};
+pub use report::{
+    format_contract_report, ContractCheck, ContractVerificationReport, MissionContractReport,
+};
 pub use verify::verify_contract;

@@ -46,11 +46,7 @@ pub fn env_push_interval_ms() -> u64 {
 
 /// POST OTLP/JSON metrics to a remote collector.
 #[cfg(feature = "push")]
-pub fn push_otlp_json(
-    endpoint: &str,
-    body: &str,
-    token: Option<&str>,
-) -> TelemetryStoreResult<()> {
+pub fn push_otlp_json(endpoint: &str, body: &str, token: Option<&str>) -> TelemetryStoreResult<()> {
     let response = spanda_deploy_http::http_request("POST", endpoint, Some(body), token)
         .map_err(|error| TelemetryStoreError::Serialization(error))?;
     if (200..300).contains(&response.status) {

@@ -35,7 +35,10 @@ pub fn run_telemetry_server(options: &TelemetryServeOptions) -> TelemetryStoreRe
             format!("bind {} failed: {error}", options.bind),
         ))
     })?;
-    eprintln!("Spanda telemetry server listening on http://{}", options.bind);
+    eprintln!(
+        "Spanda telemetry server listening on http://{}",
+        options.bind
+    );
     eprintln!("  GET /metrics         Prometheus text");
     eprintln!("  GET /otlp/v1/metrics OTLP/JSON metrics");
     eprintln!("  GET /healthz         liveness");
@@ -71,7 +74,12 @@ fn handle_connection(stream: &mut TcpStream) -> TelemetryStoreResult<()> {
         .unwrap_or("/");
     let store = global_store().lock().unwrap();
     let response = route_request(path, &store)?;
-    write_http_response(stream, response.status, response.content_type, &response.body)
+    write_http_response(
+        stream,
+        response.status,
+        response.content_type,
+        &response.body,
+    )
 }
 
 struct HttpPayload {
@@ -80,7 +88,10 @@ struct HttpPayload {
     body: String,
 }
 
-fn route_request(path: &str, store: &PersistentTelemetryStore) -> TelemetryStoreResult<HttpPayload> {
+fn route_request(
+    path: &str,
+    store: &PersistentTelemetryStore,
+) -> TelemetryStoreResult<HttpPayload> {
     match path {
         "/metrics" => Ok(HttpPayload {
             status: 200,

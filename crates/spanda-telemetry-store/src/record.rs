@@ -86,7 +86,7 @@ impl TelemetryEvent {
         match self {
             Self::Device { timestamp_ms, .. }
             | Self::Sensor { timestamp_ms, .. }
-            |             Self::Heartbeat { timestamp_ms, .. }
+            | Self::Heartbeat { timestamp_ms, .. }
             | Self::DeviceHeartbeat { timestamp_ms, .. }
             | Self::Health { timestamp_ms, .. }
             | Self::Session { timestamp_ms, .. }

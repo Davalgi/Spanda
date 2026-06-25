@@ -9,6 +9,7 @@ use rusqlite::Connection;
 use serde::Serialize;
 use serde_json::Value as JsonValue;
 use spanda_runtime::serialize::runtime_to_json_string;
+use spanda_runtime::telemetry::RuntimeTelemetry;
 use spanda_runtime::value::RuntimeValue;
 use std::collections::HashMap;
 use std::fs::{self, OpenOptions};
@@ -17,7 +18,6 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
-use spanda_runtime::telemetry::RuntimeTelemetry;
 
 static SESSION_ENABLED: AtomicBool = AtomicBool::new(false);
 static ACTIVE_SESSION_ID: OnceLock<Mutex<Option<String>>> = OnceLock::new();
@@ -134,11 +134,21 @@ fn stamp_active_session_id(event: &mut TelemetryEvent) {
         return;
     };
     match event {
-        TelemetryEvent::Device { session_id: slot, .. }
-        | TelemetryEvent::Sensor { session_id: slot, .. }
-        | TelemetryEvent::Heartbeat { session_id: slot, .. }
-        | TelemetryEvent::DeviceHeartbeat { session_id: slot, .. }
-        | TelemetryEvent::Health { session_id: slot, .. } => {
+        TelemetryEvent::Device {
+            session_id: slot, ..
+        }
+        | TelemetryEvent::Sensor {
+            session_id: slot, ..
+        }
+        | TelemetryEvent::Heartbeat {
+            session_id: slot, ..
+        }
+        | TelemetryEvent::DeviceHeartbeat {
+            session_id: slot, ..
+        }
+        | TelemetryEvent::Health {
+            session_id: slot, ..
+        } => {
             if slot.is_none() {
                 *slot = Some(session_id);
             }
@@ -495,8 +505,10 @@ impl PersistentTelemetryStore {
         }
         let mut body = String::new();
         for event in events {
-            body.push_str(&serde_json::to_string(event)
-                .map_err(|error| TelemetryStoreError::Serialization(error.to_string()))?);
+            body.push_str(
+                &serde_json::to_string(event)
+                    .map_err(|error| TelemetryStoreError::Serialization(error.to_string()))?,
+            );
             body.push('\n');
         }
         fs::write(&self.store_path, body)?;
@@ -685,16 +697,16 @@ impl PersistentTelemetryStore {
                 timestamp_ms,
             } = event
             {
-                let entry = summaries
-                    .entry(session_id.clone())
-                    .or_insert_with(|| TelemetrySessionSummary {
+                let entry = summaries.entry(session_id.clone()).or_insert_with(|| {
+                    TelemetrySessionSummary {
                         session_id: session_id.clone(),
                         source: None,
                         start_ms: *timestamp_ms,
                         end_ms: None,
                         mission_trace_path: None,
                         event_count: 0,
-                    });
+                    }
+                });
                 if phase == "start" {
                     entry.start_ms = *timestamp_ms;
                     entry.source = source.clone();
@@ -912,7 +924,8 @@ fn read_heartbeat_index(path: &Path) -> TelemetryStoreResult<HeartbeatIndex> {
         return Ok(HeartbeatIndex::default());
     }
     let text = fs::read_to_string(path)?;
-    serde_json::from_str(&text).map_err(|error| TelemetryStoreError::Serialization(error.to_string()))
+    serde_json::from_str(&text)
+        .map_err(|error| TelemetryStoreError::Serialization(error.to_string()))
 }
 
 fn write_heartbeat_index(path: &Path, index: &HeartbeatIndex) -> TelemetryStoreResult<()> {
@@ -932,7 +945,10 @@ fn resolve_max_events() -> Option<usize> {
         .filter(|max| *max > 0)
 }
 
-pub(crate) fn session_time_window(events: &[TelemetryEvent], session_id: &str) -> Option<(f64, f64)> {
+pub(crate) fn session_time_window(
+    events: &[TelemetryEvent],
+    session_id: &str,
+) -> Option<(f64, f64)> {
     let mut start_ms = None;
     let mut end_ms = None;
     for event in events {

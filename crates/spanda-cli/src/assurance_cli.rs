@@ -1,11 +1,10 @@
 //! CLI commands for mission assurance and autonomous operations.
 
 use spanda_assurance::{
-    assure_program, check_resilience, diagnose_from_trace, diagnose_program,
-    evaluate_prognostics, evaluate_recovery_coverage, evaluate_state_assurance, format_anomaly,
-    format_assurance, format_diagnosis, format_mission_assurance, format_prognostics,
-    format_recovery_coverage, format_resilience, format_state, scan_anomalies,
-    verify_mission_assurance,
+    assure_program, check_resilience, diagnose_from_trace, diagnose_program, evaluate_prognostics,
+    evaluate_recovery_coverage, evaluate_state_assurance, format_anomaly, format_assurance,
+    format_diagnosis, format_mission_assurance, format_prognostics, format_recovery_coverage,
+    format_resilience, format_state, scan_anomalies, verify_mission_assurance,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;

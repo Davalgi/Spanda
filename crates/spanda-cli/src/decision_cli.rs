@@ -1,6 +1,8 @@
 //! CLI commands for decision audit trails.
 
-use spanda_decision::{audit_decisions_from_trace, format_decision_audit, format_decision_explanations};
+use spanda_decision::{
+    audit_decisions_from_trace, format_decision_audit, format_decision_explanations,
+};
 use std::process;
 
 fn file_arg(args: &[String]) -> String {

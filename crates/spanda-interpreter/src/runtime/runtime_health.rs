@@ -88,11 +88,8 @@ impl<B: RobotBackend> Interpreter<B> {
 
         if self.last_health_overall.as_deref() != Some(label.as_str()) {
             any_change = true;
-            let _ = spanda_telemetry_store::record_health_event(
-                "overall",
-                &label,
-                self.sim_time_ms,
-            );
+            let _ =
+                spanda_telemetry_store::record_health_event("overall", &label, self.sim_time_ms);
             self.last_health_overall = Some(label.clone());
         }
 

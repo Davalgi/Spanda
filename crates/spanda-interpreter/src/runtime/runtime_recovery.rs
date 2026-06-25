@@ -3,6 +3,10 @@
 use super::super::super::options::{RecoveryRunOptions, RecoveryRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
+use crate::fleet_http::{
+    relay_continuity_via_mesh, relay_recovery_via_mesh, FleetContinuityRequest,
+    FleetRecoveryRequest,
+};
 use serde::{Deserialize, Serialize};
 use spanda_assurance::{
     classify_failure, default_knowledge_store_path, load_recovery_knowledge_store,
@@ -12,10 +16,6 @@ use spanda_assurance::{
 };
 use spanda_ast::nodes::{Program, RobotDecl};
 use spanda_comm::CommBus;
-use crate::fleet_http::{
-    relay_continuity_via_mesh, relay_recovery_via_mesh, FleetContinuityRequest,
-    FleetRecoveryRequest,
-};
 use spanda_error::SpandaError;
 use spanda_runtime::robotics::MissionState;
 use spanda_runtime::value::RuntimeValue;
@@ -653,10 +653,11 @@ impl<B: RobotBackend> Interpreter<B> {
                     from_robot: Some(failed),
                     members: members.clone(),
                 };
-                let payload = serde_json::to_string(&request).map_err(|e| SpandaError::Runtime {
-                    message: e.to_string(),
-                    line: 0,
-                })?;
+                let payload =
+                    serde_json::to_string(&request).map_err(|e| SpandaError::Runtime {
+                        message: e.to_string(),
+                        line: 0,
+                    })?;
                 self.comm_bus.publish(
                     "/fleet/continuity",
                     "Command",

@@ -3,11 +3,11 @@
 use spanda_deploy_http::http_request;
 use spanda_driver::compile;
 use spanda_fleet::{
-    default_fleet_agents_path, fleet_entry_for_port, ingest_fleet_telemetry, orchestrate_fleets_mesh,
-    register_fleet_agent, relay_deliveries_via_mesh, relay_peer_delivery, relay_recovery_via_mesh,
-    relay_continuity_via_mesh, save_fleet_agent_registry, spawn_test_fleet_agent,
-    spawn_test_fleet_mesh, FleetAgentRegistry, FleetContinuityRequest, FleetRecoveryRequest,
-    PeerDelivery,
+    default_fleet_agents_path, fleet_entry_for_port, ingest_fleet_telemetry,
+    orchestrate_fleets_mesh, register_fleet_agent, relay_continuity_via_mesh,
+    relay_deliveries_via_mesh, relay_peer_delivery, relay_recovery_via_mesh,
+    save_fleet_agent_registry, spawn_test_fleet_agent, spawn_test_fleet_mesh, FleetAgentRegistry,
+    FleetContinuityRequest, FleetRecoveryRequest, PeerDelivery,
 };
 use spanda_telemetry_store::FleetTelemetryShard;
 use std::thread;
@@ -210,12 +210,8 @@ robot ScannerBeta {
         from_robot: Some("ScannerAlpha".into()),
         members: vec!["ScannerBeta".into()],
     };
-    let resp = relay_continuity_via_mesh(
-        &format!("http://127.0.0.1:{mesh_port}"),
-        &takeover,
-        None,
-    )
-    .expect("mesh takeover");
+    let resp = relay_continuity_via_mesh(&format!("http://127.0.0.1:{mesh_port}"), &takeover, None)
+        .expect("mesh takeover");
     assert!(resp.ok);
     assert_eq!(resp.relayed, 1);
     let status = http_request(
@@ -228,7 +224,9 @@ robot ScannerBeta {
     assert!(status.body.contains("last_continuity_commands"));
     assert!(status.body.contains("continuity_active"));
     assert!(status.body.contains("continuity_successor"));
-    assert!(status.body.contains("\"continuity_engine\":\"interpreter\""));
+    assert!(status
+        .body
+        .contains("\"continuity_engine\":\"interpreter\""));
     assert!(status.body.contains("ScannerBeta"));
 }
 
@@ -422,17 +420,10 @@ robot ScoutC {
         Some("Patrol"),
     )
     .expect("continuity handoff planned");
-    let request = spanda_fleet::continuity_request_from_handoff(
-        &handoff,
-        "Recon",
-        &["ScoutB".into()],
-    );
-    let resp = relay_continuity_via_mesh(
-        &format!("http://127.0.0.1:{mesh_port}"),
-        &request,
-        None,
-    )
-    .expect("mesh swarm continuity");
+    let request =
+        spanda_fleet::continuity_request_from_handoff(&handoff, "Recon", &["ScoutB".into()]);
+    let resp = relay_continuity_via_mesh(&format!("http://127.0.0.1:{mesh_port}"), &request, None)
+        .expect("mesh swarm continuity");
     assert!(resp.ok);
     assert_eq!(resp.relayed, 1);
 }

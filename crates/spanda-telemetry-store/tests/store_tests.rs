@@ -143,10 +143,7 @@ fn device_heartbeat_updates_index_and_history() {
         .filter(|event| matches!(event, TelemetryEvent::DeviceHeartbeat { .. }))
         .collect();
     assert_eq!(device_heartbeats.len(), 2);
-    assert_eq!(
-        store.heartbeat_index().devices.get("temp-1"),
-        Some(&7000.0)
-    );
+    assert_eq!(store.heartbeat_index().devices.get("temp-1"), Some(&7000.0));
 }
 
 #[test]
@@ -290,11 +287,8 @@ fn max_events_env_trims_oldest_entries() {
     let dir = tempdir().unwrap();
     let store_path = dir.path().join("telemetry.jsonl");
     let heartbeat_path = dir.path().join("heartbeats.json");
-    let mut store = PersistentTelemetryStore::open_with_max_events(
-        store_path.clone(),
-        heartbeat_path,
-        Some(2),
-    );
+    let mut store =
+        PersistentTelemetryStore::open_with_max_events(store_path.clone(), heartbeat_path, Some(2));
     for index in 0..3 {
         store
             .append(TelemetryEvent::Health {
@@ -328,18 +322,14 @@ fn append_stamps_active_session_id_on_recorded_events() {
     record_sensor_reading(
         "lidar",
         "Lidar",
-        &spanda_runtime::value::RuntimeValue::String {
-            value: "ok".into(),
-        },
+        &spanda_runtime::value::RuntimeValue::String { value: "ok".into() },
         10.0,
         Some("Rover"),
     )
     .unwrap();
     end_run_session(None, None, 20.0).unwrap();
-    let store = PersistentTelemetryStore::open(
-        resolve_store_path(),
-        dir.path().join("heartbeats.json"),
-    );
+    let store =
+        PersistentTelemetryStore::open(resolve_store_path(), dir.path().join("heartbeats.json"));
     let sensor = store
         .query(&TelemetryQuery {
             kind: Some("sensor".into()),
@@ -397,7 +387,10 @@ fn list_sessions_links_mission_trace_and_event_counts() {
     );
     assert_eq!(sessions[0].event_count, 3);
     assert_eq!(
-        store.mission_trace_for_session("run-42").unwrap().as_deref(),
+        store
+            .mission_trace_for_session("run-42")
+            .unwrap()
+            .as_deref(),
         Some("mission.trace")
     );
 }

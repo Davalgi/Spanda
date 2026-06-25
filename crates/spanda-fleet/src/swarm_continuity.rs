@@ -1,9 +1,7 @@
 //! Swarm member continuity handoff planning and mesh relay.
 
 use serde::{Deserialize, Serialize};
-use spanda_assurance::{
-    plan_takeover, ContinuityContext, ContinuityTrigger, SuccessionScope,
-};
+use spanda_assurance::{plan_takeover, ContinuityContext, ContinuityTrigger, SuccessionScope};
 use spanda_ast::nodes::Program;
 use spanda_deploy_http::FleetContinuityRequest;
 

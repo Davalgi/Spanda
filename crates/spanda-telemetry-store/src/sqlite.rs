@@ -36,7 +36,8 @@ pub fn open_connection(path: &Path) -> TelemetryStoreResult<Connection> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let mut conn = Connection::open(path).map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+    let mut conn =
+        Connection::open(path).map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     init_schema(&conn)?;
     migrate_jsonl_if_needed(&mut conn, path)?;
     Ok(conn)
@@ -59,9 +60,14 @@ fn resolve_jsonl_heartbeat_source(jsonl_path: &Path) -> PathBuf {
 }
 
 /// Import events and heartbeat index from JSONL when the database is empty.
-pub fn migrate_jsonl_if_needed(conn: &mut Connection, sqlite_path: &Path) -> TelemetryStoreResult<bool> {
+pub fn migrate_jsonl_if_needed(
+    conn: &mut Connection,
+    sqlite_path: &Path,
+) -> TelemetryStoreResult<bool> {
     let count: i64 = conn
-        .query_row("SELECT COUNT(*) FROM telemetry_events", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM telemetry_events", [], |row| {
+            row.get(0)
+        })
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     if count > 0 {
         return Ok(false);
@@ -203,14 +209,20 @@ pub fn read_all(conn: &Connection) -> TelemetryStoreResult<Vec<TelemetryEvent>> 
     Ok(events)
 }
 
-pub fn query(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
+pub fn query(
+    conn: &Connection,
+    query: &TelemetryQuery,
+) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
     if query.session_id.is_some() {
         return query_with_session_window(conn, query);
     }
     query_indexed(conn, query)
 }
 
-fn query_indexed(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
+fn query_indexed(
+    conn: &Connection,
+    query: &TelemetryQuery,
+) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
     let mut sql = String::from("SELECT payload FROM telemetry_events WHERE 1=1");
     let mut binds: Vec<String> = Vec::new();
     if let Some(kind) = &query.kind {
@@ -242,7 +254,9 @@ fn query_indexed(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreRes
         .prepare(&sql)
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     let rows = stmt
-        .query_map(rusqlite::params_from_iter(binds.iter()), |row| row.get::<_, String>(0))
+        .query_map(rusqlite::params_from_iter(binds.iter()), |row| {
+            row.get::<_, String>(0)
+        })
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     let mut events = Vec::new();
     for row in rows {
@@ -262,7 +276,10 @@ fn query_indexed(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreRes
     Ok(events)
 }
 
-fn query_with_session_window(conn: &Connection, query: &TelemetryQuery) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
+fn query_with_session_window(
+    conn: &Connection,
+    query: &TelemetryQuery,
+) -> TelemetryStoreResult<Vec<TelemetryEvent>> {
     let all = read_all(conn)?;
     let session_window = query
         .session_id
@@ -322,7 +339,10 @@ pub fn latest_device(
     Ok(None)
 }
 
-pub fn latest_sensor(conn: &Connection, sensor_id: &str) -> TelemetryStoreResult<Option<TelemetryEvent>> {
+pub fn latest_sensor(
+    conn: &Connection,
+    sensor_id: &str,
+) -> TelemetryStoreResult<Option<TelemetryEvent>> {
     let mut stmt = conn
         .prepare(
             "SELECT payload FROM telemetry_events
@@ -342,7 +362,10 @@ pub fn latest_sensor(conn: &Connection, sensor_id: &str) -> TelemetryStoreResult
     Ok(None)
 }
 
-pub fn stats(conn: &Connection, heartbeat_index: &HeartbeatIndex) -> TelemetryStoreResult<TelemetryStats> {
+pub fn stats(
+    conn: &Connection,
+    heartbeat_index: &HeartbeatIndex,
+) -> TelemetryStoreResult<TelemetryStats> {
     let mut stats = TelemetryStats {
         tracked_tasks: heartbeat_index.tasks.len(),
         tracked_devices: heartbeat_index.devices.len(),
@@ -352,10 +375,13 @@ pub fn stats(conn: &Connection, heartbeat_index: &HeartbeatIndex) -> TelemetrySt
         .prepare("SELECT kind, COUNT(*) FROM telemetry_events GROUP BY kind")
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     let rows = stmt
-        .query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, i64>(1)?)))
+        .query_map([], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, i64>(1)?))
+        })
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     for row in rows {
-        let (kind, count) = row.map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+        let (kind, count) =
+            row.map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
         let count = count as usize;
         stats.total_events += count;
         match kind.as_str() {
@@ -398,7 +424,8 @@ pub fn read_heartbeat_index(conn: &Connection) -> TelemetryStoreResult<Heartbeat
         })
         .map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
     for row in rows {
-        let (kind, id, timestamp_ms) = row.map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
+        let (kind, id, timestamp_ms) =
+            row.map_err(|error| TelemetryStoreError::Database(error.to_string()))?;
         match kind.as_str() {
             "task" => index.tasks.insert(id, timestamp_ms),
             "device" => index.devices.insert(id, timestamp_ms),
@@ -436,7 +463,16 @@ fn event_kind(event: &TelemetryEvent) -> &'static str {
     }
 }
 
-fn index_fields(event: &TelemetryEvent) -> (Option<String>, Option<String>, Option<String>, Option<String>, Option<String>, Option<String>) {
+fn index_fields(
+    event: &TelemetryEvent,
+) -> (
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+) {
     match event {
         TelemetryEvent::Device {
             device_id,
@@ -491,10 +527,11 @@ fn index_fields(event: &TelemetryEvent) -> (Option<String>, Option<String>, Opti
             session_id.clone(),
             robot_id.clone(),
         ),
-        TelemetryEvent::Health {
-            session_id, ..
-        } => (None, None, None, None, session_id.clone(), None),
-        TelemetryEvent::Session { session_id, .. } | TelemetryEvent::RuntimeMetrics { session_id, .. } => {
+        TelemetryEvent::Health { session_id, .. } => {
+            (None, None, None, None, session_id.clone(), None)
+        }
+        TelemetryEvent::Session { session_id, .. }
+        | TelemetryEvent::RuntimeMetrics { session_id, .. } => {
             (None, None, None, None, Some(session_id.clone()), None)
         }
     }

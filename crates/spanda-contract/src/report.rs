@@ -69,8 +69,16 @@ pub fn format_contract_report(report: &ContractVerificationReport, json: bool) -
             contract.name,
             contract.kind,
             if contract.safety_aligned { "ok" } else { "gap" },
-            if contract.continuity_aligned { "ok" } else { "gap" },
-            if contract.recovery_aligned { "ok" } else { "gap" },
+            if contract.continuity_aligned {
+                "ok"
+            } else {
+                "gap"
+            },
+            if contract.recovery_aligned {
+                "ok"
+            } else {
+                "gap"
+            },
         ));
         if !contract.objectives.is_empty() {
             out.push_str("Objectives:\n");
@@ -89,7 +97,10 @@ pub fn format_contract_report(report: &ContractVerificationReport, json: bool) -
         out.push_str("\nChecks:\n");
         for check in &report.checks {
             let mark = if check.passed { "ok" } else { "FAIL" };
-            out.push_str(&format!("  [{mark}] {} ({}) — {}\n", check.name, check.category, check.detail));
+            out.push_str(&format!(
+                "  [{mark}] {} ({}) — {}\n",
+                check.name, check.category, check.detail
+            ));
         }
     }
     if !report.issues.is_empty() {

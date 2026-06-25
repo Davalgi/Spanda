@@ -1857,9 +1857,9 @@ impl HasSpan for spanda_ast::assurance_decl::RecoveryPolicyDecl {
 impl HasSpan for spanda_ast::assurance_decl::ContinuityPolicyDecl {
     fn span(&self) -> &Span {
         match self {
-            spanda_ast::assurance_decl::ContinuityPolicyDecl::ContinuityPolicyDecl { span, .. } => {
-                span
-            }
+            spanda_ast::assurance_decl::ContinuityPolicyDecl::ContinuityPolicyDecl {
+                span, ..
+            } => span,
         }
     }
 }

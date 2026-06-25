@@ -2,7 +2,7 @@
 
 use crate::agent::{apply_continuity_takeover, FleetAgentState};
 use spanda_assurance::{
-    plan_takeover, parse_trigger, ContinuityContext, SuccessionScope, TakeoverReport,
+    parse_trigger, plan_takeover, ContinuityContext, SuccessionScope, TakeoverReport,
 };
 use spanda_deploy_http::FleetContinuityRequest;
 use spanda_interpreter::{execute_continuity_on_program, ContinuityRunOptions};
@@ -46,8 +46,7 @@ fn sync_agent_from_interpreter(
         "FAIL".into()
     });
     state.last_continuity_runtime_logs = outcome.logs.clone();
-    state.last_continuity_evidence =
-        serde_json::to_value(&outcome.takeover.evidence).ok();
+    state.last_continuity_evidence = serde_json::to_value(&outcome.takeover.evidence).ok();
 }
 
 /// Run live interpreter takeover dispatch on a deployed agent program.

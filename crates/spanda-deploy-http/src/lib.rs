@@ -1,7 +1,7 @@
 //! Minimal HTTP/1.1 helpers for the Spanda deploy agent protocol.
 //!
-pub mod fleet_recovery;
 pub mod fleet_continuity;
+pub mod fleet_recovery;
 
 use rustls::pki_types::{CertificateDer, PrivateKeyDer, ServerName};
 use rustls::{
@@ -734,7 +734,7 @@ mod agent_bind_tests {
     }
 }
 
-pub use fleet_recovery::{relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse};
 pub use fleet_continuity::{
     relay_continuity_via_mesh, FleetContinuityRequest, FleetContinuityResponse,
 };
+pub use fleet_recovery::{relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse};

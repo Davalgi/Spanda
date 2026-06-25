@@ -155,7 +155,10 @@ robot RoverB { behavior patrol() { } }
         },
     )
     .expect("human takeover without approval");
-    assert_eq!(blocked.takeover.mode, spanda_assurance::TakeoverMode::HumanTakeover);
+    assert_eq!(
+        blocked.takeover.mode,
+        spanda_assurance::TakeoverMode::HumanTakeover
+    );
     assert!(
         blocked
             .logs

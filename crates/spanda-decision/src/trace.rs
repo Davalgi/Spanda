@@ -166,9 +166,7 @@ pub fn audit_decisions_from_trace(trace_path: &str) -> Result<DecisionAuditRepor
             decisions.push(record);
         }
     }
-    let mission = decisions
-        .iter()
-        .find_map(|record| record.mission.clone());
+    let mission = decisions.iter().find_map(|record| record.mission.clone());
     let timeline = DecisionTimeline {
         source: trace.source.clone(),
         decisions: decisions.clone(),

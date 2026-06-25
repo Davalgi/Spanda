@@ -109,9 +109,8 @@ fn recovery_has_handoff_action(program: &Program) -> bool {
         recovery_policies, ..
     } = program;
     recovery_policies.iter().any(|policy| {
-        let spanda_ast::assurance_decl::RecoveryPolicyDecl::RecoveryPolicyDecl {
-            branches, ..
-        } = policy;
+        let spanda_ast::assurance_decl::RecoveryPolicyDecl::RecoveryPolicyDecl { branches, .. } =
+            policy;
         branches.iter().any(|branch| {
             branch.actions.iter().any(|action| {
                 let lower = normalize_action(action);
@@ -137,7 +136,8 @@ fn fleet_member_count(program: &Program) -> usize {
 
 fn continuity_has_resume_or_checkpoint_action(program: &Program) -> bool {
     let Program::Program {
-        continuity_policies, ..
+        continuity_policies,
+        ..
     } = program;
     continuity_policies.iter().any(|policy| {
         let ContinuityPolicyDecl::ContinuityPolicyDecl { branches, .. } = policy;
@@ -263,8 +263,7 @@ pub fn collect_continuity_diagnostics(program: &Program) -> Vec<VerificationDiag
             severity: "warning".into(),
             category: "continuity:mission".into(),
             suggested_fix: Some(
-                "mission_plan PatrolMission {\n    step navigate;\n    step execute;\n}"
-                    .into(),
+                "mission_plan PatrolMission {\n    step navigate;\n    step execute;\n}".into(),
             ),
         });
     }
@@ -282,7 +281,9 @@ pub fn collect_continuity_diagnostics(program: &Program) -> Vec<VerificationDiag
                 column: span.start.column,
                 severity: "warning".into(),
                 category: "continuity:policy".into(),
-                suggested_fix: Some("on robot.failed { resume from checkpoint; reassign mission; }".into()),
+                suggested_fix: Some(
+                    "on robot.failed { resume from checkpoint; reassign mission; }".into(),
+                ),
             });
             continue;
         }
