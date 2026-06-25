@@ -44,3 +44,30 @@ robot Rover {
     std::env::remove_var("SPANDA_ATTESTATION_ENDPOINT");
     server.join().expect("server thread");
 }
+
+#[test]
+fn tpm_mock_backend_merges_secure_boot_coverage() {
+    std::env::remove_var("SPANDA_ATTESTATION_ENDPOINT");
+    std::env::set_var("SPANDA_TPM_BACKEND", "jetson");
+
+    let source = r#"
+import trust.jetson;
+hardware Jetson { sensors [ GPS ]; actuators [ DifferentialDrive ]; }
+robot Rover {
+  uses hardware Jetson;
+  sensor gps: GPS;
+  actuator wheels: DifferentialDrive;
+  behavior patrol() { wheels.drive(0.1 m/s); }
+}
+"#;
+    let program = parse(tokenize(source).expect("tokenize")).expect("parse");
+    let coverage = evaluate_secure_boot_coverage(&program, Some("rover.sd"));
+    assert!(coverage.live_attested);
+    assert!(coverage
+        .contracts
+        .first()
+        .and_then(|entry| entry.live_attestation.as_ref())
+        .is_some_and(|live| live.attested));
+
+    std::env::remove_var("SPANDA_TPM_BACKEND");
+}

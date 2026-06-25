@@ -9,6 +9,7 @@ pub mod integrity;
 pub mod policy;
 pub mod runtime;
 pub mod secure_boot;
+pub mod tpm;
 
 pub use assurance::{
     format_security_assurance_report, generate_security_assurance, SecurityAssuranceFormat,

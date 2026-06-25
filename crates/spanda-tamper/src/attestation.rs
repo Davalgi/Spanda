@@ -1,5 +1,6 @@
-//! Optional live hardware attestation via HTTP endpoint.
+//! Optional live hardware attestation via HTTP endpoint or TPM backend.
 
+use crate::tpm::query_tpm_attestation;
 use serde::{Deserialize, Serialize};
 
 /// Live attestation result from an external verifier or device agent.
@@ -29,10 +30,20 @@ pub fn query_live_attestation(
     //
     // Options:
     // `SPANDA_ATTESTATION_ENDPOINT` — HTTP URL accepting attestation JSON.
+    // `SPANDA_TPM_BACKEND` — optional TPM stub (`mock`, `jetson`, `pi`, `file`, `script`).
     //
     // Example:
     // let live = query_live_attestation("trust.jetson", "spanda-trust-jetson", Some("rover.sd"));
 
+    query_http_attestation(contract, package, program_label)
+        .or_else(|| query_tpm_attestation(contract, package, program_label))
+}
+
+fn query_http_attestation(
+    contract: &str,
+    package: &str,
+    program_label: Option<&str>,
+) -> Option<LiveAttestationResult> {
     let endpoint = std::env::var("SPANDA_ATTESTATION_ENDPOINT")
         .ok()
         .filter(|value| !value.trim().is_empty())?;
@@ -52,7 +63,11 @@ pub fn query_live_attestation(
         return None;
     }
     let payload: AttestationResponse = serde_json::from_str(&response.body).ok()?;
-    Some(LiveAttestationResult {
+    Some(parse_attestation_response(payload))
+}
+
+fn parse_attestation_response(payload: AttestationResponse) -> LiveAttestationResult {
+    LiveAttestationResult {
         attested: payload.attested,
         boot_state: payload.boot_state,
         score: payload.score.unwrap_or(if payload.attested { 100 } else { 0 }),
@@ -63,7 +78,7 @@ pub fn query_live_attestation(
                 "live attestation failed".into()
             }
         }),
-    })
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -91,8 +106,9 @@ mod tests {
     }
 
     #[test]
-    fn query_is_noop_without_endpoint() {
+    fn query_is_noop_without_backend() {
         std::env::remove_var("SPANDA_ATTESTATION_ENDPOINT");
+        std::env::remove_var("SPANDA_TPM_BACKEND");
         let result = query_live_attestation("trust.jetson", "spanda-trust-jetson", Some("rover.sd"));
         assert!(result.is_none());
     }
