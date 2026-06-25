@@ -15,13 +15,13 @@ Spanda is an autonomous systems platform centered on the **Spanda Language** (`.
 Spanda helps answer:
 
 - Can this mission run?
-- Can this robot safely perform this mission?
-- Does the hardware satisfy the required capabilities?
-- Is the system healthy enough to deploy?
 - Can it run safely?
 - Can it recover?
 - Can it continue?
 - Can it be trusted?
+- Can this robot safely perform this mission?
+- Does the hardware satisfy the required capabilities?
+- Is the system healthy enough to deploy?
 - Why should this deployment be trusted?
 - Why did it behave this way?
 - What happened when something failed?
