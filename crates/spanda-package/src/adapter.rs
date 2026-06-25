@@ -327,6 +327,18 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
             category: super::category::PackageCategory::Robotics,
             import_paths: &["assurance.fusion"],
         },
+        FrameworkPackage {
+            name: "spanda-trust-jetson",
+            description: "Jetson secure boot and attestation contract",
+            category: super::category::PackageCategory::Hardware,
+            import_paths: &["trust.jetson"],
+        },
+        FrameworkPackage {
+            name: "spanda-trust-pi",
+            description: "Raspberry Pi secure boot and attestation contract",
+            category: super::category::PackageCategory::Hardware,
+            import_paths: &["trust.pi"],
+        },
     ]
 }
 

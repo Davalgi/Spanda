@@ -6,6 +6,7 @@ BIN="${CARGO_TARGET_DIR:-$ROOT/target}/debug/spanda"
 ROVER="$ROOT/examples/showcase/secure_boot/rover.sd"
 
 cd "$ROOT"
+export SPANDA_REGISTRY_URL="file://${ROOT}/registry"
 cargo build -p spanda -q
 
 echo "== secure boot tamper-check =="
@@ -17,5 +18,9 @@ echo "== secure boot integrity =="
 INTEGRITY="$("$BIN" integrity "$ROVER" 2>&1 || true)"
 echo "$INTEGRITY"
 echo "$INTEGRITY" | grep -q "Secure boot:"
+
+echo "== secure boot package trust =="
+TRUST="$("$BIN" trust spanda-trust-jetson 2>&1 || true)"
+echo "$TRUST" | grep -q "trust score 7"
 
 echo "secure boot smoke ok"

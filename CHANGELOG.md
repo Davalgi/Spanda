@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tamper policy runtime:** `tamper_policy` blocks in `.sd` programs; `spanda-tamper::policy` matching; runtime dispatch via recovery actions; showcase `examples/showcase/tamper_policy/`; `scripts/tamper_policy_smoke.sh`.
 - **Live fleet mesh tamper:** `POST /v1/fleet/tamper/ingest`, `GET /v1/fleet/tamper`; CLI `spanda tamper-check --mesh-url <url>`; runtime ingest via `SPANDA_FLEET_MESH_URL`; `scripts/fleet_mesh_tamper_smoke.sh`.
 - **Spoofing ML backend:** optional `SPANDA_SPOOFING_ML_ENDPOINT` HTTP merge for trace spoof-check.
-- **Secure boot package stubs:** `spanda-trust-jetson`, `spanda-trust-pi` attestation contracts.
+- **Secure boot package stubs:** `spanda-trust-jetson`, `spanda-trust-pi` attestation contracts in hosted registry index.
 - **Compliance template hardening:** accreditation notice on profiles; defense/medical require `tamper_policy`; Critical tamper actions require operator approval.
 - **Trust showcase demos:** `examples/showcase/package_tampering/`, `mission_tampering/`, `runtime_intrusion/` with tamper and integrity workflows.
 - **Integrity verification (verify-time):** `generate_integrity_report` in `spanda-tamper`; CLI `spanda integrity <file.sd> [--baseline <file.sd>] [--agent <Robot@Hardware>] [--json]`; `scripts/integrity_smoke.sh`; docs [integrity-verification.md](docs/integrity-verification.md).
