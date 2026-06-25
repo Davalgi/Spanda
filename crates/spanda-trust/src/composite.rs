@@ -7,6 +7,7 @@ use spanda_readiness::{audit_program, evaluate_safety_coverage};
 use spanda_security::validate::security_audit;
 use spanda_tamper::detect::{generate_tamper_check, TamperStatus};
 use spanda_tamper::integrity::{generate_integrity_report, ArtifactIntegrityStatus, IntegrityReport};
+use spanda_tamper::secure_boot::evaluate_secure_boot_coverage;
 use std::path::Path;
 
 /// Output format for composite trust reports.
@@ -75,7 +76,7 @@ pub fn evaluate_composite_trust(
     let project_root = options.project_root.as_deref();
 
     let package_score = package_trust_score(program, project_root);
-    let device_score = device_integrity_score(program);
+    let device_score = device_integrity_score(program, source_label);
     let firmware_score = artifact_group_score(&integrity, &["deploy", "hardware"]);
     let configuration_score = artifact_group_score(
         &integrity,
@@ -212,7 +213,25 @@ fn import_path_to_package(path: &str) -> Option<String> {
     }
 }
 
-fn device_integrity_score(program: &Program) -> (u32, String) {
+fn device_integrity_score(program: &Program, source_label: &str) -> (u32, String) {
+    let coverage = evaluate_secure_boot_coverage(program, Some(source_label));
+    if !coverage.contracts.is_empty() {
+        let live = if coverage.live_attested {
+            " live_attestation=1"
+        } else {
+            ""
+        };
+        return (
+            coverage.score,
+            format!(
+                "secure_boot contracts={} passed={}{}",
+                coverage.contracts.len(),
+                coverage.passed,
+                live
+            ),
+        );
+    }
+
     let imports = program.imports();
     let secure_boot = imports.iter().any(|import| {
         let ImportDecl::ImportDecl { path, .. } = import;
@@ -498,6 +517,7 @@ robot Rover {
             .iter()
             .find(|category| category.name == "device_integrity")
             .expect("device_integrity");
-        assert_eq!(device.score, 100);
+        assert!(device.score > 0);
+        assert!(device.detail.contains("secure_boot"));
     }
 }

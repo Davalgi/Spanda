@@ -29,7 +29,9 @@ Verify-time `spanda integrity` hashes hardware, missions, safety rules, policies
 
 ## Output
 
-`IntegrityReport` — per-artifact status: **Trusted**, **Modified**, or **Unknown**.
+`IntegrityReport` — per-artifact status: **Trusted**, **Modified**, or **Unknown**. Includes `secure_boot` coverage when `trust.jetson` or `trust.pi` is imported; optional live attestation via `SPANDA_ATTESTATION_ENDPOINT`. Agent comparison adds `attestation` and `boot_state` artifacts when `/v1/status` reports them.
+
+See [hardware-attestation.md](./hardware-attestation.md).
 
 ## Foundation
 
