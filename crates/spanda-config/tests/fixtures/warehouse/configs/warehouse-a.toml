@@ -1,0 +1,6 @@
+[environment]
+name = "warehouse-a"
+zone = "north-wing"
+
+[health]
+default_interval_ms = 3000

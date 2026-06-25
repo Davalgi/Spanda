@@ -49,6 +49,7 @@ members = [
     "crates/spanda-runtime-host",
     "crates/spanda-ffi",
     "crates/spanda-interpreter",
+    "crates/spanda-config",
     "crates/spanda-capability",
     "crates/spanda-readiness",
     "crates/spanda-runtime-faults",

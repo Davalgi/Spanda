@@ -1,0 +1,14 @@
+[project]
+name = "Warehouse Patrol"
+version = "0.1.0"
+language = "0.2"
+
+[config]
+devices = "spanda.devices.toml"
+providers = "spanda.providers.toml"
+health = "spanda.health.toml"
+security = "spanda.security.toml"
+
+[extends]
+base = "configs/base.toml"
+environment = "configs/warehouse-a.toml"

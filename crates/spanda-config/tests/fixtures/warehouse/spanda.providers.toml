@@ -1,0 +1,8 @@
+[providers.spanda-gps]
+package = "spanda-gps"
+
+[providers.spanda-lidar]
+package = "spanda-lidar"
+
+[providers.spanda-canbus]
+package = "spanda-canbus"

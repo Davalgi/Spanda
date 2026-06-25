@@ -1,0 +1,3 @@
+[health.robots.rover-001]
+policy = "standard"
+interval_ms = 2000

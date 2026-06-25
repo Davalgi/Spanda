@@ -1,0 +1,5 @@
+[fleet]
+id = "warehouse-fleet-base"
+
+[health]
+default_interval_ms = 5000

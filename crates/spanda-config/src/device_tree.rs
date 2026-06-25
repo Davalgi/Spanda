@@ -1,0 +1,192 @@
+//! Physical device hierarchy parsed from fleet/devices TOML.
+//!
+use serde::{Deserialize, Serialize};
+
+/// Fleet-level device tree root.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub struct DeviceTree {
+    #[serde(default)]
+    pub fleet: Option<FleetNode>,
+}
+
+/// Fleet node containing robots.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct FleetNode {
+    pub id: String,
+    #[serde(default)]
+    pub robots: Vec<RobotNode>,
+}
+
+/// Robot with optional onboard compute and attached devices.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct RobotNode {
+    pub id: String,
+    #[serde(default)]
+    pub model: Option<String>,
+    #[serde(default)]
+    pub hardware_profile: Option<String>,
+    #[serde(default)]
+    pub compute: Option<ComputeNode>,
+}
+
+/// Onboard compute unit hosting buses, ports, and devices.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ComputeNode {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub compute_type: String,
+    #[serde(default)]
+    pub serial: Option<String>,
+    #[serde(default)]
+    pub devices: Vec<DeviceNode>,
+}
+
+/// Leaf device attached to compute (sensor, actuator, accessory, etc.).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DeviceNode {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub device_type: String,
+    #[serde(default)]
+    pub provider: Option<String>,
+    #[serde(default)]
+    pub port: Option<String>,
+    #[serde(default)]
+    pub bus: Option<String>,
+    #[serde(default)]
+    pub mount: Option<String>,
+    #[serde(default)]
+    pub capabilities: Vec<String>,
+    #[serde(default)]
+    pub firmware: Option<String>,
+    #[serde(default)]
+    pub version: Option<String>,
+    #[serde(default)]
+    pub trusted: Option<bool>,
+    #[serde(default)]
+    pub identity: Option<String>,
+    #[serde(default)]
+    pub safety_critical: Option<bool>,
+}
+
+impl DeviceTree {
+    pub fn from_toml_value(value: &toml::Value) -> Self {
+        // Deserialize a device tree from a merged TOML value.
+        //
+        // Parameters:
+        // - `value` — merged configuration containing `[fleet]` tables
+        //
+        // Returns:
+        // Parsed device tree (empty when `[fleet]` is absent).
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let tree = DeviceTree::from_toml_value(&resolved.raw);
+
+        value
+            .clone()
+            .try_into()
+            .unwrap_or_else(|_| DeviceTree::default())
+    }
+
+    pub fn robot(&self, robot_id: &str) -> Option<&RobotNode> {
+        // Look up a robot by id in the fleet tree.
+        //
+        // Parameters:
+        // - `robot_id` — robot identifier
+        //
+        // Returns:
+        // Robot node reference when found.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let robot = tree.robot("rover-001");
+
+        self.fleet
+            .as_ref()?
+            .robots
+            .iter()
+            .find(|r| r.id == robot_id)
+    }
+
+    pub fn all_devices(&self) -> Vec<(&RobotNode, &ComputeNode, &DeviceNode)> {
+        // Flatten the hierarchy into (robot, compute, device) tuples.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Every device with its parent robot and compute context.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // for (robot, compute, device) in tree.all_devices() { ... }
+
+        let mut out = Vec::new();
+        let Some(ref fleet) = self.fleet else {
+            return out;
+        };
+        for robot in &fleet.robots {
+            if let Some(ref compute) = robot.compute {
+                for device in &compute.devices {
+                    out.push((robot, compute, device));
+                }
+            }
+        }
+        out
+    }
+
+    pub fn hierarchy_lines(&self) -> Vec<String> {
+        // Render an indented hierarchy report for CLI output.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Human-readable tree lines.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // for line in tree.hierarchy_lines() { println!("{line}"); }
+
+        let mut lines = Vec::new();
+        let Some(ref fleet) = self.fleet else {
+            lines.push("(no fleet configured)".into());
+            return lines;
+        };
+        lines.push(format!("fleet: {}", fleet.id));
+        for robot in &fleet.robots {
+            lines.push(format!(
+                "  robot: {} ({})",
+                robot.id,
+                robot.model.as_deref().unwrap_or("?")
+            ));
+            if let Some(ref compute) = robot.compute {
+                lines.push(format!(
+                    "    compute: {} [{}]",
+                    compute.id, compute.compute_type
+                ));
+                for device in &compute.devices {
+                    let attach = device
+                        .port
+                        .as_deref()
+                        .or(device.bus.as_deref())
+                        .unwrap_or("-");
+                    lines.push(format!(
+                        "      device: {} ({}) @ {attach}",
+                        device.id, device.device_type
+                    ));
+                }
+            }
+        }
+        lines
+    }
+}

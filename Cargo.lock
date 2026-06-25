@@ -1360,6 +1360,7 @@ dependencies = [
  "spanda-capability",
  "spanda-certify",
  "spanda-codegen",
+ "spanda-config",
  "spanda-contract",
  "spanda-debug",
  "spanda-decision",
@@ -1504,6 +1505,19 @@ version = "0.4.0"
 dependencies = [
  "spanda-error",
  "spanda-runtime",
+]
+
+[[package]]
+name = "spanda-config"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-hardware",
+ "spanda-package",
+ "tempfile",
+ "thiserror 2.0.18",
+ "toml",
 ]
 
 [[package]]

@@ -1,0 +1,34 @@
+[fleet]
+id = "warehouse-fleet"
+
+[[fleet.robots]]
+id = "rover-001"
+model = "RoverV1"
+hardware_profile = "RoverV1"
+
+[fleet.robots.compute]
+id = "jetson-001"
+type = "JetsonOrin"
+serial = "JTN-001"
+
+[[fleet.robots.compute.devices]]
+id = "gps-001"
+type = "GPS"
+provider = "spanda-gps"
+port = "/dev/ttyUSB0"
+capabilities = ["read_location", "read_heading"]
+
+[[fleet.robots.compute.devices]]
+id = "lidar-front"
+type = "Lidar"
+provider = "spanda-lidar"
+port = "/dev/ttyUSB1"
+mount = "front"
+capabilities = ["scan_360", "obstacle_detection"]
+
+[[fleet.robots.compute.devices]]
+id = "drive-controller"
+type = "DifferentialDrive"
+provider = "spanda-canbus"
+bus = "can0"
+capabilities = ["move", "stop", "emergency_stop"]

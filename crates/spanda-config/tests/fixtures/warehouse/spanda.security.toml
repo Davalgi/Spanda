@@ -1,0 +1,7 @@
+[security.devices.gps-001]
+identity = "gps-warehouse-a-001"
+trusted = true
+
+[security.devices.drive-controller]
+identity = "drive-warehouse-a-001"
+trusted = true
