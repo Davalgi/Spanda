@@ -707,6 +707,7 @@ impl Parser {
         let mut resilience_policies = Vec::new();
         let mut recovery_policies = Vec::new();
         let mut continuity_policies = Vec::new();
+        let mut operational_policies = Vec::new();
         let mut assurance_cases = Vec::new();
         let mut runtime_fault_triggers = Vec::new();
         let mut robots = Vec::new();
@@ -788,6 +789,8 @@ impl Parser {
                 mitigations.push(self.parse_mitigation()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "assurance_case" {
                 assurance_cases.push(self.parse_assurance_case()?);
+            } else if self.check(TokenType::Policy) && self.peek_policy_block() {
+                operational_policies.push(self.parse_operational_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "resilience_policy" {
                 resilience_policies.push(self.parse_resilience_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "recovery_policy" {
@@ -851,6 +854,7 @@ impl Parser {
             resilience_policies,
             recovery_policies,
             continuity_policies,
+            operational_policies,
             assurance_cases,
             runtime_fault_triggers,
             robots,
@@ -2518,6 +2522,144 @@ impl Parser {
             policy,
             span: self.span_from(&start, &end),
         })
+    }
+
+    fn peek_policy_block(&mut self) -> bool {
+        if !self.check(TokenType::Policy) {
+            return false;
+        }
+        let name_index = self.pos + 1;
+        let brace_index = self.pos + 2;
+        matches!(
+            self.tokens.get(name_index).map(|t| t.token_type),
+            Some(TokenType::Ident)
+        ) && self
+            .tokens
+            .get(brace_index)
+            .is_some_and(|t| t.token_type == TokenType::Lbrace)
+    }
+
+    fn parse_operational_policy(
+        &mut self,
+    ) -> Result<spanda_ast::policy_decl::OperationalPolicyDecl, SpandaError> {
+        use spanda_ast::policy_decl::{OperationalPolicyDecl, OperationalPolicyRule};
+
+        let start = self.advance();
+        let name = self.parse_label("Expected policy name")?;
+        self.expect(TokenType::Lbrace, "Expected '{' after policy name")?;
+        let mut rules = Vec::new();
+
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "max_speed" {
+                let rule_start = self.advance();
+                self.expect(TokenType::Assign, "Expected '=' after max_speed")?;
+                let value = self.parse_expr()?;
+                self.expect(TokenType::Semicolon, "Expected ';' after max_speed")?;
+                rules.push(OperationalPolicyRule::MaxSpeed {
+                    limit_mps: self.expr_to_mps(&value)?,
+                    span: self.span_from(&rule_start, self.previous()),
+                });
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "requires_kill_switch" {
+                let rule_start = self.advance();
+                self.expect(TokenType::Semicolon, "Expected ';' after requires_kill_switch")?;
+                rules.push(OperationalPolicyRule::RequiresKillSwitch {
+                    span: self.span_from(&rule_start, self.previous()),
+                });
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "requires_capability" {
+                let rule_start = self.advance();
+                let capabilities = if self.check(TokenType::Lbracket) {
+                    self.parse_hardware_type_list("capabilities")?
+                } else {
+                    let cap = self.parse_label("Expected capability name")?;
+                    self.expect(TokenType::Semicolon, "Expected ';' after requires_capability")?;
+                    vec![cap]
+                };
+                rules.push(OperationalPolicyRule::RequiresCapability {
+                    capabilities,
+                    span: self.span_from(&rule_start, self.previous()),
+                });
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "min_readiness_score" {
+                let rule_start = self.advance();
+                self.expect(TokenType::Assign, "Expected '=' after min_readiness_score")?;
+                let score = self.parse_u32_literal("min_readiness_score")?;
+                self.expect(TokenType::Semicolon, "Expected ';' after min_readiness_score")?;
+                rules.push(OperationalPolicyRule::MinReadinessScore {
+                    score,
+                    span: self.span_from(&rule_start, self.previous()),
+                });
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "operation_hours" {
+                let rule_start = self.advance();
+                self.expect(TokenType::Assign, "Expected '=' after operation_hours")?;
+                let range = self.parse_operation_hours_range()?;
+                self.expect(TokenType::Semicolon, "Expected ';' after operation_hours")?;
+                rules.push(OperationalPolicyRule::OperationHours {
+                    range,
+                    span: self.span_from(&rule_start, self.previous()),
+                });
+            } else {
+                let token = self.peek();
+                return Err(SpandaError::Parse {
+                    message: "Expected policy rule (max_speed, requires_kill_switch, requires_capability, min_readiness_score, operation_hours)".into(),
+                    line: token.line,
+                    column: token.column,
+                });
+            }
+        }
+
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close policy block")?;
+        Ok(OperationalPolicyDecl::OperationalPolicyDecl {
+            name,
+            rules,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_u32_literal(&mut self, context: &str) -> Result<u32, SpandaError> {
+        match self.parse_expr()? {
+            Expr::LiteralExpr {
+                value: LiteralValue::Number(n),
+                ..
+            } if n >= 0.0 => Ok(n as u32),
+            other => {
+                let span = match other {
+                    Expr::LiteralExpr { span, .. }
+                    | Expr::UnitLiteralExpr { span, .. }
+                    | Expr::IdentExpr { span, .. }
+                    | Expr::BinaryExpr { span, .. }
+                    | Expr::UnaryExpr { span, .. }
+                    | Expr::CallExpr { span, .. }
+                    | Expr::MemberExpr { span, .. }
+                    | Expr::MatchExpr { span, .. }
+                    | Expr::StructLiteralExpr { span, .. }
+                    | Expr::ServiceCallExpr { span, .. }
+                    | Expr::ExecuteExpr { span, .. }
+                    | Expr::DiscoverExpr { span, .. }
+                    | Expr::AwaitExpr { span, .. }
+                    | Expr::SpawnExpr { span, .. } => span,
+                };
+                Err(SpandaError::Parse {
+                    message: format!("{context} requires a non-negative integer literal"),
+                    line: span.start.line,
+                    column: span.start.column,
+                })
+            }
+        }
+    }
+
+    fn parse_operation_hours_range(&mut self) -> Result<String, SpandaError> {
+        let token = self.peek();
+        let range = if self.check(TokenType::String) {
+            self.advance().lexeme.clone()
+        } else if self.check(TokenType::Ident) {
+            self.advance().lexeme.clone()
+        } else {
+            return Err(SpandaError::Parse {
+                message: "operation_hours requires a time range literal (e.g. 06:00-22:00)".into(),
+                line: token.line,
+                column: token.column,
+            });
+        };
+        Ok(range)
     }
 
     fn parse_program_safety_zone(

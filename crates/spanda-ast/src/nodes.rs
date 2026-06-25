@@ -554,6 +554,8 @@ pub enum Program {
         #[serde(default)]
         continuity_policies: Vec<crate::assurance_decl::ContinuityPolicyDecl>,
         #[serde(default)]
+        operational_policies: Vec<crate::policy_decl::OperationalPolicyDecl>,
+        #[serde(default)]
         assurance_cases: Vec<crate::assurance_decl::AssuranceCaseDecl>,
         #[serde(default)]
         runtime_fault_triggers: Vec<crate::fault_decl::RuntimeFaultTriggerDecl>,
