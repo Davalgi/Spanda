@@ -1,6 +1,6 @@
 # Security Assurance
 
-**Status:** Planned · **Phase:** Verify, Operate · **Priority:** P1.2, P3.1
+**Status:** Experimental · **Phase:** Verify, Operate · **Priority:** P1.2, P3.1
 
 Rollup security posture combining threat modeling, integrity verification, trust scoring, and tamper detection.
 

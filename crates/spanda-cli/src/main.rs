@@ -17,6 +17,7 @@ mod graph_cli;
 mod threat_model_cli;
 mod diff_cli;
 mod score_cli;
+mod security_assurance_cli;
 mod chaos_cli;
 mod estimate_cli;
 mod generate_cli;
@@ -251,7 +252,8 @@ fn usage() {
            spanda map verify <file.sd> [--config <spanda.toml>] [--json]\n\n\
          Security commands:\n\
            spanda security check [--json] <file.sd>\n\
-           spanda security audit [--json] <file.sd>\n\n\
+           spanda security audit [--json] <file.sd>\n\
+           spanda security assurance <file.sd> [--json] [--format markdown]\n\n\
          Analysis commands:\n\
            spanda graph <file.sd> [--format json|mermaid|dot|text] [--json] [--config <spanda.toml>]\n\
            spanda trust <package> [--version <ver>] [--project <dir>] [--json]\n\
@@ -1218,8 +1220,12 @@ fn security_dispatch(rest: &[String]) {
     //     let result = spanda_cli::main::security_dispatch(res);
 
     let sub = rest.first().map(String::as_str).unwrap_or("");
+    if sub == "assurance" {
+        security_assurance_cli::assurance_dispatch(&rest[1..]);
+        return;
+    }
     if sub != "check" && sub != "audit" {
-        eprintln!("Usage: spanda security check|audit [--json] <file.sd>");
+        eprintln!("Usage: spanda security check|audit|assurance [--json] <file.sd>");
         process::exit(1);
     }
     let mut json = false;
