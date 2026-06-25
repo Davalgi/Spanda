@@ -73,6 +73,10 @@ pub struct RunOptions {
     #[serde(default)]
     pub persist_telemetry: bool,
 
+    /// Enforce a named operational policy during run/sim execution.
+    #[serde(default)]
+    pub enforce_policy: Option<String>,
+
     /// Inbound comm payloads queued before each recovery approval poll (test/sim hook).
     #[serde(default)]
     pub inbound_comm_messages: Vec<(String, String)>,

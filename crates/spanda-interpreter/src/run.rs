@@ -110,6 +110,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             official_packages: package_names,
             provider_registry,
             ffi_registry,
+            enforce_policy: options.enforce_policy.clone(),
             ..Default::default()
         },
     );

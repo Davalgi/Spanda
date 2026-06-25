@@ -303,6 +303,9 @@ pub struct InterpreterOptions {
 
     /// Optional domain host for adapter and connectivity hooks; defaults to core host.
     pub runtime_host: Option<&'static dyn RuntimeHost>,
+
+    /// Enforce a named operational policy during simulation and live runs.
+    pub enforce_policy: Option<String>,
 }
 
 impl Default for InterpreterOptions {
@@ -346,6 +349,7 @@ impl Default for InterpreterOptions {
             provider_registry: None,
             official_packages: Vec::new(),
             runtime_host: None,
+            enforce_policy: None,
         }
     }
 }
@@ -438,6 +442,7 @@ pub struct Interpreter<B: RobotBackend> {
     mission_approval_actions: std::collections::HashSet<String>,
     recovery_knowledge_path: std::path::PathBuf,
     recovery_speed_cap: Option<f64>,
+    runtime_policy: Option<spanda_policy::RuntimePolicyMonitor>,
 }
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -559,6 +564,7 @@ impl<B: RobotBackend> Interpreter<B> {
             mission_approval_actions: std::collections::HashSet::new(),
             recovery_knowledge_path: spanda_assurance::default_knowledge_store_path(),
             recovery_speed_cap: None,
+            runtime_policy: None,
         }
     }
 
@@ -1275,6 +1281,11 @@ impl<B: RobotBackend> Interpreter<B> {
         self.cache_health_program(program);
         self.cache_fault_program(program);
         self.cache_kill_switches(program);
+        if let Some(ref policy_name) = self.options.enforce_policy.clone() {
+            let monitor = spanda_policy::build_runtime_policy_monitor(program, policy_name)
+                .map_err(|message| RuntimeError::new(message, 0).into_spanda())?;
+            self.load_runtime_policy(monitor)?;
+        }
         let Program::Program { swarms, .. } = program;
         self.program_swarms = swarms.clone();
         if !self
@@ -1850,6 +1861,10 @@ impl<B: RobotBackend> Interpreter<B> {
         // Example:
 
         //     let result = spanda_interpreter::orchestrator::check_safety_before_motion(&mut self);
+        if let Some(reason) = self.check_runtime_policy_before_motion(0.0) {
+            self.log(reason);
+            return false;
+        }
         let state = self.backend.get_state();
 
         // Take this path when self.evaluate stop if(&self.env.clone bindings()).
@@ -1989,6 +2004,8 @@ mod runtime_helpers;
 mod runtime_kill_switch;
 #[path = "runtime_navigation.rs"]
 mod runtime_navigation;
+#[path = "runtime_operational_policy.rs"]
+mod runtime_operational_policy;
 #[path = "runtime_program.rs"]
 mod runtime_program;
 #[path = "runtime_recovery.rs"]

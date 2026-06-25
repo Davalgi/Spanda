@@ -82,6 +82,9 @@ impl<B: RobotBackend> Interpreter<B> {
             "drive" => {
                 let linear = get_number(&self.get_named_arg_value(named_args, "linear")?, 0.0);
                 let angular = get_number(&self.get_named_arg_value(named_args, "angular")?, 0.0);
+                if let Some(reason) = self.check_runtime_policy_before_motion(linear.abs()) {
+                    return self.block_motion_for_policy(name, reason, line);
+                }
                 let pose = self.backend.get_state().pose;
                 let pose2d = Pose2d {
                     x: pose.x,
