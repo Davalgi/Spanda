@@ -29,7 +29,9 @@ Commands that accept a `.sd` file automatically resolve config from the nearest 
 - `spanda run` / `spanda sim` / `spanda fleet run` — `--config` optional; attaches config to `RunOptions`
 - `spanda verify` — merges config validation into compatibility report
 - `spanda readiness` — uses fleet hardware profile, readiness weights, robot alignment
-- `spanda assure` / `spanda diagnose` / `spanda heal` / `spanda recover` — validate config before evaluation
+- `spanda replay` — resolves config from trace source for deterministic replay and playback
+- `spanda assure` / `spanda diagnose` / `spanda mission verify` / `spanda recovery-coverage` — apply `[assurance]`, `[mission]`, `[recovery]` thresholds
+- `spanda heal` / `spanda recover` — validate config before evaluation
 
 Use `--config <path/to/spanda.toml>` to point at a non-default manifest.
 
@@ -92,6 +94,7 @@ Strategies: `replace` (default), `append`, `merge_by_id`.
 | `spanda device-tree inspect <robot>` | Inspect one robot's hierarchy |
 | `spanda device-tree graph` | Print device hierarchy |
 | `spanda map verify <file.sd>` | Verify logical-to-physical mapping |
+| `spanda replay <trace> --config spanda.toml` | Replay with project providers and health policies |
 | `spanda readiness <file.sd> --config spanda.toml` | Readiness with config validation |
 
 Add `--json` to any command for machine-readable output. Use `--config <path>` to point at a non-default manifest location.

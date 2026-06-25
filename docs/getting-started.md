@@ -475,6 +475,24 @@ Platform guides: [how-packages-work.md](./how-packages-work.md) · [how-provider
 
 ---
 
+## Project configuration (optional)
+
+Multi-file TOML configuration for fleets, devices, providers, health, readiness, and assurance thresholds. The resolver merges `spanda.toml`, `[extends]` layers, and fragment files into `ResolvedSystemConfig` consumed by verify, run, readiness, and replay.
+
+```bash
+spanda config validate
+spanda config resolve --json
+spanda device-tree graph --json
+spanda verify rover.sd --config spanda.toml
+spanda readiness rover.sd --config spanda.toml
+```
+
+Warehouse example fixture: `crates/spanda-config/tests/fixtures/warehouse/`
+
+Guides: [configuration.md](./configuration.md) · [cascading-config.md](./cascading-config.md) · [device-tree.md](./device-tree.md) · [config-validation.md](./config-validation.md)
+
+---
+
 ## Verification & health (optional)
 
 Health checks, fleet `require` clauses, and kill switch wiring:
