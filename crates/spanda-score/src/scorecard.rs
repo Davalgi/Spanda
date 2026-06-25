@@ -50,6 +50,7 @@ pub struct ScorecardReport {
 /// Evaluate an autonomous systems scorecard by composing existing engines.
 pub fn evaluate_scorecard(
     program: &Program,
+    source: &str,
     source_label: &str,
     options: &ScorecardOptions,
 ) -> ScorecardReport {
@@ -67,7 +68,7 @@ pub fn evaluate_scorecard(
     // `ScorecardOptions::system_config`.
     //
     // Example:
-    // let report = evaluate_scorecard(&program, "rover.sd", &ScorecardOptions::default());
+    // let report = evaluate_scorecard(&program, &source, "rover.sd", &ScorecardOptions::default());
 
     let config = options.system_config.as_deref();
     let readiness_options = ReadinessOptions {
@@ -78,6 +79,12 @@ pub fn evaluate_scorecard(
     let safety_coverage = evaluate_safety_coverage(program, source_label);
     let safety_audit = audit_program(program, source_label);
     let threat = analyze_threat_model(program, source_label);
+    let trust = spanda_trust::evaluate_composite_trust(
+        program,
+        source,
+        source_label,
+        &spanda_trust::CompositeTrustOptions::default(),
+    );
     let hardware = verify_program_compatibility(program, &VerifyOptions::default());
     let missions = verify_mission(program, None);
     let assurance = assure_program_with_config(program, source_label, config);
@@ -90,7 +97,8 @@ pub fn evaluate_scorecard(
         .saturating_sub(safety_audit.critical_count.saturating_mul(20))
         .saturating_sub(safety_audit.high_count.saturating_mul(8))
         .min(100);
-    let security_score = 100u32.saturating_sub(threat.risk_score);
+    let threat_score = 100u32.saturating_sub(threat.risk_score);
+    let security_score = (threat_score + trust.score) / 2;
     let verification_score = verification_score(&hardware, &missions);
     let assurance_score = if assurance.passed {
         100
@@ -117,9 +125,10 @@ pub fn evaluate_scorecard(
             health.overall
         )),
         category("security", security_score, 15, &format!(
-            "threat risk {}/100 assessments={}",
+            "threat risk {}/100 composite trust {}/100 tier={}",
             threat.risk_score,
-            threat.assessments.len()
+            trust.score,
+            trust.tier
         )),
         category("verification", verification_score, 10, &format!(
             "hardware_compatible={} missions={}",

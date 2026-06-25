@@ -8,7 +8,7 @@ use std::fs;
 use std::path::Path;
 use std::process;
 
-fn parse_program(path: &Path) -> spanda_ast::nodes::Program {
+fn parse_program(path: &Path) -> (spanda_ast::nodes::Program, String) {
     let source = fs::read_to_string(path).unwrap_or_else(|e| {
         eprintln!("Failed to read {}: {e}", path.display());
         process::exit(1);
@@ -17,10 +17,11 @@ fn parse_program(path: &Path) -> spanda_ast::nodes::Program {
         eprintln!("{e}");
         process::exit(1);
     });
-    parse(tokens).unwrap_or_else(|e| {
+    let program = parse(tokens).unwrap_or_else(|e| {
         eprintln!("{e}");
         process::exit(1);
-    })
+    });
+    (program, source)
 }
 
 fn parse_format(args: &[String]) -> ScorecardFormat {
@@ -61,7 +62,11 @@ fn file_arg(args: &[String]) -> String {
 pub fn score_dispatch(args: &[String]) {
     let file = file_arg(args);
     let path = Path::new(&file);
-    let program = parse_program(path);
+    let (program, source) = parse_program(path);
+    let label = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("program.sd");
     let system_config = load_system_config(
         path,
         spanda_config::config_flag_from_args(args).as_deref(),
@@ -69,7 +74,8 @@ pub fn score_dispatch(args: &[String]) {
     ensure_config_valid(system_config.as_ref().map(|arc| arc.as_ref()));
     let report = evaluate_scorecard(
         &program,
-        &file,
+        &source,
+        label,
         &ScorecardOptions {
             system_config,
         },

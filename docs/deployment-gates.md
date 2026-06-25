@@ -18,6 +18,7 @@ Prevent unsafe deployment when operational gates fail.
 | Safety | Safety audit has no critical/high findings |
 | Capability | Capability traceability matrix PASS |
 | Package trust | Configured packages meet trust threshold (with `--config`) |
+| Composite trust | Program composite trust score ≥ 60 (`spanda-trust`) |
 | Health | No high-severity health readiness issues |
 
 ## CLI

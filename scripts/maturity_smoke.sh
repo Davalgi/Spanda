@@ -22,7 +22,9 @@ echo "== trust =="
 run_spanda trust spanda-mqtt >/dev/null
 
 echo "== deploy gate =="
-(run_spanda deploy gate "$FILE" 2>&1 || true) | grep -q "Gate check"
+GATE_OUT="$(run_spanda deploy gate "$FILE" 2>&1 || true)"
+echo "$GATE_OUT" | grep -q "Gate check"
+echo "$GATE_OUT" | grep -q "composite_trust"
 
 echo "== demo maturity =="
 export SPANDA_ROOT="${ROOT}"

@@ -866,6 +866,29 @@ fn cmd_gate(args: &[String]) {
         spanda_readiness::DeploymentGatePolicy::default()
     };
     let report = spanda_readiness::evaluate_deployment_gates(&program, &source, &options, &policy);
+    let project_root = std::path::Path::new(&file)
+        .parent()
+        .filter(|parent| parent.as_os_str() != std::ffi::OsStr::new(""))
+        .map(std::path::Path::to_path_buf);
+    let trust_options = spanda_trust::CompositeTrustOptions {
+        project_root,
+    };
+    let trust_report = spanda_trust::evaluate_composite_trust(
+        &program,
+        &source,
+        &file,
+        &trust_options,
+    );
+    let mut report = report;
+    report.gates.push(spanda_readiness::DeploymentGate {
+        name: "composite_trust".into(),
+        passed: trust_report.score >= 60 && trust_report.passed,
+        message: format!(
+            "composite trust {}/100 tier={} status={}",
+            trust_report.score, trust_report.tier, trust_report.integrity_status
+        ),
+    });
+    report.passed = report.gates.iter().all(|gate| gate.passed);
     if json {
         println!("{}", serde_json::to_string_pretty(&report).unwrap());
     } else {
