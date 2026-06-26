@@ -556,8 +556,11 @@ fn config_snapshots_save(
     let label = serde_json::from_str::<serde_json::Value>(body)
         .ok()
         .and_then(|v| v.get("label").and_then(|l| l.as_str()).map(str::to_string));
+    let encrypt = serde_json::from_str::<serde_json::Value>(body)
+        .ok()
+        .and_then(|value| value.get("encrypt").and_then(|flag| flag.as_bool()));
     let dir = default_snapshots_dir();
-    match save_config_snapshot(resolved, &dir, label) {
+    match save_config_snapshot(resolved, &dir, label, encrypt) {
         Ok(meta) => json_ok(&serde_json::json!({
             "version": API_VERSION,
             "ok": true,

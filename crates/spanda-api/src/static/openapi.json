@@ -236,7 +236,13 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": { "label": { "type": "string" } }
+                "properties": {
+                  "label": { "type": "string" },
+                  "encrypt": {
+                    "type": "boolean",
+                    "description": "AES-256-GCM at rest (requires SPANDA_CONFIG_SNAPSHOT_KEY or SPANDA_CONFIG_SNAPSHOT_ENCRYPT=1)"
+                  }
+                }
               }
             }
           }
