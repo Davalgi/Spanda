@@ -74,7 +74,10 @@ members = [
     "crates/spanda-ops",
     "crates/spanda-api",
 ]
-exclude = ["crates/spanda-ros2-rclrs-native"]
+exclude = [
+    "crates/spanda-ros2-rclrs-native",
+    "packages/control-center-desktop/src-tauri",
+]
 resolver = "2"
 
 [workspace.package]

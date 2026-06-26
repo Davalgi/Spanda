@@ -1,0 +1,71 @@
+# Spanda Control Center (desktop)
+
+Tauri v2 desktop shell for the Spanda Control Center. The UI reuses `ControlCenterPanel` from `@spanda/web`; the API backend is expected to run separately via `spanda control-center serve` (or any compatible `spanda-api` deployment).
+
+## Prerequisites
+
+- [Rust](https://rustup.rs/) (stable)
+- [Node.js](https://nodejs.org/) 20+
+- Platform Tauri dependencies: [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/)
+
+## Quick start
+
+1. Start the Control Center API (from repo root):
+
+```bash
+cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
+```
+
+2. Install workspace dependencies (once):
+
+```bash
+npm install
+```
+
+3. Run the desktop app in dev mode:
+
+```bash
+npm run dev --workspace=@spanda/control-center-desktop
+```
+
+Optional: point the UI at a different API URL:
+
+```bash
+VITE_CONTROL_CENTER_URL=http://127.0.0.1:9090 npm run dev --workspace=@spanda/control-center-desktop
+```
+
+## Build
+
+Generate platform icons from the bundled PNG (first time only):
+
+```bash
+npm exec tauri icon --manifest-path packages/control-center-desktop/src-tauri/Cargo.toml packages/control-center-desktop/src-tauri/icons/icon.png
+```
+
+Production bundle:
+
+```bash
+npm run build --workspace=@spanda/control-center-desktop
+```
+
+## Smoke check
+
+```bash
+./scripts/control_center_desktop_smoke.sh
+```
+
+This runs `cargo check` on the Tauri crate (no GUI required).
+
+## Architecture
+
+| Layer | Package / crate |
+|-------|-----------------|
+| React UI | `packages/web` (`ControlCenterPanel`) |
+| Desktop shell | `packages/control-center-desktop` (Vite + Tauri) |
+| API | `spanda-api` via `spanda control-center serve` |
+
+The desktop app does not embed the Rust API server; operators typically run the API locally or against a fleet endpoint.
+
+## Status
+
+**Experimental** — scaffold and dev workflow; production installers are not yet published.

@@ -122,7 +122,7 @@ Enterprise operations pillars compose existing engines — they do **not** repla
 | UI framework | React + TypeScript | Extends existing `packages/web` |
 | State | React Query + context | Server state from APIs; optimistic operator actions |
 | Styling | Existing design tokens from web playground | Consistent with WASM demo |
-| Desktop (future) | Tauri | Wraps same React bundle; native file/system hooks |
+| Desktop | Tauri (`@spanda/control-center-desktop`) | Wraps `ControlCenterPanel`; API via `spanda control-center serve` |
 | Build | Vite | Shared with `@spanda/web` |
 
 ### Module map
@@ -584,10 +584,10 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Digital Thread v1 | capability traceability graph |
 | Predictive analytics | readiness forecasting + anomaly trends |
 | Reporting exports (PDF) | report composer |
-| Tauri desktop packaging | `@spanda/control-center` |
+| Tauri desktop packaging | `@spanda/control-center-desktop` |
 | WebSocket SDK | real-time telemetry stream |
 
-**Exit criteria:** Compliance report export; digital thread query demo — **shipped** (`scripts/enterprise_ops_smoke.sh`). PDF executive export — **shipped** (`format=pdf`). Tauri desktop remains a follow-up.
+**Exit criteria:** Compliance report export; digital thread query demo — **shipped** (`scripts/enterprise_ops_smoke.sh`). PDF executive export — **shipped** (`format=pdf`). Tauri desktop scaffold — **shipped** (`scripts/control_center_desktop_smoke.sh`; dev via `npm run control-center:desktop:dev`).
 
 ---
 
@@ -605,7 +605,7 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | OTA bricking robots | High | Low | Canary + rollback; `--require-certify`; readiness gate before promote |
 | Package trust gaming | Medium | Medium | Transparent scoring; community appeals (existing) |
 | Compliance liability | Medium | Low | Template-only disclaimer (existing); not accredited regulatory approval |
-| Tauri packaging complexity | Low | Medium | Defer to Phase E4; web-first |
+| Tauri packaging complexity | Low | Medium | Scaffold shipped; web-first; installers not published |
 | Duplicate drift logic | Medium | Medium | Single `spanda-config::drift` module; dimensions as plugins |
 | Breaking JSON schemas | High | Low | Version fields on all API responses |
 | Docs ahead of code | Low | High | All new docs marked **Planned** until CI smoke exists |

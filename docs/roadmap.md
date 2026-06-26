@@ -126,7 +126,7 @@ Full analysis: [enterprise-operations-roadmap.md](./enterprise-operations-roadma
 
 **Exit criteria (E4):** Compliance report export and digital thread query demo — **shipped** (`scripts/enterprise_ops_smoke.sh`)
 
-**UI stack:** React + TypeScript (`@spanda/control-center`, extends `packages/web`); Rust backend (`spanda-api`); future Tauri desktop packaging.
+**UI stack:** React + TypeScript (`ControlCenterPanel` in `@spanda/web`, desktop shell `@spanda/control-center-desktop`); Rust backend (`spanda-api`); Tauri desktop scaffold (experimental).
 
 **Lean-core:** Contracts in `spanda-api`, `spanda-config`, `spanda-security`, `spanda-ops`; vendor SDKs and alert channels in optional packages.
 

@@ -148,10 +148,23 @@ Default: log to stderr.
 
 ```bash
 ./scripts/enterprise_ops_smoke.sh
+./scripts/control_center_desktop_smoke.sh
 ```
+
+---
+
+## Desktop (Tauri)
+
+Package: `@spanda/control-center-desktop` (`packages/control-center-desktop`).
+
+1. Start the API: `spanda control-center serve --bind 127.0.0.1:8080`
+2. Dev shell: `npm run control-center:desktop:dev` (Vite on port **5174**)
+3. Optional API URL: `VITE_CONTROL_CENTER_URL=http://host:port`
+
+The desktop shell reuses `ControlCenterPanel` from `@spanda/web`; it does not embed `spanda-api`. See [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md).
 
 ---
 
 ## Status
 
-**Experimental** (Phase E1–E4). Includes WebSocket telemetry streaming, OTLP trace export to Jaeger, compliance export, digital thread query, executive scorecard, and report composer. Tauri desktop remains a follow-up.
+**Experimental** (Phase E1–E4). Includes WebSocket telemetry streaming, OTLP trace export to Jaeger, compliance export, digital thread query, executive scorecard, report composer (including PDF), and Tauri desktop scaffold.
