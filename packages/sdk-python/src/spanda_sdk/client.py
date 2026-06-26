@@ -73,6 +73,15 @@ class ControlCenterClient:
     def drift(self, baseline_id: str) -> Any:
         return self._request("GET", f"/v1/drift?baseline_id={baseline_id}")
 
+    def list_drift_scans(self) -> Any:
+        return self._request("GET", "/v1/drift/scans")
+
+    def run_drift_scan(self, baseline_id: Optional[str] = None) -> Any:
+        body: dict[str, str] = {}
+        if baseline_id:
+            body["baseline_id"] = baseline_id
+        return self._request("POST", "/v1/drift/scan", body)
+
     def ota_plan(
         self,
         strategy: str,

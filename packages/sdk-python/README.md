@@ -18,7 +18,7 @@ python -c "from spanda_sdk import ControlCenterClient; c=ControlCenterClient(); 
 | Health | `health()`, `dashboard()` |
 | Devices | `list_devices()` |
 | Readiness | `readiness_run()` |
-| Drift | `drift(baseline_id)` |
+| Drift | `drift(baseline_id)`, `run_drift_scan()`, `list_drift_scans()` |
 | OTA | `ota_plan()`, `ota_execute()`, `ota_status()` |
 | Trust | `trust_package(name, version=...)` |
 | SRE | `sre_summary()`, `list_incidents()`, `create_incident()`, `ack_incident()`, `resolve_incident()` |
