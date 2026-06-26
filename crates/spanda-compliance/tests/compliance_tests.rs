@@ -74,6 +74,25 @@ fn defense_profile_requires_secure_boot_contract() {
 }
 
 #[test]
+fn defense_showcase_passes_profile() {
+    let registry = repo_path(&["registry"]);
+    std::env::set_var(
+        "SPANDA_REGISTRY_URL",
+        format!("file://{}", registry.display()),
+    );
+    let program = parse_file(repo_path(&[
+        "examples",
+        "showcase",
+        "compliance",
+        "defense_rover.sd",
+    ]));
+    let report =
+        evaluate_compliance_profile(&program, "defense", "compliance/defense_rover.sd").unwrap();
+    assert!(report.passed, "{:?}", report.violations);
+    std::env::remove_var("SPANDA_REGISTRY_URL");
+}
+
+#[test]
 fn secure_boot_showcase_satisfies_secure_boot_requirement() {
     let registry = repo_path(&["registry"]);
     std::env::set_var(

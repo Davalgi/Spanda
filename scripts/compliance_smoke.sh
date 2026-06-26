@@ -4,7 +4,12 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-FILE="${ROOT}/examples/showcase/policy/warehouse.sd"
+WAREHOUSE="${ROOT}/examples/showcase/policy/warehouse.sd"
+DEFENSE="${ROOT}/examples/showcase/compliance/defense_rover.sd"
+SECURE_BOOT="${ROOT}/examples/showcase/secure_boot/rover.sd"
+
+export SPANDA_REGISTRY_URL="file://${ROOT}/registry"
+cargo build -p spanda -q
 
 if [[ -n "${SPANDA_BIN:-}" && -x "${SPANDA_BIN}" ]]; then
   run_spanda() { "$SPANDA_BIN" "$@"; }
@@ -13,12 +18,25 @@ else
 fi
 
 echo "== verify warehouse profile =="
-run_spanda verify "$FILE" --profile warehouse >/dev/null
+run_spanda verify "$WAREHOUSE" --profile warehouse >/dev/null
 
 echo "== verify warehouse profile json =="
-run_spanda verify "$FILE" --profile warehouse --json >/dev/null
+run_spanda verify "$WAREHOUSE" --profile warehouse --json >/dev/null
 
 echo "== readiness warehouse profile =="
-run_spanda readiness "$FILE" --profile warehouse >/dev/null
+run_spanda readiness "$WAREHOUSE" --profile warehouse >/dev/null
+
+echo "== defense showcase profile passes =="
+run_spanda verify "$DEFENSE" --profile defense >/dev/null
+
+echo "== secure boot import typechecks =="
+run_spanda check "$SECURE_BOOT" >/dev/null
+
+echo "== medical profile flags missing secure boot on warehouse =="
+MEDICAL="$(run_spanda verify "$WAREHOUSE" --profile medical 2>&1 || true)"
+echo "$MEDICAL" | grep -q "requires_secure_boot"
+
+cargo test -p spanda-compliance defense_profile_requires_secure_boot_contract -q
+cargo test -p spanda-compliance secure_boot_showcase_satisfies_secure_boot_requirement -q
 
 echo "Compliance smoke OK"
