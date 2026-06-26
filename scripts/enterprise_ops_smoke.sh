@@ -152,6 +152,10 @@ echo "== E4 GET /v1/reports/export?format=markdown =="
 curl -sf -H "Authorization: Bearer ${SPANDA_API_KEY}" \
   "http://${BIND}/v1/reports/export?profile=defense&format=markdown" | grep -q executive
 
+echo "== E4 GET /v1/reports/export?format=pdf =="
+curl -sf -H "Authorization: Bearer ${SPANDA_API_KEY}" \
+  "http://${BIND}/v1/reports/export?profile=defense&format=pdf" | grep -q body_base64
+
 echo "== OTLP GET /v1/observability/otlp/traces =="
 fetch /v1/observability/otlp/traces | grep -q resourceSpans
 

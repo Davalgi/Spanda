@@ -10,6 +10,7 @@ use spanda_readiness::{
     analyze_readiness_trends, default_readiness_history_path, load_readiness_history,
 };
 use spanda_score::{evaluate_scorecard, ScorecardOptions};
+use spanda_ops::render_text_pdf;
 use spanda_security::{ApiKeyStore, RbacAction, RbacContext};
 use std::sync::Arc;
 
@@ -148,6 +149,21 @@ pub fn reports_export(
         digital_thread.matched_node_count,
         digital_thread.matched_edge_count,
     );
+    if format == "pdf" {
+        let pdf = render_text_pdf(
+            &format!("Spanda executive report — {label}"),
+            &markdown,
+        );
+        use base64::{engine::general_purpose::STANDARD, Engine as _};
+        return json_ok(&serde_json::json!({
+            "version": "v1",
+            "program": label,
+            "profile": profile,
+            "format": "pdf",
+            "mime": "application/pdf",
+            "body_base64": STANDARD.encode(pdf),
+        }));
+    }
     if format == "json" {
         return json_ok(&serde_json::json!({
             "version": "v1",

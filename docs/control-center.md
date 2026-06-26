@@ -57,7 +57,7 @@ Open `http://127.0.0.1:8080/` for the Control Center UI, or use the **Control Ce
 | `/v1/digital-thread/query` | GET | — | Trace chain (`?capability=`, `?device_id=`) |
 | `/v1/executive/scorecard` | GET | — | Mission scorecard rollup |
 | `/v1/analytics/readiness` | GET | — | Readiness trends and forecast |
-| `/v1/reports/export` | GET | Bearer | Combined compliance + scorecard report |
+| `/v1/reports/export` | GET | Bearer | Combined report (`format=markdown`, `json`, or `pdf`) |
 
 Authenticate mutations with `Authorization: Bearer <SPANDA_API_KEY>`.
 

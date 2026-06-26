@@ -23,6 +23,7 @@ spanda-score = { path = "../spanda-score" }
 spanda-security = { path = "../spanda-security" }
 spanda-ast = { path = "../spanda-ast" }
 spanda-telemetry-store = { path = "../spanda-telemetry-store" }
+base64 = "0.22"
 tungstenite = { version = "0.24", default-features = false, features = ["handshake"] }
 
 [dev-dependencies]
