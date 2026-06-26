@@ -136,3 +136,4 @@ echo "== remote OTA live dry-run against agent registry =="
 cleanup
 
 echo "Robotics golden path complete."
+echo "For multi-process field validation (agents + mesh + recovery/continuity tests), run: ./scripts/fleet_field_validation.sh"

@@ -59,6 +59,10 @@ echo "== showcase smoke: enterprise ops (control center) =="
 chmod +x scripts/enterprise_ops_smoke.sh
 ./scripts/enterprise_ops_smoke.sh
 
+echo "== showcase smoke: fleet field validation =="
+chmod +x scripts/fleet_field_validation.sh
+./scripts/fleet_field_validation.sh
+
 echo "== showcase smoke: control center desktop (tauri check) =="
 chmod +x scripts/control_center_desktop_smoke.sh
 ./scripts/control_center_desktop_smoke.sh

@@ -569,7 +569,8 @@ spanda sim examples/showcase/self_healing/rover.sd --inject-failure gps
 spanda analyze-failure examples/showcase/self_healing/rover.sd --with-recovery
 ```
 
-| Fleet recovery with mesh relay (`SPANDA_FLEET_MESH_URL`): [self-healing.md](./self-healing.md) · [fleet-distributed.md](./fleet-distributed.md) · [`examples/showcase/fleet_recovery/`](../examples/showcase/fleet_recovery/fleet.sd)
+| Fleet recovery with mesh relay (`SPANDA_FLEET_MESH_URL`): [self-healing.md](./self-healing.md) · [fleet-distributed.md](./fleet-distributed.md) · [`examples/showcase/fleet_recovery/`](../examples/showcase/fleet_recovery/fleet.sd) |
+| Multi-process field validation (agents + mesh + recovery/continuity): `./scripts/fleet_field_validation.sh` · [`examples/showcase/fleet_distributed/`](../examples/showcase/fleet_distributed/README.md) |
 
 ---
 
@@ -626,6 +627,21 @@ Regenerate reference and man pages after compiler changes:
 python3 scripts/generate_spanda_reference.py
 cargo doc --workspace --no-deps   # Rust crate API docs
 ```
+
+---
+
+## Platform maturity (experimental)
+
+Adoption and operations tooling — graph, explain, trust, deployment gates, policy engine:
+
+```bash
+spanda demo maturity
+./scripts/maturity_smoke.sh
+spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
+spanda verify examples/showcase/policy/warehouse.sd --policy WarehousePolicy
+```
+
+See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [policy-engine.md](./policy-engine.md).
 
 ---
 

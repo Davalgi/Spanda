@@ -15,9 +15,15 @@
 | Integration | all `examples/*.sd` compile + run | `tests/integration.rs` |
 | Continuity | runtime takeover, checkpoints, CLI JSON, auto-trigger | `crates/spanda-interpreter/tests/continuity_runtime.rs`, `crates/spanda-cli/tests/continuity_cli.rs`, `crates/spanda-assurance/src/continuity_checkpoint.rs` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
+| Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |
+| Fleet field validation | multi-process agents + mesh orchestrate | `scripts/fleet_field_validation.sh` |
+| gRPC Control Center | tonic Health, GetDashboard, DetectDrift | `crates/spanda-api/tests/grpc_tests.rs` |
+| Operational drift (full) | program + agent dimensions | `crates/spanda-config/src/operational_drift.rs` |
+| Platform maturity | graph, drift, gates, trust, tamper, compliance | crate tests under `spanda-graph`, `spanda-config`, `spanda-readiness`, `spanda-trust`, `spanda-tamper`, `spanda-compliance` |
+| Enterprise ops API | Control Center handlers, device pool | `crates/spanda-api/tests/` |
 | Negative | `ai_safety_violation.sd` fails | `tests/integration.rs` |
 
-**Current count:** ~115 Rust tests (52 unit + 63 integration).
+**Current count:** ~115+ Rust unit/integration tests (workspace total grows with platform crates).
 
 ## TypeScript (`npm test`)
 
@@ -30,7 +36,18 @@
 | LSP diagnostics | `tests/lsp.test.ts` via `spanda check` + `spanda verify` |
 | Mission continuity mirror | `tests/mission-continuity.test.ts`, `tests/continuity-diagnostics.test.ts` |
 
-**Current count:** 121 vitest tests.
+**Current count:** 121+ vitest tests.
+
+## CLI smoke scripts
+
+| Script | Coverage |
+|--------|----------|
+| `scripts/showcase_smoke.sh` | Bundled demos (continuity, maturity, enterprise ops, policy, trust, …) |
+| `scripts/continuity_smoke.sh` | Continuity CLI + demo |
+| `scripts/policy_smoke.sh` | Verify-time policy |
+| `scripts/policy_runtime_smoke.sh` | Runtime `--enforce-policy` |
+| `scripts/maturity_smoke.sh` | Graph, explain, trust, deploy gate |
+| `scripts/enterprise_ops_smoke.sh` | Control Center E1–E4 API surface |
 
 ## CLI verification
 
@@ -38,11 +55,12 @@
 cargo test -p spanda-core --test hardware_compat
 spanda verify examples/hardware/rover_deploy.sd
 spanda verify examples/hardware/full_compat.sd   # expect incompatible (ESP32 in matrix)
+spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 ```
 
 ## CI
 
-`.github/workflows/ci.yml`: TypeScript tests, Rust tests, WASM + web build.
+`.github/workflows/ci.yml`: TypeScript tests, Rust tests, WASM + web build, enterprise ops smoke (when enabled).
 
 ## Acceptance criteria per feature
 
@@ -52,6 +70,7 @@ Each feature merges when:
 - New examples in `examples/` compile; hardware examples verify as expected
 - Relevant `docs/` updated
 - Golden manifest updated for stable fixtures (when applicable)
+- Smoke script added or extended for user-visible CLI paths
 
 ## Future tests
 
@@ -59,3 +78,4 @@ Each feature merges when:
 2. LSP verify diagnostic golden files
 3. Per-fault simulation coverage matrix
 4. Cross-profile deploy matrix CI job (`--all-targets` on main examples)
+5. Multi-process fleet agent field validation — **shipped** (`scripts/fleet_field_validation.sh`)
