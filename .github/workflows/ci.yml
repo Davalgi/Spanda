@@ -383,3 +383,52 @@ jobs:
       - run: npm run build --workspace=@spanda/lsp
       - run: npm install --prefix editor/vscode
       - run: npm run package:ci --prefix editor/vscode
+
+  enterprise-ops-smoke:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/enterprise_ops_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/enterprise_ops_smoke.sh
+
+  control-center-desktop:
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install Tauri Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - run: npm ci
+      - run: chmod +x scripts/build_control_center_desktop.sh
+      - run: ./scripts/build_control_center_desktop.sh
+
+  control-center-desktop-bundle:
+    runs-on: macos-latest
+    needs: rust
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: chmod +x scripts/build_control_center_desktop.sh
+      - run: TAURI_BUILD=1 ./scripts/build_control_center_desktop.sh
