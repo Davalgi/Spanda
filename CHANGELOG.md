@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **gRPC full REST parity (read paths):** `GetDeviceTree`, `GetDeviceReports`, `GetFailoverChains`, `ListSecrets`, `GetRbacMatrix`, `GetAnalyticsReadiness`, `ExportReports`, `GetObservabilityTraces`, `GetOtlpTraces`, `ExportOtlpTraces`, `ExportOtlpMetrics` RPCs (39 total).
 - **gRPC operator/provision parity:** `DiscoverDevices`, `RunDiscovery`, `ProvisionDevice`, `PlanOta`, `ExecuteOta`, `ListRobots`, `ListFleets`, `ListAlerts`, `ListConfigSnapshots`, `OperatorQuarantine`, `OperatorMissionApprove`, `ExportCompliance` RPCs (28 total); Bearer/`x-api-key` metadata for mutation RBAC.
 - **Registry discovery runtime:** `discovery_registry` wraps installed `spanda-discovery-mdns`, `spanda-discovery-ble`, and `spanda-discovery-usb` transports; `installed_packages` on discovery API responses.
 - **OTA fleet execute:** `POST /v1/ota/execute` runs remote rollout via deploy agents (`execute_remote_rollout`); dry-run parity with plan.
