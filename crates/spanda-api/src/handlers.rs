@@ -591,12 +591,22 @@ fn config_approvals_submit(body: &str, ctx: Option<&RbacContext>) -> HttpRespons
         .get("note")
         .and_then(|v| v.as_str())
         .map(str::to_string);
+    let required_approvals = payload
+        .get("required_approvals")
+        .and_then(|value| value.as_u64())
+        .map(|value| value as u32);
     let requester = ctx
         .map(|context| context.key_id.clone())
         .unwrap_or_else(|| "anonymous".into());
     let path = spanda_config::default_approvals_path();
     let mut queue = spanda_config::load_approval_queue(&path).unwrap_or_default();
-    match spanda_config::submit_config_approval(&mut queue, snapshot_id, &requester, note) {
+    match spanda_config::submit_config_approval(
+        &mut queue,
+        snapshot_id,
+        &requester,
+        note,
+        required_approvals,
+    ) {
         Ok(request) => {
             let _ = spanda_config::save_approval_queue(&path, &queue);
             json_ok(&serde_json::json!({
@@ -628,15 +638,20 @@ fn config_approvals_resolve(
     let path = spanda_config::default_approvals_path();
     let mut queue = spanda_config::load_approval_queue(&path).unwrap_or_default();
     let result = if approve {
-        spanda_config::approve_config_request(&mut queue, request_id, &resolver)
+        spanda_config::approve_config_request(&mut queue, request_id, &resolver, note)
     } else {
         spanda_config::reject_config_request(&mut queue, request_id, &resolver, note)
     };
     match result {
         Ok(request) => {
             let _ = spanda_config::save_approval_queue(&path, &queue);
+            let quorum = serde_json::json!({
+                "required": request.required_approvals,
+                "received": request.approvals.len(),
+                "met": spanda_config::approval_quorum_met(&request),
+            });
             let mut publish = None;
-            if approve {
+            if approve && request.status == spanda_config::ConfigApprovalStatus::Approved {
                 match spanda_config::publish_config_snapshot(
                     &request.snapshot_id,
                     &spanda_config::default_snapshots_dir(),
@@ -658,6 +673,7 @@ fn config_approvals_resolve(
                 "version": API_VERSION,
                 "ok": true,
                 "approval": request,
+                "quorum": quorum,
                 "publish": publish,
             }))
         }

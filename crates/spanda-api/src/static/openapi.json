@@ -555,7 +555,12 @@
                 "type": "object",
                 "properties": {
                   "snapshot_id": { "type": "string" },
-                  "note": { "type": "string" }
+                  "note": { "type": "string" },
+                  "required_approvals": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Distinct approvers required (defaults to SPANDA_CONFIG_APPROVALS_REQUIRED or 1)"
+                  }
                 },
                 "required": ["snapshot_id"]
               }
@@ -572,7 +577,7 @@
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
-        "responses": { "200": { "description": "Snapshot published; includes publish metadata" } }
+        "responses": { "200": { "description": "Vote recorded; publish when quorum.met is true" } }
       }
     },
     "/v1/config/approvals/{id}/reject": {
