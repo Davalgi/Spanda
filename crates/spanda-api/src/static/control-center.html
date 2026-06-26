@@ -148,6 +148,15 @@
       errEl.textContent = msg;
     }
 
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     async function loadDashboard() {
       try {
         errEl.hidden = true;
@@ -398,7 +407,9 @@
         errEl.hidden = true;
         const cap = document.getElementById("dt-capability")?.value?.trim() || "";
         const dev = document.getElementById("dt-device")?.value?.trim() || "";
-        const phase = document.getElementById("dt-lifecycle")?.value?.trim() || "";
+        const phaseRaw = document.getElementById("dt-lifecycle")?.value?.trim() || "";
+        const lifecyclePhases = ["", "requirement", "design", "deploy", "operate", "retire"];
+        const phase = lifecyclePhases.includes(phaseRaw) ? phaseRaw : "";
         const params = new URLSearchParams();
         if (cap) params.set("capability", cap);
         if (dev) params.set("device_id", dev);
@@ -407,11 +418,13 @@
         const data = await api("/v1/digital-thread/query" + (qs ? "?" + qs : ""));
         const thread = data.digital_thread;
         const panel = document.getElementById("tab-digital-thread");
+        const capEsc = escapeHtml(cap);
+        const devEsc = escapeHtml(dev);
         panel.innerHTML = `
           <h2>Digital thread</h2>
           <div class="dt-filters">
-            <label>Capability<input id="dt-capability" value="${cap}" placeholder="navigate" /></label>
-            <label>Device id<input id="dt-device" value="${dev}" placeholder="gps-001" /></label>
+            <label>Capability<input id="dt-capability" value="${capEsc}" placeholder="navigate" /></label>
+            <label>Device id<input id="dt-device" value="${devEsc}" placeholder="gps-001" /></label>
             <label>Lifecycle<select id="dt-lifecycle">
               <option value="">All phases</option>
               <option value="requirement"${phase==="requirement"?" selected":""}>Requirement</option>
