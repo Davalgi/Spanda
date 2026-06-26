@@ -96,6 +96,27 @@ pub fn digital_thread_query(state: &ControlCenterState, query: &str) -> HttpResp
     }))
 }
 
+pub fn compliance_profiles_catalog() -> HttpResponse {
+    let signed = spanda_compliance::load_signed_profile_catalog()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|entry| {
+            serde_json::json!({
+                "name": entry.name,
+                "version": entry.version,
+                "verified": entry.verified,
+                "content_sha256": entry.content_sha256,
+                "description": entry.profile.description,
+            })
+        })
+        .collect::<Vec<_>>();
+    json_ok(&serde_json::json!({
+        "version": "v1",
+        "profiles": spanda_compliance::list_compliance_profiles(),
+        "signed_catalog": signed,
+    }))
+}
+
 pub fn executive_scorecard(state: &ControlCenterState) -> HttpResponse {
     let (program, source, label) = match load_program(state) {
         Ok(value) => value,
@@ -137,6 +158,10 @@ pub fn reports_export(
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
+    reports_export_internal(state, query)
+}
+
+pub fn reports_export_internal(state: &ControlCenterState, query: &str) -> HttpResponse {
     let params = parse_query(query);
     let profile = params
         .get("profile")

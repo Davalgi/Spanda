@@ -2,6 +2,7 @@
 //!
 pub mod accreditation;
 pub mod evaluate;
+pub mod profile_catalog;
 pub mod profiles;
 
 pub use accreditation::{
@@ -13,3 +14,7 @@ pub use evaluate::{
     ComplianceEvaluationReport, ComplianceSeverity, ComplianceViolation,
 };
 pub use profiles::ComplianceProfile;
+pub use profile_catalog::{
+    load_signed_profile_catalog, signed_profile_by_name, ProfileCatalogManifest,
+    SignedProfileEntry, SignedProfileTemplate,
+};

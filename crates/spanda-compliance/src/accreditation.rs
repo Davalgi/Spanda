@@ -3,6 +3,7 @@
 use crate::evaluate::{
     evaluate_compliance_profile, ComplianceEvaluationReport, ComplianceViolation,
 };
+use crate::profile_catalog::signed_profile_by_name;
 use crate::profiles::{builtin_profile, ComplianceProfile};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -55,7 +56,8 @@ pub fn generate_accreditation_report(
     // Example:
     // let bundle = generate_accreditation_report(&program, "defense", "defense_rover.sd")?;
 
-    let profile = builtin_profile(profile_name)
+    let profile = signed_profile_by_name(profile_name)
+        .or_else(|| builtin_profile(profile_name))
         .ok_or_else(|| format!("Unknown compliance profile '{profile_name}'"))?;
     let evaluation = evaluate_compliance_profile(program, profile_name, source_label)?;
     let evidence_checklist = build_evidence_checklist(program, &profile, &evaluation);

@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "content_sha256": "0b8603b084cd449ef33e9b0170a22c8de37ef36043b3a4d56cbc73d45f1ae763",
+      "name": "defense",
+      "signature": "f8a7532f890bfa25e598629d2838d8aa80d8e44082842cf08552757ee75194d550e6b99e9463e2762d45f913efd5493bfbe1eceb20950167f85ea79fa9896c02",
+      "template_path": "templates/defense.json",
+      "version": "1.0.0"
+    },
+    {
+      "content_sha256": "5f2cb8bfa5e5c2792778b459dcd915b971a32f2a7c76c8e137df99647023f0a3",
+      "name": "medical",
+      "signature": "5de3da02e1225b41efc2320afdcd56dda3b19c3e358f4c10c9dfc888e7bfac664d30703d10293355097162b735b64a4bda4714faf29c6d835a70889ca25e9108",
+      "template_path": "templates/medical.json",
+      "version": "1.0.0"
+    },
+    {
+      "content_sha256": "bdb6a1a05f12214f61ebb4854ac5dd2e59d33753725100069b49f4b943b0cbee",
+      "name": "iso26262",
+      "signature": "42401d24decda9294b59e9488b3e7f76d324a447cbac0145c0cbb85ea888fea2b6c7e4e0090f7cd88ba5caf406a2812f4fbe0d96b84ea4beac589f2e10d77d0f",
+      "template_path": "templates/iso26262.json",
+      "version": "1.0.0"
+    }
+  ],
+  "publisher_pubkey": "2d7309426eab09db1c830e45a93e78d632e6d3a9b8eae242eaefb559015d2478"
+}

@@ -5,6 +5,10 @@ use serde::{Deserialize, Serialize};
 const ACCREDITATION_TEMPLATE_NOTICE: &str =
     "Template profile only — not legal accreditation or certification.";
 
+pub fn template_notice() -> &'static str {
+    ACCREDITATION_TEMPLATE_NOTICE
+}
+
 /// Template requirements for an industry compliance profile.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ComplianceProfile {
@@ -33,6 +37,7 @@ pub fn list_builtin_profiles() -> Vec<&'static str> {
         "medical",
         "agriculture",
         "defense",
+        "iso26262",
         "research",
     ]
 }
@@ -45,6 +50,7 @@ pub fn builtin_profile(name: &str) -> Option<ComplianceProfile> {
         "medical" => Some(medical_profile()),
         "agriculture" => Some(agriculture_profile()),
         "defense" => Some(defense_profile()),
+        "iso26262" | "iso_26262" | "automotive" => Some(iso26262_profile()),
         "research" => Some(research_profile()),
         _ => None,
     }
@@ -136,6 +142,25 @@ fn defense_profile() -> ComplianceProfile {
         min_health_checks: 1,
         requires_assurance_case: true,
         max_speed_mps: Some(1.2),
+        operation_hours: None,
+        requires_secure_comm: true,
+        requires_tamper_policy: true,
+        requires_secure_boot: true,
+        warn_only: false,
+        template_notice: ACCREDITATION_TEMPLATE_NOTICE,
+    }
+}
+
+fn iso26262_profile() -> ComplianceProfile {
+    ComplianceProfile {
+        name: "iso26262".into(),
+        description: "ISO 26262 automotive functional safety profile template".into(),
+        requires_kill_switch: true,
+        min_readiness_score: 90,
+        required_capabilities: vec!["obstacle_avoidance".into()],
+        min_health_checks: 2,
+        requires_assurance_case: true,
+        max_speed_mps: Some(1.0),
         operation_hours: None,
         requires_secure_comm: true,
         requires_tamper_policy: true,

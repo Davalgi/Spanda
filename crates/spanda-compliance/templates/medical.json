@@ -1,0 +1,15 @@
+{
+  "name": "medical",
+  "description": "Medical robotics with stricter health evidence and assurance cases",
+  "requires_kill_switch": true,
+  "min_readiness_score": 85,
+  "required_capabilities": [],
+  "min_health_checks": 2,
+  "requires_assurance_case": true,
+  "max_speed_mps": 1.0,
+  "operation_hours": null,
+  "requires_secure_comm": false,
+  "requires_tamper_policy": true,
+  "requires_secure_boot": true,
+  "warn_only": false
+}
