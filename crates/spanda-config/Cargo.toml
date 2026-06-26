@@ -12,6 +12,8 @@ thiserror = "2"
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-package = { path = "../spanda-package" }
 spanda-ast = { path = "../spanda-ast" }
+spanda-security = { path = "../spanda-security" }
+hex = "0.4"
 
 [dev-dependencies]
 tempfile = "3"

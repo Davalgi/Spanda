@@ -45,6 +45,9 @@ pub enum ConfigError {
     #[error("config approval error: {detail}")]
     Approval { detail: String },
 
+    #[error("config snapshot encryption error: {detail}")]
+    SnapshotEncryption { detail: String },
+
     #[error("package manifest error: {0}")]
     Package(#[from] spanda_package::PackageError),
 }

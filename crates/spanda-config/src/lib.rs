@@ -31,6 +31,7 @@ pub mod provisioning;
 pub mod reports;
 pub mod resolved;
 pub mod resolver;
+pub mod snapshot_encryption;
 pub mod system_context;
 pub mod validation;
 

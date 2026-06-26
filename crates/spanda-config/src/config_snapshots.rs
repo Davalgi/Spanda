@@ -2,13 +2,19 @@
 //!
 use crate::error::{ConfigError, ConfigResult};
 use crate::resolved::ResolvedSystemConfig;
+use crate::snapshot_encryption::{
+    decrypt_snapshot_envelope, encrypt_snapshot_bytes, snapshot_encryption_requested,
+    EncryptedSnapshotEnvelope,
+};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Default directory for persisted configuration snapshots.
 pub fn default_snapshots_dir() -> PathBuf {
-    PathBuf::from(".spanda/config-snapshots")
+    std::env::var("SPANDA_CONFIG_SNAPSHOTS_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from(".spanda/config-snapshots"))
 }
 
 /// Metadata for a stored configuration snapshot.
@@ -20,6 +26,8 @@ pub struct ConfigSnapshotMeta {
     pub label: Option<String>,
     pub project_name: String,
     pub device_count: usize,
+    #[serde(default)]
+    pub encrypted: bool,
 }
 
 /// Full snapshot including resolved configuration JSON.
@@ -36,13 +44,42 @@ fn io_error(path: impl Into<PathBuf>, source: std::io::Error) -> ConfigError {
     }
 }
 
+fn plaintext_snapshot_path(dir: &Path, id: &str) -> PathBuf {
+    dir.join(format!("{id}.json"))
+}
+
+fn encrypted_snapshot_path(dir: &Path, id: &str) -> PathBuf {
+    dir.join(format!("{id}.snap.enc"))
+}
+
+fn parse_snapshot_text(path: &Path, text: &str) -> ConfigResult<ConfigSnapshot> {
+    if let Ok(envelope) = serde_json::from_str::<EncryptedSnapshotEnvelope>(text) {
+        if envelope.format == "spanda-config-snapshot-v1" {
+            let bytes = decrypt_snapshot_envelope(&envelope)?;
+            let body = String::from_utf8(bytes).map_err(|error| ConfigError::SnapshotEncryption {
+                detail: error.to_string(),
+            })?;
+            return serde_json::from_str(&body).map_err(|source| ConfigError::JsonParse {
+                path: path.to_path_buf(),
+                source,
+            });
+        }
+    }
+    serde_json::from_str(text).map_err(|source| ConfigError::JsonParse {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
 /// Save a resolved configuration snapshot to disk.
 pub fn save_config_snapshot(
     resolved: &ResolvedSystemConfig,
     dir: &Path,
     label: Option<String>,
+    encrypt: Option<bool>,
 ) -> ConfigResult<ConfigSnapshotMeta> {
     fs::create_dir_all(dir).map_err(|e| io_error(dir, e))?;
+    let encrypted = snapshot_encryption_requested(encrypt);
     let id = format!("cfg-{}", now_ms().to_string().replace('.', ""));
     let meta = ConfigSnapshotMeta {
         id: id.clone(),
@@ -50,17 +87,30 @@ pub fn save_config_snapshot(
         label,
         project_name: resolved.project_name().to_string(),
         device_count: resolved.device_registry.devices.len(),
+        encrypted,
     };
     let snapshot = ConfigSnapshot {
         meta: meta.clone(),
         resolved: resolved.clone(),
     };
-    let path = dir.join(format!("{id}.json"));
     let text = serde_json::to_string_pretty(&snapshot).map_err(|e| ConfigError::JsonParse {
-        path: path.clone(),
+        path: dir.join(&id),
         source: e,
     })?;
-    fs::write(&path, text).map_err(|e| io_error(&path, e))?;
+    if encrypted {
+        let envelope = encrypt_snapshot_bytes(text.as_bytes())?;
+        let path = encrypted_snapshot_path(dir, &id);
+        let encoded = serde_json::to_string_pretty(&envelope).map_err(|source| {
+            ConfigError::JsonParse {
+                path: path.clone(),
+                source,
+            }
+        })?;
+        fs::write(&path, encoded).map_err(|e| io_error(&path, e))?;
+    } else {
+        let path = plaintext_snapshot_path(dir, &id);
+        fs::write(&path, text).map_err(|e| io_error(&path, e))?;
+    }
     Ok(meta)
 }
 
@@ -73,12 +123,21 @@ pub fn list_config_snapshots(dir: &Path) -> ConfigResult<Vec<ConfigSnapshotMeta>
     for entry in fs::read_dir(dir).map_err(|e| io_error(dir, e))? {
         let entry = entry.map_err(|e| io_error(dir, e))?;
         let path = entry.path();
-        if path.extension().and_then(|e| e.to_str()) != Some("json") {
+        let Some(file_name) = path.file_name().and_then(|name| name.to_str()) else {
+            continue;
+        };
+        if file_name.ends_with(".json") {
+            let text = fs::read_to_string(&path).map_err(|e| io_error(&path, e))?;
+            if let Ok(snapshot) = serde_json::from_str::<ConfigSnapshot>(&text) {
+                items.push(snapshot.meta);
+            }
             continue;
         }
-        let text = fs::read_to_string(&path).map_err(|e| io_error(&path, e))?;
-        if let Ok(snapshot) = serde_json::from_str::<ConfigSnapshot>(&text) {
-            items.push(snapshot.meta);
+        if file_name.ends_with(".snap.enc") {
+            let text = fs::read_to_string(&path).map_err(|e| io_error(&path, e))?;
+            if let Ok(snapshot) = parse_snapshot_text(&path, &text) {
+                items.push(snapshot.meta);
+            }
         }
     }
     items.sort_by(|a, b| b.created_at_ms.partial_cmp(&a.created_at_ms).unwrap());
@@ -87,9 +146,14 @@ pub fn list_config_snapshots(dir: &Path) -> ConfigResult<Vec<ConfigSnapshotMeta>
 
 /// Load a snapshot by id.
 pub fn load_config_snapshot(dir: &Path, id: &str) -> ConfigResult<ConfigSnapshot> {
-    let path = dir.join(format!("{id}.json"));
-    let text = fs::read_to_string(&path).map_err(|e| io_error(&path, e))?;
-    serde_json::from_str(&text).map_err(|e| ConfigError::JsonParse { path, source: e })
+    let plain = plaintext_snapshot_path(dir, id);
+    if plain.exists() {
+        let text = fs::read_to_string(&plain).map_err(|e| io_error(&plain, e))?;
+        return parse_snapshot_text(&plain, &text);
+    }
+    let encrypted = encrypted_snapshot_path(dir, id);
+    let text = fs::read_to_string(&encrypted).map_err(|e| io_error(&encrypted, e))?;
+    parse_snapshot_text(&encrypted, &text)
 }
 
 /// Result of publishing an approved configuration snapshot.
@@ -140,11 +204,39 @@ fn now_ms() -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::resolver::ConfigResolver;
+    use std::sync::Mutex;
+
+    static ENV_TEST_LOCK: Mutex<()> = Mutex::new(());
 
     #[test]
     fn list_missing_dir_returns_empty() {
         let dir = tempfile::tempdir().unwrap();
         let missing = dir.path().join("nested");
         assert!(list_config_snapshots(&missing).unwrap().is_empty());
+    }
+
+    #[test]
+    fn encrypted_snapshot_save_and_load_roundtrip() {
+        let _guard = ENV_TEST_LOCK.lock().unwrap();
+        std::env::set_var("SPANDA_CONFIG_SNAPSHOT_KEY", "roundtrip-snapshot-key");
+        let dir = tempfile::tempdir().unwrap();
+        let example = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/packages/basic_project/spanda.toml");
+        let resolver = ConfigResolver::new();
+        let resolved = resolver
+            .resolve_from_dir(example.parent().unwrap())
+            .expect("resolve example");
+        let meta = save_config_snapshot(&resolved, dir.path(), Some("encrypted".into()), Some(true))
+            .expect("save encrypted snapshot");
+        assert!(meta.encrypted);
+        assert!(!plaintext_snapshot_path(dir.path(), &meta.id).exists());
+        assert!(encrypted_snapshot_path(dir.path(), &meta.id).exists());
+        let loaded = load_config_snapshot(dir.path(), &meta.id).expect("load encrypted snapshot");
+        assert_eq!(loaded.meta.id, meta.id);
+        assert_eq!(
+            loaded.resolved.project_name(),
+            resolved.project_name()
+        );
     }
 }
