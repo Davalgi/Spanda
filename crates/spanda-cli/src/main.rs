@@ -2411,7 +2411,7 @@ fn main() {
                 if let Some(failure_kind) = inject_failure.as_deref() {
                     let program = parse(tokenize(&source).unwrap()).unwrap();
                     let recovery =
-                        spanda_assurance::simulate_failure_recovery(&program, failure_kind);
+                        spanda_assurance::simulate_failure_recovery(&program, failure_kind, None);
                     eprintln!("\n--- Recovery Simulation ---");
                     eprintln!(
                         "{}",

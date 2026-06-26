@@ -63,7 +63,7 @@ pub fn assure_program_with_config(
     let resilience = check_resilience(program);
     let mission = verify_mission_assurance_with_config(program, config);
     let state = evaluate_state_assurance(program);
-    let recovery = evaluate_recovery(program, None);
+    let recovery = evaluate_recovery(program, None, None);
 
     let mut issues = Vec::new();
     issues.extend(validate_knowledge_models(program));

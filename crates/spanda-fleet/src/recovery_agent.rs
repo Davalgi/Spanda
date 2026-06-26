@@ -223,7 +223,7 @@ pub fn execute_interpreter_recovery_on_agent(
     )
     .map_err(|e| e.to_string())?;
     sync_agent_from_interpreter(state, &outcome);
-    let report = spanda_assurance::evaluate_recovery(&program, None);
+    let report = spanda_assurance::evaluate_recovery(&program, None, None);
     state.recovery_validation =
         Some(validation_label_for_recovery(outcome.recovery.status, report.passed).into());
     state.last_recovery_evidence = serde_json::to_value(&outcome.recovery.evidence).ok();
@@ -287,7 +287,7 @@ pub fn execute_assurance_recovery_on_agent(
         apply_recovery_action(state, trigger_action);
     }
 
-    let report = spanda_assurance::evaluate_recovery(&program, None);
+    let report = spanda_assurance::evaluate_recovery(&program, None, None);
     state.recovery_engine = Some("assurance".into());
     state.recovery_validation = Some(if report.passed {
         "PASS".into()

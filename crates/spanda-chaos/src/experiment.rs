@@ -197,7 +197,7 @@ fn evaluate_injection(
     label: &str,
     kind: &str,
 ) -> ChaosInjectionResult {
-    let recovery = simulate_failure_recovery(program, kind);
+    let recovery = simulate_failure_recovery(program, kind, None);
     let readiness = evaluate_readiness(
         program,
         &ReadinessOptions {

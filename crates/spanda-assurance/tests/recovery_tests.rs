@@ -67,7 +67,7 @@ fn heal_workflow_produces_passing_report() {
     //     let result = spanda_assurance::recovery_tests::heal_workflow_produces_passing_report();
 
     let program = parse_source(SELF_HEALING);
-    let report = evaluate_recovery(&program, None);
+    let report = evaluate_recovery(&program, None, None);
     assert!(!report.plans.is_empty());
     assert!(report
         .results
@@ -93,7 +93,7 @@ fn inject_gps_failure_simulation() {
     //     let result = spanda_assurance::recovery_tests::inject_gps_failure_simulation();
 
     let program = parse_source(SELF_HEALING);
-    let report = simulate_failure_recovery(&program, "gps");
+    let report = simulate_failure_recovery(&program, "gps", None);
     assert_eq!(report.plans[0].diagnosis, "Satellite lock lost");
     assert!(!report.results.is_empty());
 }
@@ -120,7 +120,7 @@ fn recovery_readiness_evaluated() {
         classification: None,
         level: RecoveryLevel::Level3AutomaticWithValidation,
     };
-    let report = evaluate_recovery(&program, Some(&ctx));
+    let report = evaluate_recovery(&program, Some(&ctx), None);
     assert!(report.readiness.readiness_score > 0 || report.readiness.blockers.is_empty());
 }
 
@@ -263,7 +263,7 @@ fn fleet_showcase_recovery_report_passes() {
     let program = parse_source(include_str!(
         "../../../examples/showcase/fleet_recovery/fleet.sd"
     ));
-    let report = evaluate_recovery(&program, None);
+    let report = evaluate_recovery(&program, None, None);
     assert!(
         report.passed,
         "expected fleet showcase heal to pass, plans={} results={:?}",

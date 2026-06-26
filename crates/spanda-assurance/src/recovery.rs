@@ -1038,7 +1038,11 @@ pub fn load_merged_recovery_knowledge(program: &Program) -> RecoveryKnowledgeBas
 }
 
 /// Simulate failure injection for recovery testing.
-pub fn simulate_failure_recovery(program: &Program, failure_kind: &str) -> RecoveryReport {
+pub fn simulate_failure_recovery(
+    program: &Program,
+    failure_kind: &str,
+    device_registry: Option<&spanda_config::DeviceRegistry>,
+) -> RecoveryReport {
     // Description:
     //     Simulate failure recovery.
     //
@@ -1065,11 +1069,36 @@ pub fn simulate_failure_recovery(program: &Program, failure_kind: &str) -> Recov
         classification: Some(classify_failure(failure_kind)),
         level: RecoveryLevel::Level3AutomaticWithValidation,
     };
-    evaluate_recovery(program, Some(&context))
+    evaluate_recovery(program, Some(&context), device_registry)
+}
+
+/// Resolve a failed device id from a recovery issue string and registry.
+fn resolve_failed_device_id(
+    registry: &spanda_config::DeviceRegistry,
+    issue: &str,
+) -> Option<String> {
+    let issue_lower = issue.to_lowercase();
+    for device in &registry.devices {
+        if issue_lower.contains(&device.id.to_lowercase()) {
+            return Some(device.id.clone());
+        }
+    }
+    for device in &registry.devices {
+        if let Some(ref logical) = device.logical_name {
+            if issue_lower.contains(&logical.to_lowercase()) {
+                return Some(device.id.clone());
+            }
+        }
+    }
+    None
 }
 
 /// Run full recovery framework analysis on a program.
-pub fn evaluate_recovery(program: &Program, context: Option<&RecoveryContext>) -> RecoveryReport {
+pub fn evaluate_recovery(
+    program: &Program,
+    context: Option<&RecoveryContext>,
+    device_registry: Option<&spanda_config::DeviceRegistry>,
+) -> RecoveryReport {
     // Description:
     //     Evaluate recovery.
     //
@@ -1096,7 +1125,15 @@ pub fn evaluate_recovery(program: &Program, context: Option<&RecoveryContext>) -
 
     let plans: Vec<RecoveryPlan> = contexts
         .iter()
-        .map(|ctx| RecoveryPlanner::plan(program, ctx))
+        .map(|ctx| {
+            let mut plan = RecoveryPlanner::plan(program, ctx);
+            if let Some(registry) = device_registry {
+                if let Some(device_id) = resolve_failed_device_id(registry, &ctx.issue) {
+                    enrich_recovery_plan_with_failover(&mut plan, registry, &device_id);
+                }
+            }
+            plan
+        })
         .collect();
 
     let safe_actions: Vec<SafeRecoveryAction> = plans
@@ -1201,7 +1238,7 @@ pub fn recovery_from_diagnosis(program: &Program, diagnosis: &DiagnosisReport) -
         });
     }
     if contexts.is_empty() {
-        return evaluate_recovery(program, None);
+        return evaluate_recovery(program, None, None);
     }
     let policies = extract_recovery_policies(program);
     let plans: Vec<RecoveryPlan> = contexts
@@ -1276,7 +1313,7 @@ pub fn analyze_failure_with_recovery(program: &Program) -> FailureAnalysisWithRe
     //     let result = spanda_assurance::recovery::analyze_failure_with_recovery(progra);
 
     let failure = analyze_failure(program);
-    let recovery = evaluate_recovery(program, None);
+    let recovery = evaluate_recovery(program, None, None);
     FailureAnalysisWithRecovery {
         failure,
         recovery_plans: recovery.plans,
@@ -1903,7 +1940,7 @@ robot Rover {
         //     let result = spanda_assurance::recovery::execute_recovery_produces_evidence();
 
         let program = parse_source(RECOVERY_ROVER);
-        let report = simulate_failure_recovery(&program, "gps");
+        let report = simulate_failure_recovery(&program, "gps", None);
         assert!(!report.results.is_empty());
         assert_eq!(report.results[0].evidence.safety_validation, "PASS");
     }

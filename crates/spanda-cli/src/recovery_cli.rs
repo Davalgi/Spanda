@@ -137,6 +137,10 @@ fn failure_arg(args: &[String]) -> Option<String> {
         .and_then(|i| args.get(i + 1).cloned())
 }
 
+fn device_registry_from_args(args: &[String]) -> Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>> {
+    load_system_config_from_cli_args(args)
+}
+
 fn build_report(file: &str, args: &[String]) -> RecoveryReport {
     // Description:
     //     Build report.
@@ -155,6 +159,9 @@ fn build_report(file: &str, args: &[String]) -> RecoveryReport {
 
     //     let result = spanda_cli::recovery_cli::build_report(file, args);
 
+    let config = device_registry_from_args(args);
+    let device_registry = config.as_ref().map(|cfg| &cfg.device_registry);
+
     if file.ends_with(".trace") {
         let diagnosis = diagnose_from_trace(Path::new(file)).unwrap_or_else(|e| {
             eprintln!("{e}");
@@ -171,9 +178,9 @@ fn build_report(file: &str, args: &[String]) -> RecoveryReport {
         let source = read_file(file);
         let program = parse_program(&source);
         if let Some(failure) = failure_arg(args) {
-            simulate_failure_recovery(&program, &failure)
+            simulate_failure_recovery(&program, &failure, device_registry)
         } else {
-            evaluate_recovery(&program, None)
+            evaluate_recovery(&program, None, device_registry)
         }
     }
 }
@@ -229,8 +236,10 @@ pub fn cmd_recover(args: &[String]) {
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);
+    let config = device_registry_from_args(args);
+    let device_registry = config.as_ref().map(|cfg| &cfg.device_registry);
     let report = if let Some(failure) = failure_arg(args) {
-        simulate_failure_recovery(&program, &failure)
+        simulate_failure_recovery(&program, &failure, device_registry)
     } else {
         let ctx = RecoveryContext {
             issue: "gps.failed".into(),
@@ -238,7 +247,7 @@ pub fn cmd_recover(args: &[String]) {
             classification: None,
             level: RecoveryLevel::Level3AutomaticWithValidation,
         };
-        evaluate_recovery(&program, Some(&ctx))
+        evaluate_recovery(&program, Some(&ctx), device_registry)
     };
     println!("{}", format_recovery(&report, format));
     if !report.passed {
@@ -266,7 +275,9 @@ pub fn cmd_recovery_report(args: &[String]) {
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);
-    let report = evaluate_recovery(&program, None);
+    let config = device_registry_from_args(args);
+    let device_registry = config.as_ref().map(|cfg| &cfg.device_registry);
+    let report = evaluate_recovery(&program, None, device_registry);
     println!("{}", format_recovery(&report, format));
     if !report.passed {
         process::exit(1);
