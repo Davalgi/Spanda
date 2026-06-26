@@ -45,6 +45,14 @@ impl TraceLog {
     pub fn list_owned(&self) -> Vec<TraceRecord> {
         self.records.iter().cloned().collect()
     }
+
+    pub fn from_records(max_entries: usize, records: Vec<TraceRecord>) -> Self {
+        let mut log = Self::new(max_entries);
+        for record in records {
+            log.push(record);
+        }
+        log
+    }
 }
 
 pub fn new_correlation_id() -> String {

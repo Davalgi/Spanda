@@ -4,7 +4,7 @@ use crate::correlation::TraceLog;
 use spanda_audit::AuditRuntime;
 use spanda_config::{DeviceRegistry, ResolvedSystemConfig};
 use spanda_ops::{AlertDispatcher, AlertStore};
-use spanda_security::{ApiKeyStore, ManagedSecretVault, RateLimiter};
+use spanda_security::{default_tenant_id, ApiKeyStore, ManagedSecretVault, RateLimiter};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -21,22 +21,26 @@ pub struct ControlCenterState {
     pub trace_log: TraceLog,
     pub rate_limiter: RateLimiter,
     pub mutation_audit: AuditRuntime,
+    pub tenant_id: String,
 }
 
 impl ControlCenterState {
     pub fn new() -> Self {
-        Self {
+        let mut state = Self {
             config_path: None,
             program_path: None,
             resolved: None,
-            api_keys: ApiKeyStore::from_env(),
+            api_keys: ApiKeyStore::from_env_and_file(),
             secret_vault: ManagedSecretVault::new(),
             alert_dispatcher: AlertDispatcher::from_env(),
             alert_store: AlertStore::new(500),
             trace_log: TraceLog::new(1000),
             rate_limiter: RateLimiter::from_env(),
             mutation_audit: AuditRuntime::new("control-center", vec![]),
-        }
+            tenant_id: default_tenant_id(),
+        };
+        crate::persistence::hydrate_runtime_state(&mut state);
+        state
     }
 
     pub fn with_config_path(mut self, path: PathBuf) -> Self {

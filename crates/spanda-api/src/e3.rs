@@ -324,6 +324,7 @@ pub fn record_trace(
         maybe_auto_push_latest_span(record);
     }
     crate::audit_log::maybe_record_mutation(state, method, path, status, ctx, correlation_id);
+    let _ = crate::persistence::persist_runtime_state(state);
 }
 
 pub fn openapi_spec() -> HttpResponse {

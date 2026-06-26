@@ -130,6 +130,14 @@ impl AlertStore {
     pub fn list_owned(&self) -> Vec<Alert> {
         self.alerts.iter().cloned().collect()
     }
+
+    pub fn from_records(max_entries: usize, alerts: Vec<Alert>) -> Self {
+        let mut store = Self::new(max_entries);
+        for alert in alerts {
+            store.push(alert);
+        }
+        store
+    }
 }
 
 pub fn send_webhook(url: &str, alert: &Alert) -> Result<(), String> {
