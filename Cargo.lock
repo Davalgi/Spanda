@@ -1438,6 +1438,8 @@ dependencies = [
  "spanda-deploy-http",
  "spanda-fleet",
  "spanda-ops",
+ "spanda-ota",
+ "spanda-package",
  "spanda-readiness",
  "spanda-security",
  "tempfile",

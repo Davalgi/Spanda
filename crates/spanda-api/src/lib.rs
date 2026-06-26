@@ -1,5 +1,7 @@
 //! REST API v1 for Spanda Control Center.
 //!
+pub mod correlation;
+pub mod e3;
 pub mod handlers;
 pub mod server;
 pub mod state;

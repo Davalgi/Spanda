@@ -12,6 +12,8 @@ spanda-config = { path = "../spanda-config" }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
 spanda-fleet = { path = "../spanda-fleet" }
 spanda-ops = { path = "../spanda-ops" }
+spanda-ota = { path = "../spanda-ota" }
+spanda-package = { path = "../spanda-package" }
 spanda-readiness = { path = "../spanda-readiness" }
 spanda-security = { path = "../spanda-security" }
 

@@ -1,5 +1,7 @@
 //! REST v1 route handlers for Spanda Control Center.
 //!
+use crate::correlation::{correlation_from_headers, new_correlation_id};
+use crate::e3;
 use crate::state::ControlCenterState;
 use serde::Serialize;
 use spanda_config::{
@@ -30,35 +32,55 @@ struct DashboardPayload {
     rbac_roles: usize,
 }
 
-pub fn handle_request(state: &mut ControlCenterState, request: &HttpRequest) -> HttpResponse {
+pub fn handle_request(
+    state: &mut ControlCenterState,
+    request: &HttpRequest,
+    raw_headers: &str,
+) -> (HttpResponse, String) {
+    let started_ms = now_ms();
+    let correlation_id =
+        correlation_from_headers(raw_headers).unwrap_or_else(new_correlation_id);
     let (path, query) = match request.path.split_once('?') {
         Some((p, q)) => (p, q),
         None => (request.path.as_str(), ""),
     };
     if request.method == "OPTIONS" {
-        return cors_preflight();
+        return (cors_preflight(), correlation_id);
     }
     if path == "/health" || path == "/v1/health" || path == "/healthz" {
-        return json_ok(&HealthPayload {
+        let response = json_ok(&HealthPayload {
             ok: true,
             version: API_VERSION,
             service: "spanda-control-center",
         });
+        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        return (response, correlation_id);
     }
     if path == "/" || path == "/control-center" {
-        return html_ok(include_str!("static/control-center.html"));
+        let response = html_ok(include_str!("static/control-center.html"));
+        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        return (response, correlation_id);
+    }
+    if path == "/v1/openapi.json" {
+        let response = e3::openapi_spec();
+        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        return (response, correlation_id);
     }
     if !path.starts_with("/v1/") {
-        return not_found();
+        let response = not_found();
+        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        return (response, correlation_id);
     }
     let ctx = state
         .api_keys
         .authenticate(request.authorization.as_deref());
     if path.starts_with("/v1/devices/") && request.method == "PATCH" {
         let id = path.trim_start_matches("/v1/devices/");
-        return device_patch(state, id, &request.body, ctx.as_ref());
+        let response = device_patch(state, id, &request.body, ctx.as_ref());
+        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        return (response, correlation_id);
     }
-    match (path, request.method.as_str()) {
+    let response = match (path, request.method.as_str()) {
         ("/v1/dashboard", "GET") => dashboard(state),
         ("/v1/devices", "GET") => devices_list(state),
         ("/v1/fleet/agents", "GET") => fleet_agents(),
@@ -73,8 +95,30 @@ pub fn handle_request(state: &mut ControlCenterState, request: &HttpRequest) -> 
         ("/v1/health/summary", "GET") => health_summary(state),
         ("/v1/assurance/summary", "GET") => assurance_summary(state),
         ("/v1/diagnosis/summary", "GET") => diagnosis_summary(state),
+        ("/v1/drift", "GET") => e3::drift_report(state, query),
+        ("/v1/ota/status", "GET") => e3::ota_status(),
+        ("/v1/ota/plan", "POST") => e3::ota_plan(&request.body, ctx.as_ref()),
+        ("/v1/trust/package", "GET") => e3::trust_package(query),
+        ("/v1/sre/summary", "GET") => e3::sre_summary(state),
+        ("/v1/observability/traces", "GET") => e3::observability_traces(state),
+        ("/v1/operator/quarantine", "POST") => {
+            e3::operator_quarantine(state, &request.body, ctx.as_ref())
+        }
+        ("/v1/operator/mission/approve", "POST") => {
+            e3::operator_mission_approve(&request.body, ctx.as_ref())
+        }
+        ("/v1/rpc", "POST") => e3::rpc_gateway(state, &request.body),
         _ => not_found(),
-    }
+    };
+    e3::record_trace(
+        state,
+        &correlation_id,
+        &request.method,
+        path,
+        response.status,
+        started_ms,
+    );
+    (response, correlation_id)
 }
 
 fn dashboard(state: &ControlCenterState) -> HttpResponse {
@@ -338,7 +382,7 @@ fn diagnosis_summary(state: &ControlCenterState) -> HttpResponse {
     }))
 }
 
-fn parse_query(query: &str) -> std::collections::HashMap<String, String> {
+pub(crate) fn parse_query(query: &str) -> std::collections::HashMap<String, String> {
     let mut map = std::collections::HashMap::new();
     for pair in query.split('&').filter(|s| !s.is_empty()) {
         if let Some((k, v)) = pair.split_once('=') {
@@ -348,7 +392,7 @@ fn parse_query(query: &str) -> std::collections::HashMap<String, String> {
     map
 }
 
-fn json_ok<T: Serialize>(value: &T) -> HttpResponse {
+pub(crate) fn json_ok<T: Serialize>(value: &T) -> HttpResponse {
     let body = serde_json::to_string(value).unwrap_or_else(|_| "{}".into());
     HttpResponse {
         status: 200,
@@ -363,14 +407,14 @@ fn html_ok(html: &str) -> HttpResponse {
     }
 }
 
-fn bad_request(message: &str) -> HttpResponse {
+pub(crate) fn bad_request(message: &str) -> HttpResponse {
     HttpResponse {
         status: 400,
         body: serde_json::json!({ "ok": false, "error": message }).to_string(),
     }
 }
 
-fn unauthorized() -> HttpResponse {
+pub(crate) fn unauthorized() -> HttpResponse {
     HttpResponse {
         status: 401,
         body: serde_json::json!({ "ok": false, "error": "unauthorized" }).to_string(),
@@ -391,14 +435,18 @@ fn cors_preflight() -> HttpResponse {
     }
 }
 
-fn now_ms() -> f64 {
+pub(crate) fn now_ms() -> f64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs_f64() * 1000.0)
         .unwrap_or(0.0)
 }
 
-pub fn encode_response(response: &HttpResponse, content_type: &str) -> String {
+pub fn encode_response(
+    response: &HttpResponse,
+    content_type: &str,
+    correlation_id: Option<&str>,
+) -> String {
     if response.body.starts_with("HTTP/1.1") {
         return response.body.clone();
     }
@@ -410,12 +458,16 @@ pub fn encode_response(response: &HttpResponse, content_type: &str) -> String {
         404 => "Not Found",
         _ => "Error",
     };
+    let correlation_header = correlation_id
+        .map(|id| format!("X-Correlation-ID: {id}\r\n"))
+        .unwrap_or_default();
     format!(
-        "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: Authorization, Content-Type\r\n\r\n{}",
+        "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID\r\n{}Access-Control-Expose-Headers: X-Correlation-ID\r\n\r\n{}",
         response.status,
         status_text,
         content_type,
         response.body.len(),
+        correlation_header,
         response.body
     )
 }
@@ -427,7 +479,7 @@ mod tests {
     #[test]
     fn health_endpoint_ok() {
         let mut state = ControlCenterState::new();
-        let response = handle_request(
+        let (response, _) = handle_request(
             &mut state,
             &HttpRequest {
                 method: "GET".into(),
@@ -435,6 +487,7 @@ mod tests {
                 body: String::new(),
                 authorization: None,
             },
+            "",
         );
         assert_eq!(response.status, 200);
         assert!(response.body.contains("spanda-control-center"));

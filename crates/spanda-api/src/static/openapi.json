@@ -1,0 +1,142 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Spanda Control Center API",
+    "version": "1.0.0",
+    "description": "REST v1 gateway for enterprise operations — device pool, provisioning, drift, OTA, trust, SRE."
+  },
+  "servers": [{ "url": "http://127.0.0.1:8080" }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "SPANDA_API_KEY value"
+      }
+    },
+    "parameters": {
+      "correlationId": {
+        "name": "X-Correlation-ID",
+        "in": "header",
+        "schema": { "type": "string" },
+        "description": "Optional request correlation ID; echoed in response"
+      }
+    }
+  },
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "summary": "Liveness",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/v1/dashboard": {
+      "get": {
+        "summary": "Operations dashboard summary",
+        "responses": { "200": { "description": "Device pool and alert counts" } }
+      }
+    },
+    "/v1/drift": {
+      "get": {
+        "summary": "Operational drift report",
+        "parameters": [
+          {
+            "name": "baseline_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Drift rollup across 7 dimensions" } }
+      }
+    },
+    "/v1/ota/plan": {
+      "post": {
+        "summary": "Plan OTA rollout (canary, staged, blue_green)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "strategy": { "type": "string", "enum": ["all", "canary", "staged", "blue_green"] },
+                  "version": { "type": "string" },
+                  "canary_percent": { "type": "integer" },
+                  "dry_run": { "type": "boolean" },
+                  "assignments": { "type": "array", "items": { "type": "object" } }
+                },
+                "required": ["strategy", "version"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Rollout plan" } }
+      }
+    },
+    "/v1/ota/status": {
+      "get": {
+        "summary": "Deploy state from .spanda/deploy-state.json",
+        "responses": { "200": { "description": "OTA state" } }
+      }
+    },
+    "/v1/trust/package": {
+      "get": {
+        "summary": "Package trust evaluation",
+        "parameters": [
+          { "name": "name", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "version", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Trust score report" } }
+      }
+    },
+    "/v1/sre/summary": {
+      "get": {
+        "summary": "SRE availability and alert rollup",
+        "responses": { "200": { "description": "SRE metrics" } }
+      }
+    },
+    "/v1/observability/traces": {
+      "get": {
+        "summary": "Recent API trace records (OTLP-compatible export path)",
+        "responses": { "200": { "description": "Trace log" } }
+      }
+    },
+    "/v1/operator/quarantine": {
+      "post": {
+        "summary": "Quarantine a device",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Device quarantined" } }
+      }
+    },
+    "/v1/operator/mission/approve": {
+      "post": {
+        "summary": "Approve or reject a mission",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Mission decision recorded" } }
+      }
+    },
+    "/v1/rpc": {
+      "post": {
+        "summary": "gRPC-compatible JSON gateway",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "method": { "type": "string" },
+                  "params": { "type": "object" }
+                },
+                "required": ["method"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "RPC result" } }
+      }
+    }
+  }
+}

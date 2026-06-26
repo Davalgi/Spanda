@@ -38,6 +38,11 @@
     <button type="button" data-tab="diagnosis">Diagnosis</button>
     <button type="button" data-tab="provision">Provision</button>
     <button type="button" data-tab="config">Config</button>
+    <button type="button" data-tab="drift">Drift</button>
+    <button type="button" data-tab="ota">OTA</button>
+    <button type="button" data-tab="security">Security</button>
+    <button type="button" data-tab="sre">SRE</button>
+    <button type="button" data-tab="operator">Operator</button>
   </nav>
   <div id="error" class="error" hidden></div>
   <section id="tab-dashboard" class="panel"></section>
@@ -50,8 +55,13 @@
   <section id="tab-diagnosis" class="panel" hidden></section>
   <section id="tab-provision" class="panel" hidden></section>
   <section id="tab-config" class="panel" hidden></section>
+  <section id="tab-drift" class="panel" hidden></section>
+  <section id="tab-ota" class="panel" hidden></section>
+  <section id="tab-security" class="panel" hidden></section>
+  <section id="tab-sre" class="panel" hidden></section>
+  <section id="tab-operator" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config"];
+    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config", "drift", "ota", "security", "sre", "operator"];
     const errEl = document.getElementById("error");
 
     document.querySelectorAll("nav button").forEach((btn) => {
@@ -72,6 +82,11 @@
         if (tab === "diagnosis") loadDiagnosis();
         if (tab === "provision") loadProvision();
         if (tab === "config") loadConfig();
+        if (tab === "drift") loadDrift();
+        if (tab === "ota") loadOta();
+        if (tab === "security") loadSecurity();
+        if (tab === "sre") loadSre();
+        if (tab === "operator") loadOperator();
       });
     });
 
@@ -211,6 +226,76 @@
           <h2>Configuration snapshots</h2>
           <table><thead><tr><th>ID</th><th>Label</th><th>Devices</th></tr></thead><tbody>${rows}</tbody></table>`;
       } catch (e) { showError(String(e)); }
+    }
+
+    async function loadDrift() {
+      try {
+        errEl.hidden = true;
+        const snaps = await api("/v1/config/snapshots");
+        const first = (snaps.snapshots || [])[0];
+        if (!first) {
+          document.getElementById("tab-drift").innerHTML = `<h2>Drift</h2><p>Save a baseline snapshot first.</p>`;
+          return;
+        }
+        const data = await api("/v1/drift?baseline_id=" + encodeURIComponent(first.id));
+        document.getElementById("tab-drift").innerHTML = `
+          <h2>Operational drift</h2>
+          <p>Baseline: <code>${first.id}</code> — passed: <strong class="${data.report.passed ? "ok" : "error"}">${data.report.passed}</strong></p>
+          <pre>${JSON.stringify(data.report, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadOta() {
+      try {
+        errEl.hidden = true;
+        const status = await api("/v1/ota/status");
+        document.getElementById("tab-ota").innerHTML = `
+          <h2>OTA rollout</h2>
+          <p>Plan via <code>POST /v1/ota/plan</code> — strategies: canary, staged, blue_green.</p>
+          <pre>${JSON.stringify(status, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadSecurity() {
+      try {
+        errEl.hidden = true;
+        const trust = await api("/v1/trust/package?name=spanda-mqtt");
+        const rbac = await api("/v1/rbac/matrix");
+        document.getElementById("tab-security").innerHTML = `
+          <h2>Security &amp; trust</h2>
+          <h3>Package trust (spanda-mqtt)</h3>
+          <pre>${JSON.stringify(trust, null, 2)}</pre>
+          <h3>RBAC matrix</h3>
+          <pre>${JSON.stringify(rbac.matrix, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadSre() {
+      try {
+        errEl.hidden = true;
+        const sre = await api("/v1/sre/summary");
+        const traces = await api("/v1/observability/traces");
+        document.getElementById("tab-sre").innerHTML = `
+          <h2>SRE dashboard</h2>
+          <div class="grid">
+            <div class="stat"><dt>Availability %</dt><dd>${sre.availability_percent.toFixed(1)}</dd></div>
+            <div class="stat"><dt>Alerts</dt><dd>${sre.alerts_total}</dd></div>
+            <div class="stat"><dt>Critical</dt><dd>${sre.alerts_critical}</dd></div>
+            <div class="stat"><dt>Traces</dt><dd>${sre.traces_recorded}</dd></div>
+          </div>
+          <h3>Recent traces</h3>
+          <pre>${JSON.stringify((traces.traces || []).slice(-5), null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    function loadOperator() {
+      document.getElementById("tab-operator").innerHTML = `
+        <h2>Operator workflows</h2>
+        <ul>
+          <li><code>POST /v1/operator/mission/approve</code> — mission approval (Bearer, Approve role)</li>
+          <li><code>POST /v1/operator/quarantine</code> — quarantine device (Bearer, Operate role)</li>
+          <li><code>POST /v1/rpc</code> — gRPC-compatible JSON gateway</li>
+        </ul>`;
     }
 
     loadDashboard();

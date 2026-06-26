@@ -1,5 +1,6 @@
 //! Shared mutable state for the Control Center API server.
 //!
+use crate::correlation::TraceLog;
 use spanda_config::{DeviceRegistry, ResolvedSystemConfig};
 use spanda_ops::{AlertDispatcher, AlertStore};
 use spanda_security::{ApiKeyStore, ManagedSecretVault};
@@ -15,6 +16,7 @@ pub struct ControlCenterState {
     pub secret_vault: ManagedSecretVault,
     pub alert_dispatcher: AlertDispatcher,
     pub alert_store: AlertStore,
+    pub trace_log: TraceLog,
 }
 
 impl ControlCenterState {
@@ -26,6 +28,7 @@ impl ControlCenterState {
             secret_vault: ManagedSecretVault::new(),
             alert_dispatcher: AlertDispatcher::from_env(),
             alert_store: AlertStore::new(500),
+            trace_log: TraceLog::new(1000),
         }
     }
 

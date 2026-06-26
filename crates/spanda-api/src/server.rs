@@ -54,6 +54,10 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
     eprintln!("  GET  /v1/fleet/agents   registered fleet agents");
     eprintln!("  GET  /v1/alerts         alert history");
     eprintln!("  POST /v1/alerts/test    test alert (Bearer token)");
+    eprintln!("  GET  /v1/openapi.json   OpenAPI 3.1 spec");
+    eprintln!("  GET  /v1/drift          operational drift (?baseline_id=)");
+    eprintln!("  POST /v1/ota/plan       canary / phased / blue-green rollout");
+    eprintln!("  POST /v1/rpc            gRPC-compatible JSON gateway");
 
     if options.once {
         let (mut stream, _) = listener
@@ -89,13 +93,13 @@ fn serve_connection(
     let request = parse_http_request(&raw)?;
     let path = request.path.split('?').next().unwrap_or(&request.path);
     let mut guard = state.lock().map_err(|e| e.to_string())?;
-    let response = handle_request(&mut guard, &request);
+    let (response, correlation_id) = handle_request(&mut guard, &request, &raw);
     let content_type = if path == "/" || path == "/control-center" {
         "text/html; charset=utf-8"
     } else {
         "application/json"
     };
-    let encoded = encode_response(&response, content_type);
+    let encoded = encode_response(&response, content_type, Some(&correlation_id));
     stream
         .write_all(encoded.as_bytes())
         .map_err(|e| format!("write response failed: {e}"))?;
