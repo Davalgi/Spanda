@@ -4,7 +4,12 @@ use crate::discovery_transport::{DeviceDiscoveryTransport, DiscoveryOptions, Dis
 use spanda_package::registry_package_dir;
 
 /// Official discovery transport packages shipped in the registry.
-const DISCOVERY_PACKAGES: &[(&str, &str)] = &[("mdns", "spanda-discovery-mdns")];
+const DISCOVERY_PACKAGES: &[(&str, &str)] = &[
+    ("mdns", "spanda-discovery-mdns"),
+    ("ble", "spanda-discovery-ble"),
+    ("bluetooth", "spanda-discovery-ble"),
+    ("usb", "spanda-discovery-usb"),
+];
 
 /// Map a transport name to its registry package when one exists.
 pub fn discovery_package_for_transport(transport: &str) -> Option<&'static str> {
@@ -69,7 +74,9 @@ pub fn wrap_with_registry_package(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::discovery_transport::MockMdnsDiscoveryTransport;
+    use crate::discovery_transport::{
+        MockBleDiscoveryTransport, MockMdnsDiscoveryTransport, MockUsbDiscoveryTransport,
+    };
 
     #[test]
     fn registry_mdns_wraps_when_package_present() {
@@ -86,5 +93,31 @@ mod tests {
             .matches
             .first()
             .is_some_and(|m| m.matched_by.contains("spanda-discovery-mdns")));
+    }
+
+    #[test]
+    fn registry_ble_wraps_when_package_present() {
+        if !is_registry_discovery_package_installed("spanda-discovery-ble") {
+            return;
+        }
+        let transport = wrap_with_registry_package(
+            "ble",
+            Box::new(MockBleDiscoveryTransport) as Box<dyn DeviceDiscoveryTransport>,
+        );
+        let result = transport.discover(&DiscoveryOptions::default()).unwrap();
+        assert!(result.transport.contains("spanda-discovery-ble"));
+    }
+
+    #[test]
+    fn registry_usb_wraps_when_package_present() {
+        if !is_registry_discovery_package_installed("spanda-discovery-usb") {
+            return;
+        }
+        let transport = wrap_with_registry_package(
+            "usb",
+            Box::new(MockUsbDiscoveryTransport) as Box<dyn DeviceDiscoveryTransport>,
+        );
+        let result = transport.discover(&DiscoveryOptions::default()).unwrap();
+        assert!(result.transport.contains("spanda-discovery-usb"));
     }
 }

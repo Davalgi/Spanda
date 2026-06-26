@@ -1,0 +1,17 @@
+[package]
+name = "spanda-discovery-ble"
+version = "0.1.0"
+description = "Bluetooth LE device discovery transport for Spanda Control Center"
+license = "Apache-2.0"
+
+[safety]
+level = "sensors"
+
+[capabilities]
+required = [
+  "bluetooth.discover",
+]
+
+[adapter]
+provides = ["discovery.ble"]
+requires = ["bluetooth.le"]

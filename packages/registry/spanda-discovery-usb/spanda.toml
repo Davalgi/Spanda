@@ -1,0 +1,17 @@
+[package]
+name = "spanda-discovery-usb"
+version = "0.1.0"
+description = "USB device discovery transport for Spanda Control Center"
+license = "Apache-2.0"
+
+[safety]
+level = "sensors"
+
+[capabilities]
+required = [
+  "usb.discover",
+]
+
+[adapter]
+provides = ["discovery.usb"]
+requires = ["usb.host"]
