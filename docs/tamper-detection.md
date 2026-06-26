@@ -50,7 +50,9 @@ Verify-time `spanda tamper-check` composes threat modeling, safety audit, securi
 | `runtime_intrusion/` | `spanda tamper-check <trace>`, `spanda diagnose tamper` |
 | `tamper_policy/` | `spanda sim --inject-security-faults` |
 
-One command: `spanda demo trust` · smoke: `scripts/trust_showcase_smoke.sh`
+One command: `spanda demo trust` · smoke: `scripts/trust_showcase_smoke.sh`, `scripts/bundled_trust_smoke.sh`
+
+Trust showcases are bundled in the `spanda` CLI crate for `cargo install` (sync via `scripts/sync_bundled_examples.sh`).
 
 ## Integration
 

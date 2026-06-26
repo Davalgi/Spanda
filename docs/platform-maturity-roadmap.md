@@ -417,7 +417,9 @@ Branches match runtime signals (`tamper severity Critical`, `tamper signal capab
 | `examples/showcase/runtime_intrusion/` | Unexpected capability usage in mission trace |
 | `examples/showcase/tamper_policy/` | Declarative tamper_policy response on security faults |
 
-Run all: `spanda demo trust` (set `SPANDA_ROOT` to repo) · smoke: `scripts/trust_showcase_smoke.sh`, `scripts/showcase_smoke.sh`
+Run all: `spanda demo trust` · smoke: `scripts/trust_showcase_smoke.sh`, `scripts/showcase_smoke.sh`, `scripts/bundled_trust_smoke.sh`
+
+Bundled copies ship in the `spanda` crate for `cargo install` — refresh with `scripts/sync_bundled_examples.sh` after editing showcases.
 
 ### Remaining gaps (honest)
 
