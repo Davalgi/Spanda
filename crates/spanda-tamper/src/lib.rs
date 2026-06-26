@@ -7,6 +7,7 @@ pub mod diagnosis;
 pub mod fleet;
 pub mod integrity;
 pub mod policy;
+pub mod remote_attestation;
 pub mod runtime;
 pub mod secure_boot;
 pub mod tpm;
@@ -15,7 +16,7 @@ pub use assurance::{
     format_security_assurance_report, generate_security_assurance, SecurityAssuranceFormat,
     SecurityAssuranceReport, SecurityAssuranceSection,
 };
-pub use attestation::{query_live_attestation, LiveAttestationResult};
+pub use attestation::{apply_ak_chain_policy, query_live_attestation, LiveAttestationResult};
 pub use detect::{
     format_tamper_report, generate_tamper_check, TamperFinding, TamperFormat, TamperReport,
     TamperSeverity, TamperStatus,
@@ -39,6 +40,9 @@ pub use policy::{
     actions_for_tamper_event, extract_tamper_policies, tamper_policy_coverage, TamperPolicySpec,
 };
 pub use runtime::{generate_runtime_tamper_check, MissionTrace, TraceFrame};
+pub use remote_attestation::{
+    attestation_trust_store_dir, validate_ak_cert_chain, AkCertChainValidation,
+};
 pub use secure_boot::{
     contract_to_package, evaluate_secure_boot_coverage, is_secure_boot_contract, SecureBootCoverage,
     SecureBootEntry,

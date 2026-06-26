@@ -1,6 +1,6 @@
 //! Optional TPM and vendor secure-boot quote backends.
 
-use crate::attestation::LiveAttestationResult;
+use crate::attestation::{apply_ak_chain_policy, LiveAttestationResult};
 use serde::Deserialize;
 use std::path::{Path, PathBuf};
 
@@ -13,6 +13,8 @@ struct TpmQuoteResponse {
     score: Option<u32>,
     #[serde(default)]
     detail: Option<String>,
+    #[serde(default)]
+    ak_cert_chain: Vec<String>,
 }
 
 /// Query optional TPM or vendor quote backend when `SPANDA_TPM_BACKEND` is set.
@@ -32,7 +34,9 @@ pub fn query_tpm_attestation(
     // Live attestation result when a configured backend succeeds.
     //
     // Options:
-    // `SPANDA_TPM_BACKEND` — `mock`, `jetson`, `pi`, `tpm2`, `file`, or `script`
+    // `SPANDA_TPM_BACKEND` — `mock`, `jetson`, `pi`, `vendor`, `tpm2`, `file`, or `script`
+    // `SPANDA_TPM_VENDOR_SDK` — vendor SDK adapter script/binary for `vendor` backend
+    // `SPANDA_TPM_VENDOR_JETSON` / `SPANDA_TPM_VENDOR_PI` — contract-specific vendor SDK overrides
     // `SPANDA_TPM2_SCRIPT` — optional shell command for `tpm2` backend (stdout JSON)
     // `SPANDA_TPM2_PCR0_EXPECT` — optional hex PCR0 policy for tpm2 quote verification
     // `SPANDA_TPM_QUOTE_PATH` — JSON quote file for `file` backend
@@ -46,6 +50,7 @@ pub fn query_tpm_attestation(
         .filter(|value| !value.trim().is_empty())?;
     match backend.trim().to_ascii_lowercase().as_str() {
         "mock" | "jetson" | "pi" => Some(mock_tpm_quote(contract, package, &backend)),
+        "vendor" => Some(run_vendor_sdk_quote(contract, package, program_label)),
         "tpm2" => Some(run_tpm2_quote(contract, package)),
         "file" => read_file_quote(),
         "script" => run_script_quote(contract, package, program_label),
@@ -54,7 +59,7 @@ pub fn query_tpm_attestation(
 }
 
 fn parse_quote_response(payload: TpmQuoteResponse) -> LiveAttestationResult {
-    LiveAttestationResult {
+    let base = LiveAttestationResult {
         attested: payload.attested,
         boot_state: if payload.boot_state.is_empty() {
             if payload.attested {
@@ -73,7 +78,10 @@ fn parse_quote_response(payload: TpmQuoteResponse) -> LiveAttestationResult {
                 "tpm quote failed".into()
             }
         }),
-    }
+        ak_chain_verified: None,
+        ak_chain_detail: None,
+    };
+    apply_ak_chain_policy(base, payload.ak_cert_chain)
 }
 
 fn mock_tpm_quote(contract: &str, package: &str, backend: &str) -> LiveAttestationResult {
@@ -82,6 +90,131 @@ fn mock_tpm_quote(contract: &str, package: &str, backend: &str) -> LiveAttestati
         boot_state: "verified".into(),
         score: 95,
         detail: format!("{backend} tpm quote stub for {contract} via {package}"),
+        ak_chain_verified: None,
+        ak_chain_detail: None,
+    }
+}
+
+fn live_result(attested: bool, boot_state: &str, score: u32, detail: impl Into<String>) -> LiveAttestationResult {
+    LiveAttestationResult {
+        attested,
+        boot_state: boot_state.into(),
+        score,
+        detail: detail.into(),
+        ak_chain_verified: None,
+        ak_chain_detail: None,
+    }
+}
+
+fn run_vendor_sdk_quote(
+    contract: &str,
+    package: &str,
+    program_label: Option<&str>,
+) -> LiveAttestationResult {
+    // Invoke a vendor TPM SDK adapter script for platform-specific secure boot quotes.
+    //
+    // Parameters:
+    // - `contract` — secure-boot import path
+    // - `package` — registry package name
+    // - `program_label` — optional program label
+    //
+    // Returns:
+    // Parsed vendor SDK quote with optional AK cert chain validation.
+    //
+    // Options:
+    // `SPANDA_TPM_VENDOR_SDK` — global vendor adapter override.
+    // `SPANDA_TPM_VENDOR_JETSON` / `SPANDA_TPM_VENDOR_PI` — contract-specific adapters.
+    //
+    // Example:
+    // let live = run_vendor_sdk_quote("trust.jetson", "spanda-trust-jetson", None);
+
+    let script = std::env::var("SPANDA_TPM_VENDOR_SDK")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| vendor_sdk_for_contract(contract));
+
+    let Some(script) = script else {
+        return live_result(
+            false,
+            "unavailable",
+            0,
+            format!("no vendor TPM SDK adapter configured for {contract}"),
+        );
+    };
+
+    let mut command = std::process::Command::new("sh");
+    if Path::new(&script).is_file() {
+        command.arg(&script);
+    } else {
+        command.arg("-c").arg(&script);
+    }
+    let output = command
+        .env("SPANDA_ATTESTATION_CONTRACT", contract)
+        .env("SPANDA_ATTESTATION_PACKAGE", package)
+        .env(
+            "SPANDA_ATTESTATION_PROGRAM",
+            program_label.unwrap_or_default(),
+        )
+        .output();
+
+    match output {
+        Ok(result) if result.status.success() => {
+            if let Ok(payload) = serde_json::from_slice::<TpmQuoteResponse>(&result.stdout) {
+                return parse_quote_response(payload);
+            }
+            live_result(
+                false,
+                "failed",
+                0,
+                format!(
+                    "vendor sdk returned invalid JSON for {contract}: {}",
+                    String::from_utf8_lossy(&result.stdout)
+                ),
+            )
+        }
+        Ok(result) => live_result(
+            false,
+            "failed",
+            0,
+            format!(
+                "vendor sdk failed for {contract}: {}",
+                String::from_utf8_lossy(&result.stderr)
+            ),
+        ),
+        Err(error) => live_result(
+            false,
+            "unavailable",
+            0,
+            format!("vendor sdk unavailable for {contract}: {error}"),
+        ),
+    }
+}
+
+fn vendor_sdk_for_contract(contract: &str) -> Option<String> {
+    let override_key = match contract {
+        "trust.jetson" => "SPANDA_TPM_VENDOR_JETSON",
+        "trust.pi" => "SPANDA_TPM_VENDOR_PI",
+        _ => return None,
+    };
+    if let Some(path) = std::env::var(override_key)
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+    {
+        return Some(path);
+    }
+
+    let mut fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    fixture.push("../../examples/showcase/secure_boot/fixtures");
+    let script_name = match contract {
+        "trust.jetson" => "jetson-tpm-vendor.sh",
+        "trust.pi" => "pi-tpm-vendor.sh",
+        _ => return None,
+    };
+    fixture.push(script_name);
+    if fixture.is_file() {
+        Some(fixture.to_string_lossy().into_owned())
+    } else {
+        None
     }
 }
 
@@ -109,31 +242,26 @@ fn run_tpm2_quote(contract: &str, package: &str) -> LiveAttestationResult {
     }
 
     if !tpm2_getcap_available() {
-        return LiveAttestationResult {
-            attested: false,
-            boot_state: "unavailable".into(),
-            score: 0,
-            detail: format!("tpm2 tools not available for {contract}"),
-        };
+        return live_result(
+            false,
+            "unavailable",
+            0,
+            format!("tpm2 tools not available for {contract}"),
+        );
     }
 
     if tpm2_tooling_complete() {
         if let Ok(detail) = attempt_tpm2_pcr_quote(contract, package) {
-            return LiveAttestationResult {
-                attested: true,
-                boot_state: "verified".into(),
-                score: 98,
-                detail,
-            };
+            return live_result(true, "verified", 98, detail);
         }
     }
 
-    LiveAttestationResult {
-        attested: true,
-        boot_state: "verified".into(),
-        score: 96,
-        detail: format!("tpm2_getcap ok; tpm2_quote skipped or failed for {contract}"),
-    }
+    live_result(
+        true,
+        "verified",
+        96,
+        format!("tpm2_getcap ok; tpm2_quote skipped or failed for {contract}"),
+    )
 }
 
 fn run_tpm2_script_quote(script: &str, contract: &str, package: &str) -> LiveAttestationResult {
@@ -152,31 +280,31 @@ fn run_tpm2_script_quote(script: &str, contract: &str, package: &str) -> LiveAtt
             if let Ok(payload) = serde_json::from_slice::<TpmQuoteResponse>(&result.stdout) {
                 return parse_quote_response(payload);
             }
-            LiveAttestationResult {
-                attested: false,
-                boot_state: "failed".into(),
-                score: 0,
-                detail: format!(
+            live_result(
+                false,
+                "failed",
+                0,
+                format!(
                     "tpm2 script returned invalid JSON for {contract}: {}",
                     String::from_utf8_lossy(&result.stdout)
                 ),
-            }
+            )
         }
-        Ok(result) => LiveAttestationResult {
-            attested: false,
-            boot_state: "failed".into(),
-            score: 0,
-            detail: format!(
+        Ok(result) => live_result(
+            false,
+            "failed",
+            0,
+            format!(
                 "tpm2 script failed for {contract}: {}",
                 String::from_utf8_lossy(&result.stderr)
             ),
-        },
-        Err(error) => LiveAttestationResult {
-            attested: false,
-            boot_state: "unavailable".into(),
-            score: 0,
-            detail: format!("tpm2 script unavailable for {contract}: {error}"),
-        },
+        ),
+        Err(error) => live_result(
+            false,
+            "unavailable",
+            0,
+            format!("tpm2 script unavailable for {contract}: {error}"),
+        ),
     }
 }
 
@@ -383,12 +511,12 @@ fn run_script_quote(
         .output()
         .ok()?;
     if !output.status.success() {
-        return Some(LiveAttestationResult {
-            attested: false,
-            boot_state: "failed".into(),
-            score: 0,
-            detail: String::from_utf8_lossy(&output.stderr).into_owned(),
-        });
+        return Some(live_result(
+            false,
+            "failed",
+            0,
+            String::from_utf8_lossy(&output.stderr).into_owned(),
+        ));
     }
     let payload: TpmQuoteResponse = serde_json::from_slice(&output.stdout).ok()?;
     Some(parse_quote_response(payload))
@@ -476,6 +604,22 @@ mod tests {
         );
         std::env::remove_var("SPANDA_TPM_BACKEND");
         std::env::remove_var("SPANDA_TPM2_SCRIPT");
+    }
+
+    #[test]
+    fn vendor_backend_uses_jetson_fixture_when_present() {
+        let _guard = env_lock();
+        std::env::remove_var("SPANDA_TPM_VENDOR_SDK");
+        std::env::remove_var("SPANDA_TPM_VENDOR_JETSON");
+        std::env::set_var("SPANDA_TPM_BACKEND", "vendor");
+        let result = query_tpm_attestation("trust.jetson", "spanda-trust-jetson", Some("rover.sd"))
+            .expect("vendor quote");
+        assert!(
+            result.attested || result.boot_state == "unavailable",
+            "detail={}",
+            result.detail
+        );
+        std::env::remove_var("SPANDA_TPM_BACKEND");
     }
 
     #[test]

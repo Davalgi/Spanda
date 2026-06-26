@@ -279,7 +279,13 @@ fn collect_secure_boot_findings(
             let live = entry
                 .live_attestation
                 .as_ref()
-                .map(|live| format!(" boot_state={}", live.boot_state))
+                .map(|live| {
+                    let mut detail = format!(" boot_state={}", live.boot_state);
+                    if let Some(verified) = live.ak_chain_verified {
+                        detail.push_str(&format!(" ak_chain_verified={verified}"));
+                    }
+                    detail
+                })
                 .unwrap_or_default();
             findings.push(TamperFinding {
                 category: "secure_boot".into(),
