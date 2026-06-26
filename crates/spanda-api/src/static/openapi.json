@@ -36,6 +36,114 @@
         "responses": { "200": { "description": "Device pool and alert counts" } }
       }
     },
+    "/v1/devices": {
+      "get": {
+        "summary": "List devices in the device pool",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Device inventory" } }
+      }
+    },
+    "/v1/devices/discover": {
+      "post": {
+        "summary": "Run multi-transport device discovery",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transports": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Discovery results" } }
+      }
+    },
+    "/v1/devices/{id}": {
+      "get": {
+        "summary": "Get device by id",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Device record" }, "404": { "description": "Not found" } }
+      }
+    },
+    "/v1/devices/{id}/provision": {
+      "post": {
+        "summary": "Provision a discovered device",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Provision result" } }
+      }
+    },
+    "/v1/devices/{id}/assign": {
+      "post": {
+        "summary": "Assign device to robot or fleet",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Assignment result" } }
+      }
+    },
+    "/v1/devices/{id}/quarantine": {
+      "post": {
+        "summary": "Quarantine a device",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Quarantine result" } }
+      }
+    },
+    "/v1/robots": {
+      "get": {
+        "summary": "List robots with assigned devices",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Robot inventory" } }
+      }
+    },
+    "/v1/fleets": {
+      "get": {
+        "summary": "List fleets",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Fleet inventory" } }
+      }
+    },
+    "/v1/device-tree": {
+      "get": {
+        "summary": "Hierarchical device tree",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Device tree" } }
+      }
+    },
+    "/v1/device-reports": {
+      "get": {
+        "summary": "Device pool reports bundle",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Inventory, trust, calibration, readiness reports" } }
+      }
+    },
+    "/v1/failover/chains": {
+      "get": {
+        "summary": "Redundant device failover chains",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Failover chain definitions" } }
+      }
+    },
+    "/v1/readiness/run": {
+      "post": {
+        "summary": "Run readiness checks with device pool impact",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Readiness report" } }
+      }
+    },
     "/v1/drift": {
       "get": {
         "summary": "Operational drift report",
