@@ -73,6 +73,24 @@ fetch /v1/alerts | grep -q Control
 echo "== GET / (Control Center UI) =="
 curl -sf "http://${BIND}/" | grep -q "Spanda Control Center"
 
+echo "== GET /v1/devices/lidar-front =="
+fetch /v1/devices/lidar-front | grep -q lidar-front
+
+echo "== GET /v1/robots =="
+fetch /v1/robots | grep -q rover-001
+
+echo "== GET /v1/device-tree =="
+fetch /v1/device-tree | grep -q mapping
+
+echo "== POST /v1/readiness/run =="
+curl -sf -X POST "http://${BIND}/v1/readiness/run" | grep -q mission_ready
+
+echo "== GET /v1/failover/chains =="
+fetch /v1/failover/chains | grep -q chains
+
+echo "== GET /v1/device-reports =="
+fetch /v1/device-reports | grep -q inventory
+
 echo "== E2 GET /v1/discovery?transport=mdns =="
 fetch "/v1/discovery?transport=mdns" | grep -q mdns-stub-robot
 

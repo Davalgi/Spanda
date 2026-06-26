@@ -41,8 +41,7 @@ pub fn render_otlp_traces_json(spans: &[HttpTraceSpan]) -> String {
 
 /// Push OTLP/JSON traces to a collector (Jaeger OTLP HTTP default `/v1/traces`).
 pub fn push_otlp_traces(endpoint: &str, body: &str, token: Option<&str>) -> Result<(), String> {
-    let response =
-        spanda_deploy_http::http_request("POST", endpoint, Some(body), token).map_err(|e| e)?;
+    let response = spanda_deploy_http::http_request("POST", endpoint, Some(body), token)?;
     if (200..300).contains(&response.status) {
         return Ok(());
     }

@@ -1988,3 +1988,18 @@ robot Rover {
         let _ = std::fs::remove_file(&store);
     }
 }
+
+/// Prepend device-pool failover actions when a configured redundant chain exists.
+pub fn enrich_recovery_plan_with_failover(
+    plan: &mut RecoveryPlan,
+    registry: &spanda_config::DeviceRegistry,
+    failed_device_id: &str,
+) {
+    for (offset, action) in spanda_config::recovery_failover_actions(registry, failed_device_id)
+        .into_iter()
+        .enumerate()
+    {
+        plan.actions
+            .insert(offset, parse_action_text(&action, offset as u32 + 1));
+    }
+}

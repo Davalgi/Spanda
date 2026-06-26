@@ -7,9 +7,10 @@ use crate::observability;
 use crate::state::ControlCenterState;
 use serde::Serialize;
 use spanda_config::{
-    default_snapshots_dir, list_config_snapshots, run_provision_workflow, save_config_snapshot,
-    DeviceDiscoveryTransport, DeviceLifecycleState, DiscoveryOptions, MockMdnsDiscoveryTransport,
-    SubnetDiscoveryTransport,
+    default_snapshots_dir, export_device_mapping_json, failover_chains, generate_device_reports,
+    list_config_snapshots, readiness_impact, run_discovery_transports, run_provision_workflow,
+    save_config_snapshot, AssignDeviceOptions, DeviceDiscoveryTransport, DeviceLifecycleState,
+    DiscoveryOptions, SubnetDiscoveryTransport,
 };
 use spanda_deploy_http::{HttpRequest, HttpResponse};
 use spanda_fleet::remote::{default_fleet_agents_path, load_fleet_agent_registry};
@@ -40,8 +41,7 @@ pub fn handle_request(
     raw_headers: &str,
 ) -> (HttpResponse, String) {
     let started_ms = now_ms();
-    let correlation_id =
-        correlation_from_headers(raw_headers).unwrap_or_else(new_correlation_id);
+    let correlation_id = correlation_from_headers(raw_headers).unwrap_or_else(new_correlation_id);
     let (path, query) = match request.path.split_once('?') {
         Some((p, q)) => (p, q),
         None => (request.path.as_str(), ""),
@@ -55,22 +55,50 @@ pub fn handle_request(
             version: API_VERSION,
             service: "spanda-control-center",
         });
-        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
         return (response, correlation_id);
     }
     if path == "/" || path == "/control-center" {
         let response = html_ok(include_str!("static/control-center.html"));
-        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
         return (response, correlation_id);
     }
     if path == "/v1/openapi.json" {
         let response = e3::openapi_spec();
-        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
         return (response, correlation_id);
     }
     if !path.starts_with("/v1/") {
         let response = not_found();
-        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
         return (response, correlation_id);
     }
     let ctx = state
@@ -79,11 +107,42 @@ pub fn handle_request(
     if path.starts_with("/v1/devices/") && request.method == "PATCH" {
         let id = path.trim_start_matches("/v1/devices/");
         let response = device_patch(state, id, &request.body, ctx.as_ref());
-        e3::record_trace(state, &correlation_id, &request.method, path, response.status, started_ms);
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
+        return (response, correlation_id);
+    }
+    if let Some(response) = route_device_subresource(
+        state,
+        path,
+        &request.method,
+        &request.body,
+        query,
+        ctx.as_ref(),
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+        );
         return (response, correlation_id);
     }
     let response = match (path, request.method.as_str()) {
         ("/v1/dashboard", "GET") => dashboard(state),
+        ("/v1/robots", "GET") => robots_list(state),
+        ("/v1/fleets", "GET") => fleets_list(state),
+        ("/v1/device-tree", "GET") => device_tree_get(state),
+        ("/v1/readiness/run", "POST") => readiness_run(state, &request.body),
+        ("/v1/device-reports", "GET") => device_reports_get(state),
+        ("/v1/failover/chains", "GET") => failover_chains_get(state),
         ("/v1/devices", "GET") => devices_list(state),
         ("/v1/fleet/agents", "GET") => fleet_agents(),
         ("/v1/alerts", "GET") => alerts_list(state),
@@ -92,7 +151,9 @@ pub fn handle_request(
         ("/v1/rbac/matrix", "GET") => rbac_matrix(),
         ("/v1/provision", "POST") => provision_run(state, &request.body, ctx.as_ref()),
         ("/v1/config/snapshots", "GET") => config_snapshots_list(),
-        ("/v1/config/snapshots", "POST") => config_snapshots_save(state, &request.body, ctx.as_ref()),
+        ("/v1/config/snapshots", "POST") => {
+            config_snapshots_save(state, &request.body, ctx.as_ref())
+        }
         ("/v1/discovery", "GET") => discovery_run(query),
         ("/v1/health/summary", "GET") => health_summary(state),
         ("/v1/assurance/summary", "GET") => assurance_summary(state),
@@ -114,9 +175,7 @@ pub fn handle_request(
             e3::operator_mission_approve(&request.body, ctx.as_ref())
         }
         ("/v1/rpc", "POST") => e3::rpc_gateway(state, &request.body),
-        ("/v1/compliance/export", "GET") => {
-            e4::compliance_export(state, query, None, ctx.as_ref())
-        }
+        ("/v1/compliance/export", "GET") => e4::compliance_export(state, query, None, ctx.as_ref()),
         ("/v1/compliance/export", "POST") => {
             e4::compliance_export(state, query, Some(&request.body), ctx.as_ref())
         }
@@ -278,7 +337,8 @@ fn provision_run(
                 .iter_mut()
                 .find(|d| d.id == device_id)
             {
-                device.lifecycle_state = Some(DeviceLifecycleState::Quarantined.as_str().to_string());
+                device.lifecycle_state =
+                    Some(DeviceLifecycleState::Quarantined.as_str().to_string());
             }
         }
     } else if let Some(resolved) = state.resolved.as_mut() {
@@ -288,7 +348,7 @@ fn provision_run(
             .iter_mut()
             .find(|d| d.id == device_id)
         {
-            device.lifecycle_state = Some(DeviceLifecycleState::Healthy.as_str().to_string());
+            device.lifecycle_state = Some(DeviceLifecycleState::Active.as_str().to_string());
             if let Some(robot) = robot_id {
                 device.assigned_robot = Some(robot.to_string());
             }
@@ -337,23 +397,281 @@ fn config_snapshots_save(
 
 fn discovery_run(query: &str) -> HttpResponse {
     let params = parse_query(query);
-    let transport = params.get("transport").map(String::as_str).unwrap_or("subnet");
+    let transport = params
+        .get("transport")
+        .map(String::as_str)
+        .unwrap_or("subnet");
     let options = DiscoveryOptions {
         subnet: params.get("subnet").cloned(),
         timeout_ms: params.get("timeout_ms").and_then(|v| v.parse().ok()),
         transports: vec![transport.to_string()],
     };
-    let result = match transport {
-        "mdns" => MockMdnsDiscoveryTransport.discover(&options),
-        _ => SubnetDiscoveryTransport.discover(&options),
-    };
-    match result {
-        Ok(discovery) => json_ok(&serde_json::json!({
+    let results = run_discovery_transports(&options);
+    let discovery = results
+        .into_iter()
+        .next()
+        .and_then(Result::ok)
+        .or_else(|| SubnetDiscoveryTransport.discover(&options).ok());
+    match discovery {
+        Some(discovery) => json_ok(&serde_json::json!({
             "version": API_VERSION,
             "discovery": discovery,
         })),
-        Err(message) => bad_request(&message),
+        None => bad_request("discovery failed"),
     }
+}
+
+fn route_device_subresource(
+    state: &mut ControlCenterState,
+    path: &str,
+    method: &str,
+    body: &str,
+    _query: &str,
+    ctx: Option<&RbacContext>,
+) -> Option<HttpResponse> {
+    let rest = path.strip_prefix("/v1/devices/")?;
+    if rest == "discover" && method == "POST" {
+        return Some(discovery_post(body));
+    }
+    let (device_id, action) = rest.split_once('/').unwrap_or((rest, ""));
+    match (action, method) {
+        ("", "GET") => Some(device_get(state, device_id)),
+        ("provision", "POST") => Some(device_provision(state, device_id, body, ctx)),
+        ("assign", "POST") => Some(device_assign(state, device_id, body, ctx)),
+        ("quarantine", "POST") => Some(device_quarantine(state, device_id, ctx)),
+        _ => None,
+    }
+}
+
+fn device_get(state: &ControlCenterState, device_id: &str) -> HttpResponse {
+    let registry = state.device_registry();
+    let Some(device) = registry.get(device_id) else {
+        return HttpResponse {
+            status: 404,
+            body: serde_json::json!({ "ok": false, "error": "device not found" }).to_string(),
+        };
+    };
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "device": device,
+    }))
+}
+
+fn discovery_post(body: &str) -> HttpResponse {
+    let options: DiscoveryOptions = serde_json::from_str(body).unwrap_or_default();
+    let results: Vec<_> = run_discovery_transports(&options)
+        .into_iter()
+        .filter_map(Result::ok)
+        .collect();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "results": results,
+    }))
+}
+
+fn device_provision(
+    state: &mut ControlCenterState,
+    device_id: &str,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    let payload = serde_json::json!({
+        "device_id": device_id,
+    });
+    let merged = if body.trim().is_empty() {
+        payload.to_string()
+    } else if let Ok(mut v) = serde_json::from_str::<serde_json::Value>(body) {
+        if let Some(obj) = v.as_object_mut() {
+            obj.entry("device_id")
+                .or_insert(serde_json::json!(device_id));
+        }
+        v.to_string()
+    } else {
+        payload.to_string()
+    };
+    provision_run(state, &merged, ctx)
+}
+
+fn device_assign(
+    state: &mut ControlCenterState,
+    device_id: &str,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Provision) {
+        return unauthorized();
+    }
+    let payload: serde_json::Value = match serde_json::from_str(body) {
+        Ok(v) => v,
+        Err(e) => return bad_request(&e.to_string()),
+    };
+    let Some(robot_id) = payload.get("robot_id").and_then(|v| v.as_str()) else {
+        return bad_request("missing robot_id");
+    };
+    let options = AssignDeviceOptions {
+        robot_id: robot_id.to_string(),
+        logical_name: payload
+            .get("logical_name")
+            .and_then(|v| v.as_str())
+            .map(str::to_string),
+        redundant_group: payload
+            .get("redundant_group")
+            .and_then(|v| v.as_str())
+            .map(str::to_string),
+        failover_priority: payload
+            .get("failover_priority")
+            .and_then(|v| v.as_u64())
+            .map(|v| v as u32),
+    };
+    let result = {
+        let Some(resolved) = state.resolved.as_mut() else {
+            return bad_request("no resolved configuration loaded");
+        };
+        resolved.device_registry.assign_device(device_id, &options)
+    };
+    match result {
+        Ok(result) => {
+            let persist = state.persist_device(device_id).ok();
+            let mapping = state
+                .resolved
+                .as_ref()
+                .map(|r| export_device_mapping_json(&r.device_registry, &r.logical_map));
+            json_ok(&serde_json::json!({
+                "version": API_VERSION,
+                "result": result,
+                "mapping": mapping,
+                "persisted": persist,
+            }))
+        }
+        Err(e) => bad_request(&e),
+    }
+}
+
+fn device_quarantine(
+    state: &mut ControlCenterState,
+    device_id: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Provision) {
+        return unauthorized();
+    }
+    let result = {
+        let Some(resolved) = state.resolved.as_mut() else {
+            return bad_request("no resolved configuration loaded");
+        };
+        resolved.device_registry.quarantine_device(device_id)
+    };
+    match result {
+        Ok(result) => {
+            let persist = state.persist_device(device_id).ok();
+            json_ok(&serde_json::json!({
+                "version": API_VERSION,
+                "result": result,
+                "persisted": persist,
+            }))
+        }
+        Err(e) => bad_request(&e),
+    }
+}
+
+fn robots_list(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "robots": [],
+        }));
+    };
+    let robots: Vec<_> = resolved
+        .device_tree
+        .fleet
+        .as_ref()
+        .map(|f| {
+            f.robots
+                .iter()
+                .map(|r| {
+                    serde_json::json!({
+                        "id": r.id,
+                        "model": r.model,
+                        "hardware_profile": r.hardware_profile,
+                    })
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "robots": robots,
+    }))
+}
+
+fn fleets_list(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "fleets": [],
+        }));
+    };
+    let fleets = resolved
+        .device_tree
+        .fleet
+        .as_ref()
+        .map(|f| {
+            vec![serde_json::json!({
+                "id": f.id,
+                "robot_count": f.robots.len(),
+            })]
+        })
+        .unwrap_or_default();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "fleets": fleets,
+    }))
+}
+
+fn device_tree_get(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "loaded": false,
+        }));
+    };
+    let mapping = export_device_mapping_json(&resolved.device_registry, &resolved.logical_map);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "loaded": true,
+        "hierarchy": resolved.device_tree.hierarchy_lines(),
+        "mapping": mapping,
+    }))
+}
+
+fn readiness_run(state: &ControlCenterState, _body: &str) -> HttpResponse {
+    let registry = state.device_registry();
+    let impact = readiness_impact(&registry, now_ms());
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "mission_ready": impact.blocked_count == 0,
+        "impact": impact,
+    }))
+}
+
+fn device_reports_get(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return bad_request("no resolved configuration loaded");
+    };
+    let reports =
+        generate_device_reports(&resolved.device_registry, &resolved.logical_map, now_ms());
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "reports": reports,
+    }))
+}
+
+fn failover_chains_get(state: &ControlCenterState) -> HttpResponse {
+    let registry = state.device_registry();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "chains": failover_chains(&registry),
+    }))
 }
 
 fn health_summary(state: &ControlCenterState) -> HttpResponse {
@@ -410,10 +728,7 @@ pub(crate) fn parse_query(query: &str) -> std::collections::HashMap<String, Stri
 
 pub(crate) fn json_ok<T: Serialize>(value: &T) -> HttpResponse {
     let body = serde_json::to_string(value).unwrap_or_else(|_| "{}".into());
-    HttpResponse {
-        status: 200,
-        body,
-    }
+    HttpResponse { status: 200, body }
 }
 
 fn html_ok(html: &str) -> HttpResponse {

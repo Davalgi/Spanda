@@ -271,3 +271,46 @@ fn fleet_showcase_recovery_report_passes() {
         report.results.iter().map(|r| &r.status).collect::<Vec<_>>()
     );
 }
+
+#[test]
+fn device_pool_failover_enriches_recovery_plan() {
+    use spanda_assurance::enrich_recovery_plan_with_failover;
+    use spanda_config::{DeviceIdentityRecord, DeviceRegistry};
+
+    let registry = DeviceRegistry {
+        devices: vec![
+            DeviceIdentityRecord {
+                id: "gps-001".into(),
+                device_type: "GPS".into(),
+                logical_name: Some("gps".into()),
+                redundant_group: Some("gps".into()),
+                failover_priority: Some(1),
+                lifecycle_state: Some("failed".into()),
+                ..Default::default()
+            },
+            DeviceIdentityRecord {
+                id: "gps-002".into(),
+                device_type: "GPS".into(),
+                redundant_group: Some("gps".into()),
+                failover_priority: Some(2),
+                lifecycle_state: Some("active".into()),
+                ..Default::default()
+            },
+        ],
+    };
+    let program = parse_source("robot R { }");
+    let mut plan = RecoveryPlanner::plan(
+        &program,
+        &RecoveryContext {
+            issue: "gps-001 failed".into(),
+            diagnosis: None,
+            classification: None,
+            level: RecoveryLevel::Level2AutomaticLowRisk,
+        },
+    );
+    enrich_recovery_plan_with_failover(&mut plan, &registry, "gps-001");
+    assert!(plan
+        .actions
+        .iter()
+        .any(|a| a.description.contains("gps-002")));
+}

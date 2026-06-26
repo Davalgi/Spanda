@@ -4,11 +4,7 @@
 /// Render a plain-text document as a minimal PDF 1.4 byte stream.
 pub fn render_text_pdf(title: &str, body: &str) -> Vec<u8> {
     let mut lines: Vec<String> = vec![title.to_string(), String::new()];
-    lines.extend(
-        body.lines()
-            .take(80)
-            .map(|line| sanitize_pdf_text(line)),
-    );
+    lines.extend(body.lines().take(80).map(sanitize_pdf_text));
     let content = format!(
         "BT\n/F1 11 Tf\n14 TL\n50 750 Td\n{} T*\nET",
         lines

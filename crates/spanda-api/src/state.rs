@@ -62,6 +62,40 @@ impl ControlCenterState {
         self.resolved = Some(resolved);
         Ok(())
     }
+
+    pub fn project_root(&self) -> Option<PathBuf> {
+        let path = self.config_path.as_ref()?;
+        Some(if path.is_dir() {
+            path.clone()
+        } else {
+            path.parent()
+                .map(Path::to_path_buf)
+                .unwrap_or_else(|| PathBuf::from("."))
+        })
+    }
+
+    /// Persist one device record to disk and reload resolved configuration.
+    pub fn persist_device(
+        &mut self,
+        device_id: &str,
+    ) -> Result<spanda_config::DevicePersistResult, String> {
+        let root = self
+            .project_root()
+            .ok_or_else(|| "no config path".to_string())?;
+        let resolved = self
+            .resolved
+            .as_ref()
+            .ok_or_else(|| "no resolved configuration".to_string())?;
+        let device = resolved
+            .device_registry
+            .get(device_id)
+            .ok_or_else(|| format!("device '{device_id}' not found"))?
+            .clone();
+        let result = spanda_config::persist_device_record(&root, &resolved.manifest, &device)
+            .map_err(|e| e.to_string())?;
+        self.reload_config()?;
+        Ok(result)
+    }
 }
 
 impl Default for ControlCenterState {

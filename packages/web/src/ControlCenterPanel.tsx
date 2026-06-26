@@ -4,8 +4,10 @@ type DashboardData = {
   device_pool: {
     total: number;
     healthy: number;
+    active?: number;
     degraded: number;
     discovered: number;
+    quarantined?: number;
     failed: number;
   };
   fleet_agent_count: number;
@@ -23,9 +25,39 @@ type DeviceEntry = {
   device_type: string;
   lifecycle_state: string;
   assigned_robot?: string;
+  logical_name?: string;
+  trust_level?: string;
 };
 
-type Tab = "dashboard" | "fleet" | "readiness";
+type RobotEntry = {
+  id: string;
+  model?: string;
+  hardware_profile?: string;
+};
+
+type FleetEntry = {
+  id: string;
+  robot_count: number;
+};
+
+type ReadinessImpact = {
+  mission_ready: boolean;
+  impact: {
+    blocked_count: number;
+    total_devices: number;
+  };
+};
+
+type Tab =
+  | "dashboard"
+  | "devices"
+  | "fleet"
+  | "discovery"
+  | "provisioning"
+  | "mapping"
+  | "health"
+  | "readiness"
+  | "traceability";
 
 type Props = {
   apiBase: string;
@@ -36,28 +68,60 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [agents, setAgents] = useState<FleetAgent[]>([]);
   const [devices, setDevices] = useState<DeviceEntry[]>([]);
+  const [robots, setRobots] = useState<RobotEntry[]>([]);
+  const [fleets, setFleets] = useState<FleetEntry[]>([]);
+  const [mapping, setMapping] = useState<Record<string, unknown> | null>(null);
+  const [readiness, setReadiness] = useState<ReadinessImpact | null>(null);
+  const [deviceDetail, setDeviceDetail] = useState<Record<string, unknown> | null>(null);
+  const [provisionLog, setProvisionLog] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const base = apiBase.replace(/\/$/, "");
+  const apiKey =
+    (import.meta as { env?: { VITE_SPANDA_API_KEY?: string } }).env?.VITE_SPANDA_API_KEY ?? "";
+
+  const authHeaders = (): HeadersInit => {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+    return headers;
+  };
 
   const load = useCallback(async () => {
     setBusy(true);
     setError(null);
     try {
-      const dashRes = await fetch(`${base}/v1/dashboard`);
+      const [dashRes, fleetRes, devRes, robotRes, fleetListRes, treeRes] =
+        await Promise.all([
+          fetch(`${base}/v1/dashboard`),
+          fetch(`${base}/v1/fleet/agents`),
+          fetch(`${base}/v1/devices`),
+          fetch(`${base}/v1/robots`),
+          fetch(`${base}/v1/fleets`),
+          fetch(`${base}/v1/device-tree`),
+        ]);
       if (!dashRes.ok) throw new Error(`dashboard ${dashRes.status}`);
       setDashboard(await dashRes.json());
-
-      const fleetRes = await fetch(`${base}/v1/fleet/agents`);
-      if (!fleetRes.ok) throw new Error(`fleet ${fleetRes.status}`);
-      const fleetBody = await fleetRes.json();
-      setAgents(fleetBody.agents ?? []);
-
-      const devRes = await fetch(`${base}/v1/devices`);
-      if (!devRes.ok) throw new Error(`devices ${devRes.status}`);
-      const devBody = await devRes.json();
-      setDevices(devBody.devices ?? []);
+      if (fleetRes.ok) {
+        const fleetBody = await fleetRes.json();
+        setAgents(fleetBody.agents ?? []);
+      }
+      if (devRes.ok) {
+        const devBody = await devRes.json();
+        setDevices(devBody.devices ?? []);
+      }
+      if (robotRes.ok) {
+        const robotBody = await robotRes.json();
+        setRobots(robotBody.robots ?? []);
+      }
+      if (fleetListRes.ok) {
+        const fleetBody = await fleetListRes.json();
+        setFleets(fleetBody.fleets ?? []);
+      }
+      if (treeRes.ok) {
+        const treeBody = await treeRes.json();
+        setMapping(treeBody.mapping ?? null);
+      }
     } catch (e) {
       setError(String(e));
     } finally {
@@ -69,16 +133,161 @@ export function ControlCenterPanel({ apiBase }: Props) {
     void load();
   }, [load]);
 
+  const runReadiness = async () => {
+    setBusy(true);
+    try {
+      const res = await fetch(`${base}/v1/readiness/run`, { method: "POST" });
+      if (!res.ok) throw new Error(`readiness ${res.status}`);
+      setReadiness(await res.json());
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const runDiscovery = async () => {
+    setBusy(true);
+    try {
+      const res = await fetch(`${base}/v1/devices/discover`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transports: ["mdns", "subnet"] }),
+      });
+      if (!res.ok) throw new Error(`discover ${res.status}`);
+      await res.json();
+      await load();
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const inspectDevice = async (id: string) => {
+    setSelectedDevice(id);
+    setTab("provisioning");
+    setProvisionLog(null);
+    try {
+      const res = await fetch(`${base}/v1/devices/${encodeURIComponent(id)}`);
+      if (res.ok) {
+        const body = await res.json();
+        setDeviceDetail(body.device ?? null);
+      }
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+
+  const provisionDevice = async () => {
+    if (!selectedDevice) return;
+    setBusy(true);
+    setProvisionLog(null);
+    try {
+      const robot = robots[0]?.id ?? "rover-001";
+      const res = await fetch(
+        `${base}/v1/devices/${encodeURIComponent(selectedDevice)}/provision`,
+        {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({ robot_id: robot }),
+        },
+      );
+      const body = await res.json();
+      setProvisionLog(JSON.stringify(body.report ?? body, null, 2));
+      await load();
+      await inspectDevice(selectedDevice);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const quarantineDevice = async () => {
+    if (!selectedDevice) return;
+    setBusy(true);
+    try {
+      const res = await fetch(
+        `${base}/v1/devices/${encodeURIComponent(selectedDevice)}/quarantine`,
+        { method: "POST", headers: authHeaders() },
+      );
+      if (!res.ok) throw new Error(`quarantine ${res.status}`);
+      await load();
+      await inspectDevice(selectedDevice);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const assignDevice = async () => {
+    if (!selectedDevice) return;
+    setBusy(true);
+    try {
+      const robot = robots[0]?.id ?? "rover-001";
+      const res = await fetch(
+        `${base}/v1/devices/${encodeURIComponent(selectedDevice)}/assign`,
+        {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({ robot_id: robot }),
+        },
+      );
+      if (!res.ok) throw new Error(`assign ${res.status}`);
+      await load();
+      await inspectDevice(selectedDevice);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const exportReports = async () => {
+    setBusy(true);
+    try {
+      const res = await fetch(`${base}/v1/device-reports`);
+      if (!res.ok) throw new Error(`reports ${res.status}`);
+      const body = await res.json();
+      const blob = new Blob([JSON.stringify(body.reports ?? body, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "spanda-device-reports.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const pool = dashboard?.device_pool;
+  const tabs: Tab[] = [
+    "dashboard",
+    "devices",
+    "fleet",
+    "discovery",
+    "provisioning",
+    "mapping",
+    "health",
+    "readiness",
+    "traceability",
+  ];
 
   return (
     <div className="panel control-center">
-      <h2>Control Center</h2>
+      <h2>Spanda Control Center</h2>
       <p className="demo-hint">
-        API: <code>{base}</code> — run <code>spanda control-center serve</code>
+        API: <code>{base}</code> — run <code>spanda control-center serve --config spanda.toml</code>
       </p>
       <div className="toolbar">
-        {(["dashboard", "fleet", "readiness"] as Tab[]).map((name) => (
+        {tabs.map((name) => (
           <button
             key={name}
             type="button"
@@ -93,38 +302,163 @@ export function ControlCenterPanel({ apiBase }: Props) {
         </button>
       </div>
       {error && <div className="error">{error}</div>}
+
       {tab === "dashboard" && pool && (
         <dl>
           <dt>Devices</dt>
           <dd>{pool.total}</dd>
-          <dt>Healthy</dt>
-          <dd>{pool.healthy}</dd>
+          <dt>Active / Healthy</dt>
+          <dd>{pool.active ?? pool.healthy}</dd>
+          <dt>Discovered</dt>
+          <dd>{pool.discovered}</dd>
+          <dt>Quarantined</dt>
+          <dd>{pool.quarantined ?? 0}</dd>
           <dt>Fleet agents</dt>
           <dd>{dashboard?.fleet_agent_count ?? 0}</dd>
           <dt>Alerts</dt>
           <dd>{dashboard?.alert_count ?? 0}</dd>
         </dl>
       )}
-      {tab === "fleet" && (
-        <ul>
-          {agents.length === 0 && <li>No fleet agents registered</li>}
-          {agents.map((a) => (
-            <li key={a.robot_name}>
-              <strong>{a.robot_name}</strong> — {a.url}
-            </li>
-          ))}
-        </ul>
+
+      {tab === "devices" && (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Lifecycle</th>
+              <th>Robot</th>
+              <th>Logical</th>
+            </tr>
+          </thead>
+          <tbody>
+            {devices.map((d) => (
+              <tr key={d.id}>
+                <td>
+                  <button type="button" onClick={() => void inspectDevice(d.id)}>
+                    {d.id}
+                  </button>
+                </td>
+                <td>{d.device_type}</td>
+                <td>{d.lifecycle_state}</td>
+                <td>{d.assigned_robot ?? "—"}</td>
+                <td>{d.logical_name ?? "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
-      {tab === "readiness" && pool && (
+
+      {tab === "fleet" && (
+        <>
+          <h3>Fleets</h3>
+          <ul>
+            {fleets.map((f) => (
+              <li key={f.id}>
+                <strong>{f.id}</strong> — {f.robot_count} robots
+              </li>
+            ))}
+          </ul>
+          <h3>Robots</h3>
+          <ul>
+            {robots.map((r) => (
+              <li key={r.id}>
+                <strong>{r.id}</strong>
+                {r.hardware_profile ? ` (${r.hardware_profile})` : ""}
+              </li>
+            ))}
+          </ul>
+          <h3>Agents</h3>
+          <ul>
+            {agents.length === 0 && <li>No fleet agents registered</li>}
+            {agents.map((a) => (
+              <li key={a.robot_name}>
+                <strong>{a.robot_name}</strong> — {a.url}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {tab === "discovery" && (
+        <div>
+          <p>Run multi-transport discovery (mDNS, subnet, BLE, USB, CAN, MQTT, ROS2 stubs).</p>
+          <button type="button" onClick={() => void runDiscovery()} disabled={busy}>
+            Discover devices
+          </button>
+        </div>
+      )}
+
+      {tab === "provisioning" && (
+        <div>
+          <p>
+            Provisioning: discover → verify → trust → firmware → health → capabilities → assign →
+            ready.
+          </p>
+          {!apiKey && (
+            <p className="demo-hint">
+              Set <code>VITE_SPANDA_API_KEY</code> for provision/assign/quarantine mutations.
+            </p>
+          )}
+          {selectedDevice ? (
+            <>
+              <p>
+                Selected: <code>{selectedDevice}</code>
+              </p>
+              <div className="toolbar">
+                <button type="button" onClick={() => void provisionDevice()} disabled={busy || !apiKey}>
+                  Provision
+                </button>
+                <button type="button" onClick={() => void assignDevice()} disabled={busy || !apiKey}>
+                  Assign to fleet
+                </button>
+                <button type="button" onClick={() => void quarantineDevice()} disabled={busy || !apiKey}>
+                  Quarantine
+                </button>
+              </div>
+              {deviceDetail && <pre>{JSON.stringify(deviceDetail, null, 2)}</pre>}
+              {provisionLog && <pre>{provisionLog}</pre>}
+            </>
+          ) : (
+            <p>Select a device from the Devices tab.</p>
+          )}
+        </div>
+      )}
+
+      {tab === "mapping" && (
+        <div>
+          <button type="button" onClick={() => void exportReports()} disabled={busy}>
+            Export device reports
+          </button>
+          {mapping && <pre>{JSON.stringify(mapping, null, 2)}</pre>}
+        </div>
+      )}
+
+      {tab === "health" && pool && (
         <dl>
-          <dt>Mission-capable (healthy + assigned + verified)</dt>
-          <dd>{pool.healthy}</dd>
+          <dt>Healthy / Active</dt>
+          <dd>{pool.active ?? pool.healthy}</dd>
           <dt>Degraded</dt>
           <dd>{pool.degraded}</dd>
-          <dt>Discovered (unprovisioned)</dt>
-          <dd>{pool.discovered}</dd>
-          <dt>Device pool entries</dt>
-          <dd>
+          <dt>Failed</dt>
+          <dd>{pool.failed}</dd>
+        </dl>
+      )}
+
+      {tab === "readiness" && (
+        <div>
+          <button type="button" onClick={() => void runReadiness()} disabled={busy}>
+            Run readiness check
+          </button>
+          {readiness && (
+            <dl>
+              <dt>Mission ready</dt>
+              <dd>{readiness.mission_ready ? "yes" : "no"}</dd>
+              <dt>Blocked devices</dt>
+              <dd>{readiness.impact.blocked_count}</dd>
+            </dl>
+          )}
+          {pool && (
             <ul>
               {devices.map((d) => (
                 <li key={d.id}>
@@ -132,8 +466,18 @@ export function ControlCenterPanel({ apiBase }: Props) {
                 </li>
               ))}
             </ul>
-          </dd>
-        </dl>
+          )}
+        </div>
+      )}
+
+      {tab === "traceability" && (
+        <ul>
+          {devices.map((d) => (
+            <li key={d.id}>
+              {d.id} — trust={d.trust_level ?? "unknown"} logical={d.logical_name ?? "—"}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
