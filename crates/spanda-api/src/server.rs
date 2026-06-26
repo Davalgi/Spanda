@@ -80,7 +80,7 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
     eprintln!("  POST /v1/observability/otlp/export  push traces to Jaeger");
     if let Some(grpc_bind) = &options.grpc_bind {
         crate::grpc::spawn_grpc_server(grpc_bind.clone(), Arc::clone(&state));
-        eprintln!("  gRPC tonic server on {grpc_bind} (55 RPCs — Control Center service)");
+        eprintln!("  gRPC tonic server on {grpc_bind} (60 RPCs — Control Center service)");
     }
 
     if options.once {

@@ -10,9 +10,9 @@ pub mod spanda_v1 {
 
 use spanda_v1::control_center_server::{ControlCenter, ControlCenterServer};
 use spanda_v1::{
-    DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty, HealthResponse, IncidentBodyRequest,
-    IncidentIdRequest, JsonBodyRequest, JsonResponse, QueryRequest, ReadinessRequest,
-    TrustPackageRequest,
+    ApprovalBodyRequest, DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty, HealthResponse,
+    IncidentBodyRequest, IncidentIdRequest, JsonBodyRequest, JsonResponse, QueryRequest,
+    ReadinessRequest, TrustPackageRequest,
 };
 
 struct GrpcControlCenter {
@@ -730,6 +730,78 @@ impl ControlCenter for GrpcControlCenter {
             crate::e3::drift_report(state, &query).body
         })
         .map(Response::new)
+    }
+
+    async fn list_compliance_evidence(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        Ok(Response::new(JsonResponse {
+            json: crate::handlers::compliance_evidence_list_json(ctx.as_ref()),
+        }))
+    }
+
+    async fn list_config_approvals(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        Ok(Response::new(JsonResponse {
+            json: crate::handlers::config_approvals_list_json(),
+        }))
+    }
+
+    async fn submit_config_approval(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        let body = request.into_inner().body_json;
+        let json = crate::handlers::config_approvals_submit_json(&body, ctx.as_ref());
+        self.respond_mutation("SubmitConfigApproval", json, ctx)
+    }
+
+    async fn approve_config_approval(
+        &self,
+        request: Request<ApprovalBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        let inner = request.into_inner();
+        let json = self
+            .with_state_mut(|state| {
+                crate::handlers::config_approvals_approve_json(
+                    state,
+                    &inner.approval_id,
+                    &inner.body_json,
+                    ctx.as_ref(),
+                )
+            })?
+            .json;
+        self.respond_mutation("ApproveConfigApproval", json, ctx)
+    }
+
+    async fn reject_config_approval(
+        &self,
+        request: Request<ApprovalBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        let inner = request.into_inner();
+        let json = self
+            .with_state_mut(|state| {
+                crate::handlers::config_approvals_reject_json(
+                    state,
+                    &inner.approval_id,
+                    &inner.body_json,
+                    ctx.as_ref(),
+                )
+            })?
+            .json;
+        self.respond_mutation("RejectConfigApproval", json, ctx)
     }
 }
 

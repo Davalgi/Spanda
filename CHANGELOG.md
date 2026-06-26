@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Config publish-on-approve:** approving a config request applies the snapshot to runtime and persists device pool fields when `--config` is set.
+- **gRPC parity:** `ListConfigApprovals`, `SubmitConfigApproval`, `ApproveConfigApproval`, `RejectConfigApproval`, `ListComplianceEvidence` (60 RPCs total).
 - **Config approval queue:** `GET/POST /v1/config/approvals`, approve/reject subpaths; RBAC-gated publish workflow.
 - **Immutable compliance evidence:** append-only `.spanda/evidence-append.jsonl` on export; `GET /v1/compliance/evidence`.
 - **Alert channels:** PagerDuty and Teams webhook dispatch (`SPANDA_ALERT_PAGERDUTY_*`, `SPANDA_ALERT_TEAMS_URL`); registry packages `spanda-alert-slack`, `spanda-alert-pagerduty`, `spanda-alert-teams`.

@@ -155,6 +155,13 @@ async fn grpc_live_control_center_endpoints() {
         assert!(drift.json.contains("dimensions_checked"));
     }
 
+    let approvals = client
+        .list_config_approvals(Empty {})
+        .await
+        .expect("list config approvals")
+        .into_inner();
+    assert!(approvals.json.contains("approvals"));
+
     let robots = client
         .list_robots(Empty {})
         .await
@@ -202,5 +209,17 @@ async fn grpc_live_control_center_endpoints() {
             .expect("list secrets")
             .into_inner();
         assert!(secrets.json.contains("secrets"));
+
+        let mut evidence_req = tonic::Request::new(Empty {});
+        evidence_req.metadata_mut().insert(
+            "authorization",
+            MetadataValue::try_from(format!("Bearer {api_key}")).expect("metadata"),
+        );
+        let evidence = client
+            .list_compliance_evidence(evidence_req)
+            .await
+            .expect("list compliance evidence")
+            .into_inner();
+        assert!(evidence.json.contains("evidence"));
     }
 }

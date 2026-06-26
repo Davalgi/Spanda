@@ -49,6 +49,11 @@ message IncidentBodyRequest {
   string body_json = 2;
 }
 
+message ApprovalBodyRequest {
+  string approval_id = 1;
+  string body_json = 2;
+}
+
 service ControlCenter {
   rpc Health(Empty) returns (HealthResponse);
   rpc GetTenant(Empty) returns (JsonResponse);
@@ -103,5 +108,10 @@ service ControlCenter {
   rpc OperatorQuarantine(JsonBodyRequest) returns (JsonResponse);
   rpc OperatorMissionApprove(JsonBodyRequest) returns (JsonResponse);
   rpc ExportCompliance(QueryRequest) returns (JsonResponse);
+  rpc ListComplianceEvidence(Empty) returns (JsonResponse);
+  rpc ListConfigApprovals(Empty) returns (JsonResponse);
+  rpc SubmitConfigApproval(JsonBodyRequest) returns (JsonResponse);
+  rpc ApproveConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
+  rpc RejectConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
   rpc DetectDrift(DriftRequest) returns (JsonResponse);
 }
