@@ -37,6 +37,12 @@ spanda control-center approvals list
 spanda control-center approvals submit --snapshot-id <id>
 spanda control-center approvals approve <approval-id>
 spanda control-center evidence list
+spanda control-center sre summary
+spanda control-center devices list
+spanda control-center readiness run
+spanda control-center ota plan --strategy canary --version 1.0 --dry-run
+spanda control-center compliance export --profile defense
+spanda control-center trust package --name spanda-mqtt
 
 # Generic escape hatch for any /v1 path
 spanda control-center api get /v1/sre/summary

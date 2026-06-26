@@ -184,6 +184,12 @@ run_spanda control-center drift --baseline-id "${BASELINE_ID}" | grep -q dimensi
 run_spanda control-center approvals list | grep -q approvals
 run_spanda control-center evidence list | grep -q evidence
 run_spanda control-center incidents list | grep -q incidents
+run_spanda control-center sre summary | grep -q availability_percent
+run_spanda control-center devices list | grep -q '"devices"'
+run_spanda control-center readiness run | grep -q mission_ready
+run_spanda control-center ota plan --strategy canary --version smoke-cli-1.0 --dry-run | grep -q '"strategy":"canary"'
+run_spanda control-center trust package --name spanda-mqtt | grep -q trust
+run_spanda control-center alerts list | grep -q alerts
 
 echo "== E3 GET /v1/openapi.json =="
 fetch /v1/openapi.json | grep -q Spanda

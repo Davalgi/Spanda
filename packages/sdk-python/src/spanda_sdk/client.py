@@ -61,6 +61,15 @@ class ControlCenterClient:
     def dashboard(self) -> Any:
         return self._request("GET", "/v1/dashboard")
 
+    def list_devices(self) -> Any:
+        return self._request("GET", "/v1/devices")
+
+    def readiness_run(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/readiness/run", body or {}, auth=False)
+
+    def list_alerts(self) -> Any:
+        return self._request("GET", "/v1/alerts")
+
     def drift(self, baseline_id: str) -> Any:
         return self._request("GET", f"/v1/drift?baseline_id={baseline_id}")
 
@@ -131,6 +140,62 @@ class ControlCenterClient:
             "POST",
             f"/v1/sre/incidents/{incident_id}/resolve",
             {},
+            auth=True,
+        )
+
+    def list_config_approvals(self) -> Any:
+        return self._request("GET", "/v1/config/approvals")
+
+    def submit_config_approval(
+        self,
+        snapshot_id: str,
+        *,
+        note: Optional[str] = None,
+    ) -> Any:
+        body: dict[str, Any] = {"snapshot_id": snapshot_id}
+        if note:
+            body["note"] = note
+        return self._request("POST", "/v1/config/approvals", body, auth=True)
+
+    def approve_config_approval(
+        self,
+        approval_id: str,
+        *,
+        note: Optional[str] = None,
+    ) -> Any:
+        body: dict[str, Any] = {}
+        if note:
+            body["note"] = note
+        return self._request(
+            "POST",
+            f"/v1/config/approvals/{approval_id}/approve",
+            body,
+            auth=True,
+        )
+
+    def reject_config_approval(
+        self,
+        approval_id: str,
+        *,
+        note: Optional[str] = None,
+    ) -> Any:
+        body: dict[str, Any] = {}
+        if note:
+            body["note"] = note
+        return self._request(
+            "POST",
+            f"/v1/config/approvals/{approval_id}/reject",
+            body,
+            auth=True,
+        )
+
+    def list_compliance_evidence(self) -> Any:
+        return self._request("GET", "/v1/compliance/evidence", auth=True)
+
+    def compliance_export(self, profile: str = "defense") -> Any:
+        return self._request(
+            "GET",
+            f"/v1/compliance/export?profile={profile}",
             auth=True,
         )
 
