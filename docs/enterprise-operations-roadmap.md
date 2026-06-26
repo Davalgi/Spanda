@@ -554,7 +554,7 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Health + Assurance + Diagnosis UI modules | Control Center |
 | Config versioning + snapshots | `spanda-config` |
 
-**Exit criteria:** End-to-end provision demo; alert on readiness failure.
+**Exit criteria:** End-to-end provision demo; alert on readiness failure — **shipped** (`scripts/enterprise_ops_smoke.sh`).
 
 ### Phase E3 — Deploy and integrate (v0.7, Q2 2027)
 

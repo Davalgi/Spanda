@@ -2,7 +2,11 @@
 //!
 use crate::state::ControlCenterState;
 use serde::Serialize;
-use spanda_config::DeviceLifecycleState;
+use spanda_config::{
+    default_snapshots_dir, list_config_snapshots, run_provision_workflow, save_config_snapshot,
+    DeviceDiscoveryTransport, DeviceLifecycleState, DiscoveryOptions, MockMdnsDiscoveryTransport,
+    SubnetDiscoveryTransport,
+};
 use spanda_deploy_http::{HttpRequest, HttpResponse};
 use spanda_fleet::remote::{default_fleet_agents_path, load_fleet_agent_registry};
 use spanda_ops::{Alert, AlertSeverity, AlertType};
@@ -27,7 +31,10 @@ struct DashboardPayload {
 }
 
 pub fn handle_request(state: &mut ControlCenterState, request: &HttpRequest) -> HttpResponse {
-    let path = request.path.split('?').next().unwrap_or(&request.path);
+    let (path, query) = match request.path.split_once('?') {
+        Some((p, q)) => (p, q),
+        None => (request.path.as_str(), ""),
+    };
     if request.method == "OPTIONS" {
         return cors_preflight();
     }
@@ -47,18 +54,25 @@ pub fn handle_request(state: &mut ControlCenterState, request: &HttpRequest) -> 
     let ctx = state
         .api_keys
         .authenticate(request.authorization.as_deref());
-    match path {
-        "/v1/dashboard" => dashboard(state),
-        "/v1/devices" if request.method == "GET" => devices_list(state),
-        "/v1/fleet/agents" => fleet_agents(),
-        "/v1/alerts" if request.method == "GET" => alerts_list(state),
-        "/v1/alerts/test" if request.method == "POST" => alerts_test(state, ctx.as_ref()),
-        "/v1/secrets" if request.method == "GET" => secrets_list(state, ctx.as_ref()),
-        "/v1/rbac/matrix" => rbac_matrix(),
-        p if p.starts_with("/v1/devices/") && request.method == "PATCH" => {
-            let id = p.trim_start_matches("/v1/devices/");
-            device_patch(state, id, &request.body, ctx.as_ref())
-        }
+    if path.starts_with("/v1/devices/") && request.method == "PATCH" {
+        let id = path.trim_start_matches("/v1/devices/");
+        return device_patch(state, id, &request.body, ctx.as_ref());
+    }
+    match (path, request.method.as_str()) {
+        ("/v1/dashboard", "GET") => dashboard(state),
+        ("/v1/devices", "GET") => devices_list(state),
+        ("/v1/fleet/agents", "GET") => fleet_agents(),
+        ("/v1/alerts", "GET") => alerts_list(state),
+        ("/v1/alerts/test", "POST") => alerts_test(state, ctx.as_ref()),
+        ("/v1/secrets", "GET") => secrets_list(state, ctx.as_ref()),
+        ("/v1/rbac/matrix", "GET") => rbac_matrix(),
+        ("/v1/provision", "POST") => provision_run(state, &request.body, ctx.as_ref()),
+        ("/v1/config/snapshots", "GET") => config_snapshots_list(),
+        ("/v1/config/snapshots", "POST") => config_snapshots_save(state, &request.body, ctx.as_ref()),
+        ("/v1/discovery", "GET") => discovery_run(query),
+        ("/v1/health/summary", "GET") => health_summary(state),
+        ("/v1/assurance/summary", "GET") => assurance_summary(state),
+        ("/v1/diagnosis/summary", "GET") => diagnosis_summary(state),
         _ => not_found(),
     }
 }
@@ -165,6 +179,173 @@ fn rbac_matrix() -> HttpResponse {
         "version": API_VERSION,
         "matrix": spanda_security::permission_matrix(),
     }))
+}
+
+fn provision_run(
+    state: &mut ControlCenterState,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Provision) {
+        return unauthorized();
+    }
+    let payload: serde_json::Value = match serde_json::from_str(body) {
+        Ok(v) => v,
+        Err(e) => return bad_request(&e.to_string()),
+    };
+    let Some(device_id) = payload.get("device_id").and_then(|v| v.as_str()) else {
+        return bad_request("missing device_id");
+    };
+    let robot_id = payload.get("robot_id").and_then(|v| v.as_str());
+    let registry = state.device_registry();
+    let report = run_provision_workflow(device_id, &registry, robot_id);
+    if !report.ready {
+        let mut alert = Alert {
+            id: format!("provision-{}", now_ms()),
+            alert_type: AlertType::ReadinessFailed,
+            severity: AlertSeverity::Warning,
+            message: format!("provisioning failed for device '{device_id}'"),
+            source: "provisioning".into(),
+            timestamp_ms: now_ms(),
+            delivered_via: vec![],
+        };
+        state.alert_dispatcher.dispatch(&mut alert);
+        state.alert_store.push(alert);
+        if let Some(resolved) = state.resolved.as_mut() {
+            if let Some(device) = resolved
+                .device_registry
+                .devices
+                .iter_mut()
+                .find(|d| d.id == device_id)
+            {
+                device.lifecycle_state = Some(DeviceLifecycleState::Quarantined.as_str().to_string());
+            }
+        }
+    } else if let Some(resolved) = state.resolved.as_mut() {
+        if let Some(device) = resolved
+            .device_registry
+            .devices
+            .iter_mut()
+            .find(|d| d.id == device_id)
+        {
+            device.lifecycle_state = Some(DeviceLifecycleState::Healthy.as_str().to_string());
+            if let Some(robot) = robot_id {
+                device.assigned_robot = Some(robot.to_string());
+            }
+        }
+    }
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "ok": report.ready,
+        "report": report,
+    }))
+}
+
+fn config_snapshots_list() -> HttpResponse {
+    let dir = default_snapshots_dir();
+    let snapshots = list_config_snapshots(&dir).unwrap_or_default();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "snapshots": snapshots,
+    }))
+}
+
+fn config_snapshots_save(
+    state: &ControlCenterState,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    let Some(resolved) = state.resolved.as_ref() else {
+        return bad_request("no resolved configuration loaded; use --config");
+    };
+    let label = serde_json::from_str::<serde_json::Value>(body)
+        .ok()
+        .and_then(|v| v.get("label").and_then(|l| l.as_str()).map(str::to_string));
+    let dir = default_snapshots_dir();
+    match save_config_snapshot(resolved, &dir, label) {
+        Ok(meta) => json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "ok": true,
+            "snapshot": meta,
+        })),
+        Err(e) => bad_request(&e.to_string()),
+    }
+}
+
+fn discovery_run(query: &str) -> HttpResponse {
+    let params = parse_query(query);
+    let transport = params.get("transport").map(String::as_str).unwrap_or("subnet");
+    let options = DiscoveryOptions {
+        subnet: params.get("subnet").cloned(),
+        timeout_ms: params.get("timeout_ms").and_then(|v| v.parse().ok()),
+        transports: vec![transport.to_string()],
+    };
+    let result = match transport {
+        "mdns" => MockMdnsDiscoveryTransport.discover(&options),
+        _ => SubnetDiscoveryTransport.discover(&options),
+    };
+    match result {
+        Ok(discovery) => json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "discovery": discovery,
+        })),
+        Err(message) => bad_request(&message),
+    }
+}
+
+fn health_summary(state: &ControlCenterState) -> HttpResponse {
+    let pool = state.device_registry().pool_summary();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "overall_status": if pool.failed > 0 { "critical" } else if pool.degraded > 0 { "degraded" } else { "healthy" },
+        "device_pool": pool,
+    }))
+}
+
+fn assurance_summary(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "loaded": false,
+        }));
+    };
+    let policy = spanda_config::assurance_policy(resolved);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "loaded": true,
+        "minimum_score": policy.minimum_score,
+        "require_recovery": policy.require_recovery,
+        "require_resilience": policy.require_resilience,
+    }))
+}
+
+fn diagnosis_summary(state: &ControlCenterState) -> HttpResponse {
+    let Some(resolved) = state.resolved.as_ref() else {
+        return json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "loaded": false,
+        }));
+    };
+    let policy = spanda_config::diagnosis_policy(resolved);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "loaded": true,
+        "require_mitigations": policy.require_mitigations,
+        "require_anomaly_handlers": policy.require_anomaly_handlers,
+    }))
+}
+
+fn parse_query(query: &str) -> std::collections::HashMap<String, String> {
+    let mut map = std::collections::HashMap::new();
+    for pair in query.split('&').filter(|s| !s.is_empty()) {
+        if let Some((k, v)) = pair.split_once('=') {
+            map.insert(k.to_string(), v.to_string());
+        }
+    }
+    map
 }
 
 fn json_ok<T: Serialize>(value: &T) -> HttpResponse {

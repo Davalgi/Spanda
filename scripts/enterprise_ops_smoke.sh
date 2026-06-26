@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Phase E1 smoke — Control Center API and device pool lifecycle.
+# Phase E1+E2 smoke — Control Center API, provisioning, snapshots, discovery.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+CONFIG="${ROOT}/crates/spanda-config/tests/fixtures/warehouse/spanda.toml"
 
 if [[ -n "${SPANDA_BIN:-}" && -x "${SPANDA_BIN}" ]]; then
   run_spanda() { "$SPANDA_BIN" "$@"; }
@@ -18,8 +19,8 @@ fi
 BIND="127.0.0.1:${PORT}"
 export SPANDA_API_KEY="enterprise-ops-smoke-key"
 
-echo "== start control-center on ${BIND} =="
-run_spanda control-center serve --bind "$BIND" &
+echo "== start control-center on ${BIND} (warehouse config) =="
+run_spanda control-center serve --bind "$BIND" --config "$CONFIG" &
 SERVER_PID=$!
 sleep 2
 
@@ -67,5 +68,34 @@ fetch /v1/alerts | grep -q Control
 
 echo "== GET / (Control Center UI) =="
 curl -sf "http://${BIND}/" | grep -q "Spanda Control Center"
+
+echo "== E2 GET /v1/discovery?transport=mdns =="
+fetch "/v1/discovery?transport=mdns" | grep -q mdns-stub-robot
+
+echo "== E2 GET /v1/health/summary =="
+fetch /v1/health/summary | grep -q overall_status
+
+echo "== E2 GET /v1/assurance/summary =="
+fetch /v1/assurance/summary | grep -q '"loaded":true'
+
+echo "== E2 POST /v1/provision (expect readiness alert) =="
+curl -sf -X POST \
+  -H "Authorization: Bearer ${SPANDA_API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"device_id":"lidar-front","robot_id":"rover-001"}' \
+  "http://${BIND}/v1/provision" | grep -q '"ok":false'
+
+echo "== E2 GET /v1/alerts (provisioning failure) =="
+fetch /v1/alerts | grep -q readiness_failed
+
+echo "== E2 POST /v1/config/snapshots =="
+curl -sf -X POST \
+  -H "Authorization: Bearer ${SPANDA_API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"label":"smoke-baseline"}' \
+  "http://${BIND}/v1/config/snapshots" | grep -q '"ok":true'
+
+echo "== E2 GET /v1/config/snapshots =="
+fetch /v1/config/snapshots | grep -q smoke-baseline
 
 echo "Enterprise operations smoke OK"

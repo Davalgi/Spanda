@@ -133,7 +133,11 @@ impl AlertStore {
 }
 
 pub fn send_webhook(url: &str, alert: &Alert) -> Result<(), String> {
-    let body = serde_json::to_string(alert).map_err(|e| e.to_string())?;
+    let body = if url.contains("hooks.slack.com") {
+        crate::slack::slack_webhook_payload(alert)
+    } else {
+        serde_json::to_string(alert).map_err(|e| e.to_string())?
+    };
     let parsed = spanda_deploy_http_stub::post_json(url, &body)?;
     if parsed.status >= 200 && parsed.status < 300 {
         Ok(())

@@ -4,9 +4,11 @@
 //! Downstream consumers should use [`ResolvedSystemConfig`] rather than raw
 //! TOML or JSON files.
 //!
+pub mod config_snapshots;
 pub mod device_identity;
 pub mod device_pool;
 pub mod device_tree;
+pub mod discovery_transport;
 pub mod drift;
 pub mod error;
 pub mod integration;
@@ -15,6 +17,7 @@ pub mod layer;
 pub mod manifest;
 pub mod mapping;
 pub mod network_validation;
+pub mod provisioning;
 pub mod reports;
 pub mod resolved;
 pub mod resolver;
@@ -25,6 +28,14 @@ pub use device_identity::{
     discover_matches, identity_from_device_node, scan_subnet, traceability_rows,
     DeviceIdentityRecord, DeviceRegistry, DiscoveryMatch, Ipv4Subnet, NetworkHostProbe,
     TraceabilityRow, TrustLevel,
+};
+pub use config_snapshots::{
+    default_snapshots_dir, list_config_snapshots, load_config_snapshot, save_config_snapshot,
+    ConfigSnapshot, ConfigSnapshotMeta,
+};
+pub use discovery_transport::{
+    DeviceDiscoveryTransport, DiscoveryOptions, DiscoveryTransportResult, MockMdnsDiscoveryTransport,
+    SubnetDiscoveryTransport,
 };
 pub use device_pool::{
     DeviceLifecycleState, DevicePoolEntry, DevicePoolSummary,
@@ -48,6 +59,9 @@ pub use drift::{
     append_agent_drift, append_program_drift, detect_agent_drift, detect_config_drift,
     expected_agent_states, format_drift_lines, AgentDriftSnapshot, ConfigDriftReport,
     DriftDimension, DriftFinding, DriftSeverity, ExpectedAgentState,
+};
+pub use provisioning::{
+    run_provision_workflow, ProvisionReport, ProvisionStep, ProvisionStepResult,
 };
 pub use reports::{
     config_drift_report, format_report_text, format_report_text_with_options,

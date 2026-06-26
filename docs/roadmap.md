@@ -83,8 +83,8 @@ Full analysis: [enterprise-operations-roadmap.md](./enterprise-operations-roadma
 | 1 | Control Center (web UI) | NOW | **Experimental** — `spanda control-center serve` |
 | 2 | Device Pool (central inventory) | NOW | **Experimental** (extends `DeviceRegistry` + lifecycle) |
 | 3 | Device Discovery (package transports) | NOW | **Experimental** (IP subnet, manual) / **Planned** (mDNS, BLE, CAN, …) |
-| 4 | Provisioning (discover → ready workflow) | NOW | **Planned** |
-| 5 | Configuration Management (versioned cascading TOML) | NOW | **Experimental** (resolve, diff) / **Planned** (snapshots, approval) |
+| 4 | Provisioning (discover → ready workflow) | NOW | **Experimental** — `POST /v1/provision` |
+| 5 | Configuration Management (versioned cascading TOML) | NOW | **Experimental** (resolve, diff, snapshots) / **Planned** (approval) |
 | 6 | RBAC (roles + permissions) | NOW | **Experimental** — `SPANDA_API_KEY`, `/v1/rbac/matrix` |
 | 7 | Secret Management (rotation, audit) | NOW | **Experimental** — `ManagedSecretVault` contract |
 | 8 | Telemetry (time-series, trends) | NOW | **Experimental** — [telemetry-store.md](./telemetry-store.md) |
@@ -114,11 +114,13 @@ Full analysis: [enterprise-operations-roadmap.md](./enterprise-operations-roadma
 | Phase | Release | Theme | Key deliverables |
 |-------|---------|-------|------------------|
 | E1 | v0.5+ (Q3–Q4 2026) | Control plane | `spanda-api` REST v1, Control Center shell (Dashboard, Fleet, Readiness), Device Pool lifecycle, RBAC v1, secret store contract, alerting core |
-| E2 | v0.6 (Q1 2027) | Provision & observe | Provisioning workflow, Device Pool UI, discovery packages, telemetry backend, alert channels, Health/Assurance/Diagnosis modules, config snapshots |
+| E2 | v0.6 (Q1 2027) | Provision & observe | Provisioning workflow API, config snapshots, discovery API, Health/Assurance/Diagnosis modules, Slack alert formatting |
 | E3 | v0.7 (Q2 2027) | Deploy & integrate | Python SDK, gRPC, full drift, OTA canary/phased, Package Trust UI, OpenTelemetry, operator workflows, SRE dashboard |
 | E4 | v1.0 (2027) | Govern & trace | Compliance UI, executive dashboards, Digital Thread v1, predictive analytics, PDF reporting, Tauri desktop |
 
 **Exit criteria (E1):** `spanda control-center serve` + `scripts/enterprise_ops_smoke.sh` — **shipped**
+
+**Exit criteria (E2):** End-to-end provision demo + alert on readiness failure — **shipped** (`scripts/enterprise_ops_smoke.sh`)
 
 **UI stack:** React + TypeScript (`@spanda/control-center`, extends `packages/web`); Rust backend (`spanda-api`); future Tauri desktop packaging.
 

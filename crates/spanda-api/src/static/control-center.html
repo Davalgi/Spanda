@@ -33,6 +33,11 @@
     <button type="button" data-tab="readiness">Readiness</button>
     <button type="button" data-tab="devices">Device Pool</button>
     <button type="button" data-tab="alerts">Alerts</button>
+    <button type="button" data-tab="health">Health</button>
+    <button type="button" data-tab="assurance">Assurance</button>
+    <button type="button" data-tab="diagnosis">Diagnosis</button>
+    <button type="button" data-tab="provision">Provision</button>
+    <button type="button" data-tab="config">Config</button>
   </nav>
   <div id="error" class="error" hidden></div>
   <section id="tab-dashboard" class="panel"></section>
@@ -40,8 +45,13 @@
   <section id="tab-readiness" class="panel" hidden></section>
   <section id="tab-devices" class="panel" hidden></section>
   <section id="tab-alerts" class="panel" hidden></section>
+  <section id="tab-health" class="panel" hidden></section>
+  <section id="tab-assurance" class="panel" hidden></section>
+  <section id="tab-diagnosis" class="panel" hidden></section>
+  <section id="tab-provision" class="panel" hidden></section>
+  <section id="tab-config" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts"];
+    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config"];
     const errEl = document.getElementById("error");
 
     document.querySelectorAll("nav button").forEach((btn) => {
@@ -57,6 +67,11 @@
         if (tab === "readiness") loadReadiness();
         if (tab === "devices") loadDevices();
         if (tab === "alerts") loadAlerts();
+        if (tab === "health") loadHealth();
+        if (tab === "assurance") loadAssurance();
+        if (tab === "diagnosis") loadDiagnosis();
+        if (tab === "provision") loadProvision();
+        if (tab === "config") loadConfig();
       });
     });
 
@@ -144,6 +159,57 @@
         document.getElementById("tab-alerts").innerHTML = `
           <h2>Alerts</h2>
           <table><thead><tr><th>Severity</th><th>Type</th><th>Source</th><th>Message</th></tr></thead><tbody>${rows}</tbody></table>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadHealth() {
+      try {
+        errEl.hidden = true;
+        const data = await api("/v1/health/summary");
+        document.getElementById("tab-health").innerHTML = `
+          <h2>Health</h2>
+          <p>Overall: <strong>${data.overall_status}</strong></p>
+          <pre>${JSON.stringify(data.device_pool, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadAssurance() {
+      try {
+        errEl.hidden = true;
+        const data = await api("/v1/assurance/summary");
+        document.getElementById("tab-assurance").innerHTML = `
+          <h2>Assurance</h2>
+          <pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadDiagnosis() {
+      try {
+        errEl.hidden = true;
+        const data = await api("/v1/diagnosis/summary");
+        document.getElementById("tab-diagnosis").innerHTML = `
+          <h2>Diagnosis</h2>
+          <pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadProvision() {
+      document.getElementById("tab-provision").innerHTML = `
+        <h2>Provisioning</h2>
+        <p>POST <code>/v1/provision</code> with <code>{"device_id","robot_id"}</code> (Bearer token).</p>
+        <p>Failed provisioning emits a <code>readiness_failed</code> alert and quarantines the device.</p>`;
+    }
+
+    async function loadConfig() {
+      try {
+        errEl.hidden = true;
+        const data = await api("/v1/config/snapshots");
+        const rows = (data.snapshots || []).map((s) =>
+          `<tr><td>${s.id}</td><td>${s.label || "—"}</td><td>${s.device_count}</td></tr>`
+        ).join("") || "<tr><td colspan='3'>No snapshots — POST /v1/config/snapshots</td></tr>";
+        document.getElementById("tab-config").innerHTML = `
+          <h2>Configuration snapshots</h2>
+          <table><thead><tr><th>ID</th><th>Label</th><th>Devices</th></tr></thead><tbody>${rows}</tbody></table>`;
       } catch (e) { showError(String(e)); }
     }
 

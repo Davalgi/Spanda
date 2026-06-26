@@ -34,6 +34,12 @@ Open `http://127.0.0.1:8080/` for the Control Center UI, or use the **Control Ce
 | `/v1/alerts/test` | POST | Bearer | Dispatch test alert |
 | `/v1/secrets` | GET | Bearer | Secret metadata (no values) |
 | `/v1/rbac/matrix` | GET | — | Role permission matrix |
+| `/v1/provision` | POST | Bearer | Run discover → ready workflow |
+| `/v1/discovery` | GET | — | Package-backed discovery (`?transport=mdns` or `subnet`) |
+| `/v1/config/snapshots` | GET/POST | POST: Bearer | List or save configuration snapshots |
+| `/v1/health/summary` | GET | — | Device pool health rollup |
+| `/v1/assurance/summary` | GET | — | Assurance policy from resolved config |
+| `/v1/diagnosis/summary` | GET | — | Diagnosis policy from resolved config |
 
 Authenticate mutations with `Authorization: Bearer <SPANDA_API_KEY>`.
 
@@ -88,4 +94,4 @@ Default: log to stderr.
 
 ## Status
 
-**Experimental** (Phase E1). Provisioning workflow, gRPC, and full CLI parity APIs ship in Phase E2–E3.
+**Experimental** (Phase E1–E2). Phase E2 adds provisioning, config snapshots, discovery transports, and Health/Assurance/Diagnosis API modules. gRPC and full CLI parity ship in Phase E3.
