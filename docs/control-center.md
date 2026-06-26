@@ -90,11 +90,12 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 | `RejectConfigApproval` | Reject pending approval (`POST /v1/config/approvals/{id}/reject`) |
 | `DetectDrift` | Operational drift report (`baseline_id` in request) |
 
-Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto`
+Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.0`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
 
 ```bash
 # Example with grpcurl (reflection not enabled — use proto file)
-grpcurl -plaintext -d '{}' 127.0.0.1:50051 spanda.v1.ControlCenter/Health
+grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control_center.proto \
+  -d '{}' 127.0.0.1:50051 spanda.v1.ControlCenter/Health
 ```
 
 ---
@@ -136,7 +137,10 @@ grpcurl -plaintext -d '{}' 127.0.0.1:50051 spanda.v1.ControlCenter/Health
 | `/v1/diagnosis/summary` | GET | — | Diagnosis policy from resolved config |
 | `/v1/openapi.json` | GET | — | OpenAPI 3.1 specification |
 | `/v1/drift` | GET | — | Operational drift vs baseline snapshot (`?baseline_id=`) |
+| `/v1/drift/scans` | GET | — | Recorded drift scan history |
+| `/v1/drift/scan` | POST | Bearer | Trigger drift scan (optional `baseline_id`) |
 | `/v1/ota/plan` | POST | Bearer | Plan canary / staged / blue_green rollout |
+| `/v1/ota/execute` | POST | Bearer | Execute rollout; `rollback_on_readiness_fail` gates post-deploy readiness |
 | `/v1/ota/status` | GET | — | OTA deploy state (`.spanda/deploy-state.json`) |
 | `/v1/trust/package` | GET | — | Package trust evaluation (`?name=&version=`) |
 | `/v1/sre/summary` | GET | — | Availability, incidents, MTTR/MTBF hints, `health_trends`, `readiness_trends`, and `slo` |

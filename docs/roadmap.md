@@ -177,7 +177,7 @@ See **[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md)
 |------|-------------------|-----------------|
 | Discovery | Host-backed probes + registry packages (wifi/cellular/serial) | Production transport certs; fleet-scale soak |
 | Device Pool | Full lifecycle + HA persistence + multi-tenant | 1000+ device perf benchmark |
-| APIs | REST v1 + 60 gRPC RPCs + remote CLI + rate limits | Complete OpenAPI; gRPC semver policy |
+| APIs | REST v1 + 59 gRPC RPCs + remote CLI + rate limits | Complete OpenAPI (**shipped**); gRPC semver policy (**shipped** — `GET /v1/version`) |
 | Observability | OTLP traces/metrics + WebSocket + `spanda-otel-collector` | Managed collector HA guide |
 | Desktop | Tauri scaffold + glib patch + updater scaffold | Signed/notarized installers + active auto-update |
 | Drift / OTA | 7-dimension drift; plan + live execute | Mandatory certify gate in production policy |
