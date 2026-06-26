@@ -44,6 +44,7 @@ impl TypeCheckHost for CoreTypeCheckHost {
             || resolve_ai_import(path).is_some()
             || resolve_std_import(path)
             || resolve_ffi_import(path)
+            || spanda_package::resolve_package_import(path)
             || module_registry_has_export
     }
 

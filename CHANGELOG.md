@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Chaos engineering:** new `spanda-chaos` crate with `run_chaos_experiment`; CLI `spanda chaos <file.sd> [--inject gps-failure,...] [--json]`; `scripts/chaos_smoke.sh`; docs [chaos-engineering.md](docs/chaos-engineering.md).
 - **Readiness trends:** history store in `spanda-readiness` (`record_readiness_snapshot`, `analyze_readiness_trends`); CLI `spanda readiness --record` and `spanda readiness trends <file.sd> [--forecast 7d] [--json]`; `scripts/readiness_trends_smoke.sh`; docs [readiness-trends.md](docs/readiness-trends.md).
 - **Mission resource estimation:** new `spanda-estimate` crate with `estimate_mission`; CLI `spanda estimate <file.sd> [--target <profile>] [--json]`; `scripts/estimate_smoke.sh`; docs [resource-estimation.md](docs/resource-estimation.md).
-- **Compliance profiles:** new `spanda-compliance` crate with built-in industry templates; CLI `spanda verify --profile <name>` and `spanda readiness --profile <name>`; defense/medical secure-boot contract requirements; `scripts/compliance_smoke.sh`; docs [compliance-profiles.md](docs/compliance-profiles.md).
+- **Compliance profiles:** new `spanda-compliance` crate with built-in industry templates; CLI `spanda verify --profile <name>` and `spanda readiness --profile <name>`; defense/medical secure-boot contract requirements; defense showcase at `examples/showcase/compliance/defense_rover.sd`; `scripts/compliance_smoke.sh`; docs [compliance-profiles.md](docs/compliance-profiles.md).
 - **Architecture decision records:** new `spanda-adr` crate with `generate_adrs`; CLI `spanda adr <file.sd> [--json] [--out <dir>]`; `scripts/adr_smoke.sh`; docs [architecture-decision-records.md](docs/architecture-decision-records.md).
 - **Tamper / integrity (verify-time):** new `spanda-tamper` crate with `generate_tamper_check`; CLI `spanda tamper-check <file.sd> [--json]`; `scripts/tamper_smoke.sh`; docs [tamper-detection.md](docs/tamper-detection.md).
 - **Runtime tamper (trace analysis):** `generate_runtime_tamper_check` in `spanda-tamper`; `spanda tamper-check <file.trace> [--runtime]`; trust showcase `examples/showcase/runtime_intrusion/`; `scripts/trust_showcase_smoke.sh`.
@@ -117,6 +117,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Roadmap sync:** Package count updated to 37 across roadmap and product strategy (matches hosted registry index).
 
 ### Fixed
+
+- **Trust import typecheck:** `trust.jetson` and `trust.pi` resolve in `spanda check` / `spanda verify` via framework package import paths.
 
 - **Package trust signatures:** `evaluate_package_trust` verifies Ed25519 registry signatures using the embedded index public key when `SPANDA_REGISTRY_TRUST_KEY` is unset (matches install-time verification).
 

@@ -92,6 +92,9 @@ pub fn resolve_package_import(path: &str) -> bool {
     if builtin_import_paths().contains(&path) {
         return true;
     }
+    if framework_import_paths().iter().any(|candidate| *candidate == path) {
+        return true;
+    }
     all_import_paths().contains(&path)
 }
 
@@ -144,5 +147,7 @@ mod tests {
         assert!(resolve_package_import("navigation.path_planning"));
         assert!(resolve_package_import("robotics.ros2"));
         assert!(resolve_package_import("ai.openai"));
+        assert!(resolve_package_import("trust.jetson"));
+        assert!(resolve_package_import("trust.pi"));
     }
 }
