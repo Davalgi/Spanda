@@ -135,6 +135,48 @@ fn require_file(path: &Path) -> &Path {
     path
 }
 
+fn repo_root_containing_showcase(parts: &[&str]) -> PathBuf {
+    // Resolve repository root that contains a showcase file (trust demos may be outside bundled examples).
+    //
+    // Parameters:
+    // - `parts` — path segments under examples/showcase/
+    //
+    // Returns:
+    // Repository root containing the showcase file.
+    //
+    // Options:
+    // `SPANDA_ROOT` when it contains the showcase path.
+    //
+    // Example:
+    // let root = repo_root_containing_showcase(&["package_tampering", "approved.sd"]);
+
+    let mut candidates: Vec<PathBuf> = Vec::new();
+    if let Ok(root) = env::var("SPANDA_ROOT") {
+        candidates.push(PathBuf::from(root));
+    }
+    if let Ok(cwd) = env::current_dir() {
+        let mut dir = cwd;
+        for _ in 0..8 {
+            candidates.push(dir.clone());
+            if !dir.pop() {
+                break;
+            }
+        }
+    }
+    candidates.push(repo_root());
+    for root in candidates {
+        if showcase(&root, parts).is_file() {
+            return root;
+        }
+    }
+    eprintln!(
+        "Showcase file not found: examples/showcase/{}\n\
+         Set SPANDA_ROOT to the Spanda repository root.",
+        parts.join("/")
+    );
+    process::exit(1);
+}
+
 fn read_source(path: &Path) -> String {
     // Description:
     //     Read source.
@@ -669,6 +711,76 @@ fn demo_maturity(root: &Path) {
     println!("\nDemo complete. See docs/platform-maturity-roadmap.md and docs/dependency-graphs.md");
 }
 
+fn demo_trust(root: &Path) {
+    let trust_root = repo_root_containing_showcase(&["package_tampering", "approved.sd"]);
+    let _ = root;
+
+    let pkg_approved = showcase(&trust_root, &["package_tampering", "approved.sd"]);
+    let pkg_tampered = showcase(&trust_root, &["package_tampering", "tampered.sd"]);
+    let mission_approved = showcase(&trust_root, &["mission_tampering", "approved.sd"]);
+    let mission_modified = showcase(&trust_root, &["mission_tampering", "modified.sd"]);
+    let intrusion_trace = showcase(&trust_root, &["runtime_intrusion", "intrusion.trace"]);
+    let gps_rover = showcase(&trust_root, &["gps_spoofing", "rover.sd"]);
+    let gps_trace = showcase(&trust_root, &["gps_spoofing", "spoof.trace"]);
+    let tamper_policy = showcase(&trust_root, &["tamper_policy", "rover.sd"]);
+
+    require_file(&pkg_approved);
+    require_file(&pkg_tampered);
+    require_file(&mission_approved);
+    require_file(&mission_modified);
+    require_file(&intrusion_trace);
+    require_file(&gps_rover);
+    require_file(&gps_trace);
+    require_file(&tamper_policy);
+
+    let approved = pkg_approved.to_str().unwrap();
+    let tampered = pkg_tampered.to_str().unwrap();
+    let mission_ok = mission_approved.to_str().unwrap();
+    let mission_bad = mission_modified.to_str().unwrap();
+    let intrusion = intrusion_trace.to_str().unwrap();
+    let gps_program = gps_rover.to_str().unwrap();
+    let gps_tr = gps_trace.to_str().unwrap();
+    let policy = tamper_policy.to_str().unwrap();
+
+    println!("== Trust & tamper platform demo ==\n");
+
+    println!("--- Package tampering ---");
+    run_spanda_args(&["tamper-check", approved]);
+    run_spanda_args_allow_fail(&["tamper-check", tampered]);
+
+    println!("\n--- Mission integrity ---");
+    run_spanda_args(&["integrity", mission_ok, "--baseline", mission_ok]);
+    run_spanda_args_allow_fail(&["integrity", mission_bad, "--baseline", mission_ok]);
+
+    println!("\n--- Runtime intrusion trace ---");
+    run_spanda_args_allow_fail(&["tamper-check", intrusion]);
+    run_spanda_args_allow_fail(&["diagnose", "tamper", intrusion]);
+
+    println!("\n--- GPS spoofing ---");
+    run_spanda_args(&["spoof-check", gps_program]);
+    run_spanda_args_allow_fail(&["spoof-check", gps_tr]);
+
+    println!("\n--- Tamper policy runtime ---");
+    run_spanda_args_allow_fail(&["tamper-check", policy]);
+    run_spanda_args_allow_fail(&["sim", policy, "--inject-security-faults"]);
+
+    if let Ok(registry) = env::var("SPANDA_REGISTRY_URL") {
+        if !registry.is_empty() {
+            let secure_boot = showcase(&trust_root, &["secure_boot", "rover.sd"]);
+            if secure_boot.is_file() {
+                println!("\n--- Secure boot contracts ---");
+                run_spanda_args_allow_fail(&["tamper-check", secure_boot.to_str().unwrap()]);
+            }
+        }
+    } else {
+        println!(
+            "\n(Skip secure boot — set SPANDA_REGISTRY_URL=file://$PWD/registry to include)"
+        );
+    }
+
+    println!("\nDemo complete. See examples/showcase/*/README.md and docs/tamper-detection.md");
+}
+
 pub fn demo_dispatch(args: &[String]) {
     // Description:
     //     Demo dispatch.
@@ -699,6 +811,7 @@ pub fn demo_dispatch(args: &[String]) {
         "continuity" | "takeover" | "succession" => demo_continuity(&root),
         "differentiation" | "diff" => demo_differentiation(&root),
         "maturity" | "platform-maturity" => demo_maturity(&root),
+        "trust" | "tamper" | "security-trust" => demo_trust(&root),
         "" | "list" | "--help" | "-h" => {
             eprintln!(
                 "Spanda showcase demos\n\n\
@@ -715,7 +828,8 @@ pub fn demo_dispatch(args: &[String]) {
                    self-healing — recovery policies, heal/recover/sim, fleet recovery\n\
                    continuity — mission continuity, takeover, delegation, succession\n\
                    differentiation — mission contracts, safety/recovery coverage, explain\n\
-                   maturity — Phase A graph, explain, trust, deployment gates\n\n\
+                   maturity — Phase A graph, explain, trust, deployment gates\n\
+                   trust — package/mission tampering, spoofing, runtime intrusion, tamper_policy\n\n\
                  Set SPANDA_ROOT to the repository root if examples are not found.\n\
                  See examples/showcase/README.md"
             );
