@@ -972,6 +972,73 @@ pub fn config_snapshots_list_json() -> String {
     config_snapshots_list().body
 }
 
+/// JSON body for gRPC `GetDeviceTree` (parity with `GET /v1/device-tree`).
+pub fn device_tree_json(state: &ControlCenterState) -> String {
+    device_tree_get(state).body
+}
+
+/// JSON body for gRPC `GetDeviceReports` (parity with `GET /v1/device-reports`).
+pub fn device_reports_json(state: &ControlCenterState) -> String {
+    device_reports_get(state).body
+}
+
+/// JSON body for gRPC `GetFailoverChains` (parity with `GET /v1/failover/chains`).
+pub fn failover_chains_json(state: &ControlCenterState) -> String {
+    failover_chains_get(state).body
+}
+
+/// JSON body for gRPC `ListSecrets` (parity with `GET /v1/secrets`).
+pub fn secrets_list_json(state: &ControlCenterState, ctx: Option<&RbacContext>) -> String {
+    secrets_list(state, ctx).body
+}
+
+/// JSON body for gRPC `GetRbacMatrix` (parity with `GET /v1/rbac/matrix`).
+pub fn rbac_matrix_json() -> String {
+    rbac_matrix().body
+}
+
+/// JSON body for gRPC `GetAnalyticsReadiness` (parity with `GET /v1/analytics/readiness`).
+pub fn analytics_readiness_json(state: &ControlCenterState, query: &str) -> String {
+    e4::analytics_readiness(state, query).body
+}
+
+/// JSON body for gRPC `ExportReports` (parity with `GET /v1/reports/export`).
+pub fn reports_export_json(
+    state: &ControlCenterState,
+    query: &str,
+    ctx: Option<&RbacContext>,
+) -> String {
+    e4::reports_export(state, query, ctx).body
+}
+
+/// JSON body for gRPC `GetObservabilityTraces` (parity with `GET /v1/observability/traces`).
+pub fn observability_traces_json(state: &ControlCenterState) -> String {
+    e3::observability_traces(state).body
+}
+
+/// JSON body for gRPC `GetOtlpTraces` (parity with `GET /v1/observability/otlp/traces`).
+pub fn otlp_traces_json(state: &ControlCenterState) -> String {
+    observability::otlp_traces_preview(state).body
+}
+
+/// JSON body for gRPC `ExportOtlpTraces` (parity with `POST /v1/observability/otlp/export`).
+pub fn otlp_traces_export_json(
+    state: &ControlCenterState,
+    query: &str,
+    ctx: Option<&RbacContext>,
+) -> String {
+    observability::otlp_traces_export(state, query, ctx).body
+}
+
+/// JSON body for gRPC `ExportOtlpMetrics` (parity with `POST /v1/observability/otlp/export-metrics`).
+pub fn otlp_metrics_export_json(
+    state: &ControlCenterState,
+    query: &str,
+    ctx: Option<&RbacContext>,
+) -> String {
+    observability::otlp_metrics_export(state, query, ctx).body
+}
+
 /// JSON body for gRPC `OperatorQuarantine` (parity with `POST /v1/operator/quarantine`).
 pub fn operator_quarantine_json(
     state: &mut ControlCenterState,

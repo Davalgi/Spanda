@@ -155,6 +155,34 @@ async fn grpc_expanded_endpoints_return_json() {
         .expect("discover devices")
         .into_inner();
     assert!(discovery.json.contains("discovery"));
+
+    let device_tree = client
+        .get_device_tree(Empty {})
+        .await
+        .expect("device tree")
+        .into_inner();
+    assert!(device_tree.json.contains("loaded"));
+
+    let traces = client
+        .get_observability_traces(Empty {})
+        .await
+        .expect("observability traces")
+        .into_inner();
+    assert!(traces.json.contains("traces"));
+
+    let otlp_traces = client
+        .get_otlp_traces(Empty {})
+        .await
+        .expect("otlp traces")
+        .into_inner();
+    assert!(otlp_traces.json.contains("resourceSpans"));
+
+    let rbac = client
+        .get_rbac_matrix(Empty {})
+        .await
+        .expect("rbac matrix")
+        .into_inner();
+    assert!(rbac.json.contains("matrix"));
 }
 
 async fn connect(bind: &str) -> ControlCenterClient<Channel> {

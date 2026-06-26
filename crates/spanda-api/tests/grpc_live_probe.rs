@@ -157,5 +157,17 @@ async fn grpc_live_control_center_endpoints() {
             .expect("execute ota")
             .into_inner();
         assert!(execute.json.contains("rollout"));
+
+        let mut secrets_req = tonic::Request::new(Empty {});
+        secrets_req.metadata_mut().insert(
+            "authorization",
+            MetadataValue::try_from(format!("Bearer {api_key}")).expect("metadata"),
+        );
+        let secrets = client
+            .list_secrets(secrets_req)
+            .await
+            .expect("list secrets")
+            .into_inner();
+        assert!(secrets.json.contains("secrets"));
     }
 }

@@ -56,6 +56,17 @@ service ControlCenter {
   rpc ListFleets(Empty) returns (JsonResponse);
   rpc ListAlerts(Empty) returns (JsonResponse);
   rpc ListConfigSnapshots(Empty) returns (JsonResponse);
+  rpc GetDeviceTree(Empty) returns (JsonResponse);
+  rpc GetDeviceReports(Empty) returns (JsonResponse);
+  rpc GetFailoverChains(Empty) returns (JsonResponse);
+  rpc ListSecrets(Empty) returns (JsonResponse);
+  rpc GetRbacMatrix(Empty) returns (JsonResponse);
+  rpc GetAnalyticsReadiness(QueryRequest) returns (JsonResponse);
+  rpc ExportReports(QueryRequest) returns (JsonResponse);
+  rpc GetObservabilityTraces(Empty) returns (JsonResponse);
+  rpc GetOtlpTraces(Empty) returns (JsonResponse);
+  rpc ExportOtlpTraces(QueryRequest) returns (JsonResponse);
+  rpc ExportOtlpMetrics(QueryRequest) returns (JsonResponse);
   rpc OperatorQuarantine(JsonBodyRequest) returns (JsonResponse);
   rpc OperatorMissionApprove(JsonBodyRequest) returns (JsonResponse);
   rpc ExportCompliance(QueryRequest) returns (JsonResponse);

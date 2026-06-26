@@ -320,6 +320,107 @@ impl ControlCenter for GrpcControlCenter {
         }))
     }
 
+    async fn get_device_tree(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.with_state(|state| crate::handlers::device_tree_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_device_reports(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.with_state(|state| crate::handlers::device_reports_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_failover_chains(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.with_state(|state| crate::handlers::failover_chains_json(state))
+            .map(Response::new)
+    }
+
+    async fn list_secrets(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        let ctx = self.rbac_from_request(&request);
+        self.with_state(|state| crate::handlers::secrets_list_json(state, ctx.as_ref()))
+            .map(Response::new)
+    }
+
+    async fn get_rbac_matrix(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        Ok(Response::new(JsonResponse {
+            json: crate::handlers::rbac_matrix_json(),
+        }))
+    }
+
+    async fn get_analytics_readiness(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_readiness_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn export_reports(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        let ctx = self.rbac_from_request(&request);
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::reports_export_json(state, &query, ctx.as_ref()))
+            .map(Response::new)
+    }
+
+    async fn get_observability_traces(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.with_state(|state| crate::handlers::observability_traces_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_otlp_traces(
+        &self,
+        _request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.with_state(|state| crate::handlers::otlp_traces_json(state))
+            .map(Response::new)
+    }
+
+    async fn export_otlp_traces(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        let ctx = self.rbac_from_request(&request);
+        let query = request.into_inner().query;
+        self.with_state(|state| {
+            crate::handlers::otlp_traces_export_json(state, &query, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
+    async fn export_otlp_metrics(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        let ctx = self.rbac_from_request(&request);
+        let query = request.into_inner().query;
+        self.with_state(|state| {
+            crate::handlers::otlp_metrics_export_json(state, &query, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
     async fn detect_drift(
         &self,
         request: Request<DriftRequest>,
