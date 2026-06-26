@@ -47,6 +47,9 @@ Open `http://127.0.0.1:8080/` for the Control Center UI, or use the **Control Ce
 | `/v1/trust/package` | GET | — | Package trust evaluation (`?name=&version=`) |
 | `/v1/sre/summary` | GET | — | Availability and alert rollup |
 | `/v1/observability/traces` | GET | — | Recent API trace records |
+| `/v1/observability/otlp/traces` | GET | — | OTLP/JSON trace preview for Jaeger |
+| `/v1/observability/otlp/export` | POST | Bearer | Push API traces to OTLP collector |
+| `/v1/stream/telemetry` | WebSocket | — | Live telemetry, traces, and alerts |
 | `/v1/operator/quarantine` | POST | Bearer | Quarantine a device |
 | `/v1/operator/mission/approve` | POST | Bearer | Approve or reject a mission |
 | `/v1/rpc` | POST | — | gRPC-compatible JSON gateway |
@@ -77,6 +80,28 @@ python -c "from spanda_sdk import ControlCenterClient; print(ControlCenterClient
 ```
 
 Integration tests: `SPANDA_SDK_INTEGRATION=1 SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080 pytest packages/sdk-python/tests`
+
+WebSocket streaming (`pip install -e 'packages/sdk-python[stream]'`):
+
+```python
+from spanda_sdk import TelemetryStream
+TelemetryStream("http://127.0.0.1:8080").wait_for_hello()
+```
+
+### OTLP traces (Jaeger)
+
+Control Center API spans export as OTLP/JSON traces:
+
+```bash
+export SPANDA_OTLP_TRACES_ENDPOINT=http://localhost:4318/v1/traces
+export SPANDA_OTLP_TRACE_AUTO_PUSH=1   # optional: push each API span
+curl -H "Authorization: Bearer $SPANDA_API_KEY" \
+  -X POST "http://127.0.0.1:8080/v1/observability/otlp/export"
+```
+
+Preview payload: `GET /v1/observability/otlp/traces`
+
+Live telemetry WebSocket: `ws://127.0.0.1:8080/v1/stream/telemetry` (hello + telemetry/trace/alert events)
 
 ---
 
@@ -129,4 +154,4 @@ Default: log to stderr.
 
 ## Status
 
-**Experimental** (Phase E1–E4). Phase E4 adds compliance export, digital thread query, executive scorecard, readiness analytics, and report composer. Tauri desktop and WebSocket SDK remain follow-ups.
+**Experimental** (Phase E1–E4). Includes WebSocket telemetry streaming, OTLP trace export to Jaeger, compliance export, digital thread query, executive scorecard, and report composer. Tauri desktop remains a follow-up.

@@ -20,6 +20,7 @@ fi
 BIND="127.0.0.1:${PORT}"
 export SPANDA_API_KEY="enterprise-ops-smoke-key"
 
+export SPANDA_WS_STREAM_SECONDS=3
 echo "== start control-center on ${BIND} (warehouse config + program) =="
 run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
 SERVER_PID=$!
@@ -29,6 +30,8 @@ cleanup() {
   kill "$SERVER_PID" 2>/dev/null || true
 }
 trap cleanup EXIT
+
+chmod +x "${ROOT}/scripts/mock_otlp_traces_collector.py" "${ROOT}/scripts/ws_telemetry_probe.py" 2>/dev/null || true
 
 fetch() {
   local path="$1"
@@ -148,5 +151,23 @@ fetch /v1/executive/scorecard | grep -q overall_score
 echo "== E4 GET /v1/reports/export?format=markdown =="
 curl -sf -H "Authorization: Bearer ${SPANDA_API_KEY}" \
   "http://${BIND}/v1/reports/export?profile=defense&format=markdown" | grep -q executive
+
+echo "== OTLP GET /v1/observability/otlp/traces =="
+fetch /v1/observability/otlp/traces | grep -q resourceSpans
+
+echo "== OTLP POST /v1/observability/otlp/export (mock Jaeger collector) =="
+MOCK_OTLP_PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')
+python3 "${ROOT}/scripts/mock_otlp_traces_collector.py" "${MOCK_OTLP_PORT}" &
+MOCK_PID=$!
+sleep 0.5
+OTLP_RESPONSE=$(curl -s --max-time 10 -X POST \
+  -H "Authorization: Bearer ${SPANDA_API_KEY}" \
+  "http://${BIND}/v1/observability/otlp/export?endpoint=http://127.0.0.1:${MOCK_OTLP_PORT}/v1/traces")
+echo "$OTLP_RESPONSE" | grep -q '"ok":true'
+kill "$MOCK_PID" 2>/dev/null || true
+
+echo "== WebSocket /v1/stream/telemetry =="
+SPANDA_WS_STREAM_SECONDS=2 \
+  python3 "${ROOT}/scripts/ws_telemetry_probe.py" "ws://${BIND}/v1/stream/telemetry" | grep -q '"type":"hello"'
 
 echo "Enterprise operations smoke OK"
