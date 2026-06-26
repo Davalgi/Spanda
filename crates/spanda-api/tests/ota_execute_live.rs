@@ -1,6 +1,7 @@
 //! Live OTA execute against a spawned deploy agent.
 
 use spanda_api::e3::ota_execute;
+use spanda_api::ControlCenterState;
 use spanda_ota::{
     agent_entry_for_port, deploy_target_key, register_agent, save_agent_registry, spawn_test_agent,
     DeployAgentRegistry,
@@ -42,7 +43,8 @@ fn ota_execute_live_rollout_updates_agent() {
             "hardware": "JetsonOrin"
         }],
     });
-    let response = ota_execute(&body.to_string(), Some(&ctx));
+    let state = ControlCenterState::new();
+    let response = ota_execute(&state, &body.to_string(), Some(&ctx));
     assert_eq!(response.status, 200, "ota execute failed: {}", response.body);
     assert!(response.body.contains("\"executed\":true"));
     assert!(response.body.contains("\"success\":true"));

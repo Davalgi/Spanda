@@ -10,9 +10,11 @@ use spanda_config::{
     DeviceLifecycleState,
 };
 use spanda_deploy_http::HttpResponse;
+use spanda_certify::build_certification_proof_summary;
 use spanda_ota::{
-    apply_rollout, build_deploy_bundle, default_state_path, execute_remote_rollout,
-    load_agent_registry, load_deploy_state, plan_rollout, save_deploy_state, DeployAssignment,
+    apply_rollout, build_deploy_bundle, build_deploy_plan_from_program, default_state_path,
+    execute_remote_rollout, load_agent_registry, load_deploy_state, plan_rollout,
+    save_deploy_state, validate_rollout_certification, CertificationProofSummary, DeployAssignment,
     DeployPlan, RolloutOptions, RolloutStrategy,
 };
 use spanda_package::evaluate_package_trust;
@@ -34,6 +36,8 @@ struct OtaPlanRequest {
     readiness_runtime: bool,
     #[serde(default)]
     readiness_inject_faults: bool,
+    #[serde(default)]
+    require_certify: bool,
 }
 
 #[derive(Deserialize)]
@@ -109,7 +113,50 @@ pub fn ota_status() -> HttpResponse {
     }))
 }
 
-fn parse_ota_plan_request(body: &str) -> Result<(DeployPlan, RolloutOptions), HttpResponse> {
+fn production_require_certify(request_flag: bool) -> bool {
+    request_flag
+        || std::env::var("SPANDA_OTA_REQUIRE_CERTIFY")
+            .ok()
+            .is_some_and(|value| {
+                value == "1" || value.eq_ignore_ascii_case("true") || value.eq_ignore_ascii_case("yes")
+            })
+        || std::env::var("SPANDA_PRODUCTION_POLICY")
+            .ok()
+            .is_some_and(|value| value.eq_ignore_ascii_case("production"))
+}
+
+fn enrich_ota_plan(state: &ControlCenterState, plan: &mut DeployPlan) {
+    let Some(program_path) = state.program_path.as_ref() else {
+        return;
+    };
+    let Ok((program, _, _)) = crate::program::parse_program_file(program_path) else {
+        return;
+    };
+    if plan.assignments.is_empty() {
+        let program_path_str = program_path.to_string_lossy();
+        let built = build_deploy_plan_from_program(&program, &program_path_str, &plan.version);
+        plan.assignments = built.assignments;
+        plan.certifications = built.certifications;
+        plan.program = built.program;
+        plan.program_hash = built.program_hash;
+    }
+    if plan.certification_proof.is_none() {
+        let program_path_str = program_path.to_string_lossy();
+        let proof = build_certification_proof_summary(&program, &program_path_str);
+        plan.certification_proof = Some(CertificationProofSummary {
+            passed: proof.passed,
+            passed_strict: proof.passed_strict,
+            summary: proof.summary,
+            error_count: proof.error_count,
+            warning_count: proof.warning_count,
+        });
+    }
+}
+
+fn parse_ota_plan_request(
+    state: &ControlCenterState,
+    body: &str,
+) -> Result<(DeployPlan, RolloutOptions), HttpResponse> {
     let req: OtaPlanRequest = match serde_json::from_str(body) {
         Ok(v) => v,
         Err(e) => return Err(bad_request(&e.to_string())),
@@ -120,7 +167,7 @@ fn parse_ota_plan_request(body: &str) -> Result<(DeployPlan, RolloutOptions), Ht
         "blue_green" | "bluegreen" => RolloutStrategy::BlueGreen,
         _ => RolloutStrategy::All,
     };
-    let plan = DeployPlan {
+    let mut plan = DeployPlan {
         program: "control-center".into(),
         version: req.version.clone(),
         program_hash: None,
@@ -128,6 +175,7 @@ fn parse_ota_plan_request(body: &str) -> Result<(DeployPlan, RolloutOptions), Ht
         certifications: vec![],
         certification_proof: None,
     };
+    enrich_ota_plan(state, &mut plan);
     let rollback_on_readiness_fail = req.rollback_on_readiness_fail
         || std::env::var("SPANDA_OTA_ROLLBACK_ON_READINESS_FAIL")
             .ok()
@@ -140,6 +188,7 @@ fn parse_ota_plan_request(body: &str) -> Result<(DeployPlan, RolloutOptions), Ht
         canary_percent: req.canary_percent.unwrap_or(10),
         version: req.version,
         dry_run: req.dry_run,
+        require_certify: production_require_certify(req.require_certify),
         rollback_on_readiness_fail,
         readiness_runtime: req.readiness_runtime,
         readiness_inject_faults: req.readiness_inject_faults,
@@ -148,29 +197,36 @@ fn parse_ota_plan_request(body: &str) -> Result<(DeployPlan, RolloutOptions), Ht
     Ok((plan, options))
 }
 
-pub fn ota_plan(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+pub fn ota_plan(state: &ControlCenterState, body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
-    let (plan, options) = match parse_ota_plan_request(body) {
+    let (plan, options) = match parse_ota_plan_request(state, body) {
         Ok(v) => v,
         Err(response) => return response,
     };
+    if let Err(error) = validate_rollout_certification(&plan, &options) {
+        return bad_request(&error);
+    }
     let result = plan_rollout(&plan, &options);
     json_ok(&serde_json::json!({
         "version": "v1",
         "rollout": result,
+        "require_certify": options.require_certify,
     }))
 }
 
-pub fn ota_execute(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+pub fn ota_execute(state: &ControlCenterState, body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
-    let (plan, options) = match parse_ota_plan_request(body) {
+    let (plan, options) = match parse_ota_plan_request(state, body) {
         Ok(v) => v,
         Err(response) => return response,
     };
+    if let Err(error) = validate_rollout_certification(&plan, &options) {
+        return bad_request(&error);
+    }
     if options.dry_run {
         let result = plan_rollout(&plan, &options);
         return json_ok(&serde_json::json!({

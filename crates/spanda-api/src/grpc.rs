@@ -500,7 +500,9 @@ impl ControlCenter for GrpcControlCenter {
         self.guard_request(&request)?;
         let ctx = self.rbac_from_request(&request);
         let body = request.into_inner().body_json;
-        let json = crate::handlers::ota_plan_json(&body, ctx.as_ref());
+        let json = self
+            .with_state(|state| crate::handlers::ota_plan_json(state, &body, ctx.as_ref()))?
+            .json;
         self.respond_mutation("PlanOta", json, ctx)
     }
 
@@ -511,7 +513,9 @@ impl ControlCenter for GrpcControlCenter {
         self.guard_request(&request)?;
         let ctx = self.rbac_from_request(&request);
         let body = request.into_inner().body_json;
-        let json = crate::handlers::ota_execute_json(&body, ctx.as_ref());
+        let json = self
+            .with_state(|state| crate::handlers::ota_execute_json(state, &body, ctx.as_ref()))?
+            .json;
         self.respond_mutation("ExecuteOta", json, ctx)
     }
 

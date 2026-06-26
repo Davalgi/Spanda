@@ -12,6 +12,7 @@ tonic = "0.12"
 prost = "0.13"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
 spanda-audit = { path = "../spanda-audit" }
+spanda-certify = { path = "../spanda-certify" }
 spanda-compliance = { path = "../spanda-compliance" }
 spanda-config = { path = "../spanda-config" }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
