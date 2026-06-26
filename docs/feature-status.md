@@ -99,7 +99,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Differentiation (NEXT)** | What-If Analysis, Mission Risk Analysis, Readiness Forecasting, Trust Graph, Scorecards |
 | **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming, Autonomous Governance |
 | **Platform maturity (Phase A)** | `spanda graph`, `spanda deploy gate`, `spanda explain` (with `--config`/`--baseline`), `spanda trust` (package + program) — **Experimental**; see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
-| **Platform maturity (Phase B)** | Threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`) — **Experimental** |
+| **Platform maturity (Phase B)** | Threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`, `readiness --policy`, `deploy gate --operational-policy`, runtime `--enforce-policy`) — **Experimental** |
 | **Platform maturity (Phase C)** | Chaos, readiness trends, resource estimation, compliance profiles, ADR (`spanda adr`) — **Experimental** |
 | **Platform maturity (Phase D)** | Verify-time tamper/integrity, composite program trust, secure-boot attestation (vendor TPM + remote AK chain), compliance accreditation export, decision explain, runtime policy, AI generate/suggest, spoof-check with confidence gates, security assurance, tamper_policy runtime — **Experimental** |
 | **Platform maturity (Phase C–D)** | Readiness trends, resource estimation, compliance profiles, ADR, tamper check |
@@ -169,7 +169,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | self-healing & recovery (static + CLI) | **Stable** | Recovery planner, validation gates, audit, knowledge store |
 | mission continuity (static + CLI + diagnostics) | **Stable** | `spanda-assurance` continuity module; CLI `continuity`, `takeover`, `delegate`, `succession`; `continuity:*` diagnostics in check JSON and LSP |
 | mission continuity runtime dispatch | **Stable** | Interpreter mode-specific takeover, durable checkpoints, auto-trigger on health faults, fleet agent `/v1/continuity/execute`, mesh relay, swarm `--failed` handoff |
-| self-healing runtime dispatch | **Experimental** | Assurance-gated actions, Approval polling, fleet mesh relay (`SPANDA_FLEET_MESH_URL`), mission approval gating, fleet agent interpreter + assurance recovery on deployed programs (`recovery_engine` on `/v1/status`) |
+| self-healing runtime dispatch | **Stable** | Auto-trigger on health faults, approval polling/retry, fleet mesh relay with failure events, mission approval gating; `scripts/fleet_field_validation.sh` |
 | recovery diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `recovery:*` categories; TS mirror in `scripts/lsp-readiness.mts` |
 | continuity diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `continuity:*` categories including `continuity:mission`; TS mirror in `src/continuity-diagnostics.ts` |
 | learned anomaly backends | **Experimental** | Runtime `scan_learned`; ONNX optional |
@@ -212,7 +212,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | **Secret Management** | **Experimental** | `ManagedSecretVault`, rotation metadata |
 | **Telemetry** | **Experimental** | Health/readiness/mission signals; trend analysis; forecasting **Planned** |
 | **Alerting** | **Experimental** | Webhook + email core; Slack/Teams/PagerDuty packages **Planned** |
-| **Configuration Drift** | **Experimental** | Config + firmware dimensions; package/provider/capability/policy/safety **Planned** |
+| **Configuration Drift** | **Experimental** | Full operational drift API (`detect_operational_drift_full`); seven dimensions via Control Center `GET /v1/drift` |
 | **OTA & Rollback** | **Experimental** | Canary, blue/green, phased dry-run; production fleet automation **Planned** |
 | **Package Trust** | **Experimental** | `spanda trust`, `/v1/trust/package`, trust score |
 | **SDKs** | **Experimental** | Python SDK, REST v1, WebSocket; gRPC **Planned**; CLI reference **Stable** |
@@ -220,7 +220,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | **SRE** | **Experimental** | `/v1/sre/summary`; incident workflow UI **Planned** |
 | **Reporting** | **Experimental** | HTML, Markdown, JSON, PDF, CSV exports |
 | **Compliance** | **Experimental** | Evidence packs, `GET /v1/compliance/export` |
-| **APIs** | **Experimental** | REST v1 + OpenAPI; JSON-RPC gateway; native gRPC **Planned** |
+| **APIs** | **Experimental** | REST v1 + OpenAPI; JSON-RPC gateway; native gRPC (tonic) **Experimental** — Health, GetDashboard, DetectDrift on `--grpc-bind` |
 | **Observability** | **Experimental** | OTLP trace export, correlation IDs, WebSocket telemetry |
 | **Digital Thread** | **Experimental** | `GET /v1/digital-thread/query`; full graph UI **Planned** |
 

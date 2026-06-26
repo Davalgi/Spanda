@@ -65,10 +65,10 @@ Full enterprise analysis: [enterprise-operations-roadmap.md](./enterprise-operat
 | [Packages](#packages) | 38 official registry packages, publish mirror | Curated remote registry growth |
 | [Tooling](#tooling) | CLI, 9 bundled demos, CI golden paths | VS Code Marketplace (blocked on `VSCE_PAT`) |
 | [Mission assurance](#mission-assurance) | Static analysis + learned anomaly (experimental) | Package-backed ML anomaly backends |
-| [Mission continuity](#mission-continuity) | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Auto-trigger tuning; swarm hardening |
-| [Self-healing](#self-healing--recovery) | Recovery planner + CLI (**Stable**); runtime dispatch experimental | Recovery Coverage CLI |
-| [Platform maturity](#platform-maturity) | 16-area design specs + topic guides | Phase A: `spanda graph`, `explain`, gates, package trust |
-| [Differentiation](#differentiation--signature-capabilities) | Topic guides + architecture specs (docs) | NOW engineering: contracts, explain, audit trail, coverage |
+| [Mission continuity](#mission-continuity) | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Field validation; swarm quorum hardening |
+| [Self-healing](#self-healing--recovery) | Recovery planner + CLI + runtime dispatch (**Stable**) | Recovery coverage hardening |
+| [Platform maturity](#platform-maturity) | 16 areas shipped **Experimental** (graph, explain, gates, trust, policy, drift, …) | Stable hardening for Phase A–D deliverables |
+| [Differentiation](#differentiation--signature-capabilities) | NOW items shipped **Experimental** (contracts, explain, audit, coverage) | Stable hardening; NEXT signature capabilities |
 | [Enterprise operations](#enterprise-operations) | E1–E4 **Experimental** (Control Center, device pool, provisioning, APIs, smoke) | Harden to **Stable**: native gRPC, full drift, registry discovery packages, production desktop |
 
 ---
@@ -81,7 +81,7 @@ Full analysis: [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
 
 | # | Area | Phase | Priority | Status |
 |---|------|-------|----------|--------|
-| 1 | AI-assisted development (`generate`, `explain`, `suggest`) | Build, Operate | P0.3 / P3.3 | **Future** |
+| 1 | AI-assisted development (`generate`, `explain`, `suggest`) | Build, Operate | P0.3 / P3.3 | **Experimental** |
 | 2 | Dependency graph visualization | Build, Operate | P0.1 | **Experimental** |
 | 3 | Threat modeling | Verify, Deploy | P1.2 | **Experimental** |
 | 4 | Configuration drift detection | Deploy, Operate | P1.1 | **Experimental** |
@@ -100,12 +100,12 @@ Full analysis: [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
 
 ### Phased delivery
 
-| Phase | Release | Theme | Key deliverables |
-|-------|---------|-------|------------------|
-| A | v0.5+ (Q3–Q4 2026) | Understand & trust | `spanda graph`, `explain`, `package trust`, deployment gates |
-| B | v0.6 (Q1 2027) | Operate & compare | drift, threat model, mission diff, scorecard, policy (verify) |
-| C | v0.7 (Q2 2027) | Resilience & planning | chaos, readiness trends, estimate, compliance profiles, ADR |
-| D | v1.0 (2027) | Full trust platform | tamper/integrity, decision explain, runtime policy, AI generate/suggest (mock-first) |
+| Phase | Release | Theme | Status |
+|-------|---------|-------|--------|
+| A | v0.5+ (Q3–Q4 2026) | Understand & trust | **Shipped (experimental)** — `spanda graph`, `explain`, package trust, deployment gates |
+| B | v0.6 (Q1 2027) | Operate & compare | **Shipped (experimental)** — drift, threat model, mission diff, scorecard, policy verify + readiness |
+| C | v0.7 (Q2 2027) | Resilience & planning | **Shipped (experimental)** — chaos, readiness trends, estimate, compliance, ADR |
+| D | v1.0 (2027) | Full trust platform | **Shipped (experimental)** — tamper/integrity, decision explain, runtime policy, AI generate/suggest |
 
 Topic guides: [dependency-graphs.md](./dependency-graphs.md) · [deployment-gates.md](./deployment-gates.md) · [tamper-detection.md](./tamper-detection.md) · [security-assurance.md](./security-assurance.md)
 
@@ -321,9 +321,10 @@ See [mission-assurance.md](./mission-assurance.md), [state-estimation.md](./stat
 | `recovery_policy` syntax + `RecoveryPlanner` | **Stable** |
 | CLI (`heal`, `recover`, `recovery-report`, `recovery knowledge`, `sim --inject-failure`) | **Stable** |
 | Recovery diagnostics (`spanda check --readiness-json`) | **Stable** |
-| Runtime dispatch (modes, speed caps, connectivity, mission pause) | **Experimental** |
-| Operator approval (env, Approval topics, mission `requires approval`) | **Experimental** |
-| Fleet mesh recovery (`POST /v1/fleet/recovery`, `SPANDA_FLEET_MESH_URL`) | **Experimental** |
+| Runtime dispatch (modes, speed caps, connectivity, mission pause) | **Stable** |
+| Auto-trigger recovery during `run` / `sim` on health faults | **Stable** |
+| Operator approval (env, Approval topics, mission `requires approval`, deferred retry) | **Stable** |
+| Fleet mesh recovery (`POST /v1/fleet/recovery`, `SPANDA_FLEET_MESH_URL`) | **Stable** |
 | Recovery reassign → continuity mesh relay | **Stable** | Fleet recovery `reassign mission` relays continuity when mesh URL is set |
 | Fleet agent assurance recovery (`POST /v1/recovery/execute`, deployed program) | **Experimental** |
 | Fleet agent interpreter recovery (`execute_recovery_on_program`, `recovery_engine`) | **Experimental** |

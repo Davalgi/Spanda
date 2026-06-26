@@ -295,7 +295,7 @@ Compact snapshot — full matrix: [docs/feature-status.md](docs/feature-status.m
 | LLVM | **Experimental** | `spanda ir`, `compile-native` — interpreter is primary runtime |
 | WASM | **Experimental** | Browser check/run/verify; limited vs native CLI |
 | ROS2 | **Experimental** | rclrs/rclpy bridge; requires ROS Humble setup |
-| Control Center | **Experimental** | `spanda control-center serve`, REST v1 (`spanda-api`), embedded UI, Tauri desktop scaffold |
+| Control Center | **Experimental** | `spanda control-center serve` (REST v1 + optional `--grpc-bind` tonic), embedded UI, Tauri desktop (`scripts/build_control_center_desktop.sh`) |
 | GitHub Pages / Docs Site | **Experimental** | mdBook under [docs-site/](docs-site/); build with `mdbook build docs-site` |
 
 ---
@@ -307,9 +307,9 @@ Compact snapshot — full matrix: [docs/feature-status.md](docs/feature-status.m
 | **Safety-Typed AI** | Stable | [agentic-programming.md](docs/agentic-programming.md) |
 | **Readiness Engine** | Stable | [readiness.md](docs/readiness.md) |
 | **Continuity & Takeover** | Stable | [mission-continuity.md](docs/mission-continuity.md) |
-| **Mission Contracts** | Planned (NOW) | [mission-contracts.md](docs/mission-contracts.md) |
-| **Trust Framework** | Planned (NEXT) | [trust-framework.md](docs/trust-framework.md) |
-| **Explainability & Audit Trail** | Planned (NOW) | [explainability.md](docs/explainability.md) |
+| **Mission Contracts** | Experimental | [mission-contracts.md](docs/mission-contracts.md) |
+| **Trust Framework** | Experimental | [trust-framework.md](docs/trust-framework.md) |
+| **Explainability & Audit Trail** | Experimental | [explainability.md](docs/explainability.md) |
 
 Roadmap: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md)
 

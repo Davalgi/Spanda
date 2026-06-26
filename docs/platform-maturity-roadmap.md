@@ -188,7 +188,7 @@ Ordered by **adoption impact × trust impact ÷ implementation risk**.
 | P1.2 | **Threat modeling** (static) | Complements `spanda security check`; pre-deploy checklist |
 | P1.3 | **Mission diff** | Change-impact for CI and review workflows |
 | P1.4 | **Scorecard** | Executive rollup of existing engines |
-| P1.5 | **Policy engine** (verify-time) | Declarative ops rules without runtime enforcement yet |
+| P1.5 | **Policy engine** (verify + readiness + runtime) | Declarative ops rules at verify, readiness scoring, deploy gates, and run/sim enforcement |
 
 ### P2 — v0.7 resilience & compliance (Q2 2027)
 
