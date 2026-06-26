@@ -2,6 +2,8 @@
 
 Thin HTTP client for the [Control Center](../../docs/control-center.md) REST API v1.
 
+WebSocket streaming: `pip install -e 'packages/sdk-python[stream]'`
+
 ```bash
 pip install -e packages/sdk-python
 export SPANDA_API_KEY=your-key
