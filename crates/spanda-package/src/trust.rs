@@ -123,7 +123,7 @@ pub fn evaluate_package_trust(
 
     let maintained = lookup
         .as_ref()
-        .is_some_and(|entry| entry.versions().len() >= 1);
+        .is_some_and(|entry| !entry.versions().is_empty());
     factors.push(factor(
         "maintained",
         if maintained { 10 } else { 0 },

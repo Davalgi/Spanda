@@ -120,16 +120,16 @@ pub fn verify_contract(program: &Program, source_label: &str) -> ContractVerific
             constraints: constraint_lines,
             assumptions: health_checks
                 .iter()
-                .filter_map(|hc| {
-                    let spanda_ast::foundations::HealthCheckDecl::HealthCheckDecl { name, .. } = hc;
-                    Some(format!("health_check:{name}"))
-                })
-                .chain(health_policies.iter().filter_map(|hp| {
-                    let spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl {
-                        name, ..
-                    } = hp;
-                    Some(format!("health_policy:{name}"))
-                }))
+                .map(
+                    |spanda_ast::foundations::HealthCheckDecl::HealthCheckDecl { name, .. }| {
+                        format!("health_check:{name}")
+                    },
+                )
+                .chain(health_policies.iter().map(
+                    |spanda_ast::foundations::HealthPolicyDecl::HealthPolicyDecl {
+                         name, ..
+                     }| { format!("health_policy:{name}") },
+                ))
                 .collect(),
             invariants,
             guarantees: vec!["mission_steps_declared".into()],

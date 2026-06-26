@@ -78,7 +78,7 @@ pub fn suggest_program(program: &Program, source_label: &str) -> SuggestReport {
                 "Add `policy Name { ... }` and verify with `spanda verify --policy Name`".into(),
         });
     }
-    suggestions.sort_by(|left, right| right.severity.cmp(&left.severity));
+    suggestions.sort_by_key(|suggestion| std::cmp::Reverse(suggestion.severity));
     let passed = !suggestions.iter().any(|item| {
         matches!(
             item.severity,

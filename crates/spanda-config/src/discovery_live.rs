@@ -160,12 +160,7 @@ pub fn probe_ble() -> Vec<DiscoveryMatch> {
                     .skip(2)
                     .collect::<Vec<_>>()
                     .join("-");
-                discovery_match(
-                    &format!("ble-{}", if name.is_empty() { index } else { index }),
-                    Some(&name),
-                    mac,
-                    "ble",
-                )
+                discovery_match(&format!("ble-{index}"), Some(&name), mac, "ble")
             })
             .collect();
         if !matches.is_empty() {

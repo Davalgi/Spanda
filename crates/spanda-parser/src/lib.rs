@@ -2674,9 +2674,7 @@ impl Parser {
 
     fn parse_operation_hours_range(&mut self) -> Result<String, SpandaError> {
         let token = self.peek();
-        let range = if self.check(TokenType::String) {
-            self.advance().lexeme.clone()
-        } else if self.check(TokenType::Ident) {
+        let range = if self.check(TokenType::String) || self.check(TokenType::Ident) {
             self.advance().lexeme.clone()
         } else {
             return Err(SpandaError::Parse {
@@ -10210,8 +10208,6 @@ impl Parser {
                 } else {
                     num
                 }
-            } else if self.check(TokenType::UnitLiteral) {
-                self.advance().lexeme.clone()
             } else {
                 self.advance().lexeme.clone()
             };

@@ -35,7 +35,7 @@ struct ParsedReadinessCli {
     compliance_profile: Option<String>,
     operational_policy: Option<String>,
     history_path: Option<String>,
-    system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
+    _system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
 }
 
 fn read_file(path: &str) -> String {
@@ -284,7 +284,7 @@ fn parse_readiness_cli(args: &[String]) -> ParsedReadinessCli {
         compliance_profile,
         operational_policy,
         history_path,
-        system_config,
+        _system_config: system_config,
     }
 }
 

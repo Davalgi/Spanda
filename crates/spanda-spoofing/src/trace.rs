@@ -88,7 +88,7 @@ pub fn analyze_trace_spoofing(trace: &MissionTrace, max_speed_m_s: f64) -> Vec<S
                 let speed_m_s = distance_m / delta_s;
 
                 if speed_m_s > max_speed_m_s {
-                    let confidence = (speed_m_s / max_speed_m_s).min(1.0).max(0.5);
+                    let confidence = (speed_m_s / max_speed_m_s).clamp(0.5, 1.0);
                     alerts.push(SpoofingAlert {
                         sensor: "gps".into(),
                         severity: if speed_m_s > max_speed_m_s * 3.0 {
@@ -196,16 +196,12 @@ fn detect_imu_gps_conflict(
         return None;
     }
 
-    let Some(obj) = frame.payload.as_object() else {
-        return None;
-    };
+    let obj = frame.payload.as_object()?;
     let speed = obj
         .get("speed_m_s")
         .or_else(|| obj.get("velocity_m_s"))
         .and_then(|v| v.as_f64())?;
-    let Some((gps_time, _, _)) = last_gps else {
-        return None;
-    };
+    let (gps_time, _, _) = last_gps?;
 
     if (frame.sim_time_ms - gps_time).abs() > 250.0 {
         return None;

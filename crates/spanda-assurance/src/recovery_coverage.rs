@@ -199,11 +199,7 @@ pub fn evaluate_recovery_coverage_with_config(
 
     let known_failures = known_failure_list.len();
     let points = covered * 100 + partially_covered * 50;
-    let coverage_pct = if known_failures == 0 {
-        0
-    } else {
-        (points / known_failures) as u32
-    };
+    let coverage_pct = points.checked_div(known_failures).unwrap_or(0) as u32;
 
     RecoveryCoverageReport {
         program: source_label.into(),

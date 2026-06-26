@@ -1245,12 +1245,11 @@ pub fn encode_response(
         .map(|id| format!("X-Correlation-ID: {id}\r\n"))
         .unwrap_or_default();
     format!(
-        "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Spanda-Api-Version\r\n{}Access-Control-Expose-Headers: X-Correlation-ID\r\n\r\n{}",
+        "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Headers: Authorization, Content-Type, X-Correlation-ID, X-Spanda-Api-Version\r\n{correlation_header}{retry_header}Access-Control-Expose-Headers: X-Correlation-ID\r\n\r\n{}",
         response.status,
         status_text,
         content_type,
         response.body.len(),
-        format!("{correlation_header}{retry_header}"),
         response.body
     )
 }

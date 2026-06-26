@@ -446,75 +446,72 @@ fn diff_robots(
 ) {
     for name in left.keys().chain(right.keys()).collect::<BTreeSet<_>>() {
         let path = format!("robot/{name}");
-        match (left.get(name), right.get(name)) {
-            (Some(l), Some(r)) => {
-                if l.hardware != r.hardware {
-                    push_modified(
-                        MissionDiffDimension::Robot,
-                        &path,
-                        "robot hardware profile changed",
-                        l.hardware.as_deref(),
-                        r.hardware.as_deref(),
-                        "Re-run hardware verify and readiness",
-                        changes,
-                    );
-                }
-                diff_string_sets(
-                    MissionDiffDimension::Capability,
-                    &format!("{path}/capability"),
-                    &l.capabilities,
-                    &r.capabilities,
-                    "robot capability",
+        if let (Some(l), Some(r)) = (left.get(name), right.get(name)) {
+            if l.hardware != r.hardware {
+                push_modified(
+                    MissionDiffDimension::Robot,
+                    &path,
+                    "robot hardware profile changed",
+                    l.hardware.as_deref(),
+                    r.hardware.as_deref(),
+                    "Re-run hardware verify and readiness",
                     changes,
                 );
-                diff_string_sets(
-                    MissionDiffDimension::Sensor,
-                    &format!("{path}/sensor"),
-                    &l.sensors,
-                    &r.sensors,
-                    "robot sensor",
-                    changes,
-                );
-                diff_string_sets(
-                    MissionDiffDimension::Actuator,
-                    &format!("{path}/actuator"),
-                    &l.actuators,
-                    &r.actuators,
-                    "robot actuator",
-                    changes,
-                );
-                diff_string_sets(
-                    MissionDiffDimension::Behavior,
-                    &format!("{path}/behavior"),
-                    &l.behaviors,
-                    &r.behaviors,
-                    "robot behavior",
-                    changes,
-                );
-                if l.mission != r.mission {
-                    push_modified(
-                        MissionDiffDimension::Mission,
-                        &format!("{path}/mission"),
-                        "robot mission definition changed",
-                        l.mission.as_deref(),
-                        r.mission.as_deref(),
-                        "Re-run mission verify and readiness",
-                        changes,
-                    );
-                }
-                if l.safety != r.safety {
-                    push_modified(
-                        MissionDiffDimension::Safety,
-                        &format!("{path}/safety"),
-                        "robot safety rules changed",
-                        l.safety.as_deref(),
-                        r.safety.as_deref(),
-                        "Re-run safety audit and safety-coverage",
-                        changes,
-                    );
-                }
             }
-            _ => {}
+            diff_string_sets(
+                MissionDiffDimension::Capability,
+                &format!("{path}/capability"),
+                &l.capabilities,
+                &r.capabilities,
+                "robot capability",
+                changes,
+            );
+            diff_string_sets(
+                MissionDiffDimension::Sensor,
+                &format!("{path}/sensor"),
+                &l.sensors,
+                &r.sensors,
+                "robot sensor",
+                changes,
+            );
+            diff_string_sets(
+                MissionDiffDimension::Actuator,
+                &format!("{path}/actuator"),
+                &l.actuators,
+                &r.actuators,
+                "robot actuator",
+                changes,
+            );
+            diff_string_sets(
+                MissionDiffDimension::Behavior,
+                &format!("{path}/behavior"),
+                &l.behaviors,
+                &r.behaviors,
+                "robot behavior",
+                changes,
+            );
+            if l.mission != r.mission {
+                push_modified(
+                    MissionDiffDimension::Mission,
+                    &format!("{path}/mission"),
+                    "robot mission definition changed",
+                    l.mission.as_deref(),
+                    r.mission.as_deref(),
+                    "Re-run mission verify and readiness",
+                    changes,
+                );
+            }
+            if l.safety != r.safety {
+                push_modified(
+                    MissionDiffDimension::Safety,
+                    &format!("{path}/safety"),
+                    "robot safety rules changed",
+                    l.safety.as_deref(),
+                    r.safety.as_deref(),
+                    "Re-run safety audit and safety-coverage",
+                    changes,
+                );
+            }
         }
     }
 }

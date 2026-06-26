@@ -463,16 +463,16 @@ fn event_kind(event: &TelemetryEvent) -> &'static str {
     }
 }
 
-fn index_fields(
-    event: &TelemetryEvent,
-) -> (
+type IndexFields = (
     Option<String>,
     Option<String>,
     Option<String>,
     Option<String>,
     Option<String>,
     Option<String>,
-) {
+);
+
+fn index_fields(event: &TelemetryEvent) -> IndexFields {
     match event {
         TelemetryEvent::Device {
             device_id,

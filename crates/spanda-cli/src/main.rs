@@ -1018,6 +1018,7 @@ fn fleet_dispatch(args: &[String]) {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn human_fleet_run(
     source: &str,
     file: &str,
@@ -1162,6 +1163,7 @@ fn human_fleet_run(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn print_fleet_json(
     source: &str,
     _file: &str,

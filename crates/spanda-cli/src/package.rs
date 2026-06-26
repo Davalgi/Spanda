@@ -716,6 +716,7 @@ fn run_install_inner(root: &Path, manifest: &PackageManifest, verbose: bool) -> 
 }
 
 /// Resolve official lean-core package names for a source file path.
+#[allow(dead_code)]
 pub fn official_packages_for_source(source: &Path) -> Vec<String> {
     // Description:
     //     Official packages for source.

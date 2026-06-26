@@ -10,7 +10,7 @@ pub fn render_prometheus(store: &PersistentTelemetryStore) -> TelemetryStoreResu
     let stats = store.stats()?;
     let index = store.heartbeat_index();
     let events = store.read_all()?;
-    Ok(render_prometheus_from_events(&events, &stats, &index))
+    Ok(render_prometheus_from_events(&events, &stats, index))
 }
 
 /// Render Prometheus text exposition for an in-memory event slice.
@@ -268,7 +268,7 @@ fn json_f64(value: &Value, path: &[&str]) -> f64 {
 fn write_help_type(out: &mut String, name: &str, metric_type: &str, help: &str) {
     out.push_str("# HELP ");
     out.push_str(name);
-    out.push_str(" ");
+    out.push(' ');
     out.push_str(help);
     out.push('\n');
     out.push_str("# TYPE ");
@@ -297,7 +297,7 @@ fn write_metric(out: &mut String, name: &str, labels: &[(&str, &str)], value: f6
     if value.is_finite() {
         out.push_str(&value.to_string());
     } else {
-        out.push_str("0");
+        out.push('0');
     }
     out.push('\n');
 }

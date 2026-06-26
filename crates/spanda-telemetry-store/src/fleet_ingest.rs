@@ -64,7 +64,7 @@ pub fn ingest_global_store_to_fleet_mesh(
         Some(&payload),
         token,
     )
-    .map_err(|error| TelemetryStoreError::Serialization(error))?;
+    .map_err(TelemetryStoreError::Serialization)?;
     if (200..300).contains(&response.status) {
         return Ok(());
     }

@@ -20,9 +20,7 @@ pub fn api_version_from_headers(raw_headers: &str) -> Option<String> {
 
 /// Reject unsupported explicit API version headers.
 pub fn enforce_api_version(version: Option<&str>) -> Option<HttpResponse> {
-    let Some(requested) = version else {
-        return None;
-    };
+    let requested = version?;
     if requested == SUPPORTED_API_VERSION {
         return None;
     }

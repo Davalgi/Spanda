@@ -48,10 +48,9 @@ pub fn apply_fault_readiness_impact(report: &mut ReadinessReport, fault_report: 
         .faults
         .iter()
         .any(|f| f.status.severity_rank() >= RuntimeHealthStatus::Degraded.severity_rank())
+        && report.status == ReadinessStatus::Ready
     {
-        if report.status == ReadinessStatus::Ready {
-            report.status = ReadinessStatus::Degraded;
-        }
+        report.status = ReadinessStatus::Degraded;
     }
 
     if fault_report

@@ -6,7 +6,7 @@ use spanda_config::{
     SpandaManifest,
 };
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process;
 
 fn project_root(args: &[String]) -> PathBuf {
@@ -22,7 +22,7 @@ fn project_root(args: &[String]) -> PathBuf {
     SpandaManifest::find_project_root(&cwd).unwrap_or(cwd)
 }
 
-fn load_resolved(root: &PathBuf) -> spanda_config::ResolvedSystemConfig {
+fn load_resolved(root: &Path) -> spanda_config::ResolvedSystemConfig {
     ConfigResolver::new()
         .with_validation(false)
         .resolve_from_dir(root)
@@ -337,7 +337,7 @@ fn cmd_trust(args: &[String]) {
 }
 
 fn persist_device_if_present(
-    root: &PathBuf,
+    root: &Path,
     resolved: &spanda_config::ResolvedSystemConfig,
     device_id: &str,
 ) {

@@ -110,9 +110,7 @@ fn health_faults_for_runtime(
             let Program::Program { robots, .. } = program;
             robots
                 .iter()
-                .filter_map(|robot| match robot {
-                    RobotDecl::RobotDecl { name, .. } => Some(name.clone()),
-                })
+                .map(|RobotDecl::RobotDecl { name, .. }| name.clone())
                 .collect()
         };
         for id in robot_ids {

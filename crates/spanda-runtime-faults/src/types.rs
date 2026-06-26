@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 /// Overall runtime health status.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
+#[derive(Default)]
 pub enum RuntimeHealthStatus {
     Healthy,
     Warning,
@@ -12,6 +13,7 @@ pub enum RuntimeHealthStatus {
     Critical,
     Crashed,
     Rebooted,
+    #[default]
     Unknown,
 }
 
@@ -236,12 +238,6 @@ pub struct FaultRecoveryAction {
     pub target: String,
     pub requires_approval: bool,
     pub safety_validated: bool,
-}
-
-impl Default for RuntimeHealthStatus {
-    fn default() -> Self {
-        Self::Unknown
-    }
 }
 
 impl RuntimeHealthStatus {

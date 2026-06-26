@@ -13,7 +13,7 @@ pub fn render_otlp_json(store: &PersistentTelemetryStore) -> TelemetryStoreResul
     render_otlp_from_events(
         &events,
         &stats,
-        &index,
+        index,
         store.store_path().to_string_lossy().as_ref(),
     )
 }
@@ -155,7 +155,7 @@ fn gauge_metric(name: &str, labels: &[(&str, &str)], value: f64, time_nano: u64)
         "gauge": {
             "dataPoints": [{
                 "asDouble": value,
-                "attributes": labels.iter().map(|(key, value)| attr(key, *value)).collect::<Vec<_>>(),
+                "attributes": labels.iter().map(|(key, value)| attr(key, value)).collect::<Vec<_>>(),
                 "timeUnixNano": time_nano.to_string(),
             }]
         }

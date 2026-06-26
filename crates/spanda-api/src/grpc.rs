@@ -19,6 +19,7 @@ struct GrpcControlCenter {
     state: SharedState,
 }
 
+#[allow(clippy::result_large_err)]
 impl GrpcControlCenter {
     fn bearer_token<T>(request: &Request<T>) -> Option<String> {
         request
@@ -130,7 +131,7 @@ impl ControlCenter for GrpcControlCenter {
 
     async fn get_tenant(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::tenant_info_json(state))
+        self.with_state(crate::handlers::tenant_info_json)
             .map(Response::new)
     }
 
@@ -159,7 +160,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::devices_list_json(state))
+        self.with_state(crate::handlers::devices_list_json)
             .map(Response::new)
     }
 
@@ -292,7 +293,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::sre_summary_json(state))
+        self.with_state(crate::handlers::sre_summary_json)
             .map(Response::new)
     }
 
@@ -301,7 +302,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::sre_incidents_list_json(state))
+        self.with_state(crate::handlers::sre_incidents_list_json)
             .map(Response::new)
     }
 
@@ -391,7 +392,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::health_summary_json(state))
+        self.with_state(crate::handlers::health_summary_json)
             .map(Response::new)
     }
 
@@ -400,7 +401,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::assurance_summary_json(state))
+        self.with_state(crate::handlers::assurance_summary_json)
             .map(Response::new)
     }
 
@@ -409,7 +410,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::diagnosis_summary_json(state))
+        self.with_state(crate::handlers::diagnosis_summary_json)
             .map(Response::new)
     }
 
@@ -418,7 +419,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::executive_scorecard_json(state))
+        self.with_state(crate::handlers::executive_scorecard_json)
             .map(Response::new)
     }
 
@@ -447,7 +448,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::otlp_metrics_json(state))
+        self.with_state(crate::handlers::otlp_metrics_json)
             .map(Response::new)
     }
 
@@ -561,19 +562,19 @@ impl ControlCenter for GrpcControlCenter {
 
     async fn list_robots(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::robots_list_json(state))
+        self.with_state(crate::handlers::robots_list_json)
             .map(Response::new)
     }
 
     async fn list_fleets(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::fleets_list_json(state))
+        self.with_state(crate::handlers::fleets_list_json)
             .map(Response::new)
     }
 
     async fn list_alerts(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::alerts_list_json(state))
+        self.with_state(crate::handlers::alerts_list_json)
             .map(Response::new)
     }
 
@@ -618,7 +619,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::device_tree_json(state))
+        self.with_state(crate::handlers::device_tree_json)
             .map(Response::new)
     }
 
@@ -627,7 +628,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::device_reports_json(state))
+        self.with_state(crate::handlers::device_reports_json)
             .map(Response::new)
     }
 
@@ -636,7 +637,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::failover_chains_json(state))
+        self.with_state(crate::handlers::failover_chains_json)
             .map(Response::new)
     }
 
@@ -686,7 +687,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::observability_traces_json(state))
+        self.with_state(crate::handlers::observability_traces_json)
             .map(Response::new)
     }
 
@@ -695,7 +696,7 @@ impl ControlCenter for GrpcControlCenter {
         request: Request<Empty>,
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
-        self.with_state(|state| crate::handlers::otlp_traces_json(state))
+        self.with_state(crate::handlers::otlp_traces_json)
             .map(Response::new)
     }
 

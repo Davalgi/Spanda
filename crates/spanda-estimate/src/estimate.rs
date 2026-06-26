@@ -80,7 +80,7 @@ pub fn estimate_mission(
     let profile = target_name
         .as_ref()
         .and_then(|name| registry.get(name))
-        .map(|profile| profile.clone())
+        .cloned()
         .or_else(|| registry.values().next().cloned());
 
     let mut assumptions = Vec::new();
@@ -88,14 +88,12 @@ pub fn estimate_mission(
         .as_ref()
         .and_then(|name| find_robot(program, name));
 
-    let duration_hours = robot
-        .and_then(|robot_decl| mission_duration_hours(robot_decl))
-        .unwrap_or_else(|| {
-            assumptions.push(format!(
-                "mission duration not declared — assuming {DEFAULT_DURATION_HOURS}h"
-            ));
-            DEFAULT_DURATION_HOURS
-        });
+    let duration_hours = robot.and_then(mission_duration_hours).unwrap_or_else(|| {
+        assumptions.push(format!(
+            "mission duration not declared — assuming {DEFAULT_DURATION_HOURS}h"
+        ));
+        DEFAULT_DURATION_HOURS
+    });
 
     let duration_confidence = if robot.is_some_and(|r| mission_duration_hours(r).is_some()) {
         ResourceConfidence::High
