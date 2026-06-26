@@ -133,6 +133,20 @@ impl AlertDispatcher {
     }
 }
 
+/// Per-severity dedup window in milliseconds (0 disables dedup for that tier).
+pub fn alert_dedup_window_ms(severity: AlertSeverity) -> f64 {
+    let (env_key, default_secs) = match severity {
+        AlertSeverity::Critical => ("SPANDA_ALERT_DEDUP_WINDOW_CRITICAL_SECS", 0.0_f64),
+        AlertSeverity::Warning => ("SPANDA_ALERT_DEDUP_WINDOW_WARNING_SECS", 120.0),
+        AlertSeverity::Info => ("SPANDA_ALERT_DEDUP_WINDOW_INFO_SECS", 300.0),
+    };
+    std::env::var(env_key)
+        .ok()
+        .and_then(|value| value.parse::<f64>().ok())
+        .unwrap_or(default_secs)
+        * 1000.0
+}
+
 /// In-memory alert history for Control Center API.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AlertStore {
@@ -161,6 +175,25 @@ impl AlertStore {
 
     pub fn list_owned(&self) -> Vec<Alert> {
         self.alerts.iter().cloned().collect()
+    }
+
+    /// Return true when a matching alert was recorded inside the dedup window.
+    pub fn is_duplicate_within(
+        &self,
+        alert: &Alert,
+        now_ms: f64,
+        window_ms: f64,
+    ) -> bool {
+        if window_ms <= 0.0 {
+            return false;
+        }
+        self.alerts.iter().any(|existing| {
+            existing.alert_type == alert.alert_type
+                && existing.severity == alert.severity
+                && existing.source == alert.source
+                && existing.message == alert.message
+                && (now_ms - existing.timestamp_ms) < window_ms
+        })
     }
 
     pub fn from_records(max_entries: usize, alerts: Vec<Alert>) -> Self {
@@ -276,6 +309,23 @@ mod spanda_deploy_http_stub {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn duplicate_alerts_respect_warning_window() {
+        let mut store = AlertStore::new(10);
+        let alert = Alert {
+            id: "a1".into(),
+            alert_type: AlertType::ConfigDrift,
+            severity: AlertSeverity::Warning,
+            message: "drift".into(),
+            source: "drift-scan".into(),
+            timestamp_ms: 1000.0,
+            delivered_via: vec![],
+        };
+        store.push(alert.clone());
+        assert!(store.is_duplicate_within(&alert, 1100.0, 120_000.0));
+        assert!(!store.is_duplicate_within(&alert, 122_000.0, 120_000.0));
+    }
 
     #[test]
     fn dispatcher_logs_when_no_channels_configured() {

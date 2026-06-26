@@ -10,7 +10,10 @@ pub mod pdf_report;
 pub mod slack;
 pub mod teams;
 
-pub use alerting::{Alert, AlertChannel, AlertDispatcher, AlertSeverity, AlertStore, AlertType};
+pub use alerting::{
+    alert_dedup_window_ms, Alert, AlertChannel, AlertDispatcher, AlertSeverity, AlertStore,
+    AlertType,
+};
 pub use incidents::{
     Incident, IncidentSeverity, IncidentStatus, IncidentStore,
 };

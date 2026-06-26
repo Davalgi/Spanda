@@ -227,6 +227,9 @@ pub fn handle_request(
     let response = match (path, request.method.as_str()) {
         ("/v1/tenant", "GET") => tenant_info(state),
         ("/v1/audit/mutations", "GET") => mutation_audit_list(state, ctx.as_ref()),
+        ("/v1/audit/mutations/export", "GET") => {
+            mutation_audit_export(state, query, ctx.as_ref())
+        }
         ("/v1/dashboard", "GET") => dashboard(state),
         ("/v1/version", "GET") => api_version_info(),
         ("/v1/robots", "GET") => robots_list(state),
@@ -420,6 +423,14 @@ fn alerts_list(state: &ControlCenterState) -> HttpResponse {
 }
 
 pub(crate) fn record_alert(state: &mut ControlCenterState, mut alert: Alert) {
+    let now = now_ms();
+    let window = spanda_ops::alert_dedup_window_ms(alert.severity);
+    if state
+        .alert_store
+        .is_duplicate_within(&alert, now, window)
+    {
+        return;
+    }
     let incident = state.incident_store.maybe_open_from_alert(&alert);
     let incident_id = incident.as_ref().map(|value| value.id.as_str());
     state
@@ -482,6 +493,40 @@ fn mutation_audit_list(state: &ControlCenterState, ctx: Option<&RbacContext>) ->
         "persist_path": crate::audit_log::default_mutation_audit_path().to_string_lossy(),
         "record_count": state.mutation_audit.record_count(),
     }))
+}
+
+fn mutation_audit_export(
+    state: &ControlCenterState,
+    query: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    let params = parse_query(query);
+    let format = params
+        .get("format")
+        .map(String::as_str)
+        .unwrap_or("jsonl");
+    let path = crate::audit_log::default_mutation_audit_path();
+    let body = match format {
+        "cef" => crate::audit_log::export_mutation_audit_cef(&path),
+        "jsonl" => crate::audit_log::export_mutation_audit_jsonl(&path),
+        _ => return bad_request("format must be cef or jsonl"),
+    };
+    match body {
+        Ok(content) => HttpResponse {
+            status: 200,
+            body: serde_json::json!({
+                "version": API_VERSION,
+                "format": format,
+                "record_count": state.mutation_audit.record_count(),
+                "content": content,
+            })
+            .to_string(),
+        },
+        Err(error) => bad_request(&error),
+    }
 }
 
 fn provision_run(
