@@ -82,6 +82,8 @@ Until then, operators update via platform installers from CI (`TAURI_BUILD=1` on
 
 Set `TAURI_UPDATER_PUBKEY` (and optionally `TAURI_UPDATER_ACTIVE=true`) when running `TAURI_BUILD=1` to inject the signing pubkey at build time via `src-tauri/build.rs`.
 
+Optional macOS codesign/notarization after bundle: set `APPLE_SIGNING_IDENTITY` and `APPLE_NOTARIZE_PROFILE`, then run `./scripts/sign_tauri_macos.sh` (also wired in CI when secrets are present).
+
 ## Status
 
 **Experimental** — scaffold, dev workflow, and updater plugin wiring; production installers and signed auto-update are not yet published.

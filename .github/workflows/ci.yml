@@ -430,8 +430,13 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci
-      - run: chmod +x scripts/build_control_center_desktop.sh
+      - run: chmod +x scripts/build_control_center_desktop.sh scripts/sign_tauri_macos.sh
       - run: TAURI_BUILD=1 ./scripts/build_control_center_desktop.sh
+      - name: Codesign macOS bundle (optional)
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_NOTARIZE_PROFILE: ${{ secrets.APPLE_NOTARIZE_PROFILE }}
+        run: ./scripts/sign_tauri_macos.sh
       - name: Upload desktop bundle artifacts
         uses: actions/upload-artifact@v4
         with:
