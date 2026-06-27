@@ -1136,8 +1136,8 @@ pub fn simulate_failure_recovery(
 
     //     let result = spanda_assurance::recovery::simulate_failure_recovery(progra, failure_kind);
 
-    let issue = issue_to_recovery_issue(failure_kind)
-        .unwrap_or_else(|| format!("{failure_kind}.failed"));
+    let issue =
+        issue_to_recovery_issue(failure_kind).unwrap_or_else(|| format!("{failure_kind}.failed"));
     let classification = classify_failure(failure_kind);
     let context = RecoveryContext {
         issue: issue.clone(),
