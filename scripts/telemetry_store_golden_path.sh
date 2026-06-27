@@ -10,7 +10,15 @@ trap 'rm -rf "${STORE_DIR}"' EXIT
 export SPANDA_TELEMETRY_STORE_PATH="${STORE_DIR}/telemetry.jsonl"
 export SPANDA_TELEMETRY_HEARTBEAT_PATH="${STORE_DIR}/heartbeats.json"
 
-SPANDA=(cargo run --quiet -p spanda --)
+SPANDA="${ROOT}/target/release/spanda"
+
+if [[ -n "${SPANDA_BIN:-}" && -x "${SPANDA_BIN}" ]]; then
+  SPANDA=("$SPANDA_BIN")
+elif [[ -x "${SPANDA}" ]]; then
+  SPANDA=("$SPANDA")
+else
+  SPANDA=(cargo run --quiet -p spanda --)
+fi
 
 echo "== sim with --persist-telemetry =="
 "${SPANDA[@]}" sim examples/end_to_end/validated_telemetry.sd --persist-telemetry --record >/dev/null

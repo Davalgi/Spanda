@@ -151,6 +151,14 @@ curl -sf -X POST \
   "http://${BIND}/v1/provision" | grep -q '"ok":false'
 
 echo "== E2 GET /v1/alerts (provisioning failure) =="
+attempt=0
+while [[ $attempt -lt 30 ]]; do
+  if fetch /v1/alerts | grep -q readiness_failed; then
+    break
+  fi
+  attempt=$((attempt + 1))
+  sleep 0.2
+done
 fetch /v1/alerts | grep -q readiness_failed
 
 echo "== E2 POST /v1/config/snapshots =="

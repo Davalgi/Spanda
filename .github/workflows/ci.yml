@@ -86,6 +86,7 @@ jobs:
       - run: chmod +x scripts/telemetry_store_golden_path.sh
       - run: |
           export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
           ./scripts/telemetry_store_golden_path.sh
 
   mqtt-golden-path:
@@ -219,13 +220,19 @@ jobs:
     needs: rust
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: ./.github/actions/install-protoc
+      - run: npm ci
       - run: cargo build -p spanda --release
       - run: chmod +x scripts/showcase_smoke.sh
       - run: |
           export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
           ./scripts/showcase_smoke.sh
 
   live-ai-golden-path:
