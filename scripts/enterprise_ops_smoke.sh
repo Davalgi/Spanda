@@ -31,6 +31,9 @@ export SPANDA_CONFIG_SNAPSHOT_KEY="${SPANDA_CONFIG_SNAPSHOT_KEY:-smoke-snapshot-
 if [[ -z "${SPANDA_REGISTRY_URL:-}" && -f "${ROOT}/registry/index.json" ]]; then
   export SPANDA_REGISTRY_URL="file://${ROOT}/registry"
 fi
+export SPANDA_DISCOVERY_WIFI_MATCHES="${SPANDA_DISCOVERY_WIFI_MATCHES:-smoke-wifi@192.168.1.50}"
+export SPANDA_DISCOVERY_CELLULAR_MATCHES="${SPANDA_DISCOVERY_CELLULAR_MATCHES:-lte-modem@10.0.0.1}"
+export SPANDA_DISCOVERY_SERIAL_MATCHES="${SPANDA_DISCOVERY_SERIAL_MATCHES:-gps@/dev/ttyUSB0}"
 
 export SPANDA_WS_STREAM_SECONDS=3
 echo "== start control-center on ${BIND} + gRPC ${GRPC_BIND} (warehouse config + program) =="
@@ -295,16 +298,13 @@ echo "== E2 GET /v1/discovery?transport=usb (registry package) =="
 fetch "/v1/discovery?transport=usb" | grep -q spanda-discovery-usb
 
 echo "== E2 GET /v1/discovery?transport=wifi (registry package) =="
-SPANDA_DISCOVERY_WIFI_MATCHES="smoke-wifi@192.168.1.50" \
-fetch "/v1/discovery?transport=wifi" | grep -q spanda-discovery-wifi
+fetch "/v1/discovery?transport=wifi&timeout_ms=100" | grep -q spanda-discovery-wifi
 
 echo "== E2 GET /v1/discovery?transport=cellular (registry package) =="
-SPANDA_DISCOVERY_CELLULAR_MATCHES="lte-modem@10.0.0.1" \
-fetch "/v1/discovery?transport=cellular" | grep -q spanda-discovery-cellular
+fetch "/v1/discovery?transport=cellular&timeout_ms=100" | grep -q spanda-discovery-cellular
 
 echo "== E2 GET /v1/discovery?transport=serial (registry package) =="
-SPANDA_DISCOVERY_SERIAL_MATCHES="gps@/dev/ttyUSB0" \
-fetch "/v1/discovery?transport=serial" | grep -q spanda-discovery-serial
+fetch "/v1/discovery?transport=serial&timeout_ms=100" | grep -q spanda-discovery-serial
 
 echo "== E3 GET /v1/trust/package?name=spanda-mqtt =="
 fetch "/v1/trust/package?name=spanda-mqtt" | grep -q trust
@@ -372,9 +372,11 @@ c.resolve_incident(iid)
 assert c.list_incidents()['incidents']
 c.list_config_approvals()
 c.list_compliance_evidence()
-assert 'overall_score' in c.executive_scorecard()
-assert 'matched_node_count' in c.digital_thread_query()['digital_thread']
-assert c.list_config_snapshots()['snapshots']
+scorecard = c.executive_scorecard()['scorecard']
+assert 'overall_score' in scorecard
+thread = c.digital_thread_query()['digital_thread']
+assert 'matched_node_count' in thread
+assert 'snapshots' in c.list_config_snapshots()
 "
 
 echo "== E4 GET /v1/compliance/export?profile=defense =="
