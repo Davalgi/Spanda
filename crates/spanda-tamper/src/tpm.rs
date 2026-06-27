@@ -113,6 +113,19 @@ fn live_result(
     }
 }
 
+fn shell_command_for_script(script: &str) -> std::process::Command {
+    // Run on-disk adapters with bash so scripts can use pipefail and bash syntax.
+    if Path::new(script).is_file() {
+        let mut command = std::process::Command::new("bash");
+        command.arg(script);
+        command
+    } else {
+        let mut command = std::process::Command::new("sh");
+        command.arg("-c").arg(script);
+        command
+    }
+}
+
 fn run_vendor_sdk_quote(
     contract: &str,
     package: &str,
@@ -149,12 +162,7 @@ fn run_vendor_sdk_quote(
         );
     };
 
-    let mut command = std::process::Command::new("sh");
-    if Path::new(&script).is_file() {
-        command.arg(&script);
-    } else {
-        command.arg("-c").arg(&script);
-    }
+    let mut command = shell_command_for_script(&script);
     let output = command
         .env("SPANDA_ATTESTATION_CONTRACT", contract)
         .env("SPANDA_ATTESTATION_PACKAGE", package)
@@ -272,13 +280,7 @@ fn run_tpm2_quote(contract: &str, package: &str) -> LiveAttestationResult {
 }
 
 fn run_tpm2_script_quote(script: &str, contract: &str, package: &str) -> LiveAttestationResult {
-    let mut command = std::process::Command::new("sh");
-    if Path::new(script).is_file() {
-        command.arg(script);
-    } else {
-        command.arg("-c").arg(script);
-    }
-    let output = command
+    let output = shell_command_for_script(script)
         .env("SPANDA_ATTESTATION_CONTRACT", contract)
         .env("SPANDA_ATTESTATION_PACKAGE", package)
         .output();
