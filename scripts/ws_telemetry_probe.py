@@ -7,19 +7,39 @@ import os
 import socket
 import struct
 import sys
+import time
 
 
-def recv_frame(sock: socket.socket) -> str:
-    header = sock.recv(2)
-    if len(header) < 2:
-        raise RuntimeError("short websocket header")
-    length = header[1] & 0x7F
-    if length == 126:
-        length = struct.unpack("!H", sock.recv(2))[0]
-    elif length == 127:
-        length = struct.unpack("!Q", sock.recv(8))[0]
-    payload = sock.recv(length)
-    return payload.decode("utf-8", errors="replace")
+def recv_frame(sock: socket.socket, timeout_s: float = 15.0) -> str:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        sock.settimeout(max(0.1, deadline - time.monotonic()))
+        try:
+            header = sock.recv(2)
+        except TimeoutError:
+            continue
+        if len(header) < 2:
+            continue
+        length = header[1] & 0x7F
+        if length == 126:
+            length = struct.unpack("!H", _recv_exact(sock, 2))[0]
+        elif length == 127:
+            length = struct.unpack("!Q", _recv_exact(sock, 8))[0]
+        payload = _recv_exact(sock, length)
+        return payload.decode("utf-8", errors="replace")
+    raise TimeoutError("timed out waiting for websocket frame")
+
+
+def _recv_exact(sock: socket.socket, size: int) -> bytes:
+    chunks: list[bytes] = []
+    remaining = size
+    while remaining > 0:
+        chunk = sock.recv(remaining)
+        if not chunk:
+            raise RuntimeError("short websocket read")
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    return b"".join(chunks)
 
 
 def main() -> None:
