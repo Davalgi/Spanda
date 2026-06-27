@@ -5,7 +5,7 @@
 
 hardware MicroDrone {
     sensors [GPS, Camera];
-    actuators [Rotor];
+    actuators [DroneRotors];
     connectivity [WiFi];
 }
 
@@ -24,21 +24,21 @@ recovery_policy SwarmRecovery {
 
 robot DroneOne {
     sensor gps: GPS;
-    actuator rotors: Rotor;
+    actuator rotors: DroneRotors;
     safety { max_speed = 5.0 m/s; }
-    behavior hover() { rotors.spin(1000 rpm); }
+    behavior hover() { rotors.hover(); }
 }
 
 robot DroneTwo {
     sensor gps: GPS;
-    actuator rotors: Rotor;
+    actuator rotors: DroneRotors;
     safety { max_speed = 5.0 m/s; }
-    behavior hover() { rotors.spin(1000 rpm); }
+    behavior hover() { rotors.hover(); }
 }
 
 robot DroneThree {
     sensor gps: GPS;
-    actuator rotors: Rotor;
+    actuator rotors: DroneRotors;
     safety { max_speed = 5.0 m/s; }
-    behavior hover() { rotors.spin(1000 rpm); }
+    behavior hover() { rotors.hover(); }
 }

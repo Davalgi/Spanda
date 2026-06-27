@@ -4,6 +4,9 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+if [[ -z "${SPANDA_REGISTRY_URL:-}" && -f "$ROOT/registry/index.json" ]]; then
+  export SPANDA_REGISTRY_URL="file://${ROOT}/registry"
+fi
 MANIFEST="$ROOT/scripts/examples-check-manifest.txt"
 LIST="$(mktemp)"
 trap 'rm -f "$LIST"' EXIT

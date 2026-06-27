@@ -1,6 +1,7 @@
 hardware RoverV1 {
-    sensors [BatteryMonitor];
+    sensors [GPS];
     actuators [DifferentialDrive];
+    battery { capacity: 100 Wh; }
 }
 
 prognostics BatteryDegradation {
@@ -13,7 +14,7 @@ health_check BatteryHealth for robot Rover {
 }
 
 robot Rover {
-    sensor battery: BatteryMonitor;
+    sensor gps: GPS;
     actuator wheels: DifferentialDrive;
 
     safety { max_speed = 0.8 m/s; }

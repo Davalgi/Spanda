@@ -38,9 +38,9 @@ robot Bot {
     actuator wheels: DifferentialDrive;
 
     mission Patrol {
-        required_capabilities [navigation, inventory_scan];
+        requires capabilities [navigation, inventory_scan];
+        patrol;
     }
 
-    safety { max_speed = 1.0 m/s; }
     behavior patrol() { wheels.drive(0.4 m/s); }
 }
