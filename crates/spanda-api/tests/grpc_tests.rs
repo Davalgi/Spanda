@@ -34,21 +34,18 @@ fn copy_dir_all(src: &std::path::Path, dst: &std::path::Path) {
 
 #[tokio::test]
 async fn grpc_health_and_dashboard() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
     let http_port = pick_port();
     let grpc_port = pick_port();
     let http_bind = format!("127.0.0.1:{http_port}");
-    let grpc_bind = format!("127.0.0.1:{grpc_port}");
     let options = ControlCenterOptions {
         bind: http_bind,
-        grpc_bind: Some(grpc_bind.clone()),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
         once: true,
         timeout_ms: 500,
         ..Default::default()
     };
-    thread::spawn(move || {
-        let _ = run_control_center_server(&options);
-    });
-    thread::sleep(Duration::from_millis(400));
+    let grpc_bind = spawn_control_center(options);
     let mut client = connect(&grpc_bind).await;
     let health = client
         .health(Empty {})
@@ -66,21 +63,18 @@ async fn grpc_health_and_dashboard() {
 
 #[tokio::test]
 async fn grpc_expanded_endpoints_return_json() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
     let http_port = pick_port();
     let grpc_port = pick_port();
     let http_bind = format!("127.0.0.1:{http_port}");
-    let grpc_bind = format!("127.0.0.1:{grpc_port}");
     let options = ControlCenterOptions {
         bind: http_bind,
-        grpc_bind: Some(grpc_bind.clone()),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
         once: true,
         timeout_ms: 500,
         ..Default::default()
     };
-    thread::spawn(move || {
-        let _ = run_control_center_server(&options);
-    });
-    thread::sleep(Duration::from_millis(400));
+    let grpc_bind = spawn_control_center(options);
     let mut client = connect(&grpc_bind).await;
 
     let devices = client
@@ -203,12 +197,29 @@ async fn grpc_expanded_endpoints_return_json() {
 }
 
 async fn connect(bind: &str) -> ControlCenterClient<Channel> {
-    let channel = Channel::from_shared(format!("http://{bind}"))
-        .unwrap()
-        .connect()
-        .await
-        .expect("grpc connect");
-    ControlCenterClient::new(channel)
+    let deadline = std::time::Instant::now() + Duration::from_secs(10);
+    loop {
+        match Channel::from_shared(format!("http://{bind}"))
+            .unwrap()
+            .connect()
+            .await
+        {
+            Ok(channel) => return ControlCenterClient::new(channel),
+            Err(error) if std::time::Instant::now() < deadline => {
+                tokio::time::sleep(Duration::from_millis(50)).await;
+                let _ = &error;
+            }
+            Err(error) => panic!("grpc connect: {error:?}"),
+        }
+    }
+}
+
+fn spawn_control_center(options: ControlCenterOptions) -> String {
+    let grpc_bind = options.grpc_bind.clone().expect("grpc bind");
+    thread::spawn(move || {
+        let _ = run_control_center_server(&options);
+    });
+    grpc_bind
 }
 
 #[tokio::test]
@@ -218,18 +229,14 @@ async fn grpc_mutation_rbac_from_metadata() {
     let http_port = pick_port();
     let grpc_port = pick_port();
     let http_bind = format!("127.0.0.1:{http_port}");
-    let grpc_bind = format!("127.0.0.1:{grpc_port}");
     let options = ControlCenterOptions {
         bind: http_bind,
-        grpc_bind: Some(grpc_bind.clone()),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
         once: true,
         timeout_ms: 500,
         ..Default::default()
     };
-    thread::spawn(move || {
-        let _ = run_control_center_server(&options);
-    });
-    thread::sleep(Duration::from_millis(400));
+    let grpc_bind = spawn_control_center(options);
     let mut client = connect(&grpc_bind).await;
 
     let denied = client
@@ -278,12 +285,8 @@ async fn grpc_device_subresources_with_warehouse_config() {
         timeout_ms: 500,
         ..Default::default()
     };
-    let grpc_bind = options.grpc_bind.clone().unwrap();
+    let grpc_bind = spawn_control_center(options);
     let _temp_dir = temp_dir;
-    thread::spawn(move || {
-        let _ = run_control_center_server(&options);
-    });
-    thread::sleep(Duration::from_millis(500));
     let mut client = connect(&grpc_bind).await;
 
     let device = client
