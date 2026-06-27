@@ -341,7 +341,8 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
         },
         FrameworkPackage {
             name: "spanda-alert-escalation",
-            description: "On-call rotation and alert escalation policy templates for Spanda Control Center",
+            description:
+                "On-call rotation and alert escalation policy templates for Spanda Control Center",
             category: super::category::PackageCategory::Robotics,
             import_paths: &["alerting.escalation"],
         },
@@ -371,13 +372,15 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
         },
         FrameworkPackage {
             name: "spanda-grafana-dashboards",
-            description: "Grafana dashboard templates for Spanda Control Center SRE and OTA metrics",
+            description:
+                "Grafana dashboard templates for Spanda Control Center SRE and OTA metrics",
             category: super::category::PackageCategory::Robotics,
             import_paths: &["observability.grafana"],
         },
         FrameworkPackage {
             name: "spanda-otel-collector",
-            description: "OpenTelemetry collector integration for Spanda Control Center distributed traces",
+            description:
+                "OpenTelemetry collector integration for Spanda Control Center distributed traces",
             category: super::category::PackageCategory::Robotics,
             import_paths: &["observability.otel"],
         },
