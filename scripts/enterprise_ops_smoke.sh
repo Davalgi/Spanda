@@ -386,6 +386,8 @@ curl -sf -H "Authorization: Bearer ${SPANDA_API_KEY}" \
 
 echo "== E4 GET /v1/compliance/profiles (signed catalog) =="
 fetch /v1/compliance/profiles | grep -q defense
+fetch /v1/compliance/profiles | grep -q iso26262
+fetch /v1/compliance/profiles | grep -q iso13849
 
 echo "== E4 POST /v1/reports/schedules =="
 curl -sf -X POST \

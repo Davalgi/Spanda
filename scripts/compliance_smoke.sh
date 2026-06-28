@@ -35,6 +35,18 @@ echo "== medical showcase profile passes =="
 MEDICAL_FILE="${ROOT}/examples/showcase/compliance/medical_rover.sd"
 run_spanda verify "$MEDICAL_FILE" --profile medical >/dev/null
 
+echo "== iso26262 automotive showcase profile passes =="
+AUTOMOTIVE="${ROOT}/examples/showcase/compliance/automotive_rover.sd"
+run_spanda verify "$AUTOMOTIVE" --profile iso26262 >/dev/null
+
+echo "== iso13849 machinery showcase profile passes =="
+MACHINERY="${ROOT}/examples/showcase/compliance/machinery_rover.sd"
+run_spanda verify "$MACHINERY" --profile iso13849 >/dev/null
+
+echo "== iec61508 functional safety showcase profile passes =="
+IEC61508="${ROOT}/examples/showcase/compliance/iec61508_rover.sd"
+run_spanda verify "$IEC61508" --profile iec61508 >/dev/null
+
 echo "== compliance accreditation report =="
 ACCRED="$(run_spanda compliance report "$DEFENSE" --profile defense 2>&1 || true)"
 echo "$ACCRED" | grep -q "template_only"
@@ -52,7 +64,11 @@ echo "$MEDICAL" | grep -q "requires_secure_boot"
 
 cargo test -p spanda-compliance defense_showcase_passes_profile -q
 cargo test -p spanda-compliance medical_showcase_passes_profile -q
+cargo test -p spanda-compliance iso26262_showcase_passes_profile -q
+cargo test -p spanda-compliance iso13849_showcase_passes_profile -q
+cargo test -p spanda-compliance iec61508_showcase_passes_profile -q
 cargo test -p spanda-compliance defense_profile_requires_secure_boot_contract -q
 cargo test -p spanda-compliance secure_boot_showcase_satisfies_secure_boot_requirement -q
+cargo test -p spanda-compliance catalog_entries_verify -q
 
 echo "Compliance smoke OK"
