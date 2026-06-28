@@ -20,6 +20,7 @@ pub mod discovery_registry;
 pub mod discovery_tls;
 pub mod discovery_transport;
 pub mod drift;
+pub mod entity;
 pub mod error;
 pub mod human_entities;
 pub mod integration;
@@ -99,6 +100,12 @@ pub use drift::{
     append_agent_drift, append_program_drift, detect_agent_drift, detect_config_drift,
     expected_agent_states, format_drift_lines, AgentDriftSnapshot, ConfigDriftReport,
     DriftDimension, DriftFinding, DriftSeverity, ExpectedAgentState,
+};
+pub use entity::{
+    build_entity_registry, EntityAuditInfo, EntityGraph, EntityHealthStatus, EntityKind,
+    EntityLifecycleState, EntityLocation, EntityQuery, EntityQueryResult, EntityReadinessStatus,
+    EntityRecord, EntityRegistry, EntityRelationship, EntityRelationshipKind,
+    EntitySecurityIdentity, EntityTrustStatus,
 };
 pub use error::{ConfigError, ConfigResult};
 pub use human_entities::{

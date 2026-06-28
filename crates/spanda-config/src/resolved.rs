@@ -118,4 +118,9 @@ impl ResolvedSystemConfig {
     pub fn traceability_rows(&self) -> Vec<crate::device_identity::TraceabilityRow> {
         crate::device_identity::traceability_rows(&self.device_registry)
     }
+
+    /// Unified entity registry projecting all configured platform objects.
+    pub fn entity_registry(&self) -> crate::entity::EntityRegistry {
+        crate::entity::build_entity_registry(self)
+    }
 }
