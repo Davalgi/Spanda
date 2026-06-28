@@ -943,7 +943,8 @@ fn demo_adas(root: &Path) {
 
     let adas_root = solution(root, &["adas"]);
     let main = adas_root.join("src/highway_drive.sd");
-    let trace = adas_root.join("src/highway_drive.trace");
+    let trace = adas_root.join("sim_record/lane_keep_task.trace");
+    let legacy_trace = adas_root.join("src/highway_drive.trace");
     let config = adas_root.join("spanda.toml");
     let main_sd = require_file(&main);
     let main_str = main_sd.to_str().unwrap();
@@ -975,11 +976,29 @@ fn demo_adas(root: &Path) {
     }
 
     if trace.is_file() {
-        println!("\n--- replay (highway_drive.trace) ---");
+        println!("\n--- replay (sim_record/lane_keep_task.trace) ---");
         run_spanda_args(&[
             "replay",
             trace.to_str().unwrap(),
             "--deterministic",
+        ]);
+    } else if legacy_trace.is_file() {
+        println!("\n--- replay (highway_drive.trace) ---");
+        run_spanda_args(&[
+            "replay",
+            legacy_trace.to_str().unwrap(),
+            "--deterministic",
+        ]);
+    }
+
+    if config.is_file() {
+        println!("\n--- device tree (vehicle-001) ---");
+        run_spanda_args(&[
+            "device-tree",
+            "inspect",
+            "vehicle-001",
+            "--config",
+            config.to_str().unwrap(),
         ]);
     }
 
@@ -1008,6 +1027,9 @@ fn demo_adas(root: &Path) {
         ("lane_keeping/lane_keeping.sd", "Lane Keeping Assist"),
         ("adaptive_cruise/adaptive_cruise.sd", "Adaptive Cruise Control"),
         ("automatic_emergency_braking/aeb.sd", "Automatic Emergency Braking"),
+        ("parking_assist/parking_assist.sd", "Parking Assist"),
+        ("blind_spot_monitoring/blind_spot.sd", "Blind Spot Monitoring"),
+        ("canbus_gateway/canbus_gateway.sd", "CAN Bus Gateway"),
         ("sensor_failure_recovery/camera_failure.sd", "Sensor failure recovery"),
         ("driver_takeover/driver_takeover.sd", "Driver takeover"),
     ];

@@ -23,7 +23,8 @@ export SPANDA_ROOT=/path/to/Spanda  # if not in repo root
 | 1 | `spanda demo adas` | One command runs the full ADAS blueprint |
 | 2 | Show `src/highway_drive.sd` | Capabilities, health, assurance — no core language changes |
 | 3 | `spanda readiness src/highway_drive.sd --profile iso26262` | Go/no-go before ADAS activates |
-| 4 | `spanda replay src/highway_drive.trace --deterministic` | Sensor failure → recovery → degraded mode |
+| 4 | `spanda replay sim_record/lane_keep_task.trace --deterministic` | Scheduler golden trace replay |
+| 5 | `spanda diagnose src/highway_drive.sd fixtures/camera_failure_recovery.trace` | Sensor failure → recovery narrative |
 
 **Key message:** Spanda provides safety-first ADAS operations through composition, not core bloat.
 
@@ -65,12 +66,12 @@ spanda continuity sensor_failure_recovery/camera_failure.sd \
 ### 4. Diagnosis & replay (3 min)
 
 ```bash
-spanda replay src/highway_drive.trace --deterministic
-spanda diagnose src/highway_drive.sd src/highway_drive.trace
-spanda explain src/highway_drive.trace
+spanda replay sim_record/lane_keep_task.trace --deterministic
+spanda diagnose src/highway_drive.sd fixtures/camera_failure_recovery.trace
+spanda explain driver_takeover/driver_takeover.sd fixtures/driver_takeover.trace
 ```
 
-Talking points: explainable emergency braking, camera obstruction, driver takeover.
+Talking points: explainable emergency braking, camera obstruction, driver takeover. Use `fixtures/` for narrative traces; `sim_record/` for scheduler golden replay.
 
 ### 5. Assurance & Control Center (3 min)
 
@@ -86,8 +87,9 @@ Open ADAS tab — vehicle health, sensor health, readiness, trust, alerts, OTA, 
 ## Simulation scenarios (optional extension)
 
 ```bash
-spanda sim src/highway_drive.sd --record
-spanda sim sensor_failure_recovery/camera_failure.sd --record
+spanda sim src/highway_drive.sd
+spanda sim sim_record/lane_keep_task.sd --record
+spanda replay fixtures/aeb_activation.trace --playback
 ```
 
 Scenarios: heavy rain, snow, fog, night, camera/radar/LiDAR failure, GPS spoofing, CAN failure, emergency vehicle.
