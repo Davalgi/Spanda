@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spanda-sdk"
+version = "0.4.0"
+description = "Official Python SDK for Spanda Control Center API v1"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+stream = ["websockets>=12"]
+dev = ["pytest>=7", "websockets>=12"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["spanda_sdk*", "spanda*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
