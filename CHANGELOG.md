@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **TypeScript SDK npm publish:** add `@types/node` so CI `tsc` build succeeds on clean `npm ci` installs (`@davalgi-spanda/sdk` v0.4.1).
 - **Sim `stop_if` false E-stop:** `RunOptions::default()` now sets `lidar_range = 10.0 m` (was `0.0` from derived `Default`, forcing `nearest_distance = 0.01 m` and spurious `stop_if` triggers in `spanda sim` / `spanda run`).
 - **Behavior loop trace recording:** `loop every` in behaviors now emits `behavior_tick` mission trace frames when `--record` is enabled (ADAS `highway_drive.trace` replays deterministically).
 

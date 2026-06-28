@@ -1,6 +1,6 @@
 {
   "name": "@davalgi-spanda/sdk",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Official TypeScript SDK for Spanda Control Center API v1",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,6 +20,7 @@
     "lint": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "typescript": "^5.7.0",
     "vitest": "^3.2.6"
   },
