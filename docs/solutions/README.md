@@ -1,14 +1,50 @@
 # Official Solution Blueprints
 
-Spanda ships **Official Solution Blueprints** — reference architectures built entirely on existing platform capabilities. Each blueprint demonstrates how to compose language features, packages, verification, readiness, assurance, and operations for a specific industry without bloating the core.
+Spanda ships **Official Solution Blueprints** — reference architectures built entirely on existing platform capabilities. Each blueprint demonstrates how to compose **Platform Pillars**, packages, and providers for a specific industry **without** bloating the core.
 
-| Blueprint | Status | Path |
-|-----------|--------|------|
-| **ADAS & Autonomous Driving** | Experimental | [examples/solutions/adas/](../../examples/solutions/adas/) |
-| **Spatial Computing & Human-Robot Collaboration** | Planned | [examples/solutions/spatial-computing/](../../examples/solutions/spatial-computing/) |
-| Autonomous Rover (flagship) | Stable | [examples/showcase/autonomous_rover/](../../examples/showcase/autonomous_rover/) |
-| Compliance profiles | Experimental | [examples/showcase/compliance/](../../examples/showcase/compliance/) |
-| Warehouse operations | Experimental | [examples/end_to_end/warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) |
+**Full index with cross-references:** [ROADMAP.md § Official Solution Blueprints](../ROADMAP.md#official-solution-blueprints)
+
+---
+
+## Blueprint catalog
+
+| Blueprint | Status | Timeline | Path |
+|-----------|--------|----------|------|
+| **Warehouse Automation** | Experimental | Now | [warehouse.md](./warehouse.md) · [examples/end_to_end/warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) |
+| **Search & Rescue** | Experimental | Next | [examples/solutions/spatial-computing/search-and-rescue-ar/](../../examples/solutions/spatial-computing/search-and-rescue-ar/) |
+| **Connected Healthcare** | Planned | Next | [examples/solutions/spatial-computing/wearable-health/](../../examples/solutions/spatial-computing/wearable-health/) |
+| **ADAS & Autonomous Driving** | Experimental | Now | [examples/solutions/adas/](../../examples/solutions/adas/) · [adas.md](./adas.md) |
+| **Smart Factory** | Experimental | Now | [smart-factory.md](./smart-factory.md) · [examples/end_to_end/pick_and_place_cell/](../../examples/end_to_end/pick_and_place_cell/) |
+| **Agriculture** | Planned | Later | [agriculture.md](./agriculture.md) · [examples/solutions/agriculture/](../../examples/solutions/agriculture/) |
+| **Critical Infrastructure** | Experimental | Next | [examples/showcase/compliance/](../../examples/showcase/compliance/) |
+| **Environmental Monitoring** | Planned | Later | [environmental-monitoring.md](./environmental-monitoring.md) |
+| **Maritime** | Planned | Later | [maritime.md](./maritime.md) |
+| **Transportation** | Experimental | Now | [examples/solutions/adas/applications/](../../examples/solutions/adas/applications/) |
+| **Space** | Research | Long Term | — |
+| **Defense** | Experimental | Next | [defense.md](./defense.md) · [examples/showcase/secure_boot/](../../examples/showcase/secure_boot/) |
+| **Research & Education** | Stable | Now | [examples/showcase/autonomous_rover/](../../examples/showcase/autonomous_rover/) |
+| **Spatial Computing & HRI** | Experimental | Next | [examples/solutions/spatial-computing/](../../examples/solutions/spatial-computing/) · [spatial-computing.md](./spatial-computing.md) |
+
+**Also:** Compliance profiles showcase — [examples/showcase/compliance/](../../examples/showcase/compliance/)
+
+---
+
+## Blueprint template
+
+Each blueprint documents (see [ROADMAP.md](../ROADMAP.md) for full entries):
+
+- Purpose
+- Reference Architecture
+- Device Tree
+- Packages & Providers
+- Mission Examples
+- Health Policies · Readiness · Assurance · Recovery
+- Control Center integration
+- Example Projects · Documentation
+- Simulation · Replay
+- **Platform Pillars used** (cross-reference — no duplicate implementations)
+
+---
 
 ## ADAS & Autonomous Driving
 
@@ -20,6 +56,7 @@ Safety-first intelligent vehicle workflows — lane keeping, adaptive cruise, em
 - **Assurance:** [adas-assurance.md](../adas-assurance.md)
 - **Security:** [adas-security.md](../adas-security.md)
 - **Replay:** [adas-replay.md](../adas-replay.md)
+- **Pillars used:** Verification · Device & Fleet · Security · Operations · Packages
 
 ```bash
 spanda demo adas
@@ -27,6 +64,8 @@ spanda demo adas
 ```
 
 See also: [compliance-profiles.md](../compliance-profiles.md) (ISO 26262) · [mission-continuity.md](../mission-continuity.md) · [control-center.md](../control-center.md)
+
+---
 
 ## Spatial Computing & Human-Robot Collaboration
 
@@ -38,9 +77,24 @@ Human–robot collaboration, wearables, AR/VR/XR, and collaborative autonomy —
 - **Operator capabilities:** [operator-capabilities.md](../operator-capabilities.md)
 - **Human readiness:** [human-readiness.md](../human-readiness.md)
 - **Packages:** [hri-packages.md](../hri-packages.md)
+- **Pillars used:** Device & Fleet · Operations · Verification · Developer · Packages
 
 ```bash
-# When H1 ships:
 cd examples/solutions/spatial-computing && spanda check warehouse-ar/pick_mission.sd
 ```
 
+---
+
+## Warehouse Automation
+
+Autonomous logistics — AMRs, pick-and-place, fleet coordination.
+
+- **Examples:** [warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) · [warehouse_robot.sd](../../examples/warehouse_robot.sd)
+- **Continuity walkthrough:** [tutorials/continuity-walkthrough.md](../tutorials/continuity-walkthrough.md)
+- **Pillars used:** Device & Fleet · Verification · Operations · Developer
+
+---
+
+## Website
+
+[solutions.html](../../website/solutions.html) · [roadmap.html](../../website/roadmap.html)

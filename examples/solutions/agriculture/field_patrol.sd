@@ -1,0 +1,58 @@
+// Field patrol — autonomous agricultural row following with geofence safety
+//
+//   spanda check field_patrol.sd
+//   spanda verify field_patrol.sd --target FieldRobotV1
+//   spanda sim field_patrol.sd
+
+hardware FieldRobotV1 {
+  cpu: CortexA55;
+  memory: 2 GB;
+  sensors [ GPS, IMU, Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 80 Wh; }
+}
+
+robot FieldPatrol {
+  sensor gps: GPS;
+  sensor imu: IMU;
+  sensor camera: Camera;
+  sensor lidar: Lidar;
+  actuator drive: DifferentialDrive;
+
+  exposes capabilities [ gps_navigation, row_following, geofence_compliance ];
+
+  safety {
+    max_speed = 1.2 m/s;
+    stop_if lidar.nearest_distance < 1.0 m;
+  }
+
+  mission RowPatrol {
+    requires capabilities [ gps_navigation, row_following ];
+    patrol_rows;
+  }
+
+  behavior patrol_rows() {
+    loop every 200ms {
+      drive.drive(linear: 0.8 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+health_check FieldHealth for robot FieldPatrol {
+  check gps.status == Healthy;
+  check lidar.status == Healthy;
+}
+
+health_policy FieldPolicy {
+  on Degraded { drive.drive(linear: 0.2 m/s, angular: 0.0 rad/s); }
+  on Critical { emergency_stop; }
+}
+
+recovery_policy FieldRecovery {
+  on connectivity.lost {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy FieldPatrol to FieldRobotV1;

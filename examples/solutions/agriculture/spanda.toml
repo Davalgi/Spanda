@@ -1,0 +1,13 @@
+[package]
+name = "agriculture-blueprint"
+version = "0.1.0"
+description = "Agriculture Official Solution Blueprint — field patrol scaffold"
+
+[config]
+readiness_profile = "agriculture"
+
+[dependencies]
+# Optional when live backends are enabled:
+# spanda-gps = "0.1.0"
+# spanda-cellular = "0.1.0"
+# spanda-lora = "0.1.0"
