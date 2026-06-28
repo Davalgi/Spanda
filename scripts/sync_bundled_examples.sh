@@ -31,6 +31,12 @@ for f in killer_demo.sd ai_safety_violation.sd hardware_compatibility.sd README.
   cp "${ROOT}/examples/showcase/${f}" "${DEST}/"
 done
 
+# ADAS solution blueprint (spanda demo adas).
+ADAS_DEST="${ROOT}/crates/spanda-cli/bundled-examples/examples/solutions/adas"
+rm -rf "${ADAS_DEST}"
+mkdir -p "${ADAS_DEST}"
+cp -R "${ROOT}/examples/solutions/adas/"* "${ADAS_DEST}/"
+
 echo "✓ Synced bundled examples to crates/spanda-cli/bundled-examples/"
 
 if [[ -x "${ROOT}/scripts/sync_bundled_registry.sh" ]]; then

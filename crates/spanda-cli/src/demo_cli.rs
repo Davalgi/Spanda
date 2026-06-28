@@ -108,6 +108,30 @@ fn showcase(root: &Path, parts: &[&str]) -> PathBuf {
     path
 }
 
+fn solution(root: &Path, parts: &[&str]) -> PathBuf {
+    // Description:
+    //     Resolve a path under examples/solutions (repo or bundled).
+    //
+    // Parameters:
+    // - `root` — repository or bundled-examples root
+    // - `parts` — path segments after solutions/
+    //
+    // Returns:
+    // Solution example path.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let path = solution(&root, &["adas", "src", "highway_drive.sd"]);
+
+    let mut path = root.join("examples/solutions");
+    for part in parts {
+        path.push(part);
+    }
+    path
+}
+
 fn require_file(path: &Path) -> &Path {
     // Description:
     //     Require file.
@@ -917,9 +941,10 @@ fn demo_compliance(root: &Path) {
 fn demo_adas(root: &Path) {
     crate::bundled_registry::ensure_bundled_registry_env();
 
-    let adas_root = root.join("examples/solutions/adas");
+    let adas_root = solution(root, &["adas"]);
     let main = adas_root.join("src/highway_drive.sd");
     let trace = adas_root.join("src/highway_drive.trace");
+    let config = adas_root.join("spanda.toml");
     let main_sd = require_file(&main);
     let main_str = main_sd.to_str().unwrap();
 
@@ -935,8 +960,19 @@ fn demo_adas(root: &Path) {
         "--traceability",
     ]);
 
-    println!("\n--- readiness (highway_drive.sd) ---");
-    run_spanda_args(&["readiness", main_str, "--profile", "iso26262"]);
+    println!("\n--- readiness (highway_drive.sd + config) ---");
+    if config.is_file() {
+        run_spanda_args(&[
+            "readiness",
+            main_str,
+            "--profile",
+            "iso26262",
+            "--config",
+            config.to_str().unwrap(),
+        ]);
+    } else {
+        run_spanda_args(&["readiness", main_str, "--profile", "iso26262"]);
+    }
 
     if trace.is_file() {
         println!("\n--- replay (highway_drive.trace) ---");
@@ -944,6 +980,27 @@ fn demo_adas(root: &Path) {
             "replay",
             trace.to_str().unwrap(),
             "--deterministic",
+        ]);
+    }
+
+    let camera_fixture = adas_root.join("fixtures/camera_failure_recovery.trace");
+    if camera_fixture.is_file() {
+        println!("\n--- diagnose (camera failure scenario) ---");
+        run_spanda_args(&[
+            "diagnose",
+            main_str,
+            camera_fixture.to_str().unwrap(),
+        ]);
+    }
+
+    let takeover_sd = adas_root.join("driver_takeover/driver_takeover.sd");
+    let takeover_trace = adas_root.join("fixtures/driver_takeover.trace");
+    if takeover_sd.is_file() && takeover_trace.is_file() {
+        println!("\n--- explain (driver takeover scenario) ---");
+        run_spanda_args(&[
+            "explain",
+            takeover_sd.to_str().unwrap(),
+            takeover_trace.to_str().unwrap(),
         ]);
     }
 
@@ -962,8 +1019,6 @@ fn demo_adas(root: &Path) {
             run_spanda_args(&[
                 "verify",
                 path.to_str().unwrap(),
-                "--profile",
-                "iso26262",
                 "--capabilities",
             ]);
         }

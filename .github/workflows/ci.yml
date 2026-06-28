@@ -235,6 +235,21 @@ jobs:
           export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
           ./scripts/showcase_smoke.sh
 
+  adas-smoke:
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/adas_smoke.sh
+      - run: |
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/adas_smoke.sh
+
   live-ai-golden-path:
     runs-on: ubuntu-latest
     needs: rust
