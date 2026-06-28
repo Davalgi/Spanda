@@ -246,6 +246,31 @@ impl SpandaClient {
         Ok(TrustReport { raw: value })
     }
 
+    /// Register or update an entity in the runtime mutation overlay.
+    pub fn register_entity(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/entities/register", Some(body), true)
+    }
+
+    /// Add or remove tags on an entity overlay record.
+    pub fn tag_entity(&self, id: &str, body: &Value) -> SpandaResult<Value> {
+        self.request(
+            "POST",
+            &format!("/v1/entities/{id}/tags"),
+            Some(body),
+            true,
+        )
+    }
+
+    /// Relate two entities in the mutation overlay.
+    pub fn relate_entities(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/entities/relationships", Some(body), true)
+    }
+
+    /// Sync mutation overlay entities back to TOML fragments.
+    pub fn sync_entities(&self) -> SpandaResult<Value> {
+        self.request("POST", "/v1/entities/sync", None, true)
+    }
+
     fn parse_entity_list(value: Value) -> SpandaResult<Vec<Entity>> {
         let entities = value
             .get("entities")

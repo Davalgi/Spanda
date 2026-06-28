@@ -171,10 +171,10 @@ Cross-references:
 - [x] Medical device and ADAS-specific entity kinds with compliance metadata (`entity_kind`, `compliance_profile`, assurance/readiness/security profiles)
 - [x] Custom entity kinds via package manifests (`[entity_kinds]` on `PackageManifest`) and blueprint `[[entity_kinds]]`
 
-### Phase 5 — Write path (Later)
+### Phase 5 — Write path (Complete)
 
-- [ ] Entity mutation APIs (register, tag, relate) with audit
-- [ ] Bi-directional sync from entity registry to TOML fragments
+- [x] Entity mutation APIs (register, tag, relate) with audit
+- [x] Bi-directional sync from entity registry to TOML fragments (`POST /v1/entities/sync`)
 
 ### Compatibility guarantees
 

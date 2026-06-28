@@ -106,6 +106,30 @@ When Control Center is started with `--program`, mission declarations from the l
 
 The overlay is merged at API time in `ControlCenterState::entity_registry()` — no duplicate TOML records.
 
+## Mutation overlay (Phase 5)
+
+Runtime entity mutations are stored in `.spanda/entity-overlays.json` and merged into the registry on each read.
+
+| Endpoint | Action |
+|----------|--------|
+| `POST /v1/entities/register` | Register or update an entity |
+| `POST /v1/entities/{id}/tags` | Add/remove tags |
+| `POST /v1/entities/relationships` | Create a relationship edge |
+| `POST /v1/entities/sync` | Flush overlay to TOML (`spanda.facilities.toml` or `.spanda/entity-overrides.toml`) |
+
+Mutations require `Provision` RBAC and are recorded in the mutation audit trail (`control_center.entity.mutation`).
+
+```rust
+client.register_entity(&json!({
+    "id": "bay-1",
+    "entity_type": "calibration_station",
+    "parent_id": "warehouse-a",
+    "capabilities": ["calibrate"],
+    "persist": true
+}))?;
+client.sync_entities()?;
+```
+
 ## Future overlay extensions
 
 Live interpreter mission state, incidents, and transient sessions will enrich the overlay without persisting duplicate TOML records.
