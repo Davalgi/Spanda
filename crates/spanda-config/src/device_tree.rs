@@ -1,5 +1,8 @@
 //! Physical device hierarchy parsed from fleet/devices TOML.
 //!
+use crate::human_entities::{
+    ControlCenterEntity, HumanEntity, SpatialDeviceEntity, WearableEntity,
+};
 use serde::{Deserialize, Serialize};
 
 /// Fleet-level device tree root.
@@ -9,12 +12,26 @@ pub struct DeviceTree {
     pub fleet: Option<FleetNode>,
 }
 
-/// Fleet node containing robots.
+/// Fleet node containing robots and human-collaboration entities.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FleetNode {
     pub id: String,
     #[serde(default)]
     pub robots: Vec<RobotNode>,
+    #[serde(default)]
+    pub humans: Vec<HumanEntity>,
+    #[serde(default)]
+    pub wearables: Vec<WearableEntity>,
+    #[serde(default)]
+    pub ar_devices: Vec<SpatialDeviceEntity>,
+    #[serde(default)]
+    pub vr_devices: Vec<SpatialDeviceEntity>,
+    #[serde(default)]
+    pub drones: Vec<SpatialDeviceEntity>,
+    #[serde(default)]
+    pub iot_devices: Vec<SpatialDeviceEntity>,
+    #[serde(default)]
+    pub control_center: Vec<ControlCenterEntity>,
 }
 
 /// Robot with optional onboard compute and attached devices.
@@ -254,6 +271,30 @@ impl DeviceTree {
                     ));
                 }
             }
+        }
+        for human in &fleet.humans {
+            lines.push(format!("  human: {} ({})", human.id, human.role));
+        }
+        for wearable in &fleet.wearables {
+            lines.push(format!(
+                "  wearable: {} ({})",
+                wearable.id, wearable.device_type
+            ));
+        }
+        for ar in &fleet.ar_devices {
+            lines.push(format!("  ar_device: {} ({})", ar.id, ar.device_type));
+        }
+        for vr in &fleet.vr_devices {
+            lines.push(format!("  vr_device: {} ({})", vr.id, vr.device_type));
+        }
+        for drone in &fleet.drones {
+            lines.push(format!("  drone: {} ({})", drone.id, drone.device_type));
+        }
+        for iot in &fleet.iot_devices {
+            lines.push(format!("  iot_device: {} ({})", iot.id, iot.device_type));
+        }
+        for cc in &fleet.control_center {
+            lines.push(format!("  control_center: {}", cc.id));
         }
         lines
     }

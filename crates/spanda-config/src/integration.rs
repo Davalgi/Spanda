@@ -166,6 +166,10 @@ pub fn ensure_config_valid(cfg: Option<&ResolvedSystemConfig>) {
     }
 }
 
+pub fn configured_human_ids(cfg: &ResolvedSystemConfig) -> Vec<String> {
+    cfg.human_registry.operator_ids()
+}
+
 /// Robot ids declared in the resolved fleet config.
 pub fn configured_robot_ids(cfg: &ResolvedSystemConfig) -> Vec<String> {
     cfg.device_tree

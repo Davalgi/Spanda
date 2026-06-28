@@ -2,6 +2,7 @@
 //!
 use crate::device_identity::{DeviceIdentityRecord, DeviceRegistry};
 use crate::device_tree::DeviceTree;
+use crate::human_entities::HumanRegistry;
 use crate::layer::ConfigGraph;
 use crate::manifest::SpandaManifest;
 use crate::mapping::LogicalPhysicalMap;
@@ -19,6 +20,7 @@ pub struct ResolvedSystemConfig {
     pub fragments_loaded: Vec<String>,
     pub device_tree: DeviceTree,
     pub device_registry: DeviceRegistry,
+    pub human_registry: HumanRegistry,
     pub logical_map: LogicalPhysicalMap,
     pub providers: Vec<String>,
     pub packages: Vec<String>,
@@ -45,6 +47,14 @@ impl ResolvedSystemConfig {
             .as_ref()
             .map(|f| f.robots.iter().map(|r| r.id.as_str()).collect())
             .unwrap_or_default()
+    }
+
+    pub fn human_ids(&self) -> Vec<&str> {
+        self.human_registry
+            .humans
+            .iter()
+            .map(|h| h.id.as_str())
+            .collect()
     }
 
     pub fn section(&self, key: &str) -> Option<&toml::Value> {

@@ -21,6 +21,7 @@ pub mod discovery_tls;
 pub mod discovery_transport;
 pub mod drift;
 pub mod error;
+pub mod human_entities;
 pub mod integration;
 pub mod json;
 pub mod layer;
@@ -94,10 +95,15 @@ pub use drift::{
     DriftDimension, DriftFinding, DriftSeverity, ExpectedAgentState,
 };
 pub use error::{ConfigError, ConfigResult};
+pub use human_entities::{
+    is_operator_capability, operator_capability_names, records_from_human_registry,
+    CertificationRecord, ControlCenterEntity, HumanEntity, HumanRegistry, SpatialDeviceEntity,
+    WearableEntity,
+};
 pub use integration::{
-    config_flag_from_args, configured_robot_ids, default_verify_target, ensure_config_valid,
-    official_packages_from_resolved, recovery_knowledge_path, resolve_for_source,
-    resolve_for_source_or_exit, verify_with_system_config,
+    config_flag_from_args, configured_human_ids, configured_robot_ids, default_verify_target,
+    ensure_config_valid, official_packages_from_resolved, recovery_knowledge_path,
+    resolve_for_source, resolve_for_source_or_exit, verify_with_system_config,
 };
 pub use json::{load_config_value, parse_config_str};
 pub use layer::{ConfigGraph, ConfigGraphEdge, ConfigLayer, ConfigMergeStrategy};

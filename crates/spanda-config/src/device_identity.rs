@@ -196,6 +196,13 @@ impl DeviceRegistry {
                 .and_modify(|existing| merge_identity(existing, &record))
                 .or_insert(record);
         }
+        let human_registry = crate::human_entities::HumanRegistry::from_resolved_parts(tree, raw);
+        for record in crate::human_entities::records_from_human_registry(&human_registry) {
+            by_id
+                .entry(record.id.clone())
+                .and_modify(|existing| merge_identity(existing, &record))
+                .or_insert(record);
+        }
         let mut devices: Vec<DeviceIdentityRecord> = by_id.into_values().collect();
         devices.sort_by(|a, b| a.id.cmp(&b.id));
         Self { devices }

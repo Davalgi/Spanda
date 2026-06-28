@@ -61,6 +61,22 @@ fn parses_device_hierarchy() {
 }
 
 #[test]
+fn parses_spatial_computing_human_collaboration_tree() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/solutions/spatial-computing");
+    let resolved = ConfigResolver::new()
+        .with_validation(false)
+        .resolve_from_dir(&root)
+        .expect("resolve spatial computing blueprint");
+    assert!(resolved.human_registry.has_operators());
+    assert!(!resolved.human_registry.wearables.is_empty());
+    assert!(resolved.device_registry.get("operator-001").is_some());
+    let lines = resolved.device_tree.hierarchy_lines();
+    assert!(lines.iter().any(|l| l.contains("human:")));
+    assert!(lines.iter().any(|l| l.contains("wearable:")));
+}
+
+#[test]
 fn validates_providers_and_ports() {
     let root = fixture_root();
     let resolved = ConfigResolver::new()
