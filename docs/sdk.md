@@ -110,6 +110,6 @@ All SDKs expose structured errors:
 ## Known limitations
 
 - **Simulation / replay:** API returns planning metadata and trace inspection; full driver execution remains CLI-first (`spanda sim`, `spanda replay`).
-- **gRPC parity:** New program-level REST routes are REST-first; matching gRPC RPCs follow in a subsequent release.
+- **gRPC parity:** Program-level REST routes have matching gRPC RPCs (`EvaluateProgramReadiness`, `ListEntities`, …); full driver simulation/replay execution remains CLI-first.
 - **Local file paths:** Program endpoints resolve paths relative to Control Center `--config` project root.
 - **Pool vs program readiness:** `POST /v1/readiness/run` remains device-pool impact; use `POST /v1/programs/readiness` for CLI-equivalent program scoring.

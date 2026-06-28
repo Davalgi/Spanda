@@ -1,5 +1,5 @@
 syntax = "proto3";
-// Spanda Control Center gRPC API — proto semver 1.0.0 (package spanda.v1).
+// Spanda Control Center gRPC API — proto semver 1.0.1 (package spanda.v1).
 package spanda.v1;
 
 message Empty {}
@@ -53,6 +53,10 @@ message IncidentBodyRequest {
 message ApprovalBodyRequest {
   string approval_id = 1;
   string body_json = 2;
+}
+
+message EntityIdRequest {
+  string entity_id = 1;
 }
 
 service ControlCenter {
@@ -115,4 +119,18 @@ service ControlCenter {
   rpc ApproveConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
   rpc RejectConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
   rpc DetectDrift(DriftRequest) returns (JsonResponse);
+  rpc EvaluateProgramReadiness(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramAssure(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramDiagnose(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramHeal(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramHardware(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramCapabilities(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramMission(JsonBodyRequest) returns (JsonResponse);
+  rpc RunProgramSimulation(JsonBodyRequest) returns (JsonResponse);
+  rpc ReplayProgram(JsonBodyRequest) returns (JsonResponse);
+  rpc GetTrustProgram(QueryRequest) returns (JsonResponse);
+  rpc ListEntities(Empty) returns (JsonResponse);
+  rpc GetEntity(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityHealth(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityTrust(EntityIdRequest) returns (JsonResponse);
 }

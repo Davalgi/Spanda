@@ -339,3 +339,40 @@ async fn grpc_device_subresources_with_warehouse_config() {
         .into_inner();
     assert!(assign.json.contains("result") || assign.json.contains("ok"));
 }
+
+#[tokio::test]
+async fn grpc_sdk_program_and_entity_endpoints() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
+    let http_port = pick_port();
+    let grpc_port = pick_port();
+    let http_bind = format!("127.0.0.1:{http_port}");
+    let options = ControlCenterOptions {
+        bind: http_bind,
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
+        once: true,
+        timeout_ms: 500,
+        ..Default::default()
+    };
+    let grpc_bind = spawn_control_center(options);
+    let mut client = connect(&grpc_bind).await;
+
+    let entities = client
+        .list_entities(Empty {})
+        .await
+        .expect("list entities")
+        .into_inner();
+    assert!(entities.json.contains("entities"));
+
+    let readiness = client
+        .evaluate_program_readiness(spanda_api::grpc::spanda_v1::JsonBodyRequest {
+            body_json: r#"{"file":"examples/robotics/rover.sd"}"#.into(),
+        })
+        .await
+        .expect("program readiness")
+        .into_inner();
+    assert!(
+        readiness.json.contains("report") || readiness.json.contains("error"),
+        "unexpected body: {}",
+        readiness.json
+    );
+}

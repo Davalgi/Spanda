@@ -401,6 +401,76 @@ pub fn program_simulation(state: &ControlCenterState, body: &str) -> HttpRespons
     }))
 }
 
+/// JSON body for gRPC `EvaluateProgramReadiness` (parity with `POST /v1/programs/readiness`).
+pub fn program_readiness_json(state: &ControlCenterState, body: &str) -> String {
+    program_readiness(state, body).body
+}
+
+/// JSON body for gRPC `EvaluateProgramAssure`.
+pub fn program_assure_json(state: &ControlCenterState, body: &str) -> String {
+    program_assure(state, body).body
+}
+
+/// JSON body for gRPC `EvaluateProgramDiagnose`.
+pub fn program_diagnose_json(state: &ControlCenterState, body: &str) -> String {
+    program_diagnose(state, body).body
+}
+
+/// JSON body for gRPC `EvaluateProgramHeal`.
+pub fn program_heal_json(state: &ControlCenterState, body: &str) -> String {
+    program_heal(state, body).body
+}
+
+/// JSON body for gRPC `VerifyProgramHardware`.
+pub fn program_verify_hardware_json(state: &ControlCenterState, body: &str) -> String {
+    program_verify_hardware(state, body).body
+}
+
+/// JSON body for gRPC `VerifyProgramCapabilities`.
+pub fn program_verify_capabilities_json(state: &ControlCenterState, body: &str) -> String {
+    program_verify_capabilities(state, body).body
+}
+
+/// JSON body for gRPC `VerifyProgramMission`.
+pub fn program_verify_mission_json(state: &ControlCenterState, body: &str) -> String {
+    program_verify_mission(state, body).body
+}
+
+/// JSON body for gRPC `RunProgramSimulation`.
+pub fn program_simulation_json(state: &ControlCenterState, body: &str) -> String {
+    program_simulation(state, body).body
+}
+
+/// JSON body for gRPC `ReplayProgram`.
+pub fn program_replay_json(state: &ControlCenterState, body: &str) -> String {
+    program_replay(state, body).body
+}
+
+/// JSON body for gRPC `GetTrustProgram`.
+pub fn trust_program_json(state: &ControlCenterState, query: &str) -> String {
+    trust_program(state, query).body
+}
+
+/// JSON body for gRPC `ListEntities`.
+pub fn list_entities_json(state: &ControlCenterState) -> String {
+    list_entities(state).body
+}
+
+/// JSON body for gRPC `GetEntity`.
+pub fn get_entity_json(state: &ControlCenterState, entity_id: &str) -> String {
+    get_entity(state, entity_id).body
+}
+
+/// JSON body for gRPC `GetEntityHealth`.
+pub fn entity_health_json(state: &ControlCenterState, entity_id: &str) -> String {
+    entity_health(state, entity_id).body
+}
+
+/// JSON body for gRPC `GetEntityTrust`.
+pub fn entity_trust_json(state: &ControlCenterState, entity_id: &str) -> String {
+    entity_trust(state, entity_id).body
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -10,7 +10,7 @@ For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-r
 |-----------|--------|
 | REST | `http://host:8080/v1/*` |
 | OpenAPI | `GET /v1/openapi.json` |
-| gRPC | `ControlCenter` service (see `proto/spanda/v1/control_center.proto`) |
+| gRPC | `ControlCenter` service (see `proto/spanda/v1/control_center.proto`) — program ops: `EvaluateProgramReadiness`, `ListEntities`, … |
 | WebSocket | `WS /v1/stream/telemetry` |
 | JSON-RPC gateway | `POST /v1/rpc` |
 

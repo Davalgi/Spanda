@@ -10,9 +10,9 @@ pub mod spanda_v1 {
 
 use spanda_v1::control_center_server::{ControlCenter, ControlCenterServer};
 use spanda_v1::{
-    ApprovalBodyRequest, DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty, HealthResponse,
-    IncidentBodyRequest, IncidentIdRequest, JsonBodyRequest, JsonResponse, QueryRequest,
-    ReadinessRequest, TrustPackageRequest,
+    ApprovalBodyRequest, DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty, EntityIdRequest,
+    HealthResponse, IncidentBodyRequest, IncidentIdRequest, JsonBodyRequest, JsonResponse,
+    QueryRequest, ReadinessRequest, TrustPackageRequest,
 };
 
 struct GrpcControlCenter {
@@ -809,6 +809,145 @@ impl ControlCenter for GrpcControlCenter {
             })?
             .json;
         self.respond_mutation("RejectConfigApproval", json, ctx)
+    }
+
+    async fn evaluate_program_readiness(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_readiness_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn evaluate_program_assure(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_assure_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn evaluate_program_diagnose(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_diagnose_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn evaluate_program_heal(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_heal_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn verify_program_hardware(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_verify_hardware_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn verify_program_capabilities(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_verify_capabilities_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn verify_program_mission(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_verify_mission_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn run_program_simulation(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_simulation_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn replay_program(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::sdk_ops::program_replay_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn get_trust_program(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::sdk_ops::trust_program_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn list_entities(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        self.with_state(crate::sdk_ops::list_entities_json)
+            .map(Response::new)
+    }
+
+    async fn get_entity(
+        &self,
+        request: Request<EntityIdRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let entity_id = request.into_inner().entity_id;
+        self.with_state(|state| crate::sdk_ops::get_entity_json(state, &entity_id))
+            .map(Response::new)
+    }
+
+    async fn get_entity_health(
+        &self,
+        request: Request<EntityIdRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let entity_id = request.into_inner().entity_id;
+        self.with_state(|state| crate::sdk_ops::entity_health_json(state, &entity_id))
+            .map(Response::new)
+    }
+
+    async fn get_entity_trust(
+        &self,
+        request: Request<EntityIdRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let entity_id = request.into_inner().entity_id;
+        self.with_state(|state| crate::sdk_ops::entity_trust_json(state, &entity_id))
+            .map(Response::new)
     }
 }
 
