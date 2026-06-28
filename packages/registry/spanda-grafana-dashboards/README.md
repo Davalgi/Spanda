@@ -8,6 +8,7 @@ Grafana dashboard templates for Spanda Control Center observability and SRE.
 |------|--------|
 | `dashboards/control-center-sre.json` | Availability, SLO burn-rate, incidents, alerts |
 | `dashboards/control-center-ota.json` | OTA rollout status and readiness gates |
+| `dashboards/control-center-adas.json` | ADAS fleet health, safety alerts, mission trace volume |
 
 ## Import
 

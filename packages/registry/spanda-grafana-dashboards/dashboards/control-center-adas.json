@@ -1,0 +1,111 @@
+{
+  "title": "Spanda Control Center — ADAS",
+  "uid": "spanda-cc-adas",
+  "tags": ["spanda", "control-center", "adas", "automotive"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Fleet availability %",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_availability_percent",
+          "legendFormat": "availability"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Healthy devices",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_devices_healthy",
+          "legendFormat": "healthy"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Critical safety alerts",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_alerts_critical",
+          "legendFormat": "critical"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Mission traces recorded",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_traces_recorded",
+          "legendFormat": "traces"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Device health ratio",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_devices_healthy / spanda_control_center_devices_total",
+          "legendFormat": "healthy_ratio"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Critical alerts (1h)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        {
+          "expr": "increase(spanda_control_center_alerts_critical[1h])",
+          "legendFormat": "critical"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Open alerts by severity",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "spanda_control_center_alerts_total",
+          "legendFormat": "total"
+        },
+        {
+          "expr": "spanda_control_center_alerts_critical",
+          "legendFormat": "critical"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Recorded mission traces (24h)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "targets": [
+        {
+          "expr": "increase(spanda_control_center_traces_recorded[24h])",
+          "legendFormat": "traces"
+        }
+      ]
+    }
+  ]
+}
