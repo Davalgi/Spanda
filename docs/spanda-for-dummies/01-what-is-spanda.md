@@ -33,7 +33,7 @@ Think of a robot like a body:
 | Bouncer | Only safe moves get through | `safety.validate()` |
 | Nervous system | The program that ties it together | `behavior`, `task` |
 
-Spanda is the **pulse** — the thing that turns perception into action safely.
+Spanda is the **pulse** — the thing that turns perception, intent, and safety into action.
 
 The word **Spanda** is Sanskrit for *the divine pulse* — pronounced **SPUN-duh** (/ˈspʌndə/). It names the creative vibration that bridges stillness and movement; in software, that is the coordination layer between sensors, AI, safety, and actuators.
 
