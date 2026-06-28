@@ -72,6 +72,7 @@ type Tab =
   | "compliance"
   | "audit"
   | "digital-thread"
+  | "adas"
   | "executive"
   | "traceability";
 
@@ -139,6 +140,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const [selectedThreadNode, setSelectedThreadNode] = useState<string | null>(null);
   const [configApprovals, setConfigApprovals] = useState<Record<string, unknown>[]>([]);
   const [evidenceRecords, setEvidenceRecords] = useState<Record<string, unknown>[]>([]);
+  const [adasHealth, setAdasHealth] = useState<Record<string, unknown> | null>(null);
+  const [adasAssurance, setAdasAssurance] = useState<Record<string, unknown> | null>(null);
+  const [adasDiagnosis, setAdasDiagnosis] = useState<Record<string, unknown> | null>(null);
+  const [adasTrust, setAdasTrust] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -426,8 +431,31 @@ export function ControlCenterPanel({ apiBase }: Props) {
     if (tab === "audit") void loadAudit();
     if (tab === "executive") void loadExecutive();
     if (tab === "digital-thread") void loadDigitalThread();
+    if (tab === "adas") void loadAdas();
     if (tab === "config") void loadConfig();
   }, [tab, base, trustPackageName, apiKey]);
+
+  const loadAdas = async () => {
+    setBusy(true);
+    try {
+      const [healthRes, assuranceRes, diagnosisRes, trustRes, otaRes] = await Promise.all([
+        fetch(`${base}/v1/health/summary`),
+        fetch(`${base}/v1/assurance/summary`),
+        fetch(`${base}/v1/diagnosis/summary`),
+        fetch(`${base}/v1/trust/package?name=spanda-gps`),
+        fetch(`${base}/v1/ota/status`),
+      ]);
+      if (healthRes.ok) setAdasHealth(await healthRes.json());
+      if (assuranceRes.ok) setAdasAssurance(await assuranceRes.json());
+      if (diagnosisRes.ok) setAdasDiagnosis(await diagnosisRes.json());
+      if (trustRes.ok) setAdasTrust(await trustRes.json());
+      if (otaRes.ok) setOtaStatus(await otaRes.json());
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const loadConfig = async () => {
     setBusy(true);
@@ -687,6 +715,13 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const threadDeviceLinks =
     (digitalThread?.device_links as DigitalThreadDeviceLink[] | undefined) ?? [];
 
+  const tabLabel = (name: Tab): string => {
+    if (name === "adas") return "ADAS";
+    if (name === "sre") return "SRE";
+    if (name === "ota") return "OTA";
+    return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");
+  };
+
   const tabs: Tab[] = [
     "dashboard",
     "devices",
@@ -705,6 +740,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
     "compliance",
     "audit",
     "digital-thread",
+    "adas",
     "executive",
     "traceability",
   ];
@@ -723,7 +759,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
             className={tab === name ? "primary" : undefined}
             onClick={() => setTab(name)}
           >
-            {name.charAt(0).toUpperCase() + name.slice(1)}
+            {tabLabel(name)}
           </button>
         ))}
         <button type="button" onClick={() => void load()} disabled={busy}>
@@ -1151,6 +1187,62 @@ export function ControlCenterPanel({ apiBase }: Props) {
 
       {tab === "executive" && scorecard && (
         <pre>{JSON.stringify(scorecard, null, 2)}</pre>
+      )}
+
+      {tab === "adas" && (
+        <div>
+          <p className="demo-hint">
+            Serve with{" "}
+            <code>
+              spanda control-center serve --config spanda.toml --program src/highway_drive.sd
+            </code>
+          </p>
+          <dl>
+            <dt>Vehicle health</dt>
+            <dd>{String(adasHealth?.overall_status ?? "—")}</dd>
+            <dt>Sensor devices</dt>
+            <dd>{pool?.total ?? 0}</dd>
+            <dt>Healthy sensors</dt>
+            <dd>{pool?.healthy ?? 0}</dd>
+            <dt>Degraded</dt>
+            <dd>{pool?.degraded ?? 0}</dd>
+            <dt>Trust score</dt>
+            <dd>
+              {adasTrust?.trust_score != null
+                ? Math.round(Number(adasTrust.trust_score) * 100)
+                : "—"}
+            </dd>
+            <dt>Active alerts</dt>
+            <dd>{dashboard?.alert_count ?? 0}</dd>
+          </dl>
+          <h3>Driver takeover &amp; alerts</h3>
+          <p>
+            Monitor <code>driver_takeover</code> and <code>sensor_degradation</code> via the
+            Alerts tab.
+          </p>
+          <button type="button" onClick={() => void runReadiness()} disabled={busy}>
+            Run readiness
+          </button>
+          {readiness && (
+            <pre>{JSON.stringify(readiness, null, 2)}</pre>
+          )}
+          <h3>OTA status</h3>
+          {otaStatus && <pre>{JSON.stringify(otaStatus, null, 2)}</pre>}
+          <h3>Assurance summary</h3>
+          {adasAssurance && <pre>{JSON.stringify(adasAssurance, null, 2)}</pre>}
+          <h3>Diagnosis summary</h3>
+          {adasDiagnosis && <pre>{JSON.stringify(adasDiagnosis, null, 2)}</pre>}
+          <h3>Replay</h3>
+          <p>
+            Record: <code>spanda sim src/highway_drive.sd --record</code> · Replay:{" "}
+            <code>spanda replay src/highway_drive.trace --deterministic</code>
+          </p>
+          <h3>ISO 26262 export</h3>
+          <p>
+            <code>GET /v1/compliance/export?profile=iso26262</code> — use Compliance tab with
+            profile <code>iso26262</code>.
+          </p>
+        </div>
       )}
 
       {tab === "digital-thread" && digitalThread && (

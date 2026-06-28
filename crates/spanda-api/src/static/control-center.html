@@ -52,6 +52,7 @@
     <button type="button" data-tab="operator">Operator</button>
     <button type="button" data-tab="audit">Audit</button>
     <button type="button" data-tab="digital-thread">Digital Thread</button>
+    <button type="button" data-tab="adas">ADAS</button>
     <button type="button" data-tab="executive">Executive</button>
   </nav>
   <div id="error" class="error" hidden></div>
@@ -72,9 +73,10 @@
   <section id="tab-operator" class="panel" hidden></section>
   <section id="tab-audit" class="panel" hidden></section>
   <section id="tab-digital-thread" class="panel" hidden></section>
+  <section id="tab-adas" class="panel" hidden></section>
   <section id="tab-executive" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config", "drift", "ota", "security", "sre", "operator", "audit", "digital-thread", "executive"];
+    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config", "drift", "ota", "security", "sre", "operator", "audit", "digital-thread", "adas", "executive"];
     const errEl = document.getElementById("error");
 
     document.querySelectorAll("nav button").forEach((btn) => {
@@ -102,6 +104,7 @@
         if (tab === "operator") loadOperator();
         if (tab === "audit") loadAudit();
         if (tab === "digital-thread") loadDigitalThread();
+        if (tab === "adas") loadAdas();
         if (tab === "executive") loadExecutive();
       });
     });
@@ -527,6 +530,46 @@
       }
       draw();
       container.appendChild(svg);
+    }
+
+    async function loadAdas() {
+      try {
+        errEl.hidden = true;
+        const [dashboard, health, assurance, diagnosis, ota, trust] = await Promise.all([
+          api("/v1/dashboard"),
+          api("/v1/health/summary").catch(() => ({ overall_status: "unknown" })),
+          api("/v1/assurance/summary").catch(() => ({})),
+          api("/v1/diagnosis/summary").catch(() => ({})),
+          api("/v1/ota/status").catch(() => ({})),
+          api("/v1/trust/package?name=spanda-gps").catch(() => ({})),
+        ]);
+        const p = dashboard.device_pool || {};
+        const trustScore = trust.trust_score != null ? Math.round(trust.trust_score * 100) : "—";
+        document.getElementById("tab-adas").innerHTML = `
+          <h2>ADAS Dashboard</h2>
+          <p class="subtitle">Intelligent vehicle operations — serve with <code>--config spanda.toml --program src/highway_drive.sd</code></p>
+          <div class="grid">
+            <div class="stat"><dt>Vehicle health</dt><dd class="${health.overall_status === "healthy" ? "ok" : ""}">${health.overall_status}</dd></div>
+            <div class="stat"><dt>Sensor devices</dt><dd>${p.total || 0}</dd></div>
+            <div class="stat"><dt>Healthy sensors</dt><dd class="ok">${p.healthy || 0}</dd></div>
+            <div class="stat"><dt>Degraded</dt><dd>${p.degraded || 0}</dd></div>
+            <div class="stat"><dt>Readiness (pool)</dt><dd class="ok">${(p.healthy || 0) + (p.assigned || 0)}</dd></div>
+            <div class="stat"><dt>Trust score</dt><dd>${trustScore}</dd></div>
+            <div class="stat"><dt>Active alerts</dt><dd>${dashboard.alert_count || 0}</dd></div>
+            <div class="stat"><dt>Fleet agents</dt><dd>${dashboard.fleet_agent_count || 0}</dd></div>
+          </div>
+          <h3>Driver takeover &amp; alerts</h3>
+          <p>Monitor <code>driver_takeover</code> and <code>sensor_degradation</code> alerts via the Alerts tab.</p>
+          <h3>OTA status</h3>
+          <pre>${JSON.stringify(ota, null, 2)}</pre>
+          <h3>Assurance summary</h3>
+          <pre>${JSON.stringify(assurance, null, 2)}</pre>
+          <h3>Diagnosis summary</h3>
+          <pre>${JSON.stringify(diagnosis, null, 2)}</pre>
+          <h3>Replay viewer</h3>
+          <p>Record traces with <code>spanda sim src/highway_drive.sd --record</code> · Replay with <code>spanda replay src/highway_drive.trace --deterministic</code></p>
+          <p>Export assurance: <code>GET /v1/compliance/export?profile=iso26262</code></p>`;
+      } catch (e) { showError(String(e)); }
     }
 
     async function loadExecutive() {

@@ -22,6 +22,18 @@ spanda control-center serve --grpc-bind 127.0.0.1:50051
 
 Open `http://127.0.0.1:8080/` for the Control Center UI, or use the **Control Center** view in `@spanda/web` (set API URL to the serve address).
 
+### ADAS dashboard
+
+Launch with the ADAS Solution Blueprint for vehicle-centric operations:
+
+```bash
+spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+```
+
+The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, trust score, alerts, OTA status, assurance/diagnosis summaries, and replay workflow links. See [solutions/adas.md](./solutions/adas.md).
+
 ### Remote CLI (REST parity)
 
 Query a running Control Center without curl — uses `SPANDA_CONTROL_CENTER_URL` (default `http://127.0.0.1:8080`) and `SPANDA_API_KEY` for mutations:
