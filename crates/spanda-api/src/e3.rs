@@ -547,6 +547,19 @@ pub fn rpc_gateway(state: &mut ControlCenterState, body: &str) -> HttpResponse {
         Ok(v) => v,
         Err(e) => return bad_request(&e.to_string()),
     };
+    let params = &req.params;
+    let body_json = params
+        .get("body_json")
+        .and_then(|v| v.as_str())
+        .unwrap_or("{}");
+    let query = params
+        .get("query")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let entity_id = params
+        .get("entity_id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
     let response = match req.method.as_str() {
         "spanda.v1.SpandaService/GetHealth" => serde_json::json!({
             "ok": true,
@@ -559,6 +572,29 @@ pub fn rpc_gateway(state: &mut ControlCenterState, body: &str) -> HttpResponse {
         "spanda.v1.SpandaService/GetSreSummary" => {
             let resp = sre_summary(state);
             serde_json::from_str(&resp.body).unwrap_or(serde_json::json!({}))
+        }
+        "spanda.v1.ControlCenter/ListEntities" => {
+            serde_json::from_str(&crate::sdk_ops::list_entities_json(state)).unwrap_or_default()
+        }
+        "spanda.v1.ControlCenter/GetEntity" => {
+            serde_json::from_str(&crate::sdk_ops::get_entity_json(state, entity_id))
+                .unwrap_or_default()
+        }
+        "spanda.v1.ControlCenter/EvaluateProgramReadiness" => {
+            serde_json::from_str(&crate::sdk_ops::program_readiness_json(state, body_json))
+                .unwrap_or_default()
+        }
+        "spanda.v1.ControlCenter/EvaluateProgramAssure" => {
+            serde_json::from_str(&crate::sdk_ops::program_assure_json(state, body_json))
+                .unwrap_or_default()
+        }
+        "spanda.v1.ControlCenter/EvaluateProgramDiagnose" => {
+            serde_json::from_str(&crate::sdk_ops::program_diagnose_json(state, body_json))
+                .unwrap_or_default()
+        }
+        "spanda.v1.ControlCenter/GetTrustProgram" => {
+            serde_json::from_str(&crate::sdk_ops::trust_program_json(state, query))
+                .unwrap_or_default()
         }
         _ => {
             return bad_request(&format!("unknown rpc method: {}", req.method));
