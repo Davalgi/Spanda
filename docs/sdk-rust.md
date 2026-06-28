@@ -8,8 +8,10 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spanda-sdk = { path = "../crates/spanda-sdk" }
-# or from crates.io when published
+spanda-sdk = "0.4"
+# optional native gRPC client:
+# spanda-sdk = { version = "0.4", features = ["grpc"] }
+# or path = "../crates/spanda-sdk" from this monorepo
 ```
 
 ## Usage
@@ -74,11 +76,26 @@ spanda-sdk = { path = "../crates/spanda-sdk", features = ["grpc"] }
 ```rust
 use spanda_sdk::GrpcClient;
 
-let mut client = GrpcClient::connect_blocking("http://127.0.0.1:50051")?;
-let entities = client.list_entities().await?; // use within tokio runtime
+let rt = tokio::runtime::Runtime::new()?;
+rt.block_on(async {
+    let mut client = GrpcClient::connect("http://127.0.0.1:50051").await?;
+    let entities = client.list_entities().await?;
+    let report = client.readiness("rover.sd").await?;
+    Ok::<_, spanda_sdk::SpandaError>((entities, report))
+})?;
 ```
 
-REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center.
+| `GrpcClient` method | gRPC RPC |
+|---------------------|----------|
+| `readiness(file)` | `EvaluateProgramReadiness` |
+| `assure(file)` | `EvaluateProgramAssure` |
+| `run_simulation(file, execute)` | `RunProgramSimulation` |
+| `replay(file, deterministic, playback)` | `ReplayProgram` |
+| `list_entities()` | `ListEntities` |
+| `get_entity(id)` | `GetEntity` |
+| `list_devices()` | `ListDevices` |
+
+REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center. See [Publishing SDKs](sdk-publishing.md) for crates.io release (`crates-sdk-v*` tag, `CRATES_IO_TOKEN`).
 
 ## Error handling
 

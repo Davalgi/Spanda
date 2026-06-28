@@ -15,13 +15,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **TypeScript SDK npm publish:** add `@types/node` so CI `tsc` build succeeds on clean `npm ci` installs (`@davalgi-spanda/sdk` v0.4.1).
+- **Rust SDK crates.io packaging:** make `tonic-build` a required build-dependency so `cargo package` verifies without the `grpc` feature.
 - **Sim `stop_if` false E-stop:** `RunOptions::default()` now sets `lidar_range = 10.0 m` (was `0.0` from derived `Default`, forcing `nearest_distance = 0.01 m` and spurious `stop_if` triggers in `spanda sim` / `spanda run`).
 - **Behavior loop trace recording:** `loop every` in behaviors now emits `behavior_tick` mission trace frames when `--record` is enabled (ADAS `highway_drive.trace` replays deterministically).
 
 ### Added
 
 - **npm TypeScript SDK scope:** published package is `@davalgi-spanda/sdk` (npm org `@davalgi-spanda`; `@spanda` scope unavailable on npm).
-- **SDK publishing guide:** [docs/sdk-publishing.md](docs/sdk-publishing.md) — PyPI/npm tokens, GitHub secrets, release tags, troubleshooting.
+- **SDK publishing guide:** [docs/sdk-publishing.md](docs/sdk-publishing.md) — PyPI/npm/crates.io tokens, GitHub secrets, release tags, troubleshooting.
+- **Rust SDK crates.io workflow:** [publish-sdk-rust.yml](.github/workflows/publish-sdk-rust.yml) (`crates-sdk-v*` tag).
+- **GrpcClient expansion:** `assure`, `run_simulation`, `replay`, `get_entity`, `list_devices` on optional `grpc` feature.
+- **Replay API tests:** inspect and playback paths in `sdk_ops_tests`.
 - **SDK simulation/replay execution:** program API endpoints run the driver when `"execute": true` (sim) or `"deterministic"` / `"playback"` (replay); optional Rust `grpc` feature on `spanda-sdk`; PyPI/npm publish workflows for `sdk/python` and `@spanda/sdk`.
 - **Official SDK foundations:** `crates/spanda-sdk` (Rust), `sdk/python` (`pip install spanda-sdk`), `sdk/typescript` (`@spanda/sdk`); program-level REST endpoints on `spanda-api` for CLI parity (`/v1/programs/*`, `/v1/entities/*`); matching gRPC RPCs (`EvaluateProgramReadiness`, `ListEntities`, …); docs in [docs/sdk.md](docs/sdk.md), [docs/control-center-api.md](docs/control-center-api.md).
 - **SDK smoke and JSON-RPC:** `scripts/sdk_smoke.sh` exercises program REST endpoints; JSON-RPC gateway maps Control Center SDK methods; `rpc()` on all SDK clients.

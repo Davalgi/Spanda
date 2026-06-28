@@ -1,16 +1,18 @@
 # Publishing the official SDKs
 
-How to publish **Spanda Python** and **TypeScript** SDKs from this repository using GitHub Actions. Rust `spanda-sdk` is consumed from the workspace or crates.io separately; this guide covers PyPI and npm only.
+How to publish **Spanda Rust, Python, and TypeScript** SDKs from this repository using GitHub Actions.
 
 ## Packages and registries
 
 | SDK | Source path | Registry package | Release tag pattern |
 |-----|-------------|------------------|---------------------|
+| Rust | `crates/spanda-sdk/` | [`spanda-sdk`](https://crates.io/crates/spanda-sdk) | `crates-sdk-vX.Y.Z` |
 | Python | `sdk/python/` | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) | `sdk-python-vX.Y.Z` |
 | TypeScript | `sdk/typescript/` | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) | `npm-sdk-vX.Y.Z` |
 
 Version numbers live in:
 
+- `Cargo.toml` workspace version → `crates/spanda-sdk`
 - `sdk/python/pyproject.toml` → `[project].version`
 - `sdk/typescript/package.json` → `"version"`
 
@@ -26,12 +28,46 @@ Both publish workflows read **repository secrets** (not committed files).
 
 | Secret name | Used by | Purpose |
 |-------------|---------|---------|
+| `CRATES_IO_TOKEN` | [publish-sdk-rust.yml](../.github/workflows/publish-sdk-rust.yml) | Upload `spanda-sdk` to crates.io |
 | `PYPI_API_TOKEN` | [publish-sdk-python.yml](../.github/workflows/publish-sdk-python.yml) | Upload wheels to PyPI |
 | `NPM_TOKEN` | [publish-sdk-typescript.yml](../.github/workflows/publish-sdk-typescript.yml) | Upload `@davalgi-spanda/sdk` to npm |
 
 You need **admin** (or equivalent) access on the repository to create secrets.
 
 **Never** commit tokens to the repo, paste them in issues/PRs, or store them in `.pypirc` / `.npmrc` under version control.
+
+---
+
+## crates.io (`CRATES_IO_TOKEN`)
+
+### Create a crates.io account and token
+
+1. Register at [crates.io](https://crates.io/) (GitHub login works).
+2. **Account settings → API Tokens** → **New Token**.
+3. Name it (for example `spanda-github-actions`) and copy the token.
+
+### Add to GitHub
+
+- **Name:** `CRATES_IO_TOKEN`
+- **Value:** the crates.io API token
+
+### Workflow behavior
+
+On tag push `crates-sdk-v*`:
+
+1. `cargo test -p spanda-sdk` (with and without `grpc` feature)
+2. `cargo package -p spanda-sdk`
+3. `cargo publish -p spanda-sdk`
+
+Manual trigger: **Actions → Publish Rust SDK → Run workflow** (tests/package only; upload on matching tags).
+
+Install after publish:
+
+```bash
+cargo add spanda-sdk
+# optional gRPC client
+cargo add spanda-sdk --features grpc
+```
 
 ---
 
@@ -174,9 +210,13 @@ From repo root:
 git tag sdk-python-v0.4.0
 git push origin sdk-python-v0.4.0
 
+# Rust → crates.io
+git tag crates-sdk-v0.4.0
+git push origin crates-sdk-v0.4.0
+
 # TypeScript → npm
-git tag npm-sdk-v0.4.0
-git push origin npm-sdk-v0.4.0
+git tag npm-sdk-v0.4.1
+git push origin npm-sdk-v0.4.1
 ```
 
 Tags can be pushed in one command:
@@ -187,7 +227,7 @@ git push origin sdk-python-v0.4.0 npm-sdk-v0.4.0
 
 ### 3. Watch CI
 
-**GitHub → Actions** — confirm **Publish Python SDK** and **Publish TypeScript SDK** succeed.
+**GitHub → Actions** — confirm **Publish Rust SDK**, **Publish Python SDK**, and **Publish TypeScript SDK** succeed.
 
 ### 4. Verify install
 
@@ -195,12 +235,15 @@ git push origin sdk-python-v0.4.0 npm-sdk-v0.4.0
 pip install spanda-sdk
 python -c "from spanda_sdk import SpandaClient; print(SpandaClient.local())"
 
+cargo add spanda-sdk
+
 npm install @davalgi-spanda/sdk
 node -e "import('@davalgi-spanda/sdk').then(m => console.log(m.SpandaClient.local()))"
 ```
 
 Check registry pages:
 
+- [crates.io/crates/spanda-sdk](https://crates.io/crates/spanda-sdk)
 - [pypi.org/project/spanda-sdk/](https://pypi.org/project/spanda-sdk/)
 - [npmjs.com/package/@davalgi-spanda/sdk](https://www.npmjs.com/package/@davalgi-spanda/sdk)
 
@@ -226,7 +269,8 @@ If a token was exposed (chat, log, commit), **revoke it immediately** on PyPI/np
 
 | Workflow | Tag | Package |
 |----------|-----|---------|
-| [publish-sdk-python.yml](../.github/workflows/publish-sdk-python.yml) | `sdk-python-v*` | `spanda-sdk` |
+| [publish-sdk-rust.yml](../.github/workflows/publish-sdk-rust.yml) | `crates-sdk-v*` | `spanda-sdk` |
+| [publish-sdk-python.yml](../.github/workflows/publish-sdk-python.yml) | `sdk-python-v*` | `spanda-sdk` (PyPI) |
 | [publish-sdk-typescript.yml](../.github/workflows/publish-sdk-typescript.yml) | `npm-sdk-v*` | `@davalgi-spanda/sdk` |
 | [publish-npm-web.yml](../.github/workflows/publish-npm-web.yml) | `npm-web-v*` | `@spanda/web` (separate; may need its own npm scope strategy) |
 

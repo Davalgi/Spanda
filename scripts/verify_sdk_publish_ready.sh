@@ -12,6 +12,9 @@ echo "Python wheel OK ($(ls sdk/python/dist/*.whl | tail -1))"
 echo "== Python SDK (legacy packages/sdk-python) =="
 pip install -q -e "packages/sdk-python[dev]"
 pytest packages/sdk-python/tests -q
+echo "== Rust spanda-sdk (cargo package) =="
+cargo package -p spanda-sdk --allow-dirty >/dev/null
+echo "Rust crate package OK"
 echo "== TypeScript @davalgi-spanda/sdk =="
 npm ci --prefix sdk/typescript
 npm test --prefix sdk/typescript
@@ -21,4 +24,4 @@ npm ci
 npm run build --workspace=@spanda/web
 (cd packages/web && npm pack >/dev/null)
 echo "npm pack OK"
-echo "Publish readiness verified. Tag sdk-python-v*, npm-sdk-v*, or npm-web-v* to release."
+echo "Publish readiness verified. Tag crates-sdk-v*, sdk-python-v*, npm-sdk-v*, or npm-web-v* to release."
