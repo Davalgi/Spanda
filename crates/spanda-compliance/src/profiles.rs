@@ -41,6 +41,7 @@ pub fn list_builtin_profiles() -> Vec<&'static str> {
         "iso13849",
         "iec61508",
         "research",
+        "human_collaboration",
     ]
 }
 
@@ -56,6 +57,7 @@ pub fn builtin_profile(name: &str) -> Option<ComplianceProfile> {
         "iso13849" | "iso_13849" | "machinery" => Some(iso13849_profile()),
         "iec61508" | "iec_61508" | "functional_safety" => Some(iec61508_profile()),
         "research" => Some(research_profile()),
+        "human_collaboration" | "human_collab" | "hri" => Some(human_collaboration_profile()),
         _ => None,
     }
 }
@@ -227,6 +229,26 @@ fn research_profile() -> ComplianceProfile {
         requires_tamper_policy: false,
         requires_secure_boot: false,
         warn_only: true,
+        template_notice: ACCREDITATION_TEMPLATE_NOTICE,
+    }
+}
+
+fn human_collaboration_profile() -> ComplianceProfile {
+    ComplianceProfile {
+        name: "human_collaboration".into(),
+        description: "Human–robot collaboration with operator capabilities and supervisor gates"
+            .into(),
+        requires_kill_switch: true,
+        min_readiness_score: 85,
+        required_capabilities: vec!["obstacle_avoidance".into()],
+        min_health_checks: 0,
+        requires_assurance_case: false,
+        max_speed_mps: Some(1.5),
+        operation_hours: None,
+        requires_secure_comm: false,
+        requires_tamper_policy: false,
+        requires_secure_boot: false,
+        warn_only: false,
         template_notice: ACCREDITATION_TEMPLATE_NOTICE,
     }
 }

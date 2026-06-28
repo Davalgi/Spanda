@@ -15,6 +15,7 @@ pub mod failure;
 pub mod fleet;
 pub mod fleet_verify;
 pub mod gates;
+pub mod human;
 pub mod mission;
 pub mod report;
 pub mod root_cause;
@@ -39,6 +40,10 @@ pub use fleet::evaluate_fleet_readiness;
 pub use fleet_verify::{verify_fleet, verify_fleet_source, FleetVerifyReport};
 pub use gates::{
     evaluate_deployment_gates, DeploymentGate, DeploymentGatePolicy, DeploymentGateReport,
+};
+pub use human::{
+    evaluate_human_collaboration, format_human_readiness, HumanDimensionScore, HumanReadinessReport,
+    HumanReadinessWeights,
 };
 pub use mission::{verify_mission, verify_mission_source, MissionVerificationReport};
 pub use report::{

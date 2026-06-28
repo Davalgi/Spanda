@@ -15,8 +15,8 @@ pub use health::{
 };
 pub use minimum::{check_minimum_capabilities, MinimumCapabilityReport, MinimumCapabilityRow};
 pub use registry::{
-    capability_registry, lookup_capability, CapabilityDefinition, CapabilityRequirement,
-    PackageCapabilityContribution,
+    capability_registry, is_operator_capability, lookup_capability, CapabilityDefinition,
+    CapabilityRequirement, PackageCapabilityContribution,
 };
 pub use robot::{infer_robot_capabilities, RobotCapabilityReport, RobotCapabilityRow};
 pub use traceability::{

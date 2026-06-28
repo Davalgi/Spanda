@@ -1,6 +1,6 @@
 //! Minimum capable hardware safety verification.
 
-use crate::registry::{lookup_capability, VerificationSeverity};
+use crate::registry::{is_operator_capability, lookup_capability, VerificationSeverity};
 use crate::robot::infer_robot_capabilities;
 use serde::{Deserialize, Serialize};
 use spanda_ast::foundations::RequiresCapabilityDecl;
@@ -55,6 +55,9 @@ pub fn check_minimum_capabilities(program: &Program) -> MinimumCapabilityReport 
 
     // Check explicit requires_capability declarations.
     for req in requires_capabilities {
+        if is_operator_capability(&req.capability) {
+            continue;
+        }
         let row = check_requirement(req, &robot_reports);
         if row.status == "FAIL" {
             match req.severity {

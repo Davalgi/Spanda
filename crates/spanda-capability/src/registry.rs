@@ -251,6 +251,9 @@ pub fn capability_registry() -> Vec<CapabilityDefinition> {
             &[],
         ),
     ]
+    .into_iter()
+    .chain(operator_capability_defs())
+    .collect()
 }
 
 /// Package contributions to the registry.
@@ -287,6 +290,68 @@ pub fn package_contributions() -> Vec<PackageCapabilityContribution> {
         contrib("spanda-moveit", &["manipulation"]),
         contrib("spanda-cloud", &["telemetry_streaming"]),
         contrib("spanda-slam", &["autonomous_navigation"]),
+        contrib("spanda-mission-continuity", &["mission_continuity", "human_takeover"]),
+    ]
+}
+
+fn operator_capability_defs() -> Vec<CapabilityDefinition> {
+    vec![
+        operator_def(
+            "operate_robot",
+            "Human operator authorized to control robots",
+        ),
+        operator_def("approve_mission", "Supervisor approval for mission start"),
+        operator_def("approve_recovery", "Supervisor approval for recovery execution"),
+        operator_def("emergency_override", "Emergency safety override authority"),
+        operator_def("drone_pilot", "Licensed drone pilot operator"),
+        operator_def("medical_responder", "Medical responder certification"),
+        operator_def("hazmat_certified", "Hazmat zone entry certification"),
+        operator_def("remote_expert", "Remote expert assist authority"),
+        operator_def("maintenance_technician", "Maintenance technician certification"),
+        operator_def("forklift_operator", "Forklift operator certification"),
+        operator_def(
+            "search_rescue_operator",
+            "Search and rescue operator certification",
+        ),
+    ]
+}
+
+fn operator_def(name: &str, description: &str) -> CapabilityDefinition {
+    def(
+        name,
+        description,
+        req(
+            &[],
+            &[],
+            &[],
+            &[],
+            &[],
+            &[],
+            &[],
+            VerificationSeverity::Info,
+        ),
+        &[],
+        &[],
+    )
+}
+
+pub fn is_operator_capability(name: &str) -> bool {
+    operator_capability_names().iter().any(|cap| *cap == name)
+}
+
+fn operator_capability_names() -> &'static [&'static str] {
+    &[
+        "operate_robot",
+        "approve_mission",
+        "approve_recovery",
+        "emergency_override",
+        "drone_pilot",
+        "medical_responder",
+        "hazmat_certified",
+        "remote_expert",
+        "maintenance_technician",
+        "forklift_operator",
+        "search_rescue_operator",
     ]
 }
 

@@ -466,6 +466,20 @@ pub fn evaluate_readiness_with_runtime(
         policy.weights.assurance,
     ));
 
+    let mut human_mission_ok = true;
+    if let Some(ref cfg) = options.system_config {
+        if cfg.human_registry.has_operators() {
+            let human_report = crate::human::evaluate_human_collaboration(cfg.as_ref(), program);
+            factor_scores.push(factor_row(
+                "Operator",
+                human_report.total_score,
+                policy.weights.mission.min(15),
+            ));
+            issues.extend(human_report.issues);
+            human_mission_ok = human_report.mission_ready;
+        }
+    }
+
     let total = compute_weighted_total(&factor_scores);
     let has_critical = issues.iter().any(|i| {
         matches!(
@@ -473,7 +487,10 @@ pub fn evaluate_readiness_with_runtime(
             ReadinessSeverity::Critical | ReadinessSeverity::High
         )
     });
-    let mission_ready = total >= policy.minimum_score && hw_report.compatible && !has_critical;
+    let mission_ready = total >= policy.minimum_score
+        && hw_report.compatible
+        && !has_critical
+        && human_mission_ok;
     let status = if mission_ready {
         if issues.iter().any(|i| {
             matches!(
