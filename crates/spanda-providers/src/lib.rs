@@ -5,6 +5,7 @@ pub mod bootstrap;
 pub mod iot_hub;
 pub mod iot_live;
 pub mod package_dispatch;
+pub mod hri_backends;
 pub mod package_stubs;
 pub mod transport_adapter;
 

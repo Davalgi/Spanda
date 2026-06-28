@@ -1401,6 +1401,7 @@ impl WearableTelemetryProvider for WearablePackageStub {
                 value: live || !device_id.is_empty(),
             },
         );
+        crate::hri_backends::enrich_healthkit_telemetry(self.package, device_id, &mut fields);
         Ok(RuntimeValue::Object {
             type_name: "WearableTelemetry".into(),
             fields,
@@ -1408,9 +1409,10 @@ impl WearableTelemetryProvider for WearablePackageStub {
     }
 
     fn connectivity_status(&self, device_id: &str) -> bool {
-        std::env::var("SPANDA_LIVE_WEARABLE")
-            .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
-            .unwrap_or(!device_id.is_empty())
+        crate::hri_backends::healthkit_live_enabled()
+            || std::env::var("SPANDA_LIVE_WEARABLE")
+                .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
+                .unwrap_or(!device_id.is_empty())
     }
 }
 
@@ -1457,6 +1459,8 @@ impl SpatialSessionProvider for SpatialSessionPackageStub {
             device_id: device_id.to_string(),
             active: true,
         };
+        let mut info = info;
+        crate::hri_backends::enrich_hololens_session(self.package, device_id, &mut info);
         self.active_session = Some(info.clone());
         Ok(info)
     }
