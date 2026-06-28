@@ -97,7 +97,8 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | Area | Description |
 |------|-------------|
 | **Differentiation (NEXT)** | What-If Analysis, Mission Risk Analysis, Readiness Forecasting, Trust Graph, Scorecards |
-| **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming, Autonomous Governance |
+| **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming (**Spatial Computing blueprint**), Autonomous Governance |
+| **Human Interaction & Spatial Computing (H1–H4)** | Human entity model, operator capabilities, wearables, AR/VR/XR packages, collaborative missions, remote expert, Control Center human dashboards — [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) |
 | **Platform maturity (Phase A)** | `spanda graph`, `spanda deploy gate`, `spanda explain` (with `--config`/`--baseline`), `spanda trust` (package + program) — **Experimental**; see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
 | **Platform maturity (Phase B)** | Threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`, `readiness --policy`, `deploy gate --operational-policy`, runtime `--enforce-policy`) — **Experimental** |
 | **Platform maturity (Phase C)** | Chaos, readiness trends, resource estimation, compliance profiles, ADR (`spanda adr`) — **Experimental** |

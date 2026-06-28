@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Human Interaction & Spatial Computing roadmap:** platform pillar for humans, wearables, AR/VR/XR, and collaborative autonomy — composes Device Registry, Capability Framework, Readiness, Continuity, Trust, and Control Center without core language extensions; phased delivery H1–H4 ([docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md)).
+- **Spatial Computing Solution Blueprint (scaffold):** `examples/solutions/spatial-computing/` with six reference workflows (warehouse AR, remote maintenance, VR training, SAR AR, wearable health, operator approval); device tree with humans, wearables, AR/VR nodes.
+- **HRI documentation:** [human-interaction.md](docs/human-interaction.md), [wearables.md](docs/wearables.md), [spatial-computing.md](docs/spatial-computing.md), [ar-vr-xr.md](docs/ar-vr-xr.md), [human-readiness.md](docs/human-readiness.md), [hri.md](docs/hri.md), [remote-expert.md](docs/remote-expert.md), [operator-capabilities.md](docs/operator-capabilities.md), [hri-packages.md](docs/hri-packages.md), [solutions/spatial-computing.md](docs/solutions/spatial-computing.md).
+- **Control Center human interaction dashboard** (planned panels documented) and **website/solutions.html** Human Interaction & Spatial Computing blueprint section.
+- **Master roadmap** updated with Human Interaction & Spatial Computing platform pillar.
+
 - **ADAS & Autonomous Driving Solution Blueprint:** `examples/solutions/adas/` with highway pilot reference, five ADAS function examples, automotive device tree, readiness/assurance/security configs; `spanda demo adas`; `./scripts/adas_smoke.sh`.
 - **ADAS documentation:** [docs/solutions/adas.md](docs/solutions/adas.md), [automotive-device-tree.md](docs/automotive-device-tree.md), [adas-readiness.md](docs/adas-readiness.md), [adas-assurance.md](docs/adas-assurance.md), [adas-security.md](docs/adas-security.md), [adas-replay.md](docs/adas-replay.md), [demo-plan-adas.md](docs/demo-plan-adas.md).
 - **Control Center ADAS tab** and **website/solutions.html** Official Solution Blueprints page.

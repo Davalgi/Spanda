@@ -139,6 +139,59 @@ spanda control-center serve --config spanda.toml --program src/highway_drive.sd<
     </article>
 
     <article class="blueprint">
+      <span class="badge">Planned</span>
+      <h2>Human Interaction &amp; Spatial Computing</h2>
+      <p>
+        Safe collaboration between humans, wearables, AR/VR/XR devices, robots, drones, and fleets —
+        operator capabilities, human readiness, remote expert workflows, and collaborative missions.
+        No HRI-specific core language extensions; optional packages for Vision Pro, HoloLens, ARKit, wearables, voice, and gesture.
+      </p>
+
+      <div class="diagram">Platform Layer (existing)
+├── Device Registry · Capability Framework · Readiness
+├── Mission continuity · takeover · delegation · approval
+├── Digital twin · replay · sim · trust · RBAC
+└── Control Center (human dashboard — planned H4)
+
+Blueprint Layer (examples/solutions/spatial-computing/)
+├── Human entity model (roles, certs, trust)
+├── Wearables · AR · VR device tree
+├── Operator capabilities (verify like robots)
+└── Optional packages (hololens, arkit, smartwatch, voice, …)
+
+Collaboration Stack
+  Human → Wearable → AR/VR → Robot → Fleet → Control Center</div>
+
+      <h3>Reference workflows</h3>
+      <pre><code>spanda verify warehouse-ar/pick_mission.sd --capabilities --config spanda.toml
+spanda readiness warehouse-ar/pick_mission.sd --profile human_collaboration
+spanda control-center serve --config spanda.toml --program warehouse-ar/pick_mission.sd</code></pre>
+
+      <h3>Example dashboards (planned)</h3>
+      <div class="grid">
+        <div class="card"><h3>Operator readiness</h3><p>Certifications, capabilities, team rollup</p></div>
+        <div class="card"><h3>Wearable inventory</h3><p>Battery, connectivity, last telemetry</p></div>
+        <div class="card"><h3>AR session viewer</h3><p>Spatial anchors, live collaboration</p></div>
+        <div class="card"><h3>Approval queue</h3><p>Mission, recovery, supervisor gates</p></div>
+        <div class="card"><h3>Remote expert</h3><p>Annotations, guided repair replay</p></div>
+        <div class="card"><h3>VR training</h3><p>Sim sessions, certification evidence</p></div>
+      </div>
+
+      <h3>Supported packages (planned)</h3>
+      <p>
+        <code>spanda-vision-pro</code> · <code>spanda-hololens</code> · <code>spanda-arkit</code> ·
+        <code>spanda-arcore</code> · <code>spanda-smartwatch</code> · <code>spanda-voice</code> ·
+        <code>spanda-gesture</code> · <code>spanda-mission-continuity</code> (existing)
+      </p>
+
+      <p>
+        <a href="https://github.com/Davalgi/Spanda/tree/main/examples/solutions/spatial-computing">Blueprint source</a> ·
+        <a href="https://github.com/Davalgi/Spanda/blob/main/docs/solutions/spatial-computing.md">Architecture docs</a> ·
+        <a href="https://github.com/Davalgi/Spanda/blob/main/docs/human-interaction-spatial-computing-roadmap.md">Roadmap</a>
+      </p>
+    </article>
+
+    <article class="blueprint">
       <span class="badge">Stable</span>
       <h2>Autonomous Rover</h2>
       <p>Flagship platform demo — GPS, MQTT, AI planning, safety, verify, sim, replay.</p>

@@ -34,6 +34,32 @@ spanda control-center serve \
 
 The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, trust score, alerts, OTA status, assurance/diagnosis summaries, and replay workflow links. See [solutions/adas.md](./solutions/adas.md).
 
+### Human Interaction dashboard
+
+Launch with the Spatial Computing & Human-Robot Collaboration blueprint:
+
+```bash
+spanda control-center serve \
+  --config examples/solutions/spatial-computing/spanda.toml \
+  --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
+```
+
+**Planned (H4)** — Human Interaction tab and panels:
+
+| Panel | Content |
+|-------|---------|
+| **Human Dashboard** | Fleet-wide human entities, roles, availability |
+| **Operator Dashboard** | Per-operator readiness, certifications, assignments |
+| **Wearable Inventory** | Connected wearables, battery, connectivity |
+| **AR Session Viewer** | Active AR/XR sessions, spatial anchors |
+| **VR Training** | Training session launcher, replay links |
+| **Live Collaboration** | Remote expert sessions, participant graph |
+| **Mission Collaboration** | Human + robot + drone task allocation |
+| **Operator Readiness** | Team readiness rollup, blocking dimensions |
+| **Approval Queue** | Mission, recovery, and config approvals (extends E1) |
+
+Planned REST endpoints: `GET /v1/humans`, `GET /v1/humans/{id}/readiness`, `GET /v1/wearables`, `GET /v1/hri/sessions`, `POST /v1/hri/sessions/{id}/annotate`. See [solutions/spatial-computing.md](./solutions/spatial-computing.md) · [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md).
+
 ### Remote CLI (REST parity)
 
 Query a running Control Center without curl — uses `SPANDA_CONTROL_CENTER_URL` (default `http://127.0.0.1:8080`) and `SPANDA_API_KEY` for mutations:

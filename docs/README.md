@@ -159,6 +159,17 @@
 | [compliance-profiles.md](./compliance-profiles.md) | **Industry verification profile templates** |
 | [solutions/README.md](./solutions/README.md) | **Official Solution Blueprints index** |
 | [solutions/adas.md](./solutions/adas.md) | **ADAS & Autonomous Driving blueprint** |
+| [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) | **Human Interaction, wearables, AR/VR/XR roadmap (H1–H4)** |
+| [solutions/spatial-computing.md](./solutions/spatial-computing.md) | **Spatial Computing & Human-Robot Collaboration blueprint** |
+| [human-interaction.md](./human-interaction.md) | **Human entity model and device tree** |
+| [operator-capabilities.md](./operator-capabilities.md) | **Operator capability verification** |
+| [wearables.md](./wearables.md) | **Wearable device registry and packages** |
+| [spatial-computing.md](./spatial-computing.md) | **Spatial anchors, workspaces, overlays** |
+| [ar-vr-xr.md](./ar-vr-xr.md) | **AR, VR, and mixed reality workflows** |
+| [hri.md](./hri.md) | **Human-robot interaction abstractions** |
+| [human-readiness.md](./human-readiness.md) | **Operator, team, and mission readiness** |
+| [remote-expert.md](./remote-expert.md) | **Remote expert guided repair workflows** |
+| [hri-packages.md](./hri-packages.md) | **HRI and spatial computing optional packages** |
 | [automotive-device-tree.md](./automotive-device-tree.md) | **Automotive device hierarchy and capability mapping** |
 | [adas-readiness.md](./adas-readiness.md) | **ADAS pre-drive readiness gates** |
 | [demo-plan-adas.md](./demo-plan-adas.md) | **ADAS blueprint demo plan** |

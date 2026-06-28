@@ -5,6 +5,7 @@ Spanda ships **Official Solution Blueprints** — reference architectures built 
 | Blueprint | Status | Path |
 |-----------|--------|------|
 | **ADAS & Autonomous Driving** | Experimental | [examples/solutions/adas/](../../examples/solutions/adas/) |
+| **Spatial Computing & Human-Robot Collaboration** | Planned | [examples/solutions/spatial-computing/](../../examples/solutions/spatial-computing/) |
 | Autonomous Rover (flagship) | Stable | [examples/showcase/autonomous_rover/](../../examples/showcase/autonomous_rover/) |
 | Compliance profiles | Experimental | [examples/showcase/compliance/](../../examples/showcase/compliance/) |
 | Warehouse operations | Experimental | [examples/end_to_end/warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) |
@@ -26,3 +27,20 @@ spanda demo adas
 ```
 
 See also: [compliance-profiles.md](../compliance-profiles.md) (ISO 26262) · [mission-continuity.md](../mission-continuity.md) · [control-center.md](../control-center.md)
+
+## Spatial Computing & Human-Robot Collaboration
+
+Human–robot collaboration, wearables, AR/VR/XR, and collaborative autonomy — composes Device Registry, Capability Framework, Readiness, Continuity, Trust, and Control Center without core language extensions.
+
+- **Architecture:** [spatial-computing.md](./spatial-computing.md)
+- **Roadmap:** [human-interaction-spatial-computing-roadmap.md](../human-interaction-spatial-computing-roadmap.md)
+- **Human entity:** [human-interaction.md](../human-interaction.md)
+- **Operator capabilities:** [operator-capabilities.md](../operator-capabilities.md)
+- **Human readiness:** [human-readiness.md](../human-readiness.md)
+- **Packages:** [hri-packages.md](../hri-packages.md)
+
+```bash
+# When H1 ships:
+cd examples/solutions/spatial-computing && spanda check warehouse-ar/pick_mission.sd
+```
+
