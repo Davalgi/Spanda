@@ -118,13 +118,29 @@ class SpandaClient:
             auth=True,
         )
 
-    def run_simulation(self, project: str) -> Any:
+    def run_simulation(self, project: str, *, execute: bool = False) -> Any:
         return self._request(
-            "POST", "/v1/programs/simulation", self._program_body(project)
+            "POST",
+            "/v1/programs/simulation",
+            {"file": project, "execute": execute},
         )
 
-    def replay(self, trace: str) -> Any:
-        return self._request("POST", "/v1/programs/replay", self._program_body(trace))
+    def replay(
+        self,
+        trace: str,
+        *,
+        deterministic: bool = False,
+        playback: bool = False,
+    ) -> Any:
+        return self._request(
+            "POST",
+            "/v1/programs/replay",
+            {
+                "file": trace,
+                "deterministic": deterministic,
+                "playback": playback,
+            },
+        )
 
     def get_health(self, entity_id: str) -> Any:
         return self._request("GET", f"/v1/entities/{entity_id}/health")

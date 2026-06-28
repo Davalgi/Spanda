@@ -150,12 +150,22 @@ export class SpandaClient {
     return this.request("POST", `/v1/devices/${deviceId}/provision`, body, true);
   }
 
-  async runSimulation(project: string): Promise<JsonValue> {
-    return this.request("POST", "/v1/programs/simulation", this.programBody(project));
+  async runSimulation(project: string, execute = false): Promise<JsonValue> {
+    return this.request("POST", "/v1/programs/simulation", {
+      file: project,
+      execute,
+    });
   }
 
-  async replay(trace: string): Promise<JsonValue> {
-    return this.request("POST", "/v1/programs/replay", this.programBody(trace));
+  async replay(
+    trace: string,
+    options: { deterministic?: boolean; playback?: boolean } = {},
+  ): Promise<JsonValue> {
+    return this.request("POST", "/v1/programs/replay", {
+      file: trace,
+      deterministic: options.deterministic ?? false,
+      playback: options.playback ?? false,
+    });
   }
 
   async getHealth(entityId: string): Promise<JsonValue> {

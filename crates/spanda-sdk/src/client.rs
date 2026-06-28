@@ -245,18 +245,32 @@ impl SpandaClient {
         )
     }
 
-    /// Plan simulation for a program.
-    pub fn run_simulation(&self, project: &str) -> SpandaResult<SimulationResult> {
-        let body = Self::program_body(project);
+    /// Plan or execute simulation for a program (`execute: true` runs the driver).
+    pub fn run_simulation(&self, project: &str, execute: bool) -> SpandaResult<SimulationResult> {
+        let body = json!({ "file": project, "execute": execute });
         let value = self.request("POST", "/v1/programs/simulation", Some(&body), false)?;
         Ok(SimulationResult { raw: value })
     }
 
-    /// Load mission trace replay metadata.
-    pub fn replay(&self, trace: &str) -> SpandaResult<ReplayResult> {
-        let body = Self::program_body(trace);
+    /// Load or verify mission trace replay (`deterministic` / `playback` flags).
+    pub fn replay_with_options(
+        &self,
+        trace: &str,
+        deterministic: bool,
+        playback: bool,
+    ) -> SpandaResult<ReplayResult> {
+        let body = json!({
+            "file": trace,
+            "deterministic": deterministic,
+            "playback": playback,
+        });
         let value = self.request("POST", "/v1/programs/replay", Some(&body), false)?;
         Ok(ReplayResult { raw: value })
+    }
+
+    /// Load mission trace replay metadata (inspect only).
+    pub fn replay(&self, trace: &str) -> SpandaResult<ReplayResult> {
+        self.replay_with_options(trace, false, false)
     }
 
     /// Get health for an entity.

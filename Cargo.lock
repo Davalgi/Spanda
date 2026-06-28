@@ -1956,9 +1956,11 @@ dependencies = [
  "spanda-compliance",
  "spanda-config",
  "spanda-deploy-http",
+ "spanda-driver",
  "spanda-fleet",
  "spanda-graph",
  "spanda-hardware",
+ "spanda-interpreter",
  "spanda-lexer",
  "spanda-ops",
  "spanda-ota",
@@ -2750,9 +2752,13 @@ dependencies = [
 name = "spanda-sdk"
 version = "0.4.0"
 dependencies = [
+ "prost",
  "serde",
  "serde_json",
  "thiserror 2.0.18",
+ "tokio",
+ "tonic",
+ "tonic-build",
  "ureq",
  "uuid",
 ]
