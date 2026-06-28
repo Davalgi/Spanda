@@ -21,6 +21,7 @@ pub mod discovery_tls;
 pub mod discovery_transport;
 pub mod drift;
 pub mod entity;
+pub mod entity_overlay;
 pub mod error;
 pub mod facility;
 pub mod human_entities;
@@ -104,6 +105,12 @@ pub use entity::{
     EntityLocation, EntityQuery, EntityQueryResult, EntityReadinessStatus, EntityRecord,
     EntityRegistry, EntityRelationship, EntityRelationshipKind, EntitySecurityIdentity,
     EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,
+};
+pub use entity_overlay::{
+    apply_entity_mutation_overlay, default_entity_overlay_path, load_entity_overlay,
+    register_entity_overlay, relate_entities_overlay, save_entity_overlay,
+    sync_entity_overlay_to_toml, tag_entity_overlay, EntityMutationStore, EntityRegisterRequest,
+    EntityRelateRequest, EntitySyncResult, EntityTagRequest,
 };
 pub use error::{ConfigError, ConfigResult};
 pub use facility::{

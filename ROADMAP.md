@@ -81,7 +81,7 @@ Unified Entity Model (all platform objects)
 | **Runtime mission entities** | Project active missions into registry | **Experimental** | Now | Core |
 | **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Experimental** | Now | Core |
 | **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Experimental** | Now | Core |
-| **Entity mutation API** | Register, tag, relate with audit | **Future** | Later | Core |
+| **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Experimental** | Now | Core |
 
 **Design rule:** Before introducing a new top-level platform abstraction, determine whether it should be a new **Entity kind** instead.
 
