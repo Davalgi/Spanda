@@ -29,7 +29,7 @@ capabilities = ["parking_assist", "obstacle_detection"]
 [[fleet.robots.compute.devices]]
 id = "front-radar"
 type = "Radar"
-provider = "spanda-slam"
+provider = "spanda-radar"
 mount = "front"
 capabilities = ["obstacle_detection", "adaptive_speed_control"]
 

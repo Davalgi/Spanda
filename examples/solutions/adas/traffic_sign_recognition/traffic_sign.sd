@@ -1,0 +1,36 @@
+// Traffic sign recognition — reference workflow
+//
+//   spanda verify traffic_sign.sd --capabilities
+//   spanda sim traffic_sign.sd --record
+
+hardware JetsonAutomotive {
+  sensors [ Camera ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi ];
+}
+
+robot Vehicle {
+  sensor front_camera: Camera;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ vision_processing, autonomous_navigation ];
+
+  safety {
+    max_speed = 1.0 m/s;
+  }
+
+  mission TrafficSignRecognition {
+    requires capabilities [ vision_processing ];
+    sign_scan_loop;
+  }
+
+  behavior sign_scan_loop() {
+    loop every 100ms {
+      let signs = front_camera.analyze();
+      let _ = signs;
+      wheels.drive(linear: 0.6 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+deploy Vehicle to JetsonAutomotive;

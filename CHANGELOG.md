@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Grafana ADAS dashboard:** `spanda-grafana-dashboards` template `control-center-adas.json` for fleet health, safety alerts, and mission trace volume.
 - **ADAS lane keeping trace:** `lane_keeping/lane_keeping.trace` (20 `behavior_tick` frames) replayed in `adas_smoke.sh`.
+- **Automotive registry packages:** `spanda-radar`, `spanda-lidar`, `spanda-ultrasonic`, `spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x` (experimental stubs); ADAS device trees use dedicated radar/LiDAR providers; traffic sign and pedestrian detection examples.
 
 - **Control Center API key generator:** `spanda control-center api-key generate [--export]`; startup warning when no keys configured; embedded UI auth banner with paste field; docs updated in [control-center.md](docs/control-center.md).
 

@@ -1,0 +1,40 @@
+// Pedestrian detection — reference workflow
+//
+//   spanda verify pedestrian.sd --capabilities
+//   spanda sim pedestrian.sd --record
+
+hardware JetsonAutomotive {
+  sensors [ Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi ];
+}
+
+robot Vehicle {
+  sensor front_camera: Camera;
+  sensor front_lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ vision_processing, obstacle_avoidance, autonomous_navigation ];
+
+  safety {
+    max_speed = 0.8 m/s;
+    stop_if front_lidar.nearest_distance < 1.0 m;
+  }
+
+  mission PedestrianDetection {
+    requires capabilities [ vision_processing, obstacle_avoidance ];
+    pedestrian_scan_loop;
+  }
+
+  behavior pedestrian_scan_loop() {
+    loop every 50ms {
+      let scene = front_camera.analyze();
+      let proximity = front_lidar.read();
+      let _ = scene;
+      let _ = proximity;
+      wheels.drive(linear: 0.5 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+deploy Vehicle to JetsonAutomotive;

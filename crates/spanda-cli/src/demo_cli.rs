@@ -1031,6 +1031,8 @@ fn demo_adas(root: &Path) {
         ("automatic_emergency_braking/aeb.sd", "Automatic Emergency Braking"),
         ("parking_assist/parking_assist.sd", "Parking Assist"),
         ("blind_spot_monitoring/blind_spot.sd", "Blind Spot Monitoring"),
+        ("traffic_sign_recognition/traffic_sign.sd", "Traffic Sign Recognition"),
+        ("pedestrian_detection/pedestrian.sd", "Pedestrian Detection"),
         ("canbus_gateway/canbus_gateway.sd", "CAN Bus Gateway"),
         ("sensor_failure_recovery/camera_failure.sd", "Sensor failure recovery"),
         ("driver_takeover/driver_takeover.sd", "Driver takeover"),

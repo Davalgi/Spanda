@@ -15,14 +15,14 @@ serial = "JTN-MINING-001"
 [[fleet.robots.compute.devices]]
 id = "front-lidar"
 type = "Lidar"
-provider = "spanda-slam"
+provider = "spanda-lidar"
 mount = "front"
 capabilities = ["obstacle_detection", "localization"]
 
 [[fleet.robots.compute.devices]]
 id = "rear-lidar"
 type = "Lidar"
-provider = "spanda-slam"
+provider = "spanda-lidar"
 mount = "rear"
 capabilities = ["obstacle_detection"]
 

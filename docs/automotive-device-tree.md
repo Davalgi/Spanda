@@ -48,14 +48,15 @@ Vehicle (vehicle-001)
 |------|------------------------|------------------------|
 | Camera | `Camera` | `spanda-opencv` |
 | DepthCamera | `DepthCamera` | `spanda-opencv` |
-| Radar | `Radar` | `spanda-slam` (stub) |
-| Lidar | `Lidar` | `spanda-slam` |
+| Radar | `Radar` | `spanda-radar` |
+| Lidar | `Lidar` | `spanda-lidar` |
+| Ultrasonic | `Ultrasonic` | `spanda-ultrasonic` |
 | GPS | `GPS` | `spanda-gps` |
 | IMU | `IMU` | `spanda-fusion` |
 | DifferentialDrive | `DifferentialDrive` | `spanda-canbus` |
 | CommunicationGateway | — | `spanda-canbus`, `spanda-mqtt` |
 
-Planned providers (`spanda-radar`, `spanda-lidar`, `spanda-ultrasonic`, `spanda-automotive-ethernet`) are listed in `spanda.providers.toml` with `status = "experimental"` or `planned`.
+Planned protocol providers (`spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x`) are listed in `spanda.providers.toml` with `status = "planned"`.
 
 Wheel speed, steering angle, brake, and tire pressure sensors attach to ECUs via CAN and surface as health-check inputs.
 

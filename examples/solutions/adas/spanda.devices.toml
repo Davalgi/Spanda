@@ -39,14 +39,14 @@ capabilities = ["obstacle_detection", "parking_assist"]
 [[fleet.robots.compute.devices]]
 id = "front-radar"
 type = "Radar"
-provider = "spanda-slam"
+provider = "spanda-radar"
 mount = "front"
 capabilities = ["obstacle_detection", "adaptive_speed_control"]
 
 [[fleet.robots.compute.devices]]
 id = "front-lidar"
 type = "Lidar"
-provider = "spanda-slam"
+provider = "spanda-lidar"
 mount = "front"
 capabilities = ["obstacle_detection", "localization"]
 

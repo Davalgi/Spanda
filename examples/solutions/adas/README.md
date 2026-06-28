@@ -61,6 +61,8 @@ adas/
 | [`driver_takeover/`](./driver_takeover/) | Driver takeover | Continuity framework, driver monitoring |
 | [`parking_assist/`](./parking_assist/) | Parking Assist | `vision_processing`, `obstacle_avoidance` |
 | [`blind_spot_monitoring/`](./blind_spot_monitoring/) | Blind Spot Monitoring | `obstacle_avoidance` |
+| [`traffic_sign_recognition/`](./traffic_sign_recognition/) | Traffic Sign Recognition | `vision_processing`, lane/sign detection |
+| [`pedestrian_detection/`](./pedestrian_detection/) | Pedestrian Detection | `vision_processing`, `obstacle_avoidance` |
 | [`canbus_gateway/`](./canbus_gateway/) | CAN bus ECU gateway | `spanda-canbus` provider hook |
 
 ---

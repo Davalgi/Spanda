@@ -101,8 +101,8 @@ Reference implementations (demonstration workflows, not full perception algorith
 | Adaptive Cruise Control | `adaptive_cruise/adaptive_cruise.sd` | `adaptive_speed_control`, `obstacle_detection` |
 | Automatic Emergency Braking | `automatic_emergency_braking/aeb.sd` | `emergency_braking`, `obstacle_detection` |
 | Blind Spot Monitoring | `blind_spot_monitoring/blind_spot.sd` | `obstacle_detection` |
-| Traffic Sign Recognition | `src/highway_drive.sd` | `lane_detection` (camera) |
-| Pedestrian Detection | `src/highway_drive.sd` | `obstacle_detection` |
+| Traffic Sign Recognition | `traffic_sign_recognition/traffic_sign.sd` | `lane_detection` (camera) |
+| Pedestrian Detection | `pedestrian_detection/pedestrian.sd` | `obstacle_detection` |
 | Collision Avoidance | `automatic_emergency_braking/aeb.sd` | `emergency_braking` |
 | Parking Assist | `parking_assist/parking_assist.sd` | `parking_assist` |
 | Driver Monitoring | `driver_takeover/driver_takeover.sd` | `driver_monitoring` |
@@ -279,7 +279,7 @@ Provider interfaces for optional packages — **not core implementations**:
 
 | Protocol | Package | Status |
 |----------|---------|--------|
-| CAN / CAN FD | `spanda-canbus` | Planned |
+| CAN / CAN FD | `spanda-canbus` | Experimental |
 | LIN | `spanda-lin` | Planned |
 | Automotive Ethernet | `spanda-automotive-ethernet` | Planned |
 | SOME/IP | `spanda-automotive-ethernet` | Planned |

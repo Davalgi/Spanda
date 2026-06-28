@@ -22,7 +22,7 @@ capabilities = ["lane_detection", "pedestrian_detection", "obstacle_detection"]
 [[fleet.robots.compute.devices]]
 id = "front-lidar"
 type = "Lidar"
-provider = "spanda-slam"
+provider = "spanda-lidar"
 mount = "front"
 capabilities = ["obstacle_detection", "localization"]
 

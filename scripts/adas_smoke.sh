@@ -48,6 +48,8 @@ for example in \
   "$ADAS/driver_takeover/driver_takeover.sd" \
   "$ADAS/parking_assist/parking_assist.sd" \
   "$ADAS/blind_spot_monitoring/blind_spot.sd" \
+  "$ADAS/traffic_sign_recognition/traffic_sign.sd" \
+  "$ADAS/pedestrian_detection/pedestrian.sd" \
   "$ADAS/canbus_gateway/canbus_gateway.sd"
 do
   check check "$example"
