@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **README slim-down:** Root [README.md](README.md) now keeps only the landing intro, code sample, quick start, and doc links; detailed sections moved to [docs/overview/](docs/overview/README.md) subpages (flagship demos, audience paths, platform map, feature snapshot, signature capabilities, what Spanda is/is not).
+
 ### Added
 
 - **Control Center API key generator:** `spanda control-center api-key generate [--export]`; startup warning when no keys configured; embedded UI auth banner with paste field; docs updated in [control-center.md](docs/control-center.md).

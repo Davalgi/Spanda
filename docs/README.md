@@ -10,7 +10,9 @@
 
 **Start here:** [platform-overview.md](./platform-overview.md) — platform vs language, component map, and workflow.
 
-**Project home (expanded README):** [overview/README.md](./overview/README.md) — philosophy, differentiators, CLI, code samples, demos.
+**Project home:** [../README.md](../README.md) — quick start and links to overview subpages.
+
+**Expanded overview:** [overview/README.md](./overview/README.md) — flagship demos, audience paths, platform map, feature snapshot, philosophy, differentiators, CLI, code samples.
 
 ## Tutorials
 
