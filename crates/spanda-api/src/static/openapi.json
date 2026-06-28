@@ -404,8 +404,25 @@
     },
     "/v1/entities": {
       "get": {
-        "summary": "Unified entity inventory (humans and devices)",
+        "summary": "Unified entity inventory (all platform objects)",
+        "parameters": [
+          { "name": "kind", "in": "query", "schema": { "type": "string" } },
+          { "name": "health_status", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "Entity list" } }
+      }
+    },
+    "/v1/entities/graph": {
+      "get": {
+        "summary": "Full entity graph for traversal and visualization",
+        "responses": { "200": { "description": "Entity graph" } }
+      }
+    },
+    "/v1/entities/query": {
+      "post": {
+        "summary": "Structured entity query",
+        "responses": { "200": { "description": "Query result" } }
       }
     },
     "/v1/entities/{id}": {
@@ -417,18 +434,36 @@
         "responses": { "200": { "description": "Entity record" }, "404": { "description": "Not found" } }
       }
     },
+    "/v1/entities/{id}/relationships": {
+      "get": {
+        "summary": "Relationship edges, impact analysis, dependency chain",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Entity relationships" } }
+      }
+    },
     "/v1/entities/{id}/health": {
       "get": {
-        "summary": "Health status for a device entity",
+        "summary": "Health status for any entity",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "responses": { "200": { "description": "Entity health" } }
       }
     },
+    "/v1/entities/{id}/readiness": {
+      "get": {
+        "summary": "Readiness status for any entity",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Entity readiness" } }
+      }
+    },
     "/v1/entities/{id}/trust": {
       "get": {
-        "summary": "Trust metadata for an entity",
+        "summary": "Trust and security metadata for an entity",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],

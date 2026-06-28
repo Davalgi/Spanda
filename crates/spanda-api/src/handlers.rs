@@ -235,7 +235,9 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
-    if let Some(response) = route_sdk_entities(state, path, &request.method) {
+    if let Some(response) =
+        route_sdk_entities(state, path, &request.method, query, &request.body)
+    {
         e3::record_trace(
             state,
             &correlation_id,
@@ -908,16 +910,29 @@ fn route_sdk_entities(
     state: &ControlCenterState,
     path: &str,
     method: &str,
+    query: &str,
+    body: &str,
 ) -> Option<HttpResponse> {
+    if path == "/v1/entities/graph" && method == "GET" {
+        return Some(crate::sdk_ops::entity_graph(state));
+    }
+    if path == "/v1/entities/query" && method == "POST" {
+        return Some(crate::sdk_ops::entity_query(state, body));
+    }
     if path == "/v1/entities" && method == "GET" {
-        return Some(crate::sdk_ops::list_entities(state));
+        let filter = crate::sdk_ops::entity_query_from_params(query);
+        return Some(crate::sdk_ops::list_entities_filtered(state, &filter));
     }
     let rest = path.strip_prefix("/v1/entities/")?;
     if rest.contains('/') {
         let (entity_id, action) = rest.split_once('/')?;
         return match (action, method) {
             ("health", "GET") => Some(crate::sdk_ops::entity_health(state, entity_id)),
+            ("readiness", "GET") => Some(crate::sdk_ops::entity_readiness(state, entity_id)),
             ("trust", "GET") => Some(crate::sdk_ops::entity_trust(state, entity_id)),
+            ("relationships", "GET") => {
+                Some(crate::sdk_ops::entity_relationships(state, entity_id))
+            }
             _ => None,
         };
     }

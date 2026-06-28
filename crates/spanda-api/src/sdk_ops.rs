@@ -12,6 +12,7 @@ use spanda_assurance::{
 };
 use spanda_capability::{capability_traceability, evaluate_health_checks, infer_robot_capabilities};
 use spanda_config::verify_with_system_config;
+use spanda_config::EntityQuery;
 use spanda_deploy_http::HttpResponse;
 use spanda_hardware::VerifyOptions;
 use spanda_readiness::{
@@ -261,29 +262,20 @@ pub fn trust_program(state: &ControlCenterState, query: &str) -> HttpResponse {
     }))
 }
 
-/// GET /v1/entities — unified entity inventory (humans + devices).
+/// GET /v1/entities — unified entity inventory (all platform objects).
 pub fn list_entities(state: &ControlCenterState) -> HttpResponse {
-    let mut entities = Vec::new();
-    if let Some(resolved) = state.resolved.as_ref() {
-        for human in &resolved.human_registry.humans {
-            entities.push(serde_json::json!({
-                "id": human.id,
-                "kind": "human",
-                "display_name": human.display_name,
-                "role": human.role,
-                "trust_level": human.trust_level,
-            }));
-        }
-    }
-    for entry in state.device_registry().pool_entries() {
-        entities.push(serde_json::json!({
-            "id": entry.id,
-            "kind": "device",
-            "display_name": entry.logical_name,
-            "lifecycle_state": entry.lifecycle_state,
-            "trust_level": entry.trust_level,
-        }));
-    }
+    list_entities_filtered(state, &EntityQuery::default())
+}
+
+/// GET /v1/entities with query parameters — filtered entity inventory.
+pub fn list_entities_filtered(state: &ControlCenterState, query: &EntityQuery) -> HttpResponse {
+    let registry = state.entity_registry();
+    let result = registry.query(query);
+    let entities: Vec<serde_json::Value> = result
+        .entities
+        .iter()
+        .map(|e| e.summary_json())
+        .collect();
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "entities": entities,
@@ -293,75 +285,139 @@ pub fn list_entities(state: &ControlCenterState) -> HttpResponse {
 
 /// GET /v1/entities/{id} — entity lookup by id.
 pub fn get_entity(state: &ControlCenterState, entity_id: &str) -> HttpResponse {
-    if let Some(resolved) = state.resolved.as_ref() {
-        if let Some(human) = resolved.human_registry.humans.iter().find(|h| h.id == entity_id) {
-            return json_ok(&serde_json::json!({
-                "version": API_VERSION,
-                "entity": {
-                    "id": human.id,
-                    "kind": "human",
-                    "display_name": human.display_name,
-                    "role": human.role,
-                    "capabilities": human.capabilities,
-                    "trust_level": human.trust_level,
-                },
-            }));
-        }
-    }
-    let registry = state.device_registry();
-    if let Some(device) = registry.get(entity_id) {
-        return json_ok(&serde_json::json!({
-            "version": API_VERSION,
-            "entity": {
-                "id": device.id,
-                "kind": "device",
-                "display_name": device.logical_name,
-                "lifecycle_state": device.lifecycle_state,
-                "trust_level": device.trust_level,
-                "health": device.health_status,
-            },
-        }));
-    }
-    entity_not_found(&format!("entity '{entity_id}' not found"))
+    let registry = state.entity_registry();
+    let Some(entity) = registry.get(entity_id) else {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
+    };
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "entity": entity,
+    }))
 }
 
-/// GET /v1/health/entity/{id} — health for a device entity.
+/// GET /v1/entities/{id}/relationships — relationship edges for an entity.
+pub fn entity_relationships(state: &ControlCenterState, entity_id: &str) -> HttpResponse {
+    let registry = state.entity_registry();
+    if registry.get(entity_id).is_none() {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
+    }
+    let relationships: Vec<_> = registry
+        .relationships_for(entity_id)
+        .iter()
+        .map(|r| serde_json::to_value(r).unwrap_or_default())
+        .collect();
+    let impact = registry.impact_analysis(entity_id);
+    let dependencies = registry.dependency_chain(entity_id);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "entity_id": entity_id,
+        "relationships": relationships,
+        "impact": impact,
+        "dependency_chain": dependencies,
+    }))
+}
+
+/// GET /v1/entities/{id}/health — health snapshot for any entity.
 pub fn entity_health(state: &ControlCenterState, entity_id: &str) -> HttpResponse {
-    let registry = state.device_registry();
-    let Some(device) = registry.get(entity_id) else {
-        return entity_not_found(&format!("device entity '{entity_id}' not found"));
+    let registry = state.entity_registry();
+    let Some(entity) = registry.get(entity_id) else {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
     };
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "entity_id": entity_id,
-        "health": device.health_status,
-        "lifecycle_state": device.lifecycle_state,
+        "kind": entity.kind(),
+        "health_status": entity.health_status,
+        "lifecycle_state": entity.lifecycle_state,
     }))
 }
 
-/// GET /v1/trust/entity/{id} — trust metadata for an entity.
+/// GET /v1/entities/{id}/readiness — readiness snapshot for any entity.
+pub fn entity_readiness(state: &ControlCenterState, entity_id: &str) -> HttpResponse {
+    let registry = state.entity_registry();
+    let Some(entity) = registry.get(entity_id) else {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
+    };
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "entity_id": entity_id,
+        "kind": entity.kind(),
+        "readiness_status": entity.readiness_status,
+        "capabilities": entity.capabilities,
+    }))
+}
+
+/// GET /v1/entities/{id}/trust — trust metadata for an entity.
 pub fn entity_trust(state: &ControlCenterState, entity_id: &str) -> HttpResponse {
-    let registry = state.device_registry();
-    if let Some(device) = registry.get(entity_id) {
-        return json_ok(&serde_json::json!({
-            "version": API_VERSION,
-            "entity_id": entity_id,
-            "kind": "device",
-            "trust_level": device.trust_level,
-            "lifecycle_state": device.lifecycle_state,
-        }));
-    }
-    if let Some(resolved) = state.resolved.as_ref() {
-        if let Some(human) = resolved.human_registry.humans.iter().find(|h| h.id == entity_id) {
-            return json_ok(&serde_json::json!({
-                "version": API_VERSION,
-                "entity_id": entity_id,
-                "kind": "human",
-                "trust_level": human.trust_level,
-            }));
+    let registry = state.entity_registry();
+    let Some(entity) = registry.get(entity_id) else {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
+    };
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "entity_id": entity_id,
+        "kind": entity.kind(),
+        "trust_status": entity.trust_status,
+        "lifecycle_state": entity.lifecycle_state,
+        "security": entity.security,
+    }))
+}
+
+/// GET /v1/entities/graph — full entity graph for traversal and visualization.
+pub fn entity_graph(state: &ControlCenterState) -> HttpResponse {
+    let graph = state.entity_registry().graph();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "graph": graph,
+        "node_count": graph.nodes.len(),
+        "edge_count": graph.edges.len(),
+    }))
+}
+
+/// POST /v1/entities/query — entity query language endpoint.
+pub fn entity_query(state: &ControlCenterState, body: &str) -> HttpResponse {
+    let query: EntityQuery = serde_json::from_str(body).unwrap_or_default();
+    let result = state.entity_registry().query(&query);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "result": result,
+    }))
+}
+
+/// Parse entity filter query string into an [`EntityQuery`].
+pub fn entity_query_from_params(params: &str) -> EntityQuery {
+    let mut query = EntityQuery::default();
+    for pair in params.split('&').filter(|p| !p.is_empty()) {
+        let Some((key, value)) = pair.split_once('=') else {
+            continue;
+        };
+        let value = urlencoding_decode(value);
+        match key {
+            "kind" | "entity_type" => {
+                query.kind = Some(value.clone());
+                query.entity_type = Some(value);
+            }
+            "health" | "health_status" => query.health_status = Some(value),
+            "readiness" | "readiness_status" => query.readiness_status = Some(value),
+            "trust" | "trust_status" => query.trust_status = Some(value),
+            "lifecycle" | "lifecycle_state" => query.lifecycle_state = Some(value),
+            "tag" => query.tag = Some(value),
+            "label" => query.label = Some(value),
+            "provider" => query.provider = Some(value),
+            "package" => query.package = Some(value),
+            "firmware" | "firmware_version" => query.firmware_version = Some(value),
+            "assigned_to" => query.assigned_to = Some(value),
+            "depends_on" => query.depends_on = Some(value),
+            "parent_id" => query.parent_id = Some(value),
+            "search" | "q" => query.search = Some(value),
+            _ => {}
         }
     }
-    entity_not_found(&format!("entity '{entity_id}' not found"))
+    query
+}
+
+fn urlencoding_decode(value: &str) -> String {
+    value.replace('+', " ").replace("%20", " ")
 }
 
 /// POST /v1/programs/replay — replay or inspect a mission trace (CLI parity).

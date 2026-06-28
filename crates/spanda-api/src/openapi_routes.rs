@@ -196,11 +196,27 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/entities/graph",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/entities/query",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/entities/{id}",
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/entities/{id}/relationships",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/entities/{id}/health",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/entities/{id}/readiness",
     },
     ApiRoute {
         method: "GET",

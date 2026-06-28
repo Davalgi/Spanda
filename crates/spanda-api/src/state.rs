@@ -66,6 +66,13 @@ impl ControlCenterState {
             .unwrap_or_default()
     }
 
+    pub fn entity_registry(&self) -> spanda_config::EntityRegistry {
+        self.resolved
+            .as_ref()
+            .map(|r| r.entity_registry())
+            .unwrap_or_default()
+    }
+
     pub fn reload_config(&mut self) -> Result<(), String> {
         let Some(path) = self.config_path.as_ref() else {
             return Ok(());
