@@ -70,19 +70,19 @@ Unified Entity Model (all platform objects)
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
-| **Entity taxonomy** | Extensible `EntityKind` (human, robot, fleet, wearable, provider, package, …) | **Experimental** | Now | Core |
-| **Entity record** | Common properties (identity, capabilities, location, metadata) | **Experimental** | Now | Core |
-| **Entity registry** | `build_entity_registry`, `ResolvedSystemConfig::entity_registry` | **Experimental** | Now | Core |
-| **Entity graph** | Traversal, impact analysis, dependency chain | **Experimental** | Now | Core |
-| **Entity relationships** | 18 relationship kinds (`contains`, `depends_on`, `assigned_to`, …) | **Experimental** | Now | Core |
-| **Entity query language** | GET filters + `POST /v1/entities/query` | **Experimental** | Now | Core |
-| **Entity REST API** | `/v1/entities/*` (health, readiness, trust, relationships, graph) | **Experimental** | Now | Core |
-| **Control Center Entities tab** | Browse, search, graph neighborhood | **Experimental** | Now | Control Center |
-| **Runtime mission entities** | Project active missions into registry | **Experimental** | Now | Core |
-| **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Experimental** | Now | Core |
-| **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Experimental** | Now | Core |
-| **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Experimental** | Now | Core |
-| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), Control Center write UI, promotion gate | **Experimental** | Now | Core + Control Center |
+| **Entity taxonomy** | Extensible `EntityKind` (human, robot, fleet, wearable, provider, package, …) | **Stable** | Now | Core |
+| **Entity record** | Common properties (identity, capabilities, location, metadata) | **Stable** | Now | Core |
+| **Entity registry** | `build_entity_registry`, `ResolvedSystemConfig::entity_registry` | **Stable** | Now | Core |
+| **Entity graph** | Traversal, impact analysis, dependency chain | **Stable** | Now | Core |
+| **Entity relationships** | 18 relationship kinds (`contains`, `depends_on`, `assigned_to`, …) | **Stable** | Now | Core |
+| **Entity query language** | GET filters + `POST /v1/entities/query` | **Stable** | Now | Core |
+| **Entity REST API** | `/v1/entities/*` (health, readiness, trust, verify, relationships, graph) | **Stable** | Now | Core |
+| **Control Center Entities tab** | Browse, search, graph neighborhood, mutations | **Stable** | Now | Control Center |
+| **Runtime mission entities** | Project active missions into registry | **Stable** | Now | Core |
+| **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Stable** | Now | Core |
+| **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Stable** | Now | Core |
+| **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Stable** | Now | Core |
+| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.4.1** published | **Stable** | Now | Core + Control Center |
 
 **Design rule:** Before introducing a new top-level platform abstraction, determine whether it should be a new **Entity kind** instead.
 
@@ -240,7 +240,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 |------|-------|------|----------|-----------|
 | **Device Tree** | Logical ↔ physical mapping | **Stable** | Now | Core |
 | **Device Registry** | Device identity in TOML | **Stable** | Now | Core |
-| **Unified Entity Model** | Projects registry + fleet + humans into entity graph — [entity-model.md](docs/entity-model.md) | **Experimental** | Now | Core |
+| **Unified Entity Model** | Projects registry + fleet + humans into entity graph — [entity-model.md](docs/entity-model.md) | **Stable** | Now | Core |
 | **Device Pool** | Central inventory, lifecycle, assign/trust/quarantine | **Experimental** | Now | Core |
 | **Provisioning** | Discover → ready workflow (`POST /v1/provision`) | **Experimental** | Now | Core |
 | **Discovery** | Subnet, mDNS/BLE/USB/CAN/MQTT/ROS2 + pool ingest | **Experimental** | Now | Package + Core |

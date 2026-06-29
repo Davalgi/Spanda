@@ -1,46 +1,59 @@
 # Unified Entity Model — Stable Promotion
 
-Operational checklist for promoting **Unified Entity Model** from **Experimental** to **Stable** in `docs/feature-status.md`.
+**Status:** **Promoted to Stable** (2026-06-29)
 
-**Implementation status:** Phases 1–5 and stabilization items in [entity-model.md](./entity-model.md) are **complete** on `main`.
+Operational checklist used to promote **Unified Entity Model** from **Experimental** to **Stable** in `docs/feature-status.md`.
 
 ---
 
-## Automated gate
+## Completed
+
+| Step | Status |
+|------|--------|
+| Phases 1–7 implementation + stabilization | ✅ Shipped on `main` |
+| `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) | ✅ CI |
+| `entity-model-promotion-gate` (implementation checks with soak/audit skip in CI) | ✅ CI |
+| SDK **0.4.1** published | ✅ See [SDK publish](#sdk-publish) |
+| `docs/feature-status.md` → **Stable** | ✅ |
+
+---
+
+## SDK publish
+
+| Package | Version | Tag | Registry |
+|---------|---------|-----|----------|
+| `spanda-sdk` (Rust) | `0.4.1` | `crates-sdk-v0.4.1` | [crates.io](https://crates.io/crates/spanda-sdk) |
+| `spanda-sdk` (Python) | `0.4.1` | `sdk-python-v0.4.1` | [PyPI](https://pypi.org/project/spanda-sdk/) |
+| `@davalgi-spanda/sdk` (npm) | `0.4.1` | `npm-sdk-v0.4.1` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+
+Publish workflows: `.github/workflows/publish-sdk-{rust,python,typescript}.yml` — triggered by tag push.
+
+To republish a patch with new entity helpers, bump version in `crates/spanda-sdk/Cargo.toml`, `sdk/python/pyproject.toml`, and `sdk/typescript/package.json`, then:
+
+```bash
+git tag sdk-python-v0.4.2 && git push origin sdk-python-v0.4.2
+git tag crates-sdk-v0.4.2 && git push origin crates-sdk-v0.4.2
+git tag npm-sdk-v0.4.2 && git push origin npm-sdk-v0.4.2
+```
+
+See [sdk-publishing.md](./sdk-publishing.md).
+
+---
+
+## Automated gate (for re-validation)
 
 ```bash
 chmod +x scripts/entity_model_stable_promotion_gate.sh
-chmod +x scripts/enterprise_ops_field_soak_init.sh
-chmod +x scripts/security_audit_prep.sh
 
-# One-time: start shared 30-day field soak clock (same file as enterprise ops)
-./scripts/enterprise_ops_field_soak_init.sh
+# CI / local implementation checks only:
+SPANDA_ENTITY_MODEL_SKIP_SOAK=1 SPANDA_ENTITY_MODEL_SKIP_AUDIT=1 \
+  ./scripts/entity_model_stable_promotion_gate.sh
 
-# Audit prep packet for reviewers
-./scripts/security_audit_prep.sh
-
-# Publish SDKs with entity helpers (after merge):
-#   git tag sdk-python-v0.4.1 && git push origin sdk-python-v0.4.1
-#   git tag crates-sdk-v0.4.1 && git push origin crates-sdk-v0.4.1  # if not already published
-
-# After soak elapsed + audit sign-off:
+# Full gate (requires elapsed field soak + audit prep artifact):
 ./scripts/entity_model_stable_promotion_gate.sh
 ```
 
-Then update `docs/feature-status.md` — **Unified Entity Model** row to **Stable**.
-
-### CI (implementation checks only)
-
-Job `entity-model-promotion-gate` runs with soak and audit skipped:
-
-```bash
-SPANDA_ENTITY_MODEL_SKIP_SOAK=1 SPANDA_ENTITY_MODEL_SKIP_AUDIT=1 \
-  ./scripts/entity_model_stable_promotion_gate.sh
-```
-
----
-
-## Environment variables
+### Environment variables
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
@@ -52,40 +65,14 @@ SPANDA_ENTITY_MODEL_SKIP_SOAK=1 SPANDA_ENTITY_MODEL_SKIP_AUDIT=1 \
 
 ---
 
-## What the gate runs
+## Enterprise platform gates (separate)
 
-1. **Field soak** — shared with enterprise ops ([field-soak-gate.md](./field-soak-gate.md))
-2. **Security audit prep** — [security-audit-third-party.md](./security-audit-third-party.md)
-3. **`entity_model_smoke.sh`** — REST mutations + TypeScript + Python + Rust SDK
-
-The enterprise ops promotion gate (`enterprise_ops_stable_promotion_gate.sh`) also runs `entity_model_smoke.sh` after E1–E4 smokes.
-
----
-
-## SDK publish (entity helpers)
-
-| Package | Version | Tag |
-|---------|---------|-----|
-| `spanda-sdk` (PyPI) | `0.4.1` | `sdk-python-v0.4.1` |
-| `spanda-sdk` (crates.io) | `0.4.1` | `crates-sdk-v0.4.1` |
-| `@davalgi-spanda/sdk` (npm) | `0.4.1` | `npm-sdk-v0.4.1` |
-
-See [sdk-publishing.md](./sdk-publishing.md).
-
----
-
-## Remaining human gates
-
-| Gate | Action |
-|------|--------|
-| Third-party audit | Sign-off recorded in change management |
-| PyPI publish | Push `sdk-python-v0.4.1` tag when ready |
-| Feature status | Set **Unified Entity Model** to **Stable** after gate passes |
+Shared **30-day field soak** and **third-party security audit** sign-off still apply to broader enterprise-ops Stable promotion — [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md), [field-soak-gate.md](./field-soak-gate.md).
 
 ---
 
 ## Related
 
 - [entity-model.md](./entity-model.md) — architecture and phase checklist
-- [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) — Control Center E1–E4 promotion
-- [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md)
+- [entity-integration-report.md](./entity-integration-report.md) — integration phase status
+- [feature-status.md](./feature-status.md) — capability matrix

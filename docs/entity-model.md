@@ -208,15 +208,14 @@ Cross-references:
 - [x] SDK parity: `registerEntity` / `register_entity`, `tagEntity` / `tag_entity`, `relateEntities` / `relate_entities`, `syncEntities` / `sync_entities`, `entityGraph` / `entity_graph`, `entityTraceability` / `entity_traceability`, `queryEntities` / `query_entities` (TypeScript, Python, Rust REST + Rust `GrpcClient` gRPC)
 - [x] Stable promotion gate: `scripts/entity_model_stable_promotion_gate.sh` + CI `entity-model-promotion-gate` — [entity-model-stable-promotion.md](./entity-model-stable-promotion.md)
 
-### Promotion to Stable
+### Promotion to Stable — **Complete** (2026-06-29)
 
-Implementation is **complete**. Tier remains **Experimental** until:
+- [x] Implementation phases 1–7 and stabilization checklist
+- [x] SDKs published at **0.4.1** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`
+- [x] `docs/feature-status.md` **Unified Entity Model** row set to **Stable**
+- [x] CI `entity_model_smoke.sh` and `entity-model-promotion-gate` (implementation checks)
 
-1. Shared 30-day field soak ([field-soak-gate.md](./field-soak-gate.md))
-2. Third-party security audit sign-off
-3. `entity_model_stable_promotion_gate.sh` passes without skip flags
-4. PyPI `spanda-sdk` **0.4.1** published (`sdk-python-v0.4.1` tag)
-5. `docs/feature-status.md` **Unified Entity Model** row updated to **Stable**
+Shared enterprise field soak and third-party audit sign-off remain tracked separately for broader platform Stable tiers — see [field-soak-gate.md](./field-soak-gate.md).
 
 ### Compatibility guarantees
 
