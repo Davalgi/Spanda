@@ -178,7 +178,7 @@ The lean-core refactor (Phases 1–17) established workspace crate boundaries do
 3. **Solution blueprint** governance above interfaces
 4. **Enforceable dependency rules** with regression baselines
 
-Known upward dependencies and the compile-run-verify SCC are tracked as waivers (`ARCH-001`–`ARCH-SCC-001`) pending incremental refactors — not blockers for shipping, but **must not grow** without explicit waiver review.
+Known upward dependencies are tracked as waivers (`ARCH-*`, `TS-ARCH-*`) pending incremental refactors — not blockers for shipping, but **must not grow** without explicit waiver review. The production crate graph is acyclic (no SCC waivers).
 
 ---
 

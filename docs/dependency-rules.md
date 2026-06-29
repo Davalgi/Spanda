@@ -39,7 +39,8 @@ Solution Blueprints  (6)
 
 | Kind | Tracked by |
 |------|------------|
-| Rust path dependency (`path = "../…"`) | `validate_architecture.py` |
+| Rust path dependency in `[dependencies]` (`path = "../…"`) | `validate_architecture.py` |
+| Rust `[dev-dependencies]` / `[build-dependencies]` | Not tracked (tests and tooling only) |
 | npm workspace import | Manual review + TS layer map in manifest |
 | Blueprint → platform API | Review in blueprint PRs |
 | Registry package → provider trait | `spanda-package` resolver |
@@ -85,7 +86,7 @@ Current waiver count: see CI output from `validate_architecture.py`.
 
 Strongly connected components (SCCs) with more than one crate indicate architectural coupling.
 
-The baseline compile-run-verify SCC (`ARCH-SCC-001`) includes driver, interpreter, readiness, config, transport, and related crates. **No new SCC members** may be added without waiver.
+The production dependency graph must stay **acyclic**. `validate_architecture.py` builds the graph from `[dependencies]` only (not dev/build deps). **Any new strongly connected component** in production dependencies fails CI.
 
 To inspect:
 

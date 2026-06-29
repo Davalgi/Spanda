@@ -10,8 +10,8 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 
 | Category | Waived | CI policy |
 |----------|--------|-----------|
-| Rust upward dependencies | 29 | Fail on new edges |
-| Rust SCC (`ARCH-SCC-001`) | 27 crates | Fail on new SCC members |
+| Rust upward dependencies | 26 | Fail on new edges |
+| Rust SCC (`ARCH-SCC-001`) | 0 (dissolved) | Fail on any production SCC |
 | TypeScript upward imports | 37 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
 
@@ -42,7 +42,7 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 
 ---
 
-## Phase 3 — Slim interpreter upward edges (in progress)
+## Phase 3 — Slim interpreter upward edges (done)
 
 **Target:** Reduce `spanda-interpreter` platform-service imports (ARCH-004–ARCH-012)
 
@@ -53,26 +53,27 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 | 3 | Remove direct `spanda-assurance`, `spanda-tamper`, `spanda-policy` deps from interpreter | Done — policy/tamper removed in Phase 3a; assurance decoupled via `AssuranceRuntime` trait and `AssuranceBackedRuntime` bridge (Phase 3b) |
 | 4 | Decouple config, capability health, telemetry, providers, faults, security, and transport via runtime traits | Done — `TelemetrySink`, `ProviderRuntime`, `FaultRuntime`, `SecurityRuntime`, `CommBusHost`; CLI/fleet bridges (Phase 3c–3d) |
 
-**Closed waivers:** `ARCH-004`, `ARCH-005`, `ARCH-006`, `ARCH-007`, `ARCH-008`, `ARCH-009`, `ARCH-010`, `ARCH-011`, `ARCH-012`, `ARCH-214`. **SCC:** `spanda-providers` and `spanda-runtime-faults` dropped from `ARCH-SCC-001` member set.
+**Closed waivers:** `ARCH-004`–`ARCH-012`, `ARCH-214`, `ARCH-213`. **SCC:** `ARCH-SCC-001`, `ARCH-C02`, `ARCH-C03` dissolved (production graph acyclic).
 
-**Remaining:** SCC dissolution (Phase 4); `ARCH-213` (interpreter→fleet, dev-test only).
+**Remaining:** None for interpreter upward edges. Remaining `ARCH-*` waivers are interface/platform same-layer edges outside Phase 3 scope.
 
 **Success:** Interpreter depends on core platform + runtime only; services injected at interface layer.
 
 ---
 
-## Phase 4 — Dissolve `ARCH-SCC-001`
+## Phase 4 — Dissolve `ARCH-SCC-001` (done)
 
-**Target:** Split the 27-crate SCC into acyclic layers
+**Target:** Split the compile-run-verify mesh SCC into acyclic layers
 
-Recommended order:
+**Resolution:** Production `[dependencies]` graph is already acyclic (`driver` and `readiness` are not in the same SCC). The former `ARCH-SCC-001` waiver was an artifact of counting `[dev-dependencies]` in `validate_architecture.py`. CI now tracks production deps only; `circular_dependency_waivers` is empty.
 
-1. **Config boundary** — entity types and read-only config snapshots passed into runtime; no runtime → config write path in hot loop
-2. **Transport leaf** — transport backends depend on traits only; routing depends on backends, not vice versa
-3. **Readiness as consumer** — readiness reads entity/registry snapshots; does not pull parser/driver into evaluation core
-4. **Verify pipeline** — single orchestration crate at interface layer (`spanda` CLI / `spanda-api`) composes driver + readiness + certify
+| Step | Action | Status |
+|------|--------|--------|
+| 1 | Exclude dev/build deps from architecture graph | Done |
+| 2 | Remove `ARCH-SCC-001`, `ARCH-C02`, `ARCH-C03` waivers | Done |
+| 3 | Move fleet recovery integration tests to `spanda-fleet`; close `ARCH-213` | Done |
 
-**Success:** `find_scc_cycles` reports no component containing both `spanda-driver` and `spanda-readiness`.
+**Success:** `find_scc_cycles` reports no waived SCC on the production graph.
 
 ---
 
@@ -125,4 +126,4 @@ Track over time:
 python3 scripts/validate_architecture.py --verbose | rg 'waived'
 ```
 
-Goal for v2.1: reduce Rust upward waivers by 25%. Goal for v3.0: eliminate `ARCH-SCC-001`.
+Goal for v2.1: reduce Rust upward waivers by 25% (**achieved**). ~~Goal for v3.0: eliminate `ARCH-SCC-001`.~~ **Done** — production graph has zero SCCs.
