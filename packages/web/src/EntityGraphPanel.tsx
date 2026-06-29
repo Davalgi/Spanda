@@ -358,6 +358,54 @@ export function EntityGraphPanel({
                   </>
                 )}
               </dl>
+              {detail.readiness_report &&
+                typeof detail.readiness_report === "object" &&
+                Array.isArray((detail.readiness_report as { issues?: unknown[] }).issues) &&
+                (detail.readiness_report as { issues: { severity: string; message: string }[] })
+                  .issues.length > 0 && (
+                  <>
+                    <h4>Readiness issues</h4>
+                    <ul className="entity-issues">
+                      {(detail.readiness_report as { issues: { severity: string; message: string }[] }).issues.map(
+                        (issue, idx) => (
+                          <li key={`ri-${idx}`}>
+                            [{issue.severity}] {issue.message}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </>
+                )}
+              {detail.health_report &&
+                typeof detail.health_report === "object" &&
+                Array.isArray((detail.health_report as { diagnostics?: unknown[] }).diagnostics) &&
+                (detail.health_report as { diagnostics: { severity: string; message: string }[] })
+                  .diagnostics.length > 0 && (
+                  <>
+                    <h4>Health diagnostics</h4>
+                    <ul className="entity-issues">
+                      {(detail.health_report as { diagnostics: { severity: string; message: string }[] }).diagnostics.map(
+                        (diag, idx) => (
+                          <li key={`hd-${idx}`}>
+                            [{diag.severity}] {diag.message}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </>
+                )}
+              {detail.trust_report &&
+                typeof detail.trust_report === "object" &&
+                (detail.trust_report as { score?: number }).score != null && (
+                  <>
+                    <h4>Trust score</h4>
+                    <p>
+                      Score {(detail.trust_report as { score: number }).score}
+                      {" — "}
+                      {(detail.trust_report as { passed: boolean }).passed ? "passed" : "needs review"}
+                    </p>
+                  </>
+                )}
               {relationships.length > 0 && (
                 <>
                   <h4>Relationships</h4>

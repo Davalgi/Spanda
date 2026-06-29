@@ -562,13 +562,27 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadEntityDetail = async (entityId: string) => {
     setBusy(true);
     try {
-      const [detailRes, relRes] = await Promise.all([
-        fetch(`${base}/v1/entities/${encodeURIComponent(entityId)}`),
-        fetch(`${base}/v1/entities/${encodeURIComponent(entityId)}/relationships`),
+      const encoded = encodeURIComponent(entityId);
+      const [detailRes, relRes, healthRes, readinessRes, trustRes] = await Promise.all([
+        fetch(`${base}/v1/entities/${encoded}`),
+        fetch(`${base}/v1/entities/${encoded}/relationships`),
+        fetch(`${base}/v1/entities/${encoded}/health`),
+        fetch(`${base}/v1/entities/${encoded}/readiness`),
+        fetch(`${base}/v1/entities/${encoded}/trust`),
       ]);
       if (!detailRes.ok) throw new Error(`entity ${detailRes.status}`);
       const detailBody = await detailRes.json();
-      setEntityDetail((detailBody.entity as Record<string, unknown>) ?? null);
+      const healthBody = healthRes.ok ? await healthRes.json() : {};
+      const readinessBody = readinessRes.ok ? await readinessRes.json() : {};
+      const trustBody = trustRes.ok ? await trustRes.json() : {};
+      const entity = (detailBody.entity as Record<string, unknown>) ?? {};
+      setEntityDetail({
+        ...entity,
+        health_report: healthBody.report,
+        readiness_report: readinessBody.report,
+        trust_report: trustBody.report,
+        mission_ready: readinessBody.mission_ready,
+      });
       if (relRes.ok) {
         const relBody = await relRes.json();
         setEntityRelationships((relBody.relationships as EntityRelationship[]) ?? []);
