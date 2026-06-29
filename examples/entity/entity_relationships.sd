@@ -1,0 +1,34 @@
+// Entity relationships example — mission capabilities bind robots and devices
+//
+//   spanda entity relationships rover-001 --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar ];
+  actuators [ DifferentialDrive ];
+}
+
+robot Rover {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ gps_navigation, obstacle_avoidance, telemetry_streaming ];
+
+  mission Inspect {
+    requires capabilities [ gps_navigation, obstacle_avoidance, telemetry_streaming ];
+    inspect;
+  }
+
+  behavior inspect() {
+    loop every 500ms {
+      let _ = lidar.read();
+    }
+  }
+}
+
+fleet Warehouse {
+  Rover;
+}
+
+deploy Rover to RoverV1;

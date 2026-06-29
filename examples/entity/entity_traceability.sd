@@ -1,0 +1,48 @@
+// Entity traceability example — full chain from operator to deployment evidence
+//
+//   spanda entity traceability --entity-id rover-001 --config .../spanda.toml
+
+import trust.jetson;
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar, Camera ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi ];
+}
+
+assurance_case PatrolAssurance {
+  evidence hardware_verification;
+  evidence capability_traceability;
+}
+
+robot Rover {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  sensor camera: Camera;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ gps_navigation, obstacle_avoidance, telemetry_streaming ];
+
+  mission Patrol {
+    requires capabilities [ gps_navigation, obstacle_avoidance, telemetry_streaming ];
+    patrol;
+  }
+
+  behavior patrol() {
+    loop every 500ms {
+      let scan = lidar.read();
+      let frame = camera.read();
+      let _ = frame;
+      if scan.nearest_distance < 0.5 m {
+        wheels.drive(linear: 0.0 m/s, angular: 0.0 rad/s);
+      }
+    }
+  }
+}
+
+fleet Warehouse {
+  Rover;
+}
+
+deploy Rover to RoverV1;

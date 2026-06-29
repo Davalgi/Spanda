@@ -1,0 +1,40 @@
+// Entity health example — health checks and policies for evaluate_entity_health
+//
+//   spanda entity health rover-001 --program examples/entity/entity_health.sd --config .../spanda.toml
+
+robot Rover {
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 0.5 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  mode caution_mode { wheels.drive(linear: 0.0 m/s, angular: 0.0 rad/s); }
+
+  behavior patrol() {
+    loop every 200ms {
+      let scan = lidar.read();
+      if scan.nearest_distance < 0.5 m {
+        wheels.drive(linear: 0.0 m/s, angular: 0.0 rad/s);
+      }
+    }
+  }
+}
+
+health_check RoverHealth for robot Rover {
+  check gps.status == Healthy;
+  check lidar.status == Healthy;
+  check wheels.status == Healthy;
+}
+
+health_policy RoverPolicy {
+  on Degraded { enter caution_mode; }
+  on Critical { emergency_stop; }
+}
+
+fleet Warehouse {
+  Rover;
+}

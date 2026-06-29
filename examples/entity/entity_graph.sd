@@ -1,0 +1,36 @@
+// Entity graph example — fleet, robots, devices, and providers for graph traversal
+//
+//   spanda entity graph --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+
+import trust.jetson;
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar, Camera ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi ];
+}
+
+robot RoverAlpha {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  sensor camera: Camera;
+  actuator wheels: DifferentialDrive;
+  exposes capabilities [ gps_navigation, obstacle_avoidance ];
+}
+
+robot RoverBeta {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+  exposes capabilities [ gps_navigation ];
+}
+
+fleet Warehouse {
+  RoverAlpha;
+  RoverBeta;
+}
+
+deploy RoverAlpha to RoverV1;
+deploy RoverBeta to RoverV1;

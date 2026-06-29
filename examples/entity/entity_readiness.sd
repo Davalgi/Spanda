@@ -1,0 +1,41 @@
+// Entity readiness example — mission capability requirements for evaluate_entity_readiness
+//
+//   spanda entity readiness rover-001 --program examples/entity/entity_readiness.sd --config .../spanda.toml
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi ];
+}
+
+robot Rover {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ gps_navigation, obstacle_avoidance, telemetry_streaming ];
+
+  mission Patrol {
+    requires capabilities [ gps_navigation, obstacle_avoidance ];
+    patrol_loop;
+  }
+
+  behavior patrol_loop() {
+    loop every 100ms {
+      let _ = lidar.read();
+      wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+health_check RoverHealth for robot Rover {
+  check gps.status == Healthy;
+  check lidar.status == Healthy;
+}
+
+fleet Warehouse {
+  Rover;
+}
+
+deploy Rover to RoverV1;

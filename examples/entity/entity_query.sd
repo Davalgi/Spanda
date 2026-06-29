@@ -1,0 +1,34 @@
+// Entity query example — multiple robots and kinds for inventory filters
+//
+//   spanda entity query --kind robot --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar ];
+  actuators [ DifferentialDrive ];
+}
+
+robot RoverAlpha {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  exposes capabilities [ gps_navigation ];
+}
+
+robot RoverBeta {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  exposes capabilities [ gps_navigation, obstacle_avoidance ];
+}
+
+robot ScoutDrone {
+  sensor gps: GPS;
+  exposes capabilities [ telemetry_streaming ];
+}
+
+fleet PatrolFleet {
+  RoverAlpha;
+  RoverBeta;
+}
+
+deploy RoverAlpha to RoverV1;
+deploy RoverBeta to RoverV1;

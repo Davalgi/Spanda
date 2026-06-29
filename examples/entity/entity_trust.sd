@@ -1,0 +1,41 @@
+// Entity trust example — package trust and secure platform imports
+//
+//   spanda entity trust rover-001 --program examples/entity/entity_trust.sd --config .../spanda.toml
+
+import trust.jetson;
+
+hardware JetsonRover {
+  sensors [ GPS, Lidar ];
+  actuators [ DifferentialDrive ];
+  connectivity [ WiFi, LTE ];
+}
+
+tamper_policy RoverTamperResponse {
+  on tamper severity Critical {
+    enter degraded_mode;
+    audit.record("entity_trust_tamper");
+  }
+}
+
+robot Rover {
+  uses hardware JetsonRover;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  exposes capabilities [ gps_navigation, obstacle_avoidance ];
+
+  mode degraded_mode { wheels.drive(linear: 0.0 m/s, angular: 0.0 rad/s); }
+
+  behavior patrol() {
+    loop every 500ms {
+      let _ = lidar.read();
+    }
+  }
+}
+
+fleet Warehouse {
+  Rover;
+}
+
+deploy Rover to JetsonRover;

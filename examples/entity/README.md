@@ -20,40 +20,43 @@ Package
 
 ## Programs
 
-| File | Purpose |
-|------|---------|
-| [entity_verify.sd](./entity_verify.sd) | Patrol robot for `spanda entity verify` with warehouse fixture |
+| File | Demonstrates |
+|------|----------------|
+| [entity_verify.sd](./entity_verify.sd) | Unified `spanda entity verify` |
+| [entity_graph.sd](./entity_graph.sd) | Fleet graph and neighborhood traversal |
+| [entity_query.sd](./entity_query.sd) | Multi-kind inventory query filters |
+| [entity_relationships.sd](./entity_relationships.sd) | Mission ↔ robot ↔ provider edges |
+| [entity_health.sd](./entity_health.sd) | Health checks and `evaluate_entity_health` |
+| [entity_readiness.sd](./entity_readiness.sd) | Mission readiness and capability gates |
+| [entity_trust.sd](./entity_trust.sd) | Package and platform trust evaluation |
+| [entity_traceability.sd](./entity_traceability.sd) | End-to-end digital thread chain |
 
-## CLI workflows
+## Fixture config
 
-Use the warehouse fixture config (`crates/spanda-config/tests/fixtures/warehouse/spanda.toml`):
+Use the warehouse fixture for CLI demos:
 
 ```bash
 CONFIG=crates/spanda-config/tests/fixtures/warehouse/spanda.toml
-PROGRAM=examples/entity/entity_verify.sd
+```
 
-# Inventory
+## CLI workflows
+
+```bash
+CONFIG=crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+
+# Inventory and graph
 spanda entity list --config "$CONFIG"
-spanda entity inspect rover-001 --config "$CONFIG"
-
-# Graph and relationships
 spanda entity graph --config "$CONFIG" --json
 spanda entity relationships rover-001 --config "$CONFIG"
 
-# Operational dimensions
-spanda entity health rover-001 --config "$CONFIG"
-spanda entity readiness rover-001 --config "$CONFIG"
-spanda entity trust gps-001 --config "$CONFIG"
+# Evaluation engines
+spanda entity verify rover-001 --program examples/entity/entity_verify.sd --config "$CONFIG"
+spanda entity readiness rover-001 --program examples/entity/entity_readiness.sd --config "$CONFIG"
+spanda entity health rover-001 --program examples/entity/entity_health.sd --config "$CONFIG"
+spanda entity trust rover-001 --program examples/entity/entity_trust.sd --config "$CONFIG"
 
-# Unified verification (Phase 2)
-spanda entity verify rover-001 --config "$CONFIG"
-spanda entity verify rover-001 --program "$PROGRAM" --config "$CONFIG" --dependencies
-
-# Query
+# Query and traceability
 spanda entity query --kind robot --config "$CONFIG"
-spanda entity search rover --config "$CONFIG"
-
-# Traceability
 spanda entity traceability --entity-id rover-001 --config "$CONFIG"
 ```
 
@@ -62,17 +65,23 @@ spanda entity traceability --entity-id rover-001 --config "$CONFIG"
 ```bash
 curl -s http://127.0.0.1:8080/v1/entities/rover-001/verify \
   -H 'Content-Type: application/json' \
-  -d '{"include_dependencies":true}'
+  -d '{"include_dependencies":true,"file":"examples/entity/entity_verify.sd"}'
 ```
 
 ## SDK
 
 ```typescript
-const report = await client.verifyEntity("rover-001", { includeDependencies: true });
+const report = await client.verifyEntity("rover-001", {
+  includeDependencies: true,
+  file: "examples/entity/entity_verify.sd",
+});
 ```
 
 ## Related docs
 
 - [entity-model.md](../../docs/entity-model.md)
 - [entity-verification.md](../../docs/entity-verification.md)
+- [entity-readiness.md](../../docs/entity-readiness.md)
+- [entity-health.md](../../docs/entity-health.md)
+- [entity-trust.md](../../docs/entity-trust.md)
 - [entity-integration-report.md](../../docs/entity-integration-report.md)
