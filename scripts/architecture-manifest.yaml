@@ -149,7 +149,20 @@ typescript_packages:
 
 # TypeScript path prefix → layer (longest match wins under src/).
 typescript_module_layers:
+  src/comm/decls.ts: compiler
+  src/ast/assurance-decls.ts: compiler
+  src/readiness-types.ts: compiler
+  src/types/sensor-types.ts: compiler
+  src/types/checker-host.ts: compiler
+  src/hardware-profile-types.ts: language_runtime
+  src/rust-bridge-types.ts: language_runtime
+  src/runtime/continuity-types.ts: language_runtime
+  src/cli/checker-host.ts: interfaces
+  src/cli/deploy-readiness-bridge.ts: interfaces
+  src/cli/certify-bridge.ts: interfaces
+  src/cli/hardware-verify-bridge.ts: interfaces
   src/cli: interfaces
+  src/cli/run-program.ts: interfaces
   src/lsp: interfaces
   src/adapter-bridge.ts: interfaces
   src/adapter-verify.ts: interfaces
@@ -171,6 +184,10 @@ typescript_module_layers:
   src/readiness.ts: platform_services
   src/operational.ts: platform_services
   src/telemetry-store.ts: platform_services
+  src/telemetry-store-bridge.ts: platform_services
+  src/security-runtime-bridge.ts: platform_services
+  src/adapter-runtime-bridge.ts: interfaces
+  src/provider-runtime-bridge.ts: language_runtime
   src/telemetry-cli.ts: platform_services
   src/telemetry-otlp.ts: platform_services
   src/telemetry-sqlite.ts: platform_services
@@ -193,7 +210,7 @@ typescript_module_layers:
   src/deploy-remote.ts: core_platform
   src/deploy-service.ts: core_platform
   src/swarm-coordinator.ts: core_platform
-  src/connectivity-positioning.ts: foundation
+  src/connectivity-positioning.ts: language_runtime
   src/runtime: language_runtime
   src/comm: language_runtime
   src/safety: language_runtime
@@ -213,8 +230,8 @@ typescript_module_layers:
   src/network.ts: language_runtime
   src/continuity-checkpoint.ts: language_runtime
   src/readiness-spans.ts: language_runtime
-  src/telemetry-fleet.ts: language_runtime
-  src/telemetry-push.ts: language_runtime
+  src/telemetry-fleet.ts: platform_services
+  src/telemetry-push.ts: platform_services
   src/rust-bridge.ts: language_runtime
 
 solution_blueprints:
@@ -503,152 +520,4 @@ dependency_waivers:
 
 # Known circular dependency baselines — production graph must stay acyclic.
 circular_dependency_waivers: []
-typescript_dependency_waivers:
-  - from: src/ast/nodes
-    to: src/comm
-    ticket: TS-ARCH-001
-    reason: TypeScript mirror monolith baseline.
-  - from: src/compile
-    to: src/certify-runtime
-    ticket: TS-ARCH-002
-    reason: TypeScript mirror monolith baseline.
-  - from: src/compile
-    to: src/replay
-    ticket: TS-ARCH-003
-    reason: TypeScript mirror monolith baseline.
-  - from: src/compile
-    to: src/runtime
-    ticket: TS-ARCH-004
-    reason: TypeScript mirror monolith baseline.
-  - from: src/compile
-    to: src/simulator
-    ticket: TS-ARCH-005
-    reason: TypeScript mirror monolith baseline.
-  - from: src/compile
-    to: src/telemetry-store
-    ticket: TS-ARCH-006
-    reason: TypeScript mirror monolith baseline.
-  - from: src/connectivity-positioning
-    to: src/comm
-    ticket: TS-ARCH-007
-    reason: TypeScript mirror monolith baseline.
-  - from: src/connectivity-positioning
-    to: src/foundations
-    ticket: TS-ARCH-008
-    reason: TypeScript mirror monolith baseline.
-  - from: src/connectivity-positioning
-    to: src/hardware-profile
-    ticket: TS-ARCH-009
-    reason: TypeScript mirror monolith baseline.
-  - from: src/connectivity-positioning
-    to: src/rust-bridge
-    ticket: TS-ARCH-010
-    reason: TypeScript mirror monolith baseline.
-  - from: src/continuity-checkpoint
-    to: src/mission-continuity
-    ticket: TS-ARCH-011
-    reason: TypeScript mirror monolith baseline.
-  - from: src/deploy-agent
-    to: src/readiness
-    ticket: TS-ARCH-012
-    reason: TypeScript mirror monolith baseline.
-  - from: src/deploy-remote
-    to: src/certify-prover
-    ticket: TS-ARCH-013
-    reason: TypeScript mirror monolith baseline.
-  - from: src/deploy-service
-    to: src/certify-prover
-    ticket: TS-ARCH-014
-    reason: TypeScript mirror monolith baseline.
-  - from: src/fleet-agent
-    to: src/readiness
-    ticket: TS-ARCH-015
-    reason: TypeScript mirror monolith baseline.
-  - from: src/hardware-verify
-    to: src/adapter-verify
-    ticket: TS-ARCH-016
-    reason: TypeScript mirror monolith baseline.
-  - from: src/hardware-verify
-    to: src/certify-verify
-    ticket: TS-ARCH-017
-    reason: TypeScript mirror monolith baseline.
-  - from: src/parser
-    to: src/comm
-    ticket: TS-ARCH-018
-    reason: TypeScript mirror monolith baseline.
-  - from: src/parser/assurance
-    to: src/assurance_decl
-    ticket: TS-ARCH-019
-    reason: TypeScript mirror monolith baseline.
-  - from: src/readiness-spans
-    to: src/readiness
-    ticket: TS-ARCH-020
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/health-runtime
-    to: src/telemetry-store
-    ticket: TS-ARCH-021
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/interpreter
-    to: src/adapter-bridge
-    ticket: TS-ARCH-022
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/interpreter
-    to: src/security
-    ticket: TS-ARCH-023
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/interpreter
-    to: src/security/trust-boundary
-    ticket: TS-ARCH-024
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/interpreter
-    to: src/telemetry-store
-    ticket: TS-ARCH-025
-    reason: TypeScript mirror monolith baseline.
-  - from: src/runtime/reliability-runtime
-    to: src/telemetry-store
-    ticket: TS-ARCH-026
-    reason: TypeScript mirror monolith baseline.
-  - from: src/telemetry-fleet
-    to: src/telemetry-otlp
-    ticket: TS-ARCH-027
-    reason: TypeScript mirror monolith baseline.
-  - from: src/telemetry-push
-    to: src/telemetry-otlp
-    ticket: TS-ARCH-028
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/ai/registry
-    ticket: TS-ARCH-029
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/comm
-    ticket: TS-ARCH-030
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/ffi/registry
-    ticket: TS-ARCH-031
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/hal
-    ticket: TS-ARCH-032
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/lib/registry
-    ticket: TS-ARCH-033
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/reliability
-    ticket: TS-ARCH-034
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/security
-    ticket: TS-ARCH-035
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/checker
-    to: src/soc
-    ticket: TS-ARCH-036
-    reason: TypeScript mirror monolith baseline.
-  - from: src/types/units
-    to: src/lib/registry
-    ticket: TS-ARCH-037
-    reason: TypeScript mirror monolith baseline.
+typescript_dependency_waivers: []

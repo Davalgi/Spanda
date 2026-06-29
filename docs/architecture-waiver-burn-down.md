@@ -12,7 +12,7 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 |----------|--------|-----------|
 | Rust upward dependencies | 26 | Fail on new edges |
 | Rust SCC (`ARCH-SCC-001`) | 0 (dissolved) | Fail on any production SCC |
-| TypeScript upward imports | 37 | Fail on new edges |
+| TypeScript upward imports | 0 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
 
 Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and `python3 scripts/validate_blueprints.py`.
@@ -77,15 +77,20 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 
 ---
 
-## Phase 5 — TypeScript mirror alignment
+## Phase 5 — TypeScript mirror alignment (complete)
 
-**Target:** Remove `TS-ARCH-*` waivers (37 edges)
+**Target:** Remove `TS-ARCH-*` waivers (37 edges at baseline)
 
-| Step | Action |
-|------|--------|
-| 1 | Split `src/compile.ts` from runtime execution path (mirror Rust driver boundary) |
-| 2 | Move `types/checker` runtime imports behind type-only barrels at compiler layer |
-| 3 | Relocate deploy/fleet modules that import readiness to interface-layer entry points |
+| Step | Action | Status |
+|------|--------|--------|
+| 1 | Split `src/compile.ts` from runtime execution path (`src/cli/run-program.ts`) | Done (Phase 5a) |
+| 2 | Inject `TelemetrySink`, `SecurityRuntime`, `ProviderRuntime`, `AdapterRuntime` at CLI boundary | Done (Phase 5a) |
+| 3 | Move `types/checker` runtime imports behind `CheckerHost` at compiler layer | Done (Phase 5b) |
+| 4 | Split comm/assurance/readiness types to compiler-layer modules; inject deploy/fleet/certify/verify hosts at CLI | Done (Phase 5b) |
+
+**Closed waivers (Phase 5a):** `TS-ARCH-002`–`TS-ARCH-006`, `TS-ARCH-021`–`TS-ARCH-028`.
+
+**Closed waivers (Phase 5b):** `TS-ARCH-001`, `TS-ARCH-007`–`TS-ARCH-020`, `TS-ARCH-029`–`TS-ARCH-037`.
 
 **Success:** Zero TypeScript layer violations without waivers.
 
