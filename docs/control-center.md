@@ -231,15 +231,24 @@ The **Smart Spaces** tab (experimental) shows building and facility operations a
 | **Environmental** | CO₂, AQ, temperature baselines vs actuals |
 | **Emergency** | Fire, leak, power failure status and active missions |
 
-Planned REST endpoints (experimental):
+REST endpoints (experimental, shipped):
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /v1/facilities` | Building / facility entity list |
+| `GET /v1/smart-spaces/summary` | Blueprint rollup (facilities, energy, emergency) |
+| `GET /v1/facilities` | Building / facility entity list with zones and gateways |
 | `GET /v1/facilities/{id}/readiness` | Per-building readiness rollup |
 | `GET /v1/zones/{id}/occupancy` | Zone occupancy twin |
 | `GET /v1/energy/systems` | Solar, battery, EV, meter summary |
-| `GET /v1/emergency/status` | Active emergency missions and system paths |
+| `GET /v1/emergency/status` | Active emergency missions and continuity pairs |
+
+Remote CLI (generic `api get`):
+
+```bash
+spanda control-center api get /v1/smart-spaces/summary
+spanda control-center api get /v1/facilities/tower-demo/readiness
+spanda control-center api get /v1/zones/floor-12/occupancy
+```
 
 ### Remote CLI (REST parity)
 
