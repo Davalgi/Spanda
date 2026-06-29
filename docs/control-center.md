@@ -242,7 +242,18 @@ REST endpoints (experimental, shipped):
 | `GET /v1/energy/systems` | Solar, battery, EV, meter summary |
 | `GET /v1/emergency/status` | Active emergency missions and continuity pairs |
 
-Remote CLI (generic `api get`):
+Remote CLI:
+
+```bash
+spanda control-center smart-spaces summary
+spanda control-center smart-spaces facilities
+spanda control-center smart-spaces readiness --facility-id tower-demo
+spanda control-center smart-spaces occupancy --zone-id floor-12
+spanda control-center smart-spaces energy
+spanda control-center smart-spaces emergency
+```
+
+Generic `api get` also works:
 
 ```bash
 spanda control-center api get /v1/smart-spaces/summary
@@ -329,7 +340,7 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 | `RelateEntities` | Relate entities (`POST /v1/entities/relationships`; Bearer) |
 | `SyncEntities` | Sync overlay to TOML (`POST /v1/entities/sync`; Bearer) |
 
-Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.3`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
+Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.4`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
 
 ```bash
 # Example with grpcurl (reflection not enabled — use proto file)
@@ -397,7 +408,7 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | `/v1/operator/quarantine` | POST | Bearer | Quarantine a device |
 | `/v1/operator/mission/approve` | POST | Bearer | Approve or reject a mission |
 | `/v1/rpc` | POST | — | gRPC-compatible JSON gateway |
-| **gRPC (tonic)** | — | — | Native `ControlCenter` service on `--grpc-bind` (83 RPCs; full REST parity except JSON-RPC gateway) |
+| **gRPC (tonic)** | — | — | Native `ControlCenter` service on `--grpc-bind` (89 RPCs; full REST parity except JSON-RPC gateway) |
 | `/v1/compliance/export` | GET/POST | Bearer | Accreditation bundle (`?profile=defense`, `iso26262`, …); appends immutable evidence log |
 | `/v1/compliance/profiles` | GET | — | Signed profile catalog (defense, medical, iso26262, iso13849, iec61508) with Ed25519 verification |
 | `/v1/compliance/evidence` | GET | Bearer | List append-only compliance evidence records |

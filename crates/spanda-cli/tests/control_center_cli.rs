@@ -22,6 +22,7 @@ fn control_center_help_lists_remote_subcommands() {
     assert!(help.contains("control-center ota"));
     assert!(help.contains("control-center sre summary"));
     assert!(help.contains("control-center api-key generate"));
+    assert!(help.contains("control-center smart-spaces"));
 }
 
 #[test]

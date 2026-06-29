@@ -366,6 +366,46 @@ impl SpandaClient {
         self.request("GET", "/v1/devices", None, true)
     }
 
+    /// Smart Spaces blueprint summary.
+    pub fn smart_spaces_summary(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/smart-spaces/summary", None, false)
+    }
+
+    /// List facilities, gateways, and zones.
+    pub fn list_facilities(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/facilities", None, false)
+    }
+
+    /// Facility readiness rollup with weighted factor chart.
+    pub fn facility_readiness(&self, facility_id: &str) -> SpandaResult<Value> {
+        self.request(
+            "GET",
+            &format!("/v1/facilities/{facility_id}/readiness"),
+            None,
+            false,
+        )
+    }
+
+    /// Zone occupancy twin snapshot.
+    pub fn zone_occupancy(&self, zone_id: &str) -> SpandaResult<Value> {
+        self.request(
+            "GET",
+            &format!("/v1/zones/{zone_id}/occupancy"),
+            None,
+            false,
+        )
+    }
+
+    /// Energy systems inventory.
+    pub fn list_energy_systems(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/energy/systems", None, false)
+    }
+
+    /// Emergency and continuity status.
+    pub fn emergency_status(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/emergency/status", None, false)
+    }
+
     /// Provision a device (requires auth).
     pub fn provision_device(&self, device_id: &str, body: &Value) -> SpandaResult<Value> {
         self.request(

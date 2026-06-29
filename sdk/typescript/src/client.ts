@@ -249,6 +249,30 @@ export class SpandaClient {
     return this.request("GET", "/v1/health");
   }
 
+  async smartSpacesSummary(): Promise<JsonValue> {
+    return this.request("GET", "/v1/smart-spaces/summary");
+  }
+
+  async listFacilities(): Promise<JsonValue> {
+    return this.request("GET", "/v1/facilities");
+  }
+
+  async facilityReadiness(facilityId: string): Promise<JsonValue> {
+    return this.request("GET", `/v1/facilities/${facilityId}/readiness`);
+  }
+
+  async zoneOccupancy(zoneId: string): Promise<JsonValue> {
+    return this.request("GET", `/v1/zones/${zoneId}/occupancy`);
+  }
+
+  async listEnergySystems(): Promise<JsonValue> {
+    return this.request("GET", "/v1/energy/systems");
+  }
+
+  async emergencyStatus(): Promise<JsonValue> {
+    return this.request("GET", "/v1/emergency/status");
+  }
+
   async rpc(method: string, params: JsonValue = {}): Promise<JsonValue> {
     const payload = await this.request("POST", "/v1/rpc", {
       method,

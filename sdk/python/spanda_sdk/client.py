@@ -219,6 +219,24 @@ class SpandaClient:
     def health_check(self) -> Any:
         return self._request("GET", "/v1/health")
 
+    def smart_spaces_summary(self) -> Any:
+        return self._request("GET", "/v1/smart-spaces/summary")
+
+    def list_facilities(self) -> Any:
+        return self._request("GET", "/v1/facilities")
+
+    def facility_readiness(self, facility_id: str) -> Any:
+        return self._request("GET", f"/v1/facilities/{facility_id}/readiness")
+
+    def zone_occupancy(self, zone_id: str) -> Any:
+        return self._request("GET", f"/v1/zones/{zone_id}/occupancy")
+
+    def list_energy_systems(self) -> Any:
+        return self._request("GET", "/v1/energy/systems")
+
+    def emergency_status(self) -> Any:
+        return self._request("GET", "/v1/emergency/status")
+
     def rpc(self, method: str, params: Optional[Mapping[str, Any]] = None) -> Any:
         payload = self._request(
             "POST",

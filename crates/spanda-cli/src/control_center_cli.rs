@@ -34,6 +34,7 @@ pub fn control_center_dispatch(args: &[String]) {
         "secrets" => cmd_secrets(&args[1..]),
         "audit" => cmd_audit(&args[1..]),
         "api-key" => cmd_api_key(&args[1..]),
+        "smart-spaces" => cmd_smart_spaces(&args[1..]),
         _ => {
             eprintln!("Unknown control-center subcommand: {}", args[0]);
             print_usage();
@@ -68,6 +69,7 @@ fn print_usage() {
          spanda control-center provision run [--body <json>] [--url <base>]\n  \
          spanda control-center secrets list [--url <base>]\n  \
          spanda control-center audit list [--url <base>]\n  \
+         spanda control-center smart-spaces summary|facilities|readiness|occupancy|energy|emergency [--facility-id <id>] [--zone-id <id>] [--url <base>]\n  \
          spanda control-center api-key generate [--export]\n\n\
          Remote calls use SPANDA_CONTROL_CENTER_URL (default http://127.0.0.1:8080) and SPANDA_API_KEY for mutations.\n\
          serve: set SPANDA_API_KEY for authenticated mutations (PATCH devices, POST alerts/test).\n\
@@ -657,6 +659,37 @@ fn cmd_audit(args: &[String]) {
     }
     let client = client_from_args(args);
     remote_get(&client, "/v1/audit/mutations", true);
+}
+
+fn cmd_smart_spaces(args: &[String]) {
+    if args.is_empty() || args[0] == "--help" || args[0] == "-h" {
+        eprintln!(
+            "Usage: spanda control-center smart-spaces summary|facilities|readiness|occupancy|energy|emergency [--facility-id <id>] [--zone-id <id>] [--url <base>]"
+        );
+        process::exit(if args.is_empty() { 1 } else { 0 });
+    }
+    let client = client_from_args(args);
+    match args[0].as_str() {
+        "summary" => remote_get(&client, "/v1/smart-spaces/summary", false),
+        "facilities" => remote_get(&client, "/v1/facilities", false),
+        "readiness" => {
+            let facility_id =
+                flag_value(args, "--facility-id").unwrap_or_else(|| "tower-demo".into());
+            let path = format!("/v1/facilities/{facility_id}/readiness");
+            remote_get(&client, &path, false);
+        }
+        "occupancy" => {
+            let zone_id = flag_value(args, "--zone-id").unwrap_or_else(|| "floor-12".into());
+            let path = format!("/v1/zones/{zone_id}/occupancy");
+            remote_get(&client, &path, false);
+        }
+        "energy" => remote_get(&client, "/v1/energy/systems", false),
+        "emergency" => remote_get(&client, "/v1/emergency/status", false),
+        other => {
+            eprintln!("Unknown smart-spaces subcommand: {other}");
+            process::exit(1);
+        }
+    }
 }
 
 fn cmd_api_key(args: &[String]) {

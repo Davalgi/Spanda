@@ -307,6 +307,70 @@ impl GrpcClient {
         Self::parse_json(resp.into_inner().json)
     }
 
+    /// Smart Spaces summary via `GetSmartSpacesSummary`.
+    pub async fn smart_spaces_summary(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_smart_spaces_summary(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List facilities via `ListFacilities`.
+    pub async fn list_facilities(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_facilities(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Facility readiness via `GetFacilityReadiness`.
+    pub async fn facility_readiness(&mut self, facility_id: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_facility_readiness(EntityIdRequest {
+                entity_id: facility_id.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Zone occupancy via `GetZoneOccupancy`.
+    pub async fn zone_occupancy(&mut self, zone_id: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_zone_occupancy(EntityIdRequest {
+                entity_id: zone_id.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Energy systems via `ListEnergySystems`.
+    pub async fn list_energy_systems(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_energy_systems(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Emergency status via `GetEmergencyStatus`.
+    pub async fn emergency_status(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_emergency_status(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
     /// List devices via `ListDevices`.
     pub async fn list_devices(&mut self) -> SpandaResult<Value> {
         let resp = self
