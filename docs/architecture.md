@@ -293,23 +293,44 @@ See [hardware-compatibility.md](./hardware-compatibility.md).
 
 ## Unified Entity Model
 
-Every platform object projects into a canonical **Entity** graph in `spanda-config`:
+Every platform object projects into a canonical **Entity** graph in `spanda-config`. Evaluation engines route health, readiness, trust, and verification through the same registry:
 
 ```mermaid
 flowchart TB
-  TOML["Device tree · Device registry · Human registry · Logical map"]
+  subgraph sources [Configuration sources]
+    TOML["Device tree · Device registry · Human registry · Logical map"]
+  end
   BUILD["build_entity_registry()"]
   REG["EntityRegistry"]
-  API["GET /v1/entities/*"]
-  CC["Control Center Entities tab"]
+  subgraph engines [Evaluation engines]
+    VR["verify_entity"]
+    RD["evaluate_entity_readiness"]
+    HL["evaluate_entity_health"]
+    TR["evaluate_entity_trust"]
+  end
+  subgraph surfaces [Surfaces]
+    API["GET/POST /v1/entities/*"]
+    CLI["spanda entity *"]
+    CC["Control Center Entities tab"]
+    GRPC["gRPC ControlCenter"]
+  end
   TOML --> BUILD --> REG
-  REG --> API
-  REG --> CC
+  REG --> VR
+  REG --> RD
+  REG --> HL
+  REG --> TR
+  VR --> API
+  RD --> API
+  HL --> API
+  TR --> API
+  API --> CLI
+  API --> CC
+  API --> GRPC
 ```
 
 Domain types (`DeviceIdentityRecord`, `HumanEntity`, `RobotNode`, …) remain TOML source of truth. The entity layer adds shared health, readiness, trust, relationships, and query semantics without breaking existing APIs.
 
-See [entity-model.md](./entity-model.md) · [entity-registry.md](./entity-registry.md) · [entity-graph.md](./entity-graph.md).
+See [entity-model.md](./entity-model.md) · [entity-verification.md](./entity-verification.md) · [entity-registry.md](./entity-registry.md) · [entity-graph.md](./entity-graph.md).
 
 ---
 

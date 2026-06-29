@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Docs sync:** gRPC entity RPC parity reflected in `control-center-api.md`, `test-plan.md`, `stable-hardening-enterprise-ops.md`, and `enterprise-operations-roadmap.md` (82 RPCs, proto semver 1.0.2).
+- **Docs sync:** gRPC entity RPC parity reflected in `control-center-api.md`, `test-plan.md`, `stable-hardening-enterprise-ops.md`, and `enterprise-operations-roadmap.md` (83 RPCs, proto semver 1.0.3).
 - **Product roadmap restructure:** Canonical roadmap moved to root [ROADMAP.md](ROADMAP.md) — organized into 8 Platform Pillars, 14 Official Solution Blueprints, feature ownership model, dependency diagrams, and maturity-based timeline (Now / Next / Later / Long Term / Research). [docs/roadmap.md](docs/roadmap.md) is now a redirect; migration notes in [docs/roadmap-migration.md](docs/roadmap-migration.md). README navigation updated for product ecosystem presentation.
 - **README slim-down:** Root [README.md](README.md) now keeps only the landing intro, code sample, quick start, and doc links; detailed sections moved to [docs/overview/](docs/overview/README.md) subpages (flagship demos, audience paths, platform map, feature snapshot, signature capabilities, what Spanda is/is not).
 
@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Entity model examples (Phase 15):** eight runnable programs under `examples/entity/` (graph, query, relationships, health, readiness, trust, traceability, verify) with type-checked `.sd` sources.
+- **gRPC `VerifyEntity`:** proto semver **1.0.3**, **83 RPCs**; `GrpcClient::entity_verify` parity with `POST /v1/entities/{id}/verify`.
 - **Entity readiness, health, and trust integration (Phases 3–5):** `evaluate_entity_readiness`, `evaluate_entity_health`, and `evaluate_entity_trust` route operational engines through `EntityRegistry`; enriched `GET /v1/entities/{id}/health|readiness|trust` with `report` payloads; CLI evaluation parity; guides [entity-readiness.md](docs/entity-readiness.md), [entity-health.md](docs/entity-health.md), [entity-trust.md](docs/entity-trust.md), [entity-best-practices.md](docs/entity-best-practices.md), [entity-migration-guide.md](docs/entity-migration-guide.md).
 - **Entity verification integration (Phase 2):** unified `verify_entity` engine in `spanda-readiness` routes hardware, mission, fleet, device pool, quarantine, and config validation through `EntityRegistry`; `POST /v1/entities/{id}/verify`; `spanda entity` CLI (`list`, `inspect`, `graph`, `relationships`, `traceability`, `readiness`, `health`, `trust`, `verify`, `query`, `search`); SDK `entity_verify` / `verifyEntity`; docs [entity-verification.md](docs/entity-verification.md) and [entity-integration-report.md](docs/entity-integration-report.md); `examples/entity/` samples.
 - **gRPC entity model parity:** nine new `ControlCenter` RPCs — `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`, `RegisterEntity`, `TagEntity`, `RelateEntities`, `SyncEntities` (proto semver **1.0.2**, 82 RPCs); JSON-RPC gateway read paths for graph/traceability/query/relationships/readiness; `GrpcClient` helpers with `SPANDA_API_KEY` Bearer on mutations; warehouse fixture tests in `grpc_tests.rs`.

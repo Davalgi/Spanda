@@ -90,7 +90,7 @@ Entity
 - **Verify:** `spanda entity verify rover-001` · `POST /v1/entities/{id}/verify`
 - **Graph:** `spanda entity graph` · `GET /v1/entities/graph`
 
-Guide: [docs/entity-model.md](docs/entity-model.md) · Verification: [docs/entity-verification.md](docs/entity-verification.md)
+Guide: [docs/entity-model.md](docs/entity-model.md) · Examples: [examples/entity/](examples/entity/) · Verification: [docs/entity-verification.md](docs/entity-verification.md)
 
 ---
 

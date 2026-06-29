@@ -10,7 +10,7 @@ For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-r
 |-----------|--------|
 | REST | `http://host:8080/v1/*` |
 | OpenAPI | `GET /v1/openapi.json` |
-| gRPC | `ControlCenter` service — **82 RPCs**, proto semver **1.0.2** (`proto/spanda/v1/control_center.proto`); pin via `GET /v1/version` → `grpc` |
+| gRPC | `ControlCenter` service — **83 RPCs**, proto semver **1.0.3** (`proto/spanda/v1/control_center.proto`); pin via `GET /v1/version` → `grpc` |
 | WebSocket | `WS /v1/stream/telemetry` |
 | JSON-RPC gateway | `POST /v1/rpc` |
 
@@ -59,7 +59,7 @@ Read endpoints are unauthenticated by default; mutations require Bearer `SPANDA_
 | `GET /v1/entities/{id}/health` | — | Health snapshot |
 | `GET /v1/entities/{id}/readiness` | — | Readiness snapshot |
 | `GET /v1/entities/{id}/trust` | — | Trust and security metadata |
-| `POST /v1/entities/{id}/verify` | — | Unified entity verification (hardware, mission, fleet, device pool) |
+| `POST /v1/entities/{id}/verify` | — | Unified entity verification |
 | `POST /v1/entities/register` | Bearer | Register or update entity overlay |
 | `POST /v1/entities/{id}/tags` | Bearer | Add or remove tags |
 | `POST /v1/entities/relationships` | Bearer | Relate two entities |
@@ -78,6 +78,7 @@ Read endpoints are unauthenticated by default; mutations require Bearer `SPANDA_
 | `QueryEntities` | `POST /v1/entities/query` |
 | `GetEntityRelationships` | `GET /v1/entities/{id}/relationships` |
 | `GetEntityReadiness` | `GET /v1/entities/{id}/readiness` |
+| `VerifyEntity` | `POST /v1/entities/{id}/verify` |
 | `RegisterEntity` | `POST /v1/entities/register` |
 | `TagEntity` | `POST /v1/entities/{id}/tags` |
 | `RelateEntities` | `POST /v1/entities/relationships` |
@@ -139,7 +140,7 @@ gRPC-compatible JSON gateway for clients without tonic. Example:
 }
 ```
 
-Supported SDK methods include program ops (`EvaluateProgramReadiness`, `EvaluateProgramAssure`, `EvaluateProgramDiagnose`, `EvaluateProgramHeal`, `VerifyProgramHardware`, `VerifyProgramCapabilities`, `VerifyProgramMission`, `RunProgramSimulation`, `ReplayProgram`, `GetTrustProgram`) and entity reads (`ListEntities`, `GetEntity`, `GetEntityHealth`, `GetEntityTrust`, `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`). Entity mutations are **gRPC-only** (not exposed on the JSON-RPC gateway).
+Supported SDK methods include program ops (`EvaluateProgramReadiness`, `EvaluateProgramAssure`, `EvaluateProgramDiagnose`, `EvaluateProgramHeal`, `VerifyProgramHardware`, `VerifyProgramCapabilities`, `VerifyProgramMission`, `RunProgramSimulation`, `ReplayProgram`, `GetTrustProgram`) and entity reads (`ListEntities`, `GetEntity`, `GetEntityHealth`, `GetEntityTrust`, `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`, `VerifyEntity`). Entity mutations are **gRPC-only** (not exposed on the JSON-RPC gateway).
 
 ## Event types (WebSocket)
 

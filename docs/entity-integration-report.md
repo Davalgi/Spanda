@@ -1,11 +1,11 @@
-# Entity Model Integration Report — Phase 2 (Verification)
+# Entity Model Integration Report
 
 **Date:** 2026-06-28  
-**Status:** Shipped (Experimental tier)
+**Status:** Shipped (Experimental tier) — Phases 1–17 complete; Phase 18 validated in CI
 
 ## Summary
 
-Phase 2 integrates all verification engines with the Unified Entity Model. Every managed object can be verified through `verify_entity`, which routes to kind-appropriate engines while preserving existing APIs and CLI commands.
+The Unified Entity Model integrates registry, graph, query, traceability, verification, readiness, health, and trust across REST, gRPC, CLI, SDKs, and Control Center. Every managed object routes through `EntityRegistry` while preserving existing program- and device-level APIs.
 
 ## Deliverables
 
@@ -102,8 +102,9 @@ scripts/entity_model_smoke.sh
 | 10 | CLI entity commands | ✅ Shipped |
 | 11 | Entity Query Language | ✅ Shipped |
 | 12 | Traceability | ✅ Shipped |
-| 13–17 | Documentation & diagrams | ✅ Core entity guides shipped |
-| 18 | Full workspace validation | Ongoing in CI |
+| 13–17 | Documentation & diagrams | ✅ Shipped (overview, guides, architecture, examples) |
+| 15 | Example programs | ✅ `examples/entity/*.sd` (8 programs) |
+| 18 | Full workspace validation | ✅ fmt, clippy, grpc + entity smoke in CI |
 
 ## Stable promotion
 
