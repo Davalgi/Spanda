@@ -544,14 +544,23 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadSmartSpaces = async () => {
     setBusy(true);
     try {
-      const [summaryRes, readinessRes] = await Promise.all([
+      const [summaryRes, readinessRes, dashboardRes, occupancyRes] = await Promise.all([
         fetch(`${base}/v1/smart-spaces/summary`),
         fetch(`${base}/v1/facilities/tower-demo/readiness`).catch(() =>
           fetch(`${base}/v1/facilities/home-demo/readiness`),
         ),
+        fetch(`${base}/v1/dashboard`),
+        fetch(`${base}/v1/zones/floor-12/occupancy`).catch(() =>
+          fetch(`${base}/v1/zones/room-living/occupancy`),
+        ),
       ]);
       if (!summaryRes.ok) throw new Error(`smart-spaces summary ${summaryRes.status}`);
-      setSmartSpacesSummary(await summaryRes.json());
+      const summary = await summaryRes.json();
+      setSmartSpacesSummary({
+        ...summary,
+        dashboard: dashboardRes.ok ? await dashboardRes.json() : null,
+        occupancy: occupancyRes.ok ? await occupancyRes.json() : null,
+      });
       if (readinessRes.ok) {
         setSmartSpacesReadiness(await readinessRes.json());
       }
@@ -1810,37 +1819,152 @@ export function ControlCenterPanel({ apiBase }: Props) {
           </p>
           {smartSpacesSummary ? (
             <>
-              <dl>
-                <dt>Facilities</dt>
-                <dd>
-                  {String(
-                    (smartSpacesSummary.facilities as { count?: number } | undefined)?.count ?? "—",
-                  )}
-                </dd>
-                <dt>Energy systems</dt>
-                <dd>
-                  {String(
-                    (smartSpacesSummary.energy as { count?: number } | undefined)?.count ?? "—",
-                  )}
-                </dd>
-                <dt>Readiness profile</dt>
-                <dd>{String(smartSpacesSummary.readiness_profile ?? "smart_space")}</dd>
-                <dt>Emergency status</dt>
-                <dd>
-                  {String(
-                    (smartSpacesSummary.emergency as { status?: string } | undefined)?.status ??
-                      "—",
-                  )}
-                </dd>
-              </dl>
-              <h3>Summary</h3>
-              <pre>{JSON.stringify(smartSpacesSummary, null, 2)}</pre>
-              {smartSpacesReadiness && (
-                <>
-                  <h3>Facility readiness</h3>
-                  <pre>{JSON.stringify(smartSpacesReadiness, null, 2)}</pre>
-                </>
-              )}
+              {(() => {
+                const facilities = (smartSpacesSummary.facilities as Record<string, unknown>) ?? {};
+                const energy = (smartSpacesSummary.energy as Record<string, unknown>) ?? {};
+                const emergency = (smartSpacesSummary.emergency as Record<string, unknown>) ?? {};
+                const dashboard = smartSpacesSummary.dashboard as Record<string, unknown> | null;
+                const pool = (dashboard?.device_pool as Record<string, unknown>) ?? {};
+                const facilityRows =
+                  (facilities.facilities as Record<string, unknown>[]) ?? [];
+                const gatewayRows = (facilities.gateways as Record<string, unknown>[]) ?? [];
+                const zoneRows = (facilities.zones as Record<string, unknown>[]) ?? [];
+                const energyRows = (energy.systems as Record<string, unknown>[]) ?? [];
+                const continuity =
+                  (emergency.continuity_pairs as Record<string, unknown>[]) ?? [];
+                const occupancy = smartSpacesSummary.occupancy as Record<string, unknown> | null;
+                return (
+                  <>
+                    <dl>
+                      <dt>Facilities</dt>
+                      <dd>{String(facilities.count ?? facilityRows.length)}</dd>
+                      <dt>Gateways</dt>
+                      <dd>{gatewayRows.length}</dd>
+                      <dt>Zones</dt>
+                      <dd>{zoneRows.length}</dd>
+                      <dt>Energy systems</dt>
+                      <dd>{String(energy.count ?? energyRows.length)}</dd>
+                      <dt>Device pool healthy</dt>
+                      <dd>{String(pool.healthy ?? "—")}</dd>
+                      <dt>Readiness profile</dt>
+                      <dd>{String(smartSpacesSummary.readiness_profile ?? "smart_space")}</dd>
+                      <dt>Emergency status</dt>
+                      <dd>{String(emergency.status ?? "normal")}</dd>
+                    </dl>
+                    <h3>Buildings</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {facilityRows.map((f) => (
+                          <tr key={String(f.id)}>
+                            <td>{String(f.id)}</td>
+                            <td>{String(f.name ?? "—")}</td>
+                            <td>{String(f.facility_type ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <h3>Gateways</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Role</th>
+                          <th>Provider</th>
+                          <th>Failover</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {gatewayRows.map((g) => (
+                          <tr key={String(g.id)}>
+                            <td>{String(g.id)}</td>
+                            <td>{String(g.role ?? "—")}</td>
+                            <td>{String(g.provider ?? "—")}</td>
+                            <td>{String(g.failover_from ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <h3>Rooms &amp; zones</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Facility</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {zoneRows.map((z) => (
+                          <tr key={String(z.id)}>
+                            <td>{String(z.id)}</td>
+                            <td>{String(z.name ?? "—")}</td>
+                            <td>{String(z.facility ?? "—")}</td>
+                            <td>{String(z.type ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <h3>Energy</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Type</th>
+                          <th>Provider</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {energyRows.map((s) => (
+                          <tr key={String(s.id)}>
+                            <td>{String(s.id)}</td>
+                            <td>{String(s.type ?? "—")}</td>
+                            <td>{String(s.provider ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {occupancy && (
+                      <>
+                        <h3>Sample occupancy</h3>
+                        <pre>{JSON.stringify(occupancy, null, 2)}</pre>
+                      </>
+                    )}
+                    {smartSpacesReadiness && (
+                      <>
+                        <h3>Facility readiness</h3>
+                        <pre>{JSON.stringify(smartSpacesReadiness, null, 2)}</pre>
+                      </>
+                    )}
+                    <h3>Emergency &amp; continuity</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Primary</th>
+                          <th>Backup</th>
+                          <th>On failure</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {continuity.map((pair, idx) => (
+                          <tr key={idx}>
+                            <td>{String(pair.primary ?? "—")}</td>
+                            <td>{String(pair.backup ?? "—")}</td>
+                            <td>{String(pair.on_failure ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                );
+              })()}
             </>
           ) : (
             <p>Load with the Smart Spaces blueprint configuration.</p>

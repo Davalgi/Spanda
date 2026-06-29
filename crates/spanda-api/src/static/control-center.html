@@ -697,6 +697,17 @@
         const energyRows = (energy.systems || []).map((s) =>
           `<tr><td>${s.id}</td><td>${s.type || "—"}</td><td>${s.provider || "—"}</td></tr>`
         ).join("");
+        const zoneRows = (facilities.zones || []).map((z) =>
+          `<tr><td>${z.id}</td><td>${z.name || "—"}</td><td>${z.facility || "—"}</td><td>${z.type || "—"}</td></tr>`
+        ).join("");
+        const continuityRows = (emergency.continuity_pairs || []).map((c) =>
+          `<tr><td>${c.primary || "—"}</td><td>${c.backup || "—"}</td><td>${c.on_failure || "—"}</td></tr>`
+        ).join("");
+        let occupancyBlock = "";
+        try {
+          const occ = await api("/v1/zones/floor-12/occupancy");
+          occupancyBlock = `<h3>Sample occupancy (floor-12)</h3><pre>${JSON.stringify(occ, null, 2)}</pre>`;
+        } catch (_) { /* optional */ }
         document.getElementById("tab-smart-spaces").innerHTML = `
           <h2>Smart Spaces &amp; Ambient Intelligence</h2>
           <p class="subtitle">Serve with <code>--config examples/solutions/smart-spaces/spanda.toml --program smart-building/floor_readiness.sd</code></p>
@@ -714,11 +725,14 @@
           <table><thead><tr><th>ID</th><th>Role</th><th>Provider</th><th>Failover</th></tr></thead><tbody>${gatewayRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
           <h3>Energy</h3>
           <table><thead><tr><th>ID</th><th>Type</th><th>Provider</th></tr></thead><tbody>${energyRows || "<tr><td colspan=3>none</td></tr>"}</tbody></table>
+          <h3>Rooms &amp; zones</h3>
+          <table><thead><tr><th>ID</th><th>Name</th><th>Facility</th><th>Type</th></tr></thead><tbody>${zoneRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
+          ${occupancyBlock}
           <h3>Facility readiness</h3>
           <pre>${JSON.stringify(readiness, null, 2)}</pre>
           <h3>Emergency &amp; continuity</h3>
-          <pre>${JSON.stringify(emergency, null, 2)}</pre>
-          <p>API: <code>GET /v1/facilities</code> · <code>GET /v1/energy/systems</code> · <code>GET /v1/emergency/status</code> · <code>GET /v1/zones/{id}/occupancy</code></p>`;
+          <table><thead><tr><th>Primary</th><th>Backup</th><th>On failure</th></tr></thead><tbody>${continuityRows || "<tr><td colspan=3>none</td></tr>"}</tbody></table>
+          <p>API: <code>GET /v1/smart-spaces/summary</code> · <code>GET /v1/facilities</code> · <code>GET /v1/energy/systems</code> · <code>GET /v1/emergency/status</code> · <code>GET /v1/zones/{id}/occupancy</code></p>`;
       } catch (e) {
         document.getElementById("tab-smart-spaces").innerHTML = `
           <h2>Smart Spaces</h2>
