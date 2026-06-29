@@ -1,0 +1,1037 @@
+{
+  "version": "2.0",
+  "layers": [
+    {
+      "id": "foundation",
+      "index": 0,
+      "title": "Foundation",
+      "description": "Utilities, logging, configuration primitives, serialization, diagnostics, common types."
+    },
+    {
+      "id": "compiler",
+      "index": 1,
+      "title": "Compiler",
+      "description": "Lexer, parser, AST, type checker, SIR, optimizers, LLVM/WASM backends, compile-time tooling."
+    },
+    {
+      "id": "language_runtime",
+      "index": 2,
+      "title": "Language Runtime",
+      "description": "Scheduler, trigger engine, interpreter, execution engine, concurrency, task system, comm, safety, HAL."
+    },
+    {
+      "id": "core_platform",
+      "index": 3,
+      "title": "Core Platform",
+      "description": "Entity model, device registry, capability framework, hardware profiles, mission model, config, provider/package registries, transport."
+    },
+    {
+      "id": "platform_services",
+      "index": 4,
+      "title": "Platform Services",
+      "description": "Readiness, assurance, diagnosis, recovery, trust, health, security services, telemetry, simulation hooks, replay, policy."
+    },
+    {
+      "id": "interfaces",
+      "index": 5,
+      "title": "Interfaces",
+      "description": "Control Center, SDKs, REST API, gRPC, CLI, VS Code extension, WASM/Node bindings, public facade."
+    },
+    {
+      "id": "solution_blueprints",
+      "index": 6,
+      "title": "Solution Blueprints",
+      "description": "Industry compositions (warehouse, SAR, ADAS, healthcare, agriculture, …) — no new platform features."
+    }
+  ],
+  "rust_crates": {
+    "spanda-audit": {
+      "layer": "foundation",
+      "owner": "security-audit",
+      "responsibility": "Audit records",
+      "provenance": null,
+      "ledger abstractions.": null
+    },
+    "spanda-connectivity": {
+      "layer": "foundation",
+      "owner": "connectivity",
+      "responsibility": "Connectivity and positioning type catalogs."
+    },
+    "spanda-deploy-http": {
+      "layer": "foundation",
+      "owner": "fleet-ota",
+      "responsibility": "Minimal HTTP/1.1 for deploy and fleet agents."
+    },
+    "spanda-regex-lang": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "First-class regex compilation."
+    },
+    "spanda-ast": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "AST nodes",
+      "foundations": null,
+      "comm declarations.": null
+    },
+    "spanda-lexer": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "Tokenization and keywords."
+    },
+    "spanda-parser": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "AST construction from tokens."
+    },
+    "spanda-typecheck": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "Physical units and type system."
+    },
+    "spanda-error": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "Compiler and runtime error types."
+    },
+    "spanda-sir": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "Typed IR between AST and backends."
+    },
+    "spanda-modules": {
+      "layer": "compiler",
+      "owner": "compiler",
+      "responsibility": "Multi-file module loader."
+    },
+    "spanda-format": {
+      "layer": "compiler",
+      "owner": "tooling",
+      "responsibility": "Source formatter."
+    },
+    "spanda-lint": {
+      "layer": "compiler",
+      "owner": "tooling",
+      "responsibility": "Static analysis linter."
+    },
+    "spanda-codegen": {
+      "layer": "compiler",
+      "owner": "tooling",
+      "responsibility": "Codegen metadata from SIR."
+    },
+    "spanda-docs": {
+      "layer": "compiler",
+      "owner": "tooling",
+      "responsibility": "Program and language reference generators."
+    },
+    "spanda-llvm": {
+      "layer": "compiler",
+      "owner": "codegen",
+      "responsibility": "SIR → LLVM IR emitter (experimental)."
+    },
+    "spanda-rt": {
+      "layer": "compiler",
+      "owner": "codegen",
+      "responsibility": "Native runtime C ABI (experimental)."
+    },
+    "spanda-runtime": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Scheduler",
+      "provider types": null,
+      "runtime state.": null
+    },
+    "spanda-interpreter": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Tree-walking interpreter and simulator."
+    },
+    "spanda-runtime-host": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Default RuntimeHost wiring."
+    },
+    "spanda-comm": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Comm bus trait and in-memory transport."
+    },
+    "spanda-safety": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Safety monitor",
+      "zones": null,
+      "motion validation.": null
+    },
+    "spanda-hal": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "HAL simulation",
+      "SoC profiles": null,
+      "health hooks.": null
+    },
+    "spanda-concurrency": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Channels",
+      "spawn": null,
+      "select.": null
+    },
+    "spanda-debug": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Debugger and breakpoints."
+    },
+    "spanda-ai": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "AI model registry and agent runtime."
+    },
+    "spanda-connectivity-runtime": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Runtime helpers from AST connectivity declarations."
+    },
+    "spanda-bridge": {
+      "layer": "language_runtime",
+      "owner": "ffi",
+      "responsibility": "Python/C++ extern bridges."
+    },
+    "spanda-ffi": {
+      "layer": "language_runtime",
+      "owner": "ffi",
+      "responsibility": "Extern function registry."
+    },
+    "spanda-lib-registry": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Sensor driver library registry."
+    },
+    "spanda-driver": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "Lex → parse → type-check → run orchestration."
+    },
+    "spanda-config": {
+      "layer": "core_platform",
+      "owner": "entity-config",
+      "responsibility": "Entity model",
+      "cascading TOML config": null,
+      "device tree": null,
+      "validation.": null
+    },
+    "spanda-hardware": {
+      "layer": "core_platform",
+      "owner": "hardware",
+      "responsibility": "Builtin hardware profile catalog."
+    },
+    "spanda-capability": {
+      "layer": "core_platform",
+      "owner": "capability",
+      "responsibility": "Capability registry",
+      "traceability": null,
+      "health analysis.": null
+    },
+    "spanda-certify": {
+      "layer": "core_platform",
+      "owner": "verify",
+      "responsibility": "Deploy certification proof checklist."
+    },
+    "spanda-package": {
+      "layer": "core_platform",
+      "owner": "packages",
+      "responsibility": "Manifest",
+      "dependency resolution": null,
+      "registry.": null
+    },
+    "spanda-providers": {
+      "layer": "core_platform",
+      "owner": "providers",
+      "responsibility": "Official package bootstrap and transport wiring."
+    },
+    "spanda-transport": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "Adapter traits",
+      "security policy": null,
+      "TLS.": null
+    },
+    "spanda-transport-routing": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "RoutingCommBus across adapters."
+    },
+    "spanda-transport-mqtt": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "MQTT backend."
+    },
+    "spanda-transport-ros2": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "ROS 2 backend."
+    },
+    "spanda-transport-dds": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "DDS backend."
+    },
+    "spanda-transport-websocket": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "WebSocket backend."
+    },
+    "spanda-ros2-rclrs-native": {
+      "layer": "core_platform",
+      "owner": "transport",
+      "responsibility": "Native ROS 2 I/O via rclrs (optional)."
+    },
+    "spanda-fleet": {
+      "layer": "core_platform",
+      "owner": "fleet",
+      "responsibility": "Fleet peer relay and mesh coordination."
+    },
+    "spanda-ota": {
+      "layer": "core_platform",
+      "owner": "fleet",
+      "responsibility": "OTA planning",
+      "agents": null,
+      "rollout.": null
+    },
+    "spanda-core": {
+      "layer": "core_platform",
+      "owner": "platform",
+      "responsibility": "Stable public facade for external embedders."
+    },
+    "spanda-readiness": {
+      "layer": "platform_services",
+      "owner": "readiness",
+      "responsibility": "Operational readiness and mission verification."
+    },
+    "spanda-assurance": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Mission assurance and deployment evidence."
+    },
+    "spanda-explain": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "Explainability and failure reports."
+    },
+    "spanda-runtime-faults": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "Runtime fault detection."
+    },
+    "spanda-decision": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "Decision audit trail parsing."
+    },
+    "spanda-graph": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "Dependency graph and entity alignment visualization."
+    },
+    "spanda-diff": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "Mission differencing and change impact."
+    },
+    "spanda-contract": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Mission contract static verification."
+    },
+    "spanda-score": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Autonomous systems scorecard."
+    },
+    "spanda-compliance": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Industry compliance profiles."
+    },
+    "spanda-chaos": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Chaos engineering experiments."
+    },
+    "spanda-estimate": {
+      "layer": "platform_services",
+      "owner": "assurance",
+      "responsibility": "Mission resource estimation."
+    },
+    "spanda-policy": {
+      "layer": "platform_services",
+      "owner": "policy",
+      "responsibility": "Operational policy evaluation."
+    },
+    "spanda-tamper": {
+      "layer": "platform_services",
+      "owner": "security",
+      "responsibility": "Tamper and integrity analysis."
+    },
+    "spanda-trust": {
+      "layer": "platform_services",
+      "owner": "trust",
+      "responsibility": "Composite program trust scoring."
+    },
+    "spanda-spoofing": {
+      "layer": "platform_services",
+      "owner": "security",
+      "responsibility": "GPS/sensor spoofing detection."
+    },
+    "spanda-threat": {
+      "layer": "platform_services",
+      "owner": "security",
+      "responsibility": "Pre-deployment threat modeling."
+    },
+    "spanda-security": {
+      "layer": "platform_services",
+      "owner": "security",
+      "responsibility": "Identity",
+      "secrets": null,
+      "capabilities": null,
+      "signed messages.": null
+    },
+    "spanda-telemetry-store": {
+      "layer": "platform_services",
+      "owner": "telemetry",
+      "responsibility": "Persistent append-only telemetry",
+      "replay substrate.": null
+    },
+    "spanda-ops": {
+      "layer": "platform_services",
+      "owner": "control-center",
+      "responsibility": "Alerting and incident routing."
+    },
+    "spanda-adr": {
+      "layer": "platform_services",
+      "owner": "dx",
+      "responsibility": "Architecture decision record generation."
+    },
+    "spanda-generate": {
+      "layer": "platform_services",
+      "owner": "dx",
+      "responsibility": "Guardrailed template generation."
+    },
+    "spanda-cli": {
+      "layer": "interfaces",
+      "owner": "cli",
+      "responsibility": "Native CLI — check",
+      "run": null,
+      "sim": null,
+      "verify": null,
+      "entity": null,
+      "fleet.": null
+    },
+    "spanda": {
+      "layer": "interfaces",
+      "owner": "cli",
+      "responsibility": "Native CLI package name (crates/spanda-cli)."
+    },
+    "spanda-api": {
+      "layer": "interfaces",
+      "owner": "control-center",
+      "responsibility": "REST and gRPC Control Center API v1."
+    },
+    "spanda-sdk": {
+      "layer": "interfaces",
+      "owner": "sdk",
+      "responsibility": "Official Rust SDK for Control Center API."
+    },
+    "spanda-node": {
+      "layer": "interfaces",
+      "owner": "bindings",
+      "responsibility": "Node.js N-API bindings."
+    },
+    "spanda-wasm": {
+      "layer": "interfaces",
+      "owner": "bindings",
+      "responsibility": "WebAssembly bindings."
+    },
+    "spanda-dap": {
+      "layer": "interfaces",
+      "owner": "bindings",
+      "responsibility": "Debug Adapter Protocol server."
+    }
+  },
+  "typescript_packages": {
+    "src": {
+      "layer": "language_runtime",
+      "owner": "runtime",
+      "responsibility": "TypeScript mirror of lean-core runtime and compiler."
+    },
+    "packages/lsp": {
+      "layer": "interfaces",
+      "owner": "tooling",
+      "responsibility": "Language Server Protocol for .sd files."
+    },
+    "packages/web": {
+      "layer": "interfaces",
+      "owner": "control-center",
+      "responsibility": "Control Center React panel and web playground."
+    },
+    "packages/native": {
+      "layer": "interfaces",
+      "owner": "bindings",
+      "responsibility": "N-API wrapper around spanda-node."
+    },
+    "packages/control-center-desktop": {
+      "layer": "interfaces",
+      "owner": "control-center",
+      "responsibility": "Tauri desktop Control Center shell."
+    },
+    "sdk/typescript": {
+      "layer": "interfaces",
+      "owner": "sdk",
+      "responsibility": "Official TypeScript SDK for Control Center API."
+    },
+    "sdk/python": {
+      "layer": "interfaces",
+      "owner": "sdk",
+      "responsibility": "Official Python SDK for Control Center API."
+    },
+    "editor/vscode": {
+      "layer": "interfaces",
+      "owner": "tooling",
+      "responsibility": "VS Code extension (syntax",
+      "LSP": null,
+      "debug).": null
+    }
+  },
+  "solution_blueprints": [
+    {
+      "path": "examples/solutions/warehouse",
+      "name": "Warehouse"
+    },
+    {
+      "path": "examples/solutions/sar",
+      "name": "Search and Rescue"
+    },
+    {
+      "path": "examples/solutions/adas",
+      "name": "ADAS"
+    },
+    {
+      "path": "examples/solutions/healthcare",
+      "name": "Healthcare"
+    },
+    {
+      "path": "examples/solutions/agriculture",
+      "name": "Agriculture"
+    },
+    {
+      "path": "examples/solutions/environmental-monitoring",
+      "name": "Environmental Monitoring"
+    },
+    {
+      "path": "examples/solutions/maritime",
+      "name": "Maritime"
+    },
+    {
+      "path": "examples/solutions/spatial-computing",
+      "name": "Spatial Computing"
+    }
+  ],
+  "canonical_entity_types": {
+    "owner_crate": "spanda-config",
+    "primary_types": [
+      "EntityRecord",
+      "EntityRegistry",
+      "EntityGraph",
+      "EntityQuery",
+      "EntityRelationship",
+      "EntityKind"
+    ],
+    "specialized_kinds": [
+      "Robot",
+      "Mission",
+      "Package",
+      "Provider",
+      "Human",
+      "Device",
+      "Fleet",
+      "Wearable",
+      "Facility"
+    ],
+    "forbidden_duplicates": [
+      "RobotRecord",
+      "DeviceRecord",
+      "MissionRecord",
+      "FleetRecord"
+    ]
+  },
+  "event_types": {
+    "namespace": "spanda.events",
+    "categories": {
+      "entity": [
+        "EntityCreated",
+        "EntityUpdated",
+        "EntityDeleted",
+        "EntityTagged",
+        "EntityRelated"
+      ],
+      "health": [
+        "HealthChanged",
+        "HealthCheckFailed",
+        "DegradedModeEntered"
+      ],
+      "readiness": [
+        "ReadinessChanged",
+        "ReadinessGateFailed"
+      ],
+      "mission": [
+        "MissionStarted",
+        "MissionCompleted",
+        "MissionAborted",
+        "MissionPaused"
+      ],
+      "recovery": [
+        "RecoveryTriggered",
+        "RecoveryCompleted",
+        "RecoveryFailed"
+      ],
+      "trust": [
+        "TrustUpdated",
+        "TrustGateFailed"
+      ],
+      "security": [
+        "TamperDetected",
+        "SpoofingDetected",
+        "SecretRotated",
+        "AuthFailed"
+      ],
+      "package": [
+        "PackageInstalled",
+        "PackageRemoved",
+        "PackageVerified"
+      ],
+      "telemetry": [
+        "TraceFrameRecorded",
+        "MetricEmitted",
+        "LogEmitted"
+      ],
+      "fleet": [
+        "FleetMemberJoined",
+        "FleetMemberLeft",
+        "OtaRolloutStarted",
+        "OtaRolloutCompleted"
+      ]
+    }
+  },
+  "dependency_waivers": [
+    {
+      "from": "spanda-driver",
+      "to": "spanda-certify",
+      "reason": "Compile pipeline invokes deploy certification during verify/run.",
+      "ticket": "ARCH-001"
+    },
+    {
+      "from": "spanda-driver",
+      "to": "spanda-interpreter",
+      "reason": "Driver orchestrates tree-walking execution.",
+      "ticket": "ARCH-002"
+    },
+    {
+      "from": "spanda-driver",
+      "to": "spanda-hardware",
+      "reason": "Hardware compatibility check integrated in compile/run path.",
+      "ticket": "ARCH-003"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-config",
+      "reason": "Runtime entity overlay and resolved system config at execution.",
+      "ticket": "ARCH-004"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-assurance",
+      "reason": "Mission assurance hooks during simulation and run.",
+      "ticket": "ARCH-005"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-capability",
+      "reason": "Capability traceability during runtime execution.",
+      "ticket": "ARCH-006"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-security",
+      "reason": "Runtime identity and signed message enforcement.",
+      "ticket": "ARCH-006"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-telemetry-store",
+      "reason": "Mission trace recording and replay substrate.",
+      "ticket": "ARCH-007"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-providers",
+      "reason": "Provider dispatch at runtime.",
+      "ticket": "ARCH-008"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-transport-routing",
+      "reason": "Live transport routing during execution.",
+      "ticket": "ARCH-009"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-runtime-faults",
+      "reason": "Runtime fault detection integration.",
+      "ticket": "ARCH-010"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-policy",
+      "reason": "Operational policy evaluation during run.",
+      "ticket": "ARCH-011"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-tamper",
+      "reason": "Tamper detection hooks during execution.",
+      "ticket": "ARCH-012"
+    },
+    {
+      "from": "spanda-capability",
+      "to": "spanda-driver",
+      "reason": "Capability analysis requires parsed program AST via driver.",
+      "ticket": "ARCH-013"
+    },
+    {
+      "from": "spanda-certify",
+      "to": "spanda-driver",
+      "reason": "Certification checklist uses compile pipeline.",
+      "ticket": "ARCH-014"
+    },
+    {
+      "from": "spanda-assurance",
+      "to": "spanda-readiness",
+      "reason": "Assurance consumes readiness evaluation (same-layer service composition).",
+      "ticket": "ARCH-015"
+    },
+    {
+      "from": "spanda-readiness",
+      "to": "spanda-security",
+      "reason": "Readiness gates include security posture checks.",
+      "ticket": "ARCH-016"
+    },
+    {
+      "from": "spanda-parser",
+      "to": "spanda-connectivity-runtime",
+      "reason": "Parser validates connectivity declarations against runtime types.",
+      "ticket": "ARCH-017"
+    },
+    {
+      "from": "spanda-sir",
+      "to": "spanda-driver",
+      "reason": "SIR lowering uses driver pipeline context.",
+      "ticket": "ARCH-018"
+    },
+    {
+      "from": "spanda-runtime-host",
+      "to": "spanda-security",
+      "reason": "RuntimeHost wires security providers.",
+      "ticket": "ARCH-019"
+    },
+    {
+      "from": "spanda-runtime-host",
+      "to": "spanda-package",
+      "reason": "RuntimeHost resolves installed packages.",
+      "ticket": "ARCH-020"
+    },
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-readiness",
+      "reason": "Fleet coordination consumes readiness state.",
+      "ticket": "ARCH-021"
+    },
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-assurance",
+      "reason": "Fleet operations require assurance evidence.",
+      "ticket": "ARCH-022"
+    },
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-interpreter",
+      "reason": "Fleet relay executes programs on peers.",
+      "ticket": "ARCH-023"
+    },
+    {
+      "from": "spanda-ota",
+      "to": "spanda-readiness",
+      "reason": "OTA rollout gated on readiness.",
+      "ticket": "ARCH-024"
+    },
+    {
+      "from": "spanda-providers",
+      "to": "spanda-audit",
+      "reason": "Provider bootstrap emits audit records.",
+      "ticket": "ARCH-025"
+    },
+    {
+      "from": "spanda-providers",
+      "to": "spanda-telemetry-store",
+      "reason": "Provider telemetry persistence.",
+      "ticket": "ARCH-026"
+    },
+    {
+      "from": "spanda-security",
+      "to": "spanda-audit",
+      "reason": "Security events written to audit ledger.",
+      "ticket": "ARCH-027"
+    },
+    {
+      "from": "spanda-tamper",
+      "to": "spanda-security",
+      "reason": "Tamper analysis uses security identity context.",
+      "ticket": "ARCH-028"
+    },
+    {
+      "from": "spanda-trust",
+      "to": "spanda-tamper",
+      "reason": "Trust score incorporates tamper signals.",
+      "ticket": "ARCH-029"
+    },
+    {
+      "from": "spanda-explain",
+      "to": "spanda-trust",
+      "reason": "Explainability includes trust context.",
+      "ticket": "ARCH-030"
+    },
+    {
+      "from": "spanda-score",
+      "to": "spanda-trust",
+      "reason": "Scorecard aggregates trust dimension.",
+      "ticket": "ARCH-031"
+    },
+    {
+      "from": "spanda-graph",
+      "to": "spanda-config",
+      "reason": "Entity graph alignment with registry.",
+      "ticket": "ARCH-032"
+    },
+    {
+      "from": "spanda-generate",
+      "to": "spanda-readiness",
+      "reason": "Template generation validates readiness templates.",
+      "ticket": "ARCH-033"
+    },
+    {
+      "from": "spanda-generate",
+      "to": "spanda-policy",
+      "reason": "Generated scaffolds include policy stubs.",
+      "ticket": "ARCH-034"
+    },
+    {
+      "from": "spanda-generate",
+      "to": "spanda-runtime-host",
+      "reason": "Generated programs target default RuntimeHost.",
+      "ticket": "ARCH-035"
+    },
+    {
+      "from": "spanda-codegen",
+      "to": "spanda-driver",
+      "reason": "Codegen metadata extraction uses compile pipeline.",
+      "ticket": "ARCH-201"
+    },
+    {
+      "from": "spanda-config",
+      "to": "spanda-security",
+      "reason": "Config validation includes security policy fragments.",
+      "ticket": "ARCH-202"
+    },
+    {
+      "from": "spanda-connectivity-runtime",
+      "to": "spanda-hardware",
+      "reason": "Connectivity runtime validates against hardware profiles.",
+      "ticket": "ARCH-203"
+    },
+    {
+      "from": "spanda-core",
+      "to": "spanda-security",
+      "reason": "Public facade re-exports security for embedders.",
+      "ticket": "ARCH-204"
+    },
+    {
+      "from": "spanda-docs",
+      "to": "spanda-lib-registry",
+      "reason": "Doc generator includes sensor driver registry reference.",
+      "ticket": "ARCH-205"
+    },
+    {
+      "from": "spanda-docs",
+      "to": "spanda-runtime-host",
+      "reason": "Doc generator includes RuntimeHost API surface.",
+      "ticket": "ARCH-206"
+    },
+    {
+      "from": "spanda-driver",
+      "to": "spanda-ota",
+      "reason": "Driver integrates OTA hooks for deploy workflows.",
+      "ticket": "ARCH-207"
+    },
+    {
+      "from": "spanda-error",
+      "to": "spanda-runtime",
+      "reason": "Error types reference runtime value representations.",
+      "ticket": "ARCH-208"
+    },
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-tamper",
+      "reason": "Fleet mesh includes tamper detection relay.",
+      "ticket": "ARCH-209"
+    },
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-telemetry-store",
+      "reason": "Fleet coordination persists telemetry events.",
+      "ticket": "ARCH-210"
+    },
+    {
+      "from": "spanda-format",
+      "to": "spanda-comm",
+      "reason": "Formatter preserves comm declaration layout.",
+      "ticket": "ARCH-211"
+    },
+    {
+      "from": "spanda-format",
+      "to": "spanda-driver",
+      "reason": "Format pipeline reuses driver parse path.",
+      "ticket": "ARCH-212"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-fleet",
+      "reason": "Interpreter executes fleet coordination builtins.",
+      "ticket": "ARCH-213"
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-transport",
+      "reason": "Interpreter uses transport traits for live I/O.",
+      "ticket": "ARCH-214"
+    },
+    {
+      "from": "spanda-llvm",
+      "to": "spanda-driver",
+      "reason": "LLVM backend shares driver compile context.",
+      "ticket": "ARCH-215"
+    },
+    {
+      "from": "spanda-ota",
+      "to": "spanda-telemetry-store",
+      "reason": "OTA rollout emits telemetry audit trail.",
+      "ticket": "ARCH-216"
+    },
+    {
+      "from": "spanda-transport",
+      "to": "spanda-security",
+      "reason": "Transport adapters enforce TLS and signed frames.",
+      "ticket": "ARCH-217"
+    },
+    {
+      "from": "spanda-transport-dds",
+      "to": "spanda-security",
+      "reason": "DDS backend uses security policy.",
+      "ticket": "ARCH-218"
+    },
+    {
+      "from": "spanda-transport-mqtt",
+      "to": "spanda-security",
+      "reason": "MQTT backend uses security policy.",
+      "ticket": "ARCH-219"
+    },
+    {
+      "from": "spanda-transport-routing",
+      "to": "spanda-security",
+      "reason": "RoutingCommBus enforces transport security.",
+      "ticket": "ARCH-220"
+    },
+    {
+      "from": "spanda-transport-websocket",
+      "to": "spanda-security",
+      "reason": "WebSocket backend uses security policy.",
+      "ticket": "ARCH-221"
+    },
+    {
+      "from": "spanda-core",
+      "to": "spanda-fleet",
+      "reason": "Public facade re-exports fleet for embedders.",
+      "ticket": "ARCH-036"
+    }
+  ],
+  "circular_dependency_waivers": [
+    {
+      "members": [
+        "spanda-assurance",
+        "spanda-capability",
+        "spanda-certify",
+        "spanda-config",
+        "spanda-connectivity-runtime",
+        "spanda-driver",
+        "spanda-fleet",
+        "spanda-hardware",
+        "spanda-interpreter",
+        "spanda-ota",
+        "spanda-package",
+        "spanda-parser",
+        "spanda-policy",
+        "spanda-providers",
+        "spanda-readiness",
+        "spanda-runtime-faults",
+        "spanda-runtime-host",
+        "spanda-security",
+        "spanda-sir",
+        "spanda-spoofing",
+        "spanda-tamper",
+        "spanda-threat",
+        "spanda-transport",
+        "spanda-transport-dds",
+        "spanda-transport-mqtt",
+        "spanda-transport-ros2",
+        "spanda-transport-routing",
+        "spanda-transport-websocket"
+      ],
+      "ticket": "ARCH-SCC-001",
+      "reason": "Compile-run-verify mesh SCC — refactor tracked in ARCH-2xx roadmap."
+    },
+    {
+      "cycle": [
+        "spanda-driver",
+        "spanda-certify",
+        "spanda-driver"
+      ],
+      "ticket": "ARCH-C01"
+    },
+    {
+      "cycle": [
+        "spanda-driver",
+        "spanda-hardware",
+        "spanda-driver"
+      ],
+      "ticket": "ARCH-C02"
+    },
+    {
+      "cycle": [
+        "spanda-driver",
+        "spanda-interpreter",
+        "spanda-assurance",
+        "spanda-capability",
+        "spanda-driver"
+      ],
+      "ticket": "ARCH-C03"
+    }
+  ]
+}
