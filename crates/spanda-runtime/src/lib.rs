@@ -1,6 +1,19 @@
 //! Spanda runtime kernel primitives extracted for the Phase 4 lean-core split.
 //!
+pub mod assurance_runtime;
 pub mod classification;
+pub mod fault_primitives;
+pub mod fault_runtime;
+pub mod fault_types;
+pub mod health_primitives;
+pub mod health_types;
+pub mod provider_runtime;
+pub mod security_primitives;
+pub mod security_runtime;
+pub mod security_types;
+pub mod telemetry_sink;
+pub mod continuity_primitives;
+pub mod continuity_types;
 pub mod environment;
 pub mod error;
 pub mod events;
@@ -12,6 +25,8 @@ pub mod operational_policy;
 pub mod provider_types;
 pub mod providers;
 pub mod reliability_runtime;
+pub mod recovery_primitives;
+pub mod recovery_types;
 pub mod replay;
 pub mod robot_state;
 pub mod robotics;
@@ -25,8 +40,69 @@ pub mod twin;
 pub mod value;
 pub mod world_model;
 
+pub use assurance_runtime::{
+    default_assurance_runtime, AssuranceRuntime, BuiltinAssuranceRuntime, SharedAssuranceRuntime,
+};
+pub use fault_primitives::{
+    empty_fault_scan_report, faults_from_hardware_signals, record_fault_in_trace,
+};
+pub use fault_runtime::{
+    default_fault_runtime, BuiltinFaultRuntime, FaultRuntime, SharedFaultRuntime,
+};
+pub use fault_types::{
+    FaultEvidence, FaultScanOptions, FaultScanReport, FaultTimeline, RuntimeFault,
+    RuntimeFaultKind, RuntimeHealth, RuntimeHealthStatus,
+};
+pub use health_primitives::{
+    apply_fleet_health_checks, evaluate_health_checks, evaluate_runtime_health,
+};
+pub use health_types::{
+    HealthCheckResult, HealthReport, HealthStatus, HealthTraceRow,
+};
+pub use provider_runtime::{
+    default_provider_runtime, BuiltinProviderRuntime, ProviderDispatchContext, ProviderRuntime,
+    SharedProviderRuntime,
+};
+pub use security_primitives::{
+    boundary_for_transport_name, bus_security_from_fields, effective_bus_security,
+    resolve_broker_url, validate_bus_security,
+};
+pub use security_runtime::{
+    default_security_runtime, default_security_runtime_factory, BuiltinSecurityRuntime,
+    SecurityRuntime, SecurityRuntimeFactory,
+};
+pub use security_types::{
+    AuthenticationMode, BusTransportSecurity, CommTransportSetup, EncryptionMode,
+    IntegrityMode, RobotIdentity, SecretHandle, SecretSource, SecureCommPolicy, SecurePolicy,
+    TrustBoundaryKind, TrustLevel,
+};
+pub use telemetry_sink::{
+    default_telemetry_sink, NoopTelemetrySink, SharedTelemetrySink, TelemetrySink,
+};
 pub use classification::{
     module_classifications, official_package_names, ModuleClassification, ModuleOwnership,
+};
+pub use continuity_primitives::{
+    default_checkpoint_store_path, extract_continuity_policies, issue_to_continuity_trigger,
+    load_checkpoint, load_checkpoint_store, parse_trigger, program_has_continuity_for_trigger,
+    record_checkpoint, save_checkpoint_store,
+};
+pub use continuity_types::{
+    ContinuationDecision, ContinuityCheckpointStore, ContinuityContext, ContinuityEvidence,
+    ContinuityPolicySpec, ContinuityTrigger, MissionCheckpoint, MissionExecutionState,
+    MissionStateSnapshot, MissionStateTransfer, SuccessionScope, TakeoverMode, TakeoverReport,
+};
+pub use recovery_primitives::{
+    classify_failure, default_knowledge_store_path, extract_recovery_policies,
+    issue_to_recovery_issue, load_recovery_knowledge_store, merge_recovery_knowledge,
+    program_has_recovery_for_issue, record_recovery_outcome, save_recovery_knowledge_store,
+};
+pub use recovery_types::{
+    FailureClassification, FleetRecoveryPlan, OperationalMode, PlannedRecoveryAction,
+    RecoveryAssuranceMetrics, RecoveryAuditRecord, RecoveryContext, RecoveryEvidence,
+    RecoveryKnowledgeBase, RecoveryKnowledgeEntry, RecoveryLevel, RecoveryPlan, RecoveryPolicySpec,
+    RecoveryReadiness, RecoveryReport, RecoveryResult, RecoveryStatus, RecoveryStrategy,
+    RecoveryTraceChain, SafeRecoveryAction, SelfCorrectionAction, ValidationGateResult,
 };
 pub use environment::Environment;
 pub use error::RuntimeError;
