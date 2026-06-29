@@ -760,18 +760,6 @@
       "ticket": "ARCH-010"
     },
     {
-      "from": "spanda-interpreter",
-      "to": "spanda-policy",
-      "reason": "Operational policy evaluation during run.",
-      "ticket": "ARCH-011"
-    },
-    {
-      "from": "spanda-interpreter",
-      "to": "spanda-tamper",
-      "reason": "Tamper detection hooks during execution.",
-      "ticket": "ARCH-012"
-    },
-    {
       "from": "spanda-capability",
       "to": "spanda-driver",
       "reason": "Capability analysis requires parsed program AST via driver.",
@@ -1057,7 +1045,6 @@
         "spanda-ota",
         "spanda-package",
         "spanda-parser",
-        "spanda-policy",
         "spanda-providers",
         "spanda-readiness",
         "spanda-runtime-faults",

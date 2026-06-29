@@ -10,7 +10,7 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 
 | Category | Waived | CI policy |
 |----------|--------|-----------|
-| Rust upward dependencies | 40 | Fail on new edges |
+| Rust upward dependencies | 38 | Fail on new edges |
 | Rust SCC (`ARCH-SCC-001`) | 27 crates | Fail on new SCC members |
 | TypeScript upward imports | 37 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
@@ -42,15 +42,17 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 
 ---
 
-## Phase 3 — Slim interpreter upward edges
+## Phase 3 — Slim interpreter upward edges (in progress)
 
 **Target:** Reduce `spanda-interpreter` platform-service imports (ARCH-004–ARCH-012)
 
-| Step | Action |
-|------|--------|
-| 1 | Introduce `RuntimeHooks` trait at runtime layer for optional assurance/telemetry/tamper |
-| 2 | Wire hooks from CLI/API layer, not inside interpreter core |
-| 3 | Remove direct `spanda-assurance`, `spanda-tamper`, `spanda-policy` deps from interpreter |
+| Step | Action | Status |
+|------|--------|--------|
+| 1 | Introduce `RuntimeHooks` trait at runtime layer for optional assurance/telemetry/tamper | Done (`spanda-runtime::hooks`) |
+| 2 | Move operational policy + tamper policy runtime to `spanda-runtime`; wire certify hooks from CLI | Done |
+| 3 | Remove direct `spanda-assurance`, `spanda-tamper`, `spanda-policy` deps from interpreter | Partial — policy/tamper removed; assurance remains for recovery/continuity |
+
+**Closed waivers:** `ARCH-011`, `ARCH-012`. **SCC:** `spanda-policy` dropped from `ARCH-SCC-001` member set.
 
 **Success:** Interpreter depends on core platform + runtime only; services injected at interface layer.
 
