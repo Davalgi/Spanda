@@ -19,6 +19,7 @@ mod device_cli;
 mod device_tree_cli;
 mod diff_cli;
 mod drift_cli;
+mod entity_cli;
 mod estimate_cli;
 mod explain_cli;
 mod fault_cli;
@@ -1583,6 +1584,12 @@ fn main() {
 
     if command == "device" {
         device_cli::device_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "entity" {
+        entity_cli::entity_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }
