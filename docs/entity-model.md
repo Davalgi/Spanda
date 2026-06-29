@@ -191,6 +191,14 @@ Cross-references:
 - [x] SDK `entity_verify` / `verifyEntity` on Rust, TypeScript, and Python clients
 - [x] CI smoke coverage in `scripts/entity_model_smoke.sh`
 
+### Phase 7 — Readiness, health, trust integration (Complete)
+
+- [x] `evaluate_entity_readiness` — kind-routed readiness with issues and score
+- [x] `evaluate_entity_health` — diagnostics, metrics, program health checks
+- [x] `evaluate_entity_trust` in `spanda-trust` — package, device, composite trust
+- [x] Enriched `GET /v1/entities/{id}/health|readiness|trust` with `report` payloads
+- [x] CLI `spanda entity health|readiness|trust` call evaluation engines locally
+
 ### Stabilization (Complete)
 
 - [x] CI smoke script `scripts/entity_model_smoke.sh` (graph, traceability, query, mutations, TypeScript + Python SDK)

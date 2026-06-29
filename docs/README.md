@@ -55,6 +55,11 @@
 | [entity-relationships.md](./entity-relationships.md) | **Entity relationship taxonomy** |
 | [entity-query-language.md](./entity-query-language.md) | **Entity query language — REST and JSON filters** |
 | [entity-verification.md](./entity-verification.md) | **Entity verification — unified verify(entity) engine** |
+| [entity-readiness.md](./entity-readiness.md) | **Entity readiness evaluation** |
+| [entity-health.md](./entity-health.md) | **Entity health diagnostics** |
+| [entity-trust.md](./entity-trust.md) | **Entity trust evaluation** |
+| [entity-best-practices.md](./entity-best-practices.md) | **Entity model best practices** |
+| [entity-migration-guide.md](./entity-migration-guide.md) | **Entity model migration guide** |
 | [entity-integration-report.md](./entity-integration-report.md) | **Entity model integration report (Phase 2)** |
 | [cascading-config.md](./cascading-config.md) | **Layered config overrides (base → environment → deployment → robot)** |
 | [device-tree.md](./device-tree.md) | **Fleet/device hierarchy and device identity in TOML** |

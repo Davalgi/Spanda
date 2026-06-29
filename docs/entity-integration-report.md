@@ -91,10 +91,10 @@ scripts/entity_model_smoke.sh
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 1 | Entity Registry Integration | ✅ Shipped |
-| 2 | Verification Integration | ✅ Shipped (this report) |
-| 3 | Readiness Integration | Partial — `GET …/readiness` exists; entity verify enriches |
-| 4 | Health Integration | Partial — `GET …/health` exists |
-| 5 | Trust Integration | Partial — `GET …/trust` exists |
+| 2 | Verification Integration | ✅ Shipped |
+| 3 | Readiness Integration | ✅ Shipped — `evaluate_entity_readiness` |
+| 4 | Health Integration | ✅ Shipped — `evaluate_entity_health` |
+| 5 | Trust Integration | ✅ Shipped — `evaluate_entity_trust` |
 | 6 | Relationship Graph | ✅ Shipped |
 | 7 | Control Center Entity Explorer | ✅ Entities tab shipped |
 | 8 | SDK EntityClient | ✅ Shipped + verify |
@@ -102,7 +102,7 @@ scripts/entity_model_smoke.sh
 | 10 | CLI entity commands | ✅ Shipped |
 | 11 | Entity Query Language | ✅ Shipped |
 | 12 | Traceability | ✅ Shipped |
-| 13–17 | Documentation & diagrams | In progress |
+| 13–17 | Documentation & diagrams | ✅ Core entity guides shipped |
 | 18 | Full workspace validation | Ongoing in CI |
 
 ## Stable promotion
