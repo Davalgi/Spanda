@@ -18,7 +18,8 @@ use spanda_config::EntityQuery;
 use spanda_deploy_http::HttpResponse;
 use spanda_hardware::VerifyOptions;
 use spanda_readiness::{
-    evaluate_readiness_with_runtime, verify_mission, ReadinessOptions, ReadinessReport,
+    evaluate_readiness_with_runtime, verify_entity, verify_mission, EntityVerifyOptions,
+    ReadinessOptions, ReadinessReport,
 };
 use spanda_trust::{evaluate_composite_trust, CompositeTrustOptions};
 use std::path::{Path, PathBuf};
@@ -418,6 +419,56 @@ pub fn entity_trust(state: &ControlCenterState, entity_id: &str) -> HttpResponse
     }))
 }
 
+/// Optional body for `POST /v1/entities/{id}/verify`.
+#[derive(Debug, Deserialize, Default)]
+pub struct EntityVerifyRequest {
+    #[serde(default)]
+    pub include_dependencies: bool,
+    pub file: Option<String>,
+}
+
+/// POST /v1/entities/{id}/verify — unified entity verification (CLI parity).
+pub fn entity_verify(state: &ControlCenterState, entity_id: &str, body: &str) -> HttpResponse {
+    let req: EntityVerifyRequest = if body.trim().is_empty() {
+        EntityVerifyRequest::default()
+    } else {
+        match serde_json::from_str(body) {
+            Ok(parsed) => parsed,
+            Err(error) => return bad_request(&format!("invalid JSON body: {error}")),
+        }
+    };
+    let Some(resolved) = state.resolved.as_ref() else {
+        return bad_request("control center has no resolved configuration");
+    };
+    let registry = state.entity_registry();
+    let program = resolve_verify_program(state, req.file.as_deref());
+    let now_ms = crate::correlation::now_ms();
+    let options = EntityVerifyOptions {
+        program,
+        now_ms,
+        include_dependencies: req.include_dependencies,
+    };
+    let Some(report) = verify_entity(entity_id, &registry, resolved, &options) else {
+        return entity_not_found(&format!("entity '{entity_id}' not found"));
+    };
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "verify": report,
+    }))
+}
+
+fn resolve_verify_program(
+    state: &ControlCenterState,
+    file_override: Option<&str>,
+) -> Option<spanda_ast::nodes::Program> {
+    let path = file_override
+        .map(PathBuf::from)
+        .or_else(|| state.program_path.clone())?;
+    parse_program_file(&path)
+        .ok()
+        .map(|(program, _, _)| program)
+}
+
 /// GET /v1/entities/graph — full entity graph for traversal and visualization.
 pub fn entity_graph(state: &ControlCenterState) -> HttpResponse {
     let graph = state.entity_registry().graph();
@@ -730,6 +781,11 @@ pub fn entity_relationships_json(state: &ControlCenterState, entity_id: &str) ->
 /// JSON body for gRPC `GetEntityReadiness`.
 pub fn entity_readiness_json(state: &ControlCenterState, entity_id: &str) -> String {
     entity_readiness(state, entity_id).body
+}
+
+/// JSON body for gRPC `VerifyEntity`.
+pub fn entity_verify_json(state: &ControlCenterState, entity_id: &str, body: &str) -> String {
+    entity_verify(state, entity_id, body).body
 }
 
 #[cfg(test)]

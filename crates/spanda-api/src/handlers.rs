@@ -946,6 +946,7 @@ fn route_sdk_entities(
             ("health", "GET") => Some(crate::sdk_ops::entity_health(state, entity_id)),
             ("readiness", "GET") => Some(crate::sdk_ops::entity_readiness(state, entity_id)),
             ("trust", "GET") => Some(crate::sdk_ops::entity_trust(state, entity_id)),
+            ("verify", "POST") => Some(crate::sdk_ops::entity_verify(state, entity_id, body)),
             ("relationships", "GET") => {
                 Some(crate::sdk_ops::entity_relationships(state, entity_id))
             }

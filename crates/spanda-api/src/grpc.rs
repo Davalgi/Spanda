@@ -10,9 +10,9 @@ pub mod spanda_v1 {
 
 use spanda_v1::control_center_server::{ControlCenter, ControlCenterServer};
 use spanda_v1::{
-    ApprovalBodyRequest, DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty, EntityBodyRequest,
-    EntityIdRequest, HealthResponse, IncidentBodyRequest, IncidentIdRequest, JsonBodyRequest,
-    JsonResponse, QueryRequest, ReadinessRequest, TrustPackageRequest,
+    ApprovalBodyRequest, DeviceBodyRequest, DeviceIdRequest, DriftRequest, Empty,
+    EntityBodyRequest, EntityIdRequest, HealthResponse, IncidentBodyRequest, IncidentIdRequest,
+    JsonBodyRequest, JsonResponse, QueryRequest, ReadinessRequest, TrustPackageRequest,
 };
 
 struct GrpcControlCenter {
