@@ -25,7 +25,9 @@ agriculture/
 ├── README.md
 ├── spanda.toml
 ├── field_patrol.sd          # Row patrol with geofence + connectivity recovery
-└── (planned) spray_mission.sd, harvest_convoy.sd
+├── spray_mission.sd         # Precision row spraying
+├── harvest_convoy.sd        # Lead + follow harvest fleet
+└── (planned) crop_monitor.sd
 ```
 
 ---

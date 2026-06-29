@@ -1,0 +1,52 @@
+// Precision spray — row application with reduced speed and nozzle safety gates
+//
+//   spanda check spray_mission.sd
+//   spanda verify spray_mission.sd --target FieldRobotV1
+
+hardware FieldRobotV1 {
+  cpu: CortexA55;
+  memory: 2 GB;
+  sensors [ GPS, IMU, Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 80 Wh; }
+}
+
+robot SprayRig {
+  sensor gps: GPS;
+  sensor imu: IMU;
+  sensor camera: Camera;
+  sensor lidar: Lidar;
+  actuator drive: DifferentialDrive;
+
+  exposes capabilities [ precision_spraying, row_following, geofence_compliance ];
+
+  safety {
+    max_speed = 0.6 m/s;
+    stop_if lidar.nearest_distance < 1.2 m;
+  }
+
+  mission SprayRows {
+    requires capabilities [ precision_spraying, row_following ];
+    apply_rows;
+  }
+
+  behavior apply_rows() {
+    loop every 300ms {
+      drive.drive(linear: 0.4 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+health_check SprayHealth for robot SprayRig {
+  check gps.status == Healthy;
+  check camera.status == Healthy;
+}
+
+recovery_policy SprayRecovery {
+  on connectivity.lost {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy SprayRig to FieldRobotV1;

@@ -25,7 +25,8 @@ environmental-monitoring/
 ├── README.md
 ├── spanda.toml
 ├── sensor_mesh.sd           # Mesh node sampling with connectivity recovery
-└── (planned) gateway_bridge.sd, alert_threshold.sd
+├── gateway_bridge.sd        # Mesh aggregator uplink gateway
+└── (planned) alert_threshold.sd
 ```
 
 ---

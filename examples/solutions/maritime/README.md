@@ -25,7 +25,9 @@ maritime/
 ├── README.md
 ├── spanda.toml
 ├── harbor_patrol.sd         # Coastal patrol with collision avoidance
-└── (planned) convoy_escort.sd, docking_assist.sd
+├── convoy_escort.sd         # Lead + escort vessel fleet
+├── docking_assist.sd        # Berth zone approach assist
+└── (planned) survey_transect.sd
 ```
 
 ---

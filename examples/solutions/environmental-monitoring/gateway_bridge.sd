@@ -1,0 +1,55 @@
+// Gateway bridge — mesh aggregator uplink to cloud ingest
+//
+//   spanda check gateway_bridge.sd
+//   spanda verify gateway_bridge.sd --target MeshGatewayV1
+
+hardware MeshGatewayV1 {
+  cpu: CortexA55;
+  memory: 1 GB;
+  sensors [ GPS, IMU ];
+  actuators [ DifferentialDrive ];
+  network {
+    bandwidth: 50 Mbps;
+    latency: 40 ms;
+  }
+  battery { capacity: 40 Wh; }
+}
+
+robot MeshGateway {
+  sensor gps: GPS;
+  sensor imu: IMU;
+  actuator wheels: DifferentialDrive;
+
+  topic mesh_batch: String publish on "/mesh/uplink";
+
+  exposes capabilities [ mesh_gateway, mqtt_bridge, calibration_gate ];
+
+  safety {
+    max_speed = 0.2 m/s;
+  }
+
+  mission BridgeLoop {
+    requires capabilities [ mesh_gateway ];
+    aggregate_and_uplink;
+  }
+
+  behavior aggregate_and_uplink() {
+    loop every 10s {
+      publish mesh_batch with "samples";
+      wheels.stop();
+    }
+  }
+}
+
+health_check GatewayHealth for robot MeshGateway {
+  check gps.status == Healthy;
+}
+
+recovery_policy GatewayRecovery {
+  on connectivity.lost {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy MeshGateway to MeshGatewayV1;

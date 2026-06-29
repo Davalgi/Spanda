@@ -20,16 +20,45 @@ check_verify() {
   run_spanda verify "$file" --target "$target"
 }
 
-check_verify "agriculture" \
+check_only() {
+  local label="$1"
+  local file="$2"
+  echo "== ${label} check =="
+  run_spanda check "$file"
+}
+
+echo "== Core blueprint scaffolds =="
+check_verify "agriculture-field-patrol" \
   "$ROOT/examples/solutions/agriculture/field_patrol.sd" \
   FieldRobotV1
 
-check_verify "environmental-monitoring" \
+check_verify "environmental-sensor-mesh" \
   "$ROOT/examples/solutions/environmental-monitoring/sensor_mesh.sd" \
   SensorNodeV1
 
-check_verify "maritime" \
+check_verify "maritime-harbor-patrol" \
   "$ROOT/examples/solutions/maritime/harbor_patrol.sd" \
+  CoastalVesselV1
+
+echo "== Extended blueprint missions =="
+check_verify "agriculture-spray" \
+  "$ROOT/examples/solutions/agriculture/spray_mission.sd" \
+  FieldRobotV1
+
+check_verify "agriculture-harvest-convoy" \
+  "$ROOT/examples/solutions/agriculture/harvest_convoy.sd" \
+  FieldRobotV1
+
+check_verify "environmental-gateway" \
+  "$ROOT/examples/solutions/environmental-monitoring/gateway_bridge.sd" \
+  MeshGatewayV1
+
+check_verify "maritime-convoy-escort" \
+  "$ROOT/examples/solutions/maritime/convoy_escort.sd" \
+  CoastalVesselV1
+
+check_verify "maritime-docking" \
+  "$ROOT/examples/solutions/maritime/docking_assist.sd" \
   CoastalVesselV1
 
 echo "Solution blueprint smoke OK"

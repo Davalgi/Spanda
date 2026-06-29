@@ -1,0 +1,58 @@
+// Docking assist — slow approach into harbor berth zone
+//
+//   spanda check docking_assist.sd
+//   spanda verify docking_assist.sd --target CoastalVesselV1
+
+hardware CoastalVesselV1 {
+  cpu: CortexA55;
+  memory: 4 GB;
+  sensors [ GPS, IMU, Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 200 Wh; }
+}
+
+robot DockingPilot {
+  sensor gps: GPS;
+  sensor imu: IMU;
+  sensor camera: Camera;
+  sensor lidar: Lidar;
+  actuator propulsion: DifferentialDrive;
+
+  exposes capabilities [ docking_assist, coastal_navigation ];
+
+  safety {
+    max_speed = 0.8 m/s;
+    zone berth rect at (4.0 m, 2.0 m) size (3.0 m, 2.0 m);
+    stop_if robot.in_zone("berth");
+    stop_if lidar.nearest_distance < 2.0 m;
+  }
+
+  mission BerthApproach {
+    requires capabilities [ docking_assist ];
+    approach_berth;
+  }
+
+  behavior approach_berth() {
+    loop every 400ms {
+      if robot.in_zone("berth") {
+        propulsion.stop();
+      } else {
+        propulsion.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+      }
+    }
+  }
+}
+
+health_check DockHealth for robot DockingPilot {
+  check gps.status == Healthy;
+  check lidar.status == Healthy;
+}
+
+recovery_policy DockRecovery {
+  on connectivity.lost {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy DockingPilot to CoastalVesselV1;

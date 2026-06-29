@@ -1,0 +1,75 @@
+// Convoy escort — lead patrol vessel with escort follower
+//
+//   spanda check convoy_escort.sd
+//   spanda verify convoy_escort.sd --all-targets
+
+hardware CoastalVesselV1 {
+  cpu: CortexA55;
+  memory: 4 GB;
+  sensors [ GPS, IMU, Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 200 Wh; }
+}
+
+fleet HarborConvoy {
+  EscortLead;
+  EscortFollow;
+}
+
+robot EscortLead {
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator propulsion: DifferentialDrive;
+
+  exposes capabilities [ convoy_lead, coastal_navigation ];
+
+  safety {
+    max_speed = 2.5 m/s;
+    stop_if lidar.nearest_distance < 6.0 m;
+  }
+
+  mission LeadEscort {
+    requires capabilities [ convoy_lead, coastal_navigation ];
+    lead_channel;
+  }
+
+  behavior lead_channel() {
+    loop every 500ms {
+      propulsion.drive(linear: 1.2 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+robot EscortFollow {
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator propulsion: DifferentialDrive;
+
+  exposes capabilities [ convoy_follow, coastal_navigation ];
+
+  safety {
+    max_speed = 2.0 m/s;
+    stop_if lidar.nearest_distance < 8.0 m;
+  }
+
+  mission FollowEscort {
+    requires capabilities [ convoy_follow ];
+    follow_lead;
+  }
+
+  behavior follow_lead() {
+    loop every 500ms {
+      propulsion.drive(linear: 1.0 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+recovery_policy ConvoyRecovery {
+  on fleet.failed {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy EscortLead to CoastalVesselV1;
+deploy EscortFollow to CoastalVesselV1;

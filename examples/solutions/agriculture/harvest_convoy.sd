@@ -1,0 +1,75 @@
+// Harvest convoy — lead harvester with follow unit in coordinated fleet
+//
+//   spanda check harvest_convoy.sd
+//   spanda verify harvest_convoy.sd --all-targets
+
+hardware FieldRobotV1 {
+  cpu: CortexA55;
+  memory: 2 GB;
+  sensors [ GPS, IMU, Camera, Lidar ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 80 Wh; }
+}
+
+fleet HarvestConvoy {
+  LeadUnit;
+  FollowUnit;
+}
+
+robot LeadUnit {
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator drive: DifferentialDrive;
+
+  exposes capabilities [ convoy_lead, row_following ];
+
+  safety {
+    max_speed = 1.0 m/s;
+    stop_if lidar.nearest_distance < 1.0 m;
+  }
+
+  mission LeadHarvest {
+    requires capabilities [ convoy_lead ];
+    lead_rows;
+  }
+
+  behavior lead_rows() {
+    loop every 250ms {
+      drive.drive(linear: 0.7 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+robot FollowUnit {
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator drive: DifferentialDrive;
+
+  exposes capabilities [ convoy_follow, row_following ];
+
+  safety {
+    max_speed = 0.8 m/s;
+    stop_if lidar.nearest_distance < 1.5 m;
+  }
+
+  mission FollowHarvest {
+    requires capabilities [ convoy_follow ];
+    follow_lead;
+  }
+
+  behavior follow_lead() {
+    loop every 250ms {
+      drive.drive(linear: 0.5 m/s, angular: 0.0 rad/s);
+    }
+  }
+}
+
+recovery_policy ConvoyRecovery {
+  on fleet.failed {
+    reassign mission;
+    mode degraded;
+  }
+}
+
+deploy LeadUnit to FieldRobotV1;
+deploy FollowUnit to FieldRobotV1;
