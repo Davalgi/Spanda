@@ -1,0 +1,5 @@
+import building.entity;
+
+test "smoke" {
+    assert(true);
+}

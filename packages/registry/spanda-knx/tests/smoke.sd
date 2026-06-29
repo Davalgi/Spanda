@@ -1,0 +1,5 @@
+import iot.knx;
+
+test "smoke" {
+    assert(true);
+}

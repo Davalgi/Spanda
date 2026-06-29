@@ -1,0 +1,5 @@
+import bridge.home_assistant;
+
+test "smoke" {
+    assert(true);
+}

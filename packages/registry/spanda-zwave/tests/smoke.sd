@@ -1,0 +1,5 @@
+import iot.zwave;
+
+test "smoke" {
+    assert(true);
+}

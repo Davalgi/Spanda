@@ -1,0 +1,5 @@
+import access.lock;
+
+test "smoke" {
+    assert(true);
+}

@@ -1,0 +1,5 @@
+import iot.bacnet;
+
+test "smoke" {
+    assert(true);
+}

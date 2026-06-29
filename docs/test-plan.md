@@ -31,6 +31,7 @@
 | Platform architecture validation | layer classification, zero-waiver baseline, SCC, TypeScript layers, manifest sync | `scripts/validate_architecture.py --check-manifest-sync` (CI `rust` job) |
 | Solution blueprint governance | no workspace crates or Rust in blueprint trees | `scripts/validate_blueprints.py` (CI `rust` job) |
 | Enterprise ops API | Control Center handlers, device pool | `crates/spanda-api/tests/` |
+| Smart Spaces API | facilities, readiness, occupancy, energy, emergency | `crates/spanda-api/tests/smart_spaces_api_tests.rs`, `scripts/smart_spaces_smoke.sh` |
 | Negative | `ai_safety_violation.sd` fails | `tests/integration.rs` |
 
 **Current count:** ~115+ Rust unit/integration tests (workspace total grows with platform crates).
@@ -62,6 +63,8 @@
 | `scripts/spatial_computing_smoke.sh` | Spatial Computing blueprint (human registry, readiness, examples) |
 | `scripts/hri_stable_promotion_gate.sh` | HRI Stable promotion (soak + audit prep + spatial smoke + Control Center HRI API probe) |
 | `scripts/adas_smoke.sh` | ADAS Solution Blueprint (verify, readiness, replay, compliance, examples) |
+| `scripts/smart_spaces_smoke.sh` | Smart Spaces blueprint (six apps, verify + check) |
+| `scripts/smart_spaces_promotion_gate.sh` | Smart Spaces scaffold promotion (smoke, API tests, OpenAPI parity, Control Center probe) |
 | `scripts/adas_stable_promotion_gate.sh` | ADAS Stable promotion (soak + audit prep + smoke + Control Center ADAS API probe) |
 | `scripts/adas_automotive_sensors_smoke.sh` | Automotive sensor hub + live `SPANDA_*_CMD` bridge tests |
 | `scripts/hri_field_soak_init.sh` | Start 30-day HRI field soak clock |

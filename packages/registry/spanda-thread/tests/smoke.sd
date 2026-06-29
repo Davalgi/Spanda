@@ -1,0 +1,5 @@
+import iot.thread;
+
+test "smoke" {
+    assert(true);
+}

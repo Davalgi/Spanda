@@ -115,6 +115,9 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | **Spatial HRI** | `hri_field_soak_init.sh` | Field soak prep |
 | **Spatial HRI** | `hri_security_audit_prep.sh` | Audit prep |
 | **Smart Spaces** | `smart_spaces_smoke.sh` | Scaffold (six application examples) |
+| **Smart Spaces** | `smart_spaces_promotion_gate.sh` | Scaffold promotion (API + Control Center probe) |
+| **Smart Spaces** | `smart_spaces_field_soak_init.sh` | Field soak prep |
+| **Smart Spaces** | `smart_spaces_security_audit_prep.sh` | Audit prep |
 | **Critical Infrastructure** | `compliance_smoke.sh` | Compliance profiles |
 | **Defense** | `secure_boot_smoke.sh`, `tamper_smoke.sh` | — |
 | **Research & Education** | `showcase_smoke.sh`, `killer_demo_golden_path.sh` | — |
