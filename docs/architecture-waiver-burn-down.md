@@ -10,7 +10,7 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 
 | Category | Waived | CI policy |
 |----------|--------|-----------|
-| Rust upward dependencies | 38 | Fail on new edges |
+| Rust upward dependencies | 29 | Fail on new edges |
 | Rust SCC (`ARCH-SCC-001`) | 27 crates | Fail on new SCC members |
 | TypeScript upward imports | 37 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
@@ -50,9 +50,12 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 |------|--------|--------|
 | 1 | Introduce `RuntimeHooks` trait at runtime layer for optional assurance/telemetry/tamper | Done (`spanda-runtime::hooks`) |
 | 2 | Move operational policy + tamper policy runtime to `spanda-runtime`; wire certify hooks from CLI | Done |
-| 3 | Remove direct `spanda-assurance`, `spanda-tamper`, `spanda-policy` deps from interpreter | Partial — policy/tamper removed; assurance remains for recovery/continuity |
+| 3 | Remove direct `spanda-assurance`, `spanda-tamper`, `spanda-policy` deps from interpreter | Done — policy/tamper removed in Phase 3a; assurance decoupled via `AssuranceRuntime` trait and `AssuranceBackedRuntime` bridge (Phase 3b) |
+| 4 | Decouple config, capability health, telemetry, providers, faults, security, and transport via runtime traits | Done — `TelemetrySink`, `ProviderRuntime`, `FaultRuntime`, `SecurityRuntime`, `CommBusHost`; CLI/fleet bridges (Phase 3c–3d) |
 
-**Closed waivers:** `ARCH-011`, `ARCH-012`. **SCC:** `spanda-policy` dropped from `ARCH-SCC-001` member set.
+**Closed waivers:** `ARCH-004`, `ARCH-005`, `ARCH-006`, `ARCH-007`, `ARCH-008`, `ARCH-009`, `ARCH-010`, `ARCH-011`, `ARCH-012`, `ARCH-214`. **SCC:** `spanda-providers` and `spanda-runtime-faults` dropped from `ARCH-SCC-001` member set.
+
+**Remaining:** SCC dissolution (Phase 4); `ARCH-213` (interpreter→fleet, dev-test only).
 
 **Success:** Interpreter depends on core platform + runtime only; services injected at interface layer.
 

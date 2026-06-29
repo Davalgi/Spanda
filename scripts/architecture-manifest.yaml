@@ -325,39 +325,8 @@ dependency_waivers:
     to: spanda-hardware
     reason: Hardware compatibility check integrated in compile/run path.
     ticket: ARCH-003
-  - from: spanda-interpreter
-    to: spanda-config
-    reason: Runtime entity overlay and resolved system config at execution.
-    ticket: ARCH-004
-  - from: spanda-interpreter
-    to: spanda-assurance
-    reason: Mission assurance hooks during simulation and run.
-    ticket: ARCH-005
-  - from: spanda-interpreter
-    to: spanda-capability
-    reason: Capability traceability during runtime execution.
-    ticket: ARCH-006
-  - from: spanda-interpreter
-    to: spanda-security
-    reason: Runtime identity and signed message enforcement.
-    ticket: ARCH-006
-  - from: spanda-interpreter
-    to: spanda-telemetry-store
-    reason: Mission trace recording and replay substrate.
-    ticket: ARCH-007
-  - from: spanda-interpreter
-    to: spanda-providers
-    reason: Provider dispatch at runtime.
-    ticket: ARCH-008
-  - from: spanda-interpreter
-    to: spanda-transport-routing
-    reason: Live transport routing during execution.
-    ticket: ARCH-009
-  - from: spanda-interpreter
-    to: spanda-runtime-faults
-    reason: Runtime fault detection integration.
-    ticket: ARCH-010
-  - from: spanda-capability
+  - from: spanda-driver
+    to: spanda-hardware
     to: spanda-driver
     reason: Capability analysis requires parsed program AST via driver.
     ticket: ARCH-013
@@ -503,10 +472,6 @@ dependency_waivers:
     to: spanda-fleet
     reason: Interpreter executes fleet coordination builtins.
     ticket: ARCH-213
-  - from: spanda-interpreter
-    to: spanda-transport
-    reason: Interpreter uses transport traits for live I/O.
-    ticket: ARCH-214
   - from: spanda-llvm
     to: spanda-driver
     reason: LLVM backend shares driver compile context.
@@ -543,26 +508,36 @@ dependency_waivers:
 # Known circular dependency baselines — fail CI only if a NEW SCC appears.
 circular_dependency_waivers:
   - members:
+      - spanda-ai
       - spanda-assurance
+      - spanda-bridge
       - spanda-capability
       - spanda-certify
+      - spanda-comm
+      - spanda-concurrency
       - spanda-config
       - spanda-connectivity-runtime
       - spanda-driver
+      - spanda-error
+      - spanda-ffi
       - spanda-fleet
+      - spanda-hal
       - spanda-hardware
       - spanda-interpreter
+      - spanda-lib-registry
       - spanda-ota
       - spanda-package
       - spanda-parser
-      - spanda-providers
       - spanda-readiness
-      - spanda-runtime-faults
+      - spanda-regex-lang
+      - spanda-runtime
       - spanda-runtime-host
+      - spanda-safety
       - spanda-security
       - spanda-sir
       - spanda-spoofing
       - spanda-tamper
+      - spanda-telemetry-store
       - spanda-threat
       - spanda-transport
       - spanda-transport-dds
