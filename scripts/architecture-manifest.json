@@ -729,18 +729,6 @@
       "ticket": "ARCH-003"
     },
     {
-      "from": "spanda-driver",
-      "to": "spanda-driver",
-      "reason": "Capability analysis requires parsed program AST via driver.",
-      "ticket": "ARCH-013"
-    },
-    {
-      "from": "spanda-certify",
-      "to": "spanda-driver",
-      "reason": "Certification checklist uses compile pipeline.",
-      "ticket": "ARCH-014"
-    },
-    {
       "from": "spanda-assurance",
       "to": "spanda-readiness",
       "reason": "Assurance consumes readiness evaluation (same-layer service composition).",
@@ -757,12 +745,6 @@
       "to": "spanda-connectivity-runtime",
       "reason": "Parser validates connectivity declarations against runtime types.",
       "ticket": "ARCH-017"
-    },
-    {
-      "from": "spanda-sir",
-      "to": "spanda-driver",
-      "reason": "SIR lowering uses driver pipeline context.",
-      "ticket": "ARCH-018"
     },
     {
       "from": "spanda-runtime-host",
@@ -799,18 +781,6 @@
       "to": "spanda-readiness",
       "reason": "OTA rollout gated on readiness.",
       "ticket": "ARCH-024"
-    },
-    {
-      "from": "spanda-providers",
-      "to": "spanda-audit",
-      "reason": "Provider bootstrap emits audit records.",
-      "ticket": "ARCH-025"
-    },
-    {
-      "from": "spanda-providers",
-      "to": "spanda-telemetry-store",
-      "reason": "Provider telemetry persistence.",
-      "ticket": "ARCH-026"
     },
     {
       "from": "spanda-security",
@@ -909,12 +879,6 @@
       "ticket": "ARCH-207"
     },
     {
-      "from": "spanda-error",
-      "to": "spanda-runtime",
-      "reason": "Error types reference runtime value representations.",
-      "ticket": "ARCH-208"
-    },
-    {
       "from": "spanda-fleet",
       "to": "spanda-tamper",
       "reason": "Fleet mesh includes tamper detection relay.",
@@ -933,12 +897,6 @@
       "ticket": "ARCH-211"
     },
     {
-      "from": "spanda-format",
-      "to": "spanda-driver",
-      "reason": "Format pipeline reuses driver parse path.",
-      "ticket": "ARCH-212"
-    },
-    {
       "from": "spanda-llvm",
       "to": "spanda-driver",
       "reason": "LLVM backend shares driver compile context.",
@@ -949,36 +907,6 @@
       "to": "spanda-telemetry-store",
       "reason": "OTA rollout emits telemetry audit trail.",
       "ticket": "ARCH-216"
-    },
-    {
-      "from": "spanda-transport",
-      "to": "spanda-security",
-      "reason": "Transport adapters enforce TLS and signed frames.",
-      "ticket": "ARCH-217"
-    },
-    {
-      "from": "spanda-transport-dds",
-      "to": "spanda-security",
-      "reason": "DDS backend uses security policy.",
-      "ticket": "ARCH-218"
-    },
-    {
-      "from": "spanda-transport-mqtt",
-      "to": "spanda-security",
-      "reason": "MQTT backend uses security policy.",
-      "ticket": "ARCH-219"
-    },
-    {
-      "from": "spanda-transport-routing",
-      "to": "spanda-security",
-      "reason": "RoutingCommBus enforces transport security.",
-      "ticket": "ARCH-220"
-    },
-    {
-      "from": "spanda-transport-websocket",
-      "to": "spanda-security",
-      "reason": "WebSocket backend uses security policy.",
-      "ticket": "ARCH-221"
     },
     {
       "from": "spanda-core",

@@ -25,30 +25,6 @@ pub enum SpandaError {
     DebugPause { line: u32, reason: String },
 }
 
-impl From<spanda_runtime::RuntimeError> for SpandaError {
-    fn from(err: spanda_runtime::RuntimeError) -> Self {
-        // Description:
-        //     From.
-        //
-        // Inputs:
-        //     err: spanda_runtime::RuntimeError
-        //         Caller-supplied err.
-        //
-        // Outputs:
-        //     result: Self
-        //         Return value from `from`.
-        //
-        // Example:
-
-        //     let result = spanda_error::from(err);
-
-        Self::Runtime {
-            message: err.message,
-            line: err.line,
-        }
-    }
-}
-
 impl SpandaError {
     pub fn diagnostics(&self) -> Vec<Diagnostic> {
         // Description:

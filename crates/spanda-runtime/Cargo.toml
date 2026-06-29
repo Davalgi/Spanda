@@ -15,6 +15,10 @@ serde_yaml = "0.9"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
 spanda-ast = { path = "../spanda-ast" }
 spanda-audit = { path = "../spanda-audit" }
+spanda-error = { path = "../spanda-error" }
+aes-gcm = "0.10"
+sha2 = "0.10"
+rand = "0.8"
 
 [dev-dependencies]
 spanda-lexer = { path = "../spanda-lexer" }

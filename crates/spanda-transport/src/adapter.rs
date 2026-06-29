@@ -2,6 +2,7 @@
 
 use crate::security::{TlsTransportSession, TransportSecurityConfig};
 use spanda_ast::comm_decl::TransportKind;
+use spanda_runtime::security_types::EncryptionMode;
 use spanda_runtime::RuntimeValue;
 use std::collections::{HashMap, VecDeque};
 
@@ -253,7 +254,7 @@ macro_rules! stub_adapter {
 
                 // Call connected = true; on the current instance.
                 config.security.validate(self.kind().as_str())?;
-                if config.security.encryption != spanda_security::policy::EncryptionMode::None
+                if config.security.encryption != EncryptionMode::None
                     && !config.tls.negotiated
                 {
                     return Err(format!(

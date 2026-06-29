@@ -11,6 +11,5 @@ homepage.workspace = true
 [dependencies]
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-ast = { path = "../spanda-ast" }
-spanda-runtime = { path = "../spanda-runtime" }
 spanda-typecheck = { path = "../spanda-typecheck" }
 thiserror = "2"

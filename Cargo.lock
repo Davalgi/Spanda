@@ -2320,7 +2320,6 @@ version = "0.4.0"
 dependencies = [
  "spanda-ast",
  "spanda-lexer",
- "spanda-runtime",
  "spanda-typecheck",
  "thiserror 2.0.18",
 ]
@@ -2625,11 +2624,10 @@ dependencies = [
  "libc",
  "modbus",
  "serde_json",
+ "sha2",
  "spanda-ast",
- "spanda-audit",
  "spanda-comm",
  "spanda-runtime",
- "spanda-telemetry-store",
  "spanda-transport",
  "spanda-transport-dds",
  "spanda-transport-mqtt",
@@ -2681,12 +2679,16 @@ dependencies = [
 name = "spanda-runtime"
 version = "0.4.0"
 dependencies = [
+ "aes-gcm",
  "chrono",
+ "rand",
  "serde",
  "serde_json",
  "serde_yaml",
+ "sha2",
  "spanda-ast",
  "spanda-audit",
+ "spanda-error",
  "spanda-lexer",
  "spanda-parser",
 ]
@@ -2870,7 +2872,6 @@ dependencies = [
  "spanda-ast",
  "spanda-comm",
  "spanda-runtime",
- "spanda-security",
  "webpki-roots 0.26.11",
 ]
 
@@ -2882,7 +2883,6 @@ dependencies = [
  "serde_json",
  "spanda-ast",
  "spanda-runtime",
- "spanda-security",
  "spanda-transport",
 ]
 
@@ -2895,7 +2895,6 @@ dependencies = [
  "serde_json",
  "spanda-ast",
  "spanda-runtime",
- "spanda-security",
  "spanda-transport",
 ]
 
@@ -2917,7 +2916,6 @@ version = "0.4.0"
 dependencies = [
  "spanda-comm",
  "spanda-runtime",
- "spanda-security",
  "spanda-transport",
  "spanda-transport-dds",
  "spanda-transport-mqtt",
@@ -2933,7 +2931,6 @@ dependencies = [
  "serde_json",
  "spanda-ast",
  "spanda-runtime",
- "spanda-security",
  "spanda-transport",
  "tungstenite",
 ]

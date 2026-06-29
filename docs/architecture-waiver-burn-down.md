@@ -10,7 +10,7 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 
 | Category | Waived | CI policy |
 |----------|--------|-----------|
-| Rust upward dependencies | 26 | Fail on new edges |
+| Rust upward dependencies | 19 | Fail on new edges |
 | Rust SCC (`ARCH-SCC-001`) | 0 (dissolved) | Fail on any production SCC |
 | TypeScript upward imports | 0 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
@@ -108,6 +108,21 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 | Telemetry store | Persist all platform events | **Shipped** (`record_platform_event` + `TelemetryEvent::Platform`) |
 
 See [event-model.md](./event-model.md).
+
+---
+
+## Phase 7 — Rust upward waiver burn-down (in progress)
+
+**Target:** Reduce remaining `ARCH-*` production upward edges (19 at baseline after Phase 7b)
+
+| Step | Action | Status |
+|------|--------|--------|
+| 1 | Remove `spanda-runtime` from `spanda-error`; lift `RuntimeError` → `SpandaError` in `spanda-runtime` | Done — closed `ARCH-208` |
+| 2 | Remove dev-only orphan waivers (`ARCH-013`–`ARCH-014`, `ARCH-018`, `ARCH-212`) and fix corrupted `ARCH-013` YAML | Done |
+| 3 | Move `WireCryptoSession` to `spanda-runtime`; decouple `spanda-transport*` from `spanda-security` | Done — closed `ARCH-217`–`ARCH-221` |
+| 4 | Decouple `spanda-providers` from audit/telemetry-store via `DeviceTelemetrySink` + inline ledger stub | Done — closed `ARCH-025`–`ARCH-026` |
+
+**Success:** Monotonic reduction of Rust upward waivers without new violations.
 
 ---
 

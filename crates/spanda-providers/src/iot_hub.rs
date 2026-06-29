@@ -1,5 +1,6 @@
 //! In-memory IoT device, telemetry, and shadow store for package dispatch stubs.
 
+use spanda_runtime::device_telemetry_sink::device_telemetry_sink;
 use spanda_runtime::providers::{Command, DeviceShadow, IoTDevice, Telemetry};
 use spanda_runtime::value::RuntimeValue;
 use std::collections::HashMap;
@@ -373,10 +374,11 @@ pub fn register_device(device: IoTDevice) -> Result<(), String> {
     let device_id = device.id.clone();
     let protocol = device.protocol.clone();
     hub().lock().unwrap().register_device(device)?;
-    if spanda_telemetry_store::persist_enabled() {
-        let _ = spanda_telemetry_store::record_device_heartbeat(
-            device_id,
-            spanda_telemetry_store::wall_timestamp_ms(),
+    if device_telemetry_sink().persist_enabled() {
+        let sink = device_telemetry_sink();
+        sink.record_device_heartbeat(
+            &device_id,
+            sink.wall_timestamp_ms(),
             None,
             Some(protocol.as_str()),
             5000.0,
@@ -401,28 +403,17 @@ pub fn publish_telemetry(telemetry: Telemetry) {
 
     //     let result = spanda_providers::iot_hub::publish_telemetry(elemetry);
 
-    if spanda_telemetry_store::persist_enabled() {
+    let sink = device_telemetry_sink();
+    if sink.persist_enabled() {
         let Telemetry {
             device_id,
             metric,
             value,
             timestamp_ms,
         } = &telemetry;
-        let _ = spanda_telemetry_store::record_device_telemetry(
-            device_id,
-            metric,
-            value,
-            *timestamp_ms,
-            None,
-        );
-        if spanda_telemetry_store::is_heartbeat_metric(metric) {
-            let _ = spanda_telemetry_store::record_device_heartbeat(
-                device_id,
-                *timestamp_ms,
-                None,
-                None,
-                5000.0,
-            );
+        sink.record_device_telemetry(device_id, metric, value, *timestamp_ms, None);
+        if sink.is_heartbeat_metric(metric) {
+            sink.record_device_heartbeat(device_id, *timestamp_ms, None, None, 5000.0);
         }
     }
     hub().lock().unwrap().publish_telemetry(telemetry);

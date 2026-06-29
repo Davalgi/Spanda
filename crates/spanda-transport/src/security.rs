@@ -2,9 +2,10 @@
 
 #[cfg(feature = "tls")]
 use crate::tls;
-use spanda_security::{
-    AuthenticationMode, EncryptionMode, IntegrityMode, SecureCommPolicy, WireCryptoSession,
+use spanda_runtime::security_types::{
+    AuthenticationMode, EncryptionMode, IntegrityMode, SecureCommPolicy,
 };
+use spanda_runtime::wire_crypto::WireCryptoSession;
 
 const WIRE_PREFIX: &str = "spanda/wire/v1:";
 

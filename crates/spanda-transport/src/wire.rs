@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use spanda_comm::TransportKind;
 use spanda_runtime::serialize::{runtime_from_json_string, runtime_to_json_string};
 use spanda_runtime::value::RuntimeValue;
-use spanda_security::policy::EncryptionMode;
+use spanda_runtime::security_types::EncryptionMode;
 
 /// Versioned transport envelope exchanged between adapters and the comm bus.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -164,7 +164,7 @@ pub fn decode_wire_value(
 mod tests {
     use super::*;
     use crate::security::{TlsTransportSession, TransportSecurityConfig};
-    use spanda_security::{AuthenticationMode, EncryptionMode, IntegrityMode};
+    use spanda_runtime::security_types::{AuthenticationMode, EncryptionMode, IntegrityMode};
 
     #[test]
     fn wire_frame_roundtrip_with_encryption() {

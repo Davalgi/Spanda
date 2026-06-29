@@ -39,3 +39,13 @@ impl RuntimeError {
         }
     }
 }
+
+impl From<RuntimeError> for spanda_error::SpandaError {
+    fn from(err: RuntimeError) -> Self {
+        // Lift runtime failures into shared SpandaError diagnostics.
+        Self::Runtime {
+            message: err.message,
+            line: err.line,
+        }
+    }
+}

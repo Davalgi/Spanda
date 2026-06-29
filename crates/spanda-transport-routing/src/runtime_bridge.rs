@@ -7,9 +7,6 @@ use spanda_comm::{CommBusFactory, CommBusHost, CommEnvelope, TransportKind};
 use spanda_runtime::providers::ProviderRegistry;
 use spanda_runtime::security_types::CommTransportSetup;
 use spanda_runtime::value::RuntimeValue;
-use spanda_security::policy::{
-    AuthenticationMode, EncryptionMode, IntegrityMode,
-};
 use spanda_transport::adapter::TransportConfig;
 use spanda_transport::security::TransportSecurityConfig;
 
@@ -57,9 +54,9 @@ impl CommBusHost for RoutingCommBus {
 
     fn configure_transport(&mut self, setup: CommTransportSetup) -> Result<(), String> {
         let security = TransportSecurityConfig {
-            encryption: map_enc(setup.security.encryption),
-            authentication: map_auth(setup.security.authentication),
-            integrity: map_int(setup.security.integrity),
+            encryption: setup.security.encryption,
+            authentication: setup.security.authentication,
+            integrity: setup.security.integrity,
             cert_path: setup.security.cert_path,
             key_secret: setup.security.key_secret,
             key_path: setup.security.key_path,
@@ -76,29 +73,6 @@ impl CommBusHost for RoutingCommBus {
                 ..Default::default()
             },
         )
-    }
-}
-
-fn map_enc(mode: spanda_runtime::security_types::EncryptionMode) -> EncryptionMode {
-    match mode {
-        spanda_runtime::security_types::EncryptionMode::None => EncryptionMode::None,
-        spanda_runtime::security_types::EncryptionMode::Optional => EncryptionMode::Optional,
-        spanda_runtime::security_types::EncryptionMode::Required => EncryptionMode::Required,
-    }
-}
-
-fn map_auth(mode: spanda_runtime::security_types::AuthenticationMode) -> AuthenticationMode {
-    match mode {
-        spanda_runtime::security_types::AuthenticationMode::None => AuthenticationMode::None,
-        spanda_runtime::security_types::AuthenticationMode::Signed => AuthenticationMode::Signed,
-        spanda_runtime::security_types::AuthenticationMode::Mutual => AuthenticationMode::Mutual,
-    }
-}
-
-fn map_int(mode: spanda_runtime::security_types::IntegrityMode) -> IntegrityMode {
-    match mode {
-        spanda_runtime::security_types::IntegrityMode::None => IntegrityMode::None,
-        spanda_runtime::security_types::IntegrityMode::Required => IntegrityMode::Required,
     }
 }
 

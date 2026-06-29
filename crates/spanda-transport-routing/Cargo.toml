@@ -11,7 +11,6 @@ homepage.workspace = true
 [dependencies]
 spanda-comm = { path = "../spanda-comm" }
 spanda-runtime = { path = "../spanda-runtime" }
-spanda-security = { path = "../spanda-security" }
 spanda-transport = { path = "../spanda-transport", default-features = false }
 spanda-transport-dds = { path = "../spanda-transport-dds" }
 spanda-transport-mqtt = { path = "../spanda-transport-mqtt" }

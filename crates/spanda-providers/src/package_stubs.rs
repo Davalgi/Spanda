@@ -1,7 +1,7 @@
 //! Package-scoped provider stubs registered when official packages are installed.
 //!
 use spanda_ast::nodes::UnitKind;
-use spanda_audit::{sha256, Hash, LedgerBackend, MockLedgerBackend};
+use sha2::{Digest, Sha256};
 use spanda_runtime::providers::hri::{
     HriInputProvider, OverlayProvider, SpatialSessionInfo, SpatialSessionProvider,
     WearableTelemetryProvider,
@@ -650,9 +650,23 @@ impl FleetProvider for FleetPackageStub {
     }
 }
 
+/// In-process mock ledger chain for `spanda-ledger` package bootstrap.
+#[derive(Debug, Default)]
+struct StubLedgerChain {
+    anchored: Vec<String>,
+}
+
+impl StubLedgerChain {
+    fn anchor_hash(&mut self, digest_hex: &str) -> Result<String, String> {
+        let tx = format!("tx-{}", self.anchored.len());
+        self.anchored.push(digest_hex.to_string());
+        Ok(tx)
+    }
+}
+
 /// Ledger provider backed by the in-process mock chain (`spanda-ledger` package).
 pub struct LedgerPackageStub {
-    backend: MockLedgerBackend,
+    backend: StubLedgerChain,
 }
 
 impl Default for LedgerPackageStub {
@@ -672,7 +686,7 @@ impl Default for LedgerPackageStub {
         //     let result = spanda_providers::package_stubs::default();
 
         Self {
-            backend: MockLedgerBackend::new(),
+            backend: StubLedgerChain::default(),
         }
     }
 }
@@ -697,7 +711,7 @@ impl LedgerProvider for LedgerPackageStub {
         package_metadata(
             "spanda-ledger",
             "project",
-            "Mock ledger provider (anchors audit digests via spanda-audit)",
+            "Mock ledger provider (anchors digests in an in-process chain)",
         )
     }
 
@@ -720,12 +734,12 @@ impl LedgerProvider for LedgerPackageStub {
         //     let result = spanda_providers::package_stubs::append(&mut self, record);
 
         let payload = runtime_value_summary(&record);
-        let digest = sha256(&payload);
+        let digest = sha256_hex(payload.as_bytes());
         let tx = self
             .backend
             .anchor_hash(&digest)
             .map_err(|err| ledger_err(format!("ledger append failed: {err}")))?;
-        Ok(tx.0)
+        Ok(tx)
     }
 
     fn anchor(&mut self, digest: &[u8]) -> ProviderResult<String> {
@@ -746,12 +760,12 @@ impl LedgerProvider for LedgerPackageStub {
 
         //     let result = spanda_providers::package_stubs::anchor(&mut self, diges);
 
-        let hash = Hash(hex_encode(digest));
+        let hash = hex_encode(digest);
         let tx = self
             .backend
             .anchor_hash(&hash)
             .map_err(|err| ledger_err(format!("ledger anchor failed: {err}")))?;
-        Ok(tx.0)
+        Ok(tx)
     }
 }
 
@@ -818,6 +832,10 @@ fn runtime_value_summary(value: &RuntimeValue) -> String {
         RuntimeValue::Object { type_name, .. } => format!("object:{type_name}"),
         other => format!("{other:?}"),
     }
+}
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    hex_encode(&Sha256::digest(bytes))
 }
 
 fn hex_encode(bytes: &[u8]) -> String {

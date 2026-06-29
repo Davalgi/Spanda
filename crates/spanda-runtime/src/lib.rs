@@ -11,7 +11,9 @@ pub mod provider_runtime;
 pub mod security_primitives;
 pub mod security_runtime;
 pub mod security_types;
+pub mod device_telemetry_sink;
 pub mod telemetry_sink;
+pub mod wire_crypto;
 pub mod continuity_primitives;
 pub mod continuity_types;
 pub mod environment;
@@ -79,6 +81,11 @@ pub use security_types::{
 pub use telemetry_sink::{
     default_telemetry_sink, NoopTelemetrySink, SharedTelemetrySink, TelemetrySink,
 };
+pub use device_telemetry_sink::{
+    device_telemetry_sink, set_device_telemetry_sink, DeviceTelemetrySink,
+    NoopDeviceTelemetrySink,
+};
+pub use wire_crypto::WireCryptoSession;
 pub use classification::{
     module_classifications, official_package_names, ModuleClassification, ModuleOwnership,
 };

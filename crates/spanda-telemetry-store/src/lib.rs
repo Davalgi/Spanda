@@ -18,6 +18,7 @@ pub mod record;
 pub mod serve;
 #[cfg(feature = "sqlite")]
 pub mod sqlite;
+pub mod device_runtime_bridge;
 pub mod runtime_bridge;
 pub mod store;
 
@@ -44,6 +45,7 @@ pub use record::{HeartbeatIndex, TelemetryEvent};
 pub use serve::{run_telemetry_server, TelemetryServeOptions};
 #[cfg(feature = "sqlite")]
 pub use sqlite::{default_sqlite_store_path, env_backend_sqlite, resolve_sqlite_path};
+pub use device_runtime_bridge::TelemetryStoreDeviceSink;
 pub use runtime_bridge::TelemetryStoreSink;
 pub use store::{
     append_event, begin_run_session, configure_session_persist, default_heartbeat_index_path,
