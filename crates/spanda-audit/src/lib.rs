@@ -7,6 +7,7 @@
 pub mod backend;
 pub mod crypto;
 pub mod error;
+pub mod platform_event;
 pub mod record;
 pub mod runtime;
 
@@ -15,6 +16,7 @@ pub use backend::{
 };
 pub use crypto::{public_key_from_material, sha256, sign, verify_signature};
 pub use error::{AuditError, AuditResult};
+pub use platform_event::{PlatformEvent, PlatformEventType};
 pub use record::{
     AuditExport, AuditRecord, DeviceIdentity, Hash, MissionRecord, ProvenanceRecord, RecordId,
     TransactionId,
