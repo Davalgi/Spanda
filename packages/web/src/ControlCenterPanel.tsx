@@ -1833,6 +1833,18 @@ export function ControlCenterPanel({ apiBase }: Props) {
                 const continuity =
                   (emergency.continuity_pairs as Record<string, unknown>[]) ?? [];
                 const occupancy = smartSpacesSummary.occupancy as Record<string, unknown> | null;
+                const robotRows =
+                  (smartSpacesSummary.robots as Record<string, unknown>[]) ?? [];
+                const wearableRows =
+                  (smartSpacesSummary.wearables as Record<string, unknown>[]) ?? [];
+                const trustRows =
+                  (smartSpacesSummary.trust_entries as Record<string, unknown>[]) ?? [];
+                const factorChart =
+                  (smartSpacesReadiness?.factors as Record<string, unknown>[]) ??
+                  (smartSpacesReadiness?.factor_chart as Record<string, unknown>[]) ??
+                  [];
+                const readinessScore = smartSpacesReadiness?.score;
+                const readinessStatus = smartSpacesReadiness?.status;
                 return (
                   <>
                     <dl>
@@ -1931,6 +1943,48 @@ export function ControlCenterPanel({ apiBase }: Props) {
                         ))}
                       </tbody>
                     </table>
+                    <h3>Robots</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Facility</th>
+                          <th>Type</th>
+                          <th>Provider</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {robotRows.map((robot) => (
+                          <tr key={String(robot.id)}>
+                            <td>{String(robot.id)}</td>
+                            <td>{String(robot.facility ?? "—")}</td>
+                            <td>{String(robot.type ?? "—")}</td>
+                            <td>{String(robot.provider ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <h3>Wearables</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Human</th>
+                          <th>Type</th>
+                          <th>Provider</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {wearableRows.map((wearable) => (
+                          <tr key={String(wearable.id)}>
+                            <td>{String(wearable.id)}</td>
+                            <td>{String(wearable.human_id ?? "—")}</td>
+                            <td>{String(wearable.type ?? "—")}</td>
+                            <td>{String(wearable.provider ?? "—")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                     {occupancy && (
                       <>
                         <h3>Sample occupancy</h3>
@@ -1939,8 +1993,49 @@ export function ControlCenterPanel({ apiBase }: Props) {
                     )}
                     {smartSpacesReadiness && (
                       <>
-                        <h3>Facility readiness</h3>
-                        <pre>{JSON.stringify(smartSpacesReadiness, null, 2)}</pre>
+                        <h3>
+                          Facility readiness — {String(readinessScore ?? "—")}/100 (
+                          {String(readinessStatus ?? "unknown")})
+                        </h3>
+                        <div className="trust-chart">
+                          {factorChart.map((factor) => {
+                            const score = Number(factor.score ?? 0);
+                            const dimension = String(factor.dimension ?? "factor");
+                            return (
+                              <div key={dimension} className="trust-chart-row">
+                                <span className="trust-chart-label">{dimension}</span>
+                                <div className="trust-chart-bar">
+                                  <div
+                                    className="trust-chart-fill"
+                                    style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+                                  />
+                                </div>
+                                <span className="trust-chart-score">{score}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <h4>Trust inventory</h4>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Device</th>
+                              <th>Trust</th>
+                              <th>Health</th>
+                              <th>Provider</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {trustRows.map((entry) => (
+                              <tr key={String(entry.id)}>
+                                <td>{String(entry.id)}</td>
+                                <td>{String(entry.trust_level ?? "—")}</td>
+                                <td>{String(entry.health_status ?? "—")}</td>
+                                <td>{String(entry.provider ?? "—")}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </>
                     )}
                     <h3>Emergency &amp; continuity</h3>

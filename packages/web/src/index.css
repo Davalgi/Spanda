@@ -184,6 +184,43 @@ button:disabled {
   font-size: 0.85rem;
 }
 
+.trust-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.trust-chart-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr 2.5rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.trust-chart-label {
+  font-size: 0.85rem;
+  color: #c9d1d9;
+}
+
+.trust-chart-bar {
+  height: 0.65rem;
+  background: #21262d;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trust-chart-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #238636, #3fb950);
+}
+
+.trust-chart-score {
+  font-size: 0.85rem;
+  text-align: right;
+  color: #8b949e;
+}
+
 .digital-thread-graph {
   display: flex;
   flex-direction: column;
