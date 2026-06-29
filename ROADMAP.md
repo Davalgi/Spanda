@@ -145,7 +145,7 @@ Unified Entity Model (all platform objects)
 | **`spanda-certify`** | Runtime certification gate | **Stable** | Now | Core |
 | **Node bindings** | `spanda-node` N-API | **Stable** | Now | Core |
 
-**Topic guides:** [docs/architecture.md](docs/architecture.md) · [docs/compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md) · [docs/native-deploy.md](docs/native-deploy.md) · [docs/how-packages-work.md](docs/how-packages-work.md) · [docs/how-providers-work.md](docs/how-providers-work.md) · [docs/how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md)
+**Topic guides:** [docs/platform-architecture.md](docs/platform-architecture.md) · [docs/architecture.md](docs/architecture.md) · [docs/compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md) · [docs/native-deploy.md](docs/native-deploy.md) · [docs/how-packages-work.md](docs/how-packages-work.md) · [docs/how-providers-work.md](docs/how-providers-work.md) · [docs/how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md)
 
 ---
 
@@ -1032,7 +1032,7 @@ Recommendations to improve discoverability **without deleting content**. See [do
 | Pillar | Key guides |
 |--------|------------|
 | **Language** | [spanda-language.md](docs/spanda-language.md), [language-reference/](docs/language-reference/README.md), [triggers.md](docs/triggers.md), [concurrency.md](docs/concurrency.md) |
-| **Compiler & Runtime** | [architecture.md](docs/architecture.md), [compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md), [lean-core.md](docs/lean-core.md) |
+| **Compiler & Runtime** | [platform-architecture.md](docs/platform-architecture.md), [architecture.md](docs/architecture.md), [compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md), [lean-core.md](docs/lean-core.md) |
 | **Verification** | [hardware-compatibility.md](docs/hardware-compatibility.md), [readiness.md](docs/readiness.md), [mission-assurance.md](docs/mission-assurance.md), [self-healing.md](docs/self-healing.md), [replay.md](docs/replay.md) |
 | **Device & Fleet** | [device-tree.md](docs/device-tree.md), [device-pool.md](docs/device-pool.md), [mission-continuity.md](docs/mission-continuity.md), [fleet-distributed.md](docs/fleet-distributed.md) |
 | **Security** | [security-architecture.md](docs/security-architecture.md), [secrets.md](docs/secrets.md), [tamper-detection.md](docs/tamper-detection.md) |

@@ -28,7 +28,7 @@
 | OTLP metrics (Control Center) | `GET /v1/observability/otlp/metrics`, `POST /v1/observability/otlp/export-metrics` | `crates/spanda-ops/src/otlp_metrics.rs`, `scripts/enterprise_ops_smoke.sh` |
 | Fleet agent interpreter recovery | HTTP deploy + `/v1/recovery/execute` | `scripts/fleet_agent_recovery_smoke.sh`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Operational drift (full) | program + agent dimensions | `crates/spanda-config/src/operational_drift.rs` |
-| Platform maturity | graph, drift, gates, trust, tamper, compliance | crate tests under `spanda-graph`, `spanda-config`, `spanda-readiness`, `spanda-trust`, `spanda-tamper`, `spanda-compliance` |
+| Platform architecture validation | layer classification, dependency waivers, SCC baseline | `scripts/validate_architecture.py` (CI `rust` job) |
 | Enterprise ops API | Control Center handlers, device pool | `crates/spanda-api/tests/` |
 | Negative | `ai_safety_violation.sd` fails | `tests/integration.rs` |
 
@@ -79,7 +79,7 @@ spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 
 ## CI
 
-`.github/workflows/ci.yml`: TypeScript tests, Rust tests, WASM + web build, enterprise ops smoke (when enabled).
+`.github/workflows/ci.yml`: TypeScript tests, Rust tests, architecture validation (`validate_architecture.py`), WASM + web build, enterprise ops smoke (when enabled).
 
 ## Acceptance criteria per feature
 
