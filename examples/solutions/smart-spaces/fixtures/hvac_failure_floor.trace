@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "source": "smart-office/occupancy_climate.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "tower-demo", "score": 89, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 7200000.0,
+      "event": "sensor_alert",
+      "payload": {
+        "device_id": "ahu-12",
+        "type": "HVAC",
+        "zone": "floor-12",
+        "severity": "high",
+        "fault": "compressor_fault"
+      },
+      "state": null
+    },
+    {
+      "sim_time_ms": 7201000.0,
+      "event": "mission_started",
+      "payload": { "mission": "OccupancyClimate", "robot": "BuildingOrchestrator", "fallback": "economizer" },
+      "state": null
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "source": "smart-building/cleaning_mission.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "tower-demo", "score": 86, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 1800000.0,
+      "event": "mission_started",
+      "payload": { "mission": "CleaningMission", "robot": "service-robot-12" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 2400000.0,
+      "event": "robot_fault",
+      "payload": { "robot_id": "service-robot-12", "fault": "navigation_stuck", "zone": "floor-12" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 2405000.0,
+      "event": "continuity_failover",
+      "payload": {
+        "primary": "service-robot-12",
+        "backup": "vacuum-001",
+        "on_failure": "reassign_robot"
+      },
+      "state": null
+    }
+  ]
+}

@@ -384,6 +384,12 @@ spanda replay examples/solutions/smart-spaces/fixtures/fire_panel_activation.tra
 spanda replay examples/solutions/smart-spaces/fixtures/gateway_failover.trace --deterministic
 spanda replay examples/solutions/smart-spaces/fixtures/power_loss_island.trace --deterministic
 spanda replay examples/solutions/smart-spaces/fixtures/water_leak_basement.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/flood_basement.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/network_failure_offline.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/hvac_failure_floor.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/robot_failure_service.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/medical_emergency_patient.trace --deterministic
+spanda replay examples/solutions/smart-spaces/fixtures/security_breach_perimeter.trace --deterministic
 ```
 
 Or run all via `spanda demo smart-spaces`.

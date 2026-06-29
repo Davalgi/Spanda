@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "source": "smart-office/building_lockdown.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "tower-demo", "score": 92, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 9000000.0,
+      "event": "sensor_alert",
+      "payload": {
+        "device_id": "lock-lobby",
+        "type": "AccessBreach",
+        "zone": "room-lobby",
+        "severity": "critical"
+      },
+      "state": null
+    },
+    {
+      "sim_time_ms": 9000500.0,
+      "event": "mission_started",
+      "payload": { "mission": "BuildingLockdown", "robot": "BuildingOrchestrator" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 9002000.0,
+      "event": "emergency_stop",
+      "payload": { "policy": "AccessControlOverride", "reason": "security_breach" },
+      "state": null
+    }
+  ]
+}

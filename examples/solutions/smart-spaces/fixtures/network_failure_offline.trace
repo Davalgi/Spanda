@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "source": "smart-home/night_mode.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "home-demo", "score": 88, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 3600000.0,
+      "event": "network_event",
+      "payload": { "type": "wan_offline", "gateway_id": "matter-hub-primary", "severity": "high" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 3605000.0,
+      "event": "gateway_degraded",
+      "payload": { "gateway_id": "matter-hub-primary", "protocol": "Matter", "status": "local_only" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 3610000.0,
+      "event": "mission_started",
+      "payload": { "mission": "NightMode", "robot": "HomeOrchestrator", "mode": "local_automation" },
+      "state": null
+    }
+  ]
+}

@@ -1146,6 +1146,12 @@ fn demo_smart_spaces(root: &Path) {
         ("gateway_failover", "gateway_failover.trace"),
         ("power_loss_island", "power_loss_island.trace"),
         ("water_leak_basement", "water_leak_basement.trace"),
+        ("flood_basement", "flood_basement.trace"),
+        ("network_failure_offline", "network_failure_offline.trace"),
+        ("hvac_failure_floor", "hvac_failure_floor.trace"),
+        ("robot_failure_service", "robot_failure_service.trace"),
+        ("medical_emergency_patient", "medical_emergency_patient.trace"),
+        ("security_breach_perimeter", "security_breach_perimeter.trace"),
     ] {
         let trace = ss_root.join("fixtures").join(name);
         if trace.is_file() {

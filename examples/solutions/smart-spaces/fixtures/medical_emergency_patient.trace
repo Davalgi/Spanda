@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "source": "hospital-at-home/patient_monitoring.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "home-demo", "score": 91, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 10800000.0,
+      "event": "sensor_alert",
+      "payload": {
+        "device_id": "watch-patient-001",
+        "type": "MedicalAlert",
+        "zone": "patient-room",
+        "severity": "critical",
+        "health_opt_in": true
+      },
+      "state": null
+    },
+    {
+      "sim_time_ms": 1080050.0,
+      "event": "mission_started",
+      "payload": { "mission": "PatientMonitoring", "robot": "HomeOrchestrator" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 1081000.0,
+      "event": "emergency_stop",
+      "payload": { "policy": "HealthOptInOverride", "reason": "medical_emergency" },
+      "state": null
+    }
+  ]
+}

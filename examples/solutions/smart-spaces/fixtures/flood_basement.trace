@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "source": "emergency-response/flood_response.sd",
+  "deterministic": true,
+  "frames": [
+    {
+      "sim_time_ms": 0.0,
+      "event": "readiness_check",
+      "payload": { "profile": "smart_space", "facility_id": "home-demo", "score": 87, "passed": true },
+      "state": null
+    },
+    {
+      "sim_time_ms": 5400000.0,
+      "event": "sensor_alert",
+      "payload": {
+        "device_id": "leak-basement",
+        "type": "Flood",
+        "zone": "zone-basement",
+        "severity": "critical"
+      },
+      "state": null
+    },
+    {
+      "sim_time_ms": 5401000.0,
+      "event": "mission_started",
+      "payload": { "mission": "FloodResponse", "robot": "HomeOrchestrator" },
+      "state": null
+    },
+    {
+      "sim_time_ms": 5410000.0,
+      "event": "continuity_failover",
+      "payload": {
+        "primary": "matter-hub-primary",
+        "backup": "matter-hub-backup",
+        "on_failure": "activate_backup"
+      },
+      "state": null
+    }
+  ]
+}
