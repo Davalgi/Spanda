@@ -10,7 +10,7 @@ Incremental refactor plan for Platform Architecture v2.0 baseline waivers.
 
 | Category | Waived | CI policy |
 |----------|--------|-----------|
-| Rust upward dependencies | 16 | Fail on new edges |
+| Rust upward dependencies | 0 | Fail on new edges |
 | Rust SCC (`ARCH-SCC-001`) | 0 (dissolved) | Fail on any production SCC |
 | TypeScript upward imports | 0 | Fail on new edges |
 | Blueprint paths | 8 roots | Fail on forbidden artifacts |
@@ -111,7 +111,7 @@ See [event-model.md](./event-model.md).
 
 ---
 
-## Phase 7 — Rust upward waiver burn-down (in progress)
+## Phase 7 — Rust upward waiver burn-down (complete)
 
 **Target:** Reduce remaining `ARCH-*` production upward edges (16 at baseline after Phase 7c)
 
@@ -122,6 +122,29 @@ See [event-model.md](./event-model.md).
 | 3 | Move `WireCryptoSession` to `spanda-runtime`; decouple `spanda-transport*` from `spanda-security` | Done — closed `ARCH-217`–`ARCH-221` |
 | 4 | Decouple `spanda-providers` from audit/telemetry-store via `DeviceTelemetrySink` + inline ledger stub | Done — closed `ARCH-025`–`ARCH-026` |
 | 5 | Point formatter/parser/config at compiler-layer types (`ARCH-211`, `ARCH-017`, `ARCH-202`) | Done — closed 3 edges (**19 → 16**) |
+
+## Phase 8 — Final waiver elimination (complete)
+
+**Target:** Close all remaining 16 production upward waivers → 0.
+
+| Step | Action | Tickets closed |
+|------|--------|----------------|
+| 1 | `spanda-codegen` calls `lexer`→`parser` directly; remove `spanda-driver` dep | `ARCH-201` |
+| 2 | `spanda-connectivity-runtime` removes `spanda-hardware`; `HardwareProfile`/`CompatItem` moved to `spanda-connectivity`; validation logic to connectivity-runtime | `ARCH-203` |
+| 3 | `spanda-core` removes `spanda-security` prod dep; gut security.rs/security_validate.rs | `ARCH-204` |
+| 4 | `spanda-docs` removes `spanda-lib-registry` and `spanda-runtime-host`; `generate_language_reference` accepts `&dyn TypeCheckHost` + libraries slice | `ARCH-205`, `ARCH-206` |
+| 5 | `spanda-driver` removes `spanda-hardware`; verify moved to `spanda-core::hardware_verify` | `ARCH-003` |
+| 6 | `spanda-driver` removes `spanda-ota`; deploys via `spanda_ota::build_deploy_plan` | `ARCH-207` |
+| 7 | `spanda-fleet` removes `spanda-assurance`; uses `platform_assurance_runtime()` OnceLock | `ARCH-022` |
+| 8 | `spanda-fleet` removes `spanda-readiness`; uses `readiness_runtime()` OnceLock | `ARCH-021` |
+| 9 | `spanda-fleet` removes `spanda-tamper`; fleet tamper mesh uses `fleet_tamper_runtime()` OnceLock | `ARCH-209` |
+| 10 | `spanda-fleet` removes `spanda-telemetry-store`; telemetry mesh uses `fleet_telemetry_runtime()` OnceLock | `ARCH-210` |
+| 11 | `spanda-llvm` moves `spanda-driver` to dev-deps only | `ARCH-215` |
+| 12 | `spanda-ota` removes `spanda-readiness`; uses `readiness_runtime()` OnceLock | `ARCH-024` |
+| 13 | `spanda-ota` removes `spanda-telemetry-store`; uses `device_telemetry_sink()` OnceLock | `ARCH-216` |
+| 14 | `spanda-runtime-host` removes `spanda-package` and `spanda-security`; uses `import_catalog` and `security_capabilities` from `spanda-typecheck` | `ARCH-019`, `ARCH-020` |
+
+**Result:** 16 → **0** production upward waivers. Architecture manifest cleaned of all orphan entries (`ARCH-002`, `ARCH-015`, `ARCH-016`, `ARCH-023`, `ARCH-027`–`ARCH-036`).
 
 **Success:** Monotonic reduction of Rust upward waivers without new violations.
 
@@ -147,4 +170,4 @@ Track over time:
 python3 scripts/validate_architecture.py --verbose | rg 'waived'
 ```
 
-Goal for v2.1: reduce Rust upward waivers by 25% (**achieved**). ~~Goal for v3.0: eliminate `ARCH-SCC-001`.~~ **Done** — production graph has zero SCCs.
+Goal for v2.1: reduce Rust upward waivers by 25% (**achieved**). ~~Goal for v3.0: eliminate `ARCH-SCC-001`.~~ **Done** — production graph has zero SCCs. ~~Goal for v3.1: eliminate all remaining 16 upward waivers.~~ **Done** — 0 production upward waivers as of Phase 8.

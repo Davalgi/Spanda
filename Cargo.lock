@@ -2084,7 +2084,6 @@ version = "0.4.0"
 dependencies = [
  "serde_json",
  "spanda-ast",
- "spanda-driver",
  "spanda-error",
  "spanda-lexer",
  "spanda-parser",
@@ -2158,7 +2157,6 @@ dependencies = [
  "spanda-ast",
  "spanda-comm",
  "spanda-connectivity",
- "spanda-hardware",
  "spanda-runtime",
 ]
 
@@ -2290,9 +2288,7 @@ dependencies = [
  "spanda-ast",
  "spanda-error",
  "spanda-lexer",
- "spanda-lib-registry",
  "spanda-parser",
- "spanda-runtime-host",
  "spanda-typecheck",
 ]
 
@@ -2305,10 +2301,8 @@ dependencies = [
  "spanda-bridge",
  "spanda-debug",
  "spanda-error",
- "spanda-hardware",
  "spanda-interpreter",
  "spanda-lexer",
- "spanda-ota",
  "spanda-parser",
  "spanda-runtime",
  "spanda-runtime-host",
@@ -2375,14 +2369,12 @@ dependencies = [
  "rustls",
  "serde",
  "serde_json",
- "spanda-assurance",
  "spanda-ast",
  "spanda-deploy-http",
  "spanda-driver",
  "spanda-interpreter",
  "spanda-lexer",
  "spanda-parser",
- "spanda-readiness",
  "spanda-runtime",
  "spanda-tamper",
  "spanda-telemetry-store",
@@ -2444,6 +2436,7 @@ dependencies = [
  "spanda-ast",
  "spanda-comm",
  "spanda-connectivity",
+ "spanda-connectivity-runtime",
  "spanda-driver",
  "spanda-lexer",
  "spanda-parser",
@@ -2571,8 +2564,7 @@ dependencies = [
  "spanda-certify",
  "spanda-deploy-http",
  "spanda-driver",
- "spanda-readiness",
- "spanda-telemetry-store",
+ "spanda-runtime",
 ]
 
 [[package]]
@@ -2722,9 +2714,7 @@ dependencies = [
  "spanda-ffi",
  "spanda-hal",
  "spanda-lib-registry",
- "spanda-package",
  "spanda-runtime",
- "spanda-security",
  "spanda-typecheck",
 ]
 
