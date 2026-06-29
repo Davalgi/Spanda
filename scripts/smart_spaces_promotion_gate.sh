@@ -40,6 +40,7 @@ else
 fi
 
 AUDIT_FILE="${SPANDA_SMART_SPACES_SECURITY_AUDIT_PREP_FILE:-$ROOT/.spanda/smart-spaces-security-audit-prep.json}"
+SELF_AUDIT_FILE="${SPANDA_SMART_SPACES_SECURITY_SELF_AUDIT_FILE:-$ROOT/.spanda/smart-spaces-security-self-audit.json}"
 if [[ "${SPANDA_SMART_SPACES_SKIP_AUDIT:-1}" != "1" ]]; then
   echo "--- Smart Spaces security audit prep artifact ---"
   if [[ ! -f "$AUDIT_FILE" ]]; then
@@ -49,6 +50,13 @@ if [[ "${SPANDA_SMART_SPACES_SKIP_AUDIT:-1}" != "1" ]]; then
   fi
   python3 -c 'import json,sys; json.load(open(sys.argv[1]))' "$AUDIT_FILE"
   echo "Smart Spaces audit prep artifact present"
+  if [[ ! -f "$SELF_AUDIT_FILE" ]]; then
+    echo "missing self-audit file: $SELF_AUDIT_FILE" >&2
+    echo "Run: ./scripts/smart_spaces_security_self_audit.sh" >&2
+    exit 1
+  fi
+  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if d.get("signed_off") or all(c.get("passed") for c in d.get("checks",[])) else 1)' "$SELF_AUDIT_FILE"
+  echo "Smart Spaces security self-audit checks passed"
 else
   echo "Skipping audit prep check (SPANDA_SMART_SPACES_SKIP_AUDIT=1)"
 fi
@@ -103,10 +111,16 @@ fetch() {
 for path in \
   /v1/facilities \
   "/v1/facilities/tower-demo/readiness" \
+  "/v1/facilities/tower-demo/health" \
+  "/v1/facilities/tower-demo/security" \
+  "/v1/facilities/tower-demo/floor-map" \
   "/v1/zones/floor-12/occupancy" \
+  "/v1/zones/room-lobby/environment" \
   /v1/energy/systems \
+  "/v1/energy/systems/battery-001" \
   /v1/emergency/status \
-  /v1/smart-spaces/summary
+  /v1/smart-spaces/summary \
+  "/v1/smart-spaces/devices?facility_id=tower-demo"
 do
   echo "GET ${path}"
   body="$(fetch "$path")"
