@@ -6,9 +6,10 @@ use crate::runtime::{Interpreter, InterpreterOptions, RobotBackend};
 use crate::simulator::{create_default_simulator, Obstacle, SimulatorConfig};
 use spanda_ast::nodes::Program;
 use spanda_error::SpandaError;
-use spanda_providers::bootstrap_providers_for_packages;
+use spanda_runtime::provider_runtime::default_provider_runtime;
 use spanda_runtime::robot_state::PoseState;
 use spanda_runtime::scheduler::SchedulerClock;
+use spanda_runtime::telemetry_sink::default_telemetry_sink;
 use spanda_typecheck::ModuleRegistry;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -38,10 +39,14 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             .map_err(|message| SpandaError::Runtime { message, line: 0 })?;
     }
 
-    spanda_telemetry_store::configure_session_persist(options.persist_telemetry);
+    let telemetry_sink = options
+        .telemetry_sink
+        .clone()
+        .unwrap_or_else(default_telemetry_sink);
+    telemetry_sink.configure_session_persist(options.persist_telemetry);
     let trace_source = options.trace_source.clone();
     if options.persist_telemetry {
-        let _ = spanda_telemetry_store::begin_run_session(trace_source.as_deref());
+        telemetry_sink.begin_run_session(trace_source.as_deref());
     }
 
     let obstacles: Vec<Obstacle> = options
@@ -78,15 +83,15 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
     } else {
         options.scheduler_clock
     };
-    let package_names: Vec<String> = if let Some(ref cfg) = options.system_config {
-        spanda_config::provider_packages_for_runtime(cfg)
-    } else {
-        options.official_packages.clone()
-    };
+    let package_names = options.official_packages.clone();
+    let provider_runtime = options
+        .provider_runtime
+        .clone()
+        .unwrap_or_else(default_provider_runtime);
     let provider_registry = if package_names.is_empty() {
         None
     } else {
-        Some(bootstrap_providers_for_packages(
+        Some(provider_runtime.bootstrap_providers_for_packages(
             &package_names.iter().map(String::as_str).collect::<Vec<_>>(),
         ))
     };
@@ -118,14 +123,22 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             provider_registry,
             ffi_registry,
             enforce_policy: options.enforce_policy.clone(),
+            assurance_runtime: options.assurance_runtime.clone(),
+            telemetry_sink: options.telemetry_sink.clone(),
+            provider_runtime: options.provider_runtime.clone(),
+            fault_runtime: options.fault_runtime.clone(),
+            security_runtime_factory: options.security_runtime_factory,
+            comm_bus_factory: options.comm_bus_factory,
             ..Default::default()
         },
     );
     let trace_source = options.trace_source.clone();
     let run_outcome = interp.run(program, options.entry_behavior.as_deref());
     if run_outcome.is_err() {
+        let telemetry = interp.shared_telemetry_sink();
         emit_mission_completed(
             interp.audit_runtime_mut(),
+            telemetry.as_ref(),
             program,
             trace_source.as_deref(),
             false,
@@ -152,7 +165,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
         }
     }
     if options.persist_telemetry {
-        let _ = spanda_telemetry_store::end_run_session(
+        telemetry_sink.end_run_session(
             mission_trace_path.as_deref(),
             Some(&metrics),
             sim_time_ms,

@@ -33,6 +33,7 @@ eula = false
 spanda-api = { path = "../spanda-api" }
 spanda-ops = { path = "../spanda-ops" }
 spanda-ast = { path = "../spanda-ast" }
+spanda-comm = { path = "../spanda-comm" }
 spanda-certify = { path = "../spanda-certify" }
 spanda-codegen = { path = "../spanda-codegen" }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
@@ -72,8 +73,10 @@ spanda-modules = { path = "../spanda-modules" }
 spanda-ota = { path = "../spanda-ota" }
 spanda-package = { path = "../spanda-package" }
 spanda-parser = { path = "../spanda-parser" }
+spanda-providers = { path = "../spanda-providers" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-security = { path = "../spanda-security" }
+spanda-transport-routing = { path = "../spanda-transport-routing", default-features = false }
 spanda-sir = { path = "../spanda-sir" }
 spanda-typecheck = { path = "../spanda-typecheck" }
 serde = { version = "1", features = ["derive"] }
@@ -83,11 +86,12 @@ serde_json = "1"
 default = ["llvm"]
 llvm = ["dep:spanda-llvm"]
 slim = []
-live-mqtt = ["spanda-driver/live-mqtt"]
-live-websocket = ["spanda-driver/live-websocket"]
-live-dds = ["spanda-driver/live-dds"]
-live-transport = ["spanda-driver/live-transport"]
-live-iot = ["spanda-driver/live-iot"]
+transport-tls = ["spanda-transport-routing/transport-tls"]
+live-mqtt = ["spanda-transport-routing/live-mqtt"]
+live-websocket = ["spanda-transport-routing/live-websocket"]
+live-dds = ["spanda-transport-routing/live-dds"]
+live-transport = ["live-mqtt", "live-websocket", "live-dds"]
+live-iot = ["spanda-providers/live-iot"]
 live-ai = ["spanda-driver/live-ai"]
 cpp-native = ["spanda-driver/cpp-native"]
 python-native = ["spanda-driver/python-native"]

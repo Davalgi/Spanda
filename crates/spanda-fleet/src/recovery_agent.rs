@@ -2,12 +2,14 @@
 
 use crate::agent::{apply_recovery_action, FleetAgentState};
 use spanda_assurance::{
-    classify_failure, extract_recovery_policies, validate_recovery_plan, RecoveryContext,
-    RecoveryLevel, RecoveryPlanner, RecoveryReport, RecoveryStatus,
+    classify_failure, extract_recovery_policies, validate_recovery_plan, AssuranceBackedRuntime,
+    RecoveryContext, RecoveryLevel, RecoveryPlanner, RecoveryReport, RecoveryStatus,
 };
 use spanda_interpreter::{execute_recovery_on_program, RecoveryRunOptions, RecoveryRunResult};
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
+use spanda_runtime::security_runtime::default_security_runtime_factory;
+use spanda_transport_routing::runtime_bridge::routing_comm_bus_factory_fn;
 
 fn normalize_action(action: &str) -> String {
     // Description:
@@ -219,6 +221,9 @@ pub fn execute_interpreter_recovery_on_agent(
             robot_name,
             grant_operator_approval: operator_approval_enabled(),
             inbound_comm_messages: Vec::new(),
+            assurance_runtime: Some(std::sync::Arc::new(AssuranceBackedRuntime)),
+            security_runtime_factory: Some(default_security_runtime_factory()),
+            comm_bus_factory: Some(routing_comm_bus_factory_fn()),
         },
     )
     .map_err(|e| e.to_string())?;

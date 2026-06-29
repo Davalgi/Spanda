@@ -18,7 +18,6 @@ pub fn apply_system_config_to_run_options(
     mut opts: RunOptions,
     source: &Path,
 ) -> RunOptions {
-    opts.system_config = cfg.clone();
     if let Some(ref c) = cfg {
         let packages = provider_packages_for_runtime(c);
         if !packages.is_empty() {
@@ -42,6 +41,24 @@ pub fn apply_system_config_to_run_options(
     }
     if opts.runtime_hooks.is_none() {
         opts.runtime_hooks = Some(crate::runtime_hooks::default_runtime_hooks());
+    }
+    if opts.assurance_runtime.is_none() {
+        opts.assurance_runtime = Some(crate::assurance_runtime::default_assurance_runtime());
+    }
+    if opts.telemetry_sink.is_none() {
+        opts.telemetry_sink = Some(crate::telemetry_runtime::default_telemetry_sink());
+    }
+    if opts.provider_runtime.is_none() {
+        opts.provider_runtime = Some(crate::provider_runtime::default_provider_runtime());
+    }
+    if opts.fault_runtime.is_none() {
+        opts.fault_runtime = Some(crate::fault_runtime::default_fault_runtime());
+    }
+    if opts.security_runtime_factory.is_none() {
+        opts.security_runtime_factory = Some(crate::security_runtime::default_security_runtime_factory());
+    }
+    if opts.comm_bus_factory.is_none() {
+        opts.comm_bus_factory = Some(crate::comm_bus_runtime::default_comm_bus_factory());
     }
     opts
 }

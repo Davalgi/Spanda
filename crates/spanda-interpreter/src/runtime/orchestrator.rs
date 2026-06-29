@@ -6,7 +6,7 @@ use spanda_ast::comm_decl::{QosDecl, TransportKind};
 use spanda_ast::foundations::{CapabilityDecl, TaskPriority};
 use spanda_ast::nodes::{Expr, Program, RobotDecl, Stmt};
 use spanda_audit::{AuditRuntime, MockLedgerBackend};
-use spanda_comm::CommBus;
+use spanda_comm::{CommBus, CommBusFactory, CommBusHost, default_comm_bus_factory_fn};
 use spanda_concurrency::ConcurrencyRuntime;
 use spanda_connectivity_runtime::ConnectivityPolicyRuntime;
 use spanda_debug::DebugController;
@@ -14,7 +14,14 @@ use spanda_error::SpandaError;
 use spanda_ffi::FfiRegistry;
 use spanda_hal::hal::{create_sim_hal, HalBackend, SimHalBackend};
 use spanda_hal::HardwareMonitor;
-use spanda_providers::{bootstrap_providers_for_packages, sync_comm_bus_for_official_packages};
+use spanda_runtime::assurance_runtime::{
+    default_assurance_runtime, AssuranceRuntime, SharedAssuranceRuntime,
+};
+use spanda_runtime::fault_runtime::{default_fault_runtime, FaultRuntime, SharedFaultRuntime};
+use spanda_runtime::provider_runtime::{
+    default_provider_runtime, ProviderRuntime, SharedProviderRuntime,
+};
+use spanda_runtime::telemetry_sink::{default_telemetry_sink, SharedTelemetrySink, TelemetrySink};
 use spanda_runtime::events::EventBus;
 use spanda_runtime::reliability_runtime::{
     ModeRuntime, PipelineRuntime, RecoverHandlers, RetryRuntime, WatchdogRuntime,
@@ -30,9 +37,10 @@ use spanda_runtime::twin::TwinRuntime;
 use spanda_runtime::world_model::WorldModelRuntime;
 use spanda_runtime_host::core_runtime_host;
 use spanda_safety::{Pose2d, SafetyMonitor, SafetyZoneRuntime};
-use spanda_security::SecurityContext;
+use spanda_runtime::security_runtime::{
+    default_security_runtime_factory, SecurityRuntime, SecurityRuntimeFactory,
+};
 use spanda_runtime::tamper_policy::{TamperPolicySpec, TamperSeverity};
-use spanda_transport_routing::RoutingCommBus;
 use spanda_typecheck::ModuleRegistry;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -308,6 +316,24 @@ pub struct InterpreterOptions {
 
     /// Enforce a named operational policy during simulation and live runs.
     pub enforce_policy: Option<String>,
+
+    /// Assurance recovery/continuity runtime injected by CLI or fleet agents.
+    pub assurance_runtime: Option<SharedAssuranceRuntime>,
+
+    /// Telemetry persistence runtime injected by CLI or API layer.
+    pub telemetry_sink: Option<SharedTelemetrySink>,
+
+    /// Official package provider runtime injected by CLI or API layer.
+    pub provider_runtime: Option<SharedProviderRuntime>,
+
+    /// Runtime fault detection runtime injected by CLI or API layer.
+    pub fault_runtime: Option<SharedFaultRuntime>,
+
+    /// Security runtime factory injected by CLI or API layer.
+    pub security_runtime_factory: Option<SecurityRuntimeFactory>,
+
+    /// Comm bus host factory injected by CLI or API layer.
+    pub comm_bus_factory: Option<CommBusFactory>,
 }
 
 impl Default for InterpreterOptions {
@@ -352,6 +378,12 @@ impl Default for InterpreterOptions {
             official_packages: Vec::new(),
             runtime_host: None,
             enforce_policy: None,
+            assurance_runtime: None,
+            telemetry_sink: None,
+            provider_runtime: None,
+            fault_runtime: None,
+            security_runtime_factory: None,
+            comm_bus_factory: None,
         }
     }
 }
@@ -394,8 +426,8 @@ pub struct Interpreter<B: RobotBackend> {
     audit_runtime: Option<AuditRuntime>,
     mock_ledger: MockLedgerBackend,
     world_model: WorldModelRuntime,
-    security: SecurityContext,
-    comm_bus: RoutingCommBus,
+    security: Box<dyn SecurityRuntime>,
+    comm_bus: Box<dyn CommBusHost>,
     default_transport: TransportKind,
     module_functions: HashMap<String, spanda_ast::foundations::ModuleFnDecl>,
     imported_functions: HashMap<String, spanda_ast::foundations::ModuleFnDecl>,
@@ -448,6 +480,10 @@ pub struct Interpreter<B: RobotBackend> {
     recovery_knowledge_path: std::path::PathBuf,
     recovery_speed_cap: Option<f64>,
     runtime_policy: Option<spanda_runtime::operational_policy::RuntimePolicyMonitor>,
+    assurance_runtime: SharedAssuranceRuntime,
+    telemetry_sink: SharedTelemetrySink,
+    provider_runtime: SharedProviderRuntime,
+    fault_runtime: SharedFaultRuntime,
 }
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -467,9 +503,13 @@ impl<B: RobotBackend> Interpreter<B> {
         //
         // Example:
         //     let value = spanda_interpreter::orchestrator::new(backend, options);
+        let provider_runtime = options
+            .provider_runtime
+            .clone()
+            .unwrap_or_else(default_provider_runtime);
         let provider_registry = Rc::new(RefCell::new(
             options.provider_registry.take().unwrap_or_else(|| {
-                bootstrap_providers_for_packages(
+                provider_runtime.bootstrap_providers_for_packages(
                     &options
                         .official_packages
                         .iter()
@@ -479,8 +519,27 @@ impl<B: RobotBackend> Interpreter<B> {
             }),
         ));
         let host = options.runtime_host.unwrap_or_else(|| core_runtime_host());
-        let mut comm_bus = RoutingCommBus::new();
-        comm_bus.attach_provider_registry(Rc::clone(&provider_registry));
+        let assurance_runtime = options
+            .assurance_runtime
+            .clone()
+            .unwrap_or_else(default_assurance_runtime);
+        let telemetry_sink = options
+            .telemetry_sink
+            .clone()
+            .unwrap_or_else(default_telemetry_sink);
+        let fault_runtime = options
+            .fault_runtime
+            .clone()
+            .unwrap_or_else(default_fault_runtime);
+        let recovery_knowledge_path = assurance_runtime.default_knowledge_store_path();
+        let comm_bus_factory = options
+            .comm_bus_factory
+            .unwrap_or_else(default_comm_bus_factory_fn);
+        let security_factory = options
+            .security_runtime_factory
+            .unwrap_or_else(default_security_runtime_factory);
+        let comm_bus = comm_bus_factory(Rc::clone(&provider_registry));
+        let security = security_factory();
         Self {
             backend,
             options,
@@ -520,7 +579,7 @@ impl<B: RobotBackend> Interpreter<B> {
             audit_runtime: None,
             mock_ledger: MockLedgerBackend::new(),
             world_model: WorldModelRuntime::new(),
-            security: SecurityContext::new(),
+            security,
             comm_bus,
             default_transport: TransportKind::Sim,
             module_functions: HashMap::new(),
@@ -570,10 +629,34 @@ impl<B: RobotBackend> Interpreter<B> {
             granted_recovery_approvals: std::collections::HashSet::new(),
             deferred_recovery_issues: Vec::new(),
             mission_approval_actions: std::collections::HashSet::new(),
-            recovery_knowledge_path: spanda_assurance::default_knowledge_store_path(),
+            recovery_knowledge_path,
             recovery_speed_cap: None,
             runtime_policy: None,
+            assurance_runtime,
+            telemetry_sink,
+            provider_runtime,
+            fault_runtime,
         }
+    }
+
+    pub fn assurance(&self) -> &dyn AssuranceRuntime {
+        self.assurance_runtime.as_ref()
+    }
+
+    pub fn telemetry_sink(&self) -> &dyn TelemetrySink {
+        self.telemetry_sink.as_ref()
+    }
+
+    pub fn shared_telemetry_sink(&self) -> SharedTelemetrySink {
+        std::sync::Arc::clone(&self.telemetry_sink)
+    }
+
+    pub fn provider_runtime(&self) -> &dyn ProviderRuntime {
+        self.provider_runtime.as_ref()
+    }
+
+    pub fn fault_runtime(&self) -> &dyn FaultRuntime {
+        self.fault_runtime.as_ref()
     }
 
     pub fn runtime_host(&self) -> &dyn RuntimeHost {
@@ -1306,8 +1389,9 @@ impl<B: RobotBackend> Interpreter<B> {
             .official_packages()
             .is_empty()
         {
-            sync_comm_bus_for_official_packages(
-                &mut self.comm_bus,
+            let runtime = std::sync::Arc::clone(&self.provider_runtime);
+            runtime.sync_comm_bus(
+                self.comm_bus.as_any_mut(),
                 &mut self.provider_registry.borrow_mut(),
             );
             self.log(format!(
@@ -1340,8 +1424,10 @@ impl<B: RobotBackend> Interpreter<B> {
             for (index, robot) in robots.iter().enumerate() {
                 self.setup_robot(robot)?;
                 if index == 0 {
+                    let telemetry = std::sync::Arc::clone(&self.telemetry_sink);
                     emit_mission_started(
                         self.audit_runtime.as_mut(),
+                        telemetry.as_ref(),
                         program,
                         self.options.trace_source.as_deref(),
                     );
@@ -1366,8 +1452,10 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.setup_robot(robot)?;
             }
 
+            let telemetry = std::sync::Arc::clone(&self.telemetry_sink);
             emit_mission_started(
                 self.audit_runtime.as_mut(),
+                telemetry.as_ref(),
                 program,
                 self.options.trace_source.as_deref(),
             );
@@ -1404,8 +1492,10 @@ impl<B: RobotBackend> Interpreter<B> {
             }
         }
         // Record mission completion when audit runtime is active.
+        let telemetry = std::sync::Arc::clone(&self.telemetry_sink);
         emit_mission_completed(
             self.audit_runtime.as_mut(),
+            telemetry.as_ref(),
             program,
             self.options.trace_source.as_deref(),
             true,

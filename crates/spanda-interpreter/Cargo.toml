@@ -17,7 +17,6 @@ spanda-safety = { path = "../spanda-safety" }
 spanda-hal = { path = "../spanda-hal" }
 spanda-error = { path = "../spanda-error" }
 spanda-ai = { path = "../spanda-ai" }
-spanda-providers = { path = "../spanda-providers" }
 spanda-concurrency = { path = "../spanda-concurrency" }
 spanda-debug = { path = "../spanda-debug" }
 spanda-regex-lang = { path = "../spanda-regex-lang" }
@@ -28,28 +27,13 @@ spanda-ffi = { path = "../spanda-ffi" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 spanda-runtime = { path = "../spanda-runtime" }
-spanda-telemetry-store = { path = "../spanda-telemetry-store", default-features = false }
-spanda-security = { path = "../spanda-security" }
-spanda-transport = { path = "../spanda-transport", default-features = false }
-spanda-transport-routing = { path = "../spanda-transport-routing", default-features = false }
 spanda-typecheck = { path = "../spanda-typecheck" }
-spanda-capability = { path = "../spanda-capability" }
-spanda-runtime-faults = { path = "../spanda-runtime-faults" }
-spanda-config = { path = "../spanda-config" }
-spanda-assurance = { path = "../spanda-assurance" }
 spanda-deploy-http = { path = "../spanda-deploy-http", optional = true }
 
 [features]
-default = ["transport-tls"]
-transport-tls = ["spanda-transport/tls", "spanda-transport-routing/transport-tls"]
-telemetry-sqlite = ["spanda-telemetry-store/sqlite"]
+default = []
 fleet-http = ["dep:spanda-deploy-http"]
-live-iot = ["spanda-providers/live-iot"]
 live-ai = []
-live-mqtt = ["spanda-transport-routing/live-mqtt"]
-live-websocket = ["spanda-transport-routing/live-websocket"]
-live-dds = ["spanda-transport-routing/live-dds"]
-live-transport = ["live-mqtt", "live-websocket", "live-dds"]
 
 [dev-dependencies]
 spanda-fleet = { path = "../spanda-fleet" }

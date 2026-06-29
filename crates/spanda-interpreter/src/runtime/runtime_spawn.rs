@@ -4,7 +4,7 @@
 use super::{Interpreter, IntoSpandaError, RobotBackend, RuntimeError, RuntimeValue};
 use spanda_ast::nodes::Expr;
 use spanda_error::SpandaError;
-use spanda_providers::dispatch_official_package_call;
+use spanda_runtime::provider_runtime::ProviderDispatchContext;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn call_module_function(
@@ -45,23 +45,26 @@ impl<B: RobotBackend> Interpreter<B> {
             let record_trace = self.options.record_trace;
             let sim_time_ms = self.sim_time_ms;
             let dispatched = {
+                let runtime = std::sync::Arc::clone(&self.provider_runtime);
                 let mut registry = self.provider_registry.borrow_mut();
-                dispatch_official_package_call(
+                runtime.dispatch_official_package_call(
                     &mut registry,
                     module_path,
                     &func.name,
                     &arg_values,
-                    if trace_providers {
-                        Some(&mut self.telemetry)
-                    } else {
-                        None
+                    ProviderDispatchContext {
+                        telemetry: if trace_providers {
+                            Some(&mut self.telemetry)
+                        } else {
+                            None
+                        },
+                        mission_trace: if record_trace {
+                            self.mission_trace.as_mut()
+                        } else {
+                            None
+                        },
+                        sim_time_ms,
                     },
-                    if record_trace {
-                        self.mission_trace.as_mut()
-                    } else {
-                        None
-                    },
-                    sim_time_ms,
                 )
             };
             if let Some(value) = dispatched {

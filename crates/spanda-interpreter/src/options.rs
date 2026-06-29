@@ -3,6 +3,12 @@
 use serde::{Deserialize, Serialize};
 use spanda_ffi::FfiRegistry;
 use spanda_runtime::hooks::SharedRuntimeHooks;
+use spanda_runtime::assurance_runtime::SharedAssuranceRuntime;
+use spanda_runtime::fault_runtime::SharedFaultRuntime;
+use spanda_runtime::provider_runtime::SharedProviderRuntime;
+use spanda_runtime::security_runtime::{SecurityRuntimeFactory};
+use spanda_comm::CommBusFactory;
+use spanda_runtime::telemetry_sink::SharedTelemetrySink;
 use spanda_runtime::replay::MissionTrace;
 use spanda_runtime::robot_state::{PoseState, RobotState};
 use spanda_runtime::scheduler::SchedulerClock;
@@ -83,11 +89,27 @@ pub struct RunOptions {
     pub inbound_comm_messages: Vec<(String, String)>,
     #[serde(skip)]
     pub ffi_registry: Option<FfiRegistry>,
-    #[serde(skip)]
-    pub system_config: Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
     /// Platform service hooks injected by `spanda-driver` or the API layer.
     #[serde(skip)]
     pub runtime_hooks: Option<SharedRuntimeHooks>,
+    /// Assurance recovery/continuity runtime injected by CLI or fleet agents.
+    #[serde(skip)]
+    pub assurance_runtime: Option<SharedAssuranceRuntime>,
+    /// Telemetry persistence runtime injected by CLI or API layer.
+    #[serde(skip)]
+    pub telemetry_sink: Option<SharedTelemetrySink>,
+    /// Official package provider runtime injected by CLI or API layer.
+    #[serde(skip)]
+    pub provider_runtime: Option<SharedProviderRuntime>,
+    /// Runtime fault detection runtime injected by CLI or API layer.
+    #[serde(skip)]
+    pub fault_runtime: Option<SharedFaultRuntime>,
+    /// Security runtime factory injected by CLI or API layer.
+    #[serde(skip)]
+    pub security_runtime_factory: Option<SecurityRuntimeFactory>,
+    /// Comm bus host factory injected by CLI or API layer.
+    #[serde(skip)]
+    pub comm_bus_factory: Option<CommBusFactory>,
 }
 
 impl Default for RunOptions {
@@ -128,8 +150,13 @@ impl Default for RunOptions {
             enforce_policy: None,
             inbound_comm_messages: Vec::new(),
             ffi_registry: None,
-            system_config: None,
             runtime_hooks: None,
+            assurance_runtime: None,
+            telemetry_sink: None,
+            provider_runtime: None,
+            fault_runtime: None,
+            security_runtime_factory: None,
+            comm_bus_factory: None,
         }
     }
 }
@@ -223,7 +250,7 @@ pub struct TestRunResult {
 }
 
 /// Options for targeted interpreter recovery without a full program run loop.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct RecoveryRunOptions {
     #[serde(default)]
     pub robot_name: Option<String>,
@@ -231,12 +258,18 @@ pub struct RecoveryRunOptions {
     pub grant_operator_approval: bool,
     #[serde(default)]
     pub inbound_comm_messages: Vec<(String, String)>,
+    #[serde(skip)]
+    pub assurance_runtime: Option<SharedAssuranceRuntime>,
+    #[serde(skip)]
+    pub security_runtime_factory: Option<SecurityRuntimeFactory>,
+    #[serde(skip)]
+    pub comm_bus_factory: Option<CommBusFactory>,
 }
 
 /// Outcome of interpreter-backed recovery execution.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RecoveryRunResult {
-    pub recovery: spanda_assurance::RecoveryResult,
+    pub recovery: spanda_runtime::RecoveryResult,
     pub logs: Vec<String>,
     pub active_mode: String,
     pub mission_paused: bool,
@@ -244,7 +277,7 @@ pub struct RecoveryRunResult {
 }
 
 /// Options for targeted interpreter continuity takeover without a full run loop.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct ContinuityRunOptions {
     #[serde(default)]
     pub robot_name: Option<String>,
@@ -254,12 +287,18 @@ pub struct ContinuityRunOptions {
     pub grant_operator_approval: bool,
     #[serde(default)]
     pub inbound_comm_messages: Vec<(String, String)>,
+    #[serde(skip)]
+    pub assurance_runtime: Option<SharedAssuranceRuntime>,
+    #[serde(skip)]
+    pub security_runtime_factory: Option<SecurityRuntimeFactory>,
+    #[serde(skip)]
+    pub comm_bus_factory: Option<CommBusFactory>,
 }
 
 /// Outcome of interpreter-backed continuity takeover execution.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContinuityRunResult {
-    pub takeover: spanda_assurance::TakeoverReport,
+    pub takeover: spanda_runtime::TakeoverReport,
     pub logs: Vec<String>,
     pub mission_progress_percent: f64,
     pub handoff_from: Option<String>,

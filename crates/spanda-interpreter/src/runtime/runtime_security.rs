@@ -3,7 +3,7 @@
 
 use super::{Interpreter, IntoSpandaError, RobotBackend, RuntimeError};
 use spanda_error::SpandaError;
-use spanda_security::{SecurePolicy, TrustLevel};
+use spanda_runtime::security_types::{SecurePolicy, TrustLevel};
 use spanda_runtime::tamper_policy::TamperSeverity;
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -134,9 +134,7 @@ impl<B: RobotBackend> Interpreter<B> {
             return agent.clone();
         }
         self.security
-            .identity
-            .as_ref()
-            .map(|id| id.id().to_string())
+            .identity_id()
             .unwrap_or_else(|| "robot".into())
     }
 
@@ -203,28 +201,23 @@ impl<B: RobotBackend> Interpreter<B> {
         //     let result = spanda_interpreter::runtime_security::resolve_signing_key(&self, key);
 
         // proceed only when is ok is available.
-        if self.security.secrets.get(key).is_ok() {
+        if self.security.secret_exists(key) {
             self.security
-                .secrets
-                .resolve(key)
-                .map_err(|e| RuntimeError::new(e.to_string(), 0).into_spanda())
+                .resolve_secret(key)
+                .map_err(|e| RuntimeError::new(e, 0).into_spanda())
         } else {
             Ok(key.to_string())
         }
     }
 
-    pub(super) fn security_error(
-        &self,
-        err: spanda_security::SecurityError,
-        line: u32,
-    ) -> SpandaError {
+    pub(super) fn security_error(&self, err: impl Into<String>, line: u32) -> SpandaError {
         // Description:
         //     Security error.
         //
         // Inputs:
         //     &self: input value
         //         Caller-supplied &self.
-        //     err: spanda_security::SecurityError
+        //     err: impl Into<String>
         //         Caller-supplied err.
         //     line: u32
         //         Caller-supplied line.
@@ -237,6 +230,6 @@ impl<B: RobotBackend> Interpreter<B> {
         //     let result = spanda_interpreter::runtime_security::security_error(&self, err, line);
 
         // Produce into spanda as the result.
-        RuntimeError::new(err.to_string(), line).into_spanda()
+        RuntimeError::new(err.into(), line).into_spanda()
     }
 }

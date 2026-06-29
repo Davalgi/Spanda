@@ -204,7 +204,7 @@ impl<B: RobotBackend> Interpreter<B> {
                         self.default_transport,
                         Some(&source_id),
                     );
-                    let _ = spanda_telemetry_store::record_topic_publish(
+                    self.telemetry_sink().record_topic_publish(
                         self.telemetry_robot_id(),
                         &topic_path,
                         &val,

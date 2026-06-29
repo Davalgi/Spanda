@@ -4,7 +4,6 @@ use super::{Interpreter, RobotBackend};
 use spanda_ast::foundations::KillSwitchDecl;
 use spanda_ast::nodes::Program;
 use spanda_error::SpandaError;
-use spanda_security::signed::SignedMessage;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn cache_kill_switches(&mut self, program: &Program) {
@@ -88,25 +87,12 @@ impl<B: RobotBackend> Interpreter<B> {
                     ),
                     line: 1,
                 })?;
-            let signed: SignedMessage =
-                serde_json::from_str(signature_json).map_err(|e| SpandaError::Runtime {
-                    message: format!("Invalid kill switch signature JSON: {e}"),
+            self.security
+                .verify_remote_signature(signature_json)
+                .map_err(|message| SpandaError::Runtime {
+                    message,
                     line: 1,
                 })?;
-            let identity = self
-                .security
-                .identity
-                .as_ref()
-                .ok_or_else(|| SpandaError::Runtime {
-                    message: "Kill switch remote_signed requires robot identity".into(),
-                    line: 1,
-                })?;
-            if !signed.verify(identity).unwrap_or(false) {
-                return Err(SpandaError::Runtime {
-                    message: format!("Kill switch '{name}' signature verification failed"),
-                    line: 1,
-                });
-            }
             self.log(format!("kill_switch: verified remote signature for {name}"));
         }
 

@@ -3,10 +3,7 @@
 use super::{Interpreter, RobotBackend};
 use spanda_ast::fault_decl::RuntimeFaultTriggerDecl;
 use spanda_ast::nodes::{Program, RobotDecl};
-use spanda_runtime_faults::{
-    faults_from_hardware_signals, record_fault_in_trace, scan_program_faults, FaultScanOptions,
-    RuntimeFault,
-};
+use spanda_runtime::fault_types::{FaultScanOptions, RuntimeFault};
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn cache_fault_program(&mut self, program: &Program) {
@@ -67,13 +64,15 @@ impl<B: RobotBackend> Interpreter<B> {
         };
         let hw_faults = self.hardware_monitor.runtime_faults();
         let hw_events = self.hardware_monitor.runtime_events();
-        let mut faults = faults_from_hardware_signals(&hw_faults, &hw_events, self.sim_time_ms);
+        let fault_runtime = std::sync::Arc::clone(&self.fault_runtime);
+        let mut faults =
+            fault_runtime.faults_from_hardware_signals(&hw_faults, &hw_events, self.sim_time_ms);
 
         let scan_options = FaultScanOptions {
             sim_time_ms: self.sim_time_ms,
             ..FaultScanOptions::default()
         };
-        let scan = scan_program_faults(&program, "runtime", &scan_options);
+        let scan = fault_runtime.scan_program_faults(&program, "runtime", &scan_options);
         for fault in scan.faults {
             if fault.detected_at_ms == 0.0 {
                 faults.push(fault);
@@ -114,7 +113,8 @@ impl<B: RobotBackend> Interpreter<B> {
         // self.record_runtime_fault(&fault);
 
         if let Some(trace) = self.mission_trace.as_mut() {
-            record_fault_in_trace(trace, fault, self.sim_time_ms);
+            let fault_runtime = std::sync::Arc::clone(&self.fault_runtime);
+            fault_runtime.record_fault_in_trace(trace, fault, self.sim_time_ms);
         }
     }
 

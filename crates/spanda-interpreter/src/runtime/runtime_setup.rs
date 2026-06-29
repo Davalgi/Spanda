@@ -18,9 +18,14 @@ use spanda_runtime::state_machine::StateMachineRuntime;
 use spanda_runtime::triggers::{ConditionTriggerState, TriggerRegistry, TriggerTimerSchedule};
 use spanda_runtime::twin::TwinRuntime;
 use spanda_safety::{create_safety_config_from_robot, SafetyMonitor};
-use spanda_security::{RobotIdentity, SecretHandle, SecretSource, SecurityContext, TrustLevel};
-use spanda_transport::TransportConfig;
-use spanda_transport_routing::RoutingCommBus;
+use spanda_runtime::security_primitives::{
+    boundary_for_transport_name, bus_security_from_fields, effective_bus_security,
+    resolve_broker_url, validate_bus_security,
+};
+use spanda_runtime::security_types::{
+    CommTransportSetup, RobotIdentity, SecretHandle, SecretSource, SecureCommPolicy, TrustLevel,
+};
+use spanda_comm::default_comm_bus_factory_fn;
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -165,8 +170,11 @@ impl<B: RobotBackend> Interpreter<B> {
             );
         }
         let registry = Rc::clone(&self.provider_registry);
-        self.comm_bus = RoutingCommBus::new();
-        self.comm_bus.attach_provider_registry(registry);
+        let comm_bus_factory = self
+            .options
+            .comm_bus_factory
+            .unwrap_or_else(default_comm_bus_factory_fn);
+        self.comm_bus = comm_bus_factory(registry);
         self.zones.clear();
         self.stop_if_conditions.clear();
         self.event_bus = EventBus::new();
@@ -195,7 +203,10 @@ impl<B: RobotBackend> Interpreter<B> {
         self.twin_faults_dispatched.clear();
         self.audit_runtime = None;
         self.mock_ledger = MockLedgerBackend::new();
-        self.security = SecurityContext::new();
+        self.security = (self
+            .options
+            .security_runtime_factory
+            .unwrap_or_else(spanda_runtime::security_runtime::default_security_runtime_factory))();
         self.geofences.clear();
         self.geofence_active.clear();
         self.connectivity_events_seen.clear();
@@ -230,8 +241,8 @@ impl<B: RobotBackend> Interpreter<B> {
         // Register declared trust boundaries for runtime enforcement.
         for tb in trust_boundaries {
             let spanda_ast::foundations::TrustBoundaryDecl::TrustBoundaryDecl { name, .. } = tb;
-            if let Ok(kind) = name.parse::<spanda_security::TrustBoundaryKind>() {
-                self.security.trust_boundaries.declare(kind);
+            if let Ok(kind) = name.parse::<spanda_runtime::security_types::TrustBoundaryKind>() {
+                self.security.declare_trust_boundary(kind);
             }
         }
 
@@ -246,12 +257,12 @@ impl<B: RobotBackend> Interpreter<B> {
                 ..
             } = bus;
             self.default_transport = *transport;
-            let mut bus_security = spanda_transport::TransportSecurityConfig::from_bus_fields(
+            let mut bus_security = bus_security_from_fields(
                 encryption.as_deref(),
                 authentication.as_deref(),
                 integrity.as_deref(),
             )
-            .unwrap_or_default();
+            .map_err(|e| RuntimeError::new(format!("bus security: {e}"), 1).into_spanda())?;
             if let Some(sc) = secure_comm {
                 let spanda_ast::foundations::SecureCommPolicyDecl::SecureCommPolicyDecl {
                     encryption,
@@ -259,7 +270,7 @@ impl<B: RobotBackend> Interpreter<B> {
                     integrity,
                     ..
                 } = sc;
-                let robot_policy = spanda_security::SecureCommPolicy {
+                let robot_policy = SecureCommPolicy {
                     encryption: encryption
                         .as_deref()
                         .and_then(|s| s.parse().ok())
@@ -273,8 +284,7 @@ impl<B: RobotBackend> Interpreter<B> {
                         .and_then(|s| s.parse().ok())
                         .unwrap_or_default(),
                 };
-                bus_security =
-                    spanda_transport::effective_transport_policy(&robot_policy, &bus_security);
+                bus_security = effective_bus_security(&robot_policy, &bus_security);
             }
             for secret_decl in secrets {
                 let spanda_ast::foundations::SecretDecl::SecretDecl { name, source, .. } =
@@ -291,26 +301,23 @@ impl<B: RobotBackend> Interpreter<B> {
                     }
                 }
             }
-            if let Err(e) = bus_security.validate(transport.as_str()) {
+            if let Err(e) = validate_bus_security(&bus_security, transport.as_str()) {
                 return Err(RuntimeError::new(format!("bus security: {e}"), 1).into_spanda());
             }
             self.security.configure_wire_session(
                 bus_security.cert_path.clone(),
                 bus_security.key_secret.clone(),
             );
-            let transport_boundary =
-                spanda_security::boundary_for_transport_name(transport.as_str());
+            let transport_boundary = boundary_for_transport_name(transport.as_str());
             self.security.set_transport_context(
                 transport_boundary,
                 bus_security.encryption,
                 bus_security.authentication,
                 bus_security.integrity,
             );
-            let resolved_broker = spanda_transport::TransportSecurityConfig::resolve_broker_url(
-                broker_url.as_deref(),
-            );
+            let resolved_broker = resolve_broker_url(broker_url.as_deref());
             self.comm_bus
-                .configure(TransportConfig {
+                .configure_transport(CommTransportSetup {
                     node_name: Some(robot_name.clone()),
                     security: bus_security.clone(),
                     broker_url: resolved_broker,
@@ -610,10 +617,12 @@ impl<B: RobotBackend> Interpreter<B> {
             let spanda_ast::foundations::PermissionsDecl::PermissionsDecl { capabilities, .. } =
                 perm_decl;
             self.security.enable_strict_permissions();
-            self.security.capabilities.grant_all(capabilities);
+            let capability_refs: Vec<&str> =
+                capabilities.iter().map(String::as_str).collect();
+            self.security.grant_capabilities(&capability_refs);
             self.log(format!(
                 "permissions: strict mode, granted {} capability(ies)",
-                self.security.capabilities.granted().count()
+                self.security.granted_capability_count()
             ));
         }
 
@@ -623,7 +632,7 @@ impl<B: RobotBackend> Interpreter<B> {
 
             // Handle the success value from <TrustLevel>.
             if let Ok(t) = level.parse::<TrustLevel>() {
-                self.security.trust = t;
+                self.security.set_trust_level(t);
                 self.log(format!("trust: level set to {}", t.as_str()));
             }
         }
@@ -645,7 +654,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 }
             };
             self.security.grant_if_not_strict("secret.read");
-            self.security.secrets.register(SecretHandle {
+            self.security.register_secret(SecretHandle {
                 name: name.clone(),
                 source: src,
             });
@@ -668,7 +677,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 .map(|(_, v)| v.clone())
                 .unwrap_or_default();
             let robot_id =
-                RobotIdentity::new(id.clone(), public_key.clone()).with_trust(self.security.trust);
+                RobotIdentity::new(id.clone(), public_key.clone()).with_trust(self.security.trust_level());
             self.env.define(
                 String::from("identity"),
                 RuntimeValue::Identity {

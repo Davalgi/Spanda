@@ -3,8 +3,8 @@
 use super::{Interpreter, RobotBackend, RuntimeValue};
 use spanda_ast::assurance_decl::{AnomalyDetectorDecl, AnomalyHandlerDecl, StateEstimatorDecl};
 use spanda_ast::nodes::Program;
-use spanda_capability::{HealthReport, HealthStatus};
-use spanda_providers::dispatch_official_package_call;
+use spanda_runtime::health_types::{HealthReport, HealthStatus};
+use spanda_runtime::provider_runtime::ProviderDispatchContext;
 use std::time::Instant;
 
 fn sensor_name_from_input(input: &str) -> String {
@@ -189,23 +189,26 @@ impl<B: RobotBackend> Interpreter<B> {
             let sim_time_ms = self.sim_time_ms;
             let started = Instant::now();
             let score = {
+                let runtime = std::sync::Arc::clone(&self.provider_runtime);
                 let mut registry = self.provider_registry.borrow_mut();
-                dispatch_official_package_call(
+                runtime.dispatch_official_package_call(
                     &mut registry,
                     &backend,
                     "scan_learned",
                     &args,
-                    if trace_providers {
-                        Some(&mut self.telemetry)
-                    } else {
-                        None
+                    ProviderDispatchContext {
+                        telemetry: if trace_providers {
+                            Some(&mut self.telemetry)
+                        } else {
+                            None
+                        },
+                        mission_trace: if record_trace {
+                            self.mission_trace.as_mut()
+                        } else {
+                            None
+                        },
+                        sim_time_ms,
                     },
-                    if record_trace {
-                        self.mission_trace.as_mut()
-                    } else {
-                        None
-                    },
-                    sim_time_ms,
                 )
             };
             let Some(RuntimeValue::Number { value, .. }) = score else {

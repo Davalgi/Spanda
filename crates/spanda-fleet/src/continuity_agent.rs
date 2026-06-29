@@ -2,12 +2,15 @@
 
 use crate::agent::{apply_continuity_takeover, FleetAgentState};
 use spanda_assurance::{
-    parse_trigger, plan_takeover, ContinuityContext, SuccessionScope, TakeoverReport,
+    parse_trigger, plan_takeover, ContinuityContext, ContinuityTrigger, SuccessionScope,
+    TakeoverReport, AssuranceBackedRuntime,
 };
 use spanda_deploy_http::FleetContinuityRequest;
 use spanda_interpreter::{execute_continuity_on_program, ContinuityRunOptions};
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
+use spanda_runtime::security_runtime::default_security_runtime_factory;
+use spanda_transport_routing::runtime_bridge::routing_comm_bus_factory_fn;
 
 fn parse_takeover_request(step: &str) -> Result<FleetContinuityRequest, String> {
     serde_json::from_str::<FleetContinuityRequest>(step).map_err(|e| e.to_string())
@@ -18,7 +21,7 @@ fn continuity_context_from_request(request: &FleetContinuityRequest) -> Continui
         .trigger
         .as_deref()
         .map(parse_trigger)
-        .unwrap_or(spanda_assurance::ContinuityTrigger::RobotFailed);
+        .unwrap_or(ContinuityTrigger::RobotFailed);
     ContinuityContext {
         mission: request
             .mission
@@ -69,6 +72,9 @@ pub fn execute_interpreter_continuity_on_agent(
                 .ok()
                 .is_some_and(|v| v == "1" || v.eq_ignore_ascii_case("true")),
             inbound_comm_messages: Vec::new(),
+            assurance_runtime: Some(std::sync::Arc::new(AssuranceBackedRuntime)),
+            security_runtime_factory: Some(default_security_runtime_factory()),
+            comm_bus_factory: Some(routing_comm_bus_factory_fn()),
         },
     )
     .map_err(|e| e.to_string())?;

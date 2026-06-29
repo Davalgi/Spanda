@@ -5,11 +5,9 @@ use super::super::super::options::{ContinuityRunOptions, ContinuityRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
 use serde::{Deserialize, Serialize};
-use spanda_assurance::{
-    default_checkpoint_store_path, extract_continuity_policies, issue_to_continuity_trigger,
-    load_checkpoint, load_checkpoint_store, parse_trigger, plan_takeover,
-    program_has_continuity_for_trigger, record_checkpoint, save_checkpoint_store,
-    ContinuityContext, SuccessionScope, TakeoverMode, TakeoverReport,
+use spanda_runtime::{
+    parse_trigger, ContinuityContext, ContinuityTrigger, SuccessionScope, TakeoverMode,
+    TakeoverReport,
 };
 use spanda_ast::nodes::Program;
 use spanda_comm::CommBus;
@@ -24,18 +22,23 @@ impl<B: RobotBackend> Interpreter<B> {
     fn checkpoint_store_path(&self) -> PathBuf {
         std::env::var("SPANDA_CONTINUITY_CHECKPOINTS")
             .map(PathBuf::from)
-            .unwrap_or_else(|_| default_checkpoint_store_path())
+            .unwrap_or_else(|_| self.assurance().default_checkpoint_store_path())
     }
 
     fn persist_takeover_checkpoint(&self, report: &TakeoverReport) {
-        let mut store = load_checkpoint_store(&self.checkpoint_store_path());
-        record_checkpoint(
+        let mut store = self
+            .assurance()
+            .load_checkpoint_store(&self.checkpoint_store_path());
+        self.assurance().record_checkpoint(
             &mut store,
             &report.mission,
             &report.failed_entity,
             report.state_transfer.snapshot.clone(),
         );
-        if let Err(err) = save_checkpoint_store(&self.checkpoint_store_path(), &store) {
+        if let Err(err) = self.assurance().save_checkpoint_store(
+            &self.checkpoint_store_path(),
+            &store,
+        ) {
             self.log(format!("continuity: checkpoint persist failed: {err}"));
         } else {
             self.log(format!(
@@ -46,8 +49,11 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn loaded_progress_percent(&self, report: &TakeoverReport) -> f64 {
-        let store = load_checkpoint_store(&self.checkpoint_store_path());
-        load_checkpoint(&store, &report.mission, &report.failed_entity)
+        let store = self
+            .assurance()
+            .load_checkpoint_store(&self.checkpoint_store_path());
+        self.assurance()
+            .load_checkpoint(&store, &report.mission, &report.failed_entity)
             .map(|snap| snap.progress_percent)
             .unwrap_or(report.state_transfer.snapshot.progress_percent)
     }
@@ -90,13 +96,16 @@ impl<B: RobotBackend> Interpreter<B> {
         let Some(program) = self.health_program.clone() else {
             return Ok(None);
         };
-        if extract_continuity_policies(&program).is_empty() {
+        if self.assurance().extract_continuity_policies(&program).is_empty() {
             return Ok(None);
         }
-        let Some(trigger) = issue_to_continuity_trigger(issue) else {
+        let Some(trigger) = self.assurance().issue_to_continuity_trigger(issue) else {
             return Ok(None);
         };
-        if !program_has_continuity_for_trigger(&program, trigger) {
+        if !self
+            .assurance()
+            .program_has_continuity_for_trigger(&program, trigger)
+        {
             return Ok(None);
         }
         let failed = self
@@ -121,6 +130,8 @@ impl<B: RobotBackend> Interpreter<B> {
             successor: None,
             grant_operator_approval: false,
             inbound_comm_messages: Vec::new(),
+            assurance_runtime: Some(self.assurance_runtime.clone()),
+            ..Default::default()
         };
         let report = self.run_continuity_takeover(&program, &context, &options)?;
         self.log(format!(
@@ -356,7 +367,9 @@ impl<B: RobotBackend> Interpreter<B> {
         context: &ContinuityContext,
         options: &ContinuityRunOptions,
     ) -> Result<TakeoverReport, SpandaError> {
-        let report = plan_takeover(program, context, options.successor.as_deref());
+        let report = self
+            .assurance()
+            .plan_takeover(program, context, options.successor.as_deref());
         self.dispatch_continuity_takeover(&report, options.robot_name.as_deref())?;
 
         let fleet_names: Vec<String> = self.fleets.names().cloned().collect();
@@ -411,7 +424,9 @@ impl<B: RobotBackend> Interpreter<B> {
                 }
             })
             .unwrap_or(0.0);
-        let checkpoint_store = load_checkpoint_store(&self.checkpoint_store_path());
+        let checkpoint_store = self
+            .assurance()
+            .load_checkpoint_store(&self.checkpoint_store_path());
         let checkpoint_count = checkpoint_store.entries.len();
         ContinuityExecutionSnapshot {
             mission_paused,
@@ -438,11 +453,18 @@ pub fn execute_continuity_on_program(
     let sim = create_default_simulator(SimulatorConfig::default());
     let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
     let logs_cb = logs.clone();
+    let assurance_runtime = options
+        .assurance_runtime
+        .clone()
+        .unwrap_or_else(spanda_runtime::default_assurance_runtime);
     let mut interp = Interpreter::new(
         sim,
         super::InterpreterOptions {
             max_loop_iterations: 1,
             inbound_comm_messages: options.inbound_comm_messages.clone(),
+            assurance_runtime: Some(assurance_runtime),
+            security_runtime_factory: options.security_runtime_factory,
+            comm_bus_factory: options.comm_bus_factory,
             on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),
             ..Default::default()
         },
@@ -481,7 +503,7 @@ pub fn continuity_context_from_request(
         failed_entity: failed_robot.into(),
         trigger: trigger
             .map(parse_trigger)
-            .unwrap_or(spanda_assurance::ContinuityTrigger::RobotFailed),
+            .unwrap_or(ContinuityTrigger::RobotFailed),
         progress_percent,
         scope: SuccessionScope::Fleet,
         current_step: None,

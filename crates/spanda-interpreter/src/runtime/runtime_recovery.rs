@@ -8,12 +8,8 @@ use super::super::super::options::{RecoveryRunOptions, RecoveryRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
 use serde::{Deserialize, Serialize};
-use spanda_assurance::{
-    classify_failure, default_knowledge_store_path, extract_recovery_policies,
-    issue_to_recovery_issue, load_recovery_knowledge_store, merge_recovery_knowledge,
-    program_has_recovery_for_issue, record_recovery_outcome, save_recovery_knowledge_store,
-    validate_recovery_plan, RecoveryContext, RecoveryLevel, RecoveryPlanner, RecoveryResult,
-    RecoveryStatus,
+use spanda_runtime::{
+    RecoveryContext, RecoveryEvidence, RecoveryLevel, RecoveryResult, RecoveryStatus,
 };
 use spanda_ast::nodes::{Program, RobotDecl};
 use spanda_comm::CommBus;
@@ -411,7 +407,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 executed_actions: vec![],
                 failed_actions: vec![issue.into()],
                 verification_outcome: "No recovery program cached".into(),
-                evidence: spanda_assurance::RecoveryEvidence {
+                evidence: RecoveryEvidence {
                     failure: issue.into(),
                     diagnosis: issue.into(),
                     plan: "none".into(),
@@ -427,11 +423,11 @@ impl<B: RobotBackend> Interpreter<B> {
         let context = RecoveryContext {
             issue: issue.into(),
             diagnosis: None,
-            classification: Some(classify_failure(issue)),
+            classification: Some(self.assurance().classify_failure(issue)),
             level: RecoveryLevel::Level3AutomaticWithValidation,
         };
-        let plan = RecoveryPlanner::plan(&program, &context);
-        let safe_actions = validate_recovery_plan(&program, &plan);
+        let plan = self.assurance().plan_recovery(&program, &context);
+        let safe_actions = self.assurance().validate_recovery_plan(&program, &plan);
         let mut executed = Vec::new();
         let mut failed = Vec::new();
         let mut operator_approval = None;
@@ -474,7 +470,7 @@ impl<B: RobotBackend> Interpreter<B> {
             RecoveryStatus::Failed
         };
 
-        let evidence = spanda_assurance::RecoveryEvidence {
+        let evidence = RecoveryEvidence {
             failure: plan.failure.clone(),
             diagnosis: plan.diagnosis.clone(),
             plan: plan.name.clone(),
@@ -511,10 +507,18 @@ impl<B: RobotBackend> Interpreter<B> {
             }),
         );
 
-        let persisted = load_recovery_knowledge_store(&self.recovery_knowledge_path);
-        let mut knowledge = merge_recovery_knowledge(&program, &persisted);
-        record_recovery_outcome(&mut knowledge, &result);
-        let _ = save_recovery_knowledge_store(&self.recovery_knowledge_path, &knowledge);
+        let persisted = self
+            .assurance()
+            .load_recovery_knowledge_store(&self.recovery_knowledge_path);
+        let mut knowledge = self
+            .assurance()
+            .merge_recovery_knowledge(&program, &persisted);
+        self.assurance()
+            .record_recovery_outcome(&mut knowledge, &result);
+        let _ = self.assurance().save_recovery_knowledge_store(
+            &self.recovery_knowledge_path,
+            &knowledge,
+        );
 
         let _ = self.try_invoke_continuity_for_event(issue);
 
@@ -529,10 +533,13 @@ impl<B: RobotBackend> Interpreter<B> {
         let Some(program) = self.health_program.clone() else {
             return Ok(None);
         };
-        if extract_recovery_policies(&program).is_empty() {
+        if self.assurance().extract_recovery_policies(&program).is_empty() {
             return Ok(None);
         }
-        if !program_has_recovery_for_issue(&program, issue) {
+        if !self
+            .assurance()
+            .program_has_recovery_for_issue(&program, issue)
+        {
             return Ok(None);
         }
         let result = self.execute_recovery_runtime(issue)?;
@@ -546,7 +553,10 @@ impl<B: RobotBackend> Interpreter<B> {
 
     /// Attempt recovery dispatch for a hardware or health event during run/sim.
     pub(super) fn try_invoke_recovery_for_event(&mut self, event: &str) -> Result<(), SpandaError> {
-        let issue = issue_to_recovery_issue(event).unwrap_or_else(|| event.to_string());
+        let issue = self
+            .assurance()
+            .issue_to_recovery_issue(event)
+            .unwrap_or_else(|| event.to_string());
         match self.execute_recovery_auto(&issue) {
             Ok(Some(_)) => Ok(()),
             Ok(None) => Ok(()),
@@ -785,7 +795,7 @@ impl<B: RobotBackend> Interpreter<B> {
 
         //     let result = spanda_interpreter::runtime_recovery::init_recovery_runtime(&mut self);
 
-        self.recovery_knowledge_path = default_knowledge_store_path();
+        self.recovery_knowledge_path = self.assurance().default_knowledge_store_path();
         self.pending_recovery_approvals.clear();
         self.granted_recovery_approvals.clear();
         self.recovery_speed_cap = None;
@@ -939,11 +949,18 @@ pub fn execute_recovery_on_program(
     let logs: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
     let logs_cb = logs.clone();
     let grant_approval = options.grant_operator_approval;
+    let assurance_runtime = options
+        .assurance_runtime
+        .clone()
+        .unwrap_or_else(spanda_runtime::default_assurance_runtime);
     let mut interp = Interpreter::new(
         sim,
         super::InterpreterOptions {
             max_loop_iterations: 1,
             inbound_comm_messages: options.inbound_comm_messages.clone(),
+            assurance_runtime: Some(assurance_runtime),
+            security_runtime_factory: options.security_runtime_factory,
+            comm_bus_factory: options.comm_bus_factory,
             on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),
             ..Default::default()
         },
@@ -973,7 +990,7 @@ pub fn execute_recovery_on_program(
 mod recovery_execute_tests {
     use super::super::super::super::options::RecoveryRunOptions;
     use super::execute_recovery_on_program;
-    use spanda_assurance::RecoveryStatus;
+    use spanda_runtime::RecoveryStatus;
     use spanda_lexer::tokenize;
     use spanda_parser::parse;
 

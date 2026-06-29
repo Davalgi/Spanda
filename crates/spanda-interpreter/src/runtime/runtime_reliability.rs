@@ -5,9 +5,7 @@ use super::{
     runtime_velocity, Environment, Interpreter, IntoSpandaError, RobotBackend, RuntimeError,
     RuntimeValue, RUNTIME_TASK_COST_MS,
 };
-use spanda_assurance::{
-    classify_failure, execute_recovery_plan, RecoveryContext, RecoveryLevel, RecoveryPlanner,
-};
+use spanda_runtime::{RecoveryContext, RecoveryLevel, RecoveryStatus};
 use spanda_ast::nodes::{Expr, RobotDecl};
 use spanda_error::SpandaError;
 use spanda_runtime::reliability_runtime::{
@@ -42,15 +40,12 @@ impl<B: RobotBackend> Interpreter<B> {
         let context = RecoveryContext {
             issue: issue.into(),
             diagnosis: None,
-            classification: Some(classify_failure(issue)),
+            classification: Some(self.assurance().classify_failure(issue)),
             level: RecoveryLevel::Level3AutomaticWithValidation,
         };
-        let plan = RecoveryPlanner::plan(program, &context);
-        let result = execute_recovery_plan(program, &plan);
-        !matches!(
-            result.status,
-            spanda_assurance::RecoveryStatus::Unsafe | spanda_assurance::RecoveryStatus::Failed
-        )
+        let plan = self.assurance().plan_recovery(program, &context);
+        let result = self.assurance().build_recovery_result_from_plan(program, &plan);
+        !matches!(result.status, RecoveryStatus::Unsafe | RecoveryStatus::Failed)
     }
 
     pub(super) fn load_reliability_config(&mut self, robot: &RobotDecl) -> Result<(), SpandaError> {
@@ -311,7 +306,7 @@ impl<B: RobotBackend> Interpreter<B> {
         // Store the current simulation time as the task heartbeat.
         self.task_heartbeats
             .insert(task_name.to_string(), self.sim_time_ms);
-        let _ = spanda_telemetry_store::record_task_heartbeat(
+        self.telemetry_sink().record_task_heartbeat(
             task_name,
             self.sim_time_ms,
             self.telemetry_robot_id(),

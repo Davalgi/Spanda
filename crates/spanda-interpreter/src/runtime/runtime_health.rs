@@ -3,27 +3,12 @@
 use super::{Interpreter, RobotBackend};
 use spanda_ast::foundations::{HealthPolicyDecl, HealthPolicyReaction};
 use spanda_ast::nodes::{Program, RobotDecl};
-use spanda_capability::{evaluate_runtime_health, HealthReport, HealthStatus};
+use spanda_runtime::health_primitives::{apply_fleet_health_checks, evaluate_runtime_health};
+use spanda_runtime::health_types::{HealthReport, HealthStatus};
 use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn cache_health_program(&mut self, program: &Program) {
-        // Description:
-        //     Cache health program.
-        //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
-        //     progra: &Program
-        //         Caller-supplied progra.
-        //
-        // Outputs:
-        //     None.
-        //
-        // Example:
-
-        //     let result = spanda_interpreter::runtime_health::cache_health_program(&mut self, progra);
-
         let Program::Program {
             health_checks,
             health_policies,
@@ -56,20 +41,6 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn poll_runtime_health_changes(&mut self) {
-        // Description:
-        //     Poll runtime health changes.
-        //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
-        //
-        // Outputs:
-        //     None.
-        //
-        // Example:
-
-        //     let result = spanda_interpreter::runtime_health::poll_runtime_health_changes(&mut self);
-
         let Some(program) = self.health_program.clone() else {
             return;
         };
@@ -84,14 +55,14 @@ impl<B: RobotBackend> Interpreter<B> {
             let _ = self.try_invoke_recovery_for_event(event);
         }
         let mut report = evaluate_runtime_health(&faults, &events, &program);
-        spanda_capability::apply_fleet_health_checks(&mut report, &program, &self.fleets, &faults);
+        apply_fleet_health_checks(&mut report, &program, &self.fleets, &faults);
         let label = format!("{:?}", report.overall);
         let mut any_change = false;
 
         if self.last_health_overall.as_deref() != Some(label.as_str()) {
             any_change = true;
-            let _ =
-                spanda_telemetry_store::record_health_event("overall", &label, self.sim_time_ms);
+            self.telemetry_sink()
+                .record_health_event("overall", &label, self.sim_time_ms);
             self.last_health_overall = Some(label.clone());
         }
 
@@ -100,8 +71,8 @@ impl<B: RobotBackend> Interpreter<B> {
             let key = format!("{}:{}", check.target, check.name);
             if self.last_health_checks.get(&key) != Some(&status) {
                 any_change = true;
-                let _ = spanda_telemetry_store::record_health_event(
-                    format!("{}:{}", check.target, check.name),
+                self.telemetry_sink().record_health_event(
+                    &format!("{}:{}", check.target, check.name),
                     &status,
                     self.sim_time_ms,
                 );
@@ -146,22 +117,6 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn apply_swarm_health_coordination(&mut self, report: &HealthReport) {
-        // Description:
-        //     Apply swarm health coordination.
-        //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
-        //     repor: &HealthReport
-        //         Caller-supplied repor.
-        //
-        // Outputs:
-        //     None.
-        //
-        // Example:
-
-        //     let result = spanda_interpreter::runtime_health::apply_swarm_health_coordination(&mut self, repor);
-
         if !matches!(
             report.overall,
             HealthStatus::Critical | HealthStatus::Unsafe | HealthStatus::Failed
@@ -194,22 +149,6 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     fn apply_health_policy_reactions(&mut self, report: &HealthReport) {
-        // Description:
-        //     Apply health policy reactions.
-        //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
-        //     repor: &HealthReport
-        //         Caller-supplied repor.
-        //
-        // Outputs:
-        //     None.
-        //
-        // Example:
-
-        //     let result = spanda_interpreter::runtime_health::apply_health_policy_reactions(&mut self, repor);
-
         let Some(program) = self.health_program.clone() else {
             return;
         };
@@ -220,7 +159,6 @@ impl<B: RobotBackend> Interpreter<B> {
             return;
         }
 
-        // Collect active status labels from overall and per-check results.
         let mut active_statuses = vec![format!("{:?}", report.overall)];
         for check in &report.checks {
             if !matches!(check.status, HealthStatus::Healthy | HealthStatus::Unknown) {
@@ -228,7 +166,6 @@ impl<B: RobotBackend> Interpreter<B> {
             }
         }
 
-        // Run each policy reaction that matches an active status.
         for policy in &health_policies {
             let HealthPolicyDecl::HealthPolicyDecl {
                 name, reactions, ..
@@ -258,33 +195,12 @@ impl<B: RobotBackend> Interpreter<B> {
             }
         }
 
-        // Reset reaction latches when health returns to healthy.
         if matches!(report.overall, HealthStatus::Healthy) {
             self.applied_health_reactions.clear();
         }
     }
 
     pub(super) fn record_debug_event(&self, line: u32, reason: &str, vars: &[(&str, String)]) {
-        // Description:
-        //     Record debug event.
-        //
-        // Inputs:
-        //     &self: input value
-        //         Caller-supplied &self.
-        //     line: u32
-        //         Caller-supplied line.
-        //     reason: &str
-        //         Caller-supplied reason.
-        //     vars: &[(&str, String)]
-        //         Caller-supplied vars.
-        //
-        // Outputs:
-        //     None.
-        //
-        // Example:
-
-        //     let result = spanda_interpreter::runtime_health::record_debug_event(&self, line, reason, vars);
-
         let Some(debug) = &self.options.debug else {
             return;
         };
