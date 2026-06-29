@@ -460,6 +460,7 @@ fn event_kind(event: &TelemetryEvent) -> &'static str {
         TelemetryEvent::Health { .. } => "health",
         TelemetryEvent::Session { .. } => "session",
         TelemetryEvent::RuntimeMetrics { .. } => "runtime_metrics",
+        TelemetryEvent::Platform { .. } => "platform",
     }
 }
 
@@ -530,6 +531,19 @@ fn index_fields(event: &TelemetryEvent) -> IndexFields {
         TelemetryEvent::Health { session_id, .. } => {
             (None, None, None, None, session_id.clone(), None)
         }
+        TelemetryEvent::Platform {
+            event_type,
+            entity_id,
+            session_id,
+            ..
+        } => (
+            entity_id.clone(),
+            None,
+            None,
+            Some(event_type.clone()),
+            session_id.clone(),
+            None,
+        ),
         TelemetryEvent::Session { session_id, .. }
         | TelemetryEvent::RuntimeMetrics { session_id, .. } => {
             (None, None, None, None, Some(session_id.clone()), None)

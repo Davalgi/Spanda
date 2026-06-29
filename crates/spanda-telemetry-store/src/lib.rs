@@ -47,7 +47,7 @@ pub use store::{
     append_event, begin_run_session, configure_session_persist, default_heartbeat_index_path,
     default_store_path, end_run_session, env_persist_enabled, global_store, is_heartbeat_metric,
     persist_enabled, record_device_heartbeat, record_device_telemetry, record_health_event,
-    record_sensor_reading, record_task_heartbeat, record_topic_publish,
+    record_sensor_reading, record_task_heartbeat, record_topic_publish, record_platform_event,
     resolve_heartbeat_index_path, resolve_store_path, stats_from_events, wall_timestamp_ms,
     PersistentTelemetryStore, TelemetryQuery, TelemetrySessionSummary, TelemetryStats,
     TelemetryStoreInfo,

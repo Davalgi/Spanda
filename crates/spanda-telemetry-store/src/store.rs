@@ -148,6 +148,9 @@ fn stamp_active_session_id(event: &mut TelemetryEvent) {
         }
         | TelemetryEvent::Health {
             session_id: slot, ..
+        }
+        | TelemetryEvent::Platform {
+            session_id: slot, ..
         } => {
             if slot.is_none() {
                 *slot = Some(session_id);
@@ -306,6 +309,21 @@ pub fn record_health_event(
     })
 }
 
+/// Persist a canonical platform event envelope when telemetry persistence is enabled.
+pub fn record_platform_event(event: &spanda_audit::PlatformEvent) -> TelemetryStoreResult<()> {
+    if !persist_enabled() {
+        return Ok(());
+    }
+    append_event(TelemetryEvent::Platform {
+        event_type: event.event_type.as_str().to_string(),
+        source: event.source.clone(),
+        entity_id: event.entity_id.clone(),
+        payload: event.payload.clone(),
+        timestamp_ms: event.timestamp.timestamp_millis() as f64,
+        session_id: None,
+    })
+}
+
 /// Record a topic publish as device telemetry keyed by robot and topic path.
 pub fn record_topic_publish(
     robot_id: Option<&str>,
@@ -345,6 +363,7 @@ pub struct TelemetryStats {
     pub health_events: usize,
     pub session_events: usize,
     pub runtime_metrics_events: usize,
+    pub platform_events: usize,
     pub tracked_tasks: usize,
     pub tracked_devices: usize,
 }
@@ -366,6 +385,7 @@ pub fn stats_from_events(events: &[TelemetryEvent], index: &HeartbeatIndex) -> T
             TelemetryEvent::Health { .. } => stats.health_events += 1,
             TelemetryEvent::Session { .. } => stats.session_events += 1,
             TelemetryEvent::RuntimeMetrics { .. } => stats.runtime_metrics_events += 1,
+            TelemetryEvent::Platform { .. } => stats.platform_events += 1,
         }
     }
     stats
@@ -987,6 +1007,7 @@ pub(crate) fn matches_query(event: &TelemetryEvent, query: &TelemetryQuery) -> b
             TelemetryEvent::Health { .. } => "health",
             TelemetryEvent::Session { .. } => "session",
             TelemetryEvent::RuntimeMetrics { .. } => "runtime_metrics",
+            TelemetryEvent::Platform { .. } => "platform",
         };
         if event_kind != kind.as_str() {
             return false;
@@ -1025,8 +1046,8 @@ pub(crate) fn matches_query(event: &TelemetryEvent, query: &TelemetryQuery) -> b
                     .as_ref()
                     .is_none_or(|expected| expected == task_name)
         }
-        TelemetryEvent::Health { .. } => {
-            query.device_id.is_none() && query.sensor_id.is_none() && query.task_name.is_none()
+        TelemetryEvent::Health { .. } | TelemetryEvent::Platform { .. } => {
+            query.sensor_id.is_none() && query.task_name.is_none()
         }
         TelemetryEvent::Session { .. } | TelemetryEvent::RuntimeMetrics { .. } => {
             query.device_id.is_none() && query.sensor_id.is_none() && query.task_name.is_none()

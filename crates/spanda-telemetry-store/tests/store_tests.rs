@@ -425,3 +425,34 @@ fn store_info_reports_backend_and_counts() {
     assert_eq!(info.event_count, 1);
     assert!(!store.sqlite_backend());
 }
+
+#[test]
+fn record_platform_event_persists_envelope() {
+    use spanda_audit::platform_event::names;
+    use spanda_audit::PlatformEvent;
+    use spanda_telemetry_store::{configure_session_persist, global_store, record_platform_event};
+
+    configure_session_persist(true);
+    let event = PlatformEvent::new(
+        names::MISSION_STARTED,
+        "spanda-interpreter",
+        serde_json::json!({"mission": "demo.sd"}),
+    )
+    .with_entity_id("mission/demo.sd");
+    record_platform_event(&event).unwrap();
+    let events = global_store().lock().unwrap().read_all().unwrap();
+    assert!(
+        events.iter().any(|stored| matches!(
+            stored,
+            TelemetryEvent::Platform {
+                event_type,
+                source,
+                entity_id: Some(entity_id),
+                ..
+            } if event_type == names::MISSION_STARTED
+                && source == "spanda-interpreter"
+                && entity_id == "mission/demo.sd"
+        )),
+        "expected platform event in telemetry store"
+    );
+}

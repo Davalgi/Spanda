@@ -54,6 +54,7 @@ fn append_event_totals(out: &mut String, stats: &TelemetryStats) {
         ("health", stats.health_events),
         ("session", stats.session_events),
         ("runtime_metrics", stats.runtime_metrics_events),
+        ("platform", stats.platform_events),
     ] {
         write_metric(
             out,

@@ -79,6 +79,18 @@ pub enum TelemetryEvent {
         metrics: serde_json::Value,
         timestamp_ms: f64,
     },
+    /// Canonical platform event envelope (`docs/event-model.md`).
+    #[serde(rename = "platform")]
+    Platform {
+        event_type: String,
+        source: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        entity_id: Option<String>,
+        payload: serde_json::Value,
+        timestamp_ms: f64,
+        #[serde(skip_serializing_if = "Option::is_none", default)]
+        session_id: Option<String>,
+    },
 }
 
 impl TelemetryEvent {
@@ -90,7 +102,8 @@ impl TelemetryEvent {
             | Self::DeviceHeartbeat { timestamp_ms, .. }
             | Self::Health { timestamp_ms, .. }
             | Self::Session { timestamp_ms, .. }
-            | Self::RuntimeMetrics { timestamp_ms, .. } => *timestamp_ms,
+            | Self::RuntimeMetrics { timestamp_ms, .. }
+            | Self::Platform { timestamp_ms, .. } => *timestamp_ms,
         }
     }
 
@@ -100,7 +113,8 @@ impl TelemetryEvent {
             | Self::Sensor { session_id, .. }
             | Self::Heartbeat { session_id, .. }
             | Self::DeviceHeartbeat { session_id, .. }
-            | Self::Health { session_id, .. } => session_id.as_deref(),
+            | Self::Health { session_id, .. }
+            | Self::Platform { session_id, .. } => session_id.as_deref(),
             Self::Session { session_id, .. } | Self::RuntimeMetrics { session_id, .. } => {
                 Some(session_id.as_str())
             }

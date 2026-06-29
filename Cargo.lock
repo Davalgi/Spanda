@@ -2664,6 +2664,7 @@ dependencies = [
  "spanda-parser",
  "spanda-runtime",
  "spanda-security",
+ "spanda-telemetry-store",
 ]
 
 [[package]]
@@ -2836,6 +2837,7 @@ dependencies = [
  "rusqlite",
  "serde",
  "serde_json",
+ "spanda-audit",
  "spanda-deploy-http",
  "spanda-runtime",
  "tempfile",
