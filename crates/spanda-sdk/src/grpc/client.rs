@@ -34,12 +34,10 @@ impl GrpcClient {
         })
     }
 
-    fn bearer_metadata(
-        &self,
-    ) -> Option<tonic::metadata::MetadataValue<tonic::metadata::Ascii>> {
-        self.api_key.as_ref().and_then(|key| {
-            tonic::metadata::MetadataValue::try_from(format!("Bearer {key}")).ok()
-        })
+    fn bearer_metadata(&self) -> Option<tonic::metadata::MetadataValue<tonic::metadata::Ascii>> {
+        self.api_key
+            .as_ref()
+            .and_then(|key| tonic::metadata::MetadataValue::try_from(format!("Bearer {key}")).ok())
     }
 
     fn with_bearer<T>(&self, mut request: tonic::Request<T>) -> tonic::Request<T> {

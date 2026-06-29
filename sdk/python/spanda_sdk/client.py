@@ -154,6 +154,18 @@ class SpandaClient:
     def entity_readiness(self, entity_id: str) -> Any:
         return self._request("GET", f"/v1/entities/{entity_id}/readiness")
 
+    def entity_verify(
+        self,
+        entity_id: str,
+        *,
+        include_dependencies: bool = False,
+        file: Optional[str] = None,
+    ) -> Any:
+        body: dict[str, Any] = {"include_dependencies": include_dependencies}
+        if file:
+            body["file"] = file
+        return self._request("POST", f"/v1/entities/{entity_id}/verify", body)
+
     def entity_graph(self) -> Any:
         return self._request("GET", "/v1/entities/graph")
 

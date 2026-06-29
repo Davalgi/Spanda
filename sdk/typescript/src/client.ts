@@ -176,6 +176,16 @@ export class SpandaClient {
     return this.request("GET", `/v1/entities/${entityId}/trust`);
   }
 
+  async verifyEntity(
+    entityId: string,
+    body: { includeDependencies?: boolean; file?: string } = {},
+  ): Promise<JsonValue> {
+    return this.request("POST", `/v1/entities/${entityId}/verify`, {
+      include_dependencies: body.includeDependencies ?? false,
+      file: body.file,
+    });
+  }
+
   async entityGraph(): Promise<JsonValue> {
     return this.request("GET", "/v1/entities/graph");
   }

@@ -284,6 +284,11 @@ impl SpandaClient {
         Ok(TrustReport { raw: value })
     }
 
+    /// Unified verification for any entity kind (hardware, mission, fleet, device pool).
+    pub fn entity_verify(&self, id: &str, body: Option<&Value>) -> SpandaResult<Value> {
+        self.request("POST", &format!("/v1/entities/{id}/verify"), body, false)
+    }
+
     /// Register or update an entity in the runtime mutation overlay.
     pub fn register_entity(&self, body: &Value) -> SpandaResult<Value> {
         self.request("POST", "/v1/entities/register", Some(body), true)
