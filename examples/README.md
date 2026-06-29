@@ -29,6 +29,7 @@ Examples tagged by [Platform Pillar](../docs/pillars/README.md) and [Official So
 | [`solutions/agriculture/`](solutions/agriculture/) | Device & Fleet, Verification | Agriculture |
 | [`solutions/adas/`](solutions/adas/) | Verification, Device & Fleet, Security | ADAS |
 | [`solutions/spatial-computing/`](solutions/spatial-computing/) | Device & Fleet, Operations | SAR, Healthcare, Spatial HRI |
+| [`solutions/smart-spaces/`](solutions/smart-spaces/) | Verification, Device & Fleet, Operations | Smart Spaces & Ambient Intelligence |
 | [`iot/`](iot/) | Packages, Device & Fleet | Environmental Monitoring |
 | [`packages/`](packages/) | Packages & Ecosystem | — |
 | [`robotics/`](robotics/) | Verification, Packages | Smart Factory |

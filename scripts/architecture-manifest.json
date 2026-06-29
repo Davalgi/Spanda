@@ -620,6 +620,10 @@
     {
       "path": "examples/solutions/spatial-computing",
       "name": "Spatial Computing"
+    },
+    {
+      "path": "examples/solutions/smart-spaces",
+      "name": "Smart Spaces"
     }
   ],
   "canonical_entity_types": {
