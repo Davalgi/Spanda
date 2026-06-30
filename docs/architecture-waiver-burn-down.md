@@ -102,15 +102,18 @@ Validation: `python3 scripts/validate_architecture.py --check-manifest-sync` and
 
 | Subsystem | Events | Status |
 |-----------|--------|--------|
-| Entity API mutations | `EntityCreated`, `EntityTagged`, `EntityRelated`, `EntityUpdated` | **Shipped** (`spanda-api` → `record_platform_event`) |
-| Readiness | `ReadinessChanged`, `ReadinessGateFailed` | **Shipped** (`spanda-readiness` → `publish_platform_event`) |
-| Interpreter | `MissionStarted`, `MissionCompleted` | **Shipped** (when program declares `audit` block) |
-| Telemetry store | Persist all platform events | **Shipped** (`PlatformEventRuntime` bridge + `TelemetryEvent::Platform`) |
-| Trust | `TrustUpdated`, `TrustGateFailed` | **Shipped** (`spanda-trust` entity evaluation) |
-| Tamper | `TamperDetected` | **Shipped** (`spanda-tamper` verify-time analysis) |
-| Fleet orchestration | `FleetMemberJoined` | **Shipped** (`spanda-fleet` orchestrator) |
-| OTA rollouts | `OtaRolloutStarted`, `OtaRolloutCompleted` | **Shipped** (`spanda-ota` plan + remote rollout) |
-| Health / recovery / package | `HealthChanged`, `RecoveryTriggered`, `PackageInstalled`, … | **Planned** — taxonomy documented; wiring next |
+| Entity API mutations | `EntityCreated`, `EntityTagged`, `EntityRelated`, `EntityUpdated` | **Shipped** |
+| Readiness | `ReadinessChanged`, `ReadinessGateFailed` | **Shipped** |
+| Health | `HealthChanged`, `HealthCheckFailed`, `DegradedModeEntered` | **Shipped** (entity health evaluation) |
+| Interpreter missions | `MissionStarted`, `MissionCompleted`, `MissionPaused` | **Shipped** |
+| Recovery | `RecoveryTriggered`, `RecoveryCompleted`, `RecoveryFailed` | **Shipped** (runtime recovery execution) |
+| Trust | `TrustUpdated`, `TrustGateFailed` | **Shipped** |
+| Tamper | `TamperDetected` | **Shipped** |
+| Fleet orchestration | `FleetMemberJoined` | **Shipped** |
+| OTA rollouts | `OtaRolloutStarted`, `OtaRolloutCompleted` | **Shipped** |
+| Packages | `PackageInstalled` | **Shipped** (provider bootstrap) |
+| Telemetry store | Persist all platform events | **Shipped** |
+| Security / fleet lifecycle | `SpoofingDetected`, `FleetMemberLeft`, `MissionAborted`, … | **Planned** |
 
 See [event-model.md](./event-model.md).
 

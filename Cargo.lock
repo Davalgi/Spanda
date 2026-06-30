@@ -2623,6 +2623,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "spanda-ast",
+ "spanda-audit",
  "spanda-comm",
  "spanda-runtime",
  "spanda-transport",
