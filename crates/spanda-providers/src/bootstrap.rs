@@ -1,5 +1,6 @@
 //! Bootstrap default provider registrations from core compatibility shims.
 //!
+use super::platform_events::record_packages_installed;
 use super::package_stubs::{
     CloudPackageStub, ConnectivityPackageStub, FleetPackageStub, GpsPositioningStub,
     HriInputPackageStub, LedgerPackageStub, MaintenancePackageStub, NavNavigationStub,
@@ -311,6 +312,10 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
         || names.contains("spanda-knx")
     {
         registry.grant_capability("iot.device");
+    }
+
+    if !package_names.is_empty() {
+        record_packages_installed(package_names);
     }
 
     registry

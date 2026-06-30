@@ -4,6 +4,9 @@ use super::super::super::fleet_http::{
     relay_continuity_via_mesh, relay_recovery_via_mesh, FleetContinuityRequest,
     FleetRecoveryRequest,
 };
+use super::super::super::platform_events::{
+    emit_mission_paused, emit_recovery_outcome, emit_recovery_triggered,
+};
 use super::super::super::options::{RecoveryRunOptions, RecoveryRunResult};
 use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
@@ -401,7 +404,8 @@ impl<B: RobotBackend> Interpreter<B> {
 
         self.poll_recovery_approvals();
         let Some(program) = self.health_program.clone() else {
-            return Ok(RecoveryResult {
+            emit_recovery_triggered(issue, "none");
+            let result = RecoveryResult {
                 plan: "none".into(),
                 status: RecoveryStatus::Failed,
                 executed_actions: vec![],
@@ -417,7 +421,9 @@ impl<B: RobotBackend> Interpreter<B> {
                     operator_approval: None,
                     verification: "No program".into(),
                 },
-            });
+            };
+            emit_recovery_outcome(issue, "none", result.status);
+            return Ok(result);
         };
 
         let context = RecoveryContext {
@@ -427,6 +433,7 @@ impl<B: RobotBackend> Interpreter<B> {
             level: RecoveryLevel::Level3AutomaticWithValidation,
         };
         let plan = self.assurance().plan_recovery(&program, &context);
+        emit_recovery_triggered(issue, &plan.name);
         let safe_actions = self.assurance().validate_recovery_plan(&program, &plan);
         let mut executed = Vec::new();
         let mut failed = Vec::new();
@@ -522,6 +529,7 @@ impl<B: RobotBackend> Interpreter<B> {
 
         let _ = self.try_invoke_continuity_for_event(issue);
 
+        emit_recovery_outcome(issue, &result.plan, result.status);
         Ok(result)
     }
 
@@ -642,6 +650,7 @@ impl<B: RobotBackend> Interpreter<B> {
         self.env
             .define("mission", RuntimeValue::MissionControl { runtime });
         self.log("recovery: mission paused".into());
+        emit_mission_paused("recovery");
         self.record_mission_event("recovery_mission_paused", serde_json::json!({}));
     }
 

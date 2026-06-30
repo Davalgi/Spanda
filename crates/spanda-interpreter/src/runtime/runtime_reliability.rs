@@ -5,6 +5,7 @@ use super::{
     runtime_velocity, Environment, Interpreter, IntoSpandaError, RobotBackend, RuntimeError,
     RuntimeValue, RUNTIME_TASK_COST_MS,
 };
+use crate::platform_events::emit_degraded_mode_entered;
 use spanda_runtime::{RecoveryContext, RecoveryLevel, RecoveryStatus};
 use spanda_ast::nodes::{Expr, RobotDecl};
 use spanda_error::SpandaError;
@@ -138,6 +139,9 @@ impl<B: RobotBackend> Interpreter<B> {
 
         // Update active mode and execute the declared body when present.
         self.active_mode = mode.to_string();
+        if is_degraded_operating_mode(mode) {
+            emit_degraded_mode_entered(mode, "runtime_mode_transition", "runtime/mission");
+        }
         if let Some(body) = self.modes.get(mode).map(|m| m.body.clone()) {
             self.execute_block(&body)?;
         } else {
@@ -718,4 +722,12 @@ impl<B: RobotBackend> Interpreter<B> {
         }
         false
     }
+}
+
+fn is_degraded_operating_mode(mode: &str) -> bool {
+    matches!(
+        mode.to_ascii_lowercase().as_str(),
+        "degraded" | "degradedmode" | "safe" | "safemode" | "emergency" | "emergencymode"
+            | "recovery" | "recoverymode"
+    )
 }

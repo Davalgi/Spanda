@@ -1,5 +1,6 @@
 //! Unified entity health — routes health diagnostics through [`EntityRegistry`].
 //!
+use crate::platform_events::record_entity_health_platform_events;
 use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
 use spanda_capability::{evaluate_health_checks, evaluate_runtime_health};
@@ -149,7 +150,7 @@ pub fn evaluate_entity_health(
         }
     }
 
-    Some(EntityHealthReport {
+    let report = EntityHealthReport {
         entity_id: entity.id.clone(),
         entity_type: entity.kind().to_string(),
         health_status: entity.health_status.as_str().to_string(),
@@ -158,7 +159,9 @@ pub fn evaluate_entity_health(
         metrics,
         children_checked,
         sources,
-    })
+    };
+    record_entity_health_platform_events(&report);
+    Some(report)
 }
 
 fn is_device_kind(kind: &EntityKind) -> bool {
