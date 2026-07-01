@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **SDK 0.4.2 published:** Rust, Python, and TypeScript official SDKs bumped to **0.4.2** — ships post-0.4.1 entity parity (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); tags `crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`.
+- **Enterprise operations promoted to Stable:** All 20 enterprise operations pillars (Control Center, Device Pool, APIs, SDKs, SRE, compliance, …) updated to **Stable** in `docs/feature-status.md`, [ROADMAP.md](ROADMAP.md), and [enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) after implementation promotion gate; organizational field soak and third-party audit tracked separately.
 - **HealthChanged transition-only:** Entity health evaluation now emits `HealthChanged` only when status changes (`from`/`to`/`reason` payload); repeated evaluations with the same status are suppressed via an in-process cache.
 - **Readiness and degraded transition-only:** `ReadinessChanged`, `ReadinessGateFailed`, and entity-health `DegradedModeEntered` now emit on state transitions only (readiness snapshot, mission-ready gate entry, degraded diagnostic entry).
 - **Platform event wiring (Phase 6c):** Spoof-check emits `SpoofingDetected`; API/gRPC RBAC emits `AuthFailed`; managed vault rotation emits `SecretRotated`; fleet registry deregister/replace emits `FleetMemberLeft`; interpreter error paths emit `MissionAborted`; `spanda install`/`verify-adapter`/`remove` emit `PackageInstalled`/`PackageVerified`/`PackageRemoved`.

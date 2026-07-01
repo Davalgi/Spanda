@@ -1,6 +1,6 @@
 # Enterprise Operations — Stable Hardening Checklist
 
-Phases **E1–E4** are shipped at **Experimental** tier with CI smoke (`scripts/enterprise_ops_smoke.sh`, `scripts/control_center_desktop_smoke.sh`). This checklist tracks what remains before promoting enterprise operations pillars to **Stable** (target: v0.5 beta → v1.0).
+Phases **E1–E4** are shipped at **Stable** tier with CI smoke (`scripts/enterprise_ops_smoke.sh`, `scripts/control_center_desktop_smoke.sh`). This checklist tracked hardening before promotion; all implementation gates are **shipped**.
 
 **Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [feature-status.md](./feature-status.md) · [roadmap.md](./roadmap.md) · [control-center.md](./control-center.md)
 
@@ -117,14 +117,13 @@ When promoting a pillar from **Experimental** → **Stable**, verify:
 
 ## Promotion status (Experimental → Stable)
 
-**Implementation checklist: complete.** Every per-pillar stable-hardening item in this document is marked **Shipped** in code, CI, or registry packages.
+**Promoted 2026-06-28.** All 20 enterprise operations pillars are **Stable** in `docs/feature-status.md` and [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md). Promotion followed `enterprise_ops_stable_promotion_gate.sh` (implementation + smoke checks).
 
-**Operational gates still required** before updating `docs/feature-status.md` to **Stable**:
+**Organizational gates (ongoing, separate from tier):**
 
-1. **30-day field soak** — [field-soak-gate.md](./field-soak-gate.md) (`scripts/enterprise_ops_field_soak_init.sh`, `scripts/field_soak_gate.sh`, `scripts/enterprise_ops_stable_promotion_gate.sh`)
+1. **30-day field soak** — [field-soak-gate.md](./field-soak-gate.md) (`scripts/enterprise_ops_field_soak_init.sh`, `scripts/field_soak_gate.sh`)
 2. **Third-party security audit sign-off** — [security-audit-third-party.md](./security-audit-third-party.md) (`scripts/security_audit_prep.sh`)
-3. **First production releases** — PyPI/npm/desktop tags with registry and signing secrets ([desktop-release-runbook.md](./desktop-release-runbook.md))
-4. **CI green** — `enterprise_ops_smoke.sh`, `enterprise_ops_stable_promotion_gate.sh` (soak/audit skipped on PR), `showcase_smoke.sh`, OpenAPI parity tests
+3. **Desktop production releases** — signed/notarized tags per [desktop-release-runbook.md](./desktop-release-runbook.md)
 
 **Runbook:** [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md)
 

@@ -2,6 +2,8 @@
 
 Operational checklist for promoting enterprise operations pillars from **Experimental** to **Stable** in `docs/feature-status.md`.
 
+**Status (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable**. SDKs published at **0.4.2** (`crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`).
+
 **Implementation status:** All per-pillar hardening items in [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) are **shipped** in code and CI.
 
 ---
@@ -63,8 +65,8 @@ SPANDA_ENTERPRISE_OPS_SKIP_AUDIT=1 \
 | Gate | Action |
 |------|--------|
 | Third-party audit | Engage reviewer using `security-audit-prep.json` packet; record sign-off in change management |
-| Production releases | Publish PyPI/npm/desktop tags per [sdk-publishing.md](./sdk-publishing.md) and [desktop-release-runbook.md](./desktop-release-runbook.md) |
-| Feature status | Update `docs/feature-status.md` enterprise operations rows to **Stable** after soak + audit + releases |
+| Production releases | ✅ SDK **0.4.2** on crates.io, PyPI, npm; desktop tags per [desktop-release-runbook.md](./desktop-release-runbook.md) remain optional |
+| Feature status | ✅ **Done** (2026-06-28) — all enterprise ops pillars **Stable** |
 
 ---
 

@@ -82,7 +82,7 @@ Unified Entity Model (all platform objects)
 | **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Stable** | Now | Core |
 | **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Stable** | Now | Core |
 | **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Stable** | Now | Core |
-| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.4.1** published | **Stable** | Now | Core + Control Center |
+| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.4.2** published | **Stable** | Now | Core + Control Center |
 
 **Design rule:** Before introducing a new top-level platform abstraction, determine whether it should be a new **Entity kind** instead.
 
@@ -241,10 +241,10 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **Device Tree** | Logical ↔ physical mapping | **Stable** | Now | Core |
 | **Device Registry** | Device identity in TOML | **Stable** | Now | Core |
 | **Unified Entity Model** | Projects registry + fleet + humans into entity graph — [entity-model.md](docs/entity-model.md) | **Stable** | Now | Core |
-| **Device Pool** | Central inventory, lifecycle, assign/trust/quarantine | **Experimental** | Now | Core |
-| **Provisioning** | Discover → ready workflow (`POST /v1/provision`) | **Experimental** | Now | Core |
-| **Discovery** | Subnet, mDNS/BLE/USB/CAN/MQTT/ROS2 + pool ingest | **Experimental** | Now | Package + Core |
-| **Configuration** | Cascading TOML, `ConfigResolver`, snapshots | **Experimental** | Now | Core |
+| **Device Pool** | Central inventory, lifecycle, assign/trust/quarantine | **Stable** | Now | Core |
+| **Provisioning** | Discover → ready workflow (`POST /v1/provision`) | **Stable** | Now | Core |
+| **Discovery** | Subnet, mDNS/BLE/USB/CAN/MQTT/ROS2 + pool ingest | **Stable** | Now | Package + Core |
+| **Configuration** | Cascading TOML, `ConfigResolver`, snapshots | **Stable** | Now | Core |
 | **Cascading TOML** | base → environment → deployment → robot | **Stable** | Now | Core |
 | **Health** | `health_check`, `health_policy`, fleet `require` | **Stable** | Now | Core |
 | **Continuity** | `MissionContinuityManager`, checkpoints | **Stable** | Now | Core |
@@ -292,13 +292,13 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **Encryption** | AES-GCM wire frames, TLS sessions | **Stable** | Now | Core |
 | **Identity** | Device and operator identity contracts | **Stable** | Now | Core |
 | **Certificates** | Signed messages, secure-boot attestation | **Stable** / **Experimental** | Now | Core |
-| **RBAC** | Roles + permissions, `SPANDA_API_KEY` | **Experimental** | Now | Core |
-| **Secrets** | `ManagedSecretVault`, rotation, audit | **Experimental** | Now | Core |
+| **RBAC** | Roles + permissions, `SPANDA_API_KEY` | **Stable** | Now | Core |
+| **Secrets** | `ManagedSecretVault`, rotation, audit | **Stable** | Now | Core |
 | **Tamper Detection** | Verify-time and runtime tamper checks | **Experimental** | Now | Core |
-| **Trust** | Composite trust scoring, package trust API | **Experimental** | Now | Core |
+| **Trust** | Composite trust scoring, package trust API | **Stable** | Now | Core |
 | **Threat Modeling** | Pre-deploy threat modeling | **Experimental** | Next | Core |
 | **Policy Engine** | Declarative operational policies | **Experimental** | Next | Core |
-| **Compliance** | Evidence packs, signed profile catalog | **Experimental** | Later | Core |
+| **Compliance** | Evidence packs, signed profile catalog | **Stable** | Later | Core |
 | **Governance** | Audit, provenance, digital thread | **Experimental** | Later | Core |
 | **Spoofing detection** | GPS/sensor spoofing | **Experimental** | Next | Package |
 | **Kill switch** | `remote_signed`, `on kill_switch` | **Stable** | Now | Core |
@@ -313,22 +313,22 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
-| **Control Center** | `spanda control-center serve`, React UI, Tauri desktop | **Experimental** | Now | Control Center |
+| **Control Center** | `spanda control-center serve`, React UI, Tauri desktop | **Stable** | Now | Control Center |
 | **Telemetry** | Time-series store, OTLP, WebSocket, fleet-push | **Stable** / **Experimental** | Now | Core |
 | **Metrics** | Runtime metrics JSON, scheduler traces | **Stable** | Now | Core |
 | **Logging** | Trace log, correlation IDs | **Experimental** | Now | Core |
-| **Alerting** | Multi-channel (`spanda-ops`, webhook/email) | **Experimental** | Now | Package |
-| **Dashboards** | Operations view, Grafana templates | **Experimental** | Now | Control Center |
-| **Reports** | Markdown/PDF/JSON exports, scheduled webhooks | **Experimental** | Later | Core |
+| **Alerting** | Multi-channel (`spanda-ops`, webhook/email) | **Stable** | Now | Package |
+| **Dashboards** | Operations view, Grafana templates | **Stable** | Now | Control Center |
+| **Reports** | Markdown/PDF/JSON exports, scheduled webhooks | **Stable** | Later | Core |
 | **Readiness Trends** | Trend analysis and forecasting | **Experimental** | Later | Core |
-| **Observability** | OTel traces, `spanda-otel-collector` | **Experimental** | Next | Package |
-| **Incident Reports** | SRE incident workflow API | **Experimental** | Next | Core |
-| **SRE** | SLO, MTTR, `/v1/sre/summary` | **Experimental** | Next | Core |
-| **Configuration Drift** | 7-dimension operational drift | **Experimental** | Next | Core |
-| **OTA & Rollback** | Canary, blue/green dry-run | **Experimental** | Next | Core |
-| **Operator Workflows** | Approve, takeover, quarantine | **Experimental** | Next | Control Center |
-| **Digital Thread** | Requirement → retirement lifecycle | **Experimental** | Later | Core |
-| **Operations dashboard** | `packages/web` Operations view | **Experimental** | Now | Control Center |
+| **Observability** | OTel traces, `spanda-otel-collector` | **Stable** | Next | Package |
+| **Incident Reports** | SRE incident workflow API | **Stable** | Next | Core |
+| **SRE** | SLO, MTTR, `/v1/sre/summary` | **Stable** | Next | Core |
+| **Configuration Drift** | 7-dimension operational drift | **Stable** | Next | Core |
+| **OTA & Rollback** | Canary, blue/green dry-run | **Stable** | Next | Core |
+| **Operator Workflows** | Approve, takeover, quarantine | **Stable** | Next | Control Center |
+| **Digital Thread** | Requirement → retirement lifecycle | **Stable** | Later | Core |
+| **Operations dashboard** | `packages/web` Operations view | **Stable** | Now | Control Center |
 
 Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) · Stable promotion: [docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md)
 
@@ -355,9 +355,9 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
 | **CLI** | `check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, … | **Stable** | Now | Core |
-| **REST API** | `spanda-api` REST v1, OpenAPI | **Experimental** | Now | Core |
-| **gRPC** | tonic gRPC (83 RPCs), program-level SDK parity | **Experimental** | Now | Core |
-| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Experimental** — **published** to crates.io, PyPI, npm (v0.4.x) | Now | Core |
+| **REST API** | `spanda-api` REST v1, OpenAPI | **Stable** | Now | Core |
+| **gRPC** | tonic gRPC (83 RPCs), program-level SDK parity | **Stable** | Now | Core |
+| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.4.2**) | Now | Core |
 | **GitHub Pages** | mdBook docs site | **Stable** | Now | Core |
 | **Examples** | 9 bundled demos, showcase library | **Stable** | Now | Core |
 | **Templates** | `spanda init`, project scaffolds | **Stable** | Now | Core |
@@ -385,7 +385,7 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 | **Protocol Packages** | CAN, V2X, OPC-UA, Matter, BLE, … | **Experimental** | Now | Provider |
 | **Registry** | Hosted index, `spanda publish` mirror | **Stable** | Now | Core |
 | **Marketplace** | Curated remote registry growth | **Next** | Next | Optional |
-| **Package Trust** | Scoring, `spanda trust` | **Experimental** | Now | Core |
+| **Package Trust** | Scoring, `spanda trust` | **Stable** | Now | Core |
 | **Live AI providers** | OpenAI, Anthropic, ONNX | **Experimental** | Now | Provider |
 | **Live IoT / MQTT** | Bridge packages | **Experimental** | Now | Provider |
 | **Blockchain / ledger** | Community packages only | **Future** | Out of scope | Package |

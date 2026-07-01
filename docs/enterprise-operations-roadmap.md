@@ -8,7 +8,7 @@ Strategic expansion plan for Spanda as a **complete Autonomous Systems Platform*
 
 **Related:** [roadmap.md](./roadmap.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [differentiation-roadmap.md](./differentiation-roadmap.md) · [feature-status.md](./feature-status.md) · [platform-overview.md](./platform-overview.md)
 
-**Last updated:** 2026-06-26
+**Last updated:** 2026-06-28
 
 ---
 
@@ -62,31 +62,32 @@ Enterprise operations pillars compose existing engines — they do **not** repla
 
 | # | Pillar | Lifecycle phase(s) | Tier | Primary outcome |
 |---|--------|-------------------|------|-----------------|
-| 1 | **Control Center** | Operate, Observe, Govern | Experimental | Web-based operational visibility |
-| 2 | **Device Pool** | Deploy, Operate | Experimental | Central device inventory and lifecycle |
-| 3 | **Device Discovery** | Deploy | Experimental | Host-backed core probes (`discovery_live`) + optional registry packages |
-| 4 | **Provisioning** | Deploy, Verify | Experimental | Discover → verify → assign → ready workflow |
-| 5 | **Configuration Management** | Deploy, Operate | Experimental | Versioned cascading TOML with snapshots |
-| 6 | **RBAC** | Govern, Operate | Experimental | Role-based access for humans and services |
-| 7 | **Secret Management** | Deploy, Govern, Security | Experimental | Encrypted credentials contract with rotation metadata |
-| 8 | **Telemetry** | Operate, Observe | Experimental | Time-series health, readiness, mission data |
-| 9 | **Alerting** | Operate, Recover | Experimental | Multi-channel incident notifications |
-| 10 | **Configuration Drift** | Operate, Verify | Experimental | Expected vs actual parity across dimensions |
-| 11 | **OTA & Rollback** | Deploy | Experimental | Canary, blue/green, phased rollout |
-| 12 | **Package Trust** | Verify, Build | Experimental | Signature, reputation, vulnerability, coverage, compatibility scoring |
-| 13 | **SDKs** | Build, Operate | Experimental (published v0.4.x) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; CLI as reference |
-| 14 | **Operator Workflows** | Operate, Recover | Experimental | Mission approval, takeover, quarantine, device trust |
-| 15 | **SRE** | Operate, Observe | Experimental | SLO/SLA, MTTR/MTBF, incident reporting |
-| 16 | **Reporting** | Govern, Audit | Experimental | Fleet, mission, compliance, executive exports (incl. PDF) |
-| 17 | **Compliance** | Verify, Govern, Audit | Experimental | Evidence packs, immutable audit trails |
-| 18 | **APIs** | All | Experimental | REST v1 + OpenAPI; JSON-RPC gateway; native gRPC (tonic) **Experimental** — `--grpc-bind`, 83 RPCs (full REST parity except `/v1/rpc`) |
-| 19 | **Observability** | Operate, Observe | Experimental | Metrics, logs, traces, events; OTLP export; correlation IDs |
-| 20 | **Digital Thread** | Build → Retire | Experimental | End-to-end traceability chain (v1 query) |
+| 1 | **Control Center** | Operate, Observe, Govern | **Stable** | Web-based operational visibility |
+| 2 | **Device Pool** | Deploy, Operate | **Stable** | Central device inventory and lifecycle |
+| 3 | **Device Discovery** | Deploy | **Stable** | Host-backed core probes (`discovery_live`) + optional registry packages |
+| 4 | **Provisioning** | Deploy, Verify | **Stable** | Discover → verify → assign → ready workflow |
+| 5 | **Configuration Management** | Deploy, Operate | **Stable** | Versioned cascading TOML with snapshots |
+| 6 | **RBAC** | Govern, Operate | **Stable** | Role-based access for humans and services |
+| 7 | **Secret Management** | Deploy, Govern, Security | **Stable** | Encrypted credentials contract with rotation metadata |
+| 8 | **Telemetry** | Operate, Observe | **Stable** | Time-series health, readiness, mission data |
+| 9 | **Alerting** | Operate, Recover | **Stable** | Multi-channel incident notifications |
+| 10 | **Configuration Drift** | Operate, Verify | **Stable** | Expected vs actual parity across dimensions |
+| 11 | **OTA & Rollback** | Deploy | **Stable** | Canary, blue/green, phased rollout |
+| 12 | **Package Trust** | Verify, Build | **Stable** | Signature, reputation, vulnerability, coverage, compatibility scoring |
+| 13 | **SDKs** | Build, Operate | **Stable** (published **0.4.2**) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; CLI as reference |
+| 14 | **Operator Workflows** | Operate, Recover | **Stable** | Mission approval, takeover, quarantine, device trust |
+| 15 | **SRE** | Operate, Observe | **Stable** | SLO/SLA, MTTR/MTBF, incident reporting |
+| 16 | **Reporting** | Govern, Audit | **Stable** | Fleet, mission, compliance, executive exports (incl. PDF) |
+| 17 | **Compliance** | Verify, Govern, Audit | **Stable** | Evidence packs, immutable audit trails |
+| 18 | **APIs** | All | **Stable** | REST v1 + OpenAPI; JSON-RPC gateway; native gRPC (tonic) — `--grpc-bind`, 83 RPCs (full REST parity except `/v1/rpc`) |
+| 19 | **Observability** | Operate, Observe | **Stable** | Metrics, logs, traces, events; OTLP export; correlation IDs |
+| 20 | **Digital Thread** | Build → Retire | **Stable** | End-to-end traceability chain (v1 query) |
 
 ### Tier definitions
 
 | Tier | Meaning |
 |------|---------|
+| **Stable** | CI-backed, documented, enterprise-hardened; promoted via `enterprise_ops_stable_promotion_gate.sh` |
 | **Experimental** | Shipped with caveats; CLI or partial UI; not enterprise-hardened |
 | **Planned** | Design spec + integration contracts agreed; implementation scheduled |
 | **Future** | Depends on Planned foundations; larger scope or external integrations |
