@@ -211,7 +211,7 @@ Cross-references:
 ### Promotion to Stable — **Complete** (2026-06-29)
 
 - [x] Implementation phases 1–7 and stabilization checklist
-- [x] SDKs published at **0.4.1** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`
+- [x] SDKs published at **0.4.2** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`
 - [x] `docs/feature-status.md` **Unified Entity Model** row set to **Stable**
 - [x] CI `entity_model_smoke.sh` and `entity-model-promotion-gate` (implementation checks)
 

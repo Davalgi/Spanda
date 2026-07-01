@@ -13,7 +13,7 @@ Operational checklist used to promote **Unified Entity Model** from **Experiment
 | Phases 1–7 implementation + stabilization | ✅ Shipped on `main` |
 | `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) | ✅ CI |
 | `entity-model-promotion-gate` (implementation checks with soak/audit skip in CI) | ✅ CI |
-| SDK **0.4.1** published | ✅ See [SDK publish](#sdk-publish) |
+| SDK **0.4.2** published | ✅ See [SDK publish](#sdk-publish) |
 | `docs/feature-status.md` → **Stable** | ✅ |
 
 ---
@@ -22,9 +22,11 @@ Operational checklist used to promote **Unified Entity Model** from **Experiment
 
 | Package | Version | Tag | Registry |
 |---------|---------|-----|----------|
-| `spanda-sdk` (Rust) | `0.4.1` | `crates-sdk-v0.4.1` | [crates.io](https://crates.io/crates/spanda-sdk) |
-| `spanda-sdk` (Python) | `0.4.1` | `sdk-python-v0.4.1` | [PyPI](https://pypi.org/project/spanda-sdk/) |
-| `@davalgi-spanda/sdk` (npm) | `0.4.1` | `npm-sdk-v0.4.1` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+| `spanda-sdk` (Rust) | `0.4.2` | `crates-sdk-v0.4.2` | [crates.io](https://crates.io/crates/spanda-sdk) |
+| `spanda-sdk` (Python) | `0.4.2` | `sdk-python-v0.4.2` | [PyPI](https://pypi.org/project/spanda-sdk/) |
+| `@davalgi-spanda/sdk` (npm) | `0.4.2` | `npm-sdk-v0.4.2` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+
+Previous release: **0.4.1** (`crates-sdk-v0.4.1`, `sdk-python-v0.4.1`, `npm-sdk-v0.4.1`).
 
 Publish workflows: `.github/workflows/publish-sdk-{rust,python,typescript}.yml` — triggered by tag push.
 

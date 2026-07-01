@@ -1,7 +1,7 @@
 # Entity Model Integration Report
 
 **Date:** 2026-06-28  
-**Status:** Shipped (**Stable** tier) — Phases 1–18 complete; SDKs **0.4.1** on crates.io, PyPI, npm
+**Status:** Shipped (**Stable** tier) — Phases 1–18 complete; SDKs **0.4.2** on crates.io, PyPI, npm
 
 ## Summary
 
@@ -112,4 +112,4 @@ scripts/entity_model_smoke.sh
 
 ## Stable promotion
 
-Entity model tier is **Stable** as of 2026-06-29. SDKs published at **0.4.1** (`sdk-python-v0.4.1`, `crates-sdk-v0.4.1`, `npm-sdk-v0.4.1`). See [entity-model-stable-promotion.md](./entity-model-stable-promotion.md) for gate history.
+Entity model tier is **Stable** as of 2026-06-29. SDKs published at **0.4.2** (`sdk-python-v0.4.2`, `crates-sdk-v0.4.2`, `npm-sdk-v0.4.2`). See [entity-model-stable-promotion.md](./entity-model-stable-promotion.md) for gate history.

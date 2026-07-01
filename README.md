@@ -91,7 +91,7 @@ Entity
 - **Verify:** `spanda entity verify rover-001` · `POST /v1/entities/{id}/verify`
 - **Graph:** `spanda entity graph` · `GET /v1/entities/graph`
 
-Guide: [docs/entity-model.md](docs/entity-model.md) · APIs: [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) · Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.4.1** on crates.io, PyPI, npm
+Guide: [docs/entity-model.md](docs/entity-model.md) · APIs: [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) · Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.4.2** on crates.io, PyPI, npm
 
 ---
 
