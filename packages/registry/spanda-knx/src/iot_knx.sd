@@ -3,3 +3,7 @@ module iot.knx;
 export fn read_group_address(address: String) -> String {
   return "knx-stub";
 }
+
+export fn write_group_address(address: String, value: String) -> Bool {
+  return true;
+}
