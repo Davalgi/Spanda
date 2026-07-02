@@ -28,11 +28,13 @@
 | Trust graph | trust-weighted mission → provider paths | `crates/spanda-graph/tests/graph_tests.rs`, `scripts/trust_graph_smoke.sh` |
 | Scorecard rollup | executive multi-pillar score | `scripts/scorecard_smoke.sh`, `examples/showcase/scorecard/executive.sd` |
 | Differentiation analytics API | what-if, risk, forecast, trust graph REST | `crates/spanda-api/tests/differentiation_analytics_api_tests.rs` |
+| Differentiation analytics gRPC | GetAnalytics* RPC parity | `crates/spanda-api/tests/grpc_tests.rs` (`grpc_analytics_endpoints_with_forecast_program`) |
+| LATER differentiation | twin mission, certify pack, team verify, governance, replay time travel | `scripts/later_differentiation_smoke.sh`, `crates/spanda-runtime/tests/time_travel_tests.rs` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |
 | Fleet field validation | multi-process agents + mesh orchestrate | `scripts/fleet_field_validation.sh` |
-| gRPC Control Center | tonic (89 RPCs — full REST parity except `/v1/rpc`) | `crates/spanda-api/tests/grpc_tests.rs`, `grpc_live_probe.rs` |
+| gRPC Control Center | tonic (see `GET /v1/version` → `grpc.rpc_count`; full REST parity except `/v1/rpc`) | `crates/spanda-api/tests/grpc_tests.rs`, `grpc_live_probe.rs` |
 | API rate limit + versioning | `SPANDA_API_RATE_LIMIT_PER_MINUTE`, `GET /v1/version`, `X-Spanda-Api-Version` | `crates/spanda-api/tests/api_policy_tests.rs` |
 | OpenAPI REST parity | `GET /v1/openapi.json` documents all `/v1/*` routes | `crates/spanda-api/tests/openapi_parity_tests.rs` |
 | Live OTA execute | `POST /v1/ota/execute` against deploy agent | `crates/spanda-api/tests/ota_execute_live.rs`, `scripts/ota_fleet_execute_smoke.sh` |

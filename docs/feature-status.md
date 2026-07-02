@@ -100,8 +100,8 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 
 | Area | Description |
 |------|-------------|
-| **Differentiation (NEXT)** | What-If Analysis (`spanda what-if`), Mission Risk Analysis (`spanda risk`), Readiness Forecasting (`spanda readiness forecast`), Trust Graph (`spanda trust-graph`), Scorecards showcase (`spanda score`) |
-| **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming (**Spatial Computing blueprint**), Autonomous Governance |
+| **Differentiation (NEXT)** | What-If Analysis, Mission Risk, Readiness Forecasting, Trust Graph, Scorecards — **Experimental** CLI + Control Center REST/gRPC analytics |
+| **Differentiation (LATER)** | Digital Mission Twin (`spanda twin mission`), Certification Packs (`spanda certify pack`), Mission Time Travel (`replay --at --inspect`), Human/Robot Teaming (`spanda team verify`), Autonomous Governance (`spanda governance`) — **Experimental** |
 | **Human Interaction & Spatial Computing (H1–H6)** | **Stable** — H1–H6 platform APIs, Control Center Humans tab, `/v1/humans` + `/v1/hri/*`, promotion gate `hri_stable_promotion_gate.sh`; registry vendor packages remain **Experimental** — [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md) |
 | **Smart Spaces & Ambient Intelligence** | **Stable** — blueprint #15 feature-complete: simulation matrix, Control Center panels (REST + gRPC 1.0.5), live env I/O bridges, weighted readiness, CI `smart_spaces_promotion_gate.sh` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md) |
 | **Platform maturity (Phase A)** | **Stable** — `spanda graph`, `spanda deploy gate`, `spanda explain`, `spanda trust` — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |

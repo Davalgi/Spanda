@@ -63,4 +63,7 @@ echo "== NEXT differentiation smokes =="
 ./scripts/scorecard_smoke.sh
 ./scripts/readiness_forecast_smoke.sh
 
+echo "== LATER differentiation smokes =="
+./scripts/later_differentiation_smoke.sh
+
 echo "Differentiation smoke OK"

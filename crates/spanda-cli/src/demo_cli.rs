@@ -792,6 +792,103 @@ fn demo_readiness_forecast(root: &Path) {
     println!("\nDemo complete. See examples/showcase/forecast/ and docs/readiness-forecast.md");
 }
 
+fn demo_mission_twin(root: &Path) {
+    let path = showcase(root, &["mission_twin", "patrol.sd"]);
+    let file = require_file(&path);
+    let sd = file.to_str().unwrap();
+
+    println!("== Digital mission twin — simulated mission feasibility ==\n");
+    run_spanda("check", file, &[]);
+    run_spanda_args(&["twin", "mission", sd]);
+    run_spanda_args(&["twin", "mission", sd, "--json"]);
+
+    println!("\nDemo complete. See examples/showcase/mission_twin/ and docs/differentiation-roadmap.md");
+}
+
+fn demo_certify_pack(root: &Path) {
+    let path = showcase(root, &["certify", "deployment_bundle", "rover.sd"]);
+    let file = require_file(&path);
+    let sd = file.to_str().unwrap();
+    let bundle = root.join(".spanda/demo-cert-pack");
+
+    println!("== Certification pack — deployment evidence bundle ==\n");
+    run_spanda("check", file, &[]);
+    let _ = std::fs::remove_dir_all(&bundle);
+    run_spanda_args(&[
+        "certify",
+        "pack",
+        sd,
+        "--bundle",
+        bundle.to_str().unwrap(),
+        "--json",
+    ]);
+
+    println!("\nDemo complete. See examples/showcase/certify/deployment_bundle/ and docs/differentiation-roadmap.md");
+}
+
+fn demo_team(root: &Path) {
+    let path = showcase(root, &["human_robot", "approval_escalation.sd"]);
+    let file = require_file(&path);
+    let sd = file.to_str().unwrap();
+
+    println!("== Human/robot teaming — approval and escalation paths ==\n");
+    run_spanda("check", file, &[]);
+    run_spanda_args(&["team", "verify", sd]);
+    run_spanda_args(&["team", "verify", sd, "--json"]);
+
+    println!("\nDemo complete. See examples/showcase/human_robot/ and docs/differentiation-roadmap.md");
+}
+
+fn demo_governance(root: &Path) {
+    let path = showcase(root, &["governance", "night_ops.sd"]);
+    let file = require_file(&path);
+    let sd = file.to_str().unwrap();
+
+    println!("== Autonomous governance — operational policy evaluation ==\n");
+    run_spanda("check", file, &[]);
+    run_spanda_args(&["governance", sd, "--policy", "NightOps"]);
+    run_spanda_args(&["governance", sd, "--policy", "NightOps", "--json"]);
+
+    println!("\nDemo complete. See examples/showcase/governance/ and docs/differentiation-roadmap.md");
+}
+
+fn demo_time_travel(_root: &Path) {
+    let diff_root = repo_root_containing_showcase(&["differentiation", "decision_trail", "main.sd"]);
+    let trail_path = showcase(&diff_root, &["differentiation", "decision_trail", "main.sd"]);
+    let trail = require_file(&trail_path);
+    let trace_path = trail.with_extension("trace");
+
+    println!("== Mission time travel — inspect trace state at a timestamp ==\n");
+    run_spanda("check", trail, &[]);
+    let _ = std::fs::remove_file(&trace_path);
+    std::env::set_var("SPANDA_DECISION_TRACE", "1");
+    run_spanda("sim", trail, &["--record", "--inject-health-faults"]);
+    if trace_path.exists() {
+        run_spanda(
+            "replay",
+            &trace_path,
+            &["--at", "T+00:01", "--inspect", "decisions"],
+        );
+        run_spanda(
+            "replay",
+            &trace_path,
+            &["--at", "T+00:01", "--inspect", "all", "--json"],
+        );
+    } else {
+        println!("(trace not produced — skip replay time travel)");
+    }
+
+    println!("\nDemo complete. See examples/showcase/differentiation/decision_trail/ and docs/differentiation-roadmap.md");
+}
+
+fn demo_later(root: &Path) {
+    demo_mission_twin(root);
+    demo_certify_pack(root);
+    demo_team(root);
+    demo_governance(root);
+    demo_time_travel(root);
+}
+
 fn demo_assurance(root: &Path) {
     // Description:
     //     Demo assurance.
@@ -1385,6 +1482,12 @@ pub fn demo_dispatch(args: &[String]) {
             demo_readiness_forecast(&root)
         }
         "differentiation" | "diff" => demo_differentiation(&root),
+        "mission-twin" | "mission_twin" | "twin-mission" => demo_mission_twin(&root),
+        "certify-pack" | "certify_pack" | "cert-pack" => demo_certify_pack(&root),
+        "team" | "human-robot" | "human_robot" => demo_team(&root),
+        "governance" => demo_governance(&root),
+        "time-travel" | "time_travel" | "timetravel" => demo_time_travel(&root),
+        "later" | "differentiation-later" | "diff-later" => demo_later(&root),
         "maturity" | "platform-maturity" => demo_maturity(&root),
         "trust" | "tamper" | "security-trust" => demo_trust(&root),
         "spoof" | "spoofing" | "gps-spoofing" => demo_spoof(&root),
@@ -1417,6 +1520,12 @@ pub fn demo_dispatch(args: &[String]) {
                    scorecard — executive multi-pillar health rollup\n\
                    forecast — readiness degradation predictions over time\n\
                    differentiation — mission contracts, safety/recovery coverage, explain\n\
+                   mission-twin — digital mission twin feasibility\n\
+                   certify-pack — deployment certification evidence bundle\n\
+                   team — human/robot approval and escalation paths\n\
+                   governance — autonomous operational policy evaluation\n\
+                   time-travel — replay trace inspection at a timestamp\n\
+                   later — all LATER differentiation pillar demos\n\
                    maturity — Phase A graph, explain, trust, deployment gates\n\
                    trust — package/mission tampering, spoofing, runtime intrusion, tamper_policy\n\
                    spoof — GPS spoof-check coverage, trace alerts, mock ML merge\n\

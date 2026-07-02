@@ -6,6 +6,9 @@ mod assurance_runtime;
 mod decision_runtime;
 mod bundled_registry;
 mod certify_cli;
+mod certify_pack;
+mod governance_cli;
+mod team_cli;
 mod chaos_cli;
 mod risk_cli;
 mod whatif_cli;
@@ -863,8 +866,16 @@ fn twin_dispatch(args: &[String]) {
         readiness_cli::cmd_twin_readiness(&args[1..]);
         return;
     }
+    if args.first().map(String::as_str) == Some("mission") {
+        readiness_cli::cmd_mission_twin(&args[1..]);
+        return;
+    }
     if args.first().map(String::as_str) != Some("export") {
-        eprintln!("Usage: spanda twin export <file.sd> --out <replay.json>");
+        eprintln!(
+            "Usage: spanda twin export <file.sd> --out <replay.json>\n\
+                   spanda twin mission <file.sd> [--json]\n\
+                   spanda twin readiness <file.sd> [--trace <path>] [--json]"
+        );
         process::exit(1);
     }
     let mut file: Option<String> = None;
@@ -1555,6 +1566,18 @@ fn main() {
         return;
     }
 
+    if command == "governance" {
+        governance_cli::governance_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "team" {
+        team_cli::team_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
     // Take the branch when command equals "fleet".
     if command == "fleet" {
         fleet_dispatch(&args[2..]);
@@ -2034,6 +2057,8 @@ fn main() {
     let mut replay_playback = false;
     let mut replay_show_faults = false;
     let mut replay_from: Option<String> = None;
+    let mut replay_at: Option<String> = None;
+    let mut replay_inspect: Option<String> = None;
     let mut trace_output: Option<String> = None;
     let mut twin_export_path: Option<String> = None;
     let mut wall_clock = false;
@@ -2174,6 +2199,22 @@ fn main() {
                 }
                 replay_from = Some(args[i].clone());
             }
+            "--at" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--at requires a timestamp (ISO-8601, T+mm:ss, or HH:MM:SS)");
+                    process::exit(1);
+                }
+                replay_at = Some(args[i].clone());
+            }
+            "--inspect" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--inspect requires facets (decisions,health,readiness,safety,all)");
+                    process::exit(1);
+                }
+                replay_inspect = Some(args[i].clone());
+            }
             "--project" => project_mode = true,
             "--target" => {
                 i += 1;
@@ -2275,6 +2316,8 @@ fn main() {
         replay_cli::human_replay(
             &trace_file,
             replay_from.as_deref(),
+            replay_at.as_deref(),
+            replay_inspect.as_deref(),
             replay_deterministic,
             replay_playback,
             replay_show_faults,

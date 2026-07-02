@@ -8,7 +8,7 @@ This document extends — does not replace — [platform-maturity-roadmap.md](./
 
 **Related:** [roadmap.md](./roadmap.md) · [product-strategy.md](./product-strategy.md) · [feature-status.md](./feature-status.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
 
-**Last updated:** 2026-06-24
+**Last updated:** 2026-07-02
 
 ---
 
@@ -73,15 +73,19 @@ These six capabilities define Spanda's market identity. Protect them in every re
 | 9 | Trust Graph | `spanda trust-graph <file>` | `spanda-graph` + `spanda-trust` | **Experimental** |
 | 10 | Scorecards | `spanda score <file>` | `spanda-score` | **Experimental** |
 
+Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto **1.0.6**) expose NEXT analytics with REST parity.
+
 ### LATER — digital twin, certification, teaming, governance
 
 | # | Area | CLI (target) | Crate | Status |
 |---|------|--------------|-------|--------|
-| 11 | Digital Mission Twin | `spanda twin mission` | extends `spanda-readiness` twin | **Future** |
-| 12 | Certification Packs | `spanda certify <file>` (bundle export) | `spanda-certify` + `spanda-audit` | **Future** |
-| 13 | Mission Time Travel | `spanda replay <trace> --at <ts>` | extends replay | **Future** |
-| 14 | Human/Robot Teaming | `requires approval`, escalation paths | extends runtime + `spanda-contract` | **Future** |
-| 15 | Autonomous Governance | `policy { }` blocks | `spanda-policy` | **Future** |
+| 11 | Digital Mission Twin | `spanda twin mission` | extends `spanda-readiness` twin | **Experimental** |
+| 12 | Certification Packs | `spanda certify pack [--bundle]` | CLI bundle composer + `spanda-certify` | **Experimental** |
+| 13 | Mission Time Travel | `spanda replay <trace> --at <ts> --inspect <facets>` | extends `spanda-runtime` replay | **Experimental** |
+| 14 | Human/Robot Teaming | `spanda team verify` | extends `spanda-readiness` teaming | **Experimental** |
+| 15 | Autonomous Governance | `spanda governance <file> [--policy]` | `spanda-policy` | **Experimental** |
+
+Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`; demo: `spanda demo later`.
 
 ---
 
