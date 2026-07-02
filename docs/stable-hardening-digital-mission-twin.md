@@ -10,7 +10,7 @@
 | Showcase | `examples/showcase/mission_twin/patrol.sd` |
 | Smoke | `scripts/later_differentiation_smoke.sh` |
 
-Cloud sync (`spanda-twin-cloud`) remains **Future**.
+Cloud sync (`spanda-twin-cloud`) — **Experimental** SaaS backend on Control Center; see [twin-cloud.md](./twin-cloud.md).
 
 ```bash
 SPANDA_LATER_SKIP_SOAK=1 SPANDA_LATER_SKIP_SMOKE=1 ./scripts/later_differentiation_stable_promotion_gate.sh

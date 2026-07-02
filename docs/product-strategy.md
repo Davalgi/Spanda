@@ -156,7 +156,7 @@ Every major feature is classified for prioritization. See [feature-status.md](./
 | C++ integration | Nice To Have |
 | Concurrency (spawn/select) | Nice To Have |
 | Generics / async / traits | Nice To Have |
-| Digital twin cloud sync | Future |
+| Digital twin cloud sync | Experimental (Twin Cloud SaaS + legacy upload) |
 | Multi-agent distributed runtime | Future |
 | World models | Future |
 | LLVM production backend | Future |

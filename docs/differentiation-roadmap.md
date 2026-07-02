@@ -497,7 +497,7 @@ flowchart TB
 | Trust attestation (TPM, secure boot) | | `spanda-trust-jetson`, `spanda-trust-pi` | Vendor-specific |
 | Scorecard rollup | ✓ `spanda-score` | | Pure composition |
 | Digital mission twin (local) | ✓ readiness twin | | |
-| Digital mission twin (cloud sync) | | `spanda-twin-cloud` | Future package |
+| Digital mission twin (cloud sync) | `spanda-twin-cloud` crate + `/v1/twins/*` | **Experimental** |
 | Certification pack export | ✓ `spanda-certify` | | |
 | Compliance profile templates | ✓ `spanda-compliance` | | Industry packs as packages |
 | Mission time travel | ✓ replay extensions | | |

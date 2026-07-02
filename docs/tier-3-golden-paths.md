@@ -26,7 +26,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md) for feature status and [t
 | **Platform packages** | — | `rust` + `check_all_examples.sh` | [autonomous_rover](../examples/showcase/autonomous_rover/) |
 | **Robotics deploy/fleet** | [golden_path_deploy.sh](../examples/robotics/golden_path_deploy.sh) | `robotics-golden-path` | [fleet_field_trial.sd](../examples/robotics/fleet_field_trial.sd) |
 | **Live MQTT** | [mqtt_golden_path.sh](../scripts/mqtt_golden_path.sh) | `mqtt-golden-path` | [mqtt_live.sd](../examples/communication/mqtt_live.sd) |
-| **Twin cloud export** | [twin_cloud_golden_path.sh](../scripts/twin_cloud_golden_path.sh) | `twin-cloud-golden-path` | [twin_replay_golden.sd](../examples/communication/twin_replay_golden.sd) |
+| **Twin cloud export (legacy)** | [twin_cloud_golden_path.sh](../scripts/twin_cloud_golden_path.sh) | `twin-cloud-golden-path` | [twin_replay_golden.sd](../examples/communication/twin_replay_golden.sd) |
+| **Twin Cloud SaaS** | [twin_cloud_saas_smoke.sh](../scripts/twin_cloud_saas_smoke.sh) | `twin-cloud-golden-path` | [patrol.sd](../examples/showcase/mission_twin/patrol.sd) |
 | **LLVM native codegen** | [llvm_golden_path.sh](../scripts/llvm_golden_path.sh) | `llvm-golden-path` | [hello_world.sd](../examples/hello_world.sd) |
 | **LLVM aarch64 (Jetson/Pi slice)** | [llvm_embedded_golden_path.sh](../scripts/llvm_embedded_golden_path.sh) | `llvm-embedded-golden-path` | [hello_world.sd](../examples/hello_world.sd) |
 | **C++ in-process FFI** | [cpp_native_golden_path.sh](../scripts/cpp_native_golden_path.sh) | `cpp-native-golden-path` | [ffi_cpp_extern.sd](../examples/ffi_cpp_extern.sd) |

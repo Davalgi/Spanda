@@ -8,7 +8,7 @@ Product strategy [Tier 3](./product-strategy.md) items are **not** v1 commitment
 | **Blockchain / ledger** | Experimental | `spanda-ledger` scaffold; `scripts/ledger_golden_path.sh` | `ledger-golden-path` job |
 | **World models** | Experimental | `world_model { }` parser + fusion hook; [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) | `world-model-golden-path` job |
 | **LLVM aarch64 (Jetson/Pi)** | Experimental | [llvm_embedded_golden_path.sh](../scripts/llvm_embedded_golden_path.sh) | `llvm-embedded-golden-path` job |
-| **Digital twin cloud sync** | Experimental | `spanda twin export` + `SPANDA_CLOUD_UPLOAD_URL`; `scripts/twin_cloud_golden_path.sh` | `twin-cloud-golden-path` job |
+| **Digital twin cloud sync** | Experimental | Legacy: `spanda twin export` + `SPANDA_CLOUD_UPLOAD_URL` (`scripts/twin_cloud_golden_path.sh`). **Twin Cloud SaaS:** `spanda twin cloud`, `/v1/twins/*` (`scripts/twin_cloud_saas_smoke.sh`) | `twin-cloud-golden-path` job |
 | **Distributed fleet** | Experimental | `spanda fleet orchestrate --remote`, mesh coordinator; `examples/robotics/golden_path_deploy.sh` | `robotics-golden-path` job |
 | **MQTT / DDS live transport** | Experimental | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; `examples/communication/mqtt_live.sd` | `mqtt-golden-path` job |
 | **C++ in-process FFI** | Experimental | `spanda-bridge` `cpp-native` feature; `scripts/cpp_native_golden_path.sh` | `cpp-native-golden-path` job |
@@ -35,7 +35,7 @@ Runtime telemetry (`RuntimeTelemetry`, mission traces, trigger metrics) remains 
 - LLVM as **primary** deploy path (interpreter stays default)
 - Production blockchain adapters (`spanda-ledger-ethereum`, etc.)
 - Full world-model / knowledge-graph semantics
-- Production twin cloud SaaS
+- Production twin cloud SaaS (hosted multi-tenant service; OSS Control Center backend is **Experimental** — see [twin-cloud.md](./twin-cloud.md))
 - Full fleet planning / consensus
 - Full DDS middleware (current DDS adapter is UDP JSON shim)
 - Full ROS replacement
