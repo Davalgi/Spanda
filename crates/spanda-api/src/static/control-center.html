@@ -90,6 +90,7 @@
     <button type="button" data-tab="operator" data-role-tier="ops">Operator</button>
     <button type="button" data-tab="assurance">Assurance</button>
     <button type="button" data-tab="diagnosis">Diagnosis</button>
+    <button type="button" data-tab="recovery" data-role-tier="ops">Recovery</button>
     <button type="button" data-tab="adas">ADAS</button>
     <button type="button" data-tab="humans">Humans</button>
     <button type="button" data-tab="smart-spaces">Smart Spaces</button>
@@ -106,6 +107,7 @@
   <section id="tab-health" class="panel" hidden></section>
   <section id="tab-assurance" class="panel" hidden></section>
   <section id="tab-diagnosis" class="panel" hidden></section>
+  <section id="tab-recovery" class="panel" hidden></section>
   <section id="tab-provision" class="panel" hidden></section>
   <section id="tab-mapping" class="panel" hidden></section>
   <section id="tab-config" class="panel" hidden></section>
@@ -125,7 +127,7 @@
   <section id="tab-smart-spaces" class="panel" hidden></section>
   <section id="tab-executive" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "entities", "devices", "fleet", "discovery", "provision", "mapping", "config", "health", "readiness", "drift", "alerts", "security", "ota", "sre", "compliance", "audit", "decisions", "digital-thread", "traceability", "analytics", "operator", "assurance", "diagnosis", "adas", "humans", "smart-spaces", "executive"];
+    const tabs = ["dashboard", "entities", "devices", "fleet", "discovery", "provision", "mapping", "config", "health", "readiness", "drift", "alerts", "security", "ota", "sre", "compliance", "audit", "decisions", "digital-thread", "traceability", "analytics", "operator", "assurance", "diagnosis", "recovery", "adas", "humans", "smart-spaces", "executive"];
     const errEl = document.getElementById("error");
     const AUTH_STORAGE_PREFIX = "spanda.control_center.bearer_token.v1:";
     const RBAC_ACTIONS = ["Deploy", "Operate", "Approve", "Override", "Shutdown", "Recover", "Delete", "Provision"];
@@ -299,6 +301,7 @@
         health: loadHealth,
         assurance: loadAssurance,
         diagnosis: loadDiagnosis,
+        recovery: loadRecovery,
         provision: loadProvision,
         mapping: loadMapping,
         config: loadConfig,
@@ -808,6 +811,43 @@
         document.getElementById("tab-diagnosis").innerHTML = `
           <h2>Diagnosis</h2>
           <pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadRecovery() {
+      try {
+        errEl.hidden = true;
+        const [plans, metrics, playbooks, history] = await Promise.all([
+          api("/v1/recovery/plans"),
+          api("/v1/recovery/metrics"),
+          api("/v1/recovery/playbooks"),
+          api("/v1/recovery/history"),
+        ]);
+        const planRows = (plans.plans || []).map((p) =>
+          `<tr><td>${p.plan_id || "—"}</td><td>${p.entity_id || "—"}</td><td>${p.failure || "—"}</td><td>${p.risk || "—"}</td></tr>`
+        ).join("");
+        const pbRows = (playbooks.playbooks || []).map((p) =>
+          `<tr><td>${p.name}</td><td>${p.version}</td><td>${p.trigger}</td><td>${(p.steps || []).length}</td></tr>`
+        ).join("");
+        const histRows = (history.history || []).slice(0, 10).map((h) =>
+          `<tr><td>${h.timestamp || "—"}</td><td>${h.root_cause || "—"}</td><td>${h.status || "—"}</td></tr>`
+        ).join("");
+        const m = metrics.metrics || {};
+        document.getElementById("tab-recovery").innerHTML = `
+          <h2>Recovery Orchestrator</h2>
+          <div class="grid">
+            <div class="stat"><dt>Total recoveries</dt><dd>${m.total_recoveries || 0}</dd></div>
+            <div class="stat"><dt>Success rate</dt><dd>${((m.success_rate || 0) * 100).toFixed(0)}%</dd></div>
+            <div class="stat"><dt>Confidence</dt><dd>${((m.recovery_confidence || 0) * 100).toFixed(0)}%</dd></div>
+            <div class="stat"><dt>Active plans</dt><dd>${(plans.plans || []).length}</dd></div>
+          </div>
+          <h3>Recovery Queue / Plans</h3>
+          <table><thead><tr><th>Plan</th><th>Entity</th><th>Failure</th><th>Risk</th></tr></thead><tbody>${planRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
+          <h3>Playbooks</h3>
+          <table><thead><tr><th>Name</th><th>Version</th><th>Trigger</th><th>Steps</th></tr></thead><tbody>${pbRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
+          <h3>Recent history</h3>
+          <table><thead><tr><th>Time</th><th>Root cause</th><th>Status</th></tr></thead><tbody>${histRows || "<tr><td colspan=3>none</td></tr>"}</tbody></table>
+          <p>API: <code>POST /v1/recovery/plan</code> · <code>POST /v1/recovery/simulate</code> · <code>GET /v1/recovery/graph</code></p>`;
       } catch (e) { showError(String(e)); }
     }
 

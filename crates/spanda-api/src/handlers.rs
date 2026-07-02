@@ -2,9 +2,9 @@
 //!
 use crate::correlation::{correlation_from_headers, new_correlation_id};
 use crate::differentiation_ops;
-use crate::later_differentiation_ops;
 use crate::e3;
 use crate::e4;
+use crate::later_differentiation_ops;
 use crate::observability;
 use crate::state::ControlCenterState;
 use serde::Serialize;
@@ -280,13 +280,9 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
-    if let Some(response) = crate::twin_cloud::route_twin_cloud(
-        state,
-        path,
-        &request.method,
-        query,
-        &request.body,
-    ) {
+    if let Some(response) =
+        crate::twin_cloud::route_twin_cloud(state, path, &request.method, query, &request.body)
+    {
         e3::record_trace(
             state,
             &correlation_id,
@@ -319,9 +315,7 @@ pub fn handle_request(
         ("/v1/decision-policies", "GET") => {
             crate::decision_ops::list_decision_policies(state, query)
         }
-        ("/v1/decisions/traces", "GET") => {
-            crate::decision_ops::list_decision_traces(state, query)
-        }
+        ("/v1/decisions/traces", "GET") => crate::decision_ops::list_decision_traces(state, query),
         ("/v1/decision-policy-cache", "GET") => {
             crate::decision_ops::list_decision_policy_cache(state, query)
         }
@@ -342,9 +336,7 @@ pub fn handle_request(
         ("/v1/discovery", "GET") => discovery_run(query),
         ("/v1/health/summary", "GET") => health_summary(state),
         ("/v1/plugins", "GET") => crate::plugins::list_all_plugins(state),
-        ("/v1/plugins/control-center", "GET") => {
-            crate::plugins::list_control_center_plugins(state)
-        }
+        ("/v1/plugins/control-center", "GET") => crate::plugins::list_control_center_plugins(state),
         ("/v1/assurance/summary", "GET") => assurance_summary(state),
         ("/v1/diagnosis/summary", "GET") => diagnosis_summary(state),
         ("/v1/drift", "GET") => e3::drift_report(state, query),
@@ -364,6 +356,29 @@ pub fn handle_request(
         ("/v1/programs/diagnose", "POST") => crate::sdk_ops::program_diagnose(state, &request.body),
         ("/v1/programs/recovery/heal", "POST") => {
             crate::sdk_ops::program_heal(state, &request.body)
+        }
+        ("/v1/recovery/plans", "GET") => crate::recovery_ops::list_recovery_plans(state),
+        ("/v1/recovery/history", "GET") => crate::recovery_ops::recovery_history(state),
+        ("/v1/recovery/plan", "POST") => crate::recovery_ops::recovery_plan(state, &request.body),
+        ("/v1/recovery/simulate", "POST") => {
+            crate::recovery_ops::recovery_simulate(state, &request.body)
+        }
+        ("/v1/recovery/execute", "POST") => {
+            crate::recovery_ops::recovery_execute(state, &request.body)
+        }
+        ("/v1/recovery/validate", "POST") => {
+            crate::recovery_ops::recovery_validate(state, &request.body)
+        }
+        ("/v1/recovery/playbooks", "GET") => crate::recovery_ops::recovery_playbooks(state),
+        ("/v1/recovery/metrics", "GET") => crate::recovery_ops::recovery_metrics(state),
+        ("/v1/recovery/policies", "GET") => crate::recovery_ops::recovery_policies(state),
+        ("/v1/recovery/explain", "POST") => {
+            crate::recovery_ops::recovery_explain(state, &request.body)
+        }
+        ("/v1/recovery/graph", "GET") => {
+            let params = parse_query(query);
+            let entity_id = params.get("entity_id").map(String::as_str);
+            crate::recovery_ops::recovery_graph(state, entity_id)
         }
         ("/v1/programs/verify/hardware", "POST") => {
             crate::sdk_ops::program_verify_hardware(state, &request.body)
@@ -411,12 +426,8 @@ pub fn handle_request(
         ("/v1/digital-thread/query", "GET") => e4::digital_thread_query(state, query),
         ("/v1/executive/scorecard", "GET") => e4::executive_scorecard(state),
         ("/v1/analytics/readiness", "GET") => e4::analytics_readiness(state, query),
-        ("/v1/analytics/what-if", "GET") => {
-            differentiation_ops::analytics_what_if(state, query)
-        }
-        ("/v1/analytics/mission-risk", "GET") => {
-            differentiation_ops::analytics_mission_risk(state)
-        }
+        ("/v1/analytics/what-if", "GET") => differentiation_ops::analytics_what_if(state, query),
+        ("/v1/analytics/mission-risk", "GET") => differentiation_ops::analytics_mission_risk(state),
         ("/v1/analytics/readiness-forecast", "GET") => {
             differentiation_ops::analytics_readiness_forecast(state, query)
         }
@@ -667,14 +678,7 @@ fn rbac_me(ctx: Option<&RbacContext>) -> HttpResponse {
     };
     use RbacAction::*;
     let actions = [
-        Deploy,
-        Operate,
-        Approve,
-        Override,
-        Shutdown,
-        Recover,
-        Delete,
-        Provision,
+        Deploy, Operate, Approve, Override, Shutdown, Recover, Delete, Provision,
     ];
     let permissions: Vec<String> = actions
         .iter()
@@ -1096,9 +1100,9 @@ fn route_sdk_entities(
             ("health", "GET") => Some(crate::sdk_ops::entity_health(state, entity_id)),
             ("readiness", "GET") => Some(crate::sdk_ops::entity_readiness(state, entity_id)),
             ("trust", "GET") => Some(crate::sdk_ops::entity_trust(state, entity_id)),
-            ("decisions", "GET") => {
-                Some(crate::decision_ops::entity_decisions(state, entity_id, query))
-            }
+            ("decisions", "GET") => Some(crate::decision_ops::entity_decisions(
+                state, entity_id, query,
+            )),
             ("verify", "POST") => Some(crate::sdk_ops::entity_verify(state, entity_id, body)),
             ("relationships", "GET") => {
                 Some(crate::sdk_ops::entity_relationships(state, entity_id))

@@ -31,6 +31,7 @@ spanda-assurance = { path = "../spanda-assurance" }
 spanda-capability = { path = "../spanda-capability" }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-readiness = { path = "../spanda-readiness" }
+spanda-recovery = { path = "../spanda-recovery" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-twin-cloud = { path = "../spanda-twin-cloud" }
 spanda-trust = { path = "../spanda-trust" }
