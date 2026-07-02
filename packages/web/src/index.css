@@ -354,6 +354,65 @@ code {
   color: #ffa198;
 }
 
+.decision-layer {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #30363d;
+  text-transform: lowercase;
+}
+
+.decision-layer.reflex {
+  background: #f8514933;
+  border-color: #f85149;
+  color: #ff7b72;
+}
+
+.decision-layer.local {
+  background: #388bfd33;
+  border-color: #388bfd;
+  color: #79c0ff;
+}
+
+.decision-layer.fleet {
+  background: #a371f733;
+  border-color: #a371f7;
+  color: #d2a8ff;
+}
+
+.decision-layer.control {
+  background: #9e6a0333;
+  border-color: #9e6a03;
+  color: #d29922;
+}
+
+.decision-event {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #30363d;
+}
+
+.decision-event.blocked {
+  background: #f8514922;
+  border-color: #f85149;
+  color: #ff7b72;
+}
+
+.decision-event.escalation {
+  background: #9e6a0322;
+  border-color: #9e6a03;
+  color: #d29922;
+}
+
+tr.decision-row-blocked td {
+  background: #f851490d;
+}
+
+tr.decision-row-escalation td {
+  background: #9e6a030d;
+}
+
 .factor-table {
   width: 100%;
   border-collapse: collapse;

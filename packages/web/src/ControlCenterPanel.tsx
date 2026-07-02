@@ -13,6 +13,34 @@ import {
   type RegisterEntityInput,
 } from "./EntityGraphPanel";
 
+type DecisionTraceFrame = {
+  sim_time_ms?: number;
+  event?: string;
+  payload?: Record<string, unknown>;
+};
+
+function decisionLayerClass(layer: string): string {
+  const normalized = layer.toLowerCase();
+  if (normalized.includes("reflex")) return "decision-layer reflex";
+  if (normalized.includes("fleet") || normalized.includes("group")) {
+    return "decision-layer fleet";
+  }
+  if (normalized.includes("control")) return "decision-layer control";
+  return "decision-layer local";
+}
+
+function decisionEventClass(event: string): string {
+  if (event.includes("blocked")) return "decision-event blocked";
+  if (event.includes("escalation")) return "decision-event escalation";
+  return "decision-event";
+}
+
+function decisionRowClass(event: string): string {
+  if (event.includes("blocked")) return "decision-row-blocked";
+  if (event.includes("escalation")) return "decision-row-escalation";
+  return "";
+}
+
 type DashboardData = {
   device_pool: {
     total: number;
@@ -144,6 +172,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
   >([]);
   const [auditData, setAuditData] = useState<Record<string, unknown> | null>(null);
   const [decisionData, setDecisionData] = useState<Record<string, unknown> | null>(null);
+  const [decisionTraceLive, setDecisionTraceLive] = useState(false);
   const [scorecard, setScorecard] = useState<Record<string, unknown> | null>(null);
   const [digitalThread, setDigitalThread] = useState<Record<string, unknown> | null>(null);
   const [threadCapabilityFilter, setThreadCapabilityFilter] = useState("");
@@ -986,8 +1015,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
     }
   };
 
-  const loadDecisions = async () => {
-    setBusy(true);
+  const loadDecisions = async (options: { quiet?: boolean } = {}) => {
+    if (!options.quiet) setBusy(true);
     try {
       const [listRes, policiesRes, tracesRes] = await Promise.all([
         fetch(`${base}/v1/decisions`),
@@ -999,11 +1028,19 @@ export function ControlCenterPanel({ apiBase }: Props) {
       const traces = tracesRes.ok ? await tracesRes.json() : null;
       setDecisionData({ list, policies, traces });
     } catch (e) {
-      setError(String(e));
+      if (!options.quiet) setError(String(e));
     } finally {
-      setBusy(false);
+      if (!options.quiet) setBusy(false);
     }
   };
+
+  useEffect(() => {
+    if (tab !== "decisions" || !decisionTraceLive) return undefined;
+    const timer = window.setInterval(() => {
+      void loadDecisions({ quiet: true });
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [tab, decisionTraceLive, base]);
 
   const loadExecutive = async () => {
     setBusy(true);
@@ -1634,6 +1671,14 @@ export function ControlCenterPanel({ apiBase }: Props) {
           <button type="button" onClick={() => void loadDecisions()} disabled={busy}>
             Refresh decisions
           </button>
+          <button
+            type="button"
+            className={decisionTraceLive ? "active" : ""}
+            onClick={() => setDecisionTraceLive((live) => !live)}
+            disabled={busy}
+          >
+            {decisionTraceLive ? "Live trace on (3s)" : "Live trace off"}
+          </button>
           {decisionData && (
             <>
               <h3>Decision architecture</h3>
@@ -1643,7 +1688,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <h3>Live decision trace (v3)</h3>
               {(() => {
                 const traceBody = decisionData.traces as Record<string, unknown> | null;
-                const frames = (traceBody?.frames as Record<string, unknown>[]) ?? [];
+                const frames = (traceBody?.frames as DecisionTraceFrame[]) ?? [];
                 if (frames.length === 0) {
                   return (
                     <p className="demo-hint">
@@ -1672,12 +1717,18 @@ export function ControlCenterPanel({ apiBase }: Props) {
                       </thead>
                       <tbody>
                         {frames.map((frame, idx) => {
-                          const payload = (frame.payload as Record<string, unknown>) ?? {};
+                          const payload = frame.payload ?? {};
+                          const event = String(frame.event ?? "—");
+                          const layer = String(payload.layer ?? "—");
                           return (
-                            <tr key={idx}>
+                            <tr key={idx} className={decisionRowClass(event)}>
                               <td>{String(frame.sim_time_ms ?? "—")}</td>
-                              <td>{String(frame.event ?? "—")}</td>
-                              <td>{String(payload.layer ?? "—")}</td>
+                              <td>
+                                <span className={decisionEventClass(event)}>{event}</span>
+                              </td>
+                              <td>
+                                <span className={decisionLayerClass(layer)}>{layer}</span>
+                              </td>
                               <td>{String(payload.entity_id ?? "—")}</td>
                               <td>{String(payload.decision ?? "—")}</td>
                               <td>{String(payload.reason ?? "—")}</td>
