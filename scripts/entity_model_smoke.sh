@@ -4,6 +4,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=scripts/lib/control_center_smoke_lib.sh
+source "$ROOT/scripts/lib/control_center_smoke_lib.sh"
 WAREHOUSE_FIXTURE="${ROOT}/crates/spanda-config/tests/fixtures/warehouse"
 SMOKE_CONFIG_DIR="$(mktemp -d "${TMPDIR:-/tmp}/spanda-entity-smoke.XXXXXX")"
 cp -R "${WAREHOUSE_FIXTURE}/." "${SMOKE_CONFIG_DIR}/"
@@ -49,14 +51,16 @@ post_json() {
 }
 
 cleanup() {
-  kill "$SERVER_PID" 2>/dev/null || true
+  cc_smoke_stop_listener
   rm -rf "$SMOKE_CONFIG_DIR"
 }
-trap cleanup EXIT
+cc_smoke_trap cleanup
 
 echo "== start control-center on ${BIND} =="
+CC_SMOKE_BIND="$BIND"
 run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
-SERVER_PID=$!
+CC_SMOKE_WRAPPER_PID=$!
+SERVER_PID=$CC_SMOKE_WRAPPER_PID
 
 echo "== wait for /v1/health =="
 fetch /v1/health | grep -q spanda-control-center

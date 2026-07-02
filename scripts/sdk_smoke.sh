@@ -4,6 +4,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=scripts/lib/control_center_smoke_lib.sh
+source "$ROOT/scripts/lib/control_center_smoke_lib.sh"
 
 PROGRAM="${ROOT}/examples/showcase/compliance/defense_rover.sd"
 if [[ ! -f "$PROGRAM" ]]; then
@@ -28,17 +30,20 @@ BIND="127.0.0.1:${PORT}"
 GRPC_BIND="127.0.0.1:${GRPC_PORT}"
 
 echo "== start control-center on ${BIND} (program: ${PROGRAM}) =="
+
+cleanup() {
+  cc_smoke_stop_listener
+}
+cc_smoke_trap cleanup
+
+CC_SMOKE_BIND="$BIND"
 run_spanda control-center serve \
   --bind "$BIND" \
   --grpc-bind "$GRPC_BIND" \
   --program "$PROGRAM" &
-SERVER_PID=$!
+CC_SMOKE_WRAPPER_PID=$!
+SERVER_PID=$CC_SMOKE_WRAPPER_PID
 sleep 2
-
-cleanup() {
-  kill "$SERVER_PID" 2>/dev/null || true
-}
-trap cleanup EXIT
 
 fetch() {
   curl -sf --max-time 15 "http://${BIND}${1}"

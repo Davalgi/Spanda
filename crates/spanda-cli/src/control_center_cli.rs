@@ -3,8 +3,17 @@
 use crate::control_center_client::ControlCenterClient;
 use spanda_api::{run_control_center_server, ControlCenterOptions};
 use spanda_deploy_http::HttpResponse;
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::process;
+use std::thread;
+use std::time::Duration;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct LocalSpandaListener {
+    pid: u32,
+    url: String,
+}
 
 pub fn control_center_dispatch(args: &[String]) {
     if args.is_empty() || args[0] == "--help" || args[0] == "-h" {
@@ -14,6 +23,7 @@ pub fn control_center_dispatch(args: &[String]) {
     match args[0].as_str() {
         "serve" => cmd_serve(&args[1..]),
         "status" => cmd_status(&args[1..]),
+        "stop" => cmd_stop(&args[1..]),
         "api" => cmd_api(&args[1..]),
         "dashboard" => cmd_dashboard(&args[1..]),
         "drift" => cmd_drift(&args[1..]),
@@ -49,6 +59,7 @@ fn print_usage() {
         "Usage:\n  \
          spanda control-center serve [--bind <addr>] [--grpc-bind <addr>] [--config <spanda.toml>] [--program <file.sd>] [--once]\n  \
          spanda control-center status [--json] [--url <base>] [--discover]\n  \
+         spanda control-center stop [--json] [--url <base>] [--force]\n  \
          spanda control-center api <get|post> <path> [--body <json>] [--url <base>] [--auth|--no-auth]\n  \
          spanda control-center dashboard [--url <base>]\n  \
          spanda control-center drift report --baseline-id <id> [--url <base>]\n  \
@@ -195,6 +206,83 @@ fn cmd_status(args: &[String]) {
             eprintln!("Try: spanda control-center status --discover");
             process::exit(1);
         }
+    }
+}
+
+fn cmd_stop(args: &[String]) {
+    if args.iter().any(|arg| arg == "--help" || arg == "-h") {
+        eprintln!("Usage: spanda control-center stop [--json] [--url <base>] [--force]");
+        eprintln!();
+        eprintln!("Stop local Control Center serve processes.");
+        eprintln!("Without --url, stops every verified listener on this machine.");
+        eprintln!("Use --force to send SIGKILL when SIGTERM does not exit promptly.");
+        process::exit(0);
+    }
+    let json = args.iter().any(|arg| arg == "--json");
+    let force = args.iter().any(|arg| arg == "--force");
+    let url = flag_value(args, "--url");
+    let targets = if let Some(url) = url {
+        let listener = match listener_for_url(&url) {
+            Ok(listener) => listener,
+            Err(error) => {
+                eprintln!("{error}");
+                process::exit(1);
+            }
+        };
+        if !is_control_center_listener(&listener.url) {
+            eprintln!("{url} is not a Control Center instance");
+            process::exit(1);
+        }
+        vec![listener]
+    } else {
+        discover_control_center_listeners()
+    };
+    if targets.is_empty() {
+        if json {
+            println!("[]");
+        } else {
+            println!("No local Control Center listeners found.");
+        }
+        return;
+    }
+    let mut stopped = Vec::new();
+    let mut seen_pids = HashSet::new();
+    for listener in targets {
+        if !seen_pids.insert(listener.pid) {
+            continue;
+        }
+        match stop_listener_pid(listener.pid, force) {
+            Ok(()) => stopped.push(listener),
+            Err(error) => {
+                eprintln!("failed to stop pid {} ({}): {error}", listener.pid, listener.url);
+                process::exit(1);
+            }
+        }
+    }
+    if json {
+        let payload: Vec<serde_json::Value> = stopped
+            .iter()
+            .map(|listener| {
+                serde_json::json!({
+                    "pid": listener.pid,
+                    "url": listener.url,
+                    "stopped": true,
+                })
+            })
+            .collect();
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).unwrap_or_else(|_| "[]".into())
+        );
+        return;
+    }
+    for listener in &stopped {
+        println!("Stopped Control Center pid {} ({})", listener.pid, listener.url);
+    }
+    if stopped.is_empty() {
+        println!("No local Control Center listeners found.");
+    } else {
+        println!("Stopped {} Control Center instance(s).", stopped.len());
     }
 }
 
@@ -345,6 +433,43 @@ fn print_instance_status(base_url: &str, value: &serde_json::Value, json: bool) 
 }
 
 fn discover_local_control_center_urls() -> Vec<String> {
+    discover_control_center_listeners()
+        .into_iter()
+        .map(|listener| listener.url)
+        .collect()
+}
+
+fn discover_control_center_listeners() -> Vec<LocalSpandaListener> {
+    discover_local_spanda_listeners()
+        .into_iter()
+        .filter(|listener| is_control_center_listener(&listener.url))
+        .collect()
+}
+
+fn is_control_center_listener(url: &str) -> bool {
+    matches!(
+        fetch_instance_status(url),
+        Ok(value)
+            if value
+                .get("service")
+                .and_then(|service| service.as_str())
+                .is_some_and(|service| service == "spanda-control-center")
+    )
+}
+
+fn listener_for_url(base_url: &str) -> Result<LocalSpandaListener, String> {
+    let normalized = normalize_base_url(base_url);
+    discover_local_spanda_listeners()
+        .into_iter()
+        .find(|listener| listener.url == normalized)
+        .ok_or_else(|| format!("no spanda listener found for {normalized}"))
+}
+
+fn normalize_base_url(base_url: &str) -> String {
+    base_url.trim_end_matches('/').to_string()
+}
+
+fn discover_local_spanda_listeners() -> Vec<LocalSpandaListener> {
     #[cfg(unix)]
     {
         use std::process::Command;
@@ -358,30 +483,92 @@ fn discover_local_control_center_urls() -> Vec<String> {
             return Vec::new();
         }
         let text = String::from_utf8_lossy(&output.stdout);
-        let mut urls = Vec::new();
+        let mut listeners = Vec::new();
         for line in text.lines().skip(1) {
-            let Some(tcp_part) = line.split("TCP ").nth(1) else {
+            let Some(listener) = parse_lsof_listener_line(line) else {
                 continue;
             };
-            let Some(address) = tcp_part.split_whitespace().next() else {
+            if listeners.iter().any(|existing: &LocalSpandaListener| {
+                existing.pid == listener.pid && existing.url == listener.url
+            }) {
                 continue;
-            };
-            let Some((host, port)) = address.rsplit_once(':') else {
-                continue;
-            };
-            let host = if host == "*" { "127.0.0.1" } else { host };
-            let url = format!("http://{host}:{port}");
-            if !urls.iter().any(|existing| existing == &url) {
-                urls.push(url);
             }
+            listeners.push(listener);
         }
-        urls.sort();
-        return urls;
+        listeners.sort_by(|left, right| left.url.cmp(&right.url));
+        return listeners;
     }
     #[cfg(not(unix))]
     {
         Vec::new()
     }
+}
+
+fn parse_lsof_listener_line(line: &str) -> Option<LocalSpandaListener> {
+    let Some(tcp_part) = line.split("TCP ").nth(1) else {
+        return None;
+    };
+    let Some(address) = tcp_part.split_whitespace().next() else {
+        return None;
+    };
+    let Some((host, port)) = address.rsplit_once(':') else {
+        return None;
+    };
+    let host = if host == "*" { "127.0.0.1" } else { host };
+    let mut parts = line.split_whitespace();
+    let _command = parts.next()?;
+    let pid = parts.next()?.parse::<u32>().ok()?;
+    Some(LocalSpandaListener {
+        pid,
+        url: format!("http://{host}:{port}"),
+    })
+}
+
+fn stop_listener_pid(pid: u32, force: bool) -> Result<(), String> {
+    #[cfg(unix)]
+    {
+        use std::process::Command;
+        if force {
+            return signal_pid(pid, "KILL");
+        }
+        signal_pid(pid, "TERM")?;
+        for _ in 0..15 {
+            if !pid_is_running(pid) {
+                return Ok(());
+            }
+            thread::sleep(Duration::from_millis(200));
+        }
+        signal_pid(pid, "KILL")
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = (pid, force);
+        Err("stopping Control Center is only supported on Unix".into())
+    }
+}
+
+#[cfg(unix)]
+fn signal_pid(pid: u32, signal: &str) -> Result<(), String> {
+    use std::process::Command;
+    let status = Command::new("kill")
+        .args(["-s", signal, &pid.to_string()])
+        .status()
+        .map_err(|error| format!("kill failed: {error}"))?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!("kill -s {signal} {pid} exited with {status}"))
+    }
+}
+
+#[cfg(unix)]
+fn pid_is_running(pid: u32) -> bool {
+    use std::process::Command;
+    Command::new("kill")
+        .args(["-0", &pid.to_string()])
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
 }
 
 fn client_from_args(args: &[String]) -> ControlCenterClient {

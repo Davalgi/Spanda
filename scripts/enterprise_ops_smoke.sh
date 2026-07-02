@@ -4,6 +4,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=scripts/lib/control_center_smoke_lib.sh
+source "$ROOT/scripts/lib/control_center_smoke_lib.sh"
 WAREHOUSE_FIXTURE="${ROOT}/crates/spanda-config/tests/fixtures/warehouse"
 SMOKE_CONFIG_DIR="$(mktemp -d "${TMPDIR:-/tmp}/spanda-ops-smoke.XXXXXX")"
 cp -R "${WAREHOUSE_FIXTURE}/." "${SMOKE_CONFIG_DIR}/"
@@ -38,15 +40,18 @@ export SPANDA_DISCOVERY_MDNS_MATCHES="${SPANDA_DISCOVERY_MDNS_MATCHES:-smoke-mdn
 
 export SPANDA_WS_STREAM_SECONDS=3
 echo "== start control-center on ${BIND} + gRPC ${GRPC_BIND} (warehouse config + program) =="
-run_spanda control-center serve --bind "$BIND" --grpc-bind "$GRPC_BIND" --config "$CONFIG" --program "$PROGRAM" &
-SERVER_PID=$!
-sleep 2
 
 cleanup() {
-  kill "$SERVER_PID" 2>/dev/null || true
+  cc_smoke_stop_listener
   rm -rf "$SMOKE_CONFIG_DIR"
 }
-trap cleanup EXIT
+cc_smoke_trap cleanup
+
+CC_SMOKE_BIND="$BIND"
+run_spanda control-center serve --bind "$BIND" --grpc-bind "$GRPC_BIND" --config "$CONFIG" --program "$PROGRAM" &
+CC_SMOKE_WRAPPER_PID=$!
+SERVER_PID=$CC_SMOKE_WRAPPER_PID
+sleep 2
 
 chmod +x "${ROOT}/scripts/mock_otlp_traces_collector.py" "${ROOT}/scripts/ws_telemetry_probe.py" 2>/dev/null || true
 

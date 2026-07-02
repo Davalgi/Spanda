@@ -5,6 +5,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=scripts/lib/control_center_smoke_lib.sh
+source "$ROOT/scripts/lib/control_center_smoke_lib.sh"
 
 SS="$ROOT/examples/solutions/smart-spaces"
 PROGRAM="$SS/smart-building/floor_readiness.sd"
@@ -107,14 +109,17 @@ fi
 BIND="127.0.0.1:${PORT}"
 
 echo "--- Control Center Smart Spaces API probe on ${BIND} ---"
-run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
-SERVER_PID=$!
-sleep 2
 
 cleanup() {
-  kill "$SERVER_PID" 2>/dev/null || true
+  cc_smoke_stop_listener
 }
-trap cleanup EXIT
+cc_smoke_trap cleanup
+
+CC_SMOKE_BIND="$BIND"
+run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
+CC_SMOKE_WRAPPER_PID=$!
+SERVER_PID=$CC_SMOKE_WRAPPER_PID
+sleep 2
 
 fetch() {
   local path="$1"
