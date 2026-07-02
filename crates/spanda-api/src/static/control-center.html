@@ -160,6 +160,7 @@
       compliance: ["administrator", "supervisor", "developer", "auditor", "safety_officer"],
       audit: ["administrator", "supervisor", "developer", "auditor"],
       decisions: ["administrator", "supervisor", "developer"],
+      recovery: ["administrator", "supervisor", "operator", "safety_officer"],
       "digital-thread": ["*"],
       traceability: ["*"],
       analytics: ["administrator", "supervisor", "developer", "auditor"],
@@ -214,6 +215,7 @@
       humans: { safety_officer: "Approve or reject pending mission approvals.", operator: "View operator readiness and HRI sessions." },
       config: { developer: "Save snapshots and submit config publish approvals.", supervisor: "Approve or reject pending config publishes." },
       operator: { operator: "Mission approvals and quarantine workflows.", safety_officer: "Approve missions and safety-critical operator actions." },
+      recovery: { operator: "Plan, simulate, and execute recovery playbooks.", safety_officer: "Approve recovery workflows when Recover is granted." },
     };
     window.RBAC_CTX = null;
     window.selectedDeviceId = "";
@@ -909,6 +911,7 @@
         const m = metrics.metrics || {};
         document.getElementById("tab-recovery").innerHTML = `
           <h2>Recovery Orchestrator</h2>
+          ${tabHintHtml("recovery")}
           <div class="grid">
             <div class="stat"><dt>Total recoveries</dt><dd>${m.total_recoveries || 0}</dd></div>
             <div class="stat"><dt>Success rate</dt><dd>${((m.success_rate || 0) * 100).toFixed(0)}%</dd></div>
