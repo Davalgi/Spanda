@@ -374,7 +374,7 @@ fn trend_for_series(
     let first_time = parse_timestamp(&entries.first()?.recorded_at)?;
     let last_time = parse_timestamp(&entries.last()?.recorded_at)?;
     let elapsed_days = ((last_time - first_time).num_seconds() as f64 / 86_400.0).max(0.01);
-    let slope_per_day = (values.last()? - values.first()?) as f64 / elapsed_days;
+    let slope_per_day = (*values.last()? as i64 - *values.first()? as i64) as f64 / elapsed_days;
     let mean = values.iter().map(|v| *v as f64).sum::<f64>() / values.len() as f64;
     let variance = values
         .iter()

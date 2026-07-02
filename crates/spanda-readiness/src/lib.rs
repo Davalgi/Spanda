@@ -17,6 +17,7 @@ pub mod entity_verify;
 pub mod failure;
 pub mod fleet;
 pub mod fleet_verify;
+pub mod forecast;
 pub mod gates;
 pub mod human;
 pub mod mission;
@@ -54,6 +55,10 @@ pub use entity_verify::{
 pub use failure::{analyze_failure, analyze_failure_source, FailureAnalysisReport};
 pub use fleet::evaluate_fleet_readiness;
 pub use fleet_verify::{verify_fleet, verify_fleet_source, FleetVerifyReport};
+pub use forecast::{
+    evaluate_readiness_forecast, format_readiness_forecast, forecast_history_path,
+    ReadinessForecastOptions, ReadinessForecastReport, ReadinessPrediction,
+};
 pub use gates::{
     evaluate_deployment_gates, DeploymentGate, DeploymentGatePolicy, DeploymentGateReport,
 };

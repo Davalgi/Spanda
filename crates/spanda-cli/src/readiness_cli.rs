@@ -14,13 +14,14 @@ use spanda_ota::{
 use spanda_parser::parse;
 use spanda_readiness::{
     analyze_failure, analyze_readiness_trends, audit_program, build_runtime_context_with_config,
-    default_readiness_history_path, evaluate_fleet_readiness, evaluate_readiness_with_runtime,
-    evaluate_safety_coverage, evaluate_twin_readiness, format_audit, format_failure_analysis,
-    format_fleet_readiness, format_mission_verification, format_readiness, format_readiness_trends,
-    format_safety_coverage, format_safety_report, generate_safety_report, load_readiness_history,
-    parse_forecast_horizon, readiness_options_from_flags, record_readiness_snapshot,
-    verify_approvals, verify_fleet, verify_mission, ReadinessOptions, ReadinessPolicy,
-    ReportFormat,
+    default_readiness_history_path, evaluate_fleet_readiness, evaluate_readiness_forecast,
+    evaluate_readiness_with_runtime, evaluate_safety_coverage, evaluate_twin_readiness, format_audit,
+    format_failure_analysis, format_fleet_readiness, format_mission_verification, format_readiness,
+    format_readiness_forecast, format_readiness_trends, format_safety_coverage, format_safety_report,
+    generate_safety_report, load_readiness_history, parse_forecast_horizon,
+    readiness_options_from_flags, record_readiness_snapshot, verify_approvals, verify_fleet,
+    verify_mission, default_deploy_target, ReadinessForecastOptions, ReadinessOptions,
+    ReadinessPolicy, ReportFormat,
 };
 use std::fs;
 use std::path::Path;
@@ -934,6 +935,83 @@ pub fn cmd_readiness_trends(args: &[String]) {
     }
 }
 
+/// `spanda readiness forecast <file.sd> [--horizon 7d] [--all] [--history <path>] [--json]`
+pub fn cmd_readiness_forecast(args: &[String]) {
+    let mut file: Option<String> = None;
+    let mut horizons: Vec<u32> = Vec::new();
+    let mut all_horizons = false;
+    let mut history_path: Option<String> = None;
+    let mut target: Option<String> = None;
+    let mut json = false;
+    let mut index = 0usize;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--json" => json = true,
+            "--all" => all_horizons = true,
+            "--horizon" => {
+                index += 1;
+                if index >= args.len() {
+                    eprintln!("--horizon requires a value such as 7d");
+                    process::exit(1);
+                }
+                let days = parse_forecast_horizon(&args[index]);
+                if days.is_none() {
+                    eprintln!("Invalid --horizon value: {}", args[index]);
+                    process::exit(1);
+                }
+                horizons.push(days.unwrap());
+            }
+            "--history" => {
+                index += 1;
+                if index >= args.len() {
+                    eprintln!("--history requires a path");
+                    process::exit(1);
+                }
+                history_path = Some(args[index].clone());
+            }
+            "--target" => {
+                index += 1;
+                if index >= args.len() {
+                    eprintln!("--target requires a hardware profile name");
+                    process::exit(1);
+                }
+                target = Some(args[index].clone());
+            }
+            other if !other.starts_with('-') && file.is_none() => file = Some(other.to_string()),
+            other => {
+                eprintln!("Unknown argument: {other}");
+                process::exit(1);
+            }
+        }
+        index += 1;
+    }
+    let file = file.unwrap_or_else(|| {
+        eprintln!(
+            "Usage: spanda readiness forecast <file.sd> [--horizon 7d] [--all] [--target <profile>] [--history <path>] [--json]"
+        );
+        process::exit(1);
+    });
+    if all_horizons {
+        horizons = vec![7, 14, 30];
+    } else if horizons.is_empty() {
+        horizons = vec![7];
+    }
+    let source = read_file(&file);
+    let program = parse_program(&source);
+    let target = target.or_else(|| default_deploy_target(&program));
+    let options = ReadinessForecastOptions {
+        horizons_days: horizons,
+        minimum_score: ReadinessPolicy::default().minimum_score,
+        history_path: history_path.map(std::path::PathBuf::from),
+        target,
+    };
+    let report = evaluate_readiness_forecast(&program, &file, &options);
+    println!("{}", format_readiness_forecast(&report, json));
+    if report.predictions.iter().any(|p| p.risk_warning) {
+        process::exit(1);
+    }
+}
+
 /// Top-level readiness dispatch for subcommands.
 pub fn readiness_dispatch(args: &[String]) {
     // Description:
@@ -955,10 +1033,16 @@ pub fn readiness_dispatch(args: &[String]) {
         return;
     }
 
+    if args.first().map(String::as_str) == Some("forecast") {
+        cmd_readiness_forecast(&args[1..]);
+        return;
+    }
+
     if args.is_empty() {
         eprintln!(
             "Usage: spanda readiness <file.sd> [--baseline <dir|spanda.toml>] [--agent <Robot@Hardware>] [--record] [--profile <name>] [--policy <name>] [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]\n\
-             spanda readiness trends <file.sd> [--forecast 7d] [--history <path>] [--json]"
+             spanda readiness trends <file.sd> [--forecast 7d] [--history <path>] [--json]\n\
+             spanda readiness forecast <file.sd> [--horizon 7d] [--all] [--target <profile>] [--history <path>] [--json]"
         );
         process::exit(1);
     }
