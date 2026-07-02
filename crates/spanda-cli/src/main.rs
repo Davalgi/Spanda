@@ -31,6 +31,7 @@ mod fault_cli;
 mod fault_runtime;
 mod generate_cli;
 mod graph_cli;
+mod trust_graph_cli;
 mod integrity_cli;
 mod network_cli;
 mod package;
@@ -285,6 +286,7 @@ fn usage() {
            spanda security assurance <file.sd> [--json] [--format markdown]\n\n\
          Analysis commands:\n\
            spanda graph <file.sd> [--format json|mermaid|dot|text] [--json] [--config <spanda.toml>]\n\
+           spanda trust-graph <file.sd> [--format json|mermaid|dot|text] [--json] [--config <spanda.toml>]\n\
            spanda trust <package> [--version <ver>] [--project <dir>] [--json]\n\
            spanda threat-model <file.sd> [--json]\n\
            spanda diff <baseline.sd> <candidate.sd> [--json]\n\
@@ -1656,6 +1658,12 @@ fn main() {
 
     if command == "graph" {
         graph_cli::graph_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "trust-graph" {
+        trust_graph_cli::trust_graph_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }

@@ -33,6 +33,34 @@ deploy Rover to RoverV1;
 }
 
 #[test]
+fn builds_trust_graph_with_composite_scores() {
+    let source = r#"
+import trust.jetson;
+hardware RoverV1 { sensors [ GPS ]; actuators [ DifferentialDrive ]; }
+robot Rover {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  actuator wheels: DifferentialDrive;
+  exposes capabilities [ gps_navigation ];
+  mission Patrol { requires capabilities [ gps_navigation ]; patrol; }
+  safety { max_speed = 1 m/s; }
+  behavior patrol() {}
+}
+deploy Rover to RoverV1;
+"#;
+    let program = parse_source(source);
+    let graph = spanda_graph::build_trust_graph(&program, source, "rover.sd", None);
+    assert!(graph.composite_score <= 100);
+    assert!(!graph.nodes.is_empty());
+    assert!(graph
+        .dependencies
+        .iter()
+        .any(|d| d.relation == "provided_by" || d.relation == "requires"));
+    let json = spanda_graph::format_trust_graph(&graph, GraphFormat::Json);
+    assert!(json.contains("composite_score"));
+}
+
+#[test]
 fn renders_mermaid_output() {
     let source = r#"
 robot R { sensor g: GPS; actuator w: DifferentialDrive; behavior b() {} }
