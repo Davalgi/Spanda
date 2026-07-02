@@ -51,6 +51,8 @@ rust_out
 !examples/**/*.trace
 !tests/golden/**/*.trace
 !crates/spanda-cli/bundled-examples/examples/showcase/differentiation/decision_trail/main.trace
+# Local sim recordings (not committed fixtures)
+examples/robotics/*.trace
 
 # python
 __pycache__/
