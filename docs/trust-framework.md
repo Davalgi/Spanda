@@ -1,6 +1,6 @@
 # Trust Framework
 
-**Status:** Experimental · **Phase:** Verify, Operate · **Priority:** P0.4 (package), P3.1 (composite)
+**Status:** Stable · **Phase:** Verify, Operate · **Priority:** P0.4 (package), P3.1 (composite)
 
 Unified trust scoring across packages, devices, firmware, configuration, and runtime behavior.
 

@@ -9,9 +9,9 @@ Compact snapshot of Spanda's differentiated capabilities. Full roadmap: [differe
 | **Safety-Typed AI** | Stable | [agentic-programming.md](../agentic-programming.md) |
 | **Readiness Engine** | Stable | [readiness.md](../readiness.md) |
 | **Continuity & Takeover** | Stable | [mission-continuity.md](../mission-continuity.md) |
-| **Mission Contracts** | Experimental | [mission-contracts.md](../mission-contracts.md) |
-| **Trust Framework** | Experimental | [trust-framework.md](../trust-framework.md) |
-| **Explainability & Audit Trail** | Experimental | [explainability.md](../explainability.md) |
+| **Mission Contracts** | Stable | [mission-contracts.md](../mission-contracts.md) |
+| **Trust Framework** | Stable | [trust-framework.md](../trust-framework.md) |
+| **Explainability & Audit Trail** | Stable | [explainability.md](../explainability.md) |
 
 Spanda helps answer:
 

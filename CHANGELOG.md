@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides, `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI job `later-differentiation-stable-gates`.
+- **Trust Framework promoted to Stable:** composite program trust (`spanda trust`, `/v1/trust/program`, gRPC `GetTrustProgram`); `scripts/trust_framework_stable_promotion_gate.sh`, field soak + audit prep scripts, CI job `trust-framework-stable-gate`.
 
 ## [0.5.0] - 2026-07-02
 

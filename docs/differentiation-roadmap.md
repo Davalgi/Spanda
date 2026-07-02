@@ -22,7 +22,7 @@ These six capabilities define Spanda's market identity. Protect them in every re
 | 2 | **Mission Contracts** | Missions as verifiable first-class entities with guarantees, constraints, assumptions, invariants, and objectives. | `spanda-contract` (**Stable**) |
 | 3 | **Readiness Engine** | Weighted go/no-go scoring across health, verify, safety, trust, and mission achievability. | `spanda-readiness` (**Stable**) |
 | 4 | **Continuity & Takeover** | Checkpoint resume, delegation, succession, safety-gated takeover across robots and fleet. | `spanda-assurance` continuity (**Stable**) |
-| 5 | **Trust Framework** | Composite trust scoring across packages, hardware, configuration, identity, and safety integrity. | `spanda-trust` (**Experimental**) |
+| 5 | **Trust Framework** | Composite trust scoring across packages, hardware, configuration, identity, and safety integrity. | `spanda-trust` (**Stable**) |
 | 6 | **Explainability & Audit Trail** | Why did the system decide X? Decision → evidence → safety check → action, with trace replay. | `spanda-explain`, `spanda-decision` (**Stable**) |
 
 ### Questions Spanda uniquely answers

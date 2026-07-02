@@ -76,6 +76,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **What-If Analysis** | `spanda what-if`, `/v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf` — **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
 | **Mission Risk Analysis** | `spanda risk`, `/v1/analytics/mission-risk` — **Stable** — [stable-hardening-mission-risk.md](./stable-hardening-mission-risk.md) |
 | **Readiness Forecasting** | `spanda readiness forecast`, `/v1/analytics/readiness-forecast` — **Stable** — [stable-hardening-readiness-forecast.md](./stable-hardening-readiness-forecast.md) |
+| **Trust Framework** | `spanda trust`, `/v1/trust/program`, gRPC `GetTrustProgram` — **Stable** — [stable-hardening-trust-framework.md](./stable-hardening-trust-framework.md) |
 | **Trust Graph** | `spanda trust-graph`, `/v1/analytics/trust-graph` — **Stable** — [stable-hardening-trust-graph.md](./stable-hardening-trust-graph.md) |
 | **Scorecards** | `spanda score`, `/v1/executive/scorecard` — **Stable** — [stable-hardening-scorecards.md](./stable-hardening-scorecards.md) |
 | **Digital Mission Twin** | `spanda twin mission` — **Stable** — [stable-hardening-digital-mission-twin.md](./stable-hardening-digital-mission-twin.md) |

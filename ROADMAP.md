@@ -213,7 +213,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Readiness Engine | **Stable** | Now | Core |
 | Continuity & Takeover | **Stable** | Now | Core |
 | Mission Contracts | **Stable** | Now | Core |
-| Trust Framework | **Planned** hardening | Next | Core |
+| Trust Framework | **Stable** | Next | Core |
 | Explainability & Audit Trail | **Stable** | Now | Core |
 | What-If Analysis | **Stable** | Next | Core |
 | Mission Risk Analysis | **Stable** | Next | Core |
