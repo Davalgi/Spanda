@@ -710,4 +710,80 @@ impl GrpcClient {
             .map_err(|e| SpandaError::connection(e.to_string()))?;
         Self::parse_json(resp.into_inner().json)
     }
+
+    /// List API keys via `ListAdminApiKeys`.
+    pub async fn list_admin_api_keys(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_admin_api_keys(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Create API key via `CreateAdminApiKey`.
+    pub async fn create_admin_api_key(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .create_admin_api_key(JsonBodyRequest {
+                body_json: body.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List users via `ListAdminUsers`.
+    pub async fn list_admin_users(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_admin_users(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Get alert channels via `GetAlertChannels`.
+    pub async fn get_alert_channels(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_alert_channels(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Update alert channels via `UpdateAlertChannels`.
+    pub async fn update_alert_channels(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .update_alert_channels(JsonBodyRequest {
+                body_json: body.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List operator missions via `ListOperatorMissions`.
+    pub async fn list_operator_missions(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_operator_missions(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List program traces via `ListProgramTraces`.
+    pub async fn list_program_traces(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_program_traces(QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
 }

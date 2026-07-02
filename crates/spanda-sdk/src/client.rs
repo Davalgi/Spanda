@@ -107,6 +107,8 @@ impl SpandaClient {
             "GET" => agent.get(&url),
             "POST" => agent.post(&url),
             "PATCH" => agent.patch(&url),
+            "PUT" => agent.put(&url),
+            "DELETE" => agent.delete(&url),
             _ => {
                 return Err(SpandaError::validation(format!(
                     "unsupported method {method}"
@@ -252,6 +254,122 @@ impl SpandaClient {
     /// List active recovery plans.
     pub fn list_recovery_plans(&self) -> SpandaResult<Value> {
         self.request("GET", "/v1/recovery/plans", None, false)
+    }
+
+    /// List API keys (administrator only).
+    pub fn list_admin_api_keys(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/admin/api-keys", None, true)
+    }
+
+    /// Create an API key (administrator only); token returned once.
+    pub fn create_admin_api_key(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/admin/api-keys", Some(body), true)
+    }
+
+    /// Update API key metadata (administrator only).
+    pub fn patch_admin_api_key(&self, key_id: &str, body: &Value) -> SpandaResult<Value> {
+        self.request(
+            "PATCH",
+            &format!(
+                "/v1/admin/api-keys/{}",
+                Self::encode_query_component(key_id)
+            ),
+            Some(body),
+            true,
+        )
+    }
+
+    /// Revoke an API key (administrator only).
+    pub fn delete_admin_api_key(&self, key_id: &str) -> SpandaResult<Value> {
+        self.request(
+            "DELETE",
+            &format!(
+                "/v1/admin/api-keys/{}",
+                Self::encode_query_component(key_id)
+            ),
+            None,
+            true,
+        )
+    }
+
+    /// List Control Center users (administrator only).
+    pub fn list_admin_users(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/admin/users", None, true)
+    }
+
+    /// Create a Control Center user (administrator only).
+    pub fn create_admin_user(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/admin/users", Some(body), true)
+    }
+
+    /// Update a Control Center user (administrator only).
+    pub fn patch_admin_user(&self, user_id: &str, body: &Value) -> SpandaResult<Value> {
+        self.request(
+            "PATCH",
+            &format!(
+                "/v1/admin/users/{}",
+                Self::encode_query_component(user_id)
+            ),
+            Some(body),
+            true,
+        )
+    }
+
+    /// Delete a Control Center user (administrator only).
+    pub fn delete_admin_user(&self, user_id: &str) -> SpandaResult<Value> {
+        self.request(
+            "DELETE",
+            &format!(
+                "/v1/admin/users/{}",
+                Self::encode_query_component(user_id)
+            ),
+            None,
+            true,
+        )
+    }
+
+    /// Admin integrations summary (administrator only).
+    pub fn get_admin_integrations(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/admin/integrations", None, true)
+    }
+
+    /// Get alert channel configuration (administrator only).
+    pub fn get_alert_channels(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/admin/alert-channels", None, true)
+    }
+
+    /// Replace alert channel configuration (administrator only).
+    pub fn update_alert_channels(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("PUT", "/v1/admin/alert-channels", Some(body), true)
+    }
+
+    /// List missions with runtime state.
+    pub fn list_operator_missions(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/operator/missions", None, false)
+    }
+
+    /// Pause a running mission.
+    pub fn operator_mission_pause(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/operator/mission/pause", Some(body), true)
+    }
+
+    /// Resume a paused mission.
+    pub fn operator_mission_resume(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/operator/mission/resume", Some(body), true)
+    }
+
+    /// Cancel a mission.
+    pub fn operator_mission_cancel(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/operator/mission/cancel", Some(body), true)
+    }
+
+    /// List mission trace files discovered in the project tree.
+    pub fn list_program_traces(&self, limit: Option<u32>) -> SpandaResult<Value> {
+        let path = match limit {
+            Some(n) => format!("/v1/programs/traces?limit={n}"),
+            None => "/v1/programs/traces".into(),
+        };
+        self.request("GET", &path, None, false)
     }
 
     /// Verify hardware compatibility for a program.

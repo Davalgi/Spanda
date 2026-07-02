@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from typing import Any, Mapping, Optional
@@ -112,6 +113,75 @@ class SpandaClient:
 
     def get_recovery_metrics(self) -> Any:
         return self._request("GET", "/v1/recovery/metrics")
+
+    def list_admin_api_keys(self) -> Any:
+        return self._request("GET", "/v1/admin/api-keys", auth=True)
+
+    def create_admin_api_key(self, body: Mapping[str, Any]) -> Any:
+        return self._request("POST", "/v1/admin/api-keys", body, auth=True)
+
+    def patch_admin_api_key(self, key_id: str, body: Mapping[str, Any]) -> Any:
+        return self._request(
+            "PATCH",
+            f"/v1/admin/api-keys/{urllib.parse.quote(key_id, safe='')}",
+            body,
+            auth=True,
+        )
+
+    def delete_admin_api_key(self, key_id: str) -> Any:
+        return self._request(
+            "DELETE",
+            f"/v1/admin/api-keys/{urllib.parse.quote(key_id, safe='')}",
+            auth=True,
+        )
+
+    def list_admin_users(self) -> Any:
+        return self._request("GET", "/v1/admin/users", auth=True)
+
+    def create_admin_user(self, body: Mapping[str, Any]) -> Any:
+        return self._request("POST", "/v1/admin/users", body, auth=True)
+
+    def patch_admin_user(self, user_id: str, body: Mapping[str, Any]) -> Any:
+        return self._request(
+            "PATCH",
+            f"/v1/admin/users/{urllib.parse.quote(user_id, safe='')}",
+            body,
+            auth=True,
+        )
+
+    def delete_admin_user(self, user_id: str) -> Any:
+        return self._request(
+            "DELETE",
+            f"/v1/admin/users/{urllib.parse.quote(user_id, safe='')}",
+            auth=True,
+        )
+
+    def get_admin_integrations(self) -> Any:
+        return self._request("GET", "/v1/admin/integrations", auth=True)
+
+    def get_alert_channels(self) -> Any:
+        return self._request("GET", "/v1/admin/alert-channels", auth=True)
+
+    def update_alert_channels(self, body: Mapping[str, Any]) -> Any:
+        return self._request("PUT", "/v1/admin/alert-channels", body, auth=True)
+
+    def list_operator_missions(self) -> Any:
+        return self._request("GET", "/v1/operator/missions")
+
+    def operator_mission_pause(self, body: Mapping[str, Any]) -> Any:
+        return self._request("POST", "/v1/operator/mission/pause", body, auth=True)
+
+    def operator_mission_resume(self, body: Mapping[str, Any]) -> Any:
+        return self._request("POST", "/v1/operator/mission/resume", body, auth=True)
+
+    def operator_mission_cancel(self, body: Mapping[str, Any]) -> Any:
+        return self._request("POST", "/v1/operator/mission/cancel", body, auth=True)
+
+    def list_program_traces(self, limit: Optional[int] = None) -> Any:
+        path = "/v1/programs/traces"
+        if limit is not None:
+            path = f"{path}?limit={limit}"
+        return self._request("GET", path)
 
     def verify_hardware(self, project: str) -> Any:
         return self._request(

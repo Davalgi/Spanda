@@ -132,6 +132,97 @@ export class SpandaClient {
     return this.request("GET", "/v1/recovery/metrics");
   }
 
+  async listAdminApiKeys(): Promise<JsonValue> {
+    return this.request("GET", "/v1/admin/api-keys", undefined, true);
+  }
+
+  async createAdminApiKey(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("POST", "/v1/admin/api-keys", body, true);
+  }
+
+  async patchAdminApiKey(
+    keyId: string,
+    body: Record<string, unknown>,
+  ): Promise<JsonValue> {
+    return this.request(
+      "PATCH",
+      `/v1/admin/api-keys/${encodeURIComponent(keyId)}`,
+      body,
+      true,
+    );
+  }
+
+  async deleteAdminApiKey(keyId: string): Promise<JsonValue> {
+    return this.request(
+      "DELETE",
+      `/v1/admin/api-keys/${encodeURIComponent(keyId)}`,
+      undefined,
+      true,
+    );
+  }
+
+  async listAdminUsers(): Promise<JsonValue> {
+    return this.request("GET", "/v1/admin/users", undefined, true);
+  }
+
+  async createAdminUser(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("POST", "/v1/admin/users", body, true);
+  }
+
+  async patchAdminUser(
+    userId: string,
+    body: Record<string, unknown>,
+  ): Promise<JsonValue> {
+    return this.request(
+      "PATCH",
+      `/v1/admin/users/${encodeURIComponent(userId)}`,
+      body,
+      true,
+    );
+  }
+
+  async deleteAdminUser(userId: string): Promise<JsonValue> {
+    return this.request(
+      "DELETE",
+      `/v1/admin/users/${encodeURIComponent(userId)}`,
+      undefined,
+      true,
+    );
+  }
+
+  async getAdminIntegrations(): Promise<JsonValue> {
+    return this.request("GET", "/v1/admin/integrations", undefined, true);
+  }
+
+  async getAlertChannels(): Promise<JsonValue> {
+    return this.request("GET", "/v1/admin/alert-channels", undefined, true);
+  }
+
+  async updateAlertChannels(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("PUT", "/v1/admin/alert-channels", body, true);
+  }
+
+  async listOperatorMissions(): Promise<JsonValue> {
+    return this.request("GET", "/v1/operator/missions");
+  }
+
+  async operatorMissionPause(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("POST", "/v1/operator/mission/pause", body, true);
+  }
+
+  async operatorMissionResume(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("POST", "/v1/operator/mission/resume", body, true);
+  }
+
+  async operatorMissionCancel(body: Record<string, unknown>): Promise<JsonValue> {
+    return this.request("POST", "/v1/operator/mission/cancel", body, true);
+  }
+
+  async listProgramTraces(limit?: number): Promise<JsonValue> {
+    const qs = limit ? `?limit=${limit}` : "";
+    return this.request("GET", `/v1/programs/traces${qs}`);
+  }
+
   async verifyHardware(project: string): Promise<JsonValue> {
     return this.request(
       "POST",
