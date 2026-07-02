@@ -2462,6 +2462,7 @@ dependencies = [
  "spanda-transport-routing",
  "spanda-trust",
  "spanda-typecheck",
+ "spanda-whatif",
  "tempfile",
 ]
 
@@ -3553,6 +3554,20 @@ dependencies = [
  "spanda-hardware",
  "spanda-telemetry-store",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "spanda-whatif"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-assurance",
+ "spanda-ast",
+ "spanda-chaos",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
 ]
 
 [[package]]
