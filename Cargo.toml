@@ -63,6 +63,7 @@ members = [
     "crates/spanda-policy",
     "crates/spanda-chaos",
     "crates/spanda-whatif",
+    "crates/spanda-risk",
     "crates/spanda-estimate",
     "crates/spanda-compliance",
     "crates/spanda-adr",

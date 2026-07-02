@@ -2449,6 +2449,7 @@ dependencies = [
  "spanda-policy",
  "spanda-providers",
  "spanda-readiness",
+ "spanda-risk",
  "spanda-runtime",
  "spanda-runtime-faults",
  "spanda-runtime-host",
@@ -3241,6 +3242,23 @@ version = "0.4.0"
 dependencies = [
  "spanda-ast",
  "spanda-error",
+]
+
+[[package]]
+name = "spanda-risk"
+version = "0.4.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-assurance",
+ "spanda-ast",
+ "spanda-contract",
+ "spanda-hardware",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
+ "spanda-trust",
+ "spanda-whatif",
 ]
 
 [[package]]
