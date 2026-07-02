@@ -1641,7 +1641,54 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <h3>Decision policies</h3>
               <pre>{JSON.stringify(decisionData.policies, null, 2)}</pre>
               <h3>Live decision trace (v3)</h3>
-              <pre>{JSON.stringify(decisionData.traces, null, 2)}</pre>
+              {(() => {
+                const traceBody = decisionData.traces as Record<string, unknown> | null;
+                const frames = (traceBody?.frames as Record<string, unknown>[]) ?? [];
+                if (frames.length === 0) {
+                  return (
+                    <p className="demo-hint">
+                      {traceBody?.error
+                        ? String(traceBody.error)
+                        : "No v3 frames yet — run sim with --record and SPANDA_DECISION_TRACE=1."}
+                    </p>
+                  );
+                }
+                return (
+                  <>
+                    <p className="demo-hint">
+                      Trace: {String(traceBody?.trace ?? "—")} · {frames.length} frame
+                      {frames.length === 1 ? "" : "s"}
+                    </p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Time (ms)</th>
+                          <th>Event</th>
+                          <th>Layer</th>
+                          <th>Entity</th>
+                          <th>Decision</th>
+                          <th>Reason</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {frames.map((frame, idx) => {
+                          const payload = (frame.payload as Record<string, unknown>) ?? {};
+                          return (
+                            <tr key={idx}>
+                              <td>{String(frame.sim_time_ms ?? "—")}</td>
+                              <td>{String(frame.event ?? "—")}</td>
+                              <td>{String(payload.layer ?? "—")}</td>
+                              <td>{String(payload.entity_id ?? "—")}</td>
+                              <td>{String(payload.decision ?? "—")}</td>
+                              <td>{String(payload.reason ?? "—")}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </>
+                );
+              })()}
             </>
           )}
         </div>

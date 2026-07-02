@@ -104,6 +104,7 @@ Env knobs for runtime gates in sim: `SPANDA_CENTRAL_CONNECTED`, `SPANDA_OFFLINE_
 
 ```rust
 client.list_decisions()?;
+client.list_decision_traces(None, None)?;
 client.get_entity_decisions("Rover001")?;
 client.simulate_decision(&body)?;
 client.approve_escalation(&body)?;
