@@ -13,6 +13,15 @@ import {
   type RegisterEntityInput,
 } from "./EntityGraphPanel";
 import { RecoveryPanel } from "./RecoveryPanel";
+import { AdministrationPanel } from "./AdministrationPanel";
+import { AssuranceDiagnosisPanel } from "./AssuranceDiagnosisPanel";
+import { ControlCenterAuthBanner } from "./ControlCenterAuthBanner";
+import { MissionViewPanel } from "./MissionViewPanel";
+import { OperatorPanel } from "./OperatorPanel";
+import { SimulationPanel } from "./SimulationPanel";
+import { ReplayPanel } from "./ReplayPanel";
+import { type ControlCenterTab } from "./controlCenterRbac";
+import { useControlCenterAuth } from "./useControlCenterAuth";
 
 type DecisionTraceFrame = {
   sim_time_ms?: number;
@@ -90,34 +99,7 @@ type ReadinessImpact = {
   };
 };
 
-type Tab =
-  | "dashboard"
-  | "entities"
-  | "devices"
-  | "fleet"
-  | "discovery"
-  | "provisioning"
-  | "mapping"
-  | "config"
-  | "health"
-  | "readiness"
-  | "drift"
-  | "alerts"
-  | "security"
-  | "ota"
-  | "sre"
-  | "compliance"
-  | "audit"
-  | "decisions"
-  | "recovery"
-  | "digital-thread"
-  | "adas"
-  | "humans"
-  | "smart-spaces"
-  | "executive"
-  | "analytics"
-  | "twins"
-  | "traceability";
+type Tab = ControlCenterTab;
 
 type SreSummary = {
   availability_percent: number;
@@ -145,6 +127,26 @@ type Props = {
 };
 
 export function ControlCenterPanel({ apiBase }: Props) {
+  const auth = useControlCenterAuth({ apiBase });
+  const {
+    base,
+    apiHost,
+    rbacCtx,
+    authHeaders,
+    can,
+    isTabAllowed,
+    hasToken,
+    effectiveRole,
+    roleMeta,
+    verifyAndSetApiKey,
+    forgetToken,
+    showAuthSetup,
+    setShowAuthSetup,
+    authError,
+    envKeyLocked,
+  } = auth;
+  const apiKey = auth.apiKey;
+
   const [tab, setTab] = useState<Tab>("dashboard");
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [agents, setAgents] = useState<FleetAgent[]>([]);
@@ -237,16 +239,17 @@ export function ControlCenterPanel({ apiBase }: Props) {
     { plugin: string; id: string; title: string; component: string }[]
   >([]);
   const [pluginTab, setPluginTab] = useState<string | null>(null);
+  const [otaVersion, setOtaVersion] = useState("1.0");
+  const [otaStrategy, setOtaStrategy] = useState("canary");
+  const [otaPlanLog, setOtaPlanLog] = useState<string | null>(null);
+  const [driftBaselineId, setDriftBaselineId] = useState("");
+  const [sreTraces, setSreTraces] = useState<Record<string, unknown>[]>([]);
 
-  const base = apiBase.replace(/\/$/, "");
-  const apiKey =
-    (import.meta as { env?: { VITE_SPANDA_API_KEY?: string } }).env?.VITE_SPANDA_API_KEY ?? "";
-
-  const authHeaders = (): HeadersInit => {
-    const headers: Record<string, string> = { "Content-Type": "application/json" };
-    if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
-    return headers;
-  };
+  useEffect(() => {
+    if (!isTabAllowed(tab)) {
+      setTab("dashboard");
+    }
+  }, [tab, isTabAllowed, effectiveRole]);
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -458,15 +461,20 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadSre = async () => {
     setBusy(true);
     try {
-      const [summaryRes, incidentsRes] = await Promise.all([
+      const [summaryRes, incidentsRes, tracesRes] = await Promise.all([
         fetch(`${base}/v1/sre/summary`),
         fetch(`${base}/v1/sre/incidents`),
+        fetch(`${base}/v1/observability/traces`),
       ]);
       if (!summaryRes.ok) throw new Error(`sre summary ${summaryRes.status}`);
       setSreSummary(await summaryRes.json());
       if (incidentsRes.ok) {
         const body = await incidentsRes.json();
         setIncidents(body.incidents ?? []);
+      }
+      if (tracesRes.ok) {
+        const body = await tracesRes.json();
+        setSreTraces((body.traces ?? []).slice(-5));
       }
     } catch (e) {
       setError(String(e));
@@ -476,7 +484,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
   };
 
   const createIncident = async () => {
-    if (!apiKey) return;
+    if (!hasToken || !can("Operate")) return;
     setBusy(true);
     try {
       const res = await fetch(`${base}/v1/sre/incidents`, {
@@ -498,7 +506,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
   };
 
   const ackIncident = async (incidentId: string) => {
-    if (!apiKey) return;
+    if (!hasToken || !can("Operate")) return;
     setBusy(true);
     try {
       const res = await fetch(`${base}/v1/sre/incidents/${encodeURIComponent(incidentId)}/ack`, {
@@ -516,7 +524,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
   };
 
   const resolveIncident = async (incidentId: string) => {
-    if (!apiKey) return;
+    if (!hasToken || !can("Operate")) return;
     setBusy(true);
     try {
       const res = await fetch(
@@ -917,8 +925,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
       const first = (snaps.snapshots ?? [])[0];
       if (!first?.id) {
         setDriftData(null);
+        setDriftBaselineId("");
         return;
       }
+      setDriftBaselineId(first.id);
       const driftRes = await fetch(
         `${base}/v1/drift?baseline_id=${encodeURIComponent(first.id)}`,
       );
@@ -970,6 +980,75 @@ export function ControlCenterPanel({ apiBase }: Props) {
       const res = await fetch(`${base}/v1/ota/status`);
       if (!res.ok) throw new Error(`ota ${res.status}`);
       setOtaStatus(await res.json());
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const planOta = async (dryRun: boolean) => {
+    if (!hasToken || !can("Deploy")) return;
+    setBusy(true);
+    setOtaPlanLog(null);
+    try {
+      const res = await fetch(`${base}/v1/ota/plan`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          version: otaVersion,
+          strategy: otaStrategy,
+          dry_run: dryRun,
+        }),
+      });
+      const body = await res.text();
+      if (!res.ok) throw new Error(`ota plan ${res.status}`);
+      setOtaPlanLog(body);
+      await loadOta();
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const executeOta = async () => {
+    if (!hasToken || !can("Deploy")) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`${base}/v1/ota/execute`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          version: otaVersion,
+          strategy: otaStrategy,
+          dry_run: false,
+        }),
+      });
+      const body = await res.text();
+      if (!res.ok) throw new Error(`ota execute ${res.status}`);
+      setOtaPlanLog(body);
+      await loadOta();
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const runDriftScan = async () => {
+    if (!hasToken || !can("Deploy")) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`${base}/v1/drift/scan`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify(
+          driftBaselineId ? { baseline_id: driftBaselineId } : {},
+        ),
+      });
+      if (!res.ok) throw new Error(`drift scan ${res.status}`);
+      await loadDrift();
     } catch (e) {
       setError(String(e));
     } finally {
@@ -1273,6 +1352,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
     if (name === "sre") return "SRE";
     if (name === "ota") return "OTA";
     if (name === "twins") return "Twin Cloud";
+    if (name === "administration") return "Administration";
+    if (name === "mission") return "Mission";
+    if (name === "simulation") return "Simulation";
+    if (name === "replay") return "Replay";
     return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");
   };
 
@@ -1297,6 +1380,13 @@ export function ControlCenterPanel({ apiBase }: Props) {
     "decisions",
     "recovery",
     "digital-thread",
+    "mission",
+    "operator",
+    "assurance",
+    "diagnosis",
+    "simulation",
+    "replay",
+    "administration",
     "adas",
     "humans",
     "smart-spaces",
@@ -1312,15 +1402,24 @@ export function ControlCenterPanel({ apiBase }: Props) {
       <p className="demo-hint">
         API: <code>{base}</code> — run <code>spanda control-center serve --config spanda.toml</code>
       </p>
-      {!apiKey && (
-        <p className="demo-hint">
-          Mutations require an API key. Generate:{" "}
-          <code>spanda control-center api-key generate --export</code>, then set{" "}
-          <code>VITE_SPANDA_API_KEY</code> and restart the dev server.
-        </p>
-      )}
+      <ControlCenterAuthBanner
+        apiHost={apiHost}
+        effectiveRole={effectiveRole}
+        roleMeta={roleMeta}
+        keyId={rbacCtx?.key_id}
+        permissions={rbacCtx?.permissions ?? []}
+        hasToken={hasToken}
+        showAuthSetup={showAuthSetup}
+        envKeyLocked={envKeyLocked}
+        authError={authError}
+        onVerify={verifyAndSetApiKey}
+        onForget={forgetToken}
+        onOpenSetup={() => setShowAuthSetup(true)}
+      />
       <div className="toolbar">
-        {tabs.map((name) => (
+        {tabs
+          .filter((name) => isTabAllowed(name))
+          .map((name) => (
           <button
             key={name}
             type="button"
@@ -1405,7 +1504,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
           relationships={entityRelationships}
           loading={busy}
           write={{
-            canWrite: Boolean(apiKey),
+            canWrite: hasToken && can("Provision"),
             busy,
             onRegister: registerEntity,
             onTag: tagEntity,
@@ -1493,10 +1592,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
             Provisioning: discover → verify → trust → firmware → health → capabilities → assign →
             ready.
           </p>
-          {!apiKey && (
-            <p className="demo-hint">
-              Set <code>VITE_SPANDA_API_KEY</code> for provision/assign/trust/quarantine mutations.
-            </p>
+          {!hasToken && (
+            <p className="demo-hint">Sign in to trust, provision, assign, or quarantine devices.</p>
           )}
           {selectedDevice ? (
             <>
@@ -1518,16 +1615,32 @@ export function ControlCenterPanel({ apiBase }: Props) {
                 </select>
               </label>
               <div className="toolbar">
-                <button type="button" onClick={() => void trustDevice()} disabled={busy || !apiKey}>
+                <button
+                  type="button"
+                  onClick={() => void trustDevice()}
+                  disabled={busy || !hasToken || !can("Approve")}
+                >
                   Trust / Approve
                 </button>
-                <button type="button" onClick={() => void provisionDevice()} disabled={busy || !apiKey}>
+                <button
+                  type="button"
+                  onClick={() => void provisionDevice()}
+                  disabled={busy || !hasToken || !can("Provision")}
+                >
                   Provision
                 </button>
-                <button type="button" onClick={() => void assignDevice()} disabled={busy || !apiKey}>
+                <button
+                  type="button"
+                  onClick={() => void assignDevice()}
+                  disabled={busy || !hasToken || !can("Operate")}
+                >
                   Assign to fleet
                 </button>
-                <button type="button" onClick={() => void quarantineDevice()} disabled={busy || !apiKey}>
+                <button
+                  type="button"
+                  onClick={() => void quarantineDevice()}
+                  disabled={busy || !hasToken || !can("Operate")}
+                >
                   Quarantine
                 </button>
               </div>
@@ -1615,25 +1728,24 @@ export function ControlCenterPanel({ apiBase }: Props) {
               </>
             )}
           </dl>
-          <button type="button" onClick={() => void createIncident()} disabled={busy || !apiKey}>
+          <button
+            type="button"
+            onClick={() => void createIncident()}
+            disabled={busy || !hasToken || !can("Operate")}
+          >
             Open incident
           </button>
-          {!apiKey && (
-            <p className="demo-hint">
-              Set <code>VITE_SPANDA_API_KEY</code> to ack/resolve incidents.
-            </p>
-          )}
           <ul>
             {incidents.length === 0 && <li>No incidents</li>}
             {incidents.map((incident) => (
               <li key={incident.id}>
                 <strong>{incident.title}</strong> — {incident.status} ({incident.severity})
-                {incident.status === "open" && apiKey && (
+                {incident.status === "open" && hasToken && can("Operate") && (
                   <button type="button" onClick={() => void ackIncident(incident.id)} disabled={busy}>
                     Ack
                   </button>
                 )}
-                {incident.status !== "resolved" && apiKey && (
+                {incident.status !== "resolved" && hasToken && can("Operate") && (
                   <button
                     type="button"
                     onClick={() => void resolveIncident(incident.id)}
@@ -1645,6 +1757,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
               </li>
             ))}
           </ul>
+          <h3>Recent traces</h3>
+          <pre>{JSON.stringify(sreTraces, null, 2)}</pre>
         </div>
       )}
 
@@ -1653,6 +1767,22 @@ export function ControlCenterPanel({ apiBase }: Props) {
           {!driftData && <p>Save a config snapshot first (`POST /v1/config/snapshots`).</p>}
           {driftData && (
             <>
+              <div className="digital-thread-filters">
+                <label>
+                  Baseline id
+                  <input
+                    value={driftBaselineId}
+                    onChange={(event) => setDriftBaselineId(event.target.value)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => void runDriftScan()}
+                  disabled={busy || !hasToken || !can("Deploy")}
+                >
+                  Run drift scan
+                </button>
+              </div>
               <p>
                 Baseline: <code>{driftData.baselineId}</code> — passed:{" "}
                 <strong>{String(driftData.report.passed ?? "—")}</strong>
@@ -1669,7 +1799,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
                 ))}
               </dl>
               <pre>{JSON.stringify(driftData.report, null, 2)}</pre>
-              {apiKey && (
+              {hasToken && can("Deploy") && (
                 <button
                   type="button"
                   onClick={() => void requestConfigApproval(driftData.baselineId)}
@@ -1697,7 +1827,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <li key={String(approval.id)}>
                 <code>{String(approval.id)}</code> — snapshot{" "}
                 <code>{String(approval.snapshot_id)}</code> — {String(approval.status)}
-                {approval.status === "pending" && apiKey && (
+                {approval.status === "pending" && hasToken && can("Approve") && (
                   <>
                     <button
                       type="button"
@@ -1762,7 +1892,38 @@ export function ControlCenterPanel({ apiBase }: Props) {
 
       {tab === "ota" && (
         <div>
-          <p>Plan rollouts via <code>POST /v1/ota/plan</code>.</p>
+          <div className="digital-thread-filters">
+            <label>
+              Version
+              <input value={otaVersion} onChange={(event) => setOtaVersion(event.target.value)} />
+            </label>
+            <label>
+              Strategy
+              <select value={otaStrategy} onChange={(event) => setOtaStrategy(event.target.value)}>
+                <option value="canary">canary</option>
+                <option value="staged">staged</option>
+                <option value="blue_green">blue_green</option>
+              </select>
+            </label>
+          </div>
+          <div className="cc-action-bar">
+            <button
+              type="button"
+              onClick={() => void planOta(true)}
+              disabled={busy || !hasToken || !can("Deploy")}
+            >
+              Plan rollout (dry-run)
+            </button>
+            <button
+              type="button"
+              onClick={() => void executeOta()}
+              disabled={busy || !hasToken || !can("Deploy")}
+            >
+              Execute rollout
+            </button>
+          </div>
+          {otaPlanLog && <pre>{otaPlanLog}</pre>}
+          <h3>Current status</h3>
           {otaStatus && <pre>{JSON.stringify(otaStatus, null, 2)}</pre>}
         </div>
       )}
@@ -1787,7 +1948,11 @@ export function ControlCenterPanel({ apiBase }: Props) {
                 ))}
               </select>
             </label>
-            <button type="button" onClick={() => void loadCompliance()} disabled={busy || !apiKey}>
+            <button
+              type="button"
+              onClick={() => void loadCompliance()}
+              disabled={busy || !hasToken || !can("Deploy")}
+            >
               Export profile
             </button>
           </div>
@@ -1808,7 +1973,11 @@ export function ControlCenterPanel({ apiBase }: Props) {
 
       {tab === "audit" && (
         <div>
-          <button type="button" onClick={() => void loadAudit()} disabled={busy || !apiKey}>
+          <button
+            type="button"
+            onClick={() => void loadAudit()}
+            disabled={busy || !hasToken || !can("Deploy")}
+          >
             Load mutation audit
           </button>
           {auditData && <pre>{JSON.stringify(auditData, null, 2)}</pre>}
@@ -1922,7 +2091,65 @@ export function ControlCenterPanel({ apiBase }: Props) {
         </div>
       )}
 
-      {tab === "recovery" && <RecoveryPanel baseUrl={base} />}
+      {tab === "recovery" && (
+        <RecoveryPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      )}
+
+      {tab === "mission" && (
+        <MissionViewPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      )}
+
+      {tab === "operator" && (
+        <OperatorPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          selectedDeviceId={selectedDevice ?? undefined}
+          onQuarantine={() => void load()}
+        />
+      )}
+
+      {tab === "assurance" && <AssuranceDiagnosisPanel baseUrl={base} />}
+
+      {tab === "diagnosis" && <AssuranceDiagnosisPanel baseUrl={base} />}
+
+      {tab === "administration" && (
+        <AdministrationPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      )}
+
+      {tab === "simulation" && (
+        <SimulationPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      )}
+
+      {tab === "replay" && (
+        <ReplayPanel
+          baseUrl={base}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      )}
 
       {tab === "executive" && scorecard && (
         <pre>{JSON.stringify(scorecard, null, 2)}</pre>
@@ -2256,7 +2483,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
                   <td>{String(approval.requested_by ?? "—")}</td>
                   <td>{String(approval.status)}</td>
                   <td>
-                    {approval.status === "pending" && apiKey && (
+                    {approval.status === "pending" && hasToken && can("Approve") && (
                       <>
                         <button
                           type="button"
