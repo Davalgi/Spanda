@@ -119,6 +119,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/rbac/matrix",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/rbac/me",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/provision",
     },

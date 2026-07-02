@@ -222,6 +222,13 @@
         "responses": { "200": { "description": "RBAC matrix" } }
       }
     },
+    "/v1/rbac/me": {
+      "get": {
+        "summary": "Authenticated operator role and permissions",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Current RBAC context" } }
+      }
+    },
     "/v1/provision": {
       "post": {
         "summary": "Run discover → ready provisioning workflow",

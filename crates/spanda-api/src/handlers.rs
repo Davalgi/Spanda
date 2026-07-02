@@ -314,6 +314,7 @@ pub fn handle_request(
         ("/v1/alerts/test", "POST") => alerts_test(state, ctx.as_ref()),
         ("/v1/secrets", "GET") => secrets_list(state, ctx.as_ref()),
         ("/v1/rbac/matrix", "GET") => rbac_matrix(),
+        ("/v1/rbac/me", "GET") => rbac_me(ctx.as_ref()),
         ("/v1/provision", "POST") => provision_run(state, &request.body, ctx.as_ref()),
         ("/v1/config/snapshots", "GET") => config_snapshots_list(),
         ("/v1/config/snapshots", "POST") => {
@@ -622,6 +623,36 @@ fn rbac_matrix() -> HttpResponse {
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "matrix": spanda_security::permission_matrix(),
+    }))
+}
+
+fn rbac_me(ctx: Option<&RbacContext>) -> HttpResponse {
+    // Return the authenticated operator role and allowed mutation actions.
+    let Some(context) = ctx else {
+        return unauthorized();
+    };
+    use RbacAction::*;
+    let actions = [
+        Deploy,
+        Operate,
+        Approve,
+        Override,
+        Shutdown,
+        Recover,
+        Delete,
+        Provision,
+    ];
+    let permissions: Vec<String> = actions
+        .iter()
+        .filter(|action| ApiKeyStore::authorize(context.role, **action))
+        .map(|action| format!("{action:?}"))
+        .collect();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "key_id": context.key_id,
+        "role": context.role,
+        "tenant_id": context.tenant_id,
+        "permissions": permissions,
     }))
 }
 
@@ -2049,5 +2080,41 @@ mod tests {
         assert_eq!(response.status, 200);
         assert!(response.body.contains("fleet_field_trial.sd"));
         assert!(response.body.contains("127.0.0.1:8080"));
+    }
+
+    #[test]
+    fn rbac_me_requires_bearer_token() {
+        let mut state = ControlCenterState::new();
+        state.api_keys.keys.push(spanda_security::ApiKeyRecord {
+            key_id: "admin".into(),
+            token: "secret-token".into(),
+            role: spanda_security::Role::Administrator,
+            label: None,
+            tenant_id: "default".into(),
+        });
+        let (unauth, _) = handle_request(
+            &mut state,
+            &HttpRequest {
+                method: "GET".into(),
+                path: "/v1/rbac/me".into(),
+                body: String::new(),
+                authorization: None,
+            },
+            "",
+        );
+        assert_eq!(unauth.status, 401);
+        let (authed, _) = handle_request(
+            &mut state,
+            &HttpRequest {
+                method: "GET".into(),
+                path: "/v1/rbac/me".into(),
+                body: String::new(),
+                authorization: Some("secret-token".into()),
+            },
+            "",
+        );
+        assert_eq!(authed.status, 200);
+        assert!(authed.body.contains("administrator"));
+        assert!(authed.body.contains("Deploy"));
     }
 }
