@@ -78,6 +78,8 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
     let logs_cb = logs.clone();
     let trace_realtime = options.trace_realtime;
     let record_trace = options.record_trace;
+    let decision_trace = options.decision_trace
+        || spanda_runtime::decision_trace_enabled();
     let scheduler_clock = if options.replay_deterministic {
         SchedulerClock::Sim
     } else {
@@ -110,6 +112,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
             trace_providers: options.trace_providers || trace_realtime,
             replay_trace: options.replay_trace,
             record_trace,
+            decision_trace,
             trace_source,
             scheduler_clock,
             replay_deterministic: options.replay_deterministic,

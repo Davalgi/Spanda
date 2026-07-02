@@ -268,6 +268,43 @@ impl<B: RobotBackend> Interpreter<B> {
         }
     }
 
+    pub(super) fn record_decision_trace(
+        &mut self,
+        event: impl Into<String>,
+        decision: &str,
+        reason: &str,
+        layer: &str,
+        entity_id: &str,
+        evidence: serde_json::Value,
+    ) {
+        if !self.options.decision_trace && !spanda_runtime::decision_trace_enabled() {
+            return;
+        }
+        let event_str = event.into();
+        let mission = self
+            .env
+            .get("mission")
+            .and_then(|v| {
+                if let spanda_runtime::value::RuntimeValue::MissionControl { runtime } = v {
+                    runtime.name.clone()
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_else(|| "mission".to_string());
+        let decision_id = format!("d-{:.0}-{}", self.sim_time_ms, event_str.replace(' ', "_"));
+        let payload = spanda_runtime::v3_decision_payload(
+            &decision_id,
+            Some(&mission),
+            decision,
+            reason,
+            layer,
+            entity_id,
+            evidence,
+        );
+        self.record_mission_event(event_str, payload);
+    }
+
     pub(super) fn uses_wall_scheduler(&self) -> bool {
         // Description:
 

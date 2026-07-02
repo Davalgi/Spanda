@@ -2502,6 +2502,7 @@ dependencies = [
  "spanda-certify",
  "spanda-compliance",
  "spanda-config",
+ "spanda-decision",
  "spanda-deploy-http",
  "spanda-driver",
  "spanda-fleet",
@@ -2800,6 +2801,9 @@ version = "0.4.0"
 dependencies = [
  "serde",
  "serde_json",
+ "spanda-ast",
+ "spanda-lexer",
+ "spanda-parser",
  "spanda-runtime",
 ]
 

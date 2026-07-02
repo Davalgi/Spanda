@@ -513,6 +513,18 @@ impl<B: RobotBackend> Interpreter<B> {
                 "actions": result.executed_actions,
             }),
         );
+        self.record_decision_trace(
+            "recovery_executed",
+            "recovery_action",
+            &format!("recovery for {issue}: {:?}", result.status),
+            "local_entity",
+            issue,
+            serde_json::json!({
+                "issue": issue,
+                "status": format!("{:?}", result.status),
+                "actions": result.executed_actions,
+            }),
+        );
 
         let persisted = self
             .assurance()

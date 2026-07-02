@@ -4,6 +4,7 @@ pub mod assurance_runtime;
 pub mod classification;
 pub mod continuity_primitives;
 pub mod continuity_types;
+pub mod decision_trace;
 pub mod device_telemetry_sink;
 pub mod environment;
 pub mod error;
@@ -63,6 +64,7 @@ pub use continuity_types::{
     ContinuityPolicySpec, ContinuityTrigger, MissionCheckpoint, MissionExecutionState,
     MissionStateSnapshot, MissionStateTransfer, SuccessionScope, TakeoverMode, TakeoverReport,
 };
+pub use decision_trace::{decision_trace_enabled, v3_decision_payload};
 pub use device_telemetry_sink::{
     device_telemetry_sink, set_device_telemetry_sink, DeviceTelemetrySink, NoopDeviceTelemetrySink,
 };

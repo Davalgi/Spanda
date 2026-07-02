@@ -48,6 +48,8 @@ pub struct RunOptions {
     #[serde(default)]
     pub record_trace: bool,
     #[serde(default)]
+    pub decision_trace: bool,
+    #[serde(default)]
     pub trace_source: Option<String>,
     #[serde(default)]
     pub trace_output: Option<String>,
@@ -131,6 +133,7 @@ impl Default for RunOptions {
             trace_providers: false,
             trace_realtime: false,
             record_trace: false,
+            decision_trace: false,
             trace_source: None,
             trace_output: None,
             metrics_json: false,
