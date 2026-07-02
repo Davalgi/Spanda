@@ -2,21 +2,29 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BIN="${CARGO_TARGET_DIR:-$ROOT/target}/debug/spanda"
+if [[ -n "${SPANDA_BIN:-}" && -x "${SPANDA_BIN}" ]]; then
+  BIN="$SPANDA_BIN"
+  run_spanda() { "$SPANDA_BIN" "$@"; }
+else
+  BIN="${CARGO_TARGET_DIR:-$ROOT/target}/debug/spanda"
+  run_spanda() { "$BIN" "$@"; }
+fi
 ROVER="$ROOT/examples/showcase/tamper_policy/rover.sd"
 
 cd "$ROOT"
-cargo build -p spanda -q
+if [[ ! -x "$BIN" ]]; then
+  cargo build -p spanda -q
+fi
 
 echo "== composite program trust =="
-OUTPUT="$("$BIN" trust "$ROVER" 2>&1 || true)"
+OUTPUT="$(run_spanda trust "$ROVER" 2>&1 || true)"
 echo "$OUTPUT"
 echo "$OUTPUT" | grep -q "Composite trust:"
 echo "$OUTPUT" | grep -q "package_trust"
 echo "$OUTPUT" | grep -q "device_integrity"
 
 echo "== composite program trust json =="
-JSON="$("$BIN" trust "$ROVER" --json 2>&1 || true)"
+JSON="$(run_spanda trust "$ROVER" --json 2>&1 || true)"
 echo "$JSON" | grep -q '"score"'
 echo "$JSON" | grep -q '"integrity_status"'
 
