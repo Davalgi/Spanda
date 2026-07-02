@@ -31,6 +31,7 @@ pub mod recovery_primitives;
 pub mod recovery_types;
 pub mod reliability_runtime;
 pub mod replay;
+pub mod time_travel;
 pub mod robot_state;
 pub mod robotics;
 pub mod scheduler;
@@ -152,6 +153,10 @@ pub use reliability_runtime::{
 pub use replay::{
     parse_replay_offset, playback_frames, verify_traces, MissionTrace, PlaybackReport,
     ReplayStateSnapshot, ReplayStateTarget, TraceFrame, TraceVerification,
+};
+pub use time_travel::{
+    format_timeline_explorer, inspect_mission_at, parse_inspect_facets, parse_time_travel_at,
+    HistoricalMissionState, TimeTravelInspect, TimelineExplorer,
 };
 pub use robot_state::{PoseState, RobotState, VelocityState};
 pub use robotics::{FleetRegistry, MissionRuntime, MissionState, ProgramSafetyZoneRegistry};

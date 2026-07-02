@@ -471,6 +471,8 @@ fn cmd_replay(args: &[String]) {
     replay_cli::human_replay(
         &trace_path,
         from.as_deref(),
+        None,
+        None,
         deterministic,
         playback,
         false,

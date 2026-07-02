@@ -12,6 +12,8 @@ use std::sync::Arc;
 pub fn human_replay(
     trace_file: &str,
     from: Option<&str>,
+    at: Option<&str>,
+    inspect: Option<&str>,
     deterministic: bool,
     playback: bool,
     show_faults: bool,
@@ -22,6 +24,22 @@ pub fn human_replay(
         eprintln!("{error}");
         process::exit(1);
     });
+
+    if let Some(at_raw) = at {
+        let at_ms = spanda_runtime::parse_time_travel_at(at_raw, &trace).unwrap_or_else(|error| {
+            eprintln!("{error}");
+            process::exit(1);
+        });
+        let facets = inspect
+            .map(spanda_runtime::parse_inspect_facets)
+            .unwrap_or_else(|| vec![spanda_runtime::TimeTravelInspect::All]);
+        let explorer = spanda_runtime::inspect_mission_at(&trace, at_ms, &facets);
+        println!(
+            "{}",
+            spanda_runtime::format_timeline_explorer(&explorer, as_json)
+        );
+        return;
+    }
 
     if show_faults {
         if as_json {
