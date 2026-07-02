@@ -1,0 +1,70 @@
+{
+  "plugins": [
+    {
+      "name": "spanda-plugin-readiness-example",
+      "description": "Example readiness plugin for mission verification hooks",
+      "plugin_type": "readiness",
+      "publisher": "spanda",
+      "license": "Apache-2.0",
+      "tier": "official",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    },
+    {
+      "name": "spanda-plugin-report-example",
+      "description": "Example report generator plugin",
+      "plugin_type": "report-generator",
+      "publisher": "spanda",
+      "license": "Apache-2.0",
+      "tier": "verified",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    },
+    {
+      "name": "spanda-plugin-device-discovery-example",
+      "description": "Example device discovery plugin",
+      "plugin_type": "device-discovery",
+      "publisher": "spanda",
+      "license": "Apache-2.0",
+      "tier": "community",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    },
+    {
+      "name": "spanda-plugin-healthcare",
+      "description": "Healthcare Control Center panels for patient devices and vitals",
+      "plugin_type": "control-center-ui",
+      "publisher": "spanda",
+      "license": "Apache-2.0",
+      "tier": "verified",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    },
+    {
+      "name": "spanda-plugin-adas",
+      "description": "ADAS readiness and sensor calibration panels",
+      "plugin_type": "control-center-ui",
+      "publisher": "spanda",
+      "license": "Apache-2.0",
+      "tier": "verified",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    },
+    {
+      "name": "spanda-plugin-blocked-demo",
+      "description": "Blocked plugin used for security tests",
+      "plugin_type": "cli",
+      "publisher": "example",
+      "license": "Apache-2.0",
+      "tier": "blocked",
+      "versions": ["0.1.0"],
+      "version_checksums": {},
+      "version_signatures": {}
+    }
+  ]
+}
