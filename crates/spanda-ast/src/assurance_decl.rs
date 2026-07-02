@@ -230,3 +230,49 @@ pub enum AssuranceCaseDecl {
         span: Span,
     },
 }
+
+/// Nested branch inside a decision tree (`else if visual_odometry.available { ... }`).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DecisionTreeNestedBranch {
+    pub condition: String,
+    pub actions: Vec<String>,
+    pub span: Span,
+}
+
+/// Conditional branch inside a decision tree (`when gps.status == Failed { ... }`).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DecisionTreeBranch {
+    pub condition: String,
+    pub actions: Vec<String>,
+    #[serde(default)]
+    pub nested: Vec<DecisionTreeNestedBranch>,
+    pub span: Span,
+}
+
+/// Local decision tree for bounded edge autonomy.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum DecisionTreeDecl {
+    DecisionTreeDecl {
+        name: String,
+        scope: String,
+        layer: String,
+        #[serde(default)]
+        version: Option<String>,
+        branches: Vec<DecisionTreeBranch>,
+        span: Span,
+    },
+}
+
+/// Offline operation policy for bounded disconnected autonomy.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum OfflinePolicyDecl {
+    OfflinePolicyDecl {
+        name: String,
+        max_duration_minutes: u32,
+        allowed_actions: Vec<String>,
+        forbidden_actions: Vec<String>,
+        span: Span,
+    },
+}

@@ -439,6 +439,8 @@ impl Parser {
                 | TokenType::Actuator
                 | TokenType::Fleet
                 | TokenType::Swarm
+                | TokenType::EmergencyStop
+                | TokenType::ResetEmergencyStop
         );
 
         // Take this path when ok.
@@ -723,6 +725,8 @@ impl Parser {
         let mut continuity_policies = Vec::new();
         let mut operational_policies = Vec::new();
         let mut assurance_cases = Vec::new();
+        let mut decision_trees = Vec::new();
+        let mut offline_policies = Vec::new();
         let mut runtime_fault_triggers = Vec::new();
         let mut robots = Vec::new();
 
@@ -813,6 +817,10 @@ impl Parser {
                 tamper_policies.push(self.parse_tamper_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "continuity_policy" {
                 continuity_policies.push(self.parse_continuity_policy()?);
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "decision_tree" {
+                decision_trees.push(self.parse_decision_tree()?);
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "offline_policy" {
+                offline_policies.push(self.parse_offline_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "mission_plan" {
                 mission_plans.push(self.parse_mission_plan()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "operating_mode" {
@@ -873,6 +881,8 @@ impl Parser {
             continuity_policies,
             operational_policies,
             assurance_cases,
+            decision_trees,
+            offline_policies,
             runtime_fault_triggers,
             robots,
             span: self.span_from(&start, self.previous()),
@@ -1107,6 +1117,28 @@ impl Parser {
             TokenType::Semicolon,
             &format!("Expected ';' after {kind} list"),
         )?;
+        Ok(items)
+    }
+
+    fn parse_bracket_list(&mut self, kind: &str) -> Result<Vec<String>, SpandaError> {
+        self.expect(TokenType::Lbracket, &format!("Expected '[' after {kind}"))?;
+        let mut items = Vec::new();
+        if !self.check(TokenType::Rbracket) {
+            loop {
+                items.push(self.parse_label(&format!("Expected {kind} item"))?);
+                if self.match_types(&[TokenType::Comma]) {
+                    if self.check(TokenType::Rbracket) {
+                        break;
+                    }
+                    continue;
+                }
+                break;
+            }
+        }
+        self.expect(TokenType::Rbracket, &format!("Expected ']' after {kind} list"))?;
+        if self.check(TokenType::Semicolon) {
+            self.advance();
+        }
         Ok(items)
     }
 
@@ -3761,6 +3793,8 @@ impl Parser {
         let mut memory_watches = Vec::new();
         let mut resource_watches = Vec::new();
         let mut restart_policies = Vec::new();
+        let mut local_decision_authority = Vec::new();
+        let mut requires_central_approval = Vec::new();
 
         // Repeat while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof).
         while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
@@ -3915,6 +3949,12 @@ impl Parser {
                 resource_watches.push(self.parse_resource_watch()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "restart_policy" {
                 restart_policies.push(self.parse_restart_policy()?);
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "local_decision_authority" {
+                self.advance();
+                local_decision_authority = self.parse_hardware_type_list("local_decision_authority")?;
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "requires_central_approval" {
+                self.advance();
+                requires_central_approval = self.parse_hardware_type_list("requires_central_approval")?;
             } else {
                 let t = self.peek();
                 return Err(SpandaError::Parse {
@@ -3983,6 +4023,8 @@ impl Parser {
             memory_watches,
             resource_watches,
             restart_policies,
+            local_decision_authority,
+            requires_central_approval,
             span: self.span_from(&start, &end),
         })
     }
@@ -9900,6 +9942,54 @@ impl Parser {
         Ok(normalize_tamper_policy_condition(&parts))
     }
 
+    fn parse_decision_tree_condition(&mut self) -> Result<String, SpandaError> {
+        let mut parts = Vec::new();
+        while !self.check(TokenType::Lbrace)
+            && !self.check(TokenType::Rbrace)
+            && !self.check(TokenType::Eof)
+        {
+            let token_type = self.peek().token_type;
+            let piece = match token_type {
+                TokenType::Ident | TokenType::Number => {
+                    if token_type == TokenType::Number {
+                        let lexeme = self.peek().lexeme.clone();
+                        self.advance();
+                        lexeme
+                    } else {
+                        self.parse_label("Expected decision tree condition token")?
+                    }
+                }
+                TokenType::Dot => {
+                    self.advance();
+                    ".".to_string()
+                }
+                TokenType::Eq => {
+                    self.advance();
+                    "==".to_string()
+                }
+                TokenType::Assign => {
+                    self.advance();
+                    "=".to_string()
+                }
+                TokenType::Neq => {
+                    self.advance();
+                    "!=".to_string()
+                }
+                _ => break,
+            };
+            parts.push(piece);
+        }
+        if parts.is_empty() {
+            let token = self.peek();
+            return Err(SpandaError::Parse {
+                message: "Expected decision tree condition".into(),
+                line: token.line,
+                column: token.column,
+            });
+        }
+        Ok(parts.join(" ").replace(" . ", "."))
+    }
+
     fn parse_continuity_policy(
         &mut self,
     ) -> Result<spanda_ast::assurance_decl::ContinuityPolicyDecl, SpandaError> {
@@ -9938,6 +10028,165 @@ impl Parser {
         Ok(ContinuityPolicyDecl::ContinuityPolicyDecl {
             name,
             branches,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_decision_tree(
+        &mut self,
+    ) -> Result<spanda_ast::assurance_decl::DecisionTreeDecl, SpandaError> {
+        use spanda_ast::assurance_decl::{
+            DecisionTreeBranch, DecisionTreeDecl, DecisionTreeNestedBranch,
+        };
+        let start = self.advance();
+        let name = self.parse_label("Expected decision_tree name")?;
+        let scope = self.parse_label("Expected decision_tree scope (local, reflex, fleet)")?;
+        let layer = scope.clone();
+        self.expect(TokenType::Lbrace, "Expected '{' after decision_tree scope")?;
+        let mut branches = Vec::new();
+        let mut version = None;
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "version" {
+                self.advance();
+                self.expect(TokenType::Eq, "Expected '=' after version")?;
+                version = Some(self.parse_label("Expected version string")?);
+            } else if self.check(TokenType::When) {
+                self.advance();
+                let condition = self.parse_decision_tree_condition()?;
+                self.expect(TokenType::Lbrace, "Expected '{' after when condition")?;
+                let mut actions = Vec::new();
+                let mut nested = Vec::new();
+                while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                    if self.check(TokenType::If) {
+                        self.advance();
+                        let nested_cond = self.parse_decision_tree_condition()?;
+                        self.expect(TokenType::Lbrace, "Expected '{' after if condition")?;
+                        let mut nested_actions = Vec::new();
+                        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                            nested_actions.push(self.parse_action_statement()?);
+                        }
+                        self.expect(TokenType::Rbrace, "Expected '}' to close if branch")?;
+                        nested.push(DecisionTreeNestedBranch {
+                            condition: nested_cond,
+                            actions: nested_actions,
+                            span: self.span_from(&start, self.previous()),
+                        });
+                    } else if self.check(TokenType::Else) {
+                        self.advance();
+                        if self.check(TokenType::If) {
+                            self.advance();
+                            let nested_cond = self.parse_decision_tree_condition()?;
+                            self.expect(TokenType::Lbrace, "Expected '{' after else if")?;
+                            let mut nested_actions = Vec::new();
+                            while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                                nested_actions.push(self.parse_action_statement()?);
+                            }
+                            self.expect(TokenType::Rbrace, "Expected '}' to close else if")?;
+                            nested.push(DecisionTreeNestedBranch {
+                                condition: nested_cond,
+                                actions: nested_actions,
+                                span: self.span_from(&start, self.previous()),
+                            });
+                        } else {
+                            self.expect(TokenType::Lbrace, "Expected '{' after else")?;
+                            let mut nested_actions = Vec::new();
+                            while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                                nested_actions.push(self.parse_action_statement()?);
+                            }
+                            self.expect(TokenType::Rbrace, "Expected '}' to close else")?;
+                            nested.push(DecisionTreeNestedBranch {
+                                condition: "else".into(),
+                                actions: nested_actions,
+                                span: self.span_from(&start, self.previous()),
+                            });
+                        }
+                    } else {
+                        actions.push(self.parse_action_statement()?);
+                    }
+                }
+                self.expect(TokenType::Rbrace, "Expected '}' to close when branch")?;
+                branches.push(DecisionTreeBranch {
+                    condition,
+                    actions,
+                    nested,
+                    span: self.span_from(&start, self.previous()),
+                });
+            } else {
+                return Err(SpandaError::Parse {
+                    message: "Expected 'when' branch or 'version' in decision_tree".into(),
+                    line: self.peek().line,
+                    column: self.peek().column,
+                });
+            }
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close decision_tree")?;
+        Ok(DecisionTreeDecl::DecisionTreeDecl {
+            name,
+            scope,
+            layer,
+            version,
+            branches,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_offline_policy(
+        &mut self,
+    ) -> Result<spanda_ast::assurance_decl::OfflinePolicyDecl, SpandaError> {
+        use spanda_ast::assurance_decl::OfflinePolicyDecl;
+        let start = self.advance();
+        let name = self.parse_label("Expected offline_policy name")?;
+        self.expect(TokenType::Lbrace, "Expected '{' after offline_policy name")?;
+        let mut max_duration_minutes = 30u32;
+        let mut allowed_actions = Vec::new();
+        let mut forbidden_actions = Vec::new();
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "max_duration" {
+                self.advance();
+                self.expect(TokenType::Assign, "Expected '=' after max_duration")?;
+                if self.check(TokenType::Number) {
+                    let num_tok = self.advance();
+                    max_duration_minutes = num_tok.lexeme.parse().unwrap_or(30);
+                } else if self.check(TokenType::UnitLiteral) {
+                    let num_tok = self.advance();
+                    max_duration_minutes = num_tok.lexeme
+                        .chars()
+                        .take_while(|c| c.is_ascii_digit())
+                        .collect::<String>()
+                        .parse()
+                        .unwrap_or(30);
+                } else {
+                    return Err(SpandaError::Parse {
+                        message: "Expected duration number".into(),
+                        line: self.peek().line,
+                        column: self.peek().column,
+                    });
+                }
+                if self.check(TokenType::Ident) && self.peek().lexeme == "min" {
+                    self.advance();
+                }
+            } else if self.check(TokenType::Semicolon) {
+                self.advance();
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "allowed_actions" {
+                self.advance();
+                allowed_actions = self.parse_bracket_list("allowed_actions")?;
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "forbidden_actions" {
+                self.advance();
+                forbidden_actions = self.parse_bracket_list("forbidden_actions")?;
+            } else {
+                return Err(SpandaError::Parse {
+                    message: "Expected max_duration, allowed_actions, or forbidden_actions in offline_policy".into(),
+                    line: self.peek().line,
+                    column: self.peek().column,
+                });
+            }
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close offline_policy")?;
+        Ok(OfflinePolicyDecl::OfflinePolicyDecl {
+            name,
+            max_duration_minutes,
+            allowed_actions,
+            forbidden_actions,
             span: self.span_from(&start, &end),
         })
     }

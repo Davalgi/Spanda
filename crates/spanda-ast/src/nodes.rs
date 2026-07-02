@@ -560,6 +560,10 @@ pub enum Program {
         #[serde(default)]
         assurance_cases: Vec<crate::assurance_decl::AssuranceCaseDecl>,
         #[serde(default)]
+        decision_trees: Vec<crate::assurance_decl::DecisionTreeDecl>,
+        #[serde(default)]
+        offline_policies: Vec<crate::assurance_decl::OfflinePolicyDecl>,
+        #[serde(default)]
         runtime_fault_triggers: Vec<crate::fault_decl::RuntimeFaultTriggerDecl>,
         robots: Vec<RobotDecl>,
         span: Span,
@@ -653,6 +657,10 @@ pub enum RobotDecl {
         resource_watches: Vec<crate::fault_decl::ResourceWatchDecl>,
         #[serde(default)]
         restart_policies: Vec<crate::fault_decl::RestartPolicyDecl>,
+        #[serde(default)]
+        local_decision_authority: Vec<String>,
+        #[serde(default)]
+        requires_central_approval: Vec<String>,
         span: Span,
     },
 }
