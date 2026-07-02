@@ -113,6 +113,7 @@ type Tab =
   | "humans"
   | "smart-spaces"
   | "executive"
+  | "analytics"
   | "traceability";
 
 type SreSummary = {
@@ -178,6 +179,12 @@ export function ControlCenterPanel({ apiBase }: Props) {
     null,
   );
   const [scorecard, setScorecard] = useState<Record<string, unknown> | null>(null);
+  const [analytics, setAnalytics] = useState<{
+    what_if?: Record<string, unknown>;
+    mission_risk?: Record<string, unknown>;
+    readiness_forecast?: Record<string, unknown>;
+    trust_graph?: Record<string, unknown>;
+  } | null>(null);
   const [digitalThread, setDigitalThread] = useState<Record<string, unknown> | null>(null);
   const [threadCapabilityFilter, setThreadCapabilityFilter] = useState("");
   const [threadDeviceFilter, setThreadDeviceFilter] = useState("");
@@ -526,6 +533,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
     if (tab === "audit") void loadAudit();
     if (tab === "decisions") void loadDecisions();
     if (tab === "executive") void loadExecutive();
+    if (tab === "analytics") void loadAnalytics();
     if (tab === "digital-thread") void loadDigitalThread();
     if (tab === "entities") void loadEntities();
     if (tab === "adas") void loadAdas();
@@ -1088,6 +1096,40 @@ export function ControlCenterPanel({ apiBase }: Props) {
     }
   };
 
+  const loadAnalytics = async () => {
+    setBusy(true);
+    try {
+      const [whatIfRes, riskRes, forecastRes, trustRes] = await Promise.all([
+        fetch(`${base}/v1/analytics/what-if?all=1`),
+        fetch(`${base}/v1/analytics/mission-risk`),
+        fetch(`${base}/v1/analytics/readiness-forecast?all=1`),
+        fetch(`${base}/v1/analytics/trust-graph`),
+      ]);
+      const next: NonNullable<typeof analytics> = {};
+      if (whatIfRes.ok) {
+        const body = await whatIfRes.json();
+        next.what_if = (body.what_if ?? body) as Record<string, unknown>;
+      }
+      if (riskRes.ok) {
+        const body = await riskRes.json();
+        next.mission_risk = (body.mission_risk ?? body) as Record<string, unknown>;
+      }
+      if (forecastRes.ok) {
+        const body = await forecastRes.json();
+        next.readiness_forecast = (body.readiness_forecast ?? body) as Record<string, unknown>;
+      }
+      if (trustRes.ok) {
+        const body = await trustRes.json();
+        next.trust_graph = (body.trust_graph ?? body) as Record<string, unknown>;
+      }
+      setAnalytics(next);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const loadDigitalThread = async () => {
     setBusy(true);
     try {
@@ -1182,6 +1224,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
     "humans",
     "smart-spaces",
     "executive",
+    "analytics",
     "traceability",
   ];
 
@@ -1803,6 +1846,45 @@ export function ControlCenterPanel({ apiBase }: Props) {
 
       {tab === "executive" && scorecard && (
         <pre>{JSON.stringify(scorecard, null, 2)}</pre>
+      )}
+
+      {tab === "analytics" && (
+        <div>
+          <p className="demo-hint">
+            NEXT differentiation analytics for the loaded program — what-if, mission risk,
+            readiness forecast, and trust graph.
+          </p>
+          <button type="button" onClick={() => void loadAnalytics()} disabled={busy}>
+            Refresh analytics
+          </button>
+          {analytics?.what_if && (
+            <>
+              <h3>What-if analysis</h3>
+              <pre>{JSON.stringify(analytics.what_if, null, 2)}</pre>
+            </>
+          )}
+          {analytics?.mission_risk && (
+            <>
+              <h3>Mission risk</h3>
+              <pre>{JSON.stringify(analytics.mission_risk, null, 2)}</pre>
+            </>
+          )}
+          {analytics?.readiness_forecast && (
+            <>
+              <h3>Readiness forecast</h3>
+              <pre>{JSON.stringify(analytics.readiness_forecast, null, 2)}</pre>
+            </>
+          )}
+          {analytics?.trust_graph && (
+            <>
+              <h3>Trust graph</h3>
+              <pre>{JSON.stringify(analytics.trust_graph, null, 2)}</pre>
+            </>
+          )}
+          {!analytics && !busy && (
+            <p>Load a program with control-center serve --program to view analytics.</p>
+          )}
+        </div>
       )}
 
       {tab === "adas" && (

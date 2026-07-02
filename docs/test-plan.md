@@ -27,6 +27,7 @@
 | Readiness forecast | horizon predictions and degradation | `crates/spanda-readiness/tests/forecast_tests.rs`, `scripts/readiness_forecast_smoke.sh` |
 | Trust graph | trust-weighted mission → provider paths | `crates/spanda-graph/tests/graph_tests.rs`, `scripts/trust_graph_smoke.sh` |
 | Scorecard rollup | executive multi-pillar score | `scripts/scorecard_smoke.sh`, `examples/showcase/scorecard/executive.sd` |
+| Differentiation analytics API | what-if, risk, forecast, trust graph REST | `crates/spanda-api/tests/differentiation_analytics_api_tests.rs` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |

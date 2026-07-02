@@ -448,6 +448,10 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | `/v1/digital-thread/query` | GET | — | Trace chain (`?capability=`, `?device_id=`, `?lifecycle_phase=`) |
 | `/v1/executive/scorecard` | GET | — | Mission scorecard rollup |
 | `/v1/analytics/readiness` | GET | — | Readiness trends and forecast |
+| `/v1/analytics/what-if` | GET | `scenario`, `all` | What-if failure scenario analysis |
+| `/v1/analytics/mission-risk` | GET | — | Mission deployment risk score |
+| `/v1/analytics/readiness-forecast` | GET | `horizon`, `all` | Readiness degradation forecast |
+| `/v1/analytics/trust-graph` | GET | `format` | Trust-weighted dependency graph |
 | `/v1/reports/export` | GET | Bearer | Combined report (`format=markdown`, `json`, or `pdf`) |
 | `/v1/reports/schedules` | GET | Bearer | List scheduled report delivery jobs |
 | `/v1/reports/schedules` | POST | Bearer | Create scheduled webhook delivery (`profile`, `format`, `destination_url`, `interval_hours`) |
