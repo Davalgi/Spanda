@@ -32,6 +32,7 @@
 | Failover drill | Redundant chain selection + recovery actions | `crates/spanda-config/tests/failover_drill.rs`, `scripts/failover_drill_smoke.sh` |
 | Remote CLI parity | `spanda control-center` routes vs OpenAPI registry | `crates/spanda-cli/tests/control_center_openapi_parity.rs` |
 | Control Center instance status | `GET /v1/instance`, `spanda control-center status` | `crates/spanda-api/src/handlers.rs` (`instance_endpoint_reports_runtime_paths`), `spanda control-center status --discover` |
+| Control Center stop | `spanda control-center stop` kills verified local listeners | `crates/spanda-cli/src/control_center_cli.rs`, `scripts/lib/control_center_smoke_lib.sh` |
 | Discovery registry runtime | `spanda-discovery-mdns` package wrap | `crates/spanda-config/src/discovery_registry.rs` |
 | OTLP metrics (Control Center) | `GET /v1/observability/otlp/metrics`, `POST /v1/observability/otlp/export-metrics` | `crates/spanda-ops/src/otlp_metrics.rs`, `scripts/enterprise_ops_smoke.sh` |
 | Fleet agent interpreter recovery | HTTP deploy + `/v1/recovery/execute` | `scripts/fleet_agent_recovery_smoke.sh`, `crates/spanda-fleet/tests/mesh_integration.rs` |

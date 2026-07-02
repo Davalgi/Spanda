@@ -247,7 +247,7 @@ Manual dev key: `export SPANDA_API_KEY="my-local-dev-key"`. Same value as `Autho
 
 | Issue | What to try |
 |-------|-------------|
-| Port already in use | `--bind 127.0.0.1:9090`; or `spanda control-center status --discover` to list running instances |
+| Port already in use | `spanda control-center status --discover`; stop orphans with `spanda control-center stop`, or `--bind 127.0.0.1:9090` for a new server |
 | Mutations 401/403 | Set `SPANDA_API_KEY` on server; paste token in embedded UI banner |
 | Remote CLI cannot reach API | `export SPANDA_CONTROL_CENTER_URL=http://host:port` |
 | Desktop app blank | Start API first; `VITE_CONTROL_CENTER_URL` — [control-center.md](./control-center.md#access-the-ui) |

@@ -20,11 +20,27 @@ spanda control-center serve --config spanda.toml --bind 0.0.0.0:8080
 # Native gRPC (tonic) on a separate port
 spanda control-center serve --grpc-bind 127.0.0.1:50051
 
-# Inspect a running instance (bind, config, program, device pool)
+# Inspect or stop local instances
 spanda control-center status
 spanda control-center status --discover   # find local listeners when port is unknown
+spanda control-center stop                # stop all local Control Center servers
+spanda control-center stop --url http://127.0.0.1:8080
 spanda control-center status --url http://127.0.0.1:8081 --json
 ```
+
+### Instance lifecycle
+
+`control-center serve` runs until stopped. Each start binds a TCP port; interrupted smoke tests and `cargo run … serve` wrappers can leave orphaned listeners on random ports.
+
+| Task | Command |
+|------|---------|
+| List running servers | `spanda control-center status --discover` |
+| Inspect default (`8080`) | `spanda control-center status` |
+| Stop all local servers | `spanda control-center stop` |
+| Stop one URL | `spanda control-center stop --url http://127.0.0.1:8080` |
+| Force kill | `spanda control-center stop --force` |
+
+CI smoke scripts source [`scripts/lib/control_center_smoke_lib.sh`](../scripts/lib/control_center_smoke_lib.sh) to kill the listener on `CC_SMOKE_BIND` on `EXIT`, `INT`, and `TERM` (not only the `cargo run` wrapper PID).
 
 ### Access the UI
 
@@ -284,6 +300,7 @@ export SPANDA_API_KEY=your-operator-key
 
 spanda control-center status
 spanda control-center status --discover
+spanda control-center stop
 spanda control-center dashboard
 spanda control-center drift --baseline-id <snapshot-id>
 spanda control-center incidents list

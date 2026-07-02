@@ -684,6 +684,7 @@ export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080
 export SPANDA_API_KEY=my-local-dev-key
 spanda control-center status
 spanda control-center status --discover
+spanda control-center stop
 spanda control-center dashboard
 spanda control-center drift --baseline-id <snapshot-id>
 spanda control-center drift scan
