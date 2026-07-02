@@ -5,6 +5,7 @@ pub mod correlation;
 pub mod decision_ops;
 pub mod differentiation_ops;
 pub mod later_differentiation_ops;
+pub mod twin_cloud;
 pub mod drift_collect;
 pub mod drift_scheduler;
 pub mod e3;

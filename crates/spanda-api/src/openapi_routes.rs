@@ -440,6 +440,14 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/twins",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/twins/sync",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/compliance/profiles",
     },
     ApiRoute {

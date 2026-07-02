@@ -32,6 +32,7 @@ spanda-capability = { path = "../spanda-capability" }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-readiness = { path = "../spanda-readiness" }
 spanda-runtime = { path = "../spanda-runtime" }
+spanda-twin-cloud = { path = "../spanda-twin-cloud" }
 spanda-trust = { path = "../spanda-trust" }
 spanda-driver = { path = "../spanda-driver" }
 spanda-interpreter = { path = "../spanda-interpreter" }

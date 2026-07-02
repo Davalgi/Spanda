@@ -67,6 +67,7 @@ spanda-generate = { path = "../spanda-generate" }
 spanda-adr = { path = "../spanda-adr" }
 spanda-tamper = { path = "../spanda-tamper" }
 spanda-trust = { path = "../spanda-trust" }
+spanda-twin-cloud = { path = "../spanda-twin-cloud" }
 spanda-spoofing = { path = "../spanda-spoofing" }
 spanda-decision = { path = "../spanda-decision" }
 spanda-telemetry-store = { path = "../spanda-telemetry-store", features = ["sqlite", "push"] }

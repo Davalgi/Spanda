@@ -999,6 +999,21 @@
         "responses": { "200": { "description": "Policy evaluation report" } }
       }
     },
+    "/v1/twins": {
+      "get": {
+        "summary": "List mission twin snapshots",
+        "responses": { "200": { "description": "Twin Cloud registry summaries" } }
+      }
+    },
+    "/v1/twins/sync": {
+      "post": {
+        "summary": "Sync mission twin for loaded program",
+        "parameters": [
+          { "name": "twin_id", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Stored twin snapshot" } }
+      }
+    },
     "/v1/reports/export": {
       "get": {
         "summary": "Combined executive report export",

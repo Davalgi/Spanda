@@ -76,6 +76,7 @@ members = [
     "crates/spanda-ops",
     "crates/spanda-api",
     "crates/spanda-sdk",
+    "crates/spanda-twin-cloud",
     "crates/spanda-plugin",
 ]
 exclude = [

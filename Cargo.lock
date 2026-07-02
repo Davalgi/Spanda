@@ -2462,6 +2462,7 @@ dependencies = [
  "spanda-threat",
  "spanda-transport-routing",
  "spanda-trust",
+ "spanda-twin-cloud",
  "spanda-typecheck",
  "spanda-whatif",
  "tempfile",
@@ -2525,6 +2526,7 @@ dependencies = [
  "spanda-security",
  "spanda-telemetry-store",
  "spanda-trust",
+ "spanda-twin-cloud",
  "spanda-whatif",
  "tempfile",
  "tokio",
@@ -3552,6 +3554,20 @@ dependencies = [
  "spanda-runtime",
  "spanda-security",
  "spanda-tamper",
+]
+
+[[package]]
+name = "spanda-twin-cloud"
+version = "0.5.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "spanda-ast",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
+ "thiserror 2.0.18",
+ "ureq",
 ]
 
 [[package]]

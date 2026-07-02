@@ -1,6 +1,5 @@
 //! Certification evidence pack CLI formatting and bundle I/O.
 
-use spanda_assurance::CertificationPack;
 use std::fs;
 use std::path::Path;
 

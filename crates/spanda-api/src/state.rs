@@ -31,6 +31,7 @@ pub struct ControlCenterState {
     pub drift_scan_store: DriftScanStore,
     pub report_schedule_store: ReportScheduleStore,
     pub hri_session_store: HriSessionStore,
+    pub twin_cloud_store: spanda_twin_cloud::TwinCloudStore,
     pub entity_overlay: spanda_config::EntityMutationStore,
 }
 
@@ -54,6 +55,7 @@ impl ControlCenterState {
             drift_scan_store: DriftScanStore::new(200),
             report_schedule_store: ReportScheduleStore::new(100),
             hri_session_store: HriSessionStore::new(),
+            twin_cloud_store: spanda_twin_cloud::TwinCloudStore::new(),
             entity_overlay: spanda_config::load_entity_overlay(
                 &spanda_config::default_entity_overlay_path(),
             ),

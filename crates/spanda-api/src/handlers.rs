@@ -280,6 +280,24 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
+    if let Some(response) = crate::twin_cloud::route_twin_cloud(
+        state,
+        path,
+        &request.method,
+        query,
+        &request.body,
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
+    }
     let response = match (path, request.method.as_str()) {
         ("/v1/tenant", "GET") => tenant_info(state),
         ("/v1/instance", "GET") => instance_info(state),

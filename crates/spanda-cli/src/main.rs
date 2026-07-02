@@ -9,6 +9,7 @@ mod certify_cli;
 mod certify_pack;
 mod governance_cli;
 mod team_cli;
+mod twin_cloud_cli;
 mod chaos_cli;
 mod risk_cli;
 mod whatif_cli;
@@ -870,10 +871,15 @@ fn twin_dispatch(args: &[String]) {
         readiness_cli::cmd_mission_twin(&args[1..]);
         return;
     }
+    if args.first().map(String::as_str) == Some("cloud") {
+        twin_cloud_cli::twin_cloud_dispatch(&args[1..]);
+        return;
+    }
     if args.first().map(String::as_str) != Some("export") {
         eprintln!(
             "Usage: spanda twin export <file.sd> --out <replay.json>\n\
                    spanda twin mission <file.sd> [--json]\n\
+                   spanda twin cloud push|pull|list ...\n\
                    spanda twin readiness <file.sd> [--trace <path>] [--json]"
         );
         process::exit(1);
