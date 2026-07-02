@@ -100,6 +100,17 @@ impl<B: RobotBackend> Interpreter<B> {
             "kill_switch_activated",
             &[("kill_switch", name.to_string())],
         );
+        self.record_decision_trace(
+            "kill_switch_activated",
+            "safety_reflex",
+            &format!("kill_switch '{name}' activated"),
+            "reflex",
+            &self.active_robot_name.clone().unwrap_or_else(|| "robot".into()),
+            serde_json::json!({
+                "kill_switch": name,
+                "remote_signed": remote_signed,
+            }),
+        );
         for stmt in &body {
             let _ = self.execute_stmt(stmt);
         }

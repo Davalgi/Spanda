@@ -370,6 +370,18 @@ impl<B: RobotBackend> Interpreter<B> {
                 Ok(safe_action_from_proposal(motion.linear, motion.angular))
             }
             ValidateActionResult::Err { reason } => {
+                self.record_decision_trace(
+                    "safety_validate_rejected",
+                    "safety_reflex",
+                    &reason,
+                    "reflex",
+                    &self.active_robot_name.clone().unwrap_or_else(|| "robot".into()),
+                    serde_json::json!({
+                        "reason": reason,
+                        "linear": proposal.linear,
+                        "angular": proposal.angular,
+                    }),
+                );
                 Err(RuntimeError::new(reason, line).into_spanda())
             }
         }

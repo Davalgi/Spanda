@@ -389,12 +389,21 @@ impl<B: RobotBackend> Interpreter<B> {
             let continue_running = self.run_scheduled_task(&schedule)?;
             self.check_watchdogs()?;
             self.check_topic_qos_deadlines();
+            let _ = self.poll_live_decision_trees();
             self.record_mission_event(
                 "scheduler_tick",
                 serde_json::json!({ "sim_time_ms": sim_time, "task": task_name }),
             );
             if !continue_running {
                 self.telemetry.record_emergency_stop();
+                self.record_decision_trace(
+                    "scheduler_emergency_stop",
+                    "safety_reflex",
+                    "Scheduled task halted by emergency stop",
+                    "reflex",
+                    &self.active_robot_name.clone().unwrap_or_else(|| "robot".into()),
+                    serde_json::json!({ "task": task_name }),
+                );
                 break;
             }
             self.run_verify_rules()?;
@@ -607,6 +616,7 @@ impl<B: RobotBackend> Interpreter<B> {
             }
             self.check_watchdogs()?;
             self.check_topic_qos_deadlines();
+            let _ = self.poll_live_decision_trees();
             self.record_mission_event(
                 "scheduler_tick",
                 serde_json::json!({ "sim_time_ms": sim_time, "iteration": iteration + 1 }),

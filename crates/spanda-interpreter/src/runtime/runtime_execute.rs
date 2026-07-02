@@ -407,6 +407,14 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.log("EMERGENCY STOP triggered".into());
                 let _ =
                     self.dispatch_system_trigger(SystemTriggerCategory::Safety, "EmergencyStop");
+                self.record_decision_trace(
+                    "emergency_stop",
+                    "safety_reflex",
+                    "Emergency stop triggered",
+                    "reflex",
+                    &self.active_robot_name.clone().unwrap_or_else(|| "robot".into()),
+                    serde_json::json!({ "source": "emergency_stop_stmt" }),
+                );
             }
             Stmt::ResetEmergencyStopStmt { .. } => {
                 // Emit output when safety monitor provides a monitor.

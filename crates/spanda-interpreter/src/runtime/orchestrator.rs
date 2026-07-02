@@ -17,6 +17,9 @@ use spanda_hal::HardwareMonitor;
 use spanda_runtime::assurance_runtime::{
     default_assurance_runtime, AssuranceRuntime, SharedAssuranceRuntime,
 };
+use spanda_runtime::decision_runtime::{
+    default_decision_runtime, SharedDecisionRuntime,
+};
 use spanda_runtime::events::EventBus;
 use spanda_runtime::fault_runtime::{default_fault_runtime, FaultRuntime, SharedFaultRuntime};
 use spanda_runtime::provider_runtime::{
@@ -321,6 +324,9 @@ pub struct InterpreterOptions {
     /// Assurance recovery/continuity runtime injected by CLI or fleet agents.
     pub assurance_runtime: Option<SharedAssuranceRuntime>,
 
+    /// Distributed decision runtime injected by CLI.
+    pub decision_runtime: Option<SharedDecisionRuntime>,
+
     /// Telemetry persistence runtime injected by CLI or API layer.
     pub telemetry_sink: Option<SharedTelemetrySink>,
 
@@ -381,6 +387,7 @@ impl Default for InterpreterOptions {
             runtime_host: None,
             enforce_policy: None,
             assurance_runtime: None,
+            decision_runtime: None,
             telemetry_sink: None,
             provider_runtime: None,
             fault_runtime: None,
@@ -483,6 +490,9 @@ pub struct Interpreter<B: RobotBackend> {
     recovery_speed_cap: Option<f64>,
     runtime_policy: Option<spanda_runtime::operational_policy::RuntimePolicyMonitor>,
     assurance_runtime: SharedAssuranceRuntime,
+    decision_runtime: SharedDecisionRuntime,
+    decision_signals: HashMap<String, bool>,
+    decision_tree_emitted: std::collections::HashSet<String>,
     telemetry_sink: SharedTelemetrySink,
     provider_runtime: SharedProviderRuntime,
     fault_runtime: SharedFaultRuntime,
@@ -525,6 +535,10 @@ impl<B: RobotBackend> Interpreter<B> {
             .assurance_runtime
             .clone()
             .unwrap_or_else(default_assurance_runtime);
+        let decision_runtime = options
+            .decision_runtime
+            .clone()
+            .unwrap_or_else(default_decision_runtime);
         let telemetry_sink = options
             .telemetry_sink
             .clone()
@@ -635,6 +649,9 @@ impl<B: RobotBackend> Interpreter<B> {
             recovery_speed_cap: None,
             runtime_policy: None,
             assurance_runtime,
+            decision_runtime,
+            decision_signals: HashMap::new(),
+            decision_tree_emitted: std::collections::HashSet::new(),
             telemetry_sink,
             provider_runtime,
             fault_runtime,
@@ -1441,6 +1458,7 @@ impl<B: RobotBackend> Interpreter<B> {
                         self.log("health: injected default health fault scenarios".into());
                         self.poll_runtime_health_changes();
                         self.poll_runtime_fault_changes();
+                        self.evaluate_live_decision_trees(None);
                     }
                     if let Some(ks) = self.options.trigger_kill_switch.clone() {
                         self.activate_kill_switch(&ks)?;
@@ -1470,6 +1488,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.log("health: injected default health fault scenarios".into());
                 self.poll_runtime_health_changes();
                 self.poll_runtime_fault_changes();
+                self.evaluate_live_decision_trees(None);
             }
 
             if let Some(ks) = self.options.trigger_kill_switch.clone() {
@@ -2120,6 +2139,8 @@ mod runtime_connectivity;
 mod runtime_continuity;
 #[path = "runtime_declarations.rs"]
 mod runtime_declarations;
+#[path = "runtime_decision.rs"]
+mod runtime_decision;
 #[path = "runtime_eval.rs"]
 mod runtime_eval;
 #[path = "runtime_execute.rs"]

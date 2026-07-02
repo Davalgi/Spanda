@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use spanda_comm::CommBusFactory;
 use spanda_ffi::FfiRegistry;
 use spanda_runtime::assurance_runtime::SharedAssuranceRuntime;
+use spanda_runtime::decision_runtime::SharedDecisionRuntime;
 use spanda_runtime::fault_runtime::SharedFaultRuntime;
 use spanda_runtime::hooks::SharedRuntimeHooks;
 use spanda_runtime::provider_runtime::SharedProviderRuntime;
@@ -97,6 +98,9 @@ pub struct RunOptions {
     /// Assurance recovery/continuity runtime injected by CLI or fleet agents.
     #[serde(skip)]
     pub assurance_runtime: Option<SharedAssuranceRuntime>,
+    /// Distributed decision runtime injected by CLI or fleet agents.
+    #[serde(skip)]
+    pub decision_runtime: Option<SharedDecisionRuntime>,
     /// Telemetry persistence runtime injected by CLI or API layer.
     #[serde(skip)]
     pub telemetry_sink: Option<SharedTelemetrySink>,
@@ -155,6 +159,7 @@ impl Default for RunOptions {
             ffi_registry: None,
             runtime_hooks: None,
             assurance_runtime: None,
+            decision_runtime: None,
             telemetry_sink: None,
             provider_runtime: None,
             fault_runtime: None,

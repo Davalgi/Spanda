@@ -729,6 +729,13 @@ impl<B: RobotBackend> Interpreter<B> {
                                 "failed": resp.failed,
                             }),
                         );
+                        self.record_fleet_mesh_consensus(
+                            "fleet_mesh_recovery",
+                            &members,
+                            action,
+                            resp.relayed,
+                            resp.failed,
+                        );
                     }
                     Err(err) => {
                         self.log(format!("fleet_mesh: recovery relay failed: {err}"));
@@ -792,6 +799,18 @@ impl<B: RobotBackend> Interpreter<B> {
                                     "relayed": resp.relayed,
                                     "failed_agents": resp.failed,
                                 }),
+                            );
+                            let action = request
+                                .successor
+                                .as_deref()
+                                .map(|s| format!("takeover:{s}"))
+                                .unwrap_or_else(|| "fleet_takeover".into());
+                            self.record_fleet_mesh_consensus(
+                                "fleet_mesh_continuity",
+                                &request.members,
+                                &action,
+                                resp.relayed,
+                                resp.failed,
                             );
                         }
                         Err(err) => {
