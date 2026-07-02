@@ -69,7 +69,10 @@ Verify:
 ```bash
 spanda --version
 spanda check examples/hello_world.sd
+spanda control-center --help   # confirms enterprise-ops CLI is present
 ```
+
+If `control-center` is missing or `api-key generate` fails with `Unknown argument: generate`, your `PATH` binary is likely stale — see [troubleshooting.md](./troubleshooting.md).
 
 ---
 

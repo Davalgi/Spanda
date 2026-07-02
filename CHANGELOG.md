@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Troubleshooting guide:** [docs/troubleshooting.md](docs/troubleshooting.md) — expanded symptom-first index covering CLI install, compile/verify, run/sim, packages, deploy gates, Control Center, fleet/mesh, ROS2, live AI/IoT, plugins, config/drift, security, editor/LSP, CI, and decision runtime; cross-linked from installation, getting-started, and common-mistakes docs.
 - **Distributed decision runtime emission:** v3 decision trace payloads at continuity takeover and recovery execution when `SPANDA_DECISION_TRACE=1` or `--record`; `spanda-runtime::decision_trace` helpers.
 - **Distributed decision runtime follow-up:** reflex-layer traces (kill switch, emergency stop, `safety.validate` rejection), live `decision_tree` evaluation on sim health faults and scheduler ticks, fleet mesh consensus recording, `DecisionRuntime` bridge (`DecisionBackedRuntime`), `collect_decision_diagnostics` in check JSON, TypeScript parser/diagnostics mirror for `decision_tree` / `offline_policy`.
 - **Decision tree runtime dispatch:** matched tree actions execute via recovery dispatch (`enter degraded_mode`, `pause_mission`, emergency stop); integration tests in `crates/spanda-interpreter/tests/decision_runtime.rs`; `scripts/distributed_decisions_smoke.sh`.

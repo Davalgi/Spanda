@@ -119,7 +119,8 @@ deploy MyRobot to RoverV1;
 1. Run `spanda check file.sd --json` and read the first diagnostic
 2. Find a working example in `examples/basics/` for the same feature
 3. Read the matching [Spanda 101](../spanda-101/README.md) lesson
-4. Open an issue on [GitHub](https://github.com/Davalgi/Spanda/issues)
+4. See the full [troubleshooting guide](../troubleshooting.md) for fleet, ROS2, packages, CI, and ops issues
+5. Open an issue on [GitHub](https://github.com/Davalgi/Spanda/issues)
 
 ---
 

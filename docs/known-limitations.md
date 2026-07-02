@@ -55,4 +55,4 @@ Spanda intentionally does **not** target: blockchain production adapters, crypto
 
 ## Reporting issues
 
-If behavior differs from this document, file an issue with `spanda --version`, OS, and the smallest `.sd` reproducer.
+If behavior differs from this document, file an issue with `spanda --version`, OS, and the smallest `.sd` reproducer. For setup and integration failures, start with [troubleshooting.md](./troubleshooting.md).

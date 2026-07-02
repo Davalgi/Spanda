@@ -675,7 +675,7 @@ cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 
 Open `http://127.0.0.1:8080` for the embedded Control Center HTML UI, or use the React panel in `@davalgi-spanda/web` / the Tauri desktop shell (`npm run control-center:desktop:dev` with the API running).
 
-**API keys:** Run `spanda control-center api-key generate --export` to create a token, set `SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations. Full guide: [control-center.md — Authentication & API keys](./control-center.md#authentication--api-keys).
+**API keys:** Run `spanda control-center api-key generate --export` to create a token, set `SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations. Full guide: [control-center.md — Authentication & API keys](./control-center.md#authentication--api-keys). If that command errors, see [troubleshooting.md](./troubleshooting.md).
 
 Remote API from the CLI (no server required on the client machine):
 
@@ -813,3 +813,5 @@ See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift,
 | `verify` not available | Run `npm run build:rust` for the native CLI, or use the npm wrapper — TS verify fallback covers most checks when the CLI is missing |
 | Compile error on `wheels.execute(proposal)` | Expected — use `safety.validate(proposal)` first |
 | Tests fail after clone | Run `npm install` then `npm run build:rust` before `npm test` |
+
+Full symptom index: [troubleshooting.md](./troubleshooting.md).
