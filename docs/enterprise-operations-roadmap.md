@@ -74,12 +74,12 @@ Enterprise operations pillars compose existing engines — they do **not** repla
 | 10 | **Configuration Drift** | Operate, Verify | **Stable** | Expected vs actual parity across dimensions |
 | 11 | **OTA & Rollback** | Deploy | **Stable** | Canary, blue/green, phased rollout |
 | 12 | **Package Trust** | Verify, Build | **Stable** | Signature, reputation, vulnerability, coverage, compatibility scoring |
-| 13 | **SDKs** | Build, Operate | **Stable** (published **0.4.2**) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; CLI as reference |
-| 14 | **Operator Workflows** | Operate, Recover | **Stable** | Mission approval, takeover, quarantine, device trust |
+| 13 | **SDKs** | Build, Operate | **Stable** (published **0.5.4**) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; admin/mission/trace clients; CLI as reference |
+| 14 | **Operator Workflows** | Operate, Recover | **Stable** | Mission approval, pause/resume/cancel, takeover, quarantine, device trust |
 | 15 | **SRE** | Operate, Observe | **Stable** | SLO/SLA, MTTR/MTBF, incident reporting |
 | 16 | **Reporting** | Govern, Audit | **Stable** | Fleet, mission, compliance, executive exports (incl. PDF) |
 | 17 | **Compliance** | Verify, Govern, Audit | **Stable** | Evidence packs, immutable audit trails |
-| 18 | **APIs** | All | **Stable** | REST v1 + OpenAPI; JSON-RPC gateway; native gRPC (tonic) — `--grpc-bind`, 83 RPCs (full REST parity except `/v1/rpc`) |
+| 18 | **APIs** | All | **Stable** | REST v1 + OpenAPI; JSON-RPC gateway (admin RPCs + RBAC); native gRPC (tonic) — `--grpc-bind`, **139 RPCs** (proto **1.0.9**); full REST parity except `/v1/rpc` envelope |
 | 19 | **Observability** | Operate, Observe | **Stable** | Metrics, logs, traces, events; OTLP export; correlation IDs |
 | 20 | **Digital Thread** | Build → Retire | **Stable** | End-to-end traceability chain (v1 query) |
 
@@ -218,7 +218,7 @@ flowchart TB
 |--------|-------------|------------------|
 | **Dashboard** | Readiness rollup, fleet health, active alerts, mission count | Navigate to detail views |
 | **Fleet View** | Fleet mesh, agent registry, swarm state | Orchestrate, remote commands |
-| **Mission View** | Mission plans, progress, contracts, continuity state | Approve, pause, resume, cancel |
+| **Mission View** | Mission plans, progress, contracts, continuity state | Approve, pause, resume, cancel — **Shipped (v0.6+):** React `MissionViewPanel` + embedded HTML; REST `/v1/operator/missions`, gRPC `ListOperatorMissions` |
 | **Device Pool** | `DeviceRegistry`, lifecycle state, assignments | Assign, quarantine, retire |
 | **Readiness** | `spanda readiness`, trends, gates | Run readiness, record snapshot |
 | **Health** | Health policies, fault timeline | View degraded devices |
@@ -227,10 +227,10 @@ flowchart TB
 | **Recovery** | Recovery planner, knowledge store | Approve recovery, execute heal |
 | **Security** | Trust scores, tamper alerts, secure-boot status | View integrity, quarantine |
 | **Configuration** | Resolved config, diff, history, approval queue | Approve, rollback config |
-| **Simulation** | Active sim sessions, twin state | Launch sim, inject faults |
-| **Replay** | Trace library, deterministic playback | Replay, time-travel scrub |
+| **Simulation** | Active sim sessions, twin state | Launch sim, inject faults — **Shipped (v0.6+):** React `SimulationPanel` + embedded HTML; `POST /v1/programs/simulation` |
+| **Replay** | Trace library, deterministic playback | Replay, time-travel scrub — **Shipped (v0.6+):** React `ReplayPanel` + embedded HTML; `GET /v1/programs/traces`, `POST /v1/programs/replay` |
 | **Audit** | Decision audit trail, compliance evidence | Export evidence packs |
-| **Administration** | RBAC, secrets metadata, API keys | Manage users, roles, integrations — **Shipped (v0.6+):** user directory, API key CRUD, alert channel config UI, secrets/schedules; no external IdP sync yet |
+| **Administration** | RBAC, secrets metadata, API keys | Manage users, roles, integrations — **Shipped (v0.6+):** user directory, API key CRUD, alert channel config UI, secrets/schedules, integrations summary; OpenAPI + JSON-RPC gateway + SDK **0.5.4** parity; **not yet:** external IdP/OIDC sync, Slack OAuth wizard, gRPC reflection |
 
 ### Evolution from current UI
 
@@ -384,6 +384,16 @@ Web-based operational visibility for robots, fleets, swarms, devices, sensors, m
 | Build | Vite (shared with `@davalgi-spanda/web`) |
 
 **Modules:** Dashboard, Fleet View, Mission View, Device Pool, Readiness, Health, Assurance, Diagnosis, Recovery, Security, Configuration, Simulation, Replay, Audit, Administration.
+
+**Administrator console (v0.6+, shipped):** REST `/v1/admin/*` (API keys, user directory, alert channels, integrations), operator mission control (`/v1/operator/missions`, pause/resume/cancel), program traces (`GET /v1/programs/traces`); gRPC proto **1.0.9** (+17 RPCs); React `@davalgi-spanda/web` panels with RBAC tab gating; embedded HTML parity; OpenAPI static spec + JSON-RPC gateway routes with RBAC context; SDK **0.5.4** client methods (Rust REST/gRPC, Python, TypeScript).
+
+**Remaining (administration):** external IdP/OIDC user sync, Slack-specific OAuth setup wizard, gRPC server reflection for dynamic clients.
+
+| Planned item | Tier | Dependency / notes |
+|--------------|------|-------------------|
+| External IdP / OIDC user sync | **Planned** | Local user directory shipped; needs OIDC/OAuth2 provider contract + group→role mapping |
+| Slack OAuth setup wizard | **Planned** | Alert channels support webhook/email/PagerDuty/Teams/log JSON today; optional `spanda-alert-slack` package remains separate |
+| gRPC server reflection | **Planned** | 139 RPCs on tonic; reflection would enable grpcurl/grpcui without bundling `control_center.proto` |
 
 ### 6.2 Device Pool
 
@@ -573,17 +583,19 @@ Official SDK surfaces for external systems to interact with Readiness, Assurance
 | SDK | Status | Notes |
 |-----|--------|-------|
 | **CLI** | **Stable** | Reference implementation; all capabilities |
-| **REST** | **Experimental** | `/v1/*` + OpenAPI 3.1 (`GET /v1/openapi.json`) |
-| **gRPC** | **Experimental** | Native tonic `ControlCenter` service (`--grpc-bind`, 83 RPCs, proto semver 1.0.3); JSON-RPC gateway (`POST /v1/rpc`) also ships |
+| **REST** | **Experimental** | `/v1/*` + OpenAPI 3.1 (`GET /v1/openapi.json`); admin/mission/trace routes documented |
+| **gRPC** | **Experimental** | Native tonic `ControlCenter` service (`--grpc-bind`, **139 RPCs**, proto semver **1.0.9**); JSON-RPC gateway (`POST /v1/rpc`) includes admin RPCs with RBAC |
 | **WebSocket** | **Experimental** | `WS /v1/stream/telemetry` live telemetry |
-| **Python** | **Experimental** | `packages/sdk-python` (`pip install spanda-sdk`) |
+| **Python** | **Experimental** | `sdk/python` (`pip install spanda-sdk`, **0.5.4**) |
+| **TypeScript** | **Experimental** | `@davalgi-spanda/sdk` (**0.5.4**) |
+| **Rust** | **Experimental** | `spanda-sdk` crate (**0.5.4**); optional `grpc` feature |
 
 ### 6.14 Operator Workflows
 
 | Workflow | Integration |
 |----------|-------------|
 | Mission Approval | `requires approval`, RBAC, audit |
-| Mission Pause / Resume / Cancel | runtime + fleet mesh |
+| Mission Pause / Resume / Cancel | runtime + fleet mesh — **Shipped (v0.6+):** Control Center Mission tab + `/v1/operator/mission/{pause,resume,cancel}` + gRPC |
 | Manual Takeover | `spanda takeover`, continuity framework |
 | Emergency Stop | kill switch + safety engine |
 | Recovery Approval | `SPANDA_OPERATOR_APPROVAL`, RBAC |
@@ -638,9 +650,9 @@ REST and gRPC APIs with **CLI parity** — every `spanda` command maps to an end
 | Surface | Status |
 |---------|--------|
 | REST `/v1/*` | **Experimental** |
-| OpenAPI 3.1 | **Experimental** |
-| JSON-RPC gateway | **Experimental** (`POST /v1/rpc`) |
-| Native gRPC (tonic) | **Experimental** | 83 RPCs; `--grpc-bind` |
+| OpenAPI 3.1 | **Experimental** — includes `/v1/admin/*`, `/v1/operator/missions`, `/v1/programs/traces` |
+| JSON-RPC gateway | **Experimental** (`POST /v1/rpc`) — admin + mission RPCs with RBAC context |
+| Native gRPC (tonic) | **Experimental** | **139 RPCs**; proto **1.0.9**; `--grpc-bind` |
 | API versioning | `/v1/` prefix; breaking changes require `/v2/` |
 
 ### 6.19 Observability
@@ -714,13 +726,15 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Deliverable | Component |
 |-------------|-----------|
 | Python SDK + REST OpenAPI | `spanda-sdk-python`, OpenAPI spec |
-| gRPC service | `spanda-api::grpc` — **shipped** (83 RPCs; E4 + program SDK + entity model parity; proto semver 1.0.3) |
+| gRPC service | `spanda-api::grpc` — **shipped** (**139 RPCs**; E4 + program SDK + entity model + **admin console** parity; proto semver **1.0.9**) |
 | OTLP metrics export | `spanda-ops::otlp_metrics`, `GET /v1/observability/otlp/metrics` — **shipped** |
 | Full drift detection (7 dimensions) | `detect_operational_drift_full` — **shipped** (config + program + agents + policy) |
 | OTA canary + phased rollout | `spanda-ota` |
 | Package Trust UI | Control Center Security module |
 | Observability (OpenTelemetry export) | OTLP + correlation IDs |
-| Operator Workflows UI | mission approve, takeover, quarantine |
+| Operator Workflows UI | mission approve, takeover, quarantine — **mission pause/resume/cancel shipped (v0.6+)** |
+| Administration UI | API keys, user directory, alert channels — **shipped (v0.6+)** |
+| Simulation + Replay UI | program sim execute, trace library, replay modes — **shipped (v0.6+)** |
 | SRE dashboard | MTTR/MTBF, incident reports |
 
 **Exit criteria:** SDK integration test; canary deploy demo; correlation trace API — **shipped** (`scripts/enterprise_ops_smoke.sh`, `packages/sdk-python`). Full OTLP trace export to Jaeger and WebSocket telemetry SDK — **shipped** (`POST /v1/observability/otlp/export`, `WS /v1/stream/telemetry`).

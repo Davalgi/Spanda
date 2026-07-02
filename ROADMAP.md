@@ -330,7 +330,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
-| **Control Center** | `spanda control-center serve`, React UI, Tauri desktop | **Stable** | Now | Control Center |
+| **Control Center** | `spanda control-center serve`, React UI, Tauri desktop, **Administration** (keys/users/alerts), **Mission View**, **Simulation**, **Replay** tabs | **Stable** | Now | Control Center |
 | **Telemetry** | Time-series store, OTLP, WebSocket, fleet-push | **Stable** / **Experimental** | Now | Core |
 | **Metrics** | Runtime metrics JSON, scheduler traces | **Stable** | Now | Core |
 | **Logging** | Trace log, correlation IDs | **Experimental** | Now | Core |
@@ -343,7 +343,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **SRE** | SLO, MTTR, `/v1/sre/summary` | **Stable** | Next | Core |
 | **Configuration Drift** | 7-dimension operational drift | **Stable** | Next | Core |
 | **OTA & Rollback** | Canary, blue/green dry-run | **Stable** | Next | Core |
-| **Operator Workflows** | Approve, takeover, quarantine | **Stable** | Next | Control Center |
+| **Operator Workflows** | Approve, takeover, quarantine, mission pause/resume/cancel | **Stable** | Next | Control Center |
 | **Digital Thread** | Requirement → retirement lifecycle | **Stable** | Later | Core |
 | **Operations dashboard** | `packages/web` Operations view | **Stable** | Now | Control Center |
 
@@ -361,6 +361,14 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 
 **Phased delivery (E1–E4):** all **shipped (experimental)**. Exit: `scripts/enterprise_ops_smoke.sh`.
 
+**Administrator console — planned (not yet shipped):**
+
+| Item | Notes |
+|------|--------|
+| **External IdP / OIDC sync** | User directory is local JSON today; no SSO directory import or group→role mapping |
+| **Slack OAuth setup wizard** | Alert channel config UI supports webhook JSON; no Slack app OAuth onboarding flow in Control Center |
+| **gRPC server reflection** | Native gRPC serves 139 RPCs; no reflection service for dynamic clients (grpcurl without proto) |
+
 **Topic guides:** [docs/control-center.md](docs/control-center.md) · [docs/telemetry-store.md](docs/telemetry-store.md) · [docs/readiness-trends.md](docs/readiness-trends.md) · [docs/drift-detection.md](docs/drift-detection.md)
 
 ---
@@ -373,8 +381,8 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 |------|-------|------|----------|-----------|
 | **CLI** | `check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, … | **Stable** | Now | Core |
 | **REST API** | `spanda-api` REST v1, OpenAPI | **Stable** | Now | Core |
-| **gRPC** | tonic gRPC (83 RPCs), program-level SDK parity | **Stable** | Now | Core |
-| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.4.2**) | Now | Core |
+| **gRPC** | tonic gRPC (139 RPCs, proto **1.0.9**), program-level + admin SDK parity | **Stable** | Now | Core |
+| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.5.4** — admin/mission/trace clients) | Now | Core |
 | **GitHub Pages** | mdBook docs site | **Stable** | Now | Core |
 | **Examples** | 9 bundled demos, showcase library | **Stable** | Now | Core |
 | **Templates** | `spanda init`, project scaffolds | **Stable** | Now | Core |
