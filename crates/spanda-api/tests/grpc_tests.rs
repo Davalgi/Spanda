@@ -847,3 +847,68 @@ async fn grpc_analytics_endpoints_with_forecast_program() {
         .into_inner();
     assert!(teaming.json.contains("\"version\":\"v1\""));
 }
+
+#[tokio::test]
+async fn grpc_admin_and_mission_endpoints() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
+    std::env::set_var("SPANDA_API_KEY", "grpc-admin-test-key");
+    let http_port = pick_port();
+    let grpc_port = pick_port();
+    let options = ControlCenterOptions {
+        bind: format!("127.0.0.1:{http_port}"),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
+        once: true,
+        timeout_ms: 500,
+        ..Default::default()
+    };
+    let grpc_bind = spawn_control_center(options);
+    let mut client = connect(&grpc_bind).await;
+
+    let auth_header =
+        tonic::metadata::MetadataValue::try_from("Bearer grpc-admin-test-key").unwrap();
+
+    let mut keys_req = tonic::Request::new(Empty {});
+    keys_req.metadata_mut().insert("authorization", auth_header.clone());
+    let keys = client
+        .list_admin_api_keys(keys_req)
+        .await
+        .expect("list admin api keys")
+        .into_inner();
+    assert!(keys.json.contains("\"keys\""));
+
+    let mut users_req = tonic::Request::new(Empty {});
+    users_req.metadata_mut().insert("authorization", auth_header.clone());
+    let users = client
+        .list_admin_users(users_req)
+        .await
+        .expect("list admin users")
+        .into_inner();
+    assert!(users.json.contains("\"users\""));
+
+    let mut channels_req = tonic::Request::new(Empty {});
+    channels_req
+        .metadata_mut()
+        .insert("authorization", auth_header.clone());
+    let channels = client
+        .get_alert_channels(channels_req)
+        .await
+        .expect("get alert channels")
+        .into_inner();
+    assert!(channels.json.contains("channels") || channels.json.contains("version"));
+
+    let missions = client
+        .list_operator_missions(Empty {})
+        .await
+        .expect("list operator missions")
+        .into_inner();
+    assert!(missions.json.contains("missions"));
+
+    let traces = client
+        .list_program_traces(QueryRequest {
+            query: "limit=5".into(),
+        })
+        .await
+        .expect("list program traces")
+        .into_inner();
+    assert!(traces.json.contains("traces"));
+}

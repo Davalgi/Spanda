@@ -95,6 +95,10 @@
     <button type="button" data-tab="adas">ADAS</button>
     <button type="button" data-tab="humans">Humans</button>
     <button type="button" data-tab="smart-spaces">Smart Spaces</button>
+    <button type="button" data-tab="administration" data-role-tier="govern">Administration</button>
+    <button type="button" data-tab="mission" data-role-tier="ops">Mission</button>
+    <button type="button" data-tab="simulation" data-role-tier="ops">Simulation</button>
+    <button type="button" data-tab="replay">Replay</button>
     <button type="button" data-tab="executive">Executive</button>
   </nav>
   <div id="error" class="error" hidden></div>
@@ -127,9 +131,13 @@
   <section id="tab-adas" class="panel" hidden></section>
   <section id="tab-humans" class="panel" hidden></section>
   <section id="tab-smart-spaces" class="panel" hidden></section>
+  <section id="tab-administration" class="panel" hidden></section>
+  <section id="tab-mission" class="panel" hidden></section>
+  <section id="tab-simulation" class="panel" hidden></section>
+  <section id="tab-replay" class="panel" hidden></section>
   <section id="tab-executive" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "entities", "devices", "fleet", "discovery", "provision", "mapping", "config", "health", "readiness", "drift", "alerts", "security", "ota", "sre", "compliance", "audit", "decisions", "digital-thread", "traceability", "analytics", "twins", "operator", "assurance", "diagnosis", "recovery", "adas", "humans", "smart-spaces", "executive"];
+    const tabs = ["dashboard", "entities", "devices", "fleet", "discovery", "provision", "mapping", "config", "health", "readiness", "drift", "alerts", "security", "ota", "sre", "compliance", "audit", "decisions", "digital-thread", "traceability", "analytics", "twins", "operator", "assurance", "diagnosis", "recovery", "adas", "humans", "smart-spaces", "administration", "mission", "simulation", "replay", "executive"];
     const errEl = document.getElementById("error");
     const AUTH_STORAGE_PREFIX = "spanda.control_center.bearer_token.v1:";
     const RBAC_ACTIONS = ["Deploy", "Operate", "Approve", "Override", "Shutdown", "Recover", "Delete", "Provision"];
@@ -162,6 +170,10 @@
       adas: ["*"],
       humans: ["*"],
       "smart-spaces": ["*"],
+      administration: ["administrator"],
+      mission: ["administrator", "supervisor", "operator", "safety_officer"],
+      simulation: ["administrator", "supervisor", "developer"],
+      replay: ["*"],
       executive: ["*"],
     };
     const ROLE_META = {
@@ -323,6 +335,10 @@
         adas: loadAdas,
         humans: loadHumans,
         "smart-spaces": loadSmartSpaces,
+        administration: loadAdministration,
+        mission: loadMission,
+        simulation: loadSimulation,
+        replay: loadReplay,
         executive: loadExecutive,
       };
       if (loaders[tab]) loaders[tab]();
@@ -692,6 +708,60 @@
       await loadAlerts();
     };
 
+    window.createAdminKey = async () => {
+      const role = document.getElementById("admin-new-role")?.value || "operator";
+      const label = document.getElementById("admin-new-label")?.value?.trim() || "";
+      const body = await apiAuth("POST", "/v1/admin/api-keys", { role, label: label || undefined });
+      document.getElementById("admin-created-token").textContent = body.token
+        ? "New token (copy now): " + body.token
+        : JSON.stringify(body, null, 2);
+      await loadAdministration();
+    };
+
+    window.createAdminUser = async () => {
+      await apiAuth("POST", "/v1/admin/users", {
+        user_id: document.getElementById("admin-user-id")?.value?.trim(),
+        display_name: document.getElementById("admin-user-name")?.value?.trim(),
+        email: document.getElementById("admin-user-email")?.value?.trim() || undefined,
+        role: document.getElementById("admin-user-role")?.value || "operator",
+      });
+      await loadAdministration();
+    };
+
+    window.saveAlertChannels = async () => {
+      const raw = document.getElementById("admin-channels-json")?.value || "[]";
+      const channels = JSON.parse(raw);
+      await apiAuth("PUT", "/v1/admin/alert-channels", { channels });
+      await loadAdministration();
+    };
+
+    window.missionControl = async (path, missionId) => {
+      await apiAuth("POST", path, { mission_id: missionId });
+      await loadMission();
+    };
+
+    window.runSimulation = async (execute) => {
+      const body = await apiAuth("POST", "/v1/programs/simulation", {
+        file: document.getElementById("sim-program")?.value?.trim() || undefined,
+        execute,
+        inject_health_faults: document.getElementById("sim-faults")?.checked || false,
+        record_trace: document.getElementById("sim-record")?.checked ?? true,
+        decision_trace: document.getElementById("sim-decision")?.checked ?? true,
+      });
+      document.getElementById("sim-output").textContent = JSON.stringify(body, null, 2);
+    };
+
+    window.runReplay = async (mode) => {
+      const file = document.getElementById("replay-trace")?.value;
+      if (!file) return;
+      const body = await apiAuth("POST", "/v1/programs/replay", {
+        file,
+        deterministic: mode === "deterministic",
+        playback: mode === "playback",
+      });
+      document.getElementById("replay-output").textContent = JSON.stringify(body, null, 2);
+    };
+
     function showError(msg) {
       errEl.hidden = false;
       errEl.textContent = msg;
@@ -1039,6 +1109,125 @@
           <li><code>POST /v1/operator/quarantine</code> — quarantine device (Operate role)</li>
           <li><code>POST /v1/rpc</code> — gRPC-compatible JSON gateway</li>
         </ul>`;
+    }
+
+    async function loadAdministration() {
+      try {
+        errEl.hidden = true;
+        if (!hasToken() || effectiveRole() !== "administrator") {
+          document.getElementById("tab-administration").innerHTML = `
+            <h2>Administration</h2>
+            <p class="hint">Administrator role required. Paste a Bearer token with administrator access.</p>`;
+          return;
+        }
+        const [keys, users, channels, integrations] = await Promise.all([
+          apiAuth("GET", "/v1/admin/api-keys", null),
+          apiAuth("GET", "/v1/admin/users", null),
+          apiAuth("GET", "/v1/admin/alert-channels", null),
+          apiAuth("GET", "/v1/admin/integrations", null).catch(() => null),
+        ]);
+        const keyRows = (keys.keys || []).map((k) =>
+          `<tr><td>${k.key_id}</td><td>${k.role}</td><td>${k.label || ""}</td><td>${k.source || ""}</td></tr>`
+        ).join("");
+        const userRows = (users.users || []).map((u) =>
+          `<tr><td>${u.user_id}</td><td>${u.display_name}</td><td>${u.role}</td><td>${u.enabled ? "yes" : "no"}</td></tr>`
+        ).join("");
+        document.getElementById("tab-administration").innerHTML = `
+          <h2>Administration</h2>
+          <p>API keys, user directory, alert channels, and integrations.</p>
+          <h3>API keys</h3>
+          <table><thead><tr><th>ID</th><th>Role</th><th>Label</th><th>Source</th></tr></thead><tbody>${keyRows}</tbody></table>
+          <div class="dt-filters">
+            <label>Role<select id="admin-new-role"><option>operator</option><option>developer</option><option>supervisor</option><option>administrator</option></select></label>
+            <label>Label<input id="admin-new-label" placeholder="ops-team" /></label>
+          </div>
+          ${actionBar([actionBtn("Create API key", "createAdminKey()", "Deploy")])}
+          <pre id="admin-created-token"></pre>
+          <h3>User directory</h3>
+          <table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Enabled</th></tr></thead><tbody>${userRows}</tbody></table>
+          <div class="dt-filters">
+            <label>User ID<input id="admin-user-id" placeholder="jane" /></label>
+            <label>Name<input id="admin-user-name" placeholder="Jane Operator" /></label>
+            <label>Email<input id="admin-user-email" placeholder="jane@example.com" /></label>
+            <label>Role<select id="admin-user-role"><option>operator</option><option>developer</option><option>supervisor</option><option>administrator</option></select></label>
+          </div>
+          ${actionBar([actionBtn("Add user", "createAdminUser()", "Deploy")])}
+          <h3>Alert channels</h3>
+          <textarea id="admin-channels-json" rows="8" style="width:100%">${JSON.stringify(channels.channels || [], null, 2)}</textarea>
+          ${actionBar([actionBtn("Save channels", "saveAlertChannels()", "Deploy")])}
+          <h3>Integrations</h3>
+          <pre>${JSON.stringify(integrations, null, 2)}</pre>
+          <p class="hint">Keys: ${keys.persist_path || ""} · Users: ${users.persist_path || ""} · Channels: ${channels.persist_path || ""}</p>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadMission() {
+      try {
+        errEl.hidden = true;
+        const [missions, approvals] = await Promise.all([
+          api("/v1/operator/missions"),
+          api("/v1/operator/mission/approvals"),
+        ]);
+        const rows = (missions.missions || []).map((m) => {
+          const id = m.id || m.mission_id || "";
+          const state = m.mission_state || m.lifecycle_state || "";
+          const actions = hasToken()
+            ? actionBar([
+                actionBtn("Pause", "missionControl('/v1/operator/mission/pause','" + id + "')", "Operate"),
+                actionBtn("Resume", "missionControl('/v1/operator/mission/resume','" + id + "')", "Operate"),
+                actionBtn("Cancel", "missionControl('/v1/operator/mission/cancel','" + id + "')", "Operate"),
+              ])
+            : "";
+          return `<tr><td>${id}</td><td>${m.name || ""}</td><td>${state}</td><td>${actions}</td></tr>`;
+        }).join("");
+        const approvalRows = (approvals.approvals || []).map((a) =>
+          `<tr><td>${a.id}</td><td>${a.mission_id}</td><td>${a.status}</td><td>${a.requested_by || ""}</td></tr>`
+        ).join("");
+        document.getElementById("tab-mission").innerHTML = `
+          <h2>Mission View</h2>
+          <p>Pending approvals: ${missions.pending_approvals ?? 0}</p>
+          <h3>Active missions</h3>
+          <table><thead><tr><th>ID</th><th>Name</th><th>State</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>
+          <h3>Approval queue</h3>
+          <table><thead><tr><th>ID</th><th>Mission</th><th>Status</th><th>Requested by</th></tr></thead><tbody>${approvalRows}</tbody></table>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    function loadSimulation() {
+      document.getElementById("tab-simulation").innerHTML = `
+        <h2>Simulation</h2>
+        <p>Plan or execute program simulation with optional fault injection and decision traces.</p>
+        <div class="dt-filters">
+          <label>Program file<input id="sim-program" placeholder="src/mission.sd" /></label>
+          <label><input type="checkbox" id="sim-faults" /> Inject health faults</label>
+          <label><input type="checkbox" id="sim-record" checked /> Record mission trace</label>
+          <label><input type="checkbox" id="sim-decision" checked /> Decision trace (v3)</label>
+        </div>
+        ${actionBar([
+          actionBtn("Plan", "runSimulation(false)", "Deploy"),
+          actionBtn("Execute", "runSimulation(true)", "Deploy"),
+        ])}
+        <pre id="sim-output"></pre>`;
+    }
+
+    async function loadReplay() {
+      try {
+        errEl.hidden = true;
+        const traces = await api("/v1/programs/traces?limit=50");
+        const opts = (traces.traces || []).map((t) =>
+          `<option value="${t.path}">${t.path}</option>`
+        ).join("");
+        document.getElementById("tab-replay").innerHTML = `
+          <h2>Replay</h2>
+          <p>Mission trace library from the project tree.</p>
+          <label>Trace file<select id="replay-trace">${opts || '<option value="">No traces found</option>'}</select></label>
+          ${actionBar([
+            actionBtn("Inspect", "runReplay('inspect')", "Operate"),
+            actionBtn("Deterministic", "runReplay('deterministic')", "Operate"),
+            actionBtn("Playback", "runReplay('playback')", "Operate"),
+          ])}
+          <pre id="replay-output"></pre>`;
+      } catch (e) { showError(String(e)); }
     }
 
     async function loadAudit() {

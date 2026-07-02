@@ -209,6 +209,85 @@
         "responses": { "200": { "description": "Test alert recorded" } }
       }
     },
+    "/v1/admin/alert-channels": {
+      "get": {
+        "summary": "Get configured alert notification channels",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Alert channel configuration" } }
+      },
+      "put": {
+        "summary": "Replace alert notification channels",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Updated channel configuration" } }
+      }
+    },
+    "/v1/admin/api-keys": {
+      "get": {
+        "summary": "List API keys (metadata only)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "API key inventory" } }
+      },
+      "post": {
+        "summary": "Create API key",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Created key with one-time token" } }
+      }
+    },
+    "/v1/admin/api-keys/{key_id}": {
+      "patch": {
+        "summary": "Update API key metadata",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "key_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated key" } }
+      },
+      "delete": {
+        "summary": "Revoke API key",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "key_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Key revoked" } }
+      }
+    },
+    "/v1/admin/integrations": {
+      "get": {
+        "summary": "Admin integrations summary",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Integrations status" } }
+      }
+    },
+    "/v1/admin/users": {
+      "get": {
+        "summary": "List Control Center users",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "User directory" } }
+      },
+      "post": {
+        "summary": "Create user",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Created user" } }
+      }
+    },
+    "/v1/admin/users/{user_id}": {
+      "patch": {
+        "summary": "Update user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated user" } }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "User removed" } }
+      }
+    },
     "/v1/secrets": {
       "get": {
         "summary": "Secret metadata (no values)",
@@ -932,6 +1011,16 @@
         "responses": { "200": { "description": "Replay result" } }
       }
     },
+    "/v1/programs/traces": {
+      "get": {
+        "summary": "List mission trace files in project",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "project", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Trace file inventory" } }
+      }
+    },
     "/v1/sre/summary": {
       "get": {
         "summary": "SRE availability and incident rollup",
@@ -1216,6 +1305,33 @@
         "summary": "Approve or reject a mission",
         "security": [{ "bearerAuth": [] }],
         "responses": { "200": { "description": "Mission decision recorded" } }
+      }
+    },
+    "/v1/operator/missions": {
+      "get": {
+        "summary": "List missions with runtime state",
+        "responses": { "200": { "description": "Mission inventory" } }
+      }
+    },
+    "/v1/operator/mission/pause": {
+      "post": {
+        "summary": "Pause a running mission",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Mission paused" } }
+      }
+    },
+    "/v1/operator/mission/resume": {
+      "post": {
+        "summary": "Resume a paused mission",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Mission resumed" } }
+      }
+    },
+    "/v1/operator/mission/cancel": {
+      "post": {
+        "summary": "Cancel a mission",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Mission cancelled" } }
       }
     },
     "/v1/config/approvals": {

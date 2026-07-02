@@ -472,7 +472,7 @@ pub fn handle_request(
         ("/v1/operator/mission/approve", "POST") => {
             e3::operator_mission_approve(&request.body, ctx.as_ref())
         }
-        ("/v1/rpc", "POST") => e3::rpc_gateway(state, &request.body),
+        ("/v1/rpc", "POST") => e3::rpc_gateway(state, &request.body, ctx.as_ref()),
         ("/v1/compliance/export", "GET") => e4::compliance_export(state, query, None, ctx.as_ref()),
         ("/v1/compliance/export", "POST") => {
             e4::compliance_export(state, query, Some(&request.body), ctx.as_ref())
