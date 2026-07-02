@@ -79,6 +79,8 @@ pub fn hydrate_runtime_state(state: &mut ControlCenterState) {
     }
     crate::drift_scheduler::hydrate_drift_scans(state);
     crate::report_scheduler::hydrate_report_schedules(state);
+    crate::admin_users::hydrate_admin_users(state);
+    crate::alert_channels::hydrate_alert_channels(state);
 }
 
 /// Persist alerts and traces to disk.

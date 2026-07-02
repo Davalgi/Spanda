@@ -268,6 +268,60 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
+    if let Some(response) = crate::admin_ops::route_admin(
+        state,
+        path,
+        &request.method,
+        &request.body,
+        ctx.as_ref(),
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
+    }
+    if let Some(response) = crate::admin_users::route_admin_users(
+        state,
+        path,
+        &request.method,
+        &request.body,
+        ctx.as_ref(),
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
+    }
+    if let Some(response) = crate::alert_channels::route_alert_channels(
+        state,
+        path,
+        &request.method,
+        &request.body,
+        ctx.as_ref(),
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
+    }
     if let Some(response) = route_smart_spaces(state, path, &request.method, query) {
         e3::record_trace(
             state,
@@ -392,6 +446,7 @@ pub fn handle_request(
         ("/v1/programs/simulation", "POST") => {
             crate::sdk_ops::program_simulation(state, &request.body)
         }
+        ("/v1/programs/traces", "GET") => crate::sdk_ops::program_traces_list(state, query),
         ("/v1/programs/replay", "POST") => crate::sdk_ops::program_replay(state, &request.body),
         ("/v1/sre/summary", "GET") => e3::sre_summary(state),
         ("/v1/integrations/pagerduty/webhook", "POST") => crate::integrations::pagerduty_webhook(

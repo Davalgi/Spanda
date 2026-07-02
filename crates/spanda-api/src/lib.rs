@@ -1,5 +1,8 @@
 //! REST API v1 for Spanda Control Center.
 //!
+pub mod admin_users;
+pub mod alert_channels;
+pub mod admin_ops;
 pub mod audit_log;
 pub mod correlation;
 pub mod decision_ops;

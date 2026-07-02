@@ -123,6 +123,50 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/rbac/me",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/admin/api-keys",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/api-keys",
+    },
+    ApiRoute {
+        method: "PATCH",
+        path: "/v1/admin/api-keys/{key_id}",
+    },
+    ApiRoute {
+        method: "DELETE",
+        path: "/v1/admin/api-keys/{key_id}",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/admin/integrations",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/admin/users",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/users",
+    },
+    ApiRoute {
+        method: "PATCH",
+        path: "/v1/admin/users/{user_id}",
+    },
+    ApiRoute {
+        method: "DELETE",
+        path: "/v1/admin/users/{user_id}",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/admin/alert-channels",
+    },
+    ApiRoute {
+        method: "PUT",
+        path: "/v1/admin/alert-channels",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/provision",
     },
@@ -363,6 +407,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/programs/simulation",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/programs/traces",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/programs/replay",
     },
@@ -421,6 +469,22 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     ApiRoute {
         method: "POST",
         path: "/v1/operator/mission/approve",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/operator/missions",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/operator/mission/pause",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/operator/mission/resume",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/operator/mission/cancel",
     },
     ApiRoute {
         method: "GET",

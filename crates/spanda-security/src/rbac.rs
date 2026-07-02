@@ -161,6 +161,38 @@ impl ApiKeyStore {
             None => false,
         }
     }
+
+    /// Path for durable API key storage (env override or `.spanda/api-keys.json`).
+    pub fn default_api_keys_file_path() -> std::path::PathBuf {
+        std::env::var("SPANDA_API_KEYS_FILE")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|_| {
+                std::env::var("SPANDA_CONTROL_CENTER_STATE_DIR")
+                    .map(std::path::PathBuf::from)
+                    .unwrap_or_else(|_| std::path::PathBuf::from(".spanda"))
+                    .join("api-keys.json")
+            })
+    }
+
+    /// Keys persisted to disk (excludes the in-memory `SPANDA_API_KEY` env default).
+    pub fn file_backed_keys(&self) -> Vec<ApiKeyRecord> {
+        self.keys
+            .iter()
+            .filter(|key| key.key_id != "env-default")
+            .cloned()
+            .collect()
+    }
+
+    /// Write file-backed keys to [`default_api_keys_file_path`].
+    pub fn persist_file_keys(&self) -> Result<(), String> {
+        let path = Self::default_api_keys_file_path();
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
+        }
+        let payload = serde_json::to_string_pretty(&self.file_backed_keys())
+            .map_err(|error| error.to_string())?;
+        std::fs::write(path, payload).map_err(|error| error.to_string())
+    }
 }
 
 /// Permission matrix for documentation and UI.

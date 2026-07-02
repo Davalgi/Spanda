@@ -1,5 +1,7 @@
 //! Shared mutable state for the Control Center API server.
 //!
+use crate::admin_users::AdminUserStore;
+use crate::alert_channels::AlertChannelStore;
 use crate::correlation::TraceLog;
 use crate::drift_scheduler::DriftScanStore;
 use crate::hri::HriSessionStore;
@@ -33,6 +35,8 @@ pub struct ControlCenterState {
     pub hri_session_store: HriSessionStore,
     pub twin_cloud_store: spanda_twin_cloud::TwinCloudStore,
     pub entity_overlay: spanda_config::EntityMutationStore,
+    pub admin_user_store: AdminUserStore,
+    pub alert_channel_store: AlertChannelStore,
 }
 
 impl ControlCenterState {
@@ -59,6 +63,8 @@ impl ControlCenterState {
             entity_overlay: spanda_config::load_entity_overlay(
                 &spanda_config::default_entity_overlay_path(),
             ),
+            admin_user_store: AdminUserStore::default(),
+            alert_channel_store: AlertChannelStore::default(),
         };
         crate::persistence::hydrate_runtime_state(&mut state);
         state

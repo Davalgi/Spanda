@@ -16,6 +16,7 @@ use spanda_capability::{
 use spanda_config::verify_with_system_config;
 use spanda_config::EntityQuery;
 use spanda_deploy_http::HttpResponse;
+use std::path::{Path, PathBuf};
 use spanda_hardware::VerifyOptions;
 use spanda_readiness::{
     evaluate_entity_health, evaluate_entity_readiness, evaluate_readiness_with_runtime,
@@ -24,7 +25,6 @@ use spanda_readiness::{
 };
 use spanda_trust::{evaluate_composite_trust, CompositeTrustOptions};
 use spanda_trust::{evaluate_entity_trust, EntityTrustOptions};
-use std::path::{Path, PathBuf};
 
 fn entity_not_found(message: &str) -> HttpResponse {
     HttpResponse {
@@ -615,6 +615,91 @@ fn urlencoding_decode(value: &str) -> String {
     value.replace('+', " ").replace("%20", " ")
 }
 
+/// GET /v1/programs/traces — list mission trace artifacts in the project tree.
+pub fn program_traces_list(state: &ControlCenterState, query: &str) -> HttpResponse {
+    let limit = parse_query_param(query, "limit")
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(50)
+        .clamp(1, 200);
+    let root = state
+        .project_root()
+        .or_else(|| state.program_path.as_ref().and_then(|p| p.parent().map(|d| d.to_path_buf())))
+        .unwrap_or_else(|| PathBuf::from("."));
+    let mut traces = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(&root) {
+        collect_trace_files(&root, entries, &mut traces, limit);
+    }
+    traces.sort_by(|a, b| {
+        b
+            .get("modified_ms")
+            .and_then(|v| v.as_f64())
+            .unwrap_or(0.0)
+            .partial_cmp(
+                &a.get("modified_ms")
+                    .and_then(|v| v.as_f64())
+                    .unwrap_or(0.0),
+            )
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+    if traces.len() > limit {
+        traces.truncate(limit);
+    }
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "root": root.display().to_string(),
+        "traces": traces,
+        "count": traces.len(),
+    }))
+}
+
+fn collect_trace_files(
+    root: &Path,
+    entries: std::fs::ReadDir,
+    out: &mut Vec<serde_json::Value>,
+    limit: usize,
+) {
+    if out.len() >= limit {
+        return;
+    }
+    for entry in entries.flatten() {
+        if out.len() >= limit {
+            break;
+        }
+        let path = entry.path();
+        if path.is_dir() {
+            if let Ok(sub) = std::fs::read_dir(&path) {
+                collect_trace_files(root, sub, out, limit);
+            }
+            continue;
+        }
+        if path.extension().and_then(|ext| ext.to_str()) != Some("trace") {
+            continue;
+        }
+        let metadata = std::fs::metadata(&path).ok();
+        let modified_ms = metadata
+            .as_ref()
+            .and_then(|m| m.modified().ok())
+            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+            .map(|d| d.as_secs_f64() * 1000.0);
+        let rel = path
+            .strip_prefix(root)
+            .map(|p| p.display().to_string())
+            .unwrap_or_else(|_| path.display().to_string());
+        out.push(serde_json::json!({
+            "path": rel,
+            "absolute": path.display().to_string(),
+            "size_bytes": metadata.as_ref().map(|m| m.len()).unwrap_or(0),
+            "modified_ms": modified_ms,
+        }));
+    }
+}
+
+fn parse_query_param(query: &str, key: &str) -> Option<String> {
+    query
+        .split('&')
+        .find_map(|pair| pair.split_once('=').filter(|(k, _)| *k == key).map(|(_, v)| v.to_string()))
+}
+
 /// POST /v1/programs/replay — replay or inspect a mission trace (CLI parity).
 pub fn program_replay(state: &ControlCenterState, body: &str) -> HttpResponse {
     let req: ProgramRequest = serde_json::from_str(body).unwrap_or_default();
@@ -812,6 +897,10 @@ pub fn program_verify_mission_json(state: &ControlCenterState, body: &str) -> St
 /// JSON body for gRPC `RunProgramSimulation`.
 pub fn program_simulation_json(state: &ControlCenterState, body: &str) -> String {
     program_simulation(state, body).body
+}
+
+pub fn program_traces_list_json(state: &ControlCenterState, query: &str) -> String {
+    program_traces_list(state, query).body
 }
 
 /// JSON body for gRPC `ReplayProgram`.
