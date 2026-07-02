@@ -18,6 +18,9 @@ Cached on each edge entity:
 ```sd
 offline_policy RoverOffline {
     max_duration = 30 min;
+    policy_version = "1.0.0";
+    signature = "<hex-ed25519-signature>";
+    expires_at = 1735689600000;
     allowed_actions [
         continue_current_safe_mission,
         return_home,
@@ -31,6 +34,8 @@ offline_policy RoverOffline {
     ];
 }
 ```
+
+When `SPANDA_DECISION_REQUIRE_SIGNED_OFFLINE_POLICY=1`, runtime verifies each offline policy signature against `SPANDA_DECISION_POLICY_TRUST_KEY` before permitting tree actions.
 
 ## Offline rules
 
@@ -46,7 +51,10 @@ When offline, entities:
 ```bash
 spanda decision simulate mission.sd --offline
 spanda decision inspect mission.sd --offline-minutes 20 --action return_home
+spanda decision sign-policy mission.sd --key "$SPANDA_DECISION_POLICY_SIGNING_KEY" --write-cache
 ```
+
+Signed policies persist to `.spanda/decision-policy-cache.json` (override with `SPANDA_DECISION_POLICY_CACHE`). Runtime merges cached signatures when program source omits the `signature` field.
 
 ## API
 

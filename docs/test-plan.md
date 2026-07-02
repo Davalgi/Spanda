@@ -16,7 +16,8 @@
 | Continuity | runtime takeover, checkpoints, CLI JSON, auto-trigger | `crates/spanda-interpreter/tests/continuity_runtime.rs`, `crates/spanda-cli/tests/continuity_cli.rs`, `crates/spanda-assurance/src/continuity_checkpoint.rs` |
 | Distributed decisions | decision trees, offline policy, authority, simulation | `crates/spanda-decision/tests/distributed.rs`, `spanda decision list|inspect|simulate` |
 | Decision runtime gates | offline policy block, central approval escalation | `crates/spanda-interpreter/tests/decision_runtime.rs` (5 tests) |
-| Decision trace emission | v3 payloads, live trees, smoke on showcase | `scripts/distributed_decisions_smoke.sh` |
+| Decision trace emission | v3 payloads, live trees, smoke on showcase | `scripts/distributed_decisions_smoke.sh`, `crates/spanda-api/tests/decision_traces_api_tests.rs` |
+| Signed offline policy | signature, trust key, persisted cache, `sign-policy` CLI | `crates/spanda-decision/tests/distributed.rs`, `spanda decision sign-policy` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |
