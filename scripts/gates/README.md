@@ -14,7 +14,8 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 
 | Script | Validates |
 |--------|-----------|
-| `differentiation_smoke.sh` | Mission contracts, explain, audit, coverage |
+| `differentiation_smoke.sh` | Mission contracts, explain, audit, coverage, NEXT/LATER smokes |
+| `differentiation_promotion_gate.sh` | All 15 differentiation pillars — smoke + showcase check + topic guides |
 | `assurance_smoke.sh` | Assurance CLI suite |
 | `continuity_smoke.sh` | Takeover, delegation, succession |
 | `self_healing_smoke.sh` | Recovery planner, heal/recover |
@@ -105,6 +106,10 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 
 | Blueprint | Script | Promotion gate |
 |-----------|--------|----------------|
+| **Differentiation (Experimental)** | `differentiation_smoke.sh` | `differentiation_promotion_gate.sh` |
+| **What-If Stable** | `what_if_smoke.sh` | `what_if_stable_promotion_gate.sh` |
+| **What-If Stable** | `what_if_field_soak_init.sh` | Field soak prep |
+| **What-If Stable** | `what_if_security_audit_prep.sh` | Audit prep |
 | **ADAS** | `adas_smoke.sh` | `adas_stable_promotion_gate.sh` |
 | **ADAS** | `adas_automotive_sensors_smoke.sh` | Live radar/LiDAR/ultrasonic |
 | **ADAS** | `adas_field_soak_init.sh` | Field soak prep |
@@ -136,6 +141,8 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | Entity model Stable | `entity_model_stable_promotion_gate.sh` | [entity-model-stable-promotion.md](../../docs/entity-model-stable-promotion.md) |
 | HRI Stable | `hri_stable_promotion_gate.sh` | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
 | Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
+| What-If Stable | `what_if_stable_promotion_gate.sh` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |
+| Differentiation Experimental | `differentiation_promotion_gate.sh` | [differentiation-roadmap.md](../../docs/differentiation-roadmap.md) |
 
 ---
 

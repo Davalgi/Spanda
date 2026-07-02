@@ -31,6 +31,8 @@
 | Differentiation analytics gRPC | GetAnalytics* RPC parity | `crates/spanda-api/tests/grpc_tests.rs` (`grpc_analytics_endpoints_with_forecast_program`) |
 | Differentiation analytics SDK | REST + gRPC analytics wrappers | `crates/spanda-sdk`, `sdk/python`, `sdk/typescript` client tests |
 | LATER differentiation | twin mission, certify pack, team verify, governance, replay time travel | `scripts/later_differentiation_smoke.sh`, `crates/spanda-runtime/tests/time_travel_tests.rs` |
+| Differentiation promotion gate | 15 pillars smoke + showcase check + topic guides | `scripts/differentiation_promotion_gate.sh` |
+| What-If Stable promotion | soak + smoke + analytics API + Control Center probe | `scripts/what_if_stable_promotion_gate.sh`, [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
 | Bundled examples sync | NEXT/LATER showcases + decision-trail trace | `scripts/sync_bundled_examples.sh` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |

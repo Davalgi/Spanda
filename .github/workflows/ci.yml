@@ -583,6 +583,32 @@ jobs:
       - run: chmod +x scripts/differentiation_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/differentiation_smoke.sh
 
+  differentiation-promotion-gate:
+    runs-on: ubuntu-latest
+    needs: differentiation-smoke
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/differentiation_promotion_gate.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda SPANDA_DIFFERENTIATION_SKIP_SMOKE=1 ./scripts/differentiation_promotion_gate.sh
+
+  what-if-stable-promotion-gate:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/what_if_stable_promotion_gate.sh scripts/what_if_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda SPANDA_WHATIF_SKIP_SOAK=1 SPANDA_WHATIF_SKIP_AUDIT=1 SPANDA_WHATIF_SKIP_SMOKE=1 ./scripts/what_if_stable_promotion_gate.sh
+
   control-center-desktop:
     runs-on: ubuntu-latest
     needs: rust
