@@ -31,12 +31,15 @@
     .dt-detail { font-size: 0.85rem; margin: 0.5rem 0; }
     .auth-setup { border-color: #854d0e; background: #1c1910; }
     .auth-setup input { background: #0f1419; border: 1px solid #2d3a4f; color: #e8e8e8; border-radius: 6px; padding: 0.35rem 0.5rem; min-width: 16rem; }
-    .auth-setup button { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; }
+    .auth-setup button { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; margin-right: 0.5rem; }
+    .auth-setup button.secondary { background: #1a2332; border: 1px solid #2d3a4f; color: #c8d6e5; }
+    .auth-status { color: #4ade80; font-size: 0.85rem; margin: 0 0 0.75rem; }
   </style>
 </head>
 <body>
   <h1>Spanda Control Center</h1>
   <p class="subtitle">Enterprise operations — Dashboard · Fleet · Readiness · Device Pool</p>
+  <p id="auth-status" class="auth-status" hidden></p>
   <div id="auth-setup" class="panel auth-setup" hidden></div>
   <nav>
     <button type="button" class="active" data-tab="dashboard">Dashboard</button>
@@ -86,26 +89,115 @@
   <script>
     const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config", "drift", "ota", "security", "sre", "operator", "audit", "digital-thread", "adas", "humans", "smart-spaces", "executive"];
     const errEl = document.getElementById("error");
+    const AUTH_STORAGE_PREFIX = "spanda.control_center.bearer_token.v1:";
+
+    function authStorageKey() {
+      return AUTH_STORAGE_PREFIX + location.host;
+    }
+
+    function loadStoredApiKey() {
+      try {
+        const value = localStorage.getItem(authStorageKey());
+        return value && value.trim() ? value.trim() : "";
+      } catch (_error) {
+        return "";
+      }
+    }
+
+    function saveStoredApiKey(value) {
+      try {
+        localStorage.setItem(authStorageKey(), value);
+      } catch (_error) {
+        /* private mode or blocked storage */
+      }
+    }
+
+    function clearStoredApiKey() {
+      try {
+        localStorage.removeItem(authStorageKey());
+      } catch (_error) {
+        /* ignore */
+      }
+    }
+
+    function setApiKey(value, { persist }) {
+      window.SPANDA_API_KEY = value;
+      if (persist) {
+        saveStoredApiKey(value);
+      }
+      document.getElementById("auth-setup").hidden = true;
+      const status = document.getElementById("auth-status");
+      status.hidden = false;
+      status.innerHTML =
+        "Operator token active for mutations on <code>" +
+        location.host +
+        '</code>. <button type="button" id="auth-key-forget" class="secondary" style="font-size:0.8rem;padding:0.2rem 0.5rem;margin-left:0.5rem;background:#1a2332;border:1px solid #2d3a4f;color:#c8d6e5;border-radius:6px;cursor:pointer;">Forget token</button>';
+      document.getElementById("auth-key-forget").addEventListener("click", () => {
+        window.SPANDA_API_KEY = "";
+        clearStoredApiKey();
+        status.hidden = true;
+        initAuthSetup();
+      });
+    }
+
+    async function verifyApiKey(value) {
+      const res = await fetch("/v1/alerts/test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + value,
+        },
+      });
+      if (!res.ok) {
+        throw new Error("token rejected (" + res.status + ")");
+      }
+      return res.json();
+    }
 
     function initAuthSetup() {
-      if (window.SPANDA_API_KEY) return;
+      if (window.SPANDA_API_KEY) {
+        setApiKey(window.SPANDA_API_KEY, { persist: false });
+        return;
+      }
+      const stored = loadStoredApiKey();
+      if (stored) {
+        window.SPANDA_API_KEY = stored;
+        setApiKey(stored, { persist: false });
+        return;
+      }
       const panel = document.getElementById("auth-setup");
       panel.hidden = false;
       panel.innerHTML = `
         <h2>Operator API key</h2>
-        <p>Mutations (provision, OTA, incidents, approvals) require a Bearer token. Generate one on the host running Control Center:</p>
+        <p>Mutations (provision, OTA, incidents, approvals) require a Bearer token registered on the server (<code>SPANDA_API_KEY</code> or <code>SPANDA_API_KEYS_FILE</code>).</p>
         <pre>spanda control-center api-key generate --export</pre>
-        <p>Paste the token below for this browser session, or set <code>window.SPANDA_API_KEY</code> before loading the page.</p>
+        <p>Paste the token below. Optionally remember it in this browser (same origin only, scoped to <code>${location.host}</code>).</p>
         <label>
           Bearer token
-          <input id="auth-key-input" type="password" autocomplete="off" placeholder="paste token from api-key generate" />
+          <input id="auth-key-input" type="password" autocomplete="off" placeholder="paste token from api-keys.json or generate" />
         </label>
-        <button type="button" id="auth-key-save">Use token</button>`;
-      document.getElementById("auth-key-save").addEventListener("click", () => {
+        <label style="display:flex;flex-direction:row;align-items:center;gap:0.35rem;margin:0.5rem 0;font-size:0.85rem;color:#c8d6e5;">
+          <input id="auth-key-remember" type="checkbox" checked />
+          Remember on this browser
+        </label>
+        <button type="button" id="auth-key-save">Use token</button>
+        <span id="auth-key-error" class="error" hidden></span>`;
+      document.getElementById("auth-key-save").addEventListener("click", async () => {
         const value = (document.getElementById("auth-key-input").value || "").trim();
+        const errorEl = document.getElementById("auth-key-error");
+        const remember = document.getElementById("auth-key-remember").checked;
+        errorEl.hidden = true;
         if (!value) return;
-        window.SPANDA_API_KEY = value;
-        panel.hidden = true;
+        try {
+          await verifyApiKey(value);
+          setApiKey(value, { persist: remember });
+        } catch (error) {
+          errorEl.hidden = false;
+          errorEl.textContent =
+            "Token not accepted: " +
+            error.message +
+            ". Ensure the server was started with this key in SPANDA_API_KEYS_FILE or SPANDA_API_KEY.";
+        }
       });
     }
 

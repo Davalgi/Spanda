@@ -80,7 +80,7 @@ When `SPANDA_API_KEY` is unset and no `SPANDA_API_KEYS_FILE` is loaded, `control
 
 If `generate` fails with `Unknown argument: generate` and top-level help has no `control-center` section, reinstall the CLI — see [troubleshooting.md — Unknown argument: generate](./troubleshooting.md#unknown-argument-generate-misleading-error).
 
-The embedded Control Center UI shows an **Operator API key** banner when no token is configured — paste a generated token for the browser session. The `@davalgi-spanda/web` panel prompts you to set `VITE_SPANDA_API_KEY`.
+The embedded Control Center UI shows an **Operator API key** banner when no token is configured in the browser. Paste a token registered on the server (`SPANDA_API_KEYS_FILE` or `SPANDA_API_KEY` at `serve` time). With **Remember on this browser** checked, the token is stored in `localStorage` scoped to the Control Center origin (`host:port`) and restored on refresh; use **Forget token** to clear it. The UI verifies the token with `POST /v1/alerts/test` before saving. Same-origin XSS could read a stored token — use **Forget** on shared machines. The `@davalgi-spanda/web` panel uses `VITE_SPANDA_API_KEY` at dev/build time instead.
 
 ### Single operator key (local dev)
 
@@ -164,7 +164,7 @@ Inspect the live permission matrix: `GET /v1/rbac/matrix`.
 
 **Multi-tenant isolation:** Set `SPANDA_TENANT_ID` on the Control Center instance (default `default`). Each key may include a `tenant_id` field; authenticated requests with a mismatched tenant return `403`.
 
-**Storage:** Tokens are matched as plain strings (not hashed). Treat them like passwords — restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on compromise.
+**Storage:** Tokens are matched as plain strings (not hashed). Treat them like passwords — restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on compromise. The embedded UI may optionally persist a pasted Bearer token in browser `localStorage` (per `host:port`, opt-in via **Remember on this browser**); this does not register the key on the server and is readable by any script on the same origin.
 
 ### ADAS dashboard
 
