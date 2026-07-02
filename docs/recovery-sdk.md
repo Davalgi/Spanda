@@ -28,6 +28,29 @@ client.explain_recovery(&json!({ "entity_id": "robot-1", "failure": "gps_loss" }
 
 Legacy: `client.heal("rover.sd")` → `POST /v1/programs/recovery/heal`
 
+## Rust gRPC (`spanda-sdk` feature `grpc`)
+
+```rust
+use serde_json::json;
+use spanda_sdk::grpc::GrpcClient;
+
+let mut client = GrpcClient::connect_blocking("http://127.0.0.1:50051")?;
+let body = json!({ "failure": "gps_loss" });
+
+client.list_recovery_plans().await?;
+client.get_recovery_history().await?;
+client.plan_recovery(&body).await?;
+client.simulate_recovery(&body).await?;
+client.validate_recovery(&body).await?;
+client.list_recovery_playbooks().await?;
+client.get_recovery_metrics().await?;
+client.get_recovery_graph(Some("robot-1")).await?;
+client.list_recovery_policies().await?;
+client.explain_recovery(&body).await?;
+```
+
+Python and TypeScript SDKs use REST only today.
+
 ## Python (`spanda_sdk`)
 
 ```python

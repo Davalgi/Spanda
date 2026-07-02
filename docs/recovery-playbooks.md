@@ -68,7 +68,22 @@ await client.listRecoveryPlaybooks();
 
 ## Plugin playbooks
 
-Plugins can register playbooks via `RecoveryPluginRegistry` with extension kind `playbook`. See [plugin-api.md](./plugin-api.md).
+Plugins declare recovery extensions in `spanda.plugin.toml`:
+
+```toml
+[[recovery.extensions]]
+kind = "playbook"
+name = "custom_sensor_reset"
+description = "Reset custom sensor stack"
+trigger = "sensor_failure"
+
+[[recovery.extensions]]
+kind = "strategy"
+name = "vendor_retry"
+description = "Vendor-specific retry loop"
+```
+
+Enabled plugins with `on_recovery_completed` hooks receive payloads after orchestrator execute. See [plugin-api.md](./plugin-api.md).
 
 ## See also
 

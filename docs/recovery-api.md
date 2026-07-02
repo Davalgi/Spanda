@@ -56,3 +56,23 @@ Recovery Orchestrator endpoints (Control Center `/v1`).
 
 - [recovery-sdk.md](./recovery-sdk.md)
 - [recovery-orchestrator.md](./recovery-orchestrator.md)
+
+## gRPC (proto 1.0.8)
+
+Mirrors REST with `JsonResponse` envelopes on `spanda.v1.ControlCenter`:
+
+| gRPC RPC | REST equivalent |
+|----------|-----------------|
+| `ListRecoveryPlans` | `GET /v1/recovery/plans` |
+| `GetRecoveryHistory` | `GET /v1/recovery/history` |
+| `PlanRecovery` | `POST /v1/recovery/plan` |
+| `SimulateRecovery` | `POST /v1/recovery/simulate` |
+| `ExecuteRecovery` | `POST /v1/recovery/execute` |
+| `ValidateRecovery` | `POST /v1/recovery/validate` |
+| `ListRecoveryPlaybooks` | `GET /v1/recovery/playbooks` |
+| `GetRecoveryMetrics` | `GET /v1/recovery/metrics` |
+| `GetRecoveryGraph` | `GET /v1/recovery/graph` |
+| `ListRecoveryPolicies` | `GET /v1/recovery/policies` |
+| `ExplainRecovery` | `POST /v1/recovery/explain` |
+
+`GetRecoveryGraph` accepts `QueryRequest.query` as `entity_id=<id>`. POST RPCs use `JsonBodyRequest.body_json` with the same JSON body as REST.

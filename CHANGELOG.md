@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-02
+
 ### Added
 
 - **Recovery Orchestrator (Phase 2):** new `spanda-recovery` platform service — planning, simulation, validation, evidence, learning, recovery graph, playbooks, predictive indicators, and escalation levels 0–8; integrates with assurance, entity model, readiness, trust, and mission continuity without breaking `spanda heal` or `POST /v1/programs/recovery/heal`.
@@ -16,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Control Center Recovery tab:** dashboard for plans, metrics, playbooks, and history in embedded UI.
 - **Recovery docs:** [recovery-orchestrator.md](docs/recovery-orchestrator.md), [recovery-playbooks.md](docs/recovery-playbooks.md), [recovery-graph.md](docs/recovery-graph.md), [recovery-simulation.md](docs/recovery-simulation.md), [predictive-recovery.md](docs/predictive-recovery.md), [recovery-api.md](docs/recovery-api.md), [recovery-sdk.md](docs/recovery-sdk.md); TOML policy section in [recovery-policies.md](docs/recovery-policies.md).
 - **Recovery Orchestrator hardening:** OpenAPI `/v1/recovery/*` routes, REST API tests, Recovery tab in `@davalgi-spanda/web` Control Center panel; doc index and getting-started links.
+- **Recovery gRPC (proto 1.0.8):** eleven `ControlCenter` RPCs mirroring `/v1/recovery/*`; Rust `GrpcClient` recovery methods (`spanda-sdk` `grpc` feature).
+- **Recovery plugin wiring:** `[recovery.extensions]` in `spanda.plugin.toml`; `RecoveryPluginRegistry` loaded from enabled plugins; `on_recovery_completed` hook after execute.
 
 - **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides, `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI job `later-differentiation-stable-gates`.
 - **Trust Framework promoted to Stable:** composite program trust (`spanda trust`, `/v1/trust/program`, gRPC `GetTrustProgram`); `scripts/trust_framework_stable_promotion_gate.sh`, field soak + audit prep scripts, CI job `trust-framework-stable-gate`.
