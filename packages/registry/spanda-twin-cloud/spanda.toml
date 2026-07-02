@@ -1,0 +1,16 @@
+[package]
+name = "spanda-twin-cloud"
+version = "0.1.0"
+description = "Twin Cloud SaaS sync for digital mission twins"
+license = "Apache-2.0"
+
+[safety]
+level = "robotics"
+
+[capabilities]
+required = [
+  "cloud.invoke",
+]
+
+[hardware]
+requirements = []

@@ -30,3 +30,22 @@ cc_smoke_trap() {
   local handler="${1:-cc_smoke_stop_listener}"
   trap "$handler" EXIT INT TERM
 }
+
+cc_smoke_wait_for_health() {
+  # Poll /v1/health until Control Center accepts connections.
+  local bind="${CC_SMOKE_BIND:-}"
+  if [[ -z "$bind" ]]; then
+    echo "cc_smoke_wait_for_health: CC_SMOKE_BIND not set" >&2
+    return 1
+  fi
+  local attempt=0
+  while [[ $attempt -lt 30 ]]; do
+    if curl -sf --max-time 5 "http://${bind}/v1/health" | grep -q spanda-control-center; then
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    sleep 0.2
+  done
+  echo "Control Center did not become ready on http://${bind}/v1/health" >&2
+  return 1
+}

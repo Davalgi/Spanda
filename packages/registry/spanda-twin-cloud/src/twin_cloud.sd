@@ -1,0 +1,10 @@
+// Twin Cloud sync example — pairs with `spanda twin cloud push`.
+import twin.cloud;
+
+robot Patrol {
+  mission patrol_mission;
+}
+
+mission patrol_mission {
+  objective "Patrol warehouse aisles";
+}
