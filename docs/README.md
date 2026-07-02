@@ -117,6 +117,13 @@
 | [recovery-planning.md](./recovery-planning.md) | **Recovery planner and failure classification** |
 | [recovery-assurance.md](./recovery-assurance.md) | **Recovery evidence and assurance integration** |
 | [recovery-policies.md](./recovery-policies.md) | **`recovery_policy` syntax and operating modes** |
+| [recovery-orchestrator.md](./recovery-orchestrator.md) | **Recovery Orchestrator — plan, simulate, execute, and audit** |
+| [recovery-playbooks.md](./recovery-playbooks.md) | **Built-in recovery playbooks and escalation** |
+| [recovery-graph.md](./recovery-graph.md) | **Entity dependency and recovery impact graph** |
+| [recovery-simulation.md](./recovery-simulation.md) | **Dry-run and simulation modes** |
+| [predictive-recovery.md](./predictive-recovery.md) | **Telemetry-driven degradation and predictive recovery** |
+| [recovery-api.md](./recovery-api.md) | **REST `/v1/recovery/*` API reference** |
+| [recovery-sdk.md](./recovery-sdk.md) | **SDK client methods for Recovery Orchestrator** |
 | [continuity-policies.md](./continuity-policies.md) | **`continuity_policy` syntax, takeover modes, and fleet handoff** |
 | [mission-continuity.md](./mission-continuity.md) | **Mission continuity, takeover, delegation, and succession** |
 | [distributed-decisions.md](./distributed-decisions.md) | **Distributed decision architecture — reflex, local, fleet, control center layers** |

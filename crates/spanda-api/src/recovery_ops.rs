@@ -77,7 +77,7 @@ pub fn list_recovery_plans(state: &ControlCenterState) -> HttpResponse {
 }
 
 /// GET /v1/recovery/history
-pub fn recovery_history(state: &ControlCenterState) -> HttpResponse {
+pub fn recovery_history(_state: &ControlCenterState) -> HttpResponse {
     let orchestrator = RecoveryOrchestrator::new();
     let history = orchestrator.get_history(100);
     json_ok(&serde_json::json!({
