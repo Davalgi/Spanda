@@ -1,7 +1,8 @@
 //! Live distributed decision tree evaluation and fleet consensus recording.
 
-use super::{Interpreter, RobotBackend};
+use super::{Interpreter, MotionCommand, RobotBackend};
 use spanda_error::SpandaError;
+use spanda_runtime::decision_runtime::DecisionActionVerdict;
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn decision_runtime(&self) -> spanda_runtime::decision_runtime::SharedDecisionRuntime {
@@ -19,8 +20,50 @@ impl<B: RobotBackend> Interpreter<B> {
         self.evaluate_live_decision_trees(Some(&key));
     }
 
+    fn central_connected(&self) -> bool {
+        std::env::var("SPANDA_CENTRAL_CONNECTED")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "yes" | "on"))
+            .unwrap_or_else(|_| {
+                let faults = self.hardware_monitor.injected_faults();
+                !faults.iter().any(|f| {
+                    let lower = f.to_ascii_lowercase();
+                    lower.contains("lte")
+                        || lower.contains("wifi")
+                        || lower.contains("connectivity")
+                        || lower.contains("network")
+                })
+            })
+    }
+
+    fn offline_minutes(&self) -> u32 {
+        if let Ok(v) = std::env::var("SPANDA_OFFLINE_MINUTES") {
+            return v.parse().unwrap_or(0);
+        }
+        self.offline_since_ms
+            .map(|since| ((self.sim_time_ms - since).max(0.0) / 60_000.0) as u32)
+            .unwrap_or(0)
+    }
+
+    fn track_offline_state(&mut self) {
+        if self.central_connected() {
+            self.offline_since_ms = None;
+        } else if self.offline_since_ms.is_none() {
+            self.offline_since_ms = Some(self.sim_time_ms);
+        }
+    }
+
+    fn escalation_approved(&self, escalation_id: &str) -> bool {
+        self.granted_decision_escalations.contains(escalation_id)
+            || std::env::var("SPANDA_DECISION_ESCALATION_APPROVED")
+                .map(|v| {
+                    matches!(v.as_str(), "1" | "true" | "yes") || v == escalation_id
+                })
+                .unwrap_or(false)
+    }
+
     /// Sync decision signals from hardware monitor, safety state, and faults.
     pub(super) fn sync_decision_signals_from_runtime(&mut self) {
+        self.track_offline_state();
         let gps_failed = self
             .hardware_monitor
             .injected_faults()
@@ -89,6 +132,10 @@ impl<B: RobotBackend> Interpreter<B> {
             } else {
                 "local_entity"
             };
+            let entity = self
+                .active_robot_name
+                .clone()
+                .unwrap_or_else(|| "robot".into());
             self.record_decision_trace(
                 "decision_tree_eval",
                 "local_decision",
@@ -99,16 +146,130 @@ impl<B: RobotBackend> Interpreter<B> {
                     result.actions.join(", ")
                 ),
                 layer,
-                &self.active_robot_name.clone().unwrap_or_else(|| "robot".into()),
+                &entity,
                 serde_json::json!({
                     "tree": result.tree_name,
                     "condition": result.condition_matched,
                     "actions": result.actions,
                     "tree_hash": result.tree_hash,
+                    "policy_version": "1.0.0",
                     "signals": self.decision_signals,
+                    "central_connected": self.central_connected(),
+                    "offline_minutes": self.offline_minutes(),
                 }),
             );
+            if let Err(err) = self.dispatch_decision_tree_actions(&program, &entity, &result.actions)
+            {
+                self.log(format!("decision_tree: action dispatch error: {err}"));
+            }
         }
+    }
+
+    fn authorize_decision_action(
+        &self,
+        program: &spanda_ast::nodes::Program,
+        entity_id: &str,
+        action: &str,
+    ) -> DecisionActionVerdict {
+        self.decision_runtime().authorize_action(
+            program,
+            entity_id,
+            action,
+            self.offline_minutes(),
+            self.central_connected(),
+        )
+    }
+
+    fn record_action_verdict(
+        &mut self,
+        action: &str,
+        verdict: &DecisionActionVerdict,
+        entity_id: &str,
+    ) {
+        if verdict.permitted {
+            return;
+        }
+        let event = if verdict.requires_escalation {
+            "decision_escalation_pending"
+        } else {
+            "decision_action_blocked"
+        };
+        self.record_decision_trace(
+            event,
+            "policy_gate",
+            &verdict.reason,
+            if verdict.requires_escalation {
+                "control_center"
+            } else {
+                "local_entity"
+            },
+            entity_id,
+            serde_json::json!({
+                "action": action,
+                "escalation_id": verdict.escalation_id,
+                "policy_version": verdict.policy_version,
+                "offline_minutes": self.offline_minutes(),
+                "central_connected": self.central_connected(),
+                "rejected_alternatives": [{"action": action, "rejected_reason": verdict.reason}],
+            }),
+        );
+        if let Some(id) = &verdict.escalation_id {
+            self.pending_decision_escalations.insert(id.clone());
+        }
+    }
+
+    /// Execute actions selected by a live decision tree evaluation.
+    pub(super) fn dispatch_decision_tree_actions(
+        &mut self,
+        program: &spanda_ast::nodes::Program,
+        entity_id: &str,
+        actions: &[String],
+    ) -> Result<(), SpandaError> {
+        for action in actions {
+            let verdict = self.authorize_decision_action(program, entity_id, action);
+            if !verdict.permitted {
+                self.record_action_verdict(action, &verdict, entity_id);
+                if verdict.requires_escalation {
+                    if let Some(id) = &verdict.escalation_id {
+                        if !self.escalation_approved(id) {
+                            self.log(format!(
+                                "decision: blocked '{action}' pending escalation {id}"
+                            ));
+                            continue;
+                        }
+                        self.granted_decision_escalations.insert(id.clone());
+                        self.pending_decision_escalations.remove(id);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    self.log(format!(
+                        "decision: blocked '{action}' — {}",
+                        verdict.reason
+                    ));
+                    continue;
+                }
+            }
+            let lower = action.to_lowercase();
+            if lower.contains("trigger") && lower.contains("emergency_stop") {
+                if let Some(monitor) = &mut self.safety_monitor {
+                    monitor.set_emergency_stop(true);
+                }
+                self.backend.set_emergency_stop(true);
+                self.backend.execute_motion(MotionCommand::Stop {
+                    actuator: "all".into(),
+                });
+                self.log("decision_tree: triggered emergency stop".into());
+                continue;
+            }
+            if lower.contains("cut_actuator_power") {
+                self.backend.set_emergency_stop(true);
+                self.log("decision_tree: cut actuator power".into());
+                continue;
+            }
+            self.dispatch_recovery_action(action)?;
+        }
+        Ok(())
     }
 
     fn signal_matches_tree(&self, changed: &str, condition: &str) -> bool {
@@ -132,14 +293,7 @@ impl<B: RobotBackend> Interpreter<B> {
         let votes: Vec<(String, String, f64)> = members
             .iter()
             .enumerate()
-            .map(|(i, m)| {
-                let action = if i == 0 {
-                    selected_action.to_string()
-                } else {
-                    selected_action.to_string()
-                };
-                (m.clone(), action, 1.0 - (i as f64 * 0.1))
-            })
+            .map(|(i, m)| (m.clone(), selected_action.to_string(), 1.0 - (i as f64 * 0.1)))
             .collect();
         let quorum = if members.is_empty() {
             0.5
@@ -163,12 +317,14 @@ impl<B: RobotBackend> Interpreter<B> {
                 "relayed": relayed,
                 "failed": failed,
                 "members": members,
+                "policy_version": "1.0.0",
             }),
         );
     }
 
     /// Poll decision trees on scheduler ticks (bounded rate).
     pub(super) fn poll_live_decision_trees(&mut self) -> Result<(), SpandaError> {
+        self.sync_decision_signals_from_runtime();
         self.evaluate_live_decision_trees(None);
         Ok(())
     }

@@ -37,7 +37,7 @@ pub use offline::{
     OfflinePolicySpec,
 };
 pub use policy_cache::{build_policy_cache, LocalPolicyCache};
-pub use runtime_bridge::DecisionBackedRuntime;
+pub use runtime_bridge::{register_platform_runtime, DecisionBackedRuntime};
 pub use report::{
     format_decision_audit, format_decision_explanations, DecisionAuditReport, DecisionChain,
     DecisionEvidence, DecisionRecord, DecisionTimeline,

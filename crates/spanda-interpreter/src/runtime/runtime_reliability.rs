@@ -293,7 +293,20 @@ impl<B: RobotBackend> Interpreter<B> {
             })
             .unwrap_or_else(|| "mission".to_string());
         let decision_id = format!("d-{:.0}-{}", self.sim_time_ms, event_str.replace(' ', "_"));
-        let payload = spanda_runtime::v3_decision_payload(
+        let policy_version = evidence
+            .get("policy_version")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        let tree_hash = evidence
+            .get("tree_hash")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
+        let rejected = evidence
+            .get("rejected_alternatives")
+            .and_then(|v| v.as_array())
+            .map(|items| items.clone())
+            .unwrap_or_default();
+        let payload = spanda_runtime::v3_decision_payload_with_extras(
             &decision_id,
             Some(&mission),
             decision,
@@ -301,6 +314,13 @@ impl<B: RobotBackend> Interpreter<B> {
             layer,
             entity_id,
             evidence,
+            spanda_runtime::DecisionTraceExtras {
+                policy_version,
+                tree_hash,
+                alternatives_considered: Vec::new(),
+                rejected_alternatives: rejected,
+                sim_time_ms: Some(self.sim_time_ms),
+            },
         );
         self.record_mission_event(event_str, payload);
     }

@@ -67,10 +67,13 @@ pub use continuity_types::{
 };
 pub use decision_runtime::{
     default_decision_runtime, platform_decision_runtime, set_platform_decision_runtime,
-    BuiltinDecisionRuntime, DecisionRuntime, DecisionTreeEvalResult, FleetConsensusEvalResult,
-    SharedDecisionRuntime,
+    BuiltinDecisionRuntime, DecisionActionVerdict, DecisionRuntime, DecisionTreeEvalResult,
+    FleetConsensusEvalResult, SharedDecisionRuntime,
 };
-pub use decision_trace::{decision_trace_enabled, v3_decision_payload};
+pub use decision_trace::{
+    decision_trace_enabled, v3_decision_payload, v3_decision_payload_with_extras,
+    DecisionTraceExtras,
+};
 pub use device_telemetry_sink::{
     device_telemetry_sink, set_device_telemetry_sink, DeviceTelemetrySink, NoopDeviceTelemetrySink,
 };

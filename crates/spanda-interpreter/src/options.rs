@@ -269,6 +269,8 @@ pub struct RecoveryRunOptions {
     #[serde(skip)]
     pub assurance_runtime: Option<SharedAssuranceRuntime>,
     #[serde(skip)]
+    pub decision_runtime: Option<SharedDecisionRuntime>,
+    #[serde(skip)]
     pub security_runtime_factory: Option<SecurityRuntimeFactory>,
     #[serde(skip)]
     pub comm_bus_factory: Option<CommBusFactory>,
@@ -297,6 +299,8 @@ pub struct ContinuityRunOptions {
     pub inbound_comm_messages: Vec<(String, String)>,
     #[serde(skip)]
     pub assurance_runtime: Option<SharedAssuranceRuntime>,
+    #[serde(skip)]
+    pub decision_runtime: Option<SharedDecisionRuntime>,
     #[serde(skip)]
     pub security_runtime_factory: Option<SecurityRuntimeFactory>,
     #[serde(skip)]

@@ -17,6 +17,8 @@ impl<B: RobotBackend> Interpreter<B> {
             recovery_policies,
             continuity_policies,
             mitigations,
+            decision_trees,
+            offline_policies,
             robots,
             ..
         } = program;
@@ -27,6 +29,8 @@ impl<B: RobotBackend> Interpreter<B> {
             || !recovery_policies.is_empty()
             || !continuity_policies.is_empty()
             || !mitigations.is_empty()
+            || !decision_trees.is_empty()
+            || !offline_policies.is_empty()
             || robots.iter().any(|robot| {
                 let RobotDecl::RobotDecl {
                     health_checks: robot_checks,
@@ -114,6 +118,10 @@ impl<B: RobotBackend> Interpreter<B> {
             let _ = self.try_invoke_recovery_for_event("RobotHealthCritical");
         }
         self.apply_swarm_health_coordination(&report);
+        let gps_failed = faults
+            .iter()
+            .any(|f| f.contains("GPS") || f.contains("gps"));
+        self.set_decision_signal("gps.status == Failed", gps_failed);
     }
 
     fn apply_swarm_health_coordination(&mut self, report: &HealthReport) {

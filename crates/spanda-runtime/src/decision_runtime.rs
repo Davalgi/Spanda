@@ -23,6 +23,16 @@ pub struct FleetConsensusEvalResult {
     pub vote_count: usize,
 }
 
+/// Authorization outcome for a proposed distributed decision action.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct DecisionActionVerdict {
+    pub permitted: bool,
+    pub reason: String,
+    pub requires_escalation: bool,
+    pub escalation_id: Option<String>,
+    pub policy_version: Option<String>,
+}
+
 /// Extension points for live distributed decision evaluation at runtime.
 pub trait DecisionRuntime: Send + Sync {
     /// Evaluate decision trees against current signal values.
@@ -38,6 +48,16 @@ pub trait DecisionRuntime: Send + Sync {
         votes: &[(String, String, f64)],
         quorum_fraction: f64,
     ) -> FleetConsensusEvalResult;
+
+    /// Authorize a proposed action against entity authority and offline policy.
+    fn authorize_action(
+        &self,
+        program: &Program,
+        entity_id: &str,
+        action: &str,
+        offline_minutes: u32,
+        central_connected: bool,
+    ) -> DecisionActionVerdict;
 }
 
 /// Built-in no-op decision runtime when spanda-decision bridge is not injected.
@@ -67,6 +87,23 @@ impl DecisionRuntime for BuiltinDecisionRuntime {
             selected_action: selected,
             quorum_met: !votes.is_empty() && quorum_fraction <= 1.0,
             vote_count: votes.len(),
+        }
+    }
+
+    fn authorize_action(
+        &self,
+        _program: &Program,
+        _entity_id: &str,
+        _action: &str,
+        _offline_minutes: u32,
+        _central_connected: bool,
+    ) -> DecisionActionVerdict {
+        DecisionActionVerdict {
+            permitted: true,
+            reason: "builtin runtime permits all actions".into(),
+            requires_escalation: false,
+            escalation_id: None,
+            policy_version: None,
         }
     }
 }

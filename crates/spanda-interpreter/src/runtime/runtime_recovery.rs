@@ -996,12 +996,17 @@ pub fn execute_recovery_on_program(
         .assurance_runtime
         .clone()
         .unwrap_or_else(spanda_runtime::default_assurance_runtime);
+    let decision_runtime = options
+        .decision_runtime
+        .clone()
+        .unwrap_or_else(spanda_runtime::platform_decision_runtime);
     let mut interp = Interpreter::new(
         sim,
         super::InterpreterOptions {
             max_loop_iterations: 1,
             inbound_comm_messages: options.inbound_comm_messages.clone(),
             assurance_runtime: Some(assurance_runtime),
+            decision_runtime: Some(decision_runtime),
             security_runtime_factory: options.security_runtime_factory,
             comm_bus_factory: options.comm_bus_factory,
             on_log: Some(Rc::new(move |msg| logs_cb.borrow_mut().push(msg))),

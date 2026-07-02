@@ -5,6 +5,7 @@ use spanda_interpreter::{execute_recovery_on_program, RecoveryRunOptions, Recove
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_runtime::assurance_runtime::platform_assurance_runtime;
+use spanda_runtime::decision_runtime::platform_decision_runtime;
 use spanda_runtime::recovery_primitives::{classify_failure, extract_recovery_policies};
 use spanda_runtime::security_runtime::default_security_runtime_factory;
 use spanda_runtime::{RecoveryContext, RecoveryLevel, RecoveryReport, RecoveryStatus};
@@ -221,6 +222,7 @@ pub fn execute_interpreter_recovery_on_agent(
             grant_operator_approval: operator_approval_enabled(),
             inbound_comm_messages: Vec::new(),
             assurance_runtime: Some(platform_assurance_runtime()),
+            decision_runtime: Some(platform_decision_runtime()),
             security_runtime_factory: Some(default_security_runtime_factory()),
             comm_bus_factory: Some(routing_comm_bus_factory_fn()),
         },

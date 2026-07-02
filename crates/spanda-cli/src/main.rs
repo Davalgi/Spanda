@@ -1489,6 +1489,7 @@ fn dispatch_package(command: &str, rest: &[String]) {
 }
 
 fn main() {
+    spanda_decision::register_platform_runtime();
     // Description:
     //     Main.
     //

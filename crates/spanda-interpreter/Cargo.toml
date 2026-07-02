@@ -38,3 +38,4 @@ live-ai = []
 [dev-dependencies]
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }
+spanda-decision = { path = "../spanda-decision" }

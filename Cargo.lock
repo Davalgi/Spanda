@@ -3008,6 +3008,7 @@ dependencies = [
  "spanda-connectivity",
  "spanda-connectivity-runtime",
  "spanda-debug",
+ "spanda-decision",
  "spanda-deploy-http",
  "spanda-error",
  "spanda-ffi",
