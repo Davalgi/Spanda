@@ -583,4 +583,131 @@ impl GrpcClient {
             .map_err(|e| SpandaError::connection(e.to_string()))?;
         Self::parse_json(resp.into_inner().json)
     }
+
+    fn recovery_body(extra: Value) -> String {
+        extra.to_string()
+    }
+
+    /// List recovery plans via `ListRecoveryPlans`.
+    pub async fn list_recovery_plans(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_recovery_plans(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Get recovery history via `GetRecoveryHistory`.
+    pub async fn get_recovery_history(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_recovery_history(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Plan recovery via `PlanRecovery`.
+    pub async fn plan_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .plan_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Simulate recovery via `SimulateRecovery`.
+    pub async fn simulate_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .simulate_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Execute recovery via `ExecuteRecovery`.
+    pub async fn execute_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .execute_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Validate recovery via `ValidateRecovery`.
+    pub async fn validate_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .validate_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List recovery playbooks via `ListRecoveryPlaybooks`.
+    pub async fn list_recovery_playbooks(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_recovery_playbooks(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Get recovery metrics via `GetRecoveryMetrics`.
+    pub async fn get_recovery_metrics(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_recovery_metrics(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Get recovery graph via `GetRecoveryGraph`.
+    pub async fn get_recovery_graph(&mut self, entity_id: Option<&str>) -> SpandaResult<Value> {
+        let query = entity_id
+            .map(|id| format!("entity_id={id}"))
+            .unwrap_or_default();
+        let resp = self
+            .inner
+            .get_recovery_graph(QueryRequest { query })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List recovery policies via `ListRecoveryPolicies`.
+    pub async fn list_recovery_policies(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_recovery_policies(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Explain recovery via `ExplainRecovery`.
+    pub async fn explain_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .explain_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
 }
