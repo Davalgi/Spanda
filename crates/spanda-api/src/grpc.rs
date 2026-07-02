@@ -682,6 +682,45 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn get_analytics_what_if(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_what_if_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn get_analytics_mission_risk(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        self.with_state(crate::handlers::analytics_mission_risk_json)
+            .map(Response::new)
+    }
+
+    async fn get_analytics_readiness_forecast(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_readiness_forecast_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn get_analytics_trust_graph(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_trust_graph_json(state, &query))
+            .map(Response::new)
+    }
+
     async fn export_reports(
         &self,
         request: Request<QueryRequest>,

@@ -1925,6 +1925,26 @@ pub fn analytics_readiness_json(state: &ControlCenterState, query: &str) -> Stri
     e4::analytics_readiness(state, query).body
 }
 
+/// JSON body for gRPC `GetAnalyticsWhatIf` (parity with `GET /v1/analytics/what-if`).
+pub fn analytics_what_if_json(state: &ControlCenterState, query: &str) -> String {
+    differentiation_ops::analytics_what_if(state, query).body
+}
+
+/// JSON body for gRPC `GetAnalyticsMissionRisk` (parity with `GET /v1/analytics/mission-risk`).
+pub fn analytics_mission_risk_json(state: &ControlCenterState) -> String {
+    differentiation_ops::analytics_mission_risk(state).body
+}
+
+/// JSON body for gRPC `GetAnalyticsReadinessForecast` (parity with `GET /v1/analytics/readiness-forecast`).
+pub fn analytics_readiness_forecast_json(state: &ControlCenterState, query: &str) -> String {
+    differentiation_ops::analytics_readiness_forecast(state, query).body
+}
+
+/// JSON body for gRPC `GetAnalyticsTrustGraph` (parity with `GET /v1/analytics/trust-graph`).
+pub fn analytics_trust_graph_json(state: &ControlCenterState, query: &str) -> String {
+    differentiation_ops::analytics_trust_graph(state, query).body
+}
+
 /// JSON body for gRPC `ExportReports` (parity with `GET /v1/reports/export`).
 pub fn reports_export_json(
     state: &ControlCenterState,

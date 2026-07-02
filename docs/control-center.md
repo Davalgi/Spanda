@@ -371,8 +371,13 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 | `TagEntity` | Add/remove tags (`POST /v1/entities/{id}/tags`; Bearer) |
 | `RelateEntities` | Relate entities (`POST /v1/entities/relationships`; Bearer) |
 | `SyncEntities` | Sync overlay to TOML (`POST /v1/entities/sync`; Bearer) |
+| `GetAnalyticsReadiness` | Readiness trends (`GET /v1/analytics/readiness` parity; `query` = URL query string) |
+| `GetAnalyticsWhatIf` | What-if failure scenarios (`GET /v1/analytics/what-if` parity) |
+| `GetAnalyticsMissionRisk` | Mission deployment risk (`GET /v1/analytics/mission-risk` parity) |
+| `GetAnalyticsReadinessForecast` | Readiness degradation forecast (`GET /v1/analytics/readiness-forecast` parity) |
+| `GetAnalyticsTrustGraph` | Trust-weighted dependency graph (`GET /v1/analytics/trust-graph` parity) |
 
-Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.4`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
+Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.6`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
 
 ```bash
 # Example with grpcurl (reflection not enabled — use proto file)
@@ -441,7 +446,7 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | `/v1/operator/quarantine` | POST | Bearer | Quarantine a device |
 | `/v1/operator/mission/approve` | POST | Bearer | Approve or reject a mission |
 | `/v1/rpc` | POST | — | gRPC-compatible JSON gateway |
-| **gRPC (tonic)** | — | — | Native `ControlCenter` service on `--grpc-bind` (89 RPCs; full REST parity except JSON-RPC gateway) |
+| **gRPC (tonic)** | — | — | Native `ControlCenter` service on `--grpc-bind` (see `GET /v1/version` → `grpc.rpc_count`; full REST parity except JSON-RPC gateway) |
 | `/v1/compliance/export` | GET/POST | Bearer | Accreditation bundle (`?profile=defense`, `iso26262`, …); appends immutable evidence log |
 | `/v1/compliance/profiles` | GET | — | Signed profile catalog (defense, medical, iso26262, iso13849, iec61508) with Ed25519 verification |
 | `/v1/compliance/evidence` | GET | Bearer | List append-only compliance evidence records |

@@ -701,3 +701,61 @@ async fn grpc_decision_endpoints_with_showcase_program() {
         .into_inner();
     assert!(policy_cache.json.contains("policies"));
 }
+
+#[tokio::test]
+async fn grpc_analytics_endpoints_with_forecast_program() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
+    let program = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("examples/showcase/forecast/degradation.sd");
+    assert!(program.exists(), "missing {}", program.display());
+    let http_port = pick_port();
+    let grpc_port = pick_port();
+    let options = ControlCenterOptions {
+        bind: format!("127.0.0.1:{http_port}"),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
+        program_path: Some(program),
+        once: true,
+        timeout_ms: 500,
+        ..Default::default()
+    };
+    let grpc_bind = spawn_control_center(options);
+    let mut client = connect(&grpc_bind).await;
+
+    let what_if = client
+        .get_analytics_what_if(QueryRequest {
+            query: "all=1".into(),
+        })
+        .await
+        .expect("analytics what-if")
+        .into_inner();
+    assert!(what_if.json.contains("\"version\":\"v1\""));
+
+    let risk = client
+        .get_analytics_mission_risk(Empty {})
+        .await
+        .expect("analytics mission risk")
+        .into_inner();
+    assert!(risk.json.contains("\"version\":\"v1\""));
+
+    let forecast = client
+        .get_analytics_readiness_forecast(QueryRequest {
+            query: "all=1".into(),
+        })
+        .await
+        .expect("analytics readiness forecast")
+        .into_inner();
+    assert!(forecast.json.contains("\"version\":\"v1\""));
+
+    let trust_graph = client
+        .get_analytics_trust_graph(QueryRequest {
+            query: String::new(),
+        })
+        .await
+        .expect("analytics trust graph")
+        .into_inner();
+    assert!(trust_graph.json.contains("\"version\":\"v1\""));
+}
