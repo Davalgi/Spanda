@@ -1,0 +1,24 @@
+//! Swarm consensus — trust-weighted voting for distributed recovery.
+
+robot SwarmBot001 {
+    local_decision_authority [delegate_task, redistribute_tasks];
+}
+
+robot SwarmBot002 {
+    local_decision_authority [delegate_task, redistribute_tasks];
+}
+
+robot SwarmBot003 {
+    local_decision_authority [delegate_task, redistribute_tasks];
+}
+
+continuity_policy SwarmConsensus {
+    on coordinator.failed {
+        promote backup coordinator;
+        redistribute swarm tasks;
+    }
+}
+
+swarm InspectionSwarm {
+    robots [SwarmBot001, SwarmBot002, SwarmBot003];
+}

@@ -118,6 +118,12 @@
 | [recovery-policies.md](./recovery-policies.md) | **`recovery_policy` syntax and operating modes** |
 | [continuity-policies.md](./continuity-policies.md) | **`continuity_policy` syntax, takeover modes, and fleet handoff** |
 | [mission-continuity.md](./mission-continuity.md) | **Mission continuity, takeover, delegation, and succession** |
+| [distributed-decisions.md](./distributed-decisions.md) | **Distributed decision architecture — reflex, local, fleet, control center layers** |
+| [local-decision-trees.md](./local-decision-trees.md) | **`decision_tree` syntax for bounded edge autonomy** |
+| [decision-authority.md](./decision-authority.md) | **Entity `local_decision_authority` and central approval rules** |
+| [offline-decisions.md](./offline-decisions.md) | **`offline_policy` and local policy cache for disconnected operation** |
+| [decision-traceability.md](./decision-traceability.md) | **Distributed decision trace records and security envelope** |
+| [decision-conflict-resolution.md](./decision-conflict-resolution.md) | **Cross-layer conflict precedence and consensus** |
 | [assurance-cases.md](./assurance-cases.md) | **Assurance cases and evidence linking** |
 | [mission-verification.md](./mission-verification.md) | **Mission achievability and approval verification** |
 | [failure-analysis.md](./failure-analysis.md) | **Component failure impact and mitigations** |

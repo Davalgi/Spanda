@@ -107,6 +107,7 @@ spanda demo rover          # flagship platform demo
 spanda demo assurance      # mission assurance CLI suite
 spanda demo self-healing   # recovery policies, heal/recover/sim
 spanda demo continuity     # takeover, delegation, succession
+spanda decision list examples/showcase/distributed_decisions/main.sd  # brain/spinal-cord/reflex autonomy
 
 # Or step by step:
 spanda check examples/showcase/killer_demo.sd      # type-check

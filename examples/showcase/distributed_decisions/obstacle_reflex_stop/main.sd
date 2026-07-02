@@ -1,0 +1,14 @@
+//! Obstacle reflex stop — Layer 0 immediate safety reflex.
+
+robot Rover001 {
+    local_decision_authority [emergency_stop, obstacle_avoidance];
+    actuator drive { type Motor; }
+}
+
+decision_tree ObstacleReflexStop reflex {
+    when obstacle.detected {
+        stop_motor;
+        cut_actuator_power;
+        trigger emergency_stop;
+    }
+}

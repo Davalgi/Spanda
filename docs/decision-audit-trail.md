@@ -49,6 +49,7 @@ Mission → Decision → Evidence → Safety Check → Action
 ## Emission
 
 - Enabled during `run` / `sim` when `SPANDA_DECISION_TRACE=1` (default on with `--record`)
+- Distributed decision layers emit v3 payloads at continuity, recovery, and safety gates (see [distributed-decisions.md](./distributed-decisions.md))
 - Stored in mission trace files and telemetry store
 - Audit records cross-reference via `decision_id`
 
@@ -57,7 +58,9 @@ Mission → Decision → Evidence → Safety Check → Action
 ```bash
 spanda audit decisions mission.trace
 spanda audit decisions mission.trace --json
-spanda explain mission.trace              # human-readable decision explanations
+spanda decision trace mission.trace              # distributed decision timeline
+spanda decision explain mission.trace            # plain-language explanations
+spanda explain mission.trace                     # human-readable decision explanations
 ```
 
 ## Integration
@@ -75,4 +78,4 @@ spanda explain mission.trace              # human-readable decision explanations
 
 `spanda-decision` — trace schema, emission hooks, audit integration.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [explainability.md](./explainability.md) · [replay.md](./replay.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) · [explainability.md](./explainability.md) · [replay.md](./replay.md) · [distributed-decisions.md](./distributed-decisions.md).

@@ -597,6 +597,22 @@ Guide: [mission-continuity.md](./mission-continuity.md) · Package: `spanda-miss
 
 ---
 
+## Distributed decisions (optional)
+
+Hierarchical autonomy (brain / spinal cord / reflex): reflex safety, local bounded autonomy, fleet coordination, and control-center governance. Declare per-entity authority, local decision trees, and offline policy bounds.
+
+```bash
+spanda decision list examples/showcase/distributed_decisions/main.sd
+spanda decision inspect examples/showcase/distributed_decisions/main.sd --entity Rover001
+spanda decision simulate examples/showcase/distributed_decisions/main.sd --offline
+SPANDA_DECISION_TRACE=1 spanda sim examples/showcase/distributed_decisions/main.sd --record
+spanda decision trace mission.trace
+```
+
+Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples: [`examples/showcase/distributed_decisions/`](../examples/showcase/distributed_decisions/)
+
+---
+
 ## Documentation
 
 Generate API docs from `.sd` source (JavaDoc-style `///` comments are included):

@@ -269,6 +269,17 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Package `spanda-mission-continuity` | **Stable** |
 | `spanda demo continuity` | **Stable** |
 
+**Distributed decision architecture detail:**
+
+| Item | Tier |
+|------|------|
+| Four-layer model (reflex / local / fleet / control center) | **Stable** |
+| `decision_tree`, `offline_policy`, entity `local_decision_authority` | **Stable** |
+| Escalation, consensus, conflict resolution | **Stable** |
+| CLI (`spanda decision list|inspect|simulate|trace|explain|policy|security-audit`) | **Stable** |
+| REST `/v1/decisions*`, SDK methods, Control Center Decisions tab | **Stable** |
+| Examples `examples/showcase/distributed_decisions/` | **Stable** |
+
 **Self-healing detail:**
 
 | Item | Tier |
@@ -279,7 +290,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Operator approval + fleet mesh recovery | **Stable** |
 | `spanda demo self-healing` | **Stable** |
 
-**Topic guides:** [docs/device-tree.md](docs/device-tree.md) · [docs/device-pool.md](docs/device-pool.md) · [docs/entity-model.md](docs/entity-model.md) · [docs/configuration.md](docs/configuration.md) · [docs/health-checks.md](docs/health-checks.md) · [docs/fleet-distributed.md](docs/fleet-distributed.md) · [docs/swarm-health.md](docs/swarm-health.md) · [docs/human-interaction.md](docs/human-interaction.md)
+**Topic guides:** [docs/device-tree.md](docs/device-tree.md) · [docs/device-pool.md](docs/device-pool.md) · [docs/entity-model.md](docs/entity-model.md) · [docs/configuration.md](docs/configuration.md) · [docs/health-checks.md](docs/health-checks.md) · [docs/fleet-distributed.md](docs/fleet-distributed.md) · [docs/swarm-health.md](docs/swarm-health.md) · [docs/human-interaction.md](docs/human-interaction.md) · [docs/distributed-decisions.md](docs/distributed-decisions.md)
 
 ---
 
