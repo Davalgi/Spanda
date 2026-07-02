@@ -216,10 +216,10 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Trust Framework | **Planned** hardening | Next | Core |
 | Explainability & Audit Trail | **Stable** | Now | Core |
 | What-If Analysis | **Stable** | Next | Core |
-| Mission Risk Analysis | **Experimental** | Next | Core |
-| Readiness Forecasting | **Experimental** | Next | Core |
-| Trust Graph | **Experimental** | Next | Core |
-| Scorecards | **Experimental** | Next | Core |
+| Mission Risk Analysis | **Stable** | Next | Core |
+| Readiness Forecasting | **Stable** | Next | Core |
+| Trust Graph | **Stable** | Next | Core |
+| Scorecards | **Stable** | Next | Core |
 | Digital Mission Twin | **Experimental** | Later | Core |
 | Certification Packs | **Experimental** | Later | Core |
 | Mission Time Travel | **Experimental** | Later | Core |
@@ -228,7 +228,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 
 **NOW deliverables (v0.5+):** `spanda-contract`, `spanda-explain`, `spanda-decision`, safety/recovery coverage — **Stable**. Exit: `spanda demo differentiation` + `scripts/differentiation_smoke.sh`.
 
-**NEXT deliverables (v0.6):** what-if (**Stable**), risk, readiness forecast, trust graph, scorecards — remaining NEXT pillars **Experimental**; Control Center REST/gRPC analytics wired into `differentiation_smoke.sh`.
+**NEXT deliverables (v0.6):** all five NEXT pillars **Stable** — what-if, risk, readiness forecast, trust graph, scorecards; Control Center REST/gRPC analytics in `differentiation_smoke.sh`.
 
 **LATER deliverables (v0.7):** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — **Experimental** CLI. Exit: `spanda demo later` + `scripts/later_differentiation_smoke.sh` (via `differentiation_smoke.sh`).
 

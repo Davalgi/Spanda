@@ -609,6 +609,27 @@ jobs:
       - run: chmod +x scripts/what_if_stable_promotion_gate.sh scripts/what_if_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda SPANDA_WHATIF_SKIP_SOAK=1 SPANDA_WHATIF_SKIP_AUDIT=1 SPANDA_WHATIF_SKIP_SMOKE=1 ./scripts/what_if_stable_promotion_gate.sh
 
+  next-differentiation-stable-gates:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: |
+          chmod +x scripts/risk_stable_promotion_gate.sh \
+            scripts/forecast_stable_promotion_gate.sh \
+            scripts/trust_graph_stable_promotion_gate.sh \
+            scripts/scorecard_stable_promotion_gate.sh
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          SPANDA_RISK_SKIP_SOAK=1 SPANDA_RISK_SKIP_SMOKE=1 ./scripts/risk_stable_promotion_gate.sh
+          SPANDA_FORECAST_SKIP_SOAK=1 SPANDA_FORECAST_SKIP_SMOKE=1 ./scripts/forecast_stable_promotion_gate.sh
+          SPANDA_TRUST_GRAPH_SKIP_SOAK=1 SPANDA_TRUST_GRAPH_SKIP_SMOKE=1 ./scripts/trust_graph_stable_promotion_gate.sh
+          SPANDA_SCORECARD_SKIP_SOAK=1 SPANDA_SCORECARD_SKIP_SMOKE=1 ./scripts/scorecard_stable_promotion_gate.sh
+
   control-center-desktop:
     runs-on: ubuntu-latest
     needs: rust

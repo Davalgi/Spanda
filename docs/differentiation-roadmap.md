@@ -68,10 +68,10 @@ These six capabilities define Spanda's market identity. Protect them in every re
 | # | Area | CLI (target) | Crate | Status |
 |---|------|--------------|-------|--------|
 | 6 | What-If Analysis | `spanda what-if <file>` | `spanda-whatif` | **Stable** |
-| 7 | Mission Risk Analysis | `spanda risk <file>` | `spanda-risk` | **Experimental** |
-| 8 | Readiness Forecasting | `spanda readiness forecast` | extends `spanda-readiness` | **Experimental** |
-| 9 | Trust Graph | `spanda trust-graph <file>` | `spanda-graph` + `spanda-trust` | **Experimental** |
-| 10 | Scorecards | `spanda score <file>` | `spanda-score` | **Experimental** |
+| 7 | Mission Risk Analysis | `spanda risk <file>` | `spanda-risk` | **Stable** |
+| 8 | Readiness Forecasting | `spanda readiness forecast` | extends `spanda-readiness` | **Stable** |
+| 9 | Trust Graph | `spanda trust-graph <file>` | `spanda-graph` + `spanda-trust` | **Stable** |
+| 10 | Scorecards | `spanda score <file>` | `spanda-score` | **Stable** |
 
 Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto **1.0.6**) expose NEXT analytics with REST parity.
 
@@ -693,7 +693,7 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | `spanda trust-graph` | Mermaid golden output |
 | `spanda score` | Scorecard composition tests |
 
-**Exit met (Experimental, v0.6):** NEXT smokes in `differentiation_smoke.sh`; Control Center `/v1/analytics/*` + gRPC `GetAnalytics*`; `scripts/differentiation_promotion_gate.sh`. What-If promoted **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md).
+**Exit met (Stable, v0.5.0):** All five NEXT pillars promoted — see stable-hardening guides for what-if, mission-risk, readiness-forecast, trust-graph, and scorecards.
 
 ### Phase 3 — Field trust (LATER, v0.7–v1.0)
 

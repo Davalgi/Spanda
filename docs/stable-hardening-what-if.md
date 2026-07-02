@@ -58,7 +58,7 @@ The gate runs:
 
 **Promoted to Stable** in `docs/feature-status.md`, [ROADMAP.md](../ROADMAP.md), and [differentiation-roadmap.md](./differentiation-roadmap.md).
 
-Remaining NEXT pillars (risk, forecast, trust graph, scorecards) stay **Experimental** until their own stable gates land.
+Remaining NEXT pillars (risk, forecast, trust graph, scorecards) promoted **Stable** — see sibling stable-hardening guides.
 
 ### Ongoing organizational gates
 

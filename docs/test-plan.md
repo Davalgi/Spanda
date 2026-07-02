@@ -33,6 +33,7 @@
 | LATER differentiation | twin mission, certify pack, team verify, governance, replay time travel | `scripts/later_differentiation_smoke.sh`, `crates/spanda-runtime/tests/time_travel_tests.rs` |
 | Differentiation promotion gate | 15 pillars smoke + showcase check + topic guides | `scripts/differentiation_promotion_gate.sh` |
 | What-If Stable promotion | soak + smoke + analytics API + Control Center probe | `scripts/what_if_stable_promotion_gate.sh`, [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
+| NEXT Stable promotion (risk, forecast, trust graph, scorecard) | per-pillar gates + Control Center probes | `scripts/{risk,forecast,trust_graph,scorecard}_stable_promotion_gate.sh`, CI `next-differentiation-stable-gates` |
 | Bundled examples sync | NEXT/LATER showcases + decision-trail trace | `scripts/sync_bundled_examples.sh` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |

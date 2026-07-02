@@ -142,6 +142,10 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | HRI Stable | `hri_stable_promotion_gate.sh` | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
 | Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
 | What-If Stable | `what_if_stable_promotion_gate.sh` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |
+| Mission Risk Stable | `risk_stable_promotion_gate.sh` | [stable-hardening-mission-risk.md](../../docs/stable-hardening-mission-risk.md) |
+| Readiness Forecast Stable | `forecast_stable_promotion_gate.sh` | [stable-hardening-readiness-forecast.md](../../docs/stable-hardening-readiness-forecast.md) |
+| Trust Graph Stable | `trust_graph_stable_promotion_gate.sh` | [stable-hardening-trust-graph.md](../../docs/stable-hardening-trust-graph.md) |
+| Scorecards Stable | `scorecard_stable_promotion_gate.sh` | [stable-hardening-scorecards.md](../../docs/stable-hardening-scorecards.md) |
 | Differentiation Experimental | `differentiation_promotion_gate.sh` | [differentiation-roadmap.md](../../docs/differentiation-roadmap.md) |
 
 ---

@@ -13,7 +13,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 
 | Area | Status |
 |------|--------|
-| **Differentiation NOW** | `spanda demo differentiation`, what-if (**Stable**), risk, trust-graph, readiness forecast, scorecard — Experimental per remaining NEXT item |
+| **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
 | **Distributed decisions** | Decision trees, offline policy, trace emission, Control Center Decisions tab — Experimental |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
@@ -73,7 +73,11 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Mission continuity** | Checkpoint resume, state transfer, succession ranking, takeover/delegation; CLI `continuity`, `takeover`, `delegate`, `succession`; `continuity_policy`; diagnostics in `spanda check --readiness-json`; `spanda demo continuity`; official `spanda-mission-continuity` package |
 | **Distributed decisions** | Brain/spinal-cord/reflex layers; `decision_tree`, `offline_policy`, entity `local_decision_authority`; runtime policy gates (offline forbid, central approval escalation); signed offline policy + cache (`sign-policy`, `decision cache show|sync|clear`); live v3 trace emission; CLI `spanda decision *`; REST `/v1/decisions*`, `/v1/decisions/traces`, `/v1/decision-policy-cache`; gRPC ListDecisions/ListDecisionTraces/ListDecisionPolicyCache; sim API `decision_trace`/`record_trace`; Control Center Decisions tab with **Run sim with traces** + live polling; `spanda demo distributed-decisions`; `examples/showcase/distributed_decisions/` |
 | **Differentiation NOW** | `spanda contract verify`, `spanda explain`, `spanda audit decisions`, `spanda safety-coverage`, `spanda recovery-coverage`; `spanda demo differentiation`; decision trail showcase (`differentiation/decision_trail/`) with `explain decision` on v3 trace |
-| **What-If Analysis** | `spanda what-if`, Control Center `/v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf`, SDK analytics wrappers; showcase `what_if/gps_failure.sd`; **Stable** (2026-07-02) — [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
+| **What-If Analysis** | `spanda what-if`, `/v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf` — **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
+| **Mission Risk Analysis** | `spanda risk`, `/v1/analytics/mission-risk` — **Stable** — [stable-hardening-mission-risk.md](./stable-hardening-mission-risk.md) |
+| **Readiness Forecasting** | `spanda readiness forecast`, `/v1/analytics/readiness-forecast` — **Stable** — [stable-hardening-readiness-forecast.md](./stable-hardening-readiness-forecast.md) |
+| **Trust Graph** | `spanda trust-graph`, `/v1/analytics/trust-graph` — **Stable** — [stable-hardening-trust-graph.md](./stable-hardening-trust-graph.md) |
+| **Scorecards** | `spanda score`, `/v1/executive/scorecard` — **Stable** — [stable-hardening-scorecards.md](./stable-hardening-scorecards.md) |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`; CLI `assure`, `anomaly scan`, `diagnose`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`; `spanda demo assurance` |
 | **Weighted sensor fusion** | `observe { }`, `state_estimator`, `fusion.read()` with type-weighted confidence; `spanda-fusion` package |
 | **Learned anomaly runtime** | `learned backend assurance.anomaly`; EMA volatility; optional ONNX (`SPANDA_ANOMALY_ONNX_MODEL_PATH`) |
@@ -105,14 +109,13 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **40** packages after `build-registry.sh` |
 | **Official package provenance** | Registry-only provider bootstrap; path/git name-squatting blocked | `OfficialProvenance` API; `official_provenance` install warning; production `deploy gate` hard-fail |
 | **Registry signature policy** | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` + lockfile signature audit | Required for production `deploy gate`; optional at install otherwise |
-| **Differentiation (NEXT)** | Mission Risk, Readiness Forecasting, Trust Graph, Scorecards — **Experimental** CLI + Control Center REST/gRPC analytics |
 | **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming, Autonomous Governance — **Experimental** CLI; `scripts/later_differentiation_smoke.sh` |
 
 ### Planned (v0.5 beta and beyond)
 
 | Area | Description |
 |------|-------------|
-| **Differentiation Stable promotion (remaining NEXT)** | Promote risk, forecast, trust graph, scorecards via stable gates (what-if **Stable** — see [stable-hardening-what-if.md](./stable-hardening-what-if.md)) |
+| **Differentiation Stable promotion (LATER)** | Promote LATER pillars via stable gates after field soak |
 | **Human Interaction & Spatial Computing (H1–H6)** | **Stable** — H1–H6 platform APIs, Control Center Humans tab, `/v1/humans` + `/v1/hri/*`, promotion gate `hri_stable_promotion_gate.sh`; registry vendor packages remain **Experimental** — [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md) |
 | **Smart Spaces & Ambient Intelligence** | **Stable** — blueprint #15 feature-complete: simulation matrix, Control Center panels (REST + gRPC 1.0.5), live env I/O bridges, weighted readiness, CI `smart_spaces_promotion_gate.sh` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md) |
 | **Platform maturity (Phase A)** | **Stable** — `spanda graph`, `spanda deploy gate`, `spanda explain`, `spanda trust` — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
