@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Recovery Orchestrator (Phase 2):** new `spanda-recovery` platform service — planning, simulation, validation, evidence, learning, recovery graph, playbooks, predictive indicators, and escalation levels 0–8; integrates with assurance, entity model, readiness, trust, and mission continuity without breaking `spanda heal` or `POST /v1/programs/recovery/heal`.
+- **Recovery CLI:** `spanda recovery plan|simulate|dry-run|execute|validate|history|metrics|graph|playbooks|explain`.
+- **Recovery REST API:** `GET/POST /v1/recovery/*` endpoints for plans, history, simulate, execute, validate, playbooks, metrics, graph, policies, explain.
+- **Recovery SDK:** `planRecovery`, `simulateRecovery`, `executeRecovery`, `validateRecovery`, `listRecoveryPolicies`, `listRecoveryPlaybooks`, `getRecoveryHistory`, `getRecoveryMetrics` in Rust, Python, and TypeScript clients.
+- **Control Center Recovery tab:** dashboard for plans, metrics, playbooks, and history in embedded UI.
+- **Recovery docs:** [recovery-orchestrator.md](docs/recovery-orchestrator.md), [recovery-playbooks.md](docs/recovery-playbooks.md), [recovery-graph.md](docs/recovery-graph.md), [recovery-simulation.md](docs/recovery-simulation.md), [predictive-recovery.md](docs/predictive-recovery.md), [recovery-api.md](docs/recovery-api.md), [recovery-sdk.md](docs/recovery-sdk.md); TOML policy section in [recovery-policies.md](docs/recovery-policies.md).
+
 - **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides, `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI job `later-differentiation-stable-gates`.
 - **Trust Framework promoted to Stable:** composite program trust (`spanda trust`, `/v1/trust/program`, gRPC `GetTrustProgram`); `scripts/trust_framework_stable_promotion_gate.sh`, field soak + audit prep scripts, CI job `trust-framework-stable-gate`.
 - **LATER Control Center analytics parity:** REST `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}`; gRPC `GetAnalytics*` LATER RPCs (proto **1.0.7**); Analytics tab extended in embedded UI and `ControlCenterPanel`; `scripts/later_analytics_smoke.sh`.

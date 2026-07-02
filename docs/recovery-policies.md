@@ -1,8 +1,42 @@
 # Recovery Policies
 
-Recovery policies declare conditional self-healing actions in Spanda source.
+Recovery policies declare conditional self-healing actions in Spanda source and TOML configuration.
 
-## Syntax
+## Orchestrator policies (TOML)
+
+Configure per-entity recovery policies in `spanda.toml` for the Recovery Orchestrator:
+
+```toml
+[recovery]
+known_failures = ["gps_loss", "battery_critical", "sensor_failure"]
+
+[recovery.default]
+priority = 50
+timeout_secs = 300
+retry_limit = 3
+max_escalation_level = 4
+requires_approval = false
+validation_rules = ["health", "readiness", "trust"]
+
+[recovery.policies.robot-1]
+entity_id = "robot-1"
+entity_kind = "robot"
+max_escalation_level = 5
+requires_approval = true
+safety_constraints = ["unsafe_mode"]
+
+[[recovery.policies.robot-1.escalation_rules]]
+from_level = 0
+to_level = 1
+after_retries = 3
+strategy = "restart_component"
+```
+
+Escalation levels 0–8 are documented in [recovery-orchestrator.md](./recovery-orchestrator.md).
+
+List policies: `spanda recovery playbooks` / `GET /v1/recovery/policies`
+
+## Program policies (Spanda source)
 
 ```spanda
 recovery_policy RoverRecovery {
