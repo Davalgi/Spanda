@@ -34,6 +34,30 @@
     .auth-setup button { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; margin-right: 0.5rem; }
     .auth-setup button.secondary { background: #1a2332; border: 1px solid #2d3a4f; color: #c8d6e5; }
     .auth-status { color: #4ade80; font-size: 0.85rem; margin: 0 0 0.75rem; }
+    .role-badge { display: inline-block; color: #fff; font-size: 0.7rem; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: 0.35rem; text-transform: capitalize; }
+    .role-badge.administrator { background: #2563eb; }
+    .role-badge.supervisor { background: #0891b2; }
+    .role-badge.developer { background: #7c3aed; }
+    .role-badge.operator { background: #16a34a; }
+    .role-badge.safety_officer { background: #ea580c; }
+    .role-badge.auditor { background: #a855f7; }
+    .role-badge.guest { background: #475569; }
+    .role-tab-hint { color: #8b9bb4; font-size: 0.8rem; margin: 0 0 0.75rem; padding: 0.5rem 0.65rem; background: #0f1419; border-radius: 6px; border-left: 3px solid #2563eb; }
+    .role-tab-hint.operator { border-left-color: #16a34a; }
+    .role-tab-hint.auditor { border-left-color: #a855f7; }
+    .role-tab-hint.safety_officer { border-left-color: #ea580c; }
+    .role-tab-hint.developer { border-left-color: #7c3aed; }
+    .role-tab-hint.supervisor { border-left-color: #0891b2; }
+    .action-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; align-items: center; }
+    .action-bar button, .panel button { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; cursor: pointer; font-size: 0.85rem; }
+    .action-bar button:disabled, .panel button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .action-bar button.secondary, .panel button.secondary { background: #1a2332; border: 1px solid #2d3a4f; color: #c8d6e5; }
+    .hint { color: #8b9bb4; font-size: 0.8rem; }
+    nav button[data-role-tier] { border-style: dashed; }
+    nav button.hidden-tab { display: none; }
+    .perm-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 0.5rem 0; }
+    .perm-tag { background: #0f1419; border: 1px solid #2d3a4f; border-radius: 4px; padding: 0.15rem 0.4rem; font-size: 0.7rem; color: #94a3b8; }
+    .perm-tag.ok { border-color: #166534; color: #4ade80; }
   </style>
 </head>
 <body>
@@ -41,24 +65,31 @@
   <p class="subtitle">Enterprise operations — Dashboard · Fleet · Readiness · Device Pool</p>
   <p id="auth-status" class="auth-status" hidden></p>
   <div id="auth-setup" class="panel auth-setup" hidden></div>
-  <nav>
+  <nav id="main-nav">
     <button type="button" class="active" data-tab="dashboard">Dashboard</button>
-    <button type="button" data-tab="fleet">Fleet</button>
-    <button type="button" data-tab="readiness">Readiness</button>
+    <button type="button" data-tab="entities" data-role-tier="ops">Entities</button>
     <button type="button" data-tab="devices">Device Pool</button>
-    <button type="button" data-tab="alerts">Alerts</button>
+    <button type="button" data-tab="fleet">Fleet</button>
+    <button type="button" data-tab="discovery" data-role-tier="ops">Discovery</button>
+    <button type="button" data-tab="provision" data-role-tier="ops">Provision</button>
+    <button type="button" data-tab="mapping">Mapping</button>
+    <button type="button" data-tab="config" data-role-tier="ops">Config</button>
     <button type="button" data-tab="health">Health</button>
+    <button type="button" data-tab="readiness">Readiness</button>
+    <button type="button" data-tab="drift" data-role-tier="ops">Drift</button>
+    <button type="button" data-tab="alerts">Alerts</button>
+    <button type="button" data-tab="security">Security</button>
+    <button type="button" data-tab="ota" data-role-tier="ops">OTA</button>
+    <button type="button" data-tab="sre">SRE</button>
+    <button type="button" data-tab="compliance" data-role-tier="govern">Compliance</button>
+    <button type="button" data-tab="audit" data-role-tier="govern">Audit</button>
+    <button type="button" data-tab="decisions" data-role-tier="ops">Decisions</button>
+    <button type="button" data-tab="digital-thread">Digital Thread</button>
+    <button type="button" data-tab="traceability">Traceability</button>
+    <button type="button" data-tab="analytics" data-role-tier="govern">Analytics</button>
+    <button type="button" data-tab="operator" data-role-tier="ops">Operator</button>
     <button type="button" data-tab="assurance">Assurance</button>
     <button type="button" data-tab="diagnosis">Diagnosis</button>
-    <button type="button" data-tab="provision">Provision</button>
-    <button type="button" data-tab="config">Config</button>
-    <button type="button" data-tab="drift">Drift</button>
-    <button type="button" data-tab="ota">OTA</button>
-    <button type="button" data-tab="security">Security</button>
-    <button type="button" data-tab="sre">SRE</button>
-    <button type="button" data-tab="operator">Operator</button>
-    <button type="button" data-tab="audit">Audit</button>
-    <button type="button" data-tab="digital-thread">Digital Thread</button>
     <button type="button" data-tab="adas">ADAS</button>
     <button type="button" data-tab="humans">Humans</button>
     <button type="button" data-tab="smart-spaces">Smart Spaces</button>
@@ -66,30 +97,295 @@
   </nav>
   <div id="error" class="error" hidden></div>
   <section id="tab-dashboard" class="panel"></section>
+  <section id="tab-entities" class="panel" hidden></section>
   <section id="tab-fleet" class="panel" hidden></section>
   <section id="tab-readiness" class="panel" hidden></section>
   <section id="tab-devices" class="panel" hidden></section>
+  <section id="tab-discovery" class="panel" hidden></section>
   <section id="tab-alerts" class="panel" hidden></section>
   <section id="tab-health" class="panel" hidden></section>
   <section id="tab-assurance" class="panel" hidden></section>
   <section id="tab-diagnosis" class="panel" hidden></section>
   <section id="tab-provision" class="panel" hidden></section>
+  <section id="tab-mapping" class="panel" hidden></section>
   <section id="tab-config" class="panel" hidden></section>
   <section id="tab-drift" class="panel" hidden></section>
   <section id="tab-ota" class="panel" hidden></section>
   <section id="tab-security" class="panel" hidden></section>
   <section id="tab-sre" class="panel" hidden></section>
+  <section id="tab-compliance" class="panel" hidden></section>
   <section id="tab-operator" class="panel" hidden></section>
   <section id="tab-audit" class="panel" hidden></section>
+  <section id="tab-decisions" class="panel" hidden></section>
   <section id="tab-digital-thread" class="panel" hidden></section>
+  <section id="tab-traceability" class="panel" hidden></section>
+  <section id="tab-analytics" class="panel" hidden></section>
   <section id="tab-adas" class="panel" hidden></section>
   <section id="tab-humans" class="panel" hidden></section>
   <section id="tab-smart-spaces" class="panel" hidden></section>
   <section id="tab-executive" class="panel" hidden></section>
   <script>
-    const tabs = ["dashboard", "fleet", "readiness", "devices", "alerts", "health", "assurance", "diagnosis", "provision", "config", "drift", "ota", "security", "sre", "operator", "audit", "digital-thread", "adas", "humans", "smart-spaces", "executive"];
+    const tabs = ["dashboard", "entities", "devices", "fleet", "discovery", "provision", "mapping", "config", "health", "readiness", "drift", "alerts", "security", "ota", "sre", "compliance", "audit", "decisions", "digital-thread", "traceability", "analytics", "operator", "assurance", "diagnosis", "adas", "humans", "smart-spaces", "executive"];
     const errEl = document.getElementById("error");
     const AUTH_STORAGE_PREFIX = "spanda.control_center.bearer_token.v1:";
+    const RBAC_ACTIONS = ["Deploy", "Operate", "Approve", "Override", "Shutdown", "Recover", "Delete", "Provision"];
+    const TAB_ACCESS = {
+      dashboard: ["*"],
+      entities: ["administrator", "supervisor", "developer"],
+      devices: ["*"],
+      fleet: ["*"],
+      discovery: ["administrator", "supervisor", "developer", "operator", "safety_officer"],
+      provision: ["administrator", "supervisor", "developer", "operator", "safety_officer"],
+      mapping: ["*"],
+      config: ["administrator", "supervisor", "developer"],
+      health: ["*"],
+      readiness: ["*"],
+      drift: ["administrator", "supervisor", "developer"],
+      alerts: ["*"],
+      security: ["*"],
+      ota: ["administrator", "supervisor", "developer"],
+      sre: ["*"],
+      compliance: ["administrator", "supervisor", "developer", "auditor", "safety_officer"],
+      audit: ["administrator", "supervisor", "developer", "auditor"],
+      decisions: ["administrator", "supervisor", "developer"],
+      "digital-thread": ["*"],
+      traceability: ["*"],
+      analytics: ["administrator", "supervisor", "developer", "auditor"],
+      operator: ["administrator", "supervisor", "operator", "safety_officer"],
+      assurance: ["*"],
+      diagnosis: ["*"],
+      adas: ["*"],
+      humans: ["*"],
+      "smart-spaces": ["*"],
+      executive: ["*"],
+    };
+    const ROLE_META = {
+      guest: {
+        label: "Guest",
+        summary: "Read-only dashboards. Paste a Bearer token to unlock role-specific operations.",
+      },
+      auditor: {
+        label: "Auditor",
+        summary: "Read-only compliance and audit views. No mutation actions.",
+      },
+      operator: {
+        label: "Operator",
+        summary: "Day-to-day fleet operations: incidents, provisioning, quarantine, recovery.",
+      },
+      developer: {
+        label: "Developer",
+        summary: "Deploy and configure: snapshots, drift, OTA plans, entities, decisions.",
+      },
+      safety_officer: {
+        label: "Safety Officer",
+        summary: "Safety approvals, shutdown workflows, and compliance export.",
+      },
+      supervisor: {
+        label: "Supervisor",
+        summary: "Full operational control except delete.",
+      },
+      administrator: {
+        label: "Administrator",
+        summary: "Full access to every tab and mutation action.",
+      },
+    };
+    const TAB_HINTS = {
+      sre: { operator: "Open, acknowledge, and resolve incidents.", safety_officer: "Monitor incidents and safety-related alerts." },
+      provision: { operator: "Trust, provision, assign, and quarantine devices.", developer: "Run full provision workflows against the device pool." },
+      compliance: { auditor: "Review signed profile catalog. Export requires Deploy permission.", safety_officer: "Export safety profiles when Deploy is granted; approve missions on Humans tab." },
+      audit: { auditor: "Mutation audit log requires Deploy permission to load via API." },
+      humans: { safety_officer: "Approve or reject pending mission approvals.", operator: "View operator readiness and HRI sessions." },
+      config: { developer: "Save snapshots and submit config publish approvals.", supervisor: "Approve or reject pending config publishes." },
+      operator: { operator: "Mission approvals and quarantine workflows.", safety_officer: "Approve missions and safety-critical operator actions." },
+    };
+    window.RBAC_CTX = null;
+    window.selectedDeviceId = "";
+    window.selectedEntityId = "";
+    window.complianceProfile = "defense";
+
+    function can(action) {
+      if (!window.RBAC_CTX || !window.RBAC_CTX.permissions) return false;
+      return window.RBAC_CTX.permissions.includes(action);
+    }
+
+    function hasToken() {
+      return Boolean(window.SPANDA_API_KEY);
+    }
+
+    function roleName() {
+      if (!window.RBAC_CTX) return "guest";
+      const role = window.RBAC_CTX.role;
+      return typeof role === "string" ? role : "guest";
+    }
+
+    function effectiveRole() {
+      return hasToken() ? roleName() : "guest";
+    }
+
+    function roleMeta() {
+      return ROLE_META[effectiveRole()] || ROLE_META.guest;
+    }
+
+    function tabAllowed(tab) {
+      const access = TAB_ACCESS[tab];
+      if (!access) return true;
+      if (access.includes("*")) return true;
+      return access.includes(effectiveRole());
+    }
+
+    function isReadOnlyRole() {
+      const role = effectiveRole();
+      return role === "guest" || role === "auditor";
+    }
+
+    function permTagsHtml() {
+      if (!window.RBAC_CTX) return "";
+      return '<div class="perm-tags">' + RBAC_ACTIONS.map((a) =>
+        '<span class="perm-tag' + (can(a) ? " ok" : "") + '">' + a + "</span>"
+      ).join("") + "</div>";
+    }
+
+    function actionBtn(label, onclick, action, extra) {
+      const allowed = can(action);
+      const disabled = !allowed || !hasToken();
+      const title = !hasToken()
+        ? "Paste a Bearer token above"
+        : !allowed
+          ? "Role lacks " + action + " permission"
+          : "";
+      return '<button type="button" class="secondary"' +
+        (disabled ? " disabled" : "") +
+        (title ? ' title="' + title + '"' : "") +
+        ' onclick="' + onclick + '"' +
+        (extra || "") +
+        ">" + label + "</button>";
+    }
+
+    function actionBar(buttons) {
+      return '<div class="action-bar">' + buttons.join("") + "</div>";
+    }
+
+    function roleBadgeHtml() {
+      const role = effectiveRole();
+      const meta = roleMeta();
+      return '<span class="role-badge ' + role + '">' + meta.label + "</span>";
+    }
+
+    function tabHintHtml(tab) {
+      const hints = TAB_HINTS[tab];
+      if (!hints) return "";
+      const role = effectiveRole();
+      const text = hints[role];
+      if (!text) return "";
+      return '<p class="role-tab-hint ' + role + '"><strong>' + roleMeta().label + ":</strong> " + text + "</p>";
+    }
+
+    window.switchTab = (tab) => {
+      if (!tabAllowed(tab)) return;
+      document.querySelectorAll("nav button").forEach((b) => b.classList.remove("active"));
+      const btn = document.querySelector('nav button[data-tab="' + tab + '"]');
+      if (btn) btn.classList.add("active");
+      tabs.forEach((t) => {
+        document.getElementById("tab-" + t).hidden = t !== tab;
+      });
+      const loaders = {
+        dashboard: loadDashboard,
+        entities: loadEntities,
+        fleet: loadFleet,
+        readiness: loadReadiness,
+        devices: loadDevices,
+        discovery: loadDiscovery,
+        alerts: loadAlerts,
+        health: loadHealth,
+        assurance: loadAssurance,
+        diagnosis: loadDiagnosis,
+        provision: loadProvision,
+        mapping: loadMapping,
+        config: loadConfig,
+        drift: loadDrift,
+        ota: loadOta,
+        security: loadSecurity,
+        sre: loadSre,
+        compliance: loadCompliance,
+        operator: loadOperator,
+        audit: loadAudit,
+        decisions: loadDecisions,
+        "digital-thread": loadDigitalThread,
+        traceability: loadTraceability,
+        analytics: loadAnalytics,
+        adas: loadAdas,
+        humans: loadHumans,
+        "smart-spaces": loadSmartSpaces,
+        executive: loadExecutive,
+      };
+      if (loaders[tab]) loaders[tab]();
+    };
+
+    function ensureActiveTabVisible() {
+      const active = document.querySelector("nav button.active");
+      const tab = active && active.dataset.tab;
+      if (tab && tabAllowed(tab)) return;
+      switchTab("dashboard");
+    }
+
+    function updateNavForRole() {
+      document.querySelectorAll("nav button[data-tab]").forEach((btn) => {
+        const tab = btn.dataset.tab;
+        const allowed = tabAllowed(tab);
+        btn.classList.toggle("hidden-tab", !allowed);
+        btn.title = allowed ? "" : "Not available for " + roleMeta().label + " role";
+      });
+      ensureActiveTabVisible();
+    }
+
+    async function refreshRbacContext() {
+      if (!window.SPANDA_API_KEY) {
+        window.RBAC_CTX = null;
+        updateNavForRole();
+        renderAuthStatus();
+        switchTab("dashboard");
+        return;
+      }
+      try {
+        const res = await fetch("/v1/rbac/me", {
+          headers: { Authorization: "Bearer " + window.SPANDA_API_KEY },
+        });
+        if (!res.ok) throw new Error("rbac/me " + res.status);
+        window.RBAC_CTX = await res.json();
+      } catch (_error) {
+        window.RBAC_CTX = { role: "guest", permissions: [] };
+      }
+      updateNavForRole();
+      renderAuthStatus();
+      const active = document.querySelector("nav button.active");
+      if (active && active.dataset.tab) switchTab(active.dataset.tab);
+    }
+
+    function renderAuthStatus() {
+      const status = document.getElementById("auth-status");
+      if (!window.SPANDA_API_KEY) {
+        status.hidden = true;
+        return;
+      }
+      status.hidden = false;
+      const meta = roleMeta();
+      status.innerHTML =
+        "Signed in as " + roleBadgeHtml() +
+        (window.RBAC_CTX && window.RBAC_CTX.key_id ? " (<code>" + window.RBAC_CTX.key_id + "</code>)" : "") +
+        " on <code>" + location.host + "</code>. " +
+        "<span class='hint'>" + meta.summary + "</span>" +
+        permTagsHtml() +
+        ' <button type="button" id="auth-key-forget" class="secondary" style="font-size:0.8rem;padding:0.2rem 0.5rem;margin-left:0.5rem;background:#1a2332;border:1px solid #2d3a4f;color:#c8d6e5;border-radius:6px;cursor:pointer;">Forget token</button>';
+      document.getElementById("auth-key-forget").addEventListener("click", () => {
+        window.SPANDA_API_KEY = "";
+        window.RBAC_CTX = null;
+        clearStoredApiKey();
+        status.hidden = true;
+        updateNavForRole();
+        switchTab("dashboard");
+        initAuthSetup();
+      });
+    }
 
     function authStorageKey() {
       return AUTH_STORAGE_PREFIX + location.host;
@@ -120,24 +416,13 @@
       }
     }
 
-    function setApiKey(value, { persist }) {
+    async function setApiKey(value, { persist }) {
       window.SPANDA_API_KEY = value;
       if (persist) {
         saveStoredApiKey(value);
       }
       document.getElementById("auth-setup").hidden = true;
-      const status = document.getElementById("auth-status");
-      status.hidden = false;
-      status.innerHTML =
-        "Operator token active for mutations on <code>" +
-        location.host +
-        '</code>. <button type="button" id="auth-key-forget" class="secondary" style="font-size:0.8rem;padding:0.2rem 0.5rem;margin-left:0.5rem;background:#1a2332;border:1px solid #2d3a4f;color:#c8d6e5;border-radius:6px;cursor:pointer;">Forget token</button>';
-      document.getElementById("auth-key-forget").addEventListener("click", () => {
-        window.SPANDA_API_KEY = "";
-        clearStoredApiKey();
-        status.hidden = true;
-        initAuthSetup();
-      });
+      await refreshRbacContext();
     }
 
     async function verifyApiKey(value) {
@@ -156,20 +441,21 @@
 
     function initAuthSetup() {
       if (window.SPANDA_API_KEY) {
-        setApiKey(window.SPANDA_API_KEY, { persist: false });
+        void setApiKey(window.SPANDA_API_KEY, { persist: false });
         return;
       }
       const stored = loadStoredApiKey();
       if (stored) {
         window.SPANDA_API_KEY = stored;
-        setApiKey(stored, { persist: false });
+        void setApiKey(stored, { persist: false });
         return;
       }
       const panel = document.getElementById("auth-setup");
       panel.hidden = false;
       panel.innerHTML = `
         <h2>Operator API key</h2>
-        <p>Mutations (provision, OTA, incidents, approvals) require a Bearer token registered on the server (<code>SPANDA_API_KEY</code> or <code>SPANDA_API_KEYS_FILE</code>).</p>
+        <p>Mutations require a Bearer token registered on the server (<code>SPANDA_API_KEY</code> or <code>SPANDA_API_KEYS_FILE</code>).</p>
+        <p class="hint">Roles: <strong>administrator</strong> (full), <strong>supervisor</strong> (no delete), <strong>developer</strong> (deploy/operate), <strong>operator</strong> (incidents/recovery), <strong>safety_officer</strong> (approve/shutdown), <strong>auditor</strong> (read-only audit/compliance). Tabs and actions adapt to your role after sign-in.</p>
         <pre>spanda control-center api-key generate --export</pre>
         <p>Paste the token below. Optionally remember it in this browser (same origin only, scoped to <code>${location.host}</code>).</p>
         <label>
@@ -190,7 +476,7 @@
         if (!value) return;
         try {
           await verifyApiKey(value);
-          setApiKey(value, { persist: remember });
+          await setApiKey(value, { persist: remember });
         } catch (error) {
           errorEl.hidden = false;
           errorEl.textContent =
@@ -202,36 +488,11 @@
     }
 
     initAuthSetup();
+    updateNavForRole();
 
     document.querySelectorAll("nav button").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll("nav button").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        const tab = btn.dataset.tab;
-        tabs.forEach((t) => {
-          document.getElementById("tab-" + t).hidden = t !== tab;
-        });
-        if (tab === "dashboard") loadDashboard();
-        if (tab === "fleet") loadFleet();
-        if (tab === "readiness") loadReadiness();
-        if (tab === "devices") loadDevices();
-        if (tab === "alerts") loadAlerts();
-        if (tab === "health") loadHealth();
-        if (tab === "assurance") loadAssurance();
-        if (tab === "diagnosis") loadDiagnosis();
-        if (tab === "provision") loadProvision();
-        if (tab === "config") loadConfig();
-        if (tab === "drift") loadDrift();
-        if (tab === "ota") loadOta();
-        if (tab === "security") loadSecurity();
-        if (tab === "sre") loadSre();
-        if (tab === "operator") loadOperator();
-        if (tab === "audit") loadAudit();
-        if (tab === "digital-thread") loadDigitalThread();
-        if (tab === "adas") loadAdas();
-        if (tab === "humans") loadHumans();
-        if (tab === "smart-spaces") loadSmartSpaces();
-        if (tab === "executive") loadExecutive();
+        switchTab(btn.dataset.tab);
       });
     });
 
@@ -249,10 +510,11 @@
           "Content-Type": "application/json",
           ...(key ? { Authorization: "Bearer " + key } : {}),
         },
-        body: body ? JSON.stringify(body) : undefined,
+        body: body != null ? JSON.stringify(body) : method === "GET" ? undefined : undefined,
       });
       if (!res.ok) throw new Error(path + " returned " + res.status);
-      return res.json();
+      const text = await res.text();
+      return text ? JSON.parse(text) : {};
     }
 
     window.sreAckIncident = async (id) => {
@@ -272,6 +534,157 @@
       await loadSre();
     };
 
+    window.runDiscovery = async () => {
+      const body = await apiAuth("POST", "/v1/devices/discover", {
+        transports: ["mdns", "subnet", "ble", "usb", "can", "mqtt", "ros2"],
+        timeout_ms: 2000,
+      });
+      document.getElementById("discovery-log").textContent = JSON.stringify(body, null, 2);
+      await loadDevices();
+    };
+
+    window.selectDevice = (id) => {
+      window.selectedDeviceId = id;
+      switchTab("provision");
+    };
+
+    window.trustSelectedDevice = async () => {
+      if (!window.selectedDeviceId) return;
+      await apiAuth("POST", "/v1/devices/" + encodeURIComponent(window.selectedDeviceId) + "/trust", {});
+      await loadProvision();
+      await loadDevices();
+    };
+
+    window.provisionSelectedDevice = async () => {
+      if (!window.selectedDeviceId) return;
+      const robot = document.getElementById("prov-robot")?.value || "rover-001";
+      const body = await apiAuth("POST", "/v1/devices/" + encodeURIComponent(window.selectedDeviceId) + "/provision", { robot_id: robot });
+      document.getElementById("provision-log").textContent = JSON.stringify(body.report ?? body, null, 2);
+      await loadDevices();
+      await loadProvision();
+    };
+
+    window.assignSelectedDevice = async () => {
+      if (!window.selectedDeviceId) return;
+      const robot = document.getElementById("prov-robot")?.value || "rover-001";
+      await apiAuth("POST", "/v1/devices/" + encodeURIComponent(window.selectedDeviceId) + "/assign", { robot_id: robot });
+      await loadDevices();
+      await loadProvision();
+    };
+
+    window.quarantineSelectedDevice = async () => {
+      if (!window.selectedDeviceId) return;
+      await apiAuth("POST", "/v1/devices/" + encodeURIComponent(window.selectedDeviceId) + "/quarantine", {});
+      await loadDevices();
+      await loadProvision();
+    };
+
+    window.runProvisionWorkflow = async () => {
+      const deviceId = document.getElementById("prov-device-id")?.value?.trim();
+      const robotId = document.getElementById("prov-robot")?.value?.trim();
+      if (!deviceId) return;
+      const body = await apiAuth("POST", "/v1/provision", { device_id: deviceId, robot_id: robotId || undefined });
+      document.getElementById("provision-log").textContent = JSON.stringify(body, null, 2);
+      await loadDevices();
+    };
+
+    window.saveConfigSnapshot = async () => {
+      const label = document.getElementById("cfg-label")?.value?.trim() || "ui-snapshot";
+      await apiAuth("POST", "/v1/config/snapshots", { label });
+      await loadConfig();
+    };
+
+    window.runDriftScan = async () => {
+      const baseline = document.getElementById("drift-baseline")?.value?.trim();
+      await apiAuth("POST", "/v1/drift/scan", baseline ? { baseline_id: baseline } : {});
+      await loadDrift();
+    };
+
+    window.planOta = async () => {
+      const version = document.getElementById("ota-version")?.value?.trim() || "1.0";
+      const strategy = document.getElementById("ota-strategy")?.value || "canary";
+      const body = await apiAuth("POST", "/v1/ota/plan", { strategy, version, dry_run: true });
+      document.getElementById("ota-plan-log").textContent = JSON.stringify(body, null, 2);
+    };
+
+    window.exportCompliance = async () => {
+      const profile = document.getElementById("compliance-profile")?.value || window.complianceProfile;
+      const res = await fetch("/v1/compliance/export?profile=" + encodeURIComponent(profile), {
+        headers: { Authorization: "Bearer " + (window.SPANDA_API_KEY || "") },
+      });
+      if (!res.ok) throw new Error("compliance export " + res.status);
+      const data = await res.json();
+      document.getElementById("compliance-export").textContent = JSON.stringify(data, null, 2);
+    };
+
+    window.loadMutationAudit = async () => {
+      const data = await apiAuth("GET", "/v1/audit/mutations", null);
+      document.getElementById("audit-output").textContent = JSON.stringify(data, null, 2);
+    };
+
+    window.syncEntities = async () => {
+      await apiAuth("POST", "/v1/entities/sync", {});
+      await loadEntities();
+    };
+
+    window.selectEntity = (id) => {
+      window.selectedEntityId = id;
+      loadEntities();
+    };
+
+    window.approveMission = async (approvalId, missionId, approved) => {
+      await apiAuth("POST", "/v1/operator/mission/approve", {
+        approval_id: approvalId,
+        mission_id: missionId,
+        approved,
+      });
+      await loadHumans();
+    };
+
+    window.approveConfig = async (id) => {
+      await apiAuth("POST", "/v1/config/approvals/" + encodeURIComponent(id) + "/approve", {});
+      await loadConfig();
+    };
+
+    window.rejectConfig = async (id) => {
+      await apiAuth("POST", "/v1/config/approvals/" + encodeURIComponent(id) + "/reject", {});
+      await loadConfig();
+    };
+
+    window.runReadinessCheck = async () => {
+      const res = await fetch("/v1/readiness/run", { method: "POST" });
+      if (!res.ok) throw new Error("readiness " + res.status);
+      const data = await res.json();
+      document.getElementById("readiness-result").textContent = JSON.stringify(data, null, 2);
+    };
+
+    window.exportDeviceReports = async () => {
+      const data = await api("/v1/device-reports");
+      const blob = new Blob([JSON.stringify(data.reports ?? data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "spanda-device-reports.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    window.runDecisionSim = async () => {
+      const body = await apiAuth("POST", "/v1/programs/simulation", {
+        execute: true,
+        decision_trace: true,
+        record_trace: true,
+        inject_health_faults: true,
+      });
+      document.getElementById("decisions-sim-log").textContent = JSON.stringify(body, null, 2);
+      await loadDecisions();
+    };
+
+    window.testAlert = async () => {
+      await apiAuth("POST", "/v1/alerts/test", {});
+      await loadAlerts();
+    };
+
     function showError(msg) {
       errEl.hidden = false;
       errEl.textContent = msg;
@@ -284,6 +697,7 @@
         const p = data.device_pool;
         document.getElementById("tab-dashboard").innerHTML = `
           <h2>Dashboard</h2>
+          ${!hasToken() ? '<p class="hint">Paste a Bearer token above to unlock role-specific tabs and actions.</p>' : ""}
           <div class="grid">
             <div class="stat"><dt>Devices</dt><dd>${p.total}</dd></div>
             <div class="stat"><dt>Healthy</dt><dd class="ok">${p.healthy}</dd></div>
@@ -318,6 +732,8 @@
         const notReady = p.failed + p.quarantined + p.offline;
         document.getElementById("tab-readiness").innerHTML = `
           <h2>Readiness</h2>
+          ${actionBar([actionBtn("Run readiness check", "runReadinessCheck()", "Operate")])}
+          <div id="readiness-result"></div>
           <div class="grid">
             <div class="stat"><dt>Mission-capable devices</dt><dd class="ok">${ready}</dd></div>
             <div class="stat"><dt>Blocked / offline</dt><dd>${notReady}</dd></div>
@@ -330,13 +746,24 @@
     async function loadDevices() {
       try {
         errEl.hidden = true;
-        const data = await api("/v1/devices");
+        const [data, robots] = await Promise.all([api("/v1/devices"), api("/v1/robots").catch(() => ({ robots: [] }))]);
         const rows = (data.devices || []).map((d) =>
-          `<tr><td>${d.id}</td><td>${d.device_type}</td><td>${d.lifecycle_state}</td><td>${d.assigned_robot || "—"}</td></tr>`
+          `<tr>
+            <td><button type="button" class="secondary" onclick="selectDevice('${d.id}')">${d.id}</button></td>
+            <td>${d.device_type}</td>
+            <td>${d.lifecycle_state}</td>
+            <td>${d.assigned_robot || "—"}</td>
+          </tr>`
         ).join("") || "<tr><td colspan='4'>No devices in pool — configure [[devices]] in spanda.toml</td></tr>";
         document.getElementById("tab-devices").innerHTML = `
           <h2>Device Pool</h2>
-          <table><thead><tr><th>ID</th><th>Type</th><th>Lifecycle</th><th>Assigned robot</th></tr></thead><tbody>${rows}</tbody></table>`;
+          <p class="hint">Click a device ID to open provisioning actions.</p>
+          ${actionBar([
+            actionBtn("Run discovery", "runDiscovery()", "Provision"),
+            actionBtn("Test alert", "testAlert()", "Operate"),
+          ])}
+          <table><thead><tr><th>ID</th><th>Type</th><th>Lifecycle</th><th>Assigned robot</th></tr></thead><tbody>${rows}</tbody></table>
+          <p class="hint">Robots: ${(robots.robots || []).map((r) => r.id).join(", ") || "none"}</p>`;
       } catch (e) { showError(String(e)); }
     }
 
@@ -385,22 +812,70 @@
     }
 
     async function loadProvision() {
-      document.getElementById("tab-provision").innerHTML = `
-        <h2>Provisioning</h2>
-        <p>POST <code>/v1/provision</code> with <code>{"device_id","robot_id"}</code> (Bearer token).</p>
-        <p>Failed provisioning emits a <code>readiness_failed</code> alert and quarantines the device.</p>`;
+      try {
+        errEl.hidden = true;
+        const [robots, detail] = await Promise.all([
+          api("/v1/robots").catch(() => ({ robots: [] })),
+          window.selectedDeviceId
+            ? fetch("/v1/devices/" + encodeURIComponent(window.selectedDeviceId)).then((r) => r.ok ? r.json() : null)
+            : Promise.resolve(null),
+        ]);
+        const robotList = robots.robots || [];
+        const robotOpts = robotList.map((r) =>
+          `<option value="${r.id}"${r.id === (detail?.device?.assigned_robot || robotList[0]?.id) ? " selected" : ""}>${r.id}</option>`
+        ).join("") || '<option value="rover-001">rover-001</option>';
+        const detailPre = detail?.device ? `<pre>${JSON.stringify(detail.device, null, 2)}</pre>` : "";
+        document.getElementById("tab-provision").innerHTML = `
+          <h2>Provisioning</h2>
+          ${tabHintHtml("provision")}
+          <p>Workflow: discover → verify → trust → assign → ready.</p>
+          <div class="dt-filters">
+            <label>Device id<input id="prov-device-id" value="${window.selectedDeviceId || ""}" placeholder="lidar-front" /></label>
+            <label>Target robot<select id="prov-robot">${robotOpts}</select></label>
+          </div>
+          ${actionBar([
+            actionBtn("Trust / Approve", "trustSelectedDevice()", "Approve"),
+            actionBtn("Provision device", "provisionSelectedDevice()", "Provision"),
+            actionBtn("Assign to fleet", "assignSelectedDevice()", "Operate"),
+            actionBtn("Quarantine", "quarantineSelectedDevice()", "Operate"),
+            actionBtn("Run workflow", "runProvisionWorkflow()", "Provision"),
+          ])}
+          ${detailPre}
+          <pre id="provision-log"></pre>`;
+      } catch (e) { showError(String(e)); }
     }
 
     async function loadConfig() {
       try {
         errEl.hidden = true;
-        const data = await api("/v1/config/snapshots");
-        const rows = (data.snapshots || []).map((s) =>
+        const [snaps, approvals] = await Promise.all([
+          api("/v1/config/snapshots"),
+          api("/v1/config/approvals").catch(() => ({ approvals: [] })),
+        ]);
+        const rows = (snaps.snapshots || []).map((s) =>
           `<tr><td>${s.id}</td><td>${s.label || "—"}</td><td>${s.device_count}</td></tr>`
-        ).join("") || "<tr><td colspan='3'>No snapshots — POST /v1/config/snapshots</td></tr>";
+        ).join("") || "<tr><td colspan='3'>No snapshots — save one below</td></tr>";
+        const approvalRows = (approvals.approvals || []).map((a) =>
+          `<tr>
+            <td><code>${a.id}</code></td>
+            <td>${a.snapshot_id || "—"}</td>
+            <td>${a.status}</td>
+            <td>
+              ${a.status === "pending" ? actionBtn("Approve", "approveConfig('" + a.id + "')", "Approve") : ""}
+              ${a.status === "pending" ? actionBtn("Reject", "rejectConfig('" + a.id + "')", "Approve") : ""}
+            </td>
+          </tr>`
+        ).join("") || "<tr><td colspan='4'>No pending approvals</td></tr>";
         document.getElementById("tab-config").innerHTML = `
           <h2>Configuration snapshots</h2>
-          <table><thead><tr><th>ID</th><th>Label</th><th>Devices</th></tr></thead><tbody>${rows}</tbody></table>`;
+          ${tabHintHtml("config")}
+          <div class="dt-filters">
+            <label>Snapshot label<input id="cfg-label" placeholder="baseline-v1" /></label>
+          </div>
+          ${actionBar([actionBtn("Save snapshot", "saveConfigSnapshot()", "Deploy")])}
+          <table><thead><tr><th>ID</th><th>Label</th><th>Devices</th></tr></thead><tbody>${rows}</tbody></table>
+          <h3>Publish approvals</h3>
+          <table><thead><tr><th>ID</th><th>Snapshot</th><th>Status</th><th>Actions</th></tr></thead><tbody>${approvalRows}</tbody></table>`;
       } catch (e) { showError(String(e)); }
     }
 
@@ -420,6 +895,10 @@
         ).join("");
         document.getElementById("tab-drift").innerHTML = `
           <h2>Operational drift</h2>
+          <div class="dt-filters">
+            <label>Baseline id<input id="drift-baseline" value="${first.id}" /></label>
+          </div>
+          ${actionBar([actionBtn("Run drift scan", "runDriftScan()", "Deploy")])}
           <p>Baseline: <code>${first.id}</code> — passed: <strong class="${data.report.passed ? "ok" : "error"}">${data.report.passed}</strong></p>
           <h3>By dimension</h3>
           <div class="grid">${dimCards || "<p>No drift findings</p>"}</div>
@@ -434,7 +913,17 @@
         const status = await api("/v1/ota/status");
         document.getElementById("tab-ota").innerHTML = `
           <h2>OTA rollout</h2>
-          <p>Plan via <code>POST /v1/ota/plan</code> — strategies: canary, staged, blue_green.</p>
+          <div class="dt-filters">
+            <label>Version<input id="ota-version" value="1.0" /></label>
+            <label>Strategy<select id="ota-strategy">
+              <option value="canary">canary</option>
+              <option value="staged">staged</option>
+              <option value="blue_green">blue_green</option>
+            </select></label>
+          </div>
+          ${actionBar([actionBtn("Plan rollout (dry-run)", "planOta()", "Deploy")])}
+          <pre id="ota-plan-log"></pre>
+          <h3>Current status</h3>
           <pre>${JSON.stringify(status, null, 2)}</pre>`;
       } catch (e) { showError(String(e)); }
     }
@@ -467,12 +956,13 @@
             <td>${inc.status}</td>
             <td>${inc.severity}</td>
             <td>
-              ${inc.status === "open" ? `<button type="button" onclick="sreAckIncident('${inc.id}')">Ack</button>` : ""}
-              ${inc.status !== "resolved" ? `<button type="button" onclick="sreResolveIncident('${inc.id}')">Resolve</button>` : ""}
+              ${inc.status === "open" && can("Operate") ? `<button type="button" onclick="sreAckIncident('${inc.id}')">Ack</button>` : ""}
+              ${inc.status !== "resolved" && can("Operate") ? `<button type="button" onclick="sreResolveIncident('${inc.id}')">Resolve</button>` : ""}
             </td>
           </tr>`).join("") || "<tr><td colspan='5'>No incidents</td></tr>";
         document.getElementById("tab-sre").innerHTML = `
           <h2>SRE dashboard</h2>
+          ${tabHintHtml("sre")}
           <div class="grid">
             <div class="stat"><dt>Availability %</dt><dd>${sre.availability_percent.toFixed(1)}</dd></div>
             <div class="stat"><dt>SLO target %</dt><dd>${(slo.target_percent ?? 99).toFixed(1)}</dd></div>
@@ -485,8 +975,7 @@
             <div class="stat"><dt>Traces</dt><dd>${sre.traces_recorded}</dd></div>
           </div>
           <h3>Incidents</h3>
-          <p><button type="button" onclick="sreCreateIncident()">Open incident</button>
-          ${window.SPANDA_API_KEY ? "" : " — run <code>spanda control-center api-key generate --export</code> and paste the token in the banner above"}</p>
+          ${actionBar([actionBtn("Open incident", "sreCreateIncident()", "Operate")])}
           <table><thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Severity</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>
           <h3>Recent traces</h3>
           <pre>${JSON.stringify((traces.traces || []).slice(-5), null, 2)}</pre>`;
@@ -496,9 +985,14 @@
     function loadOperator() {
       document.getElementById("tab-operator").innerHTML = `
         <h2>Operator workflows</h2>
+        ${tabHintHtml("operator")}
+        <p>Mission approvals, quarantine, and JSON-RPC gateway.</p>
+        ${actionBar([
+          actionBtn("Test alert", "testAlert()", "Operate"),
+        ])}
         <ul>
-          <li><code>POST /v1/operator/mission/approve</code> — mission approval (Bearer, Approve role)</li>
-          <li><code>POST /v1/operator/quarantine</code> — quarantine device (Bearer, Operate role)</li>
+          <li><code>POST /v1/operator/mission/approve</code> — mission approval (Approve role)</li>
+          <li><code>POST /v1/operator/quarantine</code> — quarantine device (Operate role)</li>
           <li><code>POST /v1/rpc</code> — gRPC-compatible JSON gateway</li>
         </ul>`;
     }
@@ -506,20 +1000,187 @@
     async function loadAudit() {
       try {
         errEl.hidden = true;
-        const res = await fetch("/v1/compliance/export?profile=defense", {
-          headers: { Authorization: "Bearer " + (window.SPANDA_API_KEY || "") }
-        });
-        if (!res.ok) throw new Error("compliance export " + res.status);
-        const data = await res.json();
         document.getElementById("tab-audit").innerHTML = `
-          <h2>Compliance audit export</h2>
-          <p>Audit ID: <code>${data.export.audit_export_id}</code></p>
-          <pre>${data.markdown || JSON.stringify(data.export, null, 2)}</pre>`;
+          <h2>Mutation audit trail</h2>
+          ${tabHintHtml("audit")}
+          <p>Hash-chained audit log for successful mutations.</p>
+          ${actionBar([actionBtn("Load audit log", "loadMutationAudit()", "Deploy")])}
+          <pre id="audit-output"></pre>`;
+        if (hasToken() && can("Deploy")) {
+          await window.loadMutationAudit();
+        }
       } catch (e) {
         document.getElementById("tab-audit").innerHTML = `
-          <h2>Compliance audit export</h2>
-          <p class="error">Requires <code>--program</code> and Bearer token. ${e}</p>`;
+          <h2>Mutation audit trail</h2>
+          ${tabHintHtml("audit")}
+          <p class="error">Requires Bearer token with Deploy permission. ${e}</p>`;
       }
+    }
+
+    async function loadDiscovery() {
+      document.getElementById("tab-discovery").innerHTML = `
+        <h2>Multi-transport discovery</h2>
+        <p>Discover devices via mDNS, subnet, BLE, USB, CAN, MQTT, and ROS2 stubs.</p>
+        ${actionBar([actionBtn("Discover devices", "runDiscovery()", "Provision")])}
+        <pre id="discovery-log"></pre>`;
+    }
+
+    async function loadMapping() {
+      try {
+        errEl.hidden = true;
+        const [tree, reports] = await Promise.all([
+          api("/v1/device-tree").catch(() => null),
+          api("/v1/device-reports").catch(() => null),
+        ]);
+        document.getElementById("tab-mapping").innerHTML = `
+          <h2>Logical ↔ physical mapping</h2>
+          ${actionBar([actionBtn("Export device reports", "exportDeviceReports()", "Operate")])}
+          <h3>Device tree</h3>
+          <pre>${JSON.stringify(tree, null, 2)}</pre>
+          <h3>Reports</h3>
+          <pre>${JSON.stringify(reports?.reports ?? reports, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadCompliance() {
+      try {
+        errEl.hidden = true;
+        const profiles = await api("/v1/compliance/profiles").catch(() => ({ profiles: ["defense", "medical", "iso26262"] }));
+        const catalog = profiles.signed_catalog || (profiles.profiles || []).map((name) => ({ name }));
+        const opts = catalog.map((p) => {
+          const name = typeof p === "string" ? p : p.name;
+          const verified = p.verified ? " (signed)" : "";
+          const selected = name === window.complianceProfile ? " selected" : "";
+          return `<option value="${name}"${selected}>${name}${verified}</option>`;
+        }).join("");
+        document.getElementById("tab-compliance").innerHTML = `
+          <h2>Compliance export</h2>
+          ${tabHintHtml("compliance")}
+          <div class="dt-filters">
+            <label>Profile<select id="compliance-profile" onchange="window.complianceProfile=this.value">${opts}</select></label>
+          </div>
+          ${actionBar([actionBtn("Export profile", "exportCompliance()", "Deploy")])}
+          ${isReadOnlyRole() ? '<p class="hint">Profile export requires Deploy permission. Signed profile catalog is listed below.</p>' : ""}
+          <pre id="compliance-export"></pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadDecisions() {
+      try {
+        errEl.hidden = true;
+        const [list, policies, traces, cache] = await Promise.all([
+          api("/v1/decisions").catch(() => null),
+          api("/v1/decision-policies").catch(() => null),
+          api("/v1/decisions/traces").catch(() => null),
+          api("/v1/decision-policy-cache").catch(() => null),
+        ]);
+        const frames = traces?.frames || [];
+        const traceRows = frames.slice(-20).map((f) => {
+          const p = f.payload || {};
+          return `<tr><td>${f.sim_time_ms ?? "—"}</td><td>${f.event ?? "—"}</td><td>${p.layer ?? "—"}</td><td>${p.entity_id ?? "—"}</td><td>${p.decision ?? "—"}</td></tr>`;
+        }).join("") || "<tr><td colspan='5'>No trace frames — run sim below</td></tr>";
+        document.getElementById("tab-decisions").innerHTML = `
+          <h2>Decision architecture</h2>
+          ${actionBar([
+            actionBtn("Refresh", "loadDecisions()", "Operate"),
+            actionBtn("Run sim with traces", "runDecisionSim()", "Deploy"),
+          ])}
+          <pre id="decisions-sim-log"></pre>
+          <h3>Decision list</h3>
+          <pre>${JSON.stringify(list, null, 2)}</pre>
+          <h3>Policies</h3>
+          <pre>${JSON.stringify(policies, null, 2)}</pre>
+          <h3>Policy cache</h3>
+          <pre>${JSON.stringify(cache, null, 2)}</pre>
+          <h3>Live trace frames</h3>
+          <table><thead><tr><th>Time</th><th>Event</th><th>Layer</th><th>Entity</th><th>Decision</th></tr></thead><tbody>${traceRows}</tbody></table>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadAnalytics() {
+      try {
+        errEl.hidden = true;
+        const [whatIf, risk, forecast, trust] = await Promise.all([
+          api("/v1/analytics/what-if?all=1").catch(() => null),
+          api("/v1/analytics/mission-risk").catch(() => null),
+          api("/v1/analytics/readiness-forecast?all=1").catch(() => null),
+          api("/v1/analytics/trust-graph").catch(() => null),
+        ]);
+        document.getElementById("tab-analytics").innerHTML = `
+          <h2>Analytics</h2>
+          <p>What-if, mission risk, readiness forecast, and trust graph.</p>
+          ${actionBar([actionBtn("Refresh", "loadAnalytics()", "Operate")])}
+          <h3>What-if analysis</h3>
+          <pre>${JSON.stringify(whatIf, null, 2)}</pre>
+          <h3>Mission risk</h3>
+          <pre>${JSON.stringify(risk, null, 2)}</pre>
+          <h3>Readiness forecast</h3>
+          <pre>${JSON.stringify(forecast, null, 2)}</pre>
+          <h3>Trust graph</h3>
+          <pre>${JSON.stringify(trust, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadTraceability() {
+      try {
+        errEl.hidden = true;
+        const [devices, trace] = await Promise.all([
+          api("/v1/devices"),
+          api("/v1/entities/traceability").catch(() => null),
+        ]);
+        const rows = (devices.devices || []).map((d) =>
+          `<tr><td>${d.id}</td><td>${d.trust_level || "—"}</td><td>${d.logical_name || "—"}</td><td>${d.lifecycle_state}</td></tr>`
+        ).join("") || "<tr><td colspan='4'>No devices</td></tr>";
+        document.getElementById("tab-traceability").innerHTML = `
+          <h2>Traceability</h2>
+          <h3>Device trust &amp; identity</h3>
+          <table><thead><tr><th>Device</th><th>Trust</th><th>Logical name</th><th>Lifecycle</th></tr></thead><tbody>${rows}</tbody></table>
+          <h3>Unified entity traceability</h3>
+          <pre>${JSON.stringify(trace, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
+    }
+
+    async function loadEntities() {
+      try {
+        errEl.hidden = true;
+        const [list, graph] = await Promise.all([
+          api("/v1/entities"),
+          api("/v1/entities/graph").catch(() => null),
+        ]);
+        const entities = list.entities || [];
+        const rows = entities.map((e) => {
+          const selected = e.id === window.selectedEntityId ? " style='background:#1e3a5f'" : "";
+          return `<tr${selected}>
+            <td><button type="button" class="secondary" onclick="selectEntity('${e.id}')">${e.id}</button></td>
+            <td>${e.kind || "—"}</td>
+            <td>${e.display_name || e.label || "—"}</td>
+            <td>${(e.tags || []).join(", ") || "—"}</td>
+          </tr>`;
+        }).join("") || "<tr><td colspan='4'>No entities — register or sync from config</td></tr>";
+        let detail = "";
+        if (window.selectedEntityId) {
+          const enc = encodeURIComponent(window.selectedEntityId);
+          const [detailRes, relRes] = await Promise.all([
+            fetch("/v1/entities/" + enc).then((r) => r.ok ? r.json() : null),
+            fetch("/v1/entities/" + enc + "/relationships").then((r) => r.ok ? r.json() : null),
+          ]);
+          detail = `<h3>Entity detail: ${window.selectedEntityId}</h3>
+            <pre>${JSON.stringify(detailRes, null, 2)}</pre>
+            <h4>Relationships</h4>
+            <pre>${JSON.stringify(relRes, null, 2)}</pre>`;
+        }
+        document.getElementById("tab-entities").innerHTML = `
+          <h2>Entity graph</h2>
+          ${actionBar([
+            actionBtn("Sync from config", "syncEntities()", "Deploy"),
+            actionBtn("Refresh", "loadEntities()", "Operate"),
+          ])}
+          <p class="hint">${entities.length} entities · ${(graph?.graph?.nodes || []).length} graph nodes</p>
+          <table><thead><tr><th>ID</th><th>Kind</th><th>Name</th><th>Tags</th></tr></thead><tbody>${rows}</tbody></table>
+          ${detail}
+          <h3>Graph summary</h3>
+          <pre>${JSON.stringify(graph?.graph ?? graph, null, 2)}</pre>`;
+      } catch (e) { showError(String(e)); }
     }
 
     async function loadDigitalThread() {
@@ -725,11 +1386,15 @@
           `<tr><td>${t.id}</td><td>${t.entity_id}</td><td>${(t.mirror || []).join(", ")}</td><td>${t.replay ? "yes" : "no"}</td></tr>`
         ).join("");
         const approvalRows = (missionApprovals.approvals || []).map((a) =>
-          `<tr><td>${a.id}</td><td>${a.mission_id}</td><td>${a.requested_by || "—"}</td><td>${a.status}</td></tr>`
+          `<tr><td>${a.id}</td><td>${a.mission_id}</td><td>${a.requested_by || "—"}</td><td>${a.status}</td><td>
+            ${a.status === "pending" && can("Approve") ? actionBtn("Approve", "approveMission('" + a.id + "','" + a.mission_id + "',true)", "Approve") : ""}
+            ${a.status === "pending" && can("Approve") ? actionBtn("Reject", "approveMission('" + a.id + "','" + a.mission_id + "',false)", "Approve") : ""}
+          </td></tr>`
         ).join("");
         const policy = health.policy || {};
         document.getElementById("tab-humans").innerHTML = `
           <h2>Human Interaction</h2>
+          ${tabHintHtml("humans")}
           <p class="subtitle">Spatial Computing blueprint — serve with <code>--config spanda.toml --program warehouse-ar/pick_mission.sd</code></p>
           <div class="grid">
             <div class="stat"><dt>Operators</dt><dd>${humans.count || 0}</dd></div>
@@ -752,7 +1417,7 @@
           <h3>Human digital twins</h3>
           <table><thead><tr><th>Twin</th><th>Entity</th><th>Mirror</th><th>Replay</th></tr></thead><tbody>${twinRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
           <h3>Mission approval queue</h3>
-          <table><thead><tr><th>ID</th><th>Mission</th><th>Requested by</th><th>Status</th></tr></thead><tbody>${approvalRows || "<tr><td colspan=4>none</td></tr>"}</tbody></table>
+          <table><thead><tr><th>ID</th><th>Mission</th><th>Requested by</th><th>Status</th><th>Actions</th></tr></thead><tbody>${approvalRows || "<tr><td colspan=5>none</td></tr>"}</tbody></table>
           <p>Approve: <code>POST /v1/operator/mission/approve</code> with Bearer token · List: <code>GET /v1/operator/mission/approvals</code></p>
           <p>Annotate: <code>POST /v1/hri/sessions/{id}/annotate</code> · Operator readiness: <code>GET /v1/humans/{id}/readiness</code> · Team: <code>GET /v1/humans/readiness</code></p>
           <h3>VR training</h3>
