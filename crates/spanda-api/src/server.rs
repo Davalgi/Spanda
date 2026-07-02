@@ -3,7 +3,7 @@
 use crate::handlers::{encode_response, handle_request};
 use crate::state::{shared_state, SharedState};
 use crate::ws::{is_telemetry_stream_upgrade, serve_telemetry_websocket};
-use spanda_deploy_http::parse_http_request;
+use spanda_deploy_http::{parse_http_request, read_http_request};
 use std::io::{Read, Write};
 use std::net::{Shutdown, TcpListener, TcpStream};
 use std::path::PathBuf;
@@ -97,6 +97,8 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
     eprintln!("  GET  /v1/observability/otlp/metrics  OTLP metrics preview");
     eprintln!("  POST /v1/observability/otlp/export-metrics  push metrics to collector");
     eprintln!("  POST /v1/observability/otlp/export  push traces to Jaeger");
+    eprintln!("  GET  /v1/twins              mission twin snapshot registry");
+    eprintln!("  POST /v1/twins/sync         sync twin from loaded program");
     if let Some(grpc_bind) = &options.grpc_bind {
         crate::grpc::spawn_grpc_server(grpc_bind.clone(), Arc::clone(&state));
         eprintln!(
@@ -152,16 +154,12 @@ fn serve_connection(
     if timeout_ms > 0 {
         let _ = stream.set_read_timeout(Some(Duration::from_millis(timeout_ms)));
     }
-    let mut buf = [0u8; 8192];
-    let read = stream
-        .read(&mut buf)
-        .map_err(|e| format!("read request failed: {e}"))?;
-    let raw = String::from_utf8_lossy(&buf[..read]);
+    let raw = read_http_request(&mut stream, 4 * 1024 * 1024)?;
     let request = parse_http_request(&raw)?;
     let path = request.path.split('?').next().unwrap_or(&request.path);
 
     if is_telemetry_stream_upgrade(&raw, path) {
-        return serve_telemetry_websocket(stream, &buf[..read], state);
+        return serve_telemetry_websocket(stream, raw.as_bytes(), state);
     }
 
     let mut guard = state.lock().map_err(|e| e.to_string())?;

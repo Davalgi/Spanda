@@ -484,10 +484,7 @@ pub fn serve_once(
     let (mut stream, _) = listener
         .accept()
         .map_err(|e| format!("accept failed: {e}"))?;
-    let mut raw = String::new();
-    stream
-        .read_to_string(&mut raw)
-        .map_err(|e| format!("read request failed: {e}"))?;
+    let raw = read_http_request(&mut stream, 4 * 1024 * 1024)?;
     let request = parse_http_request(&raw)?;
     let response = handler(request);
     let encoded = http_response(response.status, &response.body);
@@ -514,11 +511,83 @@ pub fn read_plain_request(stream: &mut TcpStream) -> Result<String, String> {
     //     let result = spanda_deploy_http::read_plain_request(strea);
 
     let _ = stream.set_read_timeout(Some(Duration::from_secs(30)));
-    let mut raw = String::new();
-    stream
-        .read_to_string(&mut raw)
-        .map_err(|e| format!("read request failed: {e}"))?;
-    Ok(raw)
+    read_http_request(stream, 4 * 1024 * 1024)
+}
+
+/// Read a complete HTTP/1.1 request using `Content-Length` (not chunked).
+pub fn read_http_request(stream: &mut TcpStream, max_bytes: usize) -> Result<String, String> {
+    // Read headers and body up to `max_bytes` using Content-Length.
+    //
+    // Parameters:
+    // - `stream` — TCP connection from accept()
+    // - `max_bytes` — upper bound on total request size
+    //
+    // Returns:
+    // Raw request bytes as UTF-8 text, or a read/parse error.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let raw = read_http_request(&mut stream, 1024 * 1024)?;
+
+    let mut buf = Vec::new();
+    let mut chunk = [0u8; 4096];
+
+    loop {
+        if buf.len() >= max_bytes {
+            return Err("request too large".into());
+        }
+        let read = stream
+            .read(&mut chunk)
+            .map_err(|error| format!("read request failed: {error}"))?;
+        if read == 0 {
+            break;
+        }
+        buf.extend_from_slice(&chunk[..read]);
+        if buf.windows(4).any(|window| window == b"\r\n\r\n") {
+            break;
+        }
+    }
+
+    let header_end = buf
+        .windows(4)
+        .position(|window| window == b"\r\n\r\n")
+        .ok_or_else(|| "invalid HTTP request".to_string())?
+        + 4;
+    let headers = std::str::from_utf8(&buf[..header_end])
+        .map_err(|error| format!("invalid UTF-8 in request: {error}"))?;
+    let content_length = content_length_from_headers(headers).unwrap_or(0);
+    let needed = header_end + content_length;
+    while buf.len() < needed {
+        if buf.len() >= max_bytes {
+            return Err("request too large".into());
+        }
+        let read = stream
+            .read(&mut chunk)
+            .map_err(|error| format!("read request failed: {error}"))?;
+        if read == 0 {
+            break;
+        }
+        buf.extend_from_slice(&chunk[..read]);
+    }
+    if buf.len() < needed {
+        return Err(format!(
+            "incomplete request body: expected {content_length} bytes"
+        ));
+    }
+    buf.truncate(needed);
+    String::from_utf8(buf).map_err(|error| format!("invalid UTF-8 in request: {error}"))
+}
+
+fn content_length_from_headers(headers: &str) -> Option<usize> {
+    for line in headers.lines().skip(1) {
+        let lower = line.to_ascii_lowercase();
+        if let Some(value) = lower.strip_prefix("content-length:") {
+            return value.trim().parse().ok();
+        }
+    }
+    None
 }
 
 pub fn write_plain_response(stream: &mut TcpStream, response: &HttpResponse) -> Result<(), String> {
@@ -586,9 +655,7 @@ pub fn serve_tls_connection(
         .map_err(|e| format!("TLS server connection: {e}"))?;
     let mut tls = StreamOwned::new(conn, stream);
     let _ = tls.sock.set_read_timeout(Some(Duration::from_secs(30)));
-    let mut raw = String::new();
-    tls.read_to_string(&mut raw)
-        .map_err(|e| format!("read request failed: {e}"))?;
+    let raw = read_http_request(&mut tls.sock, 4 * 1024 * 1024)?;
     let request = parse_http_request(&raw)?;
     let response = handler(request);
     let encoded = http_response(response.status, &response.body);
@@ -732,6 +799,42 @@ mod agent_bind_tests {
         assert!(bind_requires_agent_token("0.0.0.0:8765"));
         assert!(ensure_agent_auth("0.0.0.0:8765", &None, false).is_err());
         assert!(ensure_agent_auth("0.0.0.0:8765", &None, true).is_ok());
+    }
+}
+
+#[cfg(test)]
+mod http_read_tests {
+    use super::*;
+    use std::io::Write;
+    use std::net::TcpListener;
+    use std::thread;
+
+    #[test]
+    fn read_http_request_honors_content_length_without_eof() {
+        // Large POST bodies must not rely on connection close.
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let body = "x".repeat(9000);
+        let expected_body = body.clone();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let raw = read_http_request(&mut stream, 1024 * 1024).unwrap();
+            let request = parse_http_request(&raw).unwrap();
+            assert_eq!(request.body, expected_body);
+            let response = http_response(200, "{\"ok\":true}");
+            stream.write_all(response.as_bytes()).unwrap();
+        });
+        let mut client = TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
+        let payload = format!(
+            "POST /v1/twins/patrol/snapshots HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n{}",
+            body.len(),
+            body
+        );
+        client.write_all(payload.as_bytes()).unwrap();
+        let mut response = String::new();
+        client.read_to_string(&mut response).unwrap();
+        assert!(response.contains("\"ok\":true"));
+        server.join().unwrap();
     }
 }
 
