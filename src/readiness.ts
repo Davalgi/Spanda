@@ -13,6 +13,7 @@ import {
 } from "./hardware-verify.js";
 import { lineColumnForIssue } from "./readiness-spans.js";
 import { collectContinuityDiagnostics } from "./continuity-diagnostics.js";
+import { collectDecisionDiagnostics } from "./decision-diagnostics.js";
 import { collectRecoveryDiagnostics } from "./recovery-diagnostics.js";
 import type {
   ReadinessDashboard,
@@ -486,6 +487,7 @@ export function readinessDiagnostics(
     ...readinessItems,
     ...collectRecoveryDiagnostics(program),
     ...collectContinuityDiagnostics(program),
+    ...collectDecisionDiagnostics(program),
   ];
 }
 

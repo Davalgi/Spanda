@@ -137,3 +137,35 @@ export type AssuranceCaseDecl = {
   evidence: string[];
   span: Span;
 };
+
+export type DecisionTreeNestedBranch = {
+  condition: string;
+  actions: string[];
+  span: Span;
+};
+
+export type DecisionTreeBranch = {
+  condition: string;
+  actions: string[];
+  nested: DecisionTreeNestedBranch[];
+  span: Span;
+};
+
+export type DecisionTreeDecl = {
+  kind: "DecisionTreeDecl";
+  name: string;
+  scope: string;
+  layer: string;
+  version: string | null;
+  branches: DecisionTreeBranch[];
+  span: Span;
+};
+
+export type OfflinePolicyDecl = {
+  kind: "OfflinePolicyDecl";
+  name: string;
+  maxDurationMinutes: number;
+  allowedActions: string[];
+  forbiddenActions: string[];
+  span: Span;
+};

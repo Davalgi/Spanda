@@ -18,6 +18,8 @@ import {
   parseResiliencePolicy,
   parseRecoveryPolicy,
   parseContinuityPolicy,
+  parseDecisionTree,
+  parseOfflinePolicy,
   parseStateEstimator,
   type AssuranceParseCtx,
 } from "./assurance.js";
@@ -578,6 +580,8 @@ class Parser {
       "REQUEST",
       "DEVICE",
       "BUS",
+      "EMERGENCY_STOP",
+      "RESET_EMERGENCY_STOP",
     ];
 
     // check membership before continuing.
@@ -637,6 +641,8 @@ class Parser {
     const resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[] = [];
     const recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[] = [];
     const continuityPolicies: import("../assurance_decl.js").ContinuityPolicyDecl[] = [];
+    const decisionTrees: import("../assurance_decl.js").DecisionTreeDecl[] = [];
+    const offlinePolicies: import("../assurance_decl.js").OfflinePolicyDecl[] = [];
     const assuranceCases: import("../assurance_decl.js").AssuranceCaseDecl[] = [];
     const robots: RobotDecl[] = [];
     const hardwareProfiles: HardwareDecl[] = [];
@@ -728,6 +734,10 @@ class Parser {
         recoveryPolicies.push(parseRecoveryPolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "continuity_policy") {
         continuityPolicies.push(parseContinuityPolicy(this as unknown as AssuranceParseCtx));
+      } else if (this.check("IDENT") && this.peek().lexeme === "decision_tree") {
+        decisionTrees.push(parseDecisionTree(this as unknown as AssuranceParseCtx));
+      } else if (this.check("IDENT") && this.peek().lexeme === "offline_policy") {
+        offlinePolicies.push(parseOfflinePolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "mission_plan") {
         missionPlans.push(parseMissionPlan(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "operating_mode") {
@@ -785,6 +795,8 @@ class Parser {
       resiliencePolicies,
       recoveryPolicies,
       continuityPolicies,
+      decisionTrees,
+      offlinePolicies,
       assuranceCases,
       robots,
       span: this.spanFrom(start, end),
@@ -1699,6 +1711,8 @@ class Parser {
     const exposesCapabilities: string[] = [];
     const robotKillSwitches: KillSwitchDecl[] = [];
     const robotHealthChecks: HealthCheckDecl[] = [];
+    const localDecisionAuthority: string[] = [];
+    const requiresCentralApproval: string[] = [];
 
     // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
@@ -1921,6 +1935,14 @@ class Parser {
       } else if (this.check("IDENT") && this.peek().lexeme === "health_check") {
         robotHealthChecks.push(this.parseHealthCheck());
 
+      } else if (this.check("IDENT") && this.peek().lexeme === "local_decision_authority") {
+        this.advance();
+        localDecisionAuthority.push(...this.parseBracketBindingList("local_decision_authority"));
+
+      } else if (this.check("IDENT") && this.peek().lexeme === "requires_central_approval") {
+        this.advance();
+        requiresCentralApproval.push(...this.parseBracketBindingList("requires_central_approval"));
+
       // Handle any remaining cases.
       } else {
         const t = this.peek();
@@ -1979,6 +2001,8 @@ class Parser {
       exposesCapabilities,
       killSwitches: robotKillSwitches,
       healthChecks: robotHealthChecks,
+      localDecisionAuthority,
+      requiresCentralApproval,
       span: this.spanFrom(start, end),
     };
 }
@@ -2647,6 +2671,21 @@ class Parser {
     }
     this.expect("RBRACKET", `Expected ']' after ${kind} list`);
     this.expect("SEMICOLON", `Expected ';' after ${kind} list`);
+    return items;
+}
+
+  private parseBracketBindingList(kind: string): string[] {
+    this.expect("LBRACKET", `Expected '[' after ${kind}`);
+    const items: string[] = [];
+    if (!this.check("RBRACKET")) {
+      do {
+        items.push(this.parseBindingIdent(`Expected ${kind} action name`));
+      } while (this.match("COMMA") && !this.check("RBRACKET"));
+    }
+    this.expect("RBRACKET", `Expected ']' after ${kind} list`);
+    if (this.check("SEMICOLON")) {
+      this.advance();
+    }
     return items;
 }
 

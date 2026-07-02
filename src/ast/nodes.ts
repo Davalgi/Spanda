@@ -200,6 +200,8 @@ export type Program = {
   resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[];
   recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[];
   continuityPolicies: import("../assurance_decl.js").ContinuityPolicyDecl[];
+  decisionTrees: import("../assurance_decl.js").DecisionTreeDecl[];
+  offlinePolicies: import("../assurance_decl.js").OfflinePolicyDecl[];
   assuranceCases: import("../assurance_decl.js").AssuranceCaseDecl[];
   robots: RobotDecl[];
   span: Span;
@@ -262,6 +264,8 @@ export type RobotDecl = {
   exposesCapabilities: string[];
   killSwitches: import("../foundations.js").KillSwitchDecl[];
   healthChecks: import("../foundations.js").HealthCheckDecl[];
+  localDecisionAuthority: string[];
+  requiresCentralApproval: string[];
   span: Span;
 };
 

@@ -24,6 +24,10 @@ import type {
   RecoveryPolicyBranch,
   ContinuityPolicyDecl,
   ContinuityPolicyBranch,
+  DecisionTreeDecl,
+  DecisionTreeBranch,
+  DecisionTreeNestedBranch,
+  OfflinePolicyDecl,
   StateEstimatorDecl,
 } from "../ast/assurance-decls.js";
 import type { Span } from "../ast/nodes.js";
@@ -626,4 +630,163 @@ export function parseOperatingMode(ctx: AssuranceParseCtx): OperatingModeDecl {
   }
   const end = ctx.expect("RBRACE", "Expected '}' to close operating_mode");
   return { kind: "OperatingModeDecl", name, modeKind, span: ctx.spanFrom(start, end) };
+}
+
+function parseDecisionTreeCondition(ctx: AssuranceParseCtx): string {
+  const parts: string[] = [];
+  while (!ctx.check("LBRACE") && !ctx.check("RBRACE") && !ctx.check("EOF")) {
+    if (ctx.check("IDENT") || ctx.check("NUMBER")) {
+      parts.push(ctx.advance().lexeme);
+    } else if (ctx.check("DOT")) {
+      ctx.advance();
+      parts.push(".");
+    } else if (ctx.check("EQ")) {
+      ctx.advance();
+      parts.push("==");
+    } else if (ctx.check("ASSIGN")) {
+      ctx.advance();
+      parts.push("=");
+    } else if (ctx.check("NEQ")) {
+      ctx.advance();
+      parts.push("!=");
+    } else {
+      break;
+    }
+  }
+  if (parts.length === 0) {
+    const t = ctx.peek();
+    throw new ParseError("Expected decision tree condition", t.line, t.column);
+  }
+  return parts.join(" ").replace(/ \. /g, ".");
+}
+
+export function parseDecisionTree(ctx: AssuranceParseCtx): DecisionTreeDecl {
+  const start = ctx.advance();
+  const name = ctx.parseLabel("Expected decision_tree name");
+  const scope = ctx.parseLabel("Expected decision_tree scope (local, reflex, fleet)");
+  const layer = scope;
+  ctx.expect("LBRACE", "Expected '{' after decision_tree scope");
+  let version: string | null = null;
+  const branches: DecisionTreeBranch[] = [];
+  while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+    if (ctx.check("IDENT") && ctx.peek().lexeme === "version") {
+      ctx.advance();
+      ctx.expect("EQ", "Expected '=' after version");
+      version = ctx.parseLabel("Expected version string");
+    } else if (ctx.check("WHEN")) {
+      ctx.advance();
+      const condition = parseDecisionTreeCondition(ctx);
+      ctx.expect("LBRACE", "Expected '{' after when condition");
+      const actions: string[] = [];
+      const nested: DecisionTreeNestedBranch[] = [];
+      while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+        if (ctx.check("IF")) {
+          ctx.advance();
+          const nestedCond = parseDecisionTreeCondition(ctx);
+          ctx.expect("LBRACE", "Expected '{' after if condition");
+          const nestedActions: string[] = [];
+          while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+            nestedActions.push(parseActionStatement(ctx));
+          }
+          ctx.expect("RBRACE", "Expected '}' to close if branch");
+          nested.push({
+            condition: nestedCond,
+            actions: nestedActions,
+            span: ctx.spanFrom(start, ctx.previous()),
+          });
+        } else if (ctx.check("ELSE")) {
+          ctx.advance();
+          if (ctx.check("IF")) {
+            ctx.advance();
+            const nestedCond = parseDecisionTreeCondition(ctx);
+            ctx.expect("LBRACE", "Expected '{' after else if");
+            const nestedActions: string[] = [];
+            while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+              nestedActions.push(parseActionStatement(ctx));
+            }
+            ctx.expect("RBRACE", "Expected '}' to close else if");
+            nested.push({
+              condition: nestedCond,
+              actions: nestedActions,
+              span: ctx.spanFrom(start, ctx.previous()),
+            });
+          } else {
+            ctx.expect("LBRACE", "Expected '{' after else");
+            const nestedActions: string[] = [];
+            while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+              nestedActions.push(parseActionStatement(ctx));
+            }
+            ctx.expect("RBRACE", "Expected '}' to close else");
+            nested.push({
+              condition: "else",
+              actions: nestedActions,
+              span: ctx.spanFrom(start, ctx.previous()),
+            });
+          }
+        } else {
+          actions.push(parseActionStatement(ctx));
+        }
+      }
+      ctx.expect("RBRACE", "Expected '}' to close when branch");
+      branches.push({ condition, actions, nested, span: ctx.spanFrom(start, ctx.previous()) });
+    } else {
+      const t = ctx.peek();
+      throw new ParseError("Expected 'when' branch or 'version' in decision_tree", t.line, t.column);
+    }
+  }
+  const end = ctx.expect("RBRACE", "Expected '}' to close decision_tree");
+  return {
+    kind: "DecisionTreeDecl",
+    name,
+    scope,
+    layer,
+    version,
+    branches,
+    span: ctx.spanFrom(start, end),
+  };
+}
+
+export function parseOfflinePolicy(ctx: AssuranceParseCtx): OfflinePolicyDecl {
+  const start = ctx.advance();
+  const name = ctx.parseLabel("Expected offline_policy name");
+  ctx.expect("LBRACE", "Expected '{' after offline_policy name");
+  let maxDurationMinutes = 30;
+  let allowedActions: string[] = [];
+  let forbiddenActions: string[] = [];
+  while (!ctx.check("RBRACE") && !ctx.check("EOF")) {
+    if (ctx.check("IDENT") && ctx.peek().lexeme === "max_duration") {
+      ctx.advance();
+      ctx.expect("ASSIGN", "Expected '=' after max_duration");
+      const numTok = ctx.advance();
+      const digits = numTok.lexeme.replace(/\D/g, "");
+      maxDurationMinutes = Number.parseInt(digits, 10) || 30;
+      if (ctx.check("IDENT") && ctx.peek().lexeme === "min") {
+        ctx.advance();
+      }
+    } else if (ctx.check("SEMICOLON")) {
+      ctx.advance();
+    } else if (ctx.check("IDENT") && ctx.peek().lexeme === "allowed_actions") {
+      ctx.advance();
+      allowedActions = parseBracketNameList(ctx);
+    } else if (ctx.check("IDENT") && ctx.peek().lexeme === "forbidden_actions") {
+      ctx.advance();
+      forbiddenActions = parseBracketNameList(ctx);
+    } else {
+      const t = ctx.peek();
+      throw new ParseError(
+        "Expected max_duration, allowed_actions, or forbidden_actions in offline_policy",
+        t.line,
+        t.column,
+      );
+    }
+  }
+  const end = ctx.expect("RBRACE", "Expected '}' to close offline_policy");
+  return {
+    kind: "OfflinePolicyDecl",
+    name,
+    maxDurationMinutes,
+    allowedActions,
+    forbiddenActions,
+    span: ctx.spanFrom(start, end),
+  };
 }
