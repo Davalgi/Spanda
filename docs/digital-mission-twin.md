@@ -1,8 +1,15 @@
 # Digital Mission Twin
 
-**Status:** Planned · **Horizon:** LATER (6–12 months) · **Priority:** P2
+**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
 
-Maintain a digital representation of mission state — progress, health, readiness, risks, and recovery status.
+Maintain a digital representation of mission feasibility — readiness, assurance, and mission contract alignment.
+
+## CLI
+
+```bash
+spanda twin mission examples/showcase/mission_twin/patrol.sd
+spanda twin mission patrol.sd --json
+```
 
 ## Core types
 
@@ -15,7 +22,9 @@ Maintain a digital representation of mission state — progress, health, readine
 
 ## Integration
 
-Extends existing `twin` blocks and `spanda-readiness` twin module. Local twin in core; cloud sync via `spanda-twin-cloud` package (future).
+Extends existing `twin` blocks and `spanda-readiness` twin module. Local twin in core; cloud sync via `spanda-twin-cloud` package (**Future**).
+
+Showcase: `examples/showcase/mission_twin/patrol.sd` · `spanda demo mission-twin` · `scripts/later_differentiation_smoke.sh`.
 
 Feeds What-If (NEXT) and Mission Time Travel (LATER).
 

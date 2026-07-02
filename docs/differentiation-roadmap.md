@@ -67,7 +67,7 @@ These six capabilities define Spanda's market identity. Protect them in every re
 
 | # | Area | CLI (target) | Crate | Status |
 |---|------|--------------|-------|--------|
-| 6 | What-If Analysis | `spanda what-if <file>` | `spanda-whatif` | **Experimental** |
+| 6 | What-If Analysis | `spanda what-if <file>` | `spanda-whatif` | **Stable** |
 | 7 | Mission Risk Analysis | `spanda risk <file>` | `spanda-risk` | **Experimental** |
 | 8 | Readiness Forecasting | `spanda readiness forecast` | extends `spanda-readiness` | **Experimental** |
 | 9 | Trust Graph | `spanda trust-graph <file>` | `spanda-graph` + `spanda-trust` | **Experimental** |
@@ -85,7 +85,7 @@ Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto **1.0
 | 14 | Human/Robot Teaming | `spanda team verify` | extends `spanda-readiness` teaming | **Experimental** |
 | 15 | Autonomous Governance | `spanda governance <file> [--policy]` | `spanda-policy` | **Experimental** |
 
-Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`; demo: `spanda demo later`.
+Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`; demo: `spanda demo later`. Promotion gate: `scripts/differentiation_promotion_gate.sh`.
 
 ---
 
@@ -681,7 +681,7 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | Decision record emission in traces | Trace schema v3 tests |
 | `spanda explain` (static + trace) | Fixture explanations |
 
-**Exit:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` green.
+**Exit met (v0.5.0):** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` green.
 
 ### Phase 2 — Predictive operations (NEXT, v0.6)
 
@@ -693,19 +693,19 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | `spanda trust-graph` | Mermaid golden output |
 | `spanda score` | Scorecard composition tests |
 
-**Exit:** CI scorecard + what-if on showcase examples.
+**Exit met (Experimental, v0.6):** NEXT smokes in `differentiation_smoke.sh`; Control Center `/v1/analytics/*` + gRPC `GetAnalytics*`; `scripts/differentiation_promotion_gate.sh`. What-If promoted **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md).
 
 ### Phase 3 — Field trust (LATER, v0.7–v1.0)
 
 | Deliverable | Tests |
 |-------------|-------|
-| Digital mission twin | Twin state sync tests |
-| `spanda certify --bundle` | Bundle contents manifest |
-| `spanda replay --at` | Time-travel snapshot tests |
-| Human approval verify paths | Approval/escalation CI |
-| `policy { }` verify-time | Policy violation fixtures |
+| Digital mission twin | `spanda twin mission` + patrol showcase |
+| `spanda certify pack --bundle` | Bundle evidence manifest |
+| `spanda replay --at` | Time-travel snapshot tests + golden trace |
+| Human approval verify paths | `spanda team verify` |
+| Autonomous governance | `spanda governance` + policy blocks |
 
-**Exit:** End-to-end field deployment evidence workflow documented.
+**Exit met (Experimental, v0.7):** `spanda demo later` + `scripts/later_differentiation_smoke.sh` (via `differentiation_smoke.sh`).
 
 ---
 

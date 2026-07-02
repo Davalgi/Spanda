@@ -1,15 +1,15 @@
 # Certification Packs
 
-**Status:** Planned · **Horizon:** LATER (6–12 months) · **Priority:** P2
+**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Generate deployment-ready evidence bundles for field approval workflows.
 
 ## CLI
 
 ```bash
-spanda certify rover.sd
-spanda certify rover.sd --bundle deployment-evidence.zip
-spanda certify rover.sd --format json|markdown
+spanda certify pack examples/showcase/certify/deployment_bundle/rover.sd
+spanda certify pack rover.sd --bundle /tmp/spanda-cert-pack --json
+spanda certify pack rover.sd --strict
 ```
 
 ## Bundle contents

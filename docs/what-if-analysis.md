@@ -1,6 +1,6 @@
 # What-If Analysis
 
-**Status:** Experimental · **Horizon:** NEXT (3–6 months) · **Priority:** P1
+**Status:** Stable · **Horizon:** NEXT (promoted v0.5.0) · **Priority:** P1
 
 Predict mission outcomes under failure scenarios without executing on hardware.
 
@@ -42,6 +42,6 @@ Per scenario: **Impact**, **Risk**, **Recovery Plan**, **Probability** (heuristi
 
 ## Integration
 
-Composes Recovery planner, Assurance resilience, Sim fault injection, Readiness degradation model. ML probability backends ship as `spanda-whatif-ml` package.
+Composes Recovery planner, Assurance resilience, Sim fault injection, Readiness degradation model. Control Center: `GET /v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf`. SDK: `analyticsWhatIf` / `analytics_what_if`. Stable promotion: [stable-hardening-what-if.md](./stable-hardening-what-if.md).
 
 See [differentiation-roadmap.md](./differentiation-roadmap.md) · [chaos-engineering.md](./chaos-engineering.md).

@@ -1,16 +1,18 @@
 # Mission Time Travel
 
-**Status:** Planned · **Horizon:** LATER (6–12 months) · **Priority:** P2
+**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Replay mission state at any point in time for incident investigation.
 
 ## CLI
 
 ```bash
+spanda replay examples/showcase/differentiation/decision_trail/main.trace --at T+00:01 --inspect decisions
 spanda replay mission.trace --at 2026-06-24T14:32:00Z
-spanda replay mission.trace --at 14:32:00 --inspect decisions
-spanda replay mission.trace --at 14:32:00 --inspect health|readiness|safety
+spanda replay mission.trace --at T+01:30 --inspect health|readiness|safety|all --json
 ```
+
+Golden fixture: `examples/showcase/differentiation/decision_trail/main.trace`.
 
 ## Core types
 
