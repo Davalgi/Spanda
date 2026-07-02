@@ -84,6 +84,8 @@ spanda decision simulate mission.sd --offline
 spanda decision trace mission.trace
 spanda decision explain mission.trace
 spanda decision policy mission.sd
+spanda decision sign-policy mission.sd --policy RoverOffline --write-cache
+spanda decision cache show|sync|clear ...
 spanda decision security-audit
 ```
 
@@ -95,8 +97,10 @@ spanda decision security-audit
 | GET | `/v1/entities/{id}/decisions` | Entity-scoped decision evaluation |
 | POST | `/v1/decisions/simulate` | Simulate under failure scenarios |
 | POST | `/v1/decisions/escalate` | Approve pending escalation |
-| GET | `/v1/decision-policies` | List cached policies |
+| GET | `/v1/decision-policies` | Offline policy specs from loaded program |
 | GET | `/v1/decisions/traces` | List v3 decision frames from mission trace (`?file=` or `?trace=`) |
+| GET | `/v1/decision-policy-cache` | Persisted signed offline policy cache on disk |
+| POST | `/v1/programs/simulation` | Run sim; set `decision_trace` and `record_trace` for v3 frames |
 
 Env knobs for runtime gates in sim: `SPANDA_CENTRAL_CONNECTED`, `SPANDA_OFFLINE_MINUTES`, `SPANDA_DECISION_ESCALATION_APPROVED`.
 

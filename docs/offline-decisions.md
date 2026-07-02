@@ -52,6 +52,9 @@ When offline, entities:
 spanda decision simulate mission.sd --offline
 spanda decision inspect mission.sd --offline-minutes 20 --action return_home
 spanda decision sign-policy mission.sd --key "$SPANDA_DECISION_POLICY_SIGNING_KEY" --write-cache
+spanda decision cache show [--cache <path>] [--json]
+spanda decision cache sync mission.sd [--sign] [--key <hex>] [--cache <path>]
+spanda decision cache clear [--policy <name>] [--cache <path>]
 ```
 
 Signed policies persist to `.spanda/decision-policy-cache.json` (override with `SPANDA_DECISION_POLICY_CACHE`). Runtime merges cached signatures when program source omits the `signature` field.
@@ -59,3 +62,7 @@ Signed policies persist to `.spanda/decision-policy-cache.json` (override with `
 ## API
 
 `POST /v1/decisions/simulate` with `"offline": true`.
+
+`GET /v1/decision-policy-cache` — inspect the persisted signed policy cache.
+
+`POST /v1/programs/simulation` with `"execute": true`, `"decision_trace": true`, and `"record_trace": true` — run a sim that emits v3 decision frames (Control Center **Run sim with traces** uses this).

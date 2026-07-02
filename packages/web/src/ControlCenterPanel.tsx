@@ -173,6 +173,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const [auditData, setAuditData] = useState<Record<string, unknown> | null>(null);
   const [decisionData, setDecisionData] = useState<Record<string, unknown> | null>(null);
   const [decisionTraceLive, setDecisionTraceLive] = useState(false);
+  const [decisionSimBusy, setDecisionSimBusy] = useState(false);
+  const [decisionSimResult, setDecisionSimResult] = useState<Record<string, unknown> | null>(
+    null,
+  );
   const [scorecard, setScorecard] = useState<Record<string, unknown> | null>(null);
   const [digitalThread, setDigitalThread] = useState<Record<string, unknown> | null>(null);
   const [threadCapabilityFilter, setThreadCapabilityFilter] = useState("");
@@ -1018,19 +1022,47 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadDecisions = async (options: { quiet?: boolean } = {}) => {
     if (!options.quiet) setBusy(true);
     try {
-      const [listRes, policiesRes, tracesRes] = await Promise.all([
+      const [listRes, policiesRes, tracesRes, cacheRes] = await Promise.all([
         fetch(`${base}/v1/decisions`),
         fetch(`${base}/v1/decision-policies`),
         fetch(`${base}/v1/decisions/traces`),
+        fetch(`${base}/v1/decision-policy-cache`),
       ]);
       const list = listRes.ok ? await listRes.json() : null;
       const policies = policiesRes.ok ? await policiesRes.json() : null;
       const traces = tracesRes.ok ? await tracesRes.json() : null;
-      setDecisionData({ list, policies, traces });
+      const cache = cacheRes.ok ? await cacheRes.json() : null;
+      setDecisionData({ list, policies, traces, cache });
     } catch (e) {
       if (!options.quiet) setError(String(e));
     } finally {
       if (!options.quiet) setBusy(false);
+    }
+  };
+
+  const runDecisionSimWithTraces = async () => {
+    setDecisionSimBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`${base}/v1/programs/simulation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({
+          execute: true,
+          decision_trace: true,
+          record_trace: true,
+          inject_health_faults: true,
+        }),
+      });
+      if (!res.ok) throw new Error(`simulation ${res.status}`);
+      const body = await res.json();
+      setDecisionSimResult(body);
+      setDecisionTraceLive(true);
+      await loadDecisions({ quiet: true });
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setDecisionSimBusy(false);
     }
   };
 
@@ -1673,18 +1705,42 @@ export function ControlCenterPanel({ apiBase }: Props) {
           </button>
           <button
             type="button"
+            onClick={() => void runDecisionSimWithTraces()}
+            disabled={busy || decisionSimBusy}
+          >
+            {decisionSimBusy ? "Running sim…" : "Run sim with traces"}
+          </button>
+          <button
+            type="button"
             className={decisionTraceLive ? "active" : ""}
             onClick={() => setDecisionTraceLive((live) => !live)}
             disabled={busy}
           >
             {decisionTraceLive ? "Live trace on (3s)" : "Live trace off"}
           </button>
+          {decisionSimResult && (
+            <p className="demo-hint">
+              Last sim:{" "}
+              {String(
+                (decisionSimResult.simulation as Record<string, unknown> | undefined)?.status ??
+                  "completed",
+              )}
+              {" · "}
+              trace{" "}
+              {String(
+                (decisionSimResult.simulation as Record<string, unknown> | undefined)?.trace_path ??
+                  "—",
+              )}
+            </p>
+          )}
           {decisionData && (
             <>
               <h3>Decision architecture</h3>
               <pre>{JSON.stringify(decisionData.list, null, 2)}</pre>
               <h3>Decision policies</h3>
               <pre>{JSON.stringify(decisionData.policies, null, 2)}</pre>
+              <h3>Signed policy cache</h3>
+              <pre>{JSON.stringify(decisionData.cache, null, 2)}</pre>
               <h3>Live decision trace (v3)</h3>
               {(() => {
                 const traceBody = decisionData.traces as Record<string, unknown> | null;
@@ -1694,7 +1750,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
                     <p className="demo-hint">
                       {traceBody?.error
                         ? String(traceBody.error)
-                        : "No v3 frames yet — run sim with --record and SPANDA_DECISION_TRACE=1."}
+                        : "No v3 frames yet — click Run sim with traces or run sim with --record and SPANDA_DECISION_TRACE=1."}
                     </p>
                   );
                 }

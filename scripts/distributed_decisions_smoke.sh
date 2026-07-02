@@ -27,6 +27,9 @@ echo "== decision sign-policy (dry run) =="
 export SPANDA_DECISION_POLICY_SIGNING_KEY="${SPANDA_DECISION_POLICY_SIGNING_KEY:-offline-smoke-signing-key}"
 run_spanda decision sign-policy examples/showcase/distributed_decisions/offline_mission_continue/main.sd --policy RoverOffline --json >/dev/null
 
+echo "== decision policy cache =="
+run_spanda decision cache show --json >/dev/null || true
+
 echo "== sim with decision trace + audit =="
 TRACE="${ROOT}/examples/showcase/distributed_decisions/main.trace"
 rm -f "$TRACE"
