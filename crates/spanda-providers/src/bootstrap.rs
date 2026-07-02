@@ -318,7 +318,29 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
         record_packages_installed(package_names);
     }
 
+    merge_enabled_provider_plugins(&mut registry);
+
     registry
+}
+
+fn merge_enabled_provider_plugins(registry: &mut ProviderRegistry) {
+    let cwd = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
+    let Some(project_root) = spanda_package::manifest::find_project_root(&cwd) else {
+        return;
+    };
+    let Ok(plugins) = spanda_plugin::provider::list_enabled_provider_plugins(&project_root) else {
+        return;
+    };
+    if plugins.is_empty() {
+        return;
+    }
+    let mut names: Vec<String> = registry.official_packages().to_vec();
+    for plugin in plugins {
+        if !names.iter().any(|existing| existing == &plugin.name) {
+            names.push(plugin.name);
+        }
+    }
+    registry.set_official_packages(names);
 }
 
 /// Map a transport kind to the official package that backs it when installed.
