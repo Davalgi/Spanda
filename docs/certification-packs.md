@@ -1,6 +1,6 @@
 # Certification Packs
 
-**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
+**Status:** Stable · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Generate deployment-ready evidence bundles for field approval workflows.
 

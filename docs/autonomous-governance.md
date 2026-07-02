@@ -1,6 +1,6 @@
 # Autonomous Governance
 
-**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
+**Status:** Stable · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Evaluate operational policy blocks at verify time and via CLI before deployment.
 

@@ -1,6 +1,6 @@
 # Digital Mission Twin
 
-**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
+**Status:** Stable · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Maintain a digital representation of mission feasibility — readiness, assurance, and mission contract alignment.
 

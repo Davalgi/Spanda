@@ -1,6 +1,6 @@
 # Human / Robot Teaming
 
-**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
+**Status:** Stable · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Support collaborative autonomy with verified approval, escalation, and fallback paths.
 

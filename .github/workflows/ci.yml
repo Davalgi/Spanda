@@ -630,6 +630,19 @@ jobs:
           SPANDA_TRUST_GRAPH_SKIP_SOAK=1 SPANDA_TRUST_GRAPH_SKIP_SMOKE=1 ./scripts/trust_graph_stable_promotion_gate.sh
           SPANDA_SCORECARD_SKIP_SOAK=1 SPANDA_SCORECARD_SKIP_SMOKE=1 ./scripts/scorecard_stable_promotion_gate.sh
 
+  later-differentiation-stable-gates:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/later_differentiation_stable_promotion_gate.sh scripts/later_differentiation_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda SPANDA_LATER_SKIP_SOAK=1 ./scripts/later_differentiation_stable_promotion_gate.sh
+
   control-center-desktop:
     runs-on: ubuntu-latest
     needs: rust

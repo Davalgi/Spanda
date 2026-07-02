@@ -79,11 +79,11 @@ Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto **1.0
 
 | # | Area | CLI (target) | Crate | Status |
 |---|------|--------------|-------|--------|
-| 11 | Digital Mission Twin | `spanda twin mission` | extends `spanda-readiness` twin | **Experimental** |
-| 12 | Certification Packs | `spanda certify pack [--bundle]` | CLI bundle composer + `spanda-certify` | **Experimental** |
-| 13 | Mission Time Travel | `spanda replay <trace> --at <ts> --inspect <facets>` | extends `spanda-runtime` replay | **Experimental** |
-| 14 | Human/Robot Teaming | `spanda team verify` | extends `spanda-readiness` teaming | **Experimental** |
-| 15 | Autonomous Governance | `spanda governance <file> [--policy]` | `spanda-policy` | **Experimental** |
+| 11 | Digital Mission Twin | `spanda twin mission` | extends `spanda-readiness` twin | **Stable** |
+| 12 | Certification Packs | `spanda certify pack [--bundle]` | CLI bundle composer + `spanda-certify` | **Stable** |
+| 13 | Mission Time Travel | `spanda replay <trace> --at <ts> --inspect <facets>` | extends `spanda-runtime` replay | **Stable** |
+| 14 | Human/Robot Teaming | `spanda team verify` | extends `spanda-readiness` teaming | **Stable** |
+| 15 | Autonomous Governance | `spanda governance <file> [--policy]` | `spanda-policy` | **Stable** |
 
 Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`; demo: `spanda demo later`. Promotion gate: `scripts/differentiation_promotion_gate.sh`.
 
@@ -705,7 +705,7 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | Human approval verify paths | `spanda team verify` |
 | Autonomous governance | `spanda governance` + policy blocks |
 
-**Exit met (Experimental, v0.7):** `spanda demo later` + `scripts/later_differentiation_smoke.sh` (via `differentiation_smoke.sh`).
+**Exit met (Stable, v0.7):** All five LATER pillars promoted — see stable-hardening guides for mission time travel, digital mission twin, certification packs, human/robot teaming, and autonomous governance; `scripts/later_differentiation_stable_promotion_gate.sh` + CI `later-differentiation-stable-gates`.
 
 ---
 

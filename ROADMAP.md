@@ -220,17 +220,17 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Readiness Forecasting | **Stable** | Next | Core |
 | Trust Graph | **Stable** | Next | Core |
 | Scorecards | **Stable** | Next | Core |
-| Digital Mission Twin | **Experimental** | Later | Core |
-| Certification Packs | **Experimental** | Later | Core |
-| Mission Time Travel | **Experimental** | Later | Core |
-| Human/Robot Teaming | **Experimental** | Later | Solution Blueprint |
-| Autonomous Governance | **Experimental** | Later | Core |
+| Digital Mission Twin | **Stable** | Later | Core |
+| Certification Packs | **Stable** | Later | Core |
+| Mission Time Travel | **Stable** | Later | Core |
+| Human/Robot Teaming | **Stable** | Later | Solution Blueprint |
+| Autonomous Governance | **Stable** | Later | Core |
 
 **NOW deliverables (v0.5+):** `spanda-contract`, `spanda-explain`, `spanda-decision`, safety/recovery coverage — **Stable**. Exit: `spanda demo differentiation` + `scripts/differentiation_smoke.sh`.
 
 **NEXT deliverables (v0.6):** all five NEXT pillars **Stable** — what-if, risk, readiness forecast, trust graph, scorecards; Control Center REST/gRPC analytics in `differentiation_smoke.sh`.
 
-**LATER deliverables (v0.7):** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — **Experimental** CLI. Exit: `spanda demo later` + `scripts/later_differentiation_smoke.sh` (via `differentiation_smoke.sh`).
+**LATER deliverables (v0.7):** all five LATER pillars **Stable** — mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance; exit via `scripts/later_differentiation_stable_promotion_gate.sh`.
 
 **Topic guides:** [docs/mission-assurance.md](docs/mission-assurance.md) · [docs/self-healing.md](docs/self-healing.md) · [docs/mission-continuity.md](docs/mission-continuity.md) · [docs/readiness.md](docs/readiness.md) · [docs/replay.md](docs/replay.md) · [docs/mission-contracts.md](docs/mission-contracts.md) · [docs/explainability.md](docs/explainability.md) · [docs/tamper-detection.md](docs/tamper-detection.md)
 

@@ -1,6 +1,6 @@
 # Mission Time Travel
 
-**Status:** Experimental · **Horizon:** LATER (v0.7) · **Priority:** P2
+**Status:** Stable · **Horizon:** LATER (v0.7) · **Priority:** P2
 
 Replay mission state at any point in time for incident investigation.
 

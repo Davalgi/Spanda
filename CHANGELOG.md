@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides, `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI job `later-differentiation-stable-gates`.
+
 ## [0.5.0] - 2026-07-02
 
 ### Changed

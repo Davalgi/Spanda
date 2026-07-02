@@ -78,6 +78,11 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Readiness Forecasting** | `spanda readiness forecast`, `/v1/analytics/readiness-forecast` — **Stable** — [stable-hardening-readiness-forecast.md](./stable-hardening-readiness-forecast.md) |
 | **Trust Graph** | `spanda trust-graph`, `/v1/analytics/trust-graph` — **Stable** — [stable-hardening-trust-graph.md](./stable-hardening-trust-graph.md) |
 | **Scorecards** | `spanda score`, `/v1/executive/scorecard` — **Stable** — [stable-hardening-scorecards.md](./stable-hardening-scorecards.md) |
+| **Digital Mission Twin** | `spanda twin mission` — **Stable** — [stable-hardening-digital-mission-twin.md](./stable-hardening-digital-mission-twin.md) |
+| **Certification Packs** | `spanda certify pack --bundle` — **Stable** — [stable-hardening-certification-packs.md](./stable-hardening-certification-packs.md) |
+| **Mission Time Travel** | `spanda replay --at` / `--inspect` — **Stable** — [stable-hardening-mission-time-travel.md](./stable-hardening-mission-time-travel.md) |
+| **Human/Robot Teaming** | `spanda team verify` — **Stable** — [stable-hardening-human-robot-teaming.md](./stable-hardening-human-robot-teaming.md) |
+| **Autonomous Governance** | `spanda governance` — **Stable** — [stable-hardening-autonomous-governance.md](./stable-hardening-autonomous-governance.md) |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`; CLI `assure`, `anomaly scan`, `diagnose`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`; `spanda demo assurance` |
 | **Weighted sensor fusion** | `observe { }`, `state_estimator`, `fusion.read()` with type-weighted confidence; `spanda-fusion` package |
 | **Learned anomaly runtime** | `learned backend assurance.anomaly`; EMA volatility; optional ONNX (`SPANDA_ANOMALY_ONNX_MODEL_PATH`) |
@@ -109,13 +114,11 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **40** packages after `build-registry.sh` |
 | **Official package provenance** | Registry-only provider bootstrap; path/git name-squatting blocked | `OfficialProvenance` API; `official_provenance` install warning; production `deploy gate` hard-fail |
 | **Registry signature policy** | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` + lockfile signature audit | Required for production `deploy gate`; optional at install otherwise |
-| **Differentiation (LATER)** | Digital Mission Twin, Certification Packs, Mission Time Travel, Human/Robot Teaming, Autonomous Governance — **Experimental** CLI; `scripts/later_differentiation_smoke.sh` |
 
 ### Planned (v0.5 beta and beyond)
 
 | Area | Description |
 |------|-------------|
-| **Differentiation Stable promotion (LATER)** | Promote LATER pillars via stable gates after field soak |
 | **Human Interaction & Spatial Computing (H1–H6)** | **Stable** — H1–H6 platform APIs, Control Center Humans tab, `/v1/humans` + `/v1/hri/*`, promotion gate `hri_stable_promotion_gate.sh`; registry vendor packages remain **Experimental** — [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md) |
 | **Smart Spaces & Ambient Intelligence** | **Stable** — blueprint #15 feature-complete: simulation matrix, Control Center panels (REST + gRPC 1.0.5), live env I/O bridges, weighted readiness, CI `smart_spaces_promotion_gate.sh` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md) |
 | **Platform maturity (Phase A)** | **Stable** — `spanda graph`, `spanda deploy gate`, `spanda explain`, `spanda trust` — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
