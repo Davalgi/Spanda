@@ -89,6 +89,30 @@ class SpandaClient:
     def heal(self, target: str) -> Any:
         return self._request("POST", "/v1/programs/recovery/heal", self._program_body(target))
 
+    def plan_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/recovery/plan", body or {})
+
+    def simulate_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/recovery/simulate", body or {})
+
+    def execute_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/recovery/execute", body or {})
+
+    def validate_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/recovery/validate", body or {})
+
+    def list_recovery_policies(self) -> Any:
+        return self._request("GET", "/v1/recovery/policies")
+
+    def list_recovery_playbooks(self) -> Any:
+        return self._request("GET", "/v1/recovery/playbooks")
+
+    def get_recovery_history(self) -> Any:
+        return self._request("GET", "/v1/recovery/history")
+
+    def get_recovery_metrics(self) -> Any:
+        return self._request("GET", "/v1/recovery/metrics")
+
     def verify_hardware(self, project: str) -> Any:
         return self._request(
             "POST", "/v1/programs/verify/hardware", self._program_body(project)

@@ -192,6 +192,68 @@ impl SpandaClient {
         Ok(RecoveryReport { raw: value })
     }
 
+    /// Plan recovery via the Recovery Orchestrator.
+    pub fn plan_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/plan", Some(body), false)
+    }
+
+    /// Simulate recovery without affecting runtime state.
+    pub fn simulate_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/simulate", Some(body), false)
+    }
+
+    /// Execute recovery through the orchestrator.
+    pub fn execute_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/execute", Some(body), false)
+    }
+
+    /// Validate a recovery plan (dry-run with gates).
+    pub fn validate_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/validate", Some(body), false)
+    }
+
+    /// List recovery policies from config.
+    pub fn list_recovery_policies(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/policies", None, false)
+    }
+
+    /// List recovery playbooks.
+    pub fn list_recovery_playbooks(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/playbooks", None, false)
+    }
+
+    /// Get recovery history evidence records.
+    pub fn get_recovery_history(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/history", None, false)
+    }
+
+    /// Get aggregated recovery metrics.
+    pub fn get_recovery_metrics(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/metrics", None, false)
+    }
+
+    /// Get recovery graph (optional entity_id query param).
+    pub fn get_recovery_graph(&self, entity_id: Option<&str>) -> SpandaResult<Value> {
+        let path = match entity_id {
+            Some(id) => format!(
+                "/v1/recovery/graph?entity_id={}",
+                Self::percent_encode_query(id)
+            ),
+            None => "/v1/recovery/graph".into(),
+        };
+        self.request("GET", &path, None, false)
+    }
+
+    /// Explain recovery decision for entity failure.
+    pub fn explain_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/explain", Some(body), false)
+    }
+
+    /// List active recovery plans.
+    pub fn list_recovery_plans(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/plans", None, false)
+    }
+
     /// Verify hardware compatibility for a program.
     pub fn verify_hardware(&self, project: &str) -> SpandaResult<Value> {
         let body = Self::program_body(project);
@@ -610,11 +672,7 @@ impl SpandaClient {
     }
 
     /// What-if failure scenario analysis (`GET /v1/analytics/what-if`).
-    pub fn analytics_what_if(
-        &self,
-        scenario: Option<&str>,
-        all: bool,
-    ) -> SpandaResult<Value> {
+    pub fn analytics_what_if(&self, scenario: Option<&str>, all: bool) -> SpandaResult<Value> {
         let path = Self::analytics_path(
             "/v1/analytics/what-if",
             scenario.map(|s| ("scenario", s)),
@@ -694,7 +752,9 @@ impl SpandaClient {
     /// Autonomous governance policy evaluation (`GET /v1/analytics/governance`).
     pub fn analytics_governance(&self, policy: Option<&str>) -> SpandaResult<Value> {
         let path = match policy.filter(|s| !s.is_empty()) {
-            Some(name) => Self::analytics_query_path("/v1/analytics/governance", &[("policy", name)]),
+            Some(name) => {
+                Self::analytics_query_path("/v1/analytics/governance", &[("policy", name)])
+            }
             None => "/v1/analytics/governance".to_string(),
         };
         self.request("GET", &path, None, false)

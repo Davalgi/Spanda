@@ -100,6 +100,38 @@ export class SpandaClient {
     return this.request("POST", "/v1/programs/recovery/heal", this.programBody(target));
   }
 
+  async planRecovery(body: Record<string, unknown> = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/recovery/plan", body);
+  }
+
+  async simulateRecovery(body: Record<string, unknown> = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/recovery/simulate", body);
+  }
+
+  async executeRecovery(body: Record<string, unknown> = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/recovery/execute", body);
+  }
+
+  async validateRecovery(body: Record<string, unknown> = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/recovery/validate", body);
+  }
+
+  async listRecoveryPolicies(): Promise<JsonValue> {
+    return this.request("GET", "/v1/recovery/policies");
+  }
+
+  async listRecoveryPlaybooks(): Promise<JsonValue> {
+    return this.request("GET", "/v1/recovery/playbooks");
+  }
+
+  async getRecoveryHistory(): Promise<JsonValue> {
+    return this.request("GET", "/v1/recovery/history");
+  }
+
+  async getRecoveryMetrics(): Promise<JsonValue> {
+    return this.request("GET", "/v1/recovery/metrics");
+  }
+
   async verifyHardware(project: string): Promise<JsonValue> {
     return this.request(
       "POST",
