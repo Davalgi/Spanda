@@ -1,0 +1,26 @@
+//! Fleet takeover decision — Layer 2 group/fleet coordination.
+
+robot Rover001 {
+    local_decision_authority [request_takeover];
+}
+
+robot Rover002 {
+    local_decision_authority [accept_takeover, continue_mission];
+}
+
+continuity_policy FleetTakeover {
+    on robot.failed {
+        reassign mission;
+        promote backup coordinator;
+    }
+}
+
+fleet PatrolFleet {
+    Rover001;
+    Rover002;
+}
+
+mission_plan PatrolMission {
+    step patrol_route_a;
+    step patrol_route_b;
+}

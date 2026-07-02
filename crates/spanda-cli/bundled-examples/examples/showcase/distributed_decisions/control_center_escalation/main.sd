@@ -1,0 +1,24 @@
+//! Control center escalation — Layer 3 governance and human approval.
+
+robot Rover001 {
+    local_decision_authority [pause_mission, request_takeover];
+    requires_central_approval [
+        resume_high_risk_mission,
+        override_safety_policy,
+        disable_kill_switch
+    ];
+}
+
+continuity_policy ControlCenterEscalation {
+    on trust.compromised {
+        request human approval;
+        escalate to control center;
+    }
+    on mission.risk_increased {
+        request human approval;
+    }
+}
+
+mission_plan HighRiskMission {
+    step inspect_hazard_zone;
+}

@@ -10,4 +10,6 @@ spanda explain decision main.trace
 spanda decision trace main.trace
 ```
 
+`main.trace` is a checked-in golden fixture for replay time-travel smoke (`spanda replay main.trace --at T+00:01 --inspect decisions`).
+
 Part of `spanda demo differentiation` and `scripts/differentiation_smoke.sh`.

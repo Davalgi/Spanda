@@ -1,0 +1,37 @@
+// Autonomous governance showcase.
+//
+//   spanda governance examples/showcase/governance/night_ops.sd
+//   spanda governance examples/showcase/governance/night_ops.sd --policy NightOps --json
+
+policy NightOps {
+    max_speed = 1.0 m/s;
+    requires_kill_switch;
+    min_readiness_score = 80;
+}
+
+hardware RoverV1 {
+  sensors [ GPS, Lidar ];
+  actuators [ DifferentialDrive ];
+}
+
+kill_switch EmergencyStop {
+  priority: critical;
+  action { emergency_stop; }
+}
+
+robot Rover {
+  uses hardware RoverV1;
+  sensor gps: GPS;
+  sensor lidar: Lidar;
+  actuator wheels: DifferentialDrive;
+
+  safety {
+    max_speed = 0.8 m/s;
+  }
+
+  behavior patrol() {
+    wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+  }
+}
+
+deploy Rover to RoverV1;
