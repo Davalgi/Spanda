@@ -268,6 +268,13 @@ export class SpandaClient {
     return this.request("GET", `/v1/decisions/traces${qs ? `?${qs}` : ""}`);
   }
 
+  async listDecisionPolicyCache(query: { cache?: string } = {}): Promise<JsonValue> {
+    const params = new URLSearchParams();
+    if (query.cache) params.set("cache", query.cache);
+    const qs = params.toString();
+    return this.request("GET", `/v1/decision-policy-cache${qs ? `?${qs}` : ""}`);
+  }
+
   async getPackageTrust(packageName: string, version?: string): Promise<JsonValue> {
     let path = `/v1/trust/package?name=${encodeURIComponent(packageName)}`;
     if (version) {

@@ -303,6 +303,10 @@ class ControlCenterClient:
         query = f"?{'&'.join(params)}" if params else ""
         return self._request("GET", f"/v1/decisions/traces{query}")
 
+    def list_decision_policy_cache(self, *, cache: Optional[str] = None) -> Any:
+        query = f"?cache={cache}" if cache else ""
+        return self._request("GET", f"/v1/decision-policy-cache{query}")
+
     def rpc(self, method: str, params: Optional[Mapping[str, Any]] = None) -> Any:
         return self._request(
             "POST",

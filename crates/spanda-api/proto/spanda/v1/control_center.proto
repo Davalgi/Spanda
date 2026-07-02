@@ -164,6 +164,7 @@ service ControlCenter {
   rpc ListDecisions(QueryRequest) returns (JsonResponse);
   rpc ListDecisionPolicies(QueryRequest) returns (JsonResponse);
   rpc ListDecisionTraces(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionPolicyCache(QueryRequest) returns (JsonResponse);
   rpc SimulateDecisions(JsonBodyRequest) returns (JsonResponse);
   rpc GetEntityDecisions(EntityIdRequest) returns (JsonResponse);
 }

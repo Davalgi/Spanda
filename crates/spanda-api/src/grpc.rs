@@ -1260,6 +1260,16 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn list_decision_policy_cache(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::decision_ops::list_decision_policy_cache_json(state, &query))
+            .map(Response::new)
+    }
+
     async fn simulate_decisions(
         &self,
         request: Request<JsonBodyRequest>,

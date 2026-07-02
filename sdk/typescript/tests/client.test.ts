@@ -55,6 +55,22 @@ describe("SpandaClient", () => {
     await client.listDecisionTraces({ file: "mission.sd" });
     expect(captured).toBe("GET /v1/decisions/traces?file=mission.sd");
   });
+
+  it("listDecisionPolicyCache uses policy-cache path", async () => {
+    const client = SpandaClient.local();
+    let captured = "";
+    (client as unknown as { request: typeof client["request"] }).request = async (
+      method,
+      path,
+    ) => {
+      captured = `${method} ${path}`;
+      return {};
+    };
+    await client.listDecisionPolicyCache({ cache: "/tmp/cache.json" });
+    expect(captured).toBe(
+      "GET /v1/decision-policy-cache?cache=%2Ftmp%2Fcache.json",
+    );
+  });
 });
 
 describe("ReadinessReport", () => {

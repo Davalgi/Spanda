@@ -330,6 +330,16 @@ impl SpandaClient {
         self.request("GET", &path, None, false)
     }
 
+    /// List persisted signed offline policy cache entries on disk.
+    pub fn list_decision_policy_cache(&self, cache: Option<&str>) -> SpandaResult<Value> {
+        let path = if let Some(c) = cache {
+            format!("/v1/decision-policy-cache?cache={c}")
+        } else {
+            "/v1/decision-policy-cache".to_string()
+        };
+        self.request("GET", &path, None, false)
+    }
+
     /// Unified verification for any entity kind (hardware, mission, fleet, device pool).
     pub fn entity_verify(&self, id: &str, body: Option<&Value>) -> SpandaResult<Value> {
         self.request("POST", &format!("/v1/entities/{id}/verify"), body, false)

@@ -691,4 +691,13 @@ async fn grpc_decision_endpoints_with_showcase_program() {
         "unexpected traces body: {}",
         traces.json
     );
+
+    let policy_cache = client
+        .list_decision_policy_cache(QueryRequest {
+            query: String::new(),
+        })
+        .await
+        .expect("list decision policy cache")
+        .into_inner();
+    assert!(policy_cache.json.contains("policies"));
 }

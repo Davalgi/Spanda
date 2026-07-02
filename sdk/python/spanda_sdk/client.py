@@ -239,6 +239,10 @@ class SpandaClient:
         query = f"?{'&'.join(params)}" if params else ""
         return self._request("GET", f"/v1/decisions/traces{query}")
 
+    def list_decision_policy_cache(self, *, cache: Optional[str] = None) -> Any:
+        query = f"?cache={cache}" if cache else ""
+        return self._request("GET", f"/v1/decision-policy-cache{query}")
+
     def get_package_trust(self, package: str, version: Optional[str] = None) -> Any:
         path = f"/v1/trust/package?name={package}"
         if version:
