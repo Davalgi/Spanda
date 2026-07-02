@@ -7,9 +7,15 @@ use spanda_assurance::{
     load_merged_recovery_knowledge, recovery_from_diagnosis, simulate_failure_recovery,
     RecoveryContext, RecoveryLevel, RecoveryReport,
 };
+use spanda_config::build_entity_registry;
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_readiness::{format_failure_analysis, ReportFormat};
+use spanda_recovery::{
+    format_decision, format_graph, format_history, format_metrics, format_orchestrator_report,
+    format_playbooks, OrchestratorContext, RecoveryOrchestrator, RecoveryOrchestratorRequest,
+    RecoverySimulationMode,
+};
 use std::fs;
 use std::path::Path;
 use std::process;
@@ -141,6 +147,164 @@ fn device_registry_from_args(
     args: &[String],
 ) -> Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>> {
     load_system_config_from_cli_args(args)
+}
+
+fn entity_id_arg(args: &[String]) -> Option<String> {
+    args.iter()
+        .position(|a| a == "--entity" || a == "--entity-id")
+        .and_then(|i| args.get(i + 1).cloned())
+}
+
+fn orchestrator_context(
+    args: &[String],
+) -> (
+    spanda_ast::nodes::Program,
+    spanda_config::entity::EntityRegistry,
+    Option<std::sync::Arc<spanda_config::ResolvedSystemConfig>>,
+) {
+    let file = file_arg(args);
+    let source = read_file(&file);
+    let program = parse_program(&source);
+    let config = device_registry_from_args(args);
+    let registry = config
+        .as_ref()
+        .map(|c| build_entity_registry(c))
+        .unwrap_or_default();
+    (program, registry, config)
+}
+
+fn orchestrator_request_from_args(
+    args: &[String],
+    mode: RecoverySimulationMode,
+) -> RecoveryOrchestratorRequest {
+    RecoveryOrchestratorRequest {
+        entity_id: entity_id_arg(args),
+        failure: failure_arg(args),
+        mode,
+        playbook: args
+            .iter()
+            .position(|a| a == "--playbook")
+            .and_then(|i| args.get(i + 1).cloned()),
+        max_escalation_level: None,
+        force_execute: args.iter().any(|a| a == "--execute" || a == "--force"),
+    }
+}
+
+/// `spanda recovery plan <file.sd> [--entity <id>] [--failure <kind>] [--json]`
+pub fn cmd_orchestrator_plan(args: &[String]) {
+    let format = parse_format(args);
+    let (program, registry, config) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = orchestrator_request_from_args(args, RecoverySimulationMode::Plan);
+    let report = orchestrator.plan_recovery(&program, &registry, config.as_deref(), &request);
+    println!("{}", format_orchestrator_report(&report, format));
+    if !report.passed {
+        process::exit(1);
+    }
+}
+
+/// `spanda recovery simulate <file.sd> [--entity <id>] [--failure <kind>]`
+pub fn cmd_orchestrator_simulate(args: &[String]) {
+    let format = parse_format(args);
+    let (program, registry, config) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = orchestrator_request_from_args(args, RecoverySimulationMode::Simulate);
+    let report =
+        orchestrator.simulate_recovery(&program, &registry, config.as_deref(), &request, None);
+    println!("{}", format_orchestrator_report(&report, format));
+}
+
+/// `spanda recovery execute <file.sd> [--entity <id>] [--failure <kind>] [--force]`
+pub fn cmd_orchestrator_execute(args: &[String]) {
+    let format = parse_format(args);
+    let (program, registry, config) = orchestrator_context(args);
+    let mut orchestrator = RecoveryOrchestrator::new();
+    let request = orchestrator_request_from_args(args, RecoverySimulationMode::Validate);
+    let ctx = OrchestratorContext {
+        skip_execution: !request.force_execute,
+        ..Default::default()
+    };
+    let report =
+        orchestrator.execute_recovery(&program, &registry, config.as_deref(), &request, &ctx);
+    println!("{}", format_orchestrator_report(&report, format));
+    if !report.passed {
+        process::exit(1);
+    }
+}
+
+/// `spanda recovery validate <file.sd> [--entity <id>] [--failure <kind>]`
+pub fn cmd_orchestrator_validate(args: &[String]) {
+    let format = parse_format(args);
+    let (program, registry, config) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = orchestrator_request_from_args(args, RecoverySimulationMode::Validate);
+    let report = orchestrator.dry_run_recovery(&program, &registry, config.as_deref(), &request);
+    println!("{}", format_orchestrator_report(&report, format));
+}
+
+/// `spanda recovery history [--json]`
+pub fn cmd_orchestrator_history(args: &[String]) {
+    let format = parse_format(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let history = orchestrator.get_history(50);
+    println!("{}", format_history(&history, format));
+}
+
+/// `spanda recovery metrics <file.sd> [--json]`
+pub fn cmd_orchestrator_metrics(args: &[String]) {
+    let format = parse_format(args);
+    let (program, _, _) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let metrics = orchestrator.get_metrics(&program);
+    println!("{}", format_metrics(&metrics, format));
+}
+
+/// `spanda recovery graph <file.sd> [--entity <id>] [--json]`
+pub fn cmd_orchestrator_graph(args: &[String]) {
+    let format = parse_format(args);
+    let (_, registry, _) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let entity_id = entity_id_arg(args);
+    let graph = orchestrator.build_graph(&registry, entity_id.as_deref());
+    println!("{}", format_graph(&graph, format));
+}
+
+/// `spanda recovery playbooks [--json] [--config <spanda.toml>]`
+pub fn cmd_orchestrator_playbooks(args: &[String]) {
+    let format = parse_format(args);
+    let config = device_registry_from_args(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let playbooks = orchestrator.list_playbooks(config.as_deref());
+    println!("{}", format_playbooks(&playbooks, format));
+}
+
+/// `spanda recovery explain <file.sd> --entity <id> [--failure <kind>]`
+pub fn cmd_orchestrator_explain(args: &[String]) {
+    let format = parse_format(args);
+    let (_, registry, config) = orchestrator_context(args);
+    let entity_id = entity_id_arg(args).unwrap_or_else(|| {
+        eprintln!("--entity <id> required for explain");
+        process::exit(1);
+    });
+    let failure = failure_arg(args).unwrap_or_else(|| "degraded".into());
+    let orchestrator = RecoveryOrchestrator::new();
+    let decision = orchestrator
+        .explain_recovery(&registry, config.as_deref(), &entity_id, &failure)
+        .unwrap_or_else(|| {
+            eprintln!("entity '{entity_id}' not found");
+            process::exit(1);
+        });
+    println!("{}", format_decision(&decision, format));
+}
+
+/// `spanda recovery dry-run <file.sd> [--entity <id>] [--failure <kind>]`
+pub fn cmd_orchestrator_dry_run(args: &[String]) {
+    let format = parse_format(args);
+    let (program, registry, config) = orchestrator_context(args);
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = orchestrator_request_from_args(args, RecoverySimulationMode::DryRun);
+    let report = orchestrator.dry_run_recovery(&program, &registry, config.as_deref(), &request);
+    println!("{}", format_orchestrator_report(&report, format));
 }
 
 fn build_report(file: &str, args: &[String]) -> RecoveryReport {
@@ -341,10 +505,22 @@ pub fn recovery_dispatch(args: &[String]) {
     //     let result = spanda_cli::recovery_cli::recovery_dispatch(args);
 
     match args.first().map(String::as_str).unwrap_or("") {
-        "plan" | "report" => cmd_recovery_report(&args[1..]),
+        "plan" => cmd_orchestrator_plan(&args[1..]),
+        "simulate" => cmd_orchestrator_simulate(&args[1..]),
+        "dry-run" => cmd_orchestrator_dry_run(&args[1..]),
+        "execute" => cmd_orchestrator_execute(&args[1..]),
+        "validate" => cmd_orchestrator_validate(&args[1..]),
+        "history" => cmd_orchestrator_history(&args[1..]),
+        "metrics" => cmd_orchestrator_metrics(&args[1..]),
+        "graph" => cmd_orchestrator_graph(&args[1..]),
+        "playbooks" => cmd_orchestrator_playbooks(&args[1..]),
+        "explain" => cmd_orchestrator_explain(&args[1..]),
+        "report" => cmd_recovery_report(&args[1..]),
         "knowledge" => cmd_recovery_knowledge(&args[1..]),
         _ => {
-            eprintln!("Usage: spanda recovery plan|report|knowledge <file.sd>");
+            eprintln!(
+                "Usage: spanda recovery plan|simulate|dry-run|execute|validate|history|metrics|graph|playbooks|explain|report|knowledge ..."
+            );
             process::exit(1);
         }
     }
