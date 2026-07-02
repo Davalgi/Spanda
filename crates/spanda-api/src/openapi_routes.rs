@@ -420,6 +420,26 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/analytics/mission-twin",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/analytics/certification-pack",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/analytics/time-travel",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/analytics/human-teaming",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/analytics/governance",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/compliance/profiles",
     },
     ApiRoute {

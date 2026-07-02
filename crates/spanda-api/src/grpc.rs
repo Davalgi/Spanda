@@ -721,6 +721,54 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn get_analytics_mission_twin(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        self.with_state(crate::handlers::analytics_mission_twin_json)
+            .map(Response::new)
+    }
+
+    async fn get_analytics_certification_pack(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_certification_pack_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn get_analytics_time_travel(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_time_travel_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn get_analytics_human_teaming(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        self.with_state(crate::handlers::analytics_human_teaming_json)
+            .map(Response::new)
+    }
+
+    async fn get_analytics_governance(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::handlers::analytics_governance_json(state, &query))
+            .map(Response::new)
+    }
+
     async fn export_reports(
         &self,
         request: Request<QueryRequest>,

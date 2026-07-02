@@ -758,4 +758,27 @@ async fn grpc_analytics_endpoints_with_forecast_program() {
         .expect("analytics trust graph")
         .into_inner();
     assert!(trust_graph.json.contains("\"version\":\"v1\""));
+
+    let twin = client
+        .get_analytics_mission_twin(Empty {})
+        .await
+        .expect("analytics mission twin")
+        .into_inner();
+    assert!(twin.json.contains("\"version\":\"v1\""));
+
+    let cert = client
+        .get_analytics_certification_pack(QueryRequest {
+            query: String::new(),
+        })
+        .await
+        .expect("analytics certification pack")
+        .into_inner();
+    assert!(cert.json.contains("\"version\":\"v1\""));
+
+    let teaming = client
+        .get_analytics_human_teaming(Empty {})
+        .await
+        .expect("analytics human teaming")
+        .into_inner();
+    assert!(teaming.json.contains("\"version\":\"v1\""));
 }

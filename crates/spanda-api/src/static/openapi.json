@@ -958,6 +958,47 @@
         "responses": { "200": { "description": "Trust graph payload" } }
       }
     },
+    "/v1/analytics/mission-twin": {
+      "get": {
+        "summary": "Digital mission twin report",
+        "responses": { "200": { "description": "Mission twin state and risks" } }
+      }
+    },
+    "/v1/analytics/certification-pack": {
+      "get": {
+        "summary": "Certification evidence pack",
+        "parameters": [
+          { "name": "strict", "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": { "200": { "description": "Certification pack composition" } }
+      }
+    },
+    "/v1/analytics/time-travel": {
+      "get": {
+        "summary": "Mission time travel trace inspection",
+        "parameters": [
+          { "name": "at", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "inspect", "in": "query", "schema": { "type": "string" } },
+          { "name": "trace", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Historical mission state snapshot" } }
+      }
+    },
+    "/v1/analytics/human-teaming": {
+      "get": {
+        "summary": "Human/robot teaming verification",
+        "responses": { "200": { "description": "Approval and escalation paths" } }
+      }
+    },
+    "/v1/analytics/governance": {
+      "get": {
+        "summary": "Autonomous governance policy evaluation",
+        "parameters": [
+          { "name": "policy", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Policy evaluation report" } }
+      }
+    },
     "/v1/reports/export": {
       "get": {
         "summary": "Combined executive report export",

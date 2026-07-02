@@ -1,5 +1,5 @@
 syntax = "proto3";
-// Spanda Control Center gRPC API — proto semver 1.0.6 (package spanda.v1).
+// Spanda Control Center gRPC API — proto semver 1.0.7 (package spanda.v1).
 package spanda.v1;
 
 message Empty {}
@@ -114,6 +114,11 @@ service ControlCenter {
   rpc GetAnalyticsMissionRisk(Empty) returns (JsonResponse);
   rpc GetAnalyticsReadinessForecast(QueryRequest) returns (JsonResponse);
   rpc GetAnalyticsTrustGraph(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsMissionTwin(Empty) returns (JsonResponse);
+  rpc GetAnalyticsCertificationPack(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsTimeTravel(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsHumanTeaming(Empty) returns (JsonResponse);
+  rpc GetAnalyticsGovernance(QueryRequest) returns (JsonResponse);
   rpc ExportReports(QueryRequest) returns (JsonResponse);
   rpc GetObservabilityTraces(Empty) returns (JsonResponse);
   rpc GetOtlpTraces(Empty) returns (JsonResponse);

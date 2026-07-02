@@ -2,6 +2,7 @@
 //!
 use crate::correlation::{correlation_from_headers, new_correlation_id};
 use crate::differentiation_ops;
+use crate::later_differentiation_ops;
 use crate::e3;
 use crate::e4;
 use crate::observability;
@@ -403,6 +404,21 @@ pub fn handle_request(
         }
         ("/v1/analytics/trust-graph", "GET") => {
             differentiation_ops::analytics_trust_graph(state, query)
+        }
+        ("/v1/analytics/mission-twin", "GET") => {
+            later_differentiation_ops::analytics_mission_twin(state)
+        }
+        ("/v1/analytics/certification-pack", "GET") => {
+            later_differentiation_ops::analytics_certification_pack(state, query)
+        }
+        ("/v1/analytics/time-travel", "GET") => {
+            later_differentiation_ops::analytics_time_travel(state, query)
+        }
+        ("/v1/analytics/human-teaming", "GET") => {
+            later_differentiation_ops::analytics_human_teaming(state)
+        }
+        ("/v1/analytics/governance", "GET") => {
+            later_differentiation_ops::analytics_governance(state, query)
         }
         ("/v1/reports/export", "GET") => e4::reports_export(state, query, ctx.as_ref()),
         ("/v1/reports/schedules", "GET") => crate::report_scheduler::report_schedules_list(state),
@@ -1534,10 +1550,35 @@ pub(crate) fn parse_query(query: &str) -> std::collections::HashMap<String, Stri
     let mut map = std::collections::HashMap::new();
     for pair in query.split('&').filter(|s| !s.is_empty()) {
         if let Some((k, v)) = pair.split_once('=') {
-            map.insert(k.to_string(), v.to_string());
+            map.insert(decode_query_component(k), decode_query_component(v));
         }
     }
     map
+}
+
+fn decode_query_component(raw: &str) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let bytes = raw.as_bytes();
+    let mut index = 0usize;
+    while index < bytes.len() {
+        if bytes[index] == b'%' && index + 2 < bytes.len() {
+            if let Ok(decoded) = u8::from_str_radix(
+                std::str::from_utf8(&bytes[index + 1..index + 3]).unwrap_or(""),
+                16,
+            ) {
+                out.push(char::from(decoded));
+                index += 3;
+                continue;
+            }
+        }
+        if bytes[index] == b'+' {
+            out.push(' ');
+        } else {
+            out.push(bytes[index] as char);
+        }
+        index += 1;
+    }
+    out
 }
 
 pub(crate) fn parse_header_pairs(raw_headers: &str) -> Vec<(String, String)> {
@@ -1974,6 +2015,31 @@ pub fn analytics_readiness_forecast_json(state: &ControlCenterState, query: &str
 /// JSON body for gRPC `GetAnalyticsTrustGraph` (parity with `GET /v1/analytics/trust-graph`).
 pub fn analytics_trust_graph_json(state: &ControlCenterState, query: &str) -> String {
     differentiation_ops::analytics_trust_graph(state, query).body
+}
+
+/// JSON body for gRPC `GetAnalyticsMissionTwin` (parity with `GET /v1/analytics/mission-twin`).
+pub fn analytics_mission_twin_json(state: &ControlCenterState) -> String {
+    later_differentiation_ops::analytics_mission_twin(state).body
+}
+
+/// JSON body for gRPC `GetAnalyticsCertificationPack` (parity with `GET /v1/analytics/certification-pack`).
+pub fn analytics_certification_pack_json(state: &ControlCenterState, query: &str) -> String {
+    later_differentiation_ops::analytics_certification_pack(state, query).body
+}
+
+/// JSON body for gRPC `GetAnalyticsTimeTravel` (parity with `GET /v1/analytics/time-travel`).
+pub fn analytics_time_travel_json(state: &ControlCenterState, query: &str) -> String {
+    later_differentiation_ops::analytics_time_travel(state, query).body
+}
+
+/// JSON body for gRPC `GetAnalyticsHumanTeaming` (parity with `GET /v1/analytics/human-teaming`).
+pub fn analytics_human_teaming_json(state: &ControlCenterState) -> String {
+    later_differentiation_ops::analytics_human_teaming(state).body
+}
+
+/// JSON body for gRPC `GetAnalyticsGovernance` (parity with `GET /v1/analytics/governance`).
+pub fn analytics_governance_json(state: &ControlCenterState, query: &str) -> String {
+    later_differentiation_ops::analytics_governance(state, query).body
 }
 
 /// JSON body for gRPC `ExportReports` (parity with `GET /v1/reports/export`).

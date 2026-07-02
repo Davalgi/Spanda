@@ -1100,15 +1100,20 @@
     async function loadAnalytics() {
       try {
         errEl.hidden = true;
-        const [whatIf, risk, forecast, trust] = await Promise.all([
+        const [whatIf, risk, forecast, trust, twin, certPack, timeTravel, teaming, governance] = await Promise.all([
           api("/v1/analytics/what-if?all=1").catch(() => null),
           api("/v1/analytics/mission-risk").catch(() => null),
           api("/v1/analytics/readiness-forecast?all=1").catch(() => null),
           api("/v1/analytics/trust-graph").catch(() => null),
+          api("/v1/analytics/mission-twin").catch(() => null),
+          api("/v1/analytics/certification-pack").catch(() => null),
+          api("/v1/analytics/time-travel?at=T%2B00%3A01&inspect=decisions").catch(() => null),
+          api("/v1/analytics/human-teaming").catch(() => null),
+          api("/v1/analytics/governance").catch(() => null),
         ]);
         document.getElementById("tab-analytics").innerHTML = `
           <h2>Analytics</h2>
-          <p>What-if, mission risk, readiness forecast, and trust graph.</p>
+          <p>NEXT and LATER differentiation analytics for the loaded program.</p>
           ${actionBar([actionBtn("Refresh", "loadAnalytics()", "Operate")])}
           <h3>What-if analysis</h3>
           <pre>${JSON.stringify(whatIf, null, 2)}</pre>
@@ -1117,7 +1122,17 @@
           <h3>Readiness forecast</h3>
           <pre>${JSON.stringify(forecast, null, 2)}</pre>
           <h3>Trust graph</h3>
-          <pre>${JSON.stringify(trust, null, 2)}</pre>`;
+          <pre>${JSON.stringify(trust, null, 2)}</pre>
+          <h3>Mission twin</h3>
+          <pre>${JSON.stringify(twin, null, 2)}</pre>
+          <h3>Certification pack</h3>
+          <pre>${JSON.stringify(certPack, null, 2)}</pre>
+          <h3>Time travel</h3>
+          <pre>${JSON.stringify(timeTravel, null, 2)}</pre>
+          <h3>Human teaming</h3>
+          <pre>${JSON.stringify(teaming, null, 2)}</pre>
+          <h3>Governance</h3>
+          <pre>${JSON.stringify(governance, null, 2)}</pre>`;
       } catch (e) { showError(String(e)); }
     }
 

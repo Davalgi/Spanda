@@ -2517,6 +2517,7 @@ dependencies = [
  "spanda-package",
  "spanda-parser",
  "spanda-plugin",
+ "spanda-policy",
  "spanda-readiness",
  "spanda-risk",
  "spanda-runtime",
@@ -2550,6 +2551,7 @@ dependencies = [
  "spanda-parser",
  "spanda-readiness",
  "spanda-runtime",
+ "spanda-trust",
 ]
 
 [[package]]
