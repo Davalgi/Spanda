@@ -19,6 +19,11 @@ spanda control-center serve --config spanda.toml --bind 0.0.0.0:8080
 
 # Native gRPC (tonic) on a separate port
 spanda control-center serve --grpc-bind 127.0.0.1:50051
+
+# Inspect a running instance (bind, config, program, device pool)
+spanda control-center status
+spanda control-center status --discover   # find local listeners when port is unknown
+spanda control-center status --url http://127.0.0.1:8081 --json
 ```
 
 ### Access the UI
@@ -277,6 +282,8 @@ Query a running Control Center without curl — uses `SPANDA_CONTROL_CENTER_URL`
 export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080
 export SPANDA_API_KEY=your-operator-key
 
+spanda control-center status
+spanda control-center status --discover
 spanda control-center dashboard
 spanda control-center drift --baseline-id <snapshot-id>
 spanda control-center incidents list
@@ -363,6 +370,7 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | Endpoint | Method | Auth | Description |
 |----------|--------|------|-------------|
 | `/v1/health` | GET | — | Liveness |
+| `/v1/instance` | GET | — | Runtime status (bind, config/program paths, pool summary) |
 | `/v1/tenant` | GET | — | Active tenant (`SPANDA_TENANT_ID`) |
 | `/v1/dashboard` | GET | — | Device pool summary, fleet agent count, alerts |
 | `/v1/devices` | GET | — | Device pool entries |

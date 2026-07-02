@@ -50,6 +50,10 @@ impl ControlCenterClient {
         self
     }
 
+    pub fn base_url(&self) -> &str {
+        &self.base_url
+    }
+
     pub fn request(
         &self,
         method: &str,

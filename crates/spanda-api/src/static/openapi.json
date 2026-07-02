@@ -30,6 +30,12 @@
         "responses": { "200": { "description": "OK" } }
       }
     },
+    "/v1/instance": {
+      "get": {
+        "summary": "Runtime status (bind, config, program, pool summary)",
+        "responses": { "200": { "description": "Control Center instance metadata" } }
+      }
+    },
     "/v1/tenant": {
       "get": {
         "summary": "Active Control Center tenant (SPANDA_TENANT_ID)",

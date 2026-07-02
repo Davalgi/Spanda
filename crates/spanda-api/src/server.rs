@@ -47,6 +47,8 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
         if let Some(path) = options.program_path.clone() {
             guard.program_path = Some(path);
         }
+        guard.bind_addr = Some(options.bind.clone());
+        guard.grpc_bind = options.grpc_bind.clone();
     }
 
     let listener = TcpListener::bind(&options.bind)
@@ -66,6 +68,7 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
     }
     eprintln!("  GET  /                  Control Center UI");
     eprintln!("  GET  /v1/health         liveness");
+    eprintln!("  GET  /v1/instance       runtime status (config, program, bind)");
     eprintln!("  GET  /v1/version        API version policy");
     eprintln!("  GET  /v1/dashboard      operations summary");
     eprintln!("  GET  /v1/devices        device pool");

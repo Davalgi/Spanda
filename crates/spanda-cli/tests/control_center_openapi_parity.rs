@@ -5,6 +5,7 @@ use std::collections::HashSet;
 
 const CLI_ROUTES: &[(&str, &str)] = &[
     ("GET", "/v1/dashboard"),
+    ("GET", "/v1/instance"),
     ("GET", "/v1/drift"),
     ("POST", "/v1/drift/scan"),
     ("GET", "/v1/drift/scans"),

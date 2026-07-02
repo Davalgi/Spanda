@@ -135,7 +135,7 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
-    let skip_rate_limit = path == "/v1/health" || path == "/v1/version";
+    let skip_rate_limit = path == "/v1/health" || path == "/v1/version" || path == "/v1/instance";
     if !skip_rate_limit {
         let rate_key = ctx
             .as_ref()
@@ -280,6 +280,7 @@ pub fn handle_request(
     }
     let response = match (path, request.method.as_str()) {
         ("/v1/tenant", "GET") => tenant_info(state),
+        ("/v1/instance", "GET") => instance_info(state),
         ("/v1/audit/mutations", "GET") => mutation_audit_list(state, ctx.as_ref()),
         ("/v1/audit/mutations/export", "GET") => mutation_audit_export(state, query, ctx.as_ref()),
         ("/v1/dashboard", "GET") => dashboard(state),
@@ -425,6 +426,45 @@ fn tenant_info(state: &ControlCenterState) -> HttpResponse {
         "version": API_VERSION,
         "tenant_id": state.tenant_id,
         "isolation": "api_keys must match SPANDA_TENANT_ID on this Control Center instance",
+    }))
+}
+
+fn instance_info(state: &ControlCenterState) -> HttpResponse {
+    let pool = state.device_registry().pool_summary();
+    let fleet = load_fleet_agent_registry(&default_fleet_agents_path());
+    let overall_status = if pool.failed > 0 {
+        "critical"
+    } else if pool.degraded > 0 {
+        "degraded"
+    } else {
+        "healthy"
+    };
+    let (config_loaded, project_name, fleet_id) = if let Some(resolved) = state.resolved.as_ref() {
+        (
+            true,
+            Some(resolved.project_name().to_string()),
+            resolved.fleet_id().map(str::to_string),
+        )
+    } else {
+        (false, None, None)
+    };
+    json_ok(&serde_json::json!({
+        "ok": true,
+        "version": API_VERSION,
+        "service": "spanda-control-center",
+        "tenant_id": state.tenant_id,
+        "bind": state.bind_addr,
+        "grpc_bind": state.grpc_bind,
+        "config_path": state.config_path.as_ref().map(|path| path.display().to_string()),
+        "program_path": state.program_path.as_ref().map(|path| path.display().to_string()),
+        "config_loaded": config_loaded,
+        "project_name": project_name,
+        "fleet_id": fleet_id,
+        "overall_status": overall_status,
+        "api_keys_loaded": state.api_keys.keys.len(),
+        "device_pool": pool,
+        "fleet_agent_count": fleet.agents.len(),
+        "alert_count": state.alert_store.list().len(),
     }))
 }
 
@@ -1575,6 +1615,11 @@ pub fn tenant_info_json(state: &ControlCenterState) -> String {
     tenant_info(state).body
 }
 
+/// JSON body for `GET /v1/instance` (runtime status for CLI and operators).
+pub fn instance_info_json(state: &ControlCenterState) -> String {
+    instance_info(state).body
+}
+
 /// JSON body for gRPC `ListAuditMutations` (parity with `GET /v1/audit/mutations`).
 pub fn mutation_audit_list_json(state: &ControlCenterState, ctx: Option<&RbacContext>) -> String {
     mutation_audit_list(state, ctx).body
@@ -1951,5 +1996,25 @@ mod tests {
         );
         assert_eq!(response.status, 200);
         assert!(response.body.contains("spanda-control-center"));
+    }
+
+    #[test]
+    fn instance_endpoint_reports_runtime_paths() {
+        let mut state = ControlCenterState::new();
+        state.bind_addr = Some("127.0.0.1:8080".into());
+        state.program_path = Some("examples/robotics/fleet_field_trial.sd".into());
+        let (response, _) = handle_request(
+            &mut state,
+            &HttpRequest {
+                method: "GET".into(),
+                path: "/v1/instance".into(),
+                body: String::new(),
+                authorization: None,
+            },
+            "",
+        );
+        assert_eq!(response.status, 200);
+        assert!(response.body.contains("fleet_field_trial.sd"));
+        assert!(response.body.contains("127.0.0.1:8080"));
     }
 }

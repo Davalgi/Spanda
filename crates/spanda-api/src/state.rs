@@ -16,6 +16,8 @@ use std::sync::{Arc, Mutex};
 pub struct ControlCenterState {
     pub config_path: Option<PathBuf>,
     pub program_path: Option<PathBuf>,
+    pub bind_addr: Option<String>,
+    pub grpc_bind: Option<String>,
     pub resolved: Option<ResolvedSystemConfig>,
     pub api_keys: ApiKeyStore,
     pub secret_vault: ManagedSecretVault,
@@ -37,6 +39,8 @@ impl ControlCenterState {
         let mut state = Self {
             config_path: None,
             program_path: None,
+            bind_addr: None,
+            grpc_bind: None,
             resolved: None,
             api_keys: ApiKeyStore::from_env_and_file(),
             secret_vault: ManagedSecretVault::new(),

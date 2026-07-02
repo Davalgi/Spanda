@@ -16,6 +16,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/instance",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/tenant",
     },
     ApiRoute {

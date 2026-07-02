@@ -13,6 +13,7 @@ pub fn control_center_dispatch(args: &[String]) {
     }
     match args[0].as_str() {
         "serve" => cmd_serve(&args[1..]),
+        "status" => cmd_status(&args[1..]),
         "api" => cmd_api(&args[1..]),
         "dashboard" => cmd_dashboard(&args[1..]),
         "drift" => cmd_drift(&args[1..]),
@@ -47,6 +48,7 @@ fn print_usage() {
     eprintln!(
         "Usage:\n  \
          spanda control-center serve [--bind <addr>] [--grpc-bind <addr>] [--config <spanda.toml>] [--program <file.sd>] [--once]\n  \
+         spanda control-center status [--json] [--url <base>] [--discover]\n  \
          spanda control-center api <get|post> <path> [--body <json>] [--url <base>] [--auth|--no-auth]\n  \
          spanda control-center dashboard [--url <base>]\n  \
          spanda control-center drift report --baseline-id <id> [--url <base>]\n  \
@@ -126,6 +128,270 @@ fn cmd_serve(args: &[String]) {
     if let Err(error) = run_control_center_server(&options) {
         eprintln!("control-center serve failed: {error}");
         process::exit(1);
+    }
+}
+
+fn cmd_status(args: &[String]) {
+    if args.iter().any(|arg| arg == "--help" || arg == "-h") {
+        eprintln!("Usage: spanda control-center status [--json] [--url <base>] [--discover]");
+        eprintln!();
+        eprintln!("Query a running Control Center via GET /v1/instance.");
+        eprintln!("Default URL: SPANDA_CONTROL_CENTER_URL or http://127.0.0.1:8080");
+        eprintln!("Use --discover to scan local spanda listeners (macOS/Linux).");
+        process::exit(0);
+    }
+    let json = args.iter().any(|arg| arg == "--json");
+    let discover = args.iter().any(|arg| arg == "--discover");
+    let url = flag_value(args, "--url");
+    if discover {
+        let urls = discover_local_control_center_urls();
+        if urls.is_empty() {
+            eprintln!("No local spanda Control Center listeners found.");
+            eprintln!("Start one with: spanda control-center serve --program <file.sd>");
+            process::exit(1);
+        }
+        let mut failures = 0usize;
+        let mut matched = 0usize;
+        for (index, base_url) in urls.iter().enumerate() {
+            match fetch_instance_status(base_url) {
+                Ok(value) => {
+                    if index > 0 && matched > 0 {
+                        println!();
+                    }
+                    print_instance_status(base_url, &value, json);
+                    matched += 1;
+                }
+                Err(error) => {
+                    if error == "not a Control Center instance" {
+                        continue;
+                    }
+                    failures += 1;
+                    eprintln!("{base_url}: {error}");
+                }
+            }
+        }
+        if matched == 0 {
+            eprintln!("No Control Center listeners responded on local spanda ports.");
+            eprintln!("Start one with: spanda control-center serve --program <file.sd>");
+            process::exit(1);
+        }
+        if failures > 0 {
+            process::exit(1);
+        }
+        return;
+    }
+    let client = if let Some(url) = url {
+        ControlCenterClient::from_env().with_url(url)
+    } else {
+        client_from_args(args)
+    };
+    let base_url = client.base_url().to_string();
+    match client.get("/v1/instance", false) {
+        Ok(response) => {
+            if response.status >= 400 {
+                eprintln!("HTTP {}", response.status);
+                eprintln!("{}", response.body);
+                process::exit(1);
+            }
+            let value: serde_json::Value = serde_json::from_str(&response.body).unwrap_or_else(|error| {
+                eprintln!("invalid /v1/instance JSON: {error}");
+                process::exit(1);
+            });
+            print_instance_status(&base_url, &value, json);
+        }
+        Err(error) => {
+            eprintln!("{error}");
+            eprintln!();
+            eprintln!("No Control Center reachable at {base_url}.");
+            eprintln!("Try: spanda control-center status --discover");
+            process::exit(1);
+        }
+    }
+}
+
+fn fetch_instance_status(base_url: &str) -> Result<serde_json::Value, String> {
+    let client = ControlCenterClient::from_env().with_url(base_url.to_string());
+    let response = client.get("/v1/instance", false)?;
+    if response.status == 404 {
+        return fetch_legacy_instance_status(&client);
+    }
+    if response.status >= 400 {
+        return Err(format!("HTTP {}: {}", response.status, response.body));
+    }
+    serde_json::from_str(&response.body).map_err(|error| format!("invalid /v1/instance JSON: {error}"))
+}
+
+fn fetch_legacy_instance_status(client: &ControlCenterClient) -> Result<serde_json::Value, String> {
+    let health = client.get("/v1/health", false)?;
+    if health.status != 200 || !health.body.contains("spanda-control-center") {
+        return Err("not a Control Center instance".into());
+    }
+    let health_value: serde_json::Value =
+        serde_json::from_str(&health.body).unwrap_or(serde_json::json!({}));
+    let dashboard = client.get("/v1/dashboard", false)?;
+    let dashboard_value: serde_json::Value = if dashboard.status == 200 {
+        serde_json::from_str(&dashboard.body).unwrap_or(serde_json::json!({}))
+    } else {
+        serde_json::json!({})
+    };
+    let tenant = client.get("/v1/tenant", false)?;
+    let tenant_value: serde_json::Value = if tenant.status == 200 {
+        serde_json::from_str(&tenant.body).unwrap_or(serde_json::json!({}))
+    } else {
+        serde_json::json!({})
+    };
+    Ok(serde_json::json!({
+        "ok": health_value.get("ok").and_then(|v| v.as_bool()).unwrap_or(true),
+        "version": health_value.get("version").cloned().unwrap_or(serde_json::json!("v1")),
+        "service": "spanda-control-center",
+        "tenant_id": tenant_value.get("tenant_id").cloned().unwrap_or(serde_json::json!("default")),
+        "bind": null,
+        "grpc_bind": null,
+        "config_path": null,
+        "program_path": null,
+        "config_loaded": false,
+        "project_name": null,
+        "fleet_id": null,
+        "overall_status": "healthy",
+        "api_keys_loaded": dashboard_value.get("rbac_roles").cloned().unwrap_or(serde_json::json!(0)),
+        "device_pool": dashboard_value.get("device_pool").cloned().unwrap_or(serde_json::json!({})),
+        "fleet_agent_count": dashboard_value.get("fleet_agent_count").cloned().unwrap_or(serde_json::json!(0)),
+        "alert_count": dashboard_value.get("alert_count").cloned().unwrap_or(serde_json::json!(0)),
+        "legacy_status": true,
+    }))
+}
+
+fn print_instance_status(base_url: &str, value: &serde_json::Value, json: bool) {
+    if json {
+        let mut payload = value.clone();
+        if let Some(object) = payload.as_object_mut() {
+            object.insert(
+                "url".into(),
+                serde_json::Value::String(base_url.to_string()),
+            );
+        }
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).unwrap_or_else(|_| value.to_string())
+        );
+        return;
+    }
+    let service = value
+        .get("service")
+        .and_then(|v| v.as_str())
+        .unwrap_or("spanda-control-center");
+    let overall = value
+        .get("overall_status")
+        .and_then(|v| v.as_str())
+        .unwrap_or("unknown");
+    let tenant = value
+        .get("tenant_id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("default");
+    let bind = value
+        .get("bind")
+        .and_then(|v| v.as_str())
+        .unwrap_or("(unknown)");
+    let grpc_bind = value.get("grpc_bind").and_then(|v| v.as_str());
+    let config_path = value
+        .get("config_path")
+        .and_then(|v| v.as_str())
+        .unwrap_or("(none)");
+    let program_path = value
+        .get("program_path")
+        .and_then(|v| v.as_str())
+        .unwrap_or("(none)");
+    let config_loaded = value
+        .get("config_loaded")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false);
+    let project_name = value
+        .get("project_name")
+        .and_then(|v| v.as_str())
+        .unwrap_or("(none)");
+    let api_keys = value
+        .get("api_keys_loaded")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(0);
+    let fleet_agents = value
+        .get("fleet_agent_count")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(0);
+    let alerts = value
+        .get("alert_count")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(0);
+    let pool = value.get("device_pool");
+    let total = pool.and_then(|v| v.get("total")).and_then(|v| v.as_u64());
+    let healthy = pool.and_then(|v| v.get("healthy")).and_then(|v| v.as_u64());
+    let degraded = pool.and_then(|v| v.get("degraded")).and_then(|v| v.as_u64());
+    let failed = pool.and_then(|v| v.get("failed")).and_then(|v| v.as_u64());
+
+    println!("Spanda Control Center @ {base_url}");
+    println!("  Service:       {service}");
+    println!("  Status:        {overall}");
+    println!("  Tenant:        {tenant}");
+    println!("  Bind:          {bind}");
+    if let Some(grpc_bind) = grpc_bind {
+        println!("  gRPC:          {grpc_bind}");
+    } else {
+        println!("  gRPC:          (disabled)");
+    }
+    println!(
+        "  Config:        {config_path}{}",
+        if config_loaded { " (loaded)" } else { "" }
+    );
+    println!("  Project:       {project_name}");
+    println!("  Program:       {program_path}");
+    println!("  API keys:      {api_keys}");
+    if let (Some(total), Some(healthy), Some(degraded), Some(failed)) =
+        (total, healthy, degraded, failed)
+    {
+        println!(
+            "  Device pool:   {total} total ({healthy} healthy, {degraded} degraded, {failed} failed)"
+        );
+    }
+    println!("  Fleet agents:  {fleet_agents}");
+    println!("  Alerts:        {alerts}");
+}
+
+fn discover_local_control_center_urls() -> Vec<String> {
+    #[cfg(unix)]
+    {
+        use std::process::Command;
+        let output = Command::new("lsof")
+            .args(["-nP", "-a", "-iTCP", "-sTCP:LISTEN", "-c", "spanda"])
+            .output();
+        let Ok(output) = output else {
+            return Vec::new();
+        };
+        if !output.status.success() {
+            return Vec::new();
+        }
+        let text = String::from_utf8_lossy(&output.stdout);
+        let mut urls = Vec::new();
+        for line in text.lines().skip(1) {
+            let Some(tcp_part) = line.split("TCP ").nth(1) else {
+                continue;
+            };
+            let Some(address) = tcp_part.split_whitespace().next() else {
+                continue;
+            };
+            let Some((host, port)) = address.rsplit_once(':') else {
+                continue;
+            };
+            let host = if host == "*" { "127.0.0.1" } else { host };
+            let url = format!("http://{host}:{port}");
+            if !urls.iter().any(|existing| existing == &url) {
+                urls.push(url);
+            }
+        }
+        urls.sort();
+        return urls;
+    }
+    #[cfg(not(unix))]
+    {
+        Vec::new()
     }
 }
 

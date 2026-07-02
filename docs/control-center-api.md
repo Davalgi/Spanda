@@ -30,6 +30,28 @@ These endpoints delegate to the same Rust crates as CLI commands:
 | `POST /v1/programs/simulation` | `spanda sim` (set `"execute": true` to run) |
 | `POST /v1/programs/replay` | `spanda replay` (set `"deterministic"` or `"playback"`) |
 | `GET /v1/trust/program` | `spanda trust <file.sd>` |
+| `GET /v1/instance` | `spanda control-center status` |
+
+### `GET /v1/instance`
+
+Returns runtime metadata for the running Control Center process: bind address, optional `--config` / `--program` paths, tenant, device pool summary, fleet agent count, and alert count. No authentication required.
+
+```json
+{
+  "ok": true,
+  "service": "spanda-control-center",
+  "bind": "127.0.0.1:8080",
+  "config_path": "spanda.toml",
+  "program_path": "examples/robotics/fleet_field_trial.sd",
+  "config_loaded": true,
+  "overall_status": "healthy",
+  "device_pool": { "total": 0, "healthy": 0, "degraded": 0, "failed": 0 },
+  "fleet_agent_count": 0,
+  "alert_count": 0
+}
+```
+
+Use `spanda control-center status [--discover]` to query from the CLI (see [control-center.md](./control-center.md)).
 
 ### Request body (program ops)
 

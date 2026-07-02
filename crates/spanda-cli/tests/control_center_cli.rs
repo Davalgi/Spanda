@@ -15,6 +15,7 @@ fn control_center_help_lists_remote_subcommands() {
     assert!(output.status.success());
     let help = String::from_utf8_lossy(&output.stderr);
     assert!(help.contains("control-center api"));
+    assert!(help.contains("control-center status"));
     assert!(help.contains("control-center approvals"));
     assert!(help.contains("control-center incidents"));
     assert!(help.contains("control-center evidence"));
