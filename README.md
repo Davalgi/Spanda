@@ -157,6 +157,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | [docs/solutions/README.md](docs/solutions/README.md) | Official Solution Blueprints |
 | [docs/tutorials/README.md](docs/tutorials/README.md) | Tutorials and learning paths |
 | [examples/README.md](examples/README.md) | Runnable examples library |
+| [docs/plugins.md](docs/plugins.md) | Plugin system — install, trust tiers, Control Center panels |
 | [docs/README.md](docs/README.md) | Full documentation index |
 
 CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Language API: [docs/spanda-reference.md](docs/spanda-reference.md)

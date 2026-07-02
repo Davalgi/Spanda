@@ -30,6 +30,7 @@
 | Operational drift (full) | program + agent dimensions | `crates/spanda-config/src/operational_drift.rs` |
 | Platform architecture validation | layer classification, zero-waiver baseline, SCC, TypeScript layers, manifest sync | `scripts/validate_architecture.py --check-manifest-sync` (CI `rust` job) |
 | Platform event transitions | health/readiness/degraded emit-on-change | `crates/spanda-readiness/tests/platform_events.rs` |
+| Plugin system | manifest, security, lifecycle, hooks, registry fetch | `crates/spanda-plugin/tests/integration.rs` |
 | Solution blueprint governance | no workspace crates or Rust in blueprint trees | `scripts/validate_blueprints.py` (CI `rust` job) |
 | Enterprise ops API | Control Center handlers, device pool | `crates/spanda-api/tests/` |
 | Smart Spaces live-building | BACnet registry script dispatch (`live-building` feature) | `crates/spanda-providers/src/iot_live.rs` (`live_bacnet_registry_script_reads_mock_stdout`) |

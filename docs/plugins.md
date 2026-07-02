@@ -69,6 +69,15 @@ spanda plugin inspect spanda-plugin-readiness-example --json
 spanda plugin trust spanda-plugin-readiness-example verified
 spanda plugin disable spanda-plugin-readiness-example
 spanda plugin uninstall spanda-plugin-readiness-example
+spanda plugin install spanda-plugin-healthcare   # registry name (tarball or local example fallback)
+spanda healthcare readiness                      # namespaced command from enabled plugin manifest
+```
+
+Control Center API:
+
+```bash
+curl -s http://127.0.0.1:8787/v1/plugins
+curl -s http://127.0.0.1:8787/v1/plugins/control-center
 ```
 
 ## Examples

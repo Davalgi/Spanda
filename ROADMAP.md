@@ -384,6 +384,7 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 | **Provider Packages** | Trait implementations per protocol | **Stable** / **Experimental** | Now | Provider |
 | **Protocol Packages** | CAN, V2X, OPC-UA, Matter, BLE, … | **Experimental** | Now | Provider |
 | **Registry** | Hosted index, `spanda publish` mirror | **Stable** | Now | Core |
+| **Plugin system** | `spanda.plugin.toml`, WASM sandbox, Control Center panels, namespaced CLI | **Experimental** | Now | Core |
 | **Marketplace** | Curated remote registry growth | **Next** | Next | Optional |
 | **Package Trust** | Scoring, `spanda trust` | **Stable** | Now | Core |
 | **Live AI providers** | OpenAI, Anthropic, ONNX | **Experimental** | Now | Provider |
