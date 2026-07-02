@@ -71,6 +71,20 @@ describe("SpandaClient", () => {
       "GET /v1/decision-policy-cache?cache=%2Ftmp%2Fcache.json",
     );
   });
+
+  it("analyticsWhatIf builds query path", async () => {
+    const client = SpandaClient.local();
+    let captured = "";
+    (client as unknown as { request: typeof client["request"] }).request = async (
+      _method,
+      path,
+    ) => {
+      captured = path;
+      return {};
+    };
+    await client.analyticsWhatIf({ scenario: "gps_failure", all: true });
+    expect(captured).toBe("/v1/analytics/what-if?all=1&scenario=gps_failure");
+  });
 });
 
 describe("ReadinessReport", () => {

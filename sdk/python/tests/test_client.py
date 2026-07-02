@@ -45,3 +45,16 @@ def test_register_entity_uses_auth():
         "path": "/v1/entities/register",
         "auth": True,
     }
+
+
+def test_analytics_what_if_path():
+    client = SpandaClient.local()
+    captured: dict[str, str] = {}
+
+    def fake_request(method, path, body=None, auth=False):
+        captured["path"] = path
+        return {}
+
+    client._request = fake_request  # type: ignore[method-assign]
+    client.analytics_what_if(scenario="gps_failure", all_values=True)
+    assert captured["path"] == "/v1/analytics/what-if?all=1&scenario=gps_failure"

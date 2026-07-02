@@ -600,6 +600,74 @@ impl SpandaClient {
         self.request("GET", "/v1/health", None, false)
     }
 
+    /// Readiness trends for the loaded Control Center program (`GET /v1/analytics/readiness`).
+    pub fn analytics_readiness(&self, query: Option<&str>) -> SpandaResult<Value> {
+        let path = match query {
+            Some(q) if !q.is_empty() => format!("/v1/analytics/readiness?{q}"),
+            _ => "/v1/analytics/readiness".into(),
+        };
+        self.request("GET", &path, None, false)
+    }
+
+    /// What-if failure scenario analysis (`GET /v1/analytics/what-if`).
+    pub fn analytics_what_if(
+        &self,
+        scenario: Option<&str>,
+        all: bool,
+    ) -> SpandaResult<Value> {
+        let path = Self::analytics_path(
+            "/v1/analytics/what-if",
+            scenario.map(|s| ("scenario", s)),
+            all,
+        );
+        self.request("GET", &path, None, false)
+    }
+
+    /// Mission deployment risk score (`GET /v1/analytics/mission-risk`).
+    pub fn analytics_mission_risk(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/analytics/mission-risk", None, false)
+    }
+
+    /// Readiness degradation forecast (`GET /v1/analytics/readiness-forecast`).
+    pub fn analytics_readiness_forecast(
+        &self,
+        horizon: Option<&str>,
+        all: bool,
+    ) -> SpandaResult<Value> {
+        let path = Self::analytics_path(
+            "/v1/analytics/readiness-forecast",
+            horizon.map(|h| ("horizon", h)),
+            all,
+        );
+        self.request("GET", &path, None, false)
+    }
+
+    /// Trust-weighted dependency graph (`GET /v1/analytics/trust-graph`).
+    pub fn analytics_trust_graph(&self, format: Option<&str>) -> SpandaResult<Value> {
+        let path = match format {
+            Some(value) if !value.is_empty() => {
+                format!("/v1/analytics/trust-graph?format={value}")
+            }
+            _ => "/v1/analytics/trust-graph".into(),
+        };
+        self.request("GET", &path, None, false)
+    }
+
+    fn analytics_path(base: &str, named: Option<(&str, &str)>, all: bool) -> String {
+        let mut params = Vec::new();
+        if all {
+            params.push("all=1".to_string());
+        }
+        if let Some((key, value)) = named {
+            params.push(format!("{key}={value}"));
+        }
+        if params.is_empty() {
+            base.to_string()
+        } else {
+            format!("{base}?{}", params.join("&"))
+        }
+    }
+
     /// Call JSON-RPC gateway (`POST /v1/rpc`) with a gRPC-style method name.
     pub fn rpc(&self, method: &str, params: Option<&Value>) -> SpandaResult<Value> {
         let body = json!({
@@ -630,5 +698,15 @@ mod tests {
     fn program_body_includes_file() {
         let body = SpandaClient::program_body("rover.sd");
         assert_eq!(body["file"], "rover.sd");
+    }
+
+    #[test]
+    fn analytics_what_if_path_includes_query() {
+        let path = SpandaClient::analytics_path(
+            "/v1/analytics/what-if",
+            Some(("scenario", "gps_failure")),
+            true,
+        );
+        assert_eq!(path, "/v1/analytics/what-if?all=1&scenario=gps_failure");
     }
 }

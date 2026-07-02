@@ -289,6 +289,63 @@ class SpandaClient:
     def facility_floor_map(self, facility_id: str) -> Any:
         return self._request("GET", f"/v1/facilities/{facility_id}/floor-map")
 
+    @staticmethod
+    def _analytics_path(
+        base: str,
+        *,
+        named: Optional[tuple[str, str]] = None,
+        all_values: bool = False,
+    ) -> str:
+        params: list[str] = []
+        if all_values:
+            params.append("all=1")
+        if named:
+            params.append(f"{named[0]}={named[1]}")
+        if not params:
+            return base
+        return f"{base}?{'&'.join(params)}"
+
+    def analytics_readiness(self, query: Optional[str] = None) -> Any:
+        path = "/v1/analytics/readiness"
+        if query:
+            path = f"{path}?{query}"
+        return self._request("GET", path)
+
+    def analytics_what_if(
+        self,
+        *,
+        scenario: Optional[str] = None,
+        all_values: bool = False,
+    ) -> Any:
+        named = ("scenario", scenario) if scenario else None
+        path = self._analytics_path(
+            "/v1/analytics/what-if",
+            named=named,
+            all_values=all_values,
+        )
+        return self._request("GET", path)
+
+    def analytics_mission_risk(self) -> Any:
+        return self._request("GET", "/v1/analytics/mission-risk")
+
+    def analytics_readiness_forecast(
+        self,
+        *,
+        horizon: Optional[str] = None,
+        all_values: bool = False,
+    ) -> Any:
+        named = ("horizon", horizon) if horizon else None
+        path = self._analytics_path(
+            "/v1/analytics/readiness-forecast",
+            named=named,
+            all_values=all_values,
+        )
+        return self._request("GET", path)
+
+    def analytics_trust_graph(self, format: Optional[str] = None) -> Any:
+        query = f"?format={format}" if format else ""
+        return self._request("GET", f"/v1/analytics/trust-graph{query}")
+
     def rpc(self, method: str, params: Optional[Mapping[str, Any]] = None) -> Any:
         payload = self._request(
             "POST",

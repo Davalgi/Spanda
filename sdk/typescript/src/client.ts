@@ -336,6 +336,66 @@ export class SpandaClient {
     return this.request("GET", `/v1/facilities/${facilityId}/floor-map`);
   }
 
+  private analyticsPath(
+    base: string,
+    named?: { key: string; value: string },
+    all = false,
+  ): string {
+    const params = new URLSearchParams();
+    if (all) params.set("all", "1");
+    if (named?.value) params.set(named.key, named.value);
+    const qs = params.toString();
+    return qs ? `${base}?${qs}` : base;
+  }
+
+  async analyticsReadiness(query?: string): Promise<JsonValue> {
+    const path = query
+      ? `/v1/analytics/readiness?${query}`
+      : "/v1/analytics/readiness";
+    return this.request("GET", path);
+  }
+
+  async analyticsWhatIf(options: {
+    scenario?: string;
+    all?: boolean;
+  } = {}): Promise<JsonValue> {
+    return this.request(
+      "GET",
+      this.analyticsPath(
+        "/v1/analytics/what-if",
+        options.scenario
+          ? { key: "scenario", value: options.scenario }
+          : undefined,
+        options.all ?? false,
+      ),
+    );
+  }
+
+  async analyticsMissionRisk(): Promise<JsonValue> {
+    return this.request("GET", "/v1/analytics/mission-risk");
+  }
+
+  async analyticsReadinessForecast(options: {
+    horizon?: string;
+    all?: boolean;
+  } = {}): Promise<JsonValue> {
+    return this.request(
+      "GET",
+      this.analyticsPath(
+        "/v1/analytics/readiness-forecast",
+        options.horizon
+          ? { key: "horizon", value: options.horizon }
+          : undefined,
+        options.all ?? false,
+      ),
+    );
+  }
+
+  async analyticsTrustGraph(format?: string): Promise<JsonValue> {
+    const qs = format ? `?format=${encodeURIComponent(format)}` : "";
+    return this.request("GET", `/v1/analytics/trust-graph${qs}`);
+  }
+
   async rpc(method: string, params: JsonValue = {}): Promise<JsonValue> {
     const payload = await this.request("POST", "/v1/rpc", {
       method,

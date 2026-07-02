@@ -469,4 +469,62 @@ impl GrpcClient {
             .map_err(|e| SpandaError::connection(e.to_string()))?;
         Self::parse_json(resp.into_inner().json)
     }
+
+    /// Readiness trends via `GetAnalyticsReadiness`.
+    pub async fn analytics_readiness(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_analytics_readiness(spanda_v1::QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// What-if analysis via `GetAnalyticsWhatIf`.
+    pub async fn analytics_what_if(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_analytics_what_if(spanda_v1::QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Mission risk via `GetAnalyticsMissionRisk`.
+    pub async fn analytics_mission_risk(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_analytics_mission_risk(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Readiness forecast via `GetAnalyticsReadinessForecast`.
+    pub async fn analytics_readiness_forecast(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_analytics_readiness_forecast(spanda_v1::QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Trust graph via `GetAnalyticsTrustGraph`.
+    pub async fn analytics_trust_graph(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_analytics_trust_graph(spanda_v1::QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
 }
