@@ -989,13 +989,15 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadDecisions = async () => {
     setBusy(true);
     try {
-      const [listRes, policiesRes] = await Promise.all([
+      const [listRes, policiesRes, tracesRes] = await Promise.all([
         fetch(`${base}/v1/decisions`),
         fetch(`${base}/v1/decision-policies`),
+        fetch(`${base}/v1/decisions/traces`),
       ]);
       const list = listRes.ok ? await listRes.json() : null;
       const policies = policiesRes.ok ? await policiesRes.json() : null;
-      setDecisionData({ list, policies });
+      const traces = tracesRes.ok ? await tracesRes.json() : null;
+      setDecisionData({ list, policies, traces });
     } catch (e) {
       setError(String(e));
     } finally {
@@ -1638,6 +1640,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <pre>{JSON.stringify(decisionData.list, null, 2)}</pre>
               <h3>Decision policies</h3>
               <pre>{JSON.stringify(decisionData.policies, null, 2)}</pre>
+              <h3>Live decision trace (v3)</h3>
+              <pre>{JSON.stringify(decisionData.traces, null, 2)}</pre>
             </>
           )}
         </div>

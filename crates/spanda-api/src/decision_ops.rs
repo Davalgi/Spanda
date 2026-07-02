@@ -167,6 +167,60 @@ pub fn list_decision_policies(state: &ControlCenterState, query: &str) -> HttpRe
     }))
 }
 
+/// GET /v1/decisions/traces — list v3 decision frames from a mission trace file.
+pub fn list_decision_traces(state: &ControlCenterState, query: &str) -> HttpResponse {
+    let trace_path = if let Some(path) = parse_query_param(query, "trace") {
+        std::path::PathBuf::from(path)
+    } else if let Some(program_file) = parse_query_param(query, "file") {
+        let root = state
+            .project_root()
+            .map(std::path::PathBuf::from)
+            .unwrap_or_default();
+        let path = if root.as_os_str().is_empty() {
+            std::path::PathBuf::from(&program_file)
+        } else {
+            root.join(&program_file)
+        };
+        let trace = path.with_extension("trace");
+        if trace.exists() {
+            trace
+        } else {
+            path.file_stem()
+                .map(|stem| path.with_file_name(format!("{}.trace", stem.to_string_lossy())))
+                .unwrap_or(trace)
+        }
+    } else if let Some(p) = state.program_path.clone() {
+        p.with_extension("trace")
+    } else {
+        return bad_request("no trace file specified");
+    };
+    if !trace_path.exists() {
+        return entity_not_found(&format!("trace not found: {}", trace_path.display()));
+    }
+    let trace = match spanda_runtime::replay::MissionTrace::load(&trace_path) {
+        Ok(trace) => trace,
+        Err(e) => return bad_request(&e.to_string()),
+    };
+    let frames: Vec<_> = trace
+        .frames
+        .iter()
+        .filter(|f| f.payload.get("version").and_then(|v| v.as_u64()) == Some(3))
+        .map(|f| {
+            serde_json::json!({
+                "sim_time_ms": f.sim_time_ms,
+                "event": f.event,
+                "payload": f.payload,
+            })
+        })
+        .collect();
+    json_ok(&serde_json::json!({
+        "api_version": API_VERSION,
+        "trace": trace_path.display().to_string(),
+        "count": frames.len(),
+        "frames": frames,
+    }))
+}
+
 fn parse_query_param(query: &str, key: &str) -> Option<String> {
     query.split('&').find_map(|pair| {
         let (k, v) = pair.split_once('=')?;
@@ -191,4 +245,14 @@ pub fn entity_decisions_json(state: &ControlCenterState, entity_id: &str, query:
 /// JSON string helper for gRPC parity.
 pub fn simulate_decisions_json(state: &ControlCenterState, body: &str) -> String {
     simulate_decisions(state, body).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn list_decision_traces_json(state: &ControlCenterState, query: &str) -> String {
+    list_decision_traces(state, query).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn list_decision_policies_json(state: &ControlCenterState, query: &str) -> String {
+    list_decision_policies(state, query).body
 }

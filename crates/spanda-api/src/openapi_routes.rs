@@ -271,6 +271,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/decision-policies",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/decisions/traces",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/programs/readiness",
     },

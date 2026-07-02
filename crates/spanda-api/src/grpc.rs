@@ -1229,6 +1229,56 @@ impl ControlCenter for GrpcControlCenter {
         })
         .map(Response::new)
     }
+
+    async fn list_decisions(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::decision_ops::list_decisions_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn list_decision_policies(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::decision_ops::list_decision_policies_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn list_decision_traces(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::decision_ops::list_decision_traces_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn simulate_decisions(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::decision_ops::simulate_decisions_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn get_entity_decisions(
+        &self,
+        request: Request<EntityIdRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let entity_id = request.into_inner().entity_id;
+        self.with_state(|state| crate::decision_ops::entity_decisions_json(state, &entity_id, ""))
+            .map(Response::new)
+    }
 }
 
 /// Start tonic gRPC server on `bind` (blocks the current thread's tokio runtime).

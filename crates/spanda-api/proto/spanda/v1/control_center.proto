@@ -161,4 +161,9 @@ service ControlCenter {
   rpc GetFacilityFloorMap(EntityIdRequest) returns (JsonResponse);
   rpc GetZoneEnvironment(EntityIdRequest) returns (JsonResponse);
   rpc GetEnergySystem(EntityIdRequest) returns (JsonResponse);
+  rpc ListDecisions(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionPolicies(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionTraces(QueryRequest) returns (JsonResponse);
+  rpc SimulateDecisions(JsonBodyRequest) returns (JsonResponse);
+  rpc GetEntityDecisions(EntityIdRequest) returns (JsonResponse);
 }
