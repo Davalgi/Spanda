@@ -127,6 +127,9 @@
 | [continuity-policies.md](./continuity-policies.md) | **`continuity_policy` syntax, takeover modes, and fleet handoff** |
 | [mission-continuity.md](./mission-continuity.md) | **Mission continuity, takeover, delegation, and succession** |
 | [distributed-decisions.md](./distributed-decisions.md) | **Distributed decision architecture — reflex, local, fleet, control center layers** |
+| [distributed-decision-security.md](./distributed-decision-security.md) | **Security validation, attack simulations, enforcement tests** |
+| [distributed-decision-demo.md](./distributed-decision-demo.md) | **Flagship GPS loss recovery demo** |
+| [stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md) | **Stable promotion checklist — distributed decisions** |
 | [local-decision-trees.md](./local-decision-trees.md) | **`decision_tree` syntax for bounded edge autonomy** |
 | [decision-authority.md](./decision-authority.md) | **Entity `local_decision_authority` and central approval rules** |
 | [offline-decisions.md](./offline-decisions.md) | **`offline_policy` and local policy cache for disconnected operation** |

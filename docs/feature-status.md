@@ -14,7 +14,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | Area | Status |
 |------|--------|
 | **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
-| **Distributed decisions** | Decision trees, offline policy, trace emission, Control Center Decisions tab — Experimental |
+| **Distributed decisions** | Decision trees, offline policy, signed trees, v3 signed traces, persistent escalation, conflict resolution — **Stable** |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
 
@@ -71,7 +71,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Health & kill switch** | `health_check`, `health_policy`, fleet `require` runtime; `kill_switch`, `remote_signed`, `on kill_switch` handlers |
 | **Self-healing & recovery** | `recovery_policy`, recovery planner, validation gates, audit/traceability; runtime dispatch (modes, speed caps, fleet mesh relay, reassign → continuity mesh); CLI `heal`, `recover`, `recovery-report`, `recovery knowledge`, `sim --inject-failure`; fleet agent interpreter + assurance recovery; mission operator approval gating |
 | **Mission continuity** | Checkpoint resume, state transfer, succession ranking, takeover/delegation; CLI `continuity`, `takeover`, `delegate`, `succession`; `continuity_policy`; diagnostics in `spanda check --readiness-json`; `spanda demo continuity`; official `spanda-mission-continuity` package |
-| **Distributed decisions** | Brain/spinal-cord/reflex layers; `decision_tree`, `offline_policy`, entity `local_decision_authority`; runtime policy gates (offline forbid, central approval escalation); signed offline policy + cache (`sign-policy`, `decision cache show|sync|clear`); live v3 trace emission; CLI `spanda decision *`; REST `/v1/decisions*`, `/v1/decisions/traces`, `/v1/decision-policy-cache`; gRPC ListDecisions/ListDecisionTraces/ListDecisionPolicyCache; sim API `decision_trace`/`record_trace`; Control Center Decisions tab with **Run sim with traces** + live polling; `spanda demo distributed-decisions`; `examples/showcase/distributed_decisions/` |
+| **Distributed decisions** | Brain/spinal-cord/reflex layers; `decision_tree`, `offline_policy`, entity `local_decision_authority`; runtime policy gates; signed offline policy + signed decision trees + cache; live v3 signed trace emission; persistent escalation store; runtime conflict resolution; CLI `spanda decision *`; attack simulations; rule enforcement tests — **Stable** ([stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md)) |
 | **Differentiation NOW** | `spanda contract verify`, `spanda explain`, `spanda audit decisions`, `spanda safety-coverage`, `spanda recovery-coverage`; `spanda demo differentiation`; decision trail showcase (`differentiation/decision_trail/`) with `explain decision` on v3 trace |
 | **What-If Analysis** | `spanda what-if`, `/v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf` — **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
 | **Mission Risk Analysis** | `spanda risk`, `/v1/analytics/mission-risk` — **Stable** — [stable-hardening-mission-risk.md](./stable-hardening-mission-risk.md) |

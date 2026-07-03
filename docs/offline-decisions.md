@@ -1,5 +1,7 @@
 # Offline Decisions
 
+**Status: Stable** — Ed25519 signed offline policies tested; production deployment requires trust key configuration.
+
 Entities maintain a **local policy cache** so they can operate safely when disconnected from the control center.
 
 ## Local policy cache

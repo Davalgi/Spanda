@@ -1,5 +1,7 @@
 # Local Decision Trees
 
+**Status: Stable** — tree evaluation, Ed25519 signing (`spanda decision sign-tree`), and cache merge.
+
 Local decision trees encode **bounded edge autonomy** — conditional workflows that run on-device without central approval, within safety and trust policy limits.
 
 ## Syntax

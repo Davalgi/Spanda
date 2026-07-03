@@ -139,6 +139,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Signature capabilities** | [docs/overview/signature-capabilities.md](docs/overview/signature-capabilities.md) |
 | **Platform components** | [docs/overview/platform-components.md](docs/overview/platform-components.md) |
 | **Feature status** | [docs/overview/feature-snapshot.md](docs/overview/feature-snapshot.md) · [docs/feature-status.md](docs/feature-status.md) |
+| **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |
 | **Differentiators** | [docs/overview/differentiators.md](docs/overview/differentiators.md) |

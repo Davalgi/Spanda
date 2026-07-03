@@ -1,5 +1,7 @@
 # Distributed Decision Architecture
 
+**Status: Stable** — runtime enforcement, signing, escalation persistence, and conflict resolution are implemented and tested. See [stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md).
+
 Spanda implements a **brain / spinal cord / reflex** model for hierarchical distributed autonomy. Decisions are made at the appropriate layer — closest to the device for safety and latency, centrally for strategy and governance.
 
 ## Decision layers
@@ -87,7 +89,13 @@ spanda decision policy mission.sd
 spanda decision sign-policy mission.sd --policy RoverOffline --write-cache
 spanda decision cache show|sync|clear ...
 spanda decision security-audit
+spanda decision simulate-attack policy-tamper
+spanda decision simulate-attack replayed-decision
+spanda decision simulate-attack fake-coordinator
+spanda decision simulate-attack offline-abuse
 ```
+
+Flagship demo: [distributed-decision-demo.md](./distributed-decision-demo.md)
 
 ## API
 

@@ -1,5 +1,7 @@
 # Decision Authority
 
+**Status: Stable** — authority extraction and central-approval gates tested at runtime.
+
 Each entity declares what it can decide locally versus what requires central approval.
 
 ## Types

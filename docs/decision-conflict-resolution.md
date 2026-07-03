@@ -1,5 +1,7 @@
 # Decision Conflict Resolution
 
+**Status: Stable** — `resolve_conflict()` wired at runtime in interpreter tree evaluation.
+
 When multiple layers produce competing decisions, Spanda applies a **fixed precedence order**.
 
 ## Precedence (highest first)
