@@ -49,6 +49,7 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   const [summary, setSummary] = useState<SreSummary | null>(null);
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
   const [traces, setTraces] = useState<Record<string, unknown>[]>([]);
+  const [grafanaUrl, setGrafanaUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,10 +59,13 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const [summaryRes, incidentsRes, tracesRes] = await Promise.all([
+      const [summaryRes, incidentsRes, tracesRes, integrationsRes] = await Promise.all([
         fetch(`${baseUrl}/v1/sre/summary`),
         fetch(`${baseUrl}/v1/sre/incidents`),
         fetch(`${baseUrl}/v1/observability/traces`),
+        hasToken
+          ? fetch(`${baseUrl}/v1/admin/integrations`, { headers: authHeaders() })
+          : Promise.resolve(null),
       ]);
       if (!summaryRes.ok) throw new Error(`sre summary ${summaryRes.status}`);
       setSummary(await summaryRes.json());
@@ -73,12 +77,19 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
         const body = await tracesRes.json();
         setTraces((body.traces ?? []).slice(-5));
       }
+      if (integrationsRes && integrationsRes.ok) {
+        const body = await integrationsRes.json();
+        const url = (body.observability as { grafana_url?: string } | undefined)?.grafana_url;
+        setGrafanaUrl(url?.trim() ? url : null);
+      } else {
+        setGrafanaUrl(null);
+      }
     } catch (err) {
       setError(String(err));
     } finally {
       setBusy(false);
     }
-  }, [baseUrl]);
+  }, [authHeaders, baseUrl, hasToken]);
 
   useEffect(() => {
     void load();
@@ -290,7 +301,7 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
       <CcSection title="Observability bridge" hint="Grafana templates, Jaeger traces, and OTLP export.">
         <ul className="cc-link-list">
           <li>
-            <a href="https://grafana.com/grafana/dashboards/" target="_blank" rel="noreferrer">
+            <a href="https://grafana.com/grafana/dashboards/" target="_blank" rel="noreferrer noopener">
               Grafana dashboard templates (spanda-grafana-dashboards)
             </a>
           </li>
@@ -307,6 +318,15 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
         </ul>
         {(summary as { burn_rate?: { fast_burn?: boolean } })?.burn_rate?.fast_burn && (
           <p className="cc-burn-banner">Fast-burn SLO alert — investigate incidents immediately.</p>
+        )}
+        {grafanaUrl && (
+          <iframe
+            className="cc-grafana-embed"
+            title="Grafana dashboard"
+            src={grafanaUrl}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
         )}
       </CcSection>
     </div>

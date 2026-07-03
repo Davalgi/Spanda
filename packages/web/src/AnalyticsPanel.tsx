@@ -129,6 +129,27 @@ export function AnalyticsPanel({ baseUrl }: Props) {
       )}
       <AnalyticsSection title="Mission twin" data={analytics?.mission_twin} />
       <AnalyticsSection title="Certification pack" data={analytics?.certification_pack} />
+      {analytics?.certification_pack && (
+        <CcSection title="Download certification pack">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              const blob = new Blob([JSON.stringify(analytics.certification_pack, null, 2)], {
+                type: "application/json",
+              });
+              const url = URL.createObjectURL(blob);
+              const anchor = document.createElement("a");
+              anchor.href = url;
+              anchor.download = "spanda-certification-pack.json";
+              anchor.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            Download JSON
+          </button>
+        </CcSection>
+      )}
       <AnalyticsSection title="Time travel" data={analytics?.time_travel} />
       <AnalyticsSection title="Human teaming" data={analytics?.human_teaming} />
       <AnalyticsSection title="Governance" data={analytics?.governance} />

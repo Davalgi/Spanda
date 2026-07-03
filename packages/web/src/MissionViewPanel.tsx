@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { DeployGateModal } from "./DeployGateModal";
 import type { RbacAction } from "./controlCenterRbac";
 
 type MissionRow = {
@@ -29,6 +30,7 @@ export function MissionViewPanel({ baseUrl, authHeaders, can, hasToken }: Props)
   const [pendingCount, setPendingCount] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeployGate, setShowDeployGate] = useState(false);
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -104,6 +106,9 @@ export function MissionViewPanel({ baseUrl, authHeaders, can, hasToken }: Props)
         <h3>Mission View</h3>
         <button type="button" onClick={() => void load()} disabled={busy}>
           Refresh
+        </button>
+        <button type="button" onClick={() => setShowDeployGate(true)}>
+          Deploy gate
         </button>
       </header>
       {error && <p className="error">{error}</p>}
@@ -228,6 +233,11 @@ export function MissionViewPanel({ baseUrl, authHeaders, can, hasToken }: Props)
           )}
         </tbody>
       </table>
+      <DeployGateModal
+        baseUrl={baseUrl}
+        open={showDeployGate}
+        onClose={() => setShowDeployGate(false)}
+      />
     </section>
   );
 }

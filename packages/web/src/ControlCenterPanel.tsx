@@ -135,7 +135,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
 
         <div className="cc-main-body">
           {pluginTab && activePlugin ? (
-            <ControlCenterPluginPanel panel={activePlugin} />
+            <ControlCenterPluginPanel panel={activePlugin} baseUrl={base} />
           ) : (
             <ControlCenterTabContent
               tab={tab}

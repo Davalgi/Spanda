@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { CollaborationGraph } from "./CollaborationGraph";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
@@ -22,6 +23,8 @@ export function HumansPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   const [hriContext, setHriContext] = useState<Record<string, unknown> | null>(null);
   const [humanTwins, setHumanTwins] = useState<Record<string, unknown>[]>([]);
   const [missionApprovals, setMissionApprovals] = useState<Record<string, unknown>[]>([]);
+  const [annotateSession, setAnnotateSession] = useState("");
+  const [annotateText, setAnnotateText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -214,10 +217,56 @@ export function HumansPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
 
       <CcSection title="Live collaboration graph">
         {collaborationGraph ? (
-          <pre className="cc-action-result">{JSON.stringify(collaborationGraph, null, 2)}</pre>
+          <CollaborationGraph graph={collaborationGraph} />
         ) : (
           <CcEmptyState title="Collaboration graph unavailable" />
         )}
+      </CcSection>
+
+      <CcSection title="AR annotate">
+        <div className="cc-action-bar">
+          <input
+            type="text"
+            placeholder="Session id"
+            value={annotateSession}
+            onChange={(e) => setAnnotateSession(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Annotation text"
+            value={annotateText}
+            onChange={(e) => setAnnotateText(e.target.value)}
+          />
+          <button
+            type="button"
+            disabled={!hasToken || !annotateSession.trim() || busy}
+            onClick={() => {
+              void (async () => {
+                setBusy(true);
+                setError(null);
+                try {
+                  const res = await fetch(`${baseUrl}/v1/hri/annotate`, {
+                    method: "POST",
+                    headers: authHeaders(),
+                    body: JSON.stringify({
+                      session_id: annotateSession.trim(),
+                      text: annotateText.trim(),
+                    }),
+                  });
+                  if (!res.ok) throw new Error(`annotate ${res.status}`);
+                  setAnnotateText("");
+                  await load();
+                } catch (err) {
+                  setError(String(err));
+                } finally {
+                  setBusy(false);
+                }
+              })();
+            }}
+          >
+            Post annotation
+          </button>
+        </div>
       </CcSection>
 
       <CcSection title="Context awareness (hazard zones)">
@@ -324,6 +373,14 @@ export function HumansPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           Record: <code>spanda sim vr-training/training_mission.sd --record</code> · Replay:{" "}
           <code>spanda replay training_mission.trace --playback</code>
         </p>
+        <a
+          className="cc-inline-link"
+          href={`${baseUrl}/v1/replay/training_mission.trace`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open latest training replay manifest
+        </a>
       </CcSection>
     </div>
   );

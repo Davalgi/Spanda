@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { DeployGateModal } from "./DeployGateModal";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
 
@@ -28,6 +29,7 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   const [approvals, setApprovals] = useState<ApprovalRow[]>([]);
   const [history, setHistory] = useState<Record<string, unknown>[]>([]);
   const [deployGate, setDeployGate] = useState<Record<string, unknown> | null>(null);
+  const [showDeployGate, setShowDeployGate] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,6 +111,11 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
       <CcSection
         title="Publish approval queue"
         hint="Review and approve configuration snapshots before they go live."
+        actions={
+          <button type="button" onClick={() => setShowDeployGate(true)}>
+            Deploy gate
+          </button>
+        }
       >
         {!hasToken && (
           <CcEmptyState
@@ -177,10 +184,15 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
       </CcSection>
 
       {deployGate && (
-        <CcSection title="Deploy gate checklist">
+        <CcSection title="Deploy gate summary">
           <pre className="cc-action-result">{JSON.stringify(deployGate, null, 2)}</pre>
         </CcSection>
       )}
+      <DeployGateModal
+        baseUrl={baseUrl}
+        open={showDeployGate}
+        onClose={() => setShowDeployGate(false)}
+      />
     </div>
   );
 }

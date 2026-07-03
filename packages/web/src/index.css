@@ -1998,3 +1998,77 @@ html:has(.cc-desktop-app) body {
   padding-left: 1.1rem;
   color: #d29922;
 }
+
+.cc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(1, 4, 9, 0.72);
+  padding: 1rem;
+}
+
+.cc-modal {
+  width: min(560px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.cc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cc-checklist {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.cc-collab-graph {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+}
+
+.cc-collab-edge {
+  stroke: #58a6ff88;
+  stroke-width: 0.4;
+}
+
+.cc-collab-node {
+  fill: #58a6ff;
+}
+
+.cc-plugin-host {
+  min-height: 4rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px dashed #30363d;
+  border-radius: 6px;
+}
+
+.cc-grafana-embed {
+  width: 100%;
+  min-height: 360px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #010409;
+}
+
+.cc-inline-link {
+  color: #58a6ff;
+  display: inline-block;
+  margin-top: 0.5rem;
+}

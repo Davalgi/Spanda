@@ -107,7 +107,7 @@ export function EntityGraphPanel({
   loading,
   write,
 }: Props) {
-  const [view, setView] = useState<"list" | "graph">("list");
+  const [view, setView] = useState<"list" | "graph">("graph");
   const [writeOpen, setWriteOpen] = useState(false);
   const [regId, setRegId] = useState("");
   const [regType, setRegType] = useState("calibration_station");
