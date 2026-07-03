@@ -4,7 +4,7 @@ Web-based operational visibility for fleets, devices, readiness, and alerts. Pha
 
 **Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [device-pool.md](./device-pool.md) · [device-provisioning.md](./device-provisioning.md) · [telemetry-store.md](./telemetry-store.md) · [configuration.md](./configuration.md) · [troubleshooting.md](./troubleshooting.md) (stale CLI, `Unknown argument: generate`)
 
-**Roadmap:** Shipped tabs and APIs are **Stable** (see [feature-status.md](./feature-status.md)). Planned depth work — telemetry tab, fleet map, continuity console, reports, SSO, plugin loader, desktop enhancements, and more — is tracked in [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) and [enterprise-operations-roadmap.md §6.1](./enterprise-operations-roadmap.md#61-control-center).
+**Roadmap:** Shipped tabs and APIs are **Stable** (see [feature-status.md](./feature-status.md)). Remaining depth work — multi-tenant switcher, discovery transport wizards, desktop native notifications/tray — is tracked in [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) and [enterprise-operations-roadmap.md §6.1](./enterprise-operations-roadmap.md#61-control-center).
 
 ---
 
@@ -605,7 +605,7 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | **Marketplace** | Installed plugin and Control Center panel browser |
 | **Chaos** | Fault injection catalog and simulation (`/v1/chaos/*`) |
 
-**Enhancements on existing tabs:** SRE observability bridge (Grafana/Jaeger links), config change history + deploy gate checklist, bulk device quarantine/trust, OTA rollout progress, decision policy editor, Smart Spaces floor-plan SVG, analytics trust graph bars, Twin Cloud usage meters, OIDC/Slack admin wizards, offline dashboard cache, desktop feature flags.
+**Enhancements on existing tabs:** SRE observability bridge (Grafana embed when `SPANDA_GRAFANA_URL` is set, Jaeger/trace links), config change history + deploy gate modal, bulk device quarantine/trust, OTA rollout progress, decision policy editor, Smart Spaces floor-plan SVG, analytics trust graph + certification pack download, Twin Cloud usage meters, OIDC/Slack admin wizards (experimental), offline dashboard cache, plugin bundle loader (`GET /v1/plugins/control-center/{plugin}/bundle`), Humans collaboration graph + AR annotate, entity graph default view, desktop `spawn_control_center_api`.
 
 **New REST APIs:** `GET /v1/fleet/map`, `GET /v1/config/history`, `GET /v1/deploy/gate`, `GET|PUT /v1/admin/oidc`, `POST /v1/admin/oidc/sync`, `GET|POST /v1/admin/slack`, `GET /v1/chaos/injections`, `POST /v1/chaos/simulate`. **gRPC server reflection** enabled (tonic-reflection).
 
