@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Control Center Twin Cloud tab:** list and sync twins in UI (`/v1/twins`).
 - **Twin Cloud OSS parity:** gRPC twin RPCs (proto **1.0.10**); snapshot history; RBAC on mutations; CLI `sync` and `import-replay`; OpenAPI completeness; registry `spanda-twin-cloud` + `import twin.cloud`; Administration panel twin registry; SDK **0.5.5** (`get_twin_history`, `import_twin_replay`, gRPC twins); `scripts/twin_cloud_unified_path.sh`, stable promotion gate + field soak; [hosted-twin-cloud.md](docs/hosted-twin-cloud.md), [stable-hardening-twin-cloud-saas.md](docs/stable-hardening-twin-cloud-saas.md).
 - **Twin Cloud hosted product:** Docker Compose scaffold (`deploy/twin-cloud-hosted/`), tenant onboarding runbook, `scripts/hosted_twin_cloud_smoke.sh`, `scripts/publish_sdk_release.sh` for SDK **0.5.5** tags.
+- **Twin Cloud OSS → Stable:** field soak started; promotion gate; tier sync across docs; K8s + Helm deploy; `twin.cloud` runtime dispatch; `verify_sdk_published.sh` + CI job.
 
 ## [0.6.0] - 2026-07-02
 

@@ -197,7 +197,7 @@ Promoted from deferred to experimental with minimal runtimes and golden paths. S
 - C++ in-process FFI (`cpp-native` feature)
 - Self-hosting bootstrap (`examples/self_host/`)
 
-**Still future:** LLVM as primary path, production chain adapters, full world-model semantics, **hosted Twin Cloud product** (multi-region SLA/billing — OSS `/v1/twins/*` is **Experimental**), full fleet planning, full DDS middleware, ROS replacement, complete self-hosted compiler.
+**Still future:** LLVM as primary path, production chain adapters, full world-model semantics, **hosted Twin Cloud product GA** (billing, multi-region SLA — OSS `/v1/twins/*` is **Stable**), full fleet planning, full DDS middleware, ROS replacement, complete self-hosted compiler.
 
 ---
 
