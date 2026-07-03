@@ -44,8 +44,18 @@ type Props = {
   hasToken: boolean;
 };
 
-function riskTone(risk: string): "ok" | "warn" | "danger" | "neutral" {
-  const normalized = risk.toLowerCase();
+function asArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? (value as T[]) : [];
+}
+
+function formatPercent(value: unknown): string {
+  const numeric = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numeric)) return "—";
+  return `${(numeric * 100).toFixed(0)}%`;
+}
+
+function riskTone(risk: string | undefined): "ok" | "warn" | "danger" | "neutral" {
+  const normalized = (risk ?? "unknown").toLowerCase();
   if (normalized === "low") return "ok";
   if (normalized === "medium") return "warn";
   if (normalized === "high" || normalized === "critical") return "danger";
@@ -79,17 +89,23 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           `${baseUrl}/v1/recovery/graph${entityId ? `?entity_id=${encodeURIComponent(entityId)}` : ""}`,
         ),
       ]);
-      const plansJson = await plansRes.json();
-      const metricsJson = await metricsRes.json();
+      const plansJson = plansRes.ok ? await plansRes.json() : { plans: [] };
+      const metricsJson = metricsRes.ok ? await metricsRes.json() : { metrics: null };
       const playbooksJson = playbooksRes.ok ? await playbooksRes.json() : { playbooks: [] };
       const historyJson = historyRes.ok ? await historyRes.json() : { history: [] };
       const graphJson = graphRes.ok ? await graphRes.json() : { graph: {} };
-      setPlans(Array.isArray(plansJson.plans) ? plansJson.plans : []);
-      setMetrics(metricsJson.metrics ?? null);
-      setPlaybooks(playbooksJson.playbooks ?? []);
-      setHistory((historyJson.history ?? []).slice(0, 10));
-      setGraphNodes(graphJson.graph?.nodes ?? []);
-      setGraphEdges(graphJson.graph?.edges ?? []);
+      const graph = (graphJson.graph as Record<string, unknown> | undefined) ?? {};
+      setPlans(asArray<RecoveryPlan>(plansJson.plans));
+      setMetrics((metricsJson.metrics as RecoveryMetrics | null) ?? null);
+      setPlaybooks(asArray<Playbook>(playbooksJson.playbooks));
+      setHistory(asArray<HistoryRow>(historyJson.history).slice(0, 10));
+      setGraphNodes(asArray<GraphNode>(graph.nodes));
+      setGraphEdges([
+        ...asArray<GraphEdge>(graph.edges),
+        ...asArray<GraphEdge>(graph.dependency_edges),
+        ...asArray<GraphEdge>(graph.impact_edges),
+        ...asArray<GraphEdge>(graph.recovery_edges),
+      ]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load recovery data");
     } finally {
@@ -139,12 +155,15 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
             { label: "Total recoveries", value: metrics.total_recoveries },
             {
               label: "Success rate",
-              value: `${(metrics.success_rate * 100).toFixed(0)}%`,
-              tone: metrics.success_rate >= 0.9 ? "ok" : "warn",
+              value: formatPercent(metrics.success_rate),
+              tone:
+                typeof metrics.success_rate === "number" && metrics.success_rate >= 0.9
+                  ? "ok"
+                  : "warn",
             },
             {
               label: "Confidence",
-              value: `${(metrics.recovery_confidence * 100).toFixed(0)}%`,
+              value: formatPercent(metrics.recovery_confidence),
             },
             { label: "Active plans", value: plans.length, tone: plans.length > 0 ? "warn" : "ok" },
           ]}
@@ -243,7 +262,7 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
                     <td>{plan.entity_id}</td>
                     <td>{plan.failure}</td>
                     <td>
-                      <CcBadge tone={riskTone(plan.risk)}>{plan.risk}</CcBadge>
+                      <CcBadge tone={riskTone(plan.risk)}>{plan.risk ?? "—"}</CcBadge>
                     </td>
                   </tr>
                 ))}
@@ -287,8 +306,8 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {graphNodes.map((node) => (
-                      <tr key={node.id}>
+                    {graphNodes.map((node, index) => (
+                      <tr key={node.id ?? `node-${index}`}>
                         <td>{node.display_name ?? node.id}</td>
                         <td>{node.kind ?? "—"}</td>
                         <td>
@@ -325,8 +344,8 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
               <li key={index} className="cc-incident-item">
                 <div className="cc-incident-header">
                   <span className="cc-incident-title">{row.root_cause ?? "Recovery event"}</span>
-                  {row.status && (
-                    <CcBadge tone={severityTone(row.status)}>{row.status}</CcBadge>
+                  {row.status != null && row.status !== "" && (
+                    <CcBadge tone={severityTone(String(row.status))}>{String(row.status)}</CcBadge>
                   )}
                 </div>
                 <p className="cc-alert-source">{row.timestamp ?? "—"}</p>

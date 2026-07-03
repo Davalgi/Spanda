@@ -28,6 +28,7 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
   const [liveTrace, setLiveTrace] = useState(false);
   const [policyJson, setPolicyJson] = useState("");
   const [policyBusy, setPolicyBusy] = useState(false);
+  const [simBusy, setSimBusy] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -118,11 +119,13 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
     }
   };
 
-  const pending =
-    ((data?.escalations as Record<string, unknown> | null)?.pending as Record<string, unknown>[]) ??
-    [];
+  const pendingRaw = (data?.escalations as Record<string, unknown> | null)?.pending;
+  const pending = Array.isArray(pendingRaw)
+    ? (pendingRaw as Record<string, unknown>[])
+    : [];
   const traceBody = data?.traces as Record<string, unknown> | null;
-  const frames = (traceBody?.frames as DecisionTraceFrame[]) ?? [];
+  const framesRaw = traceBody?.frames;
+  const frames = Array.isArray(framesRaw) ? (framesRaw as DecisionTraceFrame[]) : [];
   const meshBody = data?.mesh as Record<string, unknown> | null;
 
   return (
