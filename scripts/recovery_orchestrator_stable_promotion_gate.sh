@@ -11,6 +11,16 @@ PROGRAM="$ROOT/examples/showcase/self_healing/rover.sd"
 
 echo "== Recovery Orchestrator stable promotion gate =="
 
+if [[ "${SPANDA_RECOVERY_SKIP_SOAK:-1}" != "1" ]]; then
+  SOAK_FILE="${SPANDA_RECOVERY_FIELD_SOAK_START_FILE:-$ROOT/.spanda/recovery-field-soak-start.txt}"
+  MIN_DAYS="${SPANDA_RECOVERY_FIELD_SOAK_MIN_DAYS:-14}"
+  if [[ ! -f "$SOAK_FILE" ]]; then
+    echo "missing soak file: $SOAK_FILE (run scripts/recovery_orchestrator_field_soak_init.sh)" >&2
+    exit 1
+  fi
+  echo "Recovery field soak file present: $SOAK_FILE (min ${MIN_DAYS} days — timer not enforced in smoke)"
+fi
+
 echo "--- Recovery orchestrator smoke ---"
 if [[ "${SPANDA_RECOVERY_SKIP_SMOKE:-0}" != "1" ]]; then
   "$ROOT/scripts/recovery_orchestrator_smoke.sh"
@@ -57,6 +67,17 @@ body="$(curl -sf --max-time 15 -X POST "http://${BIND}/v1/recovery/plan" \
   -H 'Content-Type: application/json' \
   -d '{"failure":"gps"}')"
 echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert "report" in d'
+
+body="$(fetch "/v1/recovery/predictive")"
+echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert "indicators" in d'
+
+body="$(fetch "/v1/recovery/recoverable-entities")"
+echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert "entities" in d'
+
+body="$(curl -sf --max-time 15 -X POST "http://${BIND}/v1/recovery/recommend" \
+  -H 'Content-Type: application/json' \
+  -d '{"failure":"gps_loss"}')"
+echo "$body" | python3 -c 'import json,sys; d=json.load(sys.stdin); assert "recommendation" in d'
 
 echo ""
 echo "Recovery Orchestrator stable promotion gate passed."

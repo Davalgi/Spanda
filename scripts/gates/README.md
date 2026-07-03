@@ -20,7 +20,8 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | `continuity_smoke.sh` | Takeover, delegation, succession |
 | `self_healing_smoke.sh` | Recovery planner, heal/recover |
 | `recovery_orchestrator_smoke.sh` | Recovery Orchestrator CLI, REST, gRPC, crate tests |
-| `recovery_orchestrator_stable_promotion_gate.sh` | Stable gate + Control Center `/v1/recovery/*` probe |
+| `recovery_orchestrator_stable_promotion_gate.sh` | Stable gate + Control Center `/v1/recovery/*` probe (predictive, recoverable-entities, recommend) |
+| `recovery_orchestrator_field_soak_init.sh` | Start 30-day recovery field soak clock |
 | `readiness_smoke.sh` | Readiness engine |
 | `decision_explain_smoke.sh` | Explain + decision trace |
 | `distributed_decisions_smoke.sh` | Decision tree runtime traces, CLI inspect, sim audit |
@@ -153,6 +154,8 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | Twin Cloud SaaS | `twin_cloud_saas_smoke.sh` | [twin-cloud.md](../../docs/twin-cloud.md) |
 | Trust Framework Stable | `trust_framework_stable_promotion_gate.sh` | [stable-hardening-trust-framework.md](../../docs/stable-hardening-trust-framework.md) |
 | Differentiation Experimental | `differentiation_promotion_gate.sh` | [differentiation-roadmap.md](../../docs/differentiation-roadmap.md) |
+| Recovery Orchestrator Stable | `recovery_orchestrator_stable_promotion_gate.sh` | [stable-hardening-recovery-orchestrator.md](../../docs/stable-hardening-recovery-orchestrator.md) |
+| Recovery Orchestrator Stable | `recovery_orchestrator_field_soak_init.sh` | Field soak prep |
 
 ---
 

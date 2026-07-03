@@ -1,0 +1,44 @@
+[plugin]
+name = "spanda-plugin-recovery-example"
+version = "0.1.0"
+publisher = "spanda"
+description = "Example recovery orchestrator extensions"
+license = "Apache-2.0"
+type = "recovery"
+
+[compatibility]
+spanda_version = ">=0.6.0"
+api_version = "v1"
+
+[capabilities]
+requires = [
+  "recovery.read",
+]
+
+[security]
+signed = false
+sandbox = true
+network = false
+filesystem = "read-only"
+
+[hooks]
+enabled = [
+  "on_recovery_completed",
+]
+
+[[recovery.extensions]]
+kind = "playbook"
+name = "vendor_sensor_reset"
+description = "Vendor-specific sensor stack reset"
+trigger = "sensor_failure"
+strategy = "retry"
+
+[[recovery.extensions]]
+kind = "strategy"
+name = "vendor_retry"
+description = "Vendor retry loop for transient faults"
+
+[[recovery.extensions]]
+kind = "validator"
+name = "vendor_safety_gate"
+description = "Plugin safety validator gate"

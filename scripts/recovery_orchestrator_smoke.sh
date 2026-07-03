@@ -51,5 +51,6 @@ run_spanda recovery playbooks >/dev/null
 run_spanda recovery history >/dev/null
 run_spanda recovery metrics "$HEALING" >/dev/null
 run_spanda recovery graph "$HEALING" >/dev/null
+run_spanda recovery explain "$HEALING" --failure gps >/dev/null
 
 echo "Recovery orchestrator smoke OK"

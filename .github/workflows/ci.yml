@@ -270,6 +270,23 @@ jobs:
           export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
           ./scripts/showcase_smoke.sh
 
+  recovery-orchestrator-stable-promotion-gate:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/recovery_orchestrator_stable_promotion_gate.sh scripts/recovery_orchestrator_smoke.sh
+      - run: |
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          SPANDA_BIN=${{ github.workspace }}/target/release/spanda \
+            SPANDA_RECOVERY_SKIP_SOAK=1 \
+            ./scripts/recovery_orchestrator_stable_promotion_gate.sh
+
   adas-smoke:
     runs-on: ubuntu-latest
     needs: rust
