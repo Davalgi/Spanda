@@ -114,6 +114,17 @@ class SpandaClient:
     def get_recovery_metrics(self) -> Any:
         return self._request("GET", "/v1/recovery/metrics")
 
+    def get_recovery_predictive(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        if body:
+            return self._request("POST", "/v1/recovery/predictive", body)
+        return self._request("GET", "/v1/recovery/predictive")
+
+    def list_recoverable_entities(self) -> Any:
+        return self._request("GET", "/v1/recovery/recoverable-entities")
+
+    def recommend_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
+        return self._request("POST", "/v1/recovery/recommend", body or {})
+
     def list_admin_api_keys(self) -> Any:
         return self._request("GET", "/v1/admin/api-keys", auth=True)
 

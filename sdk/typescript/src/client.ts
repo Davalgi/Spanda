@@ -132,6 +132,23 @@ export class SpandaClient {
     return this.request("GET", "/v1/recovery/metrics");
   }
 
+  async getRecoveryPredictive(
+    body?: Record<string, unknown>,
+  ): Promise<JsonValue> {
+    if (body) {
+      return this.request("POST", "/v1/recovery/predictive", body);
+    }
+    return this.request("GET", "/v1/recovery/predictive");
+  }
+
+  async listRecoverableEntities(): Promise<JsonValue> {
+    return this.request("GET", "/v1/recovery/recoverable-entities");
+  }
+
+  async recommendRecovery(body: Record<string, unknown> = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/recovery/recommend", body);
+  }
+
   async listAdminApiKeys(): Promise<JsonValue> {
     return this.request("GET", "/v1/admin/api-keys", undefined, true);
   }

@@ -711,6 +711,40 @@ impl GrpcClient {
         Self::parse_json(resp.into_inner().json)
     }
 
+    /// Predictive indicators via `GetRecoveryPredictive`.
+    pub async fn get_recovery_predictive(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_recovery_predictive(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Recoverable entities via `ListRecoverableEntities`.
+    pub async fn list_recoverable_entities(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_recoverable_entities(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Knowledge recommendation via `RecommendRecovery`.
+    pub async fn recommend_recovery(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .recommend_recovery(JsonBodyRequest {
+                body_json: Self::recovery_body(body.clone()),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
     /// List API keys via `ListAdminApiKeys`.
     pub async fn list_admin_api_keys(&mut self) -> SpandaResult<Value> {
         let resp = self

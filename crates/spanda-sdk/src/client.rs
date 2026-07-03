@@ -256,6 +256,24 @@ impl SpandaClient {
         self.request("GET", "/v1/recovery/plans", None, false)
     }
 
+    /// Predictive recovery indicators from telemetry.
+    pub fn get_recovery_predictive(&self, body: Option<&Value>) -> SpandaResult<Value> {
+        match body {
+            Some(value) => self.request("POST", "/v1/recovery/predictive", Some(value), false),
+            None => self.request("GET", "/v1/recovery/predictive", None, false),
+        }
+    }
+
+    /// List recoverable entities from the entity graph.
+    pub fn list_recoverable_entities(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/recovery/recoverable-entities", None, false)
+    }
+
+    /// Recommend recovery strategy from program knowledge base.
+    pub fn recommend_recovery(&self, body: &Value) -> SpandaResult<Value> {
+        self.request("POST", "/v1/recovery/recommend", Some(body), false)
+    }
+
     /// List API keys (administrator only).
     pub fn list_admin_api_keys(&self) -> SpandaResult<Value> {
         self.request("GET", "/v1/admin/api-keys", None, true)

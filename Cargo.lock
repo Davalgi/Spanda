@@ -3379,7 +3379,7 @@ dependencies = [
 
 [[package]]
 name = "spanda-sdk"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "prost",
  "serde",
