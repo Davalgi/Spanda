@@ -2,9 +2,9 @@
 
 Docker Compose bundle for a **single-tenant** Twin Cloud Control Center with persisted snapshot storage.
 
-Full runbook: [docs/hosted-twin-cloud.md](../../docs/hosted-twin-cloud.md)
+Full runbook: [docs/hosted-twin-cloud.md](../../docs/hosted-twin-cloud.md) · Product GA: [docs/hosted-twin-cloud-product.md](../../docs/hosted-twin-cloud-product.md)
 
-## Quick start
+## Quick start (Docker Compose)
 
 ```bash
 cd deploy/twin-cloud-hosted
@@ -25,6 +25,29 @@ spanda twin cloud list
 ## Multi-tenant production
 
 Run **one compose stack per tenant** (different `SPANDA_TENANT_ID`, API key, and volume), or operate a shared Control Center with per-key `tenant_id` scoping — see the hosted runbook.
+
+## Kubernetes
+
+```bash
+# Build image (from repo root)
+docker build -f deploy/twin-cloud-hosted/Dockerfile -t spanda-twin-cloud:latest .
+
+# Raw manifests
+kubectl apply -f deploy/twin-cloud-hosted/k8s/namespace.yaml
+kubectl apply -f deploy/twin-cloud-hosted/k8s/configmap.yaml
+kubectl apply -f deploy/twin-cloud-hosted/k8s/secret.example.yaml  # edit first
+kubectl apply -f deploy/twin-cloud-hosted/k8s/pvc.yaml
+kubectl apply -f deploy/twin-cloud-hosted/k8s/deployment.yaml
+kubectl apply -f deploy/twin-cloud-hosted/k8s/service.yaml
+```
+
+## Helm
+
+```bash
+helm upgrade --install twin-cloud deploy/twin-cloud-hosted/helm/twin-cloud \
+  --set apiKey="$SPANDA_API_KEY" \
+  --set tenantId=default
+```
 
 ## Verify
 

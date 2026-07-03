@@ -213,6 +213,7 @@
 | [digital-mission-twin.md](./digital-mission-twin.md) | **Digital mission twin — progress, health, risks** |
 | [twin-cloud.md](./twin-cloud.md) | **Twin Cloud SaaS — OSS snapshot registry (`/v1/twins/*`)** |
 | [hosted-twin-cloud.md](./hosted-twin-cloud.md) | **Hosted Twin Cloud — deploy scaffold and tenant runbook** |
+| [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) | **Hosted Twin Cloud product — K8s/Helm, billing/SLA GA track** |
 | [certification-packs.md](./certification-packs.md) | **Deployment evidence bundles** |
 | [mission-time-travel.md](./mission-time-travel.md) | **Replay mission state at any timestamp** |
 | [human-robot-teaming.md](./human-robot-teaming.md) | **Human approval, escalation, override paths** |

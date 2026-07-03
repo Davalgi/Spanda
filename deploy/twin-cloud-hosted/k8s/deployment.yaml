@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twin-cloud
+  namespace: spanda-twin-cloud
+  labels:
+    app: twin-cloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twin-cloud
+  template:
+    metadata:
+      labels:
+        app: twin-cloud
+    spec:
+      containers:
+        - name: twin-cloud
+          image: spanda-twin-cloud:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - control-center
+            - serve
+            - --bind
+            - 0.0.0.0:8080
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SPANDA_TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: twin-cloud-config
+                  key: SPANDA_TENANT_ID
+            - name: SPANDA_CONTROL_CENTER_STATE_DIR
+              value: /var/lib/spanda
+            - name: SPANDA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: twin-cloud-api-key
+                  key: SPANDA_API_KEY
+          volumeMounts:
+            - name: state
+              mountPath: /var/lib/spanda
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: twin-cloud-state

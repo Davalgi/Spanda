@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: twin-cloud-config
+  namespace: spanda-twin-cloud
+data:
+  SPANDA_TENANT_ID: default
