@@ -30,6 +30,7 @@ mod fault_cli;
 mod fault_runtime;
 mod generate_cli;
 mod governance_cli;
+mod operational_governance_cli;
 mod graph_cli;
 mod integrity_cli;
 mod network_cli;
@@ -1573,7 +1574,36 @@ fn main() {
     }
 
     if command == "governance" {
-        governance_cli::governance_dispatch(&args[2..]);
+        match args.get(2).map(String::as_str) {
+            Some("validate") => operational_governance_cli::governance_validate_dispatch(&args[3..]),
+            Some("report") => operational_governance_cli::governance_report_dispatch(&args[3..]),
+            Some("framework") => operational_governance_cli::governance_framework_dispatch(&args[3..]),
+            _ => governance_cli::governance_dispatch(&args[2..]),
+        }
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "certification" {
+        match args.get(2).map(String::as_str) {
+            Some("list") => operational_governance_cli::certification_list_dispatch(&args[3..]),
+            Some("inspect") => operational_governance_cli::certification_inspect_dispatch(&args[3..]),
+            _ => {
+                eprintln!("Usage: spanda certification list|inspect ...");
+                process::exit(1);
+            }
+        }
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "deployment" {
+        if args.get(2).map(String::as_str) == Some("profile") {
+            operational_governance_cli::deployment_profile_dispatch(&args[3..]);
+        } else {
+            eprintln!("Usage: spanda deployment profile [name] [--json]");
+            process::exit(1);
+        }
         let _ = io::stdout().flush();
         return;
     }
@@ -1728,7 +1758,11 @@ fn main() {
     }
 
     if command == "risk" {
-        risk_cli::risk_dispatch(&args[2..]);
+        if args.get(2).map(String::as_str) == Some("report") {
+            operational_governance_cli::risk_report_dispatch(&args[3..]);
+        } else {
+            risk_cli::risk_dispatch(&args[2..]);
+        }
         let _ = io::stdout().flush();
         return;
     }

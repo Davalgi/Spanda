@@ -29,6 +29,7 @@ fn print_usage() {
     eprintln!(
         "Usage:\n\
            spanda compliance list [--json]\n\
+           spanda compliance check [--json] [--strict] [--entity <id>]\n\
            spanda compliance report <file.sd> --profile <name> [--json] [--format markdown]"
     );
 }
@@ -51,6 +52,7 @@ pub fn compliance_dispatch(args: &[String]) {
 
     match args.first().map(String::as_str) {
         Some("list") => cmd_list(&args[1..]),
+        Some("check") => crate::operational_governance_cli::compliance_check_dispatch(&args[1..]),
         Some("report") => cmd_report(&args[1..]),
         Some("--help") | Some("-h") | None => print_usage(),
         Some(other) => {
