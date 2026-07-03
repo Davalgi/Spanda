@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { DeployGateModal } from "./DeployGateModal";
 import type { RbacAction } from "./controlCenterRbac";
+import { CcPanelToolbar } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type MissionRow = {
   id: string;
@@ -60,6 +62,8 @@ export function MissionViewPanel({ baseUrl, authHeaders, can, hasToken }: Props)
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const approveMission = async (approvalId: string, missionId: string, approved: boolean) => {
     if (!hasToken || !can("Approve")) return;
     setBusy(true);
@@ -102,15 +106,11 @@ export function MissionViewPanel({ baseUrl, authHeaders, can, hasToken }: Props)
 
   return (
     <section className="cc-mission-panel">
-      <header>
-        <h3>Mission View</h3>
-        <button type="button" onClick={() => void load()} disabled={busy}>
-          Refresh
-        </button>
+      <CcPanelToolbar>
         <button type="button" onClick={() => setShowDeployGate(true)}>
           Deploy gate
         </button>
-      </header>
+      </CcPanelToolbar>
       {error && <p className="error">{error}</p>}
       <p className="demo-hint">Pending approvals: {pendingCount}</p>
 

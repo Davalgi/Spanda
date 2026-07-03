@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection, formatTimestamp, severityTone } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 export type AlertRow = {
   id?: string;
@@ -47,6 +48,8 @@ export function AlertsPanel({ baseUrl, alerts: alertsProp, loading: loadingProp 
   const alerts = alertsProp ?? fetchedAlerts;
   const isLoading = loadingProp ?? loading;
   const [severityFilter, setSeverityFilter] = useState("all");
+
+  useRegisterTabRefresh(load, { busy: isLoading });
 
   const severityOptions = useMemo(() => {
     const levels = new Set(

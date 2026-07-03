@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { fetchAgentContinuity, type AgentContinuityResponse } from "./continuity-agent";
 import type { FleetAgent } from "./controlCenterTypes";
 
@@ -35,6 +36,8 @@ export function ContinuityPanel({ baseUrl, authHeaders, can, hasToken, agents }:
   useEffect(() => {
     void loadMissions();
   }, [loadMissions]);
+
+  useRegisterTabRefresh(loadMissions, { busy });
 
   const pollAgent = async (url: string) => {
     setBusy(true);

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -37,6 +38,8 @@ export function ChaosPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const toggle = (injection: string) => {
     setSelected((current) =>
       current.includes(injection)
@@ -68,16 +71,7 @@ export function ChaosPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Chaos engineering"
-        hint="Fault injection catalog and simulation against the loaded program."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh catalog
-          </button>
-        }
-      >
-        {injections.length === 0 ? (
+      {injections.length === 0 ? (
           <CcEmptyState title="No injections available" />
         ) : (
           <ul className="cc-checkbox-list">
@@ -95,12 +89,11 @@ export function ChaosPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
             ))}
           </ul>
         )}
-        {can("Deploy") && hasToken && (
-          <button type="button" onClick={() => void simulate()} disabled={busy || selected.length === 0}>
-            Run chaos simulation
-          </button>
-        )}
-      </CcSection>
+      {can("Deploy") && hasToken && (
+        <button type="button" onClick={() => void simulate()} disabled={busy || selected.length === 0}>
+          Run chaos simulation
+        </button>
+      )}
 
       {result && (
         <CcSection title="Simulation result">

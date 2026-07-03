@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type AuditRecord = Record<string, unknown>;
 
@@ -46,6 +47,8 @@ export function AuditPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
@@ -73,11 +76,6 @@ export function AuditPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           <CcSection
             title="Mutation audit trail"
             hint="Platform mutations recorded for compliance and forensics."
-            actions={
-              <button type="button" onClick={() => void load()} disabled={busy}>
-                {busy ? "Loading…" : "Refresh"}
-              </button>
-            }
           >
             {busy && records.length === 0 ? (
               <CcEmptyState title="Loading audit records…" />

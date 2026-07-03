@@ -1052,6 +1052,17 @@ html:has(.cc-desktop-app) body {
   gap: 1.25rem;
 }
 
+.cc-panel-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.cc-section-header--actions-only {
+  justify-content: flex-end;
+}
+
 .cc-badge {
   display: inline-block;
   font-size: 0.72rem;

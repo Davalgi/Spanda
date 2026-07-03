@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 import {
   decisionEventClass,
@@ -73,6 +74,8 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
     return () => window.clearInterval(timer);
   }, [liveTrace, load]);
 
+  useRegisterTabRefresh(() => load(), { busy });
+
   const approveEscalation = async (escalationId: string) => {
     setBusy(true);
     setError(null);
@@ -137,9 +140,6 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
         hint="Distributed decision architecture — reflex, local, fleet, and control-center layers."
         actions={
           <div className="cc-action-bar">
-            <button type="button" onClick={() => void load()} disabled={busy}>
-              Refresh
-            </button>
             <button type="button" onClick={() => void runSimWithTraces()} disabled={busy || simBusy}>
               {simBusy ? "Running sim…" : "Run sim with traces"}
             </button>

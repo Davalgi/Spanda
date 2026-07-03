@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcEmptyState, CcMiniStats } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type ForecastPayload = {
   forecast?: { score?: number; horizon?: string; warnings?: string[] };
@@ -43,6 +44,8 @@ export function ReadinessTrendsPanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const trends = forecast?.trends ?? [];
   const warnings = forecast?.forecast?.warnings ?? [];
 
@@ -50,16 +53,7 @@ export function ReadinessTrendsPanel({ baseUrl }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Readiness trends & forecast"
-        hint="Analytics forecast and SRE readiness trend rollup."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        <CcMiniStats
+      <CcMiniStats
           items={[
             {
               label: "Forecast score",
@@ -103,7 +97,6 @@ export function ReadinessTrendsPanel({ baseUrl }: Props) {
             ))}
           </ul>
         )}
-      </CcSection>
     </div>
   );
 }

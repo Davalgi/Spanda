@@ -7,6 +7,7 @@ import {
   CcSection,
   severityTone,
 } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type RecoveryPlan = {
   plan_id?: string;
@@ -52,6 +53,14 @@ function formatPercent(value: unknown): string {
   const numeric = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(numeric)) return "—";
   return `${(numeric * 100).toFixed(0)}%`;
+}
+
+function displayCell(value: unknown): string {
+  if (value == null) return "—";
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  return JSON.stringify(value);
 }
 
 function riskTone(risk: string | undefined): "ok" | "warn" | "danger" | "neutral" {
@@ -117,6 +126,8 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const recoveryPost = async (path: string, body: Record<string, unknown>) => {
     if (!hasToken || !can("Recover")) return;
     setBusy(true);
@@ -148,6 +159,10 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
+
+      {busy && !metrics && plans.length === 0 && playbooks.length === 0 && (
+        <p className="cc-section-hint">Loading recovery data…</p>
+      )}
 
       {metrics && (
         <CcMiniStats
@@ -256,13 +271,15 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {plans.map((plan) => (
-                  <tr key={plan.plan_id ?? plan.entity_id}>
-                    <td>{plan.plan_id ?? "—"}</td>
-                    <td>{plan.entity_id}</td>
-                    <td>{plan.failure}</td>
+                {plans.map((plan, index) => (
+                  <tr key={plan.plan_id ?? `${plan.entity_id}-${index}`}>
+                    <td>{displayCell(plan.plan_id)}</td>
+                    <td>{displayCell(plan.entity_id)}</td>
+                    <td>{displayCell(plan.failure)}</td>
                     <td>
-                      <CcBadge tone={riskTone(plan.risk)}>{plan.risk ?? "—"}</CcBadge>
+                      <CcBadge tone={riskTone(typeof plan.risk === "string" ? plan.risk : undefined)}>
+                        {displayCell(plan.risk)}
+                      </CcBadge>
                     </td>
                   </tr>
                 ))}
@@ -308,8 +325,8 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
                   <tbody>
                     {graphNodes.map((node, index) => (
                       <tr key={node.id ?? `node-${index}`}>
-                        <td>{node.display_name ?? node.id}</td>
-                        <td>{node.kind ?? "—"}</td>
+                        <td>{displayCell(node.display_name ?? node.id)}</td>
+                        <td>{displayCell(node.kind)}</td>
                         <td>
                           <CcBadge tone={node.recoverable ? "ok" : "neutral"}>
                             {node.recoverable ? "yes" : "no"}

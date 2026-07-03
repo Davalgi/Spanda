@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type ScheduleRow = {
   id: string;
@@ -48,6 +49,8 @@ export function ReportsPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const createSchedule = async () => {
     if (!hasToken || !can("Deploy")) return;
     setBusy(true);
@@ -94,11 +97,6 @@ export function ReportsPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
       <CcSection
         title="Report schedules"
         hint="Scheduled Markdown, JSON, or PDF delivery via webhook."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
       >
         {schedules.length === 0 ? (
           <CcEmptyState title="No schedules" description="Add a webhook schedule for automated compliance reports." />

@@ -62,25 +62,38 @@ export function CcEmptyState({ title, description, action }: EmptyStateProps) {
 }
 
 type SectionProps = {
-  title: string;
+  title?: string;
   hint?: string;
   actions?: ReactNode;
   children: ReactNode;
 };
 
 export function CcSection({ title, hint, actions, children }: SectionProps) {
+  const hasHeader = Boolean(title || hint || actions);
   return (
     <section className="cc-section">
-      <div className="cc-section-header">
-        <div>
-          <h3 className="cc-section-heading">{title}</h3>
-          {hint && <p className="cc-section-hint">{hint}</p>}
+      {hasHeader && (
+        <div
+          className={
+            title || hint ? "cc-section-header" : "cc-section-header cc-section-header--actions-only"
+          }
+        >
+          {(title || hint) && (
+            <div>
+              {title && <h3 className="cc-section-heading">{title}</h3>}
+              {hint && <p className="cc-section-hint">{hint}</p>}
+            </div>
+          )}
+          {actions && <div className="cc-section-actions">{actions}</div>}
         </div>
-        {actions && <div className="cc-section-actions">{actions}</div>}
-      </div>
+      )}
       {children}
     </section>
   );
+}
+
+export function CcPanelToolbar({ children }: { children: ReactNode }) {
+  return <div className="cc-panel-toolbar">{children}</div>;
 }
 
 type MiniStat = {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcEmptyState, CcMiniStats } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type MapMarker = {
   id: string;
@@ -48,38 +49,31 @@ export function FleetMapPanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Fleet map"
-        hint="Geospatial or grid positions for robots, agents, devices, and entities."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        <CcMiniStats
-          items={[
-            { label: "Markers", value: markers.length },
-            {
-              label: "Robots",
-              value: markers.filter((marker) => marker.kind === "robot").length,
-            },
-            {
-              label: "Alerts context",
-              value: markers.filter((marker) => marker.status === "degraded" || marker.status === "failed").length,
-              tone: markers.some((m) => m.status === "failed") ? "danger" : "ok",
-            },
-          ]}
-        />
+      <CcMiniStats
+        items={[
+          { label: "Markers", value: markers.length },
+          {
+            label: "Robots",
+            value: markers.filter((marker) => marker.kind === "robot").length,
+          },
+          {
+            label: "Alerts context",
+            value: markers.filter((marker) => marker.status === "degraded" || marker.status === "failed").length,
+            tone: markers.some((m) => m.status === "failed") ? "danger" : "ok",
+          },
+        ]}
+      />
 
-        {markers.length === 0 ? (
-          <CcEmptyState title="No map markers" description="Load a program with robots or fleet agents." />
-        ) : (
-          <div className="cc-fleet-map">
+      {markers.length === 0 ? (
+        <CcEmptyState title="No map markers" description="Load a program with robots or fleet agents." />
+      ) : (
+        <div className="cc-fleet-map">
             <svg viewBox="0 0 100 100" className="cc-fleet-map-svg" role="img" aria-label="Fleet map">
               <rect x="0" y="0" width="100" height="100" className="cc-fleet-map-bg" />
               {markers.map((marker) => (
@@ -128,7 +122,6 @@ export function FleetMapPanel({ baseUrl }: Props) {
             )}
           </div>
         )}
-      </CcSection>
     </div>
   );
 }

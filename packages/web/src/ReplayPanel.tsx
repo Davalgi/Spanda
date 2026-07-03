@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type TraceRow = {
   path: string;
@@ -45,6 +46,8 @@ export function ReplayPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void loadTraces();
   }, [loadTraces]);
 
+  useRegisterTabRefresh(loadTraces, { busy });
+
   const replay = async (mode: "inspect" | "deterministic" | "playback") => {
     if (mode !== "inspect" && (!hasToken || !can("Operate"))) return;
     if (!selectedTrace) return;
@@ -73,12 +76,6 @@ export function ReplayPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
 
   return (
     <section className="cc-replay-panel">
-      <header className="cc-section-header">
-        <h3>Replay</h3>
-        <button type="button" onClick={() => void loadTraces()} disabled={busy}>
-          Refresh traces
-        </button>
-      </header>
       <p className="demo-hint">
         Mission trace library from the project tree. Record with{" "}
         <code>spanda sim program.sd --record</code>.

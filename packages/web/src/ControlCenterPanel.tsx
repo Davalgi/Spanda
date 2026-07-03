@@ -3,7 +3,8 @@ import { ControlCenterAuthBanner } from "./ControlCenterAuthBanner";
 import { ControlCenterNav } from "./ControlCenterNav";
 import { ControlCenterPluginPanel } from "./ControlCenterPluginPanel";
 import { ControlCenterTabContent } from "./ControlCenterTabContent";
-import { TAB_DESCRIPTIONS, tabLabel } from "./controlCenterNavConfig";
+import { ControlCenterMainHeader } from "./ControlCenterMainHeader";
+import { ControlCenterTabRefreshProvider } from "./useControlCenterTabRefresh";
 import {
   addProfile,
   ensureProfile,
@@ -108,8 +109,6 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const activePlugin = pluginTab
     ? core.pluginPanels.find((panel) => `${panel.plugin}:${panel.id}` === pluginTab)
     : null;
-  const sectionTitle = activePlugin ? activePlugin.title : tabLabel(tab);
-  const sectionHint = pluginTab ? null : TAB_DESCRIPTIONS[tab];
 
   const selectTab = (name: ControlCenterTab) => {
     setPluginTab(null);
@@ -157,54 +156,52 @@ export function ControlCenterPanel({ apiBase }: Props) {
       </aside>
 
       <main className="cc-main">
-        <header className="cc-main-header">
-          <div>
-            <h2 className="cc-section-title">{sectionTitle}</h2>
-            {sectionHint && <p className="cc-section-hint">{sectionHint}</p>}
-          </div>
-          <div className="cc-main-actions">
-            <button type="button" onClick={() => void core.load()} disabled={core.busy}>
-              {core.busy ? "Refreshing…" : "Refresh"}
-            </button>
-          </div>
-        </header>
+        <ControlCenterTabRefreshProvider tab={tab}>
+          <ControlCenterMainHeader
+            tab={tab}
+            pluginTitle={activePlugin?.title ?? null}
+            coreBusy={core.busy}
+            onCoreRefresh={() => void core.load()}
+            onReadinessRefresh={() => void core.runReadiness()}
+          />
 
-        {core.error && <div className="error">{core.error}</div>}
-        {core.usingCache && (
-          <div className="banner cc-offline-banner">
-            Showing cached dashboard from {core.cacheAge ?? "earlier"} — API unreachable.
-          </div>
-        )}
-
-        <div className="cc-main-body">
-          {pluginTab && activePlugin ? (
-            <ControlCenterPluginPanel panel={activePlugin} baseUrl={base} />
-          ) : (
-            <ControlCenterTabContent
-              tab={tab}
-              baseUrl={base}
-              authHeaders={authHeaders}
-              can={can}
-              hasToken={hasToken}
-              busy={core.busy}
-              pool={core.pool}
-              dashboard={core.dashboard}
-              readiness={core.readiness}
-              devices={core.devices}
-              robots={core.robots}
-              fleets={core.fleets}
-              agents={core.agents}
-              selectedRobot={core.selectedRobot}
-              onRobotChange={core.setSelectedRobot}
-              robotId={core.robotId}
-              onNavigate={selectTab}
-              onRunReadiness={() => void core.runReadiness()}
-              onRefresh={() => void core.load()}
-              onSignIn={() => setShowAuthSetup(true)}
-              deviceWorkflow={deviceWorkflow}
-            />
+          {core.error && <div className="error">{core.error}</div>}
+          {core.usingCache && (
+            <div className="banner cc-offline-banner">
+              Showing cached dashboard from {core.cacheAge ?? "earlier"} — API unreachable.
+            </div>
           )}
-        </div>
+
+          <div className="cc-main-body">
+            {pluginTab && activePlugin ? (
+              <ControlCenterPluginPanel panel={activePlugin} baseUrl={base} />
+            ) : (
+              <ControlCenterTabContent
+                tab={tab}
+                baseUrl={base}
+                authHeaders={authHeaders}
+                can={can}
+                hasToken={hasToken}
+                busy={core.busy}
+                pool={core.pool}
+                dashboard={core.dashboard}
+                readiness={core.readiness}
+                devices={core.devices}
+                robots={core.robots}
+                fleets={core.fleets}
+                agents={core.agents}
+                selectedRobot={core.selectedRobot}
+                onRobotChange={core.setSelectedRobot}
+                robotId={core.robotId}
+                onNavigate={selectTab}
+                onRunReadiness={() => void core.runReadiness()}
+                onRefresh={() => void core.load()}
+                onSignIn={() => setShowAuthSetup(true)}
+                deviceWorkflow={deviceWorkflow}
+              />
+            )}
+          </div>
+        </ControlCenterTabRefreshProvider>
       </main>
     </div>
   );

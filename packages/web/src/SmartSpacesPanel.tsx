@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 
 type Props = {
@@ -69,6 +70,8 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   if (!summary && !busy) {
     return (
       <div className="cc-panel">
@@ -114,16 +117,7 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Smart building overview"
-        hint="Facilities, zones, energy, and occupancy for smart-space programs."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        <CcMiniStats
+      <CcMiniStats
           items={[
             { label: "Facilities", value: String(facilities.count ?? facilityRows.length) },
             { label: "Gateways", value: gatewayRows.length },
@@ -133,7 +127,6 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
             { label: "Emergency", value: String(emergency.status ?? "normal") },
           ]}
         />
-      </CcSection>
 
       <CcSection title="Buildings">
         <ControlCenterDataTable

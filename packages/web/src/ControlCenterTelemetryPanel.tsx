@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
 import { connectTelemetryStream, type TelemetryStreamEvent } from "./controlCenterTelemetry";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -33,6 +34,14 @@ export function ControlCenterTelemetryPanel({ baseUrl }: Props) {
     const disconnect = startStream();
     return disconnect;
   }, [streaming, startStream]);
+
+  const refreshStream = useCallback(() => {
+    setEvents([]);
+    setError(null);
+    setStreaming(true);
+  }, []);
+
+  useRegisterTabRefresh(refreshStream);
 
   const telemetryCount = events.filter((event) => event.channel === "telemetry" || event.type === "telemetry").length;
   const traceCount = events.filter((event) => event.channel === "trace" || event.type === "trace").length;

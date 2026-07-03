@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcEmptyState, CcMiniStats } from "./controlCenterUi";
 import { scalarEntries } from "./controlCenterDataTable";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -30,21 +31,14 @@ export function ExecutivePanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const stats = scalarEntries(scorecard).slice(0, 6);
 
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
-      <CcSection
-        title="Executive scorecard"
-        hint="Cross-domain KPI rollup for leadership dashboards."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        {!scorecard && !busy ? (
+      {!scorecard && !busy ? (
           <CcEmptyState title="Scorecard unavailable" />
         ) : busy && !scorecard ? (
           <CcEmptyState title="Loading scorecard…" />
@@ -72,7 +66,6 @@ export function ExecutivePanel({ baseUrl }: Props) {
             </details>
           </>
         )}
-      </CcSection>
     </div>
   );
 }

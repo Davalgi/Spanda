@@ -6,6 +6,7 @@ import {
   type DigitalThreadGraphNode,
 } from "./DigitalThreadGraph";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -46,6 +47,8 @@ export function DigitalThreadPanel({ baseUrl }: Props) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useRegisterTabRefresh(load, { busy });
 
   const lifecycleRows =
     (digitalThread?.lifecycle_rows as { node_id: string; phase: string }[] | undefined) ?? [];

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DeployGateModal } from "./DeployGateModal";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type ApprovalRow = {
   id: string;
@@ -70,6 +71,8 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useRegisterTabRefresh(load, { busy });
 
   const resolve = async (approvalId: string, approve: boolean) => {
     if (!hasToken || !can("Approve")) return;

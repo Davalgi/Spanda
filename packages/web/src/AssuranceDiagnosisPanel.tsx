@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -31,14 +32,10 @@ export function AssuranceDiagnosisPanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   return (
-    <section>
-      <header className="cc-section-header">
-        <h3>Assurance &amp; Diagnosis</h3>
-        <button type="button" onClick={() => void load()} disabled={busy}>
-          Refresh
-        </button>
-      </header>
+    <section className="cc-panel">
       {error && <p className="error">{error}</p>}
       <h4>Assurance</h4>
       {assurance ? <pre>{JSON.stringify(assurance, null, 2)}</pre> : <p>Loading…</p>}

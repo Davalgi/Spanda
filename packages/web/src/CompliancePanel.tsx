@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Profile = {
   name: string;
@@ -53,6 +54,8 @@ export function CompliancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
   useEffect(() => {
     void loadProfiles();
   }, [loadProfiles]);
+
+  useRegisterTabRefresh(loadProfiles, { busy });
 
   const exportProfile = async () => {
     if (!hasToken || !can("Deploy")) return;

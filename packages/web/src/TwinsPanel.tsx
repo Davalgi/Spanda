@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
-import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcBadge, CcEmptyState, CcMiniStats, CcPanelToolbar, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 
 type TwinRow = {
@@ -41,6 +42,8 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const sync = async () => {
     if (!hasToken || !can("Deploy")) return;
     setBusy(true);
@@ -65,26 +68,17 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
-      <CcSection
-        title="Twin Cloud registry"
-        hint="Persisted mission twin snapshots from edge push or program sync."
-        actions={
-          <div className="cc-action-bar">
-            <button type="button" onClick={() => void load()} disabled={busy}>
-              Refresh
-            </button>
-            <button
-              type="button"
-              className="primary"
-              onClick={() => void sync()}
-              disabled={busy || !hasToken || !can("Deploy")}
-            >
-              Sync loaded program
-            </button>
-          </div>
-        }
-      >
-        {twins.length === 0 ? (
+      <CcPanelToolbar>
+        <button
+          type="button"
+          className="primary"
+          onClick={() => void sync()}
+          disabled={busy || !hasToken || !can("Deploy")}
+        >
+          Sync loaded program
+        </button>
+      </CcPanelToolbar>
+      {twins.length === 0 ? (
           <CcEmptyState
             title="No twins registered"
             description="Push with spanda twin cloud push or sync a loaded program."
@@ -114,7 +108,6 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
             ]}
           />
         )}
-      </CcSection>
       {payload && (
         <CcSection title="Twin Cloud usage">
           <CcMiniStats

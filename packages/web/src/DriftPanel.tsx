@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type DriftData = {
   baselineId: string;
@@ -62,6 +63,8 @@ export function DriftPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   useEffect(() => {
     void loadDrift();
   }, [loadDrift]);
+
+  useRegisterTabRefresh(() => loadDrift(), { busy });
 
   const runScan = async () => {
     if (!hasToken || !can("Deploy")) return;

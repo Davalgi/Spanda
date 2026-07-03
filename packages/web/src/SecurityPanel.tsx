@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection, trustTone } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type TrustFactor = {
   name?: string;
@@ -31,11 +32,7 @@ export function SecurityPanel({ baseUrl }: Props) {
     }
   }, [baseUrl]);
 
-  useEffect(() => {
-    void loadMatrix();
-  }, [loadMatrix]);
-
-  const evaluateTrust = async () => {
+  const evaluateTrust = useCallback(async () => {
     setBusy(true);
     setError(null);
     try {
@@ -49,7 +46,22 @@ export function SecurityPanel({ baseUrl }: Props) {
     } finally {
       setBusy(false);
     }
-  };
+  }, [baseUrl, packageName]);
+
+  const refresh = useCallback(async () => {
+    await loadMatrix();
+    await evaluateTrust();
+  }, [evaluateTrust, loadMatrix]);
+
+  useEffect(() => {
+    void loadMatrix();
+  }, [loadMatrix]);
+
+  useEffect(() => {
+    void evaluateTrust();
+  }, [evaluateTrust]);
+
+  useRegisterTabRefresh(refresh, { busy });
 
   const score = Number(trustReport?.score ?? 0);
   const maxScore = Number(trustReport?.max_score ?? 100);

@@ -7,6 +7,7 @@ import {
   type EntitySummary,
   type RegisterEntityInput,
 } from "./EntityGraphPanel";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -55,6 +56,8 @@ export function EntitiesPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   useEffect(() => {
     void loadEntities();
   }, [baseUrl, entityKindFilter]);
+
+  useRegisterTabRefresh(loadEntities, { busy });
 
   const loadEntityDetail = useCallback(
     async (entityId: string) => {

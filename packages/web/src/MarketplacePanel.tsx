@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type PluginEntry = {
   manifest?: { plugin?: { name?: string; version?: string; description?: string } };
@@ -44,20 +45,13 @@ export function MarketplacePanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Plugin marketplace"
-        hint="Installed plugins with Control Center panel extensions."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        {plugins.length === 0 ? (
+      {plugins.length === 0 ? (
           <CcEmptyState
             title="No plugins installed"
             description="Install packages with spanda.plugin.toml and control-center-ui panels."
@@ -89,7 +83,6 @@ export function MarketplacePanel({ baseUrl }: Props) {
             })}
           </ul>
         )}
-      </CcSection>
 
       <CcSection title="Control Center panels">
         {ccPlugins.length === 0 ? (

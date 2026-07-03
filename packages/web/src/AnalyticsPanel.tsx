@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnalyticsSection } from "./AnalyticsSection";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type AnalyticsData = {
   what_if?: Record<string, unknown>;
@@ -97,27 +98,19 @@ export function AnalyticsPanel({ baseUrl }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const hasData = analytics && Object.values(analytics).some(Boolean);
 
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
-      <CcSection
-        title="Differentiation analytics"
-        hint="Requires a loaded program via control-center serve --program."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            {busy ? "Loading…" : "Refresh"}
-          </button>
-        }
-      >
-        {!hasData && !busy ? (
-          <CcEmptyState
-            title="No analytics data"
-            description="Load a program with control-center serve --program to populate analytics endpoints."
-          />
-        ) : null}
-      </CcSection>
+      {!hasData && !busy ? (
+        <CcEmptyState
+          title="No analytics data"
+          description="Load a program with control-center serve --program to populate analytics endpoints."
+        />
+      ) : null}
       <AnalyticsSection title="What-if analysis" data={analytics?.what_if} />
       <AnalyticsSection title="Mission risk" data={analytics?.mission_risk} />
       <AnalyticsSection title="Readiness forecast" data={analytics?.readiness_forecast} />

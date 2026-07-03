@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnalyticsSection } from "./AnalyticsSection";
 import { CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type DevicePool = {
   total: number;
@@ -59,6 +60,8 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const runReadiness = async () => {
     setBusy(true);
     setError(null);
@@ -80,26 +83,16 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="ADAS vehicle summary"
-        hint="Serve with spanda control-center serve --config spanda.toml --program src/highway_drive.sd"
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        <CcMiniStats
-          items={[
-            { label: "Vehicle health", value: String(health?.overall_status ?? "—") },
-            { label: "Sensor devices", value: devicePool?.total ?? 0 },
-            { label: "Healthy sensors", value: devicePool?.healthy ?? 0 },
-            { label: "Degraded", value: devicePool?.degraded ?? 0 },
-            { label: "Trust score", value: trustScore },
-            { label: "Active alerts", value: alertCount },
-          ]}
-        />
-      </CcSection>
+      <CcMiniStats
+        items={[
+          { label: "Vehicle health", value: String(health?.overall_status ?? "—") },
+          { label: "Sensor devices", value: devicePool?.total ?? 0 },
+          { label: "Healthy sensors", value: devicePool?.healthy ?? 0 },
+          { label: "Degraded", value: devicePool?.degraded ?? 0 },
+          { label: "Trust score", value: trustScore },
+          { label: "Active alerts", value: alertCount },
+        ]}
+      />
 
       <CcSection
         title="Mission readiness"

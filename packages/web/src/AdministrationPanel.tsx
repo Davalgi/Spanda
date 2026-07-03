@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type ApiKeyRow = {
   key_id: string;
@@ -153,6 +154,8 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
   useEffect(() => {
     void load();
   }, [load]);
+
+  useRegisterTabRefresh(load, { busy });
 
   const createKey = async () => {
     setBusy(true);
@@ -349,12 +352,6 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
 
   return (
     <section className="cc-admin-panel">
-      <header className="cc-section-header">
-        <h3>Administration</h3>
-        <button type="button" onClick={() => void load()} disabled={busy}>
-          Refresh
-        </button>
-      </header>
       {error && <p className="error">{error}</p>}
 
       <h4>User directory</h4>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -37,6 +38,8 @@ export function OtaPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   useEffect(() => {
     void loadStatus();
   }, [loadStatus]);
+
+  useRegisterTabRefresh(loadStatus, { busy });
 
   const postRollout = async (path: string, dryRun: boolean) => {
     if (!hasToken || !can("Deploy")) return;

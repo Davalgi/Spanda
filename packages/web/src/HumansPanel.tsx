@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { CollaborationGraph } from "./CollaborationGraph";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 
 type Props = {
@@ -87,6 +88,8 @@ export function HumansPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     void load();
   }, [load]);
 
+  useRegisterTabRefresh(load, { busy });
+
   const resolveMissionApproval = async (
     approvalId: string,
     missionId: string,
@@ -118,27 +121,17 @@ export function HumansPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcSection
-        title="Human operations"
-        hint="Serve with warehouse-ar/pick_mission.sd or spatial-computing programs."
-        actions={
-          <button type="button" onClick={() => void load()} disabled={busy}>
-            Refresh
-          </button>
-        }
-      >
-        <CcMiniStats
-          items={[
-            { label: "Operators", value: humansList.length },
-            { label: "Wearables", value: wearablesList.length },
-            { label: "HRI sessions", value: hriSessions.length },
-            {
-              label: "Health telemetry",
-              value: humanHealthPolicy?.active === true ? "opt-in active" : "gated",
-            },
-          ]}
-        />
-      </CcSection>
+      <CcMiniStats
+        items={[
+          { label: "Operators", value: humansList.length },
+          { label: "Wearables", value: wearablesList.length },
+          { label: "HRI sessions", value: hriSessions.length },
+          {
+            label: "Health telemetry",
+            value: humanHealthPolicy?.active === true ? "opt-in active" : "gated",
+          },
+        ]}
+      />
 
       <CcSection title="Human dashboard">
         <ControlCenterDataTable

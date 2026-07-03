@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CcEmptyState, CcSection } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -45,6 +46,8 @@ export function MappingPanel({ baseUrl }: Props) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useRegisterTabRefresh(load, { busy });
 
   const sensors = useMemo(() => mappingRows(mapping?.sensors), [mapping]);
   const actuators = useMemo(() => mappingRows(mapping?.actuators), [mapping]);

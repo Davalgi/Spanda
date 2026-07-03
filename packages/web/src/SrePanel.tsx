@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcBadge, CcEmptyState, CcMiniStats, CcSection, severityTone } from "./controlCenterUi";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 export type SreSummary = {
   availability_percent: number;
@@ -94,6 +95,8 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useRegisterTabRefresh(load, { busy });
 
   const createIncident = async () => {
     if (!hasToken || !canOperate) return;
@@ -228,9 +231,6 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
         hint="Track and resolve operational incidents."
         actions={
           <div className="cc-action-bar">
-            <button type="button" onClick={() => void load()} disabled={busy}>
-              Refresh
-            </button>
             <button
               type="button"
               onClick={() => void createIncident()}
