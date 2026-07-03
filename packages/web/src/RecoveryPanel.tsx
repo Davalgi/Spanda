@@ -27,6 +27,9 @@ type HistoryRow = {
   status?: string;
 };
 
+type GraphNode = { id: string; kind?: string; display_name?: string; recoverable?: boolean };
+type GraphEdge = { from: string; to: string; relationship?: string };
+
 type Props = {
   baseUrl: string;
   authHeaders: () => HeadersInit;
@@ -39,6 +42,8 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   const [metrics, setMetrics] = useState<RecoveryMetrics | null>(null);
   const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
   const [history, setHistory] = useState<HistoryRow[]>([]);
+  const [graphNodes, setGraphNodes] = useState<GraphNode[]>([]);
+  const [graphEdges, setGraphEdges] = useState<GraphEdge[]>([]);
   const [entityId, setEntityId] = useState("");
   const [failure, setFailure] = useState("sensor_fault");
   const [playbook, setPlaybook] = useState("");
@@ -50,26 +55,30 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const [plansRes, metricsRes, playbooksRes, historyRes] = await Promise.all([
+      const [plansRes, metricsRes, playbooksRes, historyRes, graphRes] = await Promise.all([
         fetch(`${baseUrl}/v1/recovery/plans`),
         fetch(`${baseUrl}/v1/recovery/metrics`),
         fetch(`${baseUrl}/v1/recovery/playbooks`),
         fetch(`${baseUrl}/v1/recovery/history`),
+        fetch(`${baseUrl}/v1/recovery/graph${entityId ? `?entity_id=${encodeURIComponent(entityId)}` : ""}`),
       ]);
       const plansJson = await plansRes.json();
       const metricsJson = await metricsRes.json();
       const playbooksJson = playbooksRes.ok ? await playbooksRes.json() : { playbooks: [] };
       const historyJson = historyRes.ok ? await historyRes.json() : { history: [] };
+      const graphJson = graphRes.ok ? await graphRes.json() : { graph: {} };
       setPlans(Array.isArray(plansJson.plans) ? plansJson.plans : []);
       setMetrics(metricsJson.metrics ?? null);
       setPlaybooks(playbooksJson.playbooks ?? []);
       setHistory((historyJson.history ?? []).slice(0, 10));
+      setGraphNodes(graphJson.graph?.nodes ?? []);
+      setGraphEdges(graphJson.graph?.edges ?? []);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load recovery data");
     } finally {
       setBusy(false);
     }
-  }, [baseUrl]);
+  }, [baseUrl, entityId]);
 
   useEffect(() => {
     void load();
@@ -223,6 +232,40 @@ export function RecoveryPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           )}
         </tbody>
       </table>
+
+      <h3>Recovery graph</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>Kind</th>
+            <th>Recoverable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {graphNodes.map((node) => (
+            <tr key={node.id}>
+              <td>{node.display_name ?? node.id}</td>
+              <td>{node.kind ?? "—"}</td>
+              <td>{node.recoverable ? "yes" : "no"}</td>
+            </tr>
+          ))}
+          {graphNodes.length === 0 && (
+            <tr>
+              <td colSpan={3}>No graph nodes</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      {graphEdges.length > 0 ? (
+        <ul className="recovery-graph-edges">
+          {graphEdges.slice(0, 20).map((edge, idx) => (
+            <li key={`${edge.from}-${edge.to}-${idx}`}>
+              {edge.from} → {edge.to} ({edge.relationship ?? "relates"})
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       <h3>Recent history</h3>
       <table>
