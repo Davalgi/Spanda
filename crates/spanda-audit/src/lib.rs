@@ -7,6 +7,7 @@
 pub mod backend;
 pub mod crypto;
 pub mod error;
+pub mod hsm;
 pub mod platform_event;
 pub mod record;
 pub mod runtime;

@@ -545,6 +545,7 @@ fn parse_attack_scenario(name: &str) -> Option<AttackScenario> {
         "split_brain_coordinator" | "split-brain-coordinator" => {
             Some(AttackScenario::SplitBrainCoordinator)
         }
+        "split_brain_mesh" | "split-brain-mesh" => Some(AttackScenario::SplitBrainMesh),
         _ => None,
     }
 }
@@ -556,7 +557,7 @@ pub fn cmd_decision_simulate_attack(args: &[String]) {
         eprintln!("Unknown attack scenario: {scenario_str}");
         eprintln!(
             "Available: policy-tamper, replayed-decision, fake-coordinator, offline-abuse, \
-             compromised-robot, poisoned-telemetry, split-brain-coordinator"
+             compromised-robot, poisoned-telemetry, split-brain-coordinator, split-brain-mesh"
         );
         process::exit(1);
     });

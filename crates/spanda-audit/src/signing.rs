@@ -1,6 +1,7 @@
 //! Pluggable signing backends for Ed25519 decision and policy signatures.
 
 use crate::crypto::sign as software_sign;
+use crate::hsm::{external_sign_command_from_env, sign_with_external_hsm};
 use std::sync::OnceLock;
 
 /// Supported signing backend kinds selected via `SPANDA_CRYPTO_BACKEND`.
@@ -8,6 +9,8 @@ use std::sync::OnceLock;
 pub enum SigningBackendKind {
     Software,
     MockHsm,
+    ScriptHsm,
+    Tpm2Hsm,
 }
 
 /// Trait for signing UTF-8 payloads with a key reference (material or HSM key id).
@@ -66,13 +69,53 @@ impl SigningBackend for MockHsmSigningBackend {
     }
 }
 
+/// Production HSM via external script (`SPANDA_HSM_SIGN_SCRIPT` or `SPANDA_TPM2_SIGN_SCRIPT`).
+struct ScriptHsmSigningBackend {
+    label: &'static str,
+    fallback_material: String,
+}
+
+impl ScriptHsmSigningBackend {
+    fn new(label: &'static str) -> Result<Self, String> {
+        if external_sign_command_from_env().is_none() {
+            return Err(format!(
+                "SPANDA_HSM_SIGN_SCRIPT or SPANDA_TPM2_SIGN_SCRIPT required for {label} backend"
+            ));
+        }
+        let fallback_material = std::env::var("SPANDA_DECISION_POLICY_SIGNING_KEY")
+            .or_else(|_| std::env::var("SPANDA_POLICY_SIGNING_KEY"))
+            .unwrap_or_default();
+        Ok(Self {
+            label,
+            fallback_material,
+        })
+    }
+}
+
+impl SigningBackend for ScriptHsmSigningBackend {
+    fn sign_utf8(&self, data: &str, key_ref: &str) -> Result<String, String> {
+        let key_id = std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").unwrap_or_else(|_| key_ref.to_string());
+        let sig = sign_with_external_hsm(data, &key_id, key_ref);
+        if sig.is_empty() {
+            return Err("external HSM signing returned empty signature".into());
+        }
+        Ok(sig)
+    }
+
+    fn backend_label(&self) -> &'static str {
+        self.label
+    }
+}
+
 fn signing_backend_kind_from_env() -> SigningBackendKind {
     match std::env::var("SPANDA_CRYPTO_BACKEND")
         .unwrap_or_else(|_| "software".into())
         .to_ascii_lowercase()
         .as_str()
     {
-        "hsm" | "mock_hsm" | "pkcs11" => SigningBackendKind::MockHsm,
+        "mock_hsm" => SigningBackendKind::MockHsm,
+        "script" | "hsm" | "pkcs11" => SigningBackendKind::ScriptHsm,
+        "tpm2" | "tpm" => SigningBackendKind::Tpm2Hsm,
         _ => SigningBackendKind::Software,
     }
 }
@@ -84,6 +127,20 @@ fn active_backend() -> &'static dyn SigningBackend {
             Ok(backend) => Box::new(backend),
             Err(error) => {
                 eprintln!("mock HSM backend init failed ({error}); falling back to software");
+                Box::new(SoftwareSigningBackend)
+            }
+        },
+        SigningBackendKind::ScriptHsm => match ScriptHsmSigningBackend::new("script_hsm") {
+            Ok(backend) => Box::new(backend),
+            Err(error) => {
+                eprintln!("script HSM backend init failed ({error}); falling back to software");
+                Box::new(SoftwareSigningBackend)
+            }
+        },
+        SigningBackendKind::Tpm2Hsm => match ScriptHsmSigningBackend::new("tpm2_hsm") {
+            Ok(backend) => Box::new(backend),
+            Err(error) => {
+                eprintln!("tpm2 HSM backend init failed ({error}); falling back to software");
                 Box::new(SoftwareSigningBackend)
             }
         },

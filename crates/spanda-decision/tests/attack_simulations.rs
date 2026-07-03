@@ -52,6 +52,20 @@ fn attack_split_brain_safety_wins() {
 }
 
 #[test]
+fn attack_split_brain_mesh_blocked() {
+    let result = run_attack_simulation(AttackScenario::SplitBrainMesh);
+    assert!(result.blocked, "evidence: {:?}", result.evidence);
+    assert_eq!(
+        result.evidence["nonce_replay_blocked"].as_bool(),
+        Some(true)
+    );
+    assert_eq!(
+        result.evidence["winner_action"].as_str(),
+        Some("emergency_stop")
+    );
+}
+
+#[test]
 fn attack_compromised_robot_blocked() {
     let result = run_attack_simulation(AttackScenario::CompromisedRobot);
     assert!(result.blocked);
@@ -73,6 +87,7 @@ fn all_attack_scenarios_produce_evidence() {
         AttackScenario::PoisonedTelemetry,
         AttackScenario::OfflineAbuse,
         AttackScenario::SplitBrainCoordinator,
+        AttackScenario::SplitBrainMesh,
     ];
     for scenario in scenarios {
         let result = run_attack_simulation(scenario.clone());

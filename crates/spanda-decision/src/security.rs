@@ -23,6 +23,7 @@ pub enum AttackScenario {
     PoisonedTelemetry,
     OfflineAbuse,
     SplitBrainCoordinator,
+    SplitBrainMesh,
 }
 
 /// Security audit finding (static threat catalog).
@@ -94,6 +95,12 @@ pub fn security_audit() -> Vec<SecurityAuditFinding> {
             severity: "critical".into(),
             mitigation: "Quorum consensus and backup leader promotion".into(),
         },
+        SecurityAuditFinding {
+            scenario: AttackScenario::SplitBrainMesh,
+            detected: true,
+            severity: "critical".into(),
+            mitigation: "Fleet mesh conflict aggregation with layer precedence and shared nonce registry".into(),
+        },
     ]
 }
 
@@ -120,6 +127,7 @@ pub fn run_attack_simulation(scenario: AttackScenario) -> AttackSimulationResult
         AttackScenario::PoisonedTelemetry => simulate_poisoned_telemetry(),
         AttackScenario::OfflineAbuse => simulate_offline_abuse(),
         AttackScenario::SplitBrainCoordinator => simulate_split_brain_coordinator(),
+        AttackScenario::SplitBrainMesh => simulate_split_brain_mesh(),
     }
 }
 
@@ -294,6 +302,93 @@ fn simulate_split_brain_coordinator() -> AttackSimulationResult {
             "precedence_applied": resolution.as_ref().map(|r| r.precedence_applied.clone()),
             "rejected_count": resolution.as_ref().map(|r| r.rejected.len()),
             "action": "safety_kill_switch precedence wins split-brain"
+        }),
+    }
+}
+
+fn simulate_split_brain_mesh() -> AttackSimulationResult {
+    use crate::nonce_cache::PersistedNonceRegistry;
+
+    let decisions = vec![
+        CompetingDecision {
+            layer_precedence: "fleet_coordination".into(),
+            entity_id: "RoverA".into(),
+            action: "continue_mission".into(),
+            reason: "mesh vote A".into(),
+        },
+        CompetingDecision {
+            layer_precedence: "safety_kill_switch".into(),
+            entity_id: "RoverB".into(),
+            action: "emergency_stop".into(),
+            reason: "mesh safety override".into(),
+        },
+    ];
+    let resolution = resolve_conflict(&decisions);
+    let safety_wins = resolution
+        .as_ref()
+        .map(|r| r.winner.action == "emergency_stop")
+        .unwrap_or(false);
+
+    let mut nonce_registry = PersistedNonceRegistry::new();
+    let nonce = "mesh-attack-sim-nonce";
+    let first = nonce_registry.register(nonce);
+    let replay = nonce_registry.register(nonce);
+    let nonce_replay_blocked = first.is_ok() && replay.is_err();
+
+    let mut mesh_http_ok = None;
+    if let Ok(mesh_url) = std::env::var("SPANDA_FLEET_MESH_URL") {
+        if !mesh_url.is_empty() {
+            use spanda_deploy_http::{
+                fetch_fleet_decision_conflict, ingest_fleet_decision_vote,
+                register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest,
+                FleetDecisionVoteIngestRequest,
+            };
+            let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
+            let round = format!("attack-sim-{}", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis()).unwrap_or(0));
+            for vote in &decisions {
+                let _ = ingest_fleet_decision_vote(
+                    &mesh_url,
+                    &FleetDecisionVoteIngestRequest {
+                        round_id: round.clone(),
+                        entity_id: vote.entity_id.clone(),
+                        action: vote.action.clone(),
+                        layer_precedence: vote.layer_precedence.clone(),
+                        reason: vote.reason.clone(),
+                        fleet_name: Some("AttackSimFleet".into()),
+                    },
+                    token.as_deref(),
+                );
+            }
+            let http_conflict = fetch_fleet_decision_conflict(&mesh_url, &round, token.as_deref())
+                .ok()
+                .map(|c| c.resolution.winner.action == "emergency_stop");
+            let http_nonce = register_fleet_decision_nonce(
+                &mesh_url,
+                &FleetDecisionNonceRegisterRequest {
+                    nonce: format!("{nonce}-http"),
+                    entity_id: Some("RoverA".into()),
+                },
+                token.as_deref(),
+            )
+            .ok()
+            .map(|r| r.accepted)
+            .unwrap_or(false);
+            mesh_http_ok = Some(http_conflict == Some(true) && http_nonce);
+        }
+    }
+
+    AttackSimulationResult {
+        scenario: AttackScenario::SplitBrainMesh,
+        blocked: safety_wins && nonce_replay_blocked,
+        severity: "critical".into(),
+        mitigation: "Mesh coordinator resolves competing votes; shared nonce registry rejects replays".into(),
+        evidence: json!({
+            "competing_decisions": decisions.len(),
+            "winner_action": resolution.as_ref().map(|r| r.winner.action.clone()),
+            "precedence_applied": resolution.as_ref().map(|r| r.precedence_applied.clone()),
+            "nonce_replay_blocked": nonce_replay_blocked,
+            "mesh_http_exercised": mesh_http_ok.is_some(),
+            "mesh_http_ok": mesh_http_ok,
         }),
     }
 }
