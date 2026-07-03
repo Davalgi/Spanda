@@ -387,59 +387,59 @@ Web-based operational visibility for robots, fleets, swarms, devices, sensors, m
 
 **Administrator console (v0.6+, shipped):** REST `/v1/admin/*` (API keys, user directory, alert channels, integrations), operator mission control (`/v1/operator/missions`, pause/resume/cancel), program traces (`GET /v1/programs/traces`); gRPC proto **1.0.9** (+17 RPCs); React `@davalgi-spanda/web` panels with RBAC tab gating; embedded HTML parity; OpenAPI static spec + JSON-RPC gateway routes with RBAC context; SDK **0.5.4** client methods (Rust REST/gRPC, Python, TypeScript).
 
-**Remaining (administration):** external IdP/OIDC user sync, Slack-specific OAuth setup wizard, gRPC server reflection for dynamic clients.
+**Remaining (administration):** none — OIDC and Slack OAuth authorization-code flows shipped.
 
 | Planned item | Tier | Dependency / notes |
 |--------------|------|-------------------|
-| External IdP / OIDC user sync | **Planned** | Local user directory shipped; needs OIDC/OAuth2 provider contract + group→role mapping |
-| Slack OAuth setup wizard | **Planned** | Alert channels support webhook/email/PagerDuty/Teams/log JSON today; optional `spanda-alert-slack` package remains separate |
-| gRPC server reflection | **Planned** | 139 RPCs on tonic; reflection would enable grpcurl/grpcui without bundling `control_center.proto` |
+| External IdP / OIDC user sync | **Stable** | Discovery, directory import, OAuth authorize/callback |
+| Slack OAuth setup wizard | **Stable** | Webhook + Slack app OAuth v2 |
+| gRPC server reflection | **Stable** | tonic reflection on Control Center gRPC port |
 
-**Enhancement backlog (depth + integration):** 30+ RBAC-gated tabs and REST/gRPC parity are **Stable**. Remaining work wires playground-only panels into Control Center, adds visual ops dashboards, and deepens existing tabs. Canonical list: [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform).
+**Enhancement backlog (depth + integration):** P1–P3 Control Center enhancements are **Stable** except administration OAuth depth above. Canonical list: [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform).
 
-#### P1 — Quick wins (API/CLI exists; UI thin or playground-only)
+#### P1 — Quick wins (shipped)
 
 | Item | Tier | Timeline | Surfaces / APIs |
 |------|------|----------|-----------------|
-| Telemetry tab | **Planned** | Next | Promote `TelemetryPanel` from `@davalgi-spanda/web` playground; WebSocket telemetry |
-| Readiness trends & forecasting UI | **Planned** | Next | `spanda readiness trends`, `/v1/analytics/readiness-forecast`, `.spanda/readiness-history.json` |
-| Mission continuity console | **Planned** | Next | Promote `OperationsPanel` continuity/takeover/delegate; `/v1/continuity/*`, remote expert — [remote-expert.md](./remote-expert.md) |
-| Fleet map / geospatial view | **Planned** | Next | Robot pins, zones, alert overlays; agriculture/maritime/delivery blueprints |
-| Reports tab | **Planned** | Next | `GET/POST /v1/reports/schedules`; PDF/Markdown preview; webhook delivery status |
-| Grafana / observability bridge | **Planned** | Next | `spanda-grafana-dashboards`, OTLP/Jaeger links; SRE fast-burn banners on dashboard |
+| Telemetry tab | **Stable** | Now | Control Center Telemetry tab; WebSocket streams |
+| Readiness trends & forecasting UI | **Stable** | Now | Trends tab; `/v1/analytics/readiness-forecast` |
+| Mission continuity console | **Stable** | Now | Continuity tab; `/v1/continuity/*` |
+| Fleet map / geospatial view | **Stable** | Now | Fleet map tab; `/v1/fleet/map` |
+| Reports tab | **Stable** | Now | `/v1/reports/schedules`; preview and delivery status |
+| Grafana / observability bridge | **Stable** | Now | SRE tab; `SPANDA_GRAFANA_URL` embed |
 
-#### P2 — Enterprise admin + richer existing tabs
-
-| Item | Tier | Timeline | Notes |
-|------|------|----------|-------|
-| External IdP / OIDC sync | **Planned** | Next | See administration table above |
-| Slack OAuth setup wizard | **Planned** | Next | See administration table above |
-| gRPC server reflection | **Planned** | Next | See administration table above |
-| Humans — AR/VR/collaboration UX | **Planned** | Later | AR session viewer, VR training launcher, collaboration graph, AR annotate, mission task allocation — [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) |
-| Smart Spaces floor-plan visualization | **Planned** | Later | `GET /v1/facilities/{id}/floor-map` — visual occupancy, emergency, robots |
-| Entity graph explorer | **Planned** | Later | Interactive `/v1/entities/graph` — kind filters, neighborhood expand, `depends_on` traces |
-| Analytics visual depth | **Planned** | Later | Trust/decision graphs; time-travel scrubber + Replay; certification pack composer |
-| Config change history | **Planned** | Later | Audit-linked snapshot changelog (snapshots + approvals shipped) |
-
-#### P3 — Extensibility, operator polish, desktop, hosted product
+#### P2 — Enterprise admin + richer existing tabs (shipped except OAuth depth)
 
 | Item | Tier | Timeline | Notes |
 |------|------|----------|-------|
-| Plugin panel loader | **Planned** | Later | Load TS bundles from `GET /v1/plugins/control-center`; replace placeholder panel host |
-| Plugin marketplace browser | **Planned** | Later | Installable solution dashboards via registry |
-| Deploy gate checklist modal | **Planned** | Later | `spanda deploy gate` from Mission/Config |
-| Chaos engineering panel | **Planned** | Later | Fault injection for sim/replay — [chaos-engineering.md](./chaos-engineering.md) |
-| OTA rollout progress UI | **Planned** | Later | Canary/blue-green visual progress + rollback on OTA tab |
-| Bulk device actions | **Planned** | Later | Quarantine/trust/assign bulk; approval queue on Devices |
-| Decision policy editor | **Planned** | Later | Policy edit + sign-policy in Decisions tab |
-| Desktop — bundled local API | **Planned** | Later | Optional embedded `spanda control-center serve` in Tauri |
-| Desktop — native notifications | **Planned** | Later | OS alerts for SRE fast-burn / critical incidents |
-| Desktop — system tray | **Planned** | Later | Tray fleet health summary |
-| Desktop — offline cache | **Planned** | Later | Last-known dashboard when API unreachable |
-| Multi-tenant tenant switcher | **Planned** | Later | Per-tenant key / `tenant_id` — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
-| Twin Cloud usage dashboard | **Planned** | Later | Snapshot meters, sync status, billing dimensions |
-| WASM playground in Control Center | **Planned** | Later | Education blueprint inline check/run/verify |
-| Discovery transport wizards | **Planned** | Later | Guided OPC-UA, Modbus, and other stub transports |
+| External IdP / OIDC sync | **Stable** | Now | OAuth authorize/callback + directory import |
+| Slack OAuth setup wizard | **Stable** | Now | Slack app OAuth v2 + webhook |
+| gRPC server reflection | **Stable** | Now | grpcurl without bundling proto |
+| Humans — AR/VR/collaboration UX | **Stable** | Now | Collaboration graph, AR annotate, VR replay links |
+| Smart Spaces floor-plan visualization | **Stable** | Now | SVG floor map from facilities API |
+| Entity graph explorer | **Stable** | Now | Default graph view + neighborhood explorer |
+| Analytics visual depth | **Stable** | Now | Trust graph bars; certification pack download |
+| Config change history | **Stable** | Now | `/v1/config/history` + Config tab |
+
+#### P3 — Extensibility, operator polish, desktop, hosted product (shipped)
+
+| Item | Tier | Timeline | Notes |
+|------|------|----------|-------|
+| Plugin panel loader | **Stable** | Now | `GET /v1/plugins/control-center/{plugin}/bundle` |
+| Plugin marketplace browser | **Stable** | Now | Marketplace tab |
+| Deploy gate checklist modal | **Stable** | Now | Mission + Config modals |
+| Chaos engineering panel | **Stable** | Now | Chaos tab |
+| OTA rollout progress UI | **Stable** | Now | OTA tab progress bars |
+| Bulk device actions | **Stable** | Now | Devices bulk quarantine/trust |
+| Decision policy editor | **Stable** | Now | Decisions tab |
+| Desktop — bundled local API | **Stable** | Now | `spawn_control_center_api` |
+| Desktop — native notifications | **Stable** | Now | SRE fast-burn OS alerts |
+| Desktop — system tray | **Stable** | Now | Fleet health tooltip |
+| Desktop — offline cache | **Stable** | Now | Cached dashboard when API unreachable |
+| Multi-tenant tenant switcher | **Stable** | Now | Saved connection profiles in auth shell |
+| Twin Cloud usage dashboard | **Stable** | Now | Twins tab usage meters |
+| WASM playground in Control Center | **Stable** | Now | Playground tab |
+| Discovery transport wizards | **Stable** | Now | OPC-UA, Modbus, MQTT, CAN wizards |
 
 ### 6.2 Device Pool
 

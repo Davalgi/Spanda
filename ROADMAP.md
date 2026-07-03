@@ -365,8 +365,8 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 
 | Item | Notes |
 |------|--------|
-| **External IdP / OIDC sync** | **Experimental** — `PUT/POST /v1/admin/oidc` + sync with OpenID discovery and directory JSON import (`SPANDA_OIDC_DIRECTORY_JSON`); not full OAuth IdP flow |
-| **Slack OAuth setup wizard** | **Experimental** — `GET/POST /v1/admin/slack` webhook wizard; no Slack app OAuth onboarding |
+| **External IdP / OIDC sync** | **Stable** — discovery, directory import, authorization-code OAuth (`/v1/admin/oidc/authorize-url`, `/oauth/callback`) |
+| **Slack OAuth setup wizard** | **Stable** — webhook + Slack app OAuth v2 (`/v1/admin/slack/oauth-url`, `/oauth/callback`) |
 | **gRPC server reflection** | **Stable** — tonic reflection on Control Center gRPC port |
 
 **Control Center enhancement backlog (depth + integration):**
@@ -381,8 +381,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | P1 | **Fleet map / geospatial view** | **Stable** | Now | Fleet map tab — 2D pins and zones from `/v1/fleet/map` |
 | P1 | **Reports tab** | **Stable** | Now | Schedules CRUD, preview, webhook delivery status |
 | P1 | **Grafana / observability bridge** | **Stable** | Now | SRE tab deep links + embedded Grafana when `SPANDA_GRAFANA_URL` is set |
-| P2 | **External IdP / OIDC sync** | **Experimental** | Next | Discovery + directory import; full SSO OAuth deferred |
-| P2 | **Slack OAuth setup wizard** | **Experimental** | Next | Webhook wizard shipped; Slack app OAuth deferred |
+| P2 | **External IdP / OIDC sync** | **Stable** | Now | Discovery, directory import, OAuth code flow |
+| P2 | **Slack OAuth setup wizard** | **Stable** | Now | Webhook + Slack app OAuth v2 wizard |
 | P2 | **gRPC server reflection** | **Stable** | Now | grpcurl/grpcui without bundling proto |
 | P2 | **Humans — AR/VR/collaboration UX** | **Stable** | Now | Collaboration graph, AR annotate, VR replay links |
 | P2 | **Smart Spaces floor-plan visualization** | **Stable** | Now | SVG floor map from facilities API |
@@ -396,14 +396,14 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | P3 | **OTA rollout progress UI** | **Stable** | Now | OTA tab progress bars |
 | P3 | **Bulk device actions** | **Stable** | Now | Devices tab bulk quarantine/trust |
 | P3 | **Decision policy editor** | **Stable** | Now | Decisions tab policy editor |
-| P3 | **Desktop — bundled local API** | **Experimental** | Next | `spawn_control_center_api` Tauri command; tray/notifications flags only |
-| P3 | **Desktop — native notifications** | **Planned** | Later | OS notifications for SRE fast-burn (flags advertised; plugin not wired) |
-| P3 | **Desktop — system tray** | **Planned** | Later | Tray icon with fleet health summary |
+| P3 | **Desktop — bundled local API** | **Stable** | Now | `spawn_control_center_api` Tauri command |
+| P3 | **Desktop — native notifications** | **Stable** | Now | OS notifications for SRE fast-burn via `tauri-plugin-notification` |
+| P3 | **Desktop — system tray** | **Stable** | Now | Tray icon with polled fleet health tooltip |
 | P3 | **Desktop — offline cache** | **Stable** | Now | Last-known dashboard state in web shell |
-| P3 | **Multi-tenant tenant switcher** | **Planned** | Later | Per-tenant API key / `tenant_id` switching in shell |
+| P3 | **Multi-tenant tenant switcher** | **Stable** | Now | Saved connection profiles (API host + tenant) in auth shell |
 | P3 | **Twin Cloud usage dashboard** | **Stable** | Now | Twins tab usage meters |
 | P3 | **WASM playground in Control Center** | **Stable** | Now | Playground tab |
-| P3 | **Discovery transport wizards** | **Planned** | Later | Guided setup for OPC-UA, Modbus, and other stub transports |
+| P3 | **Discovery transport wizards** | **Stable** | Now | Guided OPC-UA, Modbus, MQTT, and CAN setup in Discovery tab |
 
 **Topic guides:** [docs/control-center.md](docs/control-center.md) · [docs/telemetry-store.md](docs/telemetry-store.md) · [docs/readiness-trends.md](docs/readiness-trends.md) · [docs/drift-detection.md](docs/drift-detection.md)
 
