@@ -381,6 +381,10 @@ pub fn handle_request(
         ("/v1/decision-policy-cache", "GET") => {
             crate::decision_ops::list_decision_policy_cache(state, query)
         }
+        ("/v1/decisions/mesh", "GET") => crate::decision_ops::fleet_decision_mesh_status(state, query),
+        ("/v1/decisions/mesh/conflicts", "GET") => {
+            crate::decision_ops::fleet_decision_mesh_conflicts(state, query)
+        }
         ("/v1/device-reports", "GET") => device_reports_get(state),
         ("/v1/failover/chains", "GET") => failover_chains_get(state),
         ("/v1/devices", "GET") => devices_list(state),

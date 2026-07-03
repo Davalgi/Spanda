@@ -296,3 +296,59 @@ pub fn list_decision_policy_cache_json(state: &ControlCenterState, query: &str) 
 pub fn list_decision_policies_json(state: &ControlCenterState, query: &str) -> String {
     list_decision_policies(state, query).body
 }
+
+/// GET /v1/decisions/mesh — fleet mesh decision nonce registry and coordinator status.
+pub fn fleet_decision_mesh_status(_state: &ControlCenterState, _query: &str) -> HttpResponse {
+    let Some(mesh_url) = std::env::var("SPANDA_FLEET_MESH_URL")
+        .ok()
+        .filter(|v| !v.is_empty())
+    else {
+        return json_ok(&serde_json::json!({
+            "api_version": API_VERSION,
+            "configured": false,
+            "mesh_url": null,
+            "hint": "Set SPANDA_FLEET_MESH_URL to enable fleet decision mesh proxy",
+        }));
+    };
+    let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
+    match spanda_deploy_http::fetch_fleet_decision_mesh_status(&mesh_url, token.as_deref()) {
+        Ok(body) => json_ok(&serde_json::json!({
+            "api_version": API_VERSION,
+            "configured": true,
+            "mesh": body,
+        })),
+        Err(error) => HttpResponse {
+            status: 502,
+            body: serde_json::json!({
+                "ok": false,
+                "api_version": API_VERSION,
+                "configured": true,
+                "mesh_url": mesh_url,
+                "error": error,
+            })
+            .to_string(),
+        },
+    }
+}
+
+/// GET /v1/decisions/mesh/conflicts?round= — resolve a fleet mesh decision round.
+pub fn fleet_decision_mesh_conflicts(_state: &ControlCenterState, query: &str) -> HttpResponse {
+    let round = parse_query_param(query, "round").unwrap_or_default();
+    if round.is_empty() {
+        return bad_request("round query parameter required");
+    }
+    let Some(mesh_url) = std::env::var("SPANDA_FLEET_MESH_URL")
+        .ok()
+        .filter(|v| !v.is_empty())
+    else {
+        return bad_request("SPANDA_FLEET_MESH_URL is not configured");
+    };
+    let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
+    match spanda_deploy_http::fetch_fleet_decision_conflict(&mesh_url, &round, token.as_deref()) {
+        Ok(conflict) => json_ok(&serde_json::json!({
+            "api_version": API_VERSION,
+            "conflict": conflict,
+        })),
+        Err(error) => bad_request(&error),
+    }
+}

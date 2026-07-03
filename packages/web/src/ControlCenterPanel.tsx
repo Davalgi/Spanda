@@ -1119,19 +1119,22 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadDecisions = async (options: { quiet?: boolean } = {}) => {
     if (!options.quiet) setBusy(true);
     try {
-      const [listRes, policiesRes, tracesRes, cacheRes, escalationsRes] = await Promise.all([
+      const [listRes, policiesRes, tracesRes, cacheRes, escalationsRes, meshRes] =
+        await Promise.all([
         fetch(`${base}/v1/decisions`),
         fetch(`${base}/v1/decision-policies`),
         fetch(`${base}/v1/decisions/traces`),
         fetch(`${base}/v1/decision-policy-cache`),
         fetch(`${base}/v1/decisions/escalations`),
+        fetch(`${base}/v1/decisions/mesh`),
       ]);
       const list = listRes.ok ? await listRes.json() : null;
       const policies = policiesRes.ok ? await policiesRes.json() : null;
       const traces = tracesRes.ok ? await tracesRes.json() : null;
       const cache = cacheRes.ok ? await cacheRes.json() : null;
       const escalations = escalationsRes.ok ? await escalationsRes.json() : null;
-      setDecisionData({ list, policies, traces, cache, escalations });
+      const mesh = meshRes.ok ? await meshRes.json() : null;
+      setDecisionData({ list, policies, traces, cache, escalations, mesh });
     } catch (e) {
       if (!options.quiet) setError(String(e));
     } finally {
@@ -2010,8 +2013,9 @@ export function ControlCenterPanel({ apiBase }: Props) {
       {tab === "decisions" && (
         <div>
           <p className="demo-hint">
-            Distributed decision architecture (Experimental) — reflex/local/fleet/control-center
-            layers with signed policy bounds, escalation, and v3 trace audit.
+            Distributed decision architecture (Stable) — reflex/local/fleet/control-center layers
+            with signed policy bounds, escalation, fleet mesh conflict aggregation, and v3 trace
+            audit.
           </p>
           <button type="button" onClick={() => void loadDecisions()} disabled={busy}>
             Refresh decisions
@@ -2054,6 +2058,34 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <pre>{JSON.stringify(decisionData.policies, null, 2)}</pre>
               <h3>Signed policy cache</h3>
               <pre>{JSON.stringify(decisionData.cache, null, 2)}</pre>
+              <h3>Fleet mesh (decision votes + shared nonce)</h3>
+              {(() => {
+                const meshBody = decisionData.mesh as Record<string, unknown> | null;
+                if (!meshBody) {
+                  return <p className="demo-hint">Fleet mesh status unavailable.</p>;
+                }
+                const configured = meshBody.configured === true;
+                if (!configured) {
+                  return (
+                    <p className="demo-hint">
+                      {String(meshBody.hint ?? "Set SPANDA_FLEET_MESH_URL on the Control Center host.")}
+                    </p>
+                  );
+                }
+                const mesh = meshBody.mesh as Record<string, unknown> | undefined;
+                const nonce = (mesh?.nonce as Record<string, unknown> | undefined) ?? {};
+                const meshStatus = (mesh?.mesh_status as Record<string, unknown> | undefined) ?? {};
+                return (
+                  <>
+                    <p className="demo-hint">
+                      Mesh URL: {String((mesh?.mesh_url as string | undefined) ?? "—")} · nonce
+                      registry size: {String(nonce.registry_size ?? "—")} · decision rounds:{" "}
+                      {String(meshStatus.decision_rounds ?? "—")}
+                    </p>
+                    <pre>{JSON.stringify(meshBody, null, 2)}</pre>
+                  </>
+                );
+              })()}
               <h3>Escalations</h3>
               {(() => {
                 const esc = decisionData.escalations as Record<string, unknown> | null;
