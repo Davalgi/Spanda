@@ -37,6 +37,7 @@ pub struct ControlCenterState {
     pub entity_overlay: spanda_config::EntityMutationStore,
     pub admin_user_store: AdminUserStore,
     pub alert_channel_store: AlertChannelStore,
+    pub recovery_history: spanda_recovery::RecoveryHistoryStore,
 }
 
 impl ControlCenterState {
@@ -65,6 +66,7 @@ impl ControlCenterState {
             ),
             admin_user_store: AdminUserStore::default(),
             alert_channel_store: AlertChannelStore::default(),
+            recovery_history: spanda_recovery::RecoveryHistoryStore::default(),
         };
         crate::persistence::hydrate_runtime_state(&mut state);
         state

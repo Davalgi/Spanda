@@ -123,6 +123,49 @@ fn runtime_state_persists_twin_cloud_snapshots() {
 }
 
 #[test]
+fn recovery_history_persists_across_restart() {
+    use spanda_api::persistence::persist_runtime_state;
+    use spanda_api::recovery_ops::recovery_history;
+    use spanda_recovery::{
+        OrchestratorRecoveryEvidence, OrchestratorStrategy, RecoveryHistoryStore,
+    };
+    use spanda_runtime::recovery_types::RecoveryStatus;
+
+    let dir = TempDir::new().expect("temp dir");
+    std::env::set_var(
+        "SPANDA_CONTROL_CENTER_STATE_DIR",
+        dir.path().to_string_lossy().to_string(),
+    );
+
+    let mut state = ControlCenterState::new();
+    state.recovery_history = RecoveryHistoryStore {
+        evidence: vec![OrchestratorRecoveryEvidence {
+            evidence_id: "ev-persist-1".into(),
+            root_cause: "gps_loss".into(),
+            strategy: OrchestratorStrategy::Reconnect,
+            timeline: vec![],
+            entities_involved: vec!["Rover".into()],
+            safety_validation: "pass".into(),
+            readiness_result: "pass".into(),
+            trust_result: "pass".into(),
+            operator_actions: vec![],
+            automatic_decisions: vec![],
+            mission_impact: "low".into(),
+            duration_secs: 30,
+            status: RecoveryStatus::Success,
+            timestamp: "2026-01-01T00:00:00Z".into(),
+        }],
+    };
+    persist_runtime_state(&state).expect("persist");
+
+    let reloaded = ControlCenterState::new();
+    let resp = recovery_history(&reloaded);
+    assert_eq!(resp.status, 200);
+    let json: serde_json::Value = serde_json::from_str(&resp.body).unwrap();
+    assert_eq!(json["count"], 1);
+}
+
+#[test]
 fn api_keys_file_merges_with_env_key() {
     let _guard = ENV_TEST_LOCK.lock().unwrap();
     let dir = TempDir::new().expect("temp dir");

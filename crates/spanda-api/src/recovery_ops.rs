@@ -6,11 +6,14 @@ use spanda_deploy_http::HttpResponse;
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_recovery::{
-    OrchestratorContext, RecoveryOrchestratorRequest, RecoverySimulationMode,
+    enrich_registry_from_program, OrchestratorContext, RecoveryOrchestratorRequest,
+    RecoverySimulationMode,
 };
 
 use crate::handlers::{bad_request, json_ok};
-use crate::recovery_plugins::{dispatch_recovery_completed_hook, orchestrator_for_state};
+use crate::recovery_plugins::{
+    dispatch_recovery_completed_hook, orchestrator_for_state, save_orchestrator_history,
+};
 use crate::state::ControlCenterState;
 
 const API_VERSION: &str = "v1";
@@ -27,6 +30,8 @@ pub struct RecoveryRequest {
     pub playbook: Option<String>,
     #[serde(default)]
     pub force_execute: bool,
+    #[serde(default)]
+    pub telemetry: Option<serde_json::Value>,
 }
 
 fn load_program_from_state(
@@ -127,7 +132,7 @@ pub fn recovery_simulate(state: &ControlCenterState, body: &str) -> HttpResponse
 }
 
 /// POST /v1/recovery/execute
-pub fn recovery_execute(state: &ControlCenterState, body: &str) -> HttpResponse {
+pub fn recovery_execute(state: &mut ControlCenterState, body: &str) -> HttpResponse {
     let req: RecoveryRequest = serde_json::from_str(body).unwrap_or_default();
     let registry = state.entity_registry();
     let resolved = state.resolved.as_ref();
@@ -143,6 +148,7 @@ pub fn recovery_execute(state: &ControlCenterState, body: &str) -> HttpResponse 
         ..Default::default()
     };
     let report = orchestrator.execute_recovery(&program, &registry, resolved, &request, &ctx);
+    save_orchestrator_history(state, orchestrator);
     dispatch_recovery_completed_hook(
         state,
         serde_json::json!({
@@ -224,8 +230,17 @@ pub fn recovery_graph(state: &ControlCenterState, entity_id: Option<&str>) -> Ht
 /// POST /v1/recovery/explain — decision explanations.
 pub fn recovery_explain(state: &ControlCenterState, body: &str) -> HttpResponse {
     let req: RecoveryRequest = serde_json::from_str(body).unwrap_or_default();
-    let registry = state.entity_registry();
-    let entity_id = req.entity_id.unwrap_or_else(|| "system".into());
+    let mut registry = state.entity_registry();
+    if let Some((program, _)) = load_program_from_state(state, req.file.as_deref()) {
+        enrich_registry_from_program(&program, &mut registry);
+    }
+    let entity_id = req.entity_id.unwrap_or_else(|| {
+        registry
+            .list()
+            .first()
+            .map(|e| e.id.clone())
+            .unwrap_or_else(|| "system".into())
+    });
     let failure = req.failure.unwrap_or_else(|| "degraded".into());
     let orchestrator = orchestrator_for_state(state);
     let decision =
@@ -235,6 +250,56 @@ pub fn recovery_explain(state: &ControlCenterState, body: &str) -> HttpResponse 
         "entity_id": entity_id,
         "failure": failure,
         "decision": decision,
+    }))
+}
+
+/// GET /v1/recovery/predictive — telemetry-driven degradation indicators.
+pub fn recovery_predictive(state: &ControlCenterState, body: Option<&str>) -> HttpResponse {
+    let registry = state.entity_registry();
+    let telemetry = body.and_then(|raw| {
+        serde_json::from_str::<RecoveryRequest>(raw)
+            .ok()
+            .and_then(|r| r.telemetry)
+    });
+    let orchestrator = orchestrator_for_state(state);
+    let (indicators, should_trigger) = orchestrator.check_predictive(&registry, telemetry.as_ref());
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "indicators": indicators,
+        "should_trigger_preventative": should_trigger,
+    }))
+}
+
+/// GET /v1/recovery/recoverable-entities
+pub fn recovery_recoverable_entities(state: &ControlCenterState) -> HttpResponse {
+    let mut registry = state.entity_registry();
+    if let Some((program, _)) = load_program_from_state(state, None) {
+        enrich_registry_from_program(&program, &mut registry);
+    }
+    let orchestrator = orchestrator_for_state(state);
+    let entities = orchestrator.recoverable_entities(&registry);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "entities": entities,
+        "count": entities.len(),
+    }))
+}
+
+/// POST /v1/recovery/recommend — knowledge-base strategy recommendation.
+pub fn recovery_recommend(state: &ControlCenterState, body: &str) -> HttpResponse {
+    let req: RecoveryRequest = serde_json::from_str(body).unwrap_or_default();
+    let failure = req.failure.unwrap_or_else(|| "degraded".into());
+    let (program, file) = match load_program_from_state(state, req.file.as_deref()) {
+        Some(v) => v,
+        None => return bad_request("program not found"),
+    };
+    let orchestrator = orchestrator_for_state(state);
+    let recommendation = orchestrator.recommend_from_knowledge(&program, &failure);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "file": file,
+        "failure": failure,
+        "recommendation": recommendation,
     }))
 }
 
@@ -287,7 +352,7 @@ pub fn recovery_simulate_json(state: &ControlCenterState, body: &str) -> String 
 }
 
 /// JSON string helper for gRPC parity.
-pub fn recovery_execute_json(state: &ControlCenterState, body: &str) -> String {
+pub fn recovery_execute_json(state: &mut ControlCenterState, body: &str) -> String {
     recovery_execute(state, body).body
 }
 
@@ -320,4 +385,19 @@ pub fn recovery_explain_json(state: &ControlCenterState, body: &str) -> String {
 /// JSON string helper for gRPC parity.
 pub fn recovery_policies_json(state: &ControlCenterState) -> String {
     recovery_policies(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn recovery_predictive_json(state: &ControlCenterState, body: &str) -> String {
+    recovery_predictive(state, Some(body)).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn recovery_recoverable_entities_json(state: &ControlCenterState) -> String {
+    recovery_recoverable_entities(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn recovery_recommend_json(state: &ControlCenterState, body: &str) -> String {
+    recovery_recommend(state, body).body
 }

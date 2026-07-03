@@ -391,6 +391,22 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/recovery/explain",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/recovery/predictive",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/recovery/predictive",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/recovery/recoverable-entities",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/recovery/recommend",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/programs/verify/hardware",
     },

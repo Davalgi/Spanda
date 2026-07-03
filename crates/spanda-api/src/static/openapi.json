@@ -915,6 +915,54 @@
         "responses": { "200": { "description": "Recovery decision" } }
       }
     },
+    "/v1/recovery/predictive": {
+      "get": {
+        "summary": "Telemetry-driven predictive recovery indicators",
+        "responses": { "200": { "description": "Predictive indicators" } }
+      },
+      "post": {
+        "summary": "Predictive indicators for program context",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string" },
+                  "entity_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Predictive indicators" } }
+      }
+    },
+    "/v1/recovery/recoverable-entities": {
+      "get": {
+        "summary": "List recoverable entities from orchestrator registry",
+        "responses": { "200": { "description": "Recoverable entities" } }
+      }
+    },
+    "/v1/recovery/recommend": {
+      "post": {
+        "summary": "Knowledge-base recovery strategy recommendation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string" },
+                  "failure": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Strategy recommendation" } }
+      }
+    },
     "/v1/programs/verify/hardware": {
       "post": {
         "summary": "Hardware compatibility verification (CLI parity)",

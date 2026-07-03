@@ -1,7 +1,8 @@
 //! Recovery Orchestrator REST API contract tests.
 use spanda_api::recovery_ops::{
     recovery_explain, recovery_history, recovery_playbooks, recovery_plan, recovery_policies,
-    recovery_simulate, RecoveryRequest,
+    recovery_predictive, recovery_recoverable_entities, recovery_recommend, recovery_simulate,
+    RecoveryRequest,
 };
 use spanda_api::state::ControlCenterState;
 use std::path::PathBuf;
@@ -75,4 +76,32 @@ fn recovery_policies_without_config_returns_empty() {
     assert_eq!(resp.status, 200);
     let json: serde_json::Value = serde_json::from_str(&resp.body).unwrap();
     assert!(json["policies"].is_array());
+}
+
+#[test]
+fn recovery_predictive_returns_indicators() {
+    let state = showcase_state();
+    let resp = recovery_predictive(&state, None);
+    assert_eq!(resp.status, 200);
+    let json: serde_json::Value = serde_json::from_str(&resp.body).unwrap();
+    assert!(json["indicators"].is_array());
+}
+
+#[test]
+fn recovery_recoverable_entities_lists_rover() {
+    let state = showcase_state();
+    let resp = recovery_recoverable_entities(&state);
+    assert_eq!(resp.status, 200);
+    let json: serde_json::Value = serde_json::from_str(&resp.body).unwrap();
+    assert!(json["count"].as_u64().unwrap_or(0) >= 1);
+}
+
+#[test]
+fn recovery_recommend_with_failure() {
+    let state = showcase_state();
+    let body = r#"{"failure":"gps_loss"}"#;
+    let resp = recovery_recommend(&state, body);
+    assert_eq!(resp.status, 200);
+    let json: serde_json::Value = serde_json::from_str(&resp.body).unwrap();
+    assert_eq!(json["failure"], "gps_loss");
 }

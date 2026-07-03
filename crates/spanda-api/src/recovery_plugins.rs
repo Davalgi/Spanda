@@ -1,5 +1,6 @@
 //! Build Recovery Orchestrator plugin registries from installed plugins.
 //!
+use crate::persistence::persist_runtime_state;
 use crate::state::ControlCenterState;
 use spanda_plugin::manifest::PluginManifest;
 use spanda_plugin::runtime::PluginManager;
@@ -35,20 +36,28 @@ pub fn build_recovery_plugin_registry(state: &ControlCenterState) -> RecoveryPlu
                 extension_kind: decl.kind.clone(),
                 name: decl.name.clone(),
                 description,
+                trigger: decl.trigger.clone(),
+                strategy: decl.strategy.clone(),
             });
         }
     }
     registry
 }
 
-/// Create an orchestrator wired with plugin extensions when available.
+/// Create an orchestrator wired with persisted history and plugin extensions.
 pub fn orchestrator_for_state(state: &ControlCenterState) -> RecoveryOrchestrator {
+    let mut orchestrator = RecoveryOrchestrator::new().with_history(state.recovery_history.clone());
     let registry = build_recovery_plugin_registry(state);
-    if registry.all().is_empty() {
-        RecoveryOrchestrator::new()
-    } else {
-        RecoveryOrchestrator::new().with_plugins(registry)
+    if !registry.all().is_empty() {
+        orchestrator = orchestrator.with_plugins(registry);
     }
+    orchestrator
+}
+
+/// Persist orchestrator evidence history back to Control Center state.
+pub fn save_orchestrator_history(state: &mut ControlCenterState, orchestrator: RecoveryOrchestrator) {
+    state.recovery_history = orchestrator.into_history();
+    let _ = persist_runtime_state(state);
 }
 
 /// Dispatch recovery lifecycle hooks to enabled plugins.

@@ -3,6 +3,7 @@
 use crate::correlation::TraceLog;
 use crate::state::ControlCenterState;
 use spanda_ops::{Alert, AlertStore, Incident, IncidentStore};
+use spanda_recovery::RecoveryHistoryStore;
 use spanda_twin_cloud::TwinCloudSnapshot;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -35,6 +36,12 @@ struct PersistedIncidents {
     max_entries: usize,
 }
 
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+struct PersistedRecovery {
+    #[serde(default)]
+    history: RecoveryHistoryStore,
+}
+
 /// Directory for Control Center HA state files.
 pub fn default_state_dir() -> PathBuf {
     std::env::var("SPANDA_CONTROL_CENTER_STATE_DIR")
@@ -56,6 +63,10 @@ fn incidents_path(dir: &Path) -> PathBuf {
 
 fn twins_path(dir: &Path) -> PathBuf {
     dir.join("control-center-twins.json")
+}
+
+fn recovery_path(dir: &Path) -> PathBuf {
+    dir.join("control-center-recovery.json")
 }
 
 /// Load alerts and traces from disk into runtime state.
@@ -86,6 +97,11 @@ pub fn hydrate_runtime_state(state: &mut ControlCenterState) {
             };
             state.twin_cloud_store =
                 spanda_twin_cloud::TwinCloudStore::from_records(latest, persisted.history);
+        }
+    }
+    if let Ok(content) = fs::read_to_string(recovery_path(&dir)) {
+        if let Ok(persisted) = serde_json::from_str::<PersistedRecovery>(&content) {
+            state.recovery_history = persisted.history;
         }
     }
     crate::drift_scheduler::hydrate_drift_scans(state);
@@ -133,6 +149,14 @@ pub fn persist_runtime_state(state: &ControlCenterState) -> Result<(), String> {
     fs::write(
         twins_path(&dir),
         serde_json::to_string_pretty(&twins).map_err(|error| error.to_string())?,
+    )
+    .map_err(|error| error.to_string())?;
+    let recovery = PersistedRecovery {
+        history: state.recovery_history.clone(),
+    };
+    fs::write(
+        recovery_path(&dir),
+        serde_json::to_string_pretty(&recovery).map_err(|error| error.to_string())?,
     )
     .map_err(|error| error.to_string())?;
     Ok(())

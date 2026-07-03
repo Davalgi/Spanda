@@ -441,6 +441,18 @@ pub fn handle_request(
         ("/v1/recovery/explain", "POST") => {
             crate::recovery_ops::recovery_explain(state, &request.body)
         }
+        ("/v1/recovery/predictive", "GET") => {
+            crate::recovery_ops::recovery_predictive(state, None)
+        }
+        ("/v1/recovery/predictive", "POST") => {
+            crate::recovery_ops::recovery_predictive(state, Some(&request.body))
+        }
+        ("/v1/recovery/recoverable-entities", "GET") => {
+            crate::recovery_ops::recovery_recoverable_entities(state)
+        }
+        ("/v1/recovery/recommend", "POST") => {
+            crate::recovery_ops::recovery_recommend(state, &request.body)
+        }
         ("/v1/recovery/graph", "GET") => {
             let params = parse_query(query);
             let entity_id = params.get("entity_id").map(String::as_str);

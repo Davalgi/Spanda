@@ -1423,7 +1423,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let body = request.into_inner().body_json;
-        self.with_state(|state| crate::recovery_ops::recovery_execute_json(state, &body))
+        self.with_state_mut(|state| crate::recovery_ops::recovery_execute_json(state, &body))
             .map(Response::new)
     }
 
@@ -1484,6 +1484,36 @@ impl ControlCenter for GrpcControlCenter {
         self.guard_request(&request)?;
         let body = request.into_inner().body_json;
         self.with_state(|state| crate::recovery_ops::recovery_explain_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn get_recovery_predictive(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::recovery_ops::recovery_predictive_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn list_recoverable_entities(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::recovery_ops::recovery_recoverable_entities_json(state))
+            .map(Response::new)
+    }
+
+    async fn recommend_recovery(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::recovery_ops::recovery_recommend_json(state, &body))
             .map(Response::new)
     }
 
