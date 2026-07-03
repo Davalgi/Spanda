@@ -851,6 +851,97 @@ impl ControlCenter for GrpcControlCenter {
         }))
     }
 
+    async fn get_governance(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        Ok(Response::new(JsonResponse {
+            json: crate::governance_ops::governance_summary_json(),
+        }))
+    }
+
+    async fn get_compliance(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        self.with_state(|state| {
+            crate::governance_ops::compliance_summary_json(state, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
+    async fn check_compliance(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        let body = request.into_inner().body_json;
+        self.with_state(|state| {
+            crate::governance_ops::compliance_check_json(state, &body, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
+    async fn validate_governance(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        let body = request.into_inner().body_json;
+        self.with_state(|state| {
+            crate::governance_ops::governance_validate_json(state, &body, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
+    async fn list_certifications(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        self.with_state(|state| {
+            crate::governance_ops::certifications_list_json(state, ctx.as_ref())
+        })
+        .map(Response::new)
+    }
+
+    async fn list_deployment_profiles(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        Ok(Response::new(JsonResponse {
+            json: crate::governance_ops::deployment_profiles_list_json(),
+        }))
+    }
+
+    async fn get_deployment_profile(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        Ok(Response::new(JsonResponse {
+            json: crate::governance_ops::deployment_profile_detail_json(&query),
+        }))
+    }
+
+    async fn get_operational_risk(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let ctx = self.rbac_from_request(&request);
+        self.with_state(|state| crate::governance_ops::risk_summary_json(state, ctx.as_ref()))
+            .map(Response::new)
+    }
+
     async fn list_config_approvals(
         &self,
         request: Request<Empty>,

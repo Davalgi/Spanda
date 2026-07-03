@@ -588,6 +588,27 @@ pub fn handle_request(
             crate::report_scheduler::report_schedules_create(state, &request.body, ctx.as_ref())
         }
         ("/v1/compliance/profiles", "GET") => e4::compliance_profiles_catalog(),
+        ("/v1/governance", "GET") => crate::governance_ops::governance_summary(),
+        ("/v1/compliance", "GET") => {
+            crate::governance_ops::compliance_summary(state, ctx.as_ref())
+        }
+        ("/v1/compliance/check", "POST") => {
+            crate::governance_ops::compliance_check(state, query, Some(&request.body), ctx.as_ref())
+        }
+        ("/v1/governance/validate", "POST") => {
+            crate::governance_ops::governance_validate(state, query, Some(&request.body), ctx.as_ref())
+        }
+        ("/v1/certifications", "GET") => {
+            crate::governance_ops::certifications_list(state, ctx.as_ref())
+        }
+        ("/v1/deployment-profiles", "GET") => {
+            if query.contains("name=") || query.contains("profile=") {
+                crate::governance_ops::deployment_profile_detail(query)
+            } else {
+                crate::governance_ops::deployment_profiles_list()
+            }
+        }
+        ("/v1/risk", "GET") => crate::governance_ops::risk_summary(state, ctx.as_ref()),
         ("/v1/chaos/injections", "GET") => crate::control_center_extras::chaos_catalog_json(),
         ("/v1/chaos/simulate", "POST") => {
             crate::control_center_extras::chaos_simulate_json(state, &request.body)

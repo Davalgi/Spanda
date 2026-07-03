@@ -84,6 +84,10 @@ impl ControlCenterState {
             .unwrap_or_default()
     }
 
+    pub fn resolved_config(&self) -> Option<&ResolvedSystemConfig> {
+        self.resolved.as_ref()
+    }
+
     pub fn entity_registry(&self) -> spanda_config::EntityRegistry {
         let mut registry = self
             .resolved

@@ -1,5 +1,5 @@
 syntax = "proto3";
-// Spanda Control Center gRPC API — proto semver 1.0.11 (package spanda.v1).
+// Spanda Control Center gRPC API — proto semver 1.0.12 (package spanda.v1).
 package spanda.v1;
 
 message Empty {}
@@ -128,6 +128,15 @@ service ControlCenter {
   rpc OperatorMissionApprove(JsonBodyRequest) returns (JsonResponse);
   rpc ExportCompliance(QueryRequest) returns (JsonResponse);
   rpc ListComplianceEvidence(Empty) returns (JsonResponse);
+  // Operational governance (mirrors /v1/governance, /v1/compliance, /v1/certifications, /v1/deployment-profiles, /v1/risk)
+  rpc GetGovernance(Empty) returns (JsonResponse);
+  rpc GetCompliance(Empty) returns (JsonResponse);
+  rpc CheckCompliance(JsonBodyRequest) returns (JsonResponse);
+  rpc ValidateGovernance(JsonBodyRequest) returns (JsonResponse);
+  rpc ListCertifications(Empty) returns (JsonResponse);
+  rpc ListDeploymentProfiles(Empty) returns (JsonResponse);
+  rpc GetDeploymentProfile(QueryRequest) returns (JsonResponse);
+  rpc GetOperationalRisk(Empty) returns (JsonResponse);
   rpc ListConfigApprovals(Empty) returns (JsonResponse);
   rpc SubmitConfigApproval(JsonBodyRequest) returns (JsonResponse);
   rpc ApproveConfigApproval(ApprovalBodyRequest) returns (JsonResponse);

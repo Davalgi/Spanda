@@ -13,6 +13,7 @@ pub mod drift_collect;
 pub mod drift_scheduler;
 pub mod e3;
 pub mod e4;
+pub mod governance_ops;
 pub mod entity_mutations;
 pub mod entity_runtime;
 pub mod entity_traceability;
