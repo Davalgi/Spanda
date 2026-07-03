@@ -1165,6 +1165,20 @@ pub fn dispatch_official_package_call(
                 value: "assurance.fusion".into(),
             })
         }
+        ("twin.cloud", "sync" | "push" | "list") if registry.has_capability("cloud.invoke") => {
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "twin",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(ok_int())
+        }
         _ => None,
     };
 

@@ -1,0 +1,11 @@
+# Twin Cloud runtime module — `import twin.cloud`.
+module twin.cloud;
+
+/// Push mission twin snapshot to configured Twin Cloud URL (requires `cloud.invoke`).
+export fn push(twin_id: string) -> int;
+
+/// Sync loaded program twin to Twin Cloud.
+export fn sync(twin_id: string) -> int;
+
+/// List twin summaries (returns count stub at runtime).
+export fn list() -> int;
