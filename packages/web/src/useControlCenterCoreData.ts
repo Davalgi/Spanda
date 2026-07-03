@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { saveDashboardCache, loadDashboardCache, formatCacheAge } from "./controlCenterOfflineCache";
 import type {
   DashboardData,
   DeviceEntry,
@@ -25,6 +26,16 @@ export function useControlCenterCoreData({ baseUrl, authHeaders }: Options) {
   const [pluginPanels, setPluginPanels] = useState<PluginPanelEntry[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usingCache, setUsingCache] = useState(false);
+  const [cacheAge, setCacheAge] = useState<string | null>(null);
+
+  const apiHost = (() => {
+    try {
+      return new URL(baseUrl).host;
+    } catch {
+      return baseUrl;
+    }
+  })();
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -38,7 +49,11 @@ export function useControlCenterCoreData({ baseUrl, authHeaders }: Options) {
         fetch(`${baseUrl}/v1/fleets`),
       ]);
       if (!dashRes.ok) throw new Error(`dashboard ${dashRes.status}`);
-      setDashboard(await dashRes.json());
+      const dashBody = (await dashRes.json()) as DashboardData;
+      setDashboard(dashBody);
+      setUsingCache(false);
+      setCacheAge(null);
+      saveDashboardCache(apiHost, dashBody, dashBody.device_pool);
       if (fleetRes.ok) {
         const fleetBody = await fleetRes.json();
         setAgents(fleetBody.agents ?? []);
@@ -78,11 +93,19 @@ export function useControlCenterCoreData({ baseUrl, authHeaders }: Options) {
         setPluginPanels(panels);
       }
     } catch (err) {
-      setError(String(err));
+      const cached = loadDashboardCache(apiHost);
+      if (cached?.dashboard) {
+        setDashboard(cached.dashboard as DashboardData);
+        setUsingCache(true);
+        setCacheAge(formatCacheAge(cached.saved_at));
+        setError(`Offline — showing cached dashboard (${formatCacheAge(cached.saved_at)})`);
+      } else {
+        setError(String(err));
+      }
     } finally {
       setBusy(false);
     }
-  }, [authHeaders, baseUrl]);
+  }, [authHeaders, baseUrl, apiHost]);
 
   useEffect(() => {
     void load();
@@ -123,5 +146,7 @@ export function useControlCenterCoreData({ baseUrl, authHeaders }: Options) {
     setError,
     load,
     runReadiness,
+    usingCache,
+    cacheAge,
   };
 }

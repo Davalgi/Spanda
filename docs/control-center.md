@@ -596,6 +596,18 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Administration | API keys, users, alert channels, integrations (administrator) |
 | Simulation | Program sim execute with decision traces |
 | Replay | Trace library, deterministic replay |
+| **Telemetry** | Live WebSocket stream (`/v1/stream/telemetry`) |
+| **Trends** | Readiness forecast charts and SRE trend rollup |
+| **Continuity** | Fleet-agent continuity poll and mission pause/resume/cancel |
+| **Fleet map** | Grid/geospatial markers (`GET /v1/fleet/map`) |
+| **Reports** | Scheduled report CRUD and compliance preview |
+| **Playground** | In-browser WASM check/run |
+| **Marketplace** | Installed plugin and Control Center panel browser |
+| **Chaos** | Fault injection catalog and simulation (`/v1/chaos/*`) |
+
+**Enhancements on existing tabs:** SRE observability bridge (Grafana/Jaeger links), config change history + deploy gate checklist, bulk device quarantine/trust, OTA rollout progress, decision policy editor, Smart Spaces floor-plan SVG, analytics trust graph bars, Twin Cloud usage meters, OIDC/Slack admin wizards, offline dashboard cache, desktop feature flags.
+
+**New REST APIs:** `GET /v1/fleet/map`, `GET /v1/config/history`, `GET /v1/deploy/gate`, `GET|PUT /v1/admin/oidc`, `POST /v1/admin/oidc/sync`, `GET|POST /v1/admin/slack`, `GET /v1/chaos/injections`, `POST /v1/chaos/simulate`. **gRPC server reflection** enabled (tonic-reflection).
 
 ---
 

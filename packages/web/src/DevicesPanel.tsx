@@ -22,11 +22,26 @@ type Props = {
   loading?: boolean;
   onInspect: (id: string) => void;
   onDiscover?: () => void;
+  baseUrl?: string;
+  authHeaders?: () => HeadersInit;
+  canBulk?: boolean;
+  onBulkComplete?: () => void;
 };
 
-export function DevicesPanel({ devices, loading, onInspect, onDiscover }: Props) {
+export function DevicesPanel({
+  devices,
+  loading,
+  onInspect,
+  onDiscover,
+  baseUrl,
+  authHeaders,
+  canBulk,
+  onBulkComplete,
+}: Props) {
   const [query, setQuery] = useState("");
   const [lifecycleFilter, setLifecycleFilter] = useState("all");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   const lifecycleOptions = useMemo(() => {
     const states = new Set(devices.map((device) => device.lifecycle_state));
@@ -62,6 +77,35 @@ export function DevicesPanel({ devices, loading, onInspect, onDiscover }: Props)
     return { total: devices.length, active, attention, quarantined };
   }, [devices]);
 
+  const toggleSelect = (id: string) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const bulkAction = async (action: "quarantine" | "trust") => {
+    if (!baseUrl || !authHeaders || !canBulk || selected.size === 0) return;
+    setBulkBusy(true);
+    try {
+      await Promise.all(
+        Array.from(selected).map((id) =>
+          fetch(`${baseUrl}/v1/devices/${encodeURIComponent(id)}/${action}`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: "{}",
+          }),
+        ),
+      );
+      setSelected(new Set());
+      onBulkComplete?.();
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   return (
     <div className="cc-panel">
       <CcMiniStats
@@ -78,6 +122,16 @@ export function DevicesPanel({ devices, loading, onInspect, onDiscover }: Props)
         hint="Click a device ID to open provisioning."
         actions={
           <div className="cc-filter-bar">
+            {canBulk && selected.size > 0 && (
+              <>
+                <button type="button" onClick={() => void bulkAction("quarantine")} disabled={bulkBusy}>
+                  Quarantine ({selected.size})
+                </button>
+                <button type="button" onClick={() => void bulkAction("trust")} disabled={bulkBusy}>
+                  Trust ({selected.size})
+                </button>
+              </>
+            )}
             <input
               type="search"
               value={query}
@@ -122,6 +176,7 @@ export function DevicesPanel({ devices, loading, onInspect, onDiscover }: Props)
             <table className="cc-data-table">
               <thead>
                 <tr>
+                  {canBulk && <th aria-label="Select" />}
                   <th>Device</th>
                   <th>Type</th>
                   <th>Lifecycle</th>
@@ -133,6 +188,16 @@ export function DevicesPanel({ devices, loading, onInspect, onDiscover }: Props)
               <tbody>
                 {filtered.map((device) => (
                   <tr key={device.id}>
+                    {canBulk && (
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selected.has(device.id)}
+                          onChange={() => toggleSelect(device.id)}
+                          aria-label={`Select ${device.id}`}
+                        />
+                      </td>
+                    )}
                     <td>
                       <button
                         type="button"

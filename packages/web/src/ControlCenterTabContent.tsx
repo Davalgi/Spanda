@@ -34,6 +34,14 @@ import { SmartSpacesPanel } from "./SmartSpacesPanel";
 import { SrePanel } from "./SrePanel";
 import { TraceabilityPanel } from "./TraceabilityPanel";
 import { TwinsPanel } from "./TwinsPanel";
+import { ControlCenterTelemetryPanel } from "./ControlCenterTelemetryPanel";
+import { ReadinessTrendsPanel } from "./ReadinessTrendsPanel";
+import { ContinuityPanel } from "./ContinuityPanel";
+import { FleetMapPanel } from "./FleetMapPanel";
+import { ReportsPanel } from "./ReportsPanel";
+import { PlaygroundPanel } from "./PlaygroundPanel";
+import { MarketplacePanel } from "./MarketplacePanel";
+import { ChaosPanel } from "./ChaosPanel";
 import type { FleetAgent, FleetEntry, ReadinessImpact, RobotEntry } from "./controlCenterTypes";
 import type { ProvisionReport } from "./ProvisioningPanel";
 
@@ -142,6 +150,10 @@ export function ControlCenterTabContent({
           loading={busy}
           onInspect={(id) => inspectDevice(id)}
           onDiscover={() => onNavigate("discovery")}
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          canBulk={can("Operate") && hasToken}
+          onBulkComplete={onRefresh}
         />
       );
 
@@ -323,6 +335,42 @@ export function ControlCenterTabContent({
 
     case "traceability":
       return <TraceabilityPanel devices={devices} />;
+
+    case "telemetry":
+      return <ControlCenterTelemetryPanel baseUrl={baseUrl} />;
+
+    case "trends":
+      return <ReadinessTrendsPanel baseUrl={baseUrl} />;
+
+    case "continuity":
+      return (
+        <ContinuityPanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          agents={agents}
+        />
+      );
+
+    case "fleet-map":
+      return <FleetMapPanel baseUrl={baseUrl} />;
+
+    case "reports":
+      return (
+        <ReportsPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
+      );
+
+    case "playground":
+      return <PlaygroundPanel />;
+
+    case "marketplace":
+      return <MarketplacePanel baseUrl={baseUrl} />;
+
+    case "chaos":
+      return (
+        <ChaosPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
+      );
 
     default:
       return null;

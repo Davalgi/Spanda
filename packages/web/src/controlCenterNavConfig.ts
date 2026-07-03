@@ -20,12 +20,14 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
     tabs: [
       "devices",
       "fleet",
+      "fleet-map",
       "discovery",
       "provisioning",
       "mapping",
       "entities",
       "operator",
       "mission",
+      "continuity",
     ],
   },
   {
@@ -34,11 +36,14 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
     tabs: [
       "health",
       "readiness",
+      "trends",
+      "telemetry",
       "alerts",
       "assurance",
       "diagnosis",
       "recovery",
       "sre",
+      "chaos",
     ],
   },
   {
@@ -52,12 +57,13 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
       "config",
       "ota",
       "decisions",
+      "reports",
     ],
   },
   {
     id: "digital-twin",
     label: "Digital twin & replay",
-    tabs: ["digital-thread", "traceability", "twins", "simulation", "replay"],
+    tabs: ["digital-thread", "traceability", "twins", "simulation", "replay", "playground"],
   },
   {
     id: "analytics",
@@ -67,7 +73,7 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
   {
     id: "admin",
     label: "Administration",
-    tabs: ["administration"],
+    tabs: ["administration", "marketplace"],
   },
 ];
 
@@ -100,6 +106,14 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   entities: "Unified entity graph — browse, search, and inspect relationships.",
   administration: "API keys, users, alert channels, and integrations.",
   "digital-thread": "Capability-to-device graph across the stack.",
+  telemetry: "Live WebSocket telemetry, traces, and alert stream.",
+  trends: "Readiness history slopes and forecasted mission risk.",
+  continuity: "Takeover, delegation, and mission pause during continuity events.",
+  "fleet-map": "Geospatial or grid map of robots, agents, and devices.",
+  reports: "Scheduled compliance report delivery and preview.",
+  playground: "In-browser WASM check and run for Spanda programs.",
+  marketplace: "Installed plugins and Control Center panel extensions.",
+  chaos: "Fault injection catalog and chaos simulation.",
 };
 
 export function tabLabel(name: ControlCenterTab): string {
@@ -115,6 +129,14 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "replay") return "Replay";
   if (name === "provisioning") return "Provisioning";
   if (name === "discovery") return "Discovery";
+  if (name === "fleet-map") return "Fleet map";
+  if (name === "telemetry") return "Telemetry";
+  if (name === "trends") return "Trends";
+  if (name === "continuity") return "Continuity";
+  if (name === "reports") return "Reports";
+  if (name === "playground") return "Playground";
+  if (name === "marketplace") return "Marketplace";
+  if (name === "chaos") return "Chaos";
   return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");
 }
 

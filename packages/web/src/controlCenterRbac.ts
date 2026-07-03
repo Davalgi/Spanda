@@ -44,7 +44,15 @@ export type ControlCenterTab =
   | "assurance"
   | "diagnosis"
   | "simulation"
-  | "replay";
+  | "replay"
+  | "telemetry"
+  | "trends"
+  | "continuity"
+  | "fleet-map"
+  | "reports"
+  | "playground"
+  | "marketplace"
+  | "chaos";
 
 export const RBAC_ACTIONS: RbacAction[] = [
   "Deploy",
@@ -92,6 +100,14 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   mission: ["administrator", "supervisor", "operator", "safety_officer"],
   simulation: ["administrator", "supervisor", "developer"],
   replay: ["*"],
+  telemetry: ["*"],
+  trends: ["*"],
+  continuity: ["administrator", "supervisor", "operator", "safety_officer"],
+  "fleet-map": ["*"],
+  reports: ["administrator", "supervisor", "developer", "auditor"],
+  playground: ["administrator", "supervisor", "developer"],
+  marketplace: ["administrator", "supervisor", "developer"],
+  chaos: ["administrator", "supervisor", "developer"],
 };
 
 export const ROLE_META: Record<

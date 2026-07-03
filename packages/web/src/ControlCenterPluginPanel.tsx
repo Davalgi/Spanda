@@ -9,10 +9,13 @@ export function ControlCenterPluginPanel({ panel }: Props) {
     <section className="cc-panel">
       <h3>{panel.title}</h3>
       <p className="cc-section-hint">
-        Plugin panel from <code>{panel.plugin}</code> — component <code>{panel.component}</code>.
+        Plugin <code>{panel.plugin}</code> — component <code>{panel.component}</code>.
         Host loads TypeScript bundles from the plugin install directory when a{" "}
         <code>index.js</code> artifact is present.
       </p>
+      <div className="cc-plugin-host" data-plugin={panel.plugin} data-component={panel.component}>
+        <p className="demo-hint">Plugin panel loader — install package with control-center-ui manifest.</p>
+      </div>
     </section>
   );
 }

@@ -84,10 +84,12 @@ export function ControlCenterDashboard({
   ];
 
   const quickLinks: { tab: ControlCenterTab; reason: string }[] = [
-    { tab: "fleet", reason: "Robots and fleets" },
-    { tab: "readiness", reason: "Pre-mission checks" },
+    { tab: "fleet-map", reason: "Live fleet positions" },
+    { tab: "telemetry", reason: "WebSocket signal stream" },
+    { tab: "trends", reason: "Readiness forecast" },
+    { tab: "continuity", reason: "Takeover and handoff" },
+    { tab: "reports", reason: "Scheduled exports" },
     { tab: "recovery", reason: "Playbooks and rollback" },
-    { tab: "digital-thread", reason: "Capability graph" },
   ];
 
   return (

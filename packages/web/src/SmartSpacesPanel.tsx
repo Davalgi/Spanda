@@ -281,6 +281,35 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
 
       {floorZones.length > 0 && (
         <CcSection title="Floor map">
+          <div className="cc-floor-plan">
+            <svg viewBox="0 0 100 60" className="cc-floor-plan-svg" role="img" aria-label="Floor plan">
+              {floorZones.map((row, index) => {
+                const zone = (row.zone as Record<string, unknown>) ?? {};
+                const cols = Math.ceil(Math.sqrt(floorZones.length));
+                const col = index % cols;
+                const rowIdx = Math.floor(index / cols);
+                const w = 100 / cols - 2;
+                const h = 60 / Math.ceil(floorZones.length / cols) - 2;
+                const x = col * (w + 2) + 1;
+                const y = rowIdx * (h + 2) + 1;
+                const occupancy = Number(row.occupancy_count ?? 0);
+                return (
+                  <g key={String(zone.id)}>
+                    <rect
+                      x={x}
+                      y={y}
+                      width={w}
+                      height={h}
+                      className={`cc-floor-zone${occupancy > 0 ? " occupied" : ""}`}
+                    />
+                    <text x={x + 2} y={y + h / 2} className="cc-floor-zone-label">
+                      {String(zone.name ?? zone.id).slice(0, 8)}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
           <ControlCenterDataTable
             rows={floorZones}
             rowKey={(row) => {

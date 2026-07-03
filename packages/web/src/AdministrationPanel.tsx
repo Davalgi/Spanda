@@ -573,6 +573,106 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
 
       <h4>Integrations summary</h4>
       {integrations ? <pre>{JSON.stringify(integrations, null, 2)}</pre> : <p className="demo-hint">Loading…</p>}
+
+      <OidcSlackAdmin baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} busy={busy} />
     </section>
+  );
+}
+
+function OidcSlackAdmin({
+  baseUrl,
+  authHeaders,
+  can,
+  hasToken,
+  busy,
+}: {
+  baseUrl: string;
+  authHeaders: () => HeadersInit;
+  can: (action: import("./controlCenterRbac").RbacAction) => boolean;
+  hasToken: boolean;
+  busy: boolean;
+}) {
+  const [oidc, setOidc] = useState<Record<string, unknown> | null>(null);
+  const [slack, setSlack] = useState<Record<string, unknown> | null>(null);
+  const [issuer, setIssuer] = useState("");
+  const [clientId, setClientId] = useState("");
+  const [slackWebhook, setSlackWebhook] = useState("");
+
+  const loadAdmin = useCallback(async () => {
+    if (!hasToken) return;
+    const headers = authHeaders();
+    const [oidcRes, slackRes] = await Promise.all([
+      fetch(`${baseUrl}/v1/admin/oidc`, { headers }),
+      fetch(`${baseUrl}/v1/admin/slack`, { headers }),
+    ]);
+    if (oidcRes.ok) {
+      const body = await oidcRes.json();
+      setOidc(body);
+      setIssuer(String(body.issuer ?? ""));
+      setClientId(String(body.client_id ?? ""));
+    }
+    if (slackRes.ok) setSlack(await slackRes.json());
+  }, [authHeaders, baseUrl, hasToken]);
+
+  useEffect(() => {
+    void loadAdmin();
+  }, [loadAdmin]);
+
+  const saveOidc = async () => {
+    if (!can("Deploy")) return;
+    await fetch(`${baseUrl}/v1/admin/oidc`, {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify({ enabled: true, issuer, client_id: clientId, group_role_map: {} }),
+    });
+    await loadAdmin();
+  };
+
+  const syncOidc = async () => {
+    if (!can("Deploy")) return;
+    await fetch(`${baseUrl}/v1/admin/oidc/sync`, { method: "POST", headers: authHeaders(), body: "{}" });
+    await loadAdmin();
+  };
+
+  const saveSlack = async () => {
+    if (!can("Deploy")) return;
+    await fetch(`${baseUrl}/v1/admin/slack`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ webhook_url: slackWebhook }),
+    });
+    await loadAdmin();
+  };
+
+  return (
+    <>
+      <h4>OIDC / SSO</h4>
+      {oidc ? (
+        <p className="demo-hint">
+          Enabled: {String(oidc.enabled)} · Last sync: {String(oidc.last_sync_at ?? "never")}
+        </p>
+      ) : (
+        <p className="demo-hint">Sign in to configure OIDC.</p>
+      )}
+      {can("Deploy") && hasToken && (
+        <div className="digital-thread-filters">
+          <label>Issuer URL<input value={issuer} onChange={(e) => setIssuer(e.target.value)} placeholder="https://idp.example.com" /></label>
+          <label>Client ID<input value={clientId} onChange={(e) => setClientId(e.target.value)} /></label>
+          <button type="button" onClick={() => void saveOidc()} disabled={busy}>Save OIDC</button>
+          <button type="button" onClick={() => void syncOidc()} disabled={busy}>Sync directory</button>
+        </div>
+      )}
+
+      <h4>Slack setup wizard</h4>
+      {slack ? (
+        <p className="demo-hint">Configured: {String(slack.configured)} · Team: {String(slack.team_name ?? "—")}</p>
+      ) : null}
+      {can("Deploy") && hasToken && (
+        <div className="digital-thread-filters">
+          <label>Webhook URL<input value={slackWebhook} onChange={(e) => setSlackWebhook(e.target.value)} placeholder="https://hooks.slack.com/..." /></label>
+          <button type="button" onClick={() => void saveSlack()} disabled={busy}>Save Slack</button>
+        </div>
+      )}
+    </>
   );
 }

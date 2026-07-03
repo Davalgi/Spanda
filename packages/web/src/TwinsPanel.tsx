@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
-import { CcBadge, CcEmptyState, CcSection } from "./controlCenterUi";
+import { CcBadge, CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 
 type TwinRow = {
@@ -116,12 +116,23 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
         )}
       </CcSection>
       {payload && (
-        <CcSection title="Registry metadata">
+        <CcSection title="Twin Cloud usage">
+          <CcMiniStats
+            items={[
+              { label: "Registered twins", value: twins.length },
+              {
+                label: "Total history entries",
+                value: twins.reduce((sum, twin) => sum + (twin.history_count ?? 0), 0),
+              },
+              {
+                label: "Mission-ready",
+                value: twins.filter((twin) => twin.mission_ready).length,
+                tone: "ok",
+              },
+            ]}
+          />
           <p className="cc-section-hint">
-            Count: {twins.length}{" "}
-            <CcBadge tone={twins.length > 0 ? "ok" : "neutral"}>
-              {twins.length > 0 ? "active" : "empty"}
-            </CcBadge>
+            Billing dimensions: snapshot push, sync, and stored history count per tenant.
           </p>
         </CcSection>
       )}

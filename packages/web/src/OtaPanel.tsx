@@ -62,6 +62,7 @@ export function OtaPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
 
   const deployVersion = otaState?.version ? String(otaState.version) : "—";
   const assignmentCount = Array.isArray(otaState?.assignments) ? otaState.assignments.length : 0;
+  const rolloutProgress = Number(otaState?.rollout_percent ?? otaState?.progress_percent ?? 0);
 
   return (
     <div className="cc-panel">
@@ -72,8 +73,15 @@ export function OtaPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           { label: "Deployed version", value: deployVersion },
           { label: "Assignments", value: assignmentCount },
           { label: "Strategy", value: strategy },
+          { label: "Rollout", value: `${rolloutProgress}%` },
         ]}
       />
+
+      {rolloutProgress > 0 && (
+        <div className="cc-rollout-progress" role="progressbar" aria-valuenow={rolloutProgress} aria-valuemin={0} aria-valuemax={100}>
+          <div className="cc-rollout-progress-fill" style={{ width: `${rolloutProgress}%` }} />
+        </div>
+      )}
 
       <CcSection
         title="Rollout plan"

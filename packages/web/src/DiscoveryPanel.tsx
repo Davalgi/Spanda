@@ -10,6 +10,8 @@ const TRANSPORTS = [
   { id: "can", label: "CAN", hint: "Vehicle / industrial bus" },
   { id: "mqtt", label: "MQTT", hint: "Broker-attached devices" },
   { id: "ros2", label: "ROS 2", hint: "Robot middleware" },
+  { id: "opcua", label: "OPC-UA", hint: "Industrial OPC-UA servers" },
+  { id: "modbus", label: "Modbus TCP", hint: "Modbus TCP devices" },
 ] as const;
 
 type Props = {

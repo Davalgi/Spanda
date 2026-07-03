@@ -100,6 +100,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
             effectiveRole={effectiveRole}
             roleMeta={roleMeta}
             keyId={rbacCtx?.key_id}
+            tenantId={rbacCtx?.tenant_id}
             permissions={rbacCtx?.permissions ?? []}
             hasToken={hasToken}
             showAuthSetup={showAuthSetup}
@@ -126,6 +127,11 @@ export function ControlCenterPanel({ apiBase }: Props) {
         </header>
 
         {core.error && <div className="error">{core.error}</div>}
+        {core.usingCache && (
+          <div className="banner cc-offline-banner">
+            Showing cached dashboard from {core.cacheAge ?? "earlier"} — API unreachable.
+          </div>
+        )}
 
         <div className="cc-main-body">
           {pluginTab && activePlugin ? (

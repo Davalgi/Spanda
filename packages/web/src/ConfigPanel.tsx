@@ -26,6 +26,8 @@ function approvalTone(status: string): "ok" | "warn" | "danger" | "neutral" {
 
 export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
   const [approvals, setApprovals] = useState<ApprovalRow[]>([]);
+  const [history, setHistory] = useState<Record<string, unknown>[]>([]);
+  const [deployGate, setDeployGate] = useState<Record<string, unknown> | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,9 +35,13 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`${baseUrl}/v1/config/approvals`);
-      if (!res.ok) throw new Error(`approvals ${res.status}`);
-      const body = await res.json();
+      const [approvalsRes, historyRes, gateRes] = await Promise.all([
+        fetch(`${baseUrl}/v1/config/approvals`),
+        fetch(`${baseUrl}/v1/config/history`),
+        fetch(`${baseUrl}/v1/deploy/gate`),
+      ]);
+      if (!approvalsRes.ok) throw new Error(`approvals ${approvalsRes.status}`);
+      const body = await approvalsRes.json();
       const rows = (body.approvals ?? []) as Record<string, unknown>[];
       setApprovals(
         rows.map((row) => ({
@@ -45,6 +51,13 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           note: row.note ? String(row.note) : undefined,
         })),
       );
+      if (historyRes.ok) {
+        const historyBody = await historyRes.json();
+        setHistory((historyBody.history as Record<string, unknown>[]) ?? []);
+      }
+      if (gateRes.ok) {
+        setDeployGate(await gateRes.json());
+      }
     } catch (err) {
       setError(String(err));
     } finally {
@@ -147,6 +160,27 @@ export function ConfigPanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           </ul>
         )}
       </CcSection>
+
+      <CcSection title="Config change history" hint="Snapshots and audit-linked config mutations.">
+        {history.length === 0 ? (
+          <CcEmptyState title="No config history" />
+        ) : (
+          <ul className="cc-event-log">
+            {history.slice(0, 20).map((entry, index) => (
+              <li key={`${entry.id ?? index}`}>
+                <span className="cc-event-type">{String(entry.action ?? "change")}</span>
+                {String(entry.snapshot_id ?? entry.id ?? "")} — {String(entry.timestamp ?? "—")}
+              </li>
+            ))}
+          </ul>
+        )}
+      </CcSection>
+
+      {deployGate && (
+        <CcSection title="Deploy gate checklist">
+          <pre className="cc-action-result">{JSON.stringify(deployGate, null, 2)}</pre>
+        </CcSection>
+      )}
     </div>
   );
 }

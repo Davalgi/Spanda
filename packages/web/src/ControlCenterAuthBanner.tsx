@@ -6,6 +6,7 @@ type Props = {
   effectiveRole: string;
   roleMeta: { label: string; summary: string };
   keyId?: string;
+  tenantId?: string;
   permissions: string[];
   hasToken: boolean;
   showAuthSetup: boolean;
@@ -21,6 +22,7 @@ export function ControlCenterAuthBanner({
   effectiveRole,
   roleMeta,
   keyId,
+  tenantId,
   permissions,
   hasToken,
   showAuthSetup,
@@ -57,6 +59,12 @@ export function ControlCenterAuthBanner({
             <>
               {" "}
               — <code>{keyId}</code>
+            </>
+          ) : null}
+          {tenantId ? (
+            <>
+              {" "}
+              · tenant <code>{tenantId}</code>
             </>
           ) : null}
           {" on "}

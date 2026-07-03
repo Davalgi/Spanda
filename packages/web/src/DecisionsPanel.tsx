@@ -26,7 +26,8 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
   const [data, setData] = useState<DecisionData | null>(null);
   const [simResult, setSimResult] = useState<Record<string, unknown> | null>(null);
   const [liveTrace, setLiveTrace] = useState(false);
-  const [simBusy, setSimBusy] = useState(false);
+  const [policyJson, setPolicyJson] = useState("");
+  const [policyBusy, setPolicyBusy] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -265,6 +266,34 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
             <summary>Policy bundle</summary>
             <pre className="cc-action-result">{JSON.stringify(data.policies, null, 2)}</pre>
           </details>
+          <label className="cc-field">
+            Edit policy JSON
+            <textarea
+              rows={6}
+              value={policyJson || JSON.stringify(data.policies, null, 2)}
+              onChange={(event) => setPolicyJson(event.target.value)}
+            />
+          </label>
+          <button
+            type="button"
+            disabled={policyBusy}
+            onClick={async () => {
+              setPolicyBusy(true);
+              try {
+                const body = policyJson.trim() || JSON.stringify(data.policies);
+                await fetch(`${baseUrl}/v1/decision-policies`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", ...authHeaders() },
+                  body,
+                });
+                await load();
+              } finally {
+                setPolicyBusy(false);
+              }
+            }}
+          >
+            Save policy draft
+          </button>
         </CcSection>
       )}
     </div>

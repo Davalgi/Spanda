@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Control Center enhancement backlog (shipped):** new tabs — Telemetry (WebSocket), Trends, Continuity, Fleet map, Reports, Playground (WASM), Marketplace, Chaos; SRE observability bridge; config history + deploy gate; bulk device actions; OTA rollout progress; decision policy editor; Smart Spaces floor-plan SVG; analytics trust graph; Twin Cloud usage; OIDC/Slack admin wizards; offline dashboard cache; desktop `desktop_features` command. REST: `/v1/fleet/map`, `/v1/config/history`, `/v1/deploy/gate`, `/v1/admin/oidc`, `/v1/admin/slack`, `/v1/chaos/*`. **gRPC server reflection** enabled.
 - **Control Center embedded UI:** `spanda control-center serve` at `/` now serves the React sidebar shell (built from `@davalgi-spanda/web`); regenerate with `scripts/sync_control_center_embedded_ui.sh`. Legacy HTML remains as fallback when the bundle is missing.
 - **Recovery Orchestrator follow-ups:** persisted recovery history (`control-center-recovery.json`); REST/gRPC `predictive`, `recoverable-entities`, and `recommend` endpoints (proto **1.0.11**); SDK **0.5.6** (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`); Recovery panel graph UI; example `[recovery.extensions]` plugin; `scripts/recovery_orchestrator_field_soak_init.sh`; recovery stable promotion CI job; [recovery-validation-report.md](docs/recovery-validation-report.md); OpenAPI parity for new routes.
 

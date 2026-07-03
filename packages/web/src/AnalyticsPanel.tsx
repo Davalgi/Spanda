@@ -122,11 +122,38 @@ export function AnalyticsPanel({ baseUrl }: Props) {
       <AnalyticsSection title="Mission risk" data={analytics?.mission_risk} />
       <AnalyticsSection title="Readiness forecast" data={analytics?.readiness_forecast} />
       <AnalyticsSection title="Trust graph" data={analytics?.trust_graph} />
+      {analytics?.trust_graph && (
+        <CcSection title="Trust graph visualization">
+          <TrustGraphViz data={analytics.trust_graph} />
+        </CcSection>
+      )}
       <AnalyticsSection title="Mission twin" data={analytics?.mission_twin} />
       <AnalyticsSection title="Certification pack" data={analytics?.certification_pack} />
       <AnalyticsSection title="Time travel" data={analytics?.time_travel} />
       <AnalyticsSection title="Human teaming" data={analytics?.human_teaming} />
       <AnalyticsSection title="Governance" data={analytics?.governance} />
+    </div>
+  );
+}
+
+function TrustGraphViz({ data }: { data: Record<string, unknown> }) {
+  const nodes = (data.nodes as { id?: string; score?: number }[]) ?? [];
+  if (nodes.length === 0) return null;
+  return (
+    <div className="cc-trust-graph">
+      {nodes.slice(0, 12).map((node) => {
+        const score = node.score ?? 0;
+        const width = Math.min(100, Math.max(10, Number(score)));
+        return (
+          <div key={node.id ?? "node"} className="cc-trust-bar-row">
+            <span className="cc-trust-label">{node.id ?? "—"}</span>
+            <div className="cc-trust-bar-track">
+              <div className="cc-trust-bar-fill" style={{ width: `${width}%` }} />
+            </div>
+            <span className="cc-trust-score">{String(score)}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }

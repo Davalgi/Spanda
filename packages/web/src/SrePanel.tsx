@@ -286,6 +286,29 @@ export function SrePanel({ baseUrl, authHeaders, can, hasToken }: Props) {
           </ul>
         )}
       </CcSection>
+
+      <CcSection title="Observability bridge" hint="Grafana templates, Jaeger traces, and OTLP export.">
+        <ul className="cc-link-list">
+          <li>
+            <a href="https://grafana.com/grafana/dashboards/" target="_blank" rel="noreferrer">
+              Grafana dashboard templates (spanda-grafana-dashboards)
+            </a>
+          </li>
+          <li>
+            <a href={`${baseUrl}/v1/observability/traces`} target="_blank" rel="noreferrer">
+              Open traces JSON
+            </a>
+          </li>
+          <li>
+            <a href={`${baseUrl}/v1/version`} target="_blank" rel="noreferrer">
+              API version &amp; gRPC reflection policy
+            </a>
+          </li>
+        </ul>
+        {(summary as { burn_rate?: { fast_burn?: boolean } })?.burn_rate?.fast_burn && (
+          <p className="cc-burn-banner">Fast-burn SLO alert — investigate incidents immediately.</p>
+        )}
+      </CcSection>
     </div>
   );
 }
