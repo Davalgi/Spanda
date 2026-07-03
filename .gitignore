@@ -14,6 +14,7 @@ target/
 *.tsbuildinfo
 
 # packages — build artifacts (source glue remains tracked)
+packages/web/dist-control-center/
 packages/web/wasm/*.wasm
 packages/web/wasm/spanda_wasm_bg.wasm.d.ts
 packages/native/*.node

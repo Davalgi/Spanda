@@ -69,7 +69,21 @@ pub fn handle_request(
         return (response, correlation_id);
     }
     if path == "/" || path == "/control-center" {
-        let response = html_ok(include_str!("static/control-center.html"));
+        let response = crate::control_center_ui::serve_static(path).unwrap_or_else(|| {
+            html_ok(include_str!("static/control-center.html"))
+        });
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            None,
+        );
+        return (response, correlation_id);
+    }
+    if let Some(response) = crate::control_center_ui::serve_static(path) {
         e3::record_trace(
             state,
             &correlation_id,

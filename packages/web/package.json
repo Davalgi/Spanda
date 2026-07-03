@@ -24,6 +24,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:control-center": "vite build --config vite.control-center.config.ts",
     "preview": "vite preview"
   },
   "dependencies": {

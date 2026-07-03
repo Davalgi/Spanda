@@ -46,7 +46,7 @@ CI smoke scripts source [`scripts/lib/control_center_smoke_lib.sh`](../scripts/l
 
 | Method | How |
 |--------|-----|
-| **Embedded UI** | Open `http://127.0.0.1:8080/` in a browser (default bind address) |
+| **Embedded UI** | Open `http://127.0.0.1:8080/` — React Control Center (same shell as `@davalgi-spanda/web`; rebuild with `scripts/sync_control_center_embedded_ui.sh` after UI changes) |
 | **Web package** | Use the **Control Center** view in `@davalgi-spanda/web`; set the API URL to your serve address. Paste a Bearer token in-panel (or set `VITE_SPANDA_API_KEY` at build time). Role-aware tabs and an **Administration** console match the embedded UI. |
 | **Desktop (Tauri)** | Start the API first, then `npm run control-center:desktop:dev` (Vite on port **5174**); optional `VITE_CONTROL_CENTER_URL=http://host:port`. Sign in via the in-app token banner — no rebuild required for operator keys. |
 | **Remote CLI** | `export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080` then `spanda control-center dashboard` (see [Remote CLI](#remote-cli-rest-parity)) |

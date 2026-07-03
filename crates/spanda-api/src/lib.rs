@@ -5,6 +5,7 @@ pub mod alert_channels;
 pub mod admin_ops;
 pub mod audit_log;
 pub mod correlation;
+pub mod control_center_ui;
 pub mod decision_ops;
 pub mod differentiation_ops;
 pub mod drift_collect;
