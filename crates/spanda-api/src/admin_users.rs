@@ -5,6 +5,7 @@ use crate::state::ControlCenterState;
 use serde::{Deserialize, Serialize};
 use spanda_deploy_http::HttpResponse;
 use spanda_security::{RbacContext, Role};
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -287,4 +288,71 @@ pub fn route_admin_users(
         "DELETE" => Some(admin_users_delete(state, rest, ctx)),
         _ => None,
     }
+}
+
+/// Import or update users from an OIDC directory payload using group→role mapping.
+pub fn import_oidc_directory(
+    state: &mut ControlCenterState,
+    entries: &[OidcDirectoryEntry],
+    group_role_map: &HashMap<String, String>,
+) -> (usize, usize) {
+    let mut created = 0usize;
+    let mut updated = 0usize;
+    let now = now_ms();
+    for entry in entries {
+        if entry.user_id.trim().is_empty() {
+            continue;
+        }
+        let role = entry
+            .groups
+            .iter()
+            .find_map(|group| group_role_map.get(group).cloned())
+            .or_else(|| entry.role.clone())
+            .unwrap_or_else(|| "operator".to_string());
+        if Role::parse(&role) == Role::Guest {
+            continue;
+        }
+        if let Some(user) = state.admin_user_store.find_mut(&entry.user_id) {
+            if let Some(name) = entry.display_name.as_ref() {
+                user.display_name = name.clone();
+            }
+            if let Some(email) = entry.email.as_ref() {
+                user.email = Some(email.clone());
+            }
+            user.role = role;
+            user.updated_at_ms = now;
+            updated += 1;
+        } else {
+            state.admin_user_store.users.push(AdminUser {
+                user_id: entry.user_id.clone(),
+                display_name: entry
+                    .display_name
+                    .clone()
+                    .unwrap_or_else(|| entry.user_id.clone()),
+                email: entry.email.clone(),
+                role,
+                api_key_id: None,
+                enabled: true,
+                created_at_ms: now,
+                updated_at_ms: now,
+            });
+            created += 1;
+        }
+    }
+    let _ = persist_admin_users(state);
+    (created, updated)
+}
+
+/// One user row from an OIDC directory import.
+#[derive(Debug, Deserialize)]
+pub struct OidcDirectoryEntry {
+    pub user_id: String,
+    #[serde(default)]
+    pub display_name: Option<String>,
+    #[serde(default)]
+    pub email: Option<String>,
+    #[serde(default)]
+    pub role: Option<String>,
+    #[serde(default)]
+    pub groups: Vec<String>,
 }

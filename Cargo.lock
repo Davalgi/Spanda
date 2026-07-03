@@ -2582,6 +2582,7 @@ dependencies = [
  "tonic-build",
  "tonic-reflection",
  "tungstenite",
+ "ureq",
 ]
 
 [[package]]

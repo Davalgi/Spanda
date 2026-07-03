@@ -198,10 +198,16 @@ pub fn admin_integrations_summary(
         .iter()
         .map(|channel| format!("{channel:?}"))
         .collect();
+    let mut observability = spanda_ops::observability_backend_summary();
+    if let Some(url) = std::env::var("SPANDA_GRAFANA_URL").ok() {
+        if let Some(obj) = observability.as_object_mut() {
+            obj.insert("grafana_url".into(), serde_json::Value::String(url));
+        }
+    }
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "alert_channels": channels,
-        "observability": spanda_ops::observability_backend_summary(),
+        "observability": observability,
         "tenant_id": state.tenant_id,
         "api_keys_loaded": state.api_keys.keys.len(),
     }))
@@ -441,7 +447,7 @@ pub fn route_admin(
         return Some(crate::control_center_extras::admin_oidc_put(body, ctx));
     }
     if path == "/v1/admin/oidc/sync" && method == "POST" {
-        return Some(crate::control_center_extras::admin_oidc_sync(ctx));
+        return Some(crate::control_center_extras::admin_oidc_sync(state, body, ctx));
     }
     if path == "/v1/admin/slack" && method == "GET" {
         return Some(crate::control_center_extras::admin_slack_get(ctx));

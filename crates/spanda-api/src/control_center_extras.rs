@@ -454,21 +454,27 @@ pub fn admin_oidc_put(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     }))
 }
 
-/// POST /v1/admin/oidc/sync — stub OIDC directory sync.
-pub fn admin_oidc_sync(ctx: Option<&RbacContext>) -> HttpResponse {
-    // Validate issuer URL and stamp last_sync_at for the OIDC stub sync.
+/// POST /v1/admin/oidc/sync — fetch OIDC discovery and import directory users.
+pub fn admin_oidc_sync(
+    state: &mut ControlCenterState,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    // Fetch OpenID discovery metadata and upsert users from the request directory payload.
     //
     // Parameters:
+    // - `state` — mutable Control Center state (user directory)
+    // - `body` — optional JSON `{ "directory": [...] }`
     // - `ctx` — optional RBAC context
     //
     // Returns:
-    // HTTP 200 when issuer is configured and valid.
+    // HTTP 200 with import counts on success.
     //
     // Options:
-    // None.
+    // Set `SPANDA_OIDC_DIRECTORY_JSON` to a file path for default directory entries.
     //
     // Example:
-    // let response = admin_oidc_sync(ctx.as_ref());
+    // let response = admin_oidc_sync(state, body, ctx.as_ref());
 
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
@@ -480,6 +486,40 @@ pub fn admin_oidc_sync(ctx: Option<&RbacContext>) -> HttpResponse {
     if !valid_issuer_url(issuer) {
         return bad_request("issuer must be a valid https URL");
     }
+    let discovery_url = format!(
+        "{}/.well-known/openid-configuration",
+        issuer.trim_end_matches('/')
+    );
+    let mut discovery: serde_json::Value = serde_json::json!({});
+    if let Ok(response) = ureq::get(&discovery_url).call() {
+        if let Ok(body) = response.into_string() {
+            if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&body) {
+                discovery = parsed;
+            }
+        }
+    }
+    #[derive(Debug, Deserialize, Default)]
+    struct OidcSyncRequest {
+        #[serde(default)]
+        directory: Vec<crate::admin_users::OidcDirectoryEntry>,
+    }
+    let mut request: OidcSyncRequest = serde_json::from_str(body).unwrap_or_default();
+    if request.directory.is_empty() {
+        if let Ok(path) = std::env::var("SPANDA_OIDC_DIRECTORY_JSON") {
+            if let Ok(content) = fs::read_to_string(path) {
+                if let Ok(entries) =
+                    serde_json::from_str::<Vec<crate::admin_users::OidcDirectoryEntry>>(&content)
+                {
+                    request.directory = entries;
+                }
+            }
+        }
+    }
+    let (created, updated) = if request.directory.is_empty() {
+        (0usize, 0usize)
+    } else {
+        crate::admin_users::import_oidc_directory(state, &request.directory, &config.group_role_map)
+    };
     config.last_sync_at = Some(now_ms());
     if let Err(error) = persist_admin_oidc(&config) {
         return bad_request(&error);
@@ -488,7 +528,9 @@ pub fn admin_oidc_sync(ctx: Option<&RbacContext>) -> HttpResponse {
         "version": API_VERSION,
         "ok": true,
         "last_sync_at": config.last_sync_at,
-        "message": "OIDC sync stub completed",
+        "discovery": discovery,
+        "users_created": created,
+        "users_updated": updated,
     }))
 }
 

@@ -282,6 +282,18 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
+    if let Some(response) = crate::plugins::route_plugins(state, path, &request.method) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
+    }
     if let Some(response) = crate::admin_ops::route_admin(
         state,
         path,
@@ -417,8 +429,6 @@ pub fn handle_request(
         }
         ("/v1/discovery", "GET") => discovery_run(query),
         ("/v1/health/summary", "GET") => health_summary(state),
-        ("/v1/plugins", "GET") => crate::plugins::list_all_plugins(state),
-        ("/v1/plugins/control-center", "GET") => crate::plugins::list_control_center_plugins(state),
         ("/v1/assurance/summary", "GET") => assurance_summary(state),
         ("/v1/diagnosis/summary", "GET") => diagnosis_summary(state),
         ("/v1/drift", "GET") => e3::drift_report(state, query),
