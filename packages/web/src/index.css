@@ -2072,3 +2072,89 @@ html:has(.cc-desktop-app) body {
   display: inline-block;
   margin-top: 0.5rem;
 }
+
+.cc-profile-switcher {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.cc-profile-switcher label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.cc-profile-switcher select {
+  width: 100%;
+}
+
+.cc-profile-add {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cc-wizard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cc-wizard-card {
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #161b22;
+}
+
+.cc-wizard-card.open {
+  border-color: #58a6ff66;
+}
+
+.cc-wizard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.cc-wizard-toggle {
+  background: none;
+  border: none;
+  color: #e6edf3;
+  font-weight: 600;
+  text-align: left;
+  padding: 0;
+}
+
+.cc-wizard-body {
+  padding: 0 0.75rem 0.75rem;
+}
+
+.cc-wizard-steps {
+  margin: 0.5rem 0;
+  padding-left: 1.1rem;
+}
+
+.cc-env-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cc-cli-example {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  background: #0d1117;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}

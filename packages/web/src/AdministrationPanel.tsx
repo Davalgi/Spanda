@@ -596,7 +596,18 @@ function OidcSlackAdmin({
   const [slack, setSlack] = useState<Record<string, unknown> | null>(null);
   const [issuer, setIssuer] = useState("");
   const [clientId, setClientId] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
+  const [redirectUri, setRedirectUri] = useState("");
+  const [groupRoleMap, setGroupRoleMap] = useState("{}");
+  const [oidcCode, setOidcCode] = useState("");
+  const [oidcState, setOidcState] = useState("");
   const [slackWebhook, setSlackWebhook] = useState("");
+  const [slackClientId, setSlackClientId] = useState("");
+  const [slackClientSecret, setSlackClientSecret] = useState("");
+  const [slackRedirectUri, setSlackRedirectUri] = useState("");
+  const [slackCode, setSlackCode] = useState("");
+  const [slackState, setSlackState] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
 
   const loadAdmin = useCallback(async () => {
     if (!hasToken) return;
@@ -610,27 +621,98 @@ function OidcSlackAdmin({
       setOidc(body);
       setIssuer(String(body.issuer ?? ""));
       setClientId(String(body.client_id ?? ""));
+      setRedirectUri(String(body.redirect_uri ?? ""));
+      if (body.group_role_map) {
+        setGroupRoleMap(JSON.stringify(body.group_role_map, null, 2));
+      }
     }
-    if (slackRes.ok) setSlack(await slackRes.json());
+    if (slackRes.ok) {
+      const body = await slackRes.json();
+      setSlack(body);
+      setSlackClientId(String(body.oauth_client_id ?? ""));
+      setSlackRedirectUri(String(body.oauth_redirect_uri ?? ""));
+    }
   }, [authHeaders, baseUrl, hasToken]);
 
   useEffect(() => {
     void loadAdmin();
   }, [loadAdmin]);
 
+  const parseGroupRoleMap = () => {
+    try {
+      return JSON.parse(groupRoleMap) as Record<string, string>;
+    } catch {
+      return {};
+    }
+  };
+
   const saveOidc = async () => {
     if (!can("Deploy")) return;
     await fetch(`${baseUrl}/v1/admin/oidc`, {
       method: "PUT",
       headers: authHeaders(),
-      body: JSON.stringify({ enabled: true, issuer, client_id: clientId, group_role_map: {} }),
+      body: JSON.stringify({
+        enabled: true,
+        issuer,
+        client_id: clientId,
+        client_secret: clientSecret || undefined,
+        redirect_uri: redirectUri || undefined,
+        group_role_map: parseGroupRoleMap(),
+      }),
     });
+    setClientSecret("");
     await loadAdmin();
+    setStatus("OIDC settings saved.");
   };
 
   const syncOidc = async () => {
     if (!can("Deploy")) return;
-    await fetch(`${baseUrl}/v1/admin/oidc/sync`, { method: "POST", headers: authHeaders(), body: "{}" });
+    const res = await fetch(`${baseUrl}/v1/admin/oidc/sync`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: "{}",
+    });
+    const body = await res.json();
+    setStatus(
+      res.ok
+        ? `Directory sync: ${body.users_created ?? 0} created, ${body.users_updated ?? 0} updated.`
+        : `Sync failed: ${res.status}`,
+    );
+    await loadAdmin();
+  };
+
+  const startOidcOAuth = async () => {
+    if (!can("Deploy")) return;
+    const res = await fetch(`${baseUrl}/v1/admin/oidc/authorize-url`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ redirect_uri: redirectUri || undefined }),
+    });
+    const body = await res.json();
+    if (!res.ok) {
+      setStatus(`OIDC authorize failed: ${res.status}`);
+      return;
+    }
+    setOidcState(String(body.state ?? ""));
+    const url = String(body.authorize_url ?? "");
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+    setStatus("OIDC authorization opened — paste the callback code below.");
+  };
+
+  const completeOidcOAuth = async () => {
+    if (!can("Deploy") || !oidcCode.trim()) return;
+    const res = await fetch(`${baseUrl}/v1/admin/oidc/oauth/callback`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ code: oidcCode.trim(), state: oidcState || undefined }),
+    });
+    const body = await res.json();
+    setStatus(
+      res.ok
+        ? `OAuth import: ${body.users_created ?? 0} created, ${body.users_updated ?? 0} updated.`
+        : `OAuth callback failed: ${res.status}`,
+    );
+    setOidcCode("");
     await loadAdmin();
   };
 
@@ -639,38 +721,163 @@ function OidcSlackAdmin({
     await fetch(`${baseUrl}/v1/admin/slack`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ webhook_url: slackWebhook }),
+      body: JSON.stringify({
+        webhook_url: slackWebhook || undefined,
+        oauth_client_id: slackClientId || undefined,
+        oauth_client_secret: slackClientSecret || undefined,
+        oauth_redirect_uri: slackRedirectUri || undefined,
+      }),
     });
+    setSlackClientSecret("");
+    await loadAdmin();
+    setStatus("Slack settings saved.");
+  };
+
+  const startSlackOAuth = async () => {
+    if (!can("Deploy")) return;
+    const res = await fetch(`${baseUrl}/v1/admin/slack/oauth-url`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ redirect_uri: slackRedirectUri || undefined }),
+    });
+    const body = await res.json();
+    if (!res.ok) {
+      setStatus(`Slack authorize failed: ${res.status}`);
+      return;
+    }
+    setSlackState(String(body.state ?? ""));
+    const url = String(body.authorize_url ?? "");
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+    setStatus("Slack authorization opened — paste the callback code below.");
+  };
+
+  const completeSlackOAuth = async () => {
+    if (!can("Deploy") || !slackCode.trim()) return;
+    const res = await fetch(`${baseUrl}/v1/admin/slack/oauth/callback`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ code: slackCode.trim(), state: slackState || undefined }),
+    });
+    const body = await res.json();
+    setStatus(res.ok ? `Slack connected: ${body.team_name ?? "team"}.` : `Slack OAuth failed: ${res.status}`);
+    setSlackCode("");
     await loadAdmin();
   };
 
   return (
     <>
+      {status && <p className="demo-hint">{status}</p>}
+
       <h4>OIDC / SSO</h4>
       {oidc ? (
         <p className="demo-hint">
-          Enabled: {String(oidc.enabled)} · Last sync: {String(oidc.last_sync_at ?? "never")}
+          Enabled: {String(oidc.enabled)} · OAuth ready: {String(oidc.oauth_ready ?? false)} · Last sync:{" "}
+          {String(oidc.last_sync_at ?? "never")}
         </p>
       ) : (
         <p className="demo-hint">Sign in to configure OIDC.</p>
       )}
       {can("Deploy") && hasToken && (
         <div className="digital-thread-filters">
-          <label>Issuer URL<input value={issuer} onChange={(e) => setIssuer(e.target.value)} placeholder="https://idp.example.com" /></label>
-          <label>Client ID<input value={clientId} onChange={(e) => setClientId(e.target.value)} /></label>
-          <button type="button" onClick={() => void saveOidc()} disabled={busy}>Save OIDC</button>
-          <button type="button" onClick={() => void syncOidc()} disabled={busy}>Sync directory</button>
+          <label>
+            Issuer URL
+            <input value={issuer} onChange={(e) => setIssuer(e.target.value)} placeholder="https://idp.example.com" />
+          </label>
+          <label>
+            Client ID
+            <input value={clientId} onChange={(e) => setClientId(e.target.value)} />
+          </label>
+          <label>
+            Client secret
+            <input
+              type="password"
+              value={clientSecret}
+              onChange={(e) => setClientSecret(e.target.value)}
+              placeholder={oidc?.client_secret_set ? "saved (enter to replace)" : "required for OAuth"}
+            />
+          </label>
+          <label>
+            Redirect URI
+            <input
+              value={redirectUri}
+              onChange={(e) => setRedirectUri(e.target.value)}
+              placeholder="http://127.0.0.1:8080/admin/oauth/oidc/callback"
+            />
+          </label>
+          <label>
+            Group → role map (JSON)
+            <textarea value={groupRoleMap} onChange={(e) => setGroupRoleMap(e.target.value)} rows={4} />
+          </label>
+          <button type="button" onClick={() => void saveOidc()} disabled={busy}>
+            Save OIDC
+          </button>
+          <button type="button" onClick={() => void syncOidc()} disabled={busy}>
+            Sync directory
+          </button>
+          <button type="button" onClick={() => void startOidcOAuth()} disabled={busy}>
+            Start OIDC OAuth
+          </button>
+          <label>
+            Authorization code
+            <input value={oidcCode} onChange={(e) => setOidcCode(e.target.value)} placeholder="paste code" />
+          </label>
+          <button type="button" onClick={() => void completeOidcOAuth()} disabled={busy || !oidcCode.trim()}>
+            Complete OIDC OAuth
+          </button>
         </div>
       )}
 
       <h4>Slack setup wizard</h4>
       {slack ? (
-        <p className="demo-hint">Configured: {String(slack.configured)} · Team: {String(slack.team_name ?? "—")}</p>
+        <p className="demo-hint">
+          Configured: {String(slack.configured)} · Team: {String(slack.team_name ?? "—")} · Webhook:{" "}
+          {String(slack.webhook_url_set ?? false)}
+        </p>
       ) : null}
       {can("Deploy") && hasToken && (
         <div className="digital-thread-filters">
-          <label>Webhook URL<input value={slackWebhook} onChange={(e) => setSlackWebhook(e.target.value)} placeholder="https://hooks.slack.com/..." /></label>
-          <button type="button" onClick={() => void saveSlack()} disabled={busy}>Save Slack</button>
+          <label>
+            Webhook URL
+            <input
+              value={slackWebhook}
+              onChange={(e) => setSlackWebhook(e.target.value)}
+              placeholder="https://hooks.slack.com/..."
+            />
+          </label>
+          <label>
+            OAuth client ID
+            <input value={slackClientId} onChange={(e) => setSlackClientId(e.target.value)} />
+          </label>
+          <label>
+            OAuth client secret
+            <input
+              type="password"
+              value={slackClientSecret}
+              onChange={(e) => setSlackClientSecret(e.target.value)}
+              placeholder={slack?.oauth_client_secret_set ? "saved (enter to replace)" : ""}
+            />
+          </label>
+          <label>
+            OAuth redirect URI
+            <input
+              value={slackRedirectUri}
+              onChange={(e) => setSlackRedirectUri(e.target.value)}
+              placeholder="http://127.0.0.1:8080/admin/oauth/slack/callback"
+            />
+          </label>
+          <button type="button" onClick={() => void saveSlack()} disabled={busy}>
+            Save Slack
+          </button>
+          <button type="button" onClick={() => void startSlackOAuth()} disabled={busy}>
+            Start Slack OAuth
+          </button>
+          <label>
+            Authorization code
+            <input value={slackCode} onChange={(e) => setSlackCode(e.target.value)} placeholder="paste code" />
+          </label>
+          <button type="button" onClick={() => void completeSlackOAuth()} disabled={busy || !slackCode.trim()}>
+            Complete Slack OAuth
+          </button>
         </div>
       )}
     </>

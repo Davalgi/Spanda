@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ControlCenterProfile } from "./controlCenterProfiles";
 import { RBAC_ACTIONS } from "./controlCenterRbac";
 
 type Props = {
@@ -12,6 +13,10 @@ type Props = {
   showAuthSetup: boolean;
   envKeyLocked: boolean;
   authError: string | null;
+  profiles: ControlCenterProfile[];
+  activeProfileId?: string;
+  onSwitchProfile: (profileId: string) => void;
+  onAddConnection: (apiBase: string) => void;
   onVerify: (token: string, persist: boolean) => Promise<void>;
   onForget: () => void;
   onOpenSetup: () => void;
@@ -28,6 +33,10 @@ export function ControlCenterAuthBanner({
   showAuthSetup,
   envKeyLocked,
   authError,
+  profiles,
+  activeProfileId,
+  onSwitchProfile,
+  onAddConnection,
   onVerify,
   onForget,
   onOpenSetup,
@@ -36,6 +45,8 @@ export function ControlCenterAuthBanner({
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [newHost, setNewHost] = useState("");
+  const [showAddConnection, setShowAddConnection] = useState(false);
 
   const submit = async () => {
     setBusy(true);
@@ -52,6 +63,50 @@ export function ControlCenterAuthBanner({
 
   return (
     <>
+      {profiles.length > 0 && (
+        <div className="cc-profile-switcher">
+          <label>
+            Connection
+            <select
+              value={activeProfileId ?? profiles[0]?.id}
+              onChange={(event) => onSwitchProfile(event.target.value)}
+            >
+              {profiles.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.label}
+                  {profile.tenantId ? ` · ${profile.tenantId}` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className="secondary" onClick={() => setShowAddConnection((v) => !v)}>
+            Add
+          </button>
+        </div>
+      )}
+
+      {showAddConnection && (
+        <div className="cc-profile-add">
+          <input
+            type="url"
+            placeholder="https://fleet.example.com:8080"
+            value={newHost}
+            onChange={(event) => setNewHost(event.target.value)}
+          />
+          <button
+            type="button"
+            disabled={!newHost.trim()}
+            onClick={() => {
+              onAddConnection(newHost.trim());
+              setNewHost("");
+              setShowAddConnection(false);
+            }}
+          >
+            Save connection
+          </button>
+        </div>
+      )}
+
       {hasToken && !showAuthSetup && (
         <div className="cc-auth-status">
           <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>

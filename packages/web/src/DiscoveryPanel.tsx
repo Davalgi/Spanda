@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { DiscoveryTransportWizards } from "./DiscoveryTransportWizards";
 import type { DeviceRow } from "./DevicesPanel";
 
 const TRANSPORTS = [
@@ -75,6 +76,10 @@ export function DiscoveryPanel({
     );
   };
 
+  const selectTransport = (id: string) => {
+    setSelectedTransports((current) => (current.includes(id) ? current : [...current, id]));
+  };
+
   return (
     <div className="cc-panel">
       <CcMiniStats
@@ -147,6 +152,8 @@ export function DiscoveryPanel({
           })}
         </div>
       </CcSection>
+
+      <DiscoveryTransportWizards onSelectTransport={selectTransport} />
 
       <CcSection
         title="Newly registered"

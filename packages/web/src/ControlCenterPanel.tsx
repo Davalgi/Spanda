@@ -1,12 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ControlCenterAuthBanner } from "./ControlCenterAuthBanner";
 import { ControlCenterNav } from "./ControlCenterNav";
 import { ControlCenterPluginPanel } from "./ControlCenterPluginPanel";
 import { ControlCenterTabContent } from "./ControlCenterTabContent";
 import { TAB_DESCRIPTIONS, tabLabel } from "./controlCenterNavConfig";
+import {
+  addProfile,
+  ensureProfile,
+  getActiveProfileId,
+  type ControlCenterProfile,
+  setActiveProfileId,
+  upsertProfileTenant,
+} from "./controlCenterProfiles";
 import { type ControlCenterTab } from "./controlCenterRbac";
 import { useControlCenterAuth } from "./useControlCenterAuth";
 import { useControlCenterCoreData } from "./useControlCenterCoreData";
+import { useDesktopIntegration } from "./useDesktopIntegration";
 import { useDeviceWorkflow } from "./useDeviceWorkflow";
 
 type Props = {
@@ -14,7 +23,18 @@ type Props = {
 };
 
 export function ControlCenterPanel({ apiBase }: Props) {
-  const auth = useControlCenterAuth({ apiBase });
+  const [profiles, setProfiles] = useState<ControlCenterProfile[]>(() => ensureProfile(apiBase));
+  const [activeProfileId, setActiveProfileIdState] = useState(
+    () => getActiveProfileId() ?? profiles[0]?.id ?? "",
+  );
+
+  const activeProfile = useMemo(
+    () => profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0],
+    [activeProfileId, profiles],
+  );
+  const activeApiBase = activeProfile?.apiBase ?? apiBase;
+
+  const auth = useControlCenterAuth({ apiBase: activeApiBase });
   const {
     base,
     apiHost,
@@ -37,6 +57,25 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const [pluginTab, setPluginTab] = useState<string | null>(null);
 
   const core = useControlCenterCoreData({ baseUrl: base, authHeaders });
+
+  useEffect(() => {
+    if (rbacCtx?.tenant_id && activeProfile?.id) {
+      setProfiles(upsertProfileTenant(activeProfile.id, rbacCtx.tenant_id));
+    }
+  }, [activeProfile?.id, rbacCtx?.tenant_id]);
+
+  useDesktopIntegration({ baseUrl: base });
+
+  const switchProfile = useCallback((profileId: string) => {
+    setActiveProfileId(profileId);
+    setActiveProfileIdState(profileId);
+  }, []);
+
+  const handleAddConnection = useCallback((nextBase: string) => {
+    setProfiles(addProfile(nextBase));
+    const id = getActiveProfileId();
+    if (id) setActiveProfileIdState(id);
+  }, []);
 
   useEffect(() => {
     if (!isTabAllowed(tab)) {
@@ -100,12 +139,16 @@ export function ControlCenterPanel({ apiBase }: Props) {
             effectiveRole={effectiveRole}
             roleMeta={roleMeta}
             keyId={rbacCtx?.key_id}
-            tenantId={rbacCtx?.tenant_id}
+            tenantId={rbacCtx?.tenant_id ?? activeProfile?.tenantId}
             permissions={rbacCtx?.permissions ?? []}
             hasToken={hasToken}
             showAuthSetup={showAuthSetup}
             envKeyLocked={envKeyLocked}
             authError={authError}
+            profiles={profiles}
+            activeProfileId={activeProfile?.id}
+            onSwitchProfile={switchProfile}
+            onAddConnection={handleAddConnection}
             onVerify={verifyAndSetApiKey}
             onForget={forgetToken}
             onOpenSetup={() => setShowAuthSetup(true)}
