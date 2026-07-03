@@ -96,6 +96,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/fleet/map",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/fleet/agents",
     },
     ApiRoute {
@@ -144,6 +148,26 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/admin/oidc",
+    },
+    ApiRoute {
+        method: "PUT",
+        path: "/v1/admin/oidc",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/oidc/sync",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/admin/slack",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/slack",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/admin/users",
     },
     ApiRoute {
@@ -177,6 +201,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     ApiRoute {
         method: "POST",
         path: "/v1/config/snapshots",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/config/history",
     },
     ApiRoute {
         method: "GET",
@@ -705,5 +733,17 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     ApiRoute {
         method: "GET",
         path: "/v1/energy/systems/{id}",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/chaos/injections",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/chaos/simulate",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/deploy/gate",
     },
 ];

@@ -434,6 +434,21 @@ pub fn route_admin(
     if path == "/v1/operator/mission/cancel" && method == "POST" {
         return Some(operator_mission_cancel(state, body, ctx));
     }
+    if path == "/v1/admin/oidc" && method == "GET" {
+        return Some(crate::control_center_extras::admin_oidc_get(ctx));
+    }
+    if path == "/v1/admin/oidc" && method == "PUT" {
+        return Some(crate::control_center_extras::admin_oidc_put(body, ctx));
+    }
+    if path == "/v1/admin/oidc/sync" && method == "POST" {
+        return Some(crate::control_center_extras::admin_oidc_sync(ctx));
+    }
+    if path == "/v1/admin/slack" && method == "GET" {
+        return Some(crate::control_center_extras::admin_slack_get(ctx));
+    }
+    if path == "/v1/admin/slack" && method == "POST" {
+        return Some(crate::control_center_extras::admin_slack_post(body, ctx));
+    }
     let rest = path.strip_prefix("/v1/admin/api-keys/")?;
     match method {
         "PATCH" => Some(admin_api_keys_patch(state, rest, body, ctx)),

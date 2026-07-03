@@ -3,6 +3,9 @@
 use crate::state::SharedState;
 use spanda_security::RbacContext;
 use tonic::{transport::Server, Request, Response, Status};
+use tonic_reflection::server::Builder as ReflectionBuilder;
+
+const FILE_DESCRIPTOR_SET: &[u8] = tonic::include_file_descriptor_set!("proto_descriptor");
 
 pub mod spanda_v1 {
     tonic::include_proto!("spanda.v1");
@@ -1833,8 +1836,13 @@ pub async fn serve_grpc(bind: String, state: SharedState) -> Result<(), String> 
     // serve_grpc("127.0.0.1:50051".into(), state).await?;
 
     let service = GrpcControlCenter { state };
+    let reflection = ReflectionBuilder::configure()
+        .register_encoded_file_descriptor_set(FILE_DESCRIPTOR_SET)
+        .build_v1()
+        .map_err(|error| error.to_string())?;
     Server::builder()
         .add_service(ControlCenterServer::new(service))
+        .add_service(reflection)
         .serve(
             bind.parse()
                 .map_err(|e: std::net::AddrParseError| e.to_string())?,

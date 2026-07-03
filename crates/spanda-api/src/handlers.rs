@@ -403,6 +403,7 @@ pub fn handle_request(
         ("/v1/failover/chains", "GET") => failover_chains_get(state),
         ("/v1/devices", "GET") => devices_list(state),
         ("/v1/fleet/agents", "GET") => fleet_agents(),
+        ("/v1/fleet/map", "GET") => crate::control_center_extras::fleet_map_json(state),
         ("/v1/alerts", "GET") => alerts_list(state),
         ("/v1/alerts/test", "POST") => alerts_test(state, ctx.as_ref()),
         ("/v1/secrets", "GET") => secrets_list(state, ctx.as_ref()),
@@ -410,6 +411,7 @@ pub fn handle_request(
         ("/v1/rbac/me", "GET") => rbac_me(ctx.as_ref()),
         ("/v1/provision", "POST") => provision_run(state, &request.body, ctx.as_ref()),
         ("/v1/config/snapshots", "GET") => config_snapshots_list(),
+        ("/v1/config/history", "GET") => crate::control_center_extras::config_history_json(state),
         ("/v1/config/snapshots", "POST") => {
             config_snapshots_save(state, &request.body, ctx.as_ref())
         }
@@ -548,6 +550,11 @@ pub fn handle_request(
             crate::report_scheduler::report_schedules_create(state, &request.body, ctx.as_ref())
         }
         ("/v1/compliance/profiles", "GET") => e4::compliance_profiles_catalog(),
+        ("/v1/chaos/injections", "GET") => crate::control_center_extras::chaos_catalog_json(),
+        ("/v1/chaos/simulate", "POST") => {
+            crate::control_center_extras::chaos_simulate_json(state, &request.body)
+        }
+        ("/v1/deploy/gate", "GET") => crate::control_center_extras::deploy_gate_json(state),
         _ => not_found(),
     };
     e3::record_trace(
