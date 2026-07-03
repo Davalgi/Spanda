@@ -150,6 +150,38 @@ pub fn register_fleet_decision_nonce(
     ))
 }
 
+/// Fetch fleet mesh decision and nonce registry diagnostics.
+pub fn fetch_fleet_decision_mesh_status(
+    mesh_url: &str,
+    token: Option<&str>,
+) -> Result<serde_json::Value, String> {
+    let nonce = http_request(
+        "GET",
+        &mesh_decision_url(mesh_url, "nonce/status", ""),
+        None,
+        token,
+    )?;
+    let status = http_request("GET", &mesh_base_url(mesh_url, "v1/status"), None, token)?;
+    let nonce_json: serde_json::Value =
+        serde_json::from_str(&nonce.body).unwrap_or_else(|_| serde_json::json!({ "raw": nonce.body }));
+    let status_json: serde_json::Value =
+        serde_json::from_str(&status.body).unwrap_or_else(|_| serde_json::json!({ "raw": status.body }));
+    Ok(serde_json::json!({
+        "ok": true,
+        "mesh_url": mesh_url,
+        "nonce": nonce_json,
+        "mesh_status": status_json,
+    }))
+}
+
+fn mesh_base_url(mesh_url: &str, path: &str) -> String {
+    if mesh_url.ends_with('/') {
+        format!("{mesh_url}{path}")
+    } else {
+        format!("{mesh_url}/{path}")
+    }
+}
+
 fn parse_vote_ingest_response(response: HttpResponse) -> Result<FleetDecisionVoteIngestResponse, String> {
     if (200..300).contains(&response.status) {
         return serde_json::from_str(&response.body)

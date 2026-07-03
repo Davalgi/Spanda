@@ -160,8 +160,7 @@ impl<B: RobotBackend> Interpreter<B> {
                         ),
                     })
                     .collect();
-                let mesh_winner = self.resolve_decision_via_fleet_mesh(&entity, &competing);
-                if let Some(resolution) = mesh_winner.or_else(|| resolve_conflict(&competing)) {
+                if let Some(resolution) = resolve_conflict(&competing) {
                     let winner = resolution.winner.clone();
                     let rejected: Vec<serde_json::Value> = resolution
                         .rejected
@@ -244,6 +243,18 @@ impl<B: RobotBackend> Interpreter<B> {
                 "rejected_alternatives": rejected_alternatives,
             }),
         );
+        if layer == "group_fleet" {
+            if let Some(action) = result.actions.first() {
+                let round_id = format!("fleet-{entity}-{}", self.sim_time_ms as u64);
+                self.post_fleet_member_decision_vote(
+                    entity,
+                    action,
+                    &layer_str_precedence_key(&result.layer),
+                    &format!("tree '{}' matched '{}'", result.tree_name, result.condition_matched),
+                    &round_id,
+                );
+            }
+        }
         if let Err(err) = self.dispatch_decision_tree_actions(program, entity, &result.actions) {
             self.log(format!("decision_tree: action dispatch error: {err}"));
         }
@@ -360,27 +371,11 @@ impl<B: RobotBackend> Interpreter<B> {
 
     fn resolve_decision_via_fleet_mesh(
         &self,
-        entity: &str,
-        competing: &[CompetingDecision],
+        round_id: &str,
     ) -> Option<ConflictResolution> {
         let url = std::env::var("SPANDA_FLEET_MESH_URL").ok()?;
         let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
-        let round_id = format!("local-{entity}-{}", self.sim_time_ms as u64);
-        for vote in competing {
-            let _ = ingest_fleet_decision_vote(
-                &url,
-                &FleetDecisionVoteIngestRequest {
-                    round_id: round_id.clone(),
-                    entity_id: vote.entity_id.clone(),
-                    action: vote.action.clone(),
-                    layer_precedence: vote.layer_precedence.clone(),
-                    reason: vote.reason.clone(),
-                    fleet_name: None,
-                },
-                token.as_deref(),
-            );
-        }
-        let conflict = fetch_fleet_decision_conflict(&url, &round_id, token.as_deref()).ok()?;
+        let conflict = fetch_fleet_decision_conflict(&url, round_id, token.as_deref()).ok()?;
         Some(ConflictResolution {
             winner: CompetingDecision {
                 layer_precedence: conflict.resolution.winner.layer_precedence,
@@ -403,6 +398,33 @@ impl<B: RobotBackend> Interpreter<B> {
         })
     }
 
+    fn post_fleet_member_decision_vote(
+        &self,
+        entity: &str,
+        action: &str,
+        layer_precedence: &str,
+        reason: &str,
+        round_id: &str,
+    ) {
+        let Ok(url) = std::env::var("SPANDA_FLEET_MESH_URL") else {
+            return;
+        };
+        let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
+        let fleet_name = self.fleets.names().next().cloned();
+        let _ = ingest_fleet_decision_vote(
+            &url,
+            &FleetDecisionVoteIngestRequest {
+                round_id: round_id.to_string(),
+                entity_id: entity.to_string(),
+                action: action.to_string(),
+                layer_precedence: layer_precedence.to_string(),
+                reason: reason.to_string(),
+                fleet_name,
+            },
+            token.as_deref(),
+        );
+    }
+
     /// Record fleet mesh consensus decision after coordinator relay.
     pub(super) fn record_fleet_mesh_consensus(
         &mut self,
@@ -419,22 +441,50 @@ impl<B: RobotBackend> Interpreter<B> {
         let mut mesh_resolution: Option<serde_json::Value> = None;
 
         if let Some(url) = mesh_url.as_deref() {
-            for member in members {
-                let member_action = member_fleet_vote_action(member, selected_action);
-                let _ = ingest_fleet_decision_vote(
-                    url,
-                    &FleetDecisionVoteIngestRequest {
-                        round_id: round_id.clone(),
-                        entity_id: member.clone(),
-                        action: member_action,
-                        layer_precedence: "fleet_coordination".into(),
-                        reason: format!("{event} fleet vote"),
-                        fleet_name: None,
-                    },
-                    mesh_token.as_deref(),
-                );
+            let self_robot = self
+                .active_robot_name
+                .clone()
+                .or_else(|| members.first().cloned());
+            if let Some(robot) = self_robot.clone() {
+                if members.iter().any(|m| m == &robot) {
+                    self.post_fleet_member_decision_vote(
+                        &robot,
+                        selected_action,
+                        "fleet_coordination",
+                        &format!("{event} fleet vote"),
+                        &round_id,
+                    );
+                }
             }
-            if let Ok(conflict) =
+            if synthesize_fleet_member_votes_enabled() {
+                for member in members {
+                    if Some(member) == self_robot.as_ref() {
+                        continue;
+                    }
+                    let member_action = member_fleet_vote_action(member, selected_action);
+                    let _ = ingest_fleet_decision_vote(
+                        url,
+                        &FleetDecisionVoteIngestRequest {
+                            round_id: round_id.clone(),
+                            entity_id: member.clone(),
+                            action: member_action,
+                            layer_precedence: "fleet_coordination".into(),
+                            reason: format!("{event} synthesized fleet vote"),
+                            fleet_name: None,
+                        },
+                        mesh_token.as_deref(),
+                    );
+                }
+            }
+            if let Some(conflict) = self.resolve_decision_via_fleet_mesh(&round_id) {
+                resolved_action = conflict.winner.action.clone();
+                mesh_resolution = Some(serde_json::json!({
+                    "round_id": round_id,
+                    "winner": conflict.winner,
+                    "rejected": conflict.rejected,
+                    "precedence_applied": conflict.precedence_applied,
+                }));
+            } else if let Ok(conflict) =
                 fetch_fleet_decision_conflict(url, &round_id, mesh_token.as_deref())
             {
                 resolved_action = conflict.resolution.winner.action.clone();
@@ -505,4 +555,10 @@ fn member_fleet_vote_action(member: &str, default_action: &str) -> String {
         member.to_ascii_uppercase().replace('-', "_")
     );
     std::env::var(&key).unwrap_or_else(|_| default_action.to_string())
+}
+
+fn synthesize_fleet_member_votes_enabled() -> bool {
+    std::env::var("SPANDA_FLEET_SYNTHESIZE_MEMBER_VOTES")
+        .map(|v| matches!(v.as_str(), "1" | "true" | "yes" | "on"))
+        .unwrap_or(false)
 }
