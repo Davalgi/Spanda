@@ -17,7 +17,7 @@ Start here when evaluating Spanda as a **professional autonomous-systems platfor
 | `spanda demo health` | Health checks + fault injection |
 | `spanda demo readiness` | Operational go/no-go scoring |
 | `spanda demo assurance` | Mission assurance CLI suite (`assure`, `anomaly scan`, `state estimate`, …) |
-| `spanda demo self-healing` | Recovery policies, heal/recover/sim, fleet recovery |
+| `spanda demo self-healing` | Recovery policies, heal/recover/sim, fleet recovery, orchestrator (`recovery plan`, `explain`, `graph`) |
 | `spanda demo continuity` | Mission continuity, takeover, delegation, succession |
 | `spanda demo distributed-decisions` | Decision trees, offline policy, traces, signed policy cache |
 | `spanda demo what-if` | Failure scenario impact, risk, recovery plan predictions |

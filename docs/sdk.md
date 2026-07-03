@@ -110,6 +110,7 @@ All SDKs expose structured errors:
 - [Rust SDK](sdk-rust.md)
 - [Python SDK](sdk-python.md)
 - [TypeScript SDK](sdk-typescript.md)
+- [Recovery Orchestrator SDK](recovery-sdk.md) — `planRecovery`, `getRecoveryPredictive`, `listRecoverableEntities`, … (SDK **0.5.6+**)
 - [Publishing SDKs (PyPI / npm / desktop)](sdk-publishing.md)
 - [Control Center API](control-center-api.md)
 

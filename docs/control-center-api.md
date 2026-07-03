@@ -10,7 +10,7 @@ For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-r
 |-----------|--------|
 | REST | `http://host:8080/v1/*` |
 | OpenAPI | `GET /v1/openapi.json` |
-| gRPC | `ControlCenter` service — **83 RPCs**, proto semver **1.0.3** (`proto/spanda/v1/control_center.proto`); pin via `GET /v1/version` → `grpc` |
+| gRPC | `ControlCenter` service — proto semver from `GET /v1/version` → `grpc.proto_semver` (currently **1.0.11**); see `proto/spanda/v1/control_center.proto` |
 | WebSocket | `WS /v1/stream/telemetry` |
 | JSON-RPC gateway | `POST /v1/rpc` |
 
@@ -23,7 +23,31 @@ These endpoints delegate to the same Rust crates as CLI commands:
 | `POST /v1/programs/readiness` | `spanda readiness <file.sd>` |
 | `POST /v1/programs/assure` | `spanda assure <file.sd>` |
 | `POST /v1/programs/diagnose` | `spanda diagnose <file.sd\|.trace>` |
-| `POST /v1/programs/recovery/heal` | `spanda heal` |
+| `POST /v1/programs/recovery/heal` | `spanda heal` (legacy assurance) |
+
+## Recovery Orchestrator (`/v1/recovery/*`)
+
+Platform-wide recovery intelligence — 14 REST routes mirroring `spanda recovery *` CLI. Full reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
+
+| Endpoint | CLI equivalent |
+|----------|----------------|
+| `GET /v1/recovery/plans` | Active recovery plans |
+| `GET /v1/recovery/history` | `spanda recovery history` (persisted in `control-center-recovery.json`) |
+| `POST /v1/recovery/plan` | `spanda recovery plan` |
+| `POST /v1/recovery/simulate` | `spanda recovery simulate` |
+| `POST /v1/recovery/execute` | `spanda recovery execute` |
+| `POST /v1/recovery/validate` | `spanda recovery validate` / `dry-run` |
+| `GET /v1/recovery/playbooks` | `spanda recovery playbooks` |
+| `GET /v1/recovery/metrics` | `spanda recovery metrics` |
+| `GET /v1/recovery/graph` | `spanda recovery graph` |
+| `GET /v1/recovery/policies` | Entity recovery policies |
+| `POST /v1/recovery/explain` | `spanda recovery explain` |
+| `GET/POST /v1/recovery/predictive` | Telemetry-driven indicators |
+| `GET /v1/recovery/recoverable-entities` | Recoverable entity registry |
+| `POST /v1/recovery/recommend` | Knowledge-base strategy recommendation |
+
+gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`, … (proto **1.0.11**).
+
 | `POST /v1/programs/verify/hardware` | `spanda verify` |
 | `POST /v1/programs/verify/capabilities` | `spanda verify --capabilities` |
 | `POST /v1/programs/verify/mission` | `spanda verify mission` |

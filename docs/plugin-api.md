@@ -42,6 +42,29 @@ Undeclared access returns `PluginError::Capability`.
 | `on_recovery_completed` | Recovery completion |
 | `on_report_requested` | Report request |
 
+## Recovery extensions
+
+Plugins can declare orchestrator contributions in `spanda.plugin.toml`:
+
+```toml
+[[recovery.extensions]]
+kind = "playbook"          # playbook | strategy | validator
+name = "custom_sensor_reset"
+description = "Reset custom sensor stack"
+trigger = "sensor_failure"
+strategy = "reinitialize"
+```
+
+Kinds:
+
+| Kind | Effect |
+|------|--------|
+| `playbook` | Merged into orchestrator playbook catalog (`GET /v1/recovery/playbooks`) |
+| `strategy` | Named strategy resolved during simulation |
+| `validator` | When any validator is registered, orchestrator requires safe plans |
+
+Example: `examples/plugins/recovery-plugin/`. See [recovery-playbooks.md](./recovery-playbooks.md).
+
 ## API versioning
 
 Current stable API: **`v1`**. Set `api_version = "v1"` in manifest.

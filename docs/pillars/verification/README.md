@@ -33,6 +33,7 @@ Prove hardware fit, mission safety, readiness, assurance, diagnosis, recovery, t
 | Topic | Guide |
 |-------|--------|
 | Self-healing | [self-healing.md](../../self-healing.md) · [recovery-policies.md](../../recovery-policies.md) |
+| Recovery Orchestrator | [recovery-orchestrator.md](../../recovery-orchestrator.md) · [recovery-api.md](../../recovery-api.md) · [recovery-sdk.md](../../recovery-sdk.md) |
 | Mission continuity | [mission-continuity.md](../../mission-continuity.md) · [continuity-policies.md](../../continuity-policies.md) |
 
 ## Simulation & replay

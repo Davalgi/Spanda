@@ -477,6 +477,7 @@ Use these to reproduce CI failures locally:
 | Fleet field validation | `scripts/fleet_field_validation.sh` |
 | Self-healing / recovery | `scripts/self_healing_smoke.sh` |
 | Recovery Orchestrator | `scripts/recovery_orchestrator_smoke.sh` |
+| Recovery Orchestrator (Stable gate) | `scripts/recovery_orchestrator_stable_promotion_gate.sh` |
 | Distributed decisions | `scripts/distributed_decisions_smoke.sh` |
 | ROS2 / adoption | `scripts/showcase_smoke.sh` |
 | Smart Spaces | `scripts/smart_spaces_smoke.sh` |

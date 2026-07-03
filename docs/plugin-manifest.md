@@ -71,6 +71,18 @@ Supported capabilities include `entity.read`, `device.read`, `readiness.read`, `
 - `[hooks].enabled` — lifecycle and event hooks
 - `[control_center]` — panels, entity tabs, routes
 - `[cli].commands` — namespaced CLI commands
+- `[[recovery.extensions]]` — Recovery Orchestrator playbooks, strategies, validators (see [recovery-playbooks.md](recovery-playbooks.md))
+
+```toml
+[[recovery.extensions]]
+kind = "playbook"    # playbook | strategy | validator
+name = "custom_sensor_reset"
+description = "Reset custom sensor stack"
+trigger = "sensor_failure"
+strategy = "reinitialize"
+```
+
+Example: `examples/plugins/recovery-plugin/`.
 
 ## Artifacts
 

@@ -29,6 +29,10 @@ Enable `native-loader` on `spanda-plugin`. **Not for production.**
 
 For `control-center-ui` plugins, ship `index.js` and declare `[control_center]` panels.
 
+## Recovery extensions
+
+Recovery plugins declare `[[recovery.extensions]]` in the manifest (playbook, strategy, validator) and may enable `on_recovery_completed` in `[hooks]`. See `examples/plugins/recovery-plugin/` and [plugin-api.md](plugin-api.md).
+
 ## Testing
 
 ```bash

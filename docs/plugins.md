@@ -90,6 +90,7 @@ curl -s http://127.0.0.1:8787/v1/plugins/control-center
 | Control Center panel | `examples/plugins/control-center-panel/` |
 | Healthcare solution | `examples/plugins/healthcare-plugin/` |
 | ADAS solution | `examples/plugins/adas-plugin/` |
+| Recovery orchestrator | `examples/plugins/recovery-plugin/` |
 
 ## Related docs
 

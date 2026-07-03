@@ -2,6 +2,8 @@
 
 SDK methods for the Recovery Orchestrator across Rust, Python, and TypeScript.
 
+**SDK version:** **0.5.6+** adds `getRecoveryPredictive`, `listRecoverableEntities`, and `recommendRecovery`. Rust gRPC (`spanda-sdk` feature `grpc`, proto **1.0.11**) mirrors the same three RPCs.
+
 ## Rust (`spanda-sdk`)
 
 ```rust
@@ -24,6 +26,9 @@ client.get_recovery_history()?;
 client.get_recovery_metrics()?;
 client.get_recovery_graph(Some("robot-1"))?;
 client.explain_recovery(&json!({ "entity_id": "robot-1", "failure": "gps_loss" }))?;
+client.get_recovery_predictive(None)?;
+client.list_recoverable_entities()?;
+client.recommend_recovery(&json!({ "failure": "gps_loss" }))?;
 ```
 
 Legacy: `client.heal("rover.sd")` → `POST /v1/programs/recovery/heal`
@@ -47,9 +52,12 @@ client.get_recovery_metrics().await?;
 client.get_recovery_graph(Some("robot-1")).await?;
 client.list_recovery_policies().await?;
 client.explain_recovery(&body).await?;
+client.get_recovery_predictive(&body).await?;
+client.list_recoverable_entities().await?;
+client.recommend_recovery(&body).await?;
 ```
 
-Python and TypeScript SDKs use REST only today.
+Python and TypeScript SDKs use REST only today (gRPC recovery RPCs are Rust `GrpcClient` only).
 
 ## Python (`spanda_sdk`)
 
@@ -67,6 +75,9 @@ client.list_recovery_policies()
 client.list_recovery_playbooks()
 client.get_recovery_history()
 client.get_recovery_metrics()
+client.get_recovery_predictive()
+client.list_recoverable_entities()
+client.recommend_recovery({"failure": "gps_loss"})
 ```
 
 ## TypeScript (`@davalgi-spanda/sdk`)
@@ -85,6 +96,9 @@ await client.listRecoveryPolicies();
 await client.listRecoveryPlaybooks();
 await client.getRecoveryHistory();
 await client.getRecoveryMetrics();
+await client.getRecoveryPredictive();
+await client.listRecoverableEntities();
+await client.recommendRecovery({ failure: "gps_loss" });
 ```
 
 ## See also

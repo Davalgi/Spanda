@@ -231,7 +231,7 @@ Or edit manually:
 
 Commit and push to `main`.
 
-**Current release line:** **0.5.5** — Twin Cloud client methods (`list_twins`, `get_twin_history`, `import_twin_replay`, auth on mutations; Rust gRPC twins when `grpc` feature enabled).
+**Current release line:** **0.5.6** — Recovery Orchestrator client methods (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto **1.0.11**). Prior **0.5.5** added Twin Cloud history, import-replay, and gRPC twins.
 
 ### 2. Verify locally
 
@@ -249,7 +249,7 @@ Commit and push to `main`.
 Or tag manually:
 
 ```bash
-VERSION=0.5.5
+VERSION=0.5.6
 git tag crates-sdk-v${VERSION}
 git tag sdk-python-v${VERSION}
 git tag npm-sdk-v${VERSION}

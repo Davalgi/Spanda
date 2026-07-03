@@ -107,6 +107,7 @@ spanda demo rover          # flagship platform demo
 spanda demo assurance      # mission assurance CLI suite
 spanda demo self-healing   # recovery policies, heal/recover/sim
 spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps  # orchestrator
+spanda recovery explain examples/showcase/self_healing/rover.sd --failure gps
 spanda demo continuity     # takeover, delegation, succession
 spanda decision list examples/showcase/distributed_decisions/main.sd  # brain/spinal-cord/reflex autonomy
 
@@ -140,6 +141,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Platform components** | [docs/overview/platform-components.md](docs/overview/platform-components.md) |
 | **Feature status** | [docs/overview/feature-snapshot.md](docs/overview/feature-snapshot.md) · [docs/feature-status.md](docs/feature-status.md) |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
+| **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |
 | **Differentiators** | [docs/overview/differentiators.md](docs/overview/differentiators.md) |

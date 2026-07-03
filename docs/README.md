@@ -124,6 +124,7 @@
 | [predictive-recovery.md](./predictive-recovery.md) | **Telemetry-driven degradation and predictive recovery** |
 | [recovery-api.md](./recovery-api.md) | **REST `/v1/recovery/*` API reference** |
 | [recovery-sdk.md](./recovery-sdk.md) | **SDK client methods for Recovery Orchestrator** |
+| [recovery-validation-report.md](./recovery-validation-report.md) | **Recovery Orchestrator validation and soak checklist** |
 | [continuity-policies.md](./continuity-policies.md) | **`continuity_policy` syntax, takeover modes, and fleet handoff** |
 | [mission-continuity.md](./mission-continuity.md) | **Mission continuity, takeover, delegation, and succession** |
 | [distributed-decisions.md](./distributed-decisions.md) | **Distributed decision architecture — reflex, local, fleet, control center layers** |

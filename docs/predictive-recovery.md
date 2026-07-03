@@ -27,6 +27,45 @@ if trigger {
 }
 ```
 
+### REST
+
+```bash
+# Global indicators (no program context)
+curl -s http://127.0.0.1:8080/v1/recovery/predictive
+
+# With optional telemetry in POST body
+curl -s -X POST http://127.0.0.1:8080/v1/recovery/predictive \
+  -H 'Content-Type: application/json' \
+  -d '{"file":"rover.sd","entity_id":"Rover"}'
+```
+
+Response envelope: `{ "version": "v1", "indicators": [...], "should_trigger_preventative": bool }`.
+
+### Knowledge-base recommendation
+
+```bash
+curl -s -X POST http://127.0.0.1:8080/v1/recovery/recommend \
+  -H 'Content-Type: application/json' \
+  -d '{"failure":"gps_loss"}'
+```
+
+### SDK (0.5.6+)
+
+```rust
+client.get_recovery_predictive(None)?;
+client.recommend_recovery(&json!({ "failure": "gps_loss" }))?;
+```
+
+```python
+client.get_recovery_predictive()
+client.recommend_recovery({"failure": "gps_loss"})
+```
+
+```typescript
+await client.getRecoveryPredictive();
+await client.recommendRecovery({ failure: "gps_loss" });
+```
+
 ## Prognostics integration
 
 Program-level `prognostics` declarations in Spanda source complement telemetry scanning. See [self-healing.md](./self-healing.md) and assurance prognostics.

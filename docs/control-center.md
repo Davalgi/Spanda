@@ -235,6 +235,26 @@ spanda control-center serve \
 
 The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, trust score, alerts, OTA status, assurance/diagnosis summaries, and replay workflow links. See [solutions/adas.md](./solutions/adas.md).
 
+### Recovery dashboard
+
+Launch with the self-healing showcase program:
+
+```bash
+spanda control-center serve \
+  --program examples/showcase/self_healing/rover.sd
+```
+
+The **Recovery** tab (operator+ roles with `Operate` permission) shows:
+
+| Panel | Content |
+|-------|---------|
+| **Plans & metrics** | Active recovery plans and aggregated orchestrator metrics |
+| **Playbooks & history** | Built-in and plugin playbooks; persisted evidence history |
+| **Graph** | Recovery dependency graph (`GET /v1/recovery/graph`) — nodes and edges |
+| **Actions** | Plan, simulate, and execute recovery via REST (Bearer token required for execute) |
+
+Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
+
 ### Human Interaction dashboard
 
 Launch with the Spatial Computing & Human-Robot Collaboration blueprint:
@@ -570,6 +590,10 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Compliance | Signed profile picker + accreditation export + evidence log |
 | Digital Thread | Interactive capability→device graph with filters |
 | Traceability | Trust and identity trace view |
+| Recovery | Orchestrator plans, metrics, playbooks, history, graph, plan/simulate/execute |
+| Administration | API keys, users, alert channels, integrations (administrator) |
+| Simulation | Program sim execute with decision traces |
+| Replay | Trace library, deterministic replay |
 
 ---
 

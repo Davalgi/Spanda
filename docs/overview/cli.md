@@ -37,11 +37,21 @@
 | `spanda recover <file.sd> [--failure gps]` | Recovery for a specific failure kind |
 | `spanda recovery-report <file.sd>` | Recovery plans and assurance evidence |
 | `spanda recovery knowledge <file.sd>` | Merged policy + persisted knowledge store |
+| `spanda recovery plan <file.sd> [--failure gps]` | Orchestrator recovery plan |
+| `spanda recovery simulate <file.sd>` | Simulate recovery without side effects |
+| `spanda recovery dry-run <file.sd>` | Full pipeline dry-run |
+| `spanda recovery execute <file.sd> [--force]` | Execute orchestrator recovery |
+| `spanda recovery validate <file.sd>` | Validate recovery gates |
+| `spanda recovery history` | Persisted orchestrator evidence |
+| `spanda recovery metrics <file.sd>` | Aggregated recovery metrics |
+| `spanda recovery graph <file.sd> [--entity id]` | Recovery dependency graph |
+| `spanda recovery playbooks` | Playbook catalog (built-in + plugins) |
+| `spanda recovery explain <file.sd> [--failure gps]` | Explain strategy selection |
 | `spanda sim <file.sd> --inject-failure gps` | Simulated failure + recovery |
 | `spanda analyze-failure <file.sd> --with-recovery` | Failure impacts + recovery plans |
 | `spanda check <file.sd> --readiness-json` | Readiness + recovery + continuity policy diagnostics |
 
-Guide: [self-healing.md](../self-healing.md) · Man page: [spanda-recovery.md](../man/spanda-recovery.md)
+Guide: [self-healing.md](../self-healing.md) · [recovery-orchestrator.md](../recovery-orchestrator.md) · Man page: [spanda-recovery.md](../man/spanda-recovery.md)
 
 ## Mission continuity
 

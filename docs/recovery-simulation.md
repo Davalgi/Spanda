@@ -36,7 +36,8 @@ Simulation reports include:
 - Upstream/downstream impact from the recovery graph
 - Decision explanations (can/should/safe/authorized)
 - Estimated duration and mission disruption score
-- Predictive indicators (when telemetry provided)
+- Predictive indicators (when telemetry provided) — also via `GET /v1/recovery/predictive`
+- Strategy recommendations — `POST /v1/recovery/recommend`
 - Legacy assurance report for backward compatibility
 
 ## See also

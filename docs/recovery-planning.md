@@ -39,3 +39,9 @@ Given `gps.failed` with diagnosis "Satellite lock lost":
 spanda recovery plan rover.sd
 spanda heal rover.sd
 ```
+
+## See also
+
+- [recovery-orchestrator.md](./recovery-orchestrator.md) — platform-wide orchestrator (graph, playbooks, escalation, persisted evidence)
+- [recovery-assurance.md](./recovery-assurance.md)
+- [self-healing.md](./self-healing.md)

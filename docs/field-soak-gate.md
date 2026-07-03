@@ -45,3 +45,5 @@ For the full **Stable promotion** workflow (soak + audit prep + smokes), see [en
 Add `./scripts/field_soak_gate.sh` to your fleet promotion pipeline after the soak period. Until the clock elapses, the script exits non-zero by design.
 
 For **Human Interaction** (separate 30-day clock), use `.spanda/hri-field-soak-start.txt` and `./scripts/hri_stable_promotion_gate.sh` — see [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md). Start the clock with `./scripts/hri_field_soak_init.sh` (one-time).
+
+For **Recovery Orchestrator** (separate clock), use `.spanda/recovery-field-soak-start.txt` and `./scripts/recovery_orchestrator_stable_promotion_gate.sh` — see [stable-hardening-recovery-orchestrator.md](./stable-hardening-recovery-orchestrator.md). Start with `./scripts/recovery_orchestrator_field_soak_init.sh` (one-time).

@@ -112,6 +112,8 @@ High-risk actions require operator approval via:
 
 Recovery outcomes are recorded to `.spanda/recovery_knowledge.json` for future recommendations (no automatic code or safety rule changes).
 
+**Recovery Orchestrator** (platform-wide): `spanda recovery *` and `GET/POST /v1/recovery/*` coordinate planning, simulation, validation, and execution with persisted evidence on Control Center (`control-center-recovery.json`). See [recovery-orchestrator.md](./recovery-orchestrator.md).
+
 ## Example
 
 See `examples/showcase/self_healing/rover.sd`.
