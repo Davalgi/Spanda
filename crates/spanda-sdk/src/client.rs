@@ -1014,6 +1014,106 @@ impl SpandaClient {
                     .ok_or_else(|| SpandaError::validation("rpc response missing result"))
             })
     }
+
+    /// Operational governance framework summary (`GET /v1/governance`).
+    pub fn governance(&self) -> GovernanceClient {
+        GovernanceClient(self.clone())
+    }
+
+    /// Compliance validation client.
+    pub fn compliance(&self) -> ComplianceClient {
+        ComplianceClient(self.clone())
+    }
+
+    /// Certification lifecycle client.
+    pub fn certification(&self) -> CertificationClient {
+        CertificationClient(self.clone())
+    }
+
+    /// Deployment profile client.
+    pub fn deployment_profile(&self) -> DeploymentProfileClient {
+        DeploymentProfileClient(self.clone())
+    }
+
+    /// Operational risk client.
+    pub fn risk(&self) -> RiskClient {
+        RiskClient(self.clone())
+    }
+}
+
+/// Governance framework client (`GET /v1/governance`, `POST /v1/governance/validate`).
+#[derive(Debug, Clone)]
+pub struct GovernanceClient(SpandaClient);
+
+impl GovernanceClient {
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/governance", None, false)
+    }
+
+    pub fn validate(&self, body: Option<&Value>) -> SpandaResult<Value> {
+        self.0
+            .request("POST", "/v1/governance/validate", body, true)
+    }
+}
+
+/// Compliance validation client.
+#[derive(Debug, Clone)]
+pub struct ComplianceClient(SpandaClient);
+
+impl ComplianceClient {
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/compliance", None, true)
+    }
+
+    pub fn check(&self, body: Option<&Value>) -> SpandaResult<Value> {
+        self.0.request("POST", "/v1/compliance/check", body, true)
+    }
+}
+
+/// Certification lifecycle client.
+#[derive(Debug, Clone)]
+pub struct CertificationClient(SpandaClient);
+
+impl CertificationClient {
+    pub fn list(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/certifications", None, true)
+    }
+}
+
+/// Deployment profile catalog client.
+#[derive(Debug, Clone)]
+pub struct DeploymentProfileClient(SpandaClient);
+
+impl DeploymentProfileClient {
+    pub fn list(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/deployment-profiles", None, false)
+    }
+
+    pub fn get(&self, name: &str) -> SpandaResult<Value> {
+        self.0.request(
+            "GET",
+            &format!(
+                "/v1/deployment-profiles?name={}",
+                Self::encode(name)
+            ),
+            None,
+            false,
+        )
+    }
+
+    fn encode(raw: &str) -> String {
+        SpandaClient::encode_query_component(raw)
+    }
+}
+
+/// Operational risk client.
+#[derive(Debug, Clone)]
+pub struct RiskClient(SpandaClient);
+
+impl RiskClient {
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/risk", None, true)
+    }
 }
 
 #[cfg(test)]

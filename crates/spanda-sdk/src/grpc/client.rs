@@ -891,4 +891,90 @@ impl GrpcClient {
             .map_err(|e| SpandaError::connection(e.to_string()))?;
         Self::parse_json(resp.into_inner().json)
     }
+
+    /// Operational governance framework summary via `GetGovernance`.
+    pub async fn get_governance(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_governance(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Compliance posture summary via `GetCompliance`.
+    pub async fn get_compliance(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_compliance(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Run compliance check via `CheckCompliance`.
+    pub async fn check_compliance(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .check_compliance(JsonBodyRequest {
+                body_json: body.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Validate governance configuration via `ValidateGovernance`.
+    pub async fn validate_governance(&mut self, body: &Value) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .validate_governance(JsonBodyRequest {
+                body_json: body.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List entity certifications via `ListCertifications`.
+    pub async fn list_certifications(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_certifications(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List deployment profiles via `ListDeploymentProfiles`.
+    pub async fn list_deployment_profiles(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_deployment_profiles(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Fetch a deployment profile via `GetDeploymentProfile`.
+    pub async fn get_deployment_profile(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_deployment_profile(QueryRequest {
+                query: query.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Operational risk rollup via `GetOperationalRisk`.
+    pub async fn get_operational_risk(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_operational_risk(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
 }

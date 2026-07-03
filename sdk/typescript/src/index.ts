@@ -1,5 +1,12 @@
 export { SpandaClient, EventStream, type SpandaClientOptions } from "./client.js";
 export {
+  CertificationClient,
+  ComplianceClient,
+  DeploymentProfileClient,
+  GovernanceClient,
+  RiskClient,
+} from "./governanceClients.js";
+export {
   SpandaError,
   ValidationError,
   ReadinessError,

@@ -1,6 +1,13 @@
 /** Official Spanda TypeScript SDK — thin REST client over Control Center API v1. */
 
 import { ConnectionError, PermissionError, SpandaError } from "./errors.js";
+import {
+  CertificationClient,
+  ComplianceClient,
+  DeploymentProfileClient,
+  GovernanceClient,
+  RiskClient,
+} from "./governanceClients.js";
 import { Entity, JsonValue, ReadinessReport } from "./types.js";
 
 export interface SpandaClientOptions {
@@ -609,6 +616,26 @@ export class SpandaClient {
       params,
     });
     return (payload.result as JsonValue | undefined) ?? payload;
+  }
+
+  governance(): GovernanceClient {
+    return new GovernanceClient(this);
+  }
+
+  compliance(): ComplianceClient {
+    return new ComplianceClient(this);
+  }
+
+  certification(): CertificationClient {
+    return new CertificationClient(this);
+  }
+
+  deploymentProfile(): DeploymentProfileClient {
+    return new DeploymentProfileClient(this);
+  }
+
+  risk(): RiskClient {
+    return new RiskClient(this);
   }
 }
 

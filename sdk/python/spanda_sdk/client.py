@@ -10,7 +10,13 @@ import urllib.request
 import uuid
 from typing import Any, Mapping, Optional
 
-from spanda_sdk.errors import ConnectionError, PermissionError, SpandaError, ValidationError
+from spanda_sdk.governance_clients import (
+    CertificationClient,
+    ComplianceClient,
+    DeploymentProfileClient,
+    GovernanceClient,
+    RiskClient,
+)
 from spanda_sdk.stream import TelemetryStream
 
 __all__ = ["SpandaClient", "SpandaError", "TelemetryStream"]
@@ -530,3 +536,23 @@ class SpandaClient:
 
     def trust_package(self, name: str, version: Optional[str] = None) -> Any:
         return self.get_package_trust(name, version)
+
+    @property
+    def governance_client(self) -> GovernanceClient:
+        return GovernanceClient(self)
+
+    @property
+    def compliance_client(self) -> ComplianceClient:
+        return ComplianceClient(self)
+
+    @property
+    def certification_client(self) -> CertificationClient:
+        return CertificationClient(self)
+
+    @property
+    def deployment_profile_client(self) -> DeploymentProfileClient:
+        return DeploymentProfileClient(self)
+
+    @property
+    def risk_client(self) -> RiskClient:
+        return RiskClient(self)

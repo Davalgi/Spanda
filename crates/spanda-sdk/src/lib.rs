@@ -13,7 +13,10 @@ pub mod types;
 #[cfg(feature = "grpc")]
 pub mod grpc;
 
-pub use client::{AuthConfig, SpandaClient, SpandaClientBuilder};
+pub use client::{
+    AuthConfig, CertificationClient, ComplianceClient, DeploymentProfileClient, GovernanceClient,
+    RiskClient, SpandaClient, SpandaClientBuilder,
+};
 pub use error::SpandaError;
 pub use stream::EventStream;
 pub use types::*;
