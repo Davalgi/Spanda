@@ -5,9 +5,10 @@ use crate::program::parse_program_file;
 use crate::state::ControlCenterState;
 use serde::Deserialize;
 use spanda_decision::{
-    approve_escalation, evaluate_distributed_decisions, extract_decision_authorities,
-    extract_decision_trees, extract_offline_policies, load_persisted_policy_cache,
-    simulate_distributed_decisions, DecisionContext, DecisionLayer, SimulationOptions,
+    approve_escalation_persisted, evaluate_distributed_decisions, extract_decision_authorities,
+    extract_decision_trees, extract_offline_policies, load_escalation_store,
+    load_persisted_policy_cache, simulate_distributed_decisions, DecisionContext, DecisionLayer,
+    SimulationOptions,
 };
 use spanda_deploy_http::HttpResponse;
 use std::collections::HashMap;
@@ -142,22 +143,29 @@ pub fn escalate_decision(_state: &ControlCenterState, body: &str) -> HttpRespons
         Ok(req) => req,
         Err(e) => return bad_request(&format!("invalid body: {e}")),
     };
-    let mut escalation = spanda_decision::DecisionEscalation {
-        from_layer: DecisionLayer::LocalEntity,
-        to_layer: DecisionLayer::ControlCenter,
-        reason: "pending approval".into(),
-        entity_id: req.entity_id.unwrap_or_else(|| "unknown".into()),
-        pending_approval: true,
-        escalation_id: req.escalation_id.clone(),
-    };
-    match approve_escalation(&mut escalation, &req.approver) {
-        Ok(()) => json_ok(&serde_json::json!({
+    match approve_escalation_persisted(
+        &req.escalation_id,
+        &req.approver,
+        req.entity_id.as_deref(),
+    ) {
+        Ok(grant) => json_ok(&serde_json::json!({
             "api_version": API_VERSION,
             "ok": true,
-            "escalation": escalation,
+            "grant": grant,
         })),
         Err(e) => bad_request(&e),
     }
+}
+
+/// GET /v1/decisions/escalations — list pending and granted escalations.
+pub fn list_escalations(_state: &ControlCenterState, _query: &str) -> HttpResponse {
+    let store = load_escalation_store(None);
+    json_ok(&serde_json::json!({
+        "api_version": API_VERSION,
+        "pending": store.pending.values().collect::<Vec<_>>(),
+        "granted": store.granted.values().collect::<Vec<_>>(),
+        "updated_at_ms": store.updated_at_ms,
+    }))
 }
 
 /// GET /v1/decision-policies — list decision policies from program.

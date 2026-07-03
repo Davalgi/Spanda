@@ -1119,21 +1119,44 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const loadDecisions = async (options: { quiet?: boolean } = {}) => {
     if (!options.quiet) setBusy(true);
     try {
-      const [listRes, policiesRes, tracesRes, cacheRes] = await Promise.all([
+      const [listRes, policiesRes, tracesRes, cacheRes, escalationsRes] = await Promise.all([
         fetch(`${base}/v1/decisions`),
         fetch(`${base}/v1/decision-policies`),
         fetch(`${base}/v1/decisions/traces`),
         fetch(`${base}/v1/decision-policy-cache`),
+        fetch(`${base}/v1/decisions/escalations`),
       ]);
       const list = listRes.ok ? await listRes.json() : null;
       const policies = policiesRes.ok ? await policiesRes.json() : null;
       const traces = tracesRes.ok ? await tracesRes.json() : null;
       const cache = cacheRes.ok ? await cacheRes.json() : null;
-      setDecisionData({ list, policies, traces, cache });
+      const escalations = escalationsRes.ok ? await escalationsRes.json() : null;
+      setDecisionData({ list, policies, traces, cache, escalations });
     } catch (e) {
       if (!options.quiet) setError(String(e));
     } finally {
       if (!options.quiet) setBusy(false);
+    }
+  };
+
+  const approveEscalation = async (escalationId: string) => {
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`${base}/v1/decisions/escalate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({
+          escalation_id: escalationId,
+          approver: "control_center_operator",
+        }),
+      });
+      if (!res.ok) throw new Error(`escalate ${res.status}`);
+      await loadDecisions({ quiet: true });
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -1987,8 +2010,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
       {tab === "decisions" && (
         <div>
           <p className="demo-hint">
-            Distributed decision architecture — local authorities, decision trees, offline policies,
-            escalations, and policy versions.
+            Distributed decision architecture (Experimental) — reflex/local/fleet/control-center
+            layers with signed policy bounds, escalation, and v3 trace audit.
           </p>
           <button type="button" onClick={() => void loadDecisions()} disabled={busy}>
             Refresh decisions
@@ -2031,6 +2054,46 @@ export function ControlCenterPanel({ apiBase }: Props) {
               <pre>{JSON.stringify(decisionData.policies, null, 2)}</pre>
               <h3>Signed policy cache</h3>
               <pre>{JSON.stringify(decisionData.cache, null, 2)}</pre>
+              <h3>Escalations</h3>
+              {(() => {
+                const esc = decisionData.escalations as Record<string, unknown> | null;
+                const pending = (esc?.pending as Array<Record<string, unknown>>) ?? [];
+                if (pending.length === 0) {
+                  return <p className="demo-hint">No pending escalations.</p>;
+                }
+                return (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Entity</th>
+                        <th>Action</th>
+                        <th>Reason</th>
+                        <th>Approve</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pending.map((row) => (
+                        <tr key={String(row.escalation_id)}>
+                          <td>{String(row.escalation_id ?? "—")}</td>
+                          <td>{String(row.entity_id ?? "—")}</td>
+                          <td>{String(row.action ?? "—")}</td>
+                          <td>{String(row.reason ?? "—")}</td>
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => void approveEscalation(String(row.escalation_id))}
+                              disabled={busy}
+                            >
+                              Approve
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                );
+              })()}
               <h3>Live decision trace (v3)</h3>
               {(() => {
                 const traceBody = decisionData.traces as Record<string, unknown> | null;
@@ -2058,14 +2121,35 @@ export function ControlCenterPanel({ apiBase }: Props) {
                           <th>Layer</th>
                           <th>Entity</th>
                           <th>Decision</th>
+                          <th>Rejected</th>
+                          <th>Escalation</th>
+                          <th>Safety</th>
+                          <th>Trust</th>
                           <th>Reason</th>
                         </tr>
                       </thead>
                       <tbody>
                         {frames.map((frame, idx) => {
                           const payload = frame.payload ?? {};
+                          const envelope = (payload.security_envelope as Record<string, unknown>) ?? {};
                           const event = String(frame.event ?? "—");
                           const layer = String(payload.layer ?? "—");
+                          const rejected = payload.rejected_alternatives;
+                          const rejectedText = Array.isArray(rejected)
+                            ? rejected.map(String).join(", ") || "—"
+                            : "—";
+                          const escalation = payload.escalation_path;
+                          const escalationText = Array.isArray(escalation)
+                            ? escalation.length > 0
+                              ? String((escalation[0] as Record<string, unknown>)?.reason ?? escalation.length)
+                              : "—"
+                            : "—";
+                          const safetyOk =
+                            envelope.safety_validation_passed ??
+                            (payload.safety_validation as Record<string, unknown> | undefined)?.passed;
+                          const trustOk =
+                            envelope.trust_validation_passed ??
+                            (payload.trust_validation as Record<string, unknown> | undefined)?.passed;
                           return (
                             <tr key={idx} className={decisionRowClass(event)}>
                               <td>{String(frame.sim_time_ms ?? "—")}</td>
@@ -2077,6 +2161,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
                               </td>
                               <td>{String(payload.entity_id ?? "—")}</td>
                               <td>{String(payload.decision ?? "—")}</td>
+                              <td>{rejectedText}</td>
+                              <td>{escalationText}</td>
+                              <td>{safetyOk === true ? "pass" : safetyOk === false ? "fail" : "—"}</td>
+                              <td>{trustOk === true ? "pass" : trustOk === false ? "fail" : "—"}</td>
                               <td>{String(payload.reason ?? "—")}</td>
                             </tr>
                           );

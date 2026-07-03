@@ -368,6 +368,9 @@ pub fn handle_request(
         ("/v1/decisions/simulate", "POST") => {
             crate::decision_ops::simulate_decisions(state, &request.body)
         }
+        ("/v1/decisions/escalations", "GET") => {
+            crate::decision_ops::list_escalations(state, query)
+        }
         ("/v1/decisions/escalate", "POST") => {
             crate::decision_ops::escalate_decision(state, &request.body)
         }
