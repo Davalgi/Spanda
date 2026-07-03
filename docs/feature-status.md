@@ -84,7 +84,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **Mission Time Travel** | `spanda replay --at` / `--inspect` — **Stable** — [stable-hardening-mission-time-travel.md](./stable-hardening-mission-time-travel.md) |
 | **Human/Robot Teaming** | `spanda team verify` — **Stable** — [stable-hardening-human-robot-teaming.md](./stable-hardening-human-robot-teaming.md) |
 | **Autonomous Governance** | `spanda governance` — **Stable** — [stable-hardening-autonomous-governance.md](./stable-hardening-autonomous-governance.md) |
-| **Twin Cloud SaaS** | `spanda twin cloud`, `/v1/twins/*`, gRPC twins (proto **1.0.10**), file-backed store + history — **Experimental** — [twin-cloud.md](./twin-cloud.md) · [stable-hardening-twin-cloud-saas.md](./stable-hardening-twin-cloud-saas.md) |
+| **Twin Cloud SaaS** | `spanda twin cloud`, `/v1/twins/*`, gRPC twins (proto **1.0.10**), file-backed store + history — **Stable** — [twin-cloud.md](./twin-cloud.md) · [stable-hardening-twin-cloud-saas.md](./stable-hardening-twin-cloud-saas.md) |
 | **LATER Control Center analytics** | `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` + gRPC `GetAnalytics*` (proto **1.0.7**); Analytics tab |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`; CLI `assure`, `anomaly scan`, `diagnose`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`; `spanda demo assurance` |
 | **Weighted sensor fusion** | `observe { }`, `state_estimator`, `fusion.read()` with type-weighted confidence; `spanda-fusion` package |
@@ -95,7 +95,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 
 | Area | Capabilities | Caveats |
 |------|--------------|---------|
-| **Digital twins (live sync)** | Twin mirror + replay; Twin Cloud SaaS (`spanda twin cloud`, `/v1/twins/*`, file-backed store + history, RBAC mutations); legacy `SPANDA_CLOUD_UPLOAD_URL` + `import-replay` bridge | Hosted multi-tenant SaaS — [hosted-twin-cloud.md](./hosted-twin-cloud.md) |
+| **Digital twins (live sync)** | Twin mirror + replay; Twin Cloud SaaS (`spanda twin cloud`, `/v1/twins/*`, file-backed store + history, RBAC mutations) — **Stable**; legacy `SPANDA_CLOUD_UPLOAD_URL` + `import-replay` bridge | Hosted managed product (billing, SLA) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
 | **Replay** | `replay true`, frame buffer, mission traces | In-process only; v2 traces embed state snapshots for `--playback` |
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
@@ -136,7 +136,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | **VS Code Marketplace publish** | VSIX CI + local install ready; marketplace listing pending maintainer `VSCE_PAT` |
 | **Production blockchain** | `spanda-ledger-ethereum` and related chain adapters |
 | **Full world models** | Knowledge graphs, beliefs, policies beyond minimal runtime |
-| **Twin cloud SaaS (hosted product)** | Managed multi-tenant Twin Cloud service (billing, SLA, multi-region) — OSS backend **Experimental** at `/v1/twins/*`; deploy scaffold at [deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/) — [hosted-twin-cloud.md](./hosted-twin-cloud.md) |
+| **Twin cloud SaaS (hosted product)** | Managed multi-tenant service (billing, SLA, multi-region) — OSS `/v1/twins/*` is **Stable**; pilot at [deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
 
 See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.md](./tier-3-golden-paths.md).
 

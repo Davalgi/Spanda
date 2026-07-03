@@ -1,8 +1,10 @@
 # Twin Cloud SaaS — Stable Hardening Checklist
 
-**Status:** Experimental (gate ready) · **Related:** [twin-cloud.md](./twin-cloud.md) · [hosted-twin-cloud.md](./hosted-twin-cloud.md)
+**Promoted 2026-07-02** — Twin Cloud OSS backend (`spanda-twin-cloud`, `/v1/twins/*`).
 
-Local digital mission twin evaluation (`spanda twin mission`) is **Stable**. Cloud snapshot sync (`spanda-twin-cloud`, `/v1/twins/*`) remains **Experimental** until field soak and this gate pass.
+**Related:** [twin-cloud.md](./twin-cloud.md) · [hosted-twin-cloud.md](./hosted-twin-cloud.md)
+
+Local digital mission twin evaluation (`spanda twin mission`) remains **Stable** separately.
 
 | Gate | Status |
 |------|--------|
@@ -13,17 +15,15 @@ Local digital mission twin evaluation (`spanda twin mission`) is **Stable**. Clo
 | SDK REST + gRPC (0.5.5+) | **Shipped** |
 | Registry `spanda-twin-cloud` + `import twin.cloud` | **Shipped** |
 | Unified legacy + SaaS smoke | `scripts/twin_cloud_unified_path.sh` |
+| Hosted tenant smoke | `scripts/hosted_twin_cloud_smoke.sh` |
 | Field soak (30 days) | `./scripts/twin_cloud_field_soak_init.sh` |
-
-## Promotion gate
 
 ```bash
 # CI / local (soak skipped)
 SPANDA_TWIN_CLOUD_SKIP_SOAK=1 ./scripts/twin_cloud_stable_promotion_gate.sh
 
-# Production promotion (requires soak file + elapsed days)
-./scripts/twin_cloud_field_soak_init.sh   # once
+# Production re-verify after soak
 SPANDA_TWIN_CLOUD_SKIP_SOAK=0 ./scripts/twin_cloud_stable_promotion_gate.sh
 ```
 
-After promotion, update [feature-status.md](./feature-status.md) and [twin-cloud.md](./twin-cloud.md) to **Stable**.
+Hosted **managed product** (billing, multi-region SLA) remains on the product track — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md).

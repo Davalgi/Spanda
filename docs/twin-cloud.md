@@ -1,6 +1,6 @@
 # Twin Cloud SaaS
 
-**Status:** Experimental · **Package:** `spanda-twin-cloud` · **Horizon:** LATER (production pilots)
+**Status:** Stable · **Package:** `spanda-twin-cloud` · **Horizon:** production pilots
 
 Hosted mission twin snapshot registry for field fleets — push digital mission twin state from edge Control Center or CLI, pull latest snapshots for ops dashboards and fleet analytics.
 

@@ -8,7 +8,7 @@ Product strategy [Tier 3](./product-strategy.md) items are **not** v1 commitment
 | **Blockchain / ledger** | Experimental | `spanda-ledger` scaffold; `scripts/ledger_golden_path.sh` | `ledger-golden-path` job |
 | **World models** | Experimental | `world_model { }` parser + fusion hook; [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) | `world-model-golden-path` job |
 | **LLVM aarch64 (Jetson/Pi)** | Experimental | [llvm_embedded_golden_path.sh](../scripts/llvm_embedded_golden_path.sh) | `llvm-embedded-golden-path` job |
-| **Digital twin cloud sync** | Experimental | Legacy + SaaS unified: `scripts/twin_cloud_unified_path.sh`; stable gate: `scripts/twin_cloud_stable_promotion_gate.sh` | `twin-cloud-golden-path`, `twin-cloud-stable-promotion-gate` jobs |
+| **Digital twin cloud sync** | **Stable** | Legacy + SaaS unified: `scripts/twin_cloud_unified_path.sh`; gate: `scripts/twin_cloud_stable_promotion_gate.sh` | `twin-cloud-golden-path`, `twin-cloud-stable-promotion-gate` jobs |
 | **Distributed fleet** | Experimental | `spanda fleet orchestrate --remote`, mesh coordinator; `examples/robotics/golden_path_deploy.sh` | `robotics-golden-path` job |
 | **MQTT / DDS live transport** | Experimental | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; `examples/communication/mqtt_live.sd` | `mqtt-golden-path` job |
 | **C++ in-process FFI** | Experimental | `spanda-bridge` `cpp-native` feature; `scripts/cpp_native_golden_path.sh` | `cpp-native-golden-path` job |
