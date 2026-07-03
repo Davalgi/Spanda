@@ -1,6 +1,6 @@
 # Rust SDK (`spanda-sdk`)
 
-Official Rust client for Spanda Control Center API v1.
+Official Rust client for Spanda Control Center API v1. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this crate when your application is written in Rust.
 
 ## Install
 

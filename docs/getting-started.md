@@ -747,7 +747,7 @@ Point the UI at a different API URL with `VITE_CONTROL_CENTER_URL=http://host:po
 
 ### Official SDKs
 
-Start Control Center with a program, then use any SDK (thin HTTP clients — no duplicated platform logic). Demo serve examples and `--config` / `--program` combinations: [control-center.md — Run with `--config` and `--program`](./control-center.md#run-with-config-and-program).
+Start Control Center with a program, then use **one** SDK that matches your app's language — all three are thin HTTP clients over the same API (no duplicated platform logic). Which to pick: [sdk.md — Why three SDKs?](./sdk.md#why-three-sdks). Demo serve examples and `--config` / `--program` combinations: [control-center.md — Run with `--config` and `--program`](./control-center.md#run-with-config-and-program).
 
 ```bash
 cargo run -p spanda -- control-center serve \

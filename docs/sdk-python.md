@@ -1,6 +1,6 @@
 # Python SDK (`spanda-sdk`)
 
-Official Python client for robotics scripts, notebooks, CI/CD, and ROS2 integrations.
+Official Python client for robotics scripts, notebooks, CI/CD, and ROS2 integrations. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this package when your application is written in Python.
 
 ## Install
 

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Control Center embedded UI:** `spanda control-center serve` at `/` now serves the React sidebar shell (built from `@davalgi-spanda/web`); regenerate with `scripts/sync_control_center_embedded_ui.sh`. Legacy HTML remains as fallback when the bundle is missing.
 - **Recovery Orchestrator follow-ups:** persisted recovery history (`control-center-recovery.json`); REST/gRPC `predictive`, `recoverable-entities`, and `recommend` endpoints (proto **1.0.11**); SDK **0.5.6** (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`); Recovery panel graph UI; example `[recovery.extensions]` plugin; `scripts/recovery_orchestrator_field_soak_init.sh`; recovery stable promotion CI job; [recovery-validation-report.md](docs/recovery-validation-report.md); OpenAPI parity for new routes.
 - **SDK install troubleshooting:** [troubleshooting.md](docs/troubleshooting.md#official-sdk-install) — PEP 668 / venv for `pip install spanda-sdk`; `cargo add --package` when adding Rust SDK from the monorepo root; cross-links from [sdk.md](docs/sdk.md), [sdk-python.md](docs/sdk-python.md), and [getting-started.md](docs/getting-started.md).
+- **SDK overview — why three clients:** [sdk.md — Why three SDKs?](docs/sdk.md#why-three-sdks) — one Control Center API, Rust/Python/TypeScript thin clients, when to use each registry package.
 
 ## [0.6.1] - 2026-07-02
 

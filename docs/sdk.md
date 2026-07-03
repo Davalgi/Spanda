@@ -27,6 +27,59 @@ Maintainers: [Publishing SDKs](sdk-publishing.md) (`crates-sdk-v*`, `sdk-python-
 
 Legacy Python client: `packages/sdk-python` (Control Center helpers; use `sdk/python` for full SDK surface).
 
+## Why three SDKs?
+
+Spanda ships **one Control Center API** and **three official client libraries** — not three different platforms. All business logic stays in Rust (`spanda-api`, runtime crates); each SDK is a **thin HTTP/gRPC/WebSocket client** that calls the same `/v1/*` routes the CLI uses.
+
+You do **not** need all three in one project. Pick the package that matches the language your app is written in:
+
+| Install | Language | Typical use |
+|---------|----------|-------------|
+| `cargo add spanda-sdk` | **Rust** | On-robot services, embedded tools, high-performance backends, crates already in a Cargo workspace |
+| `pip install spanda-sdk` | **Python** | Notebooks, CI scripts, ROS2 / rclpy bridges, ML pipelines, quick ops automation |
+| `npm install @davalgi-spanda/sdk` | **TypeScript / JavaScript** | Web dashboards, Node backends, VS Code extensions, Control Center integrations |
+
+Each SDK exposes the same operations (`readiness`, fleet ops, recovery, admin, …) with idiomatic types for that ecosystem:
+
+| SDK | Idioms |
+|-----|--------|
+| Rust | `Result<T, SpandaError>`, optional `grpc` feature for native tonic client |
+| Python | dict/JSON-style responses, `from spanda import SpandaClient`, ROS2-friendly scripts |
+| TypeScript | `async/await`, typed interfaces, runs in Node or bundled for the browser |
+
+**Package names differ by registry**, not by capability:
+
+- **crates.io** — flat name: `spanda-sdk`
+- **PyPI** — same flat name: `spanda-sdk` (different registry from Rust)
+- **npm** — scoped name: `@davalgi-spanda/sdk`
+
+SDK versions are bumped **together** when client APIs change — see [versioning.md](./versioning.md).
+
+All three assume Control Center is running (or reachable):
+
+```bash
+spanda control-center serve --bind 127.0.0.1:8080
+```
+
+Then connect with the client for your language — same server, same API:
+
+```rust
+// Rust
+let client = SpandaClient::local();
+```
+
+```python
+# Python
+client = SpandaClient.local()
+```
+
+```typescript
+// TypeScript
+const client = SpandaClient.local();
+```
+
+Install issues: [troubleshooting.md — Official SDK install](./troubleshooting.md#official-sdk-install).
+
 ## Architecture
 
 ```

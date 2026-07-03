@@ -1,6 +1,6 @@
 # TypeScript SDK (`@davalgi-spanda/sdk`)
 
-Official TypeScript/JavaScript client for Control Center UI, web dashboards, VS Code extensions, and cloud integrations.
+Official TypeScript/JavaScript client for Control Center UI, web dashboards, VS Code extensions, and cloud integrations. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this package when your application is written in TypeScript or JavaScript.
 
 ## Install
 

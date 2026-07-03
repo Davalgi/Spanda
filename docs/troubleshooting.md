@@ -141,7 +141,7 @@ Error loading manifest: ...
 
 ## Official SDK install
 
-Official clients: Rust [`spanda-sdk`](https://crates.io/crates/spanda-sdk), Python [`spanda-sdk`](https://pypi.org/project/spanda-sdk/), TypeScript [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk). Overview and quick start: [sdk.md](./sdk.md). Python API reference: [sdk-python.md](./sdk-python.md).
+Official clients: Rust [`spanda-sdk`](https://crates.io/crates/spanda-sdk), Python [`spanda-sdk`](https://pypi.org/project/spanda-sdk/), TypeScript [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk). You only need **one** SDK per project — pick the language your app uses. Why three packages exist: [sdk.md — Why three SDKs?](./sdk.md#why-three-sdks). Overview and quick start: [sdk.md](./sdk.md). Python API reference: [sdk-python.md](./sdk-python.md).
 
 Control Center must be running (or reachable) before SDK calls succeed — see [Control Center](#control-center).
 
