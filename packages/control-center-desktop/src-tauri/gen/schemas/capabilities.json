@@ -1,1 +1,1 @@
-{"default":{"identifier":"default","description":"Default permissions for Spanda Control Center desktop","local":true,"windows":["main"],"permissions":["core:default","shell:allow-open"]}}
+{"default":{"identifier":"default","description":"Default permissions for Spanda Control Center desktop","local":true,"windows":["main"],"permissions":["core:default","core:tray:default","shell:allow-open","notification:default"]}}

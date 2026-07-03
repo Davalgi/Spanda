@@ -3,5 +3,10 @@
   "identifier": "default",
   "description": "Default permissions for Spanda Control Center desktop",
   "windows": ["main"],
-  "permissions": ["core:default", "shell:allow-open"]
+  "permissions": [
+    "core:default",
+    "core:tray:default",
+    "shell:allow-open",
+    "notification:default"
+  ]
 }

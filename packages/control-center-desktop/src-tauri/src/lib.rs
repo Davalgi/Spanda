@@ -1,6 +1,12 @@
 //! Tauri desktop shell for Spanda Control Center.
 //!
 
+use tauri::{
+    menu::{Menu, MenuItem},
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    Manager,
+};
+
 /// Start the Control Center desktop application.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,14 +24,61 @@ pub fn run() {
     // Example:
     // spanda_control_center_desktop_lib::run();
 
-    // Build the Tauri app with shell plugin and default API URL command.
+    // Build the Tauri app with shell, notification, and tray integrations.
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .setup(|app| {
+            // Build a minimal tray menu so the icon is visible on Linux.
+            let show_item = MenuItem::with_id(app, "show", "Show Control Center", true, None::<&str>)?;
+            let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+
+            // Attach the system tray with fleet status tooltip.
+            let _tray = TrayIconBuilder::with_id("main")
+                .icon(
+                    app.default_window_icon()
+                        .ok_or_else(|| tauri::Error::FailedToReceiveMessage)?
+                        .clone(),
+                )
+                .menu(&menu)
+                .tooltip("Spanda Control Center — connecting…")
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "show" => {
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                        }
+                    }
+                    "quit" => {
+                        app.exit(0);
+                    }
+                    _ => {}
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } = event
+                    {
+                        let app = tray.app_handle();
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                        }
+                    }
+                })
+                .build(app)?;
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             default_api_base,
             desktop_features,
-            spawn_control_center_api
+            spawn_control_center_api,
+            desktop_notify,
+            update_tray_status
         ])
         .run(tauri::generate_context!())
         .expect("error while running Spanda Control Center desktop");
@@ -85,7 +138,10 @@ fn desktop_features() -> serde_json::Value {
 
 /// Spawn a local Control Center API via `spanda control-center serve` (desktop shell).
 #[tauri::command]
-async fn spawn_control_center_api(app: tauri::AppHandle, bind: Option<String>) -> Result<String, String> {
+async fn spawn_control_center_api(
+    app: tauri::AppHandle,
+    bind: Option<String>,
+) -> Result<String, String> {
     // Launch the Control Center REST API as a background child process.
     //
     // Parameters:
@@ -113,4 +169,69 @@ async fn spawn_control_center_api(app: tauri::AppHandle, bind: Option<String>) -
         .map_err(|error| format!("spawn failed: {error}"))?;
 
     Ok(format!("spawned spanda control-center serve --bind {listen}"))
+}
+
+/// Show a native OS notification from the webview.
+#[tauri::command]
+fn desktop_notify(app: tauri::AppHandle, title: String, body: String) -> Result<(), String> {
+    // Deliver a native notification for SRE or fleet alerts.
+    //
+    // Parameters:
+    // - `title` — notification headline.
+    // - `body` — notification detail text.
+    //
+    // Returns:
+    // Ok on success, or an error string when the OS rejects the notification.
+    //
+    // Options:
+    // Requires notification permissions on macOS and Windows.
+    //
+    // Example:
+    // desktop_notify(app, "SLO fast-burn".into(), "Investigate incidents".into())
+
+    use tauri_plugin_notification::NotificationExt;
+
+    // Build and show the native notification.
+    app.notification()
+        .builder()
+        .title(title)
+        .body(body)
+        .show()
+        .map_err(|error| error.to_string())
+}
+
+/// Update the system tray tooltip with fleet health summary text.
+#[tauri::command]
+fn update_tray_status(
+    app: tauri::AppHandle,
+    status: String,
+    detail: Option<String>,
+) -> Result<(), String> {
+    // Refresh tray tooltip from polled instance status.
+    //
+    // Parameters:
+    // - `status` — overall fleet health label.
+    // - `detail` — optional secondary detail (robot count, tenant, etc.).
+    //
+    // Returns:
+    // Ok when the tray icon exists and accepts the tooltip update.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // update_tray_status(app, "healthy".into(), Some("robots: 4".into()))
+
+    // Compose tooltip text from status and optional detail.
+    let tooltip = match detail {
+        Some(extra) if !extra.is_empty() => format!("Spanda — {status} ({extra})"),
+        _ => format!("Spanda — {status}"),
+    };
+
+    // Apply tooltip to the main tray icon when present.
+    if let Some(tray) = app.tray_by_id("main") {
+        tray.set_tooltip(Some(&tooltip))
+            .map_err(|error| error.to_string())?;
+    }
+    Ok(())
 }
