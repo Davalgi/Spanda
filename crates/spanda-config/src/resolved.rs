@@ -93,6 +93,10 @@ impl ResolvedSystemConfig {
         self.raw.get("assurance")
     }
 
+    pub fn governance_config(&self) -> Option<&toml::Value> {
+        self.raw.get("governance")
+    }
+
     pub fn recovery_config(&self) -> Option<&toml::Value> {
         self.raw.get("recovery")
     }

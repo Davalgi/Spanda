@@ -1,0 +1,22 @@
+[package]
+name = "spanda-governance"
+version.workspace = true
+edition.workspace = true
+description = "Operational governance framework — autonomy, deployment profiles, certification, risk, and compliance validation"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+spanda-compliance = { path = "../spanda-compliance" }
+spanda-config = { path = "../spanda-config" }
+spanda-readiness = { path = "../spanda-readiness" }
+spanda-trust = { path = "../spanda-trust" }
+
+[dev-dependencies]
+serde_json = "1"

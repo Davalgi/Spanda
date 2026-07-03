@@ -2477,6 +2477,7 @@ dependencies = [
  "spanda-fleet",
  "spanda-format",
  "spanda-generate",
+ "spanda-governance",
  "spanda-graph",
  "spanda-hardware",
  "spanda-lexer",
@@ -2556,6 +2557,7 @@ dependencies = [
  "spanda-deploy-http",
  "spanda-driver",
  "spanda-fleet",
+ "spanda-governance",
  "spanda-graph",
  "spanda-hardware",
  "spanda-interpreter",
@@ -3019,6 +3021,20 @@ dependencies = [
  "spanda-readiness",
  "spanda-runtime-host",
  "spanda-typecheck",
+]
+
+[[package]]
+name = "spanda-governance"
+version = "0.6.1"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "spanda-compliance",
+ "spanda-config",
+ "spanda-readiness",
+ "spanda-trust",
+ "toml",
 ]
 
 [[package]]

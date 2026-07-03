@@ -103,7 +103,7 @@ pub use drift::{
 pub use entity::{
     apply_runtime_mission_overlay, apply_traceability_overlay, build_entity_registry,
     mission_entity_id, runtime_missions_from_approval_seeds, DigitalThreadTraceabilityLink,
-    EntityAuditInfo, EntityGraph, EntityHealthStatus, EntityKind, EntityLifecycleState,
+    EntityAuditInfo, EntityGovernanceMeta, EntityGraph, EntityHealthStatus, EntityKind, EntityLifecycleState,
     EntityLocation, EntityQuery, EntityQueryResult, EntityReadinessStatus, EntityRecord,
     EntityRegistry, EntityRelationship, EntityRelationshipKind, EntitySecurityIdentity,
     EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,

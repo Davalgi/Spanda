@@ -448,7 +448,79 @@ pub struct EntitySecurityIdentity {
     pub permissions: Vec<String>,
 }
 
-/// Audit trail pointer for governance and compliance.
+/// Optional operational governance attributes projected onto entities.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub struct EntityGovernanceMeta {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub autonomy_level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployment_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operational_maturity: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certification_status: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub risk_level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub responsible_person: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub responsible_organization: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub governance_policies: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub standards_profiles: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub operational_constraints: Vec<String>,
+}
+
+impl EntityGovernanceMeta {
+    pub fn from_metadata(metadata: &HashMap<String, String>) -> Option<Self> {
+        let autonomy_level = metadata.get("governance.autonomy_level").cloned();
+        let deployment_profile = metadata.get("governance.deployment_profile").cloned();
+        let operational_maturity = metadata.get("governance.operational_maturity").cloned();
+        let certification_status = metadata.get("governance.certification_status").cloned();
+        let risk_level = metadata.get("governance.risk_level").cloned();
+        let responsible_person = metadata.get("governance.responsible_person").cloned();
+        let responsible_organization = metadata
+            .get("governance.responsible_organization")
+            .cloned();
+        let standards_profiles = metadata
+            .get("governance.standards_profiles")
+            .map(|raw| raw.split(',').map(|s| s.trim().to_string()).collect())
+            .unwrap_or_default();
+        let operational_constraints = metadata
+            .get("governance.constraints")
+            .map(|raw| raw.split(',').map(|s| s.trim().to_string()).collect())
+            .unwrap_or_default();
+        let governance_policies = metadata
+            .get("governance.policies")
+            .map(|raw| raw.split(',').map(|s| s.trim().to_string()).collect())
+            .unwrap_or_default();
+
+        if autonomy_level.is_none()
+            && deployment_profile.is_none()
+            && operational_maturity.is_none()
+            && certification_status.is_none()
+            && risk_level.is_none()
+        {
+            return None;
+        }
+
+        Some(Self {
+            autonomy_level,
+            deployment_profile,
+            operational_maturity,
+            certification_status,
+            risk_level,
+            responsible_person,
+            responsible_organization,
+            governance_policies,
+            standards_profiles,
+            operational_constraints,
+        })
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct EntityAuditInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -512,6 +584,8 @@ pub struct EntityRecord {
     pub metadata: HashMap<String, String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audit: Option<EntityAuditInfo>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub governance: Option<EntityGovernanceMeta>,
 }
 
 impl EntityRecord {
@@ -534,6 +608,7 @@ impl EntityRecord {
             "parent_id": self.parent_id,
             "capabilities": self.capabilities,
             "tags": self.tags,
+            "governance": self.governance,
         })
     }
 }
@@ -743,6 +818,7 @@ pub fn build_entity_registry(resolved: &ResolvedSystemConfig) -> EntityRegistry 
     );
     link_zone_references(&mut registry);
     apply_compliance_metadata(&mut registry, resolved);
+    apply_governance_metadata(&mut registry, resolved);
 
     if let Some(fleet_id) = resolved.fleet_id() {
         if let Some(org_id) = registry
@@ -2241,6 +2317,126 @@ fn stamp_compliance_metadata(
     }
 }
 
+fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedSystemConfig) {
+    let Some(gov) = resolved.governance_config() else {
+        return;
+    };
+    let table = gov.as_table();
+    let get = |key: &str| table.and_then(|t| t.get(key)).and_then(|v| v.as_str());
+
+    let autonomy = get("autonomy_level");
+    let deployment_profile = get("deployment_profile");
+    let maturity = get("operational_maturity");
+    let certification = get("certification_status");
+    let risk = get("risk_level");
+    let responsible = get("responsible_person");
+    let org = get("responsible_organization");
+    let standards = get("standards_profiles");
+    let constraints = get("constraints");
+
+    if autonomy.is_none()
+        && deployment_profile.is_none()
+        && maturity.is_none()
+        && certification.is_none()
+        && risk.is_none()
+    {
+        return;
+    }
+
+    let targets: Vec<String> = resolved
+        .fleet_id()
+        .into_iter()
+        .map(String::from)
+        .chain(resolved.robot_ids().into_iter().map(String::from))
+        .collect();
+
+    for entity_id in targets {
+        stamp_governance_metadata(
+            registry,
+            &entity_id,
+            autonomy,
+            deployment_profile,
+            maturity,
+            certification,
+            risk,
+            responsible,
+            org,
+            standards,
+            constraints,
+        );
+    }
+}
+
+fn stamp_governance_metadata(
+    registry: &mut EntityRegistry,
+    entity_id: &str,
+    autonomy: Option<&str>,
+    deployment_profile: Option<&str>,
+    maturity: Option<&str>,
+    certification: Option<&str>,
+    risk: Option<&str>,
+    responsible: Option<&str>,
+    org: Option<&str>,
+    standards: Option<&str>,
+    constraints: Option<&str>,
+) {
+    let Some(entity) = registry.entities.get_mut(entity_id) else {
+        return;
+    };
+    if let Some(value) = autonomy {
+        entity
+            .metadata
+            .insert("governance.autonomy_level".into(), value.to_string());
+    }
+    if let Some(value) = deployment_profile {
+        entity.metadata.insert(
+            "governance.deployment_profile".into(),
+            value.to_string(),
+        );
+    }
+    if let Some(value) = maturity {
+        entity.metadata.insert(
+            "governance.operational_maturity".into(),
+            value.to_string(),
+        );
+    }
+    if let Some(value) = certification {
+        entity.metadata.insert(
+            "governance.certification_status".into(),
+            value.to_string(),
+        );
+    }
+    if let Some(value) = risk {
+        entity
+            .metadata
+            .insert("governance.risk_level".into(), value.to_string());
+    }
+    if let Some(value) = responsible {
+        entity.owner = Some(value.to_string());
+        entity
+            .metadata
+            .insert("governance.responsible_person".into(), value.to_string());
+    }
+    if let Some(value) = org {
+        entity.metadata.insert(
+            "governance.responsible_organization".into(),
+            value.to_string(),
+        );
+    }
+    if let Some(value) = standards {
+        entity.metadata.insert(
+            "governance.standards_profiles".into(),
+            value.to_string(),
+        );
+    }
+    if let Some(value) = constraints {
+        entity
+            .metadata
+            .insert("governance.constraints".into(), value.to_string());
+    }
+    entity.governance = EntityGovernanceMeta::from_metadata(&entity.metadata);
+}
+
 impl Default for EntityRecord {
     fn default() -> Self {
         Self {
@@ -2272,6 +2468,7 @@ impl Default for EntityRecord {
             owner: None,
             metadata: HashMap::new(),
             audit: None,
+            governance: None,
         }
     }
 }
