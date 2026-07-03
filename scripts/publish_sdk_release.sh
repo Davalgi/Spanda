@@ -9,18 +9,21 @@ read_version() {
   grep '^version' "$ROOT/crates/spanda-sdk/Cargo.toml" | head -1 | sed 's/.*"\(.*\)".*/\1/'
 }
 
-VERSION="${1:-$(read_version)}"
+VERSION=""
+DRY_RUN=0
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1 ;;
+    *) VERSION="$arg" ;;
+  esac
+done
+VERSION="${VERSION:-$(read_version)}"
 PY_VERSION="$(grep '^version' "$ROOT/sdk/python/pyproject.toml" | head -1 | sed 's/.*"\(.*\)".*/\1/')"
 TS_VERSION="$(python3 -c 'import json; print(json.load(open("'"$ROOT/sdk/typescript/package.json"'"))["version"])')"
 
 if [[ "$VERSION" != "$PY_VERSION" || "$VERSION" != "$TS_VERSION" ]]; then
   echo "SDK version mismatch: rust=$VERSION python=$PY_VERSION typescript=$TS_VERSION" >&2
   exit 1
-fi
-
-DRY_RUN=0
-if [[ "${2:-}" == "--dry-run" ]]; then
-  DRY_RUN=1
 fi
 
 TAGS=(
