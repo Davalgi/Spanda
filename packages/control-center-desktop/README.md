@@ -17,8 +17,17 @@ The desktop `src-tauri/Cargo.lock` may report [RUSTSEC-2024-0429](https://rustse
 1. Start the Control Center API (from repo root):
 
 ```bash
+# Installed spanda
+spanda control-center serve --bind 127.0.0.1:8080
+
+# Release build (cargo build -p spanda --release)
+./target/release/spanda control-center serve --bind 127.0.0.1:8080
+
+# Active development
 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 ```
+
+Copy-paste examples with `--config` and `--program`: [docs/control-center.md](../../docs/control-center.md#run-with-config-and-program).
 
 2. Install workspace dependencies (once):
 
@@ -69,6 +78,8 @@ This runs `cargo check` on the Tauri crate (no GUI required).
 | API | `spanda-api` via `spanda control-center serve` |
 
 The desktop app does not embed the Rust API server; operators typically run the API locally or against a fleet endpoint.
+
+Full start and rebuild checklist (all three layers): [docs/control-center.md — Local dev: start & rebuild](../../docs/control-center.md#local-dev-start--rebuild).
 
 ## Auto-update
 

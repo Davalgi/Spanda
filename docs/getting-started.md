@@ -676,10 +676,18 @@ See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [policy-en
 ```bash
 # Optional but recommended — generate with: spanda control-center api-key generate --export
 export SPANDA_API_KEY="my-local-dev-key"
+
+# Installed spanda
+spanda control-center serve --bind 127.0.0.1:8080
+
+# Release build (cargo build -p spanda --release)
+./target/release/spanda control-center serve --bind 127.0.0.1:8080
+
+# Active development
 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 ```
 
-Open `http://127.0.0.1:8080` for the embedded Control Center HTML UI, or use the React panel in `@davalgi-spanda/web` / the Tauri desktop shell (`npm run control-center:desktop:dev` with the API running).
+Open `http://127.0.0.1:8080` for the embedded Control Center UI, or use the React panel in `@davalgi-spanda/web` / the Tauri desktop shell (`npm run control-center:desktop:dev` with the API running). Full two-terminal start and rebuild checklist: [control-center.md — Local dev: start & rebuild](./control-center.md#local-dev-start--rebuild).
 
 **API keys:** Run `spanda control-center api-key generate --export` to create a token, set `SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations. In the embedded UI you can paste the token and opt in to **Remember on this browser** (`localStorage`, per `host:port`). Full guide: [control-center.md — Authentication & API keys](./control-center.md#authentication--api-keys). Persistence issues: [troubleshooting.md — Control Center](./troubleshooting.md#serve-and-ui). If `api-key generate` errors, see [troubleshooting.md](./troubleshooting.md).
 
@@ -739,7 +747,7 @@ Point the UI at a different API URL with `VITE_CONTROL_CENTER_URL=http://host:po
 
 ### Official SDKs
 
-Start Control Center with a program, then use any SDK (thin HTTP clients — no duplicated platform logic):
+Start Control Center with a program, then use any SDK (thin HTTP clients — no duplicated platform logic). Demo serve examples and `--config` / `--program` combinations: [control-center.md — Run with `--config` and `--program`](./control-center.md#run-with-config-and-program).
 
 ```bash
 cargo run -p spanda -- control-center serve \

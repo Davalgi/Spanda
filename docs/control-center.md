@@ -11,24 +11,37 @@ Web-based operational visibility for fleets, devices, readiness, and alerts. Pha
 ## Quick start
 
 ```bash
-# Start API + UI (default http://127.0.0.1:8080)
 # Generate a key: spanda control-center api-key generate --export
 export SPANDA_API_KEY="my-local-dev-key"
+
+# Installed spanda — start API + UI (default http://127.0.0.1:8080)
 spanda control-center serve
+
+# Release build — cargo build -p spanda --release from repo root
+./target/release/spanda control-center serve
 
 # With project configuration (device pool from spanda.toml)
 spanda control-center serve --config spanda.toml --bind 0.0.0.0:8080
+./target/release/spanda control-center serve --config spanda.toml --bind 0.0.0.0:8080
 
 # Native gRPC (tonic) on a separate port
 spanda control-center serve --grpc-bind 127.0.0.1:50051
+./target/release/spanda control-center serve --grpc-bind 127.0.0.1:50051
 
-# Inspect or stop local instances
+# Inspect or stop local instances (use the same binary you started with)
 spanda control-center status
 spanda control-center status --discover   # find local listeners when port is unknown
 spanda control-center stop                # stop all local Control Center servers
 spanda control-center stop --url http://127.0.0.1:8080
 spanda control-center status --url http://127.0.0.1:8081 --json
+
+./target/release/spanda control-center status
+./target/release/spanda control-center status --discover
+./target/release/spanda control-center stop
+./target/release/spanda control-center stop --url http://127.0.0.1:8080
 ```
+
+Copy-paste `--config` / `--program` examples: [Local dev — Run with `--config` and `--program`](#run-with-config-and-program).
 
 ### Instance lifecycle
 
@@ -54,6 +67,389 @@ CI smoke scripts source [`scripts/lib/control_center_smoke_lib.sh`](../scripts/l
 | **Remote CLI** | `export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080` then `spanda control-center dashboard` (see [Remote CLI](#remote-cli-rest-parity)) |
 
 Read-only views and `GET /v1/*` endpoints work without authentication. Mutations (`POST`, `PATCH`, `DELETE`) require a Bearer token — configure keys on the server before calling those endpoints.
+
+### Local dev: start & rebuild
+
+Control Center has three layers. The API must run separately for every UI path except read-only CLI inspection.
+
+| Layer | Package / crate | Role |
+|-------|-----------------|------|
+| API backend | `spanda-api` via `spanda control-center serve` | REST `/v1/*`, gRPC, embedded static UI |
+| React UI | `packages/web` (`@davalgi-spanda/web`) | Panels shared by browser, desktop, and web playground |
+| Desktop shell | `packages/control-center-desktop` (Tauri + Vite) | Native window; does not embed the Rust API |
+
+#### Start (typical dev)
+
+**One-time** (from repo root):
+
+```bash
+npm install
+```
+
+**Terminal 1 — API** (pick one invocation):
+
+```bash
+export SPANDA_API_KEY="my-local-dev-key"   # optional; see Authentication below
+
+# Installed spanda
+spanda control-center stop
+spanda control-center serve --bind 127.0.0.1:8080
+
+# Release build from repo root (cargo build -p spanda --release)
+./target/release/spanda control-center stop
+./target/release/spanda control-center serve --bind 127.0.0.1:8080
+
+# Active Rust development (rebuilds on each run)
+cargo run -p spanda -- control-center stop
+cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
+```
+
+With `--config` and `--program`, see [Run with `--config` and `--program`](#run-with-config-and-program).
+
+**Browser only:** open `http://127.0.0.1:8080/` — no second terminal.
+
+**Terminal 2 — desktop** (optional; hot-reloads React changes):
+
+```bash
+npm run control-center:desktop:dev
+```
+
+Equivalent: `npm run dev --workspace=@spanda/control-center-desktop`. Vite listens on port **5174**. Point at a non-default API with `VITE_CONTROL_CENTER_URL=http://host:port`.
+
+More detail: [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md).
+
+#### Rebuild after code changes
+
+| What you changed | What to rebuild |
+|------------------|-----------------|
+| Rust API (`crates/spanda-api`, CLI handlers, ops core) | Stop `serve`, then `cargo run -p spanda -- control-center serve …` (dev) or `cargo build -p spanda --release` (install a release binary). If `spanda` on `PATH` is stale, use `cargo run` or reinstall — see [troubleshooting.md — Stale CLI binary](./troubleshooting.md#stale-cli-binary). |
+| React panels (`packages/web`) for **embedded browser UI** (`http://127.0.0.1:8080`) | `./scripts/sync_control_center_embedded_ui.sh` then restart `control-center serve`. The script runs `npm run build:control-center --workspace=@davalgi-spanda/web` and copies `dist-control-center/` into `crates/spanda-api/src/static/control-center-ui/`. |
+| React panels for **desktop dev** | Usually nothing — `control-center:desktop:dev` hot-reloads. Restart the dev shell if Vite gets stuck. |
+| Desktop shell (Tauri config, native plugins) | `npm run control-center:desktop:check` (compile check) or `npm run build --workspace=@spanda/control-center-desktop` (production bundle). Maintainer releases: [desktop-release-runbook.md](./desktop-release-runbook.md) (`TAURI_BUILD=1`). |
+| Operator API keys only | No rebuild — paste the token in the in-app banner or set `SPANDA_API_KEY` and restart `serve`. |
+
+**Embedded UI sync (browser):**
+
+```bash
+./scripts/sync_control_center_embedded_ui.sh
+
+spanda control-center stop
+spanda control-center serve --bind 127.0.0.1:8080
+
+./target/release/spanda control-center stop
+./target/release/spanda control-center serve --bind 127.0.0.1:8080
+```
+
+**Production desktop bundle:**
+
+```bash
+npm run build --workspace=@spanda/control-center-desktop
+# Artifacts: packages/control-center-desktop/src-tauri/target/release/bundle/
+```
+
+Or `TAURI_BUILD=1 ./scripts/build_control_center_desktop.sh` for the CI-style installer path.
+
+#### Run with `--config` and `--program`
+
+`control-center serve` accepts two optional paths. They are **independent** — mix any config with any program, or pass only one.
+
+| Flag | Path | What it loads |
+|------|------|----------------|
+| **`--config`** | Project directory **or** `spanda.toml` file | Device pool, discovery fixtures, facilities, fleet layout, Smart Spaces / ADAS device trees, HRI policy seeds |
+| **`--program`** | `.sd` mission file | Default program for readiness, simulation, replay, traceability, govern-and-trace, recovery context |
+
+**Path forms:** `--config` accepts either a directory (looks for `spanda.toml` inside) or the file directly — both work:
+
+```bash
+--config crates/spanda-config/tests/fixtures/warehouse
+--config crates/spanda-config/tests/fixtures/warehouse/spanda.toml   # equivalent
+```
+
+Run from the **repository root** unless paths are absolute. After changing flags, stop and restart `serve` (see [Which `spanda`?](#which-spanda) below).
+
+**What needs which flag:**
+
+| UI / API area | `--config` | `--program` |
+|---------------|:----------:|:-----------:|
+| Dashboard (pool summary, alerts) | helpful | optional |
+| Devices, Discovery, Provisioning, Mapping, Health | **required** for real pool data | — |
+| Readiness, Simulation, Replay, Digital Thread, Traceability | — | **required** (or pass `file` in API body) |
+| Smart Spaces, Humans, ADAS vehicle panels | **required** (matching blueprint) | recommended |
+| Recovery orchestrator | optional | recommended |
+| Govern-and-trace, drift vs baseline | **required** | **required** |
+
+##### Which `spanda`?
+
+Examples use **both** common invocations. Paths (`--config`, `--program`) are identical — only the binary prefix changes.
+
+| Invocation | When to use | Stop a local server |
+|------------|-------------|---------------------|
+| **`./target/release/spanda`** | Repo checkout; run `cargo build -p spanda --release` first | `./target/release/spanda control-center stop` |
+| **`spanda`** | Installed CLI on `PATH` (`cargo install`, package manager, CI image) | `spanda control-center stop` |
+| **`cargo run -p spanda --`** | Active Rust development (rebuilds on each run) | `cargo run -p spanda -- control-center stop` |
+
+```bash
+export SPANDA_API_KEY="my-local-dev-key"   # optional; see Authentication below
+
+# Release build (from repository root):
+cargo build -p spanda --release
+
+# Verify which binary you are using:
+./target/release/spanda --version
+spanda --version
+```
+
+If `spanda control-center` is missing or flags like `api-key generate` fail, the installed binary may be stale — see [troubleshooting.md — Stale CLI binary](./troubleshooting.md#stale-cli-binary). Use `./target/release/spanda` from a fresh `cargo build` or reinstall.
+
+##### Copy-paste examples
+
+Each example shows **release build** and **installed** forms. Swap `--config` / `--program` as needed; add `--bind 127.0.0.1:8080` to override the default listen address.
+
+**Enterprise ops** — warehouse device pool + compliance rover (same as `scripts/enterprise_ops_smoke.sh`):
+
+```bash
+./target/release/spanda control-center serve \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+spanda control-center serve \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+```
+
+**Flagship rover:**
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/showcase/autonomous_rover/spanda.toml \
+  --program examples/showcase/autonomous_rover/src/rover.sd
+
+spanda control-center serve \
+  --config examples/showcase/autonomous_rover/spanda.toml \
+  --program examples/showcase/autonomous_rover/src/rover.sd
+```
+
+**Program only** (readiness / sim; no device pool):
+
+```bash
+./target/release/spanda control-center serve \
+  --program examples/rover.sd
+
+spanda control-center serve \
+  --program examples/rover.sd
+```
+
+**ADAS** — vehicle device tree + highway scenario:
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+
+spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+```
+
+**Smart Spaces** — building blueprint:
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
+
+spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
+```
+
+**Humans / spatial computing:**
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/spatial-computing/spanda.toml \
+  --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
+
+spanda control-center serve \
+  --config examples/solutions/spatial-computing/spanda.toml \
+  --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
+```
+
+**Recovery orchestrator:**
+
+```bash
+./target/release/spanda control-center serve \
+  --program examples/showcase/self_healing/rover.sd
+
+spanda control-center serve \
+  --program examples/showcase/self_healing/rover.sd
+```
+
+**Warehouse logistics** (end-to-end package):
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/end_to_end/warehouse_delivery/spanda.toml \
+  --program examples/end_to_end/warehouse_delivery/src/main.sd
+
+spanda control-center serve \
+  --config examples/end_to_end/warehouse_delivery/spanda.toml \
+  --program examples/end_to_end/warehouse_delivery/src/main.sd
+```
+
+**Basic packaged project:**
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/packages/basic_project/spanda.toml \
+  --program examples/packages/basic_project/src/main.sd
+
+spanda control-center serve \
+  --config examples/packages/basic_project/spanda.toml \
+  --program examples/packages/basic_project/src/main.sd
+```
+
+**Optional bind address** (default `127.0.0.1:8080`):
+
+```bash
+./target/release/spanda control-center serve \
+  --bind 127.0.0.1:8080 \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+spanda control-center serve \
+  --bind 127.0.0.1:8080 \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+```
+
+##### Mix `--config` and `--program`
+
+Each subsection lists **release build** then **installed** commands with the same flags.
+
+**Same config, different program** — swap `--program` only:
+
+Release build:
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/smart-home/night_mode.sd
+
+./target/release/spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/emergency-response/fire_response.sd
+
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/lane_keeping/lane_keeping.sd
+
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/automatic_emergency_braking/aeb.sd
+```
+
+Installed:
+
+```bash
+spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/smart-home/night_mode.sd
+
+spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/emergency-response/fire_response.sd
+
+spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/lane_keeping/lane_keeping.sd
+
+spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/automatic_emergency_braking/aeb.sd
+```
+
+**Different config, same program** — devices / discovery tabs change:
+
+Release build:
+
+```bash
+./target/release/spanda control-center serve \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+./target/release/spanda control-center serve \
+  --config examples/packages/basic_project/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/applications/truck/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/applications/shuttle/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+```
+
+Installed:
+
+```bash
+spanda control-center serve \
+  --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+spanda control-center serve \
+  --config examples/packages/basic_project/spanda.toml \
+  --program examples/showcase/compliance/defense_rover.sd
+
+spanda control-center serve \
+  --config examples/solutions/adas/applications/truck/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+
+spanda control-center serve \
+  --config examples/solutions/adas/applications/shuttle/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+```
+
+See [solutions/adas/applications](../examples/solutions/adas/applications/README.md) for more ADAS device trees.
+
+**Config only** (pool panels; no default mission):
+
+```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml
+
+spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml
+```
+
+##### CLI demo → serve
+
+```bash
+./target/release/spanda demo adas
+./target/release/spanda control-center stop
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+
+spanda demo adas
+spanda control-center stop
+spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+```
+
+Open `http://127.0.0.1:8080/` or run `npm run control-center:desktop:dev` in a second terminal. Demo catalog: [overview/flagship-demos.md](./overview/flagship-demos.md) · [showcase/README.md](../examples/showcase/README.md).
+
+| Demo / UI focus | Highlights |
+|-----------------|------------|
+| Enterprise ops smoke | Warehouse pool + compliance rover |
+| Flagship rover | `spanda demo rover` |
+| ADAS | [ADAS dashboard](#adas-dashboard) |
+| Smart Spaces | [Smart Spaces dashboard](#smart-spaces-dashboard) |
+| Humans / spatial | [Human Interaction dashboard](#human-interaction-dashboard) |
+| Recovery | [Recovery dashboard](#recovery-dashboard) |
+| Warehouse logistics | [solutions/warehouse.md](./solutions/warehouse.md) |
 
 ---
 
@@ -230,6 +626,10 @@ Control Center **Simulation** and **Replay** tabs expose these workflows in the 
 Launch with the ADAS Solution Blueprint for vehicle-centric operations:
 
 ```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/adas/spanda.toml \
+  --program examples/solutions/adas/src/highway_drive.sd
+
 spanda control-center serve \
   --config examples/solutions/adas/spanda.toml \
   --program examples/solutions/adas/src/highway_drive.sd
@@ -242,6 +642,9 @@ The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, tr
 Launch with the self-healing showcase program:
 
 ```bash
+./target/release/spanda control-center serve \
+  --program examples/showcase/self_healing/rover.sd
+
 spanda control-center serve \
   --program examples/showcase/self_healing/rover.sd
 ```
@@ -262,6 +665,10 @@ Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference: [recov
 Launch with the Spatial Computing & Human-Robot Collaboration blueprint:
 
 ```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/spatial-computing/spanda.toml \
+  --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
+
 spanda control-center serve \
   --config examples/solutions/spatial-computing/spanda.toml \
   --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
@@ -308,6 +715,10 @@ See [solutions/spatial-computing.md](./solutions/spatial-computing.md) · [human
 Launch with the Smart Spaces & Ambient Intelligence blueprint:
 
 ```bash
+./target/release/spanda control-center serve \
+  --config examples/solutions/smart-spaces/spanda.toml \
+  --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
+
 spanda control-center serve \
   --config examples/solutions/smart-spaces/spanda.toml \
   --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
@@ -568,6 +979,7 @@ Pass optional `X-Correlation-ID` on any request; the server echoes it on the res
 Govern-and-trace endpoints require a loaded program:
 
 ```bash
+./target/release/spanda control-center serve --config spanda.toml --program rover.sd
 spanda control-center serve --config spanda.toml --program rover.sd
 ```
 
@@ -715,7 +1127,9 @@ Enterprise operations E1–E4 are **Stable** with full stable-hardening checklis
 
 Package: `@spanda/control-center-desktop` (`packages/control-center-desktop`).
 
-1. Start the API: `spanda control-center serve --bind 127.0.0.1:8080`
+1. Start the API:
+   - `./target/release/spanda control-center serve --bind 127.0.0.1:8080` (release build), or
+   - `spanda control-center serve --bind 127.0.0.1:8080` (installed)
 2. Dev shell: `npm run control-center:desktop:dev` (Vite on port **5174**)
 3. Optional API URL: `VITE_CONTROL_CENTER_URL=http://host:port`
 
