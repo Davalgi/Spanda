@@ -33,6 +33,7 @@
     "control-center:desktop:check": "npm run check --workspace=@spanda/control-center-desktop"
   },
   "dependencies": {
+    "@davalgi-spanda/sdk": "^0.5.5",
     "@noble/ed25519": "^2.1.0",
     "@noble/hashes": "^1.6.1",
     "mqtt": "^5.10.0",
