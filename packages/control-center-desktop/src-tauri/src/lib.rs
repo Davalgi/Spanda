@@ -22,7 +22,11 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .invoke_handler(tauri::generate_handler![default_api_base, desktop_features])
+        .invoke_handler(tauri::generate_handler![
+            default_api_base,
+            desktop_features,
+            spawn_control_center_api
+        ])
         .run(tauri::generate_context!())
         .expect("error while running Spanda Control Center desktop");
 }
@@ -74,6 +78,39 @@ fn desktop_features() -> serde_json::Value {
         "system_tray": true,
         "offline_cache": true,
         "bundled_api": bundled_api,
-        "bundled_api_hint": "Run: spanda control-center serve --bind 127.0.0.1:8080"
+        "bundled_api_hint": "Run: spanda control-center serve --bind 127.0.0.1:8080",
+        "spawn_api_command": "spawn_control_center_api"
     })
+}
+
+/// Spawn a local Control Center API via `spanda control-center serve` (desktop shell).
+#[tauri::command]
+async fn spawn_control_center_api(app: tauri::AppHandle, bind: Option<String>) -> Result<String, String> {
+    // Launch the Control Center REST API as a background child process.
+    //
+    // Parameters:
+    // - `bind` — optional listen address (defaults to 127.0.0.1:8080).
+    //
+    // Returns:
+    // Human-readable status string on success.
+    //
+    // Options:
+    // Requires `spanda` on PATH; uses tauri-plugin-shell.
+    //
+    // Example:
+    // spawn_control_center_api(Some("127.0.0.1:8080".into()))
+
+    use tauri_plugin_shell::ShellExt;
+
+    // Resolve bind address from argument or local dev default.
+    let listen = bind.unwrap_or_else(|| "127.0.0.1:8080".into());
+
+    // Spawn the Control Center serve subcommand detached from the desktop shell.
+    app.shell()
+        .command("spanda")
+        .args(["control-center", "serve", "--bind", listen.as_str()])
+        .spawn()
+        .map_err(|error| format!("spawn failed: {error}"))?;
+
+    Ok(format!("spawned spanda control-center serve --bind {listen}"))
 }
