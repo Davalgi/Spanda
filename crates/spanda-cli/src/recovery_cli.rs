@@ -166,10 +166,11 @@ fn orchestrator_context(
     let source = read_file(&file);
     let program = parse_program(&source);
     let config = device_registry_from_args(args);
-    let registry = config
+    let mut registry = config
         .as_ref()
         .map(|c| build_entity_registry(c))
         .unwrap_or_default();
+    spanda_recovery::enrich_registry_from_program(&program, &mut registry);
     (program, registry, config)
 }
 
@@ -283,8 +284,14 @@ pub fn cmd_orchestrator_explain(args: &[String]) {
     let format = parse_format(args);
     let (_, registry, config) = orchestrator_context(args);
     let entity_id = entity_id_arg(args).unwrap_or_else(|| {
-        eprintln!("--entity <id> required for explain");
-        process::exit(1);
+        registry
+            .list()
+            .first()
+            .map(|e| e.id.clone())
+            .unwrap_or_else(|| {
+                eprintln!("--entity <id> required when program has no robot entities");
+                process::exit(1);
+            })
     });
     let failure = failure_arg(args).unwrap_or_else(|| "degraded".into());
     let orchestrator = RecoveryOrchestrator::new();

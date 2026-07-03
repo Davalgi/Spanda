@@ -164,6 +164,8 @@ pub struct RecoveryExtensionDecl {
     pub description: Option<String>,
     #[serde(default)]
     pub trigger: Option<String>,
+    #[serde(default)]
+    pub strategy: Option<String>,
 }
 
 /// One namespaced CLI command exposed by a plugin.
