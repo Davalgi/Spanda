@@ -52,6 +52,7 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
     tabs: [
       "security",
       "compliance",
+      "governance",
       "audit",
       "drift",
       "config",
@@ -94,6 +95,7 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   security: "Package trust evaluation and RBAC permission matrix.",
   ota: "Plan and execute fleet firmware rollouts.",
   compliance: "Accreditation profiles and signed evidence export.",
+  governance: "Deployment profiles, compliance validation, certification, risk, and accountability.",
   audit: "Immutable mutation audit trail for compliance.",
   decisions: "Distributed decision layers, escalations, and live trace audit.",
   executive: "Cross-domain KPI scorecard for leadership dashboards.",

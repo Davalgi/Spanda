@@ -7,6 +7,7 @@ import { AlertsPanel } from "./AlertsPanel";
 import { AnalyticsPanel } from "./AnalyticsPanel";
 import { AssuranceDiagnosisPanel } from "./AssuranceDiagnosisPanel";
 import { AuditPanel } from "./AuditPanel";
+import { GovernancePanel } from "./GovernancePanel";
 import { CompliancePanel } from "./CompliancePanel";
 import { ConfigPanel } from "./ConfigPanel";
 import { ControlCenterDashboard } from "./ControlCenterDashboard";
@@ -241,6 +242,16 @@ export function ControlCenterTabContent({
     case "compliance":
       return (
         <CompliancePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      );
+
+    case "governance":
+      return (
+        <GovernancePanel
           baseUrl={baseUrl}
           authHeaders={authHeaders}
           can={can}

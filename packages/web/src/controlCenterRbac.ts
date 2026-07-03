@@ -27,6 +27,7 @@ export type ControlCenterTab =
   | "ota"
   | "sre"
   | "compliance"
+  | "governance"
   | "audit"
   | "decisions"
   | "recovery"
@@ -82,6 +83,7 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   ota: ["administrator", "supervisor", "developer"],
   sre: ["*"],
   compliance: ["administrator", "supervisor", "developer", "auditor", "safety_officer"],
+  governance: ["administrator", "supervisor", "developer", "auditor", "safety_officer"],
   audit: ["administrator", "supervisor", "developer", "auditor"],
   decisions: ["administrator", "supervisor", "developer"],
   recovery: ["administrator", "supervisor", "operator", "safety_officer"],
