@@ -828,6 +828,8 @@ See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift,
 |---------|----------|
 | `spanda: command not found` | Run `npm run build:rust` or use `./target/release/spanda` |
 | `verify` not available | Run `npm run build:rust` for the native CLI, or use the npm wrapper — TS verify fallback covers most checks when the CLI is missing |
+| `pip install spanda-sdk` / externally-managed-environment | Use a venv — [troubleshooting.md — Python SDK](./troubleshooting.md#python-externally-managed-environment-on-pip-install) |
+| `cargo add spanda-sdk` could not determine package | Pass `--package <crate>` from the monorepo root — [troubleshooting.md — Rust SDK](./troubleshooting.md#rust-cargo-add-in-the-spanda-monorepo) |
 | Compile error on `wheels.execute(proposal)` | Expected — use `safety.validate(proposal)` first |
 | Tests fail after clone | Run `npm install` then `npm run build:rust` before `npm test` |
 

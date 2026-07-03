@@ -21,6 +21,8 @@ npm install @davalgi-spanda/sdk
 npm install @davalgi-spanda/web
 ```
 
+Install failures (PEP 668 on Python, `cargo add` in the Spanda monorepo): [troubleshooting.md — Official SDK install](./troubleshooting.md#official-sdk-install).
+
 Maintainers: [Publishing SDKs](sdk-publishing.md) (`crates-sdk-v*`, `sdk-python-v*`, `npm-sdk-v*`, `desktop-v*` tags).
 
 Legacy Python client: `packages/sdk-python` (Control Center helpers; use `sdk/python` for full SDK surface).

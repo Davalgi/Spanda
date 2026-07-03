@@ -1,8 +1,8 @@
 # Troubleshooting
 
-Symptom-first fixes for CLI install, language errors, verification, runtime, fleet, integrations, and enterprise ops. For capability tiers and honest scope limits, see [known-limitations.md](./known-limitations.md). For language-specific mistakes, see [spanda-for-dummies/06-common-mistakes.md](./spanda-for-dummies/06-common-mistakes.md).
+Symptom-first fixes for CLI install, official SDK setup, language errors, verification, runtime, fleet, integrations, and enterprise ops. For capability tiers and honest scope limits, see [known-limitations.md](./known-limitations.md). For language-specific mistakes, see [spanda-for-dummies/06-common-mistakes.md](./spanda-for-dummies/06-common-mistakes.md).
 
-**Related:** [installation.md](./installation.md) · [getting-started.md](./getting-started.md) · [control-center.md](./control-center.md) · [ci-verify.md](./ci-verify.md)
+**Related:** [installation.md](./installation.md) · [getting-started.md](./getting-started.md) · [sdk.md](./sdk.md) · [control-center.md](./control-center.md) · [ci-verify.md](./ci-verify.md)
 
 ---
 
@@ -25,6 +25,8 @@ Symptom-first fixes for CLI install, language errors, verification, runtime, fle
 | Plugin install / CLI namespace errors | [Plugins](#plugins) |
 | VS Code diagnostics or debug broken | [Editor, LSP, and debugging](#editor-lsp-and-debugging) |
 | CI passes locally but fails in pipeline | [CI and release builds](#ci-and-release-builds) |
+| `pip install spanda-sdk` / externally-managed-environment | [SDK install — Python](#python-externally-managed-environment-on-pip-install) |
+| `cargo add spanda-sdk` could not determine package | [SDK install — Rust](#rust-cargo-add-in-the-spanda-monorepo) |
 
 **First commands on any issue:**
 
@@ -134,6 +136,112 @@ Error loading manifest: ...
 | Path typo | Run from repo root or pass absolute path |
 | `spanda run` without `spanda.toml` parent | `cd` to project root or use `--project <dir>` |
 | Missing `spanda install` after `spanda add` | Run `spanda install` or `spanda build` |
+
+---
+
+## Official SDK install
+
+Official clients: Rust [`spanda-sdk`](https://crates.io/crates/spanda-sdk), Python [`spanda-sdk`](https://pypi.org/project/spanda-sdk/), TypeScript [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk). Overview and quick start: [sdk.md](./sdk.md). Python API reference: [sdk-python.md](./sdk-python.md).
+
+Control Center must be running (or reachable) before SDK calls succeed — see [Control Center](#control-center).
+
+### Python: externally-managed-environment on pip install
+
+```text
+pip install spanda-sdk
+error: externally-managed-environment
+× This environment is externally managed
+```
+
+**Cause:** macOS Homebrew Python (and many Linux distros) block system-wide `pip install` per [PEP 668](https://peps.python.org/pep-0668/). This is expected — not a problem with `spanda-sdk`.
+
+**Fix — use a virtual environment:**
+
+```bash
+python3 -m venv ~/.venvs/spanda
+source ~/.venvs/spanda/bin/activate
+pip install spanda-sdk
+
+# Optional: WebSocket telemetry extra
+pip install "spanda-sdk[stream]"
+```
+
+**From this monorepo (development):**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e sdk/python
+# or: pip install -e "sdk/python[stream]"
+```
+
+**Verify:**
+
+```python
+from spanda import SpandaClient
+client = SpandaClient.local()
+```
+
+**Avoid** `--break-system-packages` unless you intentionally want to modify Homebrew or system Python.
+
+For ROS2 bridges and provider scripts that need extra deps, activate the same venv before running Python helpers — see [ROS2 integration](#ros2-integration).
+
+### Rust: `cargo add` in the Spanda monorepo
+
+```text
+cargo add spanda-sdk
+error: `cargo add` could not determine which package to modify.
+Use the `--package` option to specify a package.
+```
+
+**Cause:** You ran `cargo add` from the **Spanda repo root**, which is a Cargo workspace with many member crates. Cargo needs to know which crate should receive the dependency.
+
+**Fix — add to a specific workspace crate:**
+
+```bash
+cargo add spanda-sdk --package spanda-cli
+```
+
+Replace `spanda-cli` with the crate you are working on (`spanda`, `spanda-api`, etc.).
+
+Optional native gRPC client:
+
+```bash
+cargo add spanda-sdk --package spanda-cli --features grpc
+```
+
+**Use the local SDK crate (monorepo dev)** — edit that crate's `Cargo.toml` instead of pulling from crates.io:
+
+```toml
+spanda-sdk = { path = "../../crates/spanda-sdk" }
+```
+
+Adjust the path relative to the target crate's directory.
+
+**Use the SDK in a separate project** — run from **that project's** directory, not the Spanda root:
+
+```bash
+cd ~/my-robot-app
+cargo add spanda-sdk
+```
+
+Plain `cargo add spanda-sdk` works when the current directory is a single-package project (not the Spanda workspace root).
+
+### TypeScript / npm
+
+From your app directory (not required to be inside the Spanda repo):
+
+```bash
+npm install @davalgi-spanda/sdk
+```
+
+If you are developing against the monorepo source:
+
+```bash
+npm install ../path/to/Spanda/sdk/typescript
+```
+
+See [sdk.md](./sdk.md) for Control Center URL and auth setup.
 
 ---
 

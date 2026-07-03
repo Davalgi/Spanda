@@ -156,7 +156,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 |------------|-------------|
 | [ROADMAP.md](ROADMAP.md) | **Product roadmap** — pillars, blueprints, timeline |
 | [docs/getting-started.md](docs/getting-started.md) | First robot in 10 minutes |
-| [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, verify, fleet, ROS2, Control Center |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, SDK install, verify, fleet, ROS2, Control Center |
 | [docs/sdk.md](docs/sdk.md) | **Official SDKs** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `@davalgi-spanda/sdk` |
 | [docs/platform-overview.md](docs/platform-overview.md) | Platform components and workflow |
 | [docs/spanda-language.md](docs/spanda-language.md) | Language guide |

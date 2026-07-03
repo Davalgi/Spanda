@@ -36,7 +36,7 @@
 | [spanda-for-dummies/README.md](./spanda-for-dummies/README.md) | **Spanda for Dummies — plain-English no-jargon guide** |
 | [spanda-101/README.md](./spanda-101/README.md) | **Spanda 101 — 10-lesson tutorial series (basics → end-to-end)** |
 | [installation.md](./installation.md) | **Prebuilt packages for Linux, macOS, and Windows** |
-| [troubleshooting.md](./troubleshooting.md) | **CLI install, verify, fleet, ROS2, Control Center, CI — symptom-first fixes** |
+| [troubleshooting.md](./troubleshooting.md) | **CLI install, SDK setup, verify, fleet, ROS2, Control Center, CI — symptom-first fixes** |
 | [architecture.md](./architecture.md) | **Compiler pipeline with diagrams** |
 | [platform-architecture.md](./platform-architecture.md) | **Platform Architecture v2.0 — layers, governance, validation** |
 | [layered-architecture.md](./layered-architecture.md) | **Official layer stack and crate mapping** |

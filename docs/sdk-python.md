@@ -11,6 +11,8 @@ pip install spanda-sdk
 pip install "spanda-sdk[stream]"   # WebSocket telemetry extra
 ```
 
+On macOS Homebrew Python or other PEP 668–managed installs, use a virtual environment first — see [troubleshooting.md — Python SDK install](./troubleshooting.md#python-externally-managed-environment-on-pip-install).
+
 From this monorepo (development):
 
 ```bash
