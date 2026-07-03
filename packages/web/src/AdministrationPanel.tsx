@@ -638,6 +638,70 @@ function OidcSlackAdmin({
     void loadAdmin();
   }, [loadAdmin]);
 
+  const completeOidcOAuth = useCallback(
+    async (code?: string, state?: string) => {
+      const authCode = (code ?? oidcCode).trim();
+      const authState = state ?? oidcState;
+      if (!can("Deploy") || !authCode) return;
+      const res = await fetch(`${baseUrl}/v1/admin/oidc/oauth/callback`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ code: authCode, state: authState || undefined }),
+      });
+      const body = await res.json();
+      setStatus(
+        res.ok
+          ? `OAuth import: ${body.users_created ?? 0} created, ${body.users_updated ?? 0} updated.`
+          : `OAuth callback failed: ${res.status}`,
+      );
+      setOidcCode("");
+      await loadAdmin();
+    },
+    [authHeaders, baseUrl, can, loadAdmin, oidcCode, oidcState],
+  );
+
+  const completeSlackOAuth = useCallback(
+    async (code?: string, state?: string) => {
+      const authCode = (code ?? slackCode).trim();
+      const authState = state ?? slackState;
+      if (!can("Deploy") || !authCode) return;
+      const res = await fetch(`${baseUrl}/v1/admin/slack/oauth/callback`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ code: authCode, state: authState || undefined }),
+      });
+      const body = await res.json();
+      setStatus(
+        res.ok ? `Slack connected: ${body.team_name ?? "team"}.` : `Slack OAuth failed: ${res.status}`,
+      );
+      setSlackCode("");
+      await loadAdmin();
+    },
+    [authHeaders, baseUrl, can, loadAdmin, slackCode, slackState],
+  );
+
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "spanda-oidc-oauth" && event.data.code) {
+        const nextCode = String(event.data.code);
+        const nextState = event.data.state ? String(event.data.state) : "";
+        setOidcCode(nextCode);
+        setOidcState(nextState);
+        void completeOidcOAuth(nextCode, nextState || undefined);
+      }
+      if (event.data?.type === "spanda-slack-oauth" && event.data.code) {
+        const nextCode = String(event.data.code);
+        const nextState = event.data.state ? String(event.data.state) : "";
+        setSlackCode(nextCode);
+        setSlackState(nextState);
+        void completeSlackOAuth(nextCode, nextState || undefined);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [completeOidcOAuth, completeSlackOAuth]);
+
   const parseGroupRoleMap = () => {
     try {
       return JSON.parse(groupRoleMap) as Record<string, string>;
@@ -683,10 +747,12 @@ function OidcSlackAdmin({
 
   const startOidcOAuth = async () => {
     if (!can("Deploy")) return;
+    const effectiveRedirect =
+      redirectUri.trim() || `${window.location.origin}/admin/oauth/oidc/callback`;
     const res = await fetch(`${baseUrl}/v1/admin/oidc/authorize-url`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ redirect_uri: redirectUri || undefined }),
+      body: JSON.stringify({ redirect_uri: effectiveRedirect }),
     });
     const body = await res.json();
     if (!res.ok) {
@@ -696,24 +762,11 @@ function OidcSlackAdmin({
     setOidcState(String(body.state ?? ""));
     const url = String(body.authorize_url ?? "");
     if (url) window.open(url, "_blank", "noopener,noreferrer");
-    setStatus("OIDC authorization opened — paste the callback code below.");
+    setStatus("OIDC authorization opened — callback will complete automatically.");
   };
 
-  const completeOidcOAuth = async () => {
-    if (!can("Deploy") || !oidcCode.trim()) return;
-    const res = await fetch(`${baseUrl}/v1/admin/oidc/oauth/callback`, {
-      method: "POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ code: oidcCode.trim(), state: oidcState || undefined }),
-    });
-    const body = await res.json();
-    setStatus(
-      res.ok
-        ? `OAuth import: ${body.users_created ?? 0} created, ${body.users_updated ?? 0} updated.`
-        : `OAuth callback failed: ${res.status}`,
-    );
-    setOidcCode("");
-    await loadAdmin();
+  const submitOidcOAuth = async () => {
+    await completeOidcOAuth();
   };
 
   const saveSlack = async () => {
@@ -735,10 +788,12 @@ function OidcSlackAdmin({
 
   const startSlackOAuth = async () => {
     if (!can("Deploy")) return;
+    const effectiveRedirect =
+      slackRedirectUri.trim() || `${window.location.origin}/admin/oauth/slack/callback`;
     const res = await fetch(`${baseUrl}/v1/admin/slack/oauth-url`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ redirect_uri: slackRedirectUri || undefined }),
+      body: JSON.stringify({ redirect_uri: effectiveRedirect }),
     });
     const body = await res.json();
     if (!res.ok) {
@@ -748,20 +803,11 @@ function OidcSlackAdmin({
     setSlackState(String(body.state ?? ""));
     const url = String(body.authorize_url ?? "");
     if (url) window.open(url, "_blank", "noopener,noreferrer");
-    setStatus("Slack authorization opened — paste the callback code below.");
+    setStatus("Slack authorization opened — callback will complete automatically.");
   };
 
-  const completeSlackOAuth = async () => {
-    if (!can("Deploy") || !slackCode.trim()) return;
-    const res = await fetch(`${baseUrl}/v1/admin/slack/oauth/callback`, {
-      method: "POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ code: slackCode.trim(), state: slackState || undefined }),
-    });
-    const body = await res.json();
-    setStatus(res.ok ? `Slack connected: ${body.team_name ?? "team"}.` : `Slack OAuth failed: ${res.status}`);
-    setSlackCode("");
-    await loadAdmin();
+  const submitSlackOAuth = async () => {
+    await completeSlackOAuth();
   };
 
   return (
@@ -821,7 +867,7 @@ function OidcSlackAdmin({
             Authorization code
             <input value={oidcCode} onChange={(e) => setOidcCode(e.target.value)} placeholder="paste code" />
           </label>
-          <button type="button" onClick={() => void completeOidcOAuth()} disabled={busy || !oidcCode.trim()}>
+          <button type="button" onClick={() => void submitOidcOAuth()} disabled={busy || !oidcCode.trim()}>
             Complete OIDC OAuth
           </button>
         </div>
@@ -875,7 +921,7 @@ function OidcSlackAdmin({
             Authorization code
             <input value={slackCode} onChange={(e) => setSlackCode(e.target.value)} placeholder="paste code" />
           </label>
-          <button type="button" onClick={() => void completeSlackOAuth()} disabled={busy || !slackCode.trim()}>
+          <button type="button" onClick={() => void submitSlackOAuth()} disabled={busy || !slackCode.trim()}>
             Complete Slack OAuth
           </button>
         </div>
