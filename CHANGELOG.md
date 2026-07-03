@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-07-02
+
 ### Added
 
+- **Distributed decision polish:** external HSM signing via `SPANDA_HSM_SIGN_SCRIPT` / `SPANDA_TPM2_SIGN_SCRIPT`; per-robot fleet mesh vote posting; Control Center fleet mesh status panel; `split-brain-mesh` attack simulation; API proxy `GET /v1/decisions/mesh`.
 - **Distributed decision fleet mesh enhancements:** coordinator-side conflict aggregation (`/v1/fleet/decisions/vote/ingest`, `/v1/fleet/decisions/conflicts`); shared multi-node nonce registry (`/v1/fleet/decisions/nonce/register`); pluggable signing backend (`SPANDA_CRYPTO_BACKEND`, `SPANDA_DECISION_SIGNING_KEY_ID`) for decision trees, offline policies, and v3 envelopes.
 - **Distributed decision stable promotion:** runtime conflict resolution, persistent escalation store (`/v1/decisions/escalate`, `/v1/decisions/escalations`), Ed25519 decision tree signing (`spanda decision sign-tree`), persisted nonce registry, v3 envelope signatures; Control Center escalation approve; [stable-hardening-distributed-decisions.md](docs/stable-hardening-distributed-decisions.md); promoted to **Stable** in feature-status.
 - **Distributed decision hardening (Experimental):** rule enforcement tests (`rule_enforcement`, `attack_simulations`); live `spanda decision simulate-attack` with JSON evidence; GPS loss recovery flagship demo (`examples/showcase/distributed_decisions/gps_loss_recovery/`); v3 trace proof fields; `distributed-decisions` CI job; [distributed-decision-security.md](docs/distributed-decision-security.md), [distributed-decision-demo.md](docs/distributed-decision-demo.md).

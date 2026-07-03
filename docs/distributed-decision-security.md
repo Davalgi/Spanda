@@ -31,6 +31,7 @@ Attack simulations exercise **enforcement code paths** with constructed adversar
 | Compromised robot | `spanda decision simulate-attack compromised-robot` | `disable_safety` forbidden while offline |
 | Poisoned telemetry | `spanda decision simulate-attack poisoned-telemetry` | Stale timestamp rejected |
 | Split-brain coordinator | `spanda decision simulate-attack split-brain-coordinator` | Safety precedence wins |
+| Split-brain mesh | `spanda decision simulate-attack split-brain-mesh` | Mesh conflict + shared nonce replay (HTTP when `SPANDA_FLEET_MESH_URL` set) |
 
 All simulations exit non-zero when the unsafe decision is **not** blocked.
 
@@ -101,7 +102,18 @@ Static catalog documents mitigations. Live simulations (`simulate-attack`) produ
 | v3 envelope signatures | **Stable** — Ed25519 when signing key configured |
 | Fleet mesh conflict aggregation | **Stable** — `POST /v1/fleet/decisions/vote/ingest`, `GET /v1/fleet/decisions/conflicts` |
 | Shared fleet nonce registry | **Stable** — `POST /v1/fleet/decisions/nonce/register` (+ local mirror) |
-| Pluggable signing backend | **Stable** — `SPANDA_CRYPTO_BACKEND=software|mock_hsm`, `SPANDA_DECISION_SIGNING_KEY_ID` |
+| Pluggable signing backend | **Stable** — `SPANDA_CRYPTO_BACKEND=software|mock_hsm|script|tpm2`, `SPANDA_HSM_SIGN_SCRIPT` |
+
+## HSM signing (production)
+
+```bash
+export SPANDA_CRYPTO_BACKEND=script   # or tpm2, mock_hsm
+export SPANDA_DECISION_SIGNING_KEY_ID=fleet-signing-key-1
+export SPANDA_HSM_SIGN_SCRIPT=/opt/spanda/bin/hsm-sign.sh   # reads stdin, prints hex Ed25519 sig
+export SPANDA_DECISION_POLICY_TRUST_KEY=<matching public key or material>
+```
+
+The script receives the canonical signing payload on stdin and must print a hex-encoded Ed25519 signature on stdout. Set `SPANDA_HSM_SIGN_REQUIRED=1` to fail closed when the script errors.
 
 ## Former enhancements (resolved)
 
@@ -109,7 +121,7 @@ Static catalog documents mitigations. Live simulations (`simulate-attack`) produ
 |-------------|------------|
 | Fleet mesh coordinator aggregation | Mesh ingest + conflict resolution; runtime uses coordinator winner when `SPANDA_FLEET_MESH_URL` set |
 | Distributed nonce store | Shared mesh registry with local file fallback |
-| Hardware-backed signing keys | `sign_with_backend` abstraction in `spanda-audit` (`mock_hsm` for CI; production HSM via key id) |
+| Hardware-backed signing keys | `sign_with_backend` + `SPANDA_HSM_SIGN_SCRIPT` / `SPANDA_TPM2_SIGN_SCRIPT` for production HSM |
 
 ## Former gaps (resolved)
 

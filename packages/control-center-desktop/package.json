@@ -1,6 +1,6 @@
 {
   "name": "@spanda/control-center-desktop",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Tauri desktop shell for Spanda Control Center",
   "private": true,
   "type": "module",

@@ -39,6 +39,7 @@ run_spanda decision simulate-attack policy-tamper >/dev/null
 run_spanda decision simulate-attack replayed-decision >/dev/null
 run_spanda decision simulate-attack fake-coordinator >/dev/null
 run_spanda decision simulate-attack offline-abuse >/dev/null
+run_spanda decision simulate-attack split-brain-mesh >/dev/null
 
 echo "== stable gap-fix tests =="
 cargo test -p spanda-decision --test stable_gaps --quiet
