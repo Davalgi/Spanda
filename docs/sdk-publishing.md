@@ -263,14 +263,22 @@ git push origin crates-sdk-v${VERSION} sdk-python-v${VERSION} npm-sdk-v${VERSION
 ### 5. Verify install
 
 ```bash
-pip install spanda-sdk
+pip install spanda-sdk==0.5.5
 python -c "from spanda_sdk import SpandaClient; print(SpandaClient.local())"
 
-cargo add spanda-sdk
+cargo add spanda-sdk@0.5.5
 
-npm install @davalgi-spanda/sdk
+npm install @davalgi-spanda/sdk@0.5.5
 node -e "import('@davalgi-spanda/sdk').then(m => console.log(m.SpandaClient.local()))"
 ```
+
+### 6. Verify registries (post-publish)
+
+```bash
+./scripts/verify_sdk_published.sh 0.5.5
+```
+
+GitHub Actions: **Verify published SDKs** (`sdk-publish-verify.yml`) — weekly or manual `workflow_dispatch`.
 
 Check registry pages:
 

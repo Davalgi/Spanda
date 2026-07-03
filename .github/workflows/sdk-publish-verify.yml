@@ -1,0 +1,34 @@
+name: Verify published SDKs
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: SDK semver to verify (default from crates/spanda-sdk/Cargo.toml)
+        required: false
+        type: string
+  schedule:
+  # Weekly check that latest tagged SDK remains on registries
+    - cron: '0 14 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify registry presence
+        run: |
+          chmod +x scripts/verify_sdk_published.sh
+          if [[ -n "${{ inputs.version }}" ]]; then
+            ./scripts/verify_sdk_published.sh "${{ inputs.version }}"
+          else
+            ./scripts/verify_sdk_published.sh 0.5.5
+          fi
