@@ -2543,6 +2543,7 @@ dependencies = [
  "rust-embed",
  "serde",
  "serde_json",
+ "sha2",
  "spanda-assurance",
  "spanda-ast",
  "spanda-audit",

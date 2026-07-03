@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Spanda Slack callback</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #0d1117;
+        color: #e6edf3;
+        margin: 2rem;
+      }
+      code {
+        background: #161b22;
+        padding: 0.15rem 0.35rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Slack authorization</h1>
+    <p id="status">Completing Slack setup…</p>
+    <p id="code-hint" hidden>
+      Paste this code into Control Center → Administration → Slack if the window did not close
+      automatically: <code id="code-value"></code>
+    </p>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const code = params.get("code");
+      const state = params.get("state");
+      const error = params.get("error");
+      const status = document.getElementById("status");
+      const hint = document.getElementById("code-hint");
+      const codeValue = document.getElementById("code-value");
+
+      if (error) {
+        status.textContent = "Slack authorization failed: " + error;
+      } else if (!code) {
+        status.textContent = "Missing authorization code in callback URL.";
+      } else if (window.opener) {
+        window.opener.postMessage(
+          { type: "spanda-slack-oauth", code, state },
+          window.location.origin,
+        );
+        status.textContent = "Slack authorization received — returning to Control Center.";
+        setTimeout(() => window.close(), 1200);
+      } else {
+        status.textContent = "Authorization code captured.";
+        hint.hidden = false;
+        codeValue.textContent = code;
+      }
+    </script>
+  </body>
+</html>

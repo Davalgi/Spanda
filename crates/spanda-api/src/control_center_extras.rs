@@ -323,6 +323,8 @@ struct AdminOidcConfig {
     redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     oauth_state: Option<String>,
+    #[serde(default, skip_serializing)]
+    oauth_code_verifier: Option<String>,
 }
 
 fn admin_oidc_path() -> PathBuf {
@@ -376,6 +378,24 @@ fn url_encode_component(value: &str) -> String {
 
 fn fresh_oauth_state() -> String {
     format!("spanda-{:x}", now_ms() as u128)
+}
+
+fn pkce_verifier() -> String {
+    format!(
+        "spanda-pkce-{:x}-{:x}",
+        now_ms() as u128,
+        std::process::id() as u128
+    )
+}
+
+fn pkce_challenge(verifier: &str) -> String {
+    use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+    use base64::Engine;
+    use sha2::{Digest, Sha256};
+
+    // Hash the verifier with SHA-256 for the S256 PKCE challenge.
+    let digest = Sha256::digest(verifier.as_bytes());
+    URL_SAFE_NO_PAD.encode(digest)
 }
 
 fn fetch_oidc_discovery(issuer: &str) -> Option<serde_json::Value> {
@@ -657,24 +677,29 @@ pub fn admin_oidc_authorize_url(body: &str, ctx: Option<&RbacContext>) -> HttpRe
         .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
         .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
     let state = fresh_oauth_state();
+    let verifier = pkce_verifier();
+    let challenge = pkce_challenge(&verifier);
     config.oauth_state = Some(state.clone());
+    config.oauth_code_verifier = Some(verifier);
     config.redirect_uri = Some(redirect_uri.clone());
     if let Err(error) = persist_admin_oidc(&config) {
         return bad_request(&error);
     }
     let authorize_url = format!(
-        "{}?response_type=code&client_id={}&redirect_uri={}&scope={}&state={}",
+        "{}?response_type=code&client_id={}&redirect_uri={}&scope={}&state={}&code_challenge={}&code_challenge_method=S256",
         authorization_endpoint,
         url_encode_component(client_id),
         url_encode_component(&redirect_uri),
         url_encode_component("openid profile email"),
         url_encode_component(&state),
+        url_encode_component(&challenge),
     );
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "authorize_url": authorize_url,
         "state": state,
         "redirect_uri": redirect_uri,
+        "pkce": true,
     }))
 }
 
@@ -745,13 +770,20 @@ pub fn admin_oidc_oauth_callback(
     if token_endpoint.is_empty() {
         return bad_request("token_endpoint missing from discovery document");
     }
-    let form = format!(
-        "grant_type=authorization_code&code={}&redirect_uri={}&client_id={}&client_secret={}",
-        url_encode_component(request.code.trim()),
-        url_encode_component(&redirect_uri),
-        url_encode_component(client_id),
-        url_encode_component(client_secret),
-    );
+    let form = {
+        let mut body = format!(
+            "grant_type=authorization_code&code={}&redirect_uri={}&client_id={}&client_secret={}",
+            url_encode_component(request.code.trim()),
+            url_encode_component(&redirect_uri),
+            url_encode_component(client_id),
+            url_encode_component(client_secret),
+        );
+        if let Some(verifier) = config.oauth_code_verifier.as_deref() {
+            body.push_str("&code_verifier=");
+            body.push_str(&url_encode_component(verifier));
+        }
+        body
+    };
     let token_response = match ureq::post(token_endpoint)
         .set("Content-Type", "application/x-www-form-urlencoded")
         .send_string(&form)
@@ -796,6 +828,7 @@ pub fn admin_oidc_oauth_callback(
         updated = counts.1;
     }
     config.oauth_state = None;
+    config.oauth_code_verifier = None;
     config.last_sync_at = Some(now_ms());
     if let Err(error) = persist_admin_oidc(&config) {
         return bad_request(&error);

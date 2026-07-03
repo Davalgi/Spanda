@@ -108,6 +108,34 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
+    if request.method == "GET" {
+        if path == "/admin/oauth/oidc/callback" {
+            let response = html_ok(include_str!("static/oauth-oidc-callback.html"));
+            e3::record_trace(
+                state,
+                &correlation_id,
+                &request.method,
+                path,
+                response.status,
+                started_ms,
+                None,
+            );
+            return (response, correlation_id);
+        }
+        if path == "/admin/oauth/slack/callback" {
+            let response = html_ok(include_str!("static/oauth-slack-callback.html"));
+            e3::record_trace(
+                state,
+                &correlation_id,
+                &request.method,
+                path,
+                response.status,
+                started_ms,
+                None,
+            );
+            return (response, correlation_id);
+        }
+    }
     if !path.starts_with("/v1/") {
         let response = not_found();
         e3::record_trace(
