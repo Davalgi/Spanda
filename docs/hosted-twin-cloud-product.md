@@ -40,6 +40,8 @@ helm upgrade --install acme-twin-cloud deploy/twin-cloud-hosted/helm/twin-cloud 
 | Billing meter | — | API calls / stored snapshots per tenant |
 | SLA / status page | — | 99.9% target, public status |
 | Multi-region | — | Active-passive or cell-per-region |
+| Control Center tenant switcher | — | Per-tenant API key / `tenant_id` in shell — [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) |
+| Twin Cloud usage dashboard | — | Snapshot meters, sync status in Control Center Administration — [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) |
 
 ## Billing integration (stub)
 

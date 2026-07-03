@@ -173,7 +173,7 @@ flowchart TB
 | 12 | Context awareness (geofencing, hazard zones, fatigue alerts) | LATER | **Planned** |
 | 13 | Human digital twin (operator, team, training) | LATER | **Planned** |
 | 14 | Human health integration (optional, privacy-controlled) | LATER | **Planned** |
-| 15 | Control Center human dashboards & collaboration UI | LATER | **Planned** |
+| 15 | Control Center human dashboards & collaboration UI | LATER | **Planned** — AR session viewer, VR training launcher, collaboration graph, AR annotate, mission task allocation; tracked in [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) (P2 Humans — AR/VR/collaboration UX) |
 
 ---
 

@@ -369,6 +369,42 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 | **Slack OAuth setup wizard** | Alert channel config UI supports webhook JSON; no Slack app OAuth onboarding flow in Control Center |
 | **gRPC server reflection** | Native gRPC serves 139 RPCs; no reflection service for dynamic clients (grpcurl without proto) |
 
+**Control Center enhancement backlog (depth + integration):**
+
+Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritizes wiring playground-only panels, visual ops dashboards, enterprise admin gaps, and richer UX on existing tabs. Full spec: [docs/enterprise-operations-roadmap.md §6.1](docs/enterprise-operations-roadmap.md#61-control-center).
+
+| Priority | Item | Tier | Timeline | Notes |
+|----------|------|------|----------|-------|
+| P1 | **Telemetry tab** | **Planned** | Next | Promote `TelemetryPanel` from web playground into Control Center nav; WebSocket streams, live signal browser |
+| P1 | **Readiness trends & forecasting UI** | **Planned** | Next | Charts from `spanda readiness trends` / `/v1/analytics/readiness-forecast`; history from `.spanda/readiness-history.json` |
+| P1 | **Mission continuity console** | **Planned** | Next | Promote `OperationsPanel` continuity/takeover/delegate flows into CC Mission or dedicated Continuity tab; remote expert handoff — [docs/remote-expert.md](docs/remote-expert.md) |
+| P1 | **Fleet map / geospatial view** | **Planned** | Next | 2D map with robot pins, zones, alert overlays; agriculture/maritime/delivery blueprints expect this |
+| P1 | **Reports tab** | **Planned** | Next | First-class schedules CRUD, PDF/Markdown preview, webhook delivery status (`/v1/reports/schedules`) |
+| P1 | **Grafana / observability bridge** | **Planned** | Next | Deep links or embedded Grafana panels; Jaeger/trace shortcuts from SRE tab; fast-burn alert banners on dashboard |
+| P2 | **External IdP / OIDC sync** | **Planned** | Next | Group→role mapping; SSO directory import (see Administrator console above) |
+| P2 | **Slack OAuth setup wizard** | **Planned** | Next | Guided Slack app onboarding vs raw webhook JSON |
+| P2 | **gRPC server reflection** | **Planned** | Next | grpcurl/grpcui without bundling `control_center.proto` |
+| P2 | **Humans — AR/VR/collaboration UX** | **Planned** | Later | AR session viewer, VR training launcher, live collaboration graph, AR annotation publish, mission task allocation — extends H4/H5/H6 APIs — [docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md) |
+| P2 | **Smart Spaces floor-plan visualization** | **Planned** | Later | Visual floor map from `GET /v1/facilities/{id}/floor-map` (occupancy, emergency, robots) |
+| P2 | **Entity graph explorer** | **Planned** | Later | Interactive graph from `/v1/entities/graph` — filter by kind, expand neighborhoods, trace `depends_on` |
+| P2 | **Analytics visual depth** | **Planned** | Later | Trust/decision graph renderers; mission time-travel scrubber tied to Replay; certification pack composer + download |
+| P2 | **Config change history** | **Planned** | Later | Audit-linked config snapshot changelog (snapshots + approvals shipped; history view planned) |
+| P3 | **Plugin panel loader** | **Planned** | Later | Load TypeScript bundles from installed plugins (`GET /v1/plugins/control-center`); replace placeholder `ControlCenterPluginPanel` |
+| P3 | **Plugin marketplace browser** | **Planned** | Later | Installable solution dashboards (ADAS, Smart Spaces, warehouse) via registry — ties to Marketplace pillar |
+| P3 | **Deploy gate checklist modal** | **Planned** | Later | Pre-deploy UI from Mission/Config using `spanda deploy gate` |
+| P3 | **Chaos engineering panel** | **Planned** | Later | Sandbox fault injection controls for sim/replay — [docs/chaos-engineering.md](docs/chaos-engineering.md) |
+| P3 | **OTA rollout progress UI** | **Planned** | Later | Visual canary/blue-green progress + one-click rollback on OTA tab |
+| P3 | **Bulk device actions** | **Planned** | Later | Quarantine/trust/assign in bulk; approval queue integration on Devices tab |
+| P3 | **Decision policy editor** | **Planned** | Later | Policy edit + `sign-policy` workflow in Decisions tab |
+| P3 | **Desktop — bundled local API** | **Planned** | Later | Optional one-click start of `spanda control-center serve` inside Tauri shell |
+| P3 | **Desktop — native notifications** | **Planned** | Later | OS notifications for SRE fast-burn and critical alerts |
+| P3 | **Desktop — system tray** | **Planned** | Later | Tray icon with fleet health summary |
+| P3 | **Desktop — offline cache** | **Planned** | Later | Last-known dashboard state when API unreachable |
+| P3 | **Multi-tenant tenant switcher** | **Planned** | Later | Per-tenant API key / `tenant_id` switching in shell — [docs/hosted-twin-cloud-product.md](docs/hosted-twin-cloud-product.md) |
+| P3 | **Twin Cloud usage dashboard** | **Planned** | Later | Snapshot push/pull meters, sync status, billing dimensions per tenant |
+| P3 | **WASM playground in Control Center** | **Planned** | Later | Education blueprint — inline check/run/verify for developers |
+| P3 | **Discovery transport wizards** | **Planned** | Later | Guided setup for OPC-UA, Modbus, and other stub transports in Discovery tab |
+
 **Topic guides:** [docs/control-center.md](docs/control-center.md) · [docs/telemetry-store.md](docs/telemetry-store.md) · [docs/readiness-trends.md](docs/readiness-trends.md) · [docs/drift-detection.md](docs/drift-detection.md)
 
 ---

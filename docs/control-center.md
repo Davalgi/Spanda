@@ -4,6 +4,8 @@ Web-based operational visibility for fleets, devices, readiness, and alerts. Pha
 
 **Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [device-pool.md](./device-pool.md) · [device-provisioning.md](./device-provisioning.md) · [telemetry-store.md](./telemetry-store.md) · [configuration.md](./configuration.md) · [troubleshooting.md](./troubleshooting.md) (stale CLI, `Unknown argument: generate`)
 
+**Roadmap:** Shipped tabs and APIs are **Stable** (see [feature-status.md](./feature-status.md)). Planned depth work — telemetry tab, fleet map, continuity console, reports, SSO, plugin loader, desktop enhancements, and more — is tracked in [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) and [enterprise-operations-roadmap.md §6.1](./enterprise-operations-roadmap.md#61-control-center).
+
 ---
 
 ## Quick start
