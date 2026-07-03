@@ -130,7 +130,8 @@ export default function App() {
         </div>
       )}
 
-      <div className="layout">
+      <div className={view === "control-center" ? "layout layout--control-center" : "layout"}>
+        {view !== "control-center" && (
         <section className="editor-pane">
           <textarea
             value={source}
@@ -139,8 +140,9 @@ export default function App() {
             aria-label="Spanda source"
           />
         </section>
+        )}
 
-        <section className="output-pane">
+        <section className={view === "control-center" ? "output-pane output-pane--full" : "output-pane"}>
           {view === "control-center" ? (
             <ControlCenterPanel apiBase={apiBase} />
           ) : view === "operations" ? (

@@ -8,13 +8,7 @@ const apiBase =
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <div className="app">
-      <header>
-        <div>
-          <h1>Spanda Control Center</h1>
-          <p className="subtitle">Desktop shell — enterprise operations dashboard</p>
-        </div>
-      </header>
+    <div className="app cc-desktop-app">
       <ControlCenterPanel apiBase={apiBase} />
     </div>
   </StrictMode>,
