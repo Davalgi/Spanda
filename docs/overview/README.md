@@ -6,7 +6,7 @@ Expanded home linked from the root [README.md](../../README.md). For hands-on st
 
 | Page | Contents |
 |------|----------|
-| [flagship-demos.md](./flagship-demos.md) | **5-minute eval** and three flagship demo stories |
+| [flagship-demos.md](./flagship-demos.md) | **5-minute eval** and four flagship demo stories |
 | [where-to-start.md](./where-to-start.md) | **Audience paths** — developers, robotics, safety, QA, fleet, contributors |
 | [what-spanda-is.md](./what-spanda-is.md) | What Spanda is / is not, capability grid |
 | [signature-capabilities.md](./signature-capabilities.md) | Safety-Typed AI, readiness, continuity, trust, explainability |

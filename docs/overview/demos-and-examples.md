@@ -30,6 +30,7 @@ Walkthrough: [killer-demo.md](../killer-demo.md) · Video script: [demo-script.m
 | **Platform** | Packages → providers → replay | `cd examples/showcase/autonomous_rover && spanda install && spanda run src/rover.sd --trace-providers` |
 | **Assurance** | Mission assurance CLI suite | `spanda demo assurance` |
 | **Continuity** | Takeover, delegation, succession | `spanda demo continuity` |
+| **Distributed decisions** | GPS loss recovery across decision layers | `spanda demo distributed-decisions` |
 
 Showcase index: [examples/showcase/README.md](../../examples/showcase/README.md)
 

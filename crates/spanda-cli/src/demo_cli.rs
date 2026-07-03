@@ -676,40 +676,35 @@ fn demo_continuity(root: &Path) {
 }
 
 fn demo_distributed_decisions(root: &Path) {
-    let main_path = showcase(root, &["distributed_decisions", "main.sd"]);
-    let reflex_path = showcase(
+    let gps_path = showcase(
         root,
-        &["distributed_decisions", "obstacle_reflex_stop", "main.sd"],
+        &["distributed_decisions", "gps_loss_recovery", "mission.sd"],
     );
-    let offline_path = showcase(
-        root,
-        &[
-            "distributed_decisions",
-            "offline_mission_continue",
-            "main.sd",
-        ],
-    );
-    let main_sd = require_file(&main_path);
-    let reflex_sd = require_file(&reflex_path);
-    let offline_sd = require_file(&offline_path);
-    let main_file = main_sd.to_str().unwrap();
-    let reflex_file = reflex_sd.to_str().unwrap();
-    let offline_file = offline_sd.to_str().unwrap();
+    let gps_sd = require_file(&gps_path);
+    let gps_file = gps_sd.to_str().unwrap();
 
-    println!("== Distributed decisions — layers, traces, signed policy cache ==\n");
-    run_spanda("check", main_sd, &[]);
-    run_spanda("check", reflex_sd, &[]);
-    run_spanda_args(&["decision", "list", main_file]);
+    println!("== GPS loss recovery — flagship distributed decision demo ==\n");
+    run_spanda("check", gps_sd, &[]);
+    run_spanda_args(&["decision", "list", gps_file]);
     run_spanda_args(&[
         "decision",
         "inspect",
-        main_file,
+        gps_file,
         "--entity",
         "Rover001",
         "--action",
-        "emergency_stop",
+        "degraded_mode",
+        "--signal",
+        "gps.status == Failed=true,visual_odometry.available=true",
     ]);
-    run_spanda_args(&["decision", "simulate", main_file, "--offline"]);
+    run_spanda_args(&[
+        "decision",
+        "simulate",
+        gps_file,
+        "--offline",
+        "--entity",
+        "Rover001",
+    ]);
     std::env::set_var(
         "SPANDA_DECISION_POLICY_SIGNING_KEY",
         "demo-offline-signing-key",
@@ -717,23 +712,25 @@ fn demo_distributed_decisions(root: &Path) {
     run_spanda_args(&[
         "decision",
         "sign-policy",
-        offline_file,
+        gps_file,
         "--policy",
         "RoverOffline",
         "--write-cache",
     ]);
     run_spanda_args(&["decision", "cache", "show"]);
     std::env::set_var("SPANDA_DECISION_TRACE", "1");
-    run_spanda_args(&["sim", reflex_file, "--record", "--inject-health-faults"]);
-    let trace_path = reflex_sd.with_extension("trace");
+    run_spanda_args(&["sim", gps_file, "--record", "--inject-health-faults"]);
+    let trace_path = gps_sd.with_extension("trace");
     if trace_path.is_file() {
         let trace_file = trace_path.to_str().unwrap();
+        run_spanda_args(&["replay", trace_file]);
         run_spanda_args(&["decision", "trace", trace_file]);
         run_spanda_args(&["audit", "decisions", trace_file]);
     }
+    run_spanda("assure", gps_sd, &[]);
 
     println!(
-        "\nDemo complete. See examples/showcase/distributed_decisions/ and docs/distributed-decisions.md"
+        "\nDemo complete. See examples/showcase/distributed_decisions/gps_loss_recovery/ and docs/distributed-decision-demo.md"
     );
 }
 
@@ -1538,7 +1535,7 @@ pub fn demo_dispatch(args: &[String]) {
                    assurance — mission assurance CLI suite (assure, anomaly, state)\n\
                    self-healing — recovery policies, heal/recover/sim, fleet recovery\n\
                    continuity — mission continuity, takeover, delegation, succession\n\
-                   distributed-decisions — decision trees, offline policy, traces, policy cache\n\
+                   distributed-decisions — GPS loss recovery demo: trees, offline policy, traces\n\
                    what-if — failure scenario impact, risk, and recovery predictions\n\
                    risk — mission deployment risk score and mitigations\n\
                    trust-graph — trust-weighted mission → provider dependency graph\n\
