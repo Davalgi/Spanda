@@ -84,7 +84,11 @@ pub fn merge_plugin_playbooks(
         if playbooks.iter().any(|pb| pb.name == ext.name) {
             continue;
         }
-        let trigger = ext.description.clone();
+        let trigger = ext
+            .trigger
+            .clone()
+            .or_else(|| Some(ext.description.clone()))
+            .unwrap_or_else(|| ext.name.clone());
         playbooks.push(RecoveryPlaybook {
             name: ext.name.clone(),
             version: "plugin".into(),
@@ -93,7 +97,11 @@ pub fn merge_plugin_playbooks(
             steps: vec![PlaybookStep {
                 order: 1,
                 description: format!("Plugin playbook: {}", ext.name),
-                strategy: OrchestratorStrategy::Custom(ext.name.clone()),
+                strategy: ext
+                    .strategy
+                    .as_ref()
+                    .and_then(|s| registry.resolve_strategy(s))
+                    .unwrap_or_else(|| OrchestratorStrategy::Custom(ext.name.clone())),
                 escalation_level: RecoveryEscalationLevel::Level3RecoverDevice,
                 timeout_secs: 120,
                 requires_validation: true,

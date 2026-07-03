@@ -45,6 +45,22 @@ impl RecoveryOrchestrator {
         self
     }
 
+    /// Attach persisted evidence history.
+    pub fn with_history(mut self, history: RecoveryHistoryStore) -> Self {
+        self.history = history;
+        self
+    }
+
+    /// Take ownership of the evidence history store (for persistence).
+    pub fn into_history(self) -> RecoveryHistoryStore {
+        self.history
+    }
+
+    /// Borrow the evidence history store.
+    pub fn history(&self) -> &RecoveryHistoryStore {
+        &self.history
+    }
+
     fn plugin_registry(&self) -> Option<&crate::plugin::RecoveryPluginRegistry> {
         self.plugins.as_ref()
     }
@@ -194,10 +210,13 @@ impl RecoveryOrchestrator {
 
         let knowledge = load_knowledge(program);
         let metrics = compute_metrics(&self.history, &knowledge);
-        let passed = results
-            .iter()
-            .all(|r| r.status != spanda_runtime::recovery_types::RecoveryStatus::Failed)
-            && plan_report.passed;
+        let passed = results.iter().all(|r| {
+        r.status != spanda_runtime::recovery_types::RecoveryStatus::Failed
+    }) && plan_report.passed
+        && plugin_validation_passed(
+            self.plugin_registry(),
+            &plan_report.plans,
+        );
 
         OrchestratorRecoveryReport {
             plans: plan_report.plans,
@@ -355,4 +374,22 @@ impl RecoveryOrchestrator {
         enrich_plan_with_impact(&mut plan, &graph);
         Some(plan)
     }
+}
+
+fn plugin_validation_passed(
+    plugins: Option<&crate::plugin::RecoveryPluginRegistry>,
+    plans: &[OrchestratedRecoveryPlan],
+) -> bool {
+    let Some(registry) = plugins else {
+        return true;
+    };
+    if registry
+        .list(crate::plugin::PLUGIN_KIND_VALIDATOR)
+        .is_empty()
+    {
+        return true;
+    }
+    plans
+        .iter()
+        .all(|plan| plan.decision.can_recover && plan.decision.is_safe)
 }

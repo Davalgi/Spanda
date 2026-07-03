@@ -448,6 +448,10 @@ pub struct PluginRecoveryExtension {
     pub extension_kind: String,
     pub name: String,
     pub description: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trigger: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<String>,
 }
 
 /// Validation result for orchestrated recovery.

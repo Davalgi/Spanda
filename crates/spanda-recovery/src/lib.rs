@@ -24,8 +24,8 @@ pub use format::{
     format_playbooks,
 };
 pub use graph::{
-    analyze_impact, build_recovery_graph, enrich_plan_with_impact, list_recoverable_entities,
-    RecoveryGraph, RecoveryGraphEdge, RecoveryGraphNode,
+    analyze_impact, build_recovery_graph, enrich_plan_with_impact, enrich_registry_from_program,
+    list_recoverable_entities, RecoveryGraph, RecoveryGraphEdge, RecoveryGraphNode,
 };
 pub use learning::{compute_metrics, load_knowledge, recommend_strategy, RecoveryHistoryStore};
 pub use orchestrator::RecoveryOrchestrator;

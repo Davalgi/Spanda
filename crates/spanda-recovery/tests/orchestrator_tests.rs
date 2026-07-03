@@ -134,6 +134,8 @@ fn plugin_registry_accepts_extensions() {
         extension_kind: "strategy".into(),
         name: "custom_retry".into(),
         description: "Custom retry strategy".into(),
+        trigger: None,
+        strategy: None,
     });
     assert!(registry.resolve_strategy("custom_retry").is_some());
 }
