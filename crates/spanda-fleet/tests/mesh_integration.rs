@@ -405,6 +405,61 @@ fn mesh_coordinator_correlates_ingested_tamper_traces() {
 }
 
 #[test]
+fn mesh_coordinator_resolves_decision_conflicts_and_shared_nonce() {
+    init_runtimes();
+    use spanda_deploy_http::{
+        fetch_fleet_decision_conflict, ingest_fleet_decision_vote,
+        register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest,
+        FleetDecisionVoteIngestRequest,
+    };
+
+    let registry = FleetAgentRegistry::default();
+    let (mesh_port, _mesh) = spawn_test_fleet_mesh(&registry).expect("spawn mesh");
+    thread::sleep(Duration::from_millis(30));
+    let mesh_url = format!("http://127.0.0.1:{mesh_port}");
+    let round = "mesh-decision-round-1";
+    for (entity, action, precedence) in [
+        ("RoverA", "continue_mission", "fleet_coordination"),
+        ("RoverB", "emergency_stop", "safety_kill_switch"),
+    ] {
+        ingest_fleet_decision_vote(
+            &mesh_url,
+            &FleetDecisionVoteIngestRequest {
+                round_id: round.into(),
+                entity_id: entity.into(),
+                action: action.into(),
+                layer_precedence: precedence.into(),
+                reason: "mesh integration test".into(),
+                fleet_name: Some("PatrolFleet".into()),
+            },
+            None,
+        )
+        .expect("ingest vote");
+    }
+    let conflict = fetch_fleet_decision_conflict(&mesh_url, round, None).expect("resolve");
+    assert_eq!(conflict.resolution.winner.action, "emergency_stop");
+    register_fleet_decision_nonce(
+        &mesh_url,
+        &FleetDecisionNonceRegisterRequest {
+            nonce: "mesh-shared-nonce-1".into(),
+            entity_id: Some("RoverA".into()),
+        },
+        None,
+    )
+    .expect("register nonce");
+    let replay = register_fleet_decision_nonce(
+        &mesh_url,
+        &FleetDecisionNonceRegisterRequest {
+            nonce: "mesh-shared-nonce-1".into(),
+            entity_id: Some("RoverB".into()),
+        },
+        None,
+    )
+    .expect("replay response");
+    assert!(!replay.accepted);
+}
+
+#[test]
 fn swarm_continuity_handoff_relays_through_mesh() {
     let (port_b, _agent_b) = spawn_test_fleet_agent("ScoutB", None).expect("spawn ScoutB");
     let mut registry = FleetAgentRegistry::default();

@@ -3,6 +3,7 @@
 pub mod agent;
 pub mod continuity_agent;
 pub mod continuity_mesh;
+pub mod decision_mesh;
 pub mod mesh;
 pub mod orchestrator;
 pub mod platform_events;
@@ -17,6 +18,7 @@ mod types;
 
 pub use agent::*;
 pub use continuity_mesh::*;
+pub use decision_mesh::*;
 pub use mesh::*;
 pub use orchestrator::*;
 pub use recovery_mesh::*;

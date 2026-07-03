@@ -1,6 +1,10 @@
 //! Multi-host fleet mesh coordinator for centralized peer relay routing.
 //!
 use crate::continuity_mesh::handle_fleet_continuity_post;
+use crate::decision_mesh::{
+    handle_fleet_decision_conflicts_get, handle_fleet_decision_nonce_register_post,
+    handle_fleet_decision_nonce_status_get, handle_fleet_decision_vote_ingest_post,
+};
 use crate::recovery_mesh::handle_fleet_recovery_post;
 use crate::remote::{
     default_fleet_agents_path, load_fleet_agent_registry, relay_peer_deliveries, FleetAgentRegistry,
@@ -9,6 +13,7 @@ use crate::tamper_mesh::{handle_fleet_tamper_get, handle_fleet_tamper_ingest_pos
 use crate::telemetry_mesh::{handle_fleet_telemetry_get, handle_fleet_telemetry_ingest_post};
 use crate::PeerDelivery;
 use serde::{Deserialize, Serialize};
+use spanda_decision::PersistedNonceRegistry;
 use spanda_deploy_http::FleetContinuityResponse;
 use spanda_deploy_http::FleetRecoveryResponse;
 use spanda_deploy_http::{
@@ -52,7 +57,7 @@ pub fn default_fleet_mesh_state_path() -> PathBuf {
     PathBuf::from(".spanda/fleet-mesh-state.json")
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct FleetMeshState {
     pub relayed_total: u32,
     pub failed_total: u32,
@@ -68,6 +73,16 @@ pub struct FleetMeshState {
     pub tamper_shards: std::collections::BTreeMap<String, String>,
     #[serde(default)]
     pub tamper_fleet_name: String,
+    #[serde(default)]
+    pub decision_ingest_total: u32,
+    #[serde(default)]
+    pub decision_nonce_register_total: u32,
+    #[serde(default)]
+    pub decision_fleet_name: String,
+    #[serde(default)]
+    pub decision_votes: std::collections::BTreeMap<String, Vec<spanda_decision::CompetingDecision>>,
+    #[serde(default)]
+    pub decision_nonce_registry: PersistedNonceRegistry,
     #[serde(default)]
     pub token: Option<String>,
 }
@@ -258,6 +273,9 @@ pub fn handle_fleet_mesh_request(
                     "telemetry_robots": state.telemetry_shards.len(),
                     "tamper_ingest_total": state.tamper_ingest_total,
                     "tamper_robots": state.tamper_shards.len(),
+                    "decision_ingest_total": state.decision_ingest_total,
+                    "decision_rounds": state.decision_votes.len(),
+                    "decision_nonce_registry_size": state.decision_nonce_registry.seen.len(),
                     "healthy": true,
                 }))
                 .unwrap_or_else(|_| "{}".into()),
@@ -299,6 +317,18 @@ pub fn handle_fleet_mesh_request(
         }
         ("POST", "/v1/fleet/tamper/ingest") => {
             handle_fleet_tamper_ingest_post(&request.body, state)
+        }
+        ("POST", "/v1/fleet/decisions/vote/ingest") => {
+            handle_fleet_decision_vote_ingest_post(&request.body, state)
+        }
+        ("GET", path) if path.starts_with("/v1/fleet/decisions/conflicts") => {
+            handle_fleet_decision_conflicts_get(path, state)
+        }
+        ("POST", "/v1/fleet/decisions/nonce/register") => {
+            handle_fleet_decision_nonce_register_post(&request.body, state)
+        }
+        ("GET", "/v1/fleet/decisions/nonce/status") => {
+            handle_fleet_decision_nonce_status_get(state)
         }
         _ => HttpResponse {
             status: 404,

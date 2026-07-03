@@ -1,6 +1,7 @@
 //! Minimal HTTP/1.1 helpers for the Spanda deploy agent protocol.
 //!
 pub mod fleet_continuity;
+pub mod fleet_decision;
 pub mod fleet_recovery;
 pub mod fleet_tamper;
 
@@ -840,6 +841,12 @@ mod http_read_tests {
 
 pub use fleet_continuity::{
     relay_continuity_via_mesh, FleetContinuityRequest, FleetContinuityResponse,
+};
+pub use fleet_decision::{
+    fetch_fleet_decision_conflict, ingest_fleet_decision_vote, register_fleet_decision_nonce,
+    FleetCompetingDecision, FleetConflictResolution, FleetDecisionConflictResponse,
+    FleetDecisionNonceRegisterRequest, FleetDecisionNonceRegisterResponse,
+    FleetDecisionVoteIngestRequest, FleetDecisionVoteIngestResponse,
 };
 pub use fleet_recovery::{relay_recovery_via_mesh, FleetRecoveryRequest, FleetRecoveryResponse};
 pub use fleet_tamper::{
