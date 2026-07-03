@@ -1,0 +1,10 @@
+[governance]
+autonomy_level = "conditional_autonomy"
+deployment_profile = "search_rescue"
+operational_maturity = "pilot"
+certification_status = "testing"
+risk_level = "mission_critical"
+responsible_person = "sar.lead@rescue.gov"
+deployment_owner = "ops@rescue.gov"
+standards_profiles = "aviation,functional_safety"
+constraints = "outdoor,remote,limited_bandwidth"

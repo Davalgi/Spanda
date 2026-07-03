@@ -225,6 +225,15 @@
 | [mission-diff.md](./mission-diff.md) | **Mission differencing and change-impact** |
 | [policy-engine.md](./policy-engine.md) | **Declarative operational policies** |
 | [compliance-profiles.md](./compliance-profiles.md) | **Industry verification profile templates** |
+| [governance.md](./governance.md) | **Operational Governance Framework — autonomy, profiles, certification, risk** |
+| [compliance-framework.md](./compliance-framework.md) | **Compliance validation and governance checks** |
+| [certification-lifecycle.md](./certification-lifecycle.md) | **Certification states independent from health** |
+| [deployment-profiles.md](./deployment-profiles.md) | **Industry deployment context profiles** |
+| [autonomy-levels.md](./autonomy-levels.md) | **Autonomy levels 0–5 and platform influence** |
+| [risk-model.md](./risk-model.md) | **Operational risk tiers** |
+| [human-accountability.md](./human-accountability.md) | **Responsible owners and approval chains** |
+| [standards-profiles.md](./standards-profiles.md) | **Standards profile references via packages** |
+| [governance-migration.md](./governance-migration.md) | **Governance migration and compatibility** |
 | [solutions/README.md](./solutions/README.md) | **Official Solution Blueprints index** |
 | [solutions/warehouse.md](./solutions/warehouse.md) | **Warehouse Automation blueprint** |
 | [solutions/smart-factory.md](./solutions/smart-factory.md) | **Smart Factory blueprint** |

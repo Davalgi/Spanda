@@ -1,0 +1,11 @@
+[governance]
+autonomy_level = "assisted"
+deployment_profile = "hospital"
+operational_maturity = "pilot"
+certification_status = "validated"
+risk_level = "life_critical"
+responsible_person = "connected.health@provider.example.com"
+responsible_organization = "Connected Health Inc"
+deployment_owner = "platform.ops@provider.example.com"
+standards_profiles = "medical_device,cybersecurity"
+constraints = "connectivity,latency"

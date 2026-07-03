@@ -1,0 +1,11 @@
+[governance]
+autonomy_level = "partial_automation"
+deployment_profile = "warehouse"
+operational_maturity = "pilot"
+certification_status = "validated"
+risk_level = "medium"
+responsible_person = "warehouse.ops@example.com"
+deployment_owner = "fleet.manager@example.com"
+mission_owner = "logistics@example.com"
+standards_profiles = "industrial_safety,cybersecurity"
+constraints = "indoor,connectivity"

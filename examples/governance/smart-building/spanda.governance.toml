@@ -1,0 +1,10 @@
+[governance]
+autonomy_level = "partial_automation"
+deployment_profile = "smart_building"
+operational_maturity = "production"
+certification_status = "certified"
+risk_level = "low"
+responsible_person = "building.manager@example.com"
+deployment_owner = "facilities@example.com"
+standards_profiles = "cybersecurity"
+constraints = "indoor,connectivity"

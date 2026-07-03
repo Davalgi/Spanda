@@ -1,0 +1,10 @@
+[governance]
+autonomy_level = "partial_automation"
+deployment_profile = "factory"
+operational_maturity = "production"
+certification_status = "certified"
+risk_level = "high"
+responsible_person = "safety@factory.example.com"
+deployment_owner = "plant.ops@factory.example.com"
+standards_profiles = "industrial_safety,functional_safety"
+constraints = "indoor,hazardous_area"

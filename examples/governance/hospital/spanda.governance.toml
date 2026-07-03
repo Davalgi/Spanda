@@ -1,0 +1,12 @@
+[governance]
+autonomy_level = "assisted"
+deployment_profile = "hospital"
+operational_maturity = "pre_production"
+certification_status = "under_review"
+risk_level = "life_critical"
+responsible_person = "clinical.ops@hospital.org"
+responsible_organization = "Metro General Hospital"
+deployment_owner = "facilities@hospital.org"
+mission_owner = "nursing@hospital.org"
+standards_profiles = "medical_device,functional_safety"
+constraints = "indoor,clean_room"

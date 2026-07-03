@@ -1,0 +1,10 @@
+[governance]
+autonomy_level = "conditional_autonomy"
+deployment_profile = "road_vehicle"
+operational_maturity = "simulation"
+certification_status = "validated"
+risk_level = "life_critical"
+responsible_person = "fsm@automotive.example.com"
+deployment_owner = "validation@automotive.example.com"
+standards_profiles = "automotive,functional_safety"
+constraints = "outdoor,gps_availability"
