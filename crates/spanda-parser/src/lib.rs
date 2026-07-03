@@ -10054,6 +10054,7 @@ impl Parser {
         self.expect(TokenType::Lbrace, "Expected '{' after decision_tree scope")?;
         let mut branches = Vec::new();
         let mut version = None;
+        let mut signature = None;
         while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
             if self.check(TokenType::Ident) && self.peek().lexeme == "version" {
                 self.advance();
@@ -10063,6 +10064,18 @@ impl Parser {
                     Some(tok.lexeme.trim_matches('"').to_string())
                 } else {
                     Some(self.parse_label("Expected version string")?)
+                };
+                if self.check(TokenType::Semicolon) {
+                    self.advance();
+                }
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "signature" {
+                self.advance();
+                self.expect(TokenType::Assign, "Expected '=' after signature")?;
+                signature = if self.check(TokenType::String) {
+                    let tok = self.advance();
+                    Some(tok.lexeme.trim_matches('"').to_string())
+                } else {
+                    Some(self.parse_label("Expected signature hex")?)
                 };
                 if self.check(TokenType::Semicolon) {
                     self.advance();
@@ -10130,7 +10143,7 @@ impl Parser {
                 });
             } else {
                 return Err(SpandaError::Parse {
-                    message: "Expected 'when' branch or 'version' in decision_tree".into(),
+                    message: "Expected 'when' branch, 'version', or 'signature' in decision_tree".into(),
                     line: self.peek().line,
                     column: self.peek().column,
                 });
@@ -10142,6 +10155,7 @@ impl Parser {
             scope,
             layer,
             version,
+            signature,
             branches,
             span: self.span_from(&start, &end),
         })

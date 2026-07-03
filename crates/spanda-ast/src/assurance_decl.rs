@@ -259,6 +259,8 @@ pub enum DecisionTreeDecl {
         layer: String,
         #[serde(default)]
         version: Option<String>,
+        #[serde(default)]
+        signature: Option<String>,
         branches: Vec<DecisionTreeBranch>,
         span: Span,
     },

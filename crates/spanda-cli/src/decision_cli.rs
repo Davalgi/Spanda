@@ -4,9 +4,9 @@ use spanda_decision::{
     audit_decisions_from_trace, evaluate_distributed_decisions, extract_decision_authorities,
     extract_decision_trees, extract_offline_policies, format_decision_audit,
     format_decision_explanations, format_distributed_report, format_simulation_report,
-    load_persisted_policy_cache, save_persisted_policy_cache, security_audit, sign_offline_policy,
-    simulate_distributed_decisions, threat_model_summary, AttackScenario, DecisionContext,
-    DecisionLayer, OfflinePolicySpec, PersistedPolicyCache, SimulationOptions,
+    load_persisted_policy_cache, save_persisted_policy_cache, security_audit, sign_decision_tree,
+    sign_offline_policy, simulate_distributed_decisions, threat_model_summary, AttackScenario,
+    DecisionContext, DecisionLayer, OfflinePolicySpec, PersistedPolicyCache, SimulationOptions,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
@@ -279,6 +279,78 @@ pub fn cmd_decision_sign_policy(args: &[String]) {
     }
 }
 
+/// `spanda decision sign-tree <file.sd> [--tree <name>] [--key <material>] [--write-cache] [--json]`
+pub fn cmd_decision_sign_tree(args: &[String]) {
+    let path = file_arg(args);
+    let program = read_and_parse(&path);
+    let trees = extract_decision_trees(&program);
+    if trees.is_empty() {
+        eprintln!("No decision_tree declarations in {path}");
+        process::exit(1);
+    }
+    let filter = flag_value(args, "--tree");
+    let signing_key = flag_value(args, "--key")
+        .or_else(|| std::env::var("SPANDA_DECISION_POLICY_SIGNING_KEY").ok())
+        .unwrap_or_else(|| {
+            eprintln!(
+                "Missing signing key: pass --key <material> or set SPANDA_DECISION_POLICY_SIGNING_KEY"
+            );
+            process::exit(1);
+        });
+    let write_cache = args.iter().any(|a| a == "--write-cache");
+    let mut cache = if write_cache {
+        load_persisted_policy_cache(None)
+    } else {
+        PersistedPolicyCache::new()
+    };
+    let targets: Vec<_> = trees
+        .into_iter()
+        .filter(|t| filter.as_ref().map(|n| n == &t.name).unwrap_or(true))
+        .collect();
+    if targets.is_empty() {
+        eprintln!("No decision tree matching --tree filter");
+        process::exit(1);
+    }
+    let mut signed = Vec::new();
+    for spec in targets {
+        let signature = sign_decision_tree(&spec, &signing_key);
+        let mut signed_spec = spec.clone();
+        signed_spec.signature = Some(signature.clone());
+        if write_cache {
+            cache.upsert_decision_tree(signed_spec.clone());
+        }
+        signed.push(serde_json::json!({
+            "name": signed_spec.name,
+            "version": signed_spec.version,
+            "signature": signature,
+        }));
+        if !json_output(args) {
+            println!("decision_tree {}:", signed_spec.name);
+            println!("  version = \"{}\";", signed_spec.version);
+            println!("  signature = \"{signature}\";");
+        }
+    }
+    if write_cache {
+        if let Err(err) = save_persisted_policy_cache(&mut cache, None) {
+            eprintln!("{err}");
+            process::exit(1);
+        }
+        if !json_output(args) {
+            println!("\nWrote signed trees to {}", cache_path_display());
+        }
+    }
+    if json_output(args) {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&serde_json::json!({
+                "trees": signed,
+                "cache_path": if write_cache { Some(cache_path_display()) } else { None },
+            }))
+            .unwrap_or_default()
+        );
+    }
+}
+
 fn cache_path_display() -> String {
     spanda_decision::default_policy_cache_path()
         .to_string_lossy()
@@ -459,33 +531,54 @@ pub fn cmd_decision_threat_model(_args: &[String]) {
     println!("{}", threat_model_summary());
 }
 
+/// Parse attack scenario name (supports hyphen and underscore aliases).
+fn parse_attack_scenario(name: &str) -> Option<AttackScenario> {
+    match name {
+        "policy_tampering" | "policy-tamper" | "policy-tampering" => {
+            Some(AttackScenario::PolicyTampering)
+        }
+        "fake_coordinator" | "fake-coordinator" => Some(AttackScenario::FakeCoordinator),
+        "replayed_decision" | "replayed-decision" => Some(AttackScenario::ReplayedDecision),
+        "compromised_robot" | "compromised-robot" => Some(AttackScenario::CompromisedRobot),
+        "poisoned_telemetry" | "poisoned-telemetry" => Some(AttackScenario::PoisonedTelemetry),
+        "offline_abuse" | "offline-abuse" => Some(AttackScenario::OfflineAbuse),
+        "split_brain_coordinator" | "split-brain-coordinator" => {
+            Some(AttackScenario::SplitBrainCoordinator)
+        }
+        _ => None,
+    }
+}
+
 /// `spanda decision simulate-attack <scenario> [--json]`
 pub fn cmd_decision_simulate_attack(args: &[String]) {
     let scenario_str = file_arg(args);
-    let scenario = match scenario_str.as_str() {
-        "policy_tampering" => AttackScenario::PolicyTampering,
-        "fake_coordinator" => AttackScenario::FakeCoordinator,
-        "replayed_decision" => AttackScenario::ReplayedDecision,
-        "compromised_robot" => AttackScenario::CompromisedRobot,
-        "poisoned_telemetry" => AttackScenario::PoisonedTelemetry,
-        "offline_abuse" => AttackScenario::OfflineAbuse,
-        "split_brain_coordinator" => AttackScenario::SplitBrainCoordinator,
-        other => {
-            eprintln!("Unknown attack scenario: {other}");
-            process::exit(1);
-        }
-    };
-    let finding = spanda_decision::simulate_attack(scenario);
+    let scenario = parse_attack_scenario(&scenario_str).unwrap_or_else(|| {
+        eprintln!("Unknown attack scenario: {scenario_str}");
+        eprintln!(
+            "Available: policy-tamper, replayed-decision, fake-coordinator, offline-abuse, \
+             compromised-robot, poisoned-telemetry, split-brain-coordinator"
+        );
+        process::exit(1);
+    });
+    let result = spanda_decision::run_attack_simulation(scenario);
     if json_output(args) {
         println!(
             "{}",
-            serde_json::to_string_pretty(&finding).unwrap_or_default()
+            serde_json::to_string_pretty(&result).unwrap_or_default()
         );
     } else {
-        println!("Attack simulation: {:?}", finding.scenario);
-        println!("  detected: {}", finding.detected);
-        println!("  severity: {}", finding.severity);
-        println!("  mitigation: {}", finding.mitigation);
+        println!("Attack simulation: {:?}", result.scenario);
+        println!("  blocked: {}", result.blocked);
+        println!("  severity: {}", result.severity);
+        println!("  mitigation: {}", result.mitigation);
+        println!("  evidence:");
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&result.evidence).unwrap_or_default()
+        );
+    }
+    if !result.blocked {
+        process::exit(1);
     }
 }
 
@@ -509,6 +602,7 @@ pub fn decision_dispatch(args: &[String]) {
         "explain" => cmd_decision_explain(&args[1..]),
         "policy" => cmd_decision_policy(&args[1..]),
         "sign-policy" => cmd_decision_sign_policy(&args[1..]),
+        "sign-tree" => cmd_decision_sign_tree(&args[1..]),
         "cache" => decision_cache_dispatch(&args[1..]),
         "security-audit" => cmd_decision_security_audit(&args[1..]),
         "threat-model" => cmd_decision_threat_model(&args[1..]),

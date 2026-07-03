@@ -1,8 +1,12 @@
 //! Live distributed decision tree evaluation and fleet consensus recording.
 
 use super::{Interpreter, MotionCommand, RobotBackend};
+use spanda_decision::{
+    escalation_is_approved, layer_str_precedence_key, register_pending_escalation,
+    resolve_conflict, CompetingDecision,
+};
 use spanda_error::SpandaError;
-use spanda_runtime::decision_runtime::DecisionActionVerdict;
+use spanda_runtime::decision_runtime::{DecisionActionVerdict, DecisionTreeEvalResult};
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn decision_runtime(
@@ -56,9 +60,7 @@ impl<B: RobotBackend> Interpreter<B> {
 
     fn escalation_approved(&self, escalation_id: &str) -> bool {
         self.granted_decision_escalations.contains(escalation_id)
-            || std::env::var("SPANDA_DECISION_ESCALATION_APPROVED")
-                .map(|v| matches!(v.as_str(), "1" | "true" | "yes") || v == escalation_id)
-                .unwrap_or(false)
+            || escalation_is_approved(escalation_id)
     }
 
     /// Sync decision signals from hardware monitor, safety state, and faults.
@@ -105,64 +107,141 @@ impl<B: RobotBackend> Interpreter<B> {
         };
         self.sync_decision_signals_from_runtime();
         let runtime = self.decision_runtime();
-        let results = runtime.evaluate_trees(&program, &self.decision_signals);
-        for result in results {
-            let fingerprint = format!("{}:{}", result.tree_name, result.condition_matched);
-            if self.decision_tree_emitted.contains(&fingerprint) {
-                continue;
-            }
-            if let Some(changed_key) = changed {
-                if !result.condition_matched.contains(changed_key)
-                    && !self.signal_matches_tree(changed_key, &result.condition_matched)
-                {
-                    continue;
+        let all_results = runtime.evaluate_trees(&program, &self.decision_signals);
+
+        let entity = self
+            .active_robot_name
+            .clone()
+            .unwrap_or_else(|| "robot".into());
+
+        let mut candidates: Vec<DecisionTreeEvalResult> = all_results
+            .into_iter()
+            .filter(|result| {
+                let fingerprint = format!("{}:{}", result.tree_name, result.condition_matched);
+                if self.decision_tree_emitted.contains(&fingerprint) {
+                    return false;
                 }
-            }
-            self.decision_tree_emitted.insert(fingerprint);
-            self.log(format!(
-                "decision_tree '{}': {} → [{}]",
+                if let Some(changed_key) = changed {
+                    return result.condition_matched.contains(changed_key)
+                        || self.signal_matches_tree(changed_key, &result.condition_matched);
+                }
+                true
+            })
+            .collect();
+
+        if self.decision_signals.get("obstacle.detected").copied() == Some(true) {
+            candidates.push(DecisionTreeEvalResult {
+                tree_name: "SafetyReflex".into(),
+                layer: "reflex".into(),
+                condition_matched: "obstacle.detected".into(),
+                actions: vec!["emergency_stop".into()],
+                tree_hash: "safety-reflex".into(),
+            });
+        }
+
+        if candidates.is_empty() {
+            return;
+        }
+
+        let (results_to_dispatch, rejected_alternatives): (Vec<_>, Vec<_>) =
+            if candidates.len() > 1 {
+                let competing: Vec<CompetingDecision> = candidates
+                    .iter()
+                    .map(|r| CompetingDecision {
+                        layer_precedence: layer_str_precedence_key(&r.layer).into(),
+                        entity_id: entity.clone(),
+                        action: r.actions.first().cloned().unwrap_or_default(),
+                        reason: format!(
+                            "tree '{}' matched '{}'",
+                            r.tree_name, r.condition_matched
+                        ),
+                    })
+                    .collect();
+                if let Some(resolution) = resolve_conflict(&competing) {
+                    let winner = resolution.winner.clone();
+                    let rejected: Vec<serde_json::Value> = resolution
+                        .rejected
+                        .iter()
+                        .map(|d| {
+                            serde_json::json!({
+                                "entity_id": d.entity_id,
+                                "action": d.action,
+                                "reason": d.reason,
+                                "precedence_applied": resolution.precedence_applied,
+                            })
+                        })
+                        .collect();
+                    let winners: Vec<_> = candidates
+                        .into_iter()
+                        .filter(|r| {
+                            r.actions.first().map(String::as_str) == Some(winner.action.as_str())
+                                || r.tree_name == "SafetyReflex"
+                                    && winner.action.contains("emergency")
+                        })
+                        .collect();
+                    (winners, rejected)
+                } else {
+                    (candidates, vec![])
+                }
+            } else {
+                (candidates, vec![])
+            };
+
+        for result in results_to_dispatch {
+            self.emit_decision_tree_result(&program, &entity, &result, &rejected_alternatives);
+        }
+    }
+
+    fn emit_decision_tree_result(
+        &mut self,
+        program: &spanda_ast::nodes::Program,
+        entity: &str,
+        result: &DecisionTreeEvalResult,
+        rejected_alternatives: &[serde_json::Value],
+    ) {
+        let fingerprint = format!("{}:{}", result.tree_name, result.condition_matched);
+        if self.decision_tree_emitted.contains(&fingerprint) {
+            return;
+        }
+        self.decision_tree_emitted.insert(fingerprint);
+        self.log(format!(
+            "decision_tree '{}': {} → [{}]",
+            result.tree_name,
+            result.condition_matched,
+            result.actions.join(", ")
+        ));
+        let layer = if result.layer.contains("reflex") {
+            "reflex"
+        } else if result.layer.contains("group") || result.layer.contains("fleet") {
+            "group_fleet"
+        } else {
+            "local_entity"
+        };
+        self.record_decision_trace(
+            "decision_tree_eval",
+            "local_decision",
+            &format!(
+                "tree '{}' matched '{}' → {}",
                 result.tree_name,
                 result.condition_matched,
                 result.actions.join(", ")
-            ));
-            let layer = if result.layer.contains("reflex") {
-                "reflex"
-            } else if result.layer.contains("group") || result.layer.contains("fleet") {
-                "group_fleet"
-            } else {
-                "local_entity"
-            };
-            let entity = self
-                .active_robot_name
-                .clone()
-                .unwrap_or_else(|| "robot".into());
-            self.record_decision_trace(
-                "decision_tree_eval",
-                "local_decision",
-                &format!(
-                    "tree '{}' matched '{}' → {}",
-                    result.tree_name,
-                    result.condition_matched,
-                    result.actions.join(", ")
-                ),
-                layer,
-                &entity,
-                serde_json::json!({
-                    "tree": result.tree_name,
-                    "condition": result.condition_matched,
-                    "actions": result.actions,
-                    "tree_hash": result.tree_hash,
-                    "policy_version": "1.0.0",
-                    "signals": self.decision_signals,
-                    "central_connected": self.central_connected(),
-                    "offline_minutes": self.offline_minutes(),
-                }),
-            );
-            if let Err(err) =
-                self.dispatch_decision_tree_actions(&program, &entity, &result.actions)
-            {
-                self.log(format!("decision_tree: action dispatch error: {err}"));
-            }
+            ),
+            layer,
+            entity,
+            serde_json::json!({
+                "tree": result.tree_name,
+                "condition": result.condition_matched,
+                "actions": result.actions,
+                "tree_hash": result.tree_hash,
+                "policy_version": "1.0.0",
+                "signals": self.decision_signals,
+                "central_connected": self.central_connected(),
+                "offline_minutes": self.offline_minutes(),
+                "rejected_alternatives": rejected_alternatives,
+            }),
+        );
+        if let Err(err) = self.dispatch_decision_tree_actions(program, entity, &result.actions) {
+            self.log(format!("decision_tree: action dispatch error: {err}"));
         }
     }
 
@@ -216,6 +295,7 @@ impl<B: RobotBackend> Interpreter<B> {
         );
         if let Some(id) = &verdict.escalation_id {
             self.pending_decision_escalations.insert(id.clone());
+            let _ = register_pending_escalation(id, entity_id, action, &verdict.reason);
         }
     }
 

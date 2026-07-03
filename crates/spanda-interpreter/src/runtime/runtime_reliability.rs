@@ -320,6 +320,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 alternatives_considered: Vec::new(),
                 rejected_alternatives: rejected,
                 sim_time_ms: Some(self.sim_time_ms),
+                ..Default::default()
             },
         );
         self.record_mission_event(event_str, payload);
