@@ -319,6 +319,10 @@ struct AdminOidcConfig {
     group_role_map: HashMap<String, String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     last_sync_at: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    redirect_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    oauth_state: Option<String>,
 }
 
 fn admin_oidc_path() -> PathBuf {
@@ -358,6 +362,67 @@ fn valid_issuer_url(issuer: &str) -> bool {
         && issuer.chars().any(|ch| ch != '/')
 }
 
+fn url_encode_component(value: &str) -> String {
+    value
+        .bytes()
+        .map(|byte| match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                (byte as char).to_string()
+            }
+            _ => format!("%{byte:02X}"),
+        })
+        .collect()
+}
+
+fn fresh_oauth_state() -> String {
+    format!("spanda-{:x}", now_ms() as u128)
+}
+
+fn fetch_oidc_discovery(issuer: &str) -> Option<serde_json::Value> {
+    let discovery_url = format!(
+        "{}/.well-known/openid-configuration",
+        issuer.trim_end_matches('/')
+    );
+    let response = ureq::get(&discovery_url).call().ok()?;
+    let body = response.into_string().ok()?;
+    serde_json::from_str(&body).ok()
+}
+
+fn userinfo_to_directory_entry(userinfo: &serde_json::Value) -> Option<crate::admin_users::OidcDirectoryEntry> {
+    let user_id = userinfo
+        .get("sub")
+        .or_else(|| userinfo.get("user_id"))
+        .and_then(|value| value.as_str())
+        .map(str::trim)
+        .filter(|value| !value.is_empty())?;
+    let display_name = userinfo
+        .get("name")
+        .or_else(|| userinfo.get("preferred_username"))
+        .and_then(|value| value.as_str())
+        .map(str::to_string);
+    let email = userinfo
+        .get("email")
+        .and_then(|value| value.as_str())
+        .map(str::to_string);
+    let groups = userinfo
+        .get("groups")
+        .and_then(|value| value.as_array())
+        .map(|values| {
+            values
+                .iter()
+                .filter_map(|value| value.as_str().map(str::to_string))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    Some(crate::admin_users::OidcDirectoryEntry {
+        user_id: user_id.to_string(),
+        display_name,
+        email,
+        role: None,
+        groups,
+    })
+}
+
 /// GET /v1/admin/oidc — OIDC integration configuration (no secrets).
 pub fn admin_oidc_get(ctx: Option<&RbacContext>) -> HttpResponse {
     // Return persisted OIDC settings for the admin console.
@@ -386,6 +451,8 @@ pub fn admin_oidc_get(ctx: Option<&RbacContext>) -> HttpResponse {
         "client_secret_set": config.client_secret_set,
         "group_role_map": config.group_role_map,
         "last_sync_at": config.last_sync_at,
+        "redirect_uri": config.redirect_uri,
+        "oauth_ready": config.client_id.is_some() && config.client_secret_set,
         "persist_path": admin_oidc_path().display().to_string(),
     }))
 }
@@ -402,6 +469,8 @@ struct AdminOidcPutRequest {
     client_secret: Option<String>,
     #[serde(default)]
     group_role_map: HashMap<String, String>,
+    #[serde(default)]
+    redirect_uri: Option<String>,
 }
 
 /// PUT /v1/admin/oidc — update OIDC integration settings.
@@ -438,6 +507,11 @@ pub fn admin_oidc_put(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     config.issuer = request.issuer;
     config.client_id = request.client_id;
     config.group_role_map = request.group_role_map;
+    if let Some(redirect_uri) = request.redirect_uri {
+        if !redirect_uri.is_empty() {
+            config.redirect_uri = Some(redirect_uri);
+        }
+    }
     if let Some(secret) = request.client_secret {
         if !secret.is_empty() {
             config.client_secret = Some(secret);
@@ -534,6 +608,208 @@ pub fn admin_oidc_sync(
     }))
 }
 
+#[derive(Debug, Deserialize, Default)]
+struct AdminOidcAuthorizeRequest {
+    #[serde(default)]
+    redirect_uri: Option<String>,
+}
+
+/// POST /v1/admin/oidc/authorize-url — build OIDC authorization URL for admin OAuth.
+pub fn admin_oidc_authorize_url(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+    // Generate an OAuth authorization URL from OpenID discovery metadata.
+    //
+    // Parameters:
+    // - `body` — optional JSON `{ "redirect_uri": "..." }`
+    // - `ctx` — optional RBAC context
+    //
+    // Returns:
+    // HTTP 200 with `authorize_url` and `state` on success.
+    //
+    // Options:
+    // `SPANDA_OIDC_REDIRECT_URI` overrides the default redirect URI.
+    //
+    // Example:
+    // let response = admin_oidc_authorize_url(body, ctx.as_ref());
+
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    let request: AdminOidcAuthorizeRequest =
+        serde_json::from_str(body).unwrap_or_default();
+    let mut config = load_admin_oidc();
+    let Some(issuer) = config.issuer.as_deref() else {
+        return bad_request("issuer not configured");
+    };
+    let Some(client_id) = config.client_id.as_deref() else {
+        return bad_request("client_id not configured");
+    };
+    let discovery = fetch_oidc_discovery(issuer).unwrap_or_else(|| serde_json::json!({}));
+    let authorization_endpoint = discovery
+        .get("authorization_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if authorization_endpoint.is_empty() {
+        return bad_request("authorization_endpoint missing from discovery document");
+    }
+    let redirect_uri = request
+        .redirect_uri
+        .or_else(|| config.redirect_uri.clone())
+        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
+    let state = fresh_oauth_state();
+    config.oauth_state = Some(state.clone());
+    config.redirect_uri = Some(redirect_uri.clone());
+    if let Err(error) = persist_admin_oidc(&config) {
+        return bad_request(&error);
+    }
+    let authorize_url = format!(
+        "{}?response_type=code&client_id={}&redirect_uri={}&scope={}&state={}",
+        authorization_endpoint,
+        url_encode_component(client_id),
+        url_encode_component(&redirect_uri),
+        url_encode_component("openid profile email"),
+        url_encode_component(&state),
+    );
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "authorize_url": authorize_url,
+        "state": state,
+        "redirect_uri": redirect_uri,
+    }))
+}
+
+#[derive(Debug, Deserialize)]
+struct AdminOidcOAuthCallbackRequest {
+    code: String,
+    #[serde(default)]
+    state: Option<String>,
+}
+
+/// POST /v1/admin/oidc/oauth/callback — exchange authorization code and import userinfo.
+pub fn admin_oidc_oauth_callback(
+    state: &mut ControlCenterState,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    // Exchange an OAuth authorization code for tokens and import the user profile.
+    //
+    // Parameters:
+    // - `state` — mutable Control Center state (user directory)
+    // - `body` — JSON `{ "code": "...", "state": "..." }`
+    // - `ctx` — optional RBAC context
+    //
+    // Returns:
+    // HTTP 200 with import counts on success.
+    //
+    // Options:
+    // Requires `client_secret` saved via PUT /v1/admin/oidc.
+    //
+    // Example:
+    // let response = admin_oidc_oauth_callback(state, body, ctx.as_ref());
+
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    let request: AdminOidcOAuthCallbackRequest = match serde_json::from_str(body) {
+        Ok(value) => value,
+        Err(error) => return bad_request(&error.to_string()),
+    };
+    if request.code.trim().is_empty() {
+        return bad_request("code required");
+    }
+    let mut config = load_admin_oidc();
+    if let Some(expected) = config.oauth_state.as_deref() {
+        if request.state.as_deref() != Some(expected) {
+            return bad_request("oauth state mismatch");
+        }
+    }
+    let Some(issuer) = config.issuer.as_deref() else {
+        return bad_request("issuer not configured");
+    };
+    let Some(client_id) = config.client_id.as_deref() else {
+        return bad_request("client_id not configured");
+    };
+    let Some(client_secret) = config.client_secret.as_deref() else {
+        return bad_request("client_secret not configured");
+    };
+    let redirect_uri = config
+        .redirect_uri
+        .clone()
+        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
+    let discovery = fetch_oidc_discovery(issuer).unwrap_or_else(|| serde_json::json!({}));
+    let token_endpoint = discovery
+        .get("token_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if token_endpoint.is_empty() {
+        return bad_request("token_endpoint missing from discovery document");
+    }
+    let form = format!(
+        "grant_type=authorization_code&code={}&redirect_uri={}&client_id={}&client_secret={}",
+        url_encode_component(request.code.trim()),
+        url_encode_component(&redirect_uri),
+        url_encode_component(client_id),
+        url_encode_component(client_secret),
+    );
+    let token_response = match ureq::post(token_endpoint)
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .send_string(&form)
+    {
+        Ok(response) => response.into_string().unwrap_or_default(),
+        Err(error) => return bad_request(&format!("token exchange failed: {error}")),
+    };
+    let token_json: serde_json::Value = serde_json::from_str(&token_response)
+        .unwrap_or_else(|_| serde_json::json!({ "raw": token_response }));
+    let access_token = token_json
+        .get("access_token")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if access_token.is_empty() {
+        return bad_request("access_token missing from token response");
+    }
+    let userinfo_endpoint = discovery
+        .get("userinfo_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    let userinfo = if userinfo_endpoint.is_empty() {
+        serde_json::json!({})
+    } else {
+        match ureq::get(userinfo_endpoint)
+            .set("Authorization", &format!("Bearer {access_token}"))
+            .call()
+        {
+            Ok(response) => response
+                .into_string()
+                .ok()
+                .and_then(|body| serde_json::from_str(&body).ok())
+                .unwrap_or_else(|| serde_json::json!({})),
+            Err(_) => serde_json::json!({}),
+        }
+    };
+    let mut created = 0usize;
+    let mut updated = 0usize;
+    if let Some(entry) = userinfo_to_directory_entry(&userinfo) {
+        let counts =
+            crate::admin_users::import_oidc_directory(state, &[entry], &config.group_role_map);
+        created = counts.0;
+        updated = counts.1;
+    }
+    config.oauth_state = None;
+    config.last_sync_at = Some(now_ms());
+    if let Err(error) = persist_admin_oidc(&config) {
+        return bad_request(&error);
+    }
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "ok": true,
+        "users_created": created,
+        "users_updated": updated,
+        "userinfo": userinfo,
+        "last_sync_at": config.last_sync_at,
+    }))
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 struct AdminSlackConfig {
     #[serde(default)]
@@ -548,6 +824,12 @@ struct AdminSlackConfig {
     oauth_client_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     oauth_client_secret: Option<String>,
+    #[serde(default)]
+    oauth_client_secret_set: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    oauth_redirect_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    oauth_state: Option<String>,
 }
 
 fn admin_slack_path() -> PathBuf {
@@ -602,6 +884,8 @@ pub fn admin_slack_get(ctx: Option<&RbacContext>) -> HttpResponse {
         "team_name": config.team_name,
         "webhook_url_set": config.webhook_url_set,
         "oauth_client_id": config.oauth_client_id,
+        "oauth_client_secret_set": config.oauth_client_secret_set,
+        "oauth_redirect_uri": config.oauth_redirect_uri,
         "persist_path": admin_slack_path().display().to_string(),
     }))
 }
@@ -616,6 +900,8 @@ struct AdminSlackPostRequest {
     oauth_client_secret: Option<String>,
     #[serde(default)]
     team_name: Option<String>,
+    #[serde(default)]
+    oauth_redirect_uri: Option<String>,
 }
 
 /// POST /v1/admin/slack — configure Slack OAuth wizard fields.
@@ -657,6 +943,12 @@ pub fn admin_slack_post(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     if let Some(oauth_client_secret) = request.oauth_client_secret {
         if !oauth_client_secret.is_empty() {
             config.oauth_client_secret = Some(oauth_client_secret);
+            config.oauth_client_secret_set = true;
+        }
+    }
+    if let Some(oauth_redirect_uri) = request.oauth_redirect_uri {
+        if !oauth_redirect_uri.is_empty() {
+            config.oauth_redirect_uri = Some(oauth_redirect_uri);
         }
     }
     if let Some(team_name) = request.team_name {
@@ -674,6 +966,168 @@ pub fn admin_slack_post(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
         "configured": config.configured,
         "webhook_url_set": config.webhook_url_set,
         "oauth_client_id": config.oauth_client_id,
+        "oauth_client_secret_set": config.oauth_client_secret_set,
+    }))
+}
+
+#[derive(Debug, Deserialize, Default)]
+struct AdminSlackOAuthUrlRequest {
+    #[serde(default)]
+    redirect_uri: Option<String>,
+}
+
+/// POST /v1/admin/slack/oauth-url — build Slack app OAuth authorization URL.
+pub fn admin_slack_oauth_url(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+    // Generate a Slack OAuth v2 authorization URL for the setup wizard.
+    //
+    // Parameters:
+    // - `body` — optional JSON `{ "redirect_uri": "..." }`
+    // - `ctx` — optional RBAC context
+    //
+    // Returns:
+    // HTTP 200 with `authorize_url` and `state`.
+    //
+    // Options:
+    // `SPANDA_SLACK_OAUTH_REDIRECT_URI` overrides the default redirect URI.
+    //
+    // Example:
+    // let response = admin_slack_oauth_url(body, ctx.as_ref());
+
+    if !require_admin(ctx) {
+        return unauthorized();
+    }
+    let request: AdminSlackOAuthUrlRequest = serde_json::from_str(body).unwrap_or_default();
+    let mut config = load_admin_slack();
+    let Some(client_id) = config.oauth_client_id.as_deref() else {
+        return bad_request("oauth_client_id not configured");
+    };
+    let redirect_uri = request
+        .redirect_uri
+        .or_else(|| config.oauth_redirect_uri.clone())
+        .or_else(|| std::env::var("SPANDA_SLACK_OAUTH_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/slack/callback".into());
+    let state = fresh_oauth_state();
+    config.oauth_state = Some(state.clone());
+    config.oauth_redirect_uri = Some(redirect_uri.clone());
+    if let Err(error) = persist_admin_slack(&config) {
+        return bad_request(&error);
+    }
+    let authorize_url = format!(
+        "https://slack.com/oauth/v2/authorize?client_id={}&scope={}&redirect_uri={}&state={}",
+        url_encode_component(client_id),
+        url_encode_component("incoming-webhook,chat:write"),
+        url_encode_component(&redirect_uri),
+        url_encode_component(&state),
+    );
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "authorize_url": authorize_url,
+        "state": state,
+        "redirect_uri": redirect_uri,
+    }))
+}
+
+#[derive(Debug, Deserialize)]
+struct AdminSlackOAuthCallbackRequest {
+    code: String,
+    #[serde(default)]
+    state: Option<String>,
+}
+
+/// POST /v1/admin/slack/oauth/callback — exchange Slack OAuth code and store webhook.
+pub fn admin_slack_oauth_callback(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+    // Exchange a Slack OAuth authorization code for team and webhook metadata.
+    //
+    // Parameters:
+    // - `body` — JSON `{ "code": "...", "state": "..." }`
+    // - `ctx` — optional RBAC context
+    //
+    // Returns:
+    // HTTP 200 with Slack team and webhook status on success.
+    //
+    // Options:
+    // Requires OAuth client id/secret saved via POST /v1/admin/slack.
+    //
+    // Example:
+    // let response = admin_slack_oauth_callback(body, ctx.as_ref());
+
+    if !require_admin(ctx) {
+        return unauthorized();
+    }
+    let request: AdminSlackOAuthCallbackRequest = match serde_json::from_str(body) {
+        Ok(value) => value,
+        Err(error) => return bad_request(&error.to_string()),
+    };
+    if request.code.trim().is_empty() {
+        return bad_request("code required");
+    }
+    let mut config = load_admin_slack();
+    if let Some(expected) = config.oauth_state.as_deref() {
+        if request.state.as_deref() != Some(expected) {
+            return bad_request("oauth state mismatch");
+        }
+    }
+    let Some(client_id) = config.oauth_client_id.as_deref() else {
+        return bad_request("oauth_client_id not configured");
+    };
+    let Some(client_secret) = config.oauth_client_secret.as_deref() else {
+        return bad_request("oauth_client_secret not configured");
+    };
+    let redirect_uri = config
+        .oauth_redirect_uri
+        .clone()
+        .or_else(|| std::env::var("SPANDA_SLACK_OAUTH_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/slack/callback".into());
+    let form = format!(
+        "code={}&client_id={}&client_secret={}&redirect_uri={}",
+        url_encode_component(request.code.trim()),
+        url_encode_component(client_id),
+        url_encode_component(client_secret),
+        url_encode_component(&redirect_uri),
+    );
+    let response_body = match ureq::post("https://slack.com/api/oauth.v2.access")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .send_string(&form)
+    {
+        Ok(response) => response.into_string().unwrap_or_default(),
+        Err(error) => return bad_request(&format!("slack oauth failed: {error}")),
+    };
+    let parsed: serde_json::Value =
+        serde_json::from_str(&response_body).unwrap_or_else(|_| serde_json::json!({ "raw": response_body }));
+    if parsed.get("ok").and_then(|value| value.as_bool()) != Some(true) {
+        return bad_request(
+            parsed
+                .get("error")
+                .and_then(|value| value.as_str())
+                .unwrap_or("slack oauth rejected"),
+        );
+    }
+    if let Some(team_name) = parsed
+        .get("team")
+        .and_then(|team| team.get("name"))
+        .and_then(|value| value.as_str())
+    {
+        config.team_name = Some(team_name.to_string());
+    }
+    if let Some(webhook_url) = parsed
+        .get("incoming_webhook")
+        .and_then(|hook| hook.get("url"))
+        .and_then(|value| value.as_str())
+    {
+        config.webhook_url = Some(webhook_url.to_string());
+        config.webhook_url_set = true;
+    }
+    config.oauth_state = None;
+    config.configured = true;
+    if let Err(error) = persist_admin_slack(&config) {
+        return bad_request(&error);
+    }
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "ok": true,
+        "configured": config.configured,
+        "team_name": config.team_name,
+        "webhook_url_set": config.webhook_url_set,
     }))
 }
 

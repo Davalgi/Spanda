@@ -449,11 +449,23 @@ pub fn route_admin(
     if path == "/v1/admin/oidc/sync" && method == "POST" {
         return Some(crate::control_center_extras::admin_oidc_sync(state, body, ctx));
     }
+    if path == "/v1/admin/oidc/authorize-url" && method == "POST" {
+        return Some(crate::control_center_extras::admin_oidc_authorize_url(body, ctx));
+    }
+    if path == "/v1/admin/oidc/oauth/callback" && method == "POST" {
+        return Some(crate::control_center_extras::admin_oidc_oauth_callback(state, body, ctx));
+    }
     if path == "/v1/admin/slack" && method == "GET" {
         return Some(crate::control_center_extras::admin_slack_get(ctx));
     }
     if path == "/v1/admin/slack" && method == "POST" {
         return Some(crate::control_center_extras::admin_slack_post(body, ctx));
+    }
+    if path == "/v1/admin/slack/oauth-url" && method == "POST" {
+        return Some(crate::control_center_extras::admin_slack_oauth_url(body, ctx));
+    }
+    if path == "/v1/admin/slack/oauth/callback" && method == "POST" {
+        return Some(crate::control_center_extras::admin_slack_oauth_callback(body, ctx));
     }
     let rest = path.strip_prefix("/v1/admin/api-keys/")?;
     match method {

@@ -159,12 +159,28 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/admin/oidc/sync",
     },
     ApiRoute {
+        method: "POST",
+        path: "/v1/admin/oidc/authorize-url",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/oidc/oauth/callback",
+    },
+    ApiRoute {
         method: "GET",
         path: "/v1/admin/slack",
     },
     ApiRoute {
         method: "POST",
         path: "/v1/admin/slack",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/slack/oauth-url",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/admin/slack/oauth/callback",
     },
     ApiRoute {
         method: "GET",
