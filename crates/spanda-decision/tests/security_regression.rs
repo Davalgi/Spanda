@@ -118,9 +118,9 @@ fn decision_trace_signature_rejects_tampered_envelope() {
         },
     );
     verify_v3_decision_signature(&payload).expect("valid signature");
-    // Tamper the signed envelope payload (outer fields alone are not bound today).
-    let mut tampered = payload.clone();
-    if let Some(env) = tampered
+    // Tamper the embedded signing payload.
+    let mut tampered_payload = payload.clone();
+    if let Some(env) = tampered_payload
         .get_mut("security_envelope")
         .and_then(|value| value.as_object_mut())
     {
@@ -129,7 +129,17 @@ fn decision_trace_signature_rejects_tampered_envelope() {
             serde_json::json!("tampered-payload"),
         );
     }
-    assert!(verify_v3_decision_signature(&tampered).is_err());
+    assert!(verify_v3_decision_signature(&tampered_payload).is_err());
+    // Tamper an outer field while leaving the embedded payload intact.
+    let mut tampered_outer = payload.clone();
+    if let Some(obj) = tampered_outer.as_object_mut() {
+        obj.insert("decision".into(), serde_json::json!("disable_kill_switch"));
+    }
+    let err = verify_v3_decision_signature(&tampered_outer).expect_err("outer tamper");
+    assert!(
+        err.to_lowercase().contains("tamper") || err.to_lowercase().contains("match"),
+        "unexpected error: {err}"
+    );
     std::env::remove_var("SPANDA_DECISION_POLICY_SIGNING_KEY");
     std::env::remove_var("SPANDA_DECISION_POLICY_TRUST_KEY");
 }

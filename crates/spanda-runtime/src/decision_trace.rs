@@ -203,6 +203,21 @@ pub fn v3_decision_payload_with_extras(
 
 /// Verify envelope signature on a v3 trace payload when trust key is configured.
 pub fn verify_v3_decision_signature(payload: &Value) -> Result<(), String> {
+    // Verify the signature and bind outer decision fields to the signed payload.
+    //
+    // Parameters:
+    // - `payload` — v3 decision trace record
+    //
+    // Returns:
+    // `Ok(())` when the trust key is unset, or when the signature verifies and
+    // outer fields match the embedded signing payload.
+    //
+    // Options:
+    // None when `SPANDA_DECISION_POLICY_TRUST_KEY` is unset (verification skipped).
+    //
+    // Example:
+    // verify_v3_decision_signature(&payload)?;
+
     let Some(trust_key) = decision_trust_key() else {
         return Ok(());
     };
@@ -218,6 +233,53 @@ pub fn verify_v3_decision_signature(payload: &Value) -> Result<(), String> {
         .get("signing_payload")
         .and_then(|v| v.as_str())
         .ok_or_else(|| "missing signing_payload".to_string())?;
+
+    // Rebuild the canonical payload from outer fields so tampered decisions fail.
+    let tree_hash = payload
+        .get("tree_hash")
+        .and_then(|value| value.as_str())
+        .map(str::to_string);
+    let expected_payload = decision_envelope_signing_payload(
+        payload
+            .get("decision_id")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        payload
+            .get("entity_id")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        payload
+            .get("layer")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        payload
+            .get("decision")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        payload
+            .get("reason")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        payload
+            .get("policy_version")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        &tree_hash,
+        envelope
+            .get("nonce")
+            .and_then(|value| value.as_str())
+            .unwrap_or(""),
+        envelope
+            .get("timestamp_ms")
+            .and_then(|value| value.as_f64())
+            .unwrap_or(0.0),
+    );
+    if expected_payload != signing_payload {
+        return Err(
+            "decision envelope fields do not match signing payload (possible tamper)".into(),
+        );
+    }
+
     if verify_decision_envelope_signature(signing_payload, signature, &trust_key) {
         Ok(())
     } else {
