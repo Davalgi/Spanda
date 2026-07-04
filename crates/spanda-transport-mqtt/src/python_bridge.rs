@@ -184,6 +184,7 @@ pub fn try_mqtt_publish(topic: &str, payload: &str) -> bool {
     //     let result = spanda_transport_mqtt::python_bridge::try_mqtt_publish(opic, payload);
 
     if !mqtt_live_enabled() {
+        spanda_runtime::backend_notice::warn_transport_mock_fallback("mqtt");
         return false;
     }
     invoke_python_bridge("mqtt_publish", &[topic.to_string(), payload.to_string()])

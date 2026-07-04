@@ -1,5 +1,6 @@
 //! Spanda runtime kernel primitives extracted for the Phase 4 lean-core split.
 //!
+pub mod backend_notice;
 pub mod assurance_runtime;
 pub mod classification;
 pub mod continuity_primitives;
@@ -49,6 +50,9 @@ pub mod value;
 pub mod wire_crypto;
 pub mod world_model;
 
+pub use backend_notice::{
+    emit_program_backend_notices, warn_ai_mock_fallback, warn_transport_mock_fallback,
+};
 pub use assurance_runtime::{
     default_assurance_runtime, platform_assurance_runtime, set_platform_assurance_runtime,
     AssuranceRuntime, BuiltinAssuranceRuntime, SharedAssuranceRuntime,

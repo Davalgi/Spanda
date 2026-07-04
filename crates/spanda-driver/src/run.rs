@@ -75,6 +75,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
     if options.ffi_registry.is_none() {
         options.ffi_registry = Some(default_ffi_registry());
     }
+    spanda_runtime::backend_notice::emit_program_backend_notices(program);
     interpreter_run_program(program, options)
 }
 

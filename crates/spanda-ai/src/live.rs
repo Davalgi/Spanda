@@ -93,8 +93,20 @@ pub fn resolve_ai_provider(provider: &str) -> Box<dyn AiProvider> {
 
     match provider.to_ascii_lowercase().as_str() {
         "openai" if live_ai_enabled() => Box::new(OpenAiProvider),
+        "openai" => {
+            spanda_runtime::backend_notice::warn_ai_mock_fallback("openai");
+            Box::new(MockAiProvider)
+        }
         "anthropic" if live_anthropic_enabled() => Box::new(AnthropicProvider),
+        "anthropic" => {
+            spanda_runtime::backend_notice::warn_ai_mock_fallback("anthropic");
+            Box::new(MockAiProvider)
+        }
         "onnx" if live_onnx_enabled() => Box::new(OnnxProvider),
+        "onnx" => {
+            spanda_runtime::backend_notice::warn_ai_mock_fallback("onnx");
+            Box::new(MockAiProvider)
+        }
         _ => Box::new(MockAiProvider),
     }
 }

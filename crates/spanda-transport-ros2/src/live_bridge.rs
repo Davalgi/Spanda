@@ -160,6 +160,7 @@ pub fn try_ros2_bridge_publish(topic: &str, payload: &str) -> bool {
     //     let result = spanda_transport_ros2::live_bridge::try_ros2_bridge_publish(opic, payload);
 
     if !ros2_live_enabled() {
+        spanda_runtime::backend_notice::warn_transport_mock_fallback("ros2");
         return false;
     }
     python_bridge::invoke_python_bridge("ros2_publish", &[topic.to_string(), payload.to_string()])
