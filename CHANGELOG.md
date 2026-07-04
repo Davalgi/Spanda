@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`spanda demo rover` package install:** prefer monorepo `registry/` over incomplete CLI bundle; fall back to on-disk `packages/registry/<name>` when resolving registry packages.
 - **Entity / assurance / readiness CLI diagnostics:** missing config or program path now reports what/why/where/fix (warehouse fixture and showcase paths).
 - **Parser underflow panic:** `previous`/`advance` no longer overflow when the token cursor is at the start (found by property tests).
+- **Recovery plan empty plans (RB-004 / #48):** failure-only `spanda recovery plan` targets program robots; empty plans report `Passed: false` with operator guidance (RB-008 / #52).
+- **v3 decision outer-field binding (RB-011 / #55):** `verify_v3_decision_signature` requires outer decision fields to match the signed payload.
+- **Registry stub warnings (RB-005 / #49):** on-disk `packages/registry/<name>` packages no longer warn as missing from `LOCAL_REGISTRY`.
 
 ### Changed
 

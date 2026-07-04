@@ -102,16 +102,16 @@ Mock-backed, demo-only, docs-only, untested, and simulated-only features must **
 
 Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labeled [`release-blocker`](https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+label%3Arelease-blocker).
 
-- **Open P0:** none (after RB-001 / RB-010 / RB-012)
-- **Open P1:** [#48](https://github.com/Davalgi/Spanda/issues/48) RB-004 (recovery plan empty), [#50](https://github.com/Davalgi/Spanda/issues/50) RB-006 (stability label honesty), [#55](https://github.com/Davalgi/Spanda/issues/55) RB-011 (v3 decision outer-field binding)
-- **Open P2:** [#49](https://github.com/Davalgi/Spanda/issues/49) RB-005, [#51](https://github.com/Davalgi/Spanda/issues/51) RB-007, [#52](https://github.com/Davalgi/Spanda/issues/52) RB-008
+- **Open P0:** none
+- **Open P1:** none (RB-004, RB-006, RB-011 fixed or mitigated in release-hardening follow-up)
+- **Open P2:** [#51](https://github.com/Davalgi/Spanda/issues/51) RB-007 (organizational field soak / third-party audit)
 
 ## Recommendation
 
 **Go with documented limitations** for an evaluation / beta release, provided:
 
 1. CI green including README smoke, goldens, cross-interface, and security regressions
-2. RB-004 either fixed or clearly documented in recovery docs and release notes
-3. Feature-status rows for mock-default AI/IoT are not marketed as production Stable
+2. Feature-status honesty audit is respected (mock-default AI is **Mock-backed**, not production Stable alone)
+3. Organizational field soak and third-party security audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) remain explicitly out of scope for this code release
 
-**Do not** claim full production readiness until P1 items are closed and organizational security audit (RB-007) is accepted.
+**Do not** claim full production readiness until RB-007 organizational gates are accepted.

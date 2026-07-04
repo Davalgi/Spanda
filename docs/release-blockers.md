@@ -25,22 +25,21 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 | RB-001 | [#45](https://github.com/Davalgi/Spanda/issues/45) | `spanda demo rover` failed when monorepo registry was shadowed by incomplete CLI bundle | Packages / demos | P0 | `spanda demo rover` without `SPANDA_REGISTRY_URL` | — | **Fixed** — prefer monorepo `registry/` and on-disk `packages/registry/` lookup |
 | RB-002 | [#46](https://github.com/Davalgi/Spanda/issues/46) | README `entity list` / `entity graph` omitted required `--config` | Docs / entity CLI | P1 | `spanda entity list` at repo root | — | **Fixed** — README documents warehouse fixture; CLI error includes fix |
 | RB-003 | [#47](https://github.com/Davalgi/Spanda/issues/47) | Bare `assure` / `diagnose` / `readiness` printed opaque "Missing file path" | CLI diagnostics | P2 | `spanda assure` with no args | — | **Fixed** — structured what/why/where/fix messages |
-| RB-004 | [#48](https://github.com/Davalgi/Spanda/issues/48) | `spanda recovery plan … --failure gps` returns `Plans (0)` while explain succeeds | Recovery orchestrator | P1 | `spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps` | — | Open — plan path does not emit strategies for GPS failure |
-| RB-005 | [#49](https://github.com/Davalgi/Spanda/issues/49) | `LOCAL_REGISTRY` stub omits packages present under `packages/registry/` | Package manager | P2 | `spanda install` without monorepo index for packages only on disk | — | Mitigated by on-disk fallback; stub still warns |
-| RB-006 | [#50](https://github.com/Davalgi/Spanda/issues/50) | Many features labeled **Stable** while default AI/IoT paths are mock-backed | Feature status | P1 | Review `docs/feature-status.md` agent/AI and live transport rows | — | Open — audit in progress; mock defaults must not read as production-ready |
-| RB-007 | [#51](https://github.com/Davalgi/Spanda/issues/51) | Organizational gates (field soak, third-party security audit) incomplete | Enterprise ops / blueprints | P2 | Promotion gates skip soak/audit in CI | — | Documented; not code blockers |
-| RB-008 | [#52](https://github.com/Davalgi/Spanda/issues/52) | Recovery plan empty plans may mislead operators | Recovery / docs | P2 | Same as RB-004 | — | Open — document limitation until RB-004 fixed |
+| RB-004 | [#48](https://github.com/Davalgi/Spanda/issues/48) | `spanda recovery plan … --failure gps` returns `Plans (0)` while explain succeeds | Recovery orchestrator | P1 | `spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps` | — | **Fixed** — failure-only plans target program robots; empty plans no longer pass |
+| RB-005 | [#49](https://github.com/Davalgi/Spanda/issues/49) | `LOCAL_REGISTRY` stub omits packages present under `packages/registry/` | Package manager | P2 | `spanda install` without monorepo index for packages only on disk | — | **Fixed** — on-disk packages resolve and no longer warn as missing from stub |
+| RB-006 | [#50](https://github.com/Davalgi/Spanda/issues/50) | Many features labeled **Stable** while default AI/IoT paths are mock-backed | Feature status | P1 | Review `docs/feature-status.md` agent/AI and live transport rows | — | **Mitigated** — honesty audit section; AI agents Mock-backed; organizational soak still open via RB-007 |
+| RB-007 | [#51](https://github.com/Davalgi/Spanda/issues/51) | Organizational gates (field soak, third-party security audit) incomplete | Enterprise ops / blueprints | P2 | Promotion gates skip soak/audit in CI | — | Open — documented; not code blockers |
+| RB-008 | [#52](https://github.com/Davalgi/Spanda/issues/52) | Recovery plan empty plans may mislead operators | Recovery / docs | P2 | Same as RB-004 | — | **Fixed** — empty plans report `Passed: false` with what/why/where/fix text |
 | RB-009 | [#53](https://github.com/Davalgi/Spanda/issues/53) | Cross-interface consistency not historically enforced in CI | QA / SDKs | P1 | Manual CLI vs REST vs SDK drift | — | **Mitigated** — `scripts/cross_interface_consistency.sh` + CI job |
 | RB-010 | [#54](https://github.com/Davalgi/Spanda/issues/54) | README commands lacked automated smoke/golden coverage | QA | P0 | Broken README commands undetected | — | **Fixed** — `tests/readme_commands/` harness |
-| RB-011 | [#55](https://github.com/Davalgi/Spanda/issues/55) | v3 decision signature verifies embedded `signing_payload` only; outer `decision` fields can diverge | Decision security | P1 | Mutate `decision` on a signed v3 payload; `verify_v3_decision_signature` still returns Ok | — | Open — bind outer fields to envelope or reject mismatch |
+| RB-011 | [#55](https://github.com/Davalgi/Spanda/issues/55) | v3 decision signature verifies embedded `signing_payload` only; outer `decision` fields can diverge | Decision security | P1 | Mutate `decision` on a signed v3 payload; `verify_v3_decision_signature` still returns Ok | — | **Fixed** — outer fields must match signing payload before signature verify |
 | RB-012 | [#56](https://github.com/Davalgi/Spanda/issues/56) | Parser `previous`/`advance` underflow panic on empty/start position | Parser | P0 | Property test seeds (`robot`, `{{{{`, empty-ish streams) | — | **Fixed** — use `saturating_sub(1)` |
 
 ## Open issues (priority)
 
 | Priority | Issues |
 |----------|--------|
-| **P1** | [#48](https://github.com/Davalgi/Spanda/issues/48) (RB-004), [#50](https://github.com/Davalgi/Spanda/issues/50) (RB-006), [#55](https://github.com/Davalgi/Spanda/issues/55) (RB-011) |
-| **P2** | [#49](https://github.com/Davalgi/Spanda/issues/49) (RB-005), [#51](https://github.com/Davalgi/Spanda/issues/51) (RB-007), [#52](https://github.com/Davalgi/Spanda/issues/52) (RB-008) |
+| **P2** | [#51](https://github.com/Davalgi/Spanda/issues/51) (RB-007) — organizational field soak / third-party audit |
 
 ## How to add a blocker
 

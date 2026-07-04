@@ -285,14 +285,29 @@ See [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [c
 
 ---
 
-## Known limitations (v0.4.0)
+## Honesty audit (2026-07-04)
 
-- AI providers use **mock backends** by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `SPANDA_ONNX_MODEL_PATH` for live calls (`SPANDA_LIVE_AI=0` forces mock).
+Release-hardening pass against the strict labels above ([#50](https://github.com/Davalgi/Spanda/issues/50)):
+
+| Area | Label | Rationale |
+|------|-------|-----------|
+| AI agents / LLM providers | **Mock-backed** (Stable API) | Default path is mock; live keys optional |
+| Live IoT / MQTT / ROS2 / LLVM | **Experimental** | Env-gated or optional toolchains |
+| Ledger / blockchain | **Stubbed** / **Mock-backed** | `MockLedgerBackend` only |
+| Solution blueprints (ADAS, Smart Spaces, HRI) | **Stable** implementation; organizational soak **open** | CI promotion gates skip field soak / third-party audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) |
+| Enterprise ops pillars | **Stable** implementation; organizational soak **open** | Same |
+
+Remaining review: any row still marked **Stable** whose *default* path is simulated-only or docs-only should be demoted in a follow-up PR.
+
+## Known limitations (v0.5.0)
+
+- AI providers use **mock backends** by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `SPANDA_ONNX_MODEL_PATH` for live calls (`SPANDA_LIVE_AI=0` forces mock). Label: **Mock-backed**.
 - ROS2 integration requires manual ROS Humble setup and is not the default simulator transport.
 - Native compilation via LLVM is **experimental**; the tree-walking interpreter is the primary runtime.
 - `spanda publish` mirrors bundles to `registry/packages/` in-repo; remote upload requires `SPANDA_REGISTRY_URL`. Run `./scripts/build-registry.sh` to refresh the hosted index after adding scaffolds under `packages/registry/`.
 - VS Code extension builds in CI (`verify_vscode_vsix.sh`); **Marketplace publish** pending maintainer `VSCE_PAT`.
 - Multi-robot fleet examples run in a single process by default; distributed orchestration uses HTTP fleet agents and an optional fleet mesh coordinator (`spanda fleet mesh start`, `--mesh-url` on orchestrate/swarm).
+- Organizational field soak and third-party security audit remain open for enterprise ops and solution blueprints ([#51](https://github.com/Davalgi/Spanda/issues/51)).
 
 ---
 

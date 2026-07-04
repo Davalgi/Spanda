@@ -121,5 +121,3 @@ Replay <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_ro
 
 Demo complete. See examples/showcase/autonomous_rover/README.md
   ⚠ package requires manual review (level: experimental)
-  ⚠ registry package 'spanda-gps' not in local registry stub
-  ⚠ registry package 'spanda-wifi' not in local registry stub

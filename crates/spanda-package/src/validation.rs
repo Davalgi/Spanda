@@ -498,8 +498,10 @@ fn validate_dependencies(manifest: &PackageManifest, report: &mut ValidationRepo
     for (name, spec) in manifest.all_dependencies() {
         // Take the branch when source kind equals Registry.
         if spec.source_kind() == crate::dependency::DependencySourceKind::Registry {
-            // Take this path when find registry entry(name).is none().
-            if find_registry_entry(name).is_none() {
+            // Warn only when the package is missing from both the stub and on-disk tree.
+            if find_registry_entry(name).is_none()
+                && crate::registry::registry_package_dir(name).is_none()
+            {
                 report.push_warning(
                     "dependencies",
                     format!("registry package '{name}' not in local registry stub"),
