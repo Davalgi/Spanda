@@ -285,27 +285,71 @@ impl<'a> From<&'static RegistryEntry> for RegistryEntryView<'a> {
     }
 }
 
-pub fn lookup_registry_entry(name: &str) -> Option<RegistryEntryLookup> {
-    // Description:
-    //     Lookup registry entry.
+/// Build a remote-style entry from an on-disk `packages/registry/<name>` tree.
+fn entry_from_ondisk_package(name: &str) -> Option<RemoteRegistryEntry> {
+    // Resolve official packages that exist in the monorepo source tree.
     //
-    // Inputs:
-    //     name: &str
-    //         Caller-supplied name.
+    // Parameters:
+    // - `name` — package name (for example `spanda-wifi`)
     //
-    // Outputs:
-    //     result: Option<RegistryEntryLookup>
-    //         Return value from `lookup_registry_entry`.
+    // Returns:
+    // A registry entry when `packages/registry/<name>/spanda.toml` is present.
+    //
+    // Options:
+    // None.
     //
     // Example:
-    //     let result = spanda_package::registry_remote::lookup_registry_entry(name);
-    // use entry when find registry entry is present.
+    // let entry = entry_from_ondisk_package("spanda-gps");
 
-    // Emit output when find registry entry provides a entry.
+    let dir = super::registry::registry_package_dir(name)?;
+    let manifest = super::manifest::PackageManifest::load(&dir.join("spanda.toml")).ok()?;
+    Some(RemoteRegistryEntry {
+        name: manifest.package.name,
+        description: manifest
+            .package
+            .description
+            .unwrap_or_else(|| format!("On-disk registry package {name}")),
+        versions: vec![manifest.package.version],
+        category: manifest
+            .categories
+            .first()
+            .map(|c| c.as_str().to_string())
+            .unwrap_or_else(|| "robotics".into()),
+        license: manifest
+            .package
+            .license
+            .unwrap_or_else(|| "Apache-2.0".into()),
+        import_paths: Vec::new(),
+        version_checksums: Default::default(),
+        version_signatures: Default::default(),
+    })
+}
+
+pub fn lookup_registry_entry(name: &str) -> Option<RegistryEntryLookup> {
+    // Resolve a package from the local stub, remote/hosted index, or on-disk tree.
+    //
+    // Parameters:
+    // - `name` — registry package name
+    //
+    // Returns:
+    // A lookup entry when the package is known to any registry source.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let entry = lookup_registry_entry("spanda-wifi");
+
+    // Prefer the compile-time local stub for well-known framework packages.
     if let Some(entry) = super::registry::find_registry_entry(name) {
         return Some(RegistryEntryLookup::Local(entry));
     }
-    find_remote_entry(name).map(RegistryEntryLookup::Remote)
+    // Use the configured remote or monorepo index when available.
+    if let Some(entry) = find_remote_entry(name) {
+        return Some(RegistryEntryLookup::Remote(entry));
+    }
+    // Fall back to packages present under packages/registry/ in a source checkout.
+    entry_from_ondisk_package(name).map(RegistryEntryLookup::Remote)
 }
 
 #[derive(Debug, Clone)]
@@ -473,5 +517,17 @@ mod tests {
         assert!(registry_base_url().is_some());
         std::env::set_var("SPANDA_REGISTRY_URL", "");
         assert!(registry_base_url().is_none());
+    }
+}
+
+#[cfg(test)]
+mod ondisk_lookup_tests {
+    use super::*;
+
+    #[test]
+    fn looks_up_ondisk_wifi_package() {
+        let entry = lookup_registry_entry("spanda-wifi");
+        assert!(entry.is_some(), "spanda-wifi should resolve from packages/registry");
+        assert_eq!(entry.unwrap().name(), "spanda-wifi");
     }
 }

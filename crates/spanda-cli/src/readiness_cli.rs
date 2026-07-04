@@ -1056,8 +1056,17 @@ pub fn readiness_dispatch(args: &[String]) {
     }
 
     if args.is_empty() {
+        // Explain the required program path and show the readiness demo entrypoint.
         eprintln!(
-            "Usage: spanda readiness <file.sd> [--baseline <dir|spanda.toml>] [--agent <Robot@Hardware>] [--record] [--profile <name>] [--policy <name>] [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]\n\
+            "error: missing program path for readiness\n\
+             \n\
+             what:  readiness evaluation requires a `.sd` program\n\
+             why:   no program argument was provided\n\
+             where: CLI arguments\n\
+             fix:   pass a program path, for example:\n\
+                   spanda readiness examples/showcase/readiness/rover.sd\n\
+             \n\
+             Usage: spanda readiness <file.sd> [--baseline <dir|spanda.toml>] [--agent <Robot@Hardware>] [--record] [--profile <name>] [--policy <name>] [--target <profile>] [--runtime] [--inject-health-faults] [--json|--agent-json|--markdown|--html]\n\
              spanda readiness trends <file.sd> [--forecast 7d] [--history <path>] [--json]\n\
              spanda readiness forecast <file.sd> [--horizon 7d] [--all] [--target <profile>] [--history <path>] [--json]"
         );

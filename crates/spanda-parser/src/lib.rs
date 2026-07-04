@@ -171,8 +171,8 @@ impl Parser {
         // Example:
         //     let result = spanda_parser::previous(&self);
 
-        // Return pos - 1] from this handle.
-        &self.tokens[self.pos - 1]
+        // Return the prior token, or the first token when still at the start.
+        &self.tokens[self.pos.saturating_sub(1)]
     }
 
     fn advance(&mut self) -> Token {
@@ -190,11 +190,12 @@ impl Parser {
         // Example:
         //     let result = spanda_parser::advance(&mut self);
 
-        // take the branch when token type differs from Eof.
+        // Advance past non-EOF tokens, then return the token just consumed.
         if self.peek().token_type != TokenType::Eof {
             self.pos += 1;
         }
-        self.tokens[self.pos - 1].clone()
+        // Avoid underflow when the stream is already at the first/EOF token.
+        self.tokens[self.pos.saturating_sub(1)].clone()
     }
 
     fn check(&self, ty: TokenType) -> bool {

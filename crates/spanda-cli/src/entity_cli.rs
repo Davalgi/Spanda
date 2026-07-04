@@ -26,7 +26,18 @@ fn load_resolved(root: &Path) -> spanda_config::ResolvedSystemConfig {
         .with_validation(false)
         .resolve_from_dir(root)
         .unwrap_or_else(|e| {
-            eprintln!("{e}");
+            // Explain missing project config and point at the warehouse fixture.
+            eprintln!(
+                "error: failed to load entity configuration\n\
+                 \n\
+                 what:  could not resolve Spanda system config for entity commands\n\
+                 why:   {e}\n\
+                 where: project root `{}`\n\
+                 fix:   pass `--config <path/to/spanda.toml>` (warehouse demo:\n\
+                       crates/spanda-config/tests/fixtures/warehouse/spanda.toml)\n\
+                       or run from a project directory that contains `spanda.toml`",
+                root.display()
+            );
             process::exit(1);
         })
 }
@@ -161,7 +172,16 @@ fn cmd_graph(args: &[String]) {
     let root = project_root(args);
     let resolved = load_resolved(&root);
     let registry = build_entity_registry(&resolved);
-    let graph = registry.graph();
+    let mut graph = registry.graph();
+    // Sort nodes and edges so CLI/golden output is deterministic.
+    graph.nodes.sort_by(|a, b| a.id.cmp(&b.id));
+    graph.edges.sort_by(|a, b| {
+        (a.from_id.as_str(), a.kind.as_str(), a.to_id.as_str()).cmp(&(
+            b.from_id.as_str(),
+            b.kind.as_str(),
+            b.to_id.as_str(),
+        ))
+    });
     if json_output(args) {
         println!("{}", serde_json::to_string_pretty(&graph).unwrap());
         return;

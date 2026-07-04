@@ -87,11 +87,13 @@ Entity
    Platform Services (Verify, Readiness, Device Pool, Fleet)
 ```
 
-- **Browse:** `spanda entity list` · Control Center **Entities** tab · `GET /v1/entities`
-- **Verify:** `spanda entity verify rover-001` · `POST /v1/entities/{id}/verify`
-- **Graph:** `spanda entity graph` · `GET /v1/entities/graph`
+- **Browse:** `spanda entity list --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · Control Center **Entities** tab · `GET /v1/entities`
+- **Verify:** `spanda entity verify rover-001 --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `POST /v1/entities/{id}/verify`
+- **Graph:** `spanda entity graph --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `GET /v1/entities/graph`
 
 Guide: [docs/entity-model.md](docs/entity-model.md) · APIs: [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) · Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.4.2** on crates.io, PyPI, npm
+
+Entity CLI commands require a project `spanda.toml` or `--config` (warehouse fixture above).
 
 ---
 

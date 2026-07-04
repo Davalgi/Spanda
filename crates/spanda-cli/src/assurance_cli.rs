@@ -111,7 +111,17 @@ fn file_arg(args: &[String]) -> String {
         .find(|a| !a.starts_with('-'))
         .cloned()
         .unwrap_or_else(|| {
-            eprintln!("Missing file path");
+            // Tell the operator which program path is required and suggest demos.
+            eprintln!(
+                "error: missing program or trace path\n\
+                 \n\
+                 what:  assurance command requires a `.sd` program or `.trace` file\n\
+                 why:   no non-flag argument was provided\n\
+                 where: CLI arguments\n\
+                 fix:   pass a program path, for example:\n\
+                       spanda assure examples/showcase/assurance/rover.sd\n\
+                       spanda diagnose examples/showcase/assurance/rover.sd"
+            );
             process::exit(1);
         })
 }
