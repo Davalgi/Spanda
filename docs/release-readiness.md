@@ -100,9 +100,11 @@ Mock-backed, demo-only, docs-only, untested, and simulated-only features must **
 
 ## Release blockers summary
 
+Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labeled [`release-blocker`](https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+label%3Arelease-blocker).
+
 - **Open P0:** none (after RB-001 / RB-010 / RB-012)
-- **Open P1:** RB-004 (recovery plan empty), RB-006 (stability label honesty), RB-011 (v3 decision outer-field binding)
-- **Open P2:** RB-005, RB-007, RB-008
+- **Open P1:** [#48](https://github.com/Davalgi/Spanda/issues/48) RB-004 (recovery plan empty), [#50](https://github.com/Davalgi/Spanda/issues/50) RB-006 (stability label honesty), [#55](https://github.com/Davalgi/Spanda/issues/55) RB-011 (v3 decision outer-field binding)
+- **Open P2:** [#49](https://github.com/Davalgi/Spanda/issues/49) RB-005, [#51](https://github.com/Davalgi/Spanda/issues/51) RB-007, [#52](https://github.com/Davalgi/Spanda/issues/52) RB-008
 
 ## Recommendation
 
