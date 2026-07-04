@@ -30,6 +30,7 @@ export type ControlCenterTab =
   | "governance"
   | "audit"
   | "decisions"
+  | "differentiation"
   | "recovery"
   | "digital-thread"
   | "adas"
@@ -86,6 +87,7 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   governance: ["administrator", "supervisor", "developer", "auditor", "safety_officer"],
   audit: ["administrator", "supervisor", "developer", "auditor"],
   decisions: ["administrator", "supervisor", "developer"],
+  differentiation: ["administrator", "supervisor", "developer", "auditor"],
   recovery: ["administrator", "supervisor", "operator", "safety_officer"],
   "digital-thread": ["*"],
   traceability: ["*"],

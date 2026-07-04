@@ -11,6 +11,7 @@ import { GovernancePanel } from "./GovernancePanel";
 import { CompliancePanel } from "./CompliancePanel";
 import { ConfigPanel } from "./ConfigPanel";
 import { ControlCenterDashboard } from "./ControlCenterDashboard";
+import { DifferentiationPanel } from "./DifferentiationPanel";
 import { DecisionsPanel } from "./DecisionsPanel";
 import { DevicesPanel } from "./DevicesPanel";
 import { DigitalThreadPanel } from "./DigitalThreadPanel";
@@ -267,6 +268,9 @@ export function ControlCenterTabContent({
     case "decisions":
       return <DecisionsPanel baseUrl={baseUrl} authHeaders={authHeaders} />;
 
+    case "differentiation":
+      return <DifferentiationPanel baseUrl={baseUrl} />;
+
     case "recovery":
       return (
         <RecoveryPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
@@ -345,7 +349,7 @@ export function ControlCenterTabContent({
       return <DigitalThreadPanel baseUrl={baseUrl} />;
 
     case "traceability":
-      return <TraceabilityPanel devices={devices} />;
+      return <TraceabilityPanel baseUrl={baseUrl} devices={devices} />;
 
     case "telemetry":
       return <ControlCenterTelemetryPanel baseUrl={baseUrl} />;
@@ -373,7 +377,7 @@ export function ControlCenterTabContent({
       );
 
     case "playground":
-      return <PlaygroundPanel />;
+      return <PlaygroundPanel baseUrl={baseUrl} />;
 
     case "marketplace":
       return <MarketplacePanel baseUrl={baseUrl} />;
