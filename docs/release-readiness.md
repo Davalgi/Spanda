@@ -94,9 +94,8 @@ Mock-backed, demo-only, docs-only, untested, and simulated-only features must **
 
 - Default AI providers are **mock-backed** unless live keys/env are set.
 - Live IoT / MQTT / ROS2 paths are optional and environment-gated.
-- `LOCAL_REGISTRY` stub is incomplete; monorepo uses `registry/index.json` + on-disk packages.
-- Recovery orchestrator `plan` may return zero plans for some failures (RB-004).
-- Organizational soak and third-party audit gates remain open (RB-007).
+- Monorepo uses `registry/index.json` + on-disk `packages/registry/`; compile-time `LOCAL_REGISTRY` stub is incomplete but no longer blocks install.
+- Organizational soak and third-party audit gates remain open (RB-007 / [#51](https://github.com/Davalgi/Spanda/issues/51)).
 
 ## Release blockers summary
 
@@ -108,9 +107,9 @@ Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labele
 
 ## Recommendation
 
-**Go with documented limitations** for an evaluation / beta release, provided:
+**Go with documented limitations** — evaluation / beta release **shipped** as workspace **v0.6.3**.
 
-1. CI green including README smoke, goldens, cross-interface, and security regressions
+1. Release-hardening suites are in CI (README smoke, goldens, cross-interface, security regressions)
 2. Feature-status honesty audit is respected (mock-default AI is **Mock-backed**, not production Stable alone)
 3. Organizational field soak and third-party security audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) remain explicitly out of scope for this code release
 

@@ -4,10 +4,10 @@
 
 | | |
 |---|---|
-| **Current release** | v0.5.0 (tagged 2026-07-02) |
+| **Current release** | **v0.6.3** (release-hardening evaluation/beta, 2026-07-04) |
 | **Current phase** | **Release hardening** — no new platform capabilities ([docs/scope-control.md](docs/scope-control.md)) |
-| **Next** | v1.0 production positioning (after P0/P1 blockers clear) |
-| **Last audited** | 2026-07-04 — release hardening QA pass |
+| **Next** | v1.0 production positioning (after organizational gates / [#51](https://github.com/Davalgi/Spanda/issues/51)) |
+| **Last audited** | 2026-07-04 — release hardening QA pass; **Go with documented limitations** |
 | **Feature truth table** | [docs/feature-status.md](docs/feature-status.md) |
 | **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |

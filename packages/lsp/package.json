@@ -1,6 +1,6 @@
 {
   "name": "@spanda/lsp",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Language Server Protocol for Spanda (.sd)",
   "type": "module",
   "main": "./dist/server.js",
