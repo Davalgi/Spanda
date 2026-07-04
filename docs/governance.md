@@ -78,6 +78,10 @@ spanda risk report [--json]
 | POST | `/v1/governance/policies/assign` | Assign/sign policy to entity |
 | GET | `/v1/governance/audit` | Governance audit history |
 | GET | `/v1/governance/accountability` | Responsible owners |
+| PUT/POST | `/v1/governance/accountability` | Update owners / contacts / approval chain (entity overlay) |
+| POST | `/v1/governance/policies/detach` | Detach a policy assignment |
+
+Live decision authorization (`authorize_action` / distributed decision engine) loads entity governance from the project config and entity overlay. High/life/mission-critical risk and manual/assisted autonomy require human approval for non-reflex actions; emergency stop and other safety actions remain permitted.
 
 ## gRPC (proto 1.0.12)
 

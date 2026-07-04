@@ -525,6 +525,9 @@ impl EntityGovernanceMeta {
             && operational_maturity.is_none()
             && certification_status.is_none()
             && risk_level.is_none()
+            && responsible_person.is_none()
+            && deployment_owner.is_none()
+            && emergency_contact.is_none()
         {
             return None;
         }

@@ -683,11 +683,23 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/governance/policies/assign",
     },
     ApiRoute {
+        method: "POST",
+        path: "/v1/governance/policies/detach",
+    },
+    ApiRoute {
         method: "GET",
         path: "/v1/governance/audit",
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/governance/accountability",
+    },
+    ApiRoute {
+        method: "PUT",
+        path: "/v1/governance/accountability",
+    },
+    ApiRoute {
+        method: "POST",
         path: "/v1/governance/accountability",
     },
     ApiRoute {

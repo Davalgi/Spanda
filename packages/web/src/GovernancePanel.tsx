@@ -30,6 +30,21 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
   const [audit, setAudit] = useState<Record<string, unknown>[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [acctForm, setAcctForm] = useState({
+    entity_id: "",
+    responsible_person: "",
+    deployment_owner: "",
+    emergency_contact: "",
+    escalation_contact: "",
+    approval_chain: "",
+  });
+  const [policyForm, setPolicyForm] = useState({
+    entity_id: "",
+    kind: "safety",
+    name: "safety.default",
+    version: "1.0.0",
+    sign: true,
+  });
 
   const load = useCallback(async () => {
     try {
@@ -139,6 +154,93 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
     }
   };
 
+  const saveAccountability = async () => {
+    if (!hasToken || !can("Deploy") || !acctForm.entity_id.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`${baseUrl}/v1/governance/accountability`, {
+        method: "PUT",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          entity_id: acctForm.entity_id.trim(),
+          responsible_person: acctForm.responsible_person || undefined,
+          deployment_owner: acctForm.deployment_owner || undefined,
+          emergency_contact: acctForm.emergency_contact || undefined,
+          escalation_contact: acctForm.escalation_contact || undefined,
+          approval_chain: acctForm.approval_chain
+            ? acctForm.approval_chain.split(",").map((s) => s.trim()).filter(Boolean)
+            : undefined,
+        }),
+      });
+      if (!res.ok) throw new Error(`accountability update ${res.status}`);
+      await loadAuthenticated();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const assignPolicy = async () => {
+    if (!hasToken || !can("Deploy") || !policyForm.entity_id.trim() || !policyForm.name.trim()) {
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`${baseUrl}/v1/governance/policies/assign`, {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          entity_id: policyForm.entity_id.trim(),
+          kind: policyForm.kind,
+          name: policyForm.name.trim(),
+          version: policyForm.version || undefined,
+          sign: policyForm.sign,
+        }),
+      });
+      if (!res.ok) throw new Error(`policy assign ${res.status}`);
+      await loadAuthenticated();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const detachPolicy = async (assignmentId: string) => {
+    if (!hasToken || !can("Deploy")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`${baseUrl}/v1/governance/policies/detach`, {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({ assignment_id: assignmentId }),
+      });
+      if (!res.ok) throw new Error(`policy detach ${res.status}`);
+      await loadAuthenticated();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const selectAccountability = (row: Record<string, unknown>) => {
+    setAcctForm({
+      entity_id: String(row.entity_id ?? ""),
+      responsible_person: String(row.responsible_person ?? ""),
+      deployment_owner: String(row.deployment_owner ?? ""),
+      emergency_contact: String(row.emergency_contact ?? ""),
+      escalation_contact: String(row.escalation_contact ?? ""),
+      approval_chain: Array.isArray(row.approval_chain)
+        ? (row.approval_chain as string[]).join(", ")
+        : "",
+    });
+  };
+
   const summary = compliance?.summary as Record<string, number> | undefined;
   const validationPassed = validation?.passed as boolean | undefined;
   const deployPassed = deploymentVerify?.passed as boolean | undefined;
@@ -240,7 +342,7 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
         {accountability.length ? (
           <table className="cc-table">
             <thead>
-              <tr><th>Entity</th><th>Responsible</th><th>Deployment owner</th><th>Emergency</th><th>Approval chain</th></tr>
+              <tr><th>Entity</th><th>Responsible</th><th>Deployment owner</th><th>Emergency</th><th>Approval chain</th><th></th></tr>
             </thead>
             <tbody>
               {accountability.map((row) => (
@@ -250,6 +352,11 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
                   <td>{String(row.deployment_owner ?? "—")}</td>
                   <td>{String(row.emergency_contact ?? "—")}</td>
                   <td>{Array.isArray(row.approval_chain) ? (row.approval_chain as string[]).join(" → ") : "—"}</td>
+                  <td>
+                    <button type="button" disabled={busy || !hasToken} onClick={() => selectAccountability(row)}>
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -257,13 +364,67 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
         ) : (
           <CcEmptyState message="No accountability metadata on entities." />
         )}
+        <div className="cc-form-grid" style={{ marginTop: "0.75rem", display: "grid", gap: "0.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))" }}>
+          <label>
+            Entity ID
+            <input
+              value={acctForm.entity_id}
+              onChange={(e) => setAcctForm((f) => ({ ...f, entity_id: e.target.value }))}
+              placeholder="robot:amr-01"
+            />
+          </label>
+          <label>
+            Responsible person
+            <input
+              value={acctForm.responsible_person}
+              onChange={(e) => setAcctForm((f) => ({ ...f, responsible_person: e.target.value }))}
+            />
+          </label>
+          <label>
+            Deployment owner
+            <input
+              value={acctForm.deployment_owner}
+              onChange={(e) => setAcctForm((f) => ({ ...f, deployment_owner: e.target.value }))}
+            />
+          </label>
+          <label>
+            Emergency contact
+            <input
+              value={acctForm.emergency_contact}
+              onChange={(e) => setAcctForm((f) => ({ ...f, emergency_contact: e.target.value }))}
+            />
+          </label>
+          <label>
+            Escalation contact
+            <input
+              value={acctForm.escalation_contact}
+              onChange={(e) => setAcctForm((f) => ({ ...f, escalation_contact: e.target.value }))}
+            />
+          </label>
+          <label>
+            Approval chain (comma-separated roles)
+            <input
+              value={acctForm.approval_chain}
+              onChange={(e) => setAcctForm((f) => ({ ...f, approval_chain: e.target.value }))}
+              placeholder="fleet_manager, safety_officer"
+            />
+          </label>
+        </div>
+        <button
+          type="button"
+          disabled={busy || !hasToken || !can("Deploy") || !acctForm.entity_id.trim()}
+          onClick={() => void saveAccountability()}
+          style={{ marginTop: "0.5rem" }}
+        >
+          Save accountability
+        </button>
       </CcSection>
 
       <CcSection title="Applicable policies">
         {policies.length ? (
           <table className="cc-table">
             <thead>
-              <tr><th>Entity</th><th>Policy</th><th>Version</th><th>Signed</th></tr>
+              <tr><th>Entity</th><th>Policy</th><th>Version</th><th>Signed</th><th></th></tr>
             </thead>
             <tbody>
               {policies.map((row) => {
@@ -274,14 +435,74 @@ export function GovernancePanel({ baseUrl, authHeaders, can, hasToken }: Props) 
                     <td>{String(policy.name ?? "—")}</td>
                     <td>{String(policy.version ?? "—")}</td>
                     <td>{policy.signature ? "yes" : "no"}</td>
+                    <td>
+                      <button
+                        type="button"
+                        disabled={busy || !hasToken || !can("Deploy")}
+                        onClick={() => void detachPolicy(String(row.id))}
+                      >
+                        Detach
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         ) : (
-          <CcEmptyState message="No policy assignments. Use POST /v1/governance/policies/assign." />
+          <CcEmptyState message="No policy assignments yet." />
         )}
+        <div className="cc-form-grid" style={{ marginTop: "0.75rem", display: "grid", gap: "0.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))" }}>
+          <label>
+            Entity ID
+            <input
+              value={policyForm.entity_id}
+              onChange={(e) => setPolicyForm((f) => ({ ...f, entity_id: e.target.value }))}
+              placeholder="robot:amr-01"
+            />
+          </label>
+          <label>
+            Kind
+            <select
+              value={policyForm.kind}
+              onChange={(e) => setPolicyForm((f) => ({ ...f, kind: e.target.value }))}
+            >
+              {["safety", "security", "recovery", "trust", "maintenance", "update", "decision", "mission", "deployment", "compliance"].map((kind) => (
+                <option key={kind} value={kind}>{kind}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Policy name
+            <input
+              value={policyForm.name}
+              onChange={(e) => setPolicyForm((f) => ({ ...f, name: e.target.value }))}
+            />
+          </label>
+          <label>
+            Version
+            <input
+              value={policyForm.version}
+              onChange={(e) => setPolicyForm((f) => ({ ...f, version: e.target.value }))}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <input
+              type="checkbox"
+              checked={policyForm.sign}
+              onChange={(e) => setPolicyForm((f) => ({ ...f, sign: e.target.checked }))}
+            />
+            Sign policy
+          </label>
+        </div>
+        <button
+          type="button"
+          disabled={busy || !hasToken || !can("Deploy") || !policyForm.entity_id.trim()}
+          onClick={() => void assignPolicy()}
+          style={{ marginTop: "0.5rem" }}
+        >
+          Assign policy
+        </button>
       </CcSection>
 
       <CcSection title="Audit history">

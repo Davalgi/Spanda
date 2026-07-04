@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Operational governance product depth:** live decision enforcement via `lookup_entity_for_governance` in `authorize_action` and the distributed decision engine (high-risk / manual-assisted gates; reflex actions always allowed). Control Center Governance tab can assign/detach signed policies and edit accountability (owners, emergency/escalation contacts, approval chain) through `PUT /v1/governance/accountability` and `POST /v1/governance/policies/detach`.
+
 ## [0.6.2] - 2026-07-04
 
 ### Added

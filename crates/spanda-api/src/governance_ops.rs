@@ -375,6 +375,135 @@ pub fn accountability_summary(
     }))
 }
 
+pub fn accountability_update(
+    state: &mut ControlCenterState,
+    body: &str,
+    ctx: Option<&RbacContext>,
+) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    #[derive(Deserialize)]
+    struct AccountabilityUpdateRequest {
+        entity_id: String,
+        responsible_person: Option<String>,
+        responsible_organization: Option<String>,
+        mission_owner: Option<String>,
+        deployment_owner: Option<String>,
+        emergency_contact: Option<String>,
+        escalation_contact: Option<String>,
+        #[serde(default)]
+        approval_chain: Option<Vec<String>>,
+    }
+    let req: AccountabilityUpdateRequest = match serde_json::from_str(body) {
+        Ok(value) => value,
+        Err(error) => return bad_request(&error.to_string()),
+    };
+    if req.entity_id.trim().is_empty() {
+        return bad_request("entity_id is required");
+    }
+
+    let Some(mut entity) = state
+        .entity_overlay
+        .entities
+        .get(&req.entity_id)
+        .cloned()
+        .or_else(|| state.entity_registry().get(&req.entity_id).cloned())
+    else {
+        return bad_request(&format!("entity '{}' not found", req.entity_id));
+    };
+
+    if let Some(person) = req.responsible_person {
+        entity.owner = Some(person.clone());
+        entity
+            .metadata
+            .insert("governance.responsible_person".into(), person);
+    }
+    if let Some(org) = req.responsible_organization {
+        entity
+            .metadata
+            .insert("governance.responsible_organization".into(), org);
+    }
+    if let Some(owner) = req.mission_owner {
+        entity
+            .metadata
+            .insert("governance.mission_owner".into(), owner);
+    }
+    if let Some(owner) = req.deployment_owner {
+        entity
+            .metadata
+            .insert("governance.deployment_owner".into(), owner);
+    }
+    if let Some(contact) = req.emergency_contact {
+        entity
+            .metadata
+            .insert("governance.emergency_contact".into(), contact);
+    }
+    if let Some(contact) = req.escalation_contact {
+        entity
+            .metadata
+            .insert("governance.escalation_contact".into(), contact);
+    }
+    if let Some(chain) = req.approval_chain {
+        entity.metadata.insert(
+            "governance.approval_chain".into(),
+            chain.join("|"),
+        );
+    }
+    entity.governance =
+        spanda_config::EntityGovernanceMeta::from_metadata(&entity.metadata);
+
+    state
+        .entity_overlay
+        .entities
+        .insert(req.entity_id.clone(), entity.clone());
+    state.entity_overlay.version = state.entity_overlay.version.saturating_add(1);
+    if let Err(error) = spanda_config::save_entity_overlay(
+        &spanda_config::default_entity_overlay_path(),
+        &state.entity_overlay,
+    ) {
+        return bad_request(&error);
+    }
+
+    json_ok(&serde_json::json!({
+        "version": "v1",
+        "entity_id": entity.id,
+        "governance": entity.governance,
+        "overlay_version": state.entity_overlay.version,
+    }))
+}
+
+pub fn policies_detach(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
+    if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
+        return unauthorized();
+    }
+    #[derive(Deserialize)]
+    struct DetachRequest {
+        assignment_id: String,
+    }
+    let req: DetachRequest = match serde_json::from_str(body) {
+        Ok(value) => value,
+        Err(error) => return bad_request(&error.to_string()),
+    };
+    let path = default_policy_store_path();
+    let mut store = PolicyStore::load(&path);
+    let actor = ctx.map(|c| c.key_id.as_str());
+    if !store.detach(&req.assignment_id, actor) {
+        return bad_request(&format!(
+            "assignment '{}' not found",
+            req.assignment_id
+        ));
+    }
+    if let Err(error) = store.save(&path) {
+        return bad_request(&error);
+    }
+    json_ok(&serde_json::json!({
+        "version": "v1",
+        "detached": req.assignment_id,
+        "audit": store.audit,
+    }))
+}
+
 fn seed_certifications_from_registry(store: &mut CertificationStore, state: &ControlCenterState) {
     let registry = state.entity_registry();
     for entity in registry.entities.values() {

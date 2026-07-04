@@ -619,9 +619,15 @@ pub fn handle_request(
         ("/v1/governance/policies/assign", "POST") => {
             crate::governance_ops::policies_assign(&request.body, ctx.as_ref())
         }
+        ("/v1/governance/policies/detach", "POST") => {
+            crate::governance_ops::policies_detach(&request.body, ctx.as_ref())
+        }
         ("/v1/governance/audit", "GET") => crate::governance_ops::governance_audit(ctx.as_ref()),
         ("/v1/governance/accountability", "GET") => {
             crate::governance_ops::accountability_summary(state, ctx.as_ref())
+        }
+        ("/v1/governance/accountability", "PUT") | ("/v1/governance/accountability", "POST") => {
+            crate::governance_ops::accountability_update(state, &request.body, ctx.as_ref())
         }
         ("/v1/chaos/injections", "GET") => crate::control_center_extras::chaos_catalog_json(),
         ("/v1/chaos/simulate", "POST") => {
