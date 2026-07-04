@@ -4,10 +4,10 @@
 
 | | |
 |---|---|
-| **Current release** | **v0.6.3** (release-hardening evaluation/beta, 2026-07-04) |
-| **Current phase** | **Release hardening** — no new platform capabilities ([docs/scope-control.md](docs/scope-control.md)) |
-| **Next** | v1.0 production positioning (after organizational gates / [#51](https://github.com/Davalgi/Spanda/issues/51)) |
-| **Last audited** | 2026-07-04 — release hardening QA pass; **Go with documented limitations** |
+| **Current release** | **v0.6.3** (evaluation/beta, 2026-07-04) — [known limitations](docs/known-limitations.md) |
+| **Current phase** | **Next horizon** — hardening + adoption toward v1.0 ([docs/scope-control.md](docs/scope-control.md)) |
+| **Next milestone** | **v1.0** production positioning — after [organizational gates](docs/organizational-gates.md) / [#51](https://github.com/Davalgi/Spanda/issues/51) |
+| **Last audited** | 2026-07-04 — v0.6.3 shipped; **Go with documented limitations** |
 | **Feature truth table** | [docs/feature-status.md](docs/feature-status.md) |
 | **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |
@@ -1017,6 +1017,24 @@ flowchart TB
 
 ---
 
+## Next horizon priorities (post v0.6.3)
+
+Engineering focus after the evaluation/beta release. **Organizational gates** (soak + audit) run in parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
+
+| Priority | Theme | Representative work | Tier target |
+|----------|-------|---------------------|-------------|
+| **P0** | Organizational gates | 30-day field soak, third-party security audit prep + sign-off ([#51](https://github.com/Davalgi/Spanda/issues/51)) | v1.0 blocker |
+| **P1** | Differentiation hardening | Mission contracts, explainability, decision audit trail — promote signature capabilities from Planned/Experimental | Stable |
+| **P1** | Control Center promotion | Wire playground-only panels; visual ops dashboards; enterprise admin gaps ([enterprise-operations-roadmap.md §6.1](docs/enterprise-operations-roadmap.md#61-control-center)) | Experimental → Stable |
+| **P2** | Adoption blockers | VS Code Marketplace publish (needs `VSCE_PAT`) | Stable (extension) |
+| **P2** | Live paths | Swarm quorum, live vehicle I/O, env-gated AI/IoT golden paths | Experimental → Stable |
+| **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |
+| **P3** | Solution blueprints | Warehouse, medical, agriculture scaffolds | Experimental |
+
+**Phase policy:** [docs/scope-control.md](docs/scope-control.md) — fixes, tests, honest promotions, and items above only.
+
+---
+
 ## Roadmap timeline
 
 Maturity-based horizons — **not arbitrary calendar dates**.
@@ -1031,10 +1049,10 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 
 ### Platform areas at a glance
 
-| Area | Current focus (v0.4) | Next (v0.5+) |
-|------|----------------------|--------------|
+| Area | Shipped (v0.6.3) | Next (v1.0 path) |
+|------|------------------|------------------|
 | Language | Stable core; typed handler I/O | Generics polish; self-hosting subset (future) |
-| Compiler & Runtime | Interpreter LTS; certify gate | Native codegen golden paths (experimental) |
+| Compiler & Runtime | Interpreter LTS; certify gate | Native codegen golden paths (experimental → stable) |
 | Verification | `spanda verify`, capability matrices | 5+ production hardware profiles (v1.0) |
 | Safety | ActionProposal → SafeAction stable | Safety Coverage CLI; stricter certify workflows |
 | Simulation | `spanda sim`, twins, replay, telemetry store | OTLP/fleet aggregation polish; Gazebo/Webots scaffolds |
@@ -1046,8 +1064,8 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 | Mission continuity | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Field validation; swarm quorum hardening |
 | Self-healing | Recovery planner + CLI + runtime dispatch (**Stable**) | Recovery coverage hardening |
 | Platform maturity | 16 areas **Stable** (Phases A–D) | Live AI / learned anomaly paths **Experimental** |
-| Differentiation | NOW items shipped **Experimental** | Stable hardening; NEXT signature capabilities |
-| Enterprise operations | E1–E4 **Stable** | Organizational soak + audit gates |
+| Differentiation | NOW items shipped **Experimental** | Stable hardening; signature capabilities P1 |
+| Enterprise operations | E1–E4 **Stable** (code) | Organizational soak + audit gates (P0) |
 | Solution Blueprints | ADAS, Spatial Computing, Smart Spaces **Stable** | Warehouse, medical, agriculture scaffolds **Experimental** |
 
 ---
@@ -1070,7 +1088,7 @@ Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (work
 | Mission continuity runtime | **Stable** (post-v0.4.0 on `main`) |
 | Persistent telemetry + OTLP/fleet aggregation | **Stable** (post-v0.4.0 on `main`) |
 
-### v0.5 — Beta credibility (current tag)
+### v0.5 — Beta credibility
 
 **Theme:** Close adoption blockers; differentiation NOW capabilities.  
 **Tagged:** 2026-07-02.  
@@ -1087,13 +1105,42 @@ Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (work
 
 **Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until `VSCE_PAT` is configured.
 
+### v0.6.3 — Release hardening (current tag)
+
+**Theme:** Credibility over new capability — defect discovery, CI gates, stability honesty.  
+**Tagged:** 2026-07-04.  
+**Version:** **0.6.3** (patch bump from v0.6.2).
+
+| Item | Status |
+|------|--------|
+| README command smoke + golden harness | **Shipped** — `tests/readme_commands/` |
+| Cross-interface consistency (CLI / REST / gRPC) | **Shipped** — `scripts/cross_interface_consistency.sh` |
+| Security regressions (plugin, package, decision, recovery) | **Shipped** |
+| Property-style parser/manifest/config tests | **Shipped** |
+| Release blockers RB-001–RB-012 (code) | **Fixed or mitigated** — see [release-blockers.md](docs/release-blockers.md) |
+| Feature-status honesty (mock-default AI) | **Shipped** |
+| Organizational gates RB-007 | **Open** — [organizational-gates.md](docs/organizational-gates.md) |
+
+**Exit criteria:** [release-readiness.md](docs/release-readiness.md) **Go with documented limitations** — **met**. Public positioning: **evaluation / beta**.
+
+**Next phase:** [Next horizon priorities](#next-horizon-priorities-post-v063) under [scope-control.md](docs/scope-control.md).
+
 ### v0.3 / v0.2 — Complete
 
 See [docs/product-strategy.md](docs/product-strategy.md) and [docs/tier-3-priority-plan.md](docs/tier-3-priority-plan.md).
 
 ### v1.0 — Production positioning
 
-**Version bump:** **major** → `1.0.0` when exit criteria below are stable-tier and tagged.
+**Version bump:** **major** → `1.0.0` when code **and** organizational exit criteria are stable-tier and tagged.
+
+**Organizational gates (required):** [docs/organizational-gates.md](docs/organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51)
+
+| Gate | Requirement |
+|------|-------------|
+| Field soak | ≥ 30 days via `enterprise_ops_field_soak_init.sh` + promotion gate |
+| Security audit | Third-party sign-off on `security-audit-prep.json` packet |
+| Code blockers | No open P0/P1 [release-blockers](docs/release-blockers.md) |
+| CI | README smoke, goldens, cross-interface, security regressions green |
 
 | Item | Tier |
 |------|------|

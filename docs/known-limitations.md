@@ -61,7 +61,7 @@ Enterprise operations and solution blueprints ship as **Stable** in code and CI,
 - **30-day field soak** — `./scripts/enterprise_ops_field_soak_init.sh` then `./scripts/enterprise_ops_stable_promotion_gate.sh`
 - **Third-party security audit** — `./scripts/security_audit_prep.sh` then external reviewer sign-off
 
-Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51). See [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) · [release-blockers.md](./release-blockers.md).
+Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51). Full v1.0 checklist: [organizational-gates.md](./organizational-gates.md) · runbooks: [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) · [release-blockers.md](./release-blockers.md).
 
 ## Not planned (by design)
 

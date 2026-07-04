@@ -2,6 +2,8 @@
 
 **Spanda** is an autonomous systems platform with a safety-first **`.sd` language** at its core. This guide gets you from install to your first robot program in under 10 minutes.
 
+> **Release note:** Current workspace release is **v0.6.3** (**evaluation / beta**). Default AI and transport paths are mock-backed unless you configure live backends — [known-limitations.md](./known-limitations.md) · [troubleshooting.md](./troubleshooting.md).
+
 *Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [philosophy](./overview/philosophy.md) for the body metaphor and etymology.
 
 Platform map: [platform-overview.md](./platform-overview.md) · **All tutorials:** [Tutorials index](./tutorials/README.md)

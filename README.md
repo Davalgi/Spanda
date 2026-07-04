@@ -14,6 +14,8 @@ Spanda is an autonomous systems platform centered on the **Spanda Language** (`.
 
 Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
 
+**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos, and integration testing. Not a full production claim: default AI and IoT paths are mock-backed unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) · [docs/release-readiness.md](docs/release-readiness.md) · path to v1.0: [docs/organizational-gates.md](docs/organizational-gates.md).
+
 ---
 
 ## Philosophy
@@ -143,6 +145,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Platform components** | [docs/overview/platform-components.md](docs/overview/platform-components.md) |
 | **Feature status** | [docs/overview/feature-snapshot.md](docs/overview/feature-snapshot.md) · [docs/feature-status.md](docs/feature-status.md) |
 | **Known limitations** | [docs/known-limitations.md](docs/known-limitations.md) · mock/live backend setup in [docs/troubleshooting.md](docs/troubleshooting.md) |
+| **v0.6.3 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
@@ -162,6 +165,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | [docs/control-center.md](docs/control-center.md) | **Control Center** — start API/UI, rebuild, `serve` with `--config` and `--program` |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, SDK install, verify, fleet, ROS2, Control Center |
 | [docs/known-limitations.md](docs/known-limitations.md) | Honest scope limits, mock backends, organizational gates |
+| [docs/organizational-gates.md](docs/organizational-gates.md) | v0.6.3 → v1.0 path — field soak, security audit, exit checklist |
 | [docs/sdk.md](docs/sdk.md) | **Official SDKs** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `@davalgi-spanda/sdk` |
 | [docs/platform-overview.md](docs/platform-overview.md) | Platform components and workflow |
 | [docs/spanda-language.md](docs/spanda-language.md) | Language guide |

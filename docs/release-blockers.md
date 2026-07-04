@@ -50,6 +50,16 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 5. Add a row here with the issue link.
 6. Link related tests or docs when fixed, and close the GitHub issue.
 
+## Path to v1.0
+
+Code release criteria for v0.6.3 are **met**. v1.0 requires organizational gates — see [organizational-gates.md](./organizational-gates.md):
+
+| Gate | Status |
+|------|--------|
+| Field soak (30 days) | Open — `enterprise_ops_field_soak_init.sh` |
+| Third-party security audit | Open — `security_audit_prep.sh` + external sign-off |
+| RB-007 / [#51](https://github.com/Davalgi/Spanda/issues/51) | Open — P2, documented |
+
 ## Exit criteria for release
 
 - No open **P0** items
@@ -57,3 +67,4 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 - README command smoke + golden tests green in CI
 - Security regression suite green
 - [release-readiness.md](./release-readiness.md) recommendation is **Go** or **Go with documented limitations**
+- v1.0 additionally requires [organizational-gates.md](./organizational-gates.md) checklist (soak + audit)

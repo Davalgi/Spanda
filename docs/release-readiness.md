@@ -1,8 +1,9 @@
 # Release Readiness Report
 
-Snapshot for the **release hardening** phase. Update when quality gates change.
+Snapshot for **v0.6.3** (evaluation / beta). Update when quality gates or phase policy change.
 
-**Phase policy:** [scope-control.md](./scope-control.md)  
+**Phase policy:** [scope-control.md](./scope-control.md) (Next horizon)  
+**Organizational path to v1.0:** [organizational-gates.md](./organizational-gates.md)  
 **Blockers:** [release-blockers.md](./release-blockers.md)  
 **Feature labels:** [feature-status.md](./feature-status.md)
 
@@ -36,7 +37,9 @@ Snapshot for the **release hardening** phase. Update when quality gates change.
 | README commands match runnable invocations | Hardened (entity `--config`, demos) |
 | Feature stability labels | Audit ongoing — see honesty rules in feature-status |
 | Release blockers tracked | [release-blockers.md](./release-blockers.md) |
-| Scope control published | [scope-control.md](./scope-control.md) |
+| Scope control published | [scope-control.md](./scope-control.md) — Next horizon phase |
+| Organizational gates documented | [organizational-gates.md](./organizational-gates.md) |
+| Public v0.6.3 positioning | Evaluation / beta — README + [known-limitations.md](./known-limitations.md) |
 
 ## Demo status
 

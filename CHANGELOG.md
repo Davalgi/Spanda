@@ -9,13 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Organizational gates guide:** v0.6.3 → v1.0 checklist (field soak, security audit, exit criteria) — [organizational-gates.md](docs/organizational-gates.md).
+- **Next horizon priorities:** prioritized P0–P3 engineering themes in [ROADMAP.md](ROADMAP.md#next-horizon-priorities-post-v063).
 - **Mock-backend runtime notices:** one-time `[spanda]` stderr warnings when AI or live transport falls back to mock/in-memory paths; program-aware notices before `run`/`sim`; `SPANDA_QUIET=1` suppresses them.
 - **Cross-interface gRPC probe:** `crates/spanda-api/tests/cross_interface_live.rs` compares REST and gRPC health + recovery plan in `scripts/cross_interface_consistency.sh`.
 
 ### Changed
 
+- **Public positioning:** README, getting-started, and release docs state **v0.6.3 evaluation / beta** with links to known limitations and organizational gates.
+- **Phase policy:** [scope-control.md](docs/scope-control.md) transitions from release hardening to **Next horizon** (hardening + adoption toward v1.0).
+- **Release milestones:** [ROADMAP.md](ROADMAP.md) adds v0.6.3 milestone; v1.0 section includes organizational gate table.
+- **Product strategy:** updated for v0.6.3 ship and Next horizon P0/P1 priorities — [product-strategy.md](docs/product-strategy.md).
 - **Known limitations doc:** synced to v0.6.3, organizational gates, live-backend setup links, runtime notice behavior — [known-limitations.md](docs/known-limitations.md).
-- **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke — [release-readiness.md](docs/release-readiness.md).
+- **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke; phase set to Next horizon — [release-readiness.md](docs/release-readiness.md).
 
 ## [0.6.3] - 2026-07-04
 

@@ -2,7 +2,7 @@
 
 Strategic analysis for Spanda as an **autonomous systems platform** with a safety-first language at its core. This document defines positioning, priorities, and release scope. It complements [vision.md](./vision.md) (aspiration), [platform-overview.md](./platform-overview.md) (architecture), and [feature-status.md](./feature-status.md) (implementation truth).
 
-**Last updated:** 2026-06-24 (differentiation roadmap; signature capabilities; platform maturity; v0.4.0 deploy path)
+**Last updated:** 2026-07-04 (v0.6.3 evaluation/beta; Next horizon phase; organizational gates)
 
 ---
 
@@ -23,7 +23,17 @@ Spanda should not compete as a general-purpose language, Python replacement, Rus
 
 ### Platform maturity focus (2026–2027)
 
-Beyond core language features, Spanda prioritizes **adoption, trust, and operations** — see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md), [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), and [differentiation-roadmap.md](./differentiation-roadmap.md). Planned areas compose existing engines (`spanda-readiness`, `spanda-assurance`, `spanda-security`) rather than replacing them. **NOW (v0.5+):** mission contracts, explainability, decision audit trail, safety/recovery coverage. **Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI, official SDKs **0.4.2**, Tauri desktop **0.4.2** (`desktop-v0.4.2`), WebSocket/OTLP observability, compliance/digital-thread/executive reporting, signed profile catalog, scheduled reports, production OTA/discovery policy, config approval publish workflow — see [control-center.md](./control-center.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md). **NEXT (organizational):** field soak completion, third-party security audit sign-off, VS Code Marketplace publish.
+Beyond core language features, Spanda prioritizes **adoption, trust, and operations** — see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md), [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), and [differentiation-roadmap.md](./differentiation-roadmap.md). Planned areas compose existing engines (`spanda-readiness`, `spanda-assurance`, `spanda-security`) rather than replacing them.
+
+**Shipped (v0.6.3 evaluation/beta):** release-hardening CI suite, honest mock-default labeling, closed code blockers — [release-readiness.md](./release-readiness.md). Public positioning: **evaluation / beta**, not full production.
+
+**NOW (Next horizon, P1):** differentiation signature capabilities (mission contracts, explainability, decision audit trail); Control Center Stable promotion.
+
+**P0 (organizational, parallel):** 30-day field soak + third-party security audit — [organizational-gates.md](./organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51).
+
+**Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI, official SDKs **0.4.2**, Tauri desktop **0.4.2**, WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see [control-center.md](./control-center.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+
+**Deferred:** VS Code Marketplace publish (needs `VSCE_PAT`).
 
 ### Philosophy
 

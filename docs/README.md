@@ -160,7 +160,8 @@
 | [packages.md](./packages.md) | **Package manager, `spanda publish`, capabilities** |
 | [registry.md](./registry.md) | **Hosted package registry, `spanda publish` mirror, and `spanda install`** |
 | [feature-status.md](./feature-status.md) | **Feature stability matrix (strict labels)** |
-| [scope-control.md](./scope-control.md) | **Release hardening scope — allowed vs not allowed** |
+| [scope-control.md](./scope-control.md) | **Next horizon phase — allowed vs not allowed** |
+| [organizational-gates.md](./organizational-gates.md) | **v0.6.3 → v1.0 path — field soak, security audit, exit checklist** |
 | [release-blockers.md](./release-blockers.md) | **P0–P3 release blocker tracking** |
 | [release-readiness.md](./release-readiness.md) | **Release readiness report and recommendation** |
 | [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md) | **June 2026 roadmap vs codebase gap audit and closure tracking** |
