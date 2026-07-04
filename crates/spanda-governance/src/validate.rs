@@ -96,6 +96,10 @@ pub fn run_compliance_check(
     let mut passed_count = 0usize;
 
     for entity in entities {
+        // Only evaluate entities that carry governance metadata (stamped fleet/robots).
+        if entity.governance.is_none() {
+            continue;
+        }
         let mut governance = governance_from_entity(entity);
         if governance.autonomy_level.is_none() {
             governance.autonomy_level = system_governance.autonomy_level;
@@ -109,15 +113,30 @@ pub fn run_compliance_check(
         if governance.risk_level.is_none() {
             governance.risk_level = system_governance.risk_level;
         }
+        if governance.certification.is_none() {
+            governance.certification = system_governance.certification.clone();
+        }
+        if governance.accountability.is_none() {
+            governance.accountability = system_governance.accountability.clone();
+        } else if let (Some(entity_acct), Some(system_acct)) = (
+            governance.accountability.as_mut(),
+            system_governance.accountability.as_ref(),
+        ) {
+            if entity_acct.responsible_person.is_none() {
+                entity_acct.responsible_person = system_acct.responsible_person.clone();
+            }
+            if entity_acct.deployment_owner.is_none() {
+                entity_acct.deployment_owner = system_acct.deployment_owner.clone();
+            }
+            if entity_acct.emergency_contact.is_none() {
+                entity_acct.emergency_contact = system_acct.emergency_contact.clone();
+            }
+            if entity_acct.approval_chain.is_empty() {
+                entity_acct.approval_chain = system_acct.approval_chain.clone();
+            }
+        }
         if governance.standards_profiles.is_empty() {
             governance.standards_profiles = system_governance.standards_profiles.clone();
-        }
-
-        let has_governance = governance.autonomy_level.is_some()
-            || governance.deployment_profile.is_some()
-            || governance.operational_maturity.is_some();
-        if !has_governance {
-            continue;
         }
 
         let report = evaluate_entity_governance(&entity.id, registry, &governance, &eval_opts);

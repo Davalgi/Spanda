@@ -200,18 +200,26 @@ pub fn evaluate_entity_governance(
         let profile = deployment_profile_by_name(profile_kind.as_str());
         if let Some(profile) = profile {
             if let Some(record) = entity {
-                for cap in &profile.required_capabilities {
-                    if !record.capabilities.iter().any(|c| c == cap) {
-                        findings.push(GovernanceFinding {
-                            severity: ValidationSeverity::Missing,
-                            code: "GOV_CAPABILITY".into(),
-                            message: format!(
-                                "Deployment profile {} requires capability '{}'",
-                                profile_kind.as_str(),
-                                cap
-                            ),
-                            field: Some("capabilities".into()),
-                        });
+                let capability_applicable = matches!(
+                    record.entity_type,
+                    spanda_config::entity::EntityKind::Robot
+                        | spanda_config::entity::EntityKind::Drone
+                        | spanda_config::entity::EntityKind::Vehicle
+                );
+                if capability_applicable {
+                    for cap in &profile.required_capabilities {
+                        if !record.capabilities.iter().any(|c| c == cap) {
+                            findings.push(GovernanceFinding {
+                                severity: ValidationSeverity::Missing,
+                                code: "GOV_CAPABILITY".into(),
+                                message: format!(
+                                    "Deployment profile {} requires capability '{}'",
+                                    profile_kind.as_str(),
+                                    cap
+                                ),
+                                field: Some("capabilities".into()),
+                            });
+                        }
                     }
                 }
             }
@@ -328,7 +336,11 @@ pub fn governance_from_entity(record: &EntityRecord) -> EntityGovernance {
         .unwrap_or_default();
 
     let mut accountability = HumanAccountability::default();
-    if let Some(person) = record.owner.as_ref().or(record.metadata.get("governance.responsible_person")) {
+    if let Some(person) = record
+        .owner
+        .as_ref()
+        .or(record.metadata.get("governance.responsible_person"))
+    {
         accountability.responsible_person = Some(person.clone());
     }
     if let Some(org) = record.metadata.get("governance.responsible_organization") {
@@ -339,6 +351,35 @@ pub fn governance_from_entity(record: &EntityRecord) -> EntityGovernance {
     }
     if let Some(owner) = record.metadata.get("governance.deployment_owner") {
         accountability.deployment_owner = Some(owner.clone());
+    }
+    if let Some(email) = record.metadata.get("governance.emergency_contact") {
+        accountability.emergency_contact =
+            Some(crate::human_accountability::AccountabilityContact {
+                email: Some(email.clone()),
+                name: record.metadata.get("governance.emergency_contact_name").cloned(),
+                ..Default::default()
+            });
+    }
+    if let Some(email) = record.metadata.get("governance.escalation_contact") {
+        accountability.escalation_contact =
+            Some(crate::human_accountability::AccountabilityContact {
+                email: Some(email.clone()),
+                name: record.metadata.get("governance.escalation_contact_name").cloned(),
+                ..Default::default()
+            });
+    }
+    if let Some(raw) = record.metadata.get("governance.approval_chain") {
+        accountability.approval_chain = raw
+            .split('|')
+            .filter(|s| !s.is_empty())
+            .map(|role| crate::human_accountability::ApprovalChainStep {
+                role: role.to_string(),
+                assignee: None,
+                required: true,
+                approved_at: None,
+                approved_by: None,
+            })
+            .collect();
     }
 
     let certification = certification_status.map(|status| EntityCertificationSummary {
@@ -415,6 +456,59 @@ pub fn stamp_entity_governance(record: &mut EntityRecord, governance: &EntityGov
                 person.clone(),
             );
         }
+        if let Some(org) = accountability.responsible_organization.as_ref() {
+            record.metadata.insert(
+                "governance.responsible_organization".into(),
+                org.clone(),
+            );
+        }
+        if let Some(owner) = accountability.mission_owner.as_ref() {
+            record
+                .metadata
+                .insert("governance.mission_owner".into(), owner.clone());
+        }
+        if let Some(owner) = accountability.deployment_owner.as_ref() {
+            record
+                .metadata
+                .insert("governance.deployment_owner".into(), owner.clone());
+        }
+        if let Some(contact) = accountability.emergency_contact.as_ref() {
+            if let Some(email) = contact.email.as_ref() {
+                record
+                    .metadata
+                    .insert("governance.emergency_contact".into(), email.clone());
+            }
+            if let Some(name) = contact.name.as_ref() {
+                record.metadata.insert(
+                    "governance.emergency_contact_name".into(),
+                    name.clone(),
+                );
+            }
+        }
+        if let Some(contact) = accountability.escalation_contact.as_ref() {
+            if let Some(email) = contact.email.as_ref() {
+                record
+                    .metadata
+                    .insert("governance.escalation_contact".into(), email.clone());
+            }
+            if let Some(name) = contact.name.as_ref() {
+                record.metadata.insert(
+                    "governance.escalation_contact_name".into(),
+                    name.clone(),
+                );
+            }
+        }
+        if !accountability.approval_chain.is_empty() {
+            let roles = accountability
+                .approval_chain
+                .iter()
+                .map(|s| s.role.as_str())
+                .collect::<Vec<_>>()
+                .join("|");
+            record
+                .metadata
+                .insert("governance.approval_chain".into(), roles);
+        }
     }
 }
 
@@ -422,6 +516,98 @@ pub fn stamp_entity_governance(record: &mut EntityRecord, governance: &EntityGov
 pub fn parse_governance_config(value: &toml::Value) -> EntityGovernance {
     let table = value.as_table();
     let get_str = |key: &str| table.and_then(|t| t.get(key)).and_then(|v| v.as_str());
+    let get_table = |key: &str| table.and_then(|t| t.get(key)).and_then(|v| v.as_table());
+
+    let contact_from = |key: &str| -> Option<crate::human_accountability::AccountabilityContact> {
+        let contact = get_table(key)?;
+        let get = |k: &str| contact.get(k).and_then(|v| v.as_str()).map(String::from);
+        Some(crate::human_accountability::AccountabilityContact {
+            name: get("name"),
+            role: get("role"),
+            email: get("email"),
+            phone: get("phone"),
+            organization: get("organization"),
+        })
+    };
+
+    let approval_chain = table
+        .and_then(|t| t.get("approval_chain"))
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| {
+                    let step = item.as_table()?;
+                    let role = step.get("role")?.as_str()?.to_string();
+                    Some(crate::human_accountability::ApprovalChainStep {
+                        role,
+                        assignee: step
+                            .get("assignee")
+                            .and_then(|v| v.as_str())
+                            .map(String::from),
+                        required: step
+                            .get("required")
+                            .and_then(|v| v.as_bool())
+                            .unwrap_or(true),
+                        approved_at: None,
+                        approved_by: None,
+                    })
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    let operator_certifications = table
+        .and_then(|t| t.get("operator_certifications"))
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| {
+                    let cert = item.as_table()?;
+                    let id = cert.get("id")?.as_str()?.to_string();
+                    Some(crate::human_accountability::OperatorCertification {
+                        id,
+                        issuer: cert
+                            .get("issuer")
+                            .and_then(|v| v.as_str())
+                            .map(String::from),
+                        issued_at: cert
+                            .get("issued_at")
+                            .and_then(|v| v.as_str())
+                            .map(String::from),
+                        expires_at: cert
+                            .get("expires_at")
+                            .and_then(|v| v.as_str())
+                            .map(String::from),
+                        scopes: cert
+                            .get("scopes")
+                            .and_then(|v| v.as_array())
+                            .map(|scopes| {
+                                scopes
+                                    .iter()
+                                    .filter_map(|s| s.as_str().map(String::from))
+                                    .collect()
+                            })
+                            .unwrap_or_default(),
+                    })
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    let person = get_str("responsible_person");
+    let org = get_str("responsible_organization");
+    let mission = get_str("mission_owner");
+    let deployment = get_str("deployment_owner");
+    let emergency = contact_from("emergency_contact");
+    let escalation = contact_from("escalation_contact");
+    let has_accountability = person.is_some()
+        || org.is_some()
+        || mission.is_some()
+        || deployment.is_some()
+        || emergency.is_some()
+        || escalation.is_some()
+        || !approval_chain.is_empty()
+        || !operator_certifications.is_empty();
 
     EntityGovernance {
         autonomy_level: get_str("autonomy_level").map(AutonomyLevel::parse),
@@ -434,23 +620,16 @@ pub fn parse_governance_config(value: &toml::Value) -> EntityGovernance {
         }),
         risk_level: get_str("risk_level").map(OperationalRisk::parse),
         governance_policies: vec![],
-        accountability: {
-            let person = get_str("responsible_person");
-            let org = get_str("responsible_organization");
-            let mission = get_str("mission_owner");
-            let deployment = get_str("deployment_owner");
-            if person.is_some() || org.is_some() || mission.is_some() || deployment.is_some() {
-                Some(HumanAccountability {
-                    responsible_person: person.map(String::from),
-                    responsible_organization: org.map(String::from),
-                    mission_owner: mission.map(String::from),
-                    deployment_owner: deployment.map(String::from),
-                    ..Default::default()
-                })
-            } else {
-                None
-            }
-        },
+        accountability: has_accountability.then(|| HumanAccountability {
+            responsible_person: person.map(String::from),
+            responsible_organization: org.map(String::from),
+            mission_owner: mission.map(String::from),
+            deployment_owner: deployment.map(String::from),
+            approval_chain,
+            emergency_contact: emergency,
+            escalation_contact: escalation,
+            operator_certifications,
+        }),
         standards_profiles: get_str("standards_profiles")
             .map(|raw| {
                 raw.split(',')
