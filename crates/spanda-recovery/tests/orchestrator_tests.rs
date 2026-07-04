@@ -56,6 +56,45 @@ fn recovery_planning_produces_orchestrated_plan() {
 }
 
 #[test]
+fn recovery_plan_without_entity_uses_program_robots() {
+    // Failure-only plans must target robots enriched from the program.
+    let program = parse_rover();
+    let mut registry = EntityRegistry::default();
+    spanda_recovery::enrich_registry_from_program(&program, &mut registry);
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = RecoveryOrchestratorRequest {
+        entity_id: None,
+        failure: Some("gps".into()),
+        mode: RecoverySimulationMode::Plan,
+        ..Default::default()
+    };
+    let report = orchestrator.plan_recovery(&program, &registry, None, &request);
+    assert!(
+        !report.plans.is_empty(),
+        "expected plans for program robots, got none"
+    );
+    assert!(report.passed, "non-empty recoverable plans should pass");
+    assert!(report.plans.iter().any(|plan| plan.failure == "gps"));
+}
+
+#[test]
+fn recovery_plan_empty_without_entities_does_not_pass() {
+    // Empty plans must not report Passed: true.
+    let program = parse_rover();
+    let registry = EntityRegistry::default();
+    let orchestrator = RecoveryOrchestrator::new();
+    let request = RecoveryOrchestratorRequest {
+        entity_id: Some("missing-entity".into()),
+        failure: Some("gps".into()),
+        mode: RecoverySimulationMode::Plan,
+        ..Default::default()
+    };
+    let report = orchestrator.plan_recovery(&program, &registry, None, &request);
+    assert!(report.plans.is_empty());
+    assert!(!report.passed);
+}
+
+#[test]
 fn dependency_graph_includes_entities() {
     let registry = sample_registry();
     let graph = build_recovery_graph(&registry, Some("robot-1"));

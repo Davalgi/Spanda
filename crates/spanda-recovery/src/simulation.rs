@@ -2,7 +2,7 @@
 //!
 use crate::decision::decide_recovery;
 use crate::evidence::generate_evidence;
-use crate::graph::{build_recovery_graph, enrich_plan_with_impact};
+use crate::graph::{build_recovery_graph, enrich_plan_with_impact, list_recoverable_entities};
 use crate::learning::{compute_metrics, load_knowledge, RecoveryHistoryStore};
 use crate::playbook::{find_playbook, load_playbooks, match_playbooks};
 use crate::policy::load_recovery_policies;
@@ -61,9 +61,14 @@ pub fn run_simulation(
     let graph = build_recovery_graph(registry, request.entity_id.as_deref());
     let predictive = scan_predictive_indicators(registry, telemetry);
 
+    // Resolve (entity, failure) pairs. When only a failure is given, plan for
+    // recoverable program/registry entities instead of a fictional "system" id.
     let failures: Vec<(String, String)> = if let Some(ref failure) = request.failure {
-        let entity_id = request.entity_id.clone().unwrap_or_else(|| "system".into());
-        vec![(entity_id, failure.clone())]
+        if let Some(ref entity_id) = request.entity_id {
+            vec![(entity_id.clone(), failure.clone())]
+        } else {
+            failure_targets_for_registry(registry, failure)
+        }
     } else if let Some(ref entity_id) = request.entity_id {
         vec![(entity_id.clone(), format!("{entity_id}_degraded"))]
     } else {
@@ -155,9 +160,11 @@ pub fn run_simulation(
     }
 
     let metrics = compute_metrics(history, &knowledge);
-    let passed = plans
-        .iter()
-        .all(|p| p.decision.can_recover && p.decision.is_safe)
+    // Empty plans must not report success (operators treat Passed as actionable).
+    let passed = !plans.is_empty()
+        && plans
+            .iter()
+            .all(|p| p.decision.can_recover && p.decision.is_safe)
         && evidence
             .iter()
             .all(|e| e.status != spanda_runtime::recovery_types::RecoveryStatus::Failed);
@@ -198,4 +205,29 @@ pub fn run_simulation(
         passed,
         governance_notes,
     }
+}
+
+/// Pick recoverable entities for a failure when `--entity` is omitted.
+fn failure_targets_for_registry(
+    registry: &EntityRegistry,
+    failure: &str,
+) -> Vec<(String, String)> {
+    // Prefer robots and other recoverable kinds from the program/registry.
+    let recoverable = list_recoverable_entities(registry);
+    let targets: Vec<(String, String)> = if !recoverable.is_empty() {
+        recoverable
+            .into_iter()
+            .take(5)
+            .map(|target| (target.id, failure.to_string()))
+            .collect()
+    } else {
+        // Fall back to any registered entities when kind filters are empty.
+        registry
+            .list()
+            .iter()
+            .take(5)
+            .map(|entity| (entity.id.clone(), failure.to_string()))
+            .collect()
+    };
+    targets
 }

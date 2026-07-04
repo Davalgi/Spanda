@@ -155,6 +155,18 @@ fn format_text(report: &OrchestratorRecoveryReport) -> String {
     out.push_str(&format!("Mode: {:?}\n", report.simulation_mode));
     out.push_str(&format!("Passed: {}\n\n", report.passed));
     out.push_str(&format!("Plans ({}):\n", report.plans.len()));
+    if report.plans.is_empty() {
+        // Tell operators why the report is empty and how to get a plan.
+        out.push_str(
+            "  (none) — no matching entity for this failure.\n\
+             \n\
+             what:  recovery plan produced zero plans\n\
+             why:   no recoverable entity was found for the requested failure\n\
+             where: recovery orchestrator plan mode\n\
+             fix:   pass `--entity <id>` for a robot in the program, or ensure\n\
+                   the program declares robots (enriched into the entity registry)\n",
+        );
+    }
     for plan in &report.plans {
         out.push_str(&format_plan_text(plan));
     }

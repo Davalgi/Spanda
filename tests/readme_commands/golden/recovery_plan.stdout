@@ -4,7 +4,14 @@ Recovery Orchestrator Report
 Mode: Plan
 Passed: true
 
-Plans (0):
+Plans (1):
+
+  Plan: plan-Rover-gps
+  Entity: Rover (Robot)
+  Failure: gps
+  Risk: Low
+  Strategies:
+    - switch_sensor
 Recovery Metrics
 ================
 
