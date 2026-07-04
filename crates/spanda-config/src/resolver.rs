@@ -121,6 +121,25 @@ impl ConfigResolver {
             fragments_loaded.push(format!("{fragment_name}:{rel}"));
         }
 
+        // Auto-load spanda.governance.toml when present and not already referenced.
+        let governance_already = fragments_loaded
+            .iter()
+            .any(|entry| entry.starts_with("governance:"));
+        let default_governance = project_root.join("spanda.governance.toml");
+        if !governance_already && default_governance.exists() {
+            let fragment_value = load_config_value(&default_governance)?;
+            graph
+                .nodes
+                .push(default_governance.to_string_lossy().into_owned());
+            graph.edges.push(ConfigGraphEdge {
+                from: root_label.clone(),
+                to: default_governance.to_string_lossy().into_owned(),
+                layer_kind: "governance".into(),
+            });
+            merged = merge_values(merged, fragment_value, merge_hints, "governance")?;
+            fragments_loaded.push("governance:spanda.governance.toml".into());
+        }
+
         if let Some(ref project) = manifest.project {
             let mut project_table = toml::map::Map::new();
             project_table.insert("name".into(), toml::Value::String(project.name.clone()));

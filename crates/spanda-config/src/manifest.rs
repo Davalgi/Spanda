@@ -56,6 +56,8 @@ pub struct ConfigReferences {
     pub recovery: Option<String>,
     #[serde(default)]
     pub mission: Option<String>,
+    #[serde(default)]
+    pub governance: Option<String>,
 }
 
 /// Cascading configuration layer references.
@@ -242,6 +244,7 @@ impl SpandaManifest {
         push_opt!("assurance", refs.assurance);
         push_opt!("recovery", refs.recovery);
         push_opt!("mission", refs.mission);
+        push_opt!("governance", refs.governance);
         out
     }
 }

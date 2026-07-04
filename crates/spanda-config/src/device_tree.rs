@@ -49,6 +49,8 @@ pub struct RobotNode {
     #[serde(default)]
     pub compliance_profile: Option<String>,
     #[serde(default)]
+    pub capabilities: Vec<String>,
+    #[serde(default)]
     pub compute: Option<ComputeNode>,
 }
 

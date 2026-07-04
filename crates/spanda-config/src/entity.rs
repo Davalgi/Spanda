@@ -465,6 +465,16 @@ pub struct EntityGovernanceMeta {
     pub responsible_person: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub responsible_organization: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mission_owner: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployment_owner: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub emergency_contact: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub escalation_contact: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub approval_chain: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub governance_policies: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -484,6 +494,19 @@ impl EntityGovernanceMeta {
         let responsible_organization = metadata
             .get("governance.responsible_organization")
             .cloned();
+        let mission_owner = metadata.get("governance.mission_owner").cloned();
+        let deployment_owner = metadata.get("governance.deployment_owner").cloned();
+        let emergency_contact = metadata.get("governance.emergency_contact").cloned();
+        let escalation_contact = metadata.get("governance.escalation_contact").cloned();
+        let approval_chain = metadata
+            .get("governance.approval_chain")
+            .map(|raw| {
+                raw.split('|')
+                    .map(|s| s.trim().to_string())
+                    .filter(|s| !s.is_empty())
+                    .collect()
+            })
+            .unwrap_or_default();
         let standards_profiles = metadata
             .get("governance.standards_profiles")
             .map(|raw| raw.split(',').map(|s| s.trim().to_string()).collect())
@@ -514,6 +537,11 @@ impl EntityGovernanceMeta {
             risk_level,
             responsible_person,
             responsible_organization,
+            mission_owner,
+            deployment_owner,
+            emergency_contact,
+            escalation_contact,
+            approval_chain,
             governance_policies,
             standards_profiles,
             operational_constraints,
@@ -1099,6 +1127,7 @@ fn upsert_robot(registry: &mut EntityRegistry, robot: &RobotNode, fleet_id: &str
             health_status: EntityHealthStatus::Healthy,
             readiness_status: EntityReadinessStatus::Ready,
             trust_status: EntityTrustStatus::Trusted,
+            capabilities: robot.capabilities.clone(),
             tags: vec![kind_tag],
             metadata,
             ..Default::default()
@@ -2323,6 +2352,30 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
     };
     let table = gov.as_table();
     let get = |key: &str| table.and_then(|t| t.get(key)).and_then(|v| v.as_str());
+    let contact_email = |key: &str| {
+        table
+            .and_then(|t| t.get(key))
+            .and_then(|v| v.as_table())
+            .and_then(|c| c.get("email"))
+            .and_then(|v| v.as_str())
+    };
+    let contact_name = |key: &str| {
+        table
+            .and_then(|t| t.get(key))
+            .and_then(|v| v.as_table())
+            .and_then(|c| c.get("name"))
+            .and_then(|v| v.as_str())
+    };
+    let approval_chain = table
+        .and_then(|t| t.get("approval_chain"))
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("role").and_then(|v| v.as_str()))
+                .collect::<Vec<_>>()
+                .join("|")
+        })
+        .filter(|s| !s.is_empty());
 
     let autonomy = get("autonomy_level");
     let deployment_profile = get("deployment_profile");
@@ -2331,8 +2384,14 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
     let risk = get("risk_level");
     let responsible = get("responsible_person");
     let org = get("responsible_organization");
+    let mission_owner = get("mission_owner");
+    let deployment_owner = get("deployment_owner");
     let standards = get("standards_profiles");
     let constraints = get("constraints");
+    let emergency = contact_email("emergency_contact");
+    let emergency_name = contact_name("emergency_contact");
+    let escalation = contact_email("escalation_contact");
+    let escalation_name = contact_name("escalation_contact");
 
     if autonomy.is_none()
         && deployment_profile.is_none()
@@ -2351,90 +2410,99 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
         .collect();
 
     for entity_id in targets {
-        stamp_governance_metadata(
-            registry,
-            &entity_id,
-            autonomy,
-            deployment_profile,
-            maturity,
-            certification,
-            risk,
-            responsible,
-            org,
-            standards,
-            constraints,
-        );
+        let Some(entity) = registry.entities.get_mut(&entity_id) else {
+            continue;
+        };
+        if let Some(value) = autonomy {
+            entity
+                .metadata
+                .insert("governance.autonomy_level".into(), value.to_string());
+        }
+        if let Some(value) = deployment_profile {
+            entity.metadata.insert(
+                "governance.deployment_profile".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = maturity {
+            entity.metadata.insert(
+                "governance.operational_maturity".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = certification {
+            entity.metadata.insert(
+                "governance.certification_status".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = risk {
+            entity
+                .metadata
+                .insert("governance.risk_level".into(), value.to_string());
+        }
+        if let Some(value) = responsible {
+            entity.owner = Some(value.to_string());
+            entity
+                .metadata
+                .insert("governance.responsible_person".into(), value.to_string());
+        }
+        if let Some(value) = org {
+            entity.metadata.insert(
+                "governance.responsible_organization".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = mission_owner {
+            entity
+                .metadata
+                .insert("governance.mission_owner".into(), value.to_string());
+        }
+        if let Some(value) = deployment_owner {
+            entity
+                .metadata
+                .insert("governance.deployment_owner".into(), value.to_string());
+        }
+        if let Some(value) = standards {
+            entity.metadata.insert(
+                "governance.standards_profiles".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = constraints {
+            entity
+                .metadata
+                .insert("governance.constraints".into(), value.to_string());
+        }
+        if let Some(value) = emergency {
+            entity
+                .metadata
+                .insert("governance.emergency_contact".into(), value.to_string());
+        }
+        if let Some(value) = emergency_name {
+            entity.metadata.insert(
+                "governance.emergency_contact_name".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(value) = escalation {
+            entity
+                .metadata
+                .insert("governance.escalation_contact".into(), value.to_string());
+        }
+        if let Some(value) = escalation_name {
+            entity.metadata.insert(
+                "governance.escalation_contact_name".into(),
+                value.to_string(),
+            );
+        }
+        if let Some(ref chain) = approval_chain {
+            entity
+                .metadata
+                .insert("governance.approval_chain".into(), chain.clone());
+        }
+        entity.governance = EntityGovernanceMeta::from_metadata(&entity.metadata);
     }
-}
-
-fn stamp_governance_metadata(
-    registry: &mut EntityRegistry,
-    entity_id: &str,
-    autonomy: Option<&str>,
-    deployment_profile: Option<&str>,
-    maturity: Option<&str>,
-    certification: Option<&str>,
-    risk: Option<&str>,
-    responsible: Option<&str>,
-    org: Option<&str>,
-    standards: Option<&str>,
-    constraints: Option<&str>,
-) {
-    let Some(entity) = registry.entities.get_mut(entity_id) else {
-        return;
-    };
-    if let Some(value) = autonomy {
-        entity
-            .metadata
-            .insert("governance.autonomy_level".into(), value.to_string());
-    }
-    if let Some(value) = deployment_profile {
-        entity.metadata.insert(
-            "governance.deployment_profile".into(),
-            value.to_string(),
-        );
-    }
-    if let Some(value) = maturity {
-        entity.metadata.insert(
-            "governance.operational_maturity".into(),
-            value.to_string(),
-        );
-    }
-    if let Some(value) = certification {
-        entity.metadata.insert(
-            "governance.certification_status".into(),
-            value.to_string(),
-        );
-    }
-    if let Some(value) = risk {
-        entity
-            .metadata
-            .insert("governance.risk_level".into(), value.to_string());
-    }
-    if let Some(value) = responsible {
-        entity.owner = Some(value.to_string());
-        entity
-            .metadata
-            .insert("governance.responsible_person".into(), value.to_string());
-    }
-    if let Some(value) = org {
-        entity.metadata.insert(
-            "governance.responsible_organization".into(),
-            value.to_string(),
-        );
-    }
-    if let Some(value) = standards {
-        entity.metadata.insert(
-            "governance.standards_profiles".into(),
-            value.to_string(),
-        );
-    }
-    if let Some(value) = constraints {
-        entity
-            .metadata
-            .insert("governance.constraints".into(), value.to_string());
-    }
-    entity.governance = EntityGovernanceMeta::from_metadata(&entity.metadata);
 }
 
 impl Default for EntityRecord {
