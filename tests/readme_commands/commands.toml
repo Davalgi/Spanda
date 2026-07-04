@@ -1,0 +1,107 @@
+# README + flagship command manifest for release-hardening smoke/golden tests.
+# Only commands that appear in README.md or the Phase 2 flagship list.
+
+[[command]]
+id = "demo_rover"
+args = ["demo", "rover"]
+source = "README.md"
+markers = ["Autonomous Rover", "Demo complete"]
+golden = true
+
+[[command]]
+id = "demo_assurance"
+args = ["demo", "assurance"]
+source = "README.md"
+markers = ["Mission assurance", "Demo complete"]
+golden = true
+
+[[command]]
+id = "demo_self_healing"
+args = ["demo", "self-healing"]
+source = "README.md"
+markers = ["Self-healing", "Recovery Ready"]
+golden = true
+
+[[command]]
+id = "recovery_plan"
+args = ["recovery", "plan", "examples/showcase/self_healing/rover.sd", "--failure", "gps"]
+source = "README.md"
+markers = ["Recovery Orchestrator Report", "Mode: Plan"]
+golden = true
+
+[[command]]
+id = "recovery_explain"
+args = ["recovery", "explain", "examples/showcase/self_healing/rover.sd", "--failure", "gps"]
+source = "README.md"
+markers = ["Recovery Decision", "Can recover"]
+golden = false
+
+[[command]]
+id = "demo_continuity"
+args = ["demo", "continuity"]
+source = "README.md"
+markers = ["Mission continuity", "Demo complete"]
+golden = false
+
+[[command]]
+id = "decision_list"
+args = ["decision", "list", "examples/showcase/distributed_decisions/main.sd"]
+source = "README.md"
+markers = ["Decision architecture", "Authorities"]
+golden = true
+
+[[command]]
+id = "check_killer"
+args = ["check", "examples/showcase/killer_demo.sd"]
+source = "README.md"
+markers = ["no type errors"]
+golden = false
+
+[[command]]
+id = "verify_hardware"
+args = ["verify", "examples/showcase/hardware_compatibility.sd"]
+source = "README.md"
+markers = ["Deployment compatible"]
+golden = false
+
+[[command]]
+id = "sim_killer"
+args = ["sim", "examples/showcase/killer_demo.sd"]
+source = "README.md"
+markers = ["Final State", "Simulation Log"]
+golden = false
+
+[[command]]
+id = "entity_list"
+args = ["entity", "list", "--config", "crates/spanda-config/tests/fixtures/warehouse/spanda.toml"]
+source = "README.md"
+markers = ["Entities (", "rover-001"]
+golden = true
+
+[[command]]
+id = "entity_graph"
+args = ["entity", "graph", "--config", "crates/spanda-config/tests/fixtures/warehouse/spanda.toml"]
+source = "README.md"
+markers = ["Entity graph", "rover-001"]
+golden = true
+
+[[command]]
+id = "readiness"
+args = ["readiness", "examples/showcase/readiness/rover.sd"]
+source = "flagship"
+markers = ["Mission Ready", "Status: Ready"]
+golden = true
+
+[[command]]
+id = "assure"
+args = ["assure", "examples/showcase/assurance/rover.sd"]
+source = "flagship"
+markers = ["Assurance Report", "Passed: true"]
+golden = true
+
+[[command]]
+id = "diagnose"
+args = ["diagnose", "examples/showcase/assurance/rover.sd"]
+source = "flagship"
+markers = ["Diagnosis Report", "Passed: true"]
+golden = true

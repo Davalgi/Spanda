@@ -1,0 +1,170 @@
+== Self-healing — recovery policies, validation, fleet mesh ==
+
+✓ <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/self_healing/rover.sd — no type errors
+Issue:
+gps.failed
+
+Diagnosis:
+Satellite lock lost
+
+Recovery:
+switch_to visual_odometry
+
+Risk:
+Low
+
+Safety Validation:
+PASS
+
+Outcome:
+Success
+Recovery Ready: YES
+Success Rate: 100%
+
+Issue:
+gps.failed
+
+Diagnosis:
+Satellite lock lost
+
+Recovery:
+switch_to visual_odometry
+
+Risk:
+Low
+
+Safety Validation:
+PASS
+
+Outcome:
+Success
+Recovery Ready: YES
+Success Rate: 100%
+
+GPS -> Switch to visual odometry (75% success)
+  On GPS failure: Switch to visual odometry
+Camera -> Reduce speed and rely on Lidar (75% success)
+  On Camera failure: Reduce speed and rely on Lidar
+Lidar -> Halt autonomous motion; require operator takeover (60% success)
+  On Lidar failure: Halt autonomous motion; require operator takeover
+LTE -> Offline mode activated; queue telemetry locally (85% success)
+  On LTE failure: Offline mode activated; queue telemetry locally
+WiFi -> Fall back to LTE or autonomous mode (85% success)
+  On WiFi failure: Fall back to LTE or autonomous mode
+Battery -> Return to charging dock; reduce mission scope (75% success)
+  On Battery failure: Return to charging dock; reduce mission scope
+Provider -> Use bundled fallback provider or safe stop (75% success)
+  On Provider failure: Use bundled fallback provider or safe stop
+Package -> Pin package version or install from registry (85% success)
+  On Package failure: Pin package version or install from registry
+
+🤖 Running robot from <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/self_healing/rover.sd
+
+── Final State ──
+  Pose:     x=0.000 m, y=0.000 m, θ=0.000 rad
+  Altitude: z=0.000 m
+  Velocity: linear=0.000 m/s, angular=0.000 rad/s
+  E-stop:   off
+
+── Simulation Log ──
+  drive(0.00 m/s, 0.00 rad/s)
+
+── Runtime Log ──
+  wheels.drive()
+
+✓ Simulation complete
+
+If GPS fails:
+  Switch to visual odometry
+
+If Camera fails:
+  Reduce speed and rely on Lidar
+
+If Lidar fails:
+  Halt autonomous motion; require operator takeover
+
+If LTE fails:
+  Offline mode activated; queue telemetry locally
+
+If WiFi fails:
+  Fall back to LTE or autonomous mode
+
+If Battery fails:
+  Return to charging dock; reduce mission scope
+
+If Provider fails:
+  Use bundled fallback provider or safe stop
+
+If Package fails:
+  Pin package version or install from registry
+
+Recovery Plans:
+  Failure: gps.failed
+  Impact: see above
+  Fallback: switch_to visual_odometry
+  Risk: Low
+    - switch_to visual_odometry
+    - reduce_speed 0.5m/s
+    - enter degraded_mode
+    - switch_to visual_odometry
+    - enter degraded_mode
+  Failure: lidar.failed
+  Impact: see above
+  Fallback: reduce_speed 0.3m/s
+  Risk: Low
+    - reduce_speed 0.3m/s
+    - enter safe_mode
+  Failure: gps.failed
+  Impact: see above
+  Fallback: switch_to visual_odometry
+  Risk: Low
+    - switch_to visual_odometry
+    - reduce_speed 0.5m/s
+    - enter degraded_mode
+    - switch_to visual_odometry
+    - enter degraded_mode
+
+Overall Risk: Low
+
+Issue:
+fleet.failed
+
+Diagnosis:
+Fleet member unresponsive
+
+Recovery:
+reassign mission
+
+Risk:
+Low
+
+Safety Validation:
+PASS
+
+Outcome:
+Success
+Recovery Ready: YES
+Success Rate: 100%
+
+Demo complete. See examples/showcase/self_healing/ and docs/self-healing.md
+
+--- Recovery Simulation ---
+Issue:
+gps.failed
+
+Diagnosis:
+Satellite lock lost
+
+Recovery:
+switch_to visual_odometry
+
+Risk:
+Low
+
+Safety Validation:
+PASS
+
+Outcome:
+Success
+Recovery Ready: YES
+Success Rate: 100%

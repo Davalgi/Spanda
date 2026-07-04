@@ -1,0 +1,8 @@
+Decision architecture in examples/showcase/distributed_decisions/main.sd
+  Authorities: 1
+    Rover001 — local: [emergency_stop, obstacle_avoidance, degraded_mode, return_home, sensor_failover], central: [resume_high_risk_mission, override_safety_policy, disable_kill_switch, update_firmware]
+  Decision trees: 2
+    GPSLossRecovery (LocalEntity, 1 branches)
+    ObstacleReflex (Reflex, 1 branches)
+  Offline policies: 1
+    RoverOffline (max 30 min)

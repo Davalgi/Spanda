@@ -1,0 +1,1561 @@
+== Mission assurance — knowledge, state, anomaly, resilience ==
+
+✓ <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/assurance/rover.sd — no type errors
+{
+  "assurance": {
+    "cases": [
+      {
+        "name": "RoverSafetyCase",
+        "evidence": [
+          {
+            "kind": "hardware",
+            "source": "hardware_verification",
+            "status": "linked"
+          },
+          {
+            "kind": "capability",
+            "source": "capability_traceability",
+            "status": "linked"
+          },
+          {
+            "kind": "health",
+            "source": "health_checks",
+            "status": "linked"
+          },
+          {
+            "kind": "replay",
+            "source": "simulation_replay",
+            "status": "linked"
+          },
+          {
+            "kind": "safety",
+            "source": "safety_tests",
+            "status": "linked"
+          }
+        ]
+      }
+    ],
+    "verification": {
+      "compatible": true,
+      "items": [
+        "Actuator 'wheels' (DifferentialDrive) available on RoverV1",
+        "Builtin adapter 'CameraAdapter' maps sensor 'camera' (Camera) to RoverV1",
+        "Builtin adapter 'GpsAdapter' maps sensor 'gps' (GPS) to RoverV1",
+        "Builtin adapter 'LidarAdapter' maps sensor 'lidar' (Lidar) to RoverV1",
+        "Builtin adapter 'MotorAdapter' maps actuator 'wheels' (DifferentialDrive) to RoverV1",
+        "Sensor 'camera' (Camera) available on RoverV1",
+        "Sensor 'gps' (GPS) available on RoverV1",
+        "Sensor 'lidar' (Lidar) available on RoverV1",
+        "Verifying robot 'Rover' against hardware 'RoverV1'"
+      ]
+    },
+    "safety": {
+      "rules": [
+        "MaxSpeedRule { name: \"max_speed\", value: UnitLiteralExpr { value: 1.5, unit: MPerS, span: Span { start: SourceLocation { line: 113, column: 21, offset: 2356 }, end: SourceLocation { line: 113, column: 21, offset: 2362 } } }, unit: MPerS, span: Span { start: SourceLocation { line: 113, column: 9, offset: 2344 }, end: SourceLocation { line: 113, column: 28, offset: 2364 } } }"
+      ],
+      "kill_switches": [
+        "Kill switch 'EmergencyStop' declared"
+      ]
+    },
+    "traceability": {
+      "rows": [
+        "hardware: EmergencyStop",
+        "hardware: RoverV1.Camera",
+        "hardware: RoverV1.Camera",
+        "hardware: RoverV1.Camera",
+        "hardware: RoverV1.DifferentialDrive",
+        "hardware: RoverV1.DifferentialDrive",
+        "hardware: RoverV1.DifferentialDrive",
+        "hardware: RoverV1.DifferentialDrive",
+        "hardware: RoverV1.GPS",
+        "hardware: RoverV1.GPS",
+        "hardware: RoverV1.GPS",
+        "hardware: RoverV1.LTE",
+        "hardware: RoverV1.Lidar",
+        "hardware: RoverV1.Lidar",
+        "hardware: RoverV1.WiFi",
+        "hardware: camera",
+        "hardware: gps",
+        "hardware: lidar",
+        "hardware: wheels",
+        "readiness: gps_navigation",
+        "readiness: obstacle_avoidance",
+        "readiness: telemetry_streaming"
+      ]
+    },
+    "safety_case": {
+      "program": "<ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/assurance/rover.sd",
+      "hardware_verification": {
+        "compatible": true,
+        "items": [
+          {
+            "category": "deploy",
+            "column": 1,
+            "line": 121,
+            "message": "Verifying robot 'Rover' against hardware 'RoverV1'",
+            "severity": "pass"
+          },
+          {
+            "category": "sensors",
+            "column": 5,
+            "line": 101,
+            "message": "Sensor 'gps' (GPS) available on RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "sensors",
+            "column": 5,
+            "line": 102,
+            "message": "Sensor 'camera' (Camera) available on RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "sensors",
+            "column": 5,
+            "line": 103,
+            "message": "Sensor 'lidar' (Lidar) available on RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "actuators",
+            "column": 5,
+            "line": 104,
+            "message": "Actuator 'wheels' (DifferentialDrive) available on RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "adapter",
+            "column": 5,
+            "line": 101,
+            "message": "Builtin adapter 'GpsAdapter' maps sensor 'gps' (GPS) to RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "adapter",
+            "column": 5,
+            "line": 102,
+            "message": "Builtin adapter 'CameraAdapter' maps sensor 'camera' (Camera) to RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "adapter",
+            "column": 5,
+            "line": 103,
+            "message": "Builtin adapter 'LidarAdapter' maps sensor 'lidar' (Lidar) to RoverV1",
+            "severity": "pass"
+          },
+          {
+            "category": "adapter",
+            "column": 5,
+            "line": 104,
+            "message": "Builtin adapter 'MotorAdapter' maps actuator 'wheels' (DifferentialDrive) to RoverV1",
+            "severity": "pass"
+          }
+        ],
+        "matrix": null,
+        "target": "RoverV1"
+      },
+      "capability_verification": {
+        "compatible": true,
+        "errors": [],
+        "rows": [],
+        "warnings": []
+      },
+      "health_checks": {
+        "report": {
+          "checks": [
+            {
+              "message": "Static check: battery.level >= 20%",
+              "metric": "battery.level",
+              "name": "RoverHealth",
+              "operator": ">=",
+              "status": "Unknown",
+              "target": "Rover",
+              "target_kind": "robot",
+              "threshold": "20%"
+            }
+          ],
+          "overall": "Healthy",
+          "policies": []
+        },
+        "traceability": [
+          {
+            "action": null,
+            "component": "Rover",
+            "health_check": "RoverHealth",
+            "metric": "battery.level",
+            "status": "Unknown",
+            "threshold": "20%"
+          }
+        ]
+      },
+      "safety_rules": [
+        "MaxSpeedRule { name: \"max_speed\", value: UnitLiteralExpr { value: 1.5, unit: MPerS, span: Span { start: SourceLocation { line: 113, column: 21, offset: 2356 }, end: SourceLocation { line: 113, column: 21, offset: 2362 } } }, unit: MPerS, span: Span { start: SourceLocation { line: 113, column: 9, offset: 2344 }, end: SourceLocation { line: 113, column: 28, offset: 2364 } } }"
+      ],
+      "kill_switch_validation": [
+        "Kill switch 'EmergencyStop' declared"
+      ],
+      "connectivity_validation": [],
+      "mission_verification": [
+        {
+          "achievable": false,
+          "battery_sufficient": true,
+          "capabilities_satisfied": true,
+          "compute_sufficient": true,
+          "connectivity_satisfied": true,
+          "hardware_satisfied": false,
+          "issues": [],
+          "mission_name": null,
+          "required_capabilities": [],
+          "robot": null,
+          "safety_satisfied": true
+        }
+      ],
+      "traceability_matrix": {
+        "capabilities": [],
+        "hardware": [
+          {
+            "capability": "read_location",
+            "hardware_component": "RoverV1.GPS"
+            "notes": null,
+            "provider": "PositioningProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "read_altitude",
+            "hardware_component": "RoverV1.GPS"
+            "notes": null,
+            "provider": "PositioningProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "read_heading",
+            "hardware_component": "RoverV1.GPS"
+            "notes": null,
+            "provider": "PositioningProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "capture_image",
+            "hardware_component": "RoverV1.Camera"
+            "notes": null,
+            "provider": "VisionProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "stream_video",
+            "hardware_component": "RoverV1.Camera"
+            "notes": null,
+            "provider": "VisionProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "detect_motion",
+            "hardware_component": "RoverV1.Camera"
+            "notes": null,
+            "provider": "VisionProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "scan_range",
+            "hardware_component": "RoverV1.Lidar"
+            "notes": null,
+            "provider": "SensorProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "obstacle_detection",
+            "hardware_component": "RoverV1.Lidar"
+            "notes": null,
+            "provider": "SensorProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "move_forward",
+            "hardware_component": "RoverV1.DifferentialDrive"
+            "notes": null,
+            "provider": "ActuatorProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "rotate",
+            "hardware_component": "RoverV1.DifferentialDrive"
+            "notes": null,
+            "provider": "ActuatorProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "stop",
+            "hardware_component": "RoverV1.DifferentialDrive"
+            "notes": null,
+            "provider": "ActuatorProvider",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "emergency_stop",
+            "hardware_component": "RoverV1.DifferentialDrive"
+            "notes": null,
+            "provider": "ActuatorProvider",
+            "safety_rule": "stop_all_actuators",
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "network_connect",
+            "hardware_component": "RoverV1.WiFi"
+            "notes": null,
+            "provider": "spanda-wifi",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "network_connect",
+            "hardware_component": "RoverV1.LTE"
+            "notes": null,
+            "provider": "spanda-cellular",
+            "safety_rule": null,
+            "source_location": "hardware RoverV1",
+            "used_by": ""
+            "verified": true
+          },
+          {
+            "capability": "GPS",
+            "hardware_component": "gps",
+            "notes": "RoverV1",
+            "provider": "PositioningProvider"
+            "safety_rule": null,
+            "source_location": "robot Rover sensor gps",
+            "used_by": "Rover"
+            "verified": true
+          },
+          {
+            "capability": "Camera",
+            "hardware_component": "camera",
+            "notes": "RoverV1",
+            "provider": "VisionProvider"
+            "safety_rule": null,
+            "source_location": "robot Rover sensor camera",
+            "used_by": "Rover"
+            "verified": true
+          },
+          {
+            "capability": "Lidar",
+            "hardware_component": "lidar",
+            "notes": "RoverV1",
+            "provider": "SensorProvider"
+            "safety_rule": null,
+            "source_location": "robot Rover sensor lidar",
+            "used_by": "Rover"
+            "verified": true
+          },
+          {
+            "capability": "DifferentialDrive",
+            "hardware_component": "wheels"
+            "notes": null,
+            "provider": "ActuatorProvider",
+            "safety_rule": "max_speed",
+            "source_location": "robot Rover actuator wheels",
+            "used_by": "Rover"
+            "verified": true
+          },
+          {
+            "capability": "emergency_stop",
+            "hardware_component": "EmergencyStop",
+            "notes": "stop_all_actuators",
+            "provider": "KillSwitchProvider",
+            "safety_rule": "priority=critical",
+            "source_location": "kill_switch EmergencyStop",
+            "used_by": "system"
+            "verified": true
+          }
+        ],
+        "readiness": [
+          {
+            "capability": "gps_navigation",
+            "hardware": "",
+            "health_check": "RoverHealth",
+            "mission_requirement": "gps_navigation",
+            "package": "",
+            "provider": "",
+            "readiness_impact": "Review required",
+            "safety_rule": "—",
+            "verification_status": "UNKNOWN"
+          },
+          {
+            "capability": "obstacle_avoidance",
+            "hardware": "",
+            "health_check": "RoverHealth",
+            "mission_requirement": "obstacle_avoidance",
+            "package": "",
+            "provider": "",
+            "readiness_impact": "Review required",
+            "safety_rule": "—",
+            "verification_status": "UNKNOWN"
+          },
+          {
+            "capability": "telemetry_streaming",
+            "hardware": "",
+            "health_check": "RoverHealth",
+            "mission_requirement": "telemetry_streaming",
+            "package": "",
+            "provider": "",
+            "readiness_impact": "Review required",
+            "safety_rule": "—",
+            "verification_status": "UNKNOWN"
+          }
+        ]
+      },
+      "test_results": [
+        "Hardware compatible: true",
+        "Health checks: Healthy",
+        "Minimum capabilities: true"
+      ],
+      "known_risks": [
+        "Actuator 'wheels' on robot 'Rover' has no safety gate",
+        "Declared actuator 'RoverV1.DifferentialDrive' is unused",
+        "Declared sensor 'RoverV1.Camera' is unused",
+        "Declared sensor 'RoverV1.GPS' is unused",
+        "Declared sensor 'RoverV1.Lidar' is unused"
+      ],
+      "deployable": false
+    },
+    "passed": true
+  },
+  "anomalies": {
+    "detectors": [
+      {
+        "detector": "NavigationAnomaly",
+        "rules": [
+          "gps.accuracy <= 3m",
+          "localization.confidence >= 0.85"
+        ]
+      }
+    ],
+    "handlers": [
+      "NavigationAnomaly@High: diagnose root_cause, enter degraded_mode, audit . record ( navigation_anomaly )"
+    ],
+    "anomalies": [],
+    "learned": [
+      {
+        "backend": "assurance.anomaly",
+        "detector": "NavigationAnomaly"
+      }
+    ],
+    "passed": true
+  },
+  "prognostics": {
+    "models": [
+      {
+        "name": "BatteryPrognostics",
+        "target": "battery.remaining_useful_life"
+        "rules": [
+          "predict battery.remaining_useful_life",
+          "warn_if remaining_useful_life 30min"
+        ]
+      }
+    ],
+    "rul_predictions": [
+      {
+        "component": "battery.remaining_useful_life",
+        "estimate": "unknown"
+        "confidence": 0.75
+      }
+    ],
+    "failure_predictions": [],
+    "trends": [],
+    "warnings": [
+      "Prognostics 'BatteryPrognostics': warn if remaining_useful_life < 30min"
+    ],
+    "passed": true
+  },
+  "resilience": {
+    "policies": [
+      {
+        "name": "RoverResilience",
+        "strategies": [
+          {
+            "description": "Strategy: dual_navigation",
+            "name": "dual_navigation"
+          },
+          {
+            "description": "Strategy: graceful_degradation",
+            "name": "graceful_degradation"
+          }
+        ]
+      }
+    ],
+    "recovery": [
+      {
+        "name": "GPSLostMitigation",
+        "actions": [
+          "enter degraded_mode",
+          "reduce_speed 0.5m/s",
+          "switch_to visual_odometry"
+        ]
+      }
+    ],
+    "redundancy": [],
+    "readiness_score": 95,
+    "passed": true
+  },
+  "mission": {
+    "plans": [],
+    "execution": {
+      "plan": "",
+      "current_step": null,
+      "status": "ready"
+    },
+    "verification": {
+      "achievable": false,
+      "mission_name": null,
+      "robot": null,
+      "required_capabilities": [],
+      "hardware_satisfied": false,
+      "capabilities_satisfied": true,
+      "connectivity_satisfied": true,
+      "battery_sufficient": true,
+      "compute_sufficient": true,
+      "safety_satisfied": true,
+      "issues": []
+    },
+    "abort_reasons": [],
+    "passed": true
+  },
+  "state": {
+    "estimators": [
+      {
+        "estimator": "RoverState",
+        "inputs": [
+          "gps.fix",
+          "imu.data",
+          "wheel_odometry"
+        ],
+        "fused": {
+          "name": "StateEstimate",
+          "value": "weighted StateEstimate (gps.fix + imu.data + wheel_odometry)"
+          "confidence": 0.5238095238095238,
+          "sources": [
+            "gps.fix",
+            "imu.data",
+            "wheel_odometry"
+          ]
+        }
+      }
+    ],
+    "belief": {
+      "estimates": [
+        {
+          "name": "StateEstimate",
+          "value": "weighted StateEstimate (gps.fix + imu.data + wheel_odometry)"
+          "confidence": 0.5238095238095238,
+          "sources": [
+            "gps.fix",
+            "imu.data",
+            "wheel_odometry"
+          ]
+        }
+      ]
+    },
+    "issues": [],
+    "passed": true
+  },
+  "recovery": {
+    "policies": [
+      {
+        "name": "RoverRecovery",
+        "triggers": [
+          [
+            "gps.failed",
+            [
+              "enter degraded_mode",
+              "reduce_speed 0.5m/s",
+              "switch_to visual_odometry"
+            ]
+          ]
+        ]
+      },
+      {
+        "name": "GPSLostMitigation",
+        "triggers": [
+          [
+            "gps.failed",
+            [
+              "enter degraded_mode",
+              "reduce_speed 0.5m/s",
+              "switch_to visual_odometry"
+            ]
+          ]
+        ]
+      }
+    ],
+    "plans": [
+      {
+        "classification": "SensorFailure",
+        "diagnosis": "Satellite lock lost",
+        "failure": "gps.failed",
+        "name": "recovery_gps_failed"
+        "actions": [
+          {
+            "description": "switch_to visual_odometry",
+            "strategy": "failover"
+            "correction": {
+              "custom": {
+                "action": "switch_to visual_odometry"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 1
+          },
+          {
+            "description": "reduce_speed 0.5m/s",
+            "strategy": "speed_reduction"
+            "correction": {
+              "reduce_speed": {
+                "limit": "0.5m/s"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 2
+          },
+          {
+            "description": "enter degraded_mode",
+            "strategy": "degraded_mode"
+            "correction": {
+              "enter_mode": {
+                "mode": "DegradedMode"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 3
+          },
+          {
+            "description": "switch_to visual_odometry",
+            "strategy": "failover"
+            "correction": {
+              "custom": {
+                "action": "switch_to visual_odometry"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 4
+          },
+          {
+            "description": "reduce_speed 0.5m/s",
+            "strategy": "speed_reduction"
+            "correction": {
+              "reduce_speed": {
+                "limit": "0.5m/s"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 5
+          },
+          {
+            "description": "enter degraded_mode",
+            "strategy": "degraded_mode"
+            "correction": {
+              "enter_mode": {
+                "mode": "DegradedMode"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 6
+          }
+        ],
+        "level": "Level2AutomaticLowRisk",
+        "risk": "Low",
+        "target_mode": "DegradedMode"
+      },
+      {
+        "classification": "SensorFailure",
+        "diagnosis": "Satellite lock lost",
+        "failure": "gps.failed",
+        "name": "recovery_gps_failed"
+        "actions": [
+          {
+            "description": "switch_to visual_odometry",
+            "strategy": "failover"
+            "correction": {
+              "custom": {
+                "action": "switch_to visual_odometry"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 1
+          },
+          {
+            "description": "reduce_speed 0.5m/s",
+            "strategy": "speed_reduction"
+            "correction": {
+              "reduce_speed": {
+                "limit": "0.5m/s"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 2
+          },
+          {
+            "description": "enter degraded_mode",
+            "strategy": "degraded_mode"
+            "correction": {
+              "enter_mode": {
+                "mode": "DegradedMode"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 3
+          },
+          {
+            "description": "switch_to visual_odometry",
+            "strategy": "failover"
+            "correction": {
+              "custom": {
+                "action": "switch_to visual_odometry"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 4
+          },
+          {
+            "description": "reduce_speed 0.5m/s",
+            "strategy": "speed_reduction"
+            "correction": {
+              "reduce_speed": {
+                "limit": "0.5m/s"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 5
+          },
+          {
+            "description": "enter degraded_mode",
+            "strategy": "degraded_mode"
+            "correction": {
+              "enter_mode": {
+                "mode": "DegradedMode"
+              }
+            },
+            "risk": "Low",
+            "requires_approval": false,
+            "order": 6
+          }
+        ],
+        "level": "Level2AutomaticLowRisk",
+        "risk": "Low",
+        "target_mode": "DegradedMode"
+      }
+    ],
+    "safe_actions": [
+      {
+        "action": {
+          "description": "switch_to visual_odometry",
+          "strategy": "failover"
+          "correction": {
+            "custom": {
+              "action": "switch_to visual_odometry"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 1
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "reduce_speed 0.5m/s",
+          "strategy": "speed_reduction"
+          "correction": {
+            "reduce_speed": {
+              "limit": "0.5m/s"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 2
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "enter degraded_mode",
+          "strategy": "degraded_mode"
+          "correction": {
+            "enter_mode": {
+              "mode": "DegradedMode"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 3
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "switch_to visual_odometry",
+          "strategy": "failover"
+          "correction": {
+            "custom": {
+              "action": "switch_to visual_odometry"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 4
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "reduce_speed 0.5m/s",
+          "strategy": "speed_reduction"
+          "correction": {
+            "reduce_speed": {
+              "limit": "0.5m/s"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 5
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "enter degraded_mode",
+          "strategy": "degraded_mode"
+          "correction": {
+            "enter_mode": {
+              "mode": "DegradedMode"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 6
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "switch_to visual_odometry",
+          "strategy": "failover"
+          "correction": {
+            "custom": {
+              "action": "switch_to visual_odometry"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 1
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "reduce_speed 0.5m/s",
+          "strategy": "speed_reduction"
+          "correction": {
+            "reduce_speed": {
+              "limit": "0.5m/s"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 2
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "enter degraded_mode",
+          "strategy": "degraded_mode"
+          "correction": {
+            "enter_mode": {
+              "mode": "DegradedMode"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 3
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "switch_to visual_odometry",
+          "strategy": "failover"
+          "correction": {
+            "custom": {
+              "action": "switch_to visual_odometry"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 4
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "reduce_speed 0.5m/s",
+          "strategy": "speed_reduction"
+          "correction": {
+            "reduce_speed": {
+              "limit": "0.5m/s"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 5
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      },
+      {
+        "action": {
+          "description": "enter degraded_mode",
+          "strategy": "degraded_mode"
+          "correction": {
+            "enter_mode": {
+              "mode": "DegradedMode"
+            }
+          },
+          "risk": "Low",
+          "requires_approval": false,
+          "order": 6
+        },
+        "safety_validation": {
+          "gate": "Safety Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "hardware_verification": {
+          "gate": "Hardware Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "capability_verification": {
+          "gate": "Capability Verification",
+          "passed": true,
+          "message": "PASS"
+        },
+        "readiness_validation": {
+          "gate": "Readiness Validation",
+          "passed": true,
+          "message": "PASS"
+        },
+        "approved": true
+      }
+    ],
+    "results": [
+      {
+        "plan": "recovery_gps_failed",
+        "status": "Success"
+        "executed_actions": [
+          "enter degraded_mode",
+          "enter degraded_mode",
+          "reduce_speed 0.5m/s",
+          "reduce_speed 0.5m/s",
+          "switch_to visual_odometry",
+          "switch_to visual_odometry"
+        ],
+        "failed_actions": [],
+        "verification_outcome": "Recovery verified",
+        "evidence": {
+          "diagnosis": "Satellite lock lost",
+          "failure": "gps.failed",
+          "plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+          "recovery_actions": [
+            "enter degraded_mode",
+            "enter degraded_mode",
+            "reduce_speed 0.5m/s",
+            "reduce_speed 0.5m/s",
+            "switch_to visual_odometry",
+            "switch_to visual_odometry"
+          ],
+          "outcome": "Success",
+          "operator_approval": null,
+          "verification": "Recovery verified"
+        }
+      },
+      {
+        "plan": "recovery_gps_failed",
+        "status": "Success"
+        "executed_actions": [
+          "enter degraded_mode",
+          "enter degraded_mode",
+          "reduce_speed 0.5m/s",
+          "reduce_speed 0.5m/s",
+          "switch_to visual_odometry",
+          "switch_to visual_odometry"
+        ],
+        "failed_actions": [],
+        "verification_outcome": "Recovery verified",
+        "evidence": {
+          "diagnosis": "Satellite lock lost",
+          "failure": "gps.failed",
+          "plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+          "recovery_actions": [
+            "enter degraded_mode",
+            "enter degraded_mode",
+            "reduce_speed 0.5m/s",
+            "reduce_speed 0.5m/s",
+            "switch_to visual_odometry",
+            "switch_to visual_odometry"
+          ],
+          "outcome": "Success",
+          "operator_approval": null,
+          "verification": "Recovery verified"
+        }
+      }
+    ],
+    "audit": [
+      {
+        "chosen_recovery": "recovery_gps_failed",
+        "detected_failure": "gps.failed",
+        "diagnosis": "Satellite lock lost",
+        "recovery_outcome": "Success",
+        "safety_validation_result": "PASS"
+        "operator_approval": null,
+        "timestamp_hint": "static-analysis",
+        "verification_outcome": "Recovery verified"
+      },
+      {
+        "chosen_recovery": "recovery_gps_failed",
+        "detected_failure": "gps.failed",
+        "diagnosis": "Satellite lock lost",
+        "recovery_outcome": "Success",
+        "safety_validation_result": "PASS"
+        "operator_approval": null,
+        "timestamp_hint": "static-analysis",
+        "verification_outcome": "Recovery verified"
+      }
+    ],
+    "readiness": {
+      "recovery_ready": true,
+      "risk": "Low",
+      "readiness_score": 95,
+      "blockers": []
+    },
+    "assurance": {
+      "recovery_evidence": [
+        {
+          "diagnosis": "Satellite lock lost",
+          "failure": "gps.failed",
+          "plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+          "recovery_actions": [
+            "enter degraded_mode",
+            "enter degraded_mode",
+            "reduce_speed 0.5m/s",
+            "reduce_speed 0.5m/s",
+            "switch_to visual_odometry",
+            "switch_to visual_odometry"
+          ],
+          "outcome": "Success",
+          "operator_approval": null,
+          "verification": "Recovery verified"
+        },
+        {
+          "diagnosis": "Satellite lock lost",
+          "failure": "gps.failed",
+          "plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+          "recovery_actions": [
+            "enter degraded_mode",
+            "enter degraded_mode",
+            "reduce_speed 0.5m/s",
+            "reduce_speed 0.5m/s",
+            "switch_to visual_odometry",
+            "switch_to visual_odometry"
+          ],
+          "outcome": "Success",
+          "operator_approval": null,
+          "verification": "Recovery verified"
+        }
+      ],
+      "recovery_readiness": {
+        "recovery_ready": true,
+        "risk": "Low",
+        "readiness_score": 95,
+        "blockers": []
+      },
+      "success_rate": 1.0,
+      "traceability": [
+        {
+          "diagnosis": "Satellite lock lost",
+          "evidence": "Recovery verified",
+          "failure": "gps.failed",
+          "outcome": "Success",
+          "recovery_action": "switch_to visual_odometry; reduce_speed 0.5m/s; enter degraded_mode; switch_to visual_odometry; reduce_speed 0.5m/s; enter degraded_mode",
+          "recovery_plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+        },
+        {
+          "diagnosis": "Satellite lock lost",
+          "evidence": "Recovery verified",
+          "failure": "gps.failed",
+          "outcome": "Success",
+          "recovery_action": "switch_to visual_odometry; reduce_speed 0.5m/s; enter degraded_mode; switch_to visual_odometry; reduce_speed 0.5m/s; enter degraded_mode",
+          "recovery_plan": "recovery_gps_failed",
+          "safety_validation": "PASS"
+        }
+      ]
+    },
+    "fleet_plans": [],
+    "knowledge": {
+      "entries": [
+        {
+          "failure_pattern": "GPS",
+          "recovery_pattern": "Switch to visual odometry"
+          "success_rate": 0.75,
+          "recommendation": "On GPS failure: Switch to visual odometry"
+        },
+        {
+          "failure_pattern": "Camera",
+          "recovery_pattern": "Reduce speed and rely on Lidar"
+          "success_rate": 0.75,
+          "recommendation": "On Camera failure: Reduce speed and rely on Lidar"
+        },
+        {
+          "failure_pattern": "Lidar",
+          "recovery_pattern": "Halt autonomous motion; require operator takeover"
+          "success_rate": 0.6,
+          "recommendation": "On Lidar failure: Halt autonomous motion; require operator takeover"
+        },
+        {
+          "failure_pattern": "LTE",
+          "recovery_pattern": "Offline mode activated; queue telemetry locally"
+          "success_rate": 0.85,
+          "recommendation": "On LTE failure: Offline mode activated; queue telemetry locally"
+        },
+        {
+          "failure_pattern": "WiFi",
+          "recovery_pattern": "Fall back to LTE or autonomous mode"
+          "success_rate": 0.85,
+          "recommendation": "On WiFi failure: Fall back to LTE or autonomous mode"
+        },
+        {
+          "failure_pattern": "Battery",
+          "recovery_pattern": "Return to charging dock; reduce mission scope"
+          "success_rate": 0.75,
+          "recommendation": "On Battery failure: Return to charging dock; reduce mission scope"
+        },
+        {
+          "failure_pattern": "Provider",
+          "recovery_pattern": "Use bundled fallback provider or safe stop"
+          "success_rate": 0.75,
+          "recommendation": "On Provider failure: Use bundled fallback provider or safe stop"
+        },
+        {
+          "failure_pattern": "Package",
+          "recovery_pattern": "Pin package version or install from registry"
+          "success_rate": 0.85,
+          "recommendation": "On Package failure: Pin package version or install from registry"
+        }
+      ]
+    },
+    "passed": true
+  },
+  "issues": [],
+  "passed": true
+}
+Anomaly Report
+Passed: true
+* learned NavigationAnomaly via assurance.anomaly
+
+State Estimation Report
+Passed: true
+Estimators: 1
+* RoverState inputs [gps.fix, imu.data, wheel_odometry]
+
+Prognostics Report
+Passed: true
+Warnings: 1
+
+Mission Assurance Report
+Passed: true
+Plans: 0
+
+Resilience Report
+Passed: true
+Readiness score: 95
+
+Mitigation Plan
+Plans: 1
+
+{
+  "status": "Ready",
+  "mission_ready": true,
+  "score": {
+    "total": 95,
+    "maximum": 100,
+    "factors": [
+      {
+        "factor": "Hardware",
+        "score": 100,
+        "weight": 12,
+        "weighted": 12.0
+      },
+      {
+        "factor": "Capabilities",
+        "score": 100,
+        "weight": 12,
+        "weighted": 12.0
+      },
+      {
+        "factor": "Health",
+        "score": 100,
+        "weight": 12,
+        "weighted": 12.0
+      },
+      {
+        "factor": "Connectivity",
+        "score": 75,
+        "weight": 8,
+        "weighted": 6.0
+      },
+      {
+        "factor": "Safety",
+        "score": 95,
+        "weight": 12,
+        "weighted": 11.4
+      },
+      {
+        "factor": "Battery",
+        "score": 90,
+        "weight": 8,
+        "weighted": 7.2
+      },
+      {
+        "factor": "Storage",
+        "score": 90,
+        "weight": 4,
+        "weighted": 3.6
+      },
+      {
+        "factor": "Compute",
+        "score": 88,
+        "weight": 6,
+        "weighted": 5.28
+      },
+      {
+        "factor": "Packages",
+        "score": 100,
+        "weight": 8,
+        "weighted": 8.0
+      },
+      {
+        "factor": "Providers",
+        "score": 100,
+        "weight": 8,
+        "weighted": 8.0
+      },
+      {
+        "factor": "Mission Requirements",
+        "score": 100,
+        "weight": 2,
+        "weighted": 2.0
+      },
+      {
+        "factor": "Assurance",
+        "score": 100,
+        "weight": 8,
+        "weighted": 8.0
+      }
+    ]
+  },
+  "issues": [],
+  "policy": {
+    "minimum_score": 80,
+    "weights": {
+      "hardware": 12,
+      "capabilities": 12,
+      "health": 12,
+      "connectivity": 8,
+      "safety": 12,
+      "battery": 8,
+      "storage": 4,
+      "compute": 6,
+      "packages": 8,
+      "providers": 8,
+      "mission": 2,
+      "assurance": 8
+    }
+  },
+  "target": "RoverV1",
+  "robots": [
+    "Rover"
+  ]
+}
+
+Demo complete. See examples/showcase/assurance/README.md and examples/anomaly/learned_navigation.sd

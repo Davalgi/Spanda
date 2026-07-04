@@ -1,0 +1,26 @@
+Recovery Orchestrator Report
+============================
+
+Mode: Plan
+Passed: true
+
+Plans (0):
+Recovery Metrics
+================
+
+Total recoveries: 0
+Successful: 0
+Failed: 0
+Success rate: 85.0%
+Average duration: 0.0s
+Recovery confidence: 50.0%
+
+Most effective strategies:
+  Fall back to LTE or autonomous mode — 85% success (100 uses)
+  Halt autonomous motion; require operator takeover — 60% success (100 uses)
+  Offline mode activated; queue telemetry locally — 85% success (100 uses)
+  Pin package version or install from registry — 85% success (100 uses)
+  Reduce speed and rely on Lidar — 75% success (100 uses)
+  Return to charging dock; reduce mission scope — 75% success (100 uses)
+  Switch to visual odometry — 75% success (100 uses)
+  Use bundled fallback provider or safe stop — 75% success (100 uses)

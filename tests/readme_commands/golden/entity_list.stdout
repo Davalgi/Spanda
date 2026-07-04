@@ -1,0 +1,17 @@
+Entities (16):
+  calibration-bay [calibration_station] health=healthy readiness=ready
+  camera-front-001 [camera] health=unknown readiness=unknown
+  drive-controller [device] health=unknown readiness=unknown
+  gps-001 [gps] health=unknown readiness=unknown
+  jetson-001 [compute] health=healthy readiness=ready
+  lidar-front [sensor] health=unknown readiness=unknown
+  motor-controller-001 [device] health=unknown readiness=unknown
+  north-wing [zone] health=healthy readiness=ready
+  org:Warehouse Patrol [organization] health=healthy readiness=ready
+  rover-001 [robot] health=healthy readiness=ready
+  spanda-canbus [provider] health=healthy readiness=ready
+  spanda-gps [provider] health=healthy readiness=ready
+  spanda-lidar [provider] health=healthy readiness=ready
+  spanda-vision [provider] health=healthy readiness=ready
+  warehouse-a [facility] health=healthy readiness=ready
+  warehouse-fleet [fleet] health=healthy readiness=ready
