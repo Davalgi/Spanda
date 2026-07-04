@@ -159,7 +159,10 @@
 | [hardware-traceability.md](./hardware-traceability.md) | **Hardware-to-code traceability mapping** |
 | [packages.md](./packages.md) | **Package manager, `spanda publish`, capabilities** |
 | [registry.md](./registry.md) | **Hosted package registry, `spanda publish` mirror, and `spanda install`** |
-| [feature-status.md](./feature-status.md) | **v0.4 support matrix** |
+| [feature-status.md](./feature-status.md) | **Feature stability matrix (strict labels)** |
+| [scope-control.md](./scope-control.md) | **Release hardening scope — allowed vs not allowed** |
+| [release-blockers.md](./release-blockers.md) | **P0–P3 release blocker tracking** |
+| [release-readiness.md](./release-readiness.md) | **Release readiness report and recommendation** |
 | [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md) | **June 2026 roadmap vs codebase gap audit and closure tracking** |
 | [hardware-compatibility.md](./hardware-compatibility.md) | **Hardware profiles, deploy targets, and compile-time verification** |
 | [positioning.md](./positioning.md) | **GPS/GNSS types, sensors, and simulation faults** |

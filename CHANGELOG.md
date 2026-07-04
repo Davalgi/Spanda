@@ -9,7 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Operational Governance Stable promotion:** `scripts/operational_governance_smoke.sh` (pass/fail example gates), `scripts/operational_governance_stable_promotion_gate.sh`, CI job `operational-governance-smoke`, showcase smoke wiring; [stable-hardening-operational-governance.md](docs/stable-hardening-operational-governance.md). Tier **Stable** in feature-status and roadmap.
+- **Release hardening suite:** README command smoke + golden-output harness (`tests/readme_commands/`), cross-interface consistency (`scripts/cross_interface_consistency.sh`), security regressions (plugin/package/decision/recovery), property-style parser/manifest/config/policy/capability tests, CI job `release-hardening`, and docs: [scope-control.md](docs/scope-control.md), [release-blockers.md](docs/release-blockers.md), [release-readiness.md](docs/release-readiness.md).
+- **Operational Governance Stable promotion:**
+
+### Fixed
+
+- **`spanda demo rover` package install:** prefer monorepo `registry/` over incomplete CLI bundle; fall back to on-disk `packages/registry/<name>` when resolving registry packages.
+- **Entity / assurance / readiness CLI diagnostics:** missing config or program path now reports what/why/where/fix (warehouse fixture and showcase paths).
+- **Parser underflow panic:** `previous`/`advance` no longer overflow when the token cursor is at the start (found by property tests).
+
+### Changed
+
+- **Stability labeling:** strict tiers in [feature-status.md](docs/feature-status.md); default AI agents labeled **Mock-backed** (Stable API). README entity commands document required `--config`.
+ `scripts/operational_governance_smoke.sh` (pass/fail example gates), `scripts/operational_governance_stable_promotion_gate.sh`, CI job `operational-governance-smoke`, showcase smoke wiring; [stable-hardening-operational-governance.md](docs/stable-hardening-operational-governance.md). Tier **Stable** in feature-status and roadmap.
 - **Operational governance product depth:** live decision enforcement via `lookup_entity_for_governance` in `authorize_action` and the distributed decision engine (high-risk / manual-assisted gates; reflex actions always allowed). Control Center Governance tab can assign/detach signed policies and edit accountability (owners, emergency/escalation contacts, approval chain) through `PUT /v1/governance/accountability` and `POST /v1/governance/policies/detach`.
 
 ## [0.6.2] - 2026-07-04

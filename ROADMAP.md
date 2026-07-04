@@ -5,12 +5,14 @@
 | | |
 |---|---|
 | **Current release** | v0.5.0 (tagged 2026-07-02) |
-| **Next** | v1.0 production positioning |
-| **Last audited** | 2026-06-28 — [docs/roadmap-codebase-audit-2026-06.md](docs/roadmap-codebase-audit-2026-06.md) |
+| **Current phase** | **Release hardening** — no new platform capabilities ([docs/scope-control.md](docs/scope-control.md)) |
+| **Next** | v1.0 production positioning (after P0/P1 blockers clear) |
+| **Last audited** | 2026-07-04 — release hardening QA pass |
 | **Feature truth table** | [docs/feature-status.md](docs/feature-status.md) |
+| **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |
 
-**Tiers:** **Stable** (CI-backed, documented) · **Experimental** (usable with caveats) · **Future** (planned, not shipped)
+**Tiers:** **Stable** (tested, non-mock default) · **Beta** · **Experimental** · **Preview** · **Stubbed** · **Mock-backed** · **Planned** · **Deprecated** — see [docs/feature-status.md](docs/feature-status.md)
 
 **Timeline (maturity, not dates):** **Now** · **Next** · **Later** · **Long Term** · **Research**
 

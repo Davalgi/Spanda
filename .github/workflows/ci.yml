@@ -56,6 +56,13 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/sdk_smoke.sh
       - run: chmod +x scripts/check_all_examples.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/check_all_examples.sh
+      - name: README command smoke tests
+        run: |
+          chmod +x tests/readme_commands/run.sh
+          SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./tests/readme_commands/run.sh
+      - name: Flagship golden-output tests
+        run: |
+          SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./tests/readme_commands/run.sh --golden
 
   distributed-decisions:
     runs-on: ubuntu-latest
@@ -572,6 +579,33 @@ jobs:
           export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
           SPANDA_ENTERPRISE_OPS_SKIP_SOAK=1 SPANDA_ENTERPRISE_OPS_SKIP_AUDIT=1 \
             ./scripts/enterprise_ops_stable_promotion_gate.sh
+
+  release-hardening:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: cargo build -p spanda --release
+      - run: npm ci --prefix sdk/typescript
+      - run: chmod +x scripts/cross_interface_consistency.sh tests/readme_commands/run.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./tests/readme_commands/run.sh --golden
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cross_interface_consistency.sh
+      - run: cargo test -p spanda-plugin --test security_regression --test property_manifest
+      - run: cargo test -p spanda-package --test security_regression --test property_manifest
+      - run: cargo test -p spanda-decision --test security_regression
+      - run: cargo test -p spanda-recovery --test security_regression
+      - run: cargo test -p spanda-parser --test property_parser
+      - run: cargo test -p spanda-config --test property_resolver
+      - run: cargo test -p spanda-policy --test property_policy
+      - run: cargo test -p spanda-capability --test property_registry
 
   entity-model-smoke:
     runs-on: ubuntu-latest

@@ -2,7 +2,22 @@
 
 Honest snapshot of **Spanda Platform** capabilities as of **v0.5.0**. The Spanda Language (`.sd`) is one component; this matrix covers verification, simulation, fleet, packages, and tooling as well. Use this document to understand what is production-ready, experimental, planned, or deprecated.
 
-Platform overview: [platform-overview.md](./platform-overview.md)
+Platform overview: [platform-overview.md](./platform-overview.md) · Release hardening: [scope-control.md](./scope-control.md) · Blockers: [release-blockers.md](./release-blockers.md)
+
+## Stability labels (strict)
+
+| Label | Meaning |
+|-------|---------|
+| **Stable** | Tested default path; not mock/demo/docs-only |
+| **Beta** | Usable with known limitations; suitable for evaluation |
+| **Experimental** | Works with caveats; optional live backends |
+| **Preview** | Early API; may change without notice |
+| **Stubbed** | Syntax or API exists without full external integration |
+| **Mock-backed** | Default path uses mocks/simulators (not production-ready alone) |
+| **Planned** | Not implemented |
+| **Deprecated** | Replaced; do not use in new programs |
+
+**Rules:** mock-backed, demo-only, docs-only, untested, and simulated-only features are **not** Stable. Simulated-only paths must say so explicitly.
 
 **Stubbed** = syntax or API exists without full external integration.  
 **Broken** = known to fail or incomplete in current builds.
@@ -37,7 +52,7 @@ Platform overview: [platform-overview.md](./platform-overview.md)
 | Area | Capabilities |
 |------|----------------|
 | **Language core** | Lexer, parser, AST, type checker, physical units, `module`/`import`, structs/enums/traits, `match`, `Result`/`Option`, `test` blocks |
-| **AI agents** | `ai_model`, `agent`, `goal`, `memory`, mock LLM/Vision providers, `ActionProposal` → `safety.validate()` → `SafeAction` |
+| **AI agents** | `ai_model`, `agent`, `goal`, `memory`, **mock-backed** LLM/Vision providers by default, `ActionProposal` → `safety.validate()` → `SafeAction` |
 | **Robotics primitives** | `robot`, `sensor`, `actuator`, `behavior`, `task every Nms`, state machines, events |
 | **Hardware profiles** | `hardware`, `deploy`, `requires_hardware`, `requires_network`, SoC/HAL validation |
 | **Compatibility verification** | `spanda verify`, `--target`, `--all-targets`, `--simulate`, `--json` |
@@ -179,7 +194,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | Feature | Status | Notes |
 |---------|--------|-------|
 | robot / sensor / actuator | **Stable** | |
-| agent / goal / task / skill | **Stable** | Mock AI backend |
+| agent / goal / task / skill | **Mock-backed** (Stable API) | Default mock AI backend; live providers optional |
 | ActionProposal → SafeAction | **Stable** | Compile + runtime |
 | safety zones / emergency stop | **Stable** | |
 | deterministic scheduler | **Stable** | `task every Nms` |
