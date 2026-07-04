@@ -2,9 +2,11 @@
 //!
 use spanda_config::{ConfigResolver, SpandaManifest};
 use spanda_governance::{
-    deployment_profile_by_name, format_compliance_report, format_governance_report,
+    default_certification_store_path, deployment_profile_by_name, format_certification_report,
+    format_compliance_report, format_deployment_verify, format_governance_report,
     format_governance_validation, governance_framework_summary, list_deployment_profiles,
-    run_compliance_check, validate_governance, ValidationOptions,
+    run_compliance_check, validate_governance, verify_deployment, CertificationReport,
+    CertificationRecord, CertificationStatus, CertificationStore, ValidationOptions,
 };
 use std::env;
 use std::process;
@@ -206,6 +208,14 @@ pub fn certification_inspect_dispatch(args: &[String]) {
             println!("Operational Maturity: {}", gov.operational_maturity.as_deref().unwrap_or("-"));
             println!("Certification Status: {}", gov.certification_status.as_deref().unwrap_or("-"));
             println!("Risk Level: {}", gov.risk_level.as_deref().unwrap_or("-"));
+            println!("Responsible Person: {}", gov.responsible_person.as_deref().unwrap_or("-"));
+            println!("Deployment Owner: {}", gov.deployment_owner.as_deref().unwrap_or("-"));
+            println!("Mission Owner: {}", gov.mission_owner.as_deref().unwrap_or("-"));
+            println!("Emergency Contact: {}", gov.emergency_contact.as_deref().unwrap_or("-"));
+            println!("Escalation Contact: {}", gov.escalation_contact.as_deref().unwrap_or("-"));
+            if !gov.approval_chain.is_empty() {
+                println!("Approval Chain: {}", gov.approval_chain.join(" → "));
+            }
         } else {
             println!("No governance metadata configured.");
         }
@@ -246,5 +256,42 @@ pub fn risk_report_dispatch(args: &[String]) {
                 row["health_status"]
             );
         }
+    }
+}
+
+pub fn certification_report_dispatch(args: &[String]) {
+    let json = wants_json(args);
+    let entity_id = args.iter().find(|a| !a.starts_with('-')).map(String::as_str);
+    let (registry, _) = load_registry();
+    let mut store = CertificationStore::load(&default_certification_store_path());
+    for entity in registry.entities.values() {
+        let Some(gov) = entity.governance.as_ref() else {
+            continue;
+        };
+        let Some(status) = gov.certification_status.as_ref() else {
+            continue;
+        };
+        let id = format!("cert-{}", entity.id);
+        if store.get(&id).is_some() {
+            continue;
+        }
+        let mut record = CertificationRecord::draft(&id);
+        record.status = CertificationStatus::parse(status);
+        record.applicable_scope = vec![entity.id.clone()];
+        record.certified_by = gov.responsible_person.clone();
+        store.upsert(record);
+    }
+    let report = CertificationReport::from_store(&store, entity_id);
+    println!("{}", format_certification_report(&report, json));
+}
+
+pub fn deployment_verify_dispatch(args: &[String]) {
+    let opts = parse_opts(args);
+    let json = wants_json(args);
+    let (registry, resolved) = load_registry();
+    let report = verify_deployment(&registry, &resolved, &opts);
+    println!("{}", format_deployment_verify(&report, json));
+    if !report.passed {
+        process::exit(1);
     }
 }

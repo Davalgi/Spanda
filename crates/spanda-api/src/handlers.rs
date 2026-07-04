@@ -609,6 +609,20 @@ pub fn handle_request(
             }
         }
         ("/v1/risk", "GET") => crate::governance_ops::risk_summary(state, ctx.as_ref()),
+        ("/v1/certifications/report", "GET") => {
+            crate::governance_ops::certification_report(state, query, ctx.as_ref())
+        }
+        ("/v1/deployment/verify", "POST") => {
+            crate::governance_ops::deployment_verify(state, query, Some(&request.body), ctx.as_ref())
+        }
+        ("/v1/governance/policies", "GET") => crate::governance_ops::policies_list(ctx.as_ref()),
+        ("/v1/governance/policies/assign", "POST") => {
+            crate::governance_ops::policies_assign(&request.body, ctx.as_ref())
+        }
+        ("/v1/governance/audit", "GET") => crate::governance_ops::governance_audit(ctx.as_ref()),
+        ("/v1/governance/accountability", "GET") => {
+            crate::governance_ops::accountability_summary(state, ctx.as_ref())
+        }
         ("/v1/chaos/injections", "GET") => crate::control_center_extras::chaos_catalog_json(),
         ("/v1/chaos/simulate", "POST") => {
             crate::control_center_extras::chaos_simulate_json(state, &request.body)

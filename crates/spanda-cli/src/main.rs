@@ -1588,8 +1588,9 @@ fn main() {
         match args.get(2).map(String::as_str) {
             Some("list") => operational_governance_cli::certification_list_dispatch(&args[3..]),
             Some("inspect") => operational_governance_cli::certification_inspect_dispatch(&args[3..]),
+            Some("report") => operational_governance_cli::certification_report_dispatch(&args[3..]),
             _ => {
-                eprintln!("Usage: spanda certification list|inspect ...");
+                eprintln!("Usage: spanda certification list|inspect|report ...");
                 process::exit(1);
             }
         }
@@ -1598,11 +1599,17 @@ fn main() {
     }
 
     if command == "deployment" {
-        if args.get(2).map(String::as_str) == Some("profile") {
-            operational_governance_cli::deployment_profile_dispatch(&args[3..]);
-        } else {
-            eprintln!("Usage: spanda deployment profile [name] [--json]");
-            process::exit(1);
+        match args.get(2).map(String::as_str) {
+            Some("profile") => {
+                operational_governance_cli::deployment_profile_dispatch(&args[3..]);
+            }
+            Some("verify") => {
+                operational_governance_cli::deployment_verify_dispatch(&args[3..]);
+            }
+            _ => {
+                eprintln!("Usage: spanda deployment profile|verify ...");
+                process::exit(1);
+            }
         }
         let _ = io::stdout().flush();
         return;
