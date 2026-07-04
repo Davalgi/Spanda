@@ -117,6 +117,18 @@ pub fn evaluate_entity_readiness(
         }
     }
 
+    // Apply operational governance influence (autonomy, risk, maturity, certification).
+    sources.push("governance".into());
+    let influence = spanda_governance::influence_for_entity(entity);
+    for blocker in influence.readiness_blockers {
+        push_issue(
+            &mut issues,
+            &blocker.factor,
+            &blocker.severity,
+            blocker.message,
+        );
+    }
+
     let mission_ready = !issues
         .iter()
         .any(|i| i.severity == "high" || i.severity == "critical")

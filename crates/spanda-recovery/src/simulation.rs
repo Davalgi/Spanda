@@ -162,6 +162,32 @@ pub fn run_simulation(
             .iter()
             .all(|e| e.status != spanda_runtime::recovery_types::RecoveryStatus::Failed);
 
+    let mut governance_notes = Vec::new();
+    let entity_ids: Vec<String> = plans.iter().map(|p| p.entity_id.clone()).collect();
+    for entity_id in entity_ids {
+        if let Some(entity) = registry.get(&entity_id) {
+            let influence = spanda_governance::influence_for_entity(entity);
+            for note in influence.recovery_notes {
+                governance_notes.push(format!("{}: {}", entity_id, note.message));
+            }
+            if influence.recovery_escalation_required {
+                if let Some(gov) = entity.governance.as_ref() {
+                    if let Some(contact) = gov.escalation_contact.as_ref() {
+                        governance_notes.push(format!(
+                            "{entity_id}: escalate to {contact}"
+                        ));
+                    } else if let Some(person) = gov.responsible_person.as_ref() {
+                        governance_notes.push(format!(
+                            "{entity_id}: escalate to responsible person {person}"
+                        ));
+                    }
+                }
+            }
+        }
+    }
+    governance_notes.sort();
+    governance_notes.dedup();
+
     OrchestratorRecoveryReport {
         plans,
         evidence,
@@ -170,5 +196,6 @@ pub fn run_simulation(
         legacy_report,
         simulation_mode: request.mode,
         passed,
+        governance_notes,
     }
 }

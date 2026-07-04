@@ -61,7 +61,8 @@ pub use report::{
 pub use runtime_bridge::{register_platform_runtime, DecisionBackedRuntime};
 pub use enforcement::{
     cached_policy_must_be_signed, clear_nonce_registry, detect_policy_tampering,
-    high_risk_requires_central_approval, local_action_respects_kill_switch,
+    governance_requires_human_approval, high_risk_requires_central_approval,
+    local_action_respects_kill_switch,
     local_action_respects_safety_boundaries, offline_decision_expired, policy_hash,
     reflex_may_act_without_central, register_decision_nonce, resolve_split_brain,
     tamper_policy_for_test, untrusted_entity_may_not_takeover, validate_authority_scope,

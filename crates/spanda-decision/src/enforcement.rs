@@ -180,6 +180,40 @@ pub fn high_risk_requires_central_approval(
     Ok(())
 }
 
+/// Governance autonomy/risk rules may require human approval for an action.
+pub fn governance_requires_human_approval(
+    entity: &spanda_config::EntityRecord,
+    action: &str,
+) -> Result<(), String> {
+    // Block autonomous action when governance requires human approval.
+    //
+    // Parameters:
+    // - `entity` — entity with optional governance metadata
+    // - `action` — proposed decision action key
+    //
+    // Returns:
+    // `Ok(())` when allowed, or an error describing the approval requirement.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // governance_requires_human_approval(&entity, "takeover")?;
+
+    if spanda_governance::action_requires_human_approval(entity, action) {
+        let influence = spanda_governance::influence_for_entity(entity);
+        let detail = influence
+            .decision_blockers
+            .first()
+            .map(|f| f.message.clone())
+            .unwrap_or_else(|| {
+                format!("action '{action}' requires human approval under governance policy")
+            });
+        return Err(detail);
+    }
+    Ok(())
+}
+
 /// Offline decisions expire when duration exceeds policy max.
 pub fn offline_decision_expired(spec: &OfflinePolicySpec, offline_minutes: u32) -> Result<(), String> {
     if offline_minutes > spec.max_duration_minutes {

@@ -15,7 +15,9 @@ spanda-ast = { path = "../spanda-ast" }
 spanda-capability = { path = "../spanda-capability" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-audit = { path = "../spanda-audit" }
+spanda-config = { path = "../spanda-config" }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
+spanda-governance = { path = "../spanda-governance" }
 
 [dev-dependencies]
 spanda-lexer = { path = "../spanda-lexer" }

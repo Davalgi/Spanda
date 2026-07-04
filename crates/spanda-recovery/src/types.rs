@@ -417,6 +417,9 @@ pub struct OrchestratorRecoveryReport {
     pub legacy_report: Option<RecoveryReport>,
     pub simulation_mode: RecoverySimulationMode,
     pub passed: bool,
+    /// Governance-driven recovery notes (escalation, risk).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub governance_notes: Vec<String>,
 }
 
 /// Entity target for universal recovery APIs.

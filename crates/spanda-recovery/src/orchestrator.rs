@@ -239,6 +239,7 @@ impl RecoveryOrchestrator {
             )),
             simulation_mode: RecoverySimulationMode::Validate,
             passed,
+            governance_notes: plan_report.governance_notes,
         }
     }
 

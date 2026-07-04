@@ -204,6 +204,31 @@ pub fn evaluate_deployment_gates(
             format!("{health_issues} high-severity health issues")
         },
     });
+    if let Some(cfg) = options.system_config.as_deref() {
+        let registry = cfg.entity_registry();
+        let mut blocked = Vec::new();
+        for entity in registry.entities.values() {
+            if entity.governance.is_none() {
+                continue;
+            }
+            let influence = spanda_governance::influence_for_entity(entity);
+            if influence.blocks_live_deployment {
+                blocked.push(entity.id.clone());
+            }
+        }
+        gates.push(DeploymentGate {
+            name: "governance".into(),
+            passed: blocked.is_empty(),
+            message: if blocked.is_empty() {
+                "governance allows live deployment".into()
+            } else {
+                format!(
+                    "governance blocks live deployment for: {}",
+                    blocked.join(", ")
+                )
+            },
+        });
+    }
     let passed = gates.iter().all(|gate| gate.passed);
     DeploymentGateReport { passed, gates }
 }

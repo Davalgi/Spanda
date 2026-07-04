@@ -115,6 +115,18 @@ pub fn evaluate_entity_trust(
         tamper_status = Some(composite.integrity_status.clone());
     }
 
+    // Apply operational governance influence (autonomy trust tier requirements).
+    sources.push("governance".into());
+    let influence = spanda_governance::influence_for_entity(entity);
+    for blocker in influence.trust_blockers {
+        categories.push(EntityTrustCategory {
+            name: blocker.factor,
+            score: 0,
+            passed: false,
+            detail: blocker.message,
+        });
+    }
+
     let passed = categories.iter().all(|c| c.passed)
         && !matches!(
             entity.trust_status,

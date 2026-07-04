@@ -24,6 +24,7 @@ spanda-parser = { path = "../spanda-parser" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-security = { path = "../spanda-security" }
 spanda-config = { path = "../spanda-config" }
+spanda-governance = { path = "../spanda-governance" }
 spanda-package = { path = "../spanda-package" }
 spanda-telemetry-store = { path = "../spanda-telemetry-store" }
 
