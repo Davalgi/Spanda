@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **NOW differentiation REST APIs:** `GET /v1/programs/source`, `POST /v1/programs/contract/verify`, `POST /v1/programs/explain`, `POST /v1/programs/audit/decisions` — CLI parity for mission contracts, explainability, and decision audit trail.
+- **Control Center Differentiation tab:** mission contract verify, explain modes, and trace-based decision audit wired to new program APIs.
+- **Control Center promotion:** Assurance/Diagnosis panel runs `POST /v1/programs/assure` and `/diagnose`; Traceability loads capability matrix from API; Playground loads server program via `/v1/programs/source`.
 - **Organizational gates guide:** v0.6.3 → v1.0 checklist (field soak, security audit, exit criteria) — [organizational-gates.md](docs/organizational-gates.md).
 - **Next horizon priorities:** prioritized P0–P3 engineering themes in [ROADMAP.md](ROADMAP.md#next-horizon-priorities-post-v063).
 - **Mock-backend runtime notices:** one-time `[spanda]` stderr warnings when AI or live transport falls back to mock/in-memory paths; program-aware notices before `run`/`sim`; `SPANDA_QUIET=1` suppresses them.

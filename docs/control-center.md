@@ -608,6 +608,17 @@ Control Center **Simulation** and **Replay** tabs expose these workflows in the 
 | `GET /v1/operator/mission/approvals` | Pending approval queue |
 | `POST /v1/operator/mission/approve` | Approve or reject (Approve) |
 
+### Differentiation (NOW signature capabilities)
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /v1/programs/source` | Source text for the loaded `--program` file |
+| `POST /v1/programs/contract/verify` | Mission contract verification (`spanda contract verify` parity) |
+| `POST /v1/programs/explain` | Explainability report — body `{ "mode": "program\|readiness\|verify\|safety\|decision\|trace", "file": "…" }` |
+| `POST /v1/programs/audit/decisions` | Decision audit trail from a `.trace` — optional `"explain": true` |
+
+Control Center **Differentiation** tab (Governance group) surfaces contract verify, explain modes, and trace audit. **Assurance/Diagnosis** runs `POST /v1/programs/assure` and `/diagnose`. **Traceability** loads the capability matrix via `POST /v1/programs/verify/capabilities` with `traceability: true`. **Playground** can load the server program via `GET /v1/programs/source`.
+
 ### What requires authentication
 
 | Access | Auth required? |
