@@ -26,9 +26,17 @@ PORT="${SPANDA_XIFACE_PORT:-}"
 if [[ -z "$PORT" ]]; then
   PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')
 fi
+GRPC_PORT="${SPANDA_XIFACE_GRPC_PORT:-}"
+if [[ -z "$GRPC_PORT" ]]; then
+  GRPC_PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')
+fi
 BIND="127.0.0.1:${PORT}"
+GRPC_BIND="127.0.0.1:${GRPC_PORT}"
 BASE="http://${BIND}"
 export SPANDA_API_KEY="cross-interface-smoke-key"
+export SPANDA_XIFACE_HTTP_BASE="$BASE"
+export SPANDA_XIFACE_GRPC_BIND="$GRPC_BIND"
+export SPANDA_XIFACE_SELF_HEALING="$SELF_HEALING"
 
 fetch() {
   curl -sf --max-time 15 "${BASE}$1"
@@ -42,7 +50,7 @@ cc_smoke_trap cleanup
 
 echo "== start control-center on ${BIND} =="
 CC_SMOKE_BIND="$BIND"
-run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
+run_spanda control-center serve --bind "$BIND" --grpc-bind "$GRPC_BIND" --config "$CONFIG" --program "$PROGRAM" &
 CC_SMOKE_WRAPPER_PID=$!
 
 echo "== wait for health =="
@@ -140,25 +148,30 @@ print("trust structure ok")
 PY
 
 echo "== recovery plan consistency =="
-cli_recovery="$(run_spanda recovery plan "$SELF_HEALING" --failure gps --json 2>/dev/null || true)"
+cli_recovery="$(run_spanda recovery plan "$SELF_HEALING" --failure gps --json)"
 rest_recovery="$(curl -sf --max-time 30 -X POST -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${SPANDA_API_KEY}" \
   -d "{\"file\":\"${SELF_HEALING}\",\"failure\":\"gps\"}" \
-  "${BASE}/v1/recovery/plan" 2>/dev/null || true)"
+  "${BASE}/v1/recovery/plan")"
 python3 - "$cli_recovery" "$rest_recovery" <<'PY'
 import json, sys
 cli_raw, rest_raw = sys.argv[1], sys.argv[2]
-# Recovery plan may be text-only on CLI; accept either JSON or non-empty text.
-if cli_raw.strip().startswith("{"):
-    cli = json.loads(cli_raw)
-    assert "plans" in cli or "passed" in cli or "mode" in cli, cli
-else:
-    assert "Recovery" in cli_raw or "plan" in cli_raw.lower(), cli_raw[:200]
-if rest_raw.strip().startswith("{"):
-    rest = json.loads(rest_raw)
-    assert isinstance(rest, dict)
+cli = json.loads(cli_raw)
+rest = json.loads(rest_raw)
+for payload in (cli, rest):
+    assert (
+        "plans" in payload
+        or "passed" in payload
+        or "report" in payload
+        or "mode" in payload
+    ), payload
+if "passed" in cli and "passed" in rest:
+    assert cli["passed"] == rest["passed"], (cli["passed"], rest["passed"])
 print("recovery plan structure ok")
 PY
+
+echo "== gRPC recovery + health parity =="
+cargo test -p spanda-api --test cross_interface_live --quiet
 
 echo "== decision list / traces consistency =="
 cli_decisions="$(run_spanda decision list "$DECISIONS")"
