@@ -19,6 +19,22 @@ Spanda is the intelligent pulse that transforms perception, intent, and safety i
 
 In software terms: the coordination layer that turns perception into verified, safe action.
 
+## Nervous system (reflex / spinal cord / brain)
+
+The body metaphor describes *what* each part is on one robot. At fleet scale and during offline operation, Spanda adds a **nervous-system hierarchy** for *where* decisions are allowed to happen:
+
+| Layer | Role | In Spanda |
+|-------|------|-----------|
+| **Reflex** | Instant safety — never waits on cloud or model output | `safety { }`, kill switch, trust rejection |
+| **Spinal cord** | Bounded local autonomy when the link is slow or gone | `local_decision_authority`, `decision_tree`, signed `offline_policy` |
+| **Brain** | Strategy, policy, assurance, human approval — not every motor tick | Control Center, fleet coordination, central approval gates |
+
+**AI models are the mind** — they propose plans and perceive the world. They are **not** the control-center brain: proposals still pass through safety, trust, and policy before they reach actuators, and urgent reflexes never wait on a model.
+
+**Spanda is the pulse** that routes intent across this hierarchy, enforces boundaries at each layer, and keeps every decision auditable and replayable.
+
+Technical detail: [distributed-decisions.md](../distributed-decisions.md)
+
 Long-form vision: [vision.md](../vision.md) · Product positioning: [product-strategy.md](../product-strategy.md)
 
 ## Why Spanda? (detail)

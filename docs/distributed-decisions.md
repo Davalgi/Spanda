@@ -4,6 +4,8 @@
 
 Spanda implements a **brain / spinal cord / reflex** model for hierarchical distributed autonomy. Decisions are made at the appropriate layer — closest to the device for safety and latency, centrally for strategy and governance.
 
+Philosophy and naming: [overview/philosophy.md](./overview/philosophy.md#nervous-system).
+
 ## Decision layers
 
 | Layer | Name | Latency | Purpose |
