@@ -8,3 +8,12 @@ responsible_person = "safety@factory.example.com"
 deployment_owner = "plant.ops@factory.example.com"
 standards_profiles = "industrial_safety,functional_safety"
 constraints = "indoor,hazardous_area"
+
+[[governance.approval_chain]]
+role = "safety_officer"
+assignee = "safety@factory.example.com"
+required = true
+
+[governance.emergency_contact]
+name = "Plant Safety Desk"
+email = "emergency@factory.example.com"

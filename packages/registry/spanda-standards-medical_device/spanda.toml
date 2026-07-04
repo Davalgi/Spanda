@@ -1,0 +1,11 @@
+[package]
+name = "spanda-standards-medical_device"
+version = "0.1.0"
+description = "Standards profile scaffold for medical_device — required checks/evidence via packages, not embedded regulatory text"
+license = "Apache-2.0"
+
+[safety]
+level = "robotics"
+
+[capabilities]
+required = ["governance.standards.medical_device"]

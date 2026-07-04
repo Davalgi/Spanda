@@ -1,0 +1,7 @@
+[project]
+name = "governance-hospital"
+version = "0.1.0"
+
+[config]
+governance = "spanda.governance.toml"
+devices = "spanda.devices.toml"

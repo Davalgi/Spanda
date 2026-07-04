@@ -10,3 +10,22 @@ deployment_owner = "facilities@hospital.org"
 mission_owner = "nursing@hospital.org"
 standards_profiles = "medical_device,functional_safety"
 constraints = "indoor,clean_room"
+
+[[governance.approval_chain]]
+role = "clinical_lead"
+assignee = "clinical.ops@hospital.org"
+required = true
+
+[[governance.approval_chain]]
+role = "safety_officer"
+assignee = "safety@hospital.org"
+required = true
+
+[governance.emergency_contact]
+name = "Hospital Command Center"
+email = "emergency@hospital.org"
+phone = "+1-555-0911"
+
+[governance.escalation_contact]
+name = "Chief Medical Officer"
+email = "cmo@hospital.org"

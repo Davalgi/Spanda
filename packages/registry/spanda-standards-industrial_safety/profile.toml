@@ -1,0 +1,9 @@
+# Standards profile reference — implement checks via plugins/packages.
+# Spanda does not embed regulatory text.
+
+kind = "industrial_safety"
+required_checks = []
+required_evidence = []
+required_reports = []
+required_approvals = []
+required_documentation = []

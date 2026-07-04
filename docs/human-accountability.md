@@ -25,7 +25,7 @@ mission_owner = "mission.control@hospital.org"
 deployment_owner = "facilities@hospital.org"
 ```
 
-Approval chains are configured in `spanda.governance.toml` or via Control Center entity mutations (future).
+Approval chains, emergency contacts, and escalation contacts are configured in `spanda.governance.toml` and shown on the Control Center Governance tab (Responsible owners). Policy assignments use `POST /v1/governance/policies/assign`.
 
 ## Validation
 

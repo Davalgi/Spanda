@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-warehouse"
+
+[[fleet.robots]]
+id = "robot:amr-01"
+capabilities = ["navigation", "obstacle_avoidance"]

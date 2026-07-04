@@ -8,3 +8,7 @@ responsible_person = "building.manager@example.com"
 deployment_owner = "facilities@example.com"
 standards_profiles = "cybersecurity"
 constraints = "indoor,connectivity"
+
+[governance.emergency_contact]
+name = "Building Facilities Desk"
+email = "emergency@building.example.com"

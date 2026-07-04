@@ -8,3 +8,12 @@ responsible_person = "fsm@automotive.example.com"
 deployment_owner = "validation@automotive.example.com"
 standards_profiles = "automotive,functional_safety"
 constraints = "outdoor,gps_availability"
+
+[[governance.approval_chain]]
+role = "functional_safety_manager"
+assignee = "fsm@automotive.example.com"
+required = true
+
+[governance.emergency_contact]
+name = "ADAS Validation Lead"
+email = "emergency@automotive.example.com"

@@ -9,3 +9,11 @@ responsible_organization = "Connected Health Inc"
 deployment_owner = "platform.ops@provider.example.com"
 standards_profiles = "medical_device,cybersecurity"
 constraints = "connectivity,latency"
+
+[[governance.approval_chain]]
+role = "clinical_lead"
+required = true
+
+[governance.emergency_contact]
+name = "Connected Health NOC"
+email = "emergency@provider.example.com"

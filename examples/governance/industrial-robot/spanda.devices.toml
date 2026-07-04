@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-industrial-robot"
+
+[[fleet.robots]]
+id = "robot:arm-01"
+capabilities = ["manipulation", "safety_zones"]

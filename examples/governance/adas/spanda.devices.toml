@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-adas"
+
+[[fleet.robots]]
+id = "robot:vehicle-01"
+capabilities = ["perception", "lane_keeping", "aeb"]

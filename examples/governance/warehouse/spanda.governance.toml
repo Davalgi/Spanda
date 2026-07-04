@@ -9,3 +9,13 @@ deployment_owner = "fleet.manager@example.com"
 mission_owner = "logistics@example.com"
 standards_profiles = "industrial_safety,cybersecurity"
 constraints = "indoor,connectivity"
+
+[[governance.approval_chain]]
+role = "fleet_manager"
+assignee = "fleet.manager@example.com"
+required = true
+
+[governance.emergency_contact]
+name = "Warehouse Ops Desk"
+email = "emergency@warehouse.example.com"
+phone = "+1-555-0100"

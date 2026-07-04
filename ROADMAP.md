@@ -225,6 +225,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Mission Time Travel | **Stable** | Later | Core |
 | Human/Robot Teaming | **Stable** | Later | Solution Blueprint |
 | Autonomous Governance | **Stable** | Later | Core |
+| Operational Governance | **Experimental** | Now | Core |
 
 **NOW deliverables (v0.5+):** `spanda-contract`, `spanda-explain`, `spanda-decision`, safety/recovery coverage — **Stable**. Exit: `spanda demo differentiation` + `scripts/differentiation_smoke.sh`.
 
@@ -346,6 +347,7 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **Operator Workflows** | Approve, takeover, quarantine, mission pause/resume/cancel | **Stable** | Next | Control Center |
 | **Digital Thread** | Requirement → retirement lifecycle | **Stable** | Later | Core |
 | **Operations dashboard** | `packages/web` Operations view | **Stable** | Now | Control Center |
+| **Operational Governance** | Autonomy, deployment profiles, certification lifecycle, risk, accountability, standards profiles; CLI/API/SDK/Control Center — [governance.md](docs/governance.md) | **Experimental** | Now | Core |
 
 Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) · Stable promotion: [docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md)
 

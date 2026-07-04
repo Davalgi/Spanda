@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-smart-building"
+
+[[fleet.robots]]
+id = "robot:bms-01"
+capabilities = ["hvac_control", "access_control"]

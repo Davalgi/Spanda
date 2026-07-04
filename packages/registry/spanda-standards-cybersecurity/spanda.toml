@@ -1,0 +1,11 @@
+[package]
+name = "spanda-standards-cybersecurity"
+version = "0.1.0"
+description = "Standards profile scaffold for cybersecurity — required checks/evidence via packages, not embedded regulatory text"
+license = "Apache-2.0"
+
+[safety]
+level = "robotics"
+
+[capabilities]
+required = ["governance.standards.cybersecurity"]

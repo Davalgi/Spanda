@@ -8,3 +8,12 @@ responsible_person = "sar.lead@rescue.gov"
 deployment_owner = "ops@rescue.gov"
 standards_profiles = "aviation,functional_safety"
 constraints = "outdoor,remote,limited_bandwidth"
+
+[[governance.approval_chain]]
+role = "mission_commander"
+assignee = "sar.lead@rescue.gov"
+required = true
+
+[governance.emergency_contact]
+name = "SAR Ops Center"
+email = "emergency@rescue.gov"

@@ -47,7 +47,7 @@ Every [`EntityRecord`](../crates/spanda-config/src/entity.rs) may expose optiona
 - Standards profiles
 - Operational constraints
 
-Configure system-wide defaults in `spanda.governance.toml`; override per-robot in device tree metadata.
+Configure system-wide defaults in `spanda.governance.toml` (auto-loaded when present, or via `[config] governance = "spanda.governance.toml"`). Override per-robot in device tree metadata.
 
 ## CLI
 
@@ -55,8 +55,9 @@ Configure system-wide defaults in `spanda.governance.toml`; override per-robot i
 spanda compliance check [--strict] [--entity <id>] [--json]
 spanda governance validate [--strict] [--json]
 spanda governance report [--json]
-spanda certification list|inspect <entity-id>
+spanda certification list|inspect|report [entity-id] [--json]
 spanda deployment profile [name] [--json]
+spanda deployment verify [--strict] [--json]
 spanda risk report [--json]
 ```
 
@@ -71,6 +72,12 @@ spanda risk report [--json]
 | GET | `/v1/certifications` | List entity certification records |
 | GET | `/v1/deployment-profiles` | List or fetch deployment profile |
 | GET | `/v1/risk` | Operational risk rollup |
+| GET | `/v1/certifications/report` | Certification report |
+| POST | `/v1/deployment/verify` | Deployment verification |
+| GET | `/v1/governance/policies` | Policy assignments + audit |
+| POST | `/v1/governance/policies/assign` | Assign/sign policy to entity |
+| GET | `/v1/governance/audit` | Governance audit history |
+| GET | `/v1/governance/accountability` | Responsible owners |
 
 ## gRPC (proto 1.0.12)
 

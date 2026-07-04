@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-connected-healthcare"
+
+[[fleet.robots]]
+id = "robot:health-01"
+capabilities = ["navigation", "human_proximity"]

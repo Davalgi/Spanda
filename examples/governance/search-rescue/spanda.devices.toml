@@ -1,0 +1,6 @@
+[fleet]
+id = "fleet-search-rescue"
+
+[[fleet.robots]]
+id = "robot:drone-01"
+capabilities = ["navigation", "gps_fallback", "thermal_imaging"]

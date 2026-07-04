@@ -13,6 +13,10 @@ Operational governance is **additive**. Existing projects continue to work witho
 | `ResolvedSystemConfig` | New `governance_config()` accessor | No |
 | REST API | New `/v1/governance`, `/v1/compliance`, `/v1/certifications`, `/v1/deployment-profiles`, `/v1/risk` | No |
 | gRPC | Proto **1.0.12** adds 8 operational governance RPCs | No (additive) |
+| Config | `spanda.governance.toml` auto-load + `[config] governance` fragment | No |
+| Runtime | Readiness, trust, deployment gates, decisions, recovery consume governance influence | No |
+| Policies | Signed assignment store + audit trail (`/v1/governance/policies`) | No |
+| Certification | Persistent record store + `certification report` | No |
 | CLI | New subcommands under `compliance`, `governance`, `certification`, `deployment`, `risk` | No |
 | SDK | New client types (additive methods) | No |
 | Control Center | New **Governance** tab | No |
@@ -69,4 +73,4 @@ constraints = "indoor,connectivity"
 
 ## Version
 
-Introduced in workspace **0.6.1** (operational governance framework milestone).
+Introduced in workspace **0.6.2** (operational governance framework milestone).
