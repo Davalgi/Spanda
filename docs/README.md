@@ -234,6 +234,7 @@
 | [human-accountability.md](./human-accountability.md) | **Responsible owners and approval chains** |
 | [standards-profiles.md](./standards-profiles.md) | **Standards profile references via packages** |
 | [governance-migration.md](./governance-migration.md) | **Governance migration and compatibility** |
+| [stable-hardening-operational-governance.md](./stable-hardening-operational-governance.md) | **Operational Governance Stable checklist** |
 | [solutions/README.md](./solutions/README.md) | **Official Solution Blueprints index** |
 | [solutions/warehouse.md](./solutions/warehouse.md) | **Warehouse Automation blueprint** |
 | [solutions/smart-factory.md](./solutions/smart-factory.md) | **Smart Factory blueprint** |

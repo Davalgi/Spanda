@@ -110,6 +110,15 @@ Rust, Python, and TypeScript SDKs expose dedicated clients:
 
 The **Governance** tab (Governance & config group) shows deployment profiles, compliance validation, certification status, operational risk, and accountability fields.
 
+## Smoke and Stable promotion
+
+```bash
+./scripts/operational_governance_smoke.sh
+SPANDA_GOVERNANCE_SKIP_SOAK=1 ./scripts/operational_governance_stable_promotion_gate.sh
+```
+
+See [stable-hardening-operational-governance.md](./stable-hardening-operational-governance.md).
+
 ## Related guides
 
 - [Compliance framework](./compliance-framework.md)

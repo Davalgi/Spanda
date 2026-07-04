@@ -12,12 +12,19 @@ Operational governance examples demonstrating deployment profiles, risk, certifi
 | [connected-healthcare](./connected-healthcare/) | hospital | life_critical | pilot |
 | [smart-building](./smart-building/) | smart_building | low | production |
 
-Each example includes `spanda.governance.toml`. From an example directory:
+Each example is a full project (`spanda.toml`, devices, governance). From an example directory:
 
 ```bash
 spanda governance validate
 spanda compliance check
+spanda deployment verify
 spanda governance report --json
 ```
 
-See [docs/governance.md](../../docs/governance.md) for the full framework.
+CI smoke (all examples, including expected failures for incomplete certification):
+
+```bash
+./scripts/operational_governance_smoke.sh
+```
+
+See [docs/governance.md](../../docs/governance.md) and [docs/stable-hardening-operational-governance.md](../../docs/stable-hardening-operational-governance.md).

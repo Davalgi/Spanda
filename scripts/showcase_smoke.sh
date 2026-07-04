@@ -171,4 +171,8 @@ echo "== showcase smoke: attestation drift and live endpoint =="
 chmod +x scripts/attestation_smoke.sh
 ./scripts/attestation_smoke.sh
 
+echo "== showcase smoke: operational governance =="
+chmod +x scripts/operational_governance_smoke.sh
+./scripts/operational_governance_smoke.sh
+
 echo "Showcase smoke tests passed."

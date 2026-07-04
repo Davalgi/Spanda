@@ -592,6 +592,22 @@ jobs:
       - run: chmod +x scripts/entity_model_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_model_smoke.sh
 
+  operational-governance-smoke:
+    runs-on: ubuntu-latest
+    needs: rust
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: ./.github/actions/install-protoc
+      - run: cargo build -p spanda --release
+      - run: chmod +x scripts/operational_governance_smoke.sh scripts/operational_governance_stable_promotion_gate.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/operational_governance_smoke.sh
+      - run: |
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          SPANDA_GOVERNANCE_SKIP_SOAK=1 ./scripts/operational_governance_stable_promotion_gate.sh
+
   entity-model-promotion-gate:
     runs-on: ubuntu-latest
     needs: entity-model-smoke
