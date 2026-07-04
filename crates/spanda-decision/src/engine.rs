@@ -125,6 +125,29 @@ pub fn evaluate_distributed_decisions(
         }
     }
 
+    if let Some(entity) = spanda_governance::lookup_entity_for_governance(&context.entity_id) {
+        if let Err(reason) =
+            crate::enforcement::governance_requires_human_approval(&entity, &context.action)
+        {
+            passed = false;
+            messages.push(reason.clone());
+            let escalations = build_escalation_chain(
+                &context.entity_id,
+                EscalationReason::HumanApprovalRequired,
+                context.layer,
+            );
+            let mut record = build_decision_record(
+                context,
+                DecisionType::Policy,
+                &context.action,
+                "",
+                &escalations,
+            );
+            record.escalation_path = escalations;
+            decisions.push(record);
+        }
+    }
+
     for boundary in &safety_boundaries {
         if boundary.action == context.action && context.layer as u8 > boundary.max_layer as u8 {
             passed = false;

@@ -11,6 +11,7 @@ pub mod deployment_verify;
 pub mod entity_governance;
 pub mod human_accountability;
 pub mod influence;
+pub mod lookup;
 pub mod policy;
 pub mod policy_store;
 pub mod report;
@@ -43,6 +44,7 @@ pub use influence::{
     action_requires_human_approval, blocks_live_deployment, influence_for_entity,
     GovernanceInfluence, GovernanceInfluenceFinding,
 };
+pub use lookup::lookup_entity_for_governance;
 pub use policy::{list_standards_profiles, GovernancePolicyRef, StandardsProfileRef};
 pub use policy_store::{
     default_policy_store_path, policy_ref, PolicyAssignment, PolicyAuditEntry, PolicyStore,
@@ -90,5 +92,27 @@ mod tests {
         let profile = deployment_profile_by_name("warehouse").expect("warehouse profile");
         assert_eq!(profile.kind.as_str(), "warehouse");
         assert_eq!(profile.default_risk_level, OperationalRisk::Medium);
+    }
+
+    #[test]
+    fn live_enforcement_allows_reflex_blocks_high_risk() {
+        use crate::influence::action_requires_human_approval;
+        use spanda_config::entity::EntityRecord;
+        use std::collections::HashMap;
+
+        let mut metadata = HashMap::new();
+        metadata.insert("governance.autonomy_level".into(), "assisted".into());
+        metadata.insert("governance.risk_level".into(), "life_critical".into());
+        let entity = EntityRecord {
+            id: "robot:health-01".into(),
+            metadata,
+            governance: spanda_config::EntityGovernanceMeta::from_metadata(&HashMap::from([
+                ("governance.autonomy_level".into(), "assisted".into()),
+                ("governance.risk_level".into(), "life_critical".into()),
+            ])),
+            ..Default::default()
+        };
+        assert!(!action_requires_human_approval(&entity, "emergency_stop"));
+        assert!(action_requires_human_approval(&entity, "update_firmware"));
     }
 }

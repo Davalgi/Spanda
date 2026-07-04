@@ -186,19 +186,37 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
 }
 
 /// Whether an action requires human approval under governance rules.
+///
+/// Reflex/safety actions are never blocked. High/life/mission-critical risk
+/// and manual/assisted autonomy require approval for other actions.
 pub fn action_requires_human_approval(entity: &EntityRecord, action: &str) -> bool {
-    let influence = influence_for_entity(entity);
-    if influence.requires_human_approval {
-        return true;
+    let action_key = action.to_ascii_lowercase().replace(' ', "_");
+    if is_reflex_or_safety_action(&action_key) {
+        return false;
     }
     let gov = governance_from_entity(entity);
-    if let Some(risk) = gov.risk_level {
-        if risk.requires_human_approval() {
-            return true;
-        }
+    let autonomy = gov.autonomy_level.unwrap_or(AutonomyLevel::Manual);
+    let risk = gov.risk_level.unwrap_or(OperationalRisk::Negligible);
+
+    if risk.requires_human_approval() {
+        return true;
     }
-    let _ = action;
-    false
+    // Manual and assisted modes require human approval for non-reflex actions.
+    matches!(autonomy, AutonomyLevel::Manual | AutonomyLevel::Assisted)
+}
+
+fn is_reflex_or_safety_action(action: &str) -> bool {
+    const REFLEX: &[&str] = &[
+        "emergency_stop",
+        "stop_motor",
+        "kill_switch",
+        "estop",
+        "e_stop",
+        "cut_power",
+        "safe_stop",
+        "halt",
+    ];
+    REFLEX.iter().any(|name| action.contains(name))
 }
 
 /// Whether live deployment is blocked by governance for this entity.

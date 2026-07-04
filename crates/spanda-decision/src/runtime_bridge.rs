@@ -185,6 +185,26 @@ impl DecisionRuntime for DecisionBackedRuntime {
             }
         }
 
+        // Operational governance: autonomy/risk may require human approval.
+        if let Some(entity) = spanda_governance::lookup_entity_for_governance(entity_id) {
+            if let Err(reason) =
+                crate::enforcement::governance_requires_human_approval(&entity, &action_key)
+            {
+                let chain = build_escalation_chain(
+                    entity_id,
+                    EscalationReason::HumanApprovalRequired,
+                    DecisionLayer::LocalEntity,
+                );
+                return DecisionActionVerdict {
+                    permitted: false,
+                    reason,
+                    requires_escalation: true,
+                    escalation_id: chain.last().map(|e| e.escalation_id.clone()),
+                    policy_version: Some(policy_version),
+                };
+            }
+        }
+
         DecisionActionVerdict {
             permitted: true,
             reason: "authorized".into(),
