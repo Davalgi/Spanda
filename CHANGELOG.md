@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Mock-backend runtime notices:** one-time `[spanda]` stderr warnings when AI or live transport falls back to mock/in-memory paths; program-aware notices before `run`/`sim`; `SPANDA_QUIET=1` suppresses them.
+- **Cross-interface gRPC probe:** `crates/spanda-api/tests/cross_interface_live.rs` compares REST and gRPC health + recovery plan in `scripts/cross_interface_consistency.sh`.
+
+### Changed
+
+- **Known limitations doc:** synced to v0.6.3, organizational gates, live-backend setup links, runtime notice behavior — [known-limitations.md](docs/known-limitations.md).
+- **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke — [release-readiness.md](docs/release-readiness.md).
+
 ## [0.6.3] - 2026-07-04
 
 ### Added

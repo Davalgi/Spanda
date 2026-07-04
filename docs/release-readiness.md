@@ -61,8 +61,8 @@ Snapshot for the **release hardening** phase. Update when quality gates change.
 |---------|--------|
 | REST `/v1/entities/*` | Covered by entity + cross-interface smoke |
 | REST `/v1/programs/readiness` | Cross-interface probe |
-| REST `/v1/recovery/*` | Partial — plan empty-plans issue (RB-004) |
-| gRPC | Existing API tests; not re-audited in this pass |
+| REST `/v1/recovery/*` | Covered by cross-interface smoke (CLI vs REST vs gRPC plan parity) |
+| gRPC Control Center | Covered by `cross_interface_live` probe (health + recovery plan) |
 
 ## Feature status (honesty)
 
@@ -92,8 +92,8 @@ Mock-backed, demo-only, docs-only, untested, and simulated-only features must **
 
 ## Known limitations
 
-- Default AI providers are **mock-backed** unless live keys/env are set.
-- Live IoT / MQTT / ROS2 paths are optional and environment-gated.
+- Default AI providers are **mock-backed** unless live keys/env are set (`SPANDA_LIVE_AI=0` forces mock). Runtime emits one-time `[spanda]` notices; see [known-limitations.md](./known-limitations.md).
+- Live IoT / MQTT / ROS2 paths are optional and environment-gated; in-memory transport is the default.
 - Monorepo uses `registry/index.json` + on-disk `packages/registry/`; compile-time `LOCAL_REGISTRY` stub is incomplete but no longer blocks install.
 - Organizational soak and third-party audit gates remain open (RB-007 / [#51](https://github.com/Davalgi/Spanda/issues/51)).
 

@@ -819,6 +819,8 @@ See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift,
 - [typed-handler-io.md](./typed-handler-io.md) — handler return types
 - [registry.md](./registry.md) — hosted registry and publish mirror
 - [feature-status.md](./feature-status.md) — what is stable vs experimental
+- [known-limitations.md](./known-limitations.md) — mock backends, live env flags, organizational gates
+- [troubleshooting.md](./troubleshooting.md) — live AI/IoT/ROS2 setup and symptom fixes
 
 ---
 
@@ -832,5 +834,6 @@ See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift,
 | `cargo add spanda-sdk` could not determine package | Pass `--package <crate>` from the monorepo root — [troubleshooting.md — Rust SDK](./troubleshooting.md#rust-cargo-add-in-the-spanda-monorepo) |
 | Compile error on `wheels.execute(proposal)` | Expected — use `safety.validate(proposal)` first |
 | Tests fail after clone | Run `npm install` then `npm run build:rust` before `npm test` |
+| Mock AI / in-memory transport warnings | Expected by default — set live env flags or `SPANDA_QUIET=1` — [known-limitations.md](./known-limitations.md) |
 
 Full symptom index: [troubleshooting.md](./troubleshooting.md).
