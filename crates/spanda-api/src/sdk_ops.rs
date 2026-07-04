@@ -10,6 +10,12 @@ use spanda_assurance::{
     assure_program_with_config, diagnose_from_trace, diagnose_program_with_config,
     evaluate_recovery, MissionAssuranceSummary,
 };
+use spanda_contract::{verify_contract, ContractVerificationReport};
+use spanda_decision::{audit_decisions_from_trace, explain_decisions_from_trace, DecisionAuditReport};
+use spanda_explain::{
+    explain_decision_trace, explain_program_with_options, explain_readiness, explain_safety,
+    explain_trace, explain_verify, ExplainProgramOptions, ExplainReport,
+};
 use spanda_capability::{
     capability_traceability, evaluate_health_checks, infer_robot_capabilities,
 };
@@ -62,6 +68,18 @@ pub struct ProgramRequest {
     /// When true, write a mission trace file alongside the program.
     #[serde(default)]
     pub record_trace: bool,
+}
+
+/// Request body for explain / audit differentiation endpoints.
+#[derive(Debug, Deserialize, Default)]
+pub struct DifferentiationRequest {
+    /// Path to a `.sd` program or `.trace` file (relative to project root or absolute).
+    pub file: Option<String>,
+    /// Explain mode: `program`, `readiness`, `verify`, `safety`, `decision`, or `trace`.
+    pub mode: Option<String>,
+    /// When true, include plain-language decision explanations in audit responses.
+    #[serde(default)]
+    pub explain: bool,
 }
 
 fn resolve_program_path(state: &ControlCenterState, file: Option<&str>) -> Result<PathBuf, String> {
@@ -229,6 +247,131 @@ pub fn program_verify_capabilities(state: &ControlCenterState, body: &str) -> Ht
         "health": health,
         "traceability": trace,
     }))
+}
+
+/// GET /v1/programs/source — source text for the loaded or requested program file.
+pub fn program_source(state: &ControlCenterState, query: &str) -> HttpResponse {
+    let file = parse_query_param(query, "file");
+    let path = match resolve_program_path(state, file.as_deref()) {
+        Ok(path) => path,
+        Err(message) => return bad_request(&message),
+    };
+    if !path.exists() {
+        return entity_not_found(&format!("program not found: {}", path.display()));
+    }
+    let source = std::fs::read_to_string(&path).map_err(|error| bad_request(&error.to_string()));
+    let source = match source {
+        Ok(text) => text,
+        Err(resp) => return resp,
+    };
+    let label = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("program.sd")
+        .to_string();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "file": path.display().to_string(),
+        "label": label,
+        "source": source,
+    }))
+}
+
+/// POST /v1/programs/contract/verify — mission contract verification (CLI parity).
+pub fn program_contract_verify(state: &ControlCenterState, body: &str) -> HttpResponse {
+    let req: ProgramRequest = serde_json::from_str(body).unwrap_or_default();
+    let (program, path, _label) = match load_program(state, req.file.as_deref()) {
+        Ok(value) => value,
+        Err(resp) => return resp,
+    };
+    let file_label = path.to_str().unwrap_or("program.sd");
+    let report: ContractVerificationReport = verify_contract(&program, file_label);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "file": path.display().to_string(),
+        "report": report,
+        "passed": report.passed,
+    }))
+}
+
+/// POST /v1/programs/explain — explainability report (CLI parity).
+pub fn program_explain(state: &ControlCenterState, body: &str) -> HttpResponse {
+    let req: DifferentiationRequest = serde_json::from_str(body).unwrap_or_default();
+    let path = match resolve_program_path(state, req.file.as_deref()) {
+        Ok(path) => path,
+        Err(message) => return bad_request(&message),
+    };
+    if !path.exists() {
+        return entity_not_found(&format!("file not found: {}", path.display()));
+    }
+    let mode = req.mode.as_deref().unwrap_or("program").to_ascii_lowercase();
+    let file_label = path.to_str().unwrap_or("program");
+    let report: Result<ExplainReport, String> = if path.extension().and_then(|ext| ext.to_str()) == Some("trace")
+        || mode == "trace"
+    {
+        explain_trace(file_label)
+    } else if mode == "decision" {
+        explain_decision_trace(file_label)
+    } else if path.extension().and_then(|ext| ext.to_str()) == Some("sd") {
+        let (program, source, _) = match parse_program_file(&path) {
+            Ok(value) => value,
+            Err(error) => return bad_request(&error),
+        };
+        let explain_options = ExplainProgramOptions {
+            source: Some(&source),
+            system_config: system_config_ref(state),
+            baseline_config: None,
+        };
+        Ok(match mode.as_str() {
+            "readiness" => explain_readiness(&program, file_label),
+            "verify" => explain_verify(&program, file_label),
+            "safety" => explain_safety(&program, file_label),
+            _ => explain_program_with_options(&program, file_label, &explain_options),
+        })
+    } else {
+        Err(format!("unsupported explain target: {}", path.display()))
+    };
+    match report {
+        Ok(report) => json_ok(&serde_json::json!({
+            "version": API_VERSION,
+            "file": path.display().to_string(),
+            "mode": mode,
+            "report": report,
+        })),
+        Err(message) => bad_request(&message),
+    }
+}
+
+/// POST /v1/programs/audit/decisions — decision audit trail from a mission trace.
+pub fn program_audit_decisions(state: &ControlCenterState, body: &str) -> HttpResponse {
+    let req: DifferentiationRequest = serde_json::from_str(body).unwrap_or_default();
+    let path = match resolve_program_path(state, req.file.as_deref()) {
+        Ok(path) => path,
+        Err(message) => return bad_request(&message),
+    };
+    if !path.exists() {
+        return entity_not_found(&format!("trace not found: {}", path.display()));
+    }
+    let audit: Result<DecisionAuditReport, String> =
+        audit_decisions_from_trace(path.to_str().unwrap_or(""));
+    match audit {
+        Ok(report) => {
+            let decision_count = report.decision_count;
+            let explanation = if req.explain {
+                explain_decisions_from_trace(path.to_str().unwrap_or("")).ok()
+            } else {
+                None
+            };
+            json_ok(&serde_json::json!({
+                "version": API_VERSION,
+                "file": path.display().to_string(),
+                "report": report,
+                "decision_count": decision_count,
+                "explanation": explanation,
+            }))
+        }
+        Err(message) => bad_request(&message),
+    }
 }
 
 /// POST /v1/programs/verify/mission — mission verification (CLI parity).

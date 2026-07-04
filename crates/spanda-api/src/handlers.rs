@@ -477,6 +477,16 @@ pub fn handle_request(
         ("/v1/programs/recovery/heal", "POST") => {
             crate::sdk_ops::program_heal(state, &request.body)
         }
+        ("/v1/programs/source", "GET") => crate::sdk_ops::program_source(state, query),
+        ("/v1/programs/contract/verify", "POST") => {
+            crate::sdk_ops::program_contract_verify(state, &request.body)
+        }
+        ("/v1/programs/explain", "POST") => {
+            crate::sdk_ops::program_explain(state, &request.body)
+        }
+        ("/v1/programs/audit/decisions", "POST") => {
+            crate::sdk_ops::program_audit_decisions(state, &request.body)
+        }
         ("/v1/recovery/plans", "GET") => crate::recovery_ops::list_recovery_plans(state),
         ("/v1/recovery/history", "GET") => crate::recovery_ops::recovery_history(state),
         ("/v1/recovery/plan", "POST") => crate::recovery_ops::recovery_plan(state, &request.body),
