@@ -58,6 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 scripts/validate_documentation.py --warn --report
+      - run: python3 scripts/validate_markdown_lines.py
 
   lint-rust:
     runs-on: ubuntu-latest
