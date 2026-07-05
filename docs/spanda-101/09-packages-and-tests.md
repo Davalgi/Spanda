@@ -94,7 +94,8 @@ spanda build --project .
 spanda install
 ```
 
-`build` resolves dependencies and prepares the project; exact artifacts depend on your targets (interpreter today, native codegen experimental).
+`build` resolves dependencies and prepares the project; exact artifacts depend on your targets
+(interpreter today, native codegen experimental).
 
 ---
 

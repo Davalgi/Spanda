@@ -1,6 +1,7 @@
 # IoT Support (Package-First)
 
-IoT integrations live in official packages. Core defines generic contracts; packages implement protocols.
+IoT integrations live in official packages. Core defines generic contracts; packages implement
+protocols.
 
 ## Core contracts
 
@@ -53,7 +54,8 @@ device TemperatureSensor {
 
 Install packages via `spanda add spanda-mqtt`.
 
-**Example:** [`examples/iot/modbus_dispatch.sd`](../examples/iot/modbus_dispatch.sd) · Golden path: `./scripts/live_iot_golden_path.sh`
+**Example:** [`examples/iot/modbus_dispatch.sd`](../examples/iot/modbus_dispatch.sd) · Golden path:
+`./scripts/live_iot_golden_path.sh`
 
 ## Runtime dispatch
 
@@ -81,7 +83,8 @@ When official IoT packages are installed, module imports dispatch through `packa
 
 ## Live hardware (optional)
 
-Enable live reads with environment flags (build with `--features live-iot` on `spanda-cli` for native Modbus TCP):
+Enable live reads with environment flags (build with `--features live-iot` on `spanda-cli` for
+native Modbus TCP):
 
 | Variable | Purpose |
 |----------|---------|
@@ -119,16 +122,21 @@ Enable live reads with environment flags (build with `--features live-iot` on `s
 | `SPANDA_BACNET_READ_SCRIPT` | Override path to BACnet `read_point.py` |
 | `SPANDA_KNX_READ_SCRIPT` | Override path to KNX `read_group.py` |
 
-Build with `--features live-building` on `spanda-cli` to enable registry BACnet/KNX script dispatch before the Python bridge.
+Build with `--features live-building` on `spanda-cli` to enable registry BACnet/KNX script dispatch
+before the Python bridge.
 
 Golden path (mock fallback without hardware): `./scripts/live_iot_golden_path.sh`
 
 Smart Spaces building I/O smoke: `./scripts/smart_spaces_live_iot_smoke.sh`
 
-BMS sidecar (Home Assistant / MQTT patterns): `./scripts/smart_spaces_bms_sidecar_smoke.sh` — see [smart-space-bms-bridge.md](smart-space-bms-bridge.md)
+BMS sidecar (Home Assistant / MQTT patterns): `./scripts/smart_spaces_bms_sidecar_smoke.sh` — see
+[smart-space-bms-bridge.md](smart-space-bms-bridge.md)
 
 ## Persistent storage
 
-Device telemetry published through `iot.telemetry.publish` is mirrored to the local append-only store when persistence is enabled (`--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`). Sensor reads, task heartbeats, and device liveness (`heartbeat`/`liveness`/`alive`/`ping` metrics, device registration, fleet agent health) are recorded the same way.
+Device telemetry published through `iot.telemetry.publish` is mirrored to the local append-only
+store when persistence is enabled (`--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`). Sensor
+reads, task heartbeats, and device liveness (`heartbeat`/`liveness`/`alive`/`ping` metrics, device
+registration, fleet agent health) are recorded the same way.
 
 See [telemetry-store.md](./telemetry-store.md) for file layout and `spanda telemetry` CLI commands.

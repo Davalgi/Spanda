@@ -1,6 +1,7 @@
 # Geofencing
 
-Spanda supports WGS84 geofences for safety-critical boundary enforcement, extending the existing local `safety { zone ... }` model with GPS-native regions.
+Spanda supports WGS84 geofences for safety-critical boundary enforcement, extending the existing
+local `safety { zone ... }` model with GPS-native regions.
 
 ## Declaring a geofence
 
@@ -42,7 +43,8 @@ Triggers fire on boundary transitions:
 on geofence SafeZone exited { stop_all_actuators(); }
 ```
 
-> Note: `robot.in_zone()` remains for local metric safety zones inside `safety { }`. Geofences operate in WGS84 coordinates via GPS/GNSS sensors.
+> Note: `robot.in_zone()` remains for local metric safety zones inside `safety { }`. Geofences
+> operate in WGS84 coordinates via GPS/GNSS sensors.
 
 ## Standard library
 

@@ -1,10 +1,12 @@
 # Ambient Intelligence
 
-Context-aware, safety-verified orchestration for intelligent environments — part of the [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md) blueprint.
+Context-aware, safety-verified orchestration for intelligent environments — part of the [Smart
+Spaces & Ambient Intelligence](./solutions/smart-spaces.md) blueprint.
 
 **Status:** Experimental (scaffold)
 
-Ambient intelligence here means: **sense context → verify readiness → orchestrate missions → produce evidence** — not opaque black-box automation.
+Ambient intelligence here means: **sense context → verify readiness → orchestrate missions → produce
+evidence** — not opaque black-box automation.
 
 ---
 
@@ -50,17 +52,20 @@ Sensors & wearables
 
 ### Occupancy-driven climate
 
-Office zone unoccupied for 30 minutes → readiness checks BACnet path → setback HVAC → record assurance snapshot.
+Office zone unoccupied for 30 minutes → readiness checks BACnet path → setback HVAC → record
+assurance snapshot.
 
 Example: `examples/solutions/smart-spaces/smart-office/occupancy_climate.sd`
 
 ### Presence-aware lighting
 
-Occupant enters room → verify gateway + dimmer health → raise lights → log access in assurance bundle.
+Occupant enters room → verify gateway + dimmer health → raise lights → log access in assurance
+bundle.
 
 ### Health-adjacent ambient (opt-in)
 
-Wearable fall signal → verify responder availability → emergency mission → Connected Healthcare bridge.
+Wearable fall signal → verify responder availability → emergency mission → Connected Healthcare
+bridge.
 
 Example: `examples/solutions/smart-spaces/hospital-at-home/patient_monitoring.sd`
 
@@ -68,7 +73,8 @@ Example: `examples/solutions/smart-spaces/hospital-at-home/patient_monitoring.sd
 
 ## AI agents
 
-AI agents (via `spanda-openai`, `spanda-onnx`, or custom packages) may **propose** mission parameter changes. They do **not** bypass:
+AI agents (via `spanda-openai`, `spanda-onnx`, or custom packages) may **propose** mission parameter
+changes. They do **not** bypass:
 
 - `requires capabilities` verification
 - Readiness score thresholds
@@ -93,7 +99,8 @@ Test ambient scenarios without live devices:
 spanda sim examples/solutions/smart-spaces/smart-office/occupancy_climate.sd
 ```
 
-Fault injection: sudden occupancy spike during night mode, AQ threshold breach, gateway loss mid-mission.
+Fault injection: sudden occupancy spike during night mode, AQ threshold breach, gateway loss
+mid-mission.
 
 ---
 

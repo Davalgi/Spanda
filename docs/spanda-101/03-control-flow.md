@@ -16,7 +16,8 @@ enum DriveMode {
 }
 ```
 
-Enums model discrete states — navigation modes, mission phases, fault levels. Use them instead of string flags when the set of values is fixed.
+Enums model discrete states — navigation modes, mission phases, fault levels. Use them instead of
+string flags when the set of values is fixed.
 
 ---
 
@@ -30,7 +31,8 @@ match mode {
 };
 ```
 
-`match` is exhaustive: the compiler warns if you miss a variant. Each arm executes one action (or block) for that variant.
+`match` is exhaustive: the compiler warns if you miss a variant. Each arm executes one action (or
+block) for that variant.
 
 ---
 
@@ -76,7 +78,8 @@ spanda run examples/basics/03_control_flow.sd
 | `loop every Nms` | Fixed-rate control or polling |
 | `state_machine` + `enter` | Explicit transitions with named states (Lesson 5+) |
 
-For full state-machine syntax, see [spanda-language.md](../spanda-language.md#state-machines) and `examples/basics/10_state_machine.sd`.
+For full state-machine syntax, see [spanda-language.md](../spanda-language.md#state-machines) and
+`examples/basics/10_state_machine.sd`.
 
 ---
 
@@ -85,7 +88,8 @@ For full state-machine syntax, see [spanda-language.md](../spanda-language.md#st
 Extend your patrol robot from Lesson 2:
 
 1. Add `enum DriveMode { Stop, Forward, Turn }`
-2. In the loop, `match` on mode: `Forward` drives straight, `Turn` spins in place, `Stop` calls `wheels.stop()`
+2. In the loop, `match` on mode: `Forward` drives straight, `Turn` spins in place, `Stop` calls
+   `wheels.stop()`
 3. Switch to `Turn` when `scan.nearest_distance < 0.8 m`
 
 ---

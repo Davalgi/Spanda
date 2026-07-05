@@ -37,4 +37,5 @@ Mission traces when using `--record`.
 
 ## SEE ALSO
 
-spanda-run(1), spanda-replay(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-run(1), spanda-replay(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

@@ -4,15 +4,21 @@
   <img src="../assets/image/low_res_logo.png" alt="Spanda logo" width="280">
 </p>
 
-**Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its core.**
+**Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its
+core.**
 
-Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust, health, distributed autonomy, and governance.
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
+its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
+using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
+health, distributed autonomy, and governance.
 
 Short form: *The Autonomous Systems Platform.*
 
-*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [overview/philosophy.md](./overview/philosophy.md).
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see
+[overview/philosophy.md](./overview/philosophy.md).
 
-This document explains how the **Spanda Platform** relates to the **Spanda Language**, what each major component does, and where to go next.
+This document explains how the **Spanda Platform** relates to the **Spanda Language**, what each
+major component does, and where to go next.
 
 ---
 
@@ -25,9 +31,13 @@ This document explains how the **Spanda Platform** relates to the **Spanda Langu
 | **How you use it** | `spanda check`, `verify`, `sim`, `replay`, `fleet`, `install`, `demo`, … | Write `.sd` source; import packages; declare `robot`, `sensor`, `actuator`, `safety`, `deploy` |
 | **Identity** | *Build. Verify. Simulate. Deploy. Operate.* | Robot-native, safety-typed, unit-aware source code |
 
-The language is **not** being replaced or renamed. `.sd` files, language tutorials, and language reference docs remain first-class. The platform framing adds context: Spanda is more than a compiler — it is the layer where autonomous systems are designed, validated, and operated.
+The language is **not** being replaced or renamed. `.sd` files, language tutorials, and language
+reference docs remain first-class. The platform framing adds context: Spanda is more than a compiler
+— it is the layer where autonomous systems are designed, validated, and operated.
 
-**Previous positioning:** *The Autonomous Systems Language* — still accurate for the language itself; the platform name reflects the full product scope. See [platform-positioning-migration.md](./platform-positioning-migration.md) for messaging guidance.
+**Previous positioning:** *The Autonomous Systems Language* — still accurate for the language
+itself; the platform name reflects the full product scope. See
+[platform-positioning-migration.md](./platform-positioning-migration.md) for messaging guidance.
 
 ---
 
@@ -53,39 +63,55 @@ Spanda Platform
 
 ### Cognitive & Resilience Architecture
 
-Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md) inspired by proven engineering principles observed in biological nervous systems. Rather than replicating biological anatomy, it adopts functional concepts such as local reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery, and attention management to improve safety, resilience, and explainability. This **extends** the [Distributed Decision Architecture](./distributed-decisions.md) without replacing it.
+Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md)
+inspired by proven engineering principles observed in biological nervous systems. Rather than
+replicating biological anatomy, it adopts functional concepts such as local reflexes, distributed
+coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery,
+and attention management to improve safety, resilience, and explainability. This **extends** the
+[Distributed Decision Architecture](./distributed-decisions.md) without replacing it.
 
-> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures. Biological concepts are used only where they provide measurable engineering benefits.
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness,
+> emotions, or neural structures. Biological concepts are used only where they provide measurable
+> engineering benefits.
 
-Guides: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [functional-domains.md](./functional-domains.md) · [responsibility-matrix.md](./responsibility-matrix.md)
+Guides: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) ·
+[functional-domains.md](./functional-domains.md) ·
+[responsibility-matrix.md](./responsibility-matrix.md)
 
 ### Spanda Language (.sd)
 
 The safety-first programming language at the center of the platform.
 
 - Source files use the **`.sd`** extension (unchanged).
-- First-class concepts: `robot`, `sensor`, `actuator`, `ai_model`, `agent`, `safety`, `task`, `deploy`, `hardware`, `verify { }`, physical units.
+- First-class concepts: `robot`, `sensor`, `actuator`, `ai_model`, `agent`, `safety`, `task`,
+  `deploy`, `hardware`, `verify { }`, physical units.
 - Safety types: `ActionProposal` (untrusted AI output) vs `SafeAction` (post-`safety.validate()`).
-- Reference: [spanda-language.md](./spanda-language.md), [spanda-reference.md](./spanda-reference.md), [tutorials/README.md](./tutorials/README.md).
+- Reference: [spanda-language.md](./spanda-language.md),
+  [spanda-reference.md](./spanda-reference.md), [tutorials/README.md](./tutorials/README.md).
 
 ### Spanda Runtime
 
 Execution layer after compile-time and certification gates.
 
 - Tree-walking interpreter (`spanda-interpreter`) as the primary execution path.
-- Scheduler, cooperative concurrency (`spawn`, `join`, `select`), HAL bindings, trigger-driven execution.
+- Scheduler, cooperative concurrency (`spawn`, `join`, `select`), HAL bindings, trigger-driven
+  execution.
 - Provider dispatch connects official packages to live or mock backends.
-- Crates: `spanda-runtime`, `spanda-interpreter`, `spanda-concurrency`, `spanda-hal`, `spanda-certify`.
-- Reference: [architecture.md](./architecture.md), [concurrency.md](./concurrency.md), [triggers.md](./triggers.md).
+- Crates: `spanda-runtime`, `spanda-interpreter`, `spanda-concurrency`, `spanda-hal`,
+  `spanda-certify`.
+- Reference: [architecture.md](./architecture.md), [concurrency.md](./concurrency.md),
+  [triggers.md](./triggers.md).
 
 ### Spanda Verify
 
 Pre-deploy and continuous verification.
 
-- **Hardware verification:** `spanda verify` — memory, sensors, actuators, timing, battery, network, AI model requirements against hardware profiles.
+- **Hardware verification:** `spanda verify` — memory, sensors, actuators, timing, battery, network,
+  AI model requirements against hardware profiles.
 - **Capability verification:** exposure, grants, traceability matrices, minimum-hardware analysis.
 - **Behavioral verification:** `verify { }` blocks and `simulate_compatibility` fault injection.
-- Reference: [hardware-compatibility.md](./hardware-compatibility.md), [capability-traceability.md](./capability-traceability.md), [ci-verify.md](./ci-verify.md).
+- Reference: [hardware-compatibility.md](./hardware-compatibility.md),
+  [capability-traceability.md](./capability-traceability.md), [ci-verify.md](./ci-verify.md).
 
 ### Spanda Safety
 
@@ -133,18 +159,29 @@ Weighted operational go/no-go scoring before deploy and during operations.
 
 Mission-grade autonomous operations assurance integrated with readiness and verification.
 
-- Language: `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `continuity_policy`, `assurance_case`.
-- CLI: `spanda assure`, `anomaly scan`, `state estimate`, `diagnose`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`, `continuity`, `takeover`, `delegate`, `succession`.
-- Packages: `spanda-anomaly`, `spanda-fusion`, `spanda-diagnosis`, `spanda-prognostics`, `spanda-mission-planning`, `spanda-mission-continuity`, `spanda-resilience`, `spanda-knowledge-model`, `spanda-assurance`.
-- Demo: `spanda demo assurance` on [`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd); `spanda demo continuity` on [`examples/showcase/continuity/warehouse.sd`](../examples/showcase/continuity/warehouse.sd).
-- Reference: [mission-assurance.md](./mission-assurance.md), [mission-continuity.md](./mission-continuity.md), [state-estimation.md](./state-estimation.md), [anomaly-detection.md](./anomaly-detection.md).
+- Language: `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`,
+  `mitigation`, `resilience_policy`, `continuity_policy`, `assurance_case`.
+- CLI: `spanda assure`, `anomaly scan`, `state estimate`, `diagnose`, `prognostics`, `mission
+  verify`, `resilience check`, `mitigation plan`, `continuity`, `takeover`, `delegate`,
+  `succession`.
+- Packages: `spanda-anomaly`, `spanda-fusion`, `spanda-diagnosis`, `spanda-prognostics`,
+  `spanda-mission-planning`, `spanda-mission-continuity`, `spanda-resilience`,
+  `spanda-knowledge-model`, `spanda-assurance`.
+- Demo: `spanda demo assurance` on
+  [`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd); `spanda demo
+  continuity` on
+  [`examples/showcase/continuity/warehouse.sd`](../examples/showcase/continuity/warehouse.sd).
+- Reference: [mission-assurance.md](./mission-assurance.md),
+  [mission-continuity.md](./mission-continuity.md), [state-estimation.md](./state-estimation.md),
+  [anomaly-detection.md](./anomaly-detection.md).
 
 ### Spanda Fleet
 
 Multi-robot coordination and distributed operation.
 
 - In-process: `spanda fleet run` for multi-robot simulation.
-- Orchestration: `spanda fleet orchestrate`, mesh coordinator, HTTP agent relay (`--remote`, `--mesh-url`).
+- Orchestration: `spanda fleet orchestrate`, mesh coordinator, HTTP agent relay (`--remote`,
+  `--mesh-url`).
 - OTA: deploy plan, rollout, rollback, remote agents.
 - Reference: [concurrency.md](./concurrency.md), [fleet-distributed.md](./fleet-distributed.md).
 
@@ -163,17 +200,24 @@ Extensibility through official and community packages.
 
 - Provider traits and dispatch: ROS2, MQTT, GPS, SLAM, vision, fleet, OTA, cloud, and more.
 - Lean core: transport and domain logic live in packages, not the language spec.
-- Reference: [how-providers-work.md](./how-providers-work.md), [official-packages.md](./official-packages.md), [provider-interfaces.md](./provider-interfaces.md).
+- Reference: [how-providers-work.md](./how-providers-work.md),
+  [official-packages.md](./official-packages.md),
+  [provider-interfaces.md](./provider-interfaces.md).
 
 ### Enterprise Operations (Control Center)
 
-Production operations layer for fleet visibility, provisioning, governance, and integration — composes existing engines without duplicating them.
+Production operations layer for fleet visibility, provisioning, governance, and integration —
+composes existing engines without duplicating them.
 
-- **Control Center:** `spanda control-center serve` — React/TypeScript UI (`ControlCenterPanel`, sidebar version), Rust `spanda-api` backend, Tauri desktop **0.6.3** (`desktop-v0.6.3` GitHub Release). Versioning: [control-center-versioning.md](./control-center-versioning.md).
-- **Device Pool & Provisioning:** Central inventory, lifecycle states, discover → verify → assign → ready workflow.
+- **Control Center:** `spanda control-center serve` — React/TypeScript UI (`ControlCenterPanel`,
+  sidebar version), Rust `spanda-api` backend, Tauri desktop **0.6.3** (`desktop-v0.6.3` GitHub
+  Release). Versioning: [control-center-versioning.md](./control-center-versioning.md).
+- **Device Pool & Provisioning:** Central inventory, lifecycle states, discover → verify → assign →
+  ready workflow.
 - **Governance:** RBAC, secret management, alerting, compliance exports, digital thread query.
 - **Integration:** REST v1, Python SDK, WebSocket telemetry, OTLP observability.
-- Reference: [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), [control-center.md](./control-center.md).
+- Reference: [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md),
+  [control-center.md](./control-center.md).
 
 ---
 
@@ -191,20 +235,31 @@ Write (.sd)  →  check  →  verify  →  sim  →  deploy  →  operate
 1. **Build** — Author robot programs in `.sd` with safety rules and deployment targets.
 2. **Verify** — `spanda verify` against hardware profiles; capability and behavioral checks.
 3. **Simulate** — `spanda sim` before hardware is available; inject faults.
-4. **Assure** — `spanda assure` / `anomaly scan` / `state estimate` for mission assurance reports (optional `spanda demo assurance`).
-5. **Deploy** — `deploy Robot to Profile`; optional native codegen (experimental) or interpreter on edge.
-6. **Operate** — Health policies, readiness scoring, fleet coordination, mission continuity (takeover/delegation/succession), self-healing recovery, and mission replay for incidents.
-7. **Govern** — Control Center for fleet visibility; RBAC, secrets, alerting, compliance exports (experimental).
+4. **Assure** — `spanda assure` / `anomaly scan` / `state estimate` for mission assurance reports
+   (optional `spanda demo assurance`).
+5. **Deploy** — `deploy Robot to Profile`; optional native codegen (experimental) or interpreter on
+   edge.
+6. **Operate** — Health policies, readiness scoring, fleet coordination, mission continuity
+   (takeover/delegation/succession), self-healing recovery, and mission replay for incidents.
+7. **Govern** — Control Center for fleet visibility; RBAC, secrets, alerting, compliance exports
+   (experimental).
 
-Flagship walkthrough: [killer-demo.md](./killer-demo.md) · Platform demo: [examples/showcase/autonomous_rover/README.md](../examples/showcase/autonomous_rover/README.md) · Mission assurance: [examples/showcase/assurance/README.md](../examples/showcase/assurance/README.md) · Mission continuity: [examples/showcase/continuity/README.md](../examples/showcase/continuity/README.md).
+Flagship walkthrough: [killer-demo.md](./killer-demo.md) · Platform demo:
+[examples/showcase/autonomous_rover/README.md](../examples/showcase/autonomous_rover/README.md) ·
+Mission assurance: [examples/showcase/assurance/README.md](../examples/showcase/assurance/README.md)
+· Mission continuity:
+[examples/showcase/continuity/README.md](../examples/showcase/continuity/README.md).
 
 ---
 
 ## What Spanda is not
 
-Spanda does not replace Python for ML training, C++ for low-level drivers, ROS2 for production transport at scale, or Gazebo/Isaac for full physics simulation. It **coordinates** and **verifies** autonomous logic across those layers — with safety and deploy fit enforced in one platform.
+Spanda does not replace Python for ML training, C++ for low-level drivers, ROS2 for production
+transport at scale, or Gazebo/Isaac for full physics simulation. It **coordinates** and **verifies**
+autonomous logic across those layers — with safety and deploy fit enforced in one platform.
 
-See [product-strategy.md](./product-strategy.md) for competitive positioning and [feature-status.md](./feature-status.md) for honest capability tiers.
+See [product-strategy.md](./product-strategy.md) for competitive positioning and
+[feature-status.md](./feature-status.md) for honest capability tiers.
 
 ---
 

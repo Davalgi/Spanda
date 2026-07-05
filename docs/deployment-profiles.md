@@ -1,6 +1,8 @@
 # Deployment Profiles
 
-Deployment profiles define the **operational context** for autonomous systems: safety policies, recovery policies, risk levels, required capabilities, hardware, certifications, decision authority, and environmental constraints.
+Deployment profiles define the **operational context** for autonomous systems: safety policies,
+recovery policies, risk levels, required capabilities, hardware, certifications, decision authority,
+and environmental constraints.
 
 ## Built-in profiles
 
@@ -61,4 +63,5 @@ spanda deployment profile --json
 
 ## Package extension
 
-Profiles can be extended or overridden via registry packages implementing the deployment profile schema — keeping the platform modular and package-driven.
+Profiles can be extended or overridden via registry packages implementing the deployment profile
+schema — keeping the platform modular and package-driven.

@@ -2,13 +2,15 @@
 
 Enforceable dependency governance for Spanda Platform v2.0.
 
-**Parent:** [platform-architecture.md](./platform-architecture.md) · **Matrix:** [module-ownership.md](./module-ownership.md)
+**Parent:** [platform-architecture.md](./platform-architecture.md) · **Matrix:**
+[module-ownership.md](./module-ownership.md)
 
 ---
 
 ## Core rule
 
-Every module may depend only on **layers below it** (lower index) or **the same layer** (horizontal composition).
+Every module may depend only on **layers below it** (lower index) or **the same layer** (horizontal
+composition).
 
 ```
 Solution Blueprints  (6)
@@ -45,7 +47,8 @@ Solution Blueprints  (6)
 | Blueprint → platform API | Review in blueprint PRs |
 | Registry package → provider trait | `spanda-package` resolver |
 
-Only **upward** Rust path dependencies fail CI (unless waived). Same-layer and downward edges are always allowed.
+Only **upward** Rust path dependencies fail CI (unless waived). Same-layer and downward edges are
+always allowed.
 
 ---
 
@@ -63,7 +66,9 @@ Only **upward** Rust path dependencies fail CI (unless waived). Same-layer and d
 
 ## Waiver process
 
-Production upward dependencies are tracked in `scripts/architecture-manifest.yaml` under `dependency_waivers`. As of Phase 8, **all baselines are cleared** — Rust, TypeScript, and SCC waiver lists are empty.
+Production upward dependencies are tracked in `scripts/architecture-manifest.yaml` under
+`dependency_waivers`. As of Phase 8, **all baselines are cleared** — Rust, TypeScript, and SCC
+waiver lists are empty.
 
 Each waiver entry (when needed) has:
 
@@ -78,7 +83,8 @@ Each waiver entry (when needed) has:
 3. Run `scripts/sync_architecture_manifest.sh`
 4. Note in PR description
 
-**Removing a waiver** is the default outcome of refactors — delete the entry in the same PR that eliminates the edge.
+**Removing a waiver** is the default outcome of refactors — delete the entry in the same PR that
+eliminates the edge.
 
 Current counts (should stay at zero):
 
@@ -95,7 +101,9 @@ python3 scripts/validate_architecture.py
 
 Strongly connected components (SCCs) with more than one crate indicate architectural coupling.
 
-The production dependency graph must stay **acyclic**. `validate_architecture.py` builds the graph from `[dependencies]` only (not dev/build deps). **Any new strongly connected component** in production dependencies fails CI.
+The production dependency graph must stay **acyclic**. `validate_architecture.py` builds the graph
+from `[dependencies]` only (not dev/build deps). **Any new strongly connected component** in
+production dependencies fails CI.
 
 To inspect:
 
@@ -124,7 +132,8 @@ See [lean-core.md](./lean-core.md) and [how-packages-work.md](./how-packages-wor
 
 ## TypeScript mirror
 
-The root `src/` tree mirrors lean-core layers. TypeScript modules should follow the same dependency direction:
+The root `src/` tree mirrors lean-core layers. TypeScript modules should follow the same dependency
+direction:
 
 - `src/parser` must not import from `src/readiness*`
 - Platform service mirrors may call core types, not vice versa
@@ -169,4 +178,5 @@ flowchart TB
   LEX --> AST[spanda-ast]
 ```
 
-Full edge list: 399 production path dependencies across 75 workspace crates (see `validate_architecture.py` output).
+Full edge list: 399 production path dependencies across 75 workspace crates (see
+`validate_architecture.py` output).

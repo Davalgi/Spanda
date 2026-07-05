@@ -2,9 +2,11 @@
 
 [← Overview](./README.md)
 
-> **Canonical guide:** [platform-overview.md](../platform-overview.md) (per-component detail, workflow, platform vs language)
+> **Canonical guide:** [platform-overview.md](../platform-overview.md) (per-component detail,
+> workflow, platform vs language)
 
-> **Product roadmap:** [ROADMAP.md](../../ROADMAP.md) — 8 Platform Pillars, 14 Solution Blueprints, product family
+> **Product roadmap:** [ROADMAP.md](../../ROADMAP.md) — 8 Platform Pillars, 14 Solution Blueprints,
+> product family
 
 ## Product family
 
@@ -26,7 +28,8 @@ Spanda Language → Runtime → Verify → Readiness → Assurance → Diagnosis
 | 7 | Developer Platform | [pillars/developer/](../pillars/developer/README.md) |
 | 8 | Packages & Ecosystem | [pillars/packages/](../pillars/packages/README.md) |
 
-**Solution blueprints:** [solutions/README.md](../solutions/README.md) — industry compositions (not core features)
+**Solution blueprints:** [solutions/README.md](../solutions/README.md) — industry compositions (not
+core features)
 
 ## Legacy component tree
 

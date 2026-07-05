@@ -1,8 +1,12 @@
 # Responsibility Matrix
 
-Maps every major platform capability to its **functional domain**, **existing services**, **entity integration**, **SDK/API**, and **Control Center** surface. Use this matrix to avoid duplicate ownership and clarify contributor boundaries.
+Maps every major platform capability to its **functional domain**, **existing services**, **entity
+integration**, **SDK/API**, and **Control Center** surface. Use this matrix to avoid duplicate
+ownership and clarify contributor boundaries.
 
-Architecture overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Domain definitions: [functional-domains.md](./functional-domains.md)
+Architecture overview:
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Domain definitions:
+[functional-domains.md](./functional-domains.md)
 
 ---
 

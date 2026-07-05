@@ -1,8 +1,10 @@
 # Pillar 4 — Device & Fleet Platform
 
-[← Pillars index](../README.md) · [ROADMAP § Pillar 4](../../ROADMAP.md#pillar-4--device--fleet-platform)
+[← Pillars index](../README.md) · [ROADMAP § Pillar
+4](../../ROADMAP.md#pillar-4--device--fleet-platform)
 
-Device tree, registry, pool, provisioning, discovery, configuration, health, continuity, swarm, fleet, and OTA.
+Device tree, registry, pool, provisioning, discovery, configuration, health, continuity, swarm,
+fleet, and OTA.
 
 ## Configuration & devices
 
@@ -55,4 +57,5 @@ Device tree, registry, pool, provisioning, discovery, configuration, health, con
 
 ## Smoke gates
 
-`scripts/fleet_field_validation.sh` · `scripts/fleet_mesh_tamper_smoke.sh` · `scripts/ota_fleet_execute_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/fleet_field_validation.sh` · `scripts/fleet_mesh_tamper_smoke.sh` ·
+`scripts/ota_fleet_execute_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)

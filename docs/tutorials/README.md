@@ -1,6 +1,7 @@
 # Spanda Tutorials — Index
 
-One place to find every learning path: quick starts, structured courses, topic guides, demos, and runnable examples.
+One place to find every learning path: quick starts, structured courses, topic guides, demos, and
+runnable examples.
 
 **New here?** Pick a track below — you can switch anytime.
 
@@ -17,7 +18,8 @@ One place to find every learning path: quick starts, structured courses, topic g
 
 ## Where should I start?
 
-Audience-specific entry points (by role): **[overview/where-to-start.md](../overview/where-to-start.md)**
+Audience-specific entry points (by role):
+**[overview/where-to-start.md](../overview/where-to-start.md)**
 
 ---
 
@@ -123,13 +125,16 @@ Deep dives on one capability. Read after a beginner track.
 
 ## 4. Example libraries (learn by reading code)
 
-**Master index:** [examples/README.md](../../examples/README.md) — quick start, learning ladder, topic map, CI regression.
+**Master index:** [examples/README.md](../../examples/README.md) — quick start, learning ladder,
+topic map, CI regression.
 
-Runnable `.sd` programs grouped by skill level. All paths relative to [`examples/`](../../examples/).
+Runnable `.sd` programs grouped by skill level. All paths relative to
+[`examples/`](../../examples/).
 
 ### Feature coverage map
 
-**[examples/features/README.md](../../examples/features/README.md)** — master index mapping **every capability** to a runnable file (language core, AI, triggers, hardware, regex, FFI, and more).
+**[examples/features/README.md](../../examples/features/README.md)** — master index mapping **every
+capability** to a runnable file (language core, AI, triggers, hardware, regex, FFI, and more).
 
 ### Progressive ladder
 
@@ -164,7 +169,9 @@ Runnable `.sd` programs grouped by skill level. All paths relative to [`examples
 
 ### Application demos (root `examples/`)
 
-Noteworthy single-file programs: `lidar_avoidance.sd`, `ai_navigation.sd`, `humanoid_assistant.sd`, `multi_robot_fleet.sd` (under `communication/`), `warehouse_logistics.sd`, platform HAL demos (`esp32_sensors.sd`, `jetson_inspection.sd`, etc.).
+Noteworthy single-file programs: `lidar_avoidance.sd`, `ai_navigation.sd`, `humanoid_assistant.sd`,
+`multi_robot_fleet.sd` (under `communication/`), `warehouse_logistics.sd`, platform HAL demos
+(`esp32_sensors.sd`, `jetson_inspection.sd`, etc.).
 
 ---
 

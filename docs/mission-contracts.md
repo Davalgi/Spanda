@@ -2,7 +2,8 @@
 
 **Status:** Stable (static analysis v1) · **Horizon:** NOW
 
-Make missions **verifiable first-class entities** with explicit guarantees, constraints, assumptions, invariants, and objectives.
+Make missions **verifiable first-class entities** with explicit guarantees, constraints,
+assumptions, invariants, and objectives.
 
 ## Language syntax
 
@@ -85,4 +86,6 @@ spanda mission verify warehouse.sd    # extends existing mission verify
 | `spanda-mission-planning` | Planner feasibility for objectives |
 | `spanda-mission-continuity` | Continuity clause validation |
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [mission-verification.md](./mission-verification.md) · [mission-continuity.md](./mission-continuity.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[mission-verification.md](./mission-verification.md) ·
+[mission-continuity.md](./mission-continuity.md).

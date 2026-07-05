@@ -58,7 +58,9 @@ Recovery Orchestrator endpoints (Control Center `/v1`).
 
 ## Persistence
 
-Recovery evidence history (`GET /v1/recovery/history`) is backed by `control-center-recovery.json` in `SPANDA_CONTROL_CENTER_STATE_DIR`. Records are appended after `POST /v1/recovery/execute` and reloaded on Control Center startup.
+Recovery evidence history (`GET /v1/recovery/history`) is backed by `control-center-recovery.json`
+in `SPANDA_CONTROL_CENTER_STATE_DIR`. Records are appended after `POST /v1/recovery/execute` and
+reloaded on Control Center startup.
 
 ## Predictive response
 
@@ -98,4 +100,5 @@ Mirrors REST with `JsonResponse` envelopes on `spanda.v1.ControlCenter`:
 | `ListRecoverableEntities` | `GET /v1/recovery/recoverable-entities` |
 | `RecommendRecovery` | `POST /v1/recovery/recommend` |
 
-`GetRecoveryGraph` accepts `QueryRequest.query` as `entity_id=<id>`. POST RPCs use `JsonBodyRequest.body_json` with the same JSON body as REST.
+`GetRecoveryGraph` accepts `QueryRequest.query` as `entity_id=<id>`. POST RPCs use
+`JsonBodyRequest.body_json` with the same JSON body as REST.

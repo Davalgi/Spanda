@@ -37,4 +37,5 @@ Security metadata in program and `spanda.toml` when present.
 
 ## SEE ALSO
 
-spanda-verify(1), spanda-readiness(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-verify(1), spanda-readiness(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

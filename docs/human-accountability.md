@@ -1,6 +1,7 @@
 # Human Accountability
 
-Every mission and deployment should have clear **human ownership** for governance, approval, and emergency response.
+Every mission and deployment should have clear **human ownership** for governance, approval, and
+emergency response.
 
 ## Fields
 
@@ -25,7 +26,9 @@ mission_owner = "mission.control@hospital.org"
 deployment_owner = "facilities@hospital.org"
 ```
 
-Approval chains, emergency contacts, and escalation contacts are configured in `spanda.governance.toml` and shown on the Control Center Governance tab (Responsible owners). Policy assignments use `POST /v1/governance/policies/assign`.
+Approval chains, emergency contacts, and escalation contacts are configured in
+`spanda.governance.toml` and shown on the Control Center Governance tab (Responsible owners). Policy
+assignments use `POST /v1/governance/policies/assign`.
 
 ## Validation
 
@@ -39,8 +42,10 @@ Governance validation reports `GOV_ACCOUNTABILITY` when these are missing.
 
 ## Entity projection
 
-Accountability maps to `EntityRecord.owner` and `governance.responsible_person` metadata for API and Control Center display.
+Accountability maps to `EntityRecord.owner` and `governance.responsible_person` metadata for API and
+Control Center display.
 
 ## Audit
 
-Changes to accountability fields should flow through config approval workflows (`spanda-config` approvals) and appear in the mutation audit trail.
+Changes to accountability fields should flow through config approval workflows (`spanda-config`
+approvals) and appear in the mutation audit trail.

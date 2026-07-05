@@ -1,15 +1,19 @@
 # Spanda Coding Standards — Documentation
 
-Repository-wide docstring standard for every method, function, trait method, implementation method, public API, CLI handler, provider method, verifier method, runtime method, and package API.
+Repository-wide docstring standard for every method, function, trait method, implementation method,
+public API, CLI handler, provider method, verifier method, runtime method, and package API.
 
 **Scope:** documentation only — no behavior, logic, or signature changes.
 
 ## Placement
 
-Structured documentation must appear in **one** of these locations (not both with duplicated content):
+Structured documentation must appear in **one** of these locations (not both with duplicated
+content):
 
-1. **Inside the function body** (Spanda repo default) — first lines of the body, using `//` line comments (Rust/TypeScript) or a docstring (Python).
-2. **Immediately above the signature** — Rust `///` doc comments or TypeScript `/** … */` JSDoc, for items that must appear in `rustdoc` / generated API reference.
+1. **Inside the function body** (Spanda repo default) — first lines of the body, using `//` line
+   comments (Rust/TypeScript) or a docstring (Python).
+2. **Immediately above the signature** — Rust `///` doc comments or TypeScript `/** … */` JSDoc, for
+   items that must appear in `rustdoc` / generated API reference.
 
 Avoid excessive duplication between outer `///`/`/**` blocks and inner body headers.
 
@@ -131,7 +135,8 @@ export function remoteFetch(url: string, init: RequestInit = {}): Promise<Respon
 
 ### TypeScript (JSDoc — when exported to API docs)
 
-JSDoc may use `@param`, `@returns`, and `@example` instead of **Inputs** / **Outputs** / **Example** headings; the validator maps these equivalently.
+JSDoc may use `@param`, `@returns`, and `@example` instead of **Inputs** / **Outputs** / **Example**
+headings; the validator maps these equivalently.
 
 ### Python
 
@@ -203,7 +208,8 @@ Public APIs must include a realistic **Example** section. Prefer snippets that c
 
 Apply this standard across:
 
-- **Core:** parser, lexer, AST, type checker, runtime, scheduler, verifier, safety, readiness, assurance, diagnosis, recovery, simulation, replay, package manager, provider registry
+- **Core:** parser, lexer, AST, type checker, runtime, scheduler, verifier, safety, readiness,
+  assurance, diagnosis, recovery, simulation, replay, package manager, provider registry
 - **Packages:** GPS, WiFi, BLE, Cellular, MQTT, DDS, ROS2, Fleet, OTA, Health, Cloud, Ledger, OpenAI
 - **Tooling:** CLI, documentation generators, VS Code extension
 
@@ -220,11 +226,14 @@ Apply this standard across:
 
 ## CI enforcement
 
-CI runs `python3 scripts/validate_documentation.py --warn --report` in CI Integration `docs-build` (and CI Fast `docs-validate` for docs-only PRs). Missing structured documentation emits **warnings** only; builds do not fail yet.
+CI runs `python3 scripts/validate_documentation.py --warn --report` in CI Integration `docs-build`
+(and CI Fast `docs-validate` for docs-only PRs). Missing structured documentation emits **warnings**
+only; builds do not fail yet.
 
 ## Legacy format
 
-Older blocks using `Parameters`, `Returns`, and `Options` are accepted during transition but should be migrated to **Description** / **Inputs** / **Outputs** / **Example**. Run:
+Older blocks using `Parameters`, `Returns`, and `Options` are accepted during transition but should
+be migrated to **Description** / **Inputs** / **Outputs** / **Example**. Run:
 
 ```bash
 python3 scripts/migrate_legacy_inline_docs.py

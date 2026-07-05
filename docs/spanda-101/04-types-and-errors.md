@@ -2,7 +2,8 @@
 
 **Goal:** Model success and failure with `Result` and `Option` instead of exceptions.
 
-**Example:** [`examples/basics/04_result_and_option.sd`](../../examples/basics/04_result_and_option.sd)
+**Example:**
+[`examples/basics/04_result_and_option.sd`](../../examples/basics/04_result_and_option.sd)
 
 ---
 
@@ -80,7 +81,8 @@ let data = serialize(pose, "json");
 let restored = deserialize(data, "json");
 ```
 
-Full walkthrough: `examples/basics/06_serialize_telemetry.sd` and [spanda-language.md](../spanda-language.md#serialization).
+Full walkthrough: `examples/basics/06_serialize_telemetry.sd` and
+[spanda-language.md](../spanda-language.md#serialization).
 
 ---
 

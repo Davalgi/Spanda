@@ -1,6 +1,7 @@
 # Homeostasis
 
-**Status: Beta** — entity health/readiness/trust signals plus scheduler telemetry from recent `run`/`sim`.
+**Status: Beta** — entity health/readiness/trust signals plus scheduler telemetry from recent
+`run`/`sim`.
 
 ## Purpose
 
@@ -8,7 +9,8 @@ Maintain safe operating range **before** failures occur.
 
 ## Monitored metrics
 
-CPU, memory, battery, temperature, latency, network, storage, health, readiness, trust, sensor quality, scheduler ticks, runtime load, deadline misses, provider failures.
+CPU, memory, battery, temperature, latency, network, storage, health, readiness, trust, sensor
+quality, scheduler ticks, runtime load, deadline misses, provider failures.
 
 ## Language
 
@@ -23,7 +25,8 @@ homeostasis_policy PlatformStability {
 
 ## Types
 
-`HomeostasisPolicy`, `StabilityRange`, `StabilityMetric`, `DriftSignal`, `CorrectionAction`, `StabilityReport`
+`HomeostasisPolicy`, `StabilityRange`, `StabilityMetric`, `DriftSignal`, `CorrectionAction`,
+`StabilityReport`
 
 ## Examples
 
@@ -45,4 +48,5 @@ spanda homeostasis report
 - REST: `GET /v1/autonomy/homeostasis`
 - gRPC: `GetAutonomyHomeostasis`
 
-See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [platform-homeostasis.md](./platform-homeostasis.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) ·
+[platform-homeostasis.md](./platform-homeostasis.md).

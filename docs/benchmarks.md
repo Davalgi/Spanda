@@ -1,6 +1,7 @@
 # Benchmarks
 
-Reproducible compile and simulation timings for Spanda **v0.2.0**. Numbers vary by machine; use the same hardware when comparing releases.
+Reproducible compile and simulation timings for Spanda **v0.2.0**. Numbers vary by machine; use the
+same hardware when comparing releases.
 
 ## Quick run
 
@@ -49,7 +50,8 @@ FILE=examples/showcase/killer_demo.sd
 
 ## CI
 
-Benchmarks are **not** gated in CI (machine variance). The `scripts/benchmark.sh` script is for local regression tracking.
+Benchmarks are **not** gated in CI (machine variance). The `scripts/benchmark.sh` script is for
+local regression tracking.
 
 ## Related
 

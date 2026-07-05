@@ -1,6 +1,8 @@
 # Native deploy (LLVM)
 
-Spanda can emit a **linked native binary** for field deployment when the CLI is built with the `llvm` feature (default). This path complements the interpreter (`spanda run`) and WASM deploy manifest (`spanda deploy --target wasm`).
+Spanda can emit a **linked native binary** for field deployment when the CLI is built with the
+`llvm` feature (default). This path complements the interpreter (`spanda run`) and WASM deploy
+manifest (`spanda deploy --target wasm`).
 
 ## Quick start
 
@@ -51,7 +53,8 @@ spanda compile-native --target-triple aarch64-unknown-linux-gnu \
 | `spanda run` / `spanda sim` | Development, triggers, agents, full language surface |
 | Native binary | Fixed behaviors, edge nodes with clang toolchain, HAL-tuned builds |
 
-Native codegen covers a **subset** of the language today. Use `spanda check` and [known-limitations.md](./known-limitations.md) before relying on native output in production.
+Native codegen covers a **subset** of the language today. Use `spanda check` and
+[known-limitations.md](./known-limitations.md) before relying on native output in production.
 
 ## CI
 

@@ -1,8 +1,11 @@
 # Human-Robot Interaction (HRI)
 
-HRI abstractions in Spanda are **provider-backed interaction modalities** — voice, gesture, hand tracking, eye tracking, pose tracking, spatial anchors, shared workspaces, approvals, teleoperation, and takeover — composed from existing mission continuity, safety, and capability frameworks.
+HRI abstractions in Spanda are **provider-backed interaction modalities** — voice, gesture, hand
+tracking, eye tracking, pose tracking, spatial anchors, shared workspaces, approvals, teleoperation,
+and takeover — composed from existing mission continuity, safety, and capability frameworks.
 
-**Related:** [human-interaction.md](./human-interaction.md) · [spatial-computing.md](./spatial-computing.md) · [mission-continuity.md](./mission-continuity.md)
+**Related:** [human-interaction.md](./human-interaction.md) ·
+[spatial-computing.md](./spatial-computing.md) · [mission-continuity.md](./mission-continuity.md)
 
 ---
 
@@ -17,7 +20,8 @@ HRI abstractions in Spanda are **provider-backed interaction modalities** — vo
 | Pose tracking | Wearable / AR packages | `pose_tracking` |
 | Spatial anchors | `spanda-arkit`, `spanda-hololens`, … | `spatial_anchors` |
 
-Packages register capabilities; programs consume them through existing `sensor` / provider dispatch — no new HRI language syntax.
+Packages register capabilities; programs consume them through existing `sensor` / provider dispatch
+— no new HRI language syntax.
 
 ---
 
@@ -40,7 +44,8 @@ continuity_policy warehouse_policy {
 }
 ```
 
-Operator approval topics and env gates (`SPANDA_MISSION_APPROVAL_REQUIRED`) are **Stable** — see [self-healing.md](./self-healing.md).
+Operator approval topics and env gates (`SPANDA_MISSION_APPROVAL_REQUIRED`) are **Stable** — see
+[self-healing.md](./self-healing.md).
 
 ---
 
@@ -86,9 +91,11 @@ Example: `examples/solutions/spatial-computing/operator-approval/`
 
 ## Shared workspaces
 
-Multi-participant sessions bind humans, devices, and robots — see [spatial-computing.md](./spatial-computing.md#shared-workspaces).
+Multi-participant sessions bind humans, devices, and robots — see
+[spatial-computing.md](./spatial-computing.md#shared-workspaces).
 
-Remote experts join via Control Center WebSocket + AR annotation stream — see [remote-expert.md](./remote-expert.md).
+Remote experts join via Control Center WebSocket + AR annotation stream — see
+[remote-expert.md](./remote-expert.md).
 
 ---
 

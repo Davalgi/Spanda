@@ -1,6 +1,7 @@
 # Entity Trust
 
-Trust evaluation for packages, devices, robots, and program-linked entities flows through `evaluate_entity_trust`.
+Trust evaluation for packages, devices, robots, and program-linked entities flows through
+`evaluate_entity_trust`.
 
 **Implementation:** `crates/spanda-trust/src/entity_trust.rs`
 
@@ -39,4 +40,5 @@ spanda entity trust package-spanda-gps --program patrol.sd --json
 | Robot | Contained device trust rollup |
 | Program context | `evaluate_composite_trust` (tamper/integrity) |
 
-See also: [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md), [entity-model.md](./entity-model.md).
+See also: [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md),
+[entity-model.md](./entity-model.md).

@@ -12,7 +12,8 @@ spanda governance examples/showcase/governance/night_ops.sd --policy NightOps --
 spanda governance examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 ```
 
-Lists `policy { }` declarations in the program and reports violations (max speed, kill switch, readiness minimum, capabilities, operation hours).
+Lists `policy { }` declarations in the program and reports violations (max speed, kill switch,
+readiness minimum, capabilities, operation hours).
 
 ## Policy blocks
 
@@ -24,7 +25,8 @@ policy NightOps {
 }
 ```
 
-Runtime enforcement uses `spanda verify --policy`, `readiness --policy`, and `deploy gate --operational-policy` (see [policy-engine.md](./policy-engine.md)).
+Runtime enforcement uses `spanda verify --policy`, `readiness --policy`, and `deploy gate
+--operational-policy` (see [policy-engine.md](./policy-engine.md)).
 
 ## Showcase
 
@@ -35,4 +37,5 @@ Runtime enforcement uses `spanda verify --policy`, `readiness --policy`, and `de
 
 Part of `spanda demo governance` and `scripts/later_differentiation_smoke.sh`.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [policy-engine.md](./policy-engine.md) · [deploy-gates.md](./deploy-gates.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[policy-engine.md](./policy-engine.md) · [deploy-gates.md](./deploy-gates.md).

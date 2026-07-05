@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Timeline:** Now · **Path:** `examples/end_to_end/warehouse_delivery/`
 
-Official Solution Blueprint for autonomous mobile robots, pick-and-place logistics, and fleet coordination in warehouse environments.
+Official Solution Blueprint for autonomous mobile robots, pick-and-place logistics, and fleet
+coordination in warehouse environments.
 
 **Full roadmap entry:** [ROADMAP.md § Warehouse Automation](../../ROADMAP.md#warehouse-automation)
 
@@ -10,7 +11,8 @@ Official Solution Blueprint for autonomous mobile robots, pick-and-place logisti
 
 ## Purpose
 
-Coordinate AMRs through loading zones, transit corridors, and dock areas with safety zones, fleet health requirements, mission continuity, and Control Center visibility.
+Coordinate AMRs through loading zones, transit corridors, and dock areas with safety zones, fleet
+health requirements, mission continuity, and Control Center visibility.
 
 ## Platform pillars used
 
@@ -63,7 +65,8 @@ Guide: [device-tree.md](../device-tree.md)
 
 - Fleet `require` clauses — [health-checks.md](../health-checks.md)
 - Operational readiness — [readiness.md](../readiness.md)
-- Continuity walkthrough — [tutorials/continuity-walkthrough.md](../tutorials/continuity-walkthrough.md)
+- Continuity walkthrough —
+  [tutorials/continuity-walkthrough.md](../tutorials/continuity-walkthrough.md)
 
 ## Assurance & recovery
 
@@ -96,7 +99,8 @@ spanda continuity examples/showcase/continuity/warehouse.sd --json
 
 ## Smoke gates
 
-`scripts/showcase_smoke.sh` · `scripts/continuity_smoke.sh` · [scripts/gates/README.md](../../scripts/gates/README.md)
+`scripts/showcase_smoke.sh` · `scripts/continuity_smoke.sh` ·
+[scripts/gates/README.md](../../scripts/gates/README.md)
 
 ---
 

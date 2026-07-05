@@ -1,16 +1,20 @@
 # Spanda examples
 
-Runnable `.sd` programs for learning, demos, regression, and CI. **Start here** if you learn by reading code.
+Runnable `.sd` programs for learning, demos, regression, and CI. **Start here** if you learn by
+reading code.
 
-**Guided tutorials:** [Tutorials index](../docs/tutorials/README.md) · [Spanda 101](../docs/spanda-101/README.md) · [Getting started](../docs/getting-started.md)
+**Guided tutorials:** [Tutorials index](../docs/tutorials/README.md) · [Spanda
+101](../docs/spanda-101/README.md) · [Getting started](../docs/getting-started.md)
 
-**Platform pillars:** [docs/pillars/](../docs/pillars/README.md) · **Solution blueprints:** [ROADMAP.md § Blueprints](../ROADMAP.md#official-solution-blueprints)
+**Platform pillars:** [docs/pillars/](../docs/pillars/README.md) · **Solution blueprints:**
+[ROADMAP.md § Blueprints](../ROADMAP.md#official-solution-blueprints)
 
 ---
 
 ## By platform pillar & blueprint
 
-Examples tagged by [Platform Pillar](../docs/pillars/README.md) and [Official Solution Blueprint](../docs/solutions/README.md).
+Examples tagged by [Platform Pillar](../docs/pillars/README.md) and [Official Solution
+Blueprint](../docs/solutions/README.md).
 
 | Directory | Pillar(s) | Blueprint |
 |-----------|-----------|-----------|
@@ -46,7 +50,8 @@ Evaluators and new users should run these first:
 | **Verify** | `spanda verify … --target RoverV1` | [`showcase/hardware_compatibility.sd`](showcase/hardware_compatibility.sd) |
 | **Sim** | `spanda sim …` | [`showcase/killer_demo.sd`](showcase/killer_demo.sd) |
 
-Walkthrough: [docs/killer-demo.md](../docs/killer-demo.md) · Index: [showcase/README.md](showcase/README.md)
+Walkthrough: [docs/killer-demo.md](../docs/killer-demo.md) · Index:
+[showcase/README.md](showcase/README.md)
 
 ```bash
 spanda check examples/showcase/ai_safety_violation.sd && exit 1 || true
@@ -59,7 +64,8 @@ spanda sim examples/showcase/killer_demo.sd
 
 ## Learning ladder
 
-Work through tiers in order, or jump via [features/README.md](features/README.md) (one file per capability).
+Work through tiers in order, or jump via [features/README.md](features/README.md) (one file per
+capability).
 
 | Tier | Directory | Index | Spanda 101 |
 |------|-----------|-------|------------|
@@ -104,14 +110,16 @@ Work through tiers in order, or jump via [features/README.md](features/README.md
 
 ## Official packages (lean-core)
 
-Domain integrations (ROS2, MQTT, GPS, fleet, OTA, …) ship as **optional official packages** under [`packages/registry/`](../packages/registry/). Example projects show how to depend on them:
+Domain integrations (ROS2, MQTT, GPS, fleet, OTA, …) ship as **optional official packages** under
+[`packages/registry/`](../packages/registry/). Example projects show how to depend on them:
 
 ```bash
 spanda check examples/packages/ros2_adapter_package/src/main.sd
 spanda verify-adapter examples/packages/nav2_adapter_package
 ```
 
-Registry catalog: [docs/official-packages.md](../docs/official-packages.md) (**37** hosted packages, including 8 mission assurance packages) · Architecture: [docs/lean-core.md](../docs/lean-core.md)
+Registry catalog: [docs/official-packages.md](../docs/official-packages.md) (**37** hosted packages,
+including 8 mission assurance packages) · Architecture: [docs/lean-core.md](../docs/lean-core.md)
 
 ---
 
@@ -135,11 +143,14 @@ All examples are type-checked in CI Integration (`core-smokes` job on `main`):
 ./scripts/check_all_examples.sh
 ```
 
-PR gate locally: `./scripts/ci-fast.sh` · CI tiers: [docs/ci-architecture.md](../docs/ci-architecture.md)
+PR gate locally: `./scripts/ci-fast.sh` · CI tiers:
+[docs/ci-architecture.md](../docs/ci-architecture.md)
 
-Golden fixtures: [`tests/golden/manifest.json`](../tests/golden/manifest.json) · Vitest: `npm test -- tests/golden/rust.test.ts`
+Golden fixtures: [`tests/golden/manifest.json`](../tests/golden/manifest.json) · Vitest: `npm test
+-- tests/golden/rust.test.ts`
 
-**Tier 3 experimental golden paths** (MQTT, twin cloud, LLVM, cpp-native, ledger, world model, self-host lexer): [docs/tier-3-golden-paths.md](../docs/tier-3-golden-paths.md)
+**Tier 3 experimental golden paths** (MQTT, twin cloud, LLVM, cpp-native, ledger, world model,
+self-host lexer): [docs/tier-3-golden-paths.md](../docs/tier-3-golden-paths.md)
 
 ---
 

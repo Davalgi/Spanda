@@ -1,9 +1,13 @@
 # ROS2 golden path (rclpy bridge)
 
-Spanda does **not** replace ROS2. This document is the **single supported interop path** for v0.5 beta: publish and subscribe on live ROS2 topics via the **rclpy subprocess bridge**, without rewriting drivers or navigation stacks.
+Spanda does **not** replace ROS2. This document is the **single supported interop path** for v0.5
+beta: publish and subscribe on live ROS2 topics via the **rclpy subprocess bridge**, without
+rewriting drivers or navigation stacks.
 
 **Golden path choice:** rclpy bridge (`SPANDA_ROS2_LIVE=1`).  
-**Alternative (advanced):** native rclrs cdylib — see [Advanced: rclrs native](#advanced-rclrs-native). Pick one path per deployment; do not mix in the same process without understanding the transport priority chain.
+**Alternative (advanced):** native rclrs cdylib — see [Advanced: rclrs
+native](#advanced-rclrs-native). Pick one path per deployment; do not mix in the same process
+without understanding the transport priority chain.
 
 ## What works today
 
@@ -14,7 +18,8 @@ Spanda does **not** replace ROS2. This document is the **single supported intero
 | Spanda `topic` / `service` / `action` syntax | Type-checked | [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) |
 | Replace existing ROS2 nodes | **Not required** | Bridge only — keep `nav2`, drivers, SLAM as-is |
 
-Without `SPANDA_ROS2_LIVE`, transport calls log through the simulator (mock mode). This is fine for `spanda check`, `spanda verify`, and `spanda sim`.
+Without `SPANDA_ROS2_LIVE`, transport calls log through the simulator (mock mode). This is fine for
+`spanda check`, `spanda verify`, and `spanda sim`.
 
 ## Prerequisites
 
@@ -81,7 +86,9 @@ export SPANDA_ROS2_LIVE=1
 spanda run examples/ros2_bridge.sd
 ```
 
-**Expected:** `ros2 topic echo` receives messages when the program publishes `cmd_vel`. Without rclpy, the bridge returns `mode: mock` in internal logs and echo stays quiet — install `ros-humble-rclpy` and re-source.
+**Expected:** `ros2 topic echo` receives messages when the program publishes `cmd_vel`. Without
+rclpy, the bridge returns `mode: mock` in internal logs and echo stays quiet — install
+`ros-humble-rclpy` and re-source.
 
 ### Validate `/scan` subscribe path
 
@@ -99,7 +106,8 @@ export SPANDA_ROS2_LIVE=1
 spanda run examples/ros2_bridge.sd
 ```
 
-The program reads lidar on `/scan` and republishes on `scan_out`. Use `ros2 topic list` and `ros2 topic echo /scan_out` to confirm.
+The program reads lidar on `/scan` and republishes on `scan_out`. Use `ros2 topic list` and `ros2
+topic echo /scan_out` to confirm.
 
 ## Transport priority (reference)
 
@@ -120,18 +128,22 @@ When multiple backends are enabled, `spanda-core` resolves in this order:
 - `ros2_subscribe(topic)`
 - `ros2_service_call(service, service_type, request)`
 
-Handlers use `std_msgs/String` for generic payloads today. Typed `geometry_msgs/Twist` for `/cmd_vel` is planned; the golden path validates topic **connectivity**, not message-type parity with Nav2.
+Handlers use `std_msgs/String` for generic payloads today. Typed `geometry_msgs/Twist` for
+`/cmd_vel` is planned; the golden path validates topic **connectivity**, not message-type parity
+with Nav2.
 
 ## CI status
 
-Both jobs run in **CI Nightly** (Ubuntu 22.04 + ROS 2 Humble). See [ci-architecture.md](./ci-architecture.md).
+Both jobs run in **CI Nightly** (Ubuntu 22.04 + ROS 2 Humble). See
+[ci-architecture.md](./ci-architecture.md).
 
 | Check | CI job | Tier | What it proves |
 |-------|--------|------|----------------|
 | rclpy live bridge | `ros2-golden-path` | Nightly | Publish on `/cmd_vel` with `SPANDA_ROS2_LIVE=1` |
 | rclrs native crate | `ros2-rclrs-native` | Nightly | Native library loads under ROS2 Humble |
 
-Run locally: `./scripts/ros2_golden_path.sh` (requires ROS 2 Humble and rclpy; skips gracefully when absent).
+Run locally: `./scripts/ros2_golden_path.sh` (requires ROS 2 Humble and rclpy; skips gracefully when
+absent).
 
 ## Advanced: rclrs native
 
@@ -144,7 +156,8 @@ export SPANDA_ROS2_RCLRS_LIB="$PWD/target/release/libspanda_ros2_rclrs_native.so
 export SPANDA_ROS2_RCLRS=1
 ```
 
-This path is tested in CI but requires building the native cdylib. Prefer the rclpy golden path for first integration.
+This path is tested in CI but requires building the native cdylib. Prefer the rclpy golden path for
+first integration.
 
 ## Adoption checklist
 
@@ -159,4 +172,5 @@ This path is tested in CI but requires building the native cdylib. Prefer the rc
 - [ffi-and-ecosystem.md](./ffi-and-ecosystem.md) — full FFI and bridge strategy
 - [adoption-path.md](./adoption-path.md) — one-sprint Python + ROS2 integration
 - [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) — reference program
-- [`examples/packages/ros2_adapter_package/`](../examples/packages/ros2_adapter_package/) — package layout sketch
+- [`examples/packages/ros2_adapter_package/`](../examples/packages/ros2_adapter_package/) — package
+  layout sketch

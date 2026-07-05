@@ -1,8 +1,11 @@
 # Organizational Gates — v0.6.3 → v1.0
 
-**v0.6.3** shipped as an **evaluation / beta** release with CI-backed quality gates and honest stability labels. Code blockers for that release are closed; **organizational gates** remain before **v1.0 production positioning**.
+**v0.6.3** shipped as an **evaluation / beta** release with CI-backed quality gates and honest
+stability labels. Code blockers for that release are closed; **organizational gates** remain before
+**v1.0 production positioning**.
 
-Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51) in [release-blockers.md](./release-blockers.md).
+Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51) in
+[release-blockers.md](./release-blockers.md).
 
 ---
 
@@ -16,17 +19,21 @@ Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51) in [relea
 | Enterprise ops pillars (E1–E4) | **Stable in code/CI** — organizational soak and external audit not yet complete |
 | Full production readiness | **Not claimed** until gates below are accepted |
 
-Public messaging: use **evaluation / beta**, link [known-limitations.md](./known-limitations.md), and do **not** imply IEC/ISO certification or managed-cloud SLAs.
+Public messaging: use **evaluation / beta**, link [known-limitations.md](./known-limitations.md),
+and do **not** imply IEC/ISO certification or managed-cloud SLAs.
 
 ---
 
 ## Gates required for v1.0
 
-v1.0 is a **major** workspace bump (`1.0.0`) when code **and** organizational exit criteria are met. See [ROADMAP.md § v1.0](../ROADMAP.md#v10--production-positioning) and [versioning.md](./versioning.md).
+v1.0 is a **major** workspace bump (`1.0.0`) when code **and** organizational exit criteria are met.
+See [ROADMAP.md § v1.0](../ROADMAP.md#v10--production-positioning) and
+[versioning.md](./versioning.md).
 
 ### 1. Field soak (30 days)
 
-Run representative workloads in staging or pilot environments — warehouse fixture, rover/self-healing showcase, Control Center with `--config` + `--program`.
+Run representative workloads in staging or pilot environments — warehouse fixture,
+rover/self-healing showcase, Control Center with `--config` + `--program`.
 
 ```bash
 # One-time: record soak start date
@@ -36,9 +43,11 @@ Run representative workloads in staging or pilot environments — warehouse fixt
 ./scripts/enterprise_ops_stable_promotion_gate.sh
 ```
 
-Detail: [field-soak-gate.md](./field-soak-gate.md) · [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md)
+Detail: [field-soak-gate.md](./field-soak-gate.md) ·
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md)
 
-**Acceptance:** no P0/P1 incidents attributable to platform core during soak; promotion gate passes without `SPANDA_ENTERPRISE_OPS_SKIP_SOAK=1`.
+**Acceptance:** no P0/P1 incidents attributable to platform core during soak; promotion gate passes
+without `SPANDA_ENTERPRISE_OPS_SKIP_SOAK=1`.
 
 ### 2. Third-party security audit
 
@@ -51,7 +60,8 @@ Generate the audit prep packet and engage an external reviewer.
 
 Detail: [security-audit-third-party.md](./security-audit-third-party.md)
 
-**Acceptance:** signed audit report on file; no unresolved critical findings; promotion gate passes without `SPANDA_ENTERPRISE_OPS_SKIP_AUDIT=1`.
+**Acceptance:** signed audit report on file; no unresolved critical findings; promotion gate passes
+without `SPANDA_ENTERPRISE_OPS_SKIP_AUDIT=1`.
 
 ### 3. Code quality (already met for v0.6.3)
 
@@ -60,11 +70,13 @@ Maintain through v1.0 tag:
 - No open **P0** / **P1** [release-blockers](./release-blockers.md)
 - README command smoke + golden tests green
 - Security regression suite green
-- [release-readiness.md](./release-readiness.md) recommendation **Go** or **Go with documented limitations**
+- [release-readiness.md](./release-readiness.md) recommendation **Go** or **Go with documented
+  limitations**
 
 ### 4. Stability honesty
 
-- Mock-default AI remains **Mock-backed** in [feature-status.md](./feature-status.md) unless live path is default for a profile
+- Mock-default AI remains **Mock-backed** in [feature-status.md](./feature-status.md) unless live
+  path is default for a profile
 - Experimental → Stable promotions require tests and non-mock default path per tier rules
 
 ---
@@ -83,13 +95,16 @@ Use this when preparing the `1.0.0` workspace tag:
 | 6 | [known-limitations.md](./known-limitations.md) matches shipped behavior | Docs | **Met** |
 | 7 | Native codegen / device pool / RBAC promotion criteria (code) | Engineering | Partial — see [ROADMAP.md](../ROADMAP.md) v1.0 table |
 
-When rows 1–3 and 7 code items are satisfied, bump workspace with `python3 scripts/bump_version.py major`, update [CHANGELOG.md](../CHANGELOG.md), and tag `v1.0.0`.
+When rows 1–3 and 7 code items are satisfied, bump workspace with `python3 scripts/bump_version.py
+major`, update [CHANGELOG.md](../CHANGELOG.md), and tag `v1.0.0`.
 
 ---
 
 ## Parallel work (does not replace gates)
 
-While soak and audit run, engineering follows the **Next horizon** priorities in [ROADMAP.md](../ROADMAP.md#next-horizon-priorities-post-v063) under [scope-control.md](./scope-control.md):
+While soak and audit run, engineering follows the **Next horizon** priorities in
+[ROADMAP.md](../ROADMAP.md#next-horizon-priorities-post-v063) under
+[scope-control.md](./scope-control.md):
 
 - Differentiation signature capabilities (mission contracts, explainability, audit trail hardening)
 - Control Center Stable promotion (wire playground-only panels)

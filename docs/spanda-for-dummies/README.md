@@ -2,9 +2,11 @@
 
 *The no-jargon guide to writing your first autonomous robot program.*
 
-You do **not** need to be a Rust expert, a ROS guru, or an ML researcher. If you can read a short recipe and copy a command into a terminal, you can use Spanda.
+You do **not** need to be a Rust expert, a ROS guru, or an ML researcher. If you can read a short
+recipe and copy a command into a terminal, you can use Spanda.
 
-This guide is the friendly on-ramp. When you want structured lessons with exercises, switch to [Spanda 101](../spanda-101/README.md).
+This guide is the friendly on-ramp. When you want structured lessons with exercises, switch to
+[Spanda 101](../spanda-101/README.md).
 
 **All tutorials:** [Tutorials index](../tutorials/README.md)
 
@@ -77,7 +79,8 @@ That's the whole idea: **describe the robot, check it, run it.**
 | ROS2 | Messaging, ecosystem | Robot-native syntax + verify-before-deploy |
 | Spanda | End-to-end autonomous logic | AI gate, units, hardware fit, simulation |
 
-Spanda is **not** trying to replace your favorite language. It orchestrates perception → AI → safety → motion in one place.
+Spanda is **not** trying to replace your favorite language. It orchestrates perception → AI → safety
+→ motion in one place.
 
 ---
 

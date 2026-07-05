@@ -66,7 +66,8 @@ operating_mode RecoveryMode { recovery; }
 
 ## Relationship to mitigation
 
-`mitigation` blocks use `if` conditions; `recovery_policy` blocks use `on` triggers. Both feed the recovery planner.
+`mitigation` blocks use `if` conditions; `recovery_policy` blocks use `on` triggers. Both feed the
+recovery planner.
 
 ## Human approval
 
@@ -91,7 +92,13 @@ recovery_policy FleetRecovery {
 }
 ```
 
-Mesh relay: set `SPANDA_FLEET_MESH_URL` on the coordinator runtime; the mesh coordinator exposes `POST /v1/fleet/recovery`. Recovery handoff actions (`reassign mission`, `promote`, `replace`) also relay continuity takeover via `POST /v1/fleet/continuity`. Pair with `continuity_policy` for takeover mode inference — see [continuity-policies.md](./continuity-policies.md). Deployed fleet agents load programs via `POST /v1/program` and run interpreter-backed recovery (`recovery_engine: interpreter`) or assurance fallback. See [fleet-distributed.md](./fleet-distributed.md) and [self-healing.md](./self-healing.md).
+Mesh relay: set `SPANDA_FLEET_MESH_URL` on the coordinator runtime; the mesh coordinator exposes
+`POST /v1/fleet/recovery`. Recovery handoff actions (`reassign mission`, `promote`, `replace`) also
+relay continuity takeover via `POST /v1/fleet/continuity`. Pair with `continuity_policy` for
+takeover mode inference — see [continuity-policies.md](./continuity-policies.md). Deployed fleet
+agents load programs via `POST /v1/program` and run interpreter-backed recovery (`recovery_engine:
+interpreter`) or assurance fallback. See [fleet-distributed.md](./fleet-distributed.md) and
+[self-healing.md](./self-healing.md).
 
 ## Example
 

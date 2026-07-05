@@ -1,8 +1,11 @@
 # HRI & Spatial Computing Packages
 
-Optional packages for wearables, AR/VR/XR, and HRI modalities. **None ship in core** — install per deployment via `spanda install`.
+Optional packages for wearables, AR/VR/XR, and HRI modalities. **None ship in core** — install per
+deployment via `spanda install`.
 
-**Related:** [how-packages-work.md](./how-packages-work.md) · [provider-interfaces.md](./provider-interfaces.md) · [wearables.md](./wearables.md) · [ar-vr-xr.md](./ar-vr-xr.md)
+**Related:** [how-packages-work.md](./how-packages-work.md) ·
+[provider-interfaces.md](./provider-interfaces.md) · [wearables.md](./wearables.md) ·
+[ar-vr-xr.md](./ar-vr-xr.md)
 
 ---
 
@@ -60,7 +63,8 @@ registers = [
 | `HriInputProvider` | Voice, gesture, eye, pose events (`spanda-voice`, `spanda-gesture`, `spanda-eye-tracking`) |
 | `OverlayProvider` | Subscribe to robot/mission/readiness overlay layers (`spanda-hololens` stub) |
 
-Traits live in `spanda-runtime` provider dispatch; packages implement backends via registry stubs until vendor SDK bindings ship.
+Traits live in `spanda-runtime` provider dispatch; packages implement backends via registry stubs
+until vendor SDK bindings ship.
 
 ---
 
@@ -77,7 +81,9 @@ spanda verify examples/solutions/spatial-computing/remote-maintenance/repair.sd 
 
 ## Registry status
 
-H2 wearable and spatial packages ship in the curated registry (`registry/index.json`) as **experimental stubs** — vendor SDK bindings remain out of core. Enable live session/telemetry shims with:
+H2 wearable and spatial packages ship in the curated registry (`registry/index.json`) as
+**experimental stubs** — vendor SDK bindings remain out of core. Enable live session/telemetry shims
+with:
 
 ```bash
 export SPANDA_LIVE_WEARABLE=1

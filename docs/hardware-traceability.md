@@ -1,6 +1,7 @@
 # Hardware Traceability
 
-Maps declared hardware dependencies to source usage, packages, providers, capabilities, and safety rules.
+Maps declared hardware dependencies to source usage, packages, providers, capabilities, and safety
+rules.
 
 ## Example
 

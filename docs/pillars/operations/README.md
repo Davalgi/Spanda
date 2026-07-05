@@ -1,6 +1,7 @@
 # Pillar 6 — Operations Platform
 
-[← Pillars index](../README.md) · [ROADMAP § Pillar 6](../../ROADMAP.md#pillar-6--operations-platform)
+[← Pillars index](../README.md) · [ROADMAP § Pillar
+6](../../ROADMAP.md#pillar-6--operations-platform)
 
 **Spanda Control Center** — observe, alert, report, provision, and operate fleets in production.
 
@@ -52,7 +53,9 @@
 
 ## Smoke gates
 
-`scripts/enterprise_ops_smoke.sh` · `scripts/control_center_desktop_smoke.sh` · `scripts/maturity_smoke.sh` · `scripts/field_soak_gate.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/enterprise_ops_smoke.sh` · `scripts/control_center_desktop_smoke.sh` ·
+`scripts/maturity_smoke.sh` · `scripts/field_soak_gate.sh` ·
+[scripts/gates/README.md](../../../scripts/gates/README.md)
 
 ## Stable promotion gates
 

@@ -1,8 +1,11 @@
 # Spatial Computing & Human-Robot Collaboration — Solution Blueprint
 
-**Status:** **Stable** · **Profile:** `human_collaboration` · **Path:** `examples/solutions/spatial-computing/`
+**Status:** **Stable** · **Profile:** `human_collaboration` · **Path:**
+`examples/solutions/spatial-computing/`
 
-Official Solution Blueprint demonstrating safe collaboration between **humans**, **wearables**, **AR/VR/XR devices**, **robots**, **drones**, **IoT**, **AI agents**, and **fleets** — built entirely on existing platform capabilities. No HRI-specific core language extensions.
+Official Solution Blueprint demonstrating safe collaboration between **humans**, **wearables**,
+**AR/VR/XR devices**, **robots**, **drones**, **IoT**, **AI agents**, and **fleets** — built
+entirely on existing platform capabilities. No HRI-specific core language extensions.
 
 ---
 
@@ -141,7 +144,8 @@ require_supervisor_approval = true
 health_enabled = false
 ```
 
-Dimensions: certification, capability, availability, trust, location, permissions, wearable connectivity, optional health.
+Dimensions: certification, capability, availability, trust, location, permissions, wearable
+connectivity, optional health.
 
 See [human-readiness.md](../human-readiness.md).
 
@@ -177,7 +181,8 @@ spanda control-center serve \
   --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
 ```
 
-Planned tabs: Human Dashboard, Operator Dashboard, Wearable Inventory, AR Session Viewer, VR Training, Live Collaboration, Operator Readiness, Approval Queue.
+Planned tabs: Human Dashboard, Operator Dashboard, Wearable Inventory, AR Session Viewer, VR
+Training, Live Collaboration, Operator Readiness, Approval Queue.
 
 See [control-center.md](../control-center.md#human-interaction-dashboard).
 
@@ -230,4 +235,5 @@ Smoke (planned): `./scripts/spatial_computing_smoke.sh`
 
 - [solutions/adas.md](./adas.md) — Driver takeover and operator monitoring (automotive)
 - [mission-continuity.md](../mission-continuity.md) — Takeover and delegation
-- [enterprise-operations-roadmap.md](../enterprise-operations-roadmap.md) — Control Center operator workflows
+- [enterprise-operations-roadmap.md](../enterprise-operations-roadmap.md) — Control Center operator
+  workflows

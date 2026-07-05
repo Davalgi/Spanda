@@ -1,6 +1,7 @@
 # Phase 18 — Security, stability, and performance hardening
 
-Follow-up to the post–Phase 17 audit (security **B**, stability **A−**, performance **B**). This plan closes P0–P3 gaps without undoing the lean-core crate layout.
+Follow-up to the post–Phase 17 audit (security **B**, stability **A−**, performance **B**). This
+plan closes P0–P3 gaps without undoing the lean-core crate layout.
 
 ## Goals
 
@@ -51,7 +52,8 @@ Follow-up to the post–Phase 17 audit (security **B**, stability **A−**, perf
 
 ## Phase 21 — Complete ✓ (hosted registry signing + embedder slimming)
 
-Goal: sign curated hosted registry tarballs in CI and make certification / FFI shims optional on `spanda-core`.
+Goal: sign curated hosted registry tarballs in CI and make certification / FFI shims optional on
+`spanda-core`.
 
 | Step | Status |
 |------|--------|
@@ -59,11 +61,14 @@ Goal: sign curated hosted registry tarballs in CI and make certification / FFI s
 | CI verifies hosted registry signatures (`registry/TRUST_KEY`) | **Complete** |
 | Optional `certify` / `bridge` features on `spanda-core` (`default-features = false` omits FFI + certify shims) | **Complete** |
 
-Hosted packages are signed with material `spanda-hosted-registry-v1` unless `SPANDA_REGISTRY_SIGN_KEY` is set. Trust key: `registry/TRUST_KEY`.
+Hosted packages are signed with material `spanda-hosted-registry-v1` unless
+`SPANDA_REGISTRY_SIGN_KEY` is set. Trust key: `registry/TRUST_KEY`.
 
 ## Deferred (post–Phase 21)
 
-Tier 3 product items now have **experimental foundations** in Phase 22 — see [tier-3-experimental.md](./tier-3-experimental.md). LLVM-as-primary, production blockchain, and full self-hosting remain future work.
+Tier 3 product items now have **experimental foundations** in Phase 22 — see
+[tier-3-experimental.md](./tier-3-experimental.md). LLVM-as-primary, production blockchain, and full
+self-hosting remain future work.
 
 ## Verification
 

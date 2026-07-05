@@ -89,7 +89,8 @@ Snapshot for **v0.6.3** (evaluation / beta). Update when quality gates or phase 
 | **Planned** | Not implemented |
 | **Deprecated** | Replaced |
 
-Mock-backed, demo-only, docs-only, untested, and simulated-only features must **not** be labeled Stable.
+Mock-backed, demo-only, docs-only, untested, and simulated-only features must **not** be labeled
+Stable.
 
 ## Security status
 
@@ -104,25 +105,35 @@ Mock-backed, demo-only, docs-only, untested, and simulated-only features must **
 
 ## Known limitations
 
-- Default AI providers are **mock-backed** unless live keys/env are set (`SPANDA_LIVE_AI=0` forces mock). Runtime emits one-time `[spanda]` notices; see [known-limitations.md](./known-limitations.md).
+- Default AI providers are **mock-backed** unless live keys/env are set (`SPANDA_LIVE_AI=0` forces
+  mock). Runtime emits one-time `[spanda]` notices; see
+  [known-limitations.md](./known-limitations.md).
 - Live IoT / MQTT / ROS2 paths are optional and environment-gated; in-memory transport is the default.
-- Monorepo uses `registry/index.json` + on-disk `packages/registry/`; compile-time `LOCAL_REGISTRY` stub is incomplete but no longer blocks install.
-- Organizational soak and third-party audit gates remain open (RB-007 / [#51](https://github.com/Davalgi/Spanda/issues/51)).
+- Monorepo uses `registry/index.json` + on-disk `packages/registry/`; compile-time `LOCAL_REGISTRY`
+  stub is incomplete but no longer blocks install.
+- Organizational soak and third-party audit gates remain open (RB-007 /
+  [#51](https://github.com/Davalgi/Spanda/issues/51)).
 
 ## Release blockers summary
 
-Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labeled [`release-blocker`](https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+label%3Arelease-blocker).
+Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labeled
+[`release-blocker`](https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+label%3Arelease-blocker).
 
 - **Open P0:** none
 - **Open P1:** none (RB-004, RB-006, RB-011 fixed or mitigated in release-hardening follow-up)
-- **Open P2:** [#51](https://github.com/Davalgi/Spanda/issues/51) RB-007 (organizational field soak / third-party audit)
+- **Open P2:** [#51](https://github.com/Davalgi/Spanda/issues/51) RB-007 (organizational field soak
+  / third-party audit)
 
 ## Recommendation
 
 **Go with documented limitations** — evaluation / beta release **shipped** as workspace **v0.6.3**.
 
-1. Release-hardening suites run in CI Integration (`core-smokes`, `release-hardening`) after CI Fast passes on PRs
-2. Feature-status honesty audit is respected (mock-default AI is **Mock-backed**, not production Stable alone)
-3. Organizational field soak and third-party security audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) remain explicitly out of scope for this code release
+1. Release-hardening suites run in CI Integration (`core-smokes`, `release-hardening`) after CI Fast
+   passes on PRs
+2. Feature-status honesty audit is respected (mock-default AI is **Mock-backed**, not production
+   Stable alone)
+3. Organizational field soak and third-party security audit
+   ([#51](https://github.com/Davalgi/Spanda/issues/51)) remain explicitly out of scope for this code
+   release
 
 **Do not** claim full production readiness until RB-007 organizational gates are accepted.

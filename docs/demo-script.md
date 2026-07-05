@@ -1,14 +1,17 @@
 # Video demo script (~3 minutes)
 
-Use the **autonomous rover** showcase as the visual backbone. Terminal font ≥ 14pt; split screen optional (code + terminal).
+Use the **autonomous rover** showcase as the visual backbone. Terminal font ≥ 14pt; split screen
+optional (code + terminal).
 
 ---
 
 ## 0:00 — Hook (15s)
 
-> "Spanda is an autonomous systems platform where AI output is untrusted, hardware fit is checked before deploy, and safety is mandatory — not optional."
+> "Spanda is an autonomous systems platform where AI output is untrusted, hardware fit is checked
+> before deploy, and safety is mandatory — not optional."
 
-Show: `examples/showcase/autonomous_rover/src/rover.sd` — `safety { }`, `ai_model`, `deploy … to RoverV1`.
+Show: `examples/showcase/autonomous_rover/src/rover.sd` — `safety { }`, `ai_model`, `deploy … to
+RoverV1`.
 
 ---
 
@@ -90,7 +93,8 @@ Narrate: ScannerAlpha fails at 72%; ScannerBeta resumes from checkpoint with ass
 
 > "Install, verify, simulate, and replay in under fifteen minutes. Start with `spanda demo rover`."
 
-On-screen: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda) · `docs/getting-started.md`
+On-screen: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda) ·
+`docs/getting-started.md`
 
 ---
 
@@ -104,4 +108,5 @@ On-screen: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda) · `do
 | Health | `spanda demo health` |
 | Continuity | `spanda demo continuity` |
 
-Related: [killer-demo.md](./killer-demo.md) · [examples/showcase/README.md](../examples/showcase/README.md)
+Related: [killer-demo.md](./killer-demo.md) ·
+[examples/showcase/README.md](../examples/showcase/README.md)

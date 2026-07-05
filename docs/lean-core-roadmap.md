@@ -13,11 +13,13 @@ Phased plan to complete the package-first architecture.
 
 ## Phase 2 — Complete ✓
 
-Runtime wiring: `ProviderRegistry` on interpreter, lockfile/manifest official deps, comm-bus sync, package-scoped bootstrap.
+Runtime wiring: `ProviderRegistry` on interpreter, lockfile/manifest official deps, comm-bus sync,
+package-scoped bootstrap.
 
 ## Phase 3 — Complete ✓
 
-Transport, fleet, OTA, connectivity, and deploy-http crates extracted with core shims and registry-backed comm-bus routing.
+Transport, fleet, OTA, connectivity, and deploy-http crates extracted with core shims and
+registry-backed comm-bus routing.
 
 ## Phase 4 — Complete ✓ (kernel)
 
@@ -34,15 +36,23 @@ Compiler/runtime kernel extracted; interpreter remains the composition root in `
 | `spanda-interpreter` | **Done** — owns `src/runtime/` module tree (21 files, ~10.7k lines), `run_program`, and simulator; compiles standalone |
 | `spanda-core` | Facade — lexer/parser/typecheck, domain shims, bootstrap, `run(source)` compile gate, and one-way re-export of `spanda_interpreter::runtime` |
 
-The `Interpreter` is split across 21 modules under `crates/spanda-interpreter/src/runtime/` (orchestrator + eval/execute/scheduler/setup/… child files). `spanda-core` depends one-way on `spanda-interpreter` and re-exports `spanda_core::runtime` from `spanda_interpreter::runtime`. Auxiliary domain modules (`ai`, `safety`, `transport`, …) live in workspace crates that the interpreter imports directly.
+The `Interpreter` is split across 21 modules under `crates/spanda-interpreter/src/runtime/`
+(orchestrator + eval/execute/scheduler/setup/… child files). `spanda-core` depends one-way on
+`spanda-interpreter` and re-exports `spanda_core::runtime` from `spanda_interpreter::runtime`.
+Auxiliary domain modules (`ai`, `safety`, `transport`, …) live in workspace crates that the
+interpreter imports directly.
 
 ## Phase 5 — Complete ✓ (bootstrap wiring)
 
-All 20 official packages register capabilities; transport, positioning, navigation, SLAM, fleet, ledger, cloud, maintenance, vision, and simulation packages register `*Provider` stubs when installed. Spanda-language `.sd` exports remain scaffolds; live I/O is in workspace crates + core shims. See [official-packages.md](./official-packages.md).
+All 20 official packages register capabilities; transport, positioning, navigation, SLAM, fleet,
+ledger, cloud, maintenance, vision, and simulation packages register `*Provider` stubs when
+installed. Spanda-language `.sd` exports remain scaffolds; live I/O is in workspace crates + core
+shims. See [official-packages.md](./official-packages.md).
 
 ## Phase 6 — Complete ✓
 
-TypeScript parity: `bootstrapProvidersForPackages()`, registry-backed `RoutingCommBus`, interpreter `officialPackages` / `providerRegistry`, full classification table, `tests/providers-comm.test.ts`.
+TypeScript parity: `bootstrapProvidersForPackages()`, registry-backed `RoutingCommBus`, interpreter
+`officialPackages` / `providerRegistry`, full classification table, `tests/providers-comm.test.ts`.
 
 ## Technical debt addressed
 
@@ -63,11 +73,14 @@ TypeScript parity: `bootstrapProvidersForPackages()`, registry-backed `RoutingCo
 
 ## Phase 7 — Complete ✓ (shim deprecation)
 
-Protocol-specific I/O and adapter bodies live in workspace transport/fleet/connectivity crates. `spanda-core` retains only `RoutingCommBus`, wire encode/decode, bootstrap, package stubs, the `Interpreter` orchestration root, and thin `pub use` shims.
+Protocol-specific I/O and adapter bodies live in workspace transport/fleet/connectivity crates.
+`spanda-core` retains only `RoutingCommBus`, wire encode/decode, bootstrap, package stubs, the
+`Interpreter` orchestration root, and thin `pub use` shims.
 
 ### Example repairs — Complete ✓
 
-All 20 previously skipped examples now pass `spanda check`. The manifest retains only two `expect-fail` negative tests (`ai_safety_violation.sd`).
+All 20 previously skipped examples now pass `spanda check`. The manifest retains only two
+`expect-fail` negative tests (`ai_safety_violation.sd`).
 
 ## Success criteria
 
@@ -76,13 +89,16 @@ All 20 previously skipped examples now pass `spanda check`. The manifest retains
 - [x] Example regression script in CI (162 + 2 negative tests)
 - [x] `spanda-package` does not depend on `spanda-core`
 - [x] Every official package has bootstrap registration or documented stub status
-- [x] Zero protocol-specific code in core except traits + wire types (`spanda-transport-*` adapters, `spanda-connectivity` bridges, `spanda-fleet` orchestration; core routing + shims only)
+- [x] Zero protocol-specific code in core except traits + wire types (`spanda-transport-*` adapters,
+  `spanda-connectivity` bridges, `spanda-fleet` orchestration; core routing + shims only)
 
-See also: [lean-core.md](./lean-core.md), [migration.md](./migration.md#lean-core-package-first-refactor)
+See also: [lean-core.md](./lean-core.md),
+[migration.md](./migration.md#lean-core-package-first-refactor)
 
 ## Phase 8 — Complete ✓ (interpreter standalone compile)
 
-Goal: `cargo build -p spanda-interpreter` compiles the runtime tree natively; `spanda-core` depends on `spanda-interpreter` (one-way) and drops the `#[path]` shim.
+Goal: `cargo build -p spanda-interpreter` compiles the runtime tree natively; `spanda-core` depends
+on `spanda-interpreter` (one-way) and drops the `#[path]` shim.
 
 | Step | Status |
 |------|--------|
@@ -96,7 +112,8 @@ Goal: `cargo build -p spanda-interpreter` compiles the runtime tree natively; `s
 
 ## Phase 9 — Complete ✓ (compile pipeline extraction)
 
-Goal: extract parser and compile driver so `spanda-driver` owns the lexer → parser → type-check pipeline; `spanda-core` keeps `run(source)` (certify + FFI) as facade.
+Goal: extract parser and compile driver so `spanda-driver` owns the lexer → parser → type-check
+pipeline; `spanda-core` keeps `run(source)` (certify + FFI) as facade.
 
 | Step | Status |
 |------|--------|
@@ -128,7 +145,8 @@ Goal: extract parser and compile driver so `spanda-driver` owns the lexer → pa
 
 ## Phase 12 — Complete ✓ (tooling and verify extraction)
 
-Goal: move formatter, linter, codegen metadata, module loader, hardware verify, docs generators, and swarm coordination out of `spanda-core` while preserving the public API via thin shims.
+Goal: move formatter, linter, codegen metadata, module loader, hardware verify, docs generators, and
+swarm coordination out of `spanda-core` while preserving the public API via thin shims.
 
 | Step | Status |
 |------|--------|
@@ -142,7 +160,8 @@ Goal: move formatter, linter, codegen metadata, module loader, hardware verify, 
 
 ## Phase 13 — Complete ✓ (facade slim-down)
 
-Goal: move remaining non-shim bodies into workspace crates; `spanda-driver` owns the high-level pipeline API; `spanda-core` is a thin facade.
+Goal: move remaining non-shim bodies into workspace crates; `spanda-driver` owns the high-level
+pipeline API; `spanda-core` is a thin facade.
 
 | Step | Status |
 |------|--------|
@@ -180,7 +199,8 @@ Goal: move the last small glue bodies out of `spanda-core` and collapse multi-fi
 
 ## Phase 15 — Complete ✓ (caller migration)
 
-Goal: point first-party binaries and bindings at workspace crates directly instead of routing through `spanda-core` shims.
+Goal: point first-party binaries and bindings at workspace crates directly instead of routing
+through `spanda-core` shims.
 
 | Step | Status |
 |------|--------|
@@ -208,7 +228,8 @@ Goal: migrate the last first-party crates that still depended on `spanda-core` d
 
 ## Phase 17 — Complete ✓ (transport shim removal)
 
-Goal: drop redundant `spanda_core::transport_{mqtt,dds,websocket,live}` modules now that callers use workspace crates.
+Goal: drop redundant `spanda_core::transport_{mqtt,dds,websocket,live}` modules now that callers use
+workspace crates.
 
 | Step | Status |
 |------|--------|
@@ -249,7 +270,8 @@ Goal: remove the last `spanda_core::transport*` facade modules and slim `spanda-
 
 ## Phase 20 — Complete ✓ (test distribution + embedder features)
 
-Goal: move domain integration tests into owning crates and optional `spanda-core` feature bundles for minimal embedders.
+Goal: move domain integration tests into owning crates and optional `spanda-core` feature bundles
+for minimal embedders.
 
 | Step | Status |
 |------|--------|
@@ -260,11 +282,14 @@ Goal: move domain integration tests into owning crates and optional `spanda-core
 | Optional `ota` / `fleet` features on `spanda-core` (`--no-default-features` = minimal) | **Complete** |
 | CI builds minimal `spanda-core` without fleet/OTA | **Complete** |
 
-Embedders that only need compile/run/check can depend on `spanda-core` with `default-features = false`. Enable `features = ["ota"]`, `["fleet"]`, `["certify"]`, `["bridge"]`, or `["full"]` as needed.
+Embedders that only need compile/run/check can depend on `spanda-core` with `default-features =
+false`. Enable `features = ["ota"]`, `["fleet"]`, `["certify"]`, `["bridge"]`, or `["full"]` as
+needed.
 
 ## Phase 21 — Complete ✓ (hosted registry signing + embedder slimming)
 
-Goal: sign curated hosted registry tarballs in CI and make certification / FFI shims optional on `spanda-core`.
+Goal: sign curated hosted registry tarballs in CI and make certification / FFI shims optional on
+`spanda-core`.
 
 | Step | Status |
 |------|--------|
@@ -274,7 +299,8 @@ Goal: sign curated hosted registry tarballs in CI and make certification / FFI s
 
 ## Phase 22 — Complete ✓ (Tier 3 experimental + P2/P3 closure)
 
-Goal: promote deferred product-strategy items to experimental with minimal runtimes and golden paths; mark Phase 18 performance and observability tasks complete.
+Goal: promote deferred product-strategy items to experimental with minimal runtimes and golden
+paths; mark Phase 18 performance and observability tasks complete.
 
 | Step | Status |
 |------|--------|
@@ -290,7 +316,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md).
 
 ## Phase 23 — Complete ✓ (platform integration + experimental Tier 3 hardening)
 
-Goal: complete package→provider→runtime wiring, transitive dependencies, replay observability, and CI golden paths for experimental Tier 3 items.
+Goal: complete package→provider→runtime wiring, transitive dependencies, replay observability, and
+CI golden paths for experimental Tier 3 items.
 
 | Step | Status |
 |------|--------|
@@ -310,11 +337,14 @@ Goal: complete package→provider→runtime wiring, transitive dependencies, rep
 | World model parser + fusion hook | **Complete** |
 | Self-host lexer milestone | **Complete** |
 
-See [tier-3-priority-plan.md](./tier-3-priority-plan.md) for full P0–P4 ordering and release windows.
+See [tier-3-priority-plan.md](./tier-3-priority-plan.md) for full P0–P4 ordering and release
+windows.
 
 ## Phase 24 — Complete ✓ (v1.0 optional Tier 3 showcases)
 
-Goal: ship evaluator-ready showcases and golden paths for P3 promotion criteria — world-model decisions, multi-agent fleet trials, twin incident workflow, and live MQTT in reference architectures.
+Goal: ship evaluator-ready showcases and golden paths for P3 promotion criteria — world-model
+decisions, multi-agent fleet trials, twin incident workflow, and live MQTT in reference
+architectures.
 
 | Step | Status |
 |------|--------|
@@ -326,11 +356,13 @@ Goal: ship evaluator-ready showcases and golden paths for P3 promotion criteria 
 | LLVM Jetson/Pi benchmark slice | **Complete** |
 | Rust + TS world_model parity tests | **Complete** |
 
-See [tier-3-golden-paths.md](./tier-3-golden-paths.md) and [tier-3-priority-plan.md](./tier-3-priority-plan.md) § P3.
+See [tier-3-golden-paths.md](./tier-3-golden-paths.md) and
+[tier-3-priority-plan.md](./tier-3-priority-plan.md) § P3.
 
 ## Phase 25 — Complete ✓ (v0.5 beta P0 golden paths; Marketplace partial)
 
-Goal: close v0.5 beta blockers with CI-backed golden paths for killer demo, live AI, ROS2 rclpy bridge, and hosted registry install.
+Goal: close v0.5 beta blockers with CI-backed golden paths for killer demo, live AI, ROS2 rclpy
+bridge, and hosted registry install.
 
 | Step | Status |
 |------|--------|
@@ -340,14 +372,17 @@ Goal: close v0.5 beta blockers with CI-backed golden paths for killer demo, live
 | `registry_golden_path.sh` (file:// + signatures) CI | **Complete** |
 | VS Code extension marketplace publish | **Partial** — release workflow publishes when `VSCE_PAT` secret is set |
 
-Phase 25 P0 golden paths are **complete** except marketplace publish (requires maintainer `VSCE_PAT`).
+Phase 25 P0 golden paths are **complete** except marketplace publish (requires maintainer
+`VSCE_PAT`).
 | P0 acceptance tracking in [tier-3-priority-plan.md](./tier-3-priority-plan.md) | **Complete** |
 
-See [killer-demo.md](./killer-demo.md), [live-ai-provider.md](./live-ai-provider.md), [ros2-golden-path.md](./ros2-golden-path.md), [registry.md](./registry.md).
+See [killer-demo.md](./killer-demo.md), [live-ai-provider.md](./live-ai-provider.md),
+[ros2-golden-path.md](./ros2-golden-path.md), [registry.md](./registry.md).
 
 ## Phase 26 — Complete ✓ (P1 adoption enablers)
 
-Goal: ship CI-backed golden paths and polish for v0.5 beta adoption — verify in CI, PyO3 FFI, LSP deploy-target completion.
+Goal: ship CI-backed golden paths and polish for v0.5 beta adoption — verify in CI, PyO3 FFI, LSP
+deploy-target completion.
 
 | Step | Status |
 |------|--------|
@@ -359,7 +394,8 @@ Goal: ship CI-backed golden paths and polish for v0.5 beta adoption — verify i
 
 ## Phase 27 — Complete ✓ (verification, traceability, health, DX)
 
-Goal: ship test framework hardening, hardware/robot capability exposure, traceability matrices, kill switch, health checks, IoT contracts, and GitHub Pages docs without bloating core.
+Goal: ship test framework hardening, hardware/robot capability exposure, traceability matrices, kill
+switch, health checks, IoT contracts, and GitHub Pages docs without bloating core.
 
 | Step | Status |
 |------|--------|
@@ -373,11 +409,13 @@ Goal: ship test framework hardening, hardware/robot capability exposure, traceab
 | Example: `examples/hardware/capability_verification.sd` | **Complete** |
 | Docs: kill-switch, health, capabilities, traceability, IoT, agentic, debugger | **Complete** |
 
-See [capability-traceability.md](./capability-traceability.md), [health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md).
+See [capability-traceability.md](./capability-traceability.md),
+[health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md).
 
 ## Phase 28 — Complete ✓ (compile-fail tests, return types, TS parity, IoT scaffolds)
 
-Goal: close verification/DX gaps from Phase 27 audit — in-language compile-fail tests, module return-type enforcement, TypeScript parser mirror, and IoT protocol package stubs.
+Goal: close verification/DX gaps from Phase 27 audit — in-language compile-fail tests, module
+return-type enforcement, TypeScript parser mirror, and IoT protocol package stubs.
 
 | Step | Status |
 |------|--------|
@@ -390,7 +428,8 @@ Goal: close verification/DX gaps from Phase 27 audit — in-language compile-fai
 
 ## Phase 29 — Complete ✓ (LSP verification diagnostics, runtime health, kill-switch tests)
 
-Goal: wire capability/traceability/health analysis into the IDE, connect runtime health to `HardwareMonitor`, and add kill-switch integration coverage.
+Goal: wire capability/traceability/health analysis into the IDE, connect runtime health to
+`HardwareMonitor`, and add kill-switch integration coverage.
 
 | Step | Status |
 |------|--------|
@@ -402,7 +441,9 @@ Goal: wire capability/traceability/health analysis into the IDE, connect runtime
 
 ## Phase 30 — Complete ✓ (continuous health polling, verification quick-fixes, debug events)
 
-Goal: poll runtime health during trigger maintenance, surface suggested fixes in verification diagnostics and LSP code actions, and emit debugger pause events for kill switch and critical health.
+Goal: poll runtime health during trigger maintenance, surface suggested fixes in verification
+diagnostics and LSP code actions, and emit debugger pause events for kill switch and critical
+health.
 
 | Step | Status |
 |------|--------|
@@ -414,7 +455,9 @@ Goal: poll runtime health during trigger maintenance, surface suggested fixes in
 
 ## Phase 31 — Complete ✓ (gap closure: health policy runtime, typed I/O, IoT dispatch, agent audit, DAP output)
 
-Goal: close partial gaps from the 14-item verification/DX audit — runtime health_policy enforcement, behavior/agent I/O typing, IoT package dispatch, agent capability audit hooks, and DAP output for health events.
+Goal: close partial gaps from the 14-item verification/DX audit — runtime health_policy enforcement,
+behavior/agent I/O typing, IoT package dispatch, agent capability audit hooks, and DAP output for
+health events.
 
 | Step | Status |
 |------|--------|
@@ -428,7 +471,8 @@ Goal: close partial gaps from the 14-item verification/DX audit — runtime heal
 
 ## Phase 32 — Complete ✓ (IoT hub, task I/O, agent can[] enforcement, VSIX verify)
 
-Goal: close remaining partial gaps — in-memory IoT state, task return types, default-deny for empty `can[]`, VS Code VSIX build verification.
+Goal: close remaining partial gaps — in-memory IoT state, task return types, default-deny for empty
+`can[]`, VS Code VSIX build verification.
 
 | Step | Status |
 |------|--------|
@@ -441,7 +485,8 @@ Goal: close remaining partial gaps — in-memory IoT state, task return types, d
 
 ## Phase 33 — Complete ✓ (trigger I/O, live IoT, live AI)
 
-Goal: close remaining partial gaps — trigger handler return types, live Modbus/OPC-UA hardware paths, and live OpenAI provider for `ai_model`.
+Goal: close remaining partial gaps — trigger handler return types, live Modbus/OPC-UA hardware
+paths, and live OpenAI provider for `ai_model`.
 
 | Step | Status |
 |------|--------|
@@ -451,7 +496,9 @@ Goal: close remaining partial gaps — trigger handler return types, live Modbus
 | Live OpenAI provider for `provider: "openai"` when `OPENAI_API_KEY` set | **Complete** |
 | Integration tests (`phase33_gaps.rs`) + `scripts/live_iot_golden_path.sh` | **Complete** |
 
-## Phase 34 — Complete ✓ (I/O verification, kill switch signing, debugger CI, IoT protocols, Anthropic, fleet/swarm health)
+## Phase 34 — Complete ✓
+
+I/O verification, kill switch signing, debugger CI, IoT protocols, Anthropic, fleet/swarm health.
 
 Goal: fully close the six remaining partial areas from the 14-item verification/DX audit.
 
@@ -468,7 +515,9 @@ Goal: fully close the six remaining partial areas from the 14-item verification/
 
 ## Phase 35 — Complete ✓ (beta hardening: TS build, IoT live bridges, fleet requirements, ONNX, registry mirror)
 
-Goal: close remaining gaps except VS Code Marketplace publish — TS build parity, live IoT protocol bridges, fleet health requirements, ONNX provider, registry mirror publish, kill-switch verify severity, debugger `every` entry.
+Goal: close remaining gaps except VS Code Marketplace publish — TS build parity, live IoT protocol
+bridges, fleet health requirements, ONNX provider, registry mirror publish, kill-switch verify
+severity, debugger `every` entry.
 
 | Step | Status |
 |------|--------|

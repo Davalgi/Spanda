@@ -2,7 +2,8 @@
 
 ## Summary
 
-Operational governance is **additive**. Existing projects continue to work without `spanda.governance.toml`. Governance fields are optional on all entities.
+Operational governance is **additive**. Existing projects continue to work without
+`spanda.governance.toml`. Governance fields are optional on all entities.
 
 ## What changed
 
@@ -24,7 +25,8 @@ Operational governance is **additive**. Existing projects continue to work witho
 
 ## Metadata compatibility
 
-Governance uses `governance.*` metadata keys alongside existing `compliance.profile`, `assurance.profile`, etc. No key collisions.
+Governance uses `governance.*` metadata keys alongside existing `compliance.profile`,
+`assurance.profile`, etc. No key collisions.
 
 | Legacy key | Governance equivalent |
 |------------|----------------------|

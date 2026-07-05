@@ -102,7 +102,8 @@ task watchdog every 50ms {
 }
 ```
 
-Tasks are scheduled separately from behaviors — useful for monitoring, logging, or parallel work. Priorities: `critical`, `high`, `low`.
+Tasks are scheduled separately from behaviors — useful for monitoring, logging, or parallel work.
+Priorities: `critical`, `high`, `low`.
 
 ---
 
@@ -118,7 +119,8 @@ on ObstacleSeen {
 
 Emit from anywhere: `emit ObstacleSeen;`
 
-More trigger types (timers, conditions, topics): see [triggers.md](../triggers.md) or `examples/triggers_demo.sd`.
+More trigger types (timers, conditions, topics): see [triggers.md](../triggers.md) or
+`examples/triggers_demo.sd`.
 
 ---
 

@@ -1,8 +1,11 @@
 # Tier 3 and release priority plan
 
-Priority-ordered plan to address **v0.5 beta blockers**, **adoption enablers**, **experimental Tier 3 hardening**, and **post-v1.0 production** work. Aligns with [product-strategy.md](./product-strategy.md) and [tier-3-experimental.md](./tier-3-experimental.md).
+Priority-ordered plan to address **v0.5 beta blockers**, **adoption enablers**, **experimental Tier
+3 hardening**, and **post-v1.0 production** work. Aligns with
+[product-strategy.md](./product-strategy.md) and [tier-3-experimental.md](./tier-3-experimental.md).
 
-**Rule:** Tier 1 adoption (safety, verify, sim, ROS2/Python interop) ships first. Tier 3 engineering expands only where it unblocks beta credibility or has a proven golden path.
+**Rule:** Tier 1 adoption (safety, verify, sim, ROS2/Python interop) ships first. Tier 3 engineering
+expands only where it unblocks beta credibility or has a proven golden path.
 
 ---
 
@@ -65,7 +68,8 @@ See [product-strategy.md](./product-strategy.md) § v0.5 beta — prioritized wo
 
 **When:** After P0 #2–3 are green; complete by **Q1 2027**.
 
-**How (each item):** golden path → CI job → provider/package wiring → [feature-status.md](./feature-status.md) update.
+**How (each item):** golden path → CI job → provider/package wiring →
+[feature-status.md](./feature-status.md) update.
 
 ### P2-A — Highest ROI (supports beta demos)
 
@@ -109,7 +113,8 @@ See [product-strategy.md](./product-strategy.md) § v0.5 beta — prioritized wo
 
 ## P3 — v1.0 optional Tier 3 (Phases 24–25, 2027)
 
-Per [product-strategy.md](./product-strategy.md), v1.0 **may** include optional Tier 3 — not required for release.
+Per [product-strategy.md](./product-strategy.md), v1.0 **may** include optional Tier 3 — not
+required for release.
 
 | Item | v1.0 optional scope | Promotion criteria |
 |------|---------------------|-------------------|
@@ -119,7 +124,8 @@ Per [product-strategy.md](./product-strategy.md), v1.0 **may** include optional 
 | **MQTT** | Live MQTT in robotics reference arch | End-to-end with ROS2/Nav2 example |
 | **World models** | `observe` → `world_model` → decision in one showcase | Rust + TS parity |
 
-**Not in v1.0:** LLVM as primary, production blockchain, full knowledge graphs, twin SaaS, full DDS middleware, ROS replacement, full self-hosting.
+**Not in v1.0:** LLVM as primary, production blockchain, full knowledge graphs, twin SaaS, full DDS
+middleware, ROS replacement, full self-hosting.
 
 ---
 
@@ -173,7 +179,8 @@ Use this sequence for GitHub issues and sprint planning:
 ## Related
 
 - [product-strategy.md](./product-strategy.md) — Tier 1–3 classification and v0.5/v1.0 scope
-- [tier-3-experimental.md](./tier-3-experimental.md) — Phase 22 experimental foundations (current state)
+- [tier-3-experimental.md](./tier-3-experimental.md) — Phase 22 experimental foundations (current
+  state)
 - [lean-core-roadmap.md](./lean-core-roadmap.md) — Engineering phase history
 - [roadmap.md](./roadmap.md) — Language and compiler milestones
 - [compiler-backend-roadmap.md](./compiler-backend-roadmap.md) — LLVM / SIR path

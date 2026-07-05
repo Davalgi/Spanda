@@ -1,6 +1,7 @@
 # Tier 3 — Experimental foundations (Phase 22)
 
-Product strategy [Tier 3](./product-strategy.md) items are **not** v1 commitments. Phase 22 promotes each area from *deferred* to *experimental* with a documented golden path or minimal runtime.
+Product strategy [Tier 3](./product-strategy.md) items are **not** v1 commitments. Phase 22 promotes
+each area from *deferred* to *experimental* with a documented golden path or minimal runtime.
 
 | Item | Phase 22 status | Golden path / entry point | CI (Phase 23) |
 |------|-----------------|---------------------------|---------------|
@@ -28,14 +29,16 @@ Product strategy [Tier 3](./product-strategy.md) items are **not** v1 commitment
 |----|------|--------|
 | P3.1 | Pipeline benchmark | **Complete** — `cargo test -p spanda-driver pipeline_bench -- --ignored` |
 
-Runtime telemetry (`RuntimeTelemetry`, mission traces, trigger metrics) remains the production observability surface.
+Runtime telemetry (`RuntimeTelemetry`, mission traces, trigger metrics) remains the production
+observability surface.
 
 ## Still future (not experimental)
 
 - LLVM as **primary** deploy path (interpreter stays default)
 - Production blockchain adapters (`spanda-ledger-ethereum`, etc.)
 - Full world-model / knowledge-graph semantics
-- Production twin cloud SaaS (hosted multi-tenant service; OSS Control Center backend is **Experimental** — see [twin-cloud.md](./twin-cloud.md))
+- Production twin cloud SaaS (hosted multi-tenant service; OSS Control Center backend is
+  **Experimental** — see [twin-cloud.md](./twin-cloud.md))
 - Full fleet planning / consensus
 - Full DDS middleware (current DDS adapter is UDP JSON shim)
 - Full ROS replacement

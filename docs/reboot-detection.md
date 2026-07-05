@@ -1,6 +1,7 @@
 # Reboot Detection
 
-Spanda detects unexpected robot/device reboots and OS reboots, tracking boot identity, uptime, and shutdown reason.
+Spanda detects unexpected robot/device reboots and OS reboots, tracking boot identity, uptime, and
+shutdown reason.
 
 ## Tracked signals
 

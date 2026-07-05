@@ -1,6 +1,7 @@
 # API documentation map
 
-How Spanda API references relate to each other — language surface, compiler crates, JSON contracts, and tutorials.
+How Spanda API references relate to each other — language surface, compiler crates, JSON contracts,
+and tutorials.
 
 ---
 
@@ -39,7 +40,8 @@ flowchart TB
 
 ### Stable facade (`spanda_core::`)
 
-External embedders depend on **`spanda-core`** and import `spanda_core::check`, `spanda_core::run`, etc. The facade re-exports workspace crates and keeps thin compatibility shims.
+External embedders depend on **`spanda-core`** and import `spanda_core::check`, `spanda_core::run`,
+etc. The facade re-exports workspace crates and keeps thin compatibility shims.
 
 See [spanda-core/README.md](../crates/spanda-core/README.md).
 
@@ -56,7 +58,8 @@ In-repo code (`spanda-cli`, `spanda-node`, `spanda-wasm`, …) imports **owning 
 | Transport routing | `spanda_transport_routing::RoutingCommBus` |
 | Live hooks | `spanda_transport_routing::transport_live` |
 
-Full mapping table: [api-reference.md § Facade → workspace](./api-reference.md#facade--workspace-mapping).
+Full mapping table: [api-reference.md § Facade →
+workspace](./api-reference.md#facade--workspace-mapping).
 
 ---
 
@@ -84,7 +87,8 @@ python3 scripts/generate_spanda_reference.py
 python3 scripts/generate_api_reference.py
 ```
 
-Run after large API or crate-layout changes. See [CONTRIBUTING.md](../CONTRIBUTING.md#documentation-map).
+Run after large API or crate-layout changes. See
+[CONTRIBUTING.md](../CONTRIBUTING.md#documentation-map).
 
 ---
 

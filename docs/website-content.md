@@ -10,7 +10,8 @@ Draft copy for a future Spanda project website. Use as-is or adapt for static si
 
 **Spanda — The Autonomous Systems Platform**
 
-Safety-first platform with a dedicated `.sd` language at its core. Build, verify, simulate, deploy, and operate autonomous systems.
+Safety-first platform with a dedicated `.sd` language at its core. Build, verify, simulate, deploy,
+and operate autonomous systems.
 
 **Brand assets** (repo `assets/image/`):
 
@@ -45,18 +46,23 @@ AI models are the mind.
 Actuators are the muscles.  
 Spanda is the intelligent pulse that transforms perception, intent, and safety into action.
 
-**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
+**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* —
+the creative vibration of consciousness and energy that manifests as expansion and contraction in
+all entities, bridging stillness and movement within consciousness; and the first stir of awareness
+that creates and sustains the universe.
 
 ### Value proposition (3 columns)
 
 **Safety-first AI**  
-LLMs propose actions. Only `safety.validate()` unlocks actuators. Compile-time and runtime enforcement.
+LLMs propose actions. Only `safety.validate()` unlocks actuators. Compile-time and runtime
+enforcement.
 
 **Deploy with confidence**  
 `spanda verify` checks sensors, memory, timing, and power against hardware profiles before you ship.
 
 **Robot-native syntax**  
-Sensors, actuators, topics, tasks, and safety zones are language keywords — not framework boilerplate.
+Sensors, actuators, topics, tasks, and safety zones are language keywords — not framework
+boilerplate.
 
 ### Code snippet (homepage)
 
@@ -81,7 +87,8 @@ robot Rover {
 
 ### Not replacing Python, C++, or Rust
 
-Spanda orchestrates AI, robotics, safety, verification, and deployment. Keep your models in Python and drivers in C++.
+Spanda orchestrates AI, robotics, safety, verification, and deployment. Keep your models in Python
+and drivers in C++.
 
 ---
 
@@ -179,7 +186,8 @@ Optional: SIR → LLVM (experimental)
 | Bindings | N-API, WASM |
 | Developer UX | TypeScript, React, LSP |
 
-Link to [architecture.md](https://github.com/Davalgi/Spanda/blob/main/docs/architecture.md) for full diagrams.
+Link to [architecture.md](https://github.com/Davalgi/Spanda/blob/main/docs/architecture.md) for full
+diagrams.
 
 ---
 
@@ -219,7 +227,8 @@ spanda replay mission.trace --deterministic
 - Hardware verification CLI
 - Simulation backend
 - Package manager (local registry)
-- Unified triggers, cooperative concurrency, real-time contracts, mission trace replay, first-class regex
+- Unified triggers, cooperative concurrency, real-time contracts, mission trace replay, first-class
+  regex
 - Showcase examples and documentation
 
 ### Next

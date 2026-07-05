@@ -5,7 +5,8 @@
 **Examples:**
 
 - [`examples/basics/05_traits_and_impl.sd`](../../examples/basics/05_traits_and_impl.sd)
-- [`examples/modules/path_planning.sd`](../../examples/modules/path_planning.sd) + [`navigation.sd`](../../examples/modules/navigation.sd)
+- [`examples/modules/path_planning.sd`](../../examples/modules/path_planning.sd) +
+  [`navigation.sd`](../../examples/modules/navigation.sd)
 
 ---
 
@@ -89,7 +90,8 @@ spanda check examples/modules/navigation.sd
 
 ## Exercise
 
-1. Create `examples/modules/my_planner.sd` with `module my.planner` and an exported `plan_path` function
+1. Create `examples/modules/my_planner.sd` with `module my.planner` and an exported `plan_path`
+   function
 2. Import it from a robot file and call `plan_path` inside a behavior
 3. Add a trait `Planner` and `impl Planner for` an agent that wraps the call
 

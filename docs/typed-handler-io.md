@@ -1,8 +1,10 @@
 # Typed handler I/O
 
-Return type annotations on behaviors, tasks, triggers, events, and agent plans — validated at compile time in Rust and the TypeScript mirror (Phases 28–34).
+Return type annotations on behaviors, tasks, triggers, events, and agent plans — validated at
+compile time in Rust and the TypeScript mirror (Phases 28–34).
 
-**Example:** [`examples/features/typed_handler_returns.sd`](../examples/features/typed_handler_returns.sd)
+**Example:**
+[`examples/features/typed_handler_returns.sd`](../examples/features/typed_handler_returns.sd)
 
 ---
 
@@ -62,7 +64,8 @@ behavior bad() -> Bool {
 
 ## Agent plan returns
 
-When an agent is granted `propose_motion` or `execute`, the `plan` block must return `SafeAction` (not raw `ActionProposal`):
+When an agent is granted `propose_motion` or `execute`, the `plan` block must return `SafeAction`
+(not raw `ActionProposal`):
 
 ```spanda
 agent Navigator {
@@ -98,9 +101,11 @@ agent Restricted {
 
 ## Debugger
 
-Typed handlers participate in DAP stepping. Debug sessions enter from `behavior`, `task every`, or top-level `every` trigger bodies.
+Typed handlers participate in DAP stepping. Debug sessions enter from `behavior`, `task every`, or
+top-level `every` trigger bodies.
 
-**Example:** [`examples/integration/debugger_every.sd`](../examples/integration/debugger_every.sd) · [debugging.md](./debugging.md)
+**Example:** [`examples/integration/debugger_every.sd`](../examples/integration/debugger_every.sd) ·
+[debugging.md](./debugging.md)
 
 ---
 

@@ -1,8 +1,10 @@
 # ADAS & Autonomous Driving — Stable Hardening Checklist
 
-The ADAS Solution Blueprint is shipped at **Stable** tier with CI smoke (`scripts/adas_smoke.sh`). **Promoted 2026-07-02** after `adas_stable_promotion_gate.sh`.
+The ADAS Solution Blueprint is shipped at **Stable** tier with CI smoke (`scripts/adas_smoke.sh`).
+**Promoted 2026-07-02** after `adas_stable_promotion_gate.sh`.
 
-**Related:** [solutions/adas.md](./solutions/adas.md) · [feature-status.md](./feature-status.md) · [demo-plan-adas.md](./demo-plan-adas.md) · [field-soak-gate.md](./field-soak-gate.md)
+**Related:** [solutions/adas.md](./solutions/adas.md) · [feature-status.md](./feature-status.md) ·
+[demo-plan-adas.md](./demo-plan-adas.md) · [field-soak-gate.md](./field-soak-gate.md)
 
 ---
 
@@ -49,7 +51,8 @@ The gate runs:
 1. Field soak check (unless `SPANDA_ADAS_SKIP_SOAK=1`)
 2. Security audit prep artifact check (unless `SPANDA_ADAS_SKIP_AUDIT=1`)
 3. `scripts/adas_smoke.sh`
-4. Live Control Center probe against the ADAS blueprint (`/v1/dashboard`, `/v1/health/summary`, `/v1/assurance/summary`, `/v1/diagnosis/summary`, `/v1/ota/status`, `/v1/trust/package`)
+4. Live Control Center probe against the ADAS blueprint (`/v1/dashboard`, `/v1/health/summary`,
+   `/v1/assurance/summary`, `/v1/diagnosis/summary`, `/v1/ota/status`, `/v1/trust/package`)
 
 ---
 

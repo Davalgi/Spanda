@@ -2,7 +2,8 @@
 
 **Promoted 2026-07-04** — platform operational governance framework (`spanda-governance`).
 
-**Related:** [governance.md](./governance.md) · [governance-migration.md](./governance-migration.md) · [compliance-framework.md](./compliance-framework.md)
+**Related:** [governance.md](./governance.md) · [governance-migration.md](./governance-migration.md)
+· [compliance-framework.md](./compliance-framework.md)
 
 > Spanda provides governance abstractions and validation mechanisms — not legal or regulatory advice.
 
@@ -41,5 +42,6 @@ SPANDA_GOVERNANCE_SKIP_SOAK=1 ./scripts/operational_governance_stable_promotion_
 ## Known limits
 
 - Standards packages define requirement *categories* only; no embedded regulatory text.
-- Live enforcement requires project config or entity overlay visible to the process (`SPANDA_PROJECT_ROOT` / cwd).
+- Live enforcement requires project config or entity overlay visible to the process
+  (`SPANDA_PROJECT_ROOT` / cwd).
 - Policy signing uses content-hash material, not HSM-backed keys (optional future).

@@ -2,9 +2,12 @@
 
 Production macOS builds and optional signed auto-update for `@spanda/control-center-desktop`.
 
-**Current release:** **0.6.3** — tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (GitHub Release + workflow artifacts).
+**Current release:** **0.6.3** — tag
+[`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (GitHub Release +
+workflow artifacts).
 
-Full versioning policy (UI display, CLI, API fields, automatic bumps): **[control-center-versioning.md](./control-center-versioning.md)**.
+Full versioning policy (UI display, CLI, API fields, automatic bumps):
+**[control-center-versioning.md](./control-center-versioning.md)**.
 
 ---
 
@@ -32,7 +35,8 @@ Full versioning policy (UI display, CLI, API fields, automatic bumps): **[contro
 | Auto-update (optional) | `TAURI_UPDATER_PUBKEY`, `TAURI_SIGNING_PRIVATE_KEY` |
 | Windows (future) | `WINDOWS_SIGNING_CERT` (optional CI secret) |
 
-Without Apple secrets, CI still produces **unsigned** bundles and publishes a GitHub Release (installers or artifact download link in release notes).
+Without Apple secrets, CI still produces **unsigned** bundles and publishes a GitHub Release
+(installers or artifact download link in release notes).
 
 ---
 
@@ -52,7 +56,9 @@ Keep these three files on the **same semver** before tagging:
 
 This runs `control_center_desktop_smoke.sh` (Tauri `cargo check`) and fails on version mismatch.
 
-The **Control Center UI** semver (`packages/web`) is a separate workspace manifest but is shown in the sidebar and API; align it with desktop releases when shipping coordinated Control Center features. See [control-center-versioning.md](./control-center-versioning.md).
+The **Control Center UI** semver (`packages/web`) is a separate workspace manifest but is shown in
+the sidebar and API; align it with desktop releases when shipping coordinated Control Center
+features. See [control-center-versioning.md](./control-center-versioning.md).
 
 ---
 
@@ -62,7 +68,8 @@ The **Control Center UI** semver (`packages/web`) is a separate workspace manife
 
 1. Label the PR before merge: `release:patch`, `release:minor`, or `release:major`.
 2. Ensure the PR changes Control Center paths (see `scripts/control_center_paths_changed.sh`).
-3. Merge to `main`; after **CI Integration** passes, **Auto release** bumps desktop and pushes `desktop-v*`.
+3. Merge to `main`; after **CI Integration** passes, **Auto release** bumps desktop and pushes
+   `desktop-v*`.
 
 ### Manual
 
@@ -88,7 +95,8 @@ git push origin desktop-v0.6.4
 
 Tag pattern **`desktop-v*`** must match the semver in the manifests.
 
-**Alternative:** Actions → **Bump version** → stream **desktop**, choose patch/minor/major, enable **Push release tag**.
+**Alternative:** Actions → **Bump version** → stream **desktop**, choose patch/minor/major, enable
+**Push release tag**.
 
 #### 3. Watch CI
 
@@ -102,7 +110,8 @@ The workflow (`.github/workflows/desktop-release.yml`):
 4. Uploads workflow artifacts (`control-center-desktop-macos-<version>`)
 5. Creates a **GitHub Release** with `.dmg` / `.app.tar.gz` when present
 
-Manual trigger: **Actions → Desktop Control Center release → Run workflow** (no Release unless triggered by tag).
+Manual trigger: **Actions → Desktop Control Center release → Run workflow** (no Release unless
+triggered by tag).
 
 ---
 
@@ -138,7 +147,8 @@ Artifacts: `packages/control-center-desktop/src-tauri/target/release/bundle/`
 2. Set `TAURI_UPDATER_PUBKEY` in CI (injected via `src-tauri/build.rs`)
 3. Set `TAURI_SIGNING_PRIVATE_KEY` for signed updater artifacts
 4. Enable with `SPANDA_DESKTOP_UPDATER_ACTIVE=1` on release builds
-5. Host update manifests at `https://releases.spanda.dev/control-center/...` (endpoint template in `tauri.conf.json`)
+5. Host update manifests at `https://releases.spanda.dev/control-center/...` (endpoint template in
+   `tauri.conf.json`)
 
 Until updater secrets are configured, operators install new versions manually from GitHub Releases.
 
@@ -168,7 +178,8 @@ Until updater secrets are configured, operators install new versions manually fr
 
 ## Related
 
-- [control-center-versioning.md](./control-center-versioning.md) — semver streams, UI/CLI/API display, auto bump
+- [control-center-versioning.md](./control-center-versioning.md) — semver streams, UI/CLI/API
+  display, auto bump
 - [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md)
 - [sdk-publishing.md](./sdk-publishing.md) — SDK + desktop tag table
 - [control-center.md](./control-center.md) — API and UI reference

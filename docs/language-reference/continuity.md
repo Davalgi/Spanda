@@ -1,6 +1,7 @@
 # Continuity
 
-Mission continuity policies, takeover modes, and succession planning for fleet and single-robot programs.
+Mission continuity policies, takeover modes, and succession planning for fleet and single-robot
+programs.
 
 ## Declarations
 
@@ -26,7 +27,8 @@ spanda succession program.sd --scope fleet
 
 ## Diagnostics
 
-`spanda check --readiness-json` emits `continuity:policy`, `continuity:fleet`, `continuity:approval`, `continuity:handoff`, and `continuity:mission` categories.
+`spanda check --readiness-json` emits `continuity:policy`, `continuity:fleet`,
+`continuity:approval`, `continuity:handoff`, and `continuity:mission` categories.
 
 ## Guides
 

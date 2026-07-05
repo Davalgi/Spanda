@@ -29,8 +29,10 @@ spanda certify pack rover.sd --strict
 
 `CertificationPack`, `CertificationEvidence`, `ComplianceEvidence`.
 
-**Important:** Bundles are **evidence templates**, not accredited certifications. Compliance profile templates ship as packages.
+**Important:** Bundles are **evidence templates**, not accredited certifications. Compliance profile
+templates ship as packages.
 
 Extends existing `certify` metadata and `spanda certify prove`.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [compliance-profiles.md](./compliance-profiles.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[compliance-profiles.md](./compliance-profiles.md).

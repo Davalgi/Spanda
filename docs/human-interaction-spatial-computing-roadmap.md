@@ -1,12 +1,22 @@
 # Human Interaction & Spatial Computing Roadmap
 
-Strategic expansion plan for Spanda as a platform for **human–robot collaboration**, **wearables**, **AR/VR/XR**, and **collaborative autonomy** — without bloating the core language or embedding proprietary device SDKs.
+Strategic expansion plan for Spanda as a platform for **human–robot collaboration**, **wearables**,
+**AR/VR/XR**, and **collaborative autonomy** — without bloating the core language or embedding
+proprietary device SDKs.
 
-**Principle:** Humans, wearables, and spatial devices are first-class entities in configuration, device registry, capability framework, readiness, and Control Center — integrated through **packages**, **providers**, **solution blueprints**, and **existing platform spine** capabilities.
+**Principle:** Humans, wearables, and spatial devices are first-class entities in configuration,
+device registry, capability framework, readiness, and Control Center — integrated through
+**packages**, **providers**, **solution blueprints**, and **existing platform spine** capabilities.
 
-**Lean-core rule:** No AR/VR engines, no wearable vendor SDKs, and no HRI-specific language keywords in core. Contracts live in workspace crates (`spanda-config`, `spanda-capability`, `spanda-readiness`, `spanda-api`); device bridges ship in optional packages (`spanda-vision-pro`, `spanda-hololens`, `spanda-arkit`, …).
+**Lean-core rule:** No AR/VR engines, no wearable vendor SDKs, and no HRI-specific language keywords
+in core. Contracts live in workspace crates (`spanda-config`, `spanda-capability`,
+`spanda-readiness`, `spanda-api`); device bridges ship in optional packages (`spanda-vision-pro`,
+`spanda-hololens`, `spanda-arkit`, …).
 
-**Related:** [roadmap.md](./roadmap.md) · [solutions/spatial-computing.md](./solutions/spatial-computing.md) · [human-interaction.md](./human-interaction.md) · [feature-status.md](./feature-status.md) · [platform-overview.md](./platform-overview.md)
+**Related:** [roadmap.md](./roadmap.md) ·
+[solutions/spatial-computing.md](./solutions/spatial-computing.md) ·
+[human-interaction.md](./human-interaction.md) · [feature-status.md](./feature-status.md) ·
+[platform-overview.md](./platform-overview.md)
 
 **Last updated:** 2026-06-28
 
@@ -70,7 +80,8 @@ flowchart TB
   humans --> CC
 ```
 
-**Success criteria:** Safe collaboration among humans, wearables, AR/VR/XR devices, robots, drones, IoT, AI agents, and fleets — with **zero new core language keywords** for HRI.
+**Success criteria:** Safe collaboration among humans, wearables, AR/VR/XR devices, robots, drones,
+IoT, AI agents, and fleets — with **zero new core language keywords** for HRI.
 
 ---
 
@@ -211,7 +222,8 @@ Humans are **first-class entities** in the device tree and device pool — not l
 | `location` | No | GPS, indoor beacon, or zone ID |
 | `permissions` | No | RBAC permission tokens |
 
-See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md](./operator-capabilities.md).
+See [human-interaction.md](./human-interaction.md) and
+[operator-capabilities.md](./operator-capabilities.md).
 
 ---
 
@@ -234,7 +246,9 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | Spatial Computing solution blueprint scaffold | `examples/solutions/spatial-computing/` |
 | Topic guides (8 docs) | `docs/` |
 
-**Exit criteria:** `spanda verify` traces operator capabilities; `spanda readiness --profile human_collaboration` scores operator + team; device tree includes human nodes; `./scripts/spatial_computing_smoke.sh`.
+**Exit criteria:** `spanda verify` traces operator capabilities; `spanda readiness --profile
+human_collaboration` scores operator + team; device tree includes human nodes;
+`./scripts/spatial_computing_smoke.sh`.
 
 ### H2 — Wearables & AR
 
@@ -245,7 +259,9 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | Provider dispatch + package stubs | `spanda-providers` | **Experimental** |
 | Blueprint device tree uses H2 package providers | `examples/solutions/spatial-computing/` | **Experimental** |
 
-**Exit criteria:** Registry index includes H2 packages; `bootstrap_providers_for_packages` registers wearable/spatial stubs; blueprint `spanda.devices.toml` references real package names; `./scripts/spatial_computing_smoke.sh` passes.
+**Exit criteria:** Registry index includes H2 packages; `bootstrap_providers_for_packages` registers
+wearable/spatial stubs; blueprint `spanda.devices.toml` references real package names;
+`./scripts/spatial_computing_smoke.sh` passes.
 
 ### H3 — HRI & collaboration
 
@@ -257,7 +273,9 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | Control Center HRI session API (`/v1/hri/sessions`) | `spanda-api` | **Experimental** |
 | Collaborative continuity patterns in blueprint examples | `examples/solutions/spatial-computing/` | **Experimental** |
 
-**Exit criteria:** H3 packages in registry index; voice/gesture dispatch works; blueprint lists `repair-session-001`; `./scripts/spatial_computing_smoke.sh` verifies remote maintenance; OpenAPI documents HRI session routes.
+**Exit criteria:** H3 packages in registry index; voice/gesture dispatch works; blueprint lists
+`repair-session-001`; `./scripts/spatial_computing_smoke.sh` verifies remote maintenance; OpenAPI
+documents HRI session routes.
 
 ### H4 — Control Center & stable
 
@@ -269,7 +287,9 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | VR training continuity example | `examples/solutions/spatial-computing/vr-training/` | **Experimental** |
 | Stable promotion gate | `scripts/hri_stable_promotion_gate.sh` | **Shipped** — [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md) |
 
-**Exit criteria:** `SPANDA_HRI_SKIP_SOAK=1 ./scripts/hri_stable_promotion_gate.sh` passes; Humans tab parity in embedded UI and `ControlCenterPanel`; health gate blocks telemetry until opt-in; 30-day field soak + audit sign-off before **Stable** tier label.
+**Exit criteria:** `SPANDA_HRI_SKIP_SOAK=1 ./scripts/hri_stable_promotion_gate.sh` passes; Humans
+tab parity in embedded UI and `ControlCenterPanel`; health gate blocks telemetry until opt-in;
+30-day field soak + audit sign-off before **Stable** tier label.
 
 ### H5 — Control Center depth & context awareness
 
@@ -281,7 +301,9 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | Context awareness snapshot API | `spanda-api` | **Experimental** |
 | Humans tab: team readiness, collaboration, hazard zones | `spanda-api` + `@davalgi-spanda/web` | **Experimental** |
 
-**Exit criteria:** Blueprint lists hazard zones; `/v1/humans/readiness`, `/v1/hri/collaboration`, `/v1/hri/context` return JSON; promotion gate probes new endpoints; operator approval queue remains via E1 `POST /v1/operator/mission/approve`.
+**Exit criteria:** Blueprint lists hazard zones; `/v1/humans/readiness`, `/v1/hri/collaboration`,
+`/v1/hri/context` return JSON; promotion gate probes new endpoints; operator approval queue remains
+via E1 `POST /v1/operator/mission/approve`.
 
 ### H6 — Vendor backends, twins, mission approvals & Stable ops
 
@@ -293,15 +315,19 @@ See [human-interaction.md](./human-interaction.md) and [operator-capabilities.md
 | Humans tab: twins + mission approval UI | `spanda-api` + `@davalgi-spanda/web` | **Experimental** |
 | Field soak init + HRI security audit prep scripts | `scripts/` | **Shipped** |
 
-**Exit criteria:** `SPANDA_LIVE_HEALTHKIT=1` enriches smartwatch telemetry; blueprint lists twins and pending mission approvals; promotion gate checks audit prep artifact (skip with `SPANDA_HRI_SKIP_AUDIT=1`); soak started via `./scripts/hri_field_soak_init.sh`.
+**Exit criteria:** `SPANDA_LIVE_HEALTHKIT=1` enriches smartwatch telemetry; blueprint lists twins
+and pending mission approvals; promotion gate checks audit prep artifact (skip with
+`SPANDA_HRI_SKIP_AUDIT=1`); soak started via `./scripts/hri_field_soak_init.sh`.
 
 ---
 
 ## 5. Solution blueprint
 
-**Spatial Computing & Human-Robot Collaboration** — see [solutions/spatial-computing.md](./solutions/spatial-computing.md).
+**Spatial Computing & Human-Robot Collaboration** — see
+[solutions/spatial-computing.md](./solutions/spatial-computing.md).
 
-Applications: warehouse, manufacturing, healthcare, search & rescue, field service, utilities, construction, defense, emergency response, training.
+Applications: warehouse, manufacturing, healthcare, search & rescue, field service, utilities,
+construction, defense, emergency response, training.
 
 Path: `examples/solutions/spatial-computing/`
 
@@ -368,5 +394,6 @@ See [control-center.md](./control-center.md#human-interaction-dashboard).
 - [readiness.md](./readiness.md) — readiness engine foundation
 - [capability-traceability.md](./capability-traceability.md) — capability matrices
 - [device-tree.md](./device-tree.md) — fleet hierarchy
-- [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) — Control Center, RBAC, operator workflows
+- [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) — Control Center, RBAC,
+  operator workflows
 - [differentiation-roadmap.md](./differentiation-roadmap.md) — Human/Robot Teaming (LATER)

@@ -1,6 +1,7 @@
 # Cascading Configuration
 
-Spanda configuration merges in a fixed order so operators can share a base profile and override only what changes per environment, deployment, or robot.
+Spanda configuration merges in a fixed order so operators can share a base profile and override only
+what changes per environment, deployment, or robot.
 
 ## Layer stack
 
@@ -24,7 +25,8 @@ deployment = "configs/production.toml"
 robot = "configs/rover-001.toml"
 ```
 
-Each layer file may itself contain an `[extends]` table for nested inheritance. The resolver detects circular references and reports them as errors.
+Each layer file may itself contain an `[extends]` table for nested inheritance. The resolver detects
+circular references and reports them as errors.
 
 ## Merge semantics
 
@@ -44,13 +46,15 @@ capabilities = "append"
 
 ## Conflict detection
 
-When two layers set incompatible values for the same key, the later layer wins. Use `spanda config diff` to inspect changes between any two files:
+When two layers set incompatible values for the same key, the later layer wins. Use `spanda config
+diff` to inspect changes between any two files:
 
 ```bash
 spanda config diff configs/base.toml configs/production.toml
 ```
 
-Validation (`spanda config validate`) reports structural conflicts such as duplicate ports, buses, or serial numbers in the **resolved** tree.
+Validation (`spanda config validate`) reports structural conflicts such as duplicate ports, buses,
+or serial numbers in the **resolved** tree.
 
 ## Inspecting resolution
 
@@ -62,8 +66,10 @@ spanda config report           # human-readable multi-section report
 
 ## JSON layers
 
-Machine-generated layers may use `.json` files. The resolver converts JSON to the same internal representation as TOML before merging.
+Machine-generated layers may use `.json` files. The resolver converts JSON to the same internal
+representation as TOML before merging.
 
 ## Example
 
-See `crates/spanda-config/tests/fixtures/warehouse/` for a working layered project with base and environment overrides.
+See `crates/spanda-config/tests/fixtures/warehouse/` for a working layered project with base and
+environment overrides.

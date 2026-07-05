@@ -1,6 +1,8 @@
 # Platform Positioning — Migration Notes
 
-Spanda's public positioning evolved from **language-first** to **platform-first** while keeping the language identity intact. This guide helps contributors, docs authors, and integrators update copy consistently.
+Spanda's public positioning evolved from **language-first** to **platform-first** while keeping the
+language identity intact. This guide helps contributors, docs authors, and integrators update copy
+consistently.
 
 ---
 
@@ -14,7 +16,8 @@ Spanda's public positioning evolved from **language-first** to **platform-first*
 | **Language role** | Spanda *is* the language | Spanda Language (`.sd`) is **one component** of Spanda Platform |
 | **Pulse tagline** | *The pulse of autonomous intelligence.* | **Unchanged** — keep as secondary brand line |
 
-**Do not rename:** the project (`Spanda`), file extension (`.sd`), CLI (`spanda`), or core language docs.
+**Do not rename:** the project (`Spanda`), file extension (`.sd`), CLI (`spanda`), or core language
+docs.
 
 ---
 
@@ -40,7 +43,9 @@ Use this order in hero copy and elevator pitches:
 
 ### Good
 
-> Spanda is an Autonomous Systems Platform with a safety-first programming language at its core. Write `.sd` programs, verify hardware fit, simulate missions, and operate fleets with built-in health monitoring.
+> Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.
+> Write `.sd` programs, verify hardware fit, simulate missions, and operate fleets with built-in
+> health monitoring.
 
 ### Avoid
 
@@ -62,7 +67,9 @@ Use this order in hero copy and elevator pitches:
 | `website/index.html`, `docs/website-content.md` | Hero and meta description |
 | `CONTRIBUTING.md` | One-line intro |
 
-Language-specific pages (`spanda-language.md`, tutorials) need **no** repositioning unless they incorrectly claim Spanda is *only* a language. Prefer: "Spanda Language is the core of the Spanda Platform."
+Language-specific pages (`spanda-language.md`, tutorials) need **no** repositioning unless they
+incorrectly claim Spanda is *only* a language. Prefer: "Spanda Language is the core of the Spanda
+Platform."
 
 ---
 
@@ -84,7 +91,9 @@ Autonomous Systems Platform with a safety-first language at its core.
 
 **Topics to add** (merge with existing; do not remove language-related topics):
 
-`autonomous-systems`, `robotics`, `safety`, `simulation`, `verification`, `digital-twin`, `agentic-ai`, `runtime`, `programming-language`, `platform-engineering`, `iot`, `embedded`, `fleet-management`
+`autonomous-systems`, `robotics`, `safety`, `simulation`, `verification`, `digital-twin`,
+`agentic-ai`, `runtime`, `programming-language`, `platform-engineering`, `iot`, `embedded`,
+`fleet-management`
 
 ```bash
 gh repo edit Davalgi/Spanda \
@@ -119,7 +128,8 @@ gh repo edit Davalgi/Spanda \
 
 - Renaming crates, commands, or file types for "platform" alignment
 - Dropping "programming language" from SEO entirely — many users discover Spanda via language search
-- Implying ROS2/Python replacement — stay coordination-layer honest per [product-strategy.md](./product-strategy.md)
+- Implying ROS2/Python replacement — stay coordination-layer honest per
+  [product-strategy.md](./product-strategy.md)
 
 ### Optional future assets
 
@@ -132,10 +142,12 @@ gh repo edit Davalgi/Spanda \
 ## FAQ
 
 **Is Spanda still a programming language?**  
-Yes. The Spanda Language (`.sd`) is a first-class product. The platform name reflects verify, sim, replay, health, fleet, and packages that ship alongside the compiler.
+Yes. The Spanda Language (`.sd`) is a first-class product. The platform name reflects verify, sim,
+replay, health, fleet, and packages that ship alongside the compiler.
 
 **Should I stop saying "Autonomous Systems Language"?**  
-Use it when referring specifically to the language (e.g. "learn the Autonomous Systems Language in Spanda 101"). Use "Autonomous Systems Platform" for the overall project.
+Use it when referring specifically to the language (e.g. "learn the Autonomous Systems Language in
+Spanda 101"). Use "Autonomous Systems Platform" for the overall project.
 
 **Do examples or APIs change?**  
 No. This is a positioning and documentation update only.
@@ -144,5 +156,8 @@ No. This is a positioning and documentation update only.
 
 ## Changelog
 
-- **2026-06-24** — Philosophy pronunciation guide (SPUN-duh /ˈspʌndə/) and expanded Sanskrit etymology synced across philosophy, vision, product-strategy, website-content, getting-started, for-dummies, tutorials index, doc index, and mdBook introduction.
-- **2026-06-22** — Initial platform positioning migration (README, platform-overview, roadmap, vision, product-strategy, website drafts).
+- **2026-06-24** — Philosophy pronunciation guide (SPUN-duh /ˈspʌndə/) and expanded Sanskrit
+  etymology synced across philosophy, vision, product-strategy, website-content, getting-started,
+  for-dummies, tutorials index, doc index, and mdBook introduction.
+- **2026-06-22** — Initial platform positioning migration (README, platform-overview, roadmap,
+  vision, product-strategy, website drafts).

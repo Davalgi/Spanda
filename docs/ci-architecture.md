@@ -1,6 +1,7 @@
 # CI architecture
 
-Spanda CI is split into **three tiers** so pull requests stay fast while `main` and nightly runs retain full platform coverage.
+Spanda CI is split into **three tiers** so pull requests stay fast while `main` and nightly runs
+retain full platform coverage.
 
 | Workflow | File | When | Blocks merge? |
 |----------|------|------|---------------|
@@ -8,14 +9,17 @@ Spanda CI is split into **three tiers** so pull requests stay fast while `main` 
 | **CI Integration** | [.github/workflows/ci-integration.yml](../.github/workflows/ci-integration.yml) | After CI Fast succeeds on `main` push | **Yes for `main` health** (not individual PRs) |
 | **CI Nightly** | [.github/workflows/ci-nightly.yml](../.github/workflows/ci-nightly.yml) | Daily cron + manual dispatch | **No** (signal only) |
 
-**Auto release** (`.github/workflows/auto-release.yml`) waits for **CI Integration** success on `main`, not nightly.
+**Auto release** (`.github/workflows/auto-release.yml`) waits for **CI Integration** success on
+`main`, not nightly.
 
 When the merged PR has a `release:major|minor|patch` label:
 
 1. Bumps **workspace** → tag `vX.Y.Z` → cargo-dist Release.
-2. If Control Center paths changed (`scripts/control_center_paths_changed.sh`), bumps **desktop** → tag `desktop-vX.Y.Z` → [desktop-release.yml](../.github/workflows/desktop-release.yml).
+2. If Control Center paths changed (`scripts/control_center_paths_changed.sh`), bumps **desktop** →
+   tag `desktop-vX.Y.Z` → [desktop-release.yml](../.github/workflows/desktop-release.yml).
 
-Manual ad-hoc bumps: **Actions → Bump version** (stream **workspace** or **desktop**). See [control-center-versioning.md](./control-center-versioning.md).
+Manual ad-hoc bumps: **Actions → Bump version** (stream **workspace** or **desktop**). See
+[control-center-versioning.md](./control-center-versioning.md).
 
 ---
 
@@ -35,7 +39,8 @@ Runs on every pull request and every push to `main`.
 | `cross-interface` | `scripts/cross_interface_consistency.sh` using artifact |
 | `docs-validate` | Documentation audit when **only** docs/markdown changed |
 
-**Path filters:** docs-only PRs skip Rust/TS/Python jobs and run `docs-validate` instead. Any change under `crates/`, `src/`, `sdk/`, workflows, etc. runs the full fast gate.
+**Path filters:** docs-only PRs skip Rust/TS/Python jobs and run `docs-validate` instead. Any change
+under `crates/`, `src/`, `sdk/`, workflows, etc. runs the full fast gate.
 
 **Local parity:**
 
@@ -55,9 +60,13 @@ Optional pre-push hook (fmt + cross-surface only):
 
 Triggered by `workflow_run` after **CI Fast** completes successfully on a `main` push.
 
-Builds `spanda` **once**, uploads an artifact, and reuses it across smoke and golden-path jobs (no per-job release compiles).
+Builds `spanda` **once**, uploads an artifact, and reuses it across smoke and golden-path jobs (no
+per-job release compiles).
 
-Includes: readme smoke + golden output, core smokes, distributed decisions, cognitive resilience, release hardening security/property tests, key golden paths (robotics, telemetry, twin cloud, registry, ci-verify, killer demo), solution blueprint smokes, entity model smoke, LSP, WASM, VS Code extension packaging, and docs/mdBook build.
+Includes: readme smoke + golden output, core smokes, distributed decisions, cognitive resilience,
+release hardening security/property tests, key golden paths (robotics, telemetry, twin cloud,
+registry, ci-verify, killer demo), solution blueprint smokes, entity model smoke, LSP, WASM, VS Code
+extension packaging, and docs/mdBook build.
 
 ---
 
@@ -65,9 +74,12 @@ Includes: readme smoke + golden output, core smokes, distributed decisions, cogn
 
 Scheduled at **06:00 UTC** and available via **Actions → CI Nightly → Run workflow**.
 
-Includes: `cargo audit`, promotion gates (Stable hardening scripts with soak/audit skipped in CI), ROS 2, MQTT, LLVM, embedded cross-compile, live AI/IoT, Python native, desktop/Tauri builds, and remaining tier-3 golden paths.
+Includes: `cargo audit`, promotion gates (Stable hardening scripts with soak/audit skipped in CI),
+ROS 2, MQTT, LLVM, embedded cross-compile, live AI/IoT, Python native, desktop/Tauri builds, and
+remaining tier-3 golden paths.
 
-Nightly failures do **not** block PR merge or auto-release. Triage them like production monitoring alerts.
+Nightly failures do **not** block PR merge or auto-release. Triage them like production monitoring
+alerts.
 
 ---
 
@@ -90,7 +102,8 @@ Public API changes must land as **one atomic PR** across these layers:
 
 ## Branch protection (GitHub settings)
 
-Under **Settings → Branches → Branch protection for `main`**, require these **CI Fast** checks on pull requests:
+Under **Settings → Branches → Branch protection for `main`**, require these **CI Fast** checks on
+pull requests:
 
 - `lint-rust`
 - `test-rust`
@@ -100,13 +113,17 @@ Under **Settings → Branches → Branch protection for `main`**, require these 
 - `cross-surface-check`
 - `cross-interface`
 
-Enable **Require status checks to pass before merging** and **Require branches to be up to date before merging**.
+Enable **Require status checks to pass before merging** and **Require branches to be up to date
+before merging**.
 
-Optional (recommended): enable **merge queue** so integration runs against the exact merge commit. See [GitHub merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
+Optional (recommended): enable **merge queue** so integration runs against the exact merge commit.
+See [GitHub merge
+queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue).
 
 Do **not** require nightly or integration jobs on PRs — integration runs after merge to `main`.
 
-Monitor **`main` health** via CI Integration workflow status. Do not push new feature work while CI Integration is red.
+Monitor **`main` health** via CI Integration workflow status. Do not push new feature work while CI
+Integration is red.
 
 ---
 
@@ -115,7 +132,8 @@ Monitor **`main` health** via CI Integration workflow status. Do not push new fe
 1. Run `./scripts/ci-fast.sh` locally before opening a PR.
 2. Do not merge PRs with failing CI Fast checks.
 3. If `main` is red after merge, fix fmt/compile/cross-surface before stacking more commits.
-4. Auto-release only fires after **CI Integration** succeeds — do not tag manually while integration is failing.
+4. Auto-release only fires after **CI Integration** succeeds — do not tag manually while integration
+   is failing.
 
 ---
 
@@ -128,13 +146,16 @@ npm install && npm run build:rust
 
 Gate script index: [scripts/gates/README.md](../scripts/gates/README.md).
 
-Related: [ci-verify.md](./ci-verify.md) (customer CI for `spanda verify`), [troubleshooting.md](./troubleshooting.md#ci-and-release-builds), [tier-3-golden-paths.md](./tier-3-golden-paths.md) (golden path job index).
+Related: [ci-verify.md](./ci-verify.md) (customer CI for `spanda verify`),
+[troubleshooting.md](./troubleshooting.md#ci-and-release-builds),
+[tier-3-golden-paths.md](./tier-3-golden-paths.md) (golden path job index).
 
 ---
 
 ## Job tier map
 
-Use this table when updating docs or stable-hardening guides. Workflow file names are stable; job names match GitHub Actions UI.
+Use this table when updating docs or stable-hardening guides. Workflow file names are stable; job
+names match GitHub Actions UI.
 
 ### CI Fast (`.github/workflows/ci-fast.yml`)
 
@@ -177,7 +198,9 @@ Use this table when updating docs or stable-hardening guides. Workflow file name
 | `wasm` | wasm32 checks + `npm run web:build` |
 | `vscode-extension` | VSIX package via `editor/vscode` |
 
-Path-filtered extension checks also run via [.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when `editor/vscode/**` or `packages/lsp/**` change.
+Path-filtered extension checks also run via
+[.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when
+`editor/vscode/**` or `packages/lsp/**` change.
 
 ### CI Nightly (`.github/workflows/ci-nightly.yml`)
 

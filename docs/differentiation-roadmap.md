@@ -1,12 +1,20 @@
 # Differentiation Roadmap
 
-Strategic expansion plan for **signature platform capabilities** that differentiate Spanda as the **Safety, Verification, Readiness, Assurance, Diagnosis, Recovery, Trust, and Continuity** platform for autonomous systems.
+Strategic expansion plan for **signature platform capabilities** that differentiate Spanda as the
+**Safety, Verification, Readiness, Assurance, Diagnosis, Recovery, Trust, and Continuity** platform
+for autonomous systems.
 
-This document extends — does not replace — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md). Every item **composes** existing engines (`spanda-readiness`, `spanda-assurance`, `spanda-capability`, `spanda-hardware`, `spanda-security`, `spanda-audit`, replay, simulation) rather than duplicating them.
+This document extends — does not replace —
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md). Every item **composes** existing
+engines (`spanda-readiness`, `spanda-assurance`, `spanda-capability`, `spanda-hardware`,
+`spanda-security`, `spanda-audit`, replay, simulation) rather than duplicating them.
 
-**Principle:** Lean core. Heavy implementations ship as **packages**. Contracts and CLI live in focused crates.
+**Principle:** Lean core. Heavy implementations ship as **packages**. Contracts and CLI live in
+focused crates.
 
-**Related:** [roadmap.md](./roadmap.md) · [product-strategy.md](./product-strategy.md) · [feature-status.md](./feature-status.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
+**Related:** [roadmap.md](./roadmap.md) · [product-strategy.md](./product-strategy.md) ·
+[feature-status.md](./feature-status.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
 
 **Last updated:** 2026-07-02
 
@@ -73,9 +81,14 @@ These six capabilities define Spanda's market identity. Protect them in every re
 | 9 | Trust Graph | `spanda trust-graph <file>` | `spanda-graph` + `spanda-trust` | **Stable** |
 | 10 | Scorecards | `spanda score <file>` | `spanda-score` | **Stable** |
 
-Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto semver from `GET /v1/version` — currently **1.0.14**) expose NEXT analytics with REST parity.
+Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto semver from `GET
+/v1/version` — currently **1.0.14**) expose NEXT analytics with REST parity.
 
-LATER analytics REST `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` and gRPC `GetAnalyticsMissionTwin`, `GetAnalyticsCertificationPack`, `GetAnalyticsTimeTravel`, `GetAnalyticsHumanTeaming`, `GetAnalyticsGovernance` (proto **1.0.7**) mirror CLI parity; Analytics tab in Control Center UI loads all nine panels.
+LATER analytics REST
+`/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` and gRPC
+`GetAnalyticsMissionTwin`, `GetAnalyticsCertificationPack`, `GetAnalyticsTimeTravel`,
+`GetAnalyticsHumanTeaming`, `GetAnalyticsGovernance` (proto **1.0.7**) mirror CLI parity; Analytics
+tab in Control Center UI loads all nine panels.
 
 ### LATER — digital twin, certification, teaming, governance
 
@@ -87,7 +100,9 @@ LATER analytics REST `/v1/analytics/{mission-twin,certification-pack,time-travel
 | 14 | Human/Robot Teaming | `spanda team verify` | extends `spanda-readiness` teaming | **Stable** |
 | 15 | Autonomous Governance | `spanda governance <file> [--policy]` | `spanda-policy` | **Stable** |
 
-Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`; demo: `spanda demo later`. Promotion gate: `scripts/differentiation_promotion_gate.sh`.
+Showcases: `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`;
+time travel uses `differentiation/decision_trail/`. Smoke: `scripts/later_differentiation_smoke.sh`;
+demo: `spanda demo later`. Promotion gate: `scripts/differentiation_promotion_gate.sh`.
 
 ---
 
@@ -115,11 +130,13 @@ mission WarehousePatrol {
 }
 ```
 
-**Core types:** `MissionContract`, `MissionGuarantee`, `MissionConstraint`, `MissionAssumption`, `MissionInvariant`, `MissionObjective`.
+**Core types:** `MissionContract`, `MissionGuarantee`, `MissionConstraint`, `MissionAssumption`,
+`MissionInvariant`, `MissionObjective`.
 
 **Verify:** guarantees, assumptions, constraints, completion requirements.
 
-**Integrates with:** `spanda verify`, Readiness (`mission verify`), Assurance (`assurance_case`), Continuity (`continuity_policy`).
+**Integrates with:** `spanda verify`, Readiness (`mission verify`), Assurance (`assurance_case`),
+Continuity (`continuity_policy`).
 
 See [mission-contracts.md](./mission-contracts.md).
 
@@ -129,7 +146,8 @@ See [mission-contracts.md](./mission-contracts.md).
 
 **Goal:** Explain autonomous behavior — static analysis and trace-backed decisions.
 
-**Core types:** `ExplanationEngine`, `DecisionExplanation`, `MissionExplanation`, `SafetyExplanation`, `RecoveryExplanation`.
+**Core types:** `ExplanationEngine`, `DecisionExplanation`, `MissionExplanation`,
+`SafetyExplanation`, `RecoveryExplanation`.
 
 **CLI:**
 
@@ -143,7 +161,8 @@ spanda explain readiness --file rover.sd
 
 **Integrates with:** Assurance diagnosis, Readiness failures, Replay traces, Audit records.
 
-Extends [platform-maturity Area 7](./explainability.md). See [explainability.md](./explainability.md).
+Extends [platform-maturity Area 7](./explainability.md). See
+[explainability.md](./explainability.md).
 
 ---
 
@@ -159,9 +178,11 @@ Extends [platform-maturity Area 7](./explainability.md). See [explainability.md]
 Mission → Decision → Evidence → Safety Check → Action
 ```
 
-**Integrates with:** Mission trace replay (`--record`), `spanda-audit`, Assurance evidence, Telemetry store.
+**Integrates with:** Mission trace replay (`--record`), `spanda-audit`, Assurance evidence,
+Telemetry store.
 
-Emitted automatically during `run`/`sim` when `SPANDA_DECISION_TRACE=1`. Consumed by `spanda explain` and `spanda replay --at`.
+Emitted automatically during `run`/`sim` when `SPANDA_DECISION_TRACE=1`. Consumed by `spanda
+explain` and `spanda replay --at`.
 
 See [decision-audit-trail.md](./decision-audit-trail.md).
 
@@ -169,11 +190,13 @@ See [decision-audit-trail.md](./decision-audit-trail.md).
 
 ### 4. Digital Mission Twin
 
-**Goal:** Maintain a digital representation of mission state — progress, health, readiness, risks, recovery status.
+**Goal:** Maintain a digital representation of mission state — progress, health, readiness, risks,
+recovery status.
 
 **Core types:** `MissionTwin`, `MissionStateModel`, `MissionRiskModel`, `MissionForecast`.
 
-**Integrates with:** Existing `twin` blocks, Readiness twin module, Telemetry store, What-If (NEXT), Replay (LATER).
+**Integrates with:** Existing `twin` blocks, Readiness twin module, Telemetry store, What-If (NEXT),
+Replay (LATER).
 
 Extends local digital twin — **not** a cloud SaaS. Heavy forecasting backends ship as packages.
 
@@ -192,11 +215,13 @@ spanda what-if mission.sd
 spanda what-if mission.sd --scenario gps_failure
 ```
 
-**Scenarios:** GPS failure, battery failure, connectivity loss, robot failure, fleet failure, swarm failure, provider failure, package failure.
+**Scenarios:** GPS failure, battery failure, connectivity loss, robot failure, fleet failure, swarm
+failure, provider failure, package failure.
 
 **Output:** Impact, Risk, Recovery Plan, Probability (heuristic v1; package ML backends optional).
 
-**Integrates with:** Recovery planner, Assurance resilience, Sim fault injection, Readiness degradation model.
+**Integrates with:** Recovery planner, Assurance resilience, Sim fault injection, Readiness
+degradation model.
 
 See [what-if-analysis.md](./what-if-analysis.md) (NEXT).
 
@@ -217,7 +242,8 @@ spanda risk mission.sd --json
 
 **Output:** Risk Score, Risk Contributors, Recommended Mitigations.
 
-**Integrates with:** Readiness, Safety Coverage, Recovery Coverage, Trust Framework, `spanda verify`.
+**Integrates with:** Readiness, Safety Coverage, Recovery Coverage, Trust Framework, `spanda
+verify`.
 
 See [mission-risk-analysis.md](./mission-risk-analysis.md) (NEXT).
 
@@ -235,11 +261,13 @@ See [mission-risk-analysis.md](./mission-risk-analysis.md) (NEXT).
 spanda safety-coverage rover.sd
 ```
 
-**Scenarios evaluated:** Obstacle avoidance, GPS failure, battery failure, connectivity failure, provider failure, takeover failure, recovery failure.
+**Scenarios evaluated:** Obstacle avoidance, GPS failure, battery failure, connectivity failure,
+provider failure, takeover failure, recovery failure.
 
 **Output per scenario:** Covered · Partially Covered · Uncovered.
 
-**Integrates with:** Safety auditor, `simulate_compatibility`, Recovery policies, Continuity policies, Readiness safety factor.
+**Integrates with:** Safety auditor, `simulate_compatibility`, Recovery policies, Continuity
+policies, Readiness safety factor.
 
 See [safety-coverage.md](./safety-coverage.md).
 
@@ -259,7 +287,8 @@ spanda recovery-coverage rover.sd
 
 **Output:** Known Failures, Recovery Plans, Coverage %, Missing Recovery Paths.
 
-**Integrates with:** `recovery_policy`, Recovery planner, Assurance resilience, Chaos (platform-maturity Area 8).
+**Integrates with:** `recovery_policy`, Recovery planner, Assurance resilience, Chaos
+(platform-maturity Area 8).
 
 See [recovery-coverage.md](./recovery-coverage.md).
 
@@ -303,7 +332,8 @@ spanda trust-graph rover.sd
 spanda trust-graph rover.sd --format mermaid
 ```
 
-Composes [dependency-graphs.md](./dependency-graphs.md) (Area 2) with [trust-framework.md](./trust-framework.md) (Area 11).
+Composes [dependency-graphs.md](./dependency-graphs.md) (Area 2) with
+[trust-framework.md](./trust-framework.md) (Area 11).
 
 ---
 
@@ -320,9 +350,11 @@ spanda certify rover.sd
 spanda certify rover.sd --bundle deployment-evidence.zip
 ```
 
-**Bundle includes:** Verification evidence, Safety evidence, Readiness evidence, Assurance evidence, Trust evidence, Traceability evidence.
+**Bundle includes:** Verification evidence, Safety evidence, Readiness evidence, Assurance evidence,
+Trust evidence, Traceability evidence.
 
-Extends existing `certify` metadata and `spanda certify prove`. **Templates, not accredited certifications.**
+Extends existing `certify` metadata and `spanda certify prove`. **Templates, not accredited
+certifications.**
 
 See [certification-packs.md](./certification-packs.md) (LATER).
 
@@ -387,7 +419,8 @@ policy NightOps {
 }
 ```
 
-Extends [policy-engine.md](./policy-engine.md) (platform-maturity Area 5). Verify-time first; runtime enforcement in LATER phase.
+Extends [policy-engine.md](./policy-engine.md) (platform-maturity Area 5). Verify-time first;
+runtime enforcement in LATER phase.
 
 ---
 
@@ -395,7 +428,8 @@ Extends [policy-engine.md](./policy-engine.md) (platform-maturity Area 5). Verif
 
 **Goal:** Executive-level platform assessment.
 
-**Core types:** `Scorecard`, `SafetyScore`, `ReadinessScore`, `TrustScore`, `ResilienceScore`, `AssuranceScore`, `RiskScore`.
+**Core types:** `Scorecard`, `SafetyScore`, `ReadinessScore`, `TrustScore`, `ResilienceScore`,
+`AssuranceScore`, `RiskScore`.
 
 **CLI:**
 
@@ -541,7 +575,8 @@ spanda-score       → spanda-readiness, spanda-assurance, spanda-risk, spanda-t
 spanda-graph       → spanda-ast, spanda-capability, spanda-trust (trust-graph mode)
 ```
 
-Coverage analysis extends `spanda-readiness` and `spanda-assurance` — no new crates for safety/recovery coverage.
+Coverage analysis extends `spanda-readiness` and `spanda-assurance` — no new crates for
+safety/recovery coverage.
 
 ---
 
@@ -578,7 +613,8 @@ Coverage analysis extends `spanda-readiness` and `spanda-assurance` — no new c
 
 ### Per-phase updates
 
-When each area ships: `CHANGELOG.md`, `feature-status.md`, `getting-started.md` (if demo-worthy), `docs/README.md`, and `README.md` signature section.
+When each area ships: `CHANGELOG.md`, `feature-status.md`, `getting-started.md` (if demo-worthy),
+`docs/README.md`, and `README.md` signature section.
 
 ---
 
@@ -695,7 +731,8 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | `spanda trust-graph` | Mermaid golden output |
 | `spanda score` | Scorecard composition tests |
 
-**Exit met (Stable, v0.5.0):** All five NEXT pillars promoted — see stable-hardening guides for what-if, mission-risk, readiness-forecast, trust-graph, and scorecards.
+**Exit met (Stable, v0.5.0):** All five NEXT pillars promoted — see stable-hardening guides for
+what-if, mission-risk, readiness-forecast, trust-graph, and scorecards.
 
 ### Phase 3 — Field trust (LATER, v0.7–v1.0)
 
@@ -707,14 +744,21 @@ Month 6: spanda certify bundle for field deployment     ← LATER unlock
 | Human approval verify paths | `spanda team verify` |
 | Autonomous governance | `spanda governance` + policy blocks |
 
-**Exit met (Stable, v0.7):** All five LATER pillars promoted — see stable-hardening guides for mission time travel, digital mission twin, certification packs, human/robot teaming, and autonomous governance; `scripts/later_differentiation_stable_promotion_gate.sh` + CI `later-differentiation-stable-gates`.
+**Exit met (Stable, v0.7):** All five LATER pillars promoted — see stable-hardening guides for
+mission time travel, digital mission twin, certification packs, human/robot teaming, and autonomous
+governance; `scripts/later_differentiation_stable_promotion_gate.sh` + CI
+`later-differentiation-stable-gates`.
 
 ---
 
 ## Related documents
 
-- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — adoption, trust, operations (16 areas)
-- [mission-contracts.md](./mission-contracts.md) · [decision-audit-trail.md](./decision-audit-trail.md)
+- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — adoption, trust, operations (16
+  areas)
+- [mission-contracts.md](./mission-contracts.md) ·
+  [decision-audit-trail.md](./decision-audit-trail.md)
 - [safety-coverage.md](./safety-coverage.md) · [recovery-coverage.md](./recovery-coverage.md)
-- [explainability.md](./explainability.md) · [scorecards.md](./scorecards.md) · [trust-framework.md](./trust-framework.md)
-- [mission-continuity.md](./mission-continuity.md) · [readiness.md](./readiness.md) · [replay.md](./replay.md)
+- [explainability.md](./explainability.md) · [scorecards.md](./scorecards.md) ·
+  [trust-framework.md](./trust-framework.md)
+- [mission-continuity.md](./mission-continuity.md) · [readiness.md](./readiness.md) ·
+  [replay.md](./replay.md)

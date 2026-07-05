@@ -2,7 +2,8 @@
 
 Device hierarchy and capability mapping for the ADAS Solution Blueprint.
 
-**Fixture:** `examples/solutions/adas/spanda.devices.toml` · **CLI:** `spanda device-tree inspect vehicle-001 --config spanda.toml`
+**Fixture:** `examples/solutions/adas/spanda.devices.toml` · **CLI:** `spanda device-tree inspect
+vehicle-001 --config spanda.toml`
 
 ---
 
@@ -56,9 +57,11 @@ Vehicle (vehicle-001)
 | DifferentialDrive | `DifferentialDrive` | `spanda-canbus` |
 | CommunicationGateway | — | `spanda-canbus`, `spanda-mqtt` |
 
-Planned protocol providers (`spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x`) are listed in `spanda.providers.toml` with `status = "planned"`.
+Planned protocol providers (`spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x`)
+are listed in `spanda.providers.toml` with `status = "planned"`.
 
-Wheel speed, steering angle, brake, and tire pressure sensors attach to ECUs via CAN and surface as health-check inputs.
+Wheel speed, steering angle, brake, and tire pressure sensors attach to ECUs via CAN and surface as
+health-check inputs.
 
 ---
 

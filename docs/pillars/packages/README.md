@@ -1,6 +1,7 @@
 # Pillar 8 — Packages & Ecosystem
 
-[← Pillars index](../README.md) · [ROADMAP § Pillar 8](../../ROADMAP.md#pillar-8--packages--ecosystem)
+[← Pillars index](../README.md) · [ROADMAP § Pillar
+8](../../ROADMAP.md#pillar-8--packages--ecosystem)
 
 **Spanda Registry** and **Spanda Providers** — extensibility without bloating the core.
 
@@ -49,8 +50,10 @@ Sync scripts: `scripts/build-registry.sh` · `scripts/sync_bundled_registry.sh`
 
 ## FFI & interop
 
-[ffi-and-ecosystem.md](../../ffi-and-ecosystem.md) · [ros2-golden-path.md](../../ros2-golden-path.md) · [live-ai-provider.md](../../live-ai-provider.md)
+[ffi-and-ecosystem.md](../../ffi-and-ecosystem.md) ·
+[ros2-golden-path.md](../../ros2-golden-path.md) · [live-ai-provider.md](../../live-ai-provider.md)
 
 ## Smoke gates
 
-`scripts/registry_golden_path.sh` · `scripts/live_ai_golden_path.sh` · `scripts/mqtt_golden_path.sh` · `scripts/bundled_trust_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/registry_golden_path.sh` · `scripts/live_ai_golden_path.sh` · `scripts/mqtt_golden_path.sh`
+· `scripts/bundled_trust_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)

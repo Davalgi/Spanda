@@ -1,6 +1,7 @@
 # Crash Detection
 
-Spanda detects process crashes, runtime panics, provider crashes, package crashes, sensor/actuator driver crashes, network stack crashes, and abnormal shutdowns.
+Spanda detects process crashes, runtime panics, provider crashes, package crashes, sensor/actuator
+driver crashes, network stack crashes, and abnormal shutdowns.
 
 ## Detection
 

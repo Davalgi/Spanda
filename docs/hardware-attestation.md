@@ -27,7 +27,8 @@ Response:
 }
 ```
 
-When configured, `spanda tamper-check` and `spanda integrity` merge live attestation into secure-boot coverage scores.
+When configured, `spanda tamper-check` and `spanda integrity` merge live attestation into
+secure-boot coverage scores.
 
 ## TPM / vendor quote backends
 
@@ -43,7 +44,8 @@ When no HTTP endpoint is set, configure a TPM or vendor stub via `SPANDA_TPM_BAC
 | `file` | Read quote JSON from `SPANDA_TPM_QUOTE_PATH` |
 | `script` | Run `SPANDA_TPM_SCRIPT`; stdout must be quote JSON |
 
-Quote JSON schema matches the HTTP response above. Responses may include an optional `ak_cert_chain` PEM array for remote attestation.
+Quote JSON schema matches the HTTP response above. Responses may include an optional `ak_cert_chain`
+PEM array for remote attestation.
 
 ## Remote AK certificate chain validation
 
@@ -115,7 +117,8 @@ SPANDA_TPM_SCRIPT=examples/showcase/secure_boot/fixtures/tpm2-quote.sh \
 spanda tamper-check examples/showcase/secure_boot/rover.sd
 ```
 
-Smoke scripts use `scripts/lib/registry_env.sh` to prefer the bundled trust registry when `SPANDA_REGISTRY_URL` is unset. Also run `scripts/attestation_smoke.sh` and `scripts/gaps_smoke.sh`.
+Smoke scripts use `scripts/lib/registry_env.sh` to prefer the bundled trust registry when
+`SPANDA_REGISTRY_URL` is unset. Also run `scripts/attestation_smoke.sh` and `scripts/gaps_smoke.sh`.
 
 Optional PCR0 policy for tpm2 attestation:
 
@@ -136,11 +139,15 @@ Deploy agents expose attestation fields on `GET /v1/status` when set via environ
 | `SPANDA_ATTESTATION_VERIFIED=1` | `attestation_verified` |
 | `SPANDA_BOOT_STATE` | `boot_state` |
 
-`spanda integrity <file.sd> --agent <Robot@Hardware>` compares attestation when present. `spanda drift <file.sd> --agent <Robot@Hardware>` flags missing or failed attestation when the program imports secure-boot contracts. `spanda readiness <file.sd> --agent <Robot@Hardware>` surfaces attestation drift as readiness issues.
+`spanda integrity <file.sd> --agent <Robot@Hardware>` compares attestation when present. `spanda
+drift <file.sd> --agent <Robot@Hardware>` flags missing or failed attestation when the program
+imports secure-boot contracts. `spanda readiness <file.sd> --agent <Robot@Hardware>` surfaces
+attestation drift as readiness issues.
 
 ## Packages
 
 - `spanda-trust-jetson` — Jetson secure-boot contract stub
 - `spanda-trust-pi` — Raspberry Pi secure-boot contract stub
 
-See [trust-framework.md](./trust-framework.md) · [tamper-detection.md](./tamper-detection.md) · [integrity-verification.md](./integrity-verification.md).
+See [trust-framework.md](./trust-framework.md) · [tamper-detection.md](./tamper-detection.md) ·
+[integrity-verification.md](./integrity-verification.md).

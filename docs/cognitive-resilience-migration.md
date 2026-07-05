@@ -1,6 +1,8 @@
 # Cognitive & Resilience Architecture — Migration Notes
 
-This document describes the evolution from **Bio-Inspired Resilient Autonomy** naming to the **Cognitive & Resilience Architecture** functional view. **No breaking changes** — all existing APIs, CLI commands, crate names, and SDK methods remain valid.
+This document describes the evolution from **Bio-Inspired Resilient Autonomy** naming to the
+**Cognitive & Resilience Architecture** functional view. **No breaking changes** — all existing
+APIs, CLI commands, crate names, and SDK methods remain valid.
 
 ## What changed
 
@@ -18,9 +20,11 @@ This document describes the evolution from **Bio-Inspired Resilient Autonomy** n
 - Crate name: `spanda-autonomy` (unchanged)
 - REST prefix: `/v1/autonomy/*` (unchanged)
 - Entity field: `Entity.autonomy` / `EntityAutonomyProfile` (additive `attention` field only)
-- CLI commands: `spanda reflex`, `homeostasis`, `immunity`, `fusion`, `alerts`, `recovery confidence` (unchanged)
+- CLI commands: `spanda reflex`, `homeostasis`, `immunity`, `fusion`, `alerts`, `recovery
+  confidence` (unchanged)
 - gRPC RPC names: `GetAutonomyHomeostasis`, etc. (unchanged)
-- [bio-inspired-architecture.md](./bio-inspired-architecture.md) — retained; links to cognitive-resilience doc
+- [bio-inspired-architecture.md](./bio-inspired-architecture.md) — retained; links to
+  cognitive-resilience doc
 
 ## New documentation
 
@@ -72,11 +76,13 @@ client.attention().queue()
 
 ## Entity schema migration
 
-`EntityAutonomyProfile` gains optional `attention: EntityAttentionSnapshot`. Existing JSON without `attention` deserializes with `None` — backward compatible.
+`EntityAutonomyProfile` gains optional `attention: EntityAttentionSnapshot`. Existing JSON without
+`attention` deserializes with `None` — backward compatible.
 
 ## Contributor guidance
 
-1. Assign new capabilities to a **functional domain** first ([functional-domains.md](./functional-domains.md)).
+1. Assign new capabilities to a **functional domain** first
+   ([functional-domains.md](./functional-domains.md)).
 2. Check [responsibility-matrix.md](./responsibility-matrix.md) before creating new services.
 3. Integrate via `Entity.autonomy` — do not introduce parallel object models.
 4. Do **not** name modules after brain anatomy.

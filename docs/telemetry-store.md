@@ -15,9 +15,13 @@ Append-only local storage for device metrics, sensor readings, and task heartbea
 | `session` | Run boundaries when `--persist-telemetry` is enabled | `start` at run begin; `end` at completion with optional mission trace path |
 | `runtime_metrics` | End-of-run scheduler snapshot | Same payload as `--metrics-json` / run JSON `metrics` field |
 
-Runtime scheduler metrics are also captured as a `runtime_metrics` event at the end of each persisted run. Mission traces (`--record`) can be linked via the `session` end event's `mission_trace_path`.
+Runtime scheduler metrics are also captured as a `runtime_metrics` event at the end of each
+persisted run. Mission traces (`--record`) can be linked via the `session` end event's
+`mission_trace_path`.
 
-During an active run, every recorded event is tagged with `session_id` so `spanda telemetry list --session <id>` returns exactly that run's sensor reads, heartbeats, and publishes (legacy events without `session_id` still match by timestamp window).
+During an active run, every recorded event is tagged with `session_id` so `spanda telemetry list
+--session <id>` returns exactly that run's sensor reads, heartbeats, and publishes (legacy events
+without `session_id` still match by timestamp window).
 
 ## Enable persistence
 
@@ -54,7 +58,8 @@ Set `SPANDA_TELEMETRY_BACKEND=sqlite` to use an indexed SQLite database instead 
 
 Heartbeat liveness is stored in the `heartbeat_liveness` table (no JSON sidecar in SQLite mode).
 
-On first open, an empty SQLite database automatically imports a sibling `telemetry-store.jsonl` (and `telemetry-heartbeats.json` beside it), then renames the JSONL file to `telemetry-store.jsonl.bak`.
+On first open, an empty SQLite database automatically imports a sibling `telemetry-store.jsonl` (and
+`telemetry-heartbeats.json` beside it), then renames the JSONL file to `telemetry-store.jsonl.bak`.
 
 Override paths:
 
@@ -118,7 +123,9 @@ spanda telemetry prometheus
 spanda telemetry prometheus --out metrics.prom
 ```
 
-Exports event totals, heartbeat timestamps, latest `runtime_metrics` scheduler/task counters, numeric device metrics, and health scores. Point Prometheus at a file written by `--out`, or pipe stdout into your collector.
+Exports event totals, heartbeat timestamps, latest `runtime_metrics` scheduler/task counters,
+numeric device metrics, and health scores. Point Prometheus at a file written by `--out`, or pipe
+stdout into your collector.
 
 ## OTLP export
 
@@ -152,7 +159,8 @@ export SPANDA_OTLP_ENDPOINT=http://collector:4318/v1/metrics
 spanda run examples/demo.sd
 ```
 
-`--watch` runs a blocking push loop (default interval from `SPANDA_OTLP_PUSH_INTERVAL_MS`, 30s). Auto-push fires once per session end on both Rust and TypeScript run paths.
+`--watch` runs a blocking push loop (default interval from `SPANDA_OTLP_PUSH_INTERVAL_MS`, 30s).
+Auto-push fires once per session end on both Rust and TypeScript run paths.
 
 ### Auto-ingest to fleet mesh after each run
 
@@ -183,9 +191,11 @@ export SPANDA_OTLP_ENDPOINT=http://collector:4318/v1/metrics
 spanda telemetry fleet-push
 ```
 
-Mesh endpoints: `POST /v1/fleet/telemetry/ingest`, `GET /v1/fleet/telemetry` (merged OTLP/JSON with `spanda.robot.id` resource attributes).
+Mesh endpoints: `POST /v1/fleet/telemetry/ingest`, `GET /v1/fleet/telemetry` (merged OTLP/JSON with
+`spanda.robot.id` resource attributes).
 
-The payload matches `spanda telemetry otlp` (OTLP/JSON `resourceMetrics` shape). Use with `spanda telemetry serve` for local collector testing.
+The payload matches `spanda telemetry otlp` (OTLP/JSON `resourceMetrics` shape). Use with `spanda
+telemetry serve` for local collector testing.
 
 ## HTTP scrape server
 
@@ -211,12 +221,28 @@ Device liveness is recorded when:
 
 ## Crate
 
-Implementation: `crates/spanda-telemetry-store` (`TelemetryEvent`, `PersistentTelemetryStore`, in-memory `MemoryTelemetryStore` for WASM).
+Implementation: `crates/spanda-telemetry-store` (`TelemetryEvent`, `PersistentTelemetryStore`,
+in-memory `MemoryTelemetryStore` for WASM).
 
-TypeScript mirror: `src/telemetry-store.ts` records sensor reads, topic publishes, task/device heartbeats, health transitions, session boundaries, and `runtime_metrics` (scheduler, task, execution, pipeline, watchdog, trigger, topic QoS deadline misses, and provider-call counters) when `persistTelemetry` is set on `run()` or `SPANDA_TELEMETRY_STORE=1`. The TS interpreter uses `src/runtime/trigger-registry.ts` for unified trigger dispatch (`every`, `when`, `while`, and legacy `on` handlers) with per-tick storm limits and missed timer-deadline metrics aligned with Rust. With `SPANDA_TELEMETRY_BACKEND=sqlite`, Node.js 22+ (`node:sqlite`) is required for the TS path; otherwise use the native Rust CLI. `spanda telemetry` tries the native Rust CLI first, then falls back to `src/telemetry-cli.ts` (including `serve`, `push`, `replay --session` inspect/playback/**deterministic verification**, and `info`). Mission traces written by the Rust CLI use snake_case JSON fields; the TS replay loader normalizes them for inspect and verify.
+TypeScript mirror: `src/telemetry-store.ts` records sensor reads, topic publishes, task/device
+heartbeats, health transitions, session boundaries, and `runtime_metrics` (scheduler, task,
+execution, pipeline, watchdog, trigger, topic QoS deadline misses, and provider-call counters) when
+`persistTelemetry` is set on `run()` or `SPANDA_TELEMETRY_STORE=1`. The TS interpreter uses
+`src/runtime/trigger-registry.ts` for unified trigger dispatch (`every`, `when`, `while`, and legacy
+`on` handlers) with per-tick storm limits and missed timer-deadline metrics aligned with Rust. With
+`SPANDA_TELEMETRY_BACKEND=sqlite`, Node.js 22+ (`node:sqlite`) is required for the TS path;
+otherwise use the native Rust CLI. `spanda telemetry` tries the native Rust CLI first, then falls
+back to `src/telemetry-cli.ts` (including `serve`, `push`, `replay --session`
+inspect/playback/**deterministic verification**, and `info`). Mission traces written by the Rust CLI
+use snake_case JSON fields; the TS replay loader normalizes them for inspect and verify.
 
 ### WASM (browser)
 
-`wasm_telemetry_clear`, `wasm_telemetry_append` (JSONL line), `wasm_telemetry_stats`, `wasm_telemetry_prometheus`, and `wasm_telemetry_otlp`. Successful `wasm_run` calls also append a `runtime_metrics` snapshot to the in-memory buffer. TypeScript wrappers live in `packages/web/src/spanda-wasm.ts` (`telemetryClear`, `telemetryAppend`, `telemetryStats`, `telemetryPrometheus`, `telemetryOtlp`). The WASM crate depends on `spanda-telemetry-store` with `default-features = false` (no SQLite/rusqlite).
+`wasm_telemetry_clear`, `wasm_telemetry_append` (JSONL line), `wasm_telemetry_stats`,
+`wasm_telemetry_prometheus`, and `wasm_telemetry_otlp`. Successful `wasm_run` calls also append a
+`runtime_metrics` snapshot to the in-memory buffer. TypeScript wrappers live in
+`packages/web/src/spanda-wasm.ts` (`telemetryClear`, `telemetryAppend`, `telemetryStats`,
+`telemetryPrometheus`, `telemetryOtlp`). The WASM crate depends on `spanda-telemetry-store` with
+`default-features = false` (no SQLite/rusqlite).
 
 See also [iot.md](./iot.md), [watchdogs.md](./watchdogs.md), [replay.md](./replay.md).

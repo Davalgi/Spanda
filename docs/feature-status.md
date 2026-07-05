@@ -1,8 +1,11 @@
 # Feature Status
 
-Honest snapshot of **Spanda Platform** capabilities as of **v0.5.0**. The Spanda Language (`.sd`) is one component; this matrix covers verification, simulation, fleet, packages, and tooling as well. Use this document to understand what is production-ready, experimental, planned, or deprecated.
+Honest snapshot of **Spanda Platform** capabilities as of **v0.5.0**. The Spanda Language (`.sd`) is
+one component; this matrix covers verification, simulation, fleet, packages, and tooling as well.
+Use this document to understand what is production-ready, experimental, planned, or deprecated.
 
-Platform overview: [platform-overview.md](./platform-overview.md) · Release hardening: [scope-control.md](./scope-control.md) · Blockers: [release-blockers.md](./release-blockers.md)
+Platform overview: [platform-overview.md](./platform-overview.md) · Release hardening:
+[scope-control.md](./scope-control.md) · Blockers: [release-blockers.md](./release-blockers.md)
 
 ## Stability labels (strict)
 
@@ -17,7 +20,8 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Planned** | Not implemented |
 | **Deprecated** | Replaced; do not use in new programs |
 
-**Rules:** mock-backed, demo-only, docs-only, untested, and simulated-only features are **not** Stable. Simulated-only paths must say so explicitly.
+**Rules:** mock-backed, demo-only, docs-only, untested, and simulated-only features are **not**
+Stable. Simulated-only paths must say so explicitly.
 
 **Stubbed** = syntax or API exists without full external integration.  
 **Broken** = known to fail or incomplete in current builds.
@@ -31,7 +35,10 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
 | **Distributed decisions** | Decision trees, offline policy, signed trees, v3 signed traces, persistent escalation, conflict resolution — **Stable** |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
-| **Cognitive & Resilience Architecture** | Eleven functional domains; reflex/immunity/homeostasis/attention **Beta**; fusion/memory/operational memory **Beta** (entity-derived fusion, enriched memory refs); adaptive recovery **Experimental**; maintenance types **Beta**; CC Cognitive & Resilience tab **Beta** — [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` |
+| **Cognitive & Resilience Architecture** | Eleven functional domains — **Beta** tier |
+| | Reflex, immunity, homeostasis, attention; fusion, memory, operational memory |
+| | Adaptive recovery **Experimental**; CC Cognitive & Resilience tab **Beta** |
+| | [architecture](./cognitive-resilience-architecture.md) · [maturity](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
 
 ## v0.4.0 — Deploy & tooling
@@ -87,7 +94,10 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Health & kill switch** | `health_check`, `health_policy`, fleet `require` runtime; `kill_switch`, `remote_signed`, `on kill_switch` handlers |
 | **Self-healing & recovery** | `recovery_policy`, recovery planner, validation gates, audit/traceability; runtime dispatch (modes, speed caps, fleet mesh relay, reassign → continuity mesh); CLI `heal`, `recover`, `recovery-report`, `recovery knowledge`, `sim --inject-failure`; fleet agent interpreter + assurance recovery; mission operator approval gating |
 | **Mission continuity** | Checkpoint resume, state transfer, succession ranking, takeover/delegation; CLI `continuity`, `takeover`, `delegate`, `succession`; `continuity_policy`; diagnostics in `spanda check --readiness-json`; `spanda demo continuity`; official `spanda-mission-continuity` package |
-| **Distributed decisions** | Brain/spinal-cord/reflex layers; `decision_tree`, `offline_policy`, entity `local_decision_authority`; runtime policy gates; signed offline policy + signed decision trees + cache; live v3 signed trace emission; persistent escalation store; runtime conflict resolution; CLI `spanda decision *`; attack simulations; rule enforcement tests — **Stable** ([stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md)) |
+| **Distributed decisions** | Brain/spinal-cord/reflex layers; `decision_tree`, `offline_policy`, entity `local_decision_authority` |
+| | Runtime policy gates; signed offline policy + signed decision trees + cache; live v3 signed trace emission |
+| | Persistent escalation store; runtime conflict resolution; CLI `spanda decision *`; attack simulations |
+| | Rule enforcement tests — **Stable** ([stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md)) |
 | **Differentiation NOW** | `spanda contract verify`, `spanda explain`, `spanda audit decisions`, `spanda safety-coverage`, `spanda recovery-coverage`; `spanda demo differentiation`; decision trail showcase (`differentiation/decision_trail/`) with `explain decision` on v3 trace |
 | **What-If Analysis** | `spanda what-if`, `/v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf` — **Stable** — [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
 | **Mission Risk Analysis** | `spanda risk`, `/v1/analytics/mission-risk` — **Stable** — [stable-hardening-mission-risk.md](./stable-hardening-mission-risk.md) |
@@ -100,7 +110,10 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Mission Time Travel** | `spanda replay --at` / `--inspect` — **Stable** — [stable-hardening-mission-time-travel.md](./stable-hardening-mission-time-travel.md) |
 | **Human/Robot Teaming** | `spanda team verify` — **Stable** — [stable-hardening-human-robot-teaming.md](./stable-hardening-human-robot-teaming.md) |
 | **Autonomous Governance** | `spanda governance` (program policy blocks) — **Stable** — [stable-hardening-autonomous-governance.md](./stable-hardening-autonomous-governance.md) |
-| **Operational Governance** | Autonomy levels, deployment profiles, certification lifecycle, risk, accountability, standards profiles; live decision enforcement; `spanda compliance check`, `governance validate|report`, `certification list|inspect|report`, `deployment profile|verify`, `risk report`; REST/gRPC `/v1/governance/*`; Control Center Governance tab — **Stable** — [governance.md](./governance.md) · [stable-hardening-operational-governance.md](./stable-hardening-operational-governance.md) |
+| **Operational Governance** | Autonomy levels, deployment profiles, certification lifecycle, risk, accountability, standards profiles |
+| | Live decision enforcement; `spanda compliance check`, `governance validate|report`, `certification list|inspect|report` |
+| | `deployment profile|verify`, `risk report`; REST/gRPC `/v1/governance/*`; Control Center Governance tab — **Stable** |
+| | [governance.md](./governance.md) · [stable-hardening-operational-governance.md](./stable-hardening-operational-governance.md) |
 | **Twin Cloud SaaS** | `spanda twin cloud`, `/v1/twins/*`, gRPC twins (proto **1.0.10**), file-backed store + history — **Stable** — [twin-cloud.md](./twin-cloud.md) · [stable-hardening-twin-cloud-saas.md](./stable-hardening-twin-cloud-saas.md) |
 | **LATER Control Center analytics** | `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` + gRPC `GetAnalytics*` (proto **1.0.7**); Analytics tab |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`; CLI `assure`, `anomaly scan`, `diagnose`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`; `spanda demo assurance` |
@@ -145,7 +158,12 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Platform maturity (Phase B)** | **Stable** — threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`, `readiness --policy`, `deploy gate --operational-policy`, runtime `--enforce-policy`) |
 | **Platform maturity (Phase C)** | **Stable** — chaos, readiness trends, resource estimation, compliance profiles, ADR (`spanda adr`) |
 | **Platform maturity (Phase D)** | **Stable** — verify-time tamper/integrity, composite program trust, secure-boot attestation, compliance accreditation export, decision explain, runtime policy, AI generate/suggest, spoof-check, security assurance, tamper_policy runtime |
-| **Enterprise operations (E1–E4)** | Control Center (`spanda control-center serve`, embedded UI, `ControlCenterPanel` in `@davalgi-spanda/web`, Tauri `@spanda/control-center-desktop` **0.4.2** production release), REST v1 (`spanda-api`), Device Pool lifecycle (assign/trust/quarantine/retire, failover chains, recovery integration), host-backed discovery + pool ingest, RBAC v1 (`SPANDA_API_KEY`), `ManagedSecretVault`, alerting core (`spanda-ops`), provisioning/snapshots/discovery (E2), operational drift/OTA/trust/SRE/operator APIs + Python SDK + WebSocket telemetry + OTLP trace export to Jaeger (E3), compliance export/digital thread/executive scorecard/PDF reports (E4); **Stable** tier — see [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), [control-center.md](./control-center.md) |
+| **Enterprise operations (E1–E4)** | Control Center (`spanda control-center serve`, embedded UI, `ControlCenterPanel` in `@davalgi-spanda/web`, Tauri desktop **0.4.2**) |
+| | REST v1 (`spanda-api`); Device Pool lifecycle; host-backed discovery + pool ingest; RBAC v1 (`SPANDA_API_KEY`) |
+| | `ManagedSecretVault`, alerting core (`spanda-ops`); provisioning/snapshots/discovery (E2) |
+| | Operational drift/OTA/trust/SRE/operator APIs + Python SDK + WebSocket telemetry + OTLP trace export (E3) |
+| | Compliance export/digital thread/executive scorecard/PDF reports (E4); **Stable** tier |
+| | [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [control-center.md](./control-center.md) |
 | **Enterprise operations (organizational gates)** | 30-day field soak completion (`enterprise_ops_field_soak_init.sh`); third-party security audit sign-off — tracked separately from tier promotion — [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) |
 | **LLVM backend (production primary)** | Optimized native binaries replacing interpreter as default deploy path |
 | **Self-hosting compiler (full)** | Complete Spanda-authored compiler pipeline |
@@ -155,7 +173,8 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Full world models** | Knowledge graphs, beliefs, policies beyond minimal runtime |
 | **Twin cloud SaaS (hosted product)** | Managed multi-tenant service (billing, SLA, multi-region) — OSS `/v1/twins/*` is **Stable**; pilot at [deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
 
-See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.md](./tier-3-golden-paths.md).
+See [tier-3-experimental.md](./tier-3-experimental.md) and
+[tier-3-golden-paths.md](./tier-3-golden-paths.md).
 
 ### Deprecated
 
@@ -209,7 +228,10 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | observe / fusion | **Stable** | Weighted fusion by sensor type; `state_estimator` runtime bindings |
 | mission assurance (static + CLI) | **Stable** | `spanda-assurance` crate; 9 official packages (includes `spanda-mission-continuity`) |
 | self-healing & recovery (static + CLI) | **Stable** | Recovery planner, validation gates, audit, knowledge store |
-| **Recovery Orchestrator** | **Stable** | `spanda-recovery` crate; escalation levels 0–8, graph, playbooks, policies, simulation, predictive indicators, persisted history; CLI `spanda recovery *`; REST `/v1/recovery/*` (14 routes); gRPC (proto **1.0.14** via `GET /v1/version`); plugin `[recovery.extensions]`; SDK; Control Center Recovery tab + graph; `scripts/recovery_orchestrator_smoke.sh`, stable promotion gate — [recovery-orchestrator.md](./recovery-orchestrator.md) |
+| **Recovery Orchestrator** | **Stable** | `spanda-recovery` crate; escalation levels 0–8, graph, playbooks, policies, simulation |
+| | | Predictive indicators, persisted history; CLI `spanda recovery *`; REST `/v1/recovery/*` (14 routes) |
+| | | gRPC (proto **1.0.14** via `GET /v1/version`); plugin `[recovery.extensions]`; SDK; Control Center Recovery tab |
+| | | `scripts/recovery_orchestrator_smoke.sh`, stable promotion gate — [recovery-orchestrator.md](./recovery-orchestrator.md) |
 | mission continuity (static + CLI + diagnostics) | **Stable** | `spanda-assurance` continuity module; CLI `continuity`, `takeover`, `delegate`, `succession`; `continuity:*` diagnostics in check JSON and LSP |
 | mission continuity runtime dispatch | **Stable** | Interpreter mode-specific takeover, durable checkpoints, auto-trigger on health faults, fleet agent `/v1/continuity/execute`, mesh relay, swarm `--failed` handoff |
 | self-healing runtime dispatch | **Stable** | Auto-trigger on health faults, approval polling/retry, fleet mesh relay with failure events, mission approval gating; `scripts/fleet_field_validation.sh` |
@@ -264,12 +286,19 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | **SRE** | **Stable** | `/v1/sre/summary` with `slo`, `burn_rate`, MTTR/MTBF hints; incident workflow; PagerDuty webhook sync; fast-burn background monitor |
 | **Reporting** | **Stable** | Markdown, JSON, PDF exports; scheduled webhook delivery (`GET/POST /v1/reports/schedules`) |
 | **Compliance** | **Stable** | Evidence packs, `GET /v1/compliance/export`, signed profile catalog (`GET /v1/compliance/profiles`) |
-| **APIs** | **Stable** | REST v1 + OpenAPI; unified entity routes (`/v1/entities/*` — graph, relationships, readiness, query, mutations); program-level SDK routes (`/v1/programs/*`); JSON-RPC gateway (Control Center methods); native gRPC (tonic) — pin RPC count via `GET /v1/version` (currently **164** RPCs, proto **1.0.14**); rate limits (`SPANDA_API_RATE_LIMIT_PER_MINUTE`); versioning policy (`GET /v1/version`, `X-Spanda-Api-Version`) |
-| **Unified Entity Model** | **Stable** | `EntityRegistry` projects fleet, devices, humans, providers, packages into entity graph; verification, readiness, health, and trust via `verify_entity` / `evaluate_entity_*`; Control Center Entities tab with read/write mutations; CI `entity_model_smoke.sh` (REST + TypeScript + Python + Rust SDK); SDKs **0.4.2** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
+| **APIs** | **Stable** | REST v1 + OpenAPI; unified entity routes (`/v1/entities/*`); program-level SDK routes (`/v1/programs/*`) |
+| | | JSON-RPC gateway (Control Center methods); native gRPC (tonic) — **164** RPCs, proto **1.0.14** via `GET /v1/version` |
+| | | Rate limits (`SPANDA_API_RATE_LIMIT_PER_MINUTE`); versioning (`GET /v1/version`, `X-Spanda-Api-Version`) |
+| **Unified Entity Model** | **Stable** | `EntityRegistry` projects fleet, devices, humans, providers, packages into entity graph |
+| | | Verification, readiness, health, and trust via `verify_entity` / `evaluate_entity_*` |
+| | | Control Center Entities tab with read/write mutations; CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) |
+| | | SDKs **0.4.2** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
 | **Observability** | **Stable** | OTLP trace/metrics export, correlation IDs, WebSocket telemetry; `spanda-otel-collector`; Grafana templates (`spanda-grafana-dashboards`); HA collector guide |
 | **Digital Thread** | **Stable** | Full lifecycle graph (requirement → retirement); `GET /v1/digital-thread/query` with `lifecycle_phase` filter |
 
-See [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [control-center.md](./control-center.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md)
+See [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) ·
+[control-center.md](./control-center.md) ·
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md)
 
 ### Solution blueprints & platform maturity
 
@@ -280,15 +309,27 @@ See [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [c
 | **Smart Spaces & Ambient Intelligence** | **Stable** | Six blueprint apps, Smart Spaces tab, BACnet/KNX/HA bridges, `smart_spaces_promotion_gate.sh` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) |
 | **Platform maturity (Phases A–D)** | **Stable** | Graph, deploy gate, explain, trust, threat model, policy engine, chaos, scorecard, tamper, compliance export, ADR — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
 
-**Stable promotion (2026-07-02):** Human Interaction & Spatial Computing (H1–H6), Smart Spaces blueprint, ADAS blueprint, and Platform maturity Phases A–D promoted to **Stable** after implementation promotion gates (soak/audit skipped in CI). Organizational gates — per-blueprint field soak and third-party security audit sign-off — remain tracked in [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md), [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md), [stable-hardening-adas.md](./stable-hardening-adas.md), and [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
+**Stable promotion (2026-07-02):** Human Interaction & Spatial Computing (H1–H6), Smart Spaces
+blueprint, ADAS blueprint, and Platform maturity Phases A–D promoted to **Stable** after
+implementation promotion gates (soak/audit skipped in CI). Organizational gates — per-blueprint
+field soak and third-party security audit sign-off — remain tracked in
+[stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md),
+[stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md),
+[stable-hardening-adas.md](./stable-hardening-adas.md), and
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
-**Enterprise ops (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable** after `enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.4.2** and desktop **0.4.2** (`desktop-v0.4.2`) published. Ongoing organizational gates — 30-day field soak ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off — tracked in [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
+**Enterprise ops (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable** after
+`enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.4.2** and desktop
+**0.4.2** (`desktop-v0.4.2`) published. Ongoing organizational gates — 30-day field soak
+([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off — tracked in
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
 ---
 
 ## Honesty audit (2026-07-04)
 
-Release-hardening pass against the strict labels above ([#50](https://github.com/Davalgi/Spanda/issues/50)):
+Release-hardening pass against the strict labels above
+([#50](https://github.com/Davalgi/Spanda/issues/50)):
 
 | Area | Label | Rationale |
 |------|-------|-----------|
@@ -298,17 +339,26 @@ Release-hardening pass against the strict labels above ([#50](https://github.com
 | Solution blueprints (ADAS, Smart Spaces, HRI) | **Stable** implementation; organizational soak **open** | CI promotion gates skip field soak / third-party audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) |
 | Enterprise ops pillars | **Stable** implementation; organizational soak **open** | Same |
 
-Remaining review: any row still marked **Stable** whose *default* path is simulated-only or docs-only should be demoted in a follow-up PR.
+Remaining review: any row still marked **Stable** whose *default* path is simulated-only or
+docs-only should be demoted in a follow-up PR.
 
 ## Known limitations (v0.5.0)
 
-- AI providers use **mock backends** by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `SPANDA_ONNX_MODEL_PATH` for live calls (`SPANDA_LIVE_AI=0` forces mock). Label: **Mock-backed**.
+- AI providers use **mock backends** by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
+  `SPANDA_ONNX_MODEL_PATH` for live calls (`SPANDA_LIVE_AI=0` forces mock). Label: **Mock-backed**.
 - ROS2 integration requires manual ROS Humble setup and is not the default simulator transport.
-- Native compilation via LLVM is **experimental**; the tree-walking interpreter is the primary runtime.
-- `spanda publish` mirrors bundles to `registry/packages/` in-repo; remote upload requires `SPANDA_REGISTRY_URL`. Run `./scripts/build-registry.sh` to refresh the hosted index after adding scaffolds under `packages/registry/`.
-- VS Code extension builds in CI Integration + path-filtered `vscode-extension-ci.yml`; **Marketplace publish** pending maintainer `VSCE_PAT`.
-- Multi-robot fleet examples run in a single process by default; distributed orchestration uses HTTP fleet agents and an optional fleet mesh coordinator (`spanda fleet mesh start`, `--mesh-url` on orchestrate/swarm).
-- Organizational field soak and third-party security audit remain open for enterprise ops and solution blueprints ([#51](https://github.com/Davalgi/Spanda/issues/51)).
+- Native compilation via LLVM is **experimental**; the tree-walking interpreter is the primary
+  runtime.
+- `spanda publish` mirrors bundles to `registry/packages/` in-repo; remote upload requires
+  `SPANDA_REGISTRY_URL`. Run `./scripts/build-registry.sh` to refresh the hosted index after adding
+  scaffolds under `packages/registry/`.
+- VS Code extension builds in CI Integration + path-filtered `vscode-extension-ci.yml`;
+  **Marketplace publish** pending maintainer `VSCE_PAT`.
+- Multi-robot fleet examples run in a single process by default; distributed orchestration uses HTTP
+  fleet agents and an optional fleet mesh coordinator (`spanda fleet mesh start`, `--mesh-url` on
+  orchestrate/swarm).
+- Organizational field soak and third-party security audit remain open for enterprise ops and
+  solution blueprints ([#51](https://github.com/Davalgi/Spanda/issues/51)).
 
 ---
 
@@ -326,7 +376,9 @@ Remaining review: any row still marked **Stable** whose *default* path is simula
 | Full native binary deploy | Experimental | `spanda deploy --target native`, `compile-native` (clang + llvm feature) |
 | Blockchain / ledger cloud | Stubbed | Audit records local; see `future-blockchain-support.md` |
 
-Nothing in the **Supported** list above is known broken in CI Fast (`./scripts/ci-fast.sh`) or CI Integration on `main`. ROS2 rclrs native and `cargo audit` run in **CI Nightly**. See [ci-architecture.md](./ci-architecture.md).
+Nothing in the **Supported** list above is known broken in CI Fast (`./scripts/ci-fast.sh`) or CI
+Integration on `main`. ROS2 rclrs native and `cargo audit` run in **CI Nightly**. See
+[ci-architecture.md](./ci-architecture.md).
 
 ---
 
@@ -375,7 +427,8 @@ See [architecture.md](./architecture.md) for diagrams.
 - [health-checks.md](./health-checks.md) — health checks and fleet requirements
 - [kill-switch.md](./kill-switch.md) — kill switch syntax and handlers
 - [capability-traceability.md](./capability-traceability.md) — traceability matrices
-- [verification-diagnostics.md](./verification-diagnostics.md) — `--verification-json` and LSP quick-fixes
+- [verification-diagnostics.md](./verification-diagnostics.md) — `--verification-json` and LSP
+  quick-fixes
 - [typed-handler-io.md](./typed-handler-io.md) — handler return type annotations
 - [testing.md](./testing.md) — `expect_compile_error` and test CLI
 - [iot.md](./iot.md) — IoT packages and live bridges

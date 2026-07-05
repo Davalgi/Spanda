@@ -1,12 +1,14 @@
 # Entity Readiness
 
-Operational readiness for any managed object flows through the Unified Entity Model via `evaluate_entity_readiness`.
+Operational readiness for any managed object flows through the Unified Entity Model via
+`evaluate_entity_readiness`.
 
 **Implementation:** `crates/spanda-readiness/src/entity_readiness.rs`
 
 ## API
 
-`GET /v1/entities/{id}/readiness` returns legacy snapshot fields plus an enriched `report` when Control Center has resolved configuration:
+`GET /v1/entities/{id}/readiness` returns legacy snapshot fields plus an enriched `report` when
+Control Center has resolved configuration:
 
 ```json
 {
@@ -40,4 +42,5 @@ spanda entity readiness rover-001 --program patrol.sd --dependencies --json
 | Device | `evaluate_device_readiness` |
 | Facility | Child entity rollup |
 
-See also: [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md), [entity-model.md](./entity-model.md).
+See also: [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md),
+[entity-model.md](./entity-model.md).

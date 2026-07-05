@@ -66,7 +66,8 @@ Or increase loop visibility in `examples/basics/02_sensors_and_safety.sd`.
 
 **You declared** `sensor camera: Camera` **but hardware only lists** `Lidar`.
 
-**Fix:** Add `Camera` to the `hardware` block's `sensors [ ... ]` list, or remove the sensor from the robot.
+**Fix:** Add `Camera` to the `hardware` block's `sensors [ ... ]` list, or remove the sensor from
+the robot.
 
 ```bash
 spanda verify file.sd --target RoverV1 --json
@@ -98,7 +99,8 @@ deploy MyRobot to RoverV1;
 
 **Symptom:** `run` hangs or runs forever.
 
-**Fix:** Behaviors with `loop every` run until the simulator hits `maxLoopIterations`. For tests, golden fixtures pass `"run": { "maxLoopIterations": 5 }`. This is normal for control loops.
+**Fix:** Behaviors with `loop every` run until the simulator hits `maxLoopIterations`. For tests,
+golden fixtures pass `"run": { "maxLoopIterations": 5 }`. This is normal for control loops.
 
 ---
 
@@ -119,7 +121,8 @@ deploy MyRobot to RoverV1;
 1. Run `spanda check file.sd --json` and read the first diagnostic
 2. Find a working example in `examples/basics/` for the same feature
 3. Read the matching [Spanda 101](../spanda-101/README.md) lesson
-4. See the full [troubleshooting guide](../troubleshooting.md) for fleet, ROS2, packages, CI, and ops issues
+4. See the full [troubleshooting guide](../troubleshooting.md) for fleet, ROS2, packages, CI, and
+   ops issues
 5. Open an issue on [GitHub](https://github.com/Davalgi/Spanda/issues)
 
 ---

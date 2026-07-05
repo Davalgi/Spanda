@@ -1,6 +1,7 @@
 # Autonomy Levels
 
-Autonomy level is a first-class entity attribute describing how much decision authority an autonomous system holds.
+Autonomy level is a first-class entity attribute describing how much decision authority an
+autonomous system holds.
 
 ## Levels (SAE-inspired)
 
@@ -48,4 +49,5 @@ CLI and API accept flexible aliases: `level_3`, `l3`, `3`, `conditional`, `condi
 
 ## Deployment profile interaction
 
-Each deployment profile sets `max_autonomy_level`. Governance validation warns when entity autonomy exceeds the profile maximum.
+Each deployment profile sets `max_autonomy_level`. Governance validation warns when entity autonomy
+exceeds the profile maximum.

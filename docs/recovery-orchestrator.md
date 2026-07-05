@@ -1,6 +1,8 @@
 # Recovery Orchestrator
 
-The **Recovery Orchestrator** (`spanda-recovery`) is the platform-wide recovery intelligence for Spanda. It coordinates planning, simulation, validation, execution, evidence, and learning across every entity type — without replacing existing recovery APIs.
+The **Recovery Orchestrator** (`spanda-recovery`) is the platform-wide recovery intelligence for
+Spanda. It coordinates planning, simulation, validation, execution, evidence, and learning across
+every entity type — without replacing existing recovery APIs.
 
 ## Architecture
 
@@ -77,7 +79,8 @@ spanda recovery playbooks
 spanda recovery explain rover.sd --entity robot-1 --failure gps_loss
 ```
 
-When `--entity` is omitted, `recovery explain` defaults to the first recoverable entity from the program registry overlay (for example `Rover` in the self-healing showcase).
+When `--entity` is omitted, `recovery explain` defaults to the first recoverable entity from the
+program registry overlay (for example `Rover` in the self-healing showcase).
 
 ## REST API (summary)
 
@@ -91,7 +94,9 @@ Full reference: [recovery-api.md](./recovery-api.md).
 
 ## Persistence
 
-Orchestrator evidence history is stored in `control-center-recovery.json` (under `SPANDA_CONTROL_CENTER_STATE_DIR`) and hydrated on Control Center startup. `GET /v1/recovery/history` returns the persisted store.
+Orchestrator evidence history is stored in `control-center-recovery.json` (under
+`SPANDA_CONTROL_CENTER_STATE_DIR`) and hydrated on Control Center startup. `GET
+/v1/recovery/history` returns the persisted store.
 
 ## Integration points
 
@@ -100,9 +105,12 @@ Orchestrator evidence history is stored in `control-center-recovery.json` (under
 - **Diagnosis** — failure classification feeds decision engine
 - **Mission Continuity** — delegation, takeover, succession strategies
 - **Fleet** — fleet redistribution playbooks
-- **Plugins** — `[recovery.extensions]` in `spanda.plugin.toml` (playbook, strategy, validator); `on_recovery_completed` hook after execute; example: `examples/plugins/recovery-plugin/`
-- **gRPC** — pin proto semver via `GET /v1/version` (currently **1.0.14**); mirrors REST (14 recovery RPCs including `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`)
-- **Control Center** — **Recovery** tab: plans, metrics, playbooks, history, graph (nodes/edges), plan/simulate/execute actions
+- **Plugins** — `[recovery.extensions]` in `spanda.plugin.toml` (playbook, strategy, validator);
+  `on_recovery_completed` hook after execute; example: `examples/plugins/recovery-plugin/`
+- **gRPC** — pin proto semver via `GET /v1/version` (currently **1.0.14**); mirrors REST (14
+  recovery RPCs including `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`)
+- **Control Center** — **Recovery** tab: plans, metrics, playbooks, history, graph (nodes/edges),
+  plan/simulate/execute actions
 
 ## CI & promotion
 

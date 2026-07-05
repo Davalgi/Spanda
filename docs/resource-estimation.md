@@ -24,7 +24,8 @@ spanda estimate mission.sd --target RoverV1 --json
 
 ## Output
 
-`MissionEstimateReport` — per-resource estimates with confidence, assumptions, and overall budget status.
+`MissionEstimateReport` — per-resource estimates with confidence, assumptions, and overall budget
+status.
 
 ## Integration
 
@@ -32,4 +33,5 @@ Composes `spanda-hardware` profile registry with AST mission and robot structure
 
 Showcase: `examples/showcase/hardware_compatibility.sd` · smoke: `scripts/estimate_smoke.sh`
 
-See [hardware-compatibility.md](./hardware-compatibility.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [hardware-compatibility.md](./hardware-compatibility.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

@@ -26,4 +26,5 @@ SPANDA_TWIN_CLOUD_SKIP_SOAK=1 ./scripts/twin_cloud_stable_promotion_gate.sh
 SPANDA_TWIN_CLOUD_SKIP_SOAK=0 ./scripts/twin_cloud_stable_promotion_gate.sh
 ```
 
-Hosted **managed product** (billing, multi-region SLA) remains on the product track — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md).
+Hosted **managed product** (billing, multi-region SLA) remains on the product track —
+[hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md).

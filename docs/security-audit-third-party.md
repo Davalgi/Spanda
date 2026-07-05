@@ -1,6 +1,8 @@
 # Third-party security audit — Control Center
 
-Spanda enterprise operations promotion requires an independent review of authentication, authorization, and secret handling. This guide scopes the audit and links to automated prep artifacts.
+Spanda enterprise operations promotion requires an independent review of authentication,
+authorization, and secret handling. This guide scopes the audit and links to automated prep
+artifacts.
 
 ## Scope
 
@@ -36,8 +38,11 @@ For **Spatial Computing & Human-Robot Collaboration** promotion, also review:
 | AR session RBAC | `POST /v1/hri/sessions/{id}/annotate` requires Approve role |
 | Mission approvals | `GET /v1/operator/mission/approvals`, persisted queue |
 
-Run `./scripts/hri_security_audit_prep.sh` and attach `.spanda/hri-security-audit-prep.json` alongside the enterprise ops packet.
+Run `./scripts/hri_security_audit_prep.sh` and attach `.spanda/hri-security-audit-prep.json`
+alongside the enterprise ops packet.
 
 ## Registry package
 
-See [packages/registry/spanda-security-audit/README.md](../packages/registry/spanda-security-audit/README.md) for the audit checklist template.
+See
+[packages/registry/spanda-security-audit/README.md](../packages/registry/spanda-security-audit/README.md)
+for the audit checklist template.

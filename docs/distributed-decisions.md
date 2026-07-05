@@ -1,8 +1,12 @@
 # Distributed Decision Architecture
 
-**Status: Stable** — runtime enforcement, signing, escalation persistence, and conflict resolution are implemented and tested. See [stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md).
+**Status: Stable** — runtime enforcement, signing, escalation persistence, and conflict resolution
+are implemented and tested. See
+[stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md).
 
-Spanda implements a **brain / spinal cord / reflex** model for hierarchical distributed autonomy. Decisions are made at the appropriate layer — closest to the device for safety and latency, centrally for strategy and governance.
+Spanda implements a **brain / spinal cord / reflex** model for hierarchical distributed autonomy.
+Decisions are made at the appropriate layer — closest to the device for safety and latency,
+centrally for strategy and governance.
 
 Philosophy and naming: [overview/philosophy.md](./overview/philosophy.md#nervous-system).
 
@@ -29,7 +33,10 @@ Central orchestration **must not block** immediate safety reflexes.
 
 ## Cognitive & Resilience extension
 
-This architecture is extended (not replaced) by the [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md): sensory fusion, homeostasis, platform immunity, operational memory, attention, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
+This architecture is extended (not replaced) by the [Cognitive & Resilience
+Architecture](./cognitive-resilience-architecture.md): sensory fusion, homeostasis, platform
+immunity, operational memory, attention, habituation, damage-risk modeling, adaptive recovery, and
+maintenance windows — all entity-integrated.
 
 Offline operation is **bounded by signed policy** with expiration.
 
@@ -81,7 +88,9 @@ During `run` / `sim` with `SPANDA_DECISION_TRACE=1` or `--record`:
 | `continuity_takeover` | local / fleet | Continuity handoff |
 | `fleet_mesh_continuity` / `fleet_mesh_recovery` | group_fleet | Fleet mesh relay with consensus trace |
 
-`DecisionRuntime` is injected from CLI (`DecisionBackedRuntime`); TypeScript `collectDecisionDiagnostics` mirrors Rust `collect_decision_diagnostics` for `spanda check --readiness-json`.
+`DecisionRuntime` is injected from CLI (`DecisionBackedRuntime`); TypeScript
+`collectDecisionDiagnostics` mirrors Rust `collect_decision_diagnostics` for `spanda check
+--readiness-json`.
 
 ## CLI
 
@@ -116,7 +125,8 @@ Flagship demo: [distributed-decision-demo.md](./distributed-decision-demo.md)
 | GET | `/v1/decision-policy-cache` | Persisted signed offline policy cache on disk |
 | POST | `/v1/programs/simulation` | Run sim; set `decision_trace` and `record_trace` for v3 frames |
 
-Env knobs for runtime gates in sim: `SPANDA_CENTRAL_CONNECTED`, `SPANDA_OFFLINE_MINUTES`, `SPANDA_DECISION_ESCALATION_APPROVED`.
+Env knobs for runtime gates in sim: `SPANDA_CENTRAL_CONNECTED`, `SPANDA_OFFLINE_MINUTES`,
+`SPANDA_DECISION_ESCALATION_APPROVED`.
 
 ## SDK
 
@@ -140,4 +150,5 @@ client.approve_escalation(&body)?;
 
 ## Examples
 
-`examples/showcase/distributed_decisions/` — GPS loss recovery, obstacle reflex, offline continue, fleet takeover, swarm consensus, control center escalation.
+`examples/showcase/distributed_decisions/` — GPS loss recovery, obstacle reflex, offline continue,
+fleet takeover, swarm consensus, control center escalation.

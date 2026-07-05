@@ -1,6 +1,7 @@
 # Recovery Playbooks
 
-Recovery playbooks are versioned, reusable multi-step recovery workflows managed by the Recovery Orchestrator.
+Recovery playbooks are versioned, reusable multi-step recovery workflows managed by the Recovery
+Orchestrator.
 
 ## Built-in playbooks
 
@@ -83,7 +84,9 @@ name = "vendor_retry"
 description = "Vendor-specific retry loop"
 ```
 
-Enabled plugins with `on_recovery_completed` hooks receive payloads after orchestrator execute. Example plugin: `examples/plugins/recovery-plugin/` (playbook, strategy, validator extensions with `trigger` and `strategy` fields). See [plugin-api.md](./plugin-api.md).
+Enabled plugins with `on_recovery_completed` hooks receive payloads after orchestrator execute.
+Example plugin: `examples/plugins/recovery-plugin/` (playbook, strategy, validator extensions with
+`trigger` and `strategy` fields). See [plugin-api.md](./plugin-api.md).
 
 ## See also
 

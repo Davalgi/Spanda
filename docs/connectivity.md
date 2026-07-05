@@ -1,6 +1,7 @@
 # Connectivity
 
-Spanda extends the existing `network` and communication systems with first-class wireless connectivity modeling, verification, and failover.
+Spanda extends the existing `network` and communication systems with first-class wireless
+connectivity modeling, verification, and failover.
 
 ## Connection types
 
@@ -66,7 +67,8 @@ connectivity_policy RoverNetwork {
 }
 ```
 
-When the fallback link is also impaired by active simulation faults (for example `NetworkOutage` or `LteOutage`), the runtime automatically escalates to the `emergency` link in the same failover step.
+When the fallback link is also impaired by active simulation faults (for example `NetworkOutage` or
+`LteOutage`), the runtime automatically escalates to the `emergency` link in the same failover step.
 
 ## Offline and degraded modes
 

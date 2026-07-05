@@ -4,8 +4,10 @@ In-language tests, compile-fail assertions, and CLI test runners (Phases 27–28
 
 **Examples:**
 
-- [`examples/basics/07_in_language_tests.sd`](../examples/basics/07_in_language_tests.sd) — basic `test` blocks
-- [`examples/basics/12_compile_fail_tests.sd`](../examples/basics/12_compile_fail_tests.sd) — `expect_compile_error`
+- [`examples/basics/07_in_language_tests.sd`](../examples/basics/07_in_language_tests.sd) — basic
+  `test` blocks
+- [`examples/basics/12_compile_fail_tests.sd`](../examples/basics/12_compile_fail_tests.sd) —
+  `expect_compile_error`
 
 ---
 
@@ -39,9 +41,11 @@ test "rejects bad assignment" {
 }
 ```
 
-The test passes when the nested block produces a compile error. If the block type-checks, the test fails.
+The test passes when the nested block produces a compile error. If the block type-checks, the test
+fails.
 
-**Example:** [`examples/basics/12_compile_fail_tests.sd`](../examples/basics/12_compile_fail_tests.sd)
+**Example:**
+[`examples/basics/12_compile_fail_tests.sd`](../examples/basics/12_compile_fail_tests.sd)
 
 ---
 

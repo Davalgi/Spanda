@@ -1,15 +1,19 @@
 # Smart Space Security
 
-Identity, access control, trust verification, and audit for [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
+Identity, access control, trust verification, and audit for [Smart Spaces & Ambient
+Intelligence](./solutions/smart-spaces.md).
 
-**Status:** Experimental (scaffold) · **Config:** `examples/solutions/smart-spaces/spanda.security.toml`
+**Status:** Experimental (scaffold) · **Config:**
+`examples/solutions/smart-spaces/spanda.security.toml`
 
 ---
 
 ## Principles
 
-1. **Verify before trust** — Locks, cameras, and gateways must pass trust checks before access missions run.
-2. **Least privilege** — Occupants, visitors, and operators have capability-scoped grants in the entity graph.
+1. **Verify before trust** — Locks, cameras, and gateways must pass trust checks before access
+   missions run.
+2. **Least privilege** — Occupants, visitors, and operators have capability-scoped grants in the
+   entity graph.
 3. **Tamper awareness** — Device tamper signals block automation and escalate to operators.
 4. **Audit everything** — Access decisions and overrides append to assurance and audit logs.
 5. **No silent bypass** — Lockdown and emergency overrides require explicit approval or policy.
@@ -62,7 +66,8 @@ Triggered by operator or automated threat signal:
 3. Notify security operator queue
 4. Produce assurance bundle with timestamped access denials
 
-Example: [examples/solutions/smart-spaces/smart-building/floor_readiness.sd](../examples/solutions/smart-spaces/smart-building/floor_readiness.sd)
+Example:
+[floor_readiness.sd](../examples/solutions/smart-spaces/smart-building/floor_readiness.sd)
 
 ---
 

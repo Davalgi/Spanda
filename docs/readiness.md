@@ -4,7 +4,9 @@ Spanda's **Operational Readiness Engine** answers one question:
 
 > Can this robot safely perform this mission right now?
 
-It composes existing platform gates — hardware verification, capability verification, health checks, connectivity validation, safety rules, and mission requirements — into a single weighted **readiness score** and go/no-go report.
+It composes existing platform gates — hardware verification, capability verification, health checks,
+connectivity validation, safety rules, and mission requirements — into a single weighted **readiness
+score** and go/no-go report.
 
 ## Quick start
 
@@ -23,14 +25,23 @@ spanda demo readiness
 
 ### Runtime and agent readiness
 
-- **`--runtime`** — evaluate against live hardware monitor signals (health checks use runtime fault/event state).
-- **`--inject-health-faults`** — simulate degraded sensors for what-if analysis (pairs with `--runtime`).
-- **`GET /v1/readiness`** on deploy and fleet agents; query `runtime=true` and `inject_health_faults=true` for on-device evaluation.
+- **`--runtime`** — evaluate against live hardware monitor signals (health checks use runtime
+  fault/event state).
+- **`--inject-health-faults`** — simulate degraded sensors for what-if analysis (pairs with
+  `--runtime`).
+- **`GET /v1/readiness`** on deploy and fleet agents; query `runtime=true` and
+  `inject_health_faults=true` for on-device evaluation.
 - **`POST /v1/program`** on deploy and fleet agents to upload `.sd` source for live readiness.
-- **Remote CLI:** `spanda deploy agent readiness <Robot@Hardware>` and `spanda fleet agent readiness <RobotName>`.
-- **`--agent-json`** on `spanda readiness` — same JSON envelope as agent `GET /v1/readiness` (for scripts, CI, and local parity checks).
-- **`spanda check --readiness-json`** — merges operational readiness diagnostics with **recovery-policy** diagnostics (`recovery:policy`, `recovery:approval`, `recovery:fleet`) and **continuity-policy** diagnostics (`continuity:policy`, `continuity:fleet`, `continuity:approval`, `continuity:handoff`). See [verification-diagnostics.md](./verification-diagnostics.md).
-- **Web playground** — switch to **Operations** view in `packages/web` for local scoring or agent fetch.
+- **Remote CLI:** `spanda deploy agent readiness <Robot@Hardware>` and `spanda fleet agent readiness
+  <RobotName>`.
+- **`--agent-json`** on `spanda readiness` — same JSON envelope as agent `GET /v1/readiness` (for
+  scripts, CI, and local parity checks).
+- **`spanda check --readiness-json`** — merges operational readiness diagnostics with
+  **recovery-policy** diagnostics (`recovery:policy`, `recovery:approval`, `recovery:fleet`) and
+  **continuity-policy** diagnostics (`continuity:policy`, `continuity:fleet`, `continuity:approval`,
+  `continuity:handoff`). See [verification-diagnostics.md](./verification-diagnostics.md).
+- **Web playground** — switch to **Operations** view in `packages/web` for local scoring or agent
+  fetch.
 
 Example output:
 
@@ -61,7 +72,8 @@ Issues:
 
 ## Operational policy integration
 
-When `--policy <name>` is set, readiness evaluation merges verify-time operational policy rules into the report:
+When `--policy <name>` is set, readiness evaluation merges verify-time operational policy rules into
+the report:
 
 - Adds an **OperationalPolicy** factor to the weighted score (weight 8)
 - Maps policy violations to readiness issues (`High` for errors, `Medium` for warnings)
@@ -93,4 +105,5 @@ See [policy-engine.md](./policy-engine.md).
 
 Rust API: `spanda-readiness` (`evaluate_readiness`, `ReadinessReport`, …)
 
-See also: [Mission Verification](mission-verification.md), [Fleet Readiness](fleet-readiness.md), [Safety Reporting](safety-reporting.md).
+See also: [Mission Verification](mission-verification.md), [Fleet Readiness](fleet-readiness.md),
+[Safety Reporting](safety-reporting.md).

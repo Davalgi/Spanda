@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Phase:** Simulate, Recover · **Priority:** P2.1
 
-Validate resilience by injecting controlled failures and verifying recovery, health, readiness, and post-injection safety.
+Validate resilience by injecting controlled failures and verifying recovery, health, readiness, and
+post-injection safety.
 
 ## CLI
 
@@ -13,7 +14,8 @@ spanda chaos rover.sd --inject camera-failure,connectivity-failure
 spanda chaos rover.sd --json
 ```
 
-When `--inject` is omitted, injections are inferred from program structure (sensors, connectivity, recovery policies).
+When `--inject` is omitted, injections are inferred from program structure (sensors, connectivity,
+recovery policies).
 
 ## Injection kinds
 
@@ -44,4 +46,5 @@ Overall experiment **PASS** when every injection passes all four checks.
 
 Showcase: `examples/showcase/self_healing/rover.sd` · smoke: `scripts/chaos_smoke.sh`
 
-See [self-healing.md](./self-healing.md) · [resilience.md](./resilience.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [self-healing.md](./self-healing.md) · [resilience.md](./resilience.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

@@ -32,7 +32,8 @@ spanda risk mission.sd --json
 
 ## Output
 
-Risk Score, Risk Contributors, Recommended Mitigations — linked to `spanda explain` and coverage reports.
+Risk Score, Risk Contributors, Recommended Mitigations — linked to `spanda explain` and coverage
+reports.
 
 ## Crate
 

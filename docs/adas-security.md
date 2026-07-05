@@ -60,7 +60,9 @@ tamper_policy AutomotiveTamperResponse {
 
 ## Secure communication
 
-ISO 26262 profile requires `secure_comm` with encryption and signed authentication. Vehicle ECU communication via optional `spanda-canbus` and `spanda-automotive-ethernet` packages uses the same security contracts.
+ISO 26262 profile requires `secure_comm` with encryption and signed authentication. Vehicle ECU
+communication via optional `spanda-canbus` and `spanda-automotive-ethernet` packages uses the same
+security contracts.
 
 ---
 
@@ -85,7 +87,8 @@ spanda verify src/highway_drive.sd --profile iso26262  # includes trust checks
 spanda demo trust                                       # tamper showcases
 ```
 
-Trust factors: package signatures, secure boot attestation, tamper policy presence, provider allowlist.
+Trust factors: package signatures, secure boot attestation, tamper policy presence, provider
+allowlist.
 
 ---
 

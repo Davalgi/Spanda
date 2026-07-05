@@ -1,8 +1,10 @@
 # Pillar 3 — Verification Platform
 
-[← Pillars index](../README.md) · [ROADMAP § Pillar 3](../../ROADMAP.md#pillar-3--verification-platform)
+[← Pillars index](../README.md) · [ROADMAP § Pillar
+3](../../ROADMAP.md#pillar-3--verification-platform)
 
-Prove hardware fit, mission safety, readiness, assurance, diagnosis, recovery, trust, and explainability.
+Prove hardware fit, mission safety, readiness, assurance, diagnosis, recovery, trust, and
+explainability.
 
 ## Verify & safety
 
@@ -68,4 +70,5 @@ Prove hardware fit, mission safety, readiness, assurance, diagnosis, recovery, t
 
 ## Smoke gates
 
-`scripts/differentiation_smoke.sh` · `scripts/assurance_smoke.sh` · `scripts/continuity_smoke.sh` · `scripts/self_healing_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/differentiation_smoke.sh` · `scripts/assurance_smoke.sh` · `scripts/continuity_smoke.sh` ·
+`scripts/self_healing_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)

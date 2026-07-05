@@ -1,6 +1,7 @@
 # Entity Relationships
 
-Entities connect through typed, directed **relationship edges**. Relationships power graph traversal, impact analysis, Control Center navigation, and query filters.
+Entities connect through typed, directed **relationship edges**. Relationships power graph
+traversal, impact analysis, Control Center navigation, and query filters.
 
 ## Relationship kinds
 

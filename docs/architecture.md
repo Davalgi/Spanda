@@ -2,13 +2,18 @@
 
 Technical architecture of the Spanda compiler, runtime, and tooling stack.
 
-For a shorter overview, see [spanda-architecture.md](./spanda-architecture.md). For the lean-core model, see [lean-core.md](./lean-core.md). For official platform layers and dependency governance, see [platform-architecture.md](./platform-architecture.md).
+For a shorter overview, see [spanda-architecture.md](./spanda-architecture.md). For the lean-core
+model, see [lean-core.md](./lean-core.md). For official platform layers and dependency governance,
+see [platform-architecture.md](./platform-architecture.md).
 
 ---
 
 ## Lean-core model
 
-Spanda Core defines **contracts** (types, safety, verification, provider traits). **Official packages** under `packages/registry/` supply domain implementations (ROS2, MQTT, GPS, SLAM, vision, simulation, fleet, OTA, cloud). Legacy core modules remain as compatibility shims — see [migration.md](./migration.md#lean-core-package-first-refactor).
+Spanda Core defines **contracts** (types, safety, verification, provider traits). **Official
+packages** under `packages/registry/` supply domain implementations (ROS2, MQTT, GPS, SLAM, vision,
+simulation, fleet, OTA, cloud). Legacy core modules remain as compatibility shims — see
+[migration.md](./migration.md#lean-core-package-first-refactor).
 
 ```mermaid
 flowchart LR
@@ -85,7 +90,8 @@ flowchart TB
 
 ## Parser
 
-The lexer lives in `spanda-lexer`; the parser in `spanda-parser` (~8k LOC); compile orchestration in `spanda-driver`. A TypeScript mirror exists in `src/` for tests and fallback execution.
+The lexer lives in `spanda-lexer`; the parser in `spanda-parser` (~8k LOC); compile orchestration in
+`spanda-driver`. A TypeScript mirror exists in `src/` for tests and fallback execution.
 
 ```mermaid
 flowchart LR
@@ -111,7 +117,9 @@ flowchart LR
 
 ## AST
 
-The AST lives in **`spanda-ast`** (`nodes`, `foundations`, `comm_decl`). Shared across type checking, verification, interpretation, and SIR lowering. `spanda_core::ast` is a compatibility re-export.
+The AST lives in **`spanda-ast`** (`nodes`, `foundations`, `comm_decl`). Shared across type
+checking, verification, interpretation, and SIR lowering. `spanda_core::ast` is a compatibility
+re-export.
 
 ```mermaid
 flowchart TB
@@ -132,13 +140,15 @@ flowchart TB
   Stmt --> EmergencyStop
 ```
 
-Robot declarations are the primary unit of autonomous program structure. Hardware and deploy declarations are program-level siblings.
+Robot declarations are the primary unit of autonomous program structure. Hardware and deploy
+declarations are program-level siblings.
 
 ---
 
 ## Type System
 
-The type checker in **`spanda-typecheck`** (`checker`, `type_system`, `units`, `reliability_validation`) enforces:
+The type checker in **`spanda-typecheck`** (`checker`, `type_system`, `units`,
+`reliability_validation`) enforces:
 
 - Physical unit algebra (`m`, `s`, `rad`, `m/s`, compound units)
 - AI safety types (`ActionProposal` vs `SafeAction`)
@@ -158,7 +168,8 @@ flowchart LR
   CAPS --> OK
 ```
 
-Key safety rule: `actuator.execute()` requires `SafeAction`. Passing `ActionProposal` is a **compile error**.
+Key safety rule: `actuator.execute()` requires `SafeAction`. Passing `ActionProposal` is a **compile
+error**.
 
 See [spanda-type-system.md](./spanda-type-system.md).
 
@@ -166,11 +177,18 @@ See [spanda-type-system.md](./spanda-type-system.md).
 
 ## Runtime
 
-The tree-walking **interpreter** executes typed AST with integrated subsystems. Implementation lives in **`crates/spanda-interpreter/src/runtime/`** (21 modules, ~10.7k LOC): orchestrator, eval/execute, scheduler, triggers, robotics, sensors, safety, security, and related child files.
+The tree-walking **interpreter** executes typed AST with integrated subsystems. Implementation lives
+in **`crates/spanda-interpreter/src/runtime/`** (21 modules, ~10.7k LOC): orchestrator,
+eval/execute, scheduler, triggers, robotics, sensors, safety, security, and related child files.
 
-**Composition root:** `spanda-driver` owns compile → run: `spanda-lexer` → `spanda-parser` → `spanda-typecheck`, optional `spanda-bridge` FFI defaults, then `spanda-interpreter::run_program`. Certification gates are injected via `spanda-assurance` at the CLI/runtime boundary. Hardware compatibility checks live in `spanda-core::hardware_verify`. `spanda-core` is a one-way facade that re-exports the public API.
+**Composition root:** `spanda-driver` owns compile → run: `spanda-lexer` → `spanda-parser` →
+`spanda-typecheck`, optional `spanda-bridge` FFI defaults, then `spanda-interpreter::run_program`.
+Certification gates are injected via `spanda-assurance` at the CLI/runtime boundary. Hardware
+compatibility checks live in `spanda-core::hardware_verify`. `spanda-core` is a one-way facade that
+re-exports the public API.
 
-`CoreRuntimeHost` in `spanda-runtime-host` implements `spanda_runtime::RuntimeHost` and wires domain hooks (connectivity, fleet, transport adapters) into the interpreter.
+`CoreRuntimeHost` in `spanda-runtime-host` implements `spanda_runtime::RuntimeHost` and wires domain
+hooks (connectivity, fleet, transport adapters) into the interpreter.
 
 ```mermaid
 flowchart TB
@@ -217,7 +235,8 @@ flowchart TB
 6. AI agents propose actions; safety monitor validates before motion
 7. Simulator updates pose, lidar scans, and actuator feedback
 
-See [triggers.md](./triggers.md) and [concurrency.md](./concurrency.md) for handler categories, fleet CLI, and telemetry flags.
+See [triggers.md](./triggers.md) and [concurrency.md](./concurrency.md) for handler categories,
+fleet CLI, and telemetry flags.
 
 ---
 
@@ -242,7 +261,8 @@ flowchart LR
 | `service` | `service reset: ResetCostmap` | Request/response RPC |
 | `action` | `action go_to: NavigateTo` | Long-running goal with feedback |
 
-Default simulator uses in-memory routing. Optional ROS2 transport via `spanda-ros2-rclrs-native` (requires ROS Humble).
+Default simulator uses in-memory routing. Optional ROS2 transport via `spanda-ros2-rclrs-native`
+(requires ROS Humble).
 
 ---
 
@@ -263,7 +283,8 @@ flowchart LR
 
 **Compile time:** Type checker rejects `wheels.execute(proposal)`.
 
-**Runtime:** Safety monitor evaluates `max_speed`, `stop_if`, and zone membership before each motion command. Violations trigger `emergency_stop` and actuator `stop()`.
+**Runtime:** Safety monitor evaluates `max_speed`, `stop_if`, and zone membership before each motion
+command. Violations trigger `emergency_stop` and actuator `stop()`.
 
 ---
 
@@ -285,7 +306,8 @@ flowchart TB
   HWV --> REPORT["JSON / CLI report"]
 ```
 
-Checks include: required sensors present on profile, AI model memory/GPU fit, task budgets, mission power draw, network bandwidth/latency.
+Checks include: required sensors present on profile, AI model memory/GPU fit, task budgets, mission
+power draw, network bandwidth/latency.
 
 See [hardware-compatibility.md](./hardware-compatibility.md).
 
@@ -293,7 +315,8 @@ See [hardware-compatibility.md](./hardware-compatibility.md).
 
 ## Unified Entity Model
 
-Every platform object projects into a canonical **Entity** graph in `spanda-config`. Evaluation engines route health, readiness, trust, and verification through the same registry:
+Every platform object projects into a canonical **Entity** graph in `spanda-config`. Evaluation
+engines route health, readiness, trust, and verification through the same registry:
 
 ```mermaid
 flowchart TB
@@ -328,9 +351,12 @@ flowchart TB
   API --> GRPC
 ```
 
-Domain types (`DeviceIdentityRecord`, `HumanEntity`, `RobotNode`, …) remain TOML source of truth. The entity layer adds shared health, readiness, trust, relationships, and query semantics without breaking existing APIs.
+Domain types (`DeviceIdentityRecord`, `HumanEntity`, `RobotNode`, …) remain TOML source of truth.
+The entity layer adds shared health, readiness, trust, relationships, and query semantics without
+breaking existing APIs.
 
-See [entity-model.md](./entity-model.md) · [entity-verification.md](./entity-verification.md) · [entity-registry.md](./entity-registry.md) · [entity-graph.md](./entity-graph.md).
+See [entity-model.md](./entity-model.md) · [entity-verification.md](./entity-verification.md) ·
+[entity-registry.md](./entity-registry.md) · [entity-graph.md](./entity-graph.md).
 
 ---
 
@@ -342,7 +368,8 @@ AST → SIR (sir.rs) → LLVM IR (spanda-llvm) → native binary (spanda-rt)
 
 Commands: `spanda ir`, `spanda llvm-ir`, `spanda compile-native`
 
-HAL profiles (`--hal-profile`) influence conditional codegen for embedded targets. This path is experimental in v0.1.0-alpha; the interpreter is the primary runtime.
+HAL profiles (`--hal-profile`) influence conditional codegen for embedded targets. This path is
+experimental in v0.1.0-alpha; the interpreter is the primary runtime.
 
 See [compiler-backend-roadmap.md](./compiler-backend-roadmap.md).
 
@@ -358,7 +385,8 @@ See [compiler-backend-roadmap.md](./compiler-backend-roadmap.md).
 | **Mirror** | `src/` (TypeScript) | Tests, fallback CLI, LSP helpers, provider classification mirror |
 | **UX** | `packages/web`, `packages/lsp`, `editor/vscode` | Playground, language server, extension scaffold |
 
-The TypeScript mirror delegates to the Rust CLI when `target/release/spanda` is available (`src/rust-bridge.ts`).
+The TypeScript mirror delegates to the Rust CLI when `target/release/spanda` is available
+(`src/rust-bridge.ts`).
 
 ---
 

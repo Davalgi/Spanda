@@ -1,6 +1,9 @@
 # Spanda Product Strategy
 
-Strategic analysis for Spanda as an **autonomous systems platform** with a safety-first language at its core. This document defines positioning, priorities, and release scope. It complements [vision.md](./vision.md) (aspiration), [platform-overview.md](./platform-overview.md) (architecture), and [feature-status.md](./feature-status.md) (implementation truth).
+Strategic analysis for Spanda as an **autonomous systems platform** with a safety-first language at
+its core. This document defines positioning, priorities, and release scope. It complements
+[vision.md](./vision.md) (aspiration), [platform-overview.md](./platform-overview.md)
+(architecture), and [feature-status.md](./feature-status.md) (implementation truth).
 
 **Last updated:** 2026-07-04 (v0.6.3 evaluation/beta; Next horizon phase; organizational gates)
 
@@ -8,14 +11,16 @@ Strategic analysis for Spanda as an **autonomous systems platform** with a safet
 
 ## Executive summary
 
-Spanda should not compete as a general-purpose language, Python replacement, Rust replacement, or ROS replacement. It wins as **the coordination and verification platform** where:
+Spanda should not compete as a general-purpose language, Python replacement, Rust replacement, or
+ROS replacement. It wins as **the coordination and verification platform** where:
 
 1. AI output is **typed as untrusted** (`ActionProposal` → `SafeAction`)
 2. Hardware fit is **checked before deploy** (`spanda verify`)
 3. Safety is **mandatory in the language**, not bolted on
 4. Simulation, replay, and health are **first-class operational workflows**
 
-**Official positioning:** *Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.* *The pulse of autonomous intelligence.*
+**Official positioning:** *Spanda is an Autonomous Systems Platform with a safety-first programming
+language at its core.* *The pulse of autonomous intelligence.*
 
 **Short form:** *The Autonomous Systems Platform.*
 
@@ -23,15 +28,29 @@ Spanda should not compete as a general-purpose language, Python replacement, Rus
 
 ### Platform maturity focus (2026–2027)
 
-Beyond core language features, Spanda prioritizes **adoption, trust, and operations** — see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md), [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), and [differentiation-roadmap.md](./differentiation-roadmap.md). Planned areas compose existing engines (`spanda-readiness`, `spanda-assurance`, `spanda-security`) rather than replacing them.
+Beyond core language features, Spanda prioritizes **adoption, trust, and operations** — see
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md),
+[enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), and
+[differentiation-roadmap.md](./differentiation-roadmap.md). Planned areas compose existing engines
+(`spanda-readiness`, `spanda-assurance`, `spanda-security`) rather than replacing them.
 
-**Shipped (v0.6.3 evaluation/beta):** release-hardening CI suite (CI Integration), honest mock-default labeling, closed code blockers — [release-readiness.md](./release-readiness.md). PR gate: [ci-architecture.md](./ci-architecture.md).
+**Shipped (v0.6.3 evaluation/beta):** release-hardening CI suite (CI Integration), honest
+mock-default labeling, closed code blockers — [release-readiness.md](./release-readiness.md). PR
+gate: [ci-architecture.md](./ci-architecture.md).
 
-**NOW (Next horizon, P1):** differentiation signature capabilities (mission contracts, explainability, decision audit trail); Control Center Stable promotion.
+**NOW (Next horizon, P1):** differentiation signature capabilities (mission contracts,
+explainability, decision audit trail); Control Center Stable promotion.
 
-**P0 (organizational, parallel):** 30-day field soak + third-party security audit — [organizational-gates.md](./organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51).
+**P0 (organizational, parallel):** 30-day field soak + third-party security audit —
+[organizational-gates.md](./organizational-gates.md) ·
+[#51](https://github.com/Davalgi/Spanda/issues/51).
 
-**Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI with `--version`, official SDKs **0.4.2**, Tauri desktop **0.6.3** (auto `desktop-v*` on labeled CC PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see [control-center.md](./control-center.md) · [control-center-versioning.md](./control-center-versioning.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+**Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI
+with `--version`, official SDKs **0.4.2**, Tauri desktop **0.6.3** (auto `desktop-v*` on labeled CC
+PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see
+[control-center.md](./control-center.md) ·
+[control-center-versioning.md](./control-center-versioning.md) ·
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
 **Deferred:** VS Code Marketplace publish (needs `VSCE_PAT`).
 
@@ -43,7 +62,10 @@ AI models are the mind.
 Actuators are the muscles.  
 Spanda is the intelligent pulse that transforms perception, intent, and safety into action.
 
-**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
+**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* —
+the creative vibration of consciousness and energy that manifests as expansion and contraction in
+all entities, bridging stillness and movement within consciousness; and the first stir of awareness
+that creates and sustains the universe.
 
 ---
 
@@ -138,7 +160,8 @@ Foundational pillars that support the signature capabilities above.
 
 ## Feature classification
 
-Every major feature is classified for prioritization. See [feature-status.md](./feature-status.md) for implementation status.
+Every major feature is classified for prioritization. See [feature-status.md](./feature-status.md)
+for implementation status.
 
 | Feature | Classification |
 |---------|----------------|
@@ -196,7 +219,9 @@ Every major feature is classified for prioritization. See [feature-status.md](./
 
 ### Tier 3 — Experimental (Phase 22)
 
-Promoted from deferred to experimental with minimal runtimes and golden paths. See [tier-3-experimental.md](./tier-3-experimental.md). **Execution order:** [tier-3-priority-plan.md](./tier-3-priority-plan.md).
+Promoted from deferred to experimental with minimal runtimes and golden paths. See
+[tier-3-experimental.md](./tier-3-experimental.md). **Execution order:**
+[tier-3-priority-plan.md](./tier-3-priority-plan.md).
 
 - LLVM native codegen (`spanda compile-native`, `scripts/llvm_golden_path.sh`)
 - Blockchain / ledger (`spanda-ledger` → `MockLedgerBackend`)
@@ -207,7 +232,9 @@ Promoted from deferred to experimental with minimal runtimes and golden paths. S
 - C++ in-process FFI (`cpp-native` feature)
 - Self-hosting bootstrap (`examples/self_host/`)
 
-**Still future:** LLVM as primary path, production chain adapters, full world-model semantics, **hosted Twin Cloud product GA** (billing, multi-region SLA — OSS `/v1/twins/*` is **Stable**), full fleet planning, full DDS middleware, ROS replacement, complete self-hosted compiler.
+**Still future:** LLVM as primary path, production chain adapters, full world-model semantics,
+**hosted Twin Cloud product GA** (billing, multi-region SLA — OSS `/v1/twins/*` is **Stable**), full
+fleet planning, full DDS middleware, ROS replacement, complete self-hosted compiler.
 
 ---
 
@@ -215,7 +242,9 @@ Promoted from deferred to experimental with minimal runtimes and golden paths. S
 
 ### v1 vision
 
-A robotics team writes a `.sd` program, runs `spanda verify` against their hardware profile, simulates it, connects one real AI provider and one real transport (Python + ROS2), and deploys coordination logic to edge hardware — with unsafe AI blocked at compile time.
+A robotics team writes a `.sd` program, runs `spanda verify` against their hardware profile,
+simulates it, connects one real AI provider and one real transport (Python + ROS2), and deploys
+coordination logic to edge hardware — with unsafe AI blocked at compile time.
 
 ### v0.1.0-alpha — shipped
 
@@ -227,7 +256,8 @@ A robotics team writes a `.sd` program, runs `spanda verify` against their hardw
 | Physics-lite sim | Done |
 | Showcase examples + CI | Done |
 
-Optional (present): live AI/IoT when configured, experimental LLVM, hosted registry + publish mirror.  
+Optional (present): live AI/IoT when configured, experimental LLVM, hosted registry + publish
+mirror.
 Not needed: blockchain, self-hosting, fleet runtime.
 
 ### v0.5 beta — target Q4 2026
@@ -242,7 +272,8 @@ Not needed: blockchain, self-hosting, fleet runtime.
 | Package install from remote registry (small, curated) | **Done** — 38 packages; hosted index + `spanda publish` mirror |
 | Differentiation NOW (contracts, explain, audit trail, coverage) | **Planned** — topic guides shipped; crates not started |
 
-P1 adoption enablers (CI verify, PyO3, LSP deploy hints, showcase trim, adoption quickstart) are **complete** — see [tier-3-priority-plan.md](./tier-3-priority-plan.md).
+P1 adoption enablers (CI verify, PyO3, LSP deploy hints, showcase trim, adoption quickstart) are
+**complete** — see [tier-3-priority-plan.md](./tier-3-priority-plan.md).
 
 ### v1.0 — target 2027
 
@@ -332,7 +363,8 @@ Week 1: CI with `check` + `verify`.
 Week 2: one `extern python` call to existing model.  
 Week 3: ROS2 bridge for a single topic.
 
-**Guides:** [adoption-path.md](./adoption-path.md) · [ci-verify.md](./ci-verify.md) · [ros2-golden-path.md](./ros2-golden-path.md)
+**Guides:** [adoption-path.md](./adoption-path.md) · [ci-verify.md](./ci-verify.md) ·
+[ros2-golden-path.md](./ros2-golden-path.md)
 
 **Positioning:** Spanda is a 2–5k LOC coordination layer above existing stacks, not a rewrite.
 
@@ -341,7 +373,8 @@ Week 3: ROS2 bridge for a single topic.
 ## Killer demo: "The Unsafe Planner"
 
 **Duration:** under 5 minutes  
-**Message:** Unsafe AI is blocked at compile time; hardware fit is verified; safe execution is simulated.
+**Message:** Unsafe AI is blocked at compile time; hardware fit is verified; safe execution is
+simulated.
 
 | Step | Action | Audience sees |
 |------|--------|---------------|
@@ -352,7 +385,9 @@ Week 3: ROS2 bridge for a single topic.
 | 5 | `spanda sim` | Robot drives; `stop_if` triggers near obstacle |
 | 6 | `simulate_compatibility { fault ... }` | Verify warns before deploy |
 
-**Implementation:** merge `examples/showcase/ai_safety_violation.sd` and `examples/showcase/hardware_compatibility.sd` into `examples/showcase/killer_demo.sd`; add `docs/killer-demo.md`.
+**Implementation:** merge `examples/showcase/ai_safety_violation.sd` and
+`examples/showcase/hardware_compatibility.sd` into `examples/showcase/killer_demo.sd`; add
+`docs/killer-demo.md`.
 
 Do **not** show blockchain, world models, LLVM, or fleet comm in this demo.
 
@@ -373,15 +408,19 @@ Do **not** show blockchain, world models, LLVM, or fleet comm in this demo.
 | Advanced power models | Heuristic battery check is enough |
 | Expanding GP language surface | Rust/Go win on GP; Spanda wins on domain |
 
-**Exception:** maintain existing LLVM/security/audit code if tests pass — but allocate no new engineering until Tier 1 is adoption-proven.
+**Exception:** maintain existing LLVM/security/audit code if tests pass — but allocate no new
+engineering until Tier 1 is adoption-proven.
 
 ---
 
 ## Long-term vision
 
-Spanda becomes the **standard coordination layer** for autonomous systems: the `.sd` file between Python AI pipelines and ROS2/C++ hardware, with verify-as-CI and safety-typed AI as industry expectation.
+Spanda becomes the **standard coordination layer** for autonomous systems: the `.sd` file between
+Python AI pipelines and ROS2/C++ hardware, with verify-as-CI and safety-typed AI as industry
+expectation.
 
-Not a general-purpose language. Not a ROS fork. The deploy-verified, safety-gated orchestration language for robots, drones, and edge agents.
+Not a general-purpose language. Not a ROS fork. The deploy-verified, safety-gated orchestration
+language for robots, drones, and edge agents.
 
 ---
 
@@ -390,8 +429,10 @@ Not a general-purpose language. Not a ROS fork. The deploy-verified, safety-gate
 - [vision.md](./vision.md) — aspirational positioning
 - [feature-status.md](./feature-status.md) — honest implementation snapshot
 - [roadmap.md](./roadmap.md) — engineering milestones
-- [differentiation-roadmap.md](./differentiation-roadmap.md) — signature capabilities, mission contracts, explainability, coverage
-- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — adoption, trust, operations expansion
+- [differentiation-roadmap.md](./differentiation-roadmap.md) — signature capabilities, mission
+  contracts, explainability, coverage
+- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — adoption, trust, operations
+  expansion
 - [hardware-compatibility.md](./hardware-compatibility.md) — verify feature deep dive
 - [ffi-and-ecosystem.md](./ffi-and-ecosystem.md) — Python/C++/ROS2 interop
 - [future-blockchain-support.md](./future-blockchain-support.md) — optional, deferred

@@ -18,6 +18,8 @@ Rust workspace layout for the lean-core platform (Phases 1–35 complete).
 | **Official packages** | `packages/registry/*` | 38 hosted `.sd` packages (ROS2, MQTT, GPS, mission assurance, mission continuity, …) |
 | **TypeScript mirror** | `src/`, `packages/lsp` | Parser/typecheck parity, LSP, Vitest |
 
-**Dependency rule:** Only `spanda-core` pulls the full facade graph. `spanda-cli`, `spanda-node`, `spanda-wasm`, and `spanda-dap` depend on workspace crates directly.
+**Dependency rule:** Only `spanda-core` pulls the full facade graph. `spanda-cli`, `spanda-node`,
+`spanda-wasm`, and `spanda-dap` depend on workspace crates directly.
 
-References: [architecture.md](../architecture.md) · [lean-core.md](../lean-core.md) · [platform-architecture.md](../platform-architecture.md) · [crates/README.md](../../crates/README.md)
+References: [architecture.md](../architecture.md) · [lean-core.md](../lean-core.md) ·
+[platform-architecture.md](../platform-architecture.md) · [crates/README.md](../../crates/README.md)

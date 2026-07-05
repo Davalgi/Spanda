@@ -1,6 +1,8 @@
 # Field soak gate (30-day)
 
-Enterprise operations promotion to **Stable** requires a **30-day field pilot** without data-loss regressions. Use this gate before updating `docs/feature-status.md` or `docs/stable-hardening-enterprise-ops.md`.
+Enterprise operations promotion to **Stable** requires a **30-day field pilot** without data-loss
+regressions. Use this gate before updating `docs/feature-status.md` or
+`docs/stable-hardening-enterprise-ops.md`.
 
 ## Start the soak clock
 
@@ -24,7 +26,9 @@ chmod +x scripts/field_soak_gate.sh
 ./scripts/field_soak_gate.sh
 ```
 
-For the full **Stable promotion** workflow (soak + audit prep + smokes), see [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) and `./scripts/enterprise_ops_stable_promotion_gate.sh`.
+For the full **Stable promotion** workflow (soak + audit prep + smokes), see
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) and
+`./scripts/enterprise_ops_stable_promotion_gate.sh`.
 
 ### Environment
 
@@ -42,8 +46,15 @@ For the full **Stable promotion** workflow (soak + audit prep + smokes), see [en
 
 ## CI integration
 
-Add `./scripts/field_soak_gate.sh` to your fleet promotion pipeline after the soak period. Until the clock elapses, the script exits non-zero by design.
+Add `./scripts/field_soak_gate.sh` to your fleet promotion pipeline after the soak period. Until the
+clock elapses, the script exits non-zero by design.
 
-For **Human Interaction** (separate 30-day clock), use `.spanda/hri-field-soak-start.txt` and `./scripts/hri_stable_promotion_gate.sh` — see [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md). Start the clock with `./scripts/hri_field_soak_init.sh` (one-time).
+For **Human Interaction** (separate 30-day clock), use `.spanda/hri-field-soak-start.txt` and
+`./scripts/hri_stable_promotion_gate.sh` — see
+[stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md). Start the clock
+with `./scripts/hri_field_soak_init.sh` (one-time).
 
-For **Recovery Orchestrator** (separate clock), use `.spanda/recovery-field-soak-start.txt` and `./scripts/recovery_orchestrator_stable_promotion_gate.sh` — see [stable-hardening-recovery-orchestrator.md](./stable-hardening-recovery-orchestrator.md). Start with `./scripts/recovery_orchestrator_field_soak_init.sh` (one-time).
+For **Recovery Orchestrator** (separate clock), use `.spanda/recovery-field-soak-start.txt` and
+`./scripts/recovery_orchestrator_stable_promotion_gate.sh` — see
+[stable-hardening-recovery-orchestrator.md](./stable-hardening-recovery-orchestrator.md). Start with
+`./scripts/recovery_orchestrator_field_soak_init.sh` (one-time).

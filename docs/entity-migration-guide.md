@@ -28,7 +28,8 @@ Existing SDK list/get methods are unchanged. Add typed evaluation calls:
 
 ## Control Center
 
-The **Entities** tab queries `/v1/entities/*`. Legacy robot/device tabs remain; they project from the same registry.
+The **Entities** tab queries `/v1/entities/*`. Legacy robot/device tabs remain; they project from
+the same registry.
 
 ## Phased adoption
 

@@ -1,8 +1,10 @@
 # Continuity Policies
 
-Continuity policies declare takeover, delegation, and succession behavior when robots or fleet members fail mid-mission.
+Continuity policies declare takeover, delegation, and succession behavior when robots or fleet
+members fail mid-mission.
 
-Related: [mission-continuity.md](./mission-continuity.md) · [recovery-policies.md](./recovery-policies.md) · [fleet-distributed.md](./fleet-distributed.md)
+Related: [mission-continuity.md](./mission-continuity.md) ·
+[recovery-policies.md](./recovery-policies.md) · [fleet-distributed.md](./fleet-distributed.md)
 
 ---
 
@@ -23,7 +25,8 @@ continuity_policy WarehouseContinuity {
 }
 ```
 
-Declared actions influence takeover mode inference (`resume`, `hot takeover`, `restart`, `human takeover`, etc.).
+Declared actions influence takeover mode inference (`resume`, `hot takeover`, `restart`, `human
+takeover`, etc.).
 
 ---
 
@@ -40,7 +43,8 @@ Common `on` conditions:
 | `communication.interrupted` | Link loss between coordinator and agent |
 | `hardware.capability_lost` | Required sensor or actuator unavailable |
 
-Pair fleet triggers with a `fleet` declaration. Diagnostics emit `continuity:fleet` when fleet/swarm triggers appear without a fleet block.
+Pair fleet triggers with a `fleet` declaration. Diagnostics emit `continuity:fleet` when fleet/swarm
+triggers appear without a fleet block.
 
 ---
 
@@ -56,7 +60,8 @@ Pair fleet triggers with a `fleet` declaration. Diagnostics emit `continuity:fle
 | `human takeover` | Operator assumes control |
 | `restart` / `partial restart` | Full or stage-level restart |
 
-Hot, cold, and human takeover are high-risk. Declare an `Approval` topic or operator path; diagnostics emit `continuity:approval` when missing.
+Hot, cold, and human takeover are high-risk. Declare an `Approval` topic or operator path;
+diagnostics emit `continuity:approval` when missing.
 
 ---
 
@@ -79,7 +84,8 @@ continuity_policy WarehouseContinuity {
 }
 ```
 
-Without a `mission_plan`, the continuity engine synthesizes progress from context; diagnostics warn with `continuity:mission` when resume/checkpoint actions are declared without a plan.
+Without a `mission_plan`, the continuity engine synthesizes progress from context; diagnostics warn
+with `continuity:mission` when resume/checkpoint actions are declared without a plan.
 
 ---
 
@@ -101,19 +107,23 @@ continuity_policy PatrolContinuity {
 }
 ```
 
-Diagnostics emit `continuity:policy` when a multi-member fleet lacks `continuity_policy`. Pair `recovery_policy` reassign actions with `continuity_policy` for takeover mode — `continuity:handoff` hints when recovery reassigns without continuity.
+Diagnostics emit `continuity:policy` when a multi-member fleet lacks `continuity_policy`. Pair
+`recovery_policy` reassign actions with `continuity_policy` for takeover mode — `continuity:handoff`
+hints when recovery reassigns without continuity.
 
 ---
 
 ## Runtime dispatch
 
-When `SPANDA_FLEET_MESH_URL` is set, recovery handoff and continuity CLI commands relay through the mesh:
+When `SPANDA_FLEET_MESH_URL` is set, recovery handoff and continuity CLI commands relay through the
+mesh:
 
 - Coordinator: `POST /v1/fleet/continuity`
 - Agent: `POST /v1/continuity/execute`, `POST /v1/continuity/ack`
 - Peer topic: `fleet_takeover`
 
-See [fleet-distributed.md](./fleet-distributed.md) and [mission-continuity.md](./mission-continuity.md).
+See [fleet-distributed.md](./fleet-distributed.md) and
+[mission-continuity.md](./mission-continuity.md).
 
 ---
 

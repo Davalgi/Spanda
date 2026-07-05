@@ -1,6 +1,7 @@
 # Control Center Plugins
 
-Control Center UI plugins extend the operator console with dashboards, entity views, and configuration pages.
+Control Center UI plugins extend the operator console with dashboards, entity views, and
+configuration pages.
 
 ## Plugin type
 
@@ -37,4 +38,5 @@ spanda plugin install --path examples/plugins/healthcare-plugin
 spanda plugin enable spanda-plugin-healthcare
 ```
 
-UI plugins use the same capability and security model as other plugins. See [plugin-security.md](plugin-security.md).
+UI plugins use the same capability and security model as other plugins. See
+[plugin-security.md](plugin-security.md).

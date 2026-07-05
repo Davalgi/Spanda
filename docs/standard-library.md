@@ -1,14 +1,18 @@
 # Spanda Standard Library
 
-The Spanda standard library is organized as modular **`std.*` namespaces**. Each namespace registers types and import paths; runtime behavior is provided by the interpreter and domain modules (`safety`, `simulator`, `comm`, etc.).
+The Spanda standard library is organized as modular **`std.*` namespaces**. Each namespace registers
+types and import paths; runtime behavior is provided by the interpreter and domain modules
+(`safety`, `simulator`, `comm`, etc.).
 
-**Full API reference:** [spanda-reference.md](./spanda-reference.md) (generated from the type checker — all `std.*` types, global functions, and built-in methods with signatures).
+**Full API reference:** [spanda-reference.md](./spanda-reference.md) (generated from the type
+checker — all `std.*` types, global functions, and built-in methods with signatures).
 
 ## Design principles
 
 - **Modular** — import only what a program needs: `import std.robotics;`
 - **Not monolithic** — there is no single `std` package; namespaces are independent
-- **Blockchain-free** — ledger and on-chain features live in optional community packages, not in `std.*`
+- **Blockchain-free** — ledger and on-chain features live in optional community packages, not in
+  `std.*`
 
 ## Namespaces
 
@@ -54,8 +58,10 @@ robot Demo {
 
 ## Examples
 
-See `examples/std/` for runnable programs covering time, units, spatial, robotics, AI, communication, audit, provenance, device identity, and mock ledger anchoring.
+See `examples/std/` for runnable programs covering time, units, spatial, robotics, AI,
+communication, audit, provenance, device identity, and mock ledger anchoring.
 
 ## Community packages
 
-Vendor and domain libraries (ROS 2, OpenCV, YOLO, SLAM, ledger backends) ship as **optional packages** — see [packages.md](./packages.md) and [registry.md](./registry.md).
+Vendor and domain libraries (ROS 2, OpenCV, YOLO, SLAM, ledger backends) ship as **optional
+packages** — see [packages.md](./packages.md) and [registry.md](./registry.md).

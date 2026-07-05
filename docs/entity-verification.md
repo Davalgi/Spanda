@@ -1,12 +1,15 @@
 # Entity Verification
 
-All Spanda verification engines route through the **Unified Entity Model**. Instead of separate `verify(robot)`, `verify(device)`, and `verify(fleet)` code paths at the API layer, callers use a single entry point:
+All Spanda verification engines route through the **Unified Entity Model**. Instead of separate
+`verify(robot)`, `verify(device)`, and `verify(fleet)` code paths at the API layer, callers use a
+single entry point:
 
 ```text
 verify_entity(entity_id) → EntityVerifyReport
 ```
 
-Domain-specific engines (hardware, mission, fleet, device pool, quarantine, config validation) are invoked based on the entity kind and optional program context.
+Domain-specific engines (hardware, mission, fleet, device pool, quarantine, config validation) are
+invoked based on the entity kind and optional program context.
 
 ## Architecture
 
@@ -110,9 +113,11 @@ Full method reference: [entity-sdk.md](./entity-sdk.md).
 
 ## Backward compatibility
 
-- `spanda verify`, `spanda verify-fleet`, `spanda device *`, and `/v1/programs/verify/*` are unchanged.
+- `spanda verify`, `spanda verify-fleet`, `spanda device *`, and `/v1/programs/verify/*` are
+  unchanged.
 - Entity verification is **additive** — it composes existing engines rather than replacing them.
-- Legacy REST routes (`/v1/devices`, `/v1/robots`, `/v1/fleets`) continue to work; entity verify is the unified cross-kind path.
+- Legacy REST routes (`/v1/devices`, `/v1/robots`, `/v1/fleets`) continue to work; entity verify is
+  the unified cross-kind path.
 
 ## Related docs
 

@@ -26,4 +26,5 @@ Golden fixture: `examples/showcase/differentiation/decision_trail/main.trace`.
 
 Extends [replay.md](./replay.md) with state snapshots and decision records embedded in trace v3.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [decision-audit-trail.md](./decision-audit-trail.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[decision-audit-trail.md](./decision-audit-trail.md).

@@ -1,6 +1,7 @@
 # Energy Management
 
-Solar, battery storage, EV charging, demand response, and backup power for [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
+Solar, battery storage, EV charging, demand response, and backup power for [Smart Spaces & Ambient
+Intelligence](./solutions/smart-spaces.md).
 
 **Status:** Experimental (scaffold) · **Package:** `spanda-energy`
 
@@ -8,7 +9,9 @@ Solar, battery storage, EV charging, demand response, and backup power for [Smar
 
 ## Purpose
 
-Verify and orchestrate energy missions while maintaining life-safety and occupant comfort bounds. Spanda does not replace utility SCADA or inverter firmware — it coordinates **readiness-gated** optimization across distributed assets.
+Verify and orchestrate energy missions while maintaining life-safety and occupant comfort bounds.
+Spanda does not replace utility SCADA or inverter firmware — it coordinates **readiness-gated**
+optimization across distributed assets.
 
 ---
 
@@ -36,7 +39,8 @@ Device tree examples: [smart-space-device-tree.md](./smart-space-device-tree.md#
 | Backup power | Island critical circuits | Battery capacity, transfer switch |
 | Solar optimize | Self-consumption max | Inverter online, meter sync |
 
-Example: [examples/solutions/smart-spaces/energy-management/demand_response.sd](../examples/solutions/smart-spaces/energy-management/demand_response.sd)
+Example:
+[demand_response.sd](../examples/solutions/smart-spaces/energy-management/demand_response.sd)
 
 ---
 
@@ -50,7 +54,8 @@ Grid outage
   → Log assurance evidence
 ```
 
-Wi-Fi loss does not block local inverter/BMS paths when BACnet/Modbus gateways are on redundant Ethernet.
+Wi-Fi loss does not block local inverter/BMS paths when BACnet/Modbus gateways are on redundant
+Ethernet.
 
 ---
 

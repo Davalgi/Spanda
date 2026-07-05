@@ -2,7 +2,8 @@
 
 Entity hierarchy examples for [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
 
-**Canonical config:** `examples/solutions/smart-spaces/spanda.devices.toml` · **Platform guide:** [device-tree.md](./device-tree.md)
+**Canonical config:** `examples/solutions/smart-spaces/spanda.devices.toml` · **Platform guide:**
+[device-tree.md](./device-tree.md)
 
 ---
 
@@ -20,7 +21,8 @@ facility (building / campus)
 └── control_center
 ```
 
-All nodes use the [Unified Entity Model](./entity-model.md) — `EntityRecord` with `entity_kind` of `facility`, `zone`, `device`, `robot`, `human`, or `wearable`.
+All nodes use the [Unified Entity Model](./entity-model.md) — `EntityRecord` with `entity_kind` of
+`facility`, `zone`, `device`, `robot`, `human`, or `wearable`.
 
 ---
 
@@ -229,7 +231,9 @@ missions = ["fire_response", "evacuation"]
 
 ## Full fixture
 
-See [examples/solutions/smart-spaces/spanda.devices.toml](../examples/solutions/smart-spaces/spanda.devices.toml) for the complete blueprint device tree with all entity types referenced in the solution blueprint.
+See
+[examples/solutions/smart-spaces/spanda.devices.toml](../examples/solutions/smart-spaces/spanda.devices.toml)
+for the complete blueprint device tree with all entity types referenced in the solution blueprint.
 
 ---
 

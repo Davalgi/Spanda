@@ -1,6 +1,7 @@
 # Spanda Product Roadmap
 
-**The Autonomous Systems Platform** — organized by **Platform Pillars** and **Official Solution Blueprints**.
+**The Autonomous Systems Platform** — organized by **Platform Pillars** and **Official Solution
+Blueprints**.
 
 | | |
 |---|---|
@@ -12,17 +13,21 @@
 | **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |
 
-**Tiers:** **Stable** (tested, non-mock default) · **Beta** · **Experimental** · **Preview** · **Stubbed** · **Mock-backed** · **Planned** · **Deprecated** — see [docs/feature-status.md](docs/feature-status.md)
+**Tiers:** **Stable** (tested, non-mock default) · **Beta** · **Experimental** · **Preview** ·
+**Stubbed** · **Mock-backed** · **Planned** · **Deprecated** — see
+[docs/feature-status.md](docs/feature-status.md)
 
 **Timeline (maturity, not dates):** **Now** · **Next** · **Later** · **Long Term** · **Research**
 
-**Ownership:** **Core** · **Package** · **Provider** · **Solution Blueprint** · **Control Center** · **Optional** · **Experimental** · **Future**
+**Ownership:** **Core** · **Package** · **Provider** · **Solution Blueprint** · **Control Center** ·
+**Optional** · **Experimental** · **Future**
 
 ---
 
 ## Product ecosystem
 
-Spanda is a **product ecosystem**, not a single repository. Platform components are named products that compose into industry solutions:
+Spanda is a **product ecosystem**, not a single repository. Platform components are named products
+that compose into industry solutions:
 
 ```text
 Spanda Language
@@ -42,11 +47,18 @@ Spanda Registry ─── Spanda SDKs
 Unified Entity Model (all platform objects)
 ```
 
-**Lifecycle:** **Build · Verify · Simulate · Deploy · Operate · Observe · Recover · Govern · Audit · Continuously Improve**
+**Lifecycle:** **Build · Verify · Simulate · Deploy · Operate · Observe · Recover · Govern · Audit ·
+Continuously Improve**
 
-**Cognitive & Resilience Architecture:** Functional responsibility domains (reflex & safety, homeostasis, platform immunity, sensory fusion, attention, operational memory, adaptive learning, damage risk) — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · [responsibility-matrix.md](docs/responsibility-matrix.md). Prior naming: [bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
+**Cognitive & Resilience Architecture:** Functional responsibility domains (reflex & safety,
+homeostasis, platform immunity, sensory fusion, attention, operational memory, adaptive learning,
+damage risk) —
+[docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) ·
+[responsibility-matrix.md](docs/responsibility-matrix.md). Prior naming:
+[bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
 
-**Lean-core identity:** contracts in workspace crates; vendor SDKs and heavy UI in optional packages.
+**Lean-core identity:** contracts in workspace crates; vendor SDKs and heavy UI in optional
+packages.
 
 ---
 
@@ -70,7 +82,9 @@ Unified Entity Model (all platform objects)
 
 ### Pillar 0 — Unified Entity Model
 
-**Purpose:** Represent every platform object — robots, fleets, humans, devices, providers, packages, missions, facilities — as a typed **Entity** with shared health, readiness, trust, security, lifecycle, relationships, and graph semantics.
+**Purpose:** Represent every platform object — robots, fleets, humans, devices, providers, packages,
+missions, facilities — as a typed **Entity** with shared health, readiness, trust, security,
+lifecycle, relationships, and graph semantics.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -88,17 +102,23 @@ Unified Entity Model (all platform objects)
 | **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Stable** | Now | Core |
 | **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.4.2** published | **Stable** | Now | Core + Control Center |
 
-**Design rule:** Before introducing a new top-level platform abstraction, determine whether it should be a new **Entity kind** instead.
+**Design rule:** Before introducing a new top-level platform abstraction, determine whether it
+should be a new **Entity kind** instead.
 
-**Cross-references:** Device Registry (Pillar 4) · Human entity model (Pillar 4) · Provider registry (Pillar 2) · Digital thread (Pillar 6) · Trust (Pillar 5)
+**Cross-references:** Device Registry (Pillar 4) · Human entity model (Pillar 4) · Provider registry
+(Pillar 2) · Digital thread (Pillar 6) · Trust (Pillar 5)
 
-**Topic guides:** [docs/entity-model.md](docs/entity-model.md) · [docs/entity-registry.md](docs/entity-registry.md) · [docs/entity-graph.md](docs/entity-graph.md) · [docs/entity-relationships.md](docs/entity-relationships.md) · [docs/entity-query-language.md](docs/entity-query-language.md)
+**Topic guides:** [docs/entity-model.md](docs/entity-model.md) ·
+[docs/entity-registry.md](docs/entity-registry.md) · [docs/entity-graph.md](docs/entity-graph.md) ·
+[docs/entity-relationships.md](docs/entity-relationships.md) ·
+[docs/entity-query-language.md](docs/entity-query-language.md)
 
 ---
 
 ### Pillar 1 — Spanda Language
 
-**Purpose:** Safety-first `.sd` source — syntax, types, robot primitives, units, triggers, tasks, concurrency, and developer ergonomics.
+**Purpose:** Safety-first `.sd` source — syntax, types, robot primitives, units, triggers, tasks,
+concurrency, and developer ergonomics.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -125,13 +145,17 @@ Unified Entity Model (all platform objects)
 
 **Foundation:** Phases 1–35 complete — [docs/lean-core-roadmap.md](docs/lean-core-roadmap.md)
 
-**Topic guides:** [docs/spanda-language.md](docs/spanda-language.md) · [docs/language-reference/](docs/language-reference/README.md) · [docs/triggers.md](docs/triggers.md) · [docs/concurrency.md](docs/concurrency.md) · [docs/regex.md](docs/regex.md) · [docs/testing.md](docs/testing.md) · [docs/debugging.md](docs/debugging.md)
+**Topic guides:** [docs/spanda-language.md](docs/spanda-language.md) ·
+[docs/language-reference/](docs/language-reference/README.md) · [docs/triggers.md](docs/triggers.md)
+· [docs/concurrency.md](docs/concurrency.md) · [docs/regex.md](docs/regex.md) ·
+[docs/testing.md](docs/testing.md) · [docs/debugging.md](docs/debugging.md)
 
 ---
 
 ### Pillar 2 — Compiler & Runtime
 
-**Purpose:** Parse, typecheck, execute, and optionally codegen programs; load packages and dispatch providers.
+**Purpose:** Parse, typecheck, execute, and optionally codegen programs; load packages and dispatch
+providers.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -149,13 +173,20 @@ Unified Entity Model (all platform objects)
 | **`spanda-certify`** | Runtime certification gate | **Stable** | Now | Core |
 | **Node bindings** | `spanda-node` N-API | **Stable** | Now | Core |
 
-**Topic guides:** [docs/platform-architecture.md](docs/platform-architecture.md) · [docs/architecture.md](docs/architecture.md) · [docs/compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md) · [docs/native-deploy.md](docs/native-deploy.md) · [docs/how-packages-work.md](docs/how-packages-work.md) · [docs/how-providers-work.md](docs/how-providers-work.md) · [docs/how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md)
+**Topic guides:** [docs/platform-architecture.md](docs/platform-architecture.md) ·
+[docs/architecture.md](docs/architecture.md) ·
+[docs/compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md) ·
+[docs/native-deploy.md](docs/native-deploy.md) ·
+[docs/how-packages-work.md](docs/how-packages-work.md) ·
+[docs/how-providers-work.md](docs/how-providers-work.md) ·
+[docs/how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md)
 
 ---
 
 ### Pillar 3 — Verification Platform
 
-**Purpose:** Prove hardware fit, mission safety, operational readiness, assurance, diagnosis, recovery, trust, and explainability before and during deployment.
+**Purpose:** Prove hardware fit, mission safety, operational readiness, assurance, diagnosis,
+recovery, trust, and explainability before and during deployment.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -186,7 +217,8 @@ Unified Entity Model (all platform objects)
 
 #### Platform maturity (adoption & trust)
 
-Cross-cutting verification and operations capabilities — full analysis: [docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md)
+Cross-cutting verification and operations capabilities — full analysis:
+[docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md)
 
 | # | Area | Phase | Priority | Tier | Timeline | Ownership |
 |---|------|-------|----------|------|----------|-----------|
@@ -231,19 +263,30 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Autonomous Governance | **Stable** | Later | Core |
 | Operational Governance | **Stable** | Now | Core |
 
-**NOW deliverables (v0.5+):** `spanda-contract`, `spanda-explain`, `spanda-decision`, safety/recovery coverage — **Stable**. Exit: `spanda demo differentiation` + `scripts/differentiation_smoke.sh`.
+**NOW deliverables (v0.5+):** `spanda-contract`, `spanda-explain`, `spanda-decision`,
+safety/recovery coverage — **Stable**. Exit: `spanda demo differentiation` +
+`scripts/differentiation_smoke.sh`.
 
-**NEXT deliverables (v0.6):** all five NEXT pillars **Stable** — what-if, risk, readiness forecast, trust graph, scorecards; Control Center REST/gRPC analytics in `differentiation_smoke.sh`.
+**NEXT deliverables (v0.6):** all five NEXT pillars **Stable** — what-if, risk, readiness forecast,
+trust graph, scorecards; Control Center REST/gRPC analytics in `differentiation_smoke.sh`.
 
-**LATER deliverables (v0.7):** all five LATER pillars **Stable** — mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance; exit via `scripts/later_differentiation_stable_promotion_gate.sh`.
+**LATER deliverables (v0.7):** all five LATER pillars **Stable** — mission time travel, digital
+mission twin, certification packs, human/robot teaming, autonomous governance; exit via
+`scripts/later_differentiation_stable_promotion_gate.sh`.
 
-**Topic guides:** [docs/mission-assurance.md](docs/mission-assurance.md) · [docs/self-healing.md](docs/self-healing.md) · [docs/mission-continuity.md](docs/mission-continuity.md) · [docs/readiness.md](docs/readiness.md) · [docs/replay.md](docs/replay.md) · [docs/mission-contracts.md](docs/mission-contracts.md) · [docs/explainability.md](docs/explainability.md) · [docs/tamper-detection.md](docs/tamper-detection.md)
+**Topic guides:** [docs/mission-assurance.md](docs/mission-assurance.md) ·
+[docs/self-healing.md](docs/self-healing.md) ·
+[docs/mission-continuity.md](docs/mission-continuity.md) · [docs/readiness.md](docs/readiness.md) ·
+[docs/replay.md](docs/replay.md) · [docs/mission-contracts.md](docs/mission-contracts.md) ·
+[docs/explainability.md](docs/explainability.md) ·
+[docs/tamper-detection.md](docs/tamper-detection.md)
 
 ---
 
 ### Pillar 4 — Device & Fleet Platform
 
-**Purpose:** Map logical programs to physical devices, provision fleets, coordinate swarms, and manage continuity.
+**Purpose:** Map logical programs to physical devices, provision fleets, coordinate swarms, and
+manage continuity.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -291,7 +334,8 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | `spanda demo distributed-decisions` | **Stable** |
 | Examples `examples/showcase/distributed_decisions/` | **Stable** |
 
-**Cognitive & Resilience Architecture** (extends distributed decisions — [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md)):
+**Cognitive & Resilience Architecture** (extends distributed decisions —
+[cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md)):
 
 | Item | Tier |
 |------|------|
@@ -323,13 +367,20 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Operator approval + fleet mesh recovery | **Stable** |
 | `spanda demo self-healing` | **Stable** |
 
-**Topic guides:** [docs/device-tree.md](docs/device-tree.md) · [docs/device-pool.md](docs/device-pool.md) · [docs/entity-model.md](docs/entity-model.md) · [docs/configuration.md](docs/configuration.md) · [docs/health-checks.md](docs/health-checks.md) · [docs/fleet-distributed.md](docs/fleet-distributed.md) · [docs/swarm-health.md](docs/swarm-health.md) · [docs/human-interaction.md](docs/human-interaction.md) · [docs/distributed-decisions.md](docs/distributed-decisions.md)
+**Topic guides:** [docs/device-tree.md](docs/device-tree.md) ·
+[docs/device-pool.md](docs/device-pool.md) · [docs/entity-model.md](docs/entity-model.md) ·
+[docs/configuration.md](docs/configuration.md) · [docs/health-checks.md](docs/health-checks.md) ·
+[docs/fleet-distributed.md](docs/fleet-distributed.md) ·
+[docs/swarm-health.md](docs/swarm-health.md) ·
+[docs/human-interaction.md](docs/human-interaction.md) ·
+[docs/distributed-decisions.md](docs/distributed-decisions.md)
 
 ---
 
 ### Pillar 5 — Security Platform
 
-**Purpose:** Identity, encryption, policy, compliance, and tamper resistance across deploy and operate.
+**Purpose:** Identity, encryption, policy, compliance, and tamper resistance across deploy and
+operate.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -347,13 +398,18 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **Spoofing detection** | GPS/sensor spoofing | **Experimental** | Next | Package |
 | **Kill switch** | `remote_signed`, `on kill_switch` | **Stable** | Now | Core |
 
-**Topic guides:** [docs/security-architecture.md](docs/security-architecture.md) · [docs/secrets.md](docs/secrets.md) · [docs/trust-framework.md](docs/trust-framework.md) · [docs/threat-modeling.md](docs/threat-modeling.md) · [docs/compliance-profiles.md](docs/compliance-profiles.md) · [docs/policy-engine.md](docs/policy-engine.md)
+**Topic guides:** [docs/security-architecture.md](docs/security-architecture.md) ·
+[docs/secrets.md](docs/secrets.md) · [docs/trust-framework.md](docs/trust-framework.md) ·
+[docs/threat-modeling.md](docs/threat-modeling.md) ·
+[docs/compliance-profiles.md](docs/compliance-profiles.md) ·
+[docs/policy-engine.md](docs/policy-engine.md)
 
 ---
 
 ### Pillar 6 — Operations Platform
 
-**Purpose:** Observe, alert, report, and operate fleets in production — **Spanda Control Center** and enterprise operations.
+**Purpose:** Observe, alert, report, and operate fleets in production — **Spanda Control Center**
+and enterprise operations.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -375,7 +431,9 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | **Operations dashboard** | `packages/web` Operations view | **Stable** | Now | Control Center |
 | **Operational Governance** | Autonomy, deployment profiles, certification lifecycle, risk, accountability, standards profiles; live decision enforcement; CLI/API/SDK/Control Center — [governance.md](docs/governance.md) · [stable-hardening-operational-governance.md](docs/stable-hardening-operational-governance.md) | **Stable** | Now | Core |
 
-Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) · Stable promotion: [docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md)
+Full enterprise analysis:
+[docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) · Stable promotion:
+[docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md)
 
 **Remaining for Stable (operational gates only):**
 
@@ -387,7 +445,8 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 | Production releases | **Pending** — PyPI, npm, desktop signing |
 | Tier promotion | **Pending** — update `feature-status.md` after gates |
 
-**Phased delivery (E1–E4):** all **shipped (experimental)**. Exit: `scripts/enterprise_ops_smoke.sh`.
+**Phased delivery (E1–E4):** all **shipped (experimental)**. Exit:
+`scripts/enterprise_ops_smoke.sh`.
 
 **Administrator console — planned (not yet shipped):**
 
@@ -399,7 +458,10 @@ Full enterprise analysis: [docs/enterprise-operations-roadmap.md](docs/enterpris
 
 **Control Center enhancement backlog (depth + integration):**
 
-Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritizes wiring playground-only panels, visual ops dashboards, enterprise admin gaps, and richer UX on existing tabs. Full spec: [docs/enterprise-operations-roadmap.md §6.1](docs/enterprise-operations-roadmap.md#61-control-center).
+Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritizes wiring
+playground-only panels, visual ops dashboards, enterprise admin gaps, and richer UX on existing
+tabs. Full spec: [docs/enterprise-operations-roadmap.md
+§6.1](docs/enterprise-operations-roadmap.md#61-control-center).
 
 | Priority | Item | Tier | Timeline | Notes |
 |----------|------|------|----------|-------|
@@ -433,7 +495,10 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | P3 | **WASM playground in Control Center** | **Stable** | Now | Playground tab |
 | P3 | **Discovery transport wizards** | **Stable** | Now | Guided OPC-UA, Modbus, MQTT, and CAN setup in Discovery tab |
 
-**Topic guides:** [docs/control-center.md](docs/control-center.md) · [docs/telemetry-store.md](docs/telemetry-store.md) · [docs/readiness-trends.md](docs/readiness-trends.md) · [docs/drift-detection.md](docs/drift-detection.md)
+**Topic guides:** [docs/control-center.md](docs/control-center.md) ·
+[docs/telemetry-store.md](docs/telemetry-store.md) ·
+[docs/readiness-trends.md](docs/readiness-trends.md) ·
+[docs/drift-detection.md](docs/drift-detection.md)
 
 ---
 
@@ -456,15 +521,19 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **WASM playground** | Killer demo preset, Check/Run sim | **Experimental** | Next | Optional |
 | **AI-assisted dev** | `generate`, `suggest` | **Experimental** | Next | Core |
 
-**Bundled demos:** `rover`, `safety`, `verify`, `fleet`, `health`, `readiness`, `assurance`, `self-healing`, `continuity`, `differentiation`, `adas`
+**Bundled demos:** `rover`, `safety`, `verify`, `fleet`, `health`, `readiness`, `assurance`,
+`self-healing`, `continuity`, `differentiation`, `adas`
 
-**Topic guides:** [docs/getting-started.md](docs/getting-started.md) · [docs/ci-verify.md](docs/ci-verify.md) · [docs/adoption-path.md](docs/adoption-path.md) · [docs/product-strategy.md](docs/product-strategy.md)
+**Topic guides:** [docs/getting-started.md](docs/getting-started.md) ·
+[docs/ci-verify.md](docs/ci-verify.md) · [docs/adoption-path.md](docs/adoption-path.md) ·
+[docs/product-strategy.md](docs/product-strategy.md)
 
 ---
 
 ### Pillar 8 — Packages & Ecosystem
 
-**Purpose:** Extensibility without bloating core — registry, official packages, provider traits, marketplace growth.
+**Purpose:** Extensibility without bloating core — registry, official packages, provider traits,
+marketplace growth.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
@@ -483,13 +552,17 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Learned anomaly** | `spanda-anomaly`, ONNX backend | **Experimental** | Next | Package |
 | **Sim bridges** | Gazebo, Webots scaffolds | **Experimental** | Later | Package |
 
-**Topic guides:** [docs/packages.md](docs/packages.md) · [docs/registry.md](docs/registry.md) · [docs/official-packages.md](docs/official-packages.md) · [docs/provider-interfaces.md](docs/provider-interfaces.md) · [docs/live-ai-provider.md](docs/live-ai-provider.md)
+**Topic guides:** [docs/packages.md](docs/packages.md) · [docs/registry.md](docs/registry.md) ·
+[docs/official-packages.md](docs/official-packages.md) ·
+[docs/provider-interfaces.md](docs/provider-interfaces.md) ·
+[docs/live-ai-provider.md](docs/live-ai-provider.md)
 
 ---
 
 ## Official Solution Blueprints
 
-**Not platform features.** Industry reference architectures that **compose** platform pillars, packages, and providers. No duplicate implementations — each blueprint links to pillars it uses.
+**Not platform features.** Industry reference architectures that **compose** platform pillars,
+packages, and providers. No duplicate implementations — each blueprint links to pillars it uses.
 
 | Blueprint | Status | Timeline | Primary pillars |
 |-----------|--------|----------|-----------------|
@@ -509,7 +582,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | [Spatial Computing & HRI](#spatial-computing--human-robot-collaboration) | **Stable** | Next | Device & Fleet, Operations, Developer |
 | [Smart Spaces & Ambient Intelligence](#smart-spaces--ambient-intelligence) | **Stable** | Next | Verification, Device & Fleet, Operations, Security |
 
-**Index:** [docs/solutions/README.md](docs/solutions/README.md) · **Website:** [website/solutions.html](website/solutions.html)
+**Index:** [docs/solutions/README.md](docs/solutions/README.md) · **Website:**
+[website/solutions.html](website/solutions.html)
 
 ---
 
@@ -533,7 +607,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | `spanda sim` · digital twin |
 | **Replay** | [docs/replay.md](docs/replay.md) |
 
-**Uses pillars:** Device & Fleet Platform · Verification Platform · Operations Platform · Developer Platform · Packages & Ecosystem
+**Uses pillars:** Device & Fleet Platform · Verification Platform · Operations Platform · Developer
+Platform · Packages & Ecosystem
 
 ---
 
@@ -557,7 +632,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Scenario fixtures + fault injection |
 | **Replay** | Mission trace for post-incident analysis |
 
-**Uses pillars:** Verification Platform · Operations Platform · Security Platform · Device & Fleet Platform · Developer Platform
+**Uses pillars:** Verification Platform · Operations Platform · Security Platform · Device & Fleet
+Platform · Developer Platform
 
 ---
 
@@ -581,9 +657,11 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Privacy-safe synthetic vitals |
 | **Replay** | Audit trail for clinical review |
 
-**Uses pillars:** Verification Platform · Security Platform · Device & Fleet Platform · Operations Platform
+**Uses pillars:** Verification Platform · Security Platform · Device & Fleet Platform · Operations
+Platform
 
-**Status:** **Experimental** — `wearable-health/` scaffold; CI via `scripts/spatial_computing_smoke.sh`
+**Status:** **Experimental** — `wearable-health/` scaffold; CI via
+`scripts/spatial_computing_smoke.sh`
 
 ---
 
@@ -607,7 +685,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Scenario fixtures + sim-recorded golden traces |
 | **Replay** | [docs/adas-replay.md](docs/adas-replay.md) |
 
-**Uses pillars:** Verification Platform · Device & Fleet Platform · Security Platform · Operations Platform · Packages & Ecosystem
+**Uses pillars:** Verification Platform · Device & Fleet Platform · Security Platform · Operations
+Platform · Packages & Ecosystem
 
 **Stable promotion (2026-07-02):** [docs/stable-hardening-adas.md](docs/stable-hardening-adas.md)
 
@@ -633,7 +712,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Digital twin of cell |
 | **Replay** | Trace for root-cause — [docs/root-cause-analysis.md](docs/root-cause-analysis.md) |
 
-**Uses pillars:** Verification Platform · Device & Fleet Platform · Operations Platform · Security Platform
+**Uses pillars:** Verification Platform · Device & Fleet Platform · Operations Platform · Security
+Platform
 
 ---
 
@@ -657,7 +737,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Terrain + weather fault injection |
 | **Replay** | Season trace archive |
 
-**Uses pillars:** Device & Fleet Platform · Verification Platform · Packages & Ecosystem · Operations Platform
+**Uses pillars:** Device & Fleet Platform · Verification Platform · Packages & Ecosystem ·
+Operations Platform
 
 **Status:** **Experimental** (scaffold) — CI `scripts/solution_blueprints_smoke.sh`
 
@@ -683,7 +764,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Chaos engineering — [docs/chaos-engineering.md](docs/chaos-engineering.md) |
 | **Replay** | Incident timeline reconstruction |
 
-**Uses pillars:** Security Platform · Verification Platform · Operations Platform · Device & Fleet Platform
+**Uses pillars:** Security Platform · Verification Platform · Operations Platform · Device & Fleet
+Platform
 
 ---
 
@@ -733,7 +815,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Sea state + GNSS denial |
 | **Replay** | Voyage black box |
 
-**Uses pillars:** Device & Fleet Platform · Verification Platform · Security Platform · Operations Platform
+**Uses pillars:** Device & Fleet Platform · Verification Platform · Security Platform · Operations
+Platform
 
 **Status:** **Experimental** (scaffold) — CI `scripts/solution_blueprints_smoke.sh`
 
@@ -759,7 +842,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Traffic scenario fixtures |
 | **Replay** | Fleet trace aggregation |
 
-**Uses pillars:** Verification Platform · Device & Fleet Platform · Security Platform · Operations Platform
+**Uses pillars:** Verification Platform · Device & Fleet Platform · Security Platform · Operations
+Platform
 
 ---
 
@@ -809,7 +893,8 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Chaos + spoofing injection |
 | **Replay** | Decision audit trail |
 
-**Uses pillars:** Security Platform · Verification Platform · Operations Platform · Device & Fleet Platform
+**Uses pillars:** Security Platform · Verification Platform · Operations Platform · Device & Fleet
+Platform
 
 ---
 
@@ -857,9 +942,12 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | XR overlay replay |
 | **Replay** | VR training replay |
 
-**Uses pillars:** Device & Fleet Platform · Operations Platform · Verification Platform · Developer Platform · Packages & Ecosystem
+**Uses pillars:** Device & Fleet Platform · Operations Platform · Verification Platform · Developer
+Platform · Packages & Ecosystem
 
-**Phased delivery (H1–H6):** **Stable** (2026-07-02). Registry vendor SDK packages remain **Experimental**. Promotion: [docs/stable-hardening-human-interaction.md](docs/stable-hardening-human-interaction.md)
+**Phased delivery (H1–H6):** **Stable** (2026-07-02). Registry vendor SDK packages remain
+**Experimental**. Promotion:
+[docs/stable-hardening-human-interaction.md](docs/stable-hardening-human-interaction.md)
 
 ---
 
@@ -884,11 +972,15 @@ Breadth is shipped (30+ RBAC-gated tabs, REST/gRPC parity). Next work prioritize
 | **Simulation** | Fire, flood, power loss, gateway failure, HVAC failure, medical emergency |
 | **Replay** | Mode-change and emergency incident timelines |
 
-**Uses pillars:** Verification Platform · Device & Fleet Platform · Operations Platform · Security Platform · Packages & Ecosystem
+**Uses pillars:** Verification Platform · Device & Fleet Platform · Operations Platform · Security
+Platform · Packages & Ecosystem
 
-**Integrates:** [Connected Healthcare](#connected-healthcare) · [Spatial Computing & HRI](#spatial-computing--human-robot-collaboration) · [Environmental Monitoring](#environmental-monitoring)
+**Integrates:** [Connected Healthcare](#connected-healthcare) · [Spatial Computing &
+HRI](#spatial-computing--human-robot-collaboration) · [Environmental
+Monitoring](#environmental-monitoring)
 
-**Status:** **Stable** (2026-07-02) — CI via `scripts/smart_spaces_smoke.sh` + `smart_spaces_promotion_gate.sh`
+**Status:** **Stable** (2026-07-02) — CI via `scripts/smart_spaces_smoke.sh` +
+`smart_spaces_promotion_gate.sh`
 
 ---
 
@@ -907,9 +999,11 @@ Official classification for every roadmap item:
 | **Experimental** | Shipped with caveats; promotion path to Stable | Control Center, drift detection |
 | **Future** | Designed; not shipped | Self-hosting compiler, twin SaaS |
 
-**Rule:** Blueprints **reference** core and packages — never reimplement readiness, assurance, or recovery engines.
+**Rule:** Blueprints **reference** core and packages — never reimplement readiness, assurance, or
+recovery engines.
 
-Detail: [docs/enterprise-operations-roadmap.md §2](docs/enterprise-operations-roadmap.md#2-core-vs-package-ownership)
+Detail: [docs/enterprise-operations-roadmap.md
+§2](docs/enterprise-operations-roadmap.md#2-core-vs-package-ownership)
 
 ---
 
@@ -1043,7 +1137,8 @@ flowchart TB
 
 ## Next horizon priorities (post v0.6.3)
 
-Engineering focus after the evaluation/beta release. **Organizational gates** (soak + audit) run in parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
+Engineering focus after the evaluation/beta release. **Organizational gates** (soak + audit) run in
+parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
 
 | Priority | Theme | Representative work | Tier target |
 |----------|-------|---------------------|-------------|
@@ -1055,7 +1150,8 @@ Engineering focus after the evaluation/beta release. **Organizational gates** (s
 | **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |
 | **P3** | Solution blueprints | Warehouse, medical, agriculture scaffolds | Experimental |
 
-**Phase policy:** [docs/scope-control.md](docs/scope-control.md) — fixes, tests, honest promotions, and items above only.
+**Phase policy:** [docs/scope-control.md](docs/scope-control.md) — fixes, tests, honest promotions,
+and items above only.
 
 ---
 
@@ -1096,7 +1192,8 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 
 ## Release milestones
 
-Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (workspace, SDK, desktop) bumps independently when its area changes.
+Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (workspace, SDK, desktop)
+bumps independently when its area changes.
 
 ### v0.4 — Deploy path
 
@@ -1127,7 +1224,9 @@ Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (work
 | VS Code Marketplace listing | **Deferred** — needs `VSCE_PAT` (manual publisher setup) |
 | Mission Contracts, Explainability, Audit Trail, Coverage CLIs | **Stable** |
 
-**Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI Integration job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until `VSCE_PAT` is configured.
+**Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI
+Integration job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until
+`VSCE_PAT` is configured.
 
 ### v0.6.3 — Release hardening (current tag)
 
@@ -1145,19 +1244,24 @@ Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (work
 | Feature-status honesty (mock-default AI) | **Shipped** |
 | Organizational gates RB-007 | **Open** — [organizational-gates.md](docs/organizational-gates.md) |
 
-**Exit criteria:** [release-readiness.md](docs/release-readiness.md) **Go with documented limitations** — **met**. Public positioning: **evaluation / beta**.
+**Exit criteria:** [release-readiness.md](docs/release-readiness.md) **Go with documented
+limitations** — **met**. Public positioning: **evaluation / beta**.
 
-**Next phase:** [Next horizon priorities](#next-horizon-priorities-post-v063) under [scope-control.md](docs/scope-control.md).
+**Next phase:** [Next horizon priorities](#next-horizon-priorities-post-v063) under
+[scope-control.md](docs/scope-control.md).
 
 ### v0.3 / v0.2 — Complete
 
-See [docs/product-strategy.md](docs/product-strategy.md) and [docs/tier-3-priority-plan.md](docs/tier-3-priority-plan.md).
+See [docs/product-strategy.md](docs/product-strategy.md) and
+[docs/tier-3-priority-plan.md](docs/tier-3-priority-plan.md).
 
 ### v1.0 — Production positioning
 
-**Version bump:** **major** → `1.0.0` when code **and** organizational exit criteria are stable-tier and tagged.
+**Version bump:** **major** → `1.0.0` when code **and** organizational exit criteria are stable-tier
+and tagged.
 
-**Organizational gates (required):** [docs/organizational-gates.md](docs/organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51)
+**Organizational gates (required):** [docs/organizational-gates.md](docs/organizational-gates.md) ·
+[#51](https://github.com/Davalgi/Spanda/issues/51)
 
 | Gate | Requirement |
 |------|-------------|
@@ -1181,7 +1285,8 @@ See [docs/product-strategy.md](docs/product-strategy.md) and [docs/tier-3-priori
 
 ## Repository organization
 
-Recommendations to improve discoverability **without deleting content**. See [docs/repository-organization.md](docs/repository-organization.md) for the full audit.
+Recommendations to improve discoverability **without deleting content**. See
+[docs/repository-organization.md](docs/repository-organization.md) for the full audit.
 
 | Area | Current | Recommended |
 |------|---------|-------------|
@@ -1233,10 +1338,13 @@ Detail: [docs/roadmap-migration.md](docs/roadmap-migration.md)
 
 ## Related documents
 
-- [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — Operations Platform deep dive (20 areas)
-- [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md) — Signature capabilities (15 areas)
+- [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — Operations
+  Platform deep dive (20 areas)
+- [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md) — Signature capabilities (15
+  areas)
 - [docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md) — Adoption & trust (16 areas)
-- [docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md) — HRI (H1–H6)
+- [docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md)
+  — HRI (H1–H6)
 - [docs/product-strategy.md](docs/product-strategy.md) — v0.5 beta strategy
 - [docs/feature-status.md](docs/feature-status.md) — Support matrix
 - [docs/compiler-backend-roadmap.md](docs/compiler-backend-roadmap.md) — LLVM evolution

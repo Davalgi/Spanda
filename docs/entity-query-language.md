@@ -1,6 +1,7 @@
 # Entity Query Language
 
-Spanda provides a structured **Entity Query** for finding entities across the unified registry — robots, wearables, missions, packages, providers, and more.
+Spanda provides a structured **Entity Query** for finding entities across the unified registry —
+robots, wearables, missions, packages, providers, and more.
 
 ## Query structure
 
@@ -78,7 +79,8 @@ Response:
 }
 ```
 
-Then filter results whose `parent_id` chain reaches a robot, or query robots and inspect child devices via relationships API.
+Then filter results whose `parent_id` chain reaches a robot, or query robots and inspect child
+devices via relationships API.
 
 Combined approach:
 
@@ -155,7 +157,8 @@ Filters match lowercase snake_case enum strings:
 | `trust_status` | `verified`, `trusted`, `untrusted`, `compromised`, `unknown` |
 | `lifecycle_state` | `discovered`, `provisioned`, `verified`, `assigned`, `active`, `suspended`, `degraded`, `offline`, `retired`, `archived`, `unknown` |
 
-Legacy strings (`unverified`, `available`, `failed`) map during entity projection — query using normalized enum values.
+Legacy strings (`unverified`, `available`, `failed`) map during entity projection — query using
+normalized enum values.
 
 ## Future extensions
 

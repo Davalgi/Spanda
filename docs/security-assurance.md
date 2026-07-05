@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Phase:** Verify, Operate · **Priority:** P1.2, P3.1
 
-Rollup security posture combining threat modeling, integrity verification, trust scoring, and tamper detection.
+Rollup security posture combining threat modeling, integrity verification, trust scoring, and tamper
+detection.
 
 ## CLI
 
@@ -28,7 +29,8 @@ JSON · Markdown · HTML
 
 ## Integration
 
-Composes `spanda-threat`, `spanda-tamper`, `spanda-trust`, `spanda-security`, and `spanda-audit` without duplicating analysis.
+Composes `spanda-threat`, `spanda-tamper`, `spanda-trust`, `spanda-security`, and `spanda-audit`
+without duplicating analysis.
 
 ## Questions answered
 
@@ -37,4 +39,6 @@ Composes `spanda-threat`, `spanda-tamper`, `spanda-trust`, `spanda-security`, an
 - Has anything been compromised?
 - What should happen next?
 
-See [threat-modeling.md](./threat-modeling.md) · [tamper-detection.md](./tamper-detection.md) · [security-architecture.md](./security-architecture.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [threat-modeling.md](./threat-modeling.md) · [tamper-detection.md](./tamper-detection.md) ·
+[security-architecture.md](./security-architecture.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

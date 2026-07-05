@@ -50,7 +50,13 @@ See [entity-apis.md](./entity-apis.md).
 
 Published by runtime HAL, watchdogs, and entity health evaluation.
 
-`HealthChanged` is emitted only when an entity's cached health status changes (not on every evaluation). The first observation uses `from: "unknown"`. `ReadinessChanged` emits only when readiness status, mission-ready flag, or score changes (first observation uses `from.readiness_status: "unknown"`). `ReadinessGateFailed` emits on transition into a blocked state, not on every blocked evaluation. Entity-health `DegradedModeEntered` emits on entry into a critical/error diagnostic state. `HealthCheckFailed` still emits when failed checks are present on each evaluation.
+`HealthChanged` is emitted only when an entity's cached health status changes (not on every
+evaluation). The first observation uses `from: "unknown"`. `ReadinessChanged` emits only when
+readiness status, mission-ready flag, or score changes (first observation uses
+`from.readiness_status: "unknown"`). `ReadinessGateFailed` emits on transition into a blocked state,
+not on every blocked evaluation. Entity-health `DegradedModeEntered` emits on entry into a
+critical/error diagnostic state. `HealthCheckFailed` still emits when failed checks are present on
+each evaluation.
 
 | Event | When | Key fields |
 |-------|------|------------|
@@ -66,7 +72,9 @@ See [entity-health.md](./entity-health.md), [runtime-health.md](./runtime-health
 
 Published by `spanda-readiness` during evaluation.
 
-`ReadinessChanged` and `ReadinessGateFailed` use in-process transition caches (see Health events above). Gate-failed events fire when `mission_ready` transitions to `false`, not on every blocked evaluation.
+`ReadinessChanged` and `ReadinessGateFailed` use in-process transition caches (see Health events
+above). Gate-failed events fire when `mission_ready` transitions to `false`, not on every blocked
+evaluation.
 
 | Event | When | Key fields |
 |-------|------|------------|
@@ -88,7 +96,8 @@ Published by interpreter during program execution.
 | `MissionAborted` | Mission stopped early | `mission_id`, `reason` |
 | `MissionPaused` | Mission paused | `mission_id`, `reason` |
 
-Trace frames (`behavior_tick`, sensor samples) are recorded separately in mission trace format. See [replay.md](./replay.md).
+Trace frames (`behavior_tick`, sensor samples) are recorded separately in mission trace format. See
+[replay.md](./replay.md).
 
 ---
 
@@ -130,7 +139,8 @@ Published by `spanda-security`, `spanda-tamper`, `spanda-spoofing`.
 | `SecretRotated` | Secret material rotated | `scope`, `id` |
 | `AuthFailed` | Authentication rejected | `principal`, `reason` |
 
-See [tamper-detection.md](./tamper-detection.md), [security-architecture.md](./security-architecture.md).
+See [tamper-detection.md](./tamper-detection.md),
+[security-architecture.md](./security-architecture.md).
 
 ---
 
@@ -179,7 +189,8 @@ See [fleet-distributed.md](./fleet-distributed.md).
 
 ## Event envelope
 
-Recommended JSON shape for REST, telemetry store, and audit. Rust implementations should use `spanda_audit::PlatformEvent` (`crates/spanda-audit/src/platform_event.rs`).
+Recommended JSON shape for REST, telemetry store, and audit. Rust implementations should use
+`spanda_audit::PlatformEvent` (`crates/spanda-audit/src/platform_event.rs`).
 
 ```json
 {

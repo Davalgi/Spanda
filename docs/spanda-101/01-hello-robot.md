@@ -8,9 +8,12 @@
 
 ## What is Spanda?
 
-Spanda is a language for **autonomous systems** — robots, drones, agents, and edge devices where sensors, AI, actuators, and safety rules belong in the source code, not scattered across scripts and config files.
+Spanda is a language for **autonomous systems** — robots, drones, agents, and edge devices where
+sensors, AI, actuators, and safety rules belong in the source code, not scattered across scripts and
+config files.
 
-A Spanda program describes a **robot**: what it can sense, what it can move, and what behaviors it runs.
+A Spanda program describes a **robot**: what it can sense, what it can move, and what behaviors it
+runs.
 
 ---
 
@@ -36,7 +39,8 @@ robot TutorialBot {
 | `behavior greet()` | A named entry point the runtime can execute |
 | `wheels.stop()` | A safe command sent to the actuator |
 
-Spanda is **not** object-oriented in the Java sense. You do not subclass `Robot`. You declare hardware and behaviors directly.
+Spanda is **not** object-oriented in the Java sense. You do not subclass `Robot`. You declare
+hardware and behaviors directly.
 
 ---
 
@@ -47,7 +51,8 @@ spanda check examples/basics/01_minimal_robot.sd
 spanda run examples/basics/01_minimal_robot.sd
 ```
 
-- **`check`** — type-check without running. Catches unit errors, unsafe AI usage, and missing symbols at compile time.
+- **`check`** — type-check without running. Catches unit errors, unsafe AI usage, and missing
+  symbols at compile time.
 - **`run`** — execute against the simulated backend (no physical robot required).
 
 ---
@@ -74,7 +79,8 @@ See [getting-started.md](../getting-started.md) for the full first-project walkt
 
 1. **`.sd` files** — Spanda source extension (think “Spanda definition”).
 2. **Robots, not classes** — `robot { }` is the top-level unit of autonomous logic.
-3. **Actuators are typed** — `DifferentialDrive`, `RobotArm`, `Gripper`, etc. The compiler knows what commands are valid.
+3. **Actuators are typed** — `DifferentialDrive`, `RobotArm`, `Gripper`, etc. The compiler knows
+   what commands are valid.
 4. **Check before run** — always run `spanda check` in CI and before deploy.
 
 ---

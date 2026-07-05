@@ -12,7 +12,8 @@ spanda <command> [options] [arguments]
 
 ## DESCRIPTION
 
-The Spanda CLI drives the autonomous systems platform: check, verify, simulate, replay, fleet, and document `.sd` programs.
+The Spanda CLI drives the autonomous systems platform: check, verify, simulate, replay, fleet, and
+document `.sd` programs.
 
 ## COMMANDS
 
@@ -39,7 +40,8 @@ The Spanda CLI drives the autonomous systems platform: check, verify, simulate, 
 - **codegen** — Generate deployable artifacts from a Spanda program.
 - **debug** — Start an interactive debug session.
 
-Package commands: `init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`, `registry info`.
+Package commands: `init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`,
+`registry info`.
 
 ## SEE ALSO
 

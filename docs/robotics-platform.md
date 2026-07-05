@@ -1,8 +1,12 @@
 # Spanda Robotics Platform
 
-Spanda is an **autonomous systems coordination and verification platform** — not a replacement for ROS 2, Nav2, Gazebo, or ML stacks. The robotics layer extends the `.sd` language with first-class orchestration primitives while delegating algorithms to packages and external runtimes.
+Spanda is an **autonomous systems coordination and verification platform** — not a replacement for
+ROS 2, Nav2, Gazebo, or ML stacks. The robotics layer extends the `.sd` language with first-class
+orchestration primitives while delegating algorithms to packages and external runtimes.
 
-**Related docs:** [Platform overview](./platform-overview.md) · [ROS 2 golden path](./ros2-golden-path.md) · [Standard library](./standard-library.md) · [Packages](./packages.md) · [Trust boundaries](./trust-boundaries.md) · [Triggers](./triggers.md)
+**Related docs:** [Platform overview](./platform-overview.md) · [ROS 2 golden
+path](./ros2-golden-path.md) · [Standard library](./standard-library.md) · [Packages](./packages.md)
+· [Trust boundaries](./trust-boundaries.md) · [Triggers](./triggers.md)
 
 ## Architecture
 
@@ -49,7 +53,9 @@ flowchart TB
 
 ## Design principle
 
-**Orchestrate, don't rewrite.** Spanda programs coordinate perception, planning, safety, and actuation. SLAM, path planning, computer vision, and low-level drivers stay in community packages or bridged stacks (ROS 2, Python/C++ `extern`).
+**Orchestrate, don't rewrite.** Spanda programs coordinate perception, planning, safety, and
+actuation. SLAM, path planning, computer vision, and low-level drivers stay in community packages or
+bridged stacks (ROS 2, Python/C++ `extern`).
 
 Reuse existing Spanda seams:
 
@@ -105,7 +111,8 @@ Reuse existing Spanda seams:
 
 ### Mission management
 
-Named missions with optional duration (for `spanda verify` battery budgeting) and ordered steps. Lifecycle states: `Pending`, `Running`, `Paused`, `Completed`, `Failed`.
+Named missions with optional duration (for `spanda verify` battery budgeting) and ordered steps.
+Lifecycle states: `Pending`, `Running`, `Paused`, `Completed`, `Failed`.
 
 ```spanda
 mission Delivery {
@@ -122,11 +129,13 @@ behavior execute() {
 }
 ```
 
-Runtime API: `mission.start()`, `pause()`, `resume()`, `advance()`, `complete()`, `fail()`, `state()`, `step()`.
+Runtime API: `mission.start()`, `pause()`, `resume()`, `advance()`, `complete()`, `fail()`,
+`state()`, `step()`.
 
 ### Fleet grouping
 
-Program-level fleet declarations group robot names for coordination. Validated at type-check time against declared `robot` blocks.
+Program-level fleet declarations group robot names for coordination. Validated at type-check time
+against declared `robot` blocks.
 
 ```spanda
 fleet Warehouse {
@@ -141,7 +150,9 @@ behavior coordinate() {
 
 Use `spanda fleet run program.sd` for in-process multi-robot simulation.
 
-Use `spanda fleet orchestrate program.sd` for distributed-style mission coordination (round-robin mission advance across fleet members). With registered fleet agents, add `--remote` to relay peer mission steps over HTTP:
+Use `spanda fleet orchestrate program.sd` for distributed-style mission coordination (round-robin
+mission advance across fleet members). With registered fleet agents, add `--remote` to relay peer
+mission steps over HTTP:
 
 ```bash
 spanda fleet agent start --robot ScoutB --bind 0.0.0.0:8766
@@ -172,7 +183,10 @@ spanda swarm coordinate examples/robotics/swarm_coordination.sd
 spanda swarm coordinate examples/robotics/swarm_coordination.sd   # advances next member
 ```
 
-Policies: `round_robin` (one member per tick, cursor in `.spanda/swarm-state.json`), `broadcast` (all members advance), `leader_follow` (leader advances and followers receive step handoffs). Peer-link robots emit mesh-ready deliveries under `round_robin` and `broadcast`; relay handoffs through a fleet mesh with `--mesh-url`:
+Policies: `round_robin` (one member per tick, cursor in `.spanda/swarm-state.json`), `broadcast`
+(all members advance), `leader_follow` (leader advances and followers receive step handoffs).
+Peer-link robots emit mesh-ready deliveries under `round_robin` and `broadcast`; relay handoffs
+through a fleet mesh with `--mesh-url`:
 
 ```bash
 spanda fleet mesh start --bind 0.0.0.0:8767
@@ -223,7 +237,11 @@ robot R {
 }
 ```
 
-Integrates with existing safety monitor, geofencing, and `on safety` triggers. Program-level `safety_zone` speed caps are enforced at runtime via `SafetyMonitor.clamp_speed_at_pose()` when the robot is inside a matching named zone — motion remains allowed inside speed-cap zones (use `stop_if robot.in_zone(...)` for hard stops). The TypeScript interpreter mirrors the Rust runtime for fleet, mission, navigation, fusion, and zone caps (LSP/sim path).
+Integrates with existing safety monitor, geofencing, and `on safety` triggers. Program-level
+`safety_zone` speed caps are enforced at runtime via `SafetyMonitor.clamp_speed_at_pose()` when the
+robot is inside a matching named zone — motion remains allowed inside speed-cap zones (use `stop_if
+robot.in_zone(...)` for hard stops). The TypeScript interpreter mirrors the Rust runtime for fleet,
+mission, navigation, fusion, and zone caps (LSP/sim path).
 
 ### Certification metadata
 
@@ -238,7 +256,9 @@ certify IEC61508;
 certify ISO26262;
 ```
 
-Recorded during `spanda verify` as pass items under category `certify`. Programs with `deploy` targets but no `certify` metadata receive a verify warning. This is **metadata only** — Spanda does not prove ISO/IEC compliance at runtime. See `examples/robotics/certified_deployment.sd`.
+Recorded during `spanda verify` as pass items under category `certify`. Programs with `deploy`
+targets but no `certify` metadata receive a verify warning. This is **metadata only** — Spanda does
+not prove ISO/IEC compliance at runtime. See `examples/robotics/certified_deployment.sd`.
 
 ### OTA deployment CLI
 
@@ -250,9 +270,12 @@ spanda deploy rollback examples/robotics/ota_deployment.sd
 spanda deploy status
 ```
 
-Deploy plans include a `certification_proof` summary (relaxed and strict pass flags). Use `--require-certify` on rollout to block OTA updates when strict certification proof fails (same checklist as `spanda verify --strict-certify` / `spanda certify prove --strict`).
+Deploy plans include a `certification_proof` summary (relaxed and strict pass flags). Use
+`--require-certify` on rollout to block OTA updates when strict certification proof fails (same
+checklist as `spanda verify --strict-certify` / `spanda certify prove --strict`).
 
-Golden-path script: `examples/robotics/golden_path_deploy.sh` (certify, deploy, verify-adapter, fleet orchestrate, swarm coordinate).
+Golden-path script: `examples/robotics/golden_path_deploy.sh` (certify, deploy, verify-adapter,
+fleet orchestrate, swarm coordinate).
 
 State persists to `.spanda/deploy-state.json` (override with `SPANDA_DEPLOY_STATE`).
 
@@ -271,17 +294,24 @@ spanda deploy rollback examples/robotics/remote_ota_deployment.sd --remote
 spanda deploy agent list
 ```
 
-Agents with `--require-certify` reject rollouts unless the payload includes a strict certification proof summary (`passed_strict: true`), matching the operator-side `--require-certify` gate.
+Agents with `--require-certify` reject rollouts unless the payload includes a strict certification
+proof summary (`passed_strict: true`), matching the operator-side `--require-certify` gate.
 
 Agent registry: `.spanda/deploy-agents.json` (`SPANDA_DEPLOY_AGENTS` override).  
-Agent state on device: `.spanda/agent-state/<Robot@Hardware>.json` per target (`SPANDA_AGENT_STATE` overrides the path for a single agent).  
-Fleet agent state: `.spanda/fleet-agent-state/<RobotName>.json` per robot (`SPANDA_FLEET_AGENT_STATE` overrides the path for a single agent).
+Agent state on device: `.spanda/agent-state/<Robot@Hardware>.json` per target (`SPANDA_AGENT_STATE`
+overrides the path for a single agent).
+Fleet agent state: `.spanda/fleet-agent-state/<RobotName>.json` per robot
+(`SPANDA_FLEET_AGENT_STATE` overrides the path for a single agent).
 
-Protocol: `GET /v1/health`, `GET /v1/status`, `POST /v1/rollout`, `POST /v1/rollback` (JSON, optional bearer token).
+Protocol: `GET /v1/health`, `GET /v1/status`, `POST /v1/rollout`, `POST /v1/rollback` (JSON,
+optional bearer token).
 
 ### Nav2 golden path
 
-When a robot declares `topic cmd_vel: Velocity publish on "/cmd_vel"`, calling `navigation.navigate()` publishes a stub velocity on `/cmd_vel` for ROS2 bridge validation (`SPANDA_ROS2_LIVE=1`). See `examples/robotics/nav2_bridge.sd` and `docs/ros2-golden-path.md`. Nav2 itself remains a ROS2 stack — Spanda orchestrates, it does not replace planners.
+When a robot declares `topic cmd_vel: Velocity publish on "/cmd_vel"`, calling
+`navigation.navigate()` publishes a stub velocity on `/cmd_vel` for ROS2 bridge validation
+(`SPANDA_ROS2_LIVE=1`). See `examples/robotics/nav2_bridge.sd` and `docs/ros2-golden-path.md`. Nav2
+itself remains a ROS2 stack — Spanda orchestrates, it does not replace planners.
 
 ### Sensor fusion (existing, extended)
 
@@ -296,11 +326,14 @@ behavior run() {
 }
 ```
 
-`state_estimator` declarations register weighted fusion bindings at runtime (same `fusion.read()` API). Static previews: `spanda state estimate`. Optional package: `spanda-fusion` (`assurance.fusion`). See [state-estimation.md](./state-estimation.md).
+`state_estimator` declarations register weighted fusion bindings at runtime (same `fusion.read()`
+API). Static previews: `spanda state estimate`. Optional package: `spanda-fusion`
+(`assurance.fusion`). See [state-estimation.md](./state-estimation.md).
 
 ### Mission assurance
 
-Knowledge models, anomaly detectors, prognostics, mitigation, resilience policies, and assurance cases integrate with readiness and verification — not duplicated health checks.
+Knowledge models, anomaly detectors, prognostics, mitigation, resilience policies, and assurance
+cases integrate with readiness and verification — not duplicated health checks.
 
 ```bash
 spanda demo assurance
@@ -308,7 +341,8 @@ spanda assure examples/showcase/assurance/rover.sd --json
 spanda anomaly scan examples/anomaly/learned_navigation.sd
 ```
 
-Full guide: [mission-assurance.md](./mission-assurance.md) · Examples: [`examples/showcase/assurance/`](../examples/showcase/assurance/README.md)
+Full guide: [mission-assurance.md](./mission-assurance.md) · Examples:
+[`examples/showcase/assurance/`](../examples/showcase/assurance/README.md)
 
 ---
 
@@ -375,7 +409,8 @@ provides = ["Nav2Adapter", "NavigationGoal", "CostMap"]
 requires = ["topic.publish", "topic.subscribe", "safety.validate"]
 ```
 
-Programs import adapter paths and call `extern` bridges where needed — see [FFI and ecosystem](./ffi-and-ecosystem.md).
+Programs import adapter paths and call `extern` bridges where needed — see [FFI and
+ecosystem](./ffi-and-ecosystem.md).
 
 ---
 

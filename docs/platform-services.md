@@ -8,7 +8,9 @@ Clear responsibility boundaries for each Spanda platform service.
 
 ## Design intent
 
-Platform services are **reusable operational capabilities** consumed by CLI, Control Center, SDKs, and solution blueprints. Each service owns one concern. Overlapping responsibilities create inconsistent reports, duplicated DTOs, and fragile integrations.
+Platform services are **reusable operational capabilities** consumed by CLI, Control Center, SDKs,
+and solution blueprints. Each service owns one concern. Overlapping responsibilities create
+inconsistent reports, duplicated DTOs, and fragile integrations.
 
 ```mermaid
 flowchart LR
@@ -145,7 +147,8 @@ Must not: evaluate readiness or render Control Center UI.
 | **Outputs** | Simulated sensor/actuator data, trace frames |
 | **Docs** | [getting-started.md](./getting-started.md) (sim section) |
 
-Simulation is a **runtime mode**, not a separate service crate. Assurance and readiness hooks run during sim when configured.
+Simulation is a **runtime mode**, not a separate service crate. Assurance and readiness hooks run
+during sim when configured.
 
 ---
 
@@ -185,12 +188,14 @@ Must not: replace safety type system (compiler/runtime) or readiness weights.
 | Record what happened | **Telemetry** |
 | Block an action by rule | **Policy** |
 
-When in doubt, add capability to the **lower** layer service and expose via entity/API — do not fork logic into blueprints.
+When in doubt, add capability to the **lower** layer service and expose via entity/API — do not fork
+logic into blueprints.
 
 ---
 
 ## Control Center aggregation
 
-`spanda-api` aggregates platform services into REST/gRPC endpoints. It does not reimplement service logic — it routes to readiness, config, fleet, telemetry, etc.
+`spanda-api` aggregates platform services into REST/gRPC endpoints. It does not reimplement service
+logic — it routes to readiness, config, fleet, telemetry, etc.
 
 See [control-center-api.md](./control-center-api.md).

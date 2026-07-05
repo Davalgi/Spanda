@@ -1,20 +1,27 @@
 # Functional Domains
 
-The Spanda **Cognitive & Resilience Architecture** organizes platform capabilities into eleven **functional responsibility domains**. Each domain has a clear engineering purpose, integrates with existing platform services, and operates on the unified [Entity model](./entity-model.md).
+The Spanda **Cognitive & Resilience Architecture** organizes platform capabilities into eleven
+**functional responsibility domains**. Each domain has a clear engineering purpose, integrates with
+existing platform services, and operates on the unified [Entity model](./entity-model.md).
 
-> Spanda does **not** model biological anatomy. Domain names describe **engineering responsibilities**, not brain regions.
+> Spanda does **not** model biological anatomy. Domain names describe **engineering
+> responsibilities**, not brain regions.
 
-Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Ownership matrix: [responsibility-matrix.md](./responsibility-matrix.md)
+Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Ownership
+matrix: [responsibility-matrix.md](./responsibility-matrix.md)
 
 ---
 
 ## Strategic Planning
 
-**Responsibilities:** mission planning, long-term optimization, policy evaluation, deployment planning, resource planning, governance.
+**Responsibilities:** mission planning, long-term optimization, policy evaluation, deployment
+planning, resource planning, governance.
 
-**Integrates with:** Decision Engine, Mission Planner (`spanda-mission-planning`), Governance, Control Center, Simulation, Assurance.
+**Integrates with:** Decision Engine, Mission Planner (`spanda-mission-planning`), Governance,
+Control Center, Simulation, Assurance.
 
-**Entity touchpoints:** `Entity.capabilities`, mission entities, governance metadata, `Entity.damageRisk` (abort inputs).
+**Entity touchpoints:** `Entity.capabilities`, mission entities, governance metadata,
+`Entity.damageRisk` (abort inputs).
 
 **Status:** Mission planner and governance **Stable**; long-term optimization **Planned**.
 
@@ -22,11 +29,14 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Operational Coordination
 
-**Responsibilities:** mission execution, task scheduling, fleet coordination, swarm coordination, delegation, takeover, synchronization.
+**Responsibilities:** mission execution, task scheduling, fleet coordination, swarm coordination,
+delegation, takeover, synchronization.
 
-**Integrates with:** Fleet (`spanda-fleet`), Mission Runtime, [Distributed Decisions](./distributed-decisions.md), Recovery, Mission Continuity.
+**Integrates with:** Fleet (`spanda-fleet`), Mission Runtime, [Distributed
+Decisions](./distributed-decisions.md), Recovery, Mission Continuity.
 
-**Entity touchpoints:** fleet/swarm parent-child relationships, `Entity.readiness`, mission lifecycle state.
+**Entity touchpoints:** fleet/swarm parent-child relationships, `Entity.readiness`, mission
+lifecycle state.
 
 **Status:** **Stable**.
 
@@ -34,11 +44,13 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Reflex & Safety
 
-**Responsibilities:** emergency stop, immediate hazard response, local safety actions, kill switch, runtime protection, protective shutdown.
+**Responsibilities:** emergency stop, immediate hazard response, local safety actions, kill switch,
+runtime protection, protective shutdown.
 
 **Characteristics:** deterministic, ultra-low latency, no cloud dependency, safety bounded.
 
-**Integrates with:** [Reflex Architecture](./reflex-architecture.md), Distributed Decisions (layer 0), Runtime, Recovery.
+**Integrates with:** [Reflex Architecture](./reflex-architecture.md), Distributed Decisions (layer
+0), Runtime, Recovery.
 
 **Entity touchpoints:** `Entity.reflexes`, kill-switch handlers in `.sd` programs.
 
@@ -48,7 +60,9 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Homeostasis Engine
 
-**Responsibilities:** maintain stable operating conditions — monitor CPU, memory, battery, storage, temperature, latency, network, sensor quality, trust, readiness; automatic correction, preventative action, drift detection, stability maintenance.
+**Responsibilities:** maintain stable operating conditions — monitor CPU, memory, battery, storage,
+temperature, latency, network, sensor quality, trust, readiness; automatic correction, preventative
+action, drift detection, stability maintenance.
 
 **Integrates with:** Health, Telemetry, Recovery, Readiness.
 
@@ -60,7 +74,9 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Platform Immunity
 
-**Responsibilities:** detect and isolate compromised devices, entities, malicious plugins/packages, spoofed sensors, policy violations, trust violations; quarantine, isolation, re-verification, re-admission.
+**Responsibilities:** detect and isolate compromised devices, entities, malicious plugins/packages,
+spoofed sensors, policy violations, trust violations; quarantine, isolation, re-verification,
+re-admission.
 
 **Integrates with:** Security, Trust, Tamper Detection, Plugins, Packages.
 
@@ -72,7 +88,8 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Sensory Fusion
 
-**Responsibilities:** combine multiple observations; compute confidence, agreement, disagreement, signal quality, sensor reliability.
+**Responsibilities:** combine multiple observations; compute confidence, agreement, disagreement,
+signal quality, sensor reliability.
 
 **Used by:** Readiness, Decision Engine, Recovery, Diagnosis.
 
@@ -84,7 +101,8 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Attention Engine
 
-**Responsibilities:** prioritize critical events, mission events, operator events, telemetry, alerts; avoid alert fatigue via priority, suppression, aggregation, focus.
+**Responsibilities:** prioritize critical events, mission events, operator events, telemetry,
+alerts; avoid alert fatigue via priority, suppression, aggregation, focus.
 
 **Integrates with:** Telemetry, Alerts, Control Center, Diagnosis.
 
@@ -96,7 +114,8 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Operational Memory
 
-**Responsibilities:** maintain current mission state, historical missions, knowledge graph, entity graph, replay, recovery history, decision history, playbooks.
+**Responsibilities:** maintain current mission state, historical missions, knowledge graph, entity
+graph, replay, recovery history, decision history, playbooks.
 
 **Memory categories:**
 
@@ -118,7 +137,8 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 **Purpose:** improve operational decisions using historical outcomes.
 
-**Initially:** rule-based adaptation, statistics, confidence updates, historical recommendations. **No ML dependency required.**
+**Initially:** rule-based adaptation, statistics, confidence updates, historical recommendations.
+**No ML dependency required.**
 
 **Integrates with:** Recovery Orchestrator, Adaptive Recovery, Decision traceability.
 
@@ -130,7 +150,8 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Damage Risk Assessment
 
-**Purpose:** evaluate potential harm — different from errors. Model damage, harm, operator risk, asset risk, mission risk.
+**Purpose:** evaluate potential harm — different from errors. Model damage, harm, operator risk,
+asset risk, mission risk.
 
 **Actions:** preventative action, mission abort, degraded mode, maintenance scheduling.
 
@@ -142,10 +163,13 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 ## Maintenance & Optimization
 
-**Responsibilities:** maintenance windows, OTA updates, cleanup, calibration, log rotation, backup, optimization, resource balancing.
+**Responsibilities:** maintenance windows, OTA updates, cleanup, calibration, log rotation, backup,
+optimization, resource balancing.
 
-**Integrates with:** OTA, Device Pool, Telemetry store, Maintenance mode (`spanda-autonomy::maintenance`).
+**Integrates with:** OTA, Device Pool, Telemetry store, Maintenance mode
+(`spanda-autonomy::maintenance`).
 
 **Entity touchpoints:** `Entity.lifecycle_state`, firmware/software version fields.
 
-**Status:** OTA **Stable**; maintenance/sleep mode **Beta** — see [platform-maintenance.md](./platform-maintenance.md).
+**Status:** OTA **Stable**; maintenance/sleep mode **Beta** — see
+[platform-maintenance.md](./platform-maintenance.md).

@@ -16,7 +16,9 @@ Building a robot today usually means:
 
 Nothing is *wrong* with that stack — it's just **a lot of duct tape**.
 
-Spanda is an **autonomous systems platform** — and at its center is one language (`.sd` files) where sensors, AI, safety rules, and “will this fit on the Jetson?” live in the **same program**. The same toolchain also verifies hardware, simulates missions, and monitors health.
+Spanda is an **autonomous systems platform** — and at its center is one language (`.sd` files) where
+sensors, AI, safety rules, and “will this fit on the Jetson?” live in the **same program**. The same
+toolchain also verifies hardware, simulates missions, and monitors health.
 
 ---
 
@@ -35,7 +37,9 @@ Think of a robot like a body:
 
 Spanda is the **pulse** — the thing that turns perception, intent, and safety into action.
 
-The word **Spanda** is Sanskrit for *the divine pulse* — pronounced **SPUN-duh** (/ˈspʌndə/). It names the creative vibration that bridges stillness and movement; in software, that is the coordination layer between sensors, AI, safety, and actuators.
+The word **Spanda** is Sanskrit for *the divine pulse* — pronounced **SPUN-duh** (/ˈspʌndə/). It
+names the creative vibration that bridges stillness and movement; in software, that is the
+coordination layer between sensors, AI, safety, and actuators.
 
 ---
 

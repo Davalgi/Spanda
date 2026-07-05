@@ -1,6 +1,7 @@
 # Entity Registry
 
-The **Entity Registry** is the unified inventory of all platform entities, built from resolved system configuration.
+The **Entity Registry** is the unified inventory of all platform entities, built from resolved
+system configuration.
 
 ## Core types
 
@@ -36,7 +37,8 @@ let registry = resolved.entity_registry();
 | `ResolvedSystemConfig.providers` | `provider` |
 | Project manifest | `organization` |
 
-Human collaboration entities are **not duplicated**: they project from `HumanRegistry` and fleet tree nodes into a single ID namespace.
+Human collaboration entities are **not duplicated**: they project from `HumanRegistry` and fleet
+tree nodes into a single ID namespace.
 
 ## Registry operations
 
@@ -88,7 +90,9 @@ let result = client.query_entities(&serde_json::json!({
 
 ## Relationship to Device Registry
 
-The **Device Registry** (`DeviceIdentityRecord`) remains the authoritative store for device identity, provisioning, quarantine, and network metadata. The entity registry **projects** devices into the unified model without replacing device pool workflows.
+The **Device Registry** (`DeviceIdentityRecord`) remains the authoritative store for device
+identity, provisioning, quarantine, and network metadata. The entity registry **projects** devices
+into the unified model without replacing device pool workflows.
 
 Use:
 
@@ -97,18 +101,21 @@ Use:
 
 ## Runtime mission overlay (Phase 2)
 
-When Control Center is started with `--program`, mission declarations from the loaded `.sd` file are projected into the entity registry:
+When Control Center is started with `--program`, mission declarations from the loaded `.sd` file are
+projected into the entity registry:
 
 - Mission entities use ids like `mission:{robot_id}:{mission_name}`
 - Robots link to missions via `participates_in`
 - Fleets `contain` bound missions
 - `[[mission_approvals]]` seeds appear as pending mission entities until approved
 
-The overlay is merged at API time in `ControlCenterState::entity_registry()` — no duplicate TOML records.
+The overlay is merged at API time in `ControlCenterState::entity_registry()` — no duplicate TOML
+records.
 
 ## Mutation overlay (Phase 5)
 
-Runtime entity mutations are stored in `.spanda/entity-overlays.json` and merged into the registry on each read.
+Runtime entity mutations are stored in `.spanda/entity-overlays.json` and merged into the registry
+on each read.
 
 | Endpoint | Action |
 |----------|--------|
@@ -117,7 +124,8 @@ Runtime entity mutations are stored in `.spanda/entity-overlays.json` and merged
 | `POST /v1/entities/relationships` | Create a relationship edge |
 | `POST /v1/entities/sync` | Flush overlay to TOML (`spanda.facilities.toml` or `.spanda/entity-overrides.toml`) |
 
-Mutations require `Provision` RBAC and are recorded in the mutation audit trail (`control_center.entity.mutation`).
+Mutations require `Provision` RBAC and are recorded in the mutation audit trail
+(`control_center.entity.mutation`).
 
 ```rust
 client.register_entity(&json!({
@@ -132,4 +140,5 @@ client.sync_entities()?;
 
 ## Future overlay extensions
 
-Live interpreter mission state, incidents, and transient sessions will enrich the overlay without persisting duplicate TOML records.
+Live interpreter mission state, incidents, and transient sessions will enrich the overlay without
+persisting duplicate TOML records.

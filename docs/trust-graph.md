@@ -18,7 +18,8 @@ spanda trust-graph rover.sd --json
 Mission → Capability → Hardware → Package → Provider → Trust Score
 ```
 
-Each node carries a trust score derived from composite trust categories; edges annotate the weakest link on each path.
+Each node carries a trust score derived from composite trust categories; edges annotate the weakest
+link on each path.
 
 ## Output
 
@@ -29,6 +30,8 @@ Each node carries a trust score derived from composite trust categories; edges a
 
 ## Integration
 
-Composes [dependency-graphs.md](./dependency-graphs.md) (`spanda graph`) with [trust-framework.md](./trust-framework.md) (`spanda trust` composite evaluation). Implemented in `spanda-graph` (`trust_graph` module).
+Composes [dependency-graphs.md](./dependency-graphs.md) (`spanda graph`) with
+[trust-framework.md](./trust-framework.md) (`spanda trust` composite evaluation). Implemented in
+`spanda-graph` (`trust_graph` module).
 
 See [differentiation-roadmap.md](./differentiation-roadmap.md) · [scorecards.md](./scorecards.md).

@@ -1,8 +1,11 @@
 # Control Center versioning
 
-How Control Center semver is defined, displayed, bumped, and released. Spanda uses **independent release streams** — Control Center desktop and UI versioning is separate from workspace CLI and official SDKs. Policy overview: [versioning.md](./versioning.md).
+How Control Center semver is defined, displayed, bumped, and released. Spanda uses **independent
+release streams** — Control Center desktop and UI versioning is separate from workspace CLI and
+official SDKs. Policy overview: [versioning.md](./versioning.md).
 
-**Current desktop release:** **0.6.3** — tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3).
+**Current desktop release:** **0.6.3** — tag
+[`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3).
 
 ---
 
@@ -13,9 +16,13 @@ How Control Center semver is defined, displayed, bumped, and released. Spanda us
 | **Control Center UI version** | `packages/web/package.json` (injected at Vite build; compiled into `spanda-api` via `build.rs`) | Sidebar label, CLI `--version`, `GET /v1/version` → `control_center_ui_version` |
 | **Desktop shell version** | `packages/control-center-desktop` Tauri manifests (`CARGO_PKG_VERSION`) | Tauri desktop app; exposed to the webview as `desktop_features.app_version` |
 
-In normal releases these are kept aligned (both **0.6.3** today). They can diverge by stream policy — for example a workspace-only bump updates `packages/web` while desktop stays on an older Tauri line until the next `desktop-v*` release.
+In normal releases these are kept aligned (both **0.6.3** today). They can diverge by stream policy
+— for example a workspace-only bump updates `packages/web` while desktop stays on an older Tauri
+line until the next `desktop-v*` release.
 
-**Platform version:** `GET /v1/version` also returns `spanda_version` (workspace `spanda-api` crate semver). That is the Spanda platform/API build, not the Control Center product label shown in the UI sidebar.
+**Platform version:** `GET /v1/version` also returns `spanda_version` (workspace `spanda-api` crate
+semver). That is the Spanda platform/API build, not the Control Center product label shown in the UI
+sidebar.
 
 ---
 
@@ -24,10 +31,12 @@ In normal releases these are kept aligned (both **0.6.3** today). They can diver
 ### UI
 
 - **Sidebar** — under the “Control Center” title: `vX.Y.Z`
-- **Tauri desktop** — reads `app_version` from the Tauri command `desktop_features` (desktop shell semver)
+- **Tauri desktop** — reads `app_version` from the Tauri command `desktop_features` (desktop shell
+  semver)
 - **Browser / embedded UI** — build-time constant from `packages/web` (`__CONTROL_CENTER_VERSION__`)
 
-Implementation: `packages/web/src/controlCenterVersion.ts`, `useControlCenterVersion.ts`, `ControlCenterPanel.tsx`.
+Implementation: `packages/web/src/controlCenterVersion.ts`, `useControlCenterVersion.ts`,
+`ControlCenterPanel.tsx`.
 
 ### CLI
 
@@ -55,7 +64,8 @@ spanda control-center serve --bind 127.0.0.1:8080
 | `api_version` | Supported API version header value |
 | `grpc` | Proto semver and RPC metadata |
 
-**`GET /v1/instance`** — runtime status for operators and `spanda control-center status`; includes `control_center_ui_version` and `spanda_version`.
+**`GET /v1/instance`** — runtime status for operators and `spanda control-center status`; includes
+`control_center_ui_version` and `spanda_version`.
 
 ---
 
@@ -67,7 +77,9 @@ spanda control-center serve --bind 127.0.0.1:8080
 | Cargo | `packages/control-center-desktop/src-tauri/Cargo.toml` → `version` |
 | Tauri | `packages/control-center-desktop/src-tauri/tauri.conf.json` → `"version"` |
 
-**Tag:** `desktop-vX.Y.Z` → [.github/workflows/desktop-release.yml](../.github/workflows/desktop-release.yml) (macOS `.dmg` / `.app.tar.gz` GitHub Release + workflow artifacts).
+**Tag:** `desktop-vX.Y.Z` →
+[.github/workflows/desktop-release.yml](../.github/workflows/desktop-release.yml) (macOS `.dmg` /
+`.app.tar.gz` GitHub Release + workflow artifacts).
 
 **Pre-flight:**
 
@@ -75,7 +87,8 @@ spanda control-center serve --bind 127.0.0.1:8080
 ./scripts/verify_desktop_release_ready.sh
 ```
 
-Fails on manifest mismatch; runs `control_center_desktop_smoke.sh` (`cargo check` on the Tauri crate).
+Fails on manifest mismatch; runs `control_center_desktop_smoke.sh` (`cargo check` on the Tauri
+crate).
 
 ### When to bump (semver component)
 
@@ -96,11 +109,14 @@ python3 scripts/bump_version.py minor --stream desktop
 
 ## Automatic desktop bump (CI)
 
-After **CI Integration** succeeds on `main`, [.github/workflows/auto-release.yml](../.github/workflows/auto-release.yml):
+After **CI Integration** succeeds on `main`,
+[.github/workflows/auto-release.yml](../.github/workflows/auto-release.yml):
 
-1. Reads **`release:major`**, **`release:minor`**, or **`release:patch`** from the **merged** PR (same labels as workspace auto release).
+1. Reads **`release:major`**, **`release:minor`**, or **`release:patch`** from the **merged** PR
+   (same labels as workspace auto release).
 2. Bumps **workspace** → commits `chore: release vX.Y.Z` → pushes tag **`vX.Y.Z`**.
-3. If the merged PR changed **Control Center paths**, bumps **desktop** with the **same semver component** → commits `chore: release desktop vX.Y.Z` → pushes tag **`desktop-vX.Y.Z`**.
+3. If the merged PR changed **Control Center paths**, bumps **desktop** with the **same semver
+   component** → commits `chore: release desktop vX.Y.Z` → pushes tag **`desktop-vX.Y.Z`**.
 
 Path detection (also available locally):
 
@@ -122,9 +138,11 @@ Monitored paths:
 | `scripts/control_center_*` | Desktop / CC scripts |
 | `scripts/verify_desktop_release_ready.sh` | Release gate |
 
-**Manual ad-hoc bump:** Actions → **Bump version** → choose stream **desktop** or **workspace**; optional tag push. Uses [.github/workflows/release-bump.yml](../.github/workflows/release-bump.yml).
+**Manual ad-hoc bump:** Actions → **Bump version** → choose stream **desktop** or **workspace**;
+optional tag push. Uses [.github/workflows/release-bump.yml](../.github/workflows/release-bump.yml).
 
-**Skip loop:** Auto release skips when the merge commit message is already `chore: release v*` or `chore: release desktop v*`.
+**Skip loop:** Auto release skips when the merge commit message is already `chore: release v*` or
+`chore: release desktop v*`.
 
 ---
 
@@ -142,13 +160,15 @@ Monitored paths:
 3. Watch **Actions → Desktop Control Center release**.
 4. Update [CHANGELOG.md](../CHANGELOG.md) under `[Unreleased]` when user-visible.
 
-For embedded UI changes served by `spanda control-center serve`, rebuild and sync assets after UI edits:
+For embedded UI changes served by `spanda control-center serve`, rebuild and sync assets after UI
+edits:
 
 ```bash
 ./scripts/sync_control_center_embedded_ui.sh
 ```
 
-The UI semver in the API comes from `packages/web/package.json` at `spanda-api` compile time (`crates/spanda-api/build.rs`).
+The UI semver in the API comes from `packages/web/package.json` at `spanda-api` compile time
+(`crates/spanda-api/build.rs`).
 
 ---
 
@@ -205,4 +225,5 @@ flowchart LR
 - [CONTRIBUTING.md](../CONTRIBUTING.md#releases) — PR release labels
 - [ci-architecture.md](./ci-architecture.md) — CI Integration → Auto release
 - [control-center.md](./control-center.md) — API and operator reference
-- [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) — local dev and build
+- [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) — local
+  dev and build

@@ -1,6 +1,7 @@
 # Runtime Health
 
-Spanda aggregates runtime health from heartbeats, process health, active faults, and configured monitors.
+Spanda aggregates runtime health from heartbeats, process health, active faults, and configured
+monitors.
 
 ## Status values
 

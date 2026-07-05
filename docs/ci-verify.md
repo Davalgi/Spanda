@@ -1,6 +1,8 @@
 # CI integration for `spanda verify`
 
-Robotics teams adopt Spanda when **hardware fit is checked in CI** before hardware exists on the bench. This guide shows how to run `spanda check` and `spanda verify` in GitHub Actions and GitLab CI, parse `--json` output, and fail the pipeline on incompatible deploy targets.
+Robotics teams adopt Spanda when **hardware fit is checked in CI** before hardware exists on the
+bench. This guide shows how to run `spanda check` and `spanda verify` in GitHub Actions and GitLab
+CI, parse `--json` output, and fail the pipeline on incompatible deploy targets.
 
 ## What to gate in CI
 
@@ -11,9 +13,11 @@ Robotics teams adopt Spanda when **hardware fit is checked in CI** before hardwa
 | `spanda verify --json --all-targets` | Nightly or release branches | Any matrix cell incompatible for a required target |
 | `spanda deploy gate --policy production` | Release / deploy workflows | Any gate fails (includes `official_provenance`, `registry_signatures`) |
 
-Set `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` in production CI before running the deploy gate so lockfile registry dependencies are checked against signed checksums in `registry/index.json`.
+Set `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` in production CI before running the deploy gate so
+lockfile registry dependencies are checked against signed checksums in `registry/index.json`.
 
-`spanda verify` answers: *Will this program run on the declared deploy target?* — memory, sensors, actuators, task timing, battery estimates, and AI model requirements.
+`spanda verify` answers: *Will this program run on the declared deploy target?* — memory, sensors,
+actuators, task timing, battery estimates, and AI model requirements.
 
 ## JSON output shape
 
@@ -47,9 +51,11 @@ Incompatible deploy (non-zero exit):
 }
 ```
 
-**CI rule:** treat `compatible == false` or `ok == false` as a build failure. Do not rely on parsing human-readable stdout.
+**CI rule:** treat `compatible == false` or `ok == false` as a build failure. Do not rely on parsing
+human-readable stdout.
 
-With `--all-targets`, the response includes a `matrix` object with `cells[]` — each cell has `robot`, `target`, and `compatible`.
+With `--all-targets`, the response includes a `matrix` object with `cells[]` — each cell has
+`robot`, `target`, and `compatible`.
 
 ## Install Spanda in CI
 
@@ -184,7 +190,8 @@ Week 3: add `--simulate` on release branches for fault-injection warnings.
 | Verify | `examples/showcase/hardware_compatibility.sd` | `spanda verify --json` |
 | Sim | `examples/showcase/killer_demo.sd` | `spanda sim` |
 
-Full walkthrough: [killer-demo.md](./killer-demo.md). Adoption path: [adoption-path.md](./adoption-path.md).
+Full walkthrough: [killer-demo.md](./killer-demo.md). Adoption path:
+[adoption-path.md](./adoption-path.md).
 
 Golden path: `./scripts/ci_verify_golden_path.sh` (CI Integration job `ci-verify-golden-path`).
 

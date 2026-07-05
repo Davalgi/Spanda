@@ -26,4 +26,5 @@ The playground lives under `packages/web/` (`@davalgi-spanda/web`).
 - Type-check and run subset of programs
 - Lighter surface than the native `spanda` CLI (no full fleet, deploy agents, or all provider bridges)
 
-For production workflows use the native CLI: [installation.md](../installation.md) · [getting-started.md](../getting-started.md)
+For production workflows use the native CLI: [installation.md](../installation.md) ·
+[getting-started.md](../getting-started.md)

@@ -1,6 +1,7 @@
 # Provider Interfaces
 
-Spanda Core defines generic provider traits in `crates/spanda-core/src/providers/`. Official packages implement these traits and register with `ProviderRegistry` at runtime.
+Spanda Core defines generic provider traits in `crates/spanda-core/src/providers/`. Official
+packages implement these traits and register with `ProviderRegistry` at runtime.
 
 ## Trait overview
 

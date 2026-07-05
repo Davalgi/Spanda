@@ -1,12 +1,16 @@
 # Compliance Framework
 
-Spanda's compliance framework validates autonomous systems against **industry profiles** and **operational governance** requirements — not embedded regulatory text.
+Spanda's compliance framework validates autonomous systems against **industry profiles** and
+**operational governance** requirements — not embedded regulatory text.
 
 ## Layers
 
-1. **Program compliance** (`spanda-compliance`) — evaluate `.sd` programs against signed industry profiles (defense, medical, automotive, …).
-2. **Operational governance** (`spanda-governance`) — validate deployment context: autonomy, maturity, certification, risk, accountability.
-3. **Readiness & assurance** — existing engines provide health/readiness/trust inputs to governance validation.
+1. **Program compliance** (`spanda-compliance`) — evaluate `.sd` programs against signed industry
+   profiles (defense, medical, automotive, …).
+2. **Operational governance** (`spanda-governance`) — validate deployment context: autonomy,
+   maturity, certification, risk, accountability.
+3. **Readiness & assurance** — existing engines provide health/readiness/trust inputs to governance
+   validation.
 
 ## Validation outcomes
 
@@ -53,4 +57,5 @@ constraints = "indoor,connectivity"
 
 ## Disclaimer
 
-Spanda validates structural governance requirements. Organizations remain responsible for regulatory interpretation and legal compliance.
+Spanda validates structural governance requirements. Organizations remain responsible for regulatory
+interpretation and legal compliance.

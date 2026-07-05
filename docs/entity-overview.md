@@ -1,6 +1,8 @@
 # Entity Model Overview
 
-The **Unified Entity Model** is Spanda's foundational abstraction: every managed object — robots, humans, devices, packages, providers, missions, and facilities — is an **Entity** with consistent identity, evaluation, and lifecycle semantics.
+The **Unified Entity Model** is Spanda's foundational abstraction: every managed object — robots,
+humans, devices, packages, providers, missions, and facilities — is an **Entity** with consistent
+identity, evaluation, and lifecycle semantics.
 
 ## Why it exists
 
@@ -56,4 +58,5 @@ Runnable programs: [examples/entity/](../examples/entity/)
 
 ## Backward compatibility
 
-Existing `/v1/robots`, `/v1/devices`, `/v1/fleets`, `spanda verify`, and domain TOML schemas are unchanged. Entity APIs are additive.
+Existing `/v1/robots`, `/v1/devices`, `/v1/fleets`, `spanda verify`, and domain TOML schemas are
+unchanged. Entity APIs are additive.

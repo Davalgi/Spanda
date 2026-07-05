@@ -1,6 +1,7 @@
 # Plugin API
 
-Plugins access Spanda platform services through a **stable host API** in `spanda-plugin`. Internal workspace crates are **not** exposed.
+Plugins access Spanda platform services through a **stable host API** in `spanda-plugin`. Internal
+workspace crates are **not** exposed.
 
 ## Surfaces
 

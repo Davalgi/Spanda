@@ -1,12 +1,21 @@
 # Platform Maturity Roadmap
 
-Strategic expansion plan for Spanda as a **Safety, Verification, Readiness, Assurance, and Operations Platform** for autonomous systems. This document does not add unrelated features — it strengthens adoption, trust, operations, explanation, deployment, and maintenance on top of the existing language and engines.
+Strategic expansion plan for Spanda as a **Safety, Verification, Readiness, Assurance, and
+Operations Platform** for autonomous systems. This document does not add unrelated features — it
+strengthens adoption, trust, operations, explanation, deployment, and maintenance on top of the
+existing language and engines.
 
-For **enterprise control plane** pillars (Control Center, Device Pool, RBAC, APIs, alerting), see [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md).
+For **enterprise control plane** pillars (Control Center, Device Pool, RBAC, APIs, alerting), see
+[enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md).
 
-**Principle:** Every item must strengthen at least one lifecycle phase: **Build · Verify · Simulate · Deploy · Operate · Recover**.
+**Principle:** Every item must strengthen at least one lifecycle phase: **Build · Verify · Simulate
+· Deploy · Operate · Recover**.
 
-**Related:** [roadmap.md](./roadmap.md) · [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [differentiation-roadmap.md](./differentiation-roadmap.md) · [product-strategy.md](./product-strategy.md) · [feature-status.md](./feature-status.md) · [platform-overview.md](./platform-overview.md)
+**Related:** [roadmap.md](./roadmap.md) ·
+[enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) ·
+[differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[product-strategy.md](./product-strategy.md) · [feature-status.md](./feature-status.md) ·
+[platform-overview.md](./platform-overview.md)
 
 **Last updated:** 2026-07-02
 
@@ -63,7 +72,9 @@ Each area is classified by lifecycle phase, maturity tier, and primary outcome.
 
 ### Lean-core principle
 
-New capabilities follow the established pattern: **contracts in focused crates**, **CLI in `spanda-cli`**, **optional package backends** for vendor-specific integrations (secure boot, HSM, cloud attestation).
+New capabilities follow the established pattern: **contracts in focused crates**, **CLI in
+`spanda-cli`**, **optional package backends** for vendor-specific integrations (secure boot, HSM,
+cloud attestation).
 
 ```mermaid
 flowchart TB
@@ -120,7 +131,8 @@ flowchart TB
 1. All existing CLI commands, flags, and JSON schemas remain valid.
 2. Default `spanda check`, `verify`, `readiness`, `sim`, `replay` behavior unchanged.
 3. New commands are additive (`spanda graph`, `spanda drift`, …).
-4. CI golden paths (`killer_demo`, `self_healing_smoke`, `cargo test --workspace`) must pass after each phase.
+4. CI golden paths (`killer_demo`, `self_healing_smoke`, `cargo test --workspace`) must pass after
+   each phase.
 
 ---
 
@@ -247,7 +259,8 @@ Ordered by **adoption impact × trust impact ÷ implementation risk**.
 
 ### Per-phase doc updates
 
-When each area ships: update `CHANGELOG.md`, `feature-status.md`, `getting-started.md` (if CLI demo-worthy), and `docs/README.md` index.
+When each area ships: update `CHANGELOG.md`, `feature-status.md`, `getting-started.md` (if CLI
+demo-worthy), and `docs/README.md` index.
 
 ---
 
@@ -281,7 +294,8 @@ When each area ships: update `CHANGELOG.md`, `feature-status.md`, `getting-start
 | Package trust | `spanda trust <name> [--version]` | `spanda-package::trust` | Registry fixture scoring |
 | Deployment gates | `spanda deploy gate <file>`, `--gate` on rollout | extends readiness | Gate pass/fail CI |
 
-**Exit criteria:** `spanda demo maturity` + `scripts/maturity_smoke.sh` (wired into `scripts/showcase_smoke.sh`).
+**Exit criteria:** `spanda demo maturity` + `scripts/maturity_smoke.sh` (wired into
+`scripts/showcase_smoke.sh`).
 
 ### Phase B — Operate & compare (v0.6, Q1 2027)
 
@@ -354,7 +368,8 @@ flowchart TB
   DET --> outputs
 ```
 
-**Core types:** `TamperEvent`, `TamperAlert`, `TamperEvidence`, `TamperSeverity`, `TamperPolicy`, `TamperDetectionResult`, `TamperStatus` (Trusted · Suspicious · Tampered · Compromised · Unknown).
+**Core types:** `TamperEvent`, `TamperAlert`, `TamperEvidence`, `TamperSeverity`, `TamperPolicy`,
+`TamperDetectionResult`, `TamperStatus` (Trusted · Suspicious · Tampered · Compromised · Unknown).
 
 ### Trust model
 
@@ -366,7 +381,8 @@ flowchart TB
 | Runtime | Live behavior vs approved model | Tamper monitors + trace replay |
 | Fleet | Peer identity | `trust_boundary`, signed comm |
 
-**Composite `TrustScore` (0–100):** weighted blend of package trust, device integrity, firmware integrity, configuration integrity, identity validation, safety integrity.
+**Composite `TrustScore` (0–100):** weighted blend of package trust, device integrity, firmware
+integrity, configuration integrity, identity validation, safety integrity.
 
 ### Detection strategies
 
@@ -394,9 +410,12 @@ tamper_policy CriticalResponse {
 }
 ```
 
-**Actions:** Alert · Audit · Degraded Mode · Safe Mode · Kill Switch · Human Approval · Mission Pause · Mission Abort.
+**Actions:** Alert · Audit · Degraded Mode · Safe Mode · Kill Switch · Human Approval · Mission
+Pause · Mission Abort.
 
-Branches match runtime signals (`tamper severity Critical`, `tamper signal capability_denied`, `gps spoofed`) and dispatch through the recovery action runtime (`enter SafeMode`, `stop_all_actuators()`, `audit.record(...)`). Shipped — see `examples/showcase/tamper_policy/`.
+Branches match runtime signals (`tamper severity Critical`, `tamper signal capability_denied`, `gps
+spoofed`) and dispatch through the recovery action runtime (`enter SafeMode`,
+`stop_all_actuators()`, `audit.record(...)`). Shipped — see `examples/showcase/tamper_policy/`.
 
 ### Reports
 
@@ -407,7 +426,8 @@ Branches match runtime signals (`tamper severity Critical`, `tamper signal capab
 | Trust Report | `spanda trust <file>` | JSON, Markdown, HTML |
 | Security Assurance | `spanda security assurance <file>` | JSON, Markdown, HTML |
 
-**Diagnosis:** `spanda diagnose tamper <trace>` — tamper source, affected components, impact, recovery recommendations (shipped in `spanda-tamper::diagnosis`).
+**Diagnosis:** `spanda diagnose tamper <trace>` — tamper source, affected components, impact,
+recovery recommendations (shipped in `spanda-tamper::diagnosis`).
 
 ### Demos (shipped)
 
@@ -419,9 +439,14 @@ Branches match runtime signals (`tamper severity Critical`, `tamper signal capab
 | `examples/showcase/runtime_intrusion/` | Unexpected capability usage in mission trace |
 | `examples/showcase/tamper_policy/` | Declarative tamper_policy response on security faults |
 
-Run all: `spanda demo trust` · `spanda demo spoof` · `spanda demo gaps` · smoke: `scripts/trust_showcase_smoke.sh`, `scripts/showcase_smoke.sh`, `scripts/bundled_trust_smoke.sh`, `scripts/gaps_smoke.sh`
+Run all: `spanda demo trust` · `spanda demo spoof` · `spanda demo gaps` · smoke:
+`scripts/trust_showcase_smoke.sh`, `scripts/showcase_smoke.sh`, `scripts/bundled_trust_smoke.sh`,
+`scripts/gaps_smoke.sh`
 
-Bundled copies ship in the `spanda` crate for `cargo install` — refresh with `scripts/sync_bundled_examples.sh` after editing showcases. Bundled registry slice (`spanda-trust-jetson`, `spanda-trust-pi`, `spanda-gps`, `spanda-fusion`) syncs via `scripts/sync_bundled_registry.sh`; the CLI defaults `SPANDA_REGISTRY_URL` to it when unset.
+Bundled copies ship in the `spanda` crate for `cargo install` — refresh with
+`scripts/sync_bundled_examples.sh` after editing showcases. Bundled registry slice
+(`spanda-trust-jetson`, `spanda-trust-pi`, `spanda-gps`, `spanda-fusion`) syncs via
+`scripts/sync_bundled_registry.sh`; the CLI defaults `SPANDA_REGISTRY_URL` to it when unset.
 
 ### Remaining gaps (honest)
 
@@ -437,7 +462,8 @@ Bundled copies ship in the `spanda` crate for `cargo install` — refresh with `
 
 ## Success criteria
 
-Spanda evolves from *Autonomous Systems Language* to **Safety, Verification, Readiness, Assurance, and Operations Platform** while preserving `.sd` as the foundation.
+Spanda evolves from *Autonomous Systems Language* to **Safety, Verification, Readiness, Assurance,
+and Operations Platform** while preserving `.sd` as the foundation.
 
 | Question | Answered by (target) |
 |----------|----------------------|
@@ -453,7 +479,12 @@ Spanda evolves from *Autonomous Systems Language* to **Safety, Verification, Rea
 
 ## Related documents
 
-- [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) — Control Center, Device Pool, provisioning, RBAC, APIs (20 enterprise pillars)
-- [tamper-detection.md](./tamper-detection.md) · [integrity-verification.md](./integrity-verification.md) · [trust-framework.md](./trust-framework.md)
-- [deployment-gates.md](./deployment-gates.md) · [dependency-graphs.md](./dependency-graphs.md) · [package-trust.md](./package-trust.md)
-- [security-architecture.md](./security-architecture.md) · [trust-boundaries.md](./trust-boundaries.md) · [readiness.md](./readiness.md)
+- [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) — Control Center, Device
+  Pool, provisioning, RBAC, APIs (20 enterprise pillars)
+- [tamper-detection.md](./tamper-detection.md) ·
+  [integrity-verification.md](./integrity-verification.md) ·
+  [trust-framework.md](./trust-framework.md)
+- [deployment-gates.md](./deployment-gates.md) · [dependency-graphs.md](./dependency-graphs.md) ·
+  [package-trust.md](./package-trust.md)
+- [security-architecture.md](./security-architecture.md) ·
+  [trust-boundaries.md](./trust-boundaries.md) · [readiness.md](./readiness.md)

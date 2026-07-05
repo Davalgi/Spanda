@@ -1,8 +1,11 @@
 # Operational Governance Framework
 
-Spanda's **Operational Governance Framework** extends the platform with abstractions for how autonomous systems are designed, validated, deployed, operated, audited, and maintained — without becoming a generic GRC product or a repository of regulatory text.
+Spanda's **Operational Governance Framework** extends the platform with abstractions for how
+autonomous systems are designed, validated, deployed, operated, audited, and maintained — without
+becoming a generic GRC product or a repository of regulatory text.
 
-> **Disclaimer:** Spanda provides governance abstractions and validation mechanisms. It does **not** provide legal or regulatory advice.
+> **Disclaimer:** Spanda provides governance abstractions and validation mechanisms. It does **not**
+> provide legal or regulatory advice.
 
 ## Platform service
 
@@ -31,11 +34,13 @@ spanda.governance.toml  →  ResolvedSystemConfig  →  EntityRegistry
               CLI / REST / SDK / Control Center governance views
 ```
 
-Governance does **not** duplicate readiness, assurance, trust, or health engines. It composes them through the unified entity model and validation orchestration.
+Governance does **not** duplicate readiness, assurance, trust, or health engines. It composes them
+through the unified entity model and validation orchestration.
 
 ## Entity extensions
 
-Every [`EntityRecord`](../crates/spanda-config/src/entity.rs) may expose optional governance via `governance: Option<EntityGovernanceMeta>`:
+Every [`EntityRecord`](../crates/spanda-config/src/entity.rs) may expose optional governance via
+`governance: Option<EntityGovernanceMeta>`:
 
 - Autonomy level
 - Deployment profile
@@ -47,7 +52,8 @@ Every [`EntityRecord`](../crates/spanda-config/src/entity.rs) may expose optiona
 - Standards profiles
 - Operational constraints
 
-Configure system-wide defaults in `spanda.governance.toml` (auto-loaded when present, or via `[config] governance = "spanda.governance.toml"`). Override per-robot in device tree metadata.
+Configure system-wide defaults in `spanda.governance.toml` (auto-loaded when present, or via
+`[config] governance = "spanda.governance.toml"`). Override per-robot in device tree metadata.
 
 ## CLI
 
@@ -81,7 +87,10 @@ spanda risk report [--json]
 | PUT/POST | `/v1/governance/accountability` | Update owners / contacts / approval chain (entity overlay) |
 | POST | `/v1/governance/policies/detach` | Detach a policy assignment |
 
-Live decision authorization (`authorize_action` / distributed decision engine) loads entity governance from the project config and entity overlay. High/life/mission-critical risk and manual/assisted autonomy require human approval for non-reflex actions; emergency stop and other safety actions remain permitted.
+Live decision authorization (`authorize_action` / distributed decision engine) loads entity
+governance from the project config and entity overlay. High/life/mission-critical risk and
+manual/assisted autonomy require human approval for non-reflex actions; emergency stop and other
+safety actions remain permitted.
 
 ## gRPC (proto 1.0.12)
 
@@ -108,7 +117,8 @@ Rust, Python, and TypeScript SDKs expose dedicated clients:
 
 ## Control Center
 
-The **Governance** tab (Governance & config group) shows deployment profiles, compliance validation, certification status, operational risk, and accountability fields.
+The **Governance** tab (Governance & config group) shows deployment profiles, compliance validation,
+certification status, operational risk, and accountability fields.
 
 ## Smoke and Stable promotion
 

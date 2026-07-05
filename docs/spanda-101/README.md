@@ -1,14 +1,18 @@
 # Spanda 101
 
-A hands-on tutorial series for learning Spanda from your first robot program through deployment verification.
+A hands-on tutorial series for learning Spanda from your first robot program through deployment
+verification.
 
-Each lesson links to a runnable example in the repo. Work through them in order, or jump to a topic you need.
+Each lesson links to a runnable example in the repo. Work through them in order, or jump to a topic
+you need.
 
-**Prefer plain English first?** See [Spanda for Dummies](../spanda-for-dummies/README.md) (~45 min, no jargon).
+**Prefer plain English first?** See [Spanda for Dummies](../spanda-for-dummies/README.md) (~45 min,
+no jargon).
 
 **All tutorials:** [Tutorials index](../tutorials/README.md)
 
-**Prerequisites:** [Installation](../installation.md) and a built CLI (`npm run build:rust` → `target/release/spanda`).
+**Prerequisites:** [Installation](../installation.md) and a built CLI (`npm run build:rust` →
+`target/release/spanda`).
 
 ---
 
@@ -55,4 +59,5 @@ Each lesson links to a runnable example in the repo. Work through them in order,
 3. Run the commands in the **Try it** section.
 4. Complete the **Exercise** (optional) before moving on.
 
-All commands assume you are in the repository root and `spanda` is on your `PATH` (or use `./target/release/spanda`).
+All commands assume you are in the repository root and `spanda` is on your `PATH` (or use
+`./target/release/spanda`).

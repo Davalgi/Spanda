@@ -37,4 +37,5 @@ Output docs under `--out` or stdout.
 
 ## SEE ALSO
 
-spanda-reference(1), spanda-man(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-reference(1), spanda-man(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

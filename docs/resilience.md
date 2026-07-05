@@ -1,6 +1,7 @@
 # Resilience
 
-Resilience policies describe **fault tolerance strategies** and integrate with **readiness scoring**.
+Resilience policies describe **fault tolerance strategies** and integrate with **readiness
+scoring**.
 
 ## Syntax
 
@@ -37,7 +38,8 @@ mitigation SensorFailover {
 spanda resilience check rover.sd [--json]
 ```
 
-Reports include readiness score from `spanda-readiness` — resilience does not replace fleet health or readiness engines.
+Reports include readiness score from `spanda-readiness` — resilience does not replace fleet health
+or readiness engines.
 
 ## Package
 

@@ -6,7 +6,9 @@ Release: <https://github.com/Davalgi/Spanda/releases/tag/v0.1.0-alpha>
 
 ## Install
 
-Prebuilt packages for **Linux**, **macOS**, and **Windows** are published on [GitHub Releases](https://github.com/Davalgi/Spanda/releases). Semver tags (for example `v0.1.0`) ship platform archives, shell/PowerShell installers, a Windows `.msi`, and a Homebrew formula.
+Prebuilt packages for **Linux**, **macOS**, and **Windows** are published on [GitHub
+Releases](https://github.com/Davalgi/Spanda/releases). Semver tags (for example `v0.1.0`) ship
+platform archives, shell/PowerShell installers, a Windows `.msi`, and a Homebrew formula.
 
 ```bash
 # Linux / macOS — replace the tag with the release you are installing

@@ -1,10 +1,14 @@
 # Spanda Platform Architecture v2.0
 
-Official architecture for the Spanda Autonomous Systems Platform — layered structure, dependency governance, ownership boundaries, and validation tooling.
+Official architecture for the Spanda Autonomous Systems Platform — layered structure, dependency
+governance, ownership boundaries, and validation tooling.
 
-**Related:** [layered-architecture.md](./layered-architecture.md) · [dependency-rules.md](./dependency-rules.md) · [module-ownership.md](./module-ownership.md) · [design-principles.md](./design-principles.md)
+**Related:** [layered-architecture.md](./layered-architecture.md) ·
+[dependency-rules.md](./dependency-rules.md) · [module-ownership.md](./module-ownership.md) ·
+[design-principles.md](./design-principles.md)
 
-For compiler/runtime pipeline diagrams, see [architecture.md](./architecture.md). For lean-core extraction history, see [lean-core.md](./lean-core.md).
+For compiler/runtime pipeline diagrams, see [architecture.md](./architecture.md). For lean-core
+extraction history, see [lean-core.md](./lean-core.md).
 
 ---
 
@@ -19,13 +23,21 @@ Spanda has grown from a language and compiler into a complete autonomous systems
 - SDKs, Control Center, REST/gRPC APIs, CLI
 - Solution blueprints (warehouse, SAR, ADAS, healthcare, …)
 
-Architecture consistency is now as important as adding features. This document establishes the **official platform architecture**, **dependency rules**, and **ownership boundaries** without removing existing functionality or redesigning working components.
+Architecture consistency is now as important as adding features. This document establishes the
+**official platform architecture**, **dependency rules**, and **ownership boundaries** without
+removing existing functionality or redesigning working components.
 
 ### Cognitive & Resilience Architecture
 
-Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md) — a functional view of platform responsibilities inspired by proven engineering principles from biological nervous systems. Eleven functional domains (strategic planning, operational coordination, reflex & safety, homeostasis, platform immunity, sensory fusion, attention, operational memory, adaptive learning, damage risk, maintenance) map to existing platform services via the [responsibility matrix](./responsibility-matrix.md). Implementation: `spanda-autonomy` crate.
+Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md) —
+a functional view of platform responsibilities inspired by proven engineering principles from
+biological nervous systems. Eleven functional domains (strategic planning, operational coordination,
+reflex & safety, homeostasis, platform immunity, sensory fusion, attention, operational memory,
+adaptive learning, damage risk, maintenance) map to existing platform services via the
+[responsibility matrix](./responsibility-matrix.md). Implementation: `spanda-autonomy` crate.
 
-Prior naming: [bio-inspired-architecture.md](./bio-inspired-architecture.md) (retained, backward compatible).
+Prior naming: [bio-inspired-architecture.md](./bio-inspired-architecture.md) (retained, backward
+compatible).
 
 ---
 
@@ -78,7 +90,8 @@ flowchart TB
 
 ## Entity model as canonical foundation
 
-The **Entity Model** (`spanda-config`) is the single canonical data model. Everything in Spanda ultimately derives from `Entity`:
+The **Entity Model** (`spanda-config`) is the single canonical data model. Everything in Spanda
+ultimately derives from `Entity`:
 
 | Specialized entity | Role |
 |--------------------|------|
@@ -92,13 +105,15 @@ The **Entity Model** (`spanda-config`) is the single canonical data model. Every
 | Wearable | Body-worn sensor or display |
 | Facility | Building, zone, or site |
 
-No duplicate models (`RobotRecord`, `DeviceRecord`, …) should evolve independently. See [entity-model.md](./entity-model.md).
+No duplicate models (`RobotRecord`, `DeviceRecord`, …) should evolve independently. See
+[entity-model.md](./entity-model.md).
 
 ---
 
 ## Service boundaries
 
-Each platform service has a single clear responsibility. See [platform-services.md](./platform-services.md).
+Each platform service has a single clear responsibility. See
+[platform-services.md](./platform-services.md).
 
 | Service | Crate(s) | Responsibility |
 |---------|----------|----------------|
@@ -118,7 +133,8 @@ Each platform service has a single clear responsibility. See [platform-services.
 
 All subsystems publish events on a common schema. See [event-model.md](./event-model.md).
 
-Examples: `EntityCreated`, `HealthChanged`, `ReadinessChanged`, `MissionStarted`, `RecoveryTriggered`, `PackageInstalled`, `TrustUpdated`, `TamperDetected`.
+Examples: `EntityCreated`, `HealthChanged`, `ReadinessChanged`, `MissionStarted`,
+`RecoveryTriggered`, `PackageInstalled`, `TrustUpdated`, `TamperDetected`.
 
 Events underpin telemetry, replay, Control Center, audit, and notifications.
 
@@ -139,13 +155,16 @@ Avoid duplicated DTOs — SDKs, REST, and gRPC share entity and readiness payloa
 
 ## Blueprint governance
 
-Solution blueprints under `examples/solutions/` **compose** platform capabilities. They must not introduce new platform features. If a blueprint needs a capability, add it to the platform first, then reference it from the blueprint.
+Solution blueprints under `examples/solutions/` **compose** platform capabilities. They must not
+introduce new platform features. If a blueprint needs a capability, add it to the platform first,
+then reference it from the blueprint.
 
 ---
 
 ## Validation and CI
 
-Architecture governance is enforced by `scripts/validate_architecture.py` in **CI Fast** (`lint-rust`). Tier map: [ci-architecture.md](./ci-architecture.md).
+Architecture governance is enforced by `scripts/validate_architecture.py` in **CI Fast**
+(`lint-rust`). Tier map: [ci-architecture.md](./ci-architecture.md).
 
 | Check | Behavior |
 |-------|----------|
@@ -176,14 +195,19 @@ Dependency graph artifact: [architecture-dependency-graph.dot](./architecture-de
 
 ## Migration from lean-core layers
 
-The lean-core refactor (Phases 1–17) established workspace crate boundaries documented in [crates/README.md](../crates/README.md). Platform Architecture v2.0 **extends** that model with:
+The lean-core refactor (Phases 1–17) established workspace crate boundaries documented in
+[crates/README.md](../crates/README.md). Platform Architecture v2.0 **extends** that model with:
 
 1. Explicit **platform services** layer above core platform
 2. **Interfaces** layer for CLI, API, SDK, IDE
 3. **Solution blueprint** governance above interfaces
 4. **Enforceable dependency rules** with regression baselines
 
-As of **Phase 8** (Platform Architecture v2.1), the production Rust and TypeScript graphs have **zero upward dependency waivers** and **zero SCC waivers**. Any new upward edge or circular strongly connected component fails CI Fast unless an architecture review adds a tracked waiver with a ticket ID. See [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) for the completed burn-down history.
+As of **Phase 8** (Platform Architecture v2.1), the production Rust and TypeScript graphs have
+**zero upward dependency waivers** and **zero SCC waivers**. Any new upward edge or circular
+strongly connected component fails CI Fast unless an architecture review adds a tracked waiver with
+a ticket ID. See [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) for the
+completed burn-down history.
 
 ---
 

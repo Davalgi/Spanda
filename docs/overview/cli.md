@@ -1,6 +1,7 @@
 # CLI quick reference
 
-[← Overview](./README.md) · Full reference: [spanda-reference.md](../spanda-reference.md) · Man pages: [man/](../man/)
+[← Overview](./README.md) · Full reference: [spanda-reference.md](../spanda-reference.md) · Man
+pages: [man/](../man/)
 
 ## Core workflow
 
@@ -51,7 +52,9 @@
 | `spanda analyze-failure <file.sd> --with-recovery` | Failure impacts + recovery plans |
 | `spanda check <file.sd> --readiness-json` | Readiness + recovery + continuity policy diagnostics |
 
-Guide: [self-healing.md](../self-healing.md) · [recovery-orchestrator.md](../recovery-orchestrator.md) · Man page: [spanda-recovery.md](../man/spanda-recovery.md)
+Guide: [self-healing.md](../self-healing.md) ·
+[recovery-orchestrator.md](../recovery-orchestrator.md) · Man page:
+[spanda-recovery.md](../man/spanda-recovery.md)
 
 ## Mission continuity
 
@@ -63,9 +66,12 @@ Guide: [self-healing.md](../self-healing.md) · [recovery-orchestrator.md](../re
 | `spanda succession <file.sd>` | Rank fleet/swarm successors for handoff |
 | `spanda demo continuity` | Showcase continuity, takeover, delegate, succession |
 
-Common flags: `--failed`, `--progress`, `--trigger`, `--successor` / `--to`, `--scope fleet|swarm|robot`, `--json` / `--markdown` / `--html`.
+Common flags: `--failed`, `--progress`, `--trigger`, `--successor` / `--to`, `--scope
+fleet|swarm|robot`, `--json` / `--markdown` / `--html`.
 
-Guide: [mission-continuity.md](../mission-continuity.md) · [continuity-policies.md](../continuity-policies.md) · Man page: [spanda-continuity.md](../man/spanda-continuity.md)
+Guide: [mission-continuity.md](../mission-continuity.md) ·
+[continuity-policies.md](../continuity-policies.md) · Man page:
+[spanda-continuity.md](../man/spanda-continuity.md)
 
 ## Mission assurance & readiness
 
@@ -96,10 +102,15 @@ Guide: [mission-continuity.md](../mission-continuity.md) · [continuity-policies
 
 **Verify:** `--target <Profile>`, `--all-targets`, `--simulate`, `--json`
 
-**Run / sim / fleet:** `--trace-scheduler`, `--trace-tasks`, `--trace-triggers`, `--trace-events`, `--trace-providers`, `--trace-realtime`, `--metrics-json`, `--record`, `--persist-telemetry`, `--wall-clock`
+**Run / sim / fleet:** `--trace-scheduler`, `--trace-tasks`, `--trace-triggers`, `--trace-events`,
+`--trace-providers`, `--trace-realtime`, `--metrics-json`, `--record`, `--persist-telemetry`,
+`--wall-clock`
 
-**Telemetry store:** `spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|serve` — see [telemetry-store.md](../telemetry-store.md)
+**Telemetry store:** `spanda telemetry
+list|latest|heartbeats|devices|stats|export|prometheus|otlp|serve` — see
+[telemetry-store.md](../telemetry-store.md)
 
 **Replay:** `--from T+mm:ss`, `--deterministic`, `--playback`
 
-Topic guides: [realtime.md](../realtime.md) · [replay.md](../replay.md) · [mission-assurance.md](../mission-assurance.md) · [mission-continuity.md](../mission-continuity.md)
+Topic guides: [realtime.md](../realtime.md) · [replay.md](../replay.md) ·
+[mission-assurance.md](../mission-assurance.md) · [mission-continuity.md](../mission-continuity.md)

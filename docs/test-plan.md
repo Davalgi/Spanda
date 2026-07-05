@@ -43,7 +43,10 @@
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |
-| **Recovery Orchestrator** | plan/simulate/execute, graph, playbooks, predictive, recommend, persistence, gRPC, plugins | `crates/spanda-recovery/tests/orchestrator_tests.rs`, `crates/spanda-api/tests/recovery_api_tests.rs`, `tenant_persistence_tests` (`recovery_history_persists_across_restart`), `openapi_parity_tests`, `grpc_tests` (`grpc_recovery_*`), `scripts/recovery_orchestrator_smoke.sh`, CI Nightly `recovery-orchestrator-stable-promotion-gate` |
+| **Recovery Orchestrator** | plan/simulate/execute, graph, playbooks, predictive, recommend, persistence, gRPC, plugins | |
+| | | `crates/spanda-recovery/tests/orchestrator_tests.rs`, `crates/spanda-api/tests/recovery_api_tests.rs` |
+| | | `tenant_persistence_tests`, `openapi_parity_tests`, `grpc_tests` (`grpc_recovery_*`) |
+| | | `scripts/recovery_orchestrator_smoke.sh`, CI Nightly `recovery-orchestrator-stable-promotion-gate` |
 | Fleet field validation | multi-process agents + mesh orchestrate | `scripts/fleet_field_validation.sh` |
 | gRPC Control Center | tonic (see `GET /v1/version` → `grpc.rpc_count`; full REST parity except `/v1/rpc`) | `crates/spanda-api/tests/grpc_tests.rs`, `grpc_live_probe.rs` |
 | API rate limit + versioning | `SPANDA_API_RATE_LIMIT_PER_MINUTE`, `GET /v1/version`, `X-Spanda-Api-Version` | `crates/spanda-api/tests/api_policy_tests.rs` |
@@ -124,8 +127,10 @@ spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 
 Tiered workflows — see [ci-architecture.md](./ci-architecture.md):
 
-- **CI Fast** (`.github/workflows/ci-fast.yml`): PR gate — fmt, clippy, workspace tests, SDK tests, cross-interface
-- **CI Integration** (`.github/workflows/ci-integration.yml`): `main` smokes, golden paths, LSP, WASM, release-hardening
+- **CI Fast** (`.github/workflows/ci-fast.yml`): PR gate — fmt, clippy, workspace tests, SDK tests,
+  cross-interface
+- **CI Integration** (`.github/workflows/ci-integration.yml`): `main` smokes, golden paths, LSP,
+  WASM, release-hardening
 - **CI Nightly** (`.github/workflows/ci-nightly.yml`): promotion gates, ROS2, audit, desktop builds
 
 ## Acceptance criteria per feature

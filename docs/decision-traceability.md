@@ -1,8 +1,10 @@
 # Decision Traceability
 
-**Status: Stable** — v3 trace emission and proof-field validation tested; envelope crypto signing planned.
+**Status: Stable** — v3 trace emission and proof-field validation tested; envelope crypto signing
+planned.
 
-Every distributed decision is fully traceable for audit, replay, assurance, diagnosis, and explainability.
+Every distributed decision is fully traceable for audit, replay, assurance, diagnosis, and
+explainability.
 
 ## Recorded fields
 

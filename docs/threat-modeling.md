@@ -32,10 +32,13 @@ Each report includes: **Attack Surface**, **Threats**, **Risk Levels**, **Recomm
 
 ## Integration
 
-Builds on `spanda-security` (`security check`), `trust-boundaries.md`, and capability analysis. Complements `spanda verify` and deployment gates.
+Builds on `spanda-security` (`security check`), `trust-boundaries.md`, and capability analysis.
+Complements `spanda verify` and deployment gates.
 
 ## Crate
 
-`spanda-threat` — static analysis composing `spanda-security`, connectivity declarations, and deploy surfaces.
+`spanda-threat` — static analysis composing `spanda-security`, connectivity declarations, and deploy
+surfaces.
 
-See [security-assurance.md](./security-assurance.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [security-assurance.md](./security-assurance.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

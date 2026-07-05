@@ -1,10 +1,15 @@
 # Spanda Packages
 
-Spanda projects are organized as **packages** — self-contained units with a manifest (`spanda.toml`), source files, dependencies, and declared capabilities.
+Spanda projects are organized as **packages** — self-contained units with a manifest
+(`spanda.toml`), source files, dependencies, and declared capabilities.
 
-Spanda uses a **lean-core** architecture: the language core defines types, safety, and [provider interfaces](./provider-interfaces.md). Domain features (ROS2, MQTT, GPS, SLAM, vision, simulation, fleet, cloud) ship as [official packages](./official-packages.md) under `packages/registry/`.
+Spanda uses a **lean-core** architecture: the language core defines types, safety, and [provider
+interfaces](./provider-interfaces.md). Domain features (ROS2, MQTT, GPS, SLAM, vision, simulation,
+fleet, cloud) ship as [official packages](./official-packages.md) under `packages/registry/`.
 
-See [How Packages Work](./how-packages-work.md), [How Providers Work](./how-providers-work.md), and [How Runtime Resolution Works](./how-runtime-resolution-works.md) for the full platform integration pipeline.
+See [How Packages Work](./how-packages-work.md), [How Providers Work](./how-providers-work.md), and
+[How Runtime Resolution Works](./how-runtime-resolution-works.md) for the full platform integration
+pipeline.
 
 ## Quick start
 
@@ -39,7 +44,8 @@ Run `spanda init` in an empty directory (or pass a name):
 spanda init warehouse_robot --description "Warehouse robot controller"
 ```
 
-Edit `spanda.toml` to declare dependencies, hardware targets, and capabilities. See [spanda-toml.md](./spanda-toml.md) for the full schema.
+Edit `spanda.toml` to declare dependencies, hardware targets, and capabilities. See
+[spanda-toml.md](./spanda-toml.md) for the full schema.
 
 ## Importing packages
 
@@ -54,7 +60,8 @@ import std.robotics;
 import std.sensors;
 ```
 
-Package dependencies expose import paths via the registry (see [registry.md](./registry.md)). Standard library namespaces use the `std.*` prefix:
+Package dependencies expose import paths via the registry (see [registry.md](./registry.md)).
+Standard library namespaces use the `std.*` prefix:
 
 | Namespace | Domain |
 |-----------|--------|
@@ -80,11 +87,13 @@ See [standard-library.md](./standard-library.md) for the full namespace list.
 `ai.openai` is available via the `spanda-openai` package and uses the Python
 bridge (`openai_complete`) for live calls when `OPENAI_API_KEY` is set.
 
-`ai.anthropic` (`spanda-anthropic`) and ONNX inference (`spanda-onnx`, `SPANDA_ONNX_MODEL_PATH`) follow the same bridge pattern. See [live-ai-provider.md](./live-ai-provider.md).
+`ai.anthropic` (`spanda-anthropic`) and ONNX inference (`spanda-onnx`, `SPANDA_ONNX_MODEL_PATH`)
+follow the same bridge pattern. See [live-ai-provider.md](./live-ai-provider.md).
 
 ## Audit and blockchain packages (optional)
 
-Blockchain is **not** part of the language core. Audit/provenance is built-in; ledger anchoring uses optional packages:
+Blockchain is **not** part of the language core. Audit/provenance is built-in; ledger anchoring uses
+optional packages:
 
 | Package | Purpose |
 |---------|---------|
@@ -117,7 +126,8 @@ required = [
 level = "simulation_only"
 ```
 
-See [audit-provenance.md](./audit-provenance.md) and [future-blockchain-support.md](./future-blockchain-support.md).
+See [audit-provenance.md](./audit-provenance.md) and
+[future-blockchain-support.md](./future-blockchain-support.md).
 
 Packages declare what permissions they need in `[capabilities]`:
 
@@ -127,7 +137,8 @@ uses = ["network.outbound", "camera.read", "lidar.read"]
 required = ["motion.propose", "actuator.execute.safe"]
 ```
 
-The compiler and runtime **warn** when a dependency's capabilities exceed the application's granted permissions. Grant capabilities in your robot program with `can [...]` blocks.
+The compiler and runtime **warn** when a dependency's capabilities exceed the application's granted
+permissions. Grant capabilities in your robot program with `can [...]` blocks.
 
 ## Hardware compatibility
 
@@ -140,7 +151,8 @@ gpu = ">=1 TOPS"
 sensors = ["Camera", "Lidar"]
 ```
 
-These integrate with `spanda verify` and the built-in hardware profile registry (`RoverV1`, `JetsonOrin`, etc.). Set deployment targets in `[hardware]`:
+These integrate with `spanda verify` and the built-in hardware profile registry (`RoverV1`,
+`JetsonOrin`, etc.). Set deployment targets in `[hardware]`:
 
 ```toml
 [hardware]
@@ -165,7 +177,8 @@ requires_review = false
 can_control_actuators = true
 ```
 
-Applications can restrict which safety levels are permitted. Packages at `simulation_only` cannot set `can_control_actuators = true`.
+Applications can restrict which safety levels are permitted. Packages at `simulation_only` cannot
+set `can_control_actuators = true`.
 
 ## Dependency types
 
@@ -179,7 +192,8 @@ Run `spanda install` to resolve all dependencies and write `spanda.lock`.
 
 ## Official package provenance
 
-Catalog membership (`is_official_package`) is not enough to wire built-in providers. Runtime and trust scoring require **registry provenance**:
+Catalog membership (`is_official_package`) is not enough to wire built-in providers. Runtime and
+trust scoring require **registry provenance**:
 
 | Dependency source | Built-in providers wire? | Trust `official_framework` factor |
 |-------------------|--------------------------|-----------------------------------|
@@ -188,9 +202,13 @@ Catalog membership (`is_official_package`) is not enough to wire built-in provid
 | Path to canonical `packages/registry/<name>` | Yes (monorepo dev) | Yes |
 | Path/git override of an official name elsewhere | **No** — `.sd` stubs only | **No** (with `--project`) |
 
-`spanda install` / `spanda build` emit an `official_provenance` **warning** when an official name is reused via path or git without registry provenance.
+`spanda install` / `spanda build` emit an `official_provenance` **warning** when an official name is
+reused via path or git without registry provenance.
 
-**Production deploy** (`spanda deploy gate --policy production`) treats name squatting as a **hard failure** and requires `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` plus valid Ed25519 signatures for every registry dependency in `spanda.lock`. See [deployment-gates.md](./deployment-gates.md) and [package-trust.md](./package-trust.md).
+**Production deploy** (`spanda deploy gate --policy production`) treats name squatting as a **hard
+failure** and requires `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` plus valid Ed25519 signatures for every
+registry dependency in `spanda.lock`. See [deployment-gates.md](./deployment-gates.md) and
+[package-trust.md](./package-trust.md).
 
 ## Publishing
 
@@ -200,10 +218,13 @@ spanda publish
 
 Validates manifest, capabilities, hardware requirements, safety level, and license. On success:
 
-1. **Local mirror** — copies the bundle to `registry/packages/<name>/<version>/` in the repo (maintainers run `./scripts/build-registry.sh` to refresh the hosted index).
-2. **Remote upload** — when `SPANDA_REGISTRY_URL` is set, uploads the tarball to the configured registry base.
+1. **Local mirror** — copies the bundle to `registry/packages/<name>/<version>/` in the repo
+   (maintainers run `./scripts/build-registry.sh` to refresh the hosted index).
+2. **Remote upload** — when `SPANDA_REGISTRY_URL` is set, uploads the tarball to the configured
+   registry base.
 
-See [registry.md](./registry.md) for the hosted index, Ed25519 signatures, and `./scripts/registry_golden_path.sh`.
+See [registry.md](./registry.md) for the hosted index, Ed25519 signatures, and
+`./scripts/registry_golden_path.sh`.
 
 ## CLI reference
 
@@ -232,6 +253,9 @@ See [examples/packages/](../examples/packages/) for:
 
 ## Community packages
 
-Fork official scaffolds (e.g. `spanda-ledger`) for community-maintained integrations. Start from [packages/community/README.md](../packages/community/README.md) and run `./scripts/ledger_golden_path.sh` to validate the ledger scaffold.
+Fork official scaffolds (e.g. `spanda-ledger`) for community-maintained integrations. Start from
+[packages/community/README.md](../packages/community/README.md) and run
+`./scripts/ledger_golden_path.sh` to validate the ledger scaffold.
 
-See also [community-packages.md](./community-packages.md) for package categories, driver/adapters, and planned framework packages.
+See also [community-packages.md](./community-packages.md) for package categories, driver/adapters,
+and planned framework packages.

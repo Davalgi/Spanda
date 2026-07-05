@@ -1,6 +1,7 @@
 # Certification Lifecycle
 
-Certification in Spanda is modeled **independently from health**. An entity can be healthy but uncertified, or certified with degraded health requiring review.
+Certification in Spanda is modeled **independently from health**. An entity can be healthy but
+uncertified, or certified with degraded health requiring review.
 
 ## States
 
@@ -55,4 +56,5 @@ spanda certification inspect robot:amr-01
 - **Certification** — approved authority to operate at a given maturity/profile
 - **Readiness** — mission-time gate combining both
 
-Governance validation requires `validated` or `certified` status before live deployment maturity stages.
+Governance validation requires `validated` or `certified` status before live deployment maturity
+stages.

@@ -1,6 +1,7 @@
 # Smart Space Packages & Integration Strategy
 
-Optional packages and ecosystem integration for [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
+Optional packages and ecosystem integration for [Smart Spaces & Ambient
+Intelligence](./solutions/smart-spaces.md).
 
 **Rule:** All packages below are **optional**. The platform core has no smart-building dependencies.
 
@@ -37,7 +38,8 @@ Source: `packages/registry/spanda-*/`
 
 ### Layer 1 — Device authority (external)
 
-Home Assistant, OpenHAB, Apple Home, Google Home, Amazon Alexa, SmartThings, and vendor clouds remain **device pairing and scene authorities** for end users.
+Home Assistant, OpenHAB, Apple Home, Google Home, Amazon Alexa, SmartThings, and vendor clouds
+remain **device pairing and scene authorities** for end users.
 
 Spanda does not replicate their UX or device databases.
 
@@ -52,11 +54,14 @@ External hub (e.g. Home Assistant)
   ↔ .sd mission / readiness / assurance
 ```
 
-**Field buses (BACnet / KNX):** install `requirements-bacnet.txt` or `requirements-knx.txt`, set `SPANDA_LIVE_*` env vars, and use package `scripts/read_*.sh` helpers — see [iot.md](../iot.md#live-hardware-optional) and each package README.
+**Field buses (BACnet / KNX):** install `requirements-bacnet.txt` or `requirements-knx.txt`, set
+`SPANDA_LIVE_*` env vars, and use package `scripts/read_*.sh` helpers — see
+[iot.md](../iot.md#live-hardware-optional) and each package README.
 
 ### Layer 3 — Orchestration (Spanda core)
 
-Readiness, verify, mission continuity, assurance, trust, Control Center — unchanged platform pillars.
+Readiness, verify, mission continuity, assurance, trust, Control Center — unchanged platform
+pillars.
 
 ### Layer 4 — Evidence & operations
 
@@ -83,7 +88,8 @@ Assurance bundles, audit logs, operator dashboards, simulation/replay.
 
 ## Provider interface contract
 
-Packages implement traits documented in [provider-interfaces.md](./provider-interfaces.md) and [iot.md](./iot.md):
+Packages implement traits documented in [provider-interfaces.md](./provider-interfaces.md) and
+[iot.md](./iot.md):
 
 | Operation | Description |
 |-----------|-------------|

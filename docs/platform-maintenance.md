@@ -1,13 +1,16 @@
 # Maintenance & Optimization
 
-**Functional domain:** [Maintenance & Optimization](./functional-domains.md#maintenance--optimization)  
+**Functional domain:** [Maintenance &
+Optimization](./functional-domains.md#maintenance--optimization)
 **Status: Beta** — OTA and fleet operations **Stable**; maintenance window types **Beta**.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
-Schedule and execute maintenance, calibration, cleanup, updates, and resource optimization during low-risk windows without compromising mission safety.
+Schedule and execute maintenance, calibration, cleanup, updates, and resource optimization during
+low-risk windows without compromising mission safety.
 
 ## Responsibilities
 
@@ -22,7 +25,8 @@ Schedule and execute maintenance, calibration, cleanup, updates, and resource op
 
 ## Types (`spanda-autonomy`)
 
-`MaintenanceWindow`, `SleepMode`, `LowActivityMode`, `ScheduledRecovery`, `CalibrationWindow`, `UpdateWindow`
+`MaintenanceWindow`, `SleepMode`, `LowActivityMode`, `ScheduledRecovery`, `CalibrationWindow`,
+`UpdateWindow`
 
 ## Entity integration
 
@@ -61,7 +65,8 @@ Maintenance window CLI — **Planned** (`spanda maintenance window`).
 
 ## Control Center
 
-OTA tab (**Stable**). Maintenance scheduling panel — **Planned**; homeostasis drift may recommend maintenance in Cognitive & Resilience tab.
+OTA tab (**Stable**). Maintenance scheduling panel — **Planned**; homeostasis drift may recommend
+maintenance in Cognitive & Resilience tab.
 
 ## Related
 

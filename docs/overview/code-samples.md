@@ -95,4 +95,5 @@ deploy RoverMission to RoverV1;
 spanda verify examples/showcase/hardware_compatibility.sd --json
 ```
 
-See also: [killer-demo.md](../killer-demo.md) · [hardware-compatibility.md](../hardware-compatibility.md)
+See also: [killer-demo.md](../killer-demo.md) ·
+[hardware-compatibility.md](../hardware-compatibility.md)

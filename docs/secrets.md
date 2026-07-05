@@ -1,6 +1,7 @@
 # Secrets Management
 
-Spanda loads secrets at runtime from environment variables or files. **Never hardcode secrets in source.**
+Spanda loads secrets at runtime from environment variables or files. **Never hardcode secrets in
+source.**
 
 ## Declaration syntax
 

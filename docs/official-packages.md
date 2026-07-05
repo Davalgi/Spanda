@@ -1,6 +1,7 @@
 # Official Packages
 
-First-party Spanda packages live under `packages/registry/`. Each package includes `spanda.toml`, source exports, tests, and a README.
+First-party Spanda packages live under `packages/registry/`. Each package includes `spanda.toml`,
+source exports, tests, and a README.
 
 ## Connectivity and positioning
 
@@ -133,7 +134,8 @@ import positioning.gps;
 
 ## Registry provenance (provider wiring)
 
-Built-in provider bootstrap uses **provenanced** dependencies only — not every package name in the official catalog.
+Built-in provider bootstrap uses **provenanced** dependencies only — not every package name in the
+official catalog.
 
 | How you depend | `bootstrap_providers_for_packages` wires live backends? |
 |----------------|--------------------------------------------------------|
@@ -141,7 +143,8 @@ Built-in provider bootstrap uses **provenanced** dependencies only — not every
 | `spanda-gps = { path = "../../packages/registry/spanda-gps" }` | Yes (canonical monorepo tree) |
 | `spanda-gps = { path = "../my-fork" }` | **No** — stub `.sd` only |
 
-Path or git overrides of official names emit an `official_provenance` validation warning. Production deploy gates block them. See [how-packages-work.md](./how-packages-work.md).
+Path or git overrides of official names emit an `official_provenance` validation warning. Production
+deploy gates block them. See [how-packages-work.md](./how-packages-work.md).
 
 ## Verify adapter metadata
 
@@ -159,7 +162,9 @@ spanda registry info spanda-mqtt
 | **Capability grant** | `spanda-nav`, `spanda-slam`, `spanda-ledger`, `spanda-cloud` | Capabilities granted when installed; nav/slam register package stubs in bootstrap |
 | **Scaffold** | Remaining packages | Minimal `.sd` exports; smoke tests where present |
 
-Spanda-language package sources remain scaffolds for most domains. Live vendor I/O is implemented in workspace crates and core compatibility shims until each package gains full `*Provider` registration. See [lean-core-roadmap.md](./lean-core-roadmap.md).
+Spanda-language package sources remain scaffolds for most domains. Live vendor I/O is implemented in
+workspace crates and core compatibility shims until each package gains full `*Provider`
+registration. See [lean-core-roadmap.md](./lean-core-roadmap.md).
 
 ## Related docs
 

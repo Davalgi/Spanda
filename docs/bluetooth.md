@@ -1,6 +1,7 @@
 # Bluetooth and BLE
 
-Spanda models Bluetooth classic and BLE at the language level for sensor pairing and trusted-device policies.
+Spanda models Bluetooth classic and BLE at the language level for sensor pairing and trusted-device
+policies.
 
 ## Robot configuration
 

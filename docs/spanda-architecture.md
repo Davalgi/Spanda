@@ -1,10 +1,15 @@
 # Spanda Architecture
 
-**Spanda** is an **autonomous systems platform** with a safety-first **`.sd` language** at its core. The implementation uses a **lean-core, package-first** workspace: focused Rust crates own behavior; `spanda-core` is the stable public facade; a TypeScript mirror in `src/` supports tests and tooling.
+**Spanda** is an **autonomous systems platform** with a safety-first **`.sd` language** at its core.
+The implementation uses a **lean-core, package-first** workspace: focused Rust crates own behavior;
+`spanda-core` is the stable public facade; a TypeScript mirror in `src/` supports tests and tooling.
 
-Platform components: [platform-overview.md](./platform-overview.md). For diagrams and crate detail, see [architecture.md](./architecture.md) and [lean-core.md](./lean-core.md).
+Platform components: [platform-overview.md](./platform-overview.md). For diagrams and crate detail,
+see [architecture.md](./architecture.md) and [lean-core.md](./lean-core.md).
 
-**Functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — eleven responsibility domains (reflex, homeostasis, immunity, fusion, attention, memory, adaptive recovery) integrated with the Entity model via `spanda-autonomy`.
+**Functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
+— eleven responsibility domains (reflex, homeostasis, immunity, fusion, attention, memory, adaptive
+recovery) integrated with the Entity model via `spanda-autonomy`.
 
 ## System diagram
 
@@ -91,8 +96,10 @@ flowchart TB
 1. **Lex** — `spanda-lexer` tokenizes keywords, units, hardware/requirements tokens
 2. **Parse** — `spanda-parser` builds AST (`Program`, `RobotDecl`, `HardwareDecl`, foundations)
 3. **Type-check** — `spanda-typecheck`: units, capabilities, state machines, AI safety, handler I/O
-4. **Verify** (optional) — `spanda-hardware` compatibility against deployment targets; capability, health, and kill-switch gates
-5. **Run** — `spanda-driver` → `spanda-certify` → `spanda-interpreter` + simulator; tasks and triggers scheduled deterministically
+4. **Verify** (optional) — `spanda-hardware` compatibility against deployment targets; capability,
+   health, and kill-switch gates
+5. **Run** — `spanda-driver` → `spanda-certify` → `spanda-interpreter` + simulator; tasks and
+   triggers scheduled deterministically
 6. **Codegen** (optional) — AST → SIR → LLVM IR → native binary (`spanda-llvm`, experimental)
 
 ## Hardware verification engine
@@ -129,4 +136,5 @@ Direct `planner.drive(...)` or `wheels.execute(proposal)` is rejected by the typ
 
 ## Roadmap
 
-Lean-core Phases 1–35 are complete (language core through verification & DX). Current release line: **v0.4.0**. See [roadmap.md](./roadmap.md) and [lean-core-roadmap.md](./lean-core-roadmap.md).
+Lean-core Phases 1–35 are complete (language core through verification & DX). Current release line:
+**v0.4.0**. See [roadmap.md](./roadmap.md) and [lean-core-roadmap.md](./lean-core-roadmap.md).

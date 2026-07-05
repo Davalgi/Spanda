@@ -43,7 +43,8 @@ health_check FleetHealth for fleet Warehouse {
 
 ## Dashboard model
 
-`FleetDashboard` aggregates fleet score, healthy/degraded counts, and mission capacity for future UI dashboards.
+`FleetDashboard` aggregates fleet score, healthy/degraded counts, and mission capacity for future UI
+dashboards.
 
 ## API
 

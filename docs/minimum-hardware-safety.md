@@ -1,6 +1,7 @@
 # Minimum Hardware Safety
 
-Missions and `requires_capability` blocks define minimum hardware requirements. The safety verifier rejects deployment when requirements are not met.
+Missions and `requires_capability` blocks define minimum hardware requirements. The safety verifier
+rejects deployment when requirements are not met.
 
 ## Mission requirements
 

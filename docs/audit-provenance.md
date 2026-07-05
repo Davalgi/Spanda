@@ -1,6 +1,8 @@
 # Audit and Provenance
 
-Spanda provides **first-class audit and provenance abstractions** without baking blockchain into the language core. Mission records, telemetry, and safety events are captured append-only, hashed, and optionally signed before any optional ledger anchoring.
+Spanda provides **first-class audit and provenance abstractions** without baking blockchain into the
+language core. Mission records, telemetry, and safety events are captured append-only, hashed, and
+optionally signed before any optional ledger anchoring.
 
 ## Why audit-first?
 
@@ -84,7 +86,8 @@ Audit-related packages must declare capabilities in `spanda.toml`:
 - `identity.verify` — verify signatures
 - `ledger.anchor` — anchor hashes to a ledger backend
 
-High-risk capabilities trigger validation warnings when not explicitly granted. See [security.md](./security.md).
+High-risk capabilities trigger validation warnings when not explicitly granted. See
+[security.md](./security.md).
 
 ## Examples
 

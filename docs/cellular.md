@@ -1,6 +1,7 @@
 # Cellular (LTE / 4G / 5G)
 
-Spanda models cellular connectivity as part of hardware profiles, requirements, and failover policies.
+Spanda models cellular connectivity as part of hardware profiles, requirements, and failover
+policies.
 
 ## Hardware connectivity
 
@@ -10,7 +11,8 @@ hardware RoverV2 {
 }
 ```
 
-Supported profile tokens: `LTE`, `FourG`, `4G`, `FiveG`, `5G`, `Cellular`, `Satellite` (maps to websocket transport for emergency backhaul).
+Supported profile tokens: `LTE`, `FourG`, `4G`, `FiveG`, `5G`, `Cellular`, `Satellite` (maps to
+websocket transport for emergency backhaul).
 
 ## Requirements
 

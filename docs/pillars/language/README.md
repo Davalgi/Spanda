@@ -2,7 +2,8 @@
 
 [← Pillars index](../README.md) · [ROADMAP § Pillar 1](../../ROADMAP.md#pillar-1--spanda-language)
 
-Safety-first `.sd` source — syntax, types, robot primitives, units, triggers, tasks, concurrency, and editor tooling.
+Safety-first `.sd` source — syntax, types, robot primitives, units, triggers, tasks, concurrency,
+and editor tooling.
 
 ## Core guides
 

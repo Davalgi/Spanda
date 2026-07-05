@@ -1,8 +1,11 @@
 # Lean-Core Architecture
 
-Spanda uses a **lean-core, package-first** architecture. The language kernel defines contracts, safety, verification interfaces, and runtime hooks. Domain integrations — ROS2, MQTT, GPS, SLAM, vision, fleet, OTA, cloud — ship as **optional official packages** under `packages/registry/`.
+Spanda uses a **lean-core, package-first** architecture. The language kernel defines contracts,
+safety, verification interfaces, and runtime hooks. Domain integrations — ROS2, MQTT, GPS, SLAM,
+vision, fleet, OTA, cloud — ship as **optional official packages** under `packages/registry/`.
 
-Lean-core extraction is **complete through Phase 35** (see [lean-core-roadmap.md](./lean-core-roadmap.md)).
+Lean-core extraction is **complete through Phase 35** (see
+[lean-core-roadmap.md](./lean-core-roadmap.md)).
 
 ---
 
@@ -149,13 +152,15 @@ Full crate index: [crates/README.md](../crates/README.md).
 - `providers.rs` facade → `spanda-providers` + classification
 - **Removed (Phase 17):** `transport_live`, `transport_mqtt`, `transport_dds`, `transport_websocket`
 
-External code may keep using `spanda_core::`. In-repo and new integrations should prefer the owning crate (see [migration.md](./migration.md)).
+External code may keep using `spanda_core::`. In-repo and new integrations should prefer the owning
+crate (see [migration.md](./migration.md)).
 
 ---
 
 ## Official packages
 
-Twenty first-party packages under `packages/registry/` (GPS, Wi-Fi, ROS2, MQTT, fleet, OTA, …). Each declares capabilities in `spanda.toml` and registers providers when installed.
+Twenty first-party packages under `packages/registry/` (GPS, Wi-Fi, ROS2, MQTT, fleet, OTA, …). Each
+declares capabilities in `spanda.toml` and registers providers when installed.
 
 Catalog: [official-packages.md](./official-packages.md)  
 Traits: [provider-interfaces.md](./provider-interfaces.md)
@@ -164,7 +169,8 @@ Traits: [provider-interfaces.md](./provider-interfaces.md)
 
 ## Module classification
 
-Core modules are tagged in `spanda_runtime::classification` (mirrored in TypeScript `src/providers/index.ts`):
+Core modules are tagged in `spanda_runtime::classification` (mirrored in TypeScript
+`src/providers/index.ts`):
 
 | Ownership | Description |
 |-----------|-------------|

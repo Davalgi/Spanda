@@ -1,8 +1,13 @@
 # Human Interaction & Spatial Computing — Stable Hardening Checklist
 
-Phases **H1–H4** are shipped at **Stable** tier with CI smoke (`scripts/spatial_computing_smoke.sh`). This checklist recorded promotion gates for the Human Interaction pillar (**promoted 2026-07-02**).
+Phases **H1–H4** are shipped at **Stable** tier with CI smoke
+(`scripts/spatial_computing_smoke.sh`). This checklist recorded promotion gates for the Human
+Interaction pillar (**promoted 2026-07-02**).
 
-**Related:** [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) · [feature-status.md](./feature-status.md) · [control-center.md](./control-center.md) · [field-soak-gate.md](./field-soak-gate.md)
+**Related:**
+[human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) ·
+[feature-status.md](./feature-status.md) · [control-center.md](./control-center.md) ·
+[field-soak-gate.md](./field-soak-gate.md)
 
 ---
 
@@ -50,7 +55,9 @@ The gate runs:
 1. Field soak check (unless `SPANDA_HRI_SKIP_SOAK=1`)
 2. `scripts/spatial_computing_smoke.sh`
 3. HRI unit tests (`spanda-api`, `spanda-security`, `spanda-providers`)
-4. Live Control Center probe against the spatial-computing blueprint (`/v1/humans`, `/v1/humans/readiness`, `/v1/wearables`, `/v1/human-health/policy`, `/v1/hri/sessions`, `/v1/hri/collaboration`, `/v1/hri/context`, per-operator readiness)
+4. Live Control Center probe against the spatial-computing blueprint (`/v1/humans`,
+   `/v1/humans/readiness`, `/v1/wearables`, `/v1/human-health/policy`, `/v1/hri/sessions`,
+   `/v1/hri/collaboration`, `/v1/hri/context`, per-operator readiness)
 
 ---
 
@@ -70,13 +77,15 @@ spanda control-center serve \
   --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
 ```
 
-Open **Humans** tab (embedded UI) or `@davalgi-spanda/web` Control Center view with `VITE_CONTROL_CENTER_URL`.
+Open **Humans** tab (embedded UI) or `@davalgi-spanda/web` Control Center view with
+`VITE_CONTROL_CENTER_URL`.
 
 ---
 
 ## Promotion status (2026-07-02)
 
-**Promoted to Stable** in `docs/feature-status.md` and [ROADMAP.md](../ROADMAP.md) after `hri_stable_promotion_gate.sh` (implementation checks with soak/audit skip in CI).
+**Promoted to Stable** in `docs/feature-status.md` and [ROADMAP.md](../ROADMAP.md) after
+`hri_stable_promotion_gate.sh` (implementation checks with soak/audit skip in CI).
 
 ### Ongoing organizational gates
 
@@ -86,4 +95,5 @@ Open **Humans** tab (embedded UI) or `@davalgi-spanda/web` Control Center view w
 | Third-party security audit sign-off | **Pending** — `./scripts/hri_security_audit_prep.sh` |
 | Registry vendor SDK packages | **Experimental** — HoloLens / HealthKit / ARKit production backends |
 
-Do **not** rename registry package stubs to Stable until vendor backends exist; platform APIs and blueprint are **Stable** independently.
+Do **not** rename registry package stubs to Stable until vendor backends exist; platform APIs and
+blueprint are **Stable** independently.

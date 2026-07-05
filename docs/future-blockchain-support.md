@@ -1,6 +1,7 @@
 # Future Blockchain Support
 
-**Blockchain is optional in Spanda.** The language core implements audit and provenance abstractions; ledger anchoring is provided by future community packages.
+**Blockchain is optional in Spanda.** The language core implements audit and provenance
+abstractions; ledger anchoring is provided by future community packages.
 
 ## Architecture
 
@@ -32,7 +33,8 @@ trait LedgerBackend: AuditBackend {
 }
 ```
 
-Future packages implement `LedgerBackend` for their chain SDK. The compiler and interpreter **do not** reference chain-specific types.
+Future packages implement `LedgerBackend` for their chain SDK. The compiler and interpreter **do
+not** reference chain-specific types.
 
 ## Planned community packages
 
@@ -71,7 +73,8 @@ mock_ledger.anchor(root);
 mock_ledger.verify(root);
 ```
 
-This exercises the `LedgerBackend` interface without network access. Replace `mock_ledger` with a package-provided backend when real chain packages ship.
+This exercises the `LedgerBackend` interface without network access. Replace `mock_ledger` with a
+package-provided backend when real chain packages ship.
 
 ## Related
 

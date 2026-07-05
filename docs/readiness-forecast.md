@@ -2,7 +2,8 @@
 
 **Status:** Stable · **Horizon:** NEXT (promoted v0.5.0) · **Priority:** P1
 
-Predict future readiness scores from current evaluation, local history, and time-based degradation heuristics.
+Predict future readiness scores from current evaluation, local history, and time-based degradation
+heuristics.
 
 ## CLI
 
@@ -28,10 +29,13 @@ spanda readiness forecast rover.sd --history .spanda/readiness-history.json
 
 ## Output
 
-Per horizon: current → predicted score, degradation rate, projected risks, policy warnings (exit 1 when below minimum).
+Per horizon: current → predicted score, degradation rate, projected risks, policy warnings (exit 1
+when below minimum).
 
 ## Integration
 
-Extends `spanda-readiness` trends module; feeds scorecard and deployment gate signals. ML backends ship as `spanda-readiness-ml` package.
+Extends `spanda-readiness` trends module; feeds scorecard and deployment gate signals. ML backends
+ship as `spanda-readiness-ml` package.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [readiness-trends.md](./readiness-trends.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[readiness-trends.md](./readiness-trends.md).

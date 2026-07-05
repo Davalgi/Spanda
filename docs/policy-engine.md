@@ -1,8 +1,10 @@
 # Policy Engine
 
-**Status:** Experimental (verify-time) · **Phase:** Verify, Operate · **Priority:** P1.5 (verify-time), P3.4 (runtime)
+**Status:** Experimental (verify-time) · **Phase:** Verify, Operate · **Priority:** P1.5
+(verify-time), P3.4 (runtime)
 
-Declarative operational rules enforced at verification and during run/sim when `--enforce-policy` is set.
+Declarative operational rules enforced at verification and during run/sim when `--enforce-policy` is
+set.
 
 ## Syntax
 
@@ -26,7 +28,8 @@ policy WarehousePolicy {
 | `min_readiness_score = N` | Readiness rollup score meets the threshold |
 | `operation_hours = "HH:MM-HH:MM"` | Range format is valid (clock enforcement is runtime, P3.4) |
 
-`policy Name { }` is distinct from swarm `policy round_robin;` — the parser disambiguates by block vs statement form.
+`policy Name { }` is distinct from swarm `policy round_robin;` — the parser disambiguates by block
+vs statement form.
 
 ## CLI
 
@@ -39,7 +42,8 @@ spanda sim examples/showcase/policy/warehouse.sd --enforce-policy WarehousePolic
 spanda run examples/showcase/policy/warehouse.sd --enforce-policy WarehousePolicy
 ```
 
-Policy evaluation runs after hardware compatibility when `--policy` is set. Failures surface as policy violations in the verify report.
+Policy evaluation runs after hardware compatibility when `--policy` is set. Failures surface as
+policy violations in the verify report.
 
 ## Core types
 
@@ -63,8 +67,11 @@ Composes with `spanda-readiness`, `spanda-security`, safety rules, and deploymen
 
 ## Crate
 
-`spanda-policy` — AST types in `spanda-ast::policy_decl`, parser in `spanda-parser`, evaluator in `evaluate_policy`.
+`spanda-policy` — AST types in `spanda-ast::policy_decl`, parser in `spanda-parser`, evaluator in
+`evaluate_policy`.
 
 Showcase: `examples/showcase/policy/warehouse.sd` · smoke: `scripts/policy_smoke.sh`
 
-See [deployment-gates.md](./deployment-gates.md) · [compliance-profiles.md](./compliance-profiles.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [deployment-gates.md](./deployment-gates.md) ·
+[compliance-profiles.md](./compliance-profiles.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

@@ -1,6 +1,7 @@
 # Layered Architecture
 
-How Spanda Platform v2.0 layers stack, what each layer owns, and how components map to workspace crates.
+How Spanda Platform v2.0 layers stack, what each layer owns, and how components map to workspace
+crates.
 
 **Parent:** [platform-architecture.md](./platform-architecture.md)
 
@@ -54,7 +55,8 @@ flowchart LR
 
 1. A module may depend on **strictly lower** layers (e.g. platform services → core platform → runtime).
 2. **Same-layer** dependencies are allowed for horizontal composition (e.g. assurance → readiness).
-3. **Upward** dependencies (lower layer → higher layer) are forbidden. The production baseline has **zero** waived upward edges (Phase 8 complete).
+3. **Upward** dependencies (lower layer → higher layer) are forbidden. The production baseline has
+   **zero** waived upward edges (Phase 8 complete).
 4. **No new circular strongly connected components** without architecture review.
 
 See [dependency-rules.md](./dependency-rules.md).
@@ -175,7 +177,8 @@ Entry points for operators, developers, and integrations.
 | `spanda_sdk` | `sdk/python` | Python SDK |
 | VS Code extension | `editor/vscode` | IDE integration |
 
-First-party apps depend on workspace crates directly, **not** on `spanda-core`. External embedders use `spanda-core` as facade.
+First-party apps depend on workspace crates directly, **not** on `spanda-core`. External embedders
+use `spanda-core` as facade.
 
 ---
 
@@ -194,7 +197,8 @@ Industry compositions under `examples/solutions/`:
 | Maritime | `examples/solutions/maritime/` |
 | Spatial computing | `examples/solutions/spatial-computing/` |
 
-Blueprints import platform packages and call CLI/API surfaces — they do not add crates to the workspace.
+Blueprints import platform packages and call CLI/API surfaces — they do not add crates to the
+workspace.
 
 ---
 

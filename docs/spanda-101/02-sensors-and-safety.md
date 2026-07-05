@@ -2,7 +2,8 @@
 
 **Goal:** Add perception, physical units, and safety rules that run before every motion command.
 
-**Example:** [`examples/basics/02_sensors_and_safety.sd`](../../examples/basics/02_sensors_and_safety.sd)
+**Example:**
+[`examples/basics/02_sensors_and_safety.sd`](../../examples/basics/02_sensors_and_safety.sd)
 
 ---
 
@@ -12,7 +13,9 @@
 sensor lidar: Lidar on "/scan";
 ```
 
-Sensors are **first-class declarations**, not opaque driver handles. The type (`Lidar`) tells the compiler what methods exist (`read()`, `nearest_distance`, etc.). The `on "/scan"` clause binds a transport topic (ROS2-style in production; simulated in `spanda run`).
+Sensors are **first-class declarations**, not opaque driver handles. The type (`Lidar`) tells the
+compiler what methods exist (`read()`, `nearest_distance`, etc.). The `on "/scan"` clause binds a
+transport topic (ROS2-style in production; simulated in `spanda run`).
 
 Read sensor data inside a behavior:
 
@@ -56,7 +59,8 @@ safety {
 | `max_speed` | Clamps drive velocity |
 | `stop_if` | Emergency stop when condition is true |
 
-Safety is not a comment or a TODO — it is part of the language and checked by the compiler and runtime.
+Safety is not a comment or a TODO — it is part of the language and checked by the compiler and
+runtime.
 
 ---
 

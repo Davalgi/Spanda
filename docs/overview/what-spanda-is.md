@@ -19,7 +19,9 @@
 - a custom operating system
 - a blockchain platform
 
-Spanda **integrates with** existing ecosystems instead of replacing them. See [ffi-and-ecosystem.md](../ffi-and-ecosystem.md) and [platform-overview.md](../platform-overview.md#what-spanda-is-not).
+Spanda **integrates with** existing ecosystems instead of replacing them. See
+[ffi-and-ecosystem.md](../ffi-and-ecosystem.md) and
+[platform-overview.md](../platform-overview.md#what-spanda-is-not).
 
 ## What you get
 
@@ -30,4 +32,5 @@ Spanda **integrates with** existing ecosystems instead of replacing them. See [f
 | **Health & readiness** | **Fleet & OTA** | **Control Center (E1–E4)** |
 | **ROS2 / IoT / AI bridges** | **Enterprise ops API** | **Python SDK + desktop shell** |
 
-More samples: [code-samples.md](./code-samples.md) · Demos: [demos-and-examples.md](./demos-and-examples.md)
+More samples: [code-samples.md](./code-samples.md) · Demos:
+[demos-and-examples.md](./demos-and-examples.md)

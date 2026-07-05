@@ -1,6 +1,7 @@
 # Smart Space Readiness
 
-Operational go/no-go gates before mode changes, emergency missions, and energy optimization in [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
+Operational go/no-go gates before mode changes, emergency missions, and energy optimization in
+[Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md).
 
 **Config:** `examples/solutions/smart-spaces/spanda.readiness.toml` · **Profile:** `smart_space`
 
@@ -39,7 +40,8 @@ Default `min_score = 85` for comfort missions; `min_score = 95` for evacuation a
 
 From `spanda.readiness.toml`:
 
-**Required:** primary gateway, front door lock, smoke detector (sleep areas), water leak (basement/kitchen)
+**Required:** primary gateway, front door lock, smoke detector (sleep areas), water leak
+(basement/kitchen)
 
 **Optional (degraded without):** robot vacuum, solar inverter, EV charger
 
@@ -47,7 +49,8 @@ From `spanda.readiness.toml`:
 
 ## Required devices (commercial profile)
 
-**Required:** BMS gateway, fire panel interface, elevator recall path (if integrated), perimeter access quorum
+**Required:** BMS gateway, fire panel interface, elevator recall path (if integrated), perimeter
+access quorum
 
 **Optional:** service robots, demand-response meter
 

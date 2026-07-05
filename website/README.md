@@ -2,9 +2,11 @@
 
 Static site for **davalgi.com** (or **spanda.davalgi.com**) until a full marketing site exists.
 
-**Pages:** `index.html` (home) · `platform.html` (8 pillars) · `solutions.html` (14 blueprints) · `roadmap.html` (timeline)
+**Pages:** `index.html` (home) · `platform.html` (8 pillars) · `solutions.html` (14 blueprints) ·
+`roadmap.html` (timeline)
 
-Source copy lives in [docs/website-content.md](../docs/website-content.md). Product roadmap: [ROADMAP.md](../ROADMAP.md).
+Source copy lives in [docs/website-content.md](../docs/website-content.md). Product roadmap:
+[ROADMAP.md](../ROADMAP.md).
 
 ## Deploy
 
@@ -22,12 +24,14 @@ Source copy lives in [docs/website-content.md](../docs/website-content.md). Prod
 
 ### GitHub Pages (org site)
 
-If you prefer a separate **Davalgi/davalgi.com** repo, copy `index.html` there and enable Pages from `main`.
+If you prefer a separate **Davalgi/davalgi.com** repo, copy `index.html` there and enable Pages from
+`main`.
 
 ## After deploy
 
 1. Set GitHub repo **Website** to `https://davalgi.com`
-2. Update `Cargo.toml` / `package.json` `homepage` if you want crates/npm to point at the domain (optional; GitHub remains fine for now)
+2. Update `Cargo.toml` / `package.json` `homepage` if you want crates/npm to point at the domain
+   (optional; GitHub remains fine for now)
 
 ## Local preview
 

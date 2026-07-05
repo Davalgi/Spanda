@@ -1,6 +1,7 @@
 # Mission continuity walkthrough
 
-Hands-on path for takeover, delegation, succession, and durable checkpoints. Prerequisite: [getting-started.md](./getting-started.md).
+Hands-on path for takeover, delegation, succession, and durable checkpoints. Prerequisite:
+[getting-started.md](./getting-started.md).
 
 ## 1. Evaluate continuity
 

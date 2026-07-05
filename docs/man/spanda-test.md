@@ -35,4 +35,5 @@ spanda test --project examples/rover
 
 ## SEE ALSO
 
-spanda-check(1), spanda-package(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-check(1), spanda-package(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

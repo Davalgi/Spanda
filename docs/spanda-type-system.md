@@ -1,6 +1,7 @@
 # Spanda Type System
 
-Spanda’s type system supports general-purpose programming and autonomous-systems domains: physical units, spatial math, sensors, AI, agents, safety, digital twins, and distributed robotics.
+Spanda’s type system supports general-purpose programming and autonomous-systems domains: physical
+units, spatial math, sensors, AI, agents, safety, digital twins, and distributed robotics.
 
 ## Foundation types
 
@@ -14,7 +15,8 @@ Spanda’s type system supports general-purpose programming and autonomous-syste
 | `Bytes` | `let buf: Bytes;` |
 | `Null` | `let empty: Null;` |
 
-Type annotations are optional when an initializer is present; the checker infers types from expressions.
+Type annotations are optional when an initializer is present; the checker infers types from
+expressions.
 
 ```spanda
 let count: Int = 3;
@@ -33,7 +35,8 @@ let svc: Service<Command, Feedback>;
 let nav: Action<Command, Feedback, Path>;
 ```
 
-The compiler reports arity errors when generic parameters are missing or extra, e.g. `Array` requires exactly one type argument.
+The compiler reports arity errors when generic parameters are missing or extra, e.g. `Array`
+requires exactly one type argument.
 
 ## Physical unit types
 
@@ -52,7 +55,8 @@ Invalid operations are rejected at compile time:
 let bad = speed + distance;
 ```
 
-Supported unit types include `Distance`, `Velocity`, `Acceleration`, `Angle`, `AngularVelocity`, `Mass`, `Force`, `Power`, `Voltage`, `Current`, `Temperature`, and `Pressure`.
+Supported unit types include `Distance`, `Velocity`, `Acceleration`, `Angle`, `AngularVelocity`,
+`Mass`, `Force`, `Power`, `Voltage`, `Current`, `Temperature`, and `Pressure`.
 
 ### Unit literals
 
@@ -110,7 +114,8 @@ let dose: Radiation = 0.12 uSv/h;
 let soil: SoilMoisture = 42 %VWC;
 ```
 
-Compatible units may be mixed in comparisons and addition (e.g. `500 ms + 0.5 s`, `100 cm + 1 m`). Incompatible dimensions are rejected at compile time.
+Compatible units may be mixed in comparisons and addition (e.g. `500 ms + 0.5 s`, `100 cm + 1 m`).
+Incompatible dimensions are rejected at compile time.
 
 ## Time types
 
@@ -123,7 +128,8 @@ Namespace: `import std.time;`
 
 ## Spatial and robotics types
 
-`Point2D`, `Point3D`, `Vector2D`, `Vector3D`, `Quaternion`, `Pose`, `Transform`, `Trajectory`, `Path`, `Waypoint`, `MotionCommand`, `ControlSignal`, `PIDConfig`.
+`Point2D`, `Point3D`, `Vector2D`, `Vector3D`, `Quaternion`, `Pose`, `Transform`, `Trajectory`,
+`Path`, `Waypoint`, `MotionCommand`, `ControlSignal`, `PIDConfig`.
 
 Namespace: `import std.spatial;`
 
@@ -135,7 +141,8 @@ Namespace: `import std.sensors;`
 
 ## AI types
 
-`LLM`, `VisionModel`, `EmbeddingModel`, `Prompt`, `Completion`, `Embedding`, `Token`, `Context`, `Memory`, `Plan`, `ReasoningTrace`, `Goal`.
+`LLM`, `VisionModel`, `EmbeddingModel`, `Prompt`, `Completion`, `Embedding`, `Token`, `Context`,
+`Memory`, `Plan`, `ReasoningTrace`, `Goal`.
 
 Namespace: `import std.ai;`
 
@@ -173,7 +180,8 @@ wheels.execute(action);   // OK
 wheels.execute(proposal);   // COMPILE ERROR
 ```
 
-The type checker rejects `ActionProposal` passed to `actuator.execute()`. Only `SafeAction` from `safety.validate()` is permitted.
+The type checker rejects `ActionProposal` passed to `actuator.execute()`. Only `SafeAction` from
+`safety.validate()` is permitted.
 
 ## Human interaction types
 
@@ -193,7 +201,8 @@ Namespace: `import std.safety;`
 
 Namespace: `import std.twin;`
 
-Fault types for `simulate_compatibility` (verification, not runtime twin API): `CameraFailure`, `LidarFailure`, `ImuFailure`, `BatteryDegradation`, `NetworkOutage`.
+Fault types for `simulate_compatibility` (verification, not runtime twin API): `CameraFailure`,
+`LidarFailure`, `ImuFailure`, `BatteryDegradation`, `NetworkOutage`.
 
 ## Hardware compatibility types
 
@@ -214,7 +223,8 @@ See [hardware-compatibility.md](./hardware-compatibility.md).
 
 ## Networking / distributed robotics
 
-`Topic<T>`, `Message<T>`, `Service<Request, Response>`, `Action<Request, Feedback, Result>`, `Endpoint`.
+`Topic<T>`, `Message<T>`, `Service<Request, Response>`, `Action<Request, Feedback, Result>`,
+`Endpoint`.
 
 ## Advanced autonomous intelligence
 

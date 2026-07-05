@@ -1,6 +1,7 @@
 # Debugging Spanda in VS Code
 
-Step through `behavior`, `task every`, and top-level `every` trigger loops with the **Spanda debug adapter** (`spanda-dap`) and the VS Code extension.
+Step through `behavior`, `task every`, and top-level `every` trigger loops with the **Spanda debug
+adapter** (`spanda-dap`) and the VS Code extension.
 
 ## Prerequisites
 

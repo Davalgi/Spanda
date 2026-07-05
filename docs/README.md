@@ -4,23 +4,29 @@
   <img src="../assets/image/low_res_logo.png" alt="Spanda logo" width="240">
 </p>
 
-**Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.** Source files use the `.sd` extension.
+**Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.**
+Source files use the `.sd` extension.
 
-*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [overview/philosophy.md](./overview/philosophy.md).
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see
+[overview/philosophy.md](./overview/philosophy.md).
 
-**Start here:** [platform-overview.md](./platform-overview.md) — platform vs language, component map, and workflow.
+**Start here:** [platform-overview.md](./platform-overview.md) — platform vs language, component
+map, and workflow.
 
-**Product roadmap:** [../ROADMAP.md](../ROADMAP.md) — Platform Pillars, Official Solution Blueprints, ownership model, timeline.
+**Product roadmap:** [../ROADMAP.md](../ROADMAP.md) — Platform Pillars, Official Solution
+Blueprints, ownership model, timeline.
 
 **Platform pillars (navigation hubs):** [pillars/README.md](./pillars/README.md)
 
 **Project home:** [../README.md](../README.md) — quick start and links to overview subpages.
 
-**Expanded overview:** [overview/README.md](./overview/README.md) — flagship demos, audience paths, platform map, feature snapshot, philosophy, differentiators, CLI, code samples.
+**Expanded overview:** [overview/README.md](./overview/README.md) — flagship demos, audience paths,
+platform map, feature snapshot, philosophy, differentiators, CLI, code samples.
 
 ## Tutorials
 
-**[Tutorials index](./tutorials/README.md)** — all learning paths: For Dummies, Spanda 101, topic guides, walkthroughs, and example libraries.
+**[Tutorials index](./tutorials/README.md)** — all learning paths: For Dummies, Spanda 101, topic
+guides, walkthroughs, and example libraries.
 
 ## Guides
 
@@ -342,9 +348,11 @@ docs/                       Guides, architecture, API reference
 scripts/                    Doc tooling, example regression, ROS2 bridge helpers
 ```
 
-**Dependency rule:** Only `spanda-core` pulls the full facade graph. `spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap`, and `spanda-llvm` import workspace crates directly.
+**Dependency rule:** Only `spanda-core` pulls the full facade graph. `spanda-cli`, `spanda-node`,
+`spanda-wasm`, `spanda-dap`, and `spanda-llvm` import workspace crates directly.
 
-**Removed from `spanda-core` (Phase 17):** `transport_live`, `transport_mqtt`, `transport_dds`, `transport_websocket` — use `spanda-transport-routing` or `spanda-transport-*` crates.
+**Removed from `spanda-core` (Phase 17):** `transport_live`, `transport_mqtt`, `transport_dds`,
+`transport_websocket` — use `spanda-transport-routing` or `spanda-transport-*` crates.
 
 ## CLI
 
@@ -372,7 +380,10 @@ spanda sim robot.sd --wall-clock
 
 ## Install
 
-Install prebuilt packages for Linux, macOS, and Windows from [GitHub Releases](https://github.com/Davalgi/Spanda/releases), or build from source. See [installation.md](./installation.md) for shell/MSI/PowerShell installers, platform archives, and maintainer packaging notes.
+Install prebuilt packages for Linux, macOS, and Windows from [GitHub
+Releases](https://github.com/Davalgi/Spanda/releases), or build from source. See
+[installation.md](./installation.md) for shell/MSI/PowerShell installers, platform archives, and
+maintainer packaging notes.
 
 ```bash
 # Linux / macOS (replace v0.1.0 with your release tag)
@@ -384,7 +395,9 @@ Contributors can build the native CLI with `npm run build:rust` (output: `target
 
 ## Developer documentation
 
-Rust (`crates/`), TypeScript (`src/`, `packages/`), and Python (`scripts/`) use structured inline API docs. See **[coding-standards.md](./coding-standards.md)** and **[documentation-coverage.md](./documentation-coverage.md)**.
+Rust (`crates/`), TypeScript (`src/`, `packages/`), and Python (`scripts/`) use structured inline
+API docs. See **[coding-standards.md](./coding-standards.md)** and
+**[documentation-coverage.md](./documentation-coverage.md)**.
 
 Tooling lives in `scripts/`:
 
@@ -395,8 +408,10 @@ Tooling lives in `scripts/`:
 - `add_inline_docs.py` — legacy API doc generator
 - `add_logic_block_docs.py` — generate contextual block comments
 - `normalize_inline_docs.py` — fix spacing and indentation (run after bulk edits)
-- `generate_api_reference.py` — regenerate [api-reference.md](./api-reference.md) from source (see [api-documentation.md](./api-documentation.md))
-- `generate_spanda_reference.py` — regenerate [spanda-reference.md](./spanda-reference.md) and [man/](./man/)
+- `generate_api_reference.py` — regenerate [api-reference.md](./api-reference.md) from source (see
+  [api-documentation.md](./api-documentation.md))
+- `generate_spanda_reference.py` — regenerate [spanda-reference.md](./spanda-reference.md) and
+  [man/](./man/)
 
 See [../CONTRIBUTING.md](../CONTRIBUTING.md#inline-documentation) for contributor workflow.
 

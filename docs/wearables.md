@@ -1,8 +1,11 @@
 # Wearables
 
-Wearables are **device-tree nodes** registered in the device pool with provider-backed telemetry. Spanda does not embed wearable vendor SDKs in core — optional packages bridge to platform APIs (HealthKit, Wear OS, industrial BLE vests, etc.).
+Wearables are **device-tree nodes** registered in the device pool with provider-backed telemetry.
+Spanda does not embed wearable vendor SDKs in core — optional packages bridge to platform APIs
+(HealthKit, Wear OS, industrial BLE vests, etc.).
 
-**Related:** [human-interaction.md](./human-interaction.md) · [hri-packages.md](./hri-packages.md) · [human-readiness.md](./human-readiness.md)
+**Related:** [human-interaction.md](./human-interaction.md) · [hri-packages.md](./hri-packages.md) ·
+[human-readiness.md](./human-readiness.md)
 
 ---
 
@@ -56,7 +59,8 @@ spanda device discover --transport ble
 spanda control-center devices discover --transport ble
 ```
 
-Discovered wearables ingest into the device pool with `type = Wearable` and optional `human_id` assignment.
+Discovered wearables ingest into the device pool with `type = Wearable` and optional `human_id`
+assignment.
 
 ---
 
@@ -71,7 +75,8 @@ Wearable dimensions in human readiness profiles:
 | Sensor health | Provider health check |
 | Assignment | `human_id` matches mission operator |
 
-Optional health dimensions (heart rate, fatigue, stress) require `SPANDA_HUMAN_HEALTH_ENABLED=1` — see [human-readiness.md](./human-readiness.md).
+Optional health dimensions (heart rate, fatigue, stress) require `SPANDA_HUMAN_HEALTH_ENABLED=1` —
+see [human-readiness.md](./human-readiness.md).
 
 ---
 
@@ -89,4 +94,5 @@ Full list: [hri-packages.md](./hri-packages.md).
 
 ## Example
 
-`examples/solutions/spatial-computing/wearable-health/` — optional health monitoring with privacy controls for Connected Healthcare deployments.
+`examples/solutions/spatial-computing/wearable-health/` — optional health monitoring with privacy
+controls for Connected Healthcare deployments.

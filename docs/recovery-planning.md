@@ -1,10 +1,12 @@
 # Recovery Planning
 
-The `RecoveryPlanner` generates `RecoveryPlan` values from health issues, anomalies, diagnoses, and failures.
+The `RecoveryPlanner` generates `RecoveryPlan` values from health issues, anomalies, diagnoses, and
+failures.
 
 ## Workflow
 
-1. **Classify failure** — sensor, actuator, connectivity, provider, package, mission, health, fleet, swarm, or safety
+1. **Classify failure** — sensor, actuator, connectivity, provider, package, mission, health, fleet,
+   swarm, or safety
 2. **Diagnose root cause** — static declarations or trace-based RCA
 3. **Match recovery policies** — `recovery_policy` and `mitigation` declarations
 4. **Generate plan** — ordered `PlannedRecoveryAction` list with risk assessment
@@ -42,6 +44,7 @@ spanda heal rover.sd
 
 ## See also
 
-- [recovery-orchestrator.md](./recovery-orchestrator.md) — platform-wide orchestrator (graph, playbooks, escalation, persisted evidence)
+- [recovery-orchestrator.md](./recovery-orchestrator.md) — platform-wide orchestrator (graph,
+  playbooks, escalation, persisted evidence)
 - [recovery-assurance.md](./recovery-assurance.md)
 - [self-healing.md](./self-healing.md)

@@ -26,6 +26,7 @@ Invalid timing and regex patterns produce line/column diagnostics with suggested
 
 ## Safety expectations
 
-Recovery from `RuntimeError` should stop actuators or enter a degraded mode. The type checker warns when recovery blocks omit these actions.
+Recovery from `RuntimeError` should stop actuators or enter a degraded mode. The type checker warns
+when recovery blocks omit these actions.
 
 See [realtime](realtime.md) and [degraded-modes](degraded-modes.md).

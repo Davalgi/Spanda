@@ -1,6 +1,7 @@
 # Compiler Backend Roadmap
 
-This document describes how the Spanda compiler evolves from the current tree-walking interpreter toward native binaries via LLVM.
+This document describes how the Spanda compiler evolves from the current tree-walking interpreter
+toward native binaries via LLVM.
 
 ## Current pipeline (implemented)
 
@@ -13,7 +14,8 @@ Spanda source (.sd)
   → interpreter / simulator / hardware verifier
 ```
 
-The **authoritative implementation** lives in Rust (`crates/spanda-core`). A TypeScript mirror (`src/`) supports tests, the web playground, and CLI delegation when the native binary is built.
+The **authoritative implementation** lives in Rust (`crates/spanda-core`). A TypeScript mirror
+(`src/`) supports tests, the web playground, and CLI delegation when the native binary is built.
 
 Supporting outputs today:
 
@@ -38,22 +40,30 @@ Spanda source (.sd)
 
 ### Milestone 1 — Spanda IR (SIR) ✓ (extended)
 
-- Lower typed AST to SIR preserving module functions, extern bridge kinds, imports, behavior metadata (requires/ensures/invariant flags, task names), and robot names.
+- Lower typed AST to SIR preserving module functions, extern bridge kinds, imports, behavior
+  metadata (requires/ensures/invariant flags, task names), and robot names.
 - **`spanda ir [--json] file.sd`** emits SIR for codegen planning and CI inspection.
 - SIR is the contract between frontend and backends; the interpreter still executes AST directly.
 
 ### Milestone 2 — LLVM backend ✓ (extended)
 
-- **`spanda llvm-ir [--target-triple <triple>] file.sd`** emits LLVM IR from SIR with `libspanda_rt` declarations and calls for supported statements (actuator drive/stop, publish/subscribe with string payloads, constant `if`, loop every, emergency stop, integer returns).
-- **`spanda compile-native [--out <binary>] [--target-triple <triple>] file.sd`** links LLVM IR with `libspanda_rt` via clang when available.
-- `crates/spanda-rt` exposes the C ABI (`spanda_rt_drive`, `spanda_rt_stop`, `spanda_rt_publish`, `spanda_rt_subscribe`, `spanda_rt_loop_delay_ms`, …).
-- `crates/spanda-llvm` lowers bool variable `if` (alloca/br) and unit-enum `match` (switch); payload variants remain planned.
-- Robot scheduler, safety monitor, and comm routing remain in **`libspanda_rt`** (interpreter-backed for now).
+- **`spanda llvm-ir [--target-triple <triple>] file.sd`** emits LLVM IR from SIR with `libspanda_rt`
+  declarations and calls for supported statements (actuator drive/stop, publish/subscribe with
+  string payloads, constant `if`, loop every, emergency stop, integer returns).
+- **`spanda compile-native [--out <binary>] [--target-triple <triple>] file.sd`** links LLVM IR with
+  `libspanda_rt` via clang when available.
+- `crates/spanda-rt` exposes the C ABI (`spanda_rt_drive`, `spanda_rt_stop`, `spanda_rt_publish`,
+  `spanda_rt_subscribe`, `spanda_rt_loop_delay_ms`, …).
+- `crates/spanda-llvm` lowers bool variable `if` (alloca/br) and unit-enum `match` (switch); payload
+  variants remain planned.
+- Robot scheduler, safety monitor, and comm routing remain in **`libspanda_rt`** (interpreter-backed
+  for now).
 - `-O2` builds for deployment; `-O0` + debug info for DAP debugging.
 
 ### Milestone 3 — Cross-compilation (partial)
 
-- **`--target-triple`** on `llvm-ir` and `compile-native` selects the LLVM/clang target (e.g. `aarch64-unknown-linux-gnu`).
+- **`--target-triple`** on `llvm-ir` and `compile-native` selects the LLVM/clang target (e.g.
+  `aarch64-unknown-linux-gnu`).
 - HAL profiles and conditional compilation for Jetson vs ESP32 remain planned.
 
 ## Target platforms

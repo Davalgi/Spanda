@@ -4,17 +4,22 @@
 
 ## Core pillars
 
-1. **Safety-typed AI** — `ActionProposal` from LLMs and vision cannot drive actuators; only `SafeAction` from `safety.validate()` can. Enforced at compile time and runtime.
+1. **Safety-typed AI** — `ActionProposal` from LLMs and vision cannot drive actuators; only
+   `SafeAction` from `safety.validate()` can. Enforced at compile time and runtime.
 
-2. **Hardware verification** — `deploy Robot to Profile` and `spanda verify` check sensors, memory, timing, power, and network before deployment.
+2. **Hardware verification** — `deploy Robot to Profile` and `spanda verify` check sensors, memory,
+   timing, power, and network before deployment.
 
-3. **Capability verification** — Expose, grant, and trace robot capabilities; verify the system can perform the mission, not just compile.
+3. **Capability verification** — Expose, grant, and trace robot capabilities; verify the system can
+   perform the mission, not just compile.
 
-4. **Simulation + replay** — `spanda sim` before hardware exists; `spanda replay` for regression and incident review.
+4. **Simulation + replay** — `spanda sim` before hardware exists; `spanda replay` for regression and
+   incident review.
 
 5. **Health-aware runtime** — `health_check`, fleet `require` clauses, and policies during operation.
 
-6. **Package-based extensibility** — Lean core; official packages (ROS2, MQTT, GPS, vision, fleet, mission assurance, mission continuity) via the provider registry.
+6. **Package-based extensibility** — Lean core; official packages (ROS2, MQTT, GPS, vision, fleet,
+   mission assurance, mission continuity) via the provider registry.
 
 ## Capability matrix
 
@@ -43,4 +48,5 @@
 | **Live providers (optional)** | OpenAI, Anthropic, ONNX; IoT live bridges; mock fallback |
 | **Package registry** | Ed25519-signed tarballs; `SPANDA_REGISTRY_URL` override |
 
-Honest status tiers: [feature-status.md](../feature-status.md) · Lean-core phases: [lean-core-roadmap.md](../lean-core-roadmap.md)
+Honest status tiers: [feature-status.md](../feature-status.md) · Lean-core phases:
+[lean-core-roadmap.md](../lean-core-roadmap.md)

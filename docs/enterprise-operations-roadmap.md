@@ -1,12 +1,20 @@
 # Enterprise Operations Roadmap
 
-Strategic expansion plan for Spanda as a **complete Autonomous Systems Platform** — production-ready for enterprise, industrial, robotics, medical, warehouse, agricultural, research, and defense deployments.
+Strategic expansion plan for Spanda as a **complete Autonomous Systems Platform** — production-ready
+for enterprise, industrial, robotics, medical, warehouse, agricultural, research, and defense
+deployments.
 
-**Principle:** Every item strengthens at least one lifecycle phase: **Build · Verify · Simulate · Deploy · Operate · Observe · Recover · Govern · Audit · Continuously Improve** — without losing Spanda's core identity as a safety-first programming language and runtime.
+**Principle:** Every item strengthens at least one lifecycle phase: **Build · Verify · Simulate ·
+Deploy · Operate · Observe · Recover · Govern · Audit · Continuously Improve** — without losing
+Spanda's core identity as a safety-first programming language and runtime.
 
-**Lean-core rule:** Contracts and orchestration live in focused Rust crates; vendor integrations, transport adapters, and heavy UI ship in optional packages.
+**Lean-core rule:** Contracts and orchestration live in focused Rust crates; vendor integrations,
+transport adapters, and heavy UI ship in optional packages.
 
-**Related:** [roadmap.md](./roadmap.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [differentiation-roadmap.md](./differentiation-roadmap.md) · [feature-status.md](./feature-status.md) · [platform-overview.md](./platform-overview.md)
+**Related:** [roadmap.md](./roadmap.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md) ·
+[differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[feature-status.md](./feature-status.md) · [platform-overview.md](./platform-overview.md)
 
 **Last updated:** 2026-06-28
 
@@ -14,7 +22,9 @@ Strategic expansion plan for Spanda as a **complete Autonomous Systems Platform*
 
 ## 0. Platform context
 
-Spanda has evolved into a **complete Autonomous Systems Platform**. The enterprise operations expansion does **not** remove, redesign, or duplicate any existing capability — it adds operational governance, visibility, and integration surfaces on top of the pillars already shipped.
+Spanda has evolved into a **complete Autonomous Systems Platform**. The enterprise operations
+expansion does **not** remove, redesign, or duplicate any existing capability — it adds operational
+governance, visibility, and integration surfaces on top of the pillars already shipped.
 
 ### Existing platform pillars (foundation)
 
@@ -52,13 +62,18 @@ Every new enterprise pillar must integrate with:
 
 ### Lean-core rule (repeated)
 
-Contracts and orchestration live in focused Rust crates (`spanda-api`, `spanda-config`, `spanda-security`, `spanda-ops`, `spanda-telemetry-store`, …). Vendor SDKs, transport adapters, time-series backends, alert channel integrations, and industry compliance packs ship in **optional packages**.
+Contracts and orchestration live in focused Rust crates (`spanda-api`, `spanda-config`,
+`spanda-security`, `spanda-ops`, `spanda-telemetry-store`, …). Vendor SDKs, transport adapters,
+time-series backends, alert channel integrations, and industry compliance packs ship in **optional
+packages**.
 
 ---
 
 ## 1. Platform pillar classification
 
-Enterprise operations pillars compose existing engines — they do **not** replace Language, Runtime, Compiler, Verification, Safety, Simulation, Health, Fleet, Packages, or the maturity/differentiation roadmaps.
+Enterprise operations pillars compose existing engines — they do **not** replace Language, Runtime,
+Compiler, Verification, Safety, Simulation, Health, Fleet, Packages, or the maturity/differentiation
+roadmaps.
 
 | # | Pillar | Lifecycle phase(s) | Tier | Primary outcome |
 |---|--------|-------------------|------|-----------------|
@@ -154,7 +169,8 @@ Enterprise operations pillars compose existing engines — they do **not** repla
 | Compliance industry packs | `spanda-compliance-medical`, `spanda-compliance-defense` | Compliance |
 | Reporting templates | `spanda-report-executive`, `spanda-report-fleet` | Reporting |
 
-**Rule:** If it requires a vendor SDK, cloud account, or third-party SaaS, it is a package — not core.
+**Rule:** If it requires a vendor SDK, cloud account, or third-party SaaS, it is a package — not
+core.
 
 ---
 
@@ -234,7 +250,9 @@ flowchart TB
 
 ### Evolution from current UI
 
-`packages/web` Operations view (readiness scoring, live agent fetch, continuity panel, WASM telemetry) becomes the **Dashboard + Readiness + Health** seed. New modules add incrementally without replacing the playground.
+`packages/web` Operations view (readiness scoring, live agent fetch, continuity panel, WASM
+telemetry) becomes the **Dashboard + Readiness + Health** seed. New modules add incrementally
+without replacing the playground.
 
 ---
 
@@ -291,7 +309,8 @@ spanda-api/
 | **Standalone** | `spanda-api` container for enterprise deployments |
 | **Edge agent** | Lightweight agent on robot; syncs to central Control Center |
 
-Existing fleet agent endpoints (`/v1/status`, `/v1/recovery/execute`, `/v1/continuity/execute`, `/v1/fleet/telemetry/ingest`) remain the edge contract; Control Center aggregates them.
+Existing fleet agent endpoints (`/v1/status`, `/v1/recovery/execute`, `/v1/continuity/execute`,
+`/v1/fleet/telemetry/ingest`) remain the edge contract; Control Center aggregates them.
 
 ---
 
@@ -373,7 +392,8 @@ flowchart LR
 
 ### 6.1 Control Center
 
-Web-based operational visibility for robots, fleets, swarms, devices, sensors, missions, readiness, health, trust, security, and diagnostics.
+Web-based operational visibility for robots, fleets, swarms, devices, sensors, missions, readiness,
+health, trust, security, and diagnostics.
 
 | Layer | Stack |
 |-------|-------|
@@ -383,9 +403,15 @@ Web-based operational visibility for robots, fleets, swarms, devices, sensors, m
 | Backend | Rust `spanda-api` (`spanda control-center serve`) |
 | Build | Vite (shared with `@davalgi-spanda/web`) |
 
-**Modules:** Dashboard, Fleet View, Mission View, Device Pool, Readiness, Health, Assurance, Diagnosis, Recovery, Security, Configuration, Simulation, Replay, Audit, Administration.
+**Modules:** Dashboard, Fleet View, Mission View, Device Pool, Readiness, Health, Assurance,
+Diagnosis, Recovery, Security, Configuration, Simulation, Replay, Audit, Administration.
 
-**Administrator console (v0.6+, shipped):** REST `/v1/admin/*` (API keys, user directory, alert channels, integrations), operator mission control (`/v1/operator/missions`, pause/resume/cancel), program traces (`GET /v1/programs/traces`); gRPC proto **1.0.9** (+17 RPCs); React `@davalgi-spanda/web` panels with RBAC tab gating; embedded HTML parity; OpenAPI static spec + JSON-RPC gateway routes with RBAC context; SDK **0.5.4** client methods (Rust REST/gRPC, Python, TypeScript).
+**Administrator console (v0.6+, shipped):** REST `/v1/admin/*` (API keys, user directory, alert
+channels, integrations), operator mission control (`/v1/operator/missions`, pause/resume/cancel),
+program traces (`GET /v1/programs/traces`); gRPC proto **1.0.9** (+17 RPCs); React
+`@davalgi-spanda/web` panels with RBAC tab gating; embedded HTML parity; OpenAPI static spec +
+JSON-RPC gateway routes with RBAC context; SDK **0.5.4** client methods (Rust REST/gRPC, Python,
+TypeScript).
 
 **Remaining (administration):** none — OIDC and Slack OAuth authorization-code flows shipped.
 
@@ -395,7 +421,9 @@ Web-based operational visibility for robots, fleets, swarms, devices, sensors, m
 | Slack OAuth setup wizard | **Stable** | Webhook + Slack app OAuth v2 |
 | gRPC server reflection | **Stable** | tonic reflection on Control Center gRPC port |
 
-**Enhancement backlog (depth + integration):** P1–P3 Control Center enhancements are **Stable** except administration OAuth depth above. Canonical list: [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform).
+**Enhancement backlog (depth + integration):** P1–P3 Control Center enhancements are **Stable**
+except administration OAuth depth above. Canonical list: [ROADMAP.md § Pillar
+6](../ROADMAP.md#pillar-6--operations-platform).
 
 #### P1 — Quick wins (shipped)
 
@@ -445,7 +473,9 @@ Web-based operational visibility for robots, fleets, swarms, devices, sensors, m
 
 Central inventory extending `DeviceRegistry` with lifecycle states:
 
-**Device types:** Robots, Sensors, Actuators, Accessories, Compute Modules, Controllers, Gateways, Cameras, GPS, Lidar, Radar, BLE Devices, WiFi Devices, LTE Devices, 5G Devices, USB Devices, CAN Devices, EtherCAT Devices, PLC Devices.
+**Device types:** Robots, Sensors, Actuators, Accessories, Compute Modules, Controllers, Gateways,
+Cameras, GPS, Lidar, Radar, BLE Devices, WiFi Devices, LTE Devices, 5G Devices, USB Devices, CAN
+Devices, EtherCAT Devices, PLC Devices.
 
 **Lifecycle states:**
 
@@ -466,13 +496,17 @@ Discovered → Quarantined → Verified → Assigned → Active → Healthy ⇄ 
 | **Failed** | Unrecoverable fault or repeated recovery failure |
 | **Retired** | End of life; audit record retained |
 
-**Operations:** `assign` / `unassign`, `quarantine`, `retire`, **`trust`** (API `POST /v1/devices/{id}/trust`, CLI `spanda device trust`, Control Center Trust/Approve); failover chains wired into recovery (`enrich_recovery_plan_with_failover`).
+**Operations:** `assign` / `unassign`, `quarantine`, `retire`, **`trust`** (API `POST
+/v1/devices/{id}/trust`, CLI `spanda device trust`, Control Center Trust/Approve); failover chains
+wired into recovery (`enrich_recovery_plan_with_failover`).
 
-**Core schema:** extends `[[devices]]` in `spanda.toml` with `lifecycle_state`, `assigned_robot`, `last_seen`, `provisioning_id`, `trust_level`.
+**Core schema:** extends `[[devices]]` in `spanda.toml` with `lifecycle_state`, `assigned_robot`,
+`last_seen`, `provisioning_id`, `trust_level`.
 
 ### 6.3 Device Discovery
 
-Core host-backed probes (`discovery_live`) with optional registry packages; discovery POST ingests matches into the device pool (`ingest_discovery_matches`).
+Core host-backed probes (`discovery_live`) with optional registry packages; discovery POST ingests
+matches into the device pool (`ingest_discovery_matches`).
 
 | Transport | Core / package | Status |
 |-----------|----------------|--------|
@@ -541,7 +575,8 @@ Core: `spanda-security::rbac` with JWT/API-key auth at API boundary.
 
 ### 6.7 Secret Management
 
-Secures: API keys, certificates, private keys, robot credentials, cloud credentials, provider credentials.
+Secures: API keys, certificates, private keys, robot credentials, cloud credentials, provider
+credentials.
 
 Features: rotation, expiration, audit trail, encryption at rest (AES-256-GCM, existing wire crypto).
 
@@ -574,9 +609,11 @@ Builds on [telemetry-store.md](./telemetry-store.md):
 | Webhook | core (generic HTTP POST) |
 | PagerDuty | `spanda-alert-pagerduty` |
 
-**Alert types:** Mission Failure, Robot Offline, Crash, Reboot, Memory Leak, Tamper, Security, Low Battery, Health Critical, Readiness Failed, Recovery Failed.
+**Alert types:** Mission Failure, Robot Offline, Crash, Reboot, Memory Leak, Tamper, Security, Low
+Battery, Health Critical, Readiness Failed, Recovery Failed.
 
-Core: `spanda-ops::alerting` — rule engine, per-severity deduplication, severity routing. PagerDuty bi-directional sync via `POST /v1/integrations/pagerduty/webhook`.
+Core: `spanda-ops::alerting` — rule engine, per-severity deduplication, severity routing. PagerDuty
+bi-directional sync via `POST /v1/integrations/pagerduty/webhook`.
 
 ### 6.10 Configuration Drift
 
@@ -609,7 +646,8 @@ Extends existing `spanda deploy plan|rollout|rollback|status`:
 
 ### 6.12 Package Trust
 
-Evaluates packages before install and deploy; composes with deployment gates and Control Center Security module.
+Evaluates packages before install and deploy; composes with deployment gates and Control Center
+Security module.
 
 | Signal | Weight factor | Source |
 |--------|---------------|--------|
@@ -620,11 +658,13 @@ Evaluates packages before install and deploy; composes with deployment gates and
 | Test coverage | Declared + CI evidence | package manifest |
 | Compatibility | Target profile match | `spanda verify` matrix |
 
-**Output:** composite **Trust Score** (0–100) via `evaluate_package_trust` / `GET /v1/trust/package` / `spanda trust <package>`.
+**Output:** composite **Trust Score** (0–100) via `evaluate_package_trust` / `GET /v1/trust/package`
+/ `spanda trust <package>`.
 
 ### 6.13 SDKs
 
-Official SDK surfaces for external systems to interact with Readiness, Assurance, Diagnosis, Recovery, Health, Mission, and Fleet:
+Official SDK surfaces for external systems to interact with Readiness, Assurance, Diagnosis,
+Recovery, Health, Mission, and Fleet:
 
 | SDK | Status | Notes |
 |-----|--------|-------|
@@ -691,7 +731,8 @@ Evidence packs for regulatory and internal audit workflows:
 
 ### 6.18 APIs
 
-REST and gRPC APIs with **CLI parity** — every `spanda` command maps to an endpoint; no CLI-only capabilities.
+REST and gRPC APIs with **CLI parity** — every `spanda` command maps to an endpoint; no CLI-only
+capabilities.
 
 | Surface | Status |
 |---------|--------|
@@ -717,7 +758,8 @@ REST and gRPC APIs with **CLI parity** — every `spanda` command maps to an end
 
 End-to-end traceability chain (v1 query shipped; full lifecycle graph UI planned):
 
-Requirement → Mission → Capability → Hardware → Device → Provider → Package → Simulation → Verification → Deployment → Runtime → Recovery → Evidence → Audit → Retirement
+Requirement → Mission → Capability → Hardware → Device → Provider → Package → Simulation →
+Verification → Deployment → Runtime → Recovery → Evidence → Audit → Retirement
 
 Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission contracts.
 
@@ -747,7 +789,8 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Secret store contract | `spanda-security` | encryption |
 | Alerting core (webhook + email) | `spanda-ops` | telemetry events |
 
-**Exit criteria:** `spanda control-center serve` + `scripts/enterprise_ops_smoke.sh` — **shipped** (wired into `scripts/showcase_smoke.sh`).
+**Exit criteria:** `spanda control-center serve` + `scripts/enterprise_ops_smoke.sh` — **shipped**
+(wired into `scripts/showcase_smoke.sh`).
 
 ### Phase E2 — Provision and observe (v0.6, Q1 2027)
 
@@ -763,7 +806,8 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Health + Assurance + Diagnosis UI modules | Control Center |
 | Config versioning + snapshots | `spanda-config` |
 
-**Exit criteria:** End-to-end provision demo; alert on readiness failure — **shipped** (`scripts/enterprise_ops_smoke.sh`).
+**Exit criteria:** End-to-end provision demo; alert on readiness failure — **shipped**
+(`scripts/enterprise_ops_smoke.sh`).
 
 ### Phase E3 — Deploy and integrate (v0.7, Q2 2027)
 
@@ -783,7 +827,10 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Simulation + Replay UI | program sim execute, trace library, replay modes — **shipped (v0.6+)** |
 | SRE dashboard | MTTR/MTBF, incident reports |
 
-**Exit criteria:** SDK integration test; canary deploy demo; correlation trace API — **shipped** (`scripts/enterprise_ops_smoke.sh`, `packages/sdk-python`). Full OTLP trace export to Jaeger and WebSocket telemetry SDK — **shipped** (`POST /v1/observability/otlp/export`, `WS /v1/stream/telemetry`).
+**Exit criteria:** SDK integration test; canary deploy demo; correlation trace API — **shipped**
+(`scripts/enterprise_ops_smoke.sh`, `packages/sdk-python`). Full OTLP trace export to Jaeger and
+WebSocket telemetry SDK — **shipped** (`POST /v1/observability/otlp/export`, `WS
+/v1/stream/telemetry`).
 
 ### Phase E4 — Govern and trace (v1.0, 2027)
 
@@ -799,7 +846,12 @@ Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission c
 | Tauri desktop packaging | `@spanda/control-center-desktop` |
 | WebSocket SDK | real-time telemetry stream |
 
-**Exit criteria:** Compliance report export; signed profile catalog; scheduled report delivery; digital thread lifecycle graph — **shipped** (`scripts/enterprise_ops_smoke.sh`). PDF executive export — **shipped** (`format=pdf`). Tauri desktop production release — **shipped** (`desktop-v0.4.2`, `scripts/verify_desktop_release_ready.sh`, `.github/workflows/desktop-release.yml`). Stable promotion gates — [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+**Exit criteria:** Compliance report export; signed profile catalog; scheduled report delivery;
+digital thread lifecycle graph — **shipped** (`scripts/enterprise_ops_smoke.sh`). PDF executive
+export — **shipped** (`format=pdf`). Tauri desktop production release — **shipped**
+(`desktop-v0.4.2`, `scripts/verify_desktop_release_ready.sh`,
+`.github/workflows/desktop-release.yml`). Stable promotion gates —
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
 ---
 
@@ -862,8 +914,14 @@ Spanda becomes a **complete Autonomous Systems Platform** covering:
 
 ## Related documents
 
-- [configuration.md](./configuration.md) · [cascading-config.md](./cascading-config.md) · [device-tree.md](./device-tree.md)
-- [telemetry-store.md](./telemetry-store.md) · [drift-detection.md](./drift-detection.md) · [deployment-gates.md](./deployment-gates.md)
-- [package-trust.md](./package-trust.md) · [trust-framework.md](./trust-framework.md) · [compliance-profiles.md](./compliance-profiles.md)
-- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [differentiation-roadmap.md](./differentiation-roadmap.md)
-- [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) · [security-architecture.md](./security-architecture.md) · [readiness.md](./readiness.md) · [self-healing.md](./self-healing.md)
+- [configuration.md](./configuration.md) · [cascading-config.md](./cascading-config.md) ·
+  [device-tree.md](./device-tree.md)
+- [telemetry-store.md](./telemetry-store.md) · [drift-detection.md](./drift-detection.md) ·
+  [deployment-gates.md](./deployment-gates.md)
+- [package-trust.md](./package-trust.md) · [trust-framework.md](./trust-framework.md) ·
+  [compliance-profiles.md](./compliance-profiles.md)
+- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) ·
+  [differentiation-roadmap.md](./differentiation-roadmap.md)
+- [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) ·
+  [security-architecture.md](./security-architecture.md) · [readiness.md](./readiness.md) ·
+  [self-healing.md](./self-healing.md)

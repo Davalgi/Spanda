@@ -37,4 +37,5 @@ Mission traces when using `--record` (default: `mission.trace`).
 
 ## SEE ALSO
 
-spanda-sim(1), spanda-replay(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-sim(1), spanda-replay(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

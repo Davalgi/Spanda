@@ -1,6 +1,8 @@
 # Runtime Fault Detection
 
-Spanda provides runtime fault detection for autonomous systems — detecting memory leaks, crashes, reboots, hangs, restarts, and resource exhaustion. Fault detection integrates with health, readiness, diagnosis, recovery, replay, audit, and assurance systems.
+Spanda provides runtime fault detection for autonomous systems — detecting memory leaks, crashes,
+reboots, hangs, restarts, and resource exhaustion. Fault detection integrates with health,
+readiness, diagnosis, recovery, replay, audit, and assurance systems.
 
 ## Overview
 
@@ -118,11 +120,13 @@ Runtime faults affect readiness scoring:
 
 ### Assurance
 
-Runtime reliability evidence includes uptime, crash-free duration, reboot history, memory stability, watchdog coverage, and restart policy configuration.
+Runtime reliability evidence includes uptime, crash-free duration, reboot history, memory stability,
+watchdog coverage, and restart policy configuration.
 
 ### Diagnosis
 
-The diagnosis engine explains: what crashed, when, likely cause, affected components, and recovery success.
+The diagnosis engine explains: what crashed, when, likely cause, affected components, and recovery
+success.
 
 ### Recovery
 
@@ -137,7 +141,9 @@ Allowed recovery actions (always safety-validated):
 
 ### Replay
 
-Fault events are recorded in mission traces as `fault_crash`, `fault_reboot`, `fault_watchdog_timeout`, `fault_memory_growth`, `fault_restart_loop`, and `fault_resource_pressure` frames.
+Fault events are recorded in mission traces as `fault_crash`, `fault_reboot`,
+`fault_watchdog_timeout`, `fault_memory_growth`, `fault_restart_loop`, and `fault_resource_pressure`
+frames.
 
 ## Examples
 

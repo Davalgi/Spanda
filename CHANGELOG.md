@@ -9,541 +9,1564 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Control Center versioning:** sidebar shows UI semver (`vX.Y.Z`); `spanda control-center --version` and `status` report it; `GET /v1/version` and `/v1/instance` expose `control_center_ui_version`. **Auto release** bumps the desktop stream and pushes `desktop-v*` when a labeled PR changes Control Center paths. Guide: [docs/control-center-versioning.md](docs/control-center-versioning.md). Updated [desktop-release-runbook.md](docs/desktop-release-runbook.md), [versioning.md](docs/versioning.md), [CONTRIBUTING.md](CONTRIBUTING.md), [control-center.md](docs/control-center.md), and related docs.
-- **Cognitive & Resilience Architecture:** canonical functional view with eleven responsibility domains, [responsibility matrix](docs/responsibility-matrix.md), and domain guides — [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md). Prior [bio-inspired-architecture.md](docs/bio-inspired-architecture.md) retained for backward compatibility.
-- **`Entity.attention`** snapshot on `EntityAutonomyProfile`; domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`) in Rust, TypeScript, and Python; REST `GET /v1/autonomy/fusion` and `/v1/autonomy/memory`.
-- **Control Center Cognitive & Resilience tab:** panels organized by functional domain (reflex events, attention queue, homeostasis, platform immunity, operational memory, damage risk, recovery confidence).
-- **Cross-domain integration tests:** `crates/spanda-autonomy/tests/cognitive_resilience_integration.rs` — reflex+homeostasis, fusion+readiness, immunity+trust, attention+recovery, memory+replay, damage risk+mission, adaptive recovery+orchestrator.
-- **gRPC fusion/memory parity:** proto **1.0.14** adds `GetAutonomyFusion` and `GetAutonomyMemory`; cross-interface and smoke scripts cover domain SDK clients.
-- **Rust `GrpcClient` autonomy RPCs:** `list_autonomy_reflexes`, `get_autonomy_fusion`, `get_autonomy_memory`, and related methods; SDK guides updated (`sdk-rust.md`, `sdk-typescript.md`, `sdk-python.md`).
-- **Control Center Strategic Planning panel:** governance and deployment profile summary on Cognitive & Resilience tab.
-- **Capability maturity pass:** entity-derived sensory fusion (`sensor_readings_from_entity`), enriched operational memory refs + `OperationalMemoryModel` on `/v1/autonomy/memory`; promotion tiers documented in [cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md); [platform-maintenance.md](docs/platform-maintenance.md) domain guide; `scripts/cognitive_resilience_smoke.sh` CI alias.
-- **Tiered CI:** CI Fast (PR gate), CI Integration (`main` smokes/golden paths), CI Nightly (promotion gates, ROS2, audit) — [ci-architecture.md](docs/ci-architecture.md); local `./scripts/ci-fast.sh`, optional `.githooks/pre-push`, `scripts/check_cross_surface.sh`.
-- **`spanda-autonomy` crate:** core types, entity `autonomy` profile integration, CLI commands (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`), REST `/v1/autonomy/*` and `/v1/entities/{id}/autonomy`, SDK `AutonomyClient`, Control Center **Resilient Autonomy** tab (live REST panels).
-- **Bio-inspired autonomy Phase A–C:** OpenAPI parity for autonomy routes; entity registry auto-profiles; TypeScript/Python SDK methods; Control Center live REST panels; README golden tests; runtime entity context from health/trust; recovery↔autonomy confidence bridge; in-process reflex trace buffer wired from kill switch and reflex decision trees; `homeostasis_policy` / `attention_policy` in `.sd`; `scripts/bio_inspired_autonomy_smoke.sh`.
-- **Bio-inspired autonomy Phase D + platform hardening:** parse `homeostasis_policy` / `attention_policy` in `.sd`; scheduler telemetry homeostasis; tamper→quarantine registry overlay; file-backed reflex traces; gRPC autonomy RPCs (proto 1.0.13); cross-interface autonomy checks; CI job `bio-inspired-autonomy`; field soak clock documented (started 2026-06-29).
-- **NOW differentiation REST APIs:** `GET /v1/programs/source`, `POST /v1/programs/contract/verify`, `POST /v1/programs/explain`, `POST /v1/programs/audit/decisions` — CLI parity for mission contracts, explainability, and decision audit trail.
-- **Control Center Differentiation tab:** mission contract verify, explain modes, and trace-based decision audit wired to new program APIs.
-- **Control Center promotion:** Assurance/Diagnosis panel runs `POST /v1/programs/assure` and `/diagnose`; Traceability loads capability matrix from API; Playground loads server program via `/v1/programs/source`.
-- **Organizational gates guide:** v0.6.3 → v1.0 checklist (field soak, security audit, exit criteria) — [organizational-gates.md](docs/organizational-gates.md).
-- **Next horizon priorities:** prioritized P0–P3 engineering themes in [ROADMAP.md](ROADMAP.md#next-horizon-priorities-post-v063).
-- **Mock-backend runtime notices:** one-time `[spanda]` stderr warnings when AI or live transport falls back to mock/in-memory paths; program-aware notices before `run`/`sim`; `SPANDA_QUIET=1` suppresses them.
-- **Cross-interface gRPC probe:** `crates/spanda-api/tests/cross_interface_live.rs` compares REST and gRPC health + recovery plan in `scripts/cross_interface_consistency.sh`.
+- **Control Center versioning:** sidebar shows UI semver (`vX.Y.Z`); `spanda control-center
+  --version` and `status` report it; `GET /v1/version` and `/v1/instance` expose
+  `control_center_ui_version`. **Auto release** bumps the desktop stream and pushes `desktop-v*`
+  when a labeled PR changes Control Center paths. Guide:
+  [docs/control-center-versioning.md](docs/control-center-versioning.md). Updated
+  [desktop-release-runbook.md](docs/desktop-release-runbook.md),
+  [versioning.md](docs/versioning.md), [CONTRIBUTING.md](CONTRIBUTING.md),
+  [control-center.md](docs/control-center.md), and related docs.
+- **Cognitive & Resilience Architecture:** canonical functional view with eleven responsibility
+  domains, [responsibility matrix](docs/responsibility-matrix.md), and domain guides —
+  [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md). Prior
+  [bio-inspired-architecture.md](docs/bio-inspired-architecture.md) retained for backward
+  compatibility.
+- **`Entity.attention`** snapshot on `EntityAutonomyProfile`; domain SDK clients (`ReflexClient`,
+  `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`) in Rust,
+  TypeScript, and Python; REST `GET /v1/autonomy/fusion` and `/v1/autonomy/memory`.
+- **Control Center Cognitive & Resilience tab:** panels organized by functional domain (reflex
+  events, attention queue, homeostasis, platform immunity, operational memory, damage risk, recovery
+  confidence).
+- **Cross-domain integration tests:**
+  `crates/spanda-autonomy/tests/cognitive_resilience_integration.rs` — reflex+homeostasis,
+  fusion+readiness, immunity+trust, attention+recovery, memory+replay, damage risk+mission, adaptive
+  recovery+orchestrator.
+- **gRPC fusion/memory parity:** proto **1.0.14** adds `GetAutonomyFusion` and `GetAutonomyMemory`;
+  cross-interface and smoke scripts cover domain SDK clients.
+- **Rust `GrpcClient` autonomy RPCs:** `list_autonomy_reflexes`, `get_autonomy_fusion`,
+  `get_autonomy_memory`, and related methods; SDK guides updated (`sdk-rust.md`,
+  `sdk-typescript.md`, `sdk-python.md`).
+- **Control Center Strategic Planning panel:** governance and deployment profile summary on
+  Cognitive & Resilience tab.
+- **Capability maturity pass:** entity-derived sensory fusion (`sensor_readings_from_entity`),
+  enriched operational memory refs + `OperationalMemoryModel` on `/v1/autonomy/memory`; promotion
+  tiers documented in [cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md);
+  [platform-maintenance.md](docs/platform-maintenance.md) domain guide;
+  `scripts/cognitive_resilience_smoke.sh` CI alias.
+- **Tiered CI:** CI Fast (PR gate), CI Integration (`main` smokes/golden paths), CI Nightly
+  (promotion gates, ROS2, audit) — [ci-architecture.md](docs/ci-architecture.md); local
+  `./scripts/ci-fast.sh`, optional `.githooks/pre-push`, `scripts/check_cross_surface.sh`.
+- **`spanda-autonomy` crate:** core types, entity `autonomy` profile integration, CLI commands
+  (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`),
+  REST `/v1/autonomy/*` and `/v1/entities/{id}/autonomy`, SDK `AutonomyClient`, Control Center
+  **Resilient Autonomy** tab (live REST panels).
+- **Bio-inspired autonomy Phase A–C:** OpenAPI parity for autonomy routes; entity registry
+  auto-profiles; TypeScript/Python SDK methods; Control Center live REST panels; README golden
+  tests; runtime entity context from health/trust; recovery↔autonomy confidence bridge; in-process
+  reflex trace buffer wired from kill switch and reflex decision trees; `homeostasis_policy` /
+  `attention_policy` in `.sd`; `scripts/bio_inspired_autonomy_smoke.sh`.
+- **Bio-inspired autonomy Phase D + platform hardening:** parse `homeostasis_policy` /
+  `attention_policy` in `.sd`; scheduler telemetry homeostasis; tamper→quarantine registry overlay;
+  file-backed reflex traces; gRPC autonomy RPCs (proto 1.0.13); cross-interface autonomy checks; CI
+  job `bio-inspired-autonomy`; field soak clock documented (started 2026-06-29).
+- **NOW differentiation REST APIs:** `GET /v1/programs/source`, `POST /v1/programs/contract/verify`,
+  `POST /v1/programs/explain`, `POST /v1/programs/audit/decisions` — CLI parity for mission
+  contracts, explainability, and decision audit trail.
+- **Control Center Differentiation tab:** mission contract verify, explain modes, and trace-based
+  decision audit wired to new program APIs.
+- **Control Center promotion:** Assurance/Diagnosis panel runs `POST /v1/programs/assure` and
+  `/diagnose`; Traceability loads capability matrix from API; Playground loads server program via
+  `/v1/programs/source`.
+- **Organizational gates guide:** v0.6.3 → v1.0 checklist (field soak, security audit, exit
+  criteria) — [organizational-gates.md](docs/organizational-gates.md).
+- **Next horizon priorities:** prioritized P0–P3 engineering themes in
+  [ROADMAP.md](ROADMAP.md#next-horizon-priorities-post-v063).
+- **Mock-backend runtime notices:** one-time `[spanda]` stderr warnings when AI or live transport
+  falls back to mock/in-memory paths; program-aware notices before `run`/`sim`; `SPANDA_QUIET=1`
+  suppresses them.
+- **Cross-interface gRPC probe:** `crates/spanda-api/tests/cross_interface_live.rs` compares REST
+  and gRPC health + recovery plan in `scripts/cross_interface_consistency.sh`.
 
 ### Changed
 
-- **CI restructure:** replaced monolithic `.github/workflows/ci.yml` with **CI Fast** (PR required), **CI Integration** (`main` after merge), and **CI Nightly** (cron + manual). Auto-release now waits for CI Integration. `cargo audit` moved to nightly.
-- **Documentation sync (full pass):** proto semver **1.0.14** and **164** RPCs pinned via `GET /v1/version`; Cognitive & Resilience naming replaces bio-inspired primary links across guides; gRPC reflection note corrected; tier and maturity docs aligned — [entity-apis.md](docs/entity-apis.md), [control-center.md](docs/control-center.md), [known-limitations.md](docs/known-limitations.md).
-- **Public positioning:** README, getting-started, and release docs state **v0.6.3 evaluation / beta** with links to known limitations and organizational gates.
-- **Phase policy:** [scope-control.md](docs/scope-control.md) transitions from release hardening to **Next horizon** (hardening + adoption toward v1.0).
-- **Release milestones:** [ROADMAP.md](ROADMAP.md) adds v0.6.3 milestone; v1.0 section includes organizational gate table.
-- **Product strategy:** updated for v0.6.3 ship and Next horizon P0/P1 priorities — [product-strategy.md](docs/product-strategy.md).
-- **Known limitations doc:** synced to v0.6.3, organizational gates, live-backend setup links, runtime notice behavior — [known-limitations.md](docs/known-limitations.md).
-- **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke; phase set to Next horizon — [release-readiness.md](docs/release-readiness.md).
+- **CI restructure:** replaced monolithic `.github/workflows/ci.yml` with **CI Fast** (PR required),
+  **CI Integration** (`main` after merge), and **CI Nightly** (cron + manual). Auto-release now
+  waits for CI Integration. `cargo audit` moved to nightly.
+- **Documentation sync (full pass):** proto semver **1.0.14** and **164** RPCs pinned via `GET
+  /v1/version`; Cognitive & Resilience naming replaces bio-inspired primary links across guides;
+  gRPC reflection note corrected; tier and maturity docs aligned —
+  [entity-apis.md](docs/entity-apis.md), [control-center.md](docs/control-center.md),
+  [known-limitations.md](docs/known-limitations.md).
+- **Public positioning:** README, getting-started, and release docs state **v0.6.3 evaluation /
+  beta** with links to known limitations and organizational gates.
+- **Phase policy:** [scope-control.md](docs/scope-control.md) transitions from release hardening to
+  **Next horizon** (hardening + adoption toward v1.0).
+- **Release milestones:** [ROADMAP.md](ROADMAP.md) adds v0.6.3 milestone; v1.0 section includes
+  organizational gate table.
+- **Product strategy:** updated for v0.6.3 ship and Next horizon P0/P1 priorities —
+  [product-strategy.md](docs/product-strategy.md).
+- **Known limitations doc:** synced to v0.6.3, organizational gates, live-backend setup links,
+  runtime notice behavior — [known-limitations.md](docs/known-limitations.md).
+- **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke;
+  phase set to Next horizon — [release-readiness.md](docs/release-readiness.md).
 
 ### Fixed
 
-- **TypeScript mirror:** `compile.ts` fallback `Program` stub includes `decisionTrees` and `offlinePolicies`.
+- **TypeScript mirror:** `compile.ts` fallback `Program` stub includes `decisionTrees` and
+  `offlinePolicies`.
 - **Rustfmt:** autonomy/API cross-interface test formatting drift.
-- **Dependabot / wasmtime:** bump optional `wasmtime` dependency for `spanda-plugin` WASM loader from 28.x to **36.x** (≥ 36.0.7) — resolves 26 open GitHub Dependabot alerts (CVE-2026-34987 and related April 2026 Wasmtime advisories).
+- **Dependabot / wasmtime:** bump optional `wasmtime` dependency for `spanda-plugin` WASM loader
+  from 28.x to **36.x** (≥ 36.0.7) — resolves 26 open GitHub Dependabot alerts (CVE-2026-34987 and
+  related April 2026 Wasmtime advisories).
 
 ## [0.6.3] - 2026-07-04
 
 ### Added
 
-- **Release hardening suite:** README command smoke + golden-output harness (`tests/readme_commands/`), cross-interface consistency (`scripts/cross_interface_consistency.sh`), security regressions (plugin/package/decision/recovery), property-style parser/manifest/config/policy/capability tests, CI job `release-hardening`, and docs: [scope-control.md](docs/scope-control.md), [release-blockers.md](docs/release-blockers.md), [release-readiness.md](docs/release-readiness.md).
+- **Release hardening suite:** README command smoke + golden-output harness
+  (`tests/readme_commands/`), cross-interface consistency
+  (`scripts/cross_interface_consistency.sh`), security regressions
+  (plugin/package/decision/recovery), property-style parser/manifest/config/policy/capability tests,
+  CI job `release-hardening`, and docs: [scope-control.md](docs/scope-control.md),
+  [release-blockers.md](docs/release-blockers.md),
+  [release-readiness.md](docs/release-readiness.md).
 
 ### Fixed
 
-- **`spanda demo rover` package install:** prefer monorepo `registry/` over incomplete CLI bundle; fall back to on-disk `packages/registry/<name>` when resolving registry packages.
-- **Entity / assurance / readiness CLI diagnostics:** missing config or program path now reports what/why/where/fix (warehouse fixture and showcase paths).
-- **Parser underflow panic:** `previous`/`advance` no longer overflow when the token cursor is at the start (found by property tests).
-- **Recovery plan empty plans (RB-004 / #48):** failure-only `spanda recovery plan` targets program robots; empty plans report `Passed: false` with operator guidance (RB-008 / #52).
-- **v3 decision outer-field binding (RB-011 / #55):** `verify_v3_decision_signature` requires outer decision fields to match the signed payload.
-- **Registry stub warnings (RB-005 / #49):** on-disk `packages/registry/<name>` packages no longer warn as missing from `LOCAL_REGISTRY`.
+- **`spanda demo rover` package install:** prefer monorepo `registry/` over incomplete CLI bundle;
+  fall back to on-disk `packages/registry/<name>` when resolving registry packages.
+- **Entity / assurance / readiness CLI diagnostics:** missing config or program path now reports
+  what/why/where/fix (warehouse fixture and showcase paths).
+- **Parser underflow panic:** `previous`/`advance` no longer overflow when the token cursor is at
+  the start (found by property tests).
+- **Recovery plan empty plans (RB-004 / #48):** failure-only `spanda recovery plan` targets program
+  robots; empty plans report `Passed: false` with operator guidance (RB-008 / #52).
+- **v3 decision outer-field binding (RB-011 / #55):** `verify_v3_decision_signature` requires outer
+  decision fields to match the signed payload.
+- **Registry stub warnings (RB-005 / #49):** on-disk `packages/registry/<name>` packages no longer
+  warn as missing from `LOCAL_REGISTRY`.
 
 ### Changed
 
-- **Stability labeling:** strict tiers in [feature-status.md](docs/feature-status.md); default AI agents labeled **Mock-backed** (Stable API). README entity commands document required `--config`.
-- **Release readiness:** [release-readiness.md](docs/release-readiness.md) recommendation is **Go with documented limitations** (evaluation/beta); organizational soak/audit remains open as [#51](https://github.com/Davalgi/Spanda/issues/51).
+- **Stability labeling:** strict tiers in [feature-status.md](docs/feature-status.md); default AI
+  agents labeled **Mock-backed** (Stable API). README entity commands document required `--config`.
+- **Release readiness:** [release-readiness.md](docs/release-readiness.md) recommendation is **Go
+  with documented limitations** (evaluation/beta); organizational soak/audit remains open as
+  [#51](https://github.com/Davalgi/Spanda/issues/51).
 
 ## [0.6.2] - 2026-07-04
 
 ### Added
 
-- **Operational Governance Framework:** new `spanda-governance` crate — autonomy levels (0–5), deployment maturity, certification lifecycle (independent from health), deployment profiles (19 built-in contexts), operational risk model, governance policies (signed assignments + audit trail), standards profile packages (`spanda-standards-*`), human accountability, and operational constraints. Entity model extensions (`EntityGovernanceMeta` on `EntityRecord`). Auto-load `spanda.governance.toml` (or `[config] governance = …`). Runtime influence on readiness, trust, deployment gates, decisions, and recovery. REST: `/v1/governance`, `/v1/compliance`, `/v1/certifications`, `/v1/deployment-profiles`, `/v1/risk`, `/v1/certifications/report`, `/v1/deployment/verify`, `/v1/governance/policies`, `/v1/governance/audit`, `/v1/governance/accountability`. gRPC proto **1.0.12**. CLI: `compliance check`, `governance validate|report`, `certification list|inspect|report`, `deployment profile|verify`, `risk report`. SDK clients (Rust/Python/TypeScript). Control Center **Governance** tab (profiles, maturity, owners, policies, audit, risk). Docs + [examples/governance/](examples/governance/).
-- **Control Center local dev docs:** consolidated start, rebuild, and `--config` / `--program` mix-and-match examples in [control-center.md](docs/control-center.md#local-dev-start--rebuild).
-- **Control Center OAuth polish:** `GET /admin/oauth/oidc/callback` and `/admin/oauth/slack/callback` landing pages with `postMessage` auto-complete; OIDC PKCE (S256); `crates/spanda-api/tests/admin_oauth_tests.rs`.
-- **Control Center enhancement backlog (shipped):** new tabs — Telemetry, Trends, Continuity, Fleet map, Reports, Playground, Marketplace, Chaos; SRE Grafana embed; config history + deploy gate modal; bulk device actions; OTA progress; decision policy editor; Smart Spaces floor SVG; analytics trust graph + cert pack download; Twin Cloud usage; offline cache; plugin bundle loader; Humans collaboration graph; entity graph default view; desktop notifications + system tray + `spawn_control_center_api`; saved connection profile switcher; Discovery transport wizards; OIDC authorization-code OAuth and Slack app OAuth v2 wizards. REST: `/v1/fleet/map`, `/v1/config/history`, `/v1/deploy/gate`, `/v1/admin/oidc/*`, `/v1/admin/slack/*`, `/v1/chaos/*`, `/v1/plugins/control-center/{plugin}/bundle`. **gRPC server reflection** enabled.
-- **Control Center embedded UI:** `spanda control-center serve` at `/` now serves the React sidebar shell (built from `@davalgi-spanda/web`); regenerate with `scripts/sync_control_center_embedded_ui.sh`. Legacy HTML remains as fallback when the bundle is missing.
-- **Recovery Orchestrator follow-ups:** persisted recovery history (`control-center-recovery.json`); REST/gRPC `predictive`, `recoverable-entities`, and `recommend` endpoints (proto **1.0.11**); SDK **0.5.6** (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`); Recovery panel graph UI; example `[recovery.extensions]` plugin; `scripts/recovery_orchestrator_field_soak_init.sh`; recovery stable promotion CI job; [recovery-validation-report.md](docs/recovery-validation-report.md); OpenAPI parity for new routes.
-- **SDK install troubleshooting:** [troubleshooting.md](docs/troubleshooting.md#official-sdk-install) — PEP 668 / venv for `pip install spanda-sdk`; `cargo add --package` when adding Rust SDK from the monorepo root; cross-links from [sdk.md](docs/sdk.md), [sdk-python.md](docs/sdk-python.md), and [getting-started.md](docs/getting-started.md).
-- **SDK overview — why three clients:** [sdk.md — Why three SDKs?](docs/sdk.md#why-three-sdks) — one Control Center API, Rust/Python/TypeScript thin clients, when to use each registry package.
+- **Operational Governance Framework:** new `spanda-governance` crate — autonomy levels (0–5),
+  deployment maturity, certification lifecycle (independent from health), deployment profiles (19
+  built-in contexts), operational risk model, governance policies (signed assignments + audit
+  trail), standards profile packages (`spanda-standards-*`), human accountability, and operational
+  constraints. Entity model extensions (`EntityGovernanceMeta` on `EntityRecord`). Auto-load
+  `spanda.governance.toml` (or `[config] governance = …`). Runtime influence on readiness, trust,
+  deployment gates, decisions, and recovery. REST: `/v1/governance`, `/v1/compliance`,
+  `/v1/certifications`, `/v1/deployment-profiles`, `/v1/risk`, `/v1/certifications/report`,
+  `/v1/deployment/verify`, `/v1/governance/policies`, `/v1/governance/audit`,
+  `/v1/governance/accountability`. gRPC proto **1.0.12**. CLI: `compliance check`, `governance
+  validate|report`, `certification list|inspect|report`, `deployment profile|verify`, `risk report`.
+  SDK clients (Rust/Python/TypeScript). Control Center **Governance** tab (profiles, maturity,
+  owners, policies, audit, risk). Docs + [examples/governance/](examples/governance/).
+- **Control Center local dev docs:** consolidated start, rebuild, and `--config` / `--program`
+  mix-and-match examples in [control-center.md](docs/control-center.md#local-dev-start--rebuild).
+- **Control Center OAuth polish:** `GET /admin/oauth/oidc/callback` and
+  `/admin/oauth/slack/callback` landing pages with `postMessage` auto-complete; OIDC PKCE (S256);
+  `crates/spanda-api/tests/admin_oauth_tests.rs`.
+- **Control Center enhancement backlog (shipped):** new tabs — Telemetry, Trends, Continuity, Fleet
+  map, Reports, Playground, Marketplace, Chaos; SRE Grafana embed; config history + deploy gate
+  modal; bulk device actions; OTA progress; decision policy editor; Smart Spaces floor SVG;
+  analytics trust graph + cert pack download; Twin Cloud usage; offline cache; plugin bundle loader;
+  Humans collaboration graph; entity graph default view; desktop notifications + system tray +
+  `spawn_control_center_api`; saved connection profile switcher; Discovery transport wizards; OIDC
+  authorization-code OAuth and Slack app OAuth v2 wizards. REST: `/v1/fleet/map`,
+  `/v1/config/history`, `/v1/deploy/gate`, `/v1/admin/oidc/*`, `/v1/admin/slack/*`, `/v1/chaos/*`,
+  `/v1/plugins/control-center/{plugin}/bundle`. **gRPC server reflection** enabled.
+- **Control Center embedded UI:** `spanda control-center serve` at `/` now serves the React sidebar
+  shell (built from `@davalgi-spanda/web`); regenerate with
+  `scripts/sync_control_center_embedded_ui.sh`. Legacy HTML remains as fallback when the bundle is
+  missing.
+- **Recovery Orchestrator follow-ups:** persisted recovery history (`control-center-recovery.json`);
+  REST/gRPC `predictive`, `recoverable-entities`, and `recommend` endpoints (proto **1.0.11**); SDK
+  **0.5.6** (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`); Recovery
+  panel graph UI; example `[recovery.extensions]` plugin;
+  `scripts/recovery_orchestrator_field_soak_init.sh`; recovery stable promotion CI job;
+  [recovery-validation-report.md](docs/recovery-validation-report.md); OpenAPI parity for new
+  routes.
+- **SDK install troubleshooting:**
+  [troubleshooting.md](docs/troubleshooting.md#official-sdk-install) — PEP 668 / venv for `pip
+  install spanda-sdk`; `cargo add --package` when adding Rust SDK from the monorepo root;
+  cross-links from [sdk.md](docs/sdk.md), [sdk-python.md](docs/sdk-python.md), and
+  [getting-started.md](docs/getting-started.md).
+- **SDK overview — why three clients:** [sdk.md — Why three SDKs?](docs/sdk.md#why-three-sdks) — one
+  Control Center API, Rust/Python/TypeScript thin clients, when to use each registry package.
 
 ## [0.6.1] - 2026-07-02
 
 ### Added
 
-- **Distributed decision polish:** external HSM signing via `SPANDA_HSM_SIGN_SCRIPT` / `SPANDA_TPM2_SIGN_SCRIPT`; per-robot fleet mesh vote posting; Control Center fleet mesh status panel; `split-brain-mesh` attack simulation; API proxy `GET /v1/decisions/mesh`.
-- **Distributed decision fleet mesh enhancements:** coordinator-side conflict aggregation (`/v1/fleet/decisions/vote/ingest`, `/v1/fleet/decisions/conflicts`); shared multi-node nonce registry (`/v1/fleet/decisions/nonce/register`); pluggable signing backend (`SPANDA_CRYPTO_BACKEND`, `SPANDA_DECISION_SIGNING_KEY_ID`) for decision trees, offline policies, and v3 envelopes.
-- **Distributed decision stable promotion:** runtime conflict resolution, persistent escalation store (`/v1/decisions/escalate`, `/v1/decisions/escalations`), Ed25519 decision tree signing (`spanda decision sign-tree`), persisted nonce registry, v3 envelope signatures; Control Center escalation approve; [stable-hardening-distributed-decisions.md](docs/stable-hardening-distributed-decisions.md); promoted to **Stable** in feature-status.
-- **Distributed decision hardening (Experimental):** rule enforcement tests (`rule_enforcement`, `attack_simulations`); live `spanda decision simulate-attack` with JSON evidence; GPS loss recovery flagship demo (`examples/showcase/distributed_decisions/gps_loss_recovery/`); v3 trace proof fields; `distributed-decisions` CI job; [distributed-decision-security.md](docs/distributed-decision-security.md), [distributed-decision-demo.md](docs/distributed-decision-demo.md).
-- **Control Center administrator console:** `Administration` tab — API key CRUD, **user directory** (`/v1/admin/users`), **alert channel config** (`PUT /v1/admin/alert-channels`), secrets metadata, report schedules, integrations summary. **Simulation** and **Replay** tabs with program sim execute, trace library (`GET /v1/programs/traces`), deterministic replay and playback. Desktop/web RBAC parity (token banner, role tabs, permission-gated actions). gRPC proto **1.0.9** adds 17 administration/mission/replay RPCs. Embedded HTML UI parity; OpenAPI documents new admin routes; JSON-RPC gateway routes admin RPCs with RBAC context.
-- **SDK 0.5.4:** admin, mission control, and program trace client methods in Rust/Python/TypeScript (`listAdminApiKeys`, `listOperatorMissions`, `listProgramTraces`, etc.).
-- **Recovery Orchestrator CI:** `scripts/recovery_orchestrator_smoke.sh`, `scripts/recovery_orchestrator_stable_promotion_gate.sh`; wired into `scripts/showcase_smoke.sh`; [stable-hardening-recovery-orchestrator.md](docs/stable-hardening-recovery-orchestrator.md).
-- **Twin Cloud persistence:** snapshots saved to `control-center-twins.json`; survive Control Center restart.
-- **Twin Cloud SDK (0.5.3):** `list_twins`, `get_twin`, `sync_twin`, `push_twin_snapshot` in Rust/Python/TypeScript SDKs.
+- **Distributed decision polish:** external HSM signing via `SPANDA_HSM_SIGN_SCRIPT` /
+  `SPANDA_TPM2_SIGN_SCRIPT`; per-robot fleet mesh vote posting; Control Center fleet mesh status
+  panel; `split-brain-mesh` attack simulation; API proxy `GET /v1/decisions/mesh`.
+- **Distributed decision fleet mesh enhancements:** coordinator-side conflict aggregation
+  (`/v1/fleet/decisions/vote/ingest`, `/v1/fleet/decisions/conflicts`); shared multi-node nonce
+  registry (`/v1/fleet/decisions/nonce/register`); pluggable signing backend
+  (`SPANDA_CRYPTO_BACKEND`, `SPANDA_DECISION_SIGNING_KEY_ID`) for decision trees, offline policies,
+  and v3 envelopes.
+- **Distributed decision stable promotion:** runtime conflict resolution, persistent escalation
+  store (`/v1/decisions/escalate`, `/v1/decisions/escalations`), Ed25519 decision tree signing
+  (`spanda decision sign-tree`), persisted nonce registry, v3 envelope signatures; Control Center
+  escalation approve;
+  [stable-hardening-distributed-decisions.md](docs/stable-hardening-distributed-decisions.md);
+  promoted to **Stable** in feature-status.
+- **Distributed decision hardening (Experimental):** rule enforcement tests (`rule_enforcement`,
+  `attack_simulations`); live `spanda decision simulate-attack` with JSON evidence; GPS loss
+  recovery flagship demo (`examples/showcase/distributed_decisions/gps_loss_recovery/`); v3 trace
+  proof fields; `distributed-decisions` CI job;
+  [distributed-decision-security.md](docs/distributed-decision-security.md),
+  [distributed-decision-demo.md](docs/distributed-decision-demo.md).
+- **Control Center administrator console:** `Administration` tab — API key CRUD, **user directory**
+  (`/v1/admin/users`), **alert channel config** (`PUT /v1/admin/alert-channels`), secrets metadata,
+  report schedules, integrations summary. **Simulation** and **Replay** tabs with program sim
+  execute, trace library (`GET /v1/programs/traces`), deterministic replay and playback. Desktop/web
+  RBAC parity (token banner, role tabs, permission-gated actions). gRPC proto **1.0.9** adds 17
+  administration/mission/replay RPCs. Embedded HTML UI parity; OpenAPI documents new admin routes;
+  JSON-RPC gateway routes admin RPCs with RBAC context.
+- **SDK 0.5.4:** admin, mission control, and program trace client methods in Rust/Python/TypeScript
+  (`listAdminApiKeys`, `listOperatorMissions`, `listProgramTraces`, etc.).
+- **Recovery Orchestrator CI:** `scripts/recovery_orchestrator_smoke.sh`,
+  `scripts/recovery_orchestrator_stable_promotion_gate.sh`; wired into `scripts/showcase_smoke.sh`;
+  [stable-hardening-recovery-orchestrator.md](docs/stable-hardening-recovery-orchestrator.md).
+- **Twin Cloud persistence:** snapshots saved to `control-center-twins.json`; survive Control Center
+  restart.
+- **Twin Cloud SDK (0.5.3):** `list_twins`, `get_twin`, `sync_twin`, `push_twin_snapshot` in
+  Rust/Python/TypeScript SDKs.
 - **Control Center Twin Cloud tab:** list and sync twins in UI (`/v1/twins`).
-- **Twin Cloud OSS parity:** gRPC twin RPCs (proto **1.0.10**); snapshot history; RBAC on mutations; CLI `sync` and `import-replay`; OpenAPI completeness; registry `spanda-twin-cloud` + `import twin.cloud`; Administration panel twin registry; SDK **0.5.5** (`get_twin_history`, `import_twin_replay`, gRPC twins); `scripts/twin_cloud_unified_path.sh`, stable promotion gate + field soak; [hosted-twin-cloud.md](docs/hosted-twin-cloud.md), [stable-hardening-twin-cloud-saas.md](docs/stable-hardening-twin-cloud-saas.md).
-- **Twin Cloud hosted product:** Docker Compose scaffold (`deploy/twin-cloud-hosted/`), tenant onboarding runbook, `scripts/hosted_twin_cloud_smoke.sh`, `scripts/publish_sdk_release.sh` for SDK **0.5.5** tags.
-- **Twin Cloud OSS → Stable:** field soak started; promotion gate; tier sync across docs; K8s + Helm deploy; `twin.cloud` runtime dispatch; `verify_sdk_published.sh` + CI job.
+- **Twin Cloud OSS parity:** gRPC twin RPCs (proto **1.0.10**); snapshot history; RBAC on mutations;
+  CLI `sync` and `import-replay`; OpenAPI completeness; registry `spanda-twin-cloud` + `import
+  twin.cloud`; Administration panel twin registry; SDK **0.5.5** (`get_twin_history`,
+  `import_twin_replay`, gRPC twins); `scripts/twin_cloud_unified_path.sh`, stable promotion gate +
+  field soak; [hosted-twin-cloud.md](docs/hosted-twin-cloud.md),
+  [stable-hardening-twin-cloud-saas.md](docs/stable-hardening-twin-cloud-saas.md).
+- **Twin Cloud hosted product:** Docker Compose scaffold (`deploy/twin-cloud-hosted/`), tenant
+  onboarding runbook, `scripts/hosted_twin_cloud_smoke.sh`, `scripts/publish_sdk_release.sh` for SDK
+  **0.5.5** tags.
+- **Twin Cloud OSS → Stable:** field soak started; promotion gate; tier sync across docs; K8s + Helm
+  deploy; `twin.cloud` runtime dispatch; `verify_sdk_published.sh` + CI job.
 
 ## [0.6.0] - 2026-07-02
 
 ### Added
 
-- **Recovery Orchestrator (Phase 2):** new `spanda-recovery` platform service — planning, simulation, validation, evidence, learning, recovery graph, playbooks, predictive indicators, and escalation levels 0–8; integrates with assurance, entity model, readiness, trust, and mission continuity without breaking `spanda heal` or `POST /v1/programs/recovery/heal`.
-- **Recovery CLI:** `spanda recovery plan|simulate|dry-run|execute|validate|history|metrics|graph|playbooks|explain`.
-- **Recovery REST API:** `GET/POST /v1/recovery/*` endpoints for plans, history, simulate, execute, validate, playbooks, metrics, graph, policies, explain.
-- **Recovery SDK:** `planRecovery`, `simulateRecovery`, `executeRecovery`, `validateRecovery`, `listRecoveryPolicies`, `listRecoveryPlaybooks`, `getRecoveryHistory`, `getRecoveryMetrics` in Rust, Python, and TypeScript clients.
-- **Control Center Recovery tab:** dashboard for plans, metrics, playbooks, and history in embedded UI.
-- **Recovery docs:** [recovery-orchestrator.md](docs/recovery-orchestrator.md), [recovery-playbooks.md](docs/recovery-playbooks.md), [recovery-graph.md](docs/recovery-graph.md), [recovery-simulation.md](docs/recovery-simulation.md), [predictive-recovery.md](docs/predictive-recovery.md), [recovery-api.md](docs/recovery-api.md), [recovery-sdk.md](docs/recovery-sdk.md); TOML policy section in [recovery-policies.md](docs/recovery-policies.md).
-- **Recovery Orchestrator hardening:** OpenAPI `/v1/recovery/*` routes, REST API tests, Recovery tab in `@davalgi-spanda/web` Control Center panel; doc index and getting-started links.
-- **Recovery gRPC (proto 1.0.8):** eleven `ControlCenter` RPCs mirroring `/v1/recovery/*`; Rust `GrpcClient` recovery methods (`spanda-sdk` `grpc` feature).
-- **Recovery plugin wiring:** `[recovery.extensions]` in `spanda.plugin.toml`; `RecoveryPluginRegistry` loaded from enabled plugins; `on_recovery_completed` hook after execute.
+- **Recovery Orchestrator (Phase 2):** new `spanda-recovery` platform service — planning,
+  simulation, validation, evidence, learning, recovery graph, playbooks, predictive indicators, and
+  escalation levels 0–8; integrates with assurance, entity model, readiness, trust, and mission
+  continuity without breaking `spanda heal` or `POST /v1/programs/recovery/heal`.
+- **Recovery CLI:** `spanda recovery
+  plan|simulate|dry-run|execute|validate|history|metrics|graph|playbooks|explain`.
+- **Recovery REST API:** `GET/POST /v1/recovery/*` endpoints for plans, history, simulate, execute,
+  validate, playbooks, metrics, graph, policies, explain.
+- **Recovery SDK:** `planRecovery`, `simulateRecovery`, `executeRecovery`, `validateRecovery`,
+  `listRecoveryPolicies`, `listRecoveryPlaybooks`, `getRecoveryHistory`, `getRecoveryMetrics` in
+  Rust, Python, and TypeScript clients.
+- **Control Center Recovery tab:** dashboard for plans, metrics, playbooks, and history in embedded
+  UI.
+- **Recovery docs:** [recovery-orchestrator.md](docs/recovery-orchestrator.md),
+  [recovery-playbooks.md](docs/recovery-playbooks.md), [recovery-graph.md](docs/recovery-graph.md),
+  [recovery-simulation.md](docs/recovery-simulation.md),
+  [predictive-recovery.md](docs/predictive-recovery.md), [recovery-api.md](docs/recovery-api.md),
+  [recovery-sdk.md](docs/recovery-sdk.md); TOML policy section in
+  [recovery-policies.md](docs/recovery-policies.md).
+- **Recovery Orchestrator hardening:** OpenAPI `/v1/recovery/*` routes, REST API tests, Recovery tab
+  in `@davalgi-spanda/web` Control Center panel; doc index and getting-started links.
+- **Recovery gRPC (proto 1.0.8):** eleven `ControlCenter` RPCs mirroring `/v1/recovery/*`; Rust
+  `GrpcClient` recovery methods (`spanda-sdk` `grpc` feature).
+- **Recovery plugin wiring:** `[recovery.extensions]` in `spanda.plugin.toml`;
+  `RecoveryPluginRegistry` loaded from enabled plugins; `on_recovery_completed` hook after execute.
 
-- **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides, `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI job `later-differentiation-stable-gates`.
-- **Trust Framework promoted to Stable:** composite program trust (`spanda trust`, `/v1/trust/program`, gRPC `GetTrustProgram`); `scripts/trust_framework_stable_promotion_gate.sh`, field soak + audit prep scripts, CI job `trust-framework-stable-gate`.
-- **LATER Control Center analytics parity:** REST `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}`; gRPC `GetAnalytics*` LATER RPCs (proto **1.0.7**); Analytics tab extended in embedded UI and `ControlCenterPanel`; `scripts/later_analytics_smoke.sh`.
-- **SDK LATER analytics wrappers (0.5.1):** Rust REST/gRPC, Python, and TypeScript clients for mission twin, certification pack, time travel, human teaming, and governance analytics endpoints.
-- **Twin Cloud SaaS (Experimental):** `spanda-twin-cloud` crate; Control Center `/v1/twins/*` backend; `spanda twin cloud push|pull|list`; `scripts/twin_cloud_saas_smoke.sh`; registry package `spanda-twin-cloud`; [docs/twin-cloud.md](docs/twin-cloud.md).
-- **Control Center HTTP:** read full POST bodies via `Content-Length` (fixes flaky twin cloud push and other large mutations).
+- **All LATER differentiation pillars promoted to Stable:** mission time travel, digital mission
+  twin, certification packs, human/robot teaming, autonomous governance — stable-hardening guides,
+  `scripts/later_differentiation_stable_promotion_gate.sh`, `scripts/later_field_soak_init.sh`, CI
+  job `later-differentiation-stable-gates`.
+- **Trust Framework promoted to Stable:** composite program trust (`spanda trust`,
+  `/v1/trust/program`, gRPC `GetTrustProgram`); `scripts/trust_framework_stable_promotion_gate.sh`,
+  field soak + audit prep scripts, CI job `trust-framework-stable-gate`.
+- **LATER Control Center analytics parity:** REST
+  `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}`; gRPC
+  `GetAnalytics*` LATER RPCs (proto **1.0.7**); Analytics tab extended in embedded UI and
+  `ControlCenterPanel`; `scripts/later_analytics_smoke.sh`.
+- **SDK LATER analytics wrappers (0.5.1):** Rust REST/gRPC, Python, and TypeScript clients for
+  mission twin, certification pack, time travel, human teaming, and governance analytics endpoints.
+- **Twin Cloud SaaS (Experimental):** `spanda-twin-cloud` crate; Control Center `/v1/twins/*`
+  backend; `spanda twin cloud push|pull|list`; `scripts/twin_cloud_saas_smoke.sh`; registry package
+  `spanda-twin-cloud`; [docs/twin-cloud.md](docs/twin-cloud.md).
+- **Control Center HTTP:** read full POST bodies via `Content-Length` (fixes flaky twin cloud push
+  and other large mutations).
 
 ## [0.5.0] - 2026-07-02
 
 ### Changed
 
-- **Release v0.5.0:** Workspace semver bump for v0.5 beta credibility milestone (differentiation exit criteria, distributed decisions, plugins, stable tier promotions). SDK and desktop streams use independent semver — see [docs/versioning.md](docs/versioning.md).
+- **Release v0.5.0:** Workspace semver bump for v0.5 beta credibility milestone (differentiation
+  exit criteria, distributed decisions, plugins, stable tier promotions). SDK and desktop streams
+  use independent semver — see [docs/versioning.md](docs/versioning.md).
 
 ### Added
 
-- **Control Center instance status:** `GET /v1/instance` returns bind address, config/program paths, tenant, and pool summary; `spanda control-center status [--json] [--url <base>] [--discover]` queries a running server (or scans local `spanda` listeners with `--discover`).
-- **Control Center stop:** `spanda control-center stop [--json] [--url <base>] [--force]` stops verified local `control-center serve` listeners; smoke scripts use `scripts/lib/control_center_smoke_lib.sh` to kill by bind port on EXIT/INT/TERM (avoids orphaned `cargo run` children).
-- **Control Center UI token persistence:** embedded HTML remembers operator Bearer tokens in `localStorage` (opt-in, origin-scoped) with server verification on save and **Forget token** to clear; docs cover storage key format, troubleshooting, and manual test-plan check.
-- **Control Center embedded UI parity:** missing web-panel tabs (Entities, Discovery, Mapping, Compliance, Decisions, Analytics, Traceability); role-aware auth banner via `GET /v1/rbac/me`; per-role tab visibility, dashboard workspace, and mutation action buttons for all seven RBAC roles.
-- **Troubleshooting guide:** [docs/troubleshooting.md](docs/troubleshooting.md) — expanded symptom-first index covering CLI install, compile/verify, run/sim, packages, deploy gates, Control Center, fleet/mesh, ROS2, live AI/IoT, plugins, config/drift, security, editor/LSP, CI, and decision runtime; cross-linked from installation, getting-started, and common-mistakes docs.
-- **Distributed decision runtime emission:** v3 decision trace payloads at continuity takeover and recovery execution when `SPANDA_DECISION_TRACE=1` or `--record`; `spanda-runtime::decision_trace` helpers.
-- **Distributed decision runtime follow-up:** reflex-layer traces (kill switch, emergency stop, `safety.validate` rejection), live `decision_tree` evaluation on sim health faults and scheduler ticks, fleet mesh consensus recording, `DecisionRuntime` bridge (`DecisionBackedRuntime`), `collect_decision_diagnostics` in check JSON, TypeScript parser/diagnostics mirror for `decision_tree` / `offline_policy`.
-- **Decision tree runtime dispatch:** matched tree actions execute via recovery dispatch (`enter degraded_mode`, `pause_mission`, emergency stop); integration tests in `crates/spanda-interpreter/tests/decision_runtime.rs`; `scripts/distributed_decisions_smoke.sh`.
-- **Decision runtime gates:** offline policy and `requires_central_approval` enforcement at tree action dispatch; escalation pending traces; fleet agent `decision_runtime` injection; enriched v3 trace security envelope; `GET /v1/decisions/traces`; gRPC `ListDecisions` / `ListDecisionTraces` parity; Control Center live trace panel.
-- **Decision SDK and showcase parity:** `list_decision_traces` in Rust/Python/TS SDKs; gRPC decision endpoint tests; Control Center v3 trace timeline table; fixed distributed-decisions sub-showcase parser syntax.
-- **Signed offline policy verification:** `offline_policy` `policy_version`, `signature`, and `expires_at` fields; runtime trust gate via `SPANDA_DECISION_REQUIRE_SIGNED_OFFLINE_POLICY` and `SPANDA_DECISION_POLICY_TRUST_KEY`; API integration test for `/v1/decisions/traces`.
-- **Offline policy cache and sign-policy CLI:** `spanda decision sign-policy` emits signatures; `.spanda/decision-policy-cache.json` persistence (`SPANDA_DECISION_POLICY_CACHE`); runtime merges cached signatures; Control Center live trace polling toggle.
-- **Decision policy cache CLI and sim traces API:** `spanda decision cache show|sync|clear`; `GET /v1/decision-policy-cache`; `POST /v1/programs/simulation` `decision_trace` / `record_trace` flags; Control Center **Run sim with traces** button with auto live polling.
-- **Distributed decisions loop closure:** `ListDecisionPolicyCache` gRPC + SDK `list_decision_policy_cache`; `spanda demo distributed-decisions`; showcase `gps.read()` typecheck fixes; hardened `distributed_decisions_smoke.sh`.
-- **Differentiation decision trail showcase:** `examples/showcase/differentiation/decision_trail/` wired into `spanda demo differentiation` and `differentiation_smoke.sh` (audit decisions + explain decision on v3 trace).
-- **What-if analysis (NEXT):** new `spanda-whatif` crate; `spanda what-if` CLI with `--scenario` / `--all`; showcase `examples/showcase/what_if/gps_failure.sd`; `scripts/what_if_smoke.sh`.
-- **Mission risk analysis (NEXT):** new `spanda-risk` crate; `spanda risk` CLI; showcase `examples/showcase/risk/deployment_risk.sd`; `scripts/risk_smoke.sh`.
-- **Trust graph (NEXT):** trust-weighted dependency graph in `spanda-graph`; `spanda trust-graph` CLI; showcase `examples/showcase/trust_graph/rover.sd`; `scripts/trust_graph_smoke.sh`.
-- **Scorecard showcase (NEXT):** executive rollup example `examples/showcase/scorecard/executive.sd`; `spanda demo scorecard`; extended `scripts/scorecard_smoke.sh`.
-- **Readiness forecasting (NEXT):** `spanda readiness forecast` composes current readiness, history trends, and degradation heuristics; showcase `examples/showcase/forecast/degradation.sd`; `scripts/readiness_forecast_smoke.sh`; NEXT smokes wired into `differentiation_smoke.sh`.
-- **Control Center analytics panel:** REST `/v1/analytics/{what-if,mission-risk,readiness-forecast,trust-graph}` and **Analytics** tab in `ControlCenterPanel`.
-- **Control Center analytics gRPC parity:** `GetAnalyticsWhatIf`, `GetAnalyticsMissionRisk`, `GetAnalyticsReadinessForecast`, `GetAnalyticsTrustGraph` on tonic `ControlCenter`; proto semver **1.0.6**; `grpc_tests.rs` analytics coverage.
-- **LATER differentiation pillars (Experimental):** mission time travel (`spanda replay --at` / `--inspect`); digital mission twin (`spanda twin mission`); certification packs (`spanda certify pack --bundle`); human/robot teaming (`spanda team verify`); autonomous governance (`spanda governance`); showcases under `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`; `scripts/later_differentiation_smoke.sh`; `spanda demo later`.
-- **Differentiation follow-up sync:** ROADMAP and differentiation-roadmap status alignment; bundled-examples sync for NEXT/LATER showcases and decision-trail golden trace; SDK analytics wrappers (Rust REST/gRPC, Python, TypeScript); later smoke uses checked-in `main.trace`.
-- **Differentiation promotion gate:** `scripts/differentiation_promotion_gate.sh` validates all 15 pillars (showcase parse, topic guides, golden trace); CI job `differentiation-promotion-gate`.
-- **What-If Analysis promoted to Stable:** `scripts/what_if_stable_promotion_gate.sh`, [docs/stable-hardening-what-if.md](docs/stable-hardening-what-if.md), topic guide + roadmap/feature-status sync; CI job `what-if-stable-promotion-gate`.
-- **Remaining NEXT pillars promoted to Stable:** mission risk, readiness forecast, trust graph, scorecards — stable-hardening guides, promotion gates, CI job `next-differentiation-stable-gates`.
-- **Distributed decision architecture:** Brain/spinal-cord/reflex hierarchical autonomy in `spanda-decision` — four decision layers (reflex, local entity, fleet/group, control center), `DecisionAuthority` / `DecisionPolicy` / escalation / consensus / conflict resolution, local decision trees (`decision_tree`), offline policies (`offline_policy`), entity `local_decision_authority` and `requires_central_approval`; CLI `spanda decision list|inspect|simulate|trace|explain|policy|security-audit|threat-model|simulate-attack`; REST `GET /v1/decisions`, `GET /v1/entities/{id}/decisions`, `POST /v1/decisions/simulate`, `POST /v1/decisions/escalate`, `GET /v1/decision-policies`; SDK methods; Control Center **Decisions** tab; docs in `docs/distributed-decisions.md` and related guides; examples under `examples/showcase/distributed_decisions/`.
-- **Plugin system:** New `spanda-plugin` crate with versioned `spanda.plugin.toml` manifests, capability-controlled host API, registry trust tiers (official/verified/community/experimental/deprecated/blocked), sandboxed WASM loading (`wasm-loader` feature), lifecycle hooks, and CLI (`spanda plugin search|install|uninstall|inspect|trust|enable|disable|list`). Six examples under `examples/plugins/`; docs in `docs/plugins.md` and related guides. Complements existing packages and providers without replacing them.
-- **Plugin runtime wiring:** Platform event hooks dispatch to enabled plugins from CLI telemetry bridge; `PluginApiHost` connects readiness/health/trust/telemetry APIs; registry tarball install and namespaced CLI dispatch (`spanda healthcare readiness`); Control Center `GET /v1/plugins` and `/v1/plugins/control-center`; provider-type plugins merge into `ProviderRegistry` official package list; audit log persistence; report export dispatches `on_report_requested`.
-- **Smart Spaces gRPC parity:** thirteen `ControlCenter` Smart Spaces RPCs including extended panels (`ListSmartSpacesDevices`, `GetFacilityHealth`, `GetFacilitySecurity`, `GetFacilityFloorMap`, `GetZoneEnvironment`, `GetEnergySystem`, `ListSmartSpacesGateways`); proto semver **1.0.5**, **96 RPCs**; `grpc_tests.rs` extended panel coverage.
-- **Smart Spaces live building I/O:** BACnet/KNX/Thread/Z-Wave/Home Assistant env bridges in `iot_live.rs` with Python bridge mock handlers; `scripts/smart_spaces_live_iot_smoke.sh`; golden trace fixtures `gateway_failover`, `power_loss_island`, `water_leak_basement`; demo replay wiring.
-- **Smart Spaces live readiness:** weighted factor scoring from `spanda.readiness.toml` (gateways, devices, sensors, emergency); robots/wearables/trust panels in Control Center UI; `spanda control-center smart-spaces` CLI; REST/gRPC SDK wrappers (`smart_spaces_summary`, `facility_readiness`, …).
-- **Smart Spaces extended panels:** device inventory, facility health/security/floor-map, zone environment, energy detail, occupancy timeline; six additional golden traces; `smart_spaces_stable_init.sh` and `smart_spaces_security_self_audit.sh`.
-- **Smart Spaces promotion hardening:** `smart-spaces-promotion-gate` CI job; promotion gate auto-builds release `spanda` when `SPANDA_BIN` unset; blueprint `certify` + `safety` blocks and fleet orchestrator robots; KNX package bridge docs parity with BACnet.
-- **Smart Spaces native BACnet/KNX:** bacpypes3 and xknx reads in `spanda_python_bridge.py` with mock fallback; package `read_point` / `read_group` scripts and optional `requirements-*.txt`; hardware smoke via `SPANDA_LIVE_IOT_HARDWARE=1`.
-- **Smart Spaces live-building Rust dispatch:** `live-building` feature on `spanda-cli` / `spanda-providers` routes BACnet/KNX reads through registry package scripts before the Python bridge; env `SPANDA_ROOT`, `SPANDA_BACNET_READ_SCRIPT`, `SPANDA_KNX_READ_SCRIPT`.
-- **Smart Spaces BMS sidecar:** Home Assistant REST reads in `spanda_python_bridge.py`; `spanda-home-assistant` `get_state.py` / `get_state.sh`; [smart-space-bms-bridge.md](docs/smart-space-bms-bridge.md); `scripts/smart_spaces_bms_sidecar_smoke.sh`.
+- **Control Center instance status:** `GET /v1/instance` returns bind address, config/program paths,
+  tenant, and pool summary; `spanda control-center status [--json] [--url <base>] [--discover]`
+  queries a running server (or scans local `spanda` listeners with `--discover`).
+- **Control Center stop:** `spanda control-center stop [--json] [--url <base>] [--force]` stops
+  verified local `control-center serve` listeners; smoke scripts use
+  `scripts/lib/control_center_smoke_lib.sh` to kill by bind port on EXIT/INT/TERM (avoids orphaned
+  `cargo run` children).
+- **Control Center UI token persistence:** embedded HTML remembers operator Bearer tokens in
+  `localStorage` (opt-in, origin-scoped) with server verification on save and **Forget token** to
+  clear; docs cover storage key format, troubleshooting, and manual test-plan check.
+- **Control Center embedded UI parity:** missing web-panel tabs (Entities, Discovery, Mapping,
+  Compliance, Decisions, Analytics, Traceability); role-aware auth banner via `GET /v1/rbac/me`;
+  per-role tab visibility, dashboard workspace, and mutation action buttons for all seven RBAC
+  roles.
+- **Troubleshooting guide:** [docs/troubleshooting.md](docs/troubleshooting.md) — expanded
+  symptom-first index covering CLI install, compile/verify, run/sim, packages, deploy gates, Control
+  Center, fleet/mesh, ROS2, live AI/IoT, plugins, config/drift, security, editor/LSP, CI, and
+  decision runtime; cross-linked from installation, getting-started, and common-mistakes docs.
+- **Distributed decision runtime emission:** v3 decision trace payloads at continuity takeover and
+  recovery execution when `SPANDA_DECISION_TRACE=1` or `--record`; `spanda-runtime::decision_trace`
+  helpers.
+- **Distributed decision runtime follow-up:** reflex-layer traces (kill switch, emergency stop,
+  `safety.validate` rejection), live `decision_tree` evaluation on sim health faults and scheduler
+  ticks, fleet mesh consensus recording, `DecisionRuntime` bridge (`DecisionBackedRuntime`),
+  `collect_decision_diagnostics` in check JSON, TypeScript parser/diagnostics mirror for
+  `decision_tree` / `offline_policy`.
+- **Decision tree runtime dispatch:** matched tree actions execute via recovery dispatch (`enter
+  degraded_mode`, `pause_mission`, emergency stop); integration tests in
+  `crates/spanda-interpreter/tests/decision_runtime.rs`; `scripts/distributed_decisions_smoke.sh`.
+- **Decision runtime gates:** offline policy and `requires_central_approval` enforcement at tree
+  action dispatch; escalation pending traces; fleet agent `decision_runtime` injection; enriched v3
+  trace security envelope; `GET /v1/decisions/traces`; gRPC `ListDecisions` / `ListDecisionTraces`
+  parity; Control Center live trace panel.
+- **Decision SDK and showcase parity:** `list_decision_traces` in Rust/Python/TS SDKs; gRPC decision
+  endpoint tests; Control Center v3 trace timeline table; fixed distributed-decisions sub-showcase
+  parser syntax.
+- **Signed offline policy verification:** `offline_policy` `policy_version`, `signature`, and
+  `expires_at` fields; runtime trust gate via `SPANDA_DECISION_REQUIRE_SIGNED_OFFLINE_POLICY` and
+  `SPANDA_DECISION_POLICY_TRUST_KEY`; API integration test for `/v1/decisions/traces`.
+- **Offline policy cache and sign-policy CLI:** `spanda decision sign-policy` emits signatures;
+  `.spanda/decision-policy-cache.json` persistence (`SPANDA_DECISION_POLICY_CACHE`); runtime merges
+  cached signatures; Control Center live trace polling toggle.
+- **Decision policy cache CLI and sim traces API:** `spanda decision cache show|sync|clear`; `GET
+  /v1/decision-policy-cache`; `POST /v1/programs/simulation` `decision_trace` / `record_trace`
+  flags; Control Center **Run sim with traces** button with auto live polling.
+- **Distributed decisions loop closure:** `ListDecisionPolicyCache` gRPC + SDK
+  `list_decision_policy_cache`; `spanda demo distributed-decisions`; showcase `gps.read()` typecheck
+  fixes; hardened `distributed_decisions_smoke.sh`.
+- **Differentiation decision trail showcase:** `examples/showcase/differentiation/decision_trail/`
+  wired into `spanda demo differentiation` and `differentiation_smoke.sh` (audit decisions + explain
+  decision on v3 trace).
+- **What-if analysis (NEXT):** new `spanda-whatif` crate; `spanda what-if` CLI with `--scenario` /
+  `--all`; showcase `examples/showcase/what_if/gps_failure.sd`; `scripts/what_if_smoke.sh`.
+- **Mission risk analysis (NEXT):** new `spanda-risk` crate; `spanda risk` CLI; showcase
+  `examples/showcase/risk/deployment_risk.sd`; `scripts/risk_smoke.sh`.
+- **Trust graph (NEXT):** trust-weighted dependency graph in `spanda-graph`; `spanda trust-graph`
+  CLI; showcase `examples/showcase/trust_graph/rover.sd`; `scripts/trust_graph_smoke.sh`.
+- **Scorecard showcase (NEXT):** executive rollup example
+  `examples/showcase/scorecard/executive.sd`; `spanda demo scorecard`; extended
+  `scripts/scorecard_smoke.sh`.
+- **Readiness forecasting (NEXT):** `spanda readiness forecast` composes current readiness, history
+  trends, and degradation heuristics; showcase `examples/showcase/forecast/degradation.sd`;
+  `scripts/readiness_forecast_smoke.sh`; NEXT smokes wired into `differentiation_smoke.sh`.
+- **Control Center analytics panel:** REST
+  `/v1/analytics/{what-if,mission-risk,readiness-forecast,trust-graph}` and **Analytics** tab in
+  `ControlCenterPanel`.
+- **Control Center analytics gRPC parity:** `GetAnalyticsWhatIf`, `GetAnalyticsMissionRisk`,
+  `GetAnalyticsReadinessForecast`, `GetAnalyticsTrustGraph` on tonic `ControlCenter`; proto semver
+  **1.0.6**; `grpc_tests.rs` analytics coverage.
+- **LATER differentiation pillars (Experimental):** mission time travel (`spanda replay --at` /
+  `--inspect`); digital mission twin (`spanda twin mission`); certification packs (`spanda certify
+  pack --bundle`); human/robot teaming (`spanda team verify`); autonomous governance (`spanda
+  governance`); showcases under
+  `examples/showcase/{mission_twin,certify/deployment_bundle,human_robot,governance}/`;
+  `scripts/later_differentiation_smoke.sh`; `spanda demo later`.
+- **Differentiation follow-up sync:** ROADMAP and differentiation-roadmap status alignment;
+  bundled-examples sync for NEXT/LATER showcases and decision-trail golden trace; SDK analytics
+  wrappers (Rust REST/gRPC, Python, TypeScript); later smoke uses checked-in `main.trace`.
+- **Differentiation promotion gate:** `scripts/differentiation_promotion_gate.sh` validates all 15
+  pillars (showcase parse, topic guides, golden trace); CI job `differentiation-promotion-gate`.
+- **What-If Analysis promoted to Stable:** `scripts/what_if_stable_promotion_gate.sh`,
+  [docs/stable-hardening-what-if.md](docs/stable-hardening-what-if.md), topic guide +
+  roadmap/feature-status sync; CI job `what-if-stable-promotion-gate`.
+- **Remaining NEXT pillars promoted to Stable:** mission risk, readiness forecast, trust graph,
+  scorecards — stable-hardening guides, promotion gates, CI job `next-differentiation-stable-gates`.
+- **Distributed decision architecture:** Brain/spinal-cord/reflex hierarchical autonomy in
+  `spanda-decision` — four decision layers (reflex, local entity, fleet/group, control center),
+  `DecisionAuthority` / `DecisionPolicy` / escalation / consensus / conflict resolution, local
+  decision trees (`decision_tree`), offline policies (`offline_policy`), entity
+  `local_decision_authority` and `requires_central_approval`; CLI `spanda decision
+  list|inspect|simulate|trace|explain|policy|security-audit|threat-model|simulate-attack`; REST `GET
+  /v1/decisions`, `GET /v1/entities/{id}/decisions`, `POST /v1/decisions/simulate`, `POST
+  /v1/decisions/escalate`, `GET /v1/decision-policies`; SDK methods; Control Center **Decisions**
+  tab; docs in `docs/distributed-decisions.md` and related guides; examples under
+  `examples/showcase/distributed_decisions/`.
+- **Plugin system:** New `spanda-plugin` crate with versioned `spanda.plugin.toml` manifests,
+  capability-controlled host API, registry trust tiers
+  (official/verified/community/experimental/deprecated/blocked), sandboxed WASM loading
+  (`wasm-loader` feature), lifecycle hooks, and CLI (`spanda plugin
+  search|install|uninstall|inspect|trust|enable|disable|list`). Six examples under
+  `examples/plugins/`; docs in `docs/plugins.md` and related guides. Complements existing packages
+  and providers without replacing them.
+- **Plugin runtime wiring:** Platform event hooks dispatch to enabled plugins from CLI telemetry
+  bridge; `PluginApiHost` connects readiness/health/trust/telemetry APIs; registry tarball install
+  and namespaced CLI dispatch (`spanda healthcare readiness`); Control Center `GET /v1/plugins` and
+  `/v1/plugins/control-center`; provider-type plugins merge into `ProviderRegistry` official package
+  list; audit log persistence; report export dispatches `on_report_requested`.
+- **Smart Spaces gRPC parity:** thirteen `ControlCenter` Smart Spaces RPCs including extended panels
+  (`ListSmartSpacesDevices`, `GetFacilityHealth`, `GetFacilitySecurity`, `GetFacilityFloorMap`,
+  `GetZoneEnvironment`, `GetEnergySystem`, `ListSmartSpacesGateways`); proto semver **1.0.5**, **96
+  RPCs**; `grpc_tests.rs` extended panel coverage.
+- **Smart Spaces live building I/O:** BACnet/KNX/Thread/Z-Wave/Home Assistant env bridges in
+  `iot_live.rs` with Python bridge mock handlers; `scripts/smart_spaces_live_iot_smoke.sh`; golden
+  trace fixtures `gateway_failover`, `power_loss_island`, `water_leak_basement`; demo replay wiring.
+- **Smart Spaces live readiness:** weighted factor scoring from `spanda.readiness.toml` (gateways,
+  devices, sensors, emergency); robots/wearables/trust panels in Control Center UI; `spanda
+  control-center smart-spaces` CLI; REST/gRPC SDK wrappers (`smart_spaces_summary`,
+  `facility_readiness`, …).
+- **Smart Spaces extended panels:** device inventory, facility health/security/floor-map, zone
+  environment, energy detail, occupancy timeline; six additional golden traces;
+  `smart_spaces_stable_init.sh` and `smart_spaces_security_self_audit.sh`.
+- **Smart Spaces promotion hardening:** `smart-spaces-promotion-gate` CI job; promotion gate
+  auto-builds release `spanda` when `SPANDA_BIN` unset; blueprint `certify` + `safety` blocks and
+  fleet orchestrator robots; KNX package bridge docs parity with BACnet.
+- **Smart Spaces native BACnet/KNX:** bacpypes3 and xknx reads in `spanda_python_bridge.py` with
+  mock fallback; package `read_point` / `read_group` scripts and optional `requirements-*.txt`;
+  hardware smoke via `SPANDA_LIVE_IOT_HARDWARE=1`.
+- **Smart Spaces live-building Rust dispatch:** `live-building` feature on `spanda-cli` /
+  `spanda-providers` routes BACnet/KNX reads through registry package scripts before the Python
+  bridge; env `SPANDA_ROOT`, `SPANDA_BACNET_READ_SCRIPT`, `SPANDA_KNX_READ_SCRIPT`.
+- **Smart Spaces BMS sidecar:** Home Assistant REST reads in `spanda_python_bridge.py`;
+  `spanda-home-assistant` `get_state.py` / `get_state.sh`;
+  [smart-space-bms-bridge.md](docs/smart-space-bms-bridge.md);
+  `scripts/smart_spaces_bms_sidecar_smoke.sh`.
 
 ### Added
 
-- **Versioning policy:** [docs/versioning.md](docs/versioning.md) — milestone → semver mapping (patch / minor / major), version streams (workspace, SDKs, desktop, gRPC proto), and release checklists; linked from [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md).
+- **Versioning policy:** [docs/versioning.md](docs/versioning.md) — milestone → semver mapping
+  (patch / minor / major), version streams (workspace, SDKs, desktop, gRPC proto), and release
+  checklists; linked from [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md).
 
 ### Changed
 
-- **Stable tier promotions (2026-07-02):** Human Interaction & Spatial Computing (H1–H6), Smart Spaces blueprint, ADAS blueprint, and Platform maturity Phases A–D promoted to **Stable** in `feature-status.md`, `ROADMAP.md`, and stable-hardening runbooks; per-blueprint field soak and security audit sign-off remain organizational gates.
-- **Documentation sync (desktop 0.4.2):** Updated control-center, getting-started, feature-snapshot, sdk, platform-overview, product-strategy, and desktop-release-runbook for `desktop-v0.4.2` production releases and Stable enterprise ops tier.
-- **Control Center desktop 0.4.2 release:** `@spanda/control-center-desktop` bumped to **0.4.2**; `desktop-v0.4.2` tag triggers macOS bundle build, GitHub Release, and workflow artifacts; `scripts/verify_desktop_release_ready.sh` checks version sync before tagging.
-- **SDK 0.4.2 published:** Rust, Python, and TypeScript official SDKs bumped to **0.4.2** — ships post-0.4.1 entity parity (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); tags `crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`.
-- **Enterprise operations promoted to Stable:** All 20 enterprise operations pillars (Control Center, Device Pool, APIs, SDKs, SRE, compliance, …) updated to **Stable** in `docs/feature-status.md`, [ROADMAP.md](ROADMAP.md), and [enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) after implementation promotion gate; organizational field soak and third-party audit tracked separately.
-- **HealthChanged transition-only:** Entity health evaluation now emits `HealthChanged` only when status changes (`from`/`to`/`reason` payload); repeated evaluations with the same status are suppressed via an in-process cache.
-- **Readiness and degraded transition-only:** `ReadinessChanged`, `ReadinessGateFailed`, and entity-health `DegradedModeEntered` now emit on state transitions only (readiness snapshot, mission-ready gate entry, degraded diagnostic entry).
-- **Platform event wiring (Phase 6c):** Spoof-check emits `SpoofingDetected`; API/gRPC RBAC emits `AuthFailed`; managed vault rotation emits `SecretRotated`; fleet registry deregister/replace emits `FleetMemberLeft`; interpreter error paths emit `MissionAborted`; `spanda install`/`verify-adapter`/`remove` emit `PackageInstalled`/`PackageVerified`/`PackageRemoved`.
-- **Platform event wiring (Phase 6b):** Health entity evaluation emits `HealthChanged`/`HealthCheckFailed`; runtime recovery emits `RecoveryTriggered`/`RecoveryCompleted`/`RecoveryFailed`; mission pause and degraded operating modes emit `MissionPaused`/`DegradedModeEntered`; provider bootstrap emits `PackageInstalled`.
-- **Platform event wiring (Phase 6a):** Added `PlatformEventRuntime` + `publish_platform_event` in `spanda-runtime`, telemetry-store bridge, and CLI registration. Wired `TrustUpdated`/`TrustGateFailed`, `TamperDetected`, `ReadinessGateFailed`, `FleetMemberJoined`, and `OtaRolloutStarted`/`OtaRolloutCompleted` emitters in trust, tamper, readiness, fleet, and OTA crates.
-- **Documentation sync (Phase 8):** Updated platform architecture docs, README, crate indexes, `lean-core`/`architecture` pipeline descriptions, and regenerated `api-reference.md` for zero-waiver baseline, `spanda-core::hardware_verify`, and `spanda-ota` deploy plan ownership.
-- **TypeScript mirror alignment (Phase 5b):** Closed all remaining `TS-ARCH-*` waivers (0 TypeScript layer violations). Added compiler-layer type modules (`comm/decls`, `ast/assurance-decls`, `readiness-types`, `types/sensor-types`), `CheckerHost` injection for the type checker, CLI bridges for readiness/certify/hardware-verify, and reclassified `connectivity-positioning` to language runtime.
-- **TypeScript mirror alignment (Phase 5a):** Split compile from run (`src/cli/run-program.ts`); inject `TelemetrySink`, `SecurityRuntime`, `ProviderRuntime`, and `AdapterRuntime` at the CLI boundary with platform-service bridges; closed architecture waivers `TS-ARCH-002`–`TS-ARCH-006` and `TS-ARCH-021`–`TS-ARCH-028`.
-- **Unified Entity Model promoted to Stable:** `docs/feature-status.md` and [ROADMAP.md](ROADMAP.md) Pillar 0 updated; SDKs **0.4.1** already published on crates.io, PyPI, and npm (`crates-sdk-v0.4.1`, `sdk-python-v0.4.1`, `npm-sdk-v0.4.1`).
-- **Driver ↔ certify decoupling (Phase 2):** Removed `spanda-certify` from `spanda-driver`; certification proof summaries live in `spanda-ota::build_deploy_plan`; runtime gate moved to `spanda-assurance` (`certify-runtime` feature) invoked from `spanda-interpreter`; strict verify certification merged in `spanda-config::verify_with_system_config`. Waivers `ARCH-001` and `ARCH-C01` removed.
-- **Interpreter slimming (Phase 3):** Operational policy and tamper policy runtime moved to `spanda-runtime`; `RuntimeHooks` injected from CLI for certification; removed `spanda-policy` and `spanda-tamper` interpreter dependencies (waivers `ARCH-011`, `ARCH-012`). Recovery/continuity types and AST primitives moved to `spanda-runtime`; interpreter uses injectable `AssuranceRuntime` with `AssuranceBackedRuntime` from CLI/fleet (waiver `ARCH-005` removed). Health evaluation, telemetry persistence, provider dispatch, and fault scanning decoupled via `spanda-runtime` traits (`TelemetrySink`, `ProviderRuntime`, `FaultRuntime`) with CLI bridges; removed `spanda-config`, `spanda-capability`, `spanda-telemetry-store`, `spanda-providers`, and `spanda-runtime-faults` from interpreter (waivers `ARCH-004`, `ARCH-007`, `ARCH-008`, `ARCH-010`; interpreter→capability health edge closed). Security and transport decoupled via `SecurityRuntime` and `CommBusHost` traits with `SecurityBackedRuntime` and `RoutingCommBus` bridges from CLI/fleet; removed `spanda-security`, `spanda-transport`, and `spanda-transport-routing` from interpreter (waivers `ARCH-006`, `ARCH-009`, `ARCH-214` closed). Live transport feature flags re-exported at CLI via `spanda-transport-routing`.
-- **Architecture SCC dissolution (Phase 4):** `validate_architecture.py` now builds the crate graph from production `[dependencies]` only (excludes dev/build deps). Production graph is acyclic; removed waivers `ARCH-SCC-001`, `ARCH-C02`, `ARCH-C03`, and `ARCH-213` (fleet recovery tests moved to `spanda-fleet`).
-- **Rust upward waiver burn-down (Phase 7a):** Removed `spanda-runtime` from `spanda-error`; `RuntimeError` → `SpandaError` conversion now lives in `spanda-runtime` (closed `ARCH-208`). Removed dev-only orphan waivers `ARCH-013`–`ARCH-014`, `ARCH-018`, and `ARCH-212`. Rust upward waivers **26 → 25**.
-- **Rust upward waiver burn-down (Phase 7b):** Moved `WireCryptoSession` to `spanda-runtime`; transport crates now use `security_types` from runtime instead of `spanda-security` (closed `ARCH-217`–`ARCH-221`). Decoupled `spanda-providers` from `spanda-audit` and `spanda-telemetry-store` via `DeviceTelemetrySink` injection and an inline ledger stub (closed `ARCH-025`–`ARCH-026`). Rust upward waivers **25 → 19**.
-- **Rust upward waiver burn-down (Phase 7c):** Formatter uses `spanda-ast::comm_decl` (closed `ARCH-211`); parser uses `spanda-connectivity` foundation types (closed `ARCH-017`); config owns human-health gate and snapshot wire crypto (closed `ARCH-202`). Rust upward waivers **19 → 16**.
-- **Rust upward waiver elimination (Phase 8):** Closed all remaining 16 production upward waivers, reaching **0**. Key changes: `spanda-codegen` drives `lexer→parser` directly (ARCH-201); `HardwareProfile`/`CompatItem` moved to `spanda-connectivity` foundation, connectivity validation moved to connectivity-runtime (ARCH-203); `spanda-core` removes security production dep (ARCH-204); `spanda-docs` accepts injected `TypeCheckHost` and library list, removing lib-registry/runtime-host deps (ARCH-205/206); `spanda-fleet` fully decoupled from `assurance`, `readiness`, `tamper`, and `telemetry-store` via OnceLock runtime injection (ARCH-021/022/209/210); `spanda-ota` uses readiness and telemetry runtimes (ARCH-024/216); `spanda-runtime-host` uses typecheck-embedded capability and import catalogs (ARCH-019/020); `spanda-llvm` keeps driver in dev-deps only (ARCH-215). Bridge implementations added in `spanda-assurance`, `spanda-readiness`, `spanda-tamper`, and `spanda-telemetry-store`. Orphan manifest entries ARCH-002/015/016/023/027-036 removed.
-- **Platform event telemetry persistence:** `spanda-telemetry-store::record_platform_event` appends `TelemetryEvent::Platform` envelopes; wired from entity mutations, readiness evaluation, and interpreter mission lifecycle hooks when persistence is enabled.
-- **Product roadmap restructure:** Canonical roadmap moved to root [ROADMAP.md](ROADMAP.md) — organized into 8 Platform Pillars, 14 Official Solution Blueprints, feature ownership model, dependency diagrams, and maturity-based timeline (Now / Next / Later / Long Term / Research). [docs/roadmap.md](docs/roadmap.md) is now a redirect; migration notes in [docs/roadmap-migration.md](docs/roadmap-migration.md). README navigation updated for product ecosystem presentation.
-- **README slim-down:** Root [README.md](README.md) now keeps only the landing intro, code sample, quick start, and doc links; detailed sections moved to [docs/overview/](docs/overview/README.md) subpages (flagship demos, audience paths, platform map, feature snapshot, signature capabilities, what Spanda is/is not).
+- **Stable tier promotions (2026-07-02):** Human Interaction & Spatial Computing (H1–H6), Smart
+  Spaces blueprint, ADAS blueprint, and Platform maturity Phases A–D promoted to **Stable** in
+  `feature-status.md`, `ROADMAP.md`, and stable-hardening runbooks; per-blueprint field soak and
+  security audit sign-off remain organizational gates.
+- **Documentation sync (desktop 0.4.2):** Updated control-center, getting-started, feature-snapshot,
+  sdk, platform-overview, product-strategy, and desktop-release-runbook for `desktop-v0.4.2`
+  production releases and Stable enterprise ops tier.
+- **Control Center desktop 0.4.2 release:** `@spanda/control-center-desktop` bumped to **0.4.2**;
+  `desktop-v0.4.2` tag triggers macOS bundle build, GitHub Release, and workflow artifacts;
+  `scripts/verify_desktop_release_ready.sh` checks version sync before tagging.
+- **SDK 0.4.2 published:** Rust, Python, and TypeScript official SDKs bumped to **0.4.2** — ships
+  post-0.4.1 entity parity (`entityReadiness`, `entityRelationships`, gRPC
+  `entity_health`/`entity_trust`); tags `crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`.
+- **Enterprise operations promoted to Stable:** All 20 enterprise operations pillars (Control
+  Center, Device Pool, APIs, SDKs, SRE, compliance, …) updated to **Stable** in
+  `docs/feature-status.md`, [ROADMAP.md](ROADMAP.md), and
+  [enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) after implementation
+  promotion gate; organizational field soak and third-party audit tracked separately.
+- **HealthChanged transition-only:** Entity health evaluation now emits `HealthChanged` only when
+  status changes (`from`/`to`/`reason` payload); repeated evaluations with the same status are
+  suppressed via an in-process cache.
+- **Readiness and degraded transition-only:** `ReadinessChanged`, `ReadinessGateFailed`, and
+  entity-health `DegradedModeEntered` now emit on state transitions only (readiness snapshot,
+  mission-ready gate entry, degraded diagnostic entry).
+- **Platform event wiring (Phase 6c):** Spoof-check emits `SpoofingDetected`; API/gRPC RBAC emits
+  `AuthFailed`; managed vault rotation emits `SecretRotated`; fleet registry deregister/replace
+  emits `FleetMemberLeft`; interpreter error paths emit `MissionAborted`; `spanda
+  install`/`verify-adapter`/`remove` emit `PackageInstalled`/`PackageVerified`/`PackageRemoved`.
+- **Platform event wiring (Phase 6b):** Health entity evaluation emits
+  `HealthChanged`/`HealthCheckFailed`; runtime recovery emits
+  `RecoveryTriggered`/`RecoveryCompleted`/`RecoveryFailed`; mission pause and degraded operating
+  modes emit `MissionPaused`/`DegradedModeEntered`; provider bootstrap emits `PackageInstalled`.
+- **Platform event wiring (Phase 6a):** Added `PlatformEventRuntime` + `publish_platform_event` in
+  `spanda-runtime`, telemetry-store bridge, and CLI registration. Wired
+  `TrustUpdated`/`TrustGateFailed`, `TamperDetected`, `ReadinessGateFailed`, `FleetMemberJoined`,
+  and `OtaRolloutStarted`/`OtaRolloutCompleted` emitters in trust, tamper, readiness, fleet, and OTA
+  crates.
+- **Documentation sync (Phase 8):** Updated platform architecture docs, README, crate indexes,
+  `lean-core`/`architecture` pipeline descriptions, and regenerated `api-reference.md` for
+  zero-waiver baseline, `spanda-core::hardware_verify`, and `spanda-ota` deploy plan ownership.
+- **TypeScript mirror alignment (Phase 5b):** Closed all remaining `TS-ARCH-*` waivers (0 TypeScript
+  layer violations). Added compiler-layer type modules (`comm/decls`, `ast/assurance-decls`,
+  `readiness-types`, `types/sensor-types`), `CheckerHost` injection for the type checker, CLI
+  bridges for readiness/certify/hardware-verify, and reclassified `connectivity-positioning` to
+  language runtime.
+- **TypeScript mirror alignment (Phase 5a):** Split compile from run (`src/cli/run-program.ts`);
+  inject `TelemetrySink`, `SecurityRuntime`, `ProviderRuntime`, and `AdapterRuntime` at the CLI
+  boundary with platform-service bridges; closed architecture waivers `TS-ARCH-002`–`TS-ARCH-006`
+  and `TS-ARCH-021`–`TS-ARCH-028`.
+- **Unified Entity Model promoted to Stable:** `docs/feature-status.md` and [ROADMAP.md](ROADMAP.md)
+  Pillar 0 updated; SDKs **0.4.1** already published on crates.io, PyPI, and npm
+  (`crates-sdk-v0.4.1`, `sdk-python-v0.4.1`, `npm-sdk-v0.4.1`).
+- **Driver ↔ certify decoupling (Phase 2):** Removed `spanda-certify` from `spanda-driver`;
+  certification proof summaries live in `spanda-ota::build_deploy_plan`; runtime gate moved to
+  `spanda-assurance` (`certify-runtime` feature) invoked from `spanda-interpreter`; strict verify
+  certification merged in `spanda-config::verify_with_system_config`. Waivers `ARCH-001` and
+  `ARCH-C01` removed.
+- **Interpreter slimming (Phase 3):** Operational policy and tamper policy runtime moved to
+  `spanda-runtime`; `RuntimeHooks` injected from CLI for certification; removed `spanda-policy` and
+  `spanda-tamper` interpreter dependencies (waivers `ARCH-011`, `ARCH-012`). Recovery/continuity
+  types and AST primitives moved to `spanda-runtime`; interpreter uses injectable `AssuranceRuntime`
+  with `AssuranceBackedRuntime` from CLI/fleet (waiver `ARCH-005` removed). Health evaluation,
+  telemetry persistence, provider dispatch, and fault scanning decoupled via `spanda-runtime` traits
+  (`TelemetrySink`, `ProviderRuntime`, `FaultRuntime`) with CLI bridges; removed `spanda-config`,
+  `spanda-capability`, `spanda-telemetry-store`, `spanda-providers`, and `spanda-runtime-faults`
+  from interpreter (waivers `ARCH-004`, `ARCH-007`, `ARCH-008`, `ARCH-010`; interpreter→capability
+  health edge closed). Security and transport decoupled via `SecurityRuntime` and `CommBusHost`
+  traits with `SecurityBackedRuntime` and `RoutingCommBus` bridges from CLI/fleet; removed
+  `spanda-security`, `spanda-transport`, and `spanda-transport-routing` from interpreter (waivers
+  `ARCH-006`, `ARCH-009`, `ARCH-214` closed). Live transport feature flags re-exported at CLI via
+  `spanda-transport-routing`.
+- **Architecture SCC dissolution (Phase 4):** `validate_architecture.py` now builds the crate graph
+  from production `[dependencies]` only (excludes dev/build deps). Production graph is acyclic;
+  removed waivers `ARCH-SCC-001`, `ARCH-C02`, `ARCH-C03`, and `ARCH-213` (fleet recovery tests moved
+  to `spanda-fleet`).
+- **Rust upward waiver burn-down (Phase 7a):** Removed `spanda-runtime` from `spanda-error`;
+  `RuntimeError` → `SpandaError` conversion now lives in `spanda-runtime` (closed `ARCH-208`).
+  Removed dev-only orphan waivers `ARCH-013`–`ARCH-014`, `ARCH-018`, and `ARCH-212`. Rust upward
+  waivers **26 → 25**.
+- **Rust upward waiver burn-down (Phase 7b):** Moved `WireCryptoSession` to `spanda-runtime`;
+  transport crates now use `security_types` from runtime instead of `spanda-security` (closed
+  `ARCH-217`–`ARCH-221`). Decoupled `spanda-providers` from `spanda-audit` and
+  `spanda-telemetry-store` via `DeviceTelemetrySink` injection and an inline ledger stub (closed
+  `ARCH-025`–`ARCH-026`). Rust upward waivers **25 → 19**.
+- **Rust upward waiver burn-down (Phase 7c):** Formatter uses `spanda-ast::comm_decl` (closed
+  `ARCH-211`); parser uses `spanda-connectivity` foundation types (closed `ARCH-017`); config owns
+  human-health gate and snapshot wire crypto (closed `ARCH-202`). Rust upward waivers **19 → 16**.
+- **Rust upward waiver elimination (Phase 8):** Closed all remaining 16 production upward waivers,
+  reaching **0**. Key changes: `spanda-codegen` drives `lexer→parser` directly (ARCH-201);
+  `HardwareProfile`/`CompatItem` moved to `spanda-connectivity` foundation, connectivity validation
+  moved to connectivity-runtime (ARCH-203); `spanda-core` removes security production dep
+  (ARCH-204); `spanda-docs` accepts injected `TypeCheckHost` and library list, removing
+  lib-registry/runtime-host deps (ARCH-205/206); `spanda-fleet` fully decoupled from `assurance`,
+  `readiness`, `tamper`, and `telemetry-store` via OnceLock runtime injection
+  (ARCH-021/022/209/210); `spanda-ota` uses readiness and telemetry runtimes (ARCH-024/216);
+  `spanda-runtime-host` uses typecheck-embedded capability and import catalogs (ARCH-019/020);
+  `spanda-llvm` keeps driver in dev-deps only (ARCH-215). Bridge implementations added in
+  `spanda-assurance`, `spanda-readiness`, `spanda-tamper`, and `spanda-telemetry-store`. Orphan
+  manifest entries ARCH-002/015/016/023/027-036 removed.
+- **Platform event telemetry persistence:** `spanda-telemetry-store::record_platform_event` appends
+  `TelemetryEvent::Platform` envelopes; wired from entity mutations, readiness evaluation, and
+  interpreter mission lifecycle hooks when persistence is enabled.
+- **Product roadmap restructure:** Canonical roadmap moved to root [ROADMAP.md](ROADMAP.md) —
+  organized into 8 Platform Pillars, 14 Official Solution Blueprints, feature ownership model,
+  dependency diagrams, and maturity-based timeline (Now / Next / Later / Long Term / Research).
+  [docs/roadmap.md](docs/roadmap.md) is now a redirect; migration notes in
+  [docs/roadmap-migration.md](docs/roadmap-migration.md). README navigation updated for product
+  ecosystem presentation.
+- **README slim-down:** Root [README.md](README.md) now keeps only the landing intro, code sample,
+  quick start, and doc links; detailed sections moved to [docs/overview/](docs/overview/README.md)
+  subpages (flagship demos, audience paths, platform map, feature snapshot, signature capabilities,
+  what Spanda is/is not).
 
 ### Fixed
 
-- **Release `dist plan`:** sync WiX installer product name to `spanda`; exclude maintainer utility binaries (`spanda-compliance`, `spanda-package`) from cargo-dist packaging.
-- **`@davalgi-spanda/web` PR CI:** validate publish tarball with `npm pack --dry-run` instead of `npm publish --dry-run` (fails when the registry version already exists).
-- **Rust SDK crates.io packaging:** make `tonic-build` a required build-dependency so `cargo package` verifies without the `grpc` feature.
-- **Sim `stop_if` false E-stop:** `RunOptions::default()` now sets `lidar_range = 10.0 m` (was `0.0` from derived `Default`, forcing `nearest_distance = 0.01 m` and spurious `stop_if` triggers in `spanda sim` / `spanda run`).
-- **Behavior loop trace recording:** `loop every` in behaviors now emits `behavior_tick` mission trace frames when `--record` is enabled (ADAS `highway_drive.trace` replays deterministically).
-- **Config snapshot encryption tests:** shared env lock prevents parallel `SPANDA_CONFIG_SNAPSHOT_KEY` races between `snapshot_encryption` and `config_snapshots` unit tests.
+- **Release `dist plan`:** sync WiX installer product name to `spanda`; exclude maintainer utility
+  binaries (`spanda-compliance`, `spanda-package`) from cargo-dist packaging.
+- **`@davalgi-spanda/web` PR CI:** validate publish tarball with `npm pack --dry-run` instead of
+  `npm publish --dry-run` (fails when the registry version already exists).
+- **Rust SDK crates.io packaging:** make `tonic-build` a required build-dependency so `cargo
+  package` verifies without the `grpc` feature.
+- **Sim `stop_if` false E-stop:** `RunOptions::default()` now sets `lidar_range = 10.0 m` (was `0.0`
+  from derived `Default`, forcing `nearest_distance = 0.01 m` and spurious `stop_if` triggers in
+  `spanda sim` / `spanda run`).
+- **Behavior loop trace recording:** `loop every` in behaviors now emits `behavior_tick` mission
+  trace frames when `--record` is enabled (ADAS `highway_drive.trace` replays deterministically).
+- **Config snapshot encryption tests:** shared env lock prevents parallel
+  `SPANDA_CONFIG_SNAPSHOT_KEY` races between `snapshot_encryption` and `config_snapshots` unit
+  tests.
 
 ### Added
 
-- **Smart Spaces CI and registry:** `smart-spaces-smoke` GitHub Actions job; provider dispatch for nine Smart Spaces packages; package `.sd` module stubs; registry index rebuilt with new packages; example syntax fixes so smoke passes.
-- **Smart Spaces stable hardening:** [stable-hardening-smart-spaces.md](docs/stable-hardening-smart-spaces.md) promotion checklist; golden emergency trace `fixtures/fire_panel_activation.trace`; ten Smart Spaces registry packages in offline `bundled-registry`; `SPANDA_SMART_SPACES_SKIP_SMOKE` on promotion gate.
-- **Smart Spaces Control Center:** REST endpoints (`/v1/facilities`, `/v1/facilities/{id}/readiness`, `/v1/zones/{id}/occupancy`, `/v1/energy/systems`, `/v1/emergency/status`, `/v1/smart-spaces/summary`); static HTML and React Control Center **Smart Spaces** tab with buildings, gateways, zones, energy, and continuity panels; `spanda demo smart-spaces`; bundled examples sync; Grafana dashboard `control-center-smart-spaces.json`; provider bootstrap and `iot_hub` stubs for BACnet/KNX/Thread/Z-Wave/Home Assistant/energy/building/locks/environment; OpenAPI spec parity; promotion gate `scripts/smart_spaces_promotion_gate.sh`; registry package smoke tests.
-- **Smart Spaces & Ambient Intelligence — Official Solution Blueprint:** Safety-first orchestration for intelligent environments (home through smart city) without competing with home automation platforms. Adds `docs/solutions/smart-spaces.md`, topic guides (`building-automation`, `ambient-intelligence`, `energy-management`, `smart-space-security`, `smart-space-readiness`, `smart-space-device-tree`, `smart-space-packages`), example tree `examples/solutions/smart-spaces/` (six application scaffolds), nine optional registry package stubs (`spanda-thread`, `spanda-zwave`, `spanda-home-assistant`, `spanda-bacnet`, `spanda-knx`, `spanda-energy`, `spanda-building`, `spanda-smart-locks`, `spanda-environment`), Control Center Smart Spaces dashboard spec, website blueprint page, roadmap entry #15, and `scripts/smart_spaces_smoke.sh`.
-- **Entity SDK parity:** TypeScript `entityReadiness` / `entityRelationships`; Rust gRPC `entity_health` / `entity_trust` wrappers.
-- **Platform lifecycle events:** `ReadinessChanged`, `MissionStarted`, and `MissionCompleted` platform events from readiness evaluation and interpreter orchestration (when audit runtime is active).
-- **Platform event emission:** entity mutation REST handlers emit `PlatformEvent` envelopes (`EntityCreated`, `EntityTagged`, …) via `AuditRuntime::record_platform_event`.
-- **Platform Architecture v2.1 hardening:** TypeScript layer validation (37 baseline waivers), manifest YAML/JSON sync check, blueprint governance validator (`validate_blueprints.py`), `PlatformEvent` envelope in `spanda-audit`, waiver burn-down plan [architecture-waiver-burn-down.md](docs/architecture-waiver-burn-down.md).
-- **Platform Architecture v2.0:** Official layered architecture, dependency governance, ownership boundaries, and CI validation — [platform-architecture.md](docs/platform-architecture.md), [layered-architecture.md](docs/layered-architecture.md), [dependency-rules.md](docs/dependency-rules.md), [module-ownership.md](docs/module-ownership.md), [platform-services.md](docs/platform-services.md), [event-model.md](docs/event-model.md), [design-principles.md](docs/design-principles.md); manifest at [scripts/architecture-manifest.yaml](scripts/architecture-manifest.yaml); validator [scripts/validate_architecture.py](scripts/validate_architecture.py) in CI; dependency graph [docs/architecture-dependency-graph.dot](docs/architecture-dependency-graph.dot).
-- **Entity API and SDK reference docs:** [entity-apis.md](docs/entity-apis.md) (REST/gRPC endpoint reference) and [entity-sdk.md](docs/entity-sdk.md) (Rust, TypeScript, Python method parity and examples).
-- **Entity model examples (Phase 15):** eight runnable programs under `examples/entity/` (graph, query, relationships, health, readiness, trust, traceability, verify) with type-checked `.sd` sources.
-- **gRPC `VerifyEntity`:** proto semver **1.0.3**, **83 RPCs**; `GrpcClient::entity_verify` parity with `POST /v1/entities/{id}/verify`.
-- **Entity readiness, health, and trust integration (Phases 3–5):** `evaluate_entity_readiness`, `evaluate_entity_health`, and `evaluate_entity_trust` route operational engines through `EntityRegistry`; enriched `GET /v1/entities/{id}/health|readiness|trust` with `report` payloads; CLI evaluation parity; guides [entity-readiness.md](docs/entity-readiness.md), [entity-health.md](docs/entity-health.md), [entity-trust.md](docs/entity-trust.md), [entity-best-practices.md](docs/entity-best-practices.md), [entity-migration-guide.md](docs/entity-migration-guide.md).
-- **Entity verification integration (Phase 2):** unified `verify_entity` engine in `spanda-readiness` routes hardware, mission, fleet, device pool, quarantine, and config validation through `EntityRegistry`; `POST /v1/entities/{id}/verify`; `spanda entity` CLI (`list`, `inspect`, `graph`, `relationships`, `traceability`, `readiness`, `health`, `trust`, `verify`, `query`, `search`); SDK `entity_verify` / `verifyEntity`; docs [entity-verification.md](docs/entity-verification.md) and [entity-integration-report.md](docs/entity-integration-report.md); `examples/entity/` samples.
-- **gRPC entity model parity:** nine new `ControlCenter` RPCs — `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`, `RegisterEntity`, `TagEntity`, `RelateEntities`, `SyncEntities` (proto semver **1.0.2**, 82 RPCs); JSON-RPC gateway read paths for graph/traceability/query/relationships/readiness; `GrpcClient` helpers with `SPANDA_API_KEY` Bearer on mutations; warehouse fixture tests in `grpc_tests.rs`.
-- **Python SDK entity helpers:** `entity_graph`, `entity_traceability`, `query_entities`, `register_entity`, `tag_entity`, `relate_entities`, `sync_entities` — parity with TypeScript and Rust SDKs; covered in `scripts/entity_model_smoke.sh`.
+- **Smart Spaces CI and registry:** `smart-spaces-smoke` GitHub Actions job; provider dispatch for
+  nine Smart Spaces packages; package `.sd` module stubs; registry index rebuilt with new packages;
+  example syntax fixes so smoke passes.
+- **Smart Spaces stable hardening:**
+  [stable-hardening-smart-spaces.md](docs/stable-hardening-smart-spaces.md) promotion checklist;
+  golden emergency trace `fixtures/fire_panel_activation.trace`; ten Smart Spaces registry packages
+  in offline `bundled-registry`; `SPANDA_SMART_SPACES_SKIP_SMOKE` on promotion gate.
+- **Smart Spaces Control Center:** REST endpoints (`/v1/facilities`,
+  `/v1/facilities/{id}/readiness`, `/v1/zones/{id}/occupancy`, `/v1/energy/systems`,
+  `/v1/emergency/status`, `/v1/smart-spaces/summary`); static HTML and React Control Center **Smart
+  Spaces** tab with buildings, gateways, zones, energy, and continuity panels; `spanda demo
+  smart-spaces`; bundled examples sync; Grafana dashboard `control-center-smart-spaces.json`;
+  provider bootstrap and `iot_hub` stubs for BACnet/KNX/Thread/Z-Wave/Home
+  Assistant/energy/building/locks/environment; OpenAPI spec parity; promotion gate
+  `scripts/smart_spaces_promotion_gate.sh`; registry package smoke tests.
+- **Smart Spaces & Ambient Intelligence — Official Solution Blueprint:** Safety-first orchestration
+  for intelligent environments (home through smart city) without competing with home automation
+  platforms. Adds `docs/solutions/smart-spaces.md`, topic guides (`building-automation`,
+  `ambient-intelligence`, `energy-management`, `smart-space-security`, `smart-space-readiness`,
+  `smart-space-device-tree`, `smart-space-packages`), example tree
+  `examples/solutions/smart-spaces/` (six application scaffolds), nine optional registry package
+  stubs (`spanda-thread`, `spanda-zwave`, `spanda-home-assistant`, `spanda-bacnet`, `spanda-knx`,
+  `spanda-energy`, `spanda-building`, `spanda-smart-locks`, `spanda-environment`), Control Center
+  Smart Spaces dashboard spec, website blueprint page, roadmap entry #15, and
+  `scripts/smart_spaces_smoke.sh`.
+- **Entity SDK parity:** TypeScript `entityReadiness` / `entityRelationships`; Rust gRPC
+  `entity_health` / `entity_trust` wrappers.
+- **Platform lifecycle events:** `ReadinessChanged`, `MissionStarted`, and `MissionCompleted`
+  platform events from readiness evaluation and interpreter orchestration (when audit runtime is
+  active).
+- **Platform event emission:** entity mutation REST handlers emit `PlatformEvent` envelopes
+  (`EntityCreated`, `EntityTagged`, …) via `AuditRuntime::record_platform_event`.
+- **Platform Architecture v2.1 hardening:** TypeScript layer validation (37 baseline waivers),
+  manifest YAML/JSON sync check, blueprint governance validator (`validate_blueprints.py`),
+  `PlatformEvent` envelope in `spanda-audit`, waiver burn-down plan
+  [architecture-waiver-burn-down.md](docs/architecture-waiver-burn-down.md).
+- **Platform Architecture v2.0:** Official layered architecture, dependency governance, ownership
+  boundaries, and CI validation — [platform-architecture.md](docs/platform-architecture.md),
+  [layered-architecture.md](docs/layered-architecture.md),
+  [dependency-rules.md](docs/dependency-rules.md), [module-ownership.md](docs/module-ownership.md),
+  [platform-services.md](docs/platform-services.md), [event-model.md](docs/event-model.md),
+  [design-principles.md](docs/design-principles.md); manifest at
+  [scripts/architecture-manifest.yaml](scripts/architecture-manifest.yaml); validator
+  [scripts/validate_architecture.py](scripts/validate_architecture.py) in CI; dependency graph
+  [docs/architecture-dependency-graph.dot](docs/architecture-dependency-graph.dot).
+- **Entity API and SDK reference docs:** [entity-apis.md](docs/entity-apis.md) (REST/gRPC endpoint
+  reference) and [entity-sdk.md](docs/entity-sdk.md) (Rust, TypeScript, Python method parity and
+  examples).
+- **Entity model examples (Phase 15):** eight runnable programs under `examples/entity/` (graph,
+  query, relationships, health, readiness, trust, traceability, verify) with type-checked `.sd`
+  sources.
+- **gRPC `VerifyEntity`:** proto semver **1.0.3**, **83 RPCs**; `GrpcClient::entity_verify` parity
+  with `POST /v1/entities/{id}/verify`.
+- **Entity readiness, health, and trust integration (Phases 3–5):** `evaluate_entity_readiness`,
+  `evaluate_entity_health`, and `evaluate_entity_trust` route operational engines through
+  `EntityRegistry`; enriched `GET /v1/entities/{id}/health|readiness|trust` with `report` payloads;
+  CLI evaluation parity; guides [entity-readiness.md](docs/entity-readiness.md),
+  [entity-health.md](docs/entity-health.md), [entity-trust.md](docs/entity-trust.md),
+  [entity-best-practices.md](docs/entity-best-practices.md),
+  [entity-migration-guide.md](docs/entity-migration-guide.md).
+- **Entity verification integration (Phase 2):** unified `verify_entity` engine in
+  `spanda-readiness` routes hardware, mission, fleet, device pool, quarantine, and config validation
+  through `EntityRegistry`; `POST /v1/entities/{id}/verify`; `spanda entity` CLI (`list`, `inspect`,
+  `graph`, `relationships`, `traceability`, `readiness`, `health`, `trust`, `verify`, `query`,
+  `search`); SDK `entity_verify` / `verifyEntity`; docs
+  [entity-verification.md](docs/entity-verification.md) and
+  [entity-integration-report.md](docs/entity-integration-report.md); `examples/entity/` samples.
+- **gRPC entity model parity:** nine new `ControlCenter` RPCs — `GetEntityGraph`,
+  `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`,
+  `RegisterEntity`, `TagEntity`, `RelateEntities`, `SyncEntities` (proto semver **1.0.2**, 82 RPCs);
+  JSON-RPC gateway read paths for graph/traceability/query/relationships/readiness; `GrpcClient`
+  helpers with `SPANDA_API_KEY` Bearer on mutations; warehouse fixture tests in `grpc_tests.rs`.
+- **Python SDK entity helpers:** `entity_graph`, `entity_traceability`, `query_entities`,
+  `register_entity`, `tag_entity`, `relate_entities`, `sync_entities` — parity with TypeScript and
+  Rust SDKs; covered in `scripts/entity_model_smoke.sh`.
 - **Rust SDK `entity_traceability`:** query helper for `GET /v1/entities/traceability`.
-- **Agriculture solution blueprint CI:** `scripts/agriculture_smoke.sh` validates `examples/solutions/agriculture/field_patrol.sd` (`agriculture-smoke` job).
-- **Environmental + Maritime blueprint scaffolds:** `examples/solutions/environmental-monitoring/sensor_mesh.sd`, `examples/solutions/maritime/harbor_patrol.sd`; consolidated `scripts/solution_blueprints_smoke.sh` (agriculture, environmental, maritime).
-- **Extended blueprint missions:** `spray_mission.sd`, `harvest_convoy.sd`, `gateway_bridge.sd`, `convoy_escort.sd`, `docking_assist.sd` in solution blueprint smoke.
-- **Entity model Stable promotion:** `entity_model_stable_promotion_gate.sh`, Rust SDK in `entity_model_smoke.sh`, Python SDK `0.4.1` with `entity_relationships` / `entity_readiness`; runbook [entity-model-stable-promotion.md](docs/entity-model-stable-promotion.md); CI `entity-model-promotion-gate`.
-- **Entity model stabilization:** `scripts/entity_model_smoke.sh` CI job covering graph, traceability, query, and mutation APIs; Control Center Entities tab write UI (register, tag, relate, sync); TypeScript SDK entity mutation helpers (`registerEntity`, `tagEntity`, `relateEntities`, `syncEntities`, `entityGraph`, `entityTraceability`, `queryEntities`).
-- **Entity Model Phase 5 — write path:** mutation overlay store with `POST /v1/entities/register`, `{id}/tags`, `relationships`, and `sync`; audit events; TOML sync to facilities/overrides fragments; SDK helpers.
-- **Entity Model Phase 4 — industry extensions:** facility/building/zone TOML projection, ADAS `vehicle` entity kind + compliance metadata, flat hazard zones and spatial sessions, package `entity_kinds` manifest section, and `spanda.facilities.toml` config fragment.
-- **Entity Model Phase 3 — graph unification:** align `spanda-graph` dependency nodes with entity IDs (`entity_id` metadata); merge digital-thread device links and program-graph edges into the entity relationship store via `apply_traceability_overlay`; unified `GET /v1/entities/traceability` query across entity registry, program graph, and digital thread.
-- **Entity Model Phase 2 — runtime missions:** overlay `MissionRuntime` from loaded programs and approval seeds into `/v1/entities`; `participates_in` relationships and mission readiness payloads on `/v1/entities/{id}/readiness`.
-- **Unified Entity Model (foundational pillar):** `EntityRecord`, `EntityRegistry`, `EntityGraph`, and `EntityQuery` in `spanda-config`; expanded `/v1/entities/*` API (graph, relationships, readiness, query); Control Center **Entities** tab; SDK entity helpers; docs in [docs/entity-model.md](docs/entity-model.md) (+ registry, graph, relationships, query language guides) and [ROADMAP.md](ROADMAP.md) Pillar 0.
-- **@davalgi-spanda/web npm package:** rename from `@spanda/web` for npm org parity; publish via `npm-web-v*` with `ControlCenterPanel` exports.
+- **Agriculture solution blueprint CI:** `scripts/agriculture_smoke.sh` validates
+  `examples/solutions/agriculture/field_patrol.sd` (`agriculture-smoke` job).
+- **Environmental + Maritime blueprint scaffolds:**
+  `examples/solutions/environmental-monitoring/sensor_mesh.sd`,
+  `examples/solutions/maritime/harbor_patrol.sd`; consolidated
+  `scripts/solution_blueprints_smoke.sh` (agriculture, environmental, maritime).
+- **Extended blueprint missions:** `spray_mission.sd`, `harvest_convoy.sd`, `gateway_bridge.sd`,
+  `convoy_escort.sd`, `docking_assist.sd` in solution blueprint smoke.
+- **Entity model Stable promotion:** `entity_model_stable_promotion_gate.sh`, Rust SDK in
+  `entity_model_smoke.sh`, Python SDK `0.4.1` with `entity_relationships` / `entity_readiness`;
+  runbook [entity-model-stable-promotion.md](docs/entity-model-stable-promotion.md); CI
+  `entity-model-promotion-gate`.
+- **Entity model stabilization:** `scripts/entity_model_smoke.sh` CI job covering graph,
+  traceability, query, and mutation APIs; Control Center Entities tab write UI (register, tag,
+  relate, sync); TypeScript SDK entity mutation helpers (`registerEntity`, `tagEntity`,
+  `relateEntities`, `syncEntities`, `entityGraph`, `entityTraceability`, `queryEntities`).
+- **Entity Model Phase 5 — write path:** mutation overlay store with `POST /v1/entities/register`,
+  `{id}/tags`, `relationships`, and `sync`; audit events; TOML sync to facilities/overrides
+  fragments; SDK helpers.
+- **Entity Model Phase 4 — industry extensions:** facility/building/zone TOML projection, ADAS
+  `vehicle` entity kind + compliance metadata, flat hazard zones and spatial sessions, package
+  `entity_kinds` manifest section, and `spanda.facilities.toml` config fragment.
+- **Entity Model Phase 3 — graph unification:** align `spanda-graph` dependency nodes with entity
+  IDs (`entity_id` metadata); merge digital-thread device links and program-graph edges into the
+  entity relationship store via `apply_traceability_overlay`; unified `GET
+  /v1/entities/traceability` query across entity registry, program graph, and digital thread.
+- **Entity Model Phase 2 — runtime missions:** overlay `MissionRuntime` from loaded programs and
+  approval seeds into `/v1/entities`; `participates_in` relationships and mission readiness payloads
+  on `/v1/entities/{id}/readiness`.
+- **Unified Entity Model (foundational pillar):** `EntityRecord`, `EntityRegistry`, `EntityGraph`,
+  and `EntityQuery` in `spanda-config`; expanded `/v1/entities/*` API (graph, relationships,
+  readiness, query); Control Center **Entities** tab; SDK entity helpers; docs in
+  [docs/entity-model.md](docs/entity-model.md) (+ registry, graph, relationships, query language
+  guides) and [ROADMAP.md](ROADMAP.md) Pillar 0.
+- **@davalgi-spanda/web npm package:** rename from `@spanda/web` for npm org parity; publish via
+  `npm-web-v*` with `ControlCenterPanel` exports.
 - **spanda-sdk v0.4.1:** crates.io README manifest; tag `crates-sdk-v0.4.1`.
-- **SDK registry publication complete:** `spanda-sdk` on crates.io (v0.4.0), PyPI (v0.4.0), and `@davalgi-spanda/sdk` on npm (v0.4.1); README and docs updated with install commands and token rotation table.
-- **npm TypeScript SDK scope:** published package is `@davalgi-spanda/sdk` (npm org `@davalgi-spanda`; `@spanda` scope unavailable on npm).
-- **SDK publishing guide:** [docs/sdk-publishing.md](docs/sdk-publishing.md) — PyPI/npm/crates.io tokens, GitHub secrets, release tags, troubleshooting.
-- **Rust SDK crates.io workflow:** [publish-sdk-rust.yml](.github/workflows/publish-sdk-rust.yml) (`crates-sdk-v*` tag).
-- **GrpcClient expansion:** `assure`, `run_simulation`, `replay`, `get_entity`, `list_devices` on optional `grpc` feature.
+- **SDK registry publication complete:** `spanda-sdk` on crates.io (v0.4.0), PyPI (v0.4.0), and
+  `@davalgi-spanda/sdk` on npm (v0.4.1); README and docs updated with install commands and token
+  rotation table.
+- **npm TypeScript SDK scope:** published package is `@davalgi-spanda/sdk` (npm org
+  `@davalgi-spanda`; `@spanda` scope unavailable on npm).
+- **SDK publishing guide:** [docs/sdk-publishing.md](docs/sdk-publishing.md) — PyPI/npm/crates.io
+  tokens, GitHub secrets, release tags, troubleshooting.
+- **Rust SDK crates.io workflow:** [publish-sdk-rust.yml](.github/workflows/publish-sdk-rust.yml)
+  (`crates-sdk-v*` tag).
+- **GrpcClient expansion:** `assure`, `run_simulation`, `replay`, `get_entity`, `list_devices` on
+  optional `grpc` feature.
 - **Replay API tests:** inspect and playback paths in `sdk_ops_tests`.
-- **SDK simulation/replay execution:** program API endpoints run the driver when `"execute": true` (sim) or `"deterministic"` / `"playback"` (replay); optional Rust `grpc` feature on `spanda-sdk`; PyPI/npm publish workflows for `sdk/python` and `@spanda/sdk`.
-- **Official SDK foundations:** `crates/spanda-sdk` (Rust), `sdk/python` (`pip install spanda-sdk`), `sdk/typescript` (`@spanda/sdk`); program-level REST endpoints on `spanda-api` for CLI parity (`/v1/programs/*`, `/v1/entities/*`); matching gRPC RPCs (`EvaluateProgramReadiness`, `ListEntities`, …); docs in [docs/sdk.md](docs/sdk.md), [docs/control-center-api.md](docs/control-center-api.md).
-- **SDK smoke and JSON-RPC:** `scripts/sdk_smoke.sh` exercises program REST endpoints; JSON-RPC gateway maps Control Center SDK methods; `rpc()` on all SDK clients.
-- **Website roadmap & platform pages:** [website/roadmap.html](website/roadmap.html), [website/platform.html](website/platform.html) — product ecosystem navigation.
-- **Platform pillar link hubs:** [docs/pillars/](docs/pillars/README.md) — 8 navigation hubs cross-linking topic guides.
-- **CI gates index:** [scripts/gates/README.md](scripts/gates/README.md) — smoke scripts by pillar and blueprint.
-- **Planned blueprint docs:** [agriculture](docs/solutions/agriculture.md), [environmental-monitoring](docs/solutions/environmental-monitoring.md), [maritime](docs/solutions/maritime.md).
-- **Registry README:** [packages/registry/README.md](packages/registry/README.md) — authoritative package source vs mirror paths.
-- **Grafana ADAS dashboard:** `spanda-grafana-dashboards` template `control-center-adas.json` for fleet health, safety alerts, and mission trace volume.
-- **ADAS lane keeping trace:** `lane_keeping/lane_keeping.trace` (20 `behavior_tick` frames) replayed in `adas_smoke.sh`.
-- **Automotive registry packages:** `spanda-radar`, `spanda-lidar`, `spanda-ultrasonic`, `spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x` (experimental stubs); ADAS device trees use dedicated radar/LiDAR providers; traffic sign and pedestrian detection examples.
+- **SDK simulation/replay execution:** program API endpoints run the driver when `"execute": true`
+  (sim) or `"deterministic"` / `"playback"` (replay); optional Rust `grpc` feature on `spanda-sdk`;
+  PyPI/npm publish workflows for `sdk/python` and `@spanda/sdk`.
+- **Official SDK foundations:** `crates/spanda-sdk` (Rust), `sdk/python` (`pip install spanda-sdk`),
+  `sdk/typescript` (`@spanda/sdk`); program-level REST endpoints on `spanda-api` for CLI parity
+  (`/v1/programs/*`, `/v1/entities/*`); matching gRPC RPCs (`EvaluateProgramReadiness`,
+  `ListEntities`, …); docs in [docs/sdk.md](docs/sdk.md),
+  [docs/control-center-api.md](docs/control-center-api.md).
+- **SDK smoke and JSON-RPC:** `scripts/sdk_smoke.sh` exercises program REST endpoints; JSON-RPC
+  gateway maps Control Center SDK methods; `rpc()` on all SDK clients.
+- **Website roadmap & platform pages:** [website/roadmap.html](website/roadmap.html),
+  [website/platform.html](website/platform.html) — product ecosystem navigation.
+- **Platform pillar link hubs:** [docs/pillars/](docs/pillars/README.md) — 8 navigation hubs
+  cross-linking topic guides.
+- **CI gates index:** [scripts/gates/README.md](scripts/gates/README.md) — smoke scripts by pillar
+  and blueprint.
+- **Planned blueprint docs:** [agriculture](docs/solutions/agriculture.md),
+  [environmental-monitoring](docs/solutions/environmental-monitoring.md),
+  [maritime](docs/solutions/maritime.md).
+- **Registry README:** [packages/registry/README.md](packages/registry/README.md) — authoritative
+  package source vs mirror paths.
+- **Grafana ADAS dashboard:** `spanda-grafana-dashboards` template `control-center-adas.json` for
+  fleet health, safety alerts, and mission trace volume.
+- **ADAS lane keeping trace:** `lane_keeping/lane_keeping.trace` (20 `behavior_tick` frames)
+  replayed in `adas_smoke.sh`.
+- **Automotive registry packages:** `spanda-radar`, `spanda-lidar`, `spanda-ultrasonic`,
+  `spanda-automotive-ethernet`, `spanda-lin`, `spanda-uds`, `spanda-v2x` (experimental stubs); ADAS
+  device trees use dedicated radar/LiDAR providers; traffic sign and pedestrian detection examples.
 - **ADAS ROS 2 bridge:** `ros2_automotive/automotive_nav.sd` with `spanda-ros2` `/cmd_vel` publish.
-- **ADAS stable promotion gate:** `scripts/adas_stable_promotion_gate.sh`, soak/audit init scripts, [stable-hardening-adas.md](docs/stable-hardening-adas.md); ultrasonic nodes in parking device trees.
-- **ADAS live sensor bridges:** `automotive_hub` provider dispatch with `SPANDA_LIVE_RADAR` / `SPANDA_LIVE_LIDAR` / `SPANDA_LIVE_ULTRASONIC` and `SPANDA_*_CMD` env probes; `scripts/adas_automotive_sensors_smoke.sh`.
+- **ADAS stable promotion gate:** `scripts/adas_stable_promotion_gate.sh`, soak/audit init scripts,
+  [stable-hardening-adas.md](docs/stable-hardening-adas.md); ultrasonic nodes in parking device
+  trees.
+- **ADAS live sensor bridges:** `automotive_hub` provider dispatch with `SPANDA_LIVE_RADAR` /
+  `SPANDA_LIVE_LIDAR` / `SPANDA_LIVE_ULTRASONIC` and `SPANDA_*_CMD` env probes;
+  `scripts/adas_automotive_sensors_smoke.sh`.
 
-- **Control Center API key generator:** `spanda control-center api-key generate [--export]`; startup warning when no keys configured; embedded UI auth banner with paste field; docs updated in [control-center.md](docs/control-center.md).
+- **Control Center API key generator:** `spanda control-center api-key generate [--export]`; startup
+  warning when no keys configured; embedded UI auth banner with paste field; docs updated in
+  [control-center.md](docs/control-center.md).
 
-- **Control Center auth docs:** [control-center.md](docs/control-center.md) documents UI access paths, API key setup (`SPANDA_API_KEY`, `SPANDA_API_KEYS_FILE`), role matrix, and which endpoints require Bearer auth; [getting-started.md](docs/getting-started.md) cross-links the guide.
+- **Control Center auth docs:** [control-center.md](docs/control-center.md) documents UI access
+  paths, API key setup (`SPANDA_API_KEY`, `SPANDA_API_KEYS_FILE`), role matrix, and which endpoints
+  require Bearer auth; [getting-started.md](docs/getting-started.md) cross-links the guide.
 
-- **H6 HRI depth (experimental):** vendor live backends (`SPANDA_LIVE_HEALTHKIT`, `SPANDA_LIVE_HOLOLENS`); `[[twins]]` and `[[mission_approvals]]` config; `GET /v1/humans/twins`, `GET /v1/operator/mission/approvals`; mission approval queue persistence; Humans tab mission approval UI; `hri_field_soak_init.sh` and `hri_security_audit_prep.sh` for Stable promotion ops.
+- **H6 HRI depth (experimental):** vendor live backends (`SPANDA_LIVE_HEALTHKIT`,
+  `SPANDA_LIVE_HOLOLENS`); `[[twins]]` and `[[mission_approvals]]` config; `GET /v1/humans/twins`,
+  `GET /v1/operator/mission/approvals`; mission approval queue persistence; Humans tab mission
+  approval UI; `hri_field_soak_init.sh` and `hri_security_audit_prep.sh` for Stable promotion ops.
 
-- **H5 HRI engineering expansion (experimental):** `[[hazard_zones]]` config; `GET /v1/humans/readiness` team rollup; `GET /v1/hri/collaboration` participant graph; `GET /v1/hri/context` hazard and location snapshot; Control Center Humans tab panels for team readiness, collaboration, and context awareness.
+- **H5 HRI engineering expansion (experimental):** `[[hazard_zones]]` config; `GET
+  /v1/humans/readiness` team rollup; `GET /v1/hri/collaboration` participant graph; `GET
+  /v1/hri/context` hazard and location snapshot; Control Center Humans tab panels for team
+  readiness, collaboration, and context awareness.
 
-- **HRI stable promotion gate:** `scripts/hri_stable_promotion_gate.sh` and [stable-hardening-human-interaction.md](docs/stable-hardening-human-interaction.md); `@spanda/web` `ControlCenterPanel` Humans tab parity with embedded Control Center.
+- **HRI stable promotion gate:** `scripts/hri_stable_promotion_gate.sh` and
+  [stable-hardening-human-interaction.md](docs/stable-hardening-human-interaction.md); `@spanda/web`
+  `ControlCenterPanel` Humans tab parity with embedded Control Center.
 
-- **H4 Control Center human UI (experimental):** Humans tab in Control Center; `GET /v1/humans`, `/v1/wearables`, `/v1/human-health/policy`; `HumanHealthGate` opt-in (`SPANDA_HUMAN_HEALTH_ENABLED` + `[security.human_health]`); VR training continuity example.
+- **H4 Control Center human UI (experimental):** Humans tab in Control Center; `GET /v1/humans`,
+  `/v1/wearables`, `/v1/human-health/policy`; `HumanHealthGate` opt-in
+  (`SPANDA_HUMAN_HEALTH_ENABLED` + `[security.human_health]`); VR training continuity example.
 
-- **H3 HRI & collaboration (experimental):** `spanda-voice`, `spanda-gesture`, `spanda-eye-tracking` registry packages; `HriInputProvider` and `OverlayProvider` wiring; `[[spatial_sessions]]` config; Control Center `/v1/hri/sessions` API; collaborative continuity in spatial-computing blueprint examples.
+- **H3 HRI & collaboration (experimental):** `spanda-voice`, `spanda-gesture`, `spanda-eye-tracking`
+  registry packages; `HriInputProvider` and `OverlayProvider` wiring; `[[spatial_sessions]]` config;
+  Control Center `/v1/hri/sessions` API; collaborative continuity in spatial-computing blueprint
+  examples.
 
-- **Official package provenance binding:** built-in provider bootstrap and trust scoring require registry provenance — registry lockfile source or version constraint, or a path to the canonical `packages/registry/<name>` tree; path/git overrides of official names no longer wire built-in providers; `official_provenance` validation warning; `OfficialProvenance` API in `spanda-package::official`.
-- **Production deploy gates:** `spanda deploy gate --policy production` hard-fails on `official_provenance` (official name path/git squatting) and `registry_signatures` (`SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` plus verified lockfile registry signatures); `spanda-package::provenance_gate` helpers.
+- **Official package provenance binding:** built-in provider bootstrap and trust scoring require
+  registry provenance — registry lockfile source or version constraint, or a path to the canonical
+  `packages/registry/<name>` tree; path/git overrides of official names no longer wire built-in
+  providers; `official_provenance` validation warning; `OfficialProvenance` API in
+  `spanda-package::official`.
+- **Production deploy gates:** `spanda deploy gate --policy production` hard-fails on
+  `official_provenance` (official name path/git squatting) and `registry_signatures`
+  (`SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` plus verified lockfile registry signatures);
+  `spanda-package::provenance_gate` helpers.
 
-- **H2 Wearables & AR (experimental):** nine registry packages (`spanda-smartwatch`, `spanda-industrial-wearables`, `spanda-bodycam`, `spanda-hololens`, `spanda-arkit`, `spanda-arcore`, `spanda-vision-pro`, `spanda-magic-leap`, `spanda-openxr`); `WearableTelemetryProvider` and `SpatialSessionProvider` traits; provider dispatch and package stubs; spatial-computing blueprint device tree wired to H2 providers.
+- **H2 Wearables & AR (experimental):** nine registry packages (`spanda-smartwatch`,
+  `spanda-industrial-wearables`, `spanda-bodycam`, `spanda-hololens`, `spanda-arkit`,
+  `spanda-arcore`, `spanda-vision-pro`, `spanda-magic-leap`, `spanda-openxr`);
+  `WearableTelemetryProvider` and `SpatialSessionProvider` traits; provider dispatch and package
+  stubs; spatial-computing blueprint device tree wired to H2 providers.
 
-- **H1 Human Interaction (experimental):** `HumanRegistry` and fleet device tree nodes for humans, wearables, AR/VR/drones; operator capability registry; `human_collaboration` readiness profile and compliance template; `spanda demo spatial`; `./scripts/spatial_computing_smoke.sh`.
+- **H1 Human Interaction (experimental):** `HumanRegistry` and fleet device tree nodes for humans,
+  wearables, AR/VR/drones; operator capability registry; `human_collaboration` readiness profile and
+  compliance template; `spanda demo spatial`; `./scripts/spatial_computing_smoke.sh`.
 
-- **Human Interaction & Spatial Computing roadmap:** platform pillar for humans, wearables, AR/VR/XR, and collaborative autonomy — composes Device Registry, Capability Framework, Readiness, Continuity, Trust, and Control Center without core language extensions; phased delivery H1–H4 ([docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md)).
-- **Spatial Computing Solution Blueprint (scaffold):** `examples/solutions/spatial-computing/` with six reference workflows (warehouse AR, remote maintenance, VR training, SAR AR, wearable health, operator approval); device tree with humans, wearables, AR/VR nodes.
-- **HRI documentation:** [human-interaction.md](docs/human-interaction.md), [wearables.md](docs/wearables.md), [spatial-computing.md](docs/spatial-computing.md), [ar-vr-xr.md](docs/ar-vr-xr.md), [human-readiness.md](docs/human-readiness.md), [hri.md](docs/hri.md), [remote-expert.md](docs/remote-expert.md), [operator-capabilities.md](docs/operator-capabilities.md), [hri-packages.md](docs/hri-packages.md), [solutions/spatial-computing.md](docs/solutions/spatial-computing.md).
-- **Control Center human interaction dashboard** (planned panels documented) and **website/solutions.html** Human Interaction & Spatial Computing blueprint section.
+- **Human Interaction & Spatial Computing roadmap:** platform pillar for humans, wearables,
+  AR/VR/XR, and collaborative autonomy — composes Device Registry, Capability Framework, Readiness,
+  Continuity, Trust, and Control Center without core language extensions; phased delivery H1–H4
+([docs/human-interaction-spatial-computing-roadmap.md](docs/human-interaction-spatial-computing-roadmap.md)).
+- **Spatial Computing Solution Blueprint (scaffold):** `examples/solutions/spatial-computing/` with
+  six reference workflows (warehouse AR, remote maintenance, VR training, SAR AR, wearable health,
+  operator approval); device tree with humans, wearables, AR/VR nodes.
+- **HRI documentation:** [human-interaction.md](docs/human-interaction.md),
+  [wearables.md](docs/wearables.md), [spatial-computing.md](docs/spatial-computing.md),
+  [ar-vr-xr.md](docs/ar-vr-xr.md), [human-readiness.md](docs/human-readiness.md),
+  [hri.md](docs/hri.md), [remote-expert.md](docs/remote-expert.md),
+  [operator-capabilities.md](docs/operator-capabilities.md),
+  [hri-packages.md](docs/hri-packages.md),
+  [solutions/spatial-computing.md](docs/solutions/spatial-computing.md).
+- **Control Center human interaction dashboard** (planned panels documented) and
+  **website/solutions.html** Human Interaction & Spatial Computing blueprint section.
 - **Master roadmap** updated with Human Interaction & Spatial Computing platform pillar.
 
-- **ADAS blueprint phase 2:** CI `adas-smoke` job; bundled `spanda demo adas`; application variants (shuttle, mining, delivery, agricultural, construction); scenario trace fixtures; diagnose/explain in smoke.
-- **ADAS blueprint phase 3:** parking assist, blind spot monitoring, CAN bus gateway examples; `spanda-canbus` dependency; providers catalog update.
-- **ADAS device tree validation:** device trees use registered providers only (`spanda-opencv`, `spanda-slam`, `spanda-gps`, `spanda-fusion`, `spanda-canbus`, `spanda-mqtt`); consolidated vehicle CAN gateway; `hardware_profile = "JetsonAutomotive"` matches program `deploy` target so `spanda verify` and `spanda config validate` pass with `[config] devices`.
-- **ADAS blueprint phase 4:** passenger, truck, airport, and campus application variants; `sim_record/lane_keep_task` golden trace (20 scheduler frames); smoke covers all nine application device trees.
-- **ADAS documentation:** [docs/solutions/adas.md](docs/solutions/adas.md), [automotive-device-tree.md](docs/automotive-device-tree.md), [adas-readiness.md](docs/adas-readiness.md), [adas-assurance.md](docs/adas-assurance.md), [adas-security.md](docs/adas-security.md), [adas-replay.md](docs/adas-replay.md), [demo-plan-adas.md](docs/demo-plan-adas.md).
+- **ADAS blueprint phase 2:** CI `adas-smoke` job; bundled `spanda demo adas`; application variants
+  (shuttle, mining, delivery, agricultural, construction); scenario trace fixtures; diagnose/explain
+  in smoke.
+- **ADAS blueprint phase 3:** parking assist, blind spot monitoring, CAN bus gateway examples;
+  `spanda-canbus` dependency; providers catalog update.
+- **ADAS device tree validation:** device trees use registered providers only (`spanda-opencv`,
+  `spanda-slam`, `spanda-gps`, `spanda-fusion`, `spanda-canbus`, `spanda-mqtt`); consolidated
+  vehicle CAN gateway; `hardware_profile = "JetsonAutomotive"` matches program `deploy` target so
+  `spanda verify` and `spanda config validate` pass with `[config] devices`.
+- **ADAS blueprint phase 4:** passenger, truck, airport, and campus application variants;
+  `sim_record/lane_keep_task` golden trace (20 scheduler frames); smoke covers all nine application
+  device trees.
+- **ADAS documentation:** [docs/solutions/adas.md](docs/solutions/adas.md),
+  [automotive-device-tree.md](docs/automotive-device-tree.md),
+  [adas-readiness.md](docs/adas-readiness.md), [adas-assurance.md](docs/adas-assurance.md),
+  [adas-security.md](docs/adas-security.md), [adas-replay.md](docs/adas-replay.md),
+  [demo-plan-adas.md](docs/demo-plan-adas.md).
 - **Control Center ADAS tab** and **website/solutions.html** Official Solution Blueprints page.
 
-- **Compliance profiles (ISO 13849, IEC 61508):** signed catalog templates `iso13849` and `iec61508`; showcase programs `automotive_rover.sd`, `machinery_rover.sd`, `iec61508_rover.sd`; Control Center compliance tab profile selector; readiness scoring in compliance verify uses deploy target.
-- **Compliance CLI and demo:** `spanda compliance list` (built-in + signed catalog); `spanda demo compliance` runs all five profile showcases.
-- **WebSocket reconnect contract:** resume offsets, heartbeat, backpressure (`SPANDA_WS_MAX_PENDING_FRAMES`, `SPANDA_WS_HEARTBEAT_INTERVAL_MS`).
-- **SIEM mutation audit export:** `GET /v1/audit/mutations/export?format=cef|jsonl`; registry package `spanda-audit-siem`.
-- **On-call escalation templates:** registry package `spanda-alert-escalation` with tier routing guidance.
-- **Device pool scale gate:** 1000-device list/summary perf test (`device_pool_scale`) + `scripts/device_pool_perf_bench.sh`.
-- **Ops docs:** [control-center-rate-limits.md](docs/control-center-rate-limits.md), [otlp-collector-ha.md](docs/otlp-collector-ha.md); idempotent reprovision policy in [device-provisioning.md](docs/device-provisioning.md). complete `openapi.json` for all `/v1/*` routes; `openapi_routes.rs` registry + `openapi_parity_tests.rs` CI guard.
-- **Scheduled drift scans:** background scheduler (`SPANDA_DRIFT_SCAN_INTERVAL_SECS`), `GET /v1/drift/scans`, `POST /v1/drift/scan`, `ConfigDrift` alerts with critical auto-incidents; CLI `control-center drift scan|scans`.
-- **gRPC proto semver policy:** `grpc_policy.rs`, proto semver `1.0.0` on `control_center.proto`, `GET /v1/version` → `grpc` block; Health status includes proto semver and RPC count.
-- **OTA readiness rollback:** `rollback_on_readiness_fail` on `POST /v1/ota/execute` (env `SPANDA_OTA_ROLLBACK_ON_READINESS_FAIL`); auto-rollback deploy agents when post-deploy readiness fails.
-- **Multi-approver config approvals:** `required_approvals` on submit + `SPANDA_CONFIG_APPROVALS_REQUIRED`; distinct approver votes with `quorum` metadata; publish-on-approve when quorum met.
-- **OTA fleet soak:** `scripts/ota_fleet_soak.sh` — multi-agent version bumps and canary→full progression tests.
-- **Remote CLI OpenAPI parity:** `control_center_openapi_parity.rs` verifies CLI routes exist in `REST_V1_ROUTES`.
-- **Encrypted config snapshots:** AES-256-GCM at rest via `encrypt` on `POST /v1/config/snapshots` or `SPANDA_CONFIG_SNAPSHOT_ENCRYPT=1` + `SPANDA_CONFIG_SNAPSHOT_KEY`.
-- **Failover drill smoke:** `scripts/failover_drill_smoke.sh` validates redundant chain selection and recovery actions.
-- **SLO burn-rate rollup:** `burn_rate` object on `GET /v1/sre/summary` with `fast_burn` when fault alert rate exceeds budget (`SPANDA_SRE_BURN_RATE_FAST`, `SPANDA_SRE_BURN_WINDOW_HOURS`).
-- **SLO burn-rate monitor:** background fast-burn alert dispatch (`SPANDA_SRE_BURN_SCAN_INTERVAL_SECS`) with deduplicated `HealthCritical` alerts.
-- **PagerDuty bi-directional sync:** inbound `POST /v1/integrations/pagerduty/webhook` (ack/resolve → incidents); outbound ack/resolve events on incident workflow; `incident_id` in PD custom details.
-- **Digital thread lifecycle graph:** requirement → design → deploy → operate → retire phases on `GET /v1/digital-thread/query` (`lifecycle_phase` filter, `lifecycle_rows` / `lifecycle_summary`); lifecycle layout in graph UI.
-- **Grafana dashboard templates:** registry package `spanda-grafana-dashboards` (SRE + OTA JSON dashboards).
-- **Python SDK publish scaffold:** `packages/sdk-python/VERSIONING.md`, `sdk-python-v*` tag workflow, version `0.4.0`.
+- **Compliance profiles (ISO 13849, IEC 61508):** signed catalog templates `iso13849` and
+  `iec61508`; showcase programs `automotive_rover.sd`, `machinery_rover.sd`, `iec61508_rover.sd`;
+  Control Center compliance tab profile selector; readiness scoring in compliance verify uses deploy
+  target.
+- **Compliance CLI and demo:** `spanda compliance list` (built-in + signed catalog); `spanda demo
+  compliance` runs all five profile showcases.
+- **WebSocket reconnect contract:** resume offsets, heartbeat, backpressure
+  (`SPANDA_WS_MAX_PENDING_FRAMES`, `SPANDA_WS_HEARTBEAT_INTERVAL_MS`).
+- **SIEM mutation audit export:** `GET /v1/audit/mutations/export?format=cef|jsonl`; registry
+  package `spanda-audit-siem`.
+- **On-call escalation templates:** registry package `spanda-alert-escalation` with tier routing
+  guidance.
+- **Device pool scale gate:** 1000-device list/summary perf test (`device_pool_scale`) +
+  `scripts/device_pool_perf_bench.sh`.
+- **Ops docs:** [control-center-rate-limits.md](docs/control-center-rate-limits.md),
+  [otlp-collector-ha.md](docs/otlp-collector-ha.md); idempotent reprovision policy in
+  [device-provisioning.md](docs/device-provisioning.md). complete `openapi.json` for all `/v1/*`
+  routes; `openapi_routes.rs` registry + `openapi_parity_tests.rs` CI guard.
+- **Scheduled drift scans:** background scheduler (`SPANDA_DRIFT_SCAN_INTERVAL_SECS`), `GET
+  /v1/drift/scans`, `POST /v1/drift/scan`, `ConfigDrift` alerts with critical auto-incidents; CLI
+  `control-center drift scan|scans`.
+- **gRPC proto semver policy:** `grpc_policy.rs`, proto semver `1.0.0` on `control_center.proto`,
+  `GET /v1/version` → `grpc` block; Health status includes proto semver and RPC count.
+- **OTA readiness rollback:** `rollback_on_readiness_fail` on `POST /v1/ota/execute` (env
+  `SPANDA_OTA_ROLLBACK_ON_READINESS_FAIL`); auto-rollback deploy agents when post-deploy readiness
+  fails.
+- **Multi-approver config approvals:** `required_approvals` on submit +
+  `SPANDA_CONFIG_APPROVALS_REQUIRED`; distinct approver votes with `quorum` metadata;
+  publish-on-approve when quorum met.
+- **OTA fleet soak:** `scripts/ota_fleet_soak.sh` — multi-agent version bumps and canary→full
+  progression tests.
+- **Remote CLI OpenAPI parity:** `control_center_openapi_parity.rs` verifies CLI routes exist in
+  `REST_V1_ROUTES`.
+- **Encrypted config snapshots:** AES-256-GCM at rest via `encrypt` on `POST /v1/config/snapshots`
+  or `SPANDA_CONFIG_SNAPSHOT_ENCRYPT=1` + `SPANDA_CONFIG_SNAPSHOT_KEY`.
+- **Failover drill smoke:** `scripts/failover_drill_smoke.sh` validates redundant chain selection
+  and recovery actions.
+- **SLO burn-rate rollup:** `burn_rate` object on `GET /v1/sre/summary` with `fast_burn` when fault
+  alert rate exceeds budget (`SPANDA_SRE_BURN_RATE_FAST`, `SPANDA_SRE_BURN_WINDOW_HOURS`).
+- **SLO burn-rate monitor:** background fast-burn alert dispatch
+  (`SPANDA_SRE_BURN_SCAN_INTERVAL_SECS`) with deduplicated `HealthCritical` alerts.
+- **PagerDuty bi-directional sync:** inbound `POST /v1/integrations/pagerduty/webhook` (ack/resolve
+  → incidents); outbound ack/resolve events on incident workflow; `incident_id` in PD custom
+  details.
+- **Digital thread lifecycle graph:** requirement → design → deploy → operate → retire phases on
+  `GET /v1/digital-thread/query` (`lifecycle_phase` filter, `lifecycle_rows` / `lifecycle_summary`);
+  lifecycle layout in graph UI.
+- **Grafana dashboard templates:** registry package `spanda-grafana-dashboards` (SRE + OTA JSON
+  dashboards).
+- **Python SDK publish scaffold:** `packages/sdk-python/VERSIONING.md`, `sdk-python-v*` tag
+  workflow, version `0.4.0`.
 - **npm `@spanda/web` publish scaffold:** `PUBLISHING.md`, `npm-web-v*` tag workflow with PR dry-run.
-- **30-day field soak gate:** `scripts/field_soak_gate.sh` + [docs/field-soak-gate.md](docs/field-soak-gate.md).
-- **OTA production certify policy:** `SPANDA_OTA_REQUIRE_CERTIFY` / `SPANDA_PRODUCTION_POLICY=production` enforce certification proof on `POST /v1/ota/plan` and `/v1/ota/execute`.
-- **Signed compliance profile catalog:** Ed25519-verified defense/medical/ISO 26262 templates; `GET /v1/compliance/profiles`; `cargo run -p spanda-compliance --bin sign_catalog`.
-- **Scheduled report delivery:** `GET/POST /v1/reports/schedules` with webhook delivery (`SPANDA_REPORT_SCHEDULE_INTERVAL_SECS`).
-- **Discovery TLS policy:** `SPANDA_DISCOVERY_REQUIRE_TLS`, `SPANDA_DISCOVERY_TLS_CA_BUNDLE`, registry package `spanda-discovery-tls`; `tls` summary on discovery responses.
-- **Security audit prep:** `scripts/security_audit_prep.sh`, registry package `spanda-security-audit`, [docs/security-audit-third-party.md](docs/security-audit-third-party.md).
-- **Desktop release runbook:** signed/notarized macOS CI (`.github/workflows/desktop-release.yml`), env-gated Tauri updater (`TAURI_UPDATER_PUBKEY`, `SPANDA_DESKTOP_UPDATER_ACTIVE`), [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md).
+- **30-day field soak gate:** `scripts/field_soak_gate.sh` +
+  [docs/field-soak-gate.md](docs/field-soak-gate.md).
+- **OTA production certify policy:** `SPANDA_OTA_REQUIRE_CERTIFY` /
+  `SPANDA_PRODUCTION_POLICY=production` enforce certification proof on `POST /v1/ota/plan` and
+  `/v1/ota/execute`.
+- **Signed compliance profile catalog:** Ed25519-verified defense/medical/ISO 26262 templates; `GET
+  /v1/compliance/profiles`; `cargo run -p spanda-compliance --bin sign_catalog`.
+- **Scheduled report delivery:** `GET/POST /v1/reports/schedules` with webhook delivery
+  (`SPANDA_REPORT_SCHEDULE_INTERVAL_SECS`).
+- **Discovery TLS policy:** `SPANDA_DISCOVERY_REQUIRE_TLS`, `SPANDA_DISCOVERY_TLS_CA_BUNDLE`,
+  registry package `spanda-discovery-tls`; `tls` summary on discovery responses.
+- **Security audit prep:** `scripts/security_audit_prep.sh`, registry package
+  `spanda-security-audit`, [docs/security-audit-third-party.md](docs/security-audit-third-party.md).
+- **Desktop release runbook:** signed/notarized macOS CI (`.github/workflows/desktop-release.yml`),
+  env-gated Tauri updater (`TAURI_UPDATER_PUBKEY`, `SPANDA_DESKTOP_UPDATER_ACTIVE`),
+  [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md).
 - **SDK publish verify:** `scripts/verify_sdk_publish_ready.sh` for PyPI/npm readiness checks.
-- **Docs:** enterprise ops stable-hardening checklist, control-center API reference, field soak, security audit, and desktop release runbooks synced.
-- **Digital thread graph UI:** interactive SVG graph in `ControlCenterPanel` and embedded Control Center HTML — filter by capability/device, click-to-highlight neighbors.
-- **Stable hardening checklist:** [docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md) — Experimental → Stable promotion gates per pillar.
-- **Python SDK expansion:** executive scorecard, digital thread, reports export, OTA execute/status, config snapshots, audit mutations.
-- **Enterprise ops doc sync:** roadmap/feature-status/product-strategy updated for 60 RPCs, remote CLI, and publish-on-approve.
-- **Config publish-on-approve:** approving a config request applies the snapshot to runtime and persists device pool fields when `--config` is set.
-- **gRPC parity:** `ListConfigApprovals`, `SubmitConfigApproval`, `ApproveConfigApproval`, `RejectConfigApproval`, `ListComplianceEvidence` (60 RPCs total).
-- **Config approval queue:** `GET/POST /v1/config/approvals`, approve/reject subpaths; RBAC-gated publish workflow.
-- **Immutable compliance evidence:** append-only `.spanda/evidence-append.jsonl` on export; `GET /v1/compliance/evidence`.
-- **Alert channels:** PagerDuty and Teams webhook dispatch (`SPANDA_ALERT_PAGERDUTY_*`, `SPANDA_ALERT_TEAMS_URL`); registry packages `spanda-alert-slack`, `spanda-alert-pagerduty`, `spanda-alert-teams`.
-- **SRE MTBF and health trends:** `mtbf_hint_ms`, `health_trends`, and `readiness_trends` on `GET /v1/sre/summary`; critical alerts auto-open incidents.
-- **Control Center React parity:** drift, alerts, security/trust, OTA, compliance, audit, executive, and digital-thread tabs in `ControlCenterPanel`.
+- **Docs:** enterprise ops stable-hardening checklist, control-center API reference, field soak,
+  security audit, and desktop release runbooks synced.
+- **Digital thread graph UI:** interactive SVG graph in `ControlCenterPanel` and embedded Control
+  Center HTML — filter by capability/device, click-to-highlight neighbors.
+- **Stable hardening checklist:**
+  [docs/stable-hardening-enterprise-ops.md](docs/stable-hardening-enterprise-ops.md) — Experimental
+  → Stable promotion gates per pillar.
+- **Python SDK expansion:** executive scorecard, digital thread, reports export, OTA execute/status,
+  config snapshots, audit mutations.
+- **Enterprise ops doc sync:** roadmap/feature-status/product-strategy updated for 60 RPCs, remote
+  CLI, and publish-on-approve.
+- **Config publish-on-approve:** approving a config request applies the snapshot to runtime and
+  persists device pool fields when `--config` is set.
+- **gRPC parity:** `ListConfigApprovals`, `SubmitConfigApproval`, `ApproveConfigApproval`,
+  `RejectConfigApproval`, `ListComplianceEvidence` (60 RPCs total).
+- **Config approval queue:** `GET/POST /v1/config/approvals`, approve/reject subpaths; RBAC-gated
+  publish workflow.
+- **Immutable compliance evidence:** append-only `.spanda/evidence-append.jsonl` on export; `GET
+  /v1/compliance/evidence`.
+- **Alert channels:** PagerDuty and Teams webhook dispatch (`SPANDA_ALERT_PAGERDUTY_*`,
+  `SPANDA_ALERT_TEAMS_URL`); registry packages `spanda-alert-slack`, `spanda-alert-pagerduty`,
+  `spanda-alert-teams`.
+- **SRE MTBF and health trends:** `mtbf_hint_ms`, `health_trends`, and `readiness_trends` on `GET
+  /v1/sre/summary`; critical alerts auto-open incidents.
+- **Control Center React parity:** drift, alerts, security/trust, OTA, compliance, audit, executive,
+  and digital-thread tabs in `ControlCenterPanel`.
 - **Discovery hardening:** cellular `mmcli` probe; `SPANDA_DISCOVERY_NO_STUB` to skip transport stubs.
 - **SRE SLO rollup:** `SPANDA_SRE_SLO_PERCENT` and `slo` object on `GET /v1/sre/summary`.
 - **Incident workflow UI:** SRE tab in embedded Control Center and `@spanda/web` `ControlCenterPanel`.
 - **Python SDK incidents:** `list_incidents`, `create_incident`, `ack_incident`, `resolve_incident`.
 - **macOS codesign scaffold:** `scripts/sign_tauri_macos.sh` with optional CI secrets.
-- **Operational drift policy/safety rollup:** `DriftDimension::Policy` and `Safety` route firmware, attestation, and assurance findings into all seven `by_dimension` buckets.
-- **SRE incident workflow:** `IncidentStore` in `spanda-ops`; `GET/POST /v1/sre/incidents`, ack/resolve subpaths; HA persistence; gRPC `ListSreIncidents`/`CreateSreIncident`/`AckSreIncident`/`ResolveSreIncident`; MTTR hint on `/v1/sre/summary`.
-- **Discovery registry expansion:** `spanda-discovery-wifi`, `spanda-discovery-cellular`, `spanda-discovery-serial` packages; BLE/USB registry wrap; host probes via env overrides.
-- **Tauri signed release scaffold:** `build.rs` injects `TAURI_UPDATER_PUBKEY`; macOS CI uploads bundle artifacts.
-- **Multi-tenant isolation:** `SPANDA_TENANT_ID` scopes Control Center instances; API keys carry `tenant_id` (`SPANDA_API_KEYS_FILE` JSON); `GET /v1/tenant`; gRPC `GetTenant`; `403` on tenant mismatch for authenticated requests.
-- **HA persistence:** alerts and trace log hydrate/persist under `.spanda/` (`SPANDA_CONTROL_CENTER_STATE_DIR`); survives restarts for operator dashboards.
-- **Distributed trace backend:** registry package `spanda-otel-collector`; `SPANDA_OTEL_COLLECTOR_URL`; `GET /v1/observability/backend`; gRPC `GetObservabilityBackend`.
-- **Tauri auto-update scaffold:** `tauri-plugin-updater` in `@spanda/control-center-desktop` (inactive until signing pubkey is configured).
-- **Mutation audit trail:** append-only audit on successful REST/gRPC mutations via `spanda-audit`; `GET /v1/audit/mutations`; JSONL persist at `.spanda/control-center-mutations.jsonl` (`SPANDA_MUTATION_AUDIT_PATH`); gRPC `ListAuditMutations`.
-- **API versioning policy:** `GET /v1/version`; `X-Spanda-Api-Version: v1` header enforcement on REST and gRPC.
-- **Live OTA fleet execute:** `SPANDA_DEPLOY_AGENTS` registry path for `POST /v1/ota/execute`; `scripts/ota_fleet_execute_smoke.sh`.
-- **gRPC full REST parity (read paths):** `GetDeviceTree`, `GetDeviceReports`, `GetFailoverChains`, `ListSecrets`, `GetRbacMatrix`, `GetAnalyticsReadiness`, `ExportReports`, `GetObservabilityTraces`, `GetOtlpTraces`, `ExportOtlpTraces`, `ExportOtlpMetrics` RPCs (39 total).
-- **gRPC operator/provision parity:** `DiscoverDevices`, `RunDiscovery`, `ProvisionDevice`, `PlanOta`, `ExecuteOta`, `ListRobots`, `ListFleets`, `ListAlerts`, `ListConfigSnapshots`, `OperatorQuarantine`, `OperatorMissionApprove`, `ExportCompliance` RPCs (28 total); Bearer/`x-api-key` metadata for mutation RBAC.
-- **Registry discovery runtime:** `discovery_registry` wraps installed `spanda-discovery-mdns`, `spanda-discovery-ble`, and `spanda-discovery-usb` transports; `installed_packages` on discovery API responses.
-- **OTA fleet execute:** `POST /v1/ota/execute` runs remote rollout via deploy agents (`execute_remote_rollout`); dry-run parity with plan.
+- **Operational drift policy/safety rollup:** `DriftDimension::Policy` and `Safety` route firmware,
+  attestation, and assurance findings into all seven `by_dimension` buckets.
+- **SRE incident workflow:** `IncidentStore` in `spanda-ops`; `GET/POST /v1/sre/incidents`,
+  ack/resolve subpaths; HA persistence; gRPC
+  `ListSreIncidents`/`CreateSreIncident`/`AckSreIncident`/`ResolveSreIncident`; MTTR hint on
+  `/v1/sre/summary`.
+- **Discovery registry expansion:** `spanda-discovery-wifi`, `spanda-discovery-cellular`,
+  `spanda-discovery-serial` packages; BLE/USB registry wrap; host probes via env overrides.
+- **Tauri signed release scaffold:** `build.rs` injects `TAURI_UPDATER_PUBKEY`; macOS CI uploads
+  bundle artifacts.
+- **Multi-tenant isolation:** `SPANDA_TENANT_ID` scopes Control Center instances; API keys carry
+  `tenant_id` (`SPANDA_API_KEYS_FILE` JSON); `GET /v1/tenant`; gRPC `GetTenant`; `403` on tenant
+  mismatch for authenticated requests.
+- **HA persistence:** alerts and trace log hydrate/persist under `.spanda/`
+  (`SPANDA_CONTROL_CENTER_STATE_DIR`); survives restarts for operator dashboards.
+- **Distributed trace backend:** registry package `spanda-otel-collector`;
+  `SPANDA_OTEL_COLLECTOR_URL`; `GET /v1/observability/backend`; gRPC `GetObservabilityBackend`.
+- **Tauri auto-update scaffold:** `tauri-plugin-updater` in `@spanda/control-center-desktop`
+  (inactive until signing pubkey is configured).
+- **Mutation audit trail:** append-only audit on successful REST/gRPC mutations via `spanda-audit`;
+  `GET /v1/audit/mutations`; JSONL persist at `.spanda/control-center-mutations.jsonl`
+  (`SPANDA_MUTATION_AUDIT_PATH`); gRPC `ListAuditMutations`.
+- **API versioning policy:** `GET /v1/version`; `X-Spanda-Api-Version: v1` header enforcement on
+  REST and gRPC.
+- **Live OTA fleet execute:** `SPANDA_DEPLOY_AGENTS` registry path for `POST /v1/ota/execute`;
+  `scripts/ota_fleet_execute_smoke.sh`.
+- **gRPC full REST parity (read paths):** `GetDeviceTree`, `GetDeviceReports`, `GetFailoverChains`,
+  `ListSecrets`, `GetRbacMatrix`, `GetAnalyticsReadiness`, `ExportReports`,
+  `GetObservabilityTraces`, `GetOtlpTraces`, `ExportOtlpTraces`, `ExportOtlpMetrics` RPCs (39
+  total).
+- **gRPC operator/provision parity:** `DiscoverDevices`, `RunDiscovery`, `ProvisionDevice`,
+  `PlanOta`, `ExecuteOta`, `ListRobots`, `ListFleets`, `ListAlerts`, `ListConfigSnapshots`,
+  `OperatorQuarantine`, `OperatorMissionApprove`, `ExportCompliance` RPCs (28 total);
+  Bearer/`x-api-key` metadata for mutation RBAC.
+- **Registry discovery runtime:** `discovery_registry` wraps installed `spanda-discovery-mdns`,
+  `spanda-discovery-ble`, and `spanda-discovery-usb` transports; `installed_packages` on discovery
+  API responses.
+- **OTA fleet execute:** `POST /v1/ota/execute` runs remote rollout via deploy agents
+  (`execute_remote_rollout`); dry-run parity with plan.
 
-- **gRPC E2/E4 expansion:** `GetHealthSummary`, `GetAssuranceSummary`, `GetDiagnosisSummary`, `GetExecutiveScorecard`, `QueryDigitalThread`, `GetOtaStatus`, `GetOtlpMetrics` RPCs (16 total).
-- **OTLP metrics (Control Center):** `spanda-ops::otlp_metrics`, `GET /v1/observability/otlp/metrics`, `POST /v1/observability/otlp/export-metrics`; enterprise ops smoke probe.
+- **gRPC E2/E4 expansion:** `GetHealthSummary`, `GetAssuranceSummary`, `GetDiagnosisSummary`,
+  `GetExecutiveScorecard`, `QueryDigitalThread`, `GetOtaStatus`, `GetOtlpMetrics` RPCs (16 total).
+- **OTLP metrics (Control Center):** `spanda-ops::otlp_metrics`, `GET
+  /v1/observability/otlp/metrics`, `POST /v1/observability/otlp/export-metrics`; enterprise ops
+  smoke probe.
 
-- **gRPC expansion:** `ListDevices`, `ListFleetAgents`, `EvaluateReadiness`, `GetSreSummary`, `GetTrustPackage`, `GetOpenApi` RPCs on tonic `ControlCenter`; REST parity helpers in `handlers`; live probe `grpc_live_probe.rs`; `scripts/enterprise_ops_smoke.sh` gRPC section.
-- **Tauri CI:** `control-center-desktop` job (Linux compile check); `control-center-desktop-bundle` job (`TAURI_BUILD=1` on macOS main pushes).
-- **Fleet agent interpreter recovery (Stable):** `scripts/fleet_agent_recovery_smoke.sh`; wired into `scripts/fleet_field_validation.sh`; mesh integration test coverage.
+- **gRPC expansion:** `ListDevices`, `ListFleetAgents`, `EvaluateReadiness`, `GetSreSummary`,
+  `GetTrustPackage`, `GetOpenApi` RPCs on tonic `ControlCenter`; REST parity helpers in `handlers`;
+  live probe `grpc_live_probe.rs`; `scripts/enterprise_ops_smoke.sh` gRPC section.
+- **Tauri CI:** `control-center-desktop` job (Linux compile check); `control-center-desktop-bundle`
+  job (`TAURI_BUILD=1` on macOS main pushes).
+- **Fleet agent interpreter recovery (Stable):** `scripts/fleet_agent_recovery_smoke.sh`; wired into
+  `scripts/fleet_field_validation.sh`; mesh integration test coverage.
 
-- **Self-healing runtime (Stable):** auto-trigger recovery during `run`/`sim` via `try_invoke_recovery_for_event` and `issue_to_recovery_issue`; approval polling every trigger maintenance tick with deferred retry; fleet mesh failure events (`fleet_mesh_recovery_failed`); mission health-critical recovery hook; tests `recovery_auto_triggers_during_run_on_health_fault`; extended `scripts/self_healing_smoke.sh`.
-- **Enterprise ops hardening:** native tonic gRPC (`--grpc-bind`, `ControlCenter` service with Health/GetDashboard/DetectDrift); full operational drift (`detect_operational_drift_full` with program + agent findings, `GET /v1/drift`); Tauri desktop build script (`scripts/build_control_center_desktop.sh`, `TAURI_BUILD=1` for installers); gRPC test `crates/spanda-api/tests/grpc_tests.rs`.
-- **Field validation:** `scripts/fleet_field_validation.sh` — multi-process fleet agents, mesh orchestrate, recovery/continuity mesh tests; wired into `scripts/showcase_smoke.sh`; golden-path robot names aligned (ScoutA/ScoutB).
+- **Self-healing runtime (Stable):** auto-trigger recovery during `run`/`sim` via
+  `try_invoke_recovery_for_event` and `issue_to_recovery_issue`; approval polling every trigger
+  maintenance tick with deferred retry; fleet mesh failure events (`fleet_mesh_recovery_failed`);
+  mission health-critical recovery hook; tests `recovery_auto_triggers_during_run_on_health_fault`;
+  extended `scripts/self_healing_smoke.sh`.
+- **Enterprise ops hardening:** native tonic gRPC (`--grpc-bind`, `ControlCenter` service with
+  Health/GetDashboard/DetectDrift); full operational drift (`detect_operational_drift_full` with
+  program + agent findings, `GET /v1/drift`); Tauri desktop build script
+  (`scripts/build_control_center_desktop.sh`, `TAURI_BUILD=1` for installers); gRPC test
+  `crates/spanda-api/tests/grpc_tests.rs`.
+- **Field validation:** `scripts/fleet_field_validation.sh` — multi-process fleet agents, mesh
+  orchestrate, recovery/continuity mesh tests; wired into `scripts/showcase_smoke.sh`; golden-path
+  robot names aligned (ScoutA/ScoutB).
 
-- **Policy engine readiness integration:** `spanda readiness --policy <name>` merges operational policy evaluation into readiness scoring (OperationalPolicy factor, violation issues, mission_ready gating); `spanda deploy gate --operational-policy <name>` adds an operational policy deployment gate; `evaluate_policy_with_options` shares readiness options with `min_readiness_score` rules; `scripts/policy_smoke.sh` extended; docs [policy-engine.md](docs/policy-engine.md), [readiness.md](docs/readiness.md), [deployment-gates.md](docs/deployment-gates.md), [test-plan.md](docs/test-plan.md), [roadmap.md](docs/roadmap.md), [README.md](README.md).
+- **Policy engine readiness integration:** `spanda readiness --policy <name>` merges operational
+  policy evaluation into readiness scoring (OperationalPolicy factor, violation issues,
+  mission_ready gating); `spanda deploy gate --operational-policy <name>` adds an operational policy
+  deployment gate; `evaluate_policy_with_options` shares readiness options with
+  `min_readiness_score` rules; `scripts/policy_smoke.sh` extended; docs
+  [policy-engine.md](docs/policy-engine.md), [readiness.md](docs/readiness.md),
+  [deployment-gates.md](docs/deployment-gates.md), [test-plan.md](docs/test-plan.md),
+  [roadmap.md](docs/roadmap.md), [README.md](README.md).
 
-- **Enterprise operations roadmap expansion:** [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — platform context (§0), 20-pillar classification with Control Center module map, Device Pool lifecycle, discovery transport matrix (WiFi/LTE/5G/DNS-SD/Serial/Modbus RTU), Package Trust scoring criteria, SDK surfaces (CLI/REST/gRPC/WebSocket/Python), Compliance/APIs/Observability specs, lifecycle coverage map, and stable-hardening matrix; [docs/roadmap.md](docs/roadmap.md) — Complete Autonomous Systems Platform table, enterprise integration spine diagram, deliverable index; [docs/feature-status.md](docs/feature-status.md) — 20-pillar enterprise operations matrix; [docs/platform-overview.md](docs/platform-overview.md) — Enterprise Operations layer.
+- **Enterprise operations roadmap expansion:**
+  [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — platform context
+  (§0), 20-pillar classification with Control Center module map, Device Pool lifecycle, discovery
+  transport matrix (WiFi/LTE/5G/DNS-SD/Serial/Modbus RTU), Package Trust scoring criteria, SDK
+  surfaces (CLI/REST/gRPC/WebSocket/Python), Compliance/APIs/Observability specs, lifecycle coverage
+  map, and stable-hardening matrix; [docs/roadmap.md](docs/roadmap.md) — Complete Autonomous Systems
+  Platform table, enterprise integration spine diagram, deliverable index;
+  [docs/feature-status.md](docs/feature-status.md) — 20-pillar enterprise operations matrix;
+  [docs/platform-overview.md](docs/platform-overview.md) — Enterprise Operations layer.
 
-- **Device Pool & Provisioning (enterprise operations):** extended `spanda-config` with `Active` lifecycle state, health/calibration readiness gates (`device_health`), quarantine policy (`device_quarantine`), pool operations (`assign`/`unassign`/`quarantine`/`retire`/`trust`), identity anomaly detection, host-backed multi-transport discovery (`discovery_live` for mDNS/BLE/USB/CAN/MQTT/ROS2 with stub fallback), discovery pool ingestion (`ingest_discovery_matches`), device report bundle, config persistence (`device_config_persist`), failover chains (`device_failover`) integrated with recovery via `enrich_recovery_plan_with_failover`; CLI `spanda device provision|assign|unassign|quarantine|trust|retire` with `--write`; Control Center API `GET /v1/devices/{id}`, `POST /v1/devices/discover`, per-device provision/assign/quarantine/trust, `GET /v1/robots|fleets|device-tree|failover/chains|device-reports`, `POST /v1/readiness/run`; expanded `@spanda/web` Control Center panel with trust/provision/assign/quarantine actions and robot selector; registry package `spanda-discovery-mdns`; docs [device-pool.md](docs/device-pool.md), [device-provisioning.md](docs/device-provisioning.md), [device-discovery.md](docs/device-discovery.md), [device-quarantine.md](docs/device-quarantine.md), [calibration.md](docs/calibration.md). OTLP/JSON trace export to Jaeger (`GET /v1/observability/otlp/traces`, `POST /v1/observability/otlp/export`, `SPANDA_OTLP_TRACES_ENDPOINT`, `SPANDA_OTLP_TRACE_AUTO_PUSH`); WebSocket live telemetry stream (`WS /v1/stream/telemetry`); Python `TelemetryStream` (`pip install spanda-sdk[stream]`); smoke probes `scripts/mock_otlp_traces_collector.py`, `scripts/ws_telemetry_probe.py`.
-- **Control Center desktop (Tauri):** `@spanda/control-center-desktop` wraps `ControlCenterPanel` in a Tauri v2 shell; `npm run control-center:desktop:dev`; compile smoke `scripts/control_center_desktop_smoke.sh`.
-- **Docs:** roadmap alignment — E1–E4 reframed as shipped **Experimental** with stable-hardening matrix; enterprise-operations discovery/trust/snapshots/OTA tables synced to codebase; feature-status device pool depth.
-- **Executive PDF reports:** `GET /v1/reports/export?format=pdf` returns base64-encoded PDF via `spanda-ops::render_text_pdf`.
-- **Phase E4 — Govern and trace:** digital thread query (`query_digital_thread`, `GET /v1/digital-thread/query`); compliance accreditation export (`GET|POST /v1/compliance/export`); executive scorecard (`GET /v1/executive/scorecard`); readiness analytics (`GET /v1/analytics/readiness`); executive report composer (`GET /v1/reports/export`); Control Center `--program` flag; Audit, Digital Thread, and Executive UI tabs; extended `scripts/enterprise_ops_smoke.sh`.
-- **Phase E3 — Deploy and integrate:** operational drift API (`detect_operational_drift`, `GET /v1/drift?baseline_id=`); OTA rollout planning (`POST /v1/ota/plan` with canary/staged/blue_green, `GET /v1/ota/status`); package trust API (`GET /v1/trust/package`); SRE summary and observability trace log (`GET /v1/sre/summary`, `GET /v1/observability/traces`); operator workflows (`POST /v1/operator/quarantine`, `POST /v1/operator/mission/approve`); gRPC-compatible JSON gateway (`POST /v1/rpc`); OpenAPI 3.1 spec (`GET /v1/openapi.json`); `X-Correlation-ID` request tracing; Control Center UI tabs for Drift, OTA, Security, SRE, Operator; Python SDK (`packages/sdk-python`); `RolloutStrategy::BlueGreen` in `spanda-ota`; extended `scripts/enterprise_ops_smoke.sh`.
-- **Phase E2 — Provision and observe:** provisioning workflow (`run_provision_workflow`, `POST /v1/provision`) with readiness-failure alerting and quarantine; configuration snapshots (`.spanda/config-snapshots/`, `GET|POST /v1/config/snapshots`); discovery transport contract (`DeviceDiscoveryTransport`, subnet + mock mDNS); `GET /v1/health|assurance|diagnosis/summary`; Control Center UI tabs for Health, Assurance, Diagnosis, Provision, Config; Slack webhook payload formatting in `spanda-ops`; registry stub `spanda-discovery-mdns`; extended `scripts/enterprise_ops_smoke.sh`.
-- **Phase E1 — Control Center (enterprise operations):** new `spanda-api` crate (REST `/v1/*`, embedded Control Center HTML UI); `spanda control-center serve [--bind] [--config]`; `spanda-ops` alerting core (webhook, email dry-run, log channel); Device Pool lifecycle in `spanda-config` (`DeviceLifecycleState`, `DevicePoolEntry`, `pool_summary`, `set_lifecycle`); RBAC v1 in `spanda-security` (`Role`, `ApiKeyStore`, `RbacAction`, `SPANDA_API_KEY`); `ManagedSecretVault` secret store contract with rotation metadata; Control Center view in `@spanda/web` (`ControlCenterPanel`); `scripts/enterprise_ops_smoke.sh`.
-- **Enterprise operations roadmap:** [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — 20 platform pillars for production enterprise deployments (Control Center, Device Pool, Device Discovery, Provisioning, Configuration Management, RBAC, Secret Management, Telemetry, Alerting, Configuration Drift, OTA & Rollback, Package Trust, SDKs, Operator Workflows, SRE, Reporting, Compliance, APIs, Observability, Digital Thread); core vs package ownership; React/TypeScript UI + Rust `spanda-api` backend architecture; integration map with Readiness, Assurance, Diagnosis, Recovery, Trust, Health, Device Registry, Configuration, Traceability, Audit, Security, Packages; phased implementation (E1–E4); risks and mitigation; priority horizons NOW/NEXT/LATER.
-- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Enterprise Operations section; [docs/feature-status.md](docs/feature-status.md) planned matrix; [docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md) cross-reference; [docs/README.md](docs/README.md) index entry.
-- **Cascading TOML configuration:** new `spanda-config` crate with `SpandaManifest`, `ConfigResolver`, `ResolvedSystemConfig`, `DeviceTree`, `LogicalPhysicalMap`, and `ConfigValidationReport`; root `spanda.toml` `[project]` / `[config]` / `[extends]` / `[merge]` sections; fragment files (`spanda.devices.toml`, `spanda.providers.toml`, etc.); JSON config compatibility; CLI `spanda config resolve|validate|graph|diff|report`, `spanda device-tree inspect|graph`, `spanda map verify`; `spanda readiness --config`; docs [configuration.md](docs/configuration.md), [cascading-config.md](docs/cascading-config.md), [device-tree.md](docs/device-tree.md), [config-validation.md](docs/config-validation.md); updated [spanda-toml.md](docs/spanda-toml.md).
-- **Configuration runtime integration:** `ResolvedSystemConfig` wired into `run`/`sim`/`fleet run`/`verify`/`readiness`/`assure`/`diagnose`/`heal`/`recover`/`replay`; shared `resolve_for_source`; lockfile- and device-tree-aligned provider bootstrap; readiness policy and per-robot `[health]` fault injection from config; assurance/mission/recovery thresholds from `[assurance]`/`[mission]`/`[recovery]`; TypeScript CLI delegation with `cargo run` and lightweight fallback for `config validate|resolve`.
-- **Device identity mapping:** `[[devices]]` registry with network/bus identity fields (`ip`, `mac`, `serial`, `endpoint`, `protocol`, `can_id`, `trust_level`, …); `DeviceRegistry` on `ResolvedSystemConfig`; duplicate IP/MAC/serial validation; redundant failover rules; CLI `spanda device discover|inspect`, `spanda network scan`, `spanda config report --network`; readiness connectivity issues from device identity gaps; assurance/diagnosis traceability when `--config` is set.
-- **Configuration drift detection:** `detect_config_drift` / `ConfigDriftReport` in `spanda-config`; CLI `spanda drift` and `spanda config drift` with `--baseline` and `--agent`; agent `/v1/status` fields (`program_hash`, `hardware_profile`, `firmware_version`, `packages`); `spanda readiness --baseline` and `spanda readiness --agent` for config and attestation drift gates; docs [drift-detection.md](docs/drift-detection.md).
-- **Dependency graphs:** new `spanda-graph` crate; CLI `spanda graph <file.sd>` with `--format json|mermaid|dot|text`; composes capability traceability and resolved config; docs [dependency-graphs.md](docs/dependency-graphs.md).
-- **Deployment gates:** `evaluate_deployment_gates` in `spanda-readiness`; CLI `spanda deploy gate` with `--policy default|production`; docs [deployment-gates.md](docs/deployment-gates.md).
-- **Package trust:** `evaluate_package_trust` in `spanda-package`; CLI `spanda trust <package>` with `--version`, `--project`, `--json`; package trust gate in deployment gates when `--config` declares packages; docs [package-trust.md](docs/package-trust.md).
-- **Composite program trust:** new `spanda-trust` crate with `evaluate_composite_trust`; CLI `spanda trust <file.sd>` with `--json` and `--format markdown`; weighted categories (package, device, firmware, configuration, identity, safety); secure-boot import detection (`trust.jetson` / `trust.pi`); `scripts/trust_program_smoke.sh`; docs [trust-framework.md](docs/trust-framework.md).
-- **Secure-boot contract integration:** `spanda-tamper::secure_boot` scores `trust.jetson` / `trust.pi` in `tamper-check` and `integrity`; optional `SPANDA_ATTESTATION_ENDPOINT` live attestation; optional `SPANDA_TPM_BACKEND` backends including `vendor` SDK adapters, tpm2-tools PCR quote with `tpm2_checkquote` verification, remote AK cert chain validation (`SPANDA_ATTESTATION_TRUST_STORE`), and `SPANDA_TPM2_PCR0_EXPECT` policy; bundled trust registry for offline demos; deploy agent `/v1/status` attestation fields; drift detection for attestation posture; `examples/showcase/secure_boot/`; `scripts/secure_boot_smoke.sh`, `scripts/attestation_smoke.sh`, `scripts/gaps_smoke.sh`, `scripts/lib/registry_env.sh`; docs [hardware-attestation.md](docs/hardware-attestation.md).
-- **Composite trust in gates and scorecard:** `spanda deploy gate` adds `composite_trust` and `secure_boot` gates; scorecard security pillar blends threat risk, composite trust, and secure-boot coverage; `spanda explain` includes `composite_trust` and `secure_boot` sections; `spanda demo maturity` runs program trust.
-- **Explain polish:** `spanda explain <file.sd>` supports `--config` and `--baseline` for configuration validation, deployment gates preview, package trust, and drift sections; docs [explainability.md](docs/explainability.md).
-- **Platform maturity demo:** `spanda demo maturity` runs graph, explain, trust, and deploy gate on `examples/showcase/readiness/rover.sd`; `scripts/maturity_smoke.sh` (wired into `scripts/showcase_smoke.sh`).
-- **Threat modeling:** new `spanda-threat` crate with `analyze_threat_model`; CLI `spanda threat-model <file.sd> [--json]`; docs [threat-modeling.md](docs/threat-modeling.md).
-- **Mission diff:** new `spanda-diff` crate with `diff_programs`; CLI `spanda diff <baseline.sd> <candidate.sd> [--json]`; `scripts/diff_smoke.sh`; docs [mission-diff.md](docs/mission-diff.md).
-- **Scorecard:** new `spanda-score` crate with `evaluate_scorecard`; CLI `spanda score <file.sd> [--json] [--format markdown]`; docs [scorecards.md](docs/scorecards.md).
-- **Policy engine (verify-time):** `policy { }` declarations in AST/parser; new `spanda-policy` crate with `evaluate_policy`; CLI `spanda verify --policy <Name> [--json]`; showcase `examples/showcase/policy/warehouse.sd`; `scripts/policy_smoke.sh`; docs [policy-engine.md](docs/policy-engine.md).
-- **Chaos engineering:** new `spanda-chaos` crate with `run_chaos_experiment`; CLI `spanda chaos <file.sd> [--inject gps-failure,...] [--json]`; `scripts/chaos_smoke.sh`; docs [chaos-engineering.md](docs/chaos-engineering.md).
-- **Readiness trends:** history store in `spanda-readiness` (`record_readiness_snapshot`, `analyze_readiness_trends`); CLI `spanda readiness --record` and `spanda readiness trends <file.sd> [--forecast 7d] [--json]`; `scripts/readiness_trends_smoke.sh`; docs [readiness-trends.md](docs/readiness-trends.md).
-- **Mission resource estimation:** new `spanda-estimate` crate with `estimate_mission`; CLI `spanda estimate <file.sd> [--target <profile>] [--json]`; `scripts/estimate_smoke.sh`; docs [resource-estimation.md](docs/resource-estimation.md).
-- **Compliance profiles:** new `spanda-compliance` crate with built-in industry templates; CLI `spanda verify --profile <name>` and `spanda readiness --profile <name>`; `spanda compliance report <file.sd> --profile <name>` accreditation export bundles with evidence checklist and audit export ID; defense/medical secure-boot contract requirements; defense showcase at `examples/showcase/compliance/defense_rover.sd`; `scripts/compliance_smoke.sh`; docs [compliance-profiles.md](docs/compliance-profiles.md).
-- **Architecture decision records:** new `spanda-adr` crate with `generate_adrs`; CLI `spanda adr <file.sd> [--json] [--out <dir>]`; `scripts/adr_smoke.sh`; docs [architecture-decision-records.md](docs/architecture-decision-records.md).
-- **Tamper / integrity (verify-time):** new `spanda-tamper` crate with `generate_tamper_check`; CLI `spanda tamper-check <file.sd> [--json]`; `scripts/tamper_smoke.sh`; docs [tamper-detection.md](docs/tamper-detection.md).
-- **Runtime tamper (trace analysis):** `generate_runtime_tamper_check` in `spanda-tamper`; `spanda tamper-check <file.trace> [--runtime]`; trust showcase `examples/showcase/runtime_intrusion/`; `scripts/trust_showcase_smoke.sh`.
-- **Tamper diagnosis:** `diagnose_tamper_trace` in `spanda-tamper`; CLI `spanda diagnose tamper <file.trace> [--json]`; `scripts/tamper_diagnose_smoke.sh`.
-- **Fleet tamper correlation:** `correlate_fleet_tamper` in `spanda-tamper`; CLI `spanda tamper-check --fleet <manifest.json>`; showcase `examples/showcase/fleet_tamper/`; `scripts/fleet_tamper_smoke.sh`.
-- **Security assurance rollup:** `generate_security_assurance` in `spanda-tamper`; CLI `spanda security assurance <file.sd>`; `scripts/security_assurance_smoke.sh`.
-- **Tamper policy runtime:** `tamper_policy` blocks in `.sd` programs; `spanda-tamper::policy` matching; runtime dispatch via recovery actions; showcase `examples/showcase/tamper_policy/`; `scripts/tamper_policy_smoke.sh`.
-- **Live fleet mesh tamper:** `POST /v1/fleet/tamper/ingest`, `GET /v1/fleet/tamper`; CLI `spanda tamper-check --mesh-url <url>`; runtime ingest via `SPANDA_FLEET_MESH_URL`; `scripts/fleet_mesh_tamper_smoke.sh`.
-- **Spoofing ML backend:** optional `SPANDA_SPOOFING_ML_ENDPOINT` HTTP merge plus `SPANDA_SPOOFING_ML_BACKEND` stub backends (`mock`, `file`, `script`) and `SPANDA_SPOOFING_ML_MIN_CONFIDENCE` filtering for trace spoof-check; global `SPANDA_SPOOFING_MIN_CONFIDENCE` trace filter and operator confirmation gates for High/Critical alerts.
-- **Secure boot package stubs:** `spanda-trust-jetson`, `spanda-trust-pi` attestation contracts in hosted registry index.
-- **Compliance template hardening:** accreditation notice on profiles; defense/medical require `tamper_policy`; Critical tamper actions require operator approval.
-- **Platform maturity gap closure:** `spanda demo gaps` walkthrough; `secure_boot_status_line` in explain and deploy gates; attestation and compliance smokes extended for vendor TPM and AK chain validation.
-- **Trust showcase demos:** `examples/showcase/package_tampering/`, `mission_tampering/`, `runtime_intrusion/` with tamper and integrity workflows; `spanda demo trust` one-command walkthrough; bundled registry slice (trust + gps/fusion packages) in CLI crate via `scripts/sync_bundled_registry.sh`; CLI defaults `SPANDA_REGISTRY_URL` to bundled registry when unset; `scripts/bundled_trust_smoke.sh`.
-- **Integrity verification (verify-time):** `generate_integrity_report` in `spanda-tamper`; CLI `spanda integrity <file.sd> [--baseline <file.sd>] [--agent <Robot@Hardware>] [--json]`; `scripts/integrity_smoke.sh`; docs [integrity-verification.md](docs/integrity-verification.md).
-- **Decision trace explainability:** `spanda explain decision <mission.trace> [--json]` with evidence, safety checks, and rejected alternatives; `scripts/decision_explain_smoke.sh`.
-- **Runtime policy enforcement:** `spanda-policy` runtime monitor with `max_speed` and `operation_hours` gates; `spanda run|sim --enforce-policy <name>`; `scripts/policy_runtime_smoke.sh`.
-- **AI-assisted development (mock-first):** new `spanda-generate` crate with template scaffolds and `suggest_program`; CLI `spanda generate mission|robot|health-policy` and `spanda suggest <file.sd>`; optional `--backend llm` via `SPANDA_LLM_ENDPOINT`; `scripts/generate_smoke.sh`; docs [ai-assisted-development.md](docs/ai-assisted-development.md).
-- **Spoofing detection:** new `spanda-spoofing` crate with program coverage and trace plausibility analysis; CLI `spanda spoof-check <file.sd|file.trace> [--json]`; showcase `examples/showcase/gps_spoofing/`; `spanda demo spoof` focused walkthrough; `scripts/spoof_smoke.sh`; package backends in `spanda-gps` and `spanda-fusion`; `scripts/package_spoofing_smoke.sh`; docs [spoofing-detection.md](docs/spoofing-detection.md).
-- **Runtime fault detection:** new `spanda-runtime-faults` crate with `RuntimeFault`, `CrashEvent`, `RebootEvent`, `MemoryLeakEvent`, `OOMEvent`, `WatchdogTimeout`, `DeadlockEvent`, `RestartLoop`, `ResourcePressure`, `HeartbeatStatus`, `ProcessHealth`, `RuntimeHealth`, `FaultEvidence`, and `FaultTimeline` types; AST declarations (`heartbeat`, `memory_watch`, `resource_watch`, `restart_policy`, `on runtime crash` triggers); CLI `spanda fault scan|report`, `spanda runtime health|diagnose`, and `spanda replay --show-faults`; readiness/assurance/diagnosis/recovery/replay integration; showcase examples under `examples/showcase/runtime_faults/`; docs [runtime-fault-detection.md](docs/runtime-fault-detection.md), [crash-detection.md](docs/crash-detection.md), [reboot-detection.md](docs/reboot-detection.md), [memory-leak-detection.md](docs/memory-leak-detection.md), [runtime-health.md](docs/runtime-health.md). `spanda-contract`, `spanda-explain`, `spanda-decision` crates; CLI `spanda contract verify`, `spanda explain`, `spanda audit decisions`, `spanda safety-coverage`, `spanda recovery-coverage`; `spanda demo differentiation`; `examples/showcase/differentiation/warehouse.sd`; `scripts/differentiation_smoke.sh` (wired into `showcase_smoke.sh`).
-- **Philosophy & pronunciation doc sync:** README pronunciation guide (*SPUN-duh* /ˈspʌndə/) and expanded Sanskrit etymology propagated to [overview/philosophy.md](docs/overview/philosophy.md), [vision.md](docs/vision.md), [product-strategy.md](docs/product-strategy.md), [website-content.md](docs/website-content.md), [getting-started.md](docs/getting-started.md), [spanda-for-dummies](docs/spanda-for-dummies/), [tutorials index](docs/tutorials/README.md) (audience paths), [docs/README.md](docs/README.md), and mdBook [introduction](docs-site/src/introduction.md).
-- **Differentiation roadmap:** [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md) — 15 signature platform areas (mission contracts, explainability, decision audit trail, safety/recovery coverage, what-if, risk, trust graph, scorecards, digital mission twin, certification packs, mission time travel, human/robot teaming, autonomous governance); priority horizons NOW/NEXT/LATER; architecture impact; package vs core ownership; integration mapping; documentation, demo, and adoption plans.
-- **Signature capabilities:** Safety-Typed AI, Mission Contracts, Readiness Engine, Continuity & Takeover, Trust Framework, Explainability & Audit Trail — documented in [product-strategy.md](docs/product-strategy.md) and [README.md](README.md).
-- **Differentiation topic guides:** [mission-contracts.md](docs/mission-contracts.md), [decision-audit-trail.md](docs/decision-audit-trail.md), [safety-coverage.md](docs/safety-coverage.md), [recovery-coverage.md](docs/recovery-coverage.md), [what-if-analysis.md](docs/what-if-analysis.md), [mission-risk-analysis.md](docs/mission-risk-analysis.md), [digital-mission-twin.md](docs/digital-mission-twin.md), [certification-packs.md](docs/certification-packs.md), [mission-time-travel.md](docs/mission-time-travel.md), [human-robot-teaming.md](docs/human-robot-teaming.md).
-- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Differentiation section; [docs/feature-status.md](docs/feature-status.md) planned matrix; [docs/README.md](docs/README.md) index entries.
-- **Mission continuity framework:** `spanda-assurance` continuity module with `MissionContinuityManager`, `MissionDelegationManager`, `TakeoverCoordinator`, `SuccessionPlanner`, `MissionCheckpointManager`, `MissionStateTransferManager`, `MissionRecoveryPlanner`, and `ContinuationDecisionEngine`; takeover modes (resume, restart, partial restart, shadow/hot/cold/human); state transfer models; successor ranking with trust/readiness gates.
-- **Continuity CLI:** `spanda continuity`, `spanda takeover`, `spanda delegate`, `spanda succession` with `--failed`, `--progress`, `--trigger`, `--scope`, and report formats.
-- **`continuity_policy` syntax:** parser, AST, and takeover mode inference from declared actions; TypeScript parser parity.
-- **`spanda demo continuity`:** showcase demo and `scripts/continuity_smoke.sh` (wired into `showcase_smoke.sh`).
-- **Fleet runtime takeover dispatch:** interpreter `execute_continuity_on_program`, fleet agent `/v1/continuity/execute`, mesh `POST /v1/fleet/continuity`, `fleet_takeover` peer topic.
-- **Continuity diagnostics:** `collect_continuity_diagnostics` in `spanda-assurance` and `src/continuity-diagnostics.ts`; merged into `spanda check --readiness-json` and LSP readiness diagnostics.
+- **Device Pool & Provisioning (enterprise operations):** extended `spanda-config` with `Active`
+  lifecycle state, health/calibration readiness gates (`device_health`), quarantine policy
+  (`device_quarantine`), pool operations (`assign`/`unassign`/`quarantine`/`retire`/`trust`),
+  identity anomaly detection, host-backed multi-transport discovery (`discovery_live` for
+  mDNS/BLE/USB/CAN/MQTT/ROS2 with stub fallback), discovery pool ingestion
+  (`ingest_discovery_matches`), device report bundle, config persistence (`device_config_persist`),
+  failover chains (`device_failover`) integrated with recovery via
+  `enrich_recovery_plan_with_failover`; CLI `spanda device
+  provision|assign|unassign|quarantine|trust|retire` with `--write`; Control Center API `GET
+  /v1/devices/{id}`, `POST /v1/devices/discover`, per-device provision/assign/quarantine/trust, `GET
+  /v1/robots|fleets|device-tree|failover/chains|device-reports`, `POST /v1/readiness/run`; expanded
+  `@spanda/web` Control Center panel with trust/provision/assign/quarantine actions and robot
+  selector; registry package `spanda-discovery-mdns`; docs [device-pool.md](docs/device-pool.md),
+  [device-provisioning.md](docs/device-provisioning.md),
+  [device-discovery.md](docs/device-discovery.md),
+  [device-quarantine.md](docs/device-quarantine.md), [calibration.md](docs/calibration.md).
+  OTLP/JSON trace export to Jaeger (`GET /v1/observability/otlp/traces`, `POST
+  /v1/observability/otlp/export`, `SPANDA_OTLP_TRACES_ENDPOINT`, `SPANDA_OTLP_TRACE_AUTO_PUSH`);
+  WebSocket live telemetry stream (`WS /v1/stream/telemetry`); Python `TelemetryStream` (`pip
+  install spanda-sdk[stream]`); smoke probes `scripts/mock_otlp_traces_collector.py`,
+  `scripts/ws_telemetry_probe.py`.
+- **Control Center desktop (Tauri):** `@spanda/control-center-desktop` wraps `ControlCenterPanel` in
+  a Tauri v2 shell; `npm run control-center:desktop:dev`; compile smoke
+  `scripts/control_center_desktop_smoke.sh`.
+- **Docs:** roadmap alignment — E1–E4 reframed as shipped **Experimental** with stable-hardening
+  matrix; enterprise-operations discovery/trust/snapshots/OTA tables synced to codebase;
+  feature-status device pool depth.
+- **Executive PDF reports:** `GET /v1/reports/export?format=pdf` returns base64-encoded PDF via
+  `spanda-ops::render_text_pdf`.
+- **Phase E4 — Govern and trace:** digital thread query (`query_digital_thread`, `GET
+  /v1/digital-thread/query`); compliance accreditation export (`GET|POST /v1/compliance/export`);
+  executive scorecard (`GET /v1/executive/scorecard`); readiness analytics (`GET
+  /v1/analytics/readiness`); executive report composer (`GET /v1/reports/export`); Control Center
+  `--program` flag; Audit, Digital Thread, and Executive UI tabs; extended
+  `scripts/enterprise_ops_smoke.sh`.
+- **Phase E3 — Deploy and integrate:** operational drift API (`detect_operational_drift`, `GET
+  /v1/drift?baseline_id=`); OTA rollout planning (`POST /v1/ota/plan` with canary/staged/blue_green,
+  `GET /v1/ota/status`); package trust API (`GET /v1/trust/package`); SRE summary and observability
+  trace log (`GET /v1/sre/summary`, `GET /v1/observability/traces`); operator workflows (`POST
+  /v1/operator/quarantine`, `POST /v1/operator/mission/approve`); gRPC-compatible JSON gateway
+  (`POST /v1/rpc`); OpenAPI 3.1 spec (`GET /v1/openapi.json`); `X-Correlation-ID` request tracing;
+  Control Center UI tabs for Drift, OTA, Security, SRE, Operator; Python SDK
+  (`packages/sdk-python`); `RolloutStrategy::BlueGreen` in `spanda-ota`; extended
+  `scripts/enterprise_ops_smoke.sh`.
+- **Phase E2 — Provision and observe:** provisioning workflow (`run_provision_workflow`, `POST
+  /v1/provision`) with readiness-failure alerting and quarantine; configuration snapshots
+  (`.spanda/config-snapshots/`, `GET|POST /v1/config/snapshots`); discovery transport contract
+  (`DeviceDiscoveryTransport`, subnet + mock mDNS); `GET /v1/health|assurance|diagnosis/summary`;
+  Control Center UI tabs for Health, Assurance, Diagnosis, Provision, Config; Slack webhook payload
+  formatting in `spanda-ops`; registry stub `spanda-discovery-mdns`; extended
+  `scripts/enterprise_ops_smoke.sh`.
+- **Phase E1 — Control Center (enterprise operations):** new `spanda-api` crate (REST `/v1/*`,
+  embedded Control Center HTML UI); `spanda control-center serve [--bind] [--config]`; `spanda-ops`
+  alerting core (webhook, email dry-run, log channel); Device Pool lifecycle in `spanda-config`
+  (`DeviceLifecycleState`, `DevicePoolEntry`, `pool_summary`, `set_lifecycle`); RBAC v1 in
+  `spanda-security` (`Role`, `ApiKeyStore`, `RbacAction`, `SPANDA_API_KEY`); `ManagedSecretVault`
+  secret store contract with rotation metadata; Control Center view in `@spanda/web`
+  (`ControlCenterPanel`); `scripts/enterprise_ops_smoke.sh`.
+- **Enterprise operations roadmap:**
+  [docs/enterprise-operations-roadmap.md](docs/enterprise-operations-roadmap.md) — 20 platform
+  pillars for production enterprise deployments (Control Center, Device Pool, Device Discovery,
+  Provisioning, Configuration Management, RBAC, Secret Management, Telemetry, Alerting,
+  Configuration Drift, OTA & Rollback, Package Trust, SDKs, Operator Workflows, SRE, Reporting,
+  Compliance, APIs, Observability, Digital Thread); core vs package ownership; React/TypeScript UI +
+  Rust `spanda-api` backend architecture; integration map with Readiness, Assurance, Diagnosis,
+  Recovery, Trust, Health, Device Registry, Configuration, Traceability, Audit, Security, Packages;
+  phased implementation (E1–E4); risks and mitigation; priority horizons NOW/NEXT/LATER.
+- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Enterprise Operations section;
+  [docs/feature-status.md](docs/feature-status.md) planned matrix;
+  [docs/platform-maturity-roadmap.md](docs/platform-maturity-roadmap.md) cross-reference;
+  [docs/README.md](docs/README.md) index entry.
+- **Cascading TOML configuration:** new `spanda-config` crate with `SpandaManifest`,
+  `ConfigResolver`, `ResolvedSystemConfig`, `DeviceTree`, `LogicalPhysicalMap`, and
+  `ConfigValidationReport`; root `spanda.toml` `[project]` / `[config]` / `[extends]` / `[merge]`
+  sections; fragment files (`spanda.devices.toml`, `spanda.providers.toml`, etc.); JSON config
+  compatibility; CLI `spanda config resolve|validate|graph|diff|report`, `spanda device-tree
+  inspect|graph`, `spanda map verify`; `spanda readiness --config`; docs
+  [configuration.md](docs/configuration.md), [cascading-config.md](docs/cascading-config.md),
+  [device-tree.md](docs/device-tree.md), [config-validation.md](docs/config-validation.md); updated
+  [spanda-toml.md](docs/spanda-toml.md).
+- **Configuration runtime integration:** `ResolvedSystemConfig` wired into `run`/`sim`/`fleet
+  run`/`verify`/`readiness`/`assure`/`diagnose`/`heal`/`recover`/`replay`; shared
+  `resolve_for_source`; lockfile- and device-tree-aligned provider bootstrap; readiness policy and
+  per-robot `[health]` fault injection from config; assurance/mission/recovery thresholds from
+  `[assurance]`/`[mission]`/`[recovery]`; TypeScript CLI delegation with `cargo run` and lightweight
+  fallback for `config validate|resolve`.
+- **Device identity mapping:** `[[devices]]` registry with network/bus identity fields (`ip`, `mac`,
+  `serial`, `endpoint`, `protocol`, `can_id`, `trust_level`, …); `DeviceRegistry` on
+  `ResolvedSystemConfig`; duplicate IP/MAC/serial validation; redundant failover rules; CLI `spanda
+  device discover|inspect`, `spanda network scan`, `spanda config report --network`; readiness
+  connectivity issues from device identity gaps; assurance/diagnosis traceability when `--config` is
+  set.
+- **Configuration drift detection:** `detect_config_drift` / `ConfigDriftReport` in `spanda-config`;
+  CLI `spanda drift` and `spanda config drift` with `--baseline` and `--agent`; agent `/v1/status`
+  fields (`program_hash`, `hardware_profile`, `firmware_version`, `packages`); `spanda readiness
+  --baseline` and `spanda readiness --agent` for config and attestation drift gates; docs
+  [drift-detection.md](docs/drift-detection.md).
+- **Dependency graphs:** new `spanda-graph` crate; CLI `spanda graph <file.sd>` with `--format
+  json|mermaid|dot|text`; composes capability traceability and resolved config; docs
+  [dependency-graphs.md](docs/dependency-graphs.md).
+- **Deployment gates:** `evaluate_deployment_gates` in `spanda-readiness`; CLI `spanda deploy gate`
+  with `--policy default|production`; docs [deployment-gates.md](docs/deployment-gates.md).
+- **Package trust:** `evaluate_package_trust` in `spanda-package`; CLI `spanda trust <package>` with
+  `--version`, `--project`, `--json`; package trust gate in deployment gates when `--config`
+  declares packages; docs [package-trust.md](docs/package-trust.md).
+- **Composite program trust:** new `spanda-trust` crate with `evaluate_composite_trust`; CLI `spanda
+  trust <file.sd>` with `--json` and `--format markdown`; weighted categories (package, device,
+  firmware, configuration, identity, safety); secure-boot import detection (`trust.jetson` /
+  `trust.pi`); `scripts/trust_program_smoke.sh`; docs [trust-framework.md](docs/trust-framework.md).
+- **Secure-boot contract integration:** `spanda-tamper::secure_boot` scores `trust.jetson` /
+  `trust.pi` in `tamper-check` and `integrity`; optional `SPANDA_ATTESTATION_ENDPOINT` live
+  attestation; optional `SPANDA_TPM_BACKEND` backends including `vendor` SDK adapters, tpm2-tools
+  PCR quote with `tpm2_checkquote` verification, remote AK cert chain validation
+  (`SPANDA_ATTESTATION_TRUST_STORE`), and `SPANDA_TPM2_PCR0_EXPECT` policy; bundled trust registry
+  for offline demos; deploy agent `/v1/status` attestation fields; drift detection for attestation
+  posture; `examples/showcase/secure_boot/`; `scripts/secure_boot_smoke.sh`,
+  `scripts/attestation_smoke.sh`, `scripts/gaps_smoke.sh`, `scripts/lib/registry_env.sh`; docs
+  [hardware-attestation.md](docs/hardware-attestation.md).
+- **Composite trust in gates and scorecard:** `spanda deploy gate` adds `composite_trust` and
+  `secure_boot` gates; scorecard security pillar blends threat risk, composite trust, and
+  secure-boot coverage; `spanda explain` includes `composite_trust` and `secure_boot` sections;
+  `spanda demo maturity` runs program trust.
+- **Explain polish:** `spanda explain <file.sd>` supports `--config` and `--baseline` for
+  configuration validation, deployment gates preview, package trust, and drift sections; docs
+  [explainability.md](docs/explainability.md).
+- **Platform maturity demo:** `spanda demo maturity` runs graph, explain, trust, and deploy gate on
+  `examples/showcase/readiness/rover.sd`; `scripts/maturity_smoke.sh` (wired into
+  `scripts/showcase_smoke.sh`).
+- **Threat modeling:** new `spanda-threat` crate with `analyze_threat_model`; CLI `spanda
+  threat-model <file.sd> [--json]`; docs [threat-modeling.md](docs/threat-modeling.md).
+- **Mission diff:** new `spanda-diff` crate with `diff_programs`; CLI `spanda diff <baseline.sd>
+  <candidate.sd> [--json]`; `scripts/diff_smoke.sh`; docs [mission-diff.md](docs/mission-diff.md).
+- **Scorecard:** new `spanda-score` crate with `evaluate_scorecard`; CLI `spanda score <file.sd>
+  [--json] [--format markdown]`; docs [scorecards.md](docs/scorecards.md).
+- **Policy engine (verify-time):** `policy { }` declarations in AST/parser; new `spanda-policy`
+  crate with `evaluate_policy`; CLI `spanda verify --policy <Name> [--json]`; showcase
+  `examples/showcase/policy/warehouse.sd`; `scripts/policy_smoke.sh`; docs
+  [policy-engine.md](docs/policy-engine.md).
+- **Chaos engineering:** new `spanda-chaos` crate with `run_chaos_experiment`; CLI `spanda chaos
+  <file.sd> [--inject gps-failure,...] [--json]`; `scripts/chaos_smoke.sh`; docs
+  [chaos-engineering.md](docs/chaos-engineering.md).
+- **Readiness trends:** history store in `spanda-readiness` (`record_readiness_snapshot`,
+  `analyze_readiness_trends`); CLI `spanda readiness --record` and `spanda readiness trends
+  <file.sd> [--forecast 7d] [--json]`; `scripts/readiness_trends_smoke.sh`; docs
+  [readiness-trends.md](docs/readiness-trends.md).
+- **Mission resource estimation:** new `spanda-estimate` crate with `estimate_mission`; CLI `spanda
+  estimate <file.sd> [--target <profile>] [--json]`; `scripts/estimate_smoke.sh`; docs
+  [resource-estimation.md](docs/resource-estimation.md).
+- **Compliance profiles:** new `spanda-compliance` crate with built-in industry templates; CLI
+  `spanda verify --profile <name>` and `spanda readiness --profile <name>`; `spanda compliance
+  report <file.sd> --profile <name>` accreditation export bundles with evidence checklist and audit
+  export ID; defense/medical secure-boot contract requirements; defense showcase at
+  `examples/showcase/compliance/defense_rover.sd`; `scripts/compliance_smoke.sh`; docs
+  [compliance-profiles.md](docs/compliance-profiles.md).
+- **Architecture decision records:** new `spanda-adr` crate with `generate_adrs`; CLI `spanda adr
+  <file.sd> [--json] [--out <dir>]`; `scripts/adr_smoke.sh`; docs
+  [architecture-decision-records.md](docs/architecture-decision-records.md).
+- **Tamper / integrity (verify-time):** new `spanda-tamper` crate with `generate_tamper_check`; CLI
+  `spanda tamper-check <file.sd> [--json]`; `scripts/tamper_smoke.sh`; docs
+  [tamper-detection.md](docs/tamper-detection.md).
+- **Runtime tamper (trace analysis):** `generate_runtime_tamper_check` in `spanda-tamper`; `spanda
+  tamper-check <file.trace> [--runtime]`; trust showcase `examples/showcase/runtime_intrusion/`;
+  `scripts/trust_showcase_smoke.sh`.
+- **Tamper diagnosis:** `diagnose_tamper_trace` in `spanda-tamper`; CLI `spanda diagnose tamper
+  <file.trace> [--json]`; `scripts/tamper_diagnose_smoke.sh`.
+- **Fleet tamper correlation:** `correlate_fleet_tamper` in `spanda-tamper`; CLI `spanda
+  tamper-check --fleet <manifest.json>`; showcase `examples/showcase/fleet_tamper/`;
+  `scripts/fleet_tamper_smoke.sh`.
+- **Security assurance rollup:** `generate_security_assurance` in `spanda-tamper`; CLI `spanda
+  security assurance <file.sd>`; `scripts/security_assurance_smoke.sh`.
+- **Tamper policy runtime:** `tamper_policy` blocks in `.sd` programs; `spanda-tamper::policy`
+  matching; runtime dispatch via recovery actions; showcase `examples/showcase/tamper_policy/`;
+  `scripts/tamper_policy_smoke.sh`.
+- **Live fleet mesh tamper:** `POST /v1/fleet/tamper/ingest`, `GET /v1/fleet/tamper`; CLI `spanda
+  tamper-check --mesh-url <url>`; runtime ingest via `SPANDA_FLEET_MESH_URL`;
+  `scripts/fleet_mesh_tamper_smoke.sh`.
+- **Spoofing ML backend:** optional `SPANDA_SPOOFING_ML_ENDPOINT` HTTP merge plus
+  `SPANDA_SPOOFING_ML_BACKEND` stub backends (`mock`, `file`, `script`) and
+  `SPANDA_SPOOFING_ML_MIN_CONFIDENCE` filtering for trace spoof-check; global
+  `SPANDA_SPOOFING_MIN_CONFIDENCE` trace filter and operator confirmation gates for High/Critical
+  alerts.
+- **Secure boot package stubs:** `spanda-trust-jetson`, `spanda-trust-pi` attestation contracts in
+  hosted registry index.
+- **Compliance template hardening:** accreditation notice on profiles; defense/medical require
+  `tamper_policy`; Critical tamper actions require operator approval.
+- **Platform maturity gap closure:** `spanda demo gaps` walkthrough; `secure_boot_status_line` in
+  explain and deploy gates; attestation and compliance smokes extended for vendor TPM and AK chain
+  validation.
+- **Trust showcase demos:** `examples/showcase/package_tampering/`, `mission_tampering/`,
+  `runtime_intrusion/` with tamper and integrity workflows; `spanda demo trust` one-command
+  walkthrough; bundled registry slice (trust + gps/fusion packages) in CLI crate via
+  `scripts/sync_bundled_registry.sh`; CLI defaults `SPANDA_REGISTRY_URL` to bundled registry when
+  unset; `scripts/bundled_trust_smoke.sh`.
+- **Integrity verification (verify-time):** `generate_integrity_report` in `spanda-tamper`; CLI
+  `spanda integrity <file.sd> [--baseline <file.sd>] [--agent <Robot@Hardware>] [--json]`;
+  `scripts/integrity_smoke.sh`; docs [integrity-verification.md](docs/integrity-verification.md).
+- **Decision trace explainability:** `spanda explain decision <mission.trace> [--json]` with
+  evidence, safety checks, and rejected alternatives; `scripts/decision_explain_smoke.sh`.
+- **Runtime policy enforcement:** `spanda-policy` runtime monitor with `max_speed` and
+  `operation_hours` gates; `spanda run|sim --enforce-policy <name>`;
+  `scripts/policy_runtime_smoke.sh`.
+- **AI-assisted development (mock-first):** new `spanda-generate` crate with template scaffolds and
+  `suggest_program`; CLI `spanda generate mission|robot|health-policy` and `spanda suggest
+  <file.sd>`; optional `--backend llm` via `SPANDA_LLM_ENDPOINT`; `scripts/generate_smoke.sh`; docs
+  [ai-assisted-development.md](docs/ai-assisted-development.md).
+- **Spoofing detection:** new `spanda-spoofing` crate with program coverage and trace plausibility
+  analysis; CLI `spanda spoof-check <file.sd|file.trace> [--json]`; showcase
+  `examples/showcase/gps_spoofing/`; `spanda demo spoof` focused walkthrough;
+  `scripts/spoof_smoke.sh`; package backends in `spanda-gps` and `spanda-fusion`;
+  `scripts/package_spoofing_smoke.sh`; docs [spoofing-detection.md](docs/spoofing-detection.md).
+- **Runtime fault detection:** new `spanda-runtime-faults` crate with `RuntimeFault`, `CrashEvent`,
+  `RebootEvent`, `MemoryLeakEvent`, `OOMEvent`, `WatchdogTimeout`, `DeadlockEvent`, `RestartLoop`,
+  `ResourcePressure`, `HeartbeatStatus`, `ProcessHealth`, `RuntimeHealth`, `FaultEvidence`, and
+  `FaultTimeline` types; AST declarations (`heartbeat`, `memory_watch`, `resource_watch`,
+  `restart_policy`, `on runtime crash` triggers); CLI `spanda fault scan|report`, `spanda runtime
+  health|diagnose`, and `spanda replay --show-faults`; readiness/assurance/diagnosis/recovery/replay
+  integration; showcase examples under `examples/showcase/runtime_faults/`; docs
+  [runtime-fault-detection.md](docs/runtime-fault-detection.md),
+  [crash-detection.md](docs/crash-detection.md), [reboot-detection.md](docs/reboot-detection.md),
+  [memory-leak-detection.md](docs/memory-leak-detection.md),
+  [runtime-health.md](docs/runtime-health.md). `spanda-contract`, `spanda-explain`,
+  `spanda-decision` crates; CLI `spanda contract verify`, `spanda explain`, `spanda audit
+  decisions`, `spanda safety-coverage`, `spanda recovery-coverage`; `spanda demo differentiation`;
+  `examples/showcase/differentiation/warehouse.sd`; `scripts/differentiation_smoke.sh` (wired into
+  `showcase_smoke.sh`).
+- **Philosophy & pronunciation doc sync:** README pronunciation guide (*SPUN-duh* /ˈspʌndə/) and
+  expanded Sanskrit etymology propagated to [overview/philosophy.md](docs/overview/philosophy.md),
+  [vision.md](docs/vision.md), [product-strategy.md](docs/product-strategy.md),
+  [website-content.md](docs/website-content.md), [getting-started.md](docs/getting-started.md),
+  [spanda-for-dummies](docs/spanda-for-dummies/), [tutorials index](docs/tutorials/README.md)
+  (audience paths), [docs/README.md](docs/README.md), and mdBook
+  [introduction](docs-site/src/introduction.md).
+- **Differentiation roadmap:** [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md) —
+  15 signature platform areas (mission contracts, explainability, decision audit trail,
+  safety/recovery coverage, what-if, risk, trust graph, scorecards, digital mission twin,
+  certification packs, mission time travel, human/robot teaming, autonomous governance); priority
+  horizons NOW/NEXT/LATER; architecture impact; package vs core ownership; integration mapping;
+  documentation, demo, and adoption plans.
+- **Signature capabilities:** Safety-Typed AI, Mission Contracts, Readiness Engine, Continuity &
+  Takeover, Trust Framework, Explainability & Audit Trail — documented in
+  [product-strategy.md](docs/product-strategy.md) and [README.md](README.md).
+- **Differentiation topic guides:** [mission-contracts.md](docs/mission-contracts.md),
+  [decision-audit-trail.md](docs/decision-audit-trail.md),
+  [safety-coverage.md](docs/safety-coverage.md), [recovery-coverage.md](docs/recovery-coverage.md),
+  [what-if-analysis.md](docs/what-if-analysis.md),
+  [mission-risk-analysis.md](docs/mission-risk-analysis.md),
+  [digital-mission-twin.md](docs/digital-mission-twin.md),
+  [certification-packs.md](docs/certification-packs.md),
+  [mission-time-travel.md](docs/mission-time-travel.md),
+  [human-robot-teaming.md](docs/human-robot-teaming.md).
+- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Differentiation section;
+  [docs/feature-status.md](docs/feature-status.md) planned matrix; [docs/README.md](docs/README.md)
+  index entries.
+- **Mission continuity framework:** `spanda-assurance` continuity module with
+  `MissionContinuityManager`, `MissionDelegationManager`, `TakeoverCoordinator`,
+  `SuccessionPlanner`, `MissionCheckpointManager`, `MissionStateTransferManager`,
+  `MissionRecoveryPlanner`, and `ContinuationDecisionEngine`; takeover modes (resume, restart,
+  partial restart, shadow/hot/cold/human); state transfer models; successor ranking with
+  trust/readiness gates.
+- **Continuity CLI:** `spanda continuity`, `spanda takeover`, `spanda delegate`, `spanda succession`
+  with `--failed`, `--progress`, `--trigger`, `--scope`, and report formats.
+- **`continuity_policy` syntax:** parser, AST, and takeover mode inference from declared actions;
+  TypeScript parser parity.
+- **`spanda demo continuity`:** showcase demo and `scripts/continuity_smoke.sh` (wired into
+  `showcase_smoke.sh`).
+- **Fleet runtime takeover dispatch:** interpreter `execute_continuity_on_program`, fleet agent
+  `/v1/continuity/execute`, mesh `POST /v1/fleet/continuity`, `fleet_takeover` peer topic.
+- **Continuity diagnostics:** `collect_continuity_diagnostics` in `spanda-assurance` and
+  `src/continuity-diagnostics.ts`; merged into `spanda check --readiness-json` and LSP readiness
+  diagnostics.
 - **Official package:** `spanda-mission-continuity` (`assurance.continuity`).
-- **Recovery handoff bridge:** fleet recovery `reassign mission` actions also relay continuity takeover when `SPANDA_FLEET_MESH_URL` is set.
-- **Continuity man page and docs:** `spanda man continuity`; README and getting-started continuity section; roadmap/feature-status sync.
-- **LSP continuity quick-fixes:** readiness/recovery/continuity diagnostics cached for code actions; VS Code snippets for `continuitypolicy` and `recoverypolicy`.
-- **Continuity docs and editor polish:** fleet-distributed continuity APIs, syntax highlighting for `continuity_policy`, LSP completions/hover, robot-aware approval quick-fixes, package count sync (38).
-- **`continuity:mission` diagnostic:** warns when resume/checkpoint actions lack `mission_plan`; [continuity-policies.md](docs/continuity-policies.md) policy guide; `continuity_policy` promoted to **Stable** in roadmap.
-- **Documentation sync (continuity):** overview CLI, differentiators, layers, getting-started showcase table, platform workflow, feature-status, spanda-language, man cross-links, mdBook SUMMARY, VS Code README.
-- **Continuity runtime hardening:** mode-specific interpreter takeover (resume/restart/partial/shadow/hot/cold/human), durable checkpoint store (`.spanda/mission-checkpoints.json`), swarm `--failed` handoff in `spanda swarm coordinate`, operations dashboard continuity panel, interpreter/CLI/TS tests; runtime promoted to **Stable**.
-- **Continuity auto-trigger and polish:** automatic takeover during `run`/`sim` on health faults and recovery; parser action spacing fix; TS checkpoint disk I/O; `spanda-mission-continuity` provider exports; swarm+mesh integration test.
-- **Continuity examples:** `examples/showcase/continuity/`, `takeover/`, `delegation/`, `swarm_takeover/`, `fleet_succession/`.
+- **Recovery handoff bridge:** fleet recovery `reassign mission` actions also relay continuity
+  takeover when `SPANDA_FLEET_MESH_URL` is set.
+- **Continuity man page and docs:** `spanda man continuity`; README and getting-started continuity
+  section; roadmap/feature-status sync.
+- **LSP continuity quick-fixes:** readiness/recovery/continuity diagnostics cached for code actions;
+  VS Code snippets for `continuitypolicy` and `recoverypolicy`.
+- **Continuity docs and editor polish:** fleet-distributed continuity APIs, syntax highlighting for
+  `continuity_policy`, LSP completions/hover, robot-aware approval quick-fixes, package count sync
+  (38).
+- **`continuity:mission` diagnostic:** warns when resume/checkpoint actions lack `mission_plan`;
+  [continuity-policies.md](docs/continuity-policies.md) policy guide; `continuity_policy` promoted
+  to **Stable** in roadmap.
+- **Documentation sync (continuity):** overview CLI, differentiators, layers, getting-started
+  showcase table, platform workflow, feature-status, spanda-language, man cross-links, mdBook
+  SUMMARY, VS Code README.
+- **Continuity runtime hardening:** mode-specific interpreter takeover
+  (resume/restart/partial/shadow/hot/cold/human), durable checkpoint store
+  (`.spanda/mission-checkpoints.json`), swarm `--failed` handoff in `spanda swarm coordinate`,
+  operations dashboard continuity panel, interpreter/CLI/TS tests; runtime promoted to **Stable**.
+- **Continuity auto-trigger and polish:** automatic takeover during `run`/`sim` on health faults and
+  recovery; parser action spacing fix; TS checkpoint disk I/O; `spanda-mission-continuity` provider
+  exports; swarm+mesh integration test.
+- **Continuity examples:** `examples/showcase/continuity/`, `takeover/`, `delegation/`,
+  `swarm_takeover/`, `fleet_succession/`.
 - **Docs:** [mission-continuity.md](docs/mission-continuity.md).
-- **Persistent telemetry store:** HTTP scrape server (`spanda telemetry serve`); OTLP/JSON export and **`spanda telemetry push`** to remote collectors (`SPANDA_OTLP_ENDPOINT`); **`spanda telemetry push --watch`** and **`SPANDA_OTLP_AUTO_PUSH`** session-end auto-push; **`spanda telemetry fleet-push`** with fleet mesh ingest (`/v1/fleet/telemetry/ingest`, merged `GET /v1/fleet/telemetry`) and **`SPANDA_FLEET_TELEMETRY_AUTO_INGEST`** session-end agent ingest; per-event `session_id` tagging; Prometheus export; SQLite backend with JSONL migration; `sessions` / `replay --session`; `telemetry info`; TypeScript parity for sessions, metrics, retention, SQLite (Node 22+), serve, push, fleet-push, replay inspect/playback/**deterministic verify**, and Rust trace JSON normalization; vitest coverage in `tests/telemetry-store.test.ts`, `tests/telemetry-replay.test.ts`, `tests/telemetry-push.test.ts`, and `tests/telemetry-fleet.test.ts`; **TS `runtime_metrics` aligned with Rust `RuntimeTelemetry` (scheduler, task, execution, pipeline, watchdog, trigger, topic, provider maps)**; **topic QoS deadline tracking and provider-call metrics in the TS interpreter**; **in-memory telemetry store (`memory` module) with WASM bindings** (`wasm_telemetry_clear|append|stats|prometheus|otlp`) with **web playground telemetry panel**; optional `sqlite` feature on `spanda-telemetry-store` for wasm32 builds; **CI wasm32 `cargo check` for `spanda-wasm` and `spanda-telemetry-store` (no default features)** plus **`scripts/telemetry_store_golden_path.sh` job**; **TS interpreter routes official package imports through `dispatchOfficialPackageCall`**; **event handler trigger metrics**; **`wasm_run` auto-appends `runtime_metrics` to the in-memory buffer**; **TypeScript `TriggerRegistry` with timer/when/while/state/system triggers, storm limits, missed-deadline metrics, and scheduler integration**
-- **Platform maturity topic guides:** dependency graphs, threat modeling, drift detection, policy engine, compliance profiles, explainability, chaos engineering, resource estimation, readiness trends, package trust, deployment gates, scorecards, tamper detection, integrity verification, trust framework, spoofing detection, security assurance.
-- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Platform Maturity section; [docs/product-strategy.md](docs/product-strategy.md) maturity focus; [docs/README.md](docs/README.md) index entries.
-- **Structured docstring standard:** [docs/coding-standards.md](docs/coding-standards.md) defines Description / Inputs / Outputs / Example for all Rust, TypeScript, Python, and Spanda APIs; [docs/documentation-coverage.md](docs/documentation-coverage.md) tracks coverage; `scripts/validate_documentation.py`, `add_structured_api_docs.py`, and `migrate_legacy_inline_docs.py` enforce and bulk-apply the format; CI emits warnings (non-blocking) on pull requests.
-- **Documentation tooling (follow-up):** getting-started and README links for `spanda doc`, `spanda man`, and `docs/language-reference/`; feature-status matrix updated for docgen and man pages.
-- **Documentation tooling:** `///` doc comments in `.sd` files (parsed into AST); `spanda doc --html`, `spanda doc examples/`, `spanda man`; expanded man pages with EXIT STATUS and FILES; `docs/language-reference/` topic index; mdBook site sections; CI gates for `cargo doc`, `spanda doc`, and mdBook build.
-- **Self-healing docs sync:** man page (`spanda-recovery`), CLI overview, fleet-distributed recovery HTTP APIs, verification/readiness diagnostic categories, feature-status matrix, and deploy-http `fleet_recovery` module docs. validated recovery actions execute at runtime (mode transitions, speed caps, connectivity restart, mission pause, fleet coordination) with assurance gating.
-- **Recovery knowledge store:** persistent `.spanda/recovery_knowledge.json` records outcomes; planner and `evaluate_recovery` use merged knowledge when policies are absent; `spanda recovery knowledge` inspects the store.
-- **Operator approval hooks:** `SPANDA_OPERATOR_APPROVAL`, `SPANDA_GRANT_RECOVERY_APPROVAL`, `Approval` comm-topic polling, `RunOptions.inbound_comm_messages` test hook, and mission `requires approval Operator` runtime gating for high-risk recovery and mission steps.
-- **Fleet recovery mesh signal:** runtime publishes `/fleet/recovery` Command messages and relays to fleet mesh (`POST /v1/fleet/recovery`) when `SPANDA_FLEET_MESH_URL` is set; mesh coordinator fans out `fleet_recovery` peer deliveries to registered agents; agents expose `recovery_active` on `/v1/status`.
+- **Persistent telemetry store:** HTTP scrape server (`spanda telemetry serve`); OTLP/JSON export
+  and **`spanda telemetry push`** to remote collectors (`SPANDA_OTLP_ENDPOINT`); **`spanda telemetry
+  push --watch`** and **`SPANDA_OTLP_AUTO_PUSH`** session-end auto-push; **`spanda telemetry
+  fleet-push`** with fleet mesh ingest (`/v1/fleet/telemetry/ingest`, merged `GET
+  /v1/fleet/telemetry`) and **`SPANDA_FLEET_TELEMETRY_AUTO_INGEST`** session-end agent ingest;
+  per-event `session_id` tagging; Prometheus export; SQLite backend with JSONL migration; `sessions`
+  / `replay --session`; `telemetry info`; TypeScript parity for sessions, metrics, retention, SQLite
+  (Node 22+), serve, push, fleet-push, replay inspect/playback/**deterministic verify**, and Rust
+  trace JSON normalization; vitest coverage in `tests/telemetry-store.test.ts`,
+  `tests/telemetry-replay.test.ts`, `tests/telemetry-push.test.ts`, and
+  `tests/telemetry-fleet.test.ts`; **TS `runtime_metrics` aligned with Rust `RuntimeTelemetry`
+  (scheduler, task, execution, pipeline, watchdog, trigger, topic, provider maps)**; **topic QoS
+  deadline tracking and provider-call metrics in the TS interpreter**; **in-memory telemetry store
+  (`memory` module) with WASM bindings** (`wasm_telemetry_clear|append|stats|prometheus|otlp`) with
+  **web playground telemetry panel**; optional `sqlite` feature on `spanda-telemetry-store` for
+  wasm32 builds; **CI wasm32 `cargo check` for `spanda-wasm` and `spanda-telemetry-store` (no
+  default features)** plus **`scripts/telemetry_store_golden_path.sh` job**; **TS interpreter routes
+  official package imports through `dispatchOfficialPackageCall`**; **event handler trigger
+  metrics**; **`wasm_run` auto-appends `runtime_metrics` to the in-memory buffer**; **TypeScript
+  `TriggerRegistry` with timer/when/while/state/system triggers, storm limits, missed-deadline
+  metrics, and scheduler integration**
+- **Platform maturity topic guides:** dependency graphs, threat modeling, drift detection, policy
+  engine, compliance profiles, explainability, chaos engineering, resource estimation, readiness
+  trends, package trust, deployment gates, scorecards, tamper detection, integrity verification,
+  trust framework, spoofing detection, security assurance.
+- **Roadmap sync:** [docs/roadmap.md](docs/roadmap.md) Platform Maturity section;
+  [docs/product-strategy.md](docs/product-strategy.md) maturity focus;
+  [docs/README.md](docs/README.md) index entries.
+- **Structured docstring standard:** [docs/coding-standards.md](docs/coding-standards.md) defines
+  Description / Inputs / Outputs / Example for all Rust, TypeScript, Python, and Spanda APIs;
+  [docs/documentation-coverage.md](docs/documentation-coverage.md) tracks coverage;
+  `scripts/validate_documentation.py`, `add_structured_api_docs.py`, and
+  `migrate_legacy_inline_docs.py` enforce and bulk-apply the format; CI emits warnings
+  (non-blocking) on pull requests.
+- **Documentation tooling (follow-up):** getting-started and README links for `spanda doc`, `spanda
+  man`, and `docs/language-reference/`; feature-status matrix updated for docgen and man pages.
+- **Documentation tooling:** `///` doc comments in `.sd` files (parsed into AST); `spanda doc
+  --html`, `spanda doc examples/`, `spanda man`; expanded man pages with EXIT STATUS and FILES;
+  `docs/language-reference/` topic index; mdBook site sections; CI gates for `cargo doc`, `spanda
+  doc`, and mdBook build.
+- **Self-healing docs sync:** man page (`spanda-recovery`), CLI overview, fleet-distributed recovery
+  HTTP APIs, verification/readiness diagnostic categories, feature-status matrix, and deploy-http
+  `fleet_recovery` module docs. validated recovery actions execute at runtime (mode transitions,
+  speed caps, connectivity restart, mission pause, fleet coordination) with assurance gating.
+- **Recovery knowledge store:** persistent `.spanda/recovery_knowledge.json` records outcomes;
+  planner and `evaluate_recovery` use merged knowledge when policies are absent; `spanda recovery
+  knowledge` inspects the store.
+- **Operator approval hooks:** `SPANDA_OPERATOR_APPROVAL`, `SPANDA_GRANT_RECOVERY_APPROVAL`,
+  `Approval` comm-topic polling, `RunOptions.inbound_comm_messages` test hook, and mission `requires
+  approval Operator` runtime gating for high-risk recovery and mission steps.
+- **Fleet recovery mesh signal:** runtime publishes `/fleet/recovery` Command messages and relays to
+  fleet mesh (`POST /v1/fleet/recovery`) when `SPANDA_FLEET_MESH_URL` is set; mesh coordinator fans
+  out `fleet_recovery` peer deliveries to registered agents; agents expose `recovery_active` on
+  `/v1/status`.
 
-- **Self-healing and recovery framework:** `spanda-assurance` recovery module with `RecoveryPlan`, `RecoveryPlanner`, failure classification, recovery levels (0–4), safe mode transitions, self-correction actions, validation gates (safety, hardware, capability, readiness), human approval integration, recovery audit/traceability, fleet recovery, recovery knowledge base, and assurance metrics.
+- **Self-healing and recovery framework:** `spanda-assurance` recovery module with `RecoveryPlan`,
+  `RecoveryPlanner`, failure classification, recovery levels (0–4), safe mode transitions,
+  self-correction actions, validation gates (safety, hardware, capability, readiness), human
+  approval integration, recovery audit/traceability, fleet recovery, recovery knowledge base, and
+  assurance metrics.
 - **Recovery policy syntax:** `recovery_policy Name { on condition { actions; } }` declarations.
-- **Recovery CLI:** `spanda heal`, `spanda recover`, `spanda recovery-report`, `spanda recovery plan|knowledge`; `spanda sim --inject-failure <kind>`; `spanda analyze-failure --with-recovery`.
-- **Examples:** `examples/showcase/self_healing/`, `self_correction/`, `fleet_recovery/`, `recovery_assurance/`.
-- **Docs:** [self-healing.md](docs/self-healing.md), [self-correction.md](docs/self-correction.md), [recovery-planning.md](docs/recovery-planning.md), [recovery-assurance.md](docs/recovery-assurance.md), [recovery-policies.md](docs/recovery-policies.md).
-- **Mission assurance platform:** new `spanda-assurance` crate with core interfaces (knowledge model, state estimation, anomaly detection, diagnosis, prognostics, mitigation, mode management, mission planning, resilience, assurance evidence) and static analysis integrated with readiness, health, traceability, and hardware verification.
-- **Mission assurance language:** `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `operating_mode`, `mission_plan`, `resilience_policy`, and `assurance_case` declarations.
-- **Mission assurance CLI:** `spanda assure`, `spanda anomaly scan`, `spanda prognostics`, `spanda mission verify`, and `spanda resilience check`; enhanced `spanda diagnose` for traces and programs.
-- **Official packages:** `spanda-assurance`, `spanda-knowledge-model`, `spanda-anomaly`, `spanda-diagnosis`, `spanda-prognostics`, `spanda-mission-planning`, `spanda-mission-continuity`, `spanda-resilience`, `spanda-fusion`.
-- **Examples:** `examples/assurance/`, `examples/anomaly/`, `examples/diagnostics/`, `examples/prognostics/`, `examples/resilience/`, `examples/mission/`.
-- **Docs:** [mission-assurance.md](docs/mission-assurance.md), [knowledge-models.md](docs/knowledge-models.md), [anomaly-detection.md](docs/anomaly-detection.md), [diagnostics.md](docs/diagnostics.md), [prognostics.md](docs/prognostics.md), [resilience.md](docs/resilience.md), [assurance-cases.md](docs/assurance-cases.md).
-- **Learned anomaly detectors:** `learned backend <module>;` on `anomaly_detector`; anomaly scan reports include learned model metadata.
-- **State estimation CLI:** `spanda state estimate` reports estimators and belief state; included in `spanda assure` summary.
-- **Readiness state estimation:** empty `state_estimator` inputs reduce Assurance factor score with span-aware IDE diagnostics.
-- **Assurance demo:** `spanda demo assurance` runs the full mission assurance CLI suite on `examples/showcase/assurance/rover.sd`.
-- **Self-healing demo:** `spanda demo self-healing` runs heal, recover, recovery knowledge, sim inject-failure, and fleet recovery showcase paths.
-- **Self-healing CI smoke:** `scripts/self_healing_smoke.sh` exercises recovery CLI, runtime tests, diagnostics, and demo.
-- **Fleet agent assurance recovery:** deployed fleet agents run assurance plan/validate/apply on `fleet_recovery` peer commands and `POST /v1/recovery/execute`; status reports `recovery_validation`.
-- **Fleet agent interpreter recovery:** deployed agents run live interpreter recovery dispatch (`execute_recovery_on_program`) for mode transitions, speed caps, and mission pause; `recovery_engine` on `/v1/status` reports `interpreter` vs `assurance` fallback.
-- **TypeScript recovery diagnostics:** `src/recovery-diagnostics.ts` mirrors Rust `collect_recovery_diagnostics` for LSP/readiness JSON fallbacks.
-- **Learned anomaly runtime:** health polling invokes `assurance.anomaly::scan_learned` for detectors with `learned backend`; package stub scores observations below 0.85 as anomalies.
-- **Weighted sensor fusion:** runtime and `spanda state estimate` use type-weighted confidence; `fusion.read()` exposes `sources` and `state_estimate`.
-- **Learned anomaly EMA:** runtime tracks per-detector EMA volatility and passes it to `scan_learned` for drift detection.
-- **`spanda-fusion` package:** `assurance.fusion` import path with `weight_for_sensor` and `confidence_for_types` provider dispatch (extends lean-core weighted fusion).
-- **ONNX anomaly inference:** `SPANDA_ANOMALY_ONNX_MODEL_PATH` (or `SPANDA_ONNX_MODEL_PATH`) enables ONNX-backed `scan_learned` via Python bridge; showcase rover links learned anomaly + fusion packages.
-- **Documentation sync:** README, getting-started, platform-overview, tutorials index, examples library, mission-assurance guides, and registry catalog updated for mission assurance features and examples (37 hosted packages).
-- **README split:** Slim root [README.md](README.md); expanded content moved to [docs/overview/](docs/overview/README.md) subpages.
-- **Overview subpages:** Platform structure, components, architecture, layers, library, packages, web playground, and CLI reference under `docs/overview/`.
+- **Recovery CLI:** `spanda heal`, `spanda recover`, `spanda recovery-report`, `spanda recovery
+  plan|knowledge`; `spanda sim --inject-failure <kind>`; `spanda analyze-failure --with-recovery`.
+- **Examples:** `examples/showcase/self_healing/`, `self_correction/`, `fleet_recovery/`,
+  `recovery_assurance/`.
+- **Docs:** [self-healing.md](docs/self-healing.md), [self-correction.md](docs/self-correction.md),
+  [recovery-planning.md](docs/recovery-planning.md),
+  [recovery-assurance.md](docs/recovery-assurance.md),
+  [recovery-policies.md](docs/recovery-policies.md).
+- **Mission assurance platform:** new `spanda-assurance` crate with core interfaces (knowledge
+  model, state estimation, anomaly detection, diagnosis, prognostics, mitigation, mode management,
+  mission planning, resilience, assurance evidence) and static analysis integrated with readiness,
+  health, traceability, and hardware verification.
+- **Mission assurance language:** `knowledge_model`, `state_estimator`, `anomaly_detector`, `on
+  anomaly`, `prognostics`, `mitigation`, `operating_mode`, `mission_plan`, `resilience_policy`, and
+  `assurance_case` declarations.
+- **Mission assurance CLI:** `spanda assure`, `spanda anomaly scan`, `spanda prognostics`, `spanda
+  mission verify`, and `spanda resilience check`; enhanced `spanda diagnose` for traces and
+  programs.
+- **Official packages:** `spanda-assurance`, `spanda-knowledge-model`, `spanda-anomaly`,
+  `spanda-diagnosis`, `spanda-prognostics`, `spanda-mission-planning`, `spanda-mission-continuity`,
+  `spanda-resilience`, `spanda-fusion`.
+- **Examples:** `examples/assurance/`, `examples/anomaly/`, `examples/diagnostics/`,
+  `examples/prognostics/`, `examples/resilience/`, `examples/mission/`.
+- **Docs:** [mission-assurance.md](docs/mission-assurance.md),
+  [knowledge-models.md](docs/knowledge-models.md),
+  [anomaly-detection.md](docs/anomaly-detection.md), [diagnostics.md](docs/diagnostics.md),
+  [prognostics.md](docs/prognostics.md), [resilience.md](docs/resilience.md),
+  [assurance-cases.md](docs/assurance-cases.md).
+- **Learned anomaly detectors:** `learned backend <module>;` on `anomaly_detector`; anomaly scan
+  reports include learned model metadata.
+- **State estimation CLI:** `spanda state estimate` reports estimators and belief state; included in
+  `spanda assure` summary.
+- **Readiness state estimation:** empty `state_estimator` inputs reduce Assurance factor score with
+  span-aware IDE diagnostics.
+- **Assurance demo:** `spanda demo assurance` runs the full mission assurance CLI suite on
+  `examples/showcase/assurance/rover.sd`.
+- **Self-healing demo:** `spanda demo self-healing` runs heal, recover, recovery knowledge, sim
+  inject-failure, and fleet recovery showcase paths.
+- **Self-healing CI smoke:** `scripts/self_healing_smoke.sh` exercises recovery CLI, runtime tests,
+  diagnostics, and demo.
+- **Fleet agent assurance recovery:** deployed fleet agents run assurance plan/validate/apply on
+  `fleet_recovery` peer commands and `POST /v1/recovery/execute`; status reports
+  `recovery_validation`.
+- **Fleet agent interpreter recovery:** deployed agents run live interpreter recovery dispatch
+  (`execute_recovery_on_program`) for mode transitions, speed caps, and mission pause;
+  `recovery_engine` on `/v1/status` reports `interpreter` vs `assurance` fallback.
+- **TypeScript recovery diagnostics:** `src/recovery-diagnostics.ts` mirrors Rust
+  `collect_recovery_diagnostics` for LSP/readiness JSON fallbacks.
+- **Learned anomaly runtime:** health polling invokes `assurance.anomaly::scan_learned` for
+  detectors with `learned backend`; package stub scores observations below 0.85 as anomalies.
+- **Weighted sensor fusion:** runtime and `spanda state estimate` use type-weighted confidence;
+  `fusion.read()` exposes `sources` and `state_estimate`.
+- **Learned anomaly EMA:** runtime tracks per-detector EMA volatility and passes it to
+  `scan_learned` for drift detection.
+- **`spanda-fusion` package:** `assurance.fusion` import path with `weight_for_sensor` and
+  `confidence_for_types` provider dispatch (extends lean-core weighted fusion).
+- **ONNX anomaly inference:** `SPANDA_ANOMALY_ONNX_MODEL_PATH` (or `SPANDA_ONNX_MODEL_PATH`) enables
+  ONNX-backed `scan_learned` via Python bridge; showcase rover links learned anomaly + fusion
+  packages.
+- **Documentation sync:** README, getting-started, platform-overview, tutorials index, examples
+  library, mission-assurance guides, and registry catalog updated for mission assurance features and
+  examples (37 hosted packages).
+- **README split:** Slim root [README.md](README.md); expanded content moved to
+  [docs/overview/](docs/overview/README.md) subpages.
+- **Overview subpages:** Platform structure, components, architecture, layers, library, packages,
+  web playground, and CLI reference under `docs/overview/`.
 
 ### Changed
 
-- **Roadmap audit (2026-06-24):** [docs/roadmap.md](docs/roadmap.md) — v0.5 beta milestone, post-v0.4.0 continuity/telemetry notes, differentiation docs-vs-code honesty, tooling/web updates; [roadmap-codebase-audit-2026-06.md](docs/roadmap-codebase-audit-2026-06.md) refreshed; [feature-status.md](docs/feature-status.md) telemetry OTLP/fleet row.
+- **Roadmap audit (2026-06-24):** [docs/roadmap.md](docs/roadmap.md) — v0.5 beta milestone,
+  post-v0.4.0 continuity/telemetry notes, differentiation docs-vs-code honesty, tooling/web updates;
+  [roadmap-codebase-audit-2026-06.md](docs/roadmap-codebase-audit-2026-06.md) refreshed;
+  [feature-status.md](docs/feature-status.md) telemetry OTLP/fleet row.
 
-- **Overview doc dedup:** Overview subpages link to canonical guides instead of repeating prose and tables; README and docs index consolidate navigation through [docs/overview/README.md](docs/overview/README.md).
-- **Roadmap sync:** Package count updated to 37 across roadmap and product strategy (matches hosted registry index).
+- **Overview doc dedup:** Overview subpages link to canonical guides instead of repeating prose and
+  tables; README and docs index consolidate navigation through
+  [docs/overview/README.md](docs/overview/README.md).
+- **Roadmap sync:** Package count updated to 37 across roadmap and product strategy (matches hosted
+  registry index).
 
 ### Fixed
 
-- **Trust import typecheck:** `trust.jetson` and `trust.pi` resolve in `spanda check` / `spanda verify` via framework package import paths.
+- **Trust import typecheck:** `trust.jetson` and `trust.pi` resolve in `spanda check` / `spanda
+  verify` via framework package import paths.
 
-- **Package trust signatures:** `evaluate_package_trust` verifies Ed25519 registry signatures using the embedded index public key when `SPANDA_REGISTRY_TRUST_KEY` is unset (matches install-time verification).
+- **Package trust signatures:** `evaluate_package_trust` verifies Ed25519 registry signatures using
+  the embedded index public key when `SPANDA_REGISTRY_TRUST_KEY` is unset (matches install-time
+  verification).
 
-- **Readiness polish:** CI smoke (`scripts/readiness_smoke.sh`), agent `/v1/readiness` integration tests, `spanda deploy|fleet agent readiness` CLI, TypeScript fallbacks for all operational commands (`src/operational.ts`), span-aware LSP readiness diagnostics, `POST /v1/program` on deploy agents, bundled `root_cause_analysis` example, and fleet dashboard aggregates in the web Operations panel.
+- **Readiness polish:** CI smoke (`scripts/readiness_smoke.sh`), agent `/v1/readiness` integration
+  tests, `spanda deploy|fleet agent readiness` CLI, TypeScript fallbacks for all operational
+  commands (`src/operational.ts`), span-aware LSP readiness diagnostics, `POST /v1/program` on
+  deploy agents, bundled `root_cause_analysis` example, and fleet dashboard aggregates in the web
+  Operations panel.
 
-- **Readiness gap closure (phases 1–4):** `--target`, `--runtime`, `--inject-health-faults`, and `--agent-json` on `spanda readiness`; `spanda check --readiness-json` for IDE diagnostics; `spanda demo readiness`; bundled showcase examples synced to the CLI crate.
-- **Agent readiness API:** `GET /v1/readiness` on deploy and fleet agents (`?runtime=true`, `?inject_health_faults=true`); TypeScript CLI fallback via `src/readiness.ts` when the native binary is unavailable.
-- **Operations dashboard:** `packages/web` Operations view with local readiness scoring and live agent fetch.
-- **LSP readiness diagnostics:** readiness issues surface in the language server via native CLI or TypeScript fallback.
+- **Readiness gap closure (phases 1–4):** `--target`, `--runtime`, `--inject-health-faults`, and
+  `--agent-json` on `spanda readiness`; `spanda check --readiness-json` for IDE diagnostics; `spanda
+  demo readiness`; bundled showcase examples synced to the CLI crate.
+- **Agent readiness API:** `GET /v1/readiness` on deploy and fleet agents (`?runtime=true`,
+  `?inject_health_faults=true`); TypeScript CLI fallback via `src/readiness.ts` when the native
+  binary is unavailable.
+- **Operations dashboard:** `packages/web` Operations view with local readiness scoring and live
+  agent fetch.
+- **LSP readiness diagnostics:** readiness issues surface in the language server via native CLI or
+  TypeScript fallback.
 
-- **Operational readiness engine:** new `spanda-readiness` crate composing hardware, capability, health, connectivity, safety, and mission gates into weighted `ReadinessReport` with `spanda readiness <file.sd>` (`--json`, `--markdown`, `--html`).
-- **Mission assurance CLI:** `spanda verify mission`, `spanda analyze-failure`, `spanda safety-report`, `spanda diagnose`, `spanda audit`, `spanda verify-fleet`, `spanda verify-approval`, `spanda fleet readiness`, `spanda twin readiness`.
-- **Mission approvals:** `requires approval <Actor> for: <action>` in mission blocks for human-in-the-loop verification.
-- **Showcase examples:** `examples/showcase/readiness/`, `mission_verification/`, `failure_analysis/`, `safety_report/`, `fleet_readiness/`, `root_cause_analysis/`.
-- **Docs:** [readiness.md](docs/readiness.md), [mission-verification.md](docs/mission-verification.md), [failure-analysis.md](docs/failure-analysis.md), [safety-reporting.md](docs/safety-reporting.md), [fleet-readiness.md](docs/fleet-readiness.md), [root-cause-analysis.md](docs/root-cause-analysis.md), [safety-auditor.md](docs/safety-auditor.md).
-- **Platform positioning:** README reframed as Autonomous Systems Platform; Spanda Platform component map; "Why Spanda?" and "What makes Spanda different?" sections; homepage messaging (Build · Verify · Simulate · Deploy · Operate).
-- **Docs:** [platform-overview.md](docs/platform-overview.md) (platform vs language); [platform-positioning-migration.md](docs/platform-positioning-migration.md) (messaging migration and GitHub metadata); roadmap reorganized by platform area; platform Mermaid diagram in [diagrams/README.md](docs/diagrams/README.md).
-- **Bundled rover demo:** `spanda demo rover` ships `examples/showcase/autonomous_rover/` source in the crate (install fetches registry deps).
+- **Operational readiness engine:** new `spanda-readiness` crate composing hardware, capability,
+  health, connectivity, safety, and mission gates into weighted `ReadinessReport` with `spanda
+  readiness <file.sd>` (`--json`, `--markdown`, `--html`).
+- **Mission assurance CLI:** `spanda verify mission`, `spanda analyze-failure`, `spanda
+  safety-report`, `spanda diagnose`, `spanda audit`, `spanda verify-fleet`, `spanda
+  verify-approval`, `spanda fleet readiness`, `spanda twin readiness`.
+- **Mission approvals:** `requires approval <Actor> for: <action>` in mission blocks for
+  human-in-the-loop verification.
+- **Showcase examples:** `examples/showcase/readiness/`, `mission_verification/`,
+  `failure_analysis/`, `safety_report/`, `fleet_readiness/`, `root_cause_analysis/`.
+- **Docs:** [readiness.md](docs/readiness.md),
+  [mission-verification.md](docs/mission-verification.md),
+  [failure-analysis.md](docs/failure-analysis.md), [safety-reporting.md](docs/safety-reporting.md),
+  [fleet-readiness.md](docs/fleet-readiness.md),
+  [root-cause-analysis.md](docs/root-cause-analysis.md),
+  [safety-auditor.md](docs/safety-auditor.md).
+- **Platform positioning:** README reframed as Autonomous Systems Platform; Spanda Platform
+  component map; "Why Spanda?" and "What makes Spanda different?" sections; homepage messaging
+  (Build · Verify · Simulate · Deploy · Operate).
+- **Docs:** [platform-overview.md](docs/platform-overview.md) (platform vs language);
+  [platform-positioning-migration.md](docs/platform-positioning-migration.md) (messaging migration
+  and GitHub metadata); roadmap reorganized by platform area; platform Mermaid diagram in
+  [diagrams/README.md](docs/diagrams/README.md).
+- **Bundled rover demo:** `spanda demo rover` ships `examples/showcase/autonomous_rover/` source in
+  the crate (install fetches registry deps).
 - **Registry index:** all 29 `packages/registry/*` scaffolds indexed in `registry/index.json`.
 - **Phase 30 test crate:** `phase30_gaps.rs` for health polling during trigger loops.
-- **Docs:** Phase 27+ language reference section; version narrative aligned to v0.4; Phase 25 marked complete; native deploy tier matches feature-status (experimental).
+- **Docs:** Phase 27+ language reference section; version narrative aligned to v0.4; Phase 25 marked
+  complete; native deploy tier matches feature-status (experimental).
 
 ### Changed
 
-- **Docs:** Platform positioning follow-up — docs-site intro, getting-started, spanda-architecture, hardware-compatibility, demo-script, robotics-platform, For Dummies ch.1; CLI man blurb in `spanda-docs`; regenerated `spanda-reference.md` and `docs/man/`.
-- **Brand assets:** Logo in README, docs index, platform overview, mdBook intro; banner and favicon on `website/index.html`; VS Code extension icon from `assets/image/app_favicon.png`.
+- **Docs:** Platform positioning follow-up — docs-site intro, getting-started, spanda-architecture,
+  hardware-compatibility, demo-script, robotics-platform, For Dummies ch.1; CLI man blurb in
+  `spanda-docs`; regenerated `spanda-reference.md` and `docs/man/`.
+- **Brand assets:** Logo in README, docs index, platform overview, mdBook intro; banner and favicon
+  on `website/index.html`; VS Code extension icon from `assets/image/app_favicon.png`.
 - Golden-path live AI example reference: `examples/features/live_openai.sd`.
 
 ### Fixed
 
-- **Formatter spans:** parser `span_from` now uses an exclusive end offset so `spanda fmt` preserves closing braces on span-backed declarations (hardware, assurance, health, kill switch).
-- **Robot safety formatting:** `max_speed` rules no longer duplicate velocity units when the value is already a unit literal.
-- **State estimation runtime:** `state_estimator` declarations register `SensorFusion` bindings at robot setup; a single estimator aliases `fusion`.
-- **Learned anomaly backends:** `learned_models()` detects `assurance.anomaly` imports for package-backed detectors.
-- **Fleet and deploy agents:** per-robot/per-target state files in Rust and TypeScript so concurrent agents on one host do not inherit the wrong identity; fleet mesh relay no longer holds the coordinator mutex during outbound HTTP; fleet agents reject peer relays when startup identity is missing.
-- **Agent hardening:** TypeScript per-identity state paths ignore `SPANDA_*_STATE` env overrides; stale deployment fields reset when loaded identity mismatches startup; HTTPS agents use read timeouts and connection shutdown; HTTP 400 responses shut down cleanly; TypeScript agent servers serialize concurrent requests; remote/mesh clients use 30s fetch timeouts; `spanda fleet mesh start` routes through the native CLI; integration test spawns use per-identity state files.
+- **Formatter spans:** parser `span_from` now uses an exclusive end offset so `spanda fmt` preserves
+  closing braces on span-backed declarations (hardware, assurance, health, kill switch).
+- **Robot safety formatting:** `max_speed` rules no longer duplicate velocity units when the value
+  is already a unit literal.
+- **State estimation runtime:** `state_estimator` declarations register `SensorFusion` bindings at
+  robot setup; a single estimator aliases `fusion`.
+- **Learned anomaly backends:** `learned_models()` detects `assurance.anomaly` imports for
+  package-backed detectors.
+- **Fleet and deploy agents:** per-robot/per-target state files in Rust and TypeScript so concurrent
+  agents on one host do not inherit the wrong identity; fleet mesh relay no longer holds the
+  coordinator mutex during outbound HTTP; fleet agents reject peer relays when startup identity is
+  missing.
+- **Agent hardening:** TypeScript per-identity state paths ignore `SPANDA_*_STATE` env overrides;
+  stale deployment fields reset when loaded identity mismatches startup; HTTPS agents use read
+  timeouts and connection shutdown; HTTP 400 responses shut down cleanly; TypeScript agent servers
+  serialize concurrent requests; remote/mesh clients use 30s fetch timeouts; `spanda fleet mesh
+  start` routes through the native CLI; integration test spawns use per-identity state files.
 
 ## [0.4.0] - 2026-06-22
 
 ### Added
 
-- **Native deploy path:** `spanda deploy --target native` links LLVM binaries (same pipeline as `compile-native`); guide [native-deploy.md](docs/native-deploy.md).
-- **ROS 2 polish:** `spanda ros2 check [--json]` validates `ROS_DISTRO`, rclpy, and bridge script before live transport.
-- **Distributed fleet docs:** [fleet-distributed.md](docs/fleet-distributed.md) for `--remote` orchestration, agent registry, and OTA rollout.
+- **Native deploy path:** `spanda deploy --target native` links LLVM binaries (same pipeline as
+  `compile-native`); guide [native-deploy.md](docs/native-deploy.md).
+- **ROS 2 polish:** `spanda ros2 check [--json]` validates `ROS_DISTRO`, rclpy, and bridge script
+  before live transport.
+- **Distributed fleet docs:** [fleet-distributed.md](docs/fleet-distributed.md) for `--remote`
+  orchestration, agent registry, and OTA rollout.
 - **CI:** `live-iot-golden-path` job runs `scripts/live_iot_golden_path.sh`.
 
 ## [0.3.0] - 2026-06-22
 
 ### Added
 
-- **Install ergonomics:** crate renamed to `spanda` (`cargo install --path crates/spanda-cli` installs binary `spanda`); `spanda --version`; bundled showcase examples ship in the crate for `spanda demo` without a full clone; `scripts/sync_bundled_examples.sh`.
-- **Productization (credibility & demos):** `spanda demo {rover,safety,verify,fleet,health}`; showcase directories under `examples/showcase/`; `scripts/install.sh`, `scripts/benchmark.sh`, `scripts/showcase_smoke.sh`; docs [benchmarks.md](docs/benchmarks.md), [known-limitations.md](docs/known-limitations.md), [demo-script.md](docs/demo-script.md), [diagrams/](docs/diagrams/); README trust table; improved `SafeAction` type errors with hints; VS Code snippets; CI `showcase-smoke` job.
-- **LSP v0.3 polish:** keyword hover for `ActionProposal`, `SafeAction`, `safety.validate`, `deploy`, `health_check`, `kill_switch`; SafeAction quick-fix code action.
+- **Install ergonomics:** crate renamed to `spanda` (`cargo install --path crates/spanda-cli`
+  installs binary `spanda`); `spanda --version`; bundled showcase examples ship in the crate for
+  `spanda demo` without a full clone; `scripts/sync_bundled_examples.sh`.
+- **Productization (credibility & demos):** `spanda demo {rover,safety,verify,fleet,health}`;
+  showcase directories under `examples/showcase/`; `scripts/install.sh`, `scripts/benchmark.sh`,
+  `scripts/showcase_smoke.sh`; docs [benchmarks.md](docs/benchmarks.md),
+  [known-limitations.md](docs/known-limitations.md), [demo-script.md](docs/demo-script.md),
+  [diagrams/](docs/diagrams/); README trust table; improved `SafeAction` type errors with hints; VS
+  Code snippets; CI `showcase-smoke` job.
+- **LSP v0.3 polish:** keyword hover for `ActionProposal`, `SafeAction`, `safety.validate`,
+  `deploy`, `health_check`, `kill_switch`; SafeAction quick-fix code action.
 
 ### Changed
 
@@ -551,167 +1574,447 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Multi-robot fleet runtime:** interpreter now setup+executes each robot in isolation so `spanda fleet run` works when the last robot lacks member actuators (e.g. coordinator-only programs).
+- **Multi-robot fleet runtime:** interpreter now setup+executes each robot in isolation so `spanda
+  fleet run` works when the last robot lacks member actuators (e.g. coordinator-only programs).
 
 ## [0.2.0] - 2026-06-23
 ### Added
 
-- **Documentation audit:** new guides [verification-diagnostics.md](docs/verification-diagnostics.md), [typed-handler-io.md](docs/typed-handler-io.md), [testing.md](docs/testing.md); expanded [fleet-health.md](docs/fleet-health.md), [swarm-health.md](docs/swarm-health.md), [kill-switch.md](docs/kill-switch.md), [capability-traceability.md](docs/capability-traceability.md), [agentic-programming.md](docs/agentic-programming.md); example indexes under [examples/hardware/README.md](examples/hardware/README.md), [examples/iot/README.md](examples/iot/README.md).
-- **Examples (Phase 27–35 coverage):** `features/kill_switch.sd`, `fleet_health_require.sd`, `typed_handler_returns.sd`, `agent_can_deny.sd`, `live_openai.sd`, `live_anthropic.sd`, `live_onnx.sd`, `security/remote_signed_kill_switch.sd`, `integration/debugger_every.sd`, `basics/12_compile_fail_tests.sd`, `iot/modbus_dispatch/`, `packages/publish_mirror_project/`.
+- **Documentation audit:** new guides
+  [verification-diagnostics.md](docs/verification-diagnostics.md),
+  [typed-handler-io.md](docs/typed-handler-io.md), [testing.md](docs/testing.md); expanded
+  [fleet-health.md](docs/fleet-health.md), [swarm-health.md](docs/swarm-health.md),
+  [kill-switch.md](docs/kill-switch.md),
+  [capability-traceability.md](docs/capability-traceability.md),
+  [agentic-programming.md](docs/agentic-programming.md); example indexes under
+  [examples/hardware/README.md](examples/hardware/README.md),
+  [examples/iot/README.md](examples/iot/README.md).
+- **Examples (Phase 27–35 coverage):** `features/kill_switch.sd`, `fleet_health_require.sd`,
+  `typed_handler_returns.sd`, `agent_can_deny.sd`, `live_openai.sd`, `live_anthropic.sd`,
+  `live_onnx.sd`, `security/remote_signed_kill_switch.sd`, `integration/debugger_every.sd`,
+  `basics/12_compile_fail_tests.sd`, `iot/modbus_dispatch/`, `packages/publish_mirror_project/`.
 
 ### Added
 
-- **Verification & DX (Phase 28):** `expect_compile_error { }` blocks in test bodies — validated at test-run time; module function return type enforcement in the typechecker; TypeScript parser mirror for Phase 27 syntax (`kill_switch`, `health_check`, `health_policy`, `requires_capability`, hardware components, robot `uses hardware` / `exposes capabilities`); IoT protocol package stubs (`spanda-opcua`, `spanda-modbus`, `spanda-zigbee`, `spanda-lora`, `spanda-matter`, `spanda-canbus`); integration tests in `p1_features.rs` and `tests/capability-parser.test.ts`.
-- **Verification & DX (Phase 29):** span-aware verification diagnostics for capability, traceability, minimum-hardware, health, and kill-switch checks; `spanda check --verification-json`; LSP integration; runtime health evaluation wired to `HardwareMonitor`; kill-switch and health-fault sim integration tests.
-- **Verification & DX (Phase 30):** `suggested_fix` hints on verification diagnostics; LSP quick-fix code actions; continuous runtime health polling during trigger maintenance; debugger pause events for kill switch (`kill_switch_activated`) and critical health (`health_critical`).
-- **Verification & DX (Phase 31):** runtime `health_policy` enforcement; behavior `-> Type` return validation; agent plan `SafeAction` return checks; IoT package dispatch stubs; agent capability audit logging; DAP output events for health/kill-switch.
-- **Verification & DX (Phase 32):** in-memory IoT hub; task return types; agent `can[]` default-deny; VS Code VSIX verify script.
-- **Verification & DX (Phase 33):** trigger handler `-> Type` return validation; live Modbus TCP and OPC-UA bridge IoT paths; live OpenAI provider for `ai_model` when `OPENAI_API_KEY` is set.
-- **Verification & DX (Phase 34):** event handler I/O verification; kill switch `remote_signed` runtime enforcement and `on kill_switch` handlers; VS Code extension CI; IoT protocol dispatch stubs; live Anthropic provider; fleet/swarm health runtime coordination.
-- **Verification & DX (Phase 35):** TypeScript build parity; live IoT bridges for zigbee/lora/matter/canbus; fleet health `require` runtime; ONNX provider; registry mirror publish; kill-switch verify errors; debugger `every` entry.
-- **Verification & DX (Phase 27):** `spanda-capability` crate — capability registry, hardware/robot capability inference, traceability matrices, minimum-hardware safety checks, health-check analysis; CLI commands `spanda trace {hardware|capabilities|health}`, `spanda health robot`, `spanda hardware capabilities`, `spanda robot capabilities`, `spanda safety check --capabilities`; verify flags `--traceability`, `--capabilities`, `--health`, `--minimum-capabilities`; hardened `spanda test` with file paths, `--json`, `--filter`, `--compile-fail`; language syntax for `kill_switch`, `health_check`, `health_policy`, `requires_capability`, `uses hardware`, `exposes capabilities`; sim flags `--trigger-kill-switch`, `--inject-health-faults`; IoT provider contracts in `spanda-runtime`; `spanda-iot-core` package stub; mdBook site at `docs-site/` + GitHub Pages workflow; guides for kill switch, health, capabilities, traceability, IoT, agentic programming, debugger. (`dispatch_official_package_call`); connectivity provider stubs for Wi-Fi/BLE/cellular; `--trace-providers` observability flag; `spanda update` command; flagship demo at `examples/showcase/autonomous_rover/`; guides [how-packages-work.md](docs/how-packages-work.md), [how-providers-work.md](docs/how-providers-work.md), [how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md).
-- **Platform integration (phase 2):** transitive dependency resolution; SLAM/vision/simulation provider dispatch; `provider_call` mission-trace frames; aligned provider capabilities in validation/security; TS `package_dispatch.ts` mirror; project-aware module registry for check/build/test/run/verify.
-- **Phase 23 CI golden paths:** fleet `--remote` in `golden_path_deploy.sh`; live MQTT Mosquitto job (`scripts/mqtt_golden_path.sh`, `examples/communication/mqtt_live.sd`); twin cloud upload job (`scripts/twin_cloud_golden_path.sh`); LLVM job (`scripts/llvm_golden_path.sh`); `live-mqtt` / `live-transport` Cargo features on `spanda-cli`.
-- **Phase 23 completion:** `world_model { }` parser + observe→fusion belief hook; ledger community scaffold (`packages/community/`, `scripts/ledger_golden_path.sh`); cpp-native and self-host lexer golden paths; Phase 23 marked complete in roadmap.
-- **Phase 26 (in progress):** P1 adoption golden paths — `ci_verify_golden_path.sh`, `python_native_golden_path.sh`; `python-native` feature on `spanda-cli`; Phase 26 on roadmap. — `killer_demo_golden_path.sh`, `live_ai_golden_path.sh`, `ros2_golden_path.sh`, `registry_golden_path.sh`; CI jobs; [ros2_cmd_vel_ping.sd](examples/communication/ros2_cmd_vel_ping.sd); VS Code `vsce publish` on release when `VSCE_PAT` is set; P0 status table in [tier-3-priority-plan.md](docs/tier-3-priority-plan.md).
-- **CI fix:** `cargo fmt` drift; TypeScript build parity (lexer tokens, compile stub, package dispatch); release workflow `VSCE_PAT` guard without invalid `secrets` in `if`.
-- **Phase 24 (complete):** `world_model_patrol.sd` showcase; `fleet_field_trial.sd` three-agent layout; [tier-3-golden-paths.md](docs/tier-3-golden-paths.md) index; `world-model-golden-path` CI; typechecker support for `world_model.belief()` / `update()` / `export()`; [mqtt-nav2-reference-architecture.md](docs/mqtt-nav2-reference-architecture.md); [llvm-embedded-benchmark.md](docs/llvm-embedded-benchmark.md) + `llvm-embedded-golden-path` CI; TS mirror parser/checker parity for `world_model { }`.
+- **Verification & DX (Phase 28):** `expect_compile_error { }` blocks in test bodies — validated at
+  test-run time; module function return type enforcement in the typechecker; TypeScript parser
+  mirror for Phase 27 syntax (`kill_switch`, `health_check`, `health_policy`, `requires_capability`,
+  hardware components, robot `uses hardware` / `exposes capabilities`); IoT protocol package stubs
+  (`spanda-opcua`, `spanda-modbus`, `spanda-zigbee`, `spanda-lora`, `spanda-matter`,
+  `spanda-canbus`); integration tests in `p1_features.rs` and `tests/capability-parser.test.ts`.
+- **Verification & DX (Phase 29):** span-aware verification diagnostics for capability,
+  traceability, minimum-hardware, health, and kill-switch checks; `spanda check
+  --verification-json`; LSP integration; runtime health evaluation wired to `HardwareMonitor`;
+  kill-switch and health-fault sim integration tests.
+- **Verification & DX (Phase 30):** `suggested_fix` hints on verification diagnostics; LSP quick-fix
+  code actions; continuous runtime health polling during trigger maintenance; debugger pause events
+  for kill switch (`kill_switch_activated`) and critical health (`health_critical`).
+- **Verification & DX (Phase 31):** runtime `health_policy` enforcement; behavior `-> Type` return
+  validation; agent plan `SafeAction` return checks; IoT package dispatch stubs; agent capability
+  audit logging; DAP output events for health/kill-switch.
+- **Verification & DX (Phase 32):** in-memory IoT hub; task return types; agent `can[]`
+  default-deny; VS Code VSIX verify script.
+- **Verification & DX (Phase 33):** trigger handler `-> Type` return validation; live Modbus TCP and
+  OPC-UA bridge IoT paths; live OpenAI provider for `ai_model` when `OPENAI_API_KEY` is set.
+- **Verification & DX (Phase 34):** event handler I/O verification; kill switch `remote_signed`
+  runtime enforcement and `on kill_switch` handlers; VS Code extension CI; IoT protocol dispatch
+  stubs; live Anthropic provider; fleet/swarm health runtime coordination.
+- **Verification & DX (Phase 35):** TypeScript build parity; live IoT bridges for
+  zigbee/lora/matter/canbus; fleet health `require` runtime; ONNX provider; registry mirror publish;
+  kill-switch verify errors; debugger `every` entry.
+- **Verification & DX (Phase 27):** `spanda-capability` crate — capability registry, hardware/robot
+  capability inference, traceability matrices, minimum-hardware safety checks, health-check
+  analysis; CLI commands `spanda trace {hardware|capabilities|health}`, `spanda health robot`,
+  `spanda hardware capabilities`, `spanda robot capabilities`, `spanda safety check --capabilities`;
+  verify flags `--traceability`, `--capabilities`, `--health`, `--minimum-capabilities`; hardened
+  `spanda test` with file paths, `--json`, `--filter`, `--compile-fail`; language syntax for
+  `kill_switch`, `health_check`, `health_policy`, `requires_capability`, `uses hardware`, `exposes
+  capabilities`; sim flags `--trigger-kill-switch`, `--inject-health-faults`; IoT provider contracts
+  in `spanda-runtime`; `spanda-iot-core` package stub; mdBook site at `docs-site/` + GitHub Pages
+  workflow; guides for kill switch, health, capabilities, traceability, IoT, agentic programming,
+  debugger. (`dispatch_official_package_call`); connectivity provider stubs for Wi-Fi/BLE/cellular;
+  `--trace-providers` observability flag; `spanda update` command; flagship demo at
+  `examples/showcase/autonomous_rover/`; guides [how-packages-work.md](docs/how-packages-work.md),
+  [how-providers-work.md](docs/how-providers-work.md),
+  [how-runtime-resolution-works.md](docs/how-runtime-resolution-works.md).
+- **Platform integration (phase 2):** transitive dependency resolution; SLAM/vision/simulation
+  provider dispatch; `provider_call` mission-trace frames; aligned provider capabilities in
+  validation/security; TS `package_dispatch.ts` mirror; project-aware module registry for
+  check/build/test/run/verify.
+- **Phase 23 CI golden paths:** fleet `--remote` in `golden_path_deploy.sh`; live MQTT Mosquitto job
+  (`scripts/mqtt_golden_path.sh`, `examples/communication/mqtt_live.sd`); twin cloud upload job
+  (`scripts/twin_cloud_golden_path.sh`); LLVM job (`scripts/llvm_golden_path.sh`); `live-mqtt` /
+  `live-transport` Cargo features on `spanda-cli`.
+- **Phase 23 completion:** `world_model { }` parser + observe→fusion belief hook; ledger community
+  scaffold (`packages/community/`, `scripts/ledger_golden_path.sh`); cpp-native and self-host lexer
+  golden paths; Phase 23 marked complete in roadmap.
+- **Phase 26 (in progress):** P1 adoption golden paths — `ci_verify_golden_path.sh`,
+  `python_native_golden_path.sh`; `python-native` feature on `spanda-cli`; Phase 26 on roadmap. —
+  `killer_demo_golden_path.sh`, `live_ai_golden_path.sh`, `ros2_golden_path.sh`,
+  `registry_golden_path.sh`; CI jobs;
+  [ros2_cmd_vel_ping.sd](examples/communication/ros2_cmd_vel_ping.sd); VS Code `vsce publish` on
+  release when `VSCE_PAT` is set; P0 status table in
+  [tier-3-priority-plan.md](docs/tier-3-priority-plan.md).
+- **CI fix:** `cargo fmt` drift; TypeScript build parity (lexer tokens, compile stub, package
+  dispatch); release workflow `VSCE_PAT` guard without invalid `secrets` in `if`.
+- **Phase 24 (complete):** `world_model_patrol.sd` showcase; `fleet_field_trial.sd` three-agent
+  layout; [tier-3-golden-paths.md](docs/tier-3-golden-paths.md) index; `world-model-golden-path` CI;
+  typechecker support for `world_model.belief()` / `update()` / `export()`;
+  [mqtt-nav2-reference-architecture.md](docs/mqtt-nav2-reference-architecture.md);
+  [llvm-embedded-benchmark.md](docs/llvm-embedded-benchmark.md) + `llvm-embedded-golden-path` CI; TS
+  mirror parser/checker parity for `world_model { }`.
 
-- **Tier 3 priority plan:** [tier-3-priority-plan.md](docs/tier-3-priority-plan.md) documents P0–P4 ordering (v0.5 beta → Phase 23 hardening → v1.0 optional → post-v1.0 production); Phase 23 planned in [lean-core-roadmap.md](docs/lean-core-roadmap.md).
+- **Tier 3 priority plan:** [tier-3-priority-plan.md](docs/tier-3-priority-plan.md) documents P0–P4
+  ordering (v0.5 beta → Phase 23 hardening → v1.0 optional → post-v1.0 production); Phase 23 planned
+  in [lean-core-roadmap.md](docs/lean-core-roadmap.md).
 
-- **Phase 22 Tier 3 experimental:** world-model runtime (`world_model.update`/`belief`/`export`), ledger provider wired to `MockLedgerBackend`, cloud upload via `SPANDA_CLOUD_UPLOAD_URL`, LLVM golden path script, self-host bootstrap example, and [tier-3-experimental.md](docs/tier-3-experimental.md).
-- **Phase 18 P2/P3 closure:** performance (slim CLI, bridge timeouts, `cargo audit`) and observability (pipeline benchmark) marked complete in docs.
+- **Phase 22 Tier 3 experimental:** world-model runtime (`world_model.update`/`belief`/`export`),
+  ledger provider wired to `MockLedgerBackend`, cloud upload via `SPANDA_CLOUD_UPLOAD_URL`, LLVM
+  golden path script, self-host bootstrap example, and
+  [tier-3-experimental.md](docs/tier-3-experimental.md).
+- **Phase 18 P2/P3 closure:** performance (slim CLI, bridge timeouts, `cargo audit`) and
+  observability (pipeline benchmark) marked complete in docs.
 
-- **Phase 21 hosted registry signing:** `registry-index-maintain` binary updates checksums and Ed25519 `version_signatures` in `registry/index.json`; CI verifies against `registry/TRUST_KEY`; `scripts/update_registry_checksums.py` delegates to the Rust tool.
-- **Phase 21 embedder slimming:** optional `certify` and `bridge` features on `spanda-core` (`default-features = false` omits certification and FFI shims; `full` remains default).
+- **Phase 21 hosted registry signing:** `registry-index-maintain` binary updates checksums and
+  Ed25519 `version_signatures` in `registry/index.json`; CI verifies against `registry/TRUST_KEY`;
+  `scripts/update_registry_checksums.py` delegates to the Rust tool.
+- **Phase 21 embedder slimming:** optional `certify` and `bridge` features on `spanda-core`
+  (`default-features = false` omits certification and FFI shims; `full` remains default).
 
-- **Automated version bumps:** `scripts/bump_version.py` bumps `Cargo.toml`, npm packages, and finalizes `CHANGELOG.md`. **Auto release** runs after CI on `main` when a merged PR has `release:major`, `release:minor`, or `release:patch`; **Bump version** (manual Actions workflow) is available for ad-hoc releases. Both push `v*` tags that trigger cargo-dist **Release** builds.
+- **Automated version bumps:** `scripts/bump_version.py` bumps `Cargo.toml`, npm packages, and
+  finalizes `CHANGELOG.md`. **Auto release** runs after CI on `main` when a merged PR has
+  `release:major`, `release:minor`, or `release:patch`; **Bump version** (manual Actions workflow)
+  is available for ad-hoc releases. Both push `v*` tags that trigger cargo-dist **Release** builds.
 
-- **Phase 18 security hardening:** registry tarball SHA-256 verification and tar-slip-safe extraction in `spanda-package`; deploy/fleet/mesh agents require `--token` on non-loopback binds; bridge subprocess timeouts; `cargo audit` CI job; slim CLI build (`--no-default-features --features slim`); pipeline benchmark test; [phase-18-security-hardening.md](docs/phase-18-security-hardening.md).
-- **Phase 18b signed registry:** Ed25519 `version_signatures` on publish/install via `SPANDA_REGISTRY_SIGN_KEY` / `SPANDA_REGISTRY_TRUST_KEY`.
-- **Phase 19 transport shim removal:** dropped `spanda_core::transport*` modules; `spanda-core` no longer depends on transport adapter crates directly.
-- **Phase 20 test distribution + embedder features:** OTA, fleet, provider, and certify integration tests moved to owning crates; `spanda-core` exposes optional `ota` / `fleet` features (`default = ["full"]`; `--no-default-features` for minimal embedder builds).
+- **Phase 18 security hardening:** registry tarball SHA-256 verification and tar-slip-safe
+  extraction in `spanda-package`; deploy/fleet/mesh agents require `--token` on non-loopback binds;
+  bridge subprocess timeouts; `cargo audit` CI job; slim CLI build (`--no-default-features
+  --features slim`); pipeline benchmark test;
+  [phase-18-security-hardening.md](docs/phase-18-security-hardening.md).
+- **Phase 18b signed registry:** Ed25519 `version_signatures` on publish/install via
+  `SPANDA_REGISTRY_SIGN_KEY` / `SPANDA_REGISTRY_TRUST_KEY`.
+- **Phase 19 transport shim removal:** dropped `spanda_core::transport*` modules; `spanda-core` no
+  longer depends on transport adapter crates directly.
+- **Phase 20 test distribution + embedder features:** OTA, fleet, provider, and certify integration
+  tests moved to owning crates; `spanda-core` exposes optional `ota` / `fleet` features (`default =
+  ["full"]`; `--no-default-features` for minimal embedder builds).
 
-- **Interpreter architecture docs:** [architecture.md](docs/architecture.md) documents the modular `spanda-interpreter` runtime tree, one-way `spanda-core` → `spanda-interpreter` dependency, and `CoreRuntimeHost` wiring (see [lean-core-roadmap.md](docs/lean-core-roadmap.md)).
-- **Hosted registry (20 packages):** `registry/index.json` and tarballs for all official packages under `packages/registry/`; `./scripts/build-registry.sh` auto-discovers package scaffolds; [registry.md](docs/registry.md) curated table updated.
-- **Killer demo:** flagship program at `examples/showcase/killer_demo.sd` with walkthrough in [killer-demo.md](docs/killer-demo.md) (check → verify → sim narrative).
-- **Hosted registry tests:** `crates/spanda-package/tests/hosted_registry.rs` guards 20-package index, tarballs, and `file://` fetch; `killer_demo.sd` added to golden manifest.
-- **Interpreter Phase 8 (partial):** moved `triggers`, `telemetry`, `replay`, `twin`, `events`, `state_machine`, `reliability_runtime`, and `serialize` into `spanda-runtime` with thin `spanda-core` shims; interpreter runtime routes imports through workspace crates; `RuntimeError` implements `Display`.
-- **`spanda-comm` crate:** extracts `CommBus`, `InMemoryCommBus`, comm safety chain, and bandwidth helpers from `spanda-core` with a thin shim; interpreter runtime imports `spanda_comm::CommBus` directly.
-- **`spanda-safety` crate:** extracts `SafetyMonitor`, zones, `Pose2d`, and motion validation from `spanda-core` with a thin shim; interpreter runtime imports `spanda_safety` directly.
-- **`spanda-hal` crate:** extracts HAL simulation backend, SoC profiles, and hardware health monitoring from `spanda-core` with thin shims; interpreter runtime imports `spanda_hal` directly.
-- **`spanda-transport` routing:** moves wire-frame encode/decode into `spanda-transport` and `RoutingCommBus` into new `spanda-transport-routing` (avoids adapter-backend cycle); thin `transport` / `transport_wire` shims; interpreter runtime imports `spanda_transport_routing::RoutingCommBus` directly.
-- **`spanda-error` crate:** extracts `SpandaError` and diagnostic helpers from `spanda-core`; interpreter runtime imports `spanda_error::SpandaError` directly; `RunOptions` / `RunResult` remain in core.
-- **`spanda-ai` crate:** extracts AI model registry, agent runtime, memory store, and mock inference helpers from `spanda-core` with a thin shim; interpreter runtime imports `spanda_ai` directly.
-- **`spanda-providers` crate:** extracts official package bootstrap, stubs, and transport adapter wiring; interpreter imports `spanda_providers` for registry bootstrap and comm-bus sync.
-- **`spanda-concurrency` crate:** extracts cooperative channels, spawn handles, and select; thin core shim; interpreter imports `spanda_concurrency` directly.
-- **`spanda-debug` crate:** extracts debugger controller, breakpoints, and `stmt_line`; interpreter imports `spanda_debug` directly.
-- **Phase 8 routing complete:** `spanda-regex-lang`, `spanda-lib-registry`, `spanda-connectivity-runtime`, `spanda-runtime-host`, and `spanda-ffi` extracted with thin shims; interpreter runtime has zero `crate::` imports.
-- **Phase 11 SIR extraction:** `spanda-sir` crate owns AST lowering to typed intermediate representation; `spanda-core` re-exports via thin shim.
-- **Phase 10 run pipeline:** `spanda-certify` and `spanda-bridge` extracted; `spanda-driver::run` owns compile + certify gate + FFI defaults + interpreter execution; `spanda-core` re-exports the public API.
-- **Phase 12 tooling extraction:** `spanda-hardware` (full verify + adapter verify + connectivity validators), `spanda-format`, `spanda-lint`, `spanda-codegen`, `spanda-modules`, and `spanda-docs` extracted with thin core shims; `spanda-security::validate` owns static security audit; `spanda-driver::debug_session` owns the debugger machine; `spanda-fleet::swarm_coordinator` owns swarm coordination; connectivity-runtime re-exports hardware validators to preserve the public API.
-- **Phase 13 facade slim-down:** `spanda-driver` now owns verify, SIR lowering, replay/playback, debug run, deploy plan (with certify proof), and type-check host wiring; `spanda-ota::plan` extracts deploy assignments from the AST; reliability validators live in `spanda-typecheck`; `spanda-core` re-exports the public API without local pipeline bodies.
-- **Phase 14 shim consolidation:** `transport_live` RuntimeValue hooks live in `spanda-transport-routing`; lexer `tokenize` error mapping and FFI bridge alias moved to `spanda-driver` / `spanda-bridge`; `providers/` collapsed to a single facade module.
-- **Phase 15 caller migration:** `spanda-cli` and `spanda-node` import workspace crates directly (`spanda-driver`, OTA/fleet/deploy-http, tooling crates); MQTT/DDS/WebSocket `RuntimeValue` live bridges consolidated in `spanda-transport-routing::live_bridges` with thin core shims retained for API stability.
-- **Phase 16 caller migration:** `spanda-llvm`, `spanda-wasm`, and `spanda-dap` no longer depend on `spanda-core`; only the `spanda-core` facade crate itself pulls the full workspace graph for external API stability.
-- **Phase 17 transport shim removal:** removed `spanda_core::transport_mqtt`, `transport_dds`, `transport_websocket`, and `transport_live`; use `spanda-transport-routing` or `spanda-transport-*` workspace crates directly.
-- **Documentation refresh:** rewritten lean-core guide, workspace crate index, per-crate READMEs; **tutorials & examples hub** (`examples/README.md`, `examples/packages/README.md`, updated tutorial indexes and learning paths); **API doc hierarchy** ([api-documentation.md](docs/api-documentation.md), grouped [api-reference.md](docs/api-reference.md) with facade→crate mapping).
-
-### Changed core `mission` (named steps + lifecycle), program-level `fleet`, `safety_zone`, and `certify` metadata (optional `level` block), extended `observe`/`fusion.read()` with `confidence` and `state_estimate`, `std.navigation` / `std.fusion` / `std.slam` namespaces, navigation runtime helpers; program-level safety zone speed caps (motion allowed in cap zones); TypeScript parser/type-checker and interpreter parity; Nav2 golden-path publish on `navigation.navigate()` when `/cmd_vel` is declared; **OTA deploy CLI** (`spanda deploy plan|rollout|rollback|status` with canary/staged strategies); **fleet orchestrator** (`spanda fleet orchestrate`); verify warning when deploy targets lack certification metadata; examples in `examples/robotics/`; tests in `crates/spanda-core/tests/` and `tests/robotics-platform.test.ts`
-- **Robotics TS CLI parity:** TypeScript mirrors for OTA deploy service and fleet orchestrator; `spanda deploy plan|rollout|rollback|status` and `spanda fleet orchestrate` in the Node CLI without requiring the Rust binary; hardware verify warns on deploy-without-`certify` in the TS fallback
-- **Robotics navigation sugar + adapter verify:** `navigate { goal: ... }` statement sugar (Rust + TS); `spanda verify` reports framework adapter mappings for imports like `navigation.nav2`; registry entries for `spanda-nav2`, `spanda-cartographer`, and `spanda-rtabmap`; example package `examples/packages/nav2_adapter_package/`
-- **Remote OTA deploy agents:** HTTP deploy agent server (`spanda deploy agent start`), agent registry (`.spanda/deploy-agents.json`), `spanda deploy rollout|rollback --remote`; SLAM stub runtime (`slam.localize()` / `slam.map()`); fleet orchestrator peer-aware mode
-- **OTA artifact integrity + HTTPS agents:** deploy plans include SHA-256 `program_hash`; remote rollouts send hash to agents; optional `--require-hash` on agents; HTTPS agent URLs and `--tls-cert` / `--tls-key` for deploy agents (Rust rustls + Node https); fleet peer handoff messages during orchestration; SLAM adapter example packages (`cartographer_adapter_package`, `rtabmap_adapter_package`); `examples/robotics/fleet_peer_missions.sd`
-- **Signed OTA bundles + fleet mesh delivery:** Ed25519-signed deploy artifact bundles (`--sign-key`, `--bundle-out`); agents verify signatures with `--require-signature --trust-key`; fleet orchestrator delivers peer mission steps over the in-process comm mesh (`peer_mesh_mission`)
-- **Distributed fleet agents + strict certify verify:** HTTP fleet peer relay agents (`spanda fleet agent start|register|list`, `.spanda/fleet-agents.json`); `spanda fleet orchestrate --remote` relays peer mission steps to registered agents (`distributed_peer_mesh`); `spanda verify --strict-certify` treats missing deploy certification, ISO13849 level gaps, and deployed-robot mission/safety metadata as errors; adapter registry metadata for Nav2/Cartographer/RTabMap packages
-- **Fleet mesh coordinator + runtime certify gate + adapter production hooks:** `spanda fleet mesh start` centralizes multi-host peer relay (`--mesh-url`); fleet agents forward peer deliveries to downstream robots; `spanda run --enforce-certify` / `SPANDA_ENFORCE_CERTIFY=1` blocks uncertified deploy programs at runtime; `spanda verify-adapter` validates package `[adapter]` sections; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` subprocess bridges for production Nav2/SLAM backends
-- **Certification proof artifacts + TS adapter bridge parity:** `spanda certify prove [--strict] [--out proof.json]` emits structured checklist reports with `program_hash`; TypeScript interpreter invokes Nav2/SLAM subprocess bridges and enforces `--enforce-certify` on run; reference bridge scripts in `examples/adapters/`
-- **Deploy certification gate:** deploy plans embed certification proof summaries; `spanda deploy rollout --require-certify` blocks OTA when strict proof fails; deploy agents accept `--require-certify` to reject rollouts missing strict proof in the payload; TypeScript deploy-service and `verify-adapter` Node fallback mirror Rust behavior
-- **Swarm coordinator (experimental):** program-level `swarm` declarations with `round_robin`, `broadcast`, and `leader_follow` policies; `spanda swarm coordinate` runtime with persistent round-robin cursors in `.spanda/swarm-state.json`; TypeScript parser/checker/coordinator parity
-- **Robotics golden path script:** `examples/robotics/golden_path_deploy.sh` now covers certify, deploy, verify-adapter, fleet orchestrate, and swarm coordinate
-- **Swarm mesh relay:** `spanda swarm coordinate --mesh-url` relays leader-follow peer deliveries through the fleet mesh coordinator; CI `robotics-golden-path` job runs the golden-path script against the release CLI
-- **Swarm peer mesh parity:** round_robin and broadcast policies collect peer-link deliveries for mesh relay; golden path covers mesh fleet/swarm, remote OTA dry-run, and Nav2/SLAM adapter bridge fixtures
-
-### Fixed
-
-- **Fleet mesh CLI routing:** `spanda fleet mesh start` now receives the correct subcommand args (was treating `mesh` as the subcommand and exiting with usage)
-- **Fleet mesh registry reload:** mesh coordinator reloads `SPANDA_FLEET_AGENTS` on each relay request instead of snapshotting at startup; fleet agents honor the same env for downstream forwarding
-- **Swarm mesh peer delivery:** round_robin/broadcast include peer-link deliveries; leader_follow avoids duplicate peer/member handoffs
-- **Secure communication:** optional encrypted communication across buses, topics, services, and actions — `secure_comm` policy, `trust_boundary` declarations, `secrets` blocks (env/file), extended `secure { }` blocks with encryption/authentication/trusted sources, `EncryptedMessage`/`VerifiedMessage` types (AES-256-GCM), production transport wire frames with `source_id`, `spanda security check|audit`, `--secure` and `--inject-security-faults` CLI flags; docs in `docs/secure-communication.md`, `docs/identity.md`, `docs/secrets.md`, `docs/trust-boundaries.md`; examples in `examples/security/`
-- **Secure comm TS parity:** TypeScript `RoutingCommBus` wire encryption, `secure_comm` configure fail-fast, inbound `source_id`, trust-boundary registry, static `security check|audit`, and integration tests in `tests/security-comm.test.ts`
-- **Live MQTT (optional):** `live-mqtt` Cargo feature with rumqttc bridge; enable with `SPANDA_LIVE_MQTT=1`
-- **Live WebSocket + DDS (optional):** `live-websocket` / `live-dds` Cargo features (or `live-transport` bundle); enable with `SPANDA_LIVE_WEBSOCKET=1` / `SPANDA_LIVE_DDS=1`
-- **mTLS handshake (optional):** rustls client handshake when mutual auth + cert/key files + TLS broker URL; `SPANDA_MTLS_REQUIRED=1` fails hard; TypeScript mirror with `SPANDA_MTLS_HANDSHAKE=1`
-- **Runtime trust-boundary enforcement:** publish/receive validates declared boundaries against transport-mapped crossing rules
-- **Bus broker URL:** `url:` field on `bus { }` blocks and `SPANDA_BROKER_URL` env fallback for live transport and mTLS
-
-### Fixed
-
-- **Secure comm parser/runtime:** `secure_topic.publish` / `actuator.execute.safe` capability parsing, timed `fault … at T+10s` offsets, inbound trusted-source checks on receive/poll, TypeScript parser mirror for `secure_comm`, `trust_boundary`, `secrets`, bus blocks, and full `secure { }` fields
-- **Example regression:** repaired 20 skipped `.sd` examples (regex, security, robotics, packages, hardware/modules); `scripts/check_all_examples.sh` resolves relative `SPANDA_BIN` from repo root for package checks — **162 pass, 2 expected-fail, 0 skips**
-- **Lean-core transport shims:** ROS2/MQTT live bridge logic moved from `spanda-core/src/transport_live.rs` into `spanda-transport-ros2` and `spanda-transport-mqtt`; core retains a thin `RuntimeValue` shim with `lean_core_shims` guard tests
-- **Lean-core transport adapters:** `TransportAdapter` implementations moved from `spanda-core/src/transport.rs` into `spanda-transport-{ros2,mqtt,dds,websocket}`; ROS2 rclrs consolidated in `spanda-transport-ros2`; Nav2/SLAM subprocess bridge moved to `spanda-connectivity::adapter_bridge`; unused TLS deps removed from `spanda-core` (TLS remains in `spanda-transport` and deploy crates)
-- **Lean-core provider kernel:** `ProviderRegistry` and provider trait contracts moved to `spanda-runtime`; new `spanda-transport` crate for adapter traits and wire security; `spanda-interpreter` staging crate; fleet orchestration moved to `spanda-fleet`
-- **Lean-core connectivity runtime split:** moved geofence math, connectivity/fault trigger mapping, GPS drift/spoof simulation, and link impairment checks from `spanda-core::connectivity_positioning` to `spanda-connectivity::runtime_sim`; core keeps compatibility wrappers for AST/runtime value conversions
-- **Interpreter extraction staging:** expanded `spanda-runtime::RuntimeHost` with connectivity/geofence/GPS-fault hooks and routed `spanda-core::runtime` trigger/failover/geofence callsites through host methods to reduce direct core coupling
-- **Interpreter host injection:** `Interpreter` now stores an injectable `RuntimeHost` (`InterpreterOptions::runtime_host`); remaining GPS reading and SIM identity paths route through host hooks; `spanda-interpreter` re-exports `RuntimeHost`
-- **Interpreter module split:** connectivity trigger, geofence, and failover logic extracted from `runtime.rs` into `runtime_connectivity.rs` as a staging step toward `spanda-interpreter`
-- **Interpreter submodule extraction:** navigation/SLAM (`runtime_navigation.rs`), robot methods (`runtime_robot.rs`), and trigger dispatch (`runtime_triggers.rs`) split out of `runtime.rs` with lean_core guard tests
-- **Interpreter robotics/sensors/twin split:** AI/mission/fleet/safety (`runtime_robotics.rs`), sensor fusion (`runtime_sensors.rs`), and digital twin (`runtime_twin.rs`) extracted from `runtime.rs` (~580 lines); `runtime.rs` down to ~7670 lines
-- **Interpreter builtins/audit/actuators split:** builtin dispatch (`runtime_builtins.rs`), audit/ledger (`runtime_audit.rs`), actuator motion (`runtime_actuators.rs`), and shared helpers (`runtime_helpers.rs`) extracted; `runtime.rs` down to ~6640 lines
-- **Interpreter eval cluster split:** expression evaluation, member/call dispatch, regex methods, and binary operators moved to `runtime_eval.rs`; `runtime.rs` down to ~5750 lines
-- **Interpreter spawn/async split:** module calls, future resolution, spawn targets, and task-handle queue processing moved to `runtime_spawn.rs`; `runtime.rs` down to ~5480 lines
-- **Interpreter execution split:** statement execution (`runtime_execute.rs`), scheduling/contracts (`runtime_scheduler.rs`), robot setup (`runtime_setup.rs`), reliability (`runtime_reliability.rs`), declarations (`runtime_declarations.rs`), program/trigger glue (`runtime_program.rs`), and security helpers (`runtime_security.rs`) extracted; orchestrator down to ~1790 lines
-- **Interpreter sources in `spanda-interpreter`:** all `runtime_*.rs` modules and `orchestrator.rs` now live under `crates/spanda-interpreter/src/runtime/`; `spanda-core/src/runtime.rs` is a thin `#[path]` include shim; smoke tests moved to `runtime_smoke.rs`
+- **Interpreter architecture docs:** [architecture.md](docs/architecture.md) documents the modular
+  `spanda-interpreter` runtime tree, one-way `spanda-core` → `spanda-interpreter` dependency, and
+  `CoreRuntimeHost` wiring (see [lean-core-roadmap.md](docs/lean-core-roadmap.md)).
+- **Hosted registry (20 packages):** `registry/index.json` and tarballs for all official packages
+  under `packages/registry/`; `./scripts/build-registry.sh` auto-discovers package scaffolds;
+  [registry.md](docs/registry.md) curated table updated.
+- **Killer demo:** flagship program at `examples/showcase/killer_demo.sd` with walkthrough in
+  [killer-demo.md](docs/killer-demo.md) (check → verify → sim narrative).
+- **Hosted registry tests:** `crates/spanda-package/tests/hosted_registry.rs` guards 20-package
+  index, tarballs, and `file://` fetch; `killer_demo.sd` added to golden manifest.
+- **Interpreter Phase 8 (partial):** moved `triggers`, `telemetry`, `replay`, `twin`, `events`,
+  `state_machine`, `reliability_runtime`, and `serialize` into `spanda-runtime` with thin
+  `spanda-core` shims; interpreter runtime routes imports through workspace crates; `RuntimeError`
+  implements `Display`.
+- **`spanda-comm` crate:** extracts `CommBus`, `InMemoryCommBus`, comm safety chain, and bandwidth
+  helpers from `spanda-core` with a thin shim; interpreter runtime imports `spanda_comm::CommBus`
+  directly.
+- **`spanda-safety` crate:** extracts `SafetyMonitor`, zones, `Pose2d`, and motion validation from
+  `spanda-core` with a thin shim; interpreter runtime imports `spanda_safety` directly.
+- **`spanda-hal` crate:** extracts HAL simulation backend, SoC profiles, and hardware health
+  monitoring from `spanda-core` with thin shims; interpreter runtime imports `spanda_hal` directly.
+- **`spanda-transport` routing:** moves wire-frame encode/decode into `spanda-transport` and
+  `RoutingCommBus` into new `spanda-transport-routing` (avoids adapter-backend cycle); thin
+  `transport` / `transport_wire` shims; interpreter runtime imports
+  `spanda_transport_routing::RoutingCommBus` directly.
+- **`spanda-error` crate:** extracts `SpandaError` and diagnostic helpers from `spanda-core`;
+  interpreter runtime imports `spanda_error::SpandaError` directly; `RunOptions` / `RunResult`
+  remain in core.
+- **`spanda-ai` crate:** extracts AI model registry, agent runtime, memory store, and mock inference
+  helpers from `spanda-core` with a thin shim; interpreter runtime imports `spanda_ai` directly.
+- **`spanda-providers` crate:** extracts official package bootstrap, stubs, and transport adapter
+  wiring; interpreter imports `spanda_providers` for registry bootstrap and comm-bus sync.
+- **`spanda-concurrency` crate:** extracts cooperative channels, spawn handles, and select; thin
+  core shim; interpreter imports `spanda_concurrency` directly.
+- **`spanda-debug` crate:** extracts debugger controller, breakpoints, and `stmt_line`; interpreter
+  imports `spanda_debug` directly.
+- **Phase 8 routing complete:** `spanda-regex-lang`, `spanda-lib-registry`,
+  `spanda-connectivity-runtime`, `spanda-runtime-host`, and `spanda-ffi` extracted with thin shims;
+  interpreter runtime has zero `crate::` imports.
+- **Phase 11 SIR extraction:** `spanda-sir` crate owns AST lowering to typed intermediate
+  representation; `spanda-core` re-exports via thin shim.
+- **Phase 10 run pipeline:** `spanda-certify` and `spanda-bridge` extracted; `spanda-driver::run`
+  owns compile + certify gate + FFI defaults + interpreter execution; `spanda-core` re-exports the
+  public API.
+- **Phase 12 tooling extraction:** `spanda-hardware` (full verify + adapter verify + connectivity
+  validators), `spanda-format`, `spanda-lint`, `spanda-codegen`, `spanda-modules`, and `spanda-docs`
+  extracted with thin core shims; `spanda-security::validate` owns static security audit;
+  `spanda-driver::debug_session` owns the debugger machine; `spanda-fleet::swarm_coordinator` owns
+  swarm coordination; connectivity-runtime re-exports hardware validators to preserve the public
+  API.
+- **Phase 13 facade slim-down:** `spanda-driver` now owns verify, SIR lowering, replay/playback,
+  debug run, deploy plan (with certify proof), and type-check host wiring; `spanda-ota::plan`
+  extracts deploy assignments from the AST; reliability validators live in `spanda-typecheck`;
+  `spanda-core` re-exports the public API without local pipeline bodies.
+- **Phase 14 shim consolidation:** `transport_live` RuntimeValue hooks live in
+  `spanda-transport-routing`; lexer `tokenize` error mapping and FFI bridge alias moved to
+  `spanda-driver` / `spanda-bridge`; `providers/` collapsed to a single facade module.
+- **Phase 15 caller migration:** `spanda-cli` and `spanda-node` import workspace crates directly
+  (`spanda-driver`, OTA/fleet/deploy-http, tooling crates); MQTT/DDS/WebSocket `RuntimeValue` live
+  bridges consolidated in `spanda-transport-routing::live_bridges` with thin core shims retained for
+  API stability.
+- **Phase 16 caller migration:** `spanda-llvm`, `spanda-wasm`, and `spanda-dap` no longer depend on
+  `spanda-core`; only the `spanda-core` facade crate itself pulls the full workspace graph for
+  external API stability.
+- **Phase 17 transport shim removal:** removed `spanda_core::transport_mqtt`, `transport_dds`,
+  `transport_websocket`, and `transport_live`; use `spanda-transport-routing` or
+  `spanda-transport-*` workspace crates directly.
+- **Documentation refresh:** rewritten lean-core guide, workspace crate index, per-crate READMEs;
+  **tutorials & examples hub** (`examples/README.md`, `examples/packages/README.md`, updated
+  tutorial indexes and learning paths); **API doc hierarchy**
+  ([api-documentation.md](docs/api-documentation.md), grouped
+  [api-reference.md](docs/api-reference.md) with facade→crate mapping).
 
 ### Changed
 
-- **Dependency security:** `cargo update` bumps `log` 0.4.33 and `quote` 1.0.46; npm upgrades `vitest` to 3.2.6 (critical Dependabot) with `vite` override to 6.4.3 (`npm audit` clean); removed unused TLS crates from `spanda-core` AES-256-GCM wire frames (`spanda/wire/v1:`), `TransportWireFrame` with `source_id`, TLS session negotiation from cert/key secrets, rustls PEM validation when cert files exist, broker URL TLS scheme auto-upgrade (`mqtts://`, `wss://`), session-key derivation from robot secrets for `EncryptedMessage`, and production wire crypto (replacing mock-session stubs)
-- **Python native bridge runtime:** upgraded optional `pyo3` from 0.23 to 0.29 and migrated bridge GIL entrypoint to `Python::attach`; fixed embedded Python runner script syntax for native bridge tests
-- **MQTT TLS dependency chain:** `spanda-transport-mqtt` now uses `rumqttc` 0.25.1 with `default-features = false` + `use-native-tls`, removing the old `rustls-webpki <0.103.13` path from the MQTT transport dependency graph
-- **VS Code marketplace readiness:** bundled LSP in extension VSIX, deploy-target autocomplete, verify picker command, Spanda debug type (`editor/vscode/`)
-- **Hosted package registry:** `registry/index.json` + `spanda-openai` / `spanda-ros2` tarballs; default `SPANDA_REGISTRY_URL`
-- **Live AI provider:** OpenAI via Python bridge — `docs/live-ai-provider.md`, `examples/ffi_openai_live.sd`
+- Core `mission` (named steps + lifecycle), program-level `fleet`, `safety_zone`, and `certify` metadata
+  (optional `level` block), extended `observe`/`fusion.read()` with `confidence` and `state_estimate`,
+  `std.navigation` / `std.fusion` / `std.slam` namespaces, navigation runtime helpers; program-level
+  safety zone speed caps (motion allowed in cap zones); TypeScript parser/type-checker and interpreter
+  parity; Nav2 golden-path publish on `navigation.navigate()` when `/cmd_vel` is declared; **OTA deploy
+  CLI** (`spanda deploy plan|rollout|rollback|status` with canary/staged strategies); **fleet
+  orchestrator** (`spanda fleet orchestrate`); verify warning when deploy targets lack certification
+  metadata; examples in `examples/robotics/`; tests in `crates/spanda-core/tests/` and
+  `tests/robotics-platform.test.ts`
+- **Robotics TS CLI parity:** TypeScript mirrors for OTA deploy service and fleet orchestrator;
+  `spanda deploy plan|rollout|rollback|status` and `spanda fleet orchestrate` in the Node CLI
+  without requiring the Rust binary; hardware verify warns on deploy-without-`certify` in the TS
+  fallback
+- **Robotics navigation sugar + adapter verify:** `navigate { goal: ... }` statement sugar (Rust +
+  TS); `spanda verify` reports framework adapter mappings for imports like `navigation.nav2`;
+  registry entries for `spanda-nav2`, `spanda-cartographer`, and `spanda-rtabmap`; example package
+  `examples/packages/nav2_adapter_package/`
+- **Remote OTA deploy agents:** HTTP deploy agent server (`spanda deploy agent start`), agent
+  registry (`.spanda/deploy-agents.json`), `spanda deploy rollout|rollback --remote`; SLAM stub
+  runtime (`slam.localize()` / `slam.map()`); fleet orchestrator peer-aware mode
+- **OTA artifact integrity + HTTPS agents:** deploy plans include SHA-256 `program_hash`; remote
+  rollouts send hash to agents; optional `--require-hash` on agents; HTTPS agent URLs and
+  `--tls-cert` / `--tls-key` for deploy agents (Rust rustls + Node https); fleet peer handoff
+  messages during orchestration; SLAM adapter example packages (`cartographer_adapter_package`,
+  `rtabmap_adapter_package`); `examples/robotics/fleet_peer_missions.sd`
+- **Signed OTA bundles + fleet mesh delivery:** Ed25519-signed deploy artifact bundles
+  (`--sign-key`, `--bundle-out`); agents verify signatures with `--require-signature --trust-key`;
+  fleet orchestrator delivers peer mission steps over the in-process comm mesh (`peer_mesh_mission`)
+- **Distributed fleet agents + strict certify verify:** HTTP fleet peer relay agents (`spanda fleet
+  agent start|register|list`, `.spanda/fleet-agents.json`); `spanda fleet orchestrate --remote`
+  relays peer mission steps to registered agents (`distributed_peer_mesh`); `spanda verify
+  --strict-certify` treats missing deploy certification, ISO13849 level gaps, and deployed-robot
+  mission/safety metadata as errors; adapter registry metadata for Nav2/Cartographer/RTabMap
+  packages
+- **Fleet mesh coordinator + runtime certify gate + adapter production hooks:** `spanda fleet mesh
+  start` centralizes multi-host peer relay (`--mesh-url`); fleet agents forward peer deliveries to
+  downstream robots; `spanda run --enforce-certify` / `SPANDA_ENFORCE_CERTIFY=1` blocks uncertified
+  deploy programs at runtime; `spanda verify-adapter` validates package `[adapter]` sections;
+  optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` subprocess bridges for production Nav2/SLAM
+  backends
+- **Certification proof artifacts + TS adapter bridge parity:** `spanda certify prove [--strict]
+  [--out proof.json]` emits structured checklist reports with `program_hash`; TypeScript interpreter
+  invokes Nav2/SLAM subprocess bridges and enforces `--enforce-certify` on run; reference bridge
+  scripts in `examples/adapters/`
+- **Deploy certification gate:** deploy plans embed certification proof summaries; `spanda deploy
+  rollout --require-certify` blocks OTA when strict proof fails; deploy agents accept
+  `--require-certify` to reject rollouts missing strict proof in the payload; TypeScript
+  deploy-service and `verify-adapter` Node fallback mirror Rust behavior
+- **Swarm coordinator (experimental):** program-level `swarm` declarations with `round_robin`,
+  `broadcast`, and `leader_follow` policies; `spanda swarm coordinate` runtime with persistent
+  round-robin cursors in `.spanda/swarm-state.json`; TypeScript parser/checker/coordinator parity
+- **Robotics golden path script:** `examples/robotics/golden_path_deploy.sh` now covers certify,
+  deploy, verify-adapter, fleet orchestrate, and swarm coordinate
+- **Swarm mesh relay:** `spanda swarm coordinate --mesh-url` relays leader-follow peer deliveries
+  through the fleet mesh coordinator; CI `robotics-golden-path` job runs the golden-path script
+  against the release CLI
+- **Swarm peer mesh parity:** round_robin and broadcast policies collect peer-link deliveries for
+  mesh relay; golden path covers mesh fleet/swarm, remote OTA dry-run, and Nav2/SLAM adapter bridge
+  fixtures
+
+### Fixed
+
+- **Fleet mesh CLI routing:** `spanda fleet mesh start` now receives the correct subcommand args
+  (was treating `mesh` as the subcommand and exiting with usage)
+- **Fleet mesh registry reload:** mesh coordinator reloads `SPANDA_FLEET_AGENTS` on each relay
+  request instead of snapshotting at startup; fleet agents honor the same env for downstream
+  forwarding
+- **Swarm mesh peer delivery:** round_robin/broadcast include peer-link deliveries; leader_follow
+  avoids duplicate peer/member handoffs
+- **Secure communication:** optional encrypted communication across buses, topics, services, and
+  actions — `secure_comm` policy, `trust_boundary` declarations, `secrets` blocks (env/file),
+  extended `secure { }` blocks with encryption/authentication/trusted sources,
+  `EncryptedMessage`/`VerifiedMessage` types (AES-256-GCM), production transport wire frames with
+  `source_id`, `spanda security check|audit`, `--secure` and `--inject-security-faults` CLI flags;
+  docs in `docs/secure-communication.md`, `docs/identity.md`, `docs/secrets.md`,
+  `docs/trust-boundaries.md`; examples in `examples/security/`
+- **Secure comm TS parity:** TypeScript `RoutingCommBus` wire encryption, `secure_comm` configure
+  fail-fast, inbound `source_id`, trust-boundary registry, static `security check|audit`, and
+  integration tests in `tests/security-comm.test.ts`
+- **Live MQTT (optional):** `live-mqtt` Cargo feature with rumqttc bridge; enable with
+  `SPANDA_LIVE_MQTT=1`
+- **Live WebSocket + DDS (optional):** `live-websocket` / `live-dds` Cargo features (or
+  `live-transport` bundle); enable with `SPANDA_LIVE_WEBSOCKET=1` / `SPANDA_LIVE_DDS=1`
+- **mTLS handshake (optional):** rustls client handshake when mutual auth + cert/key files + TLS
+  broker URL; `SPANDA_MTLS_REQUIRED=1` fails hard; TypeScript mirror with `SPANDA_MTLS_HANDSHAKE=1`
+- **Runtime trust-boundary enforcement:** publish/receive validates declared boundaries against
+  transport-mapped crossing rules
+- **Bus broker URL:** `url:` field on `bus { }` blocks and `SPANDA_BROKER_URL` env fallback for live
+  transport and mTLS
+
+### Fixed
+
+- **Secure comm parser/runtime:** `secure_topic.publish` / `actuator.execute.safe` capability
+  parsing, timed `fault … at T+10s` offsets, inbound trusted-source checks on receive/poll,
+  TypeScript parser mirror for `secure_comm`, `trust_boundary`, `secrets`, bus blocks, and full
+  `secure { }` fields
+- **Example regression:** repaired 20 skipped `.sd` examples (regex, security, robotics, packages,
+  hardware/modules); `scripts/check_all_examples.sh` resolves relative `SPANDA_BIN` from repo root
+  for package checks — **162 pass, 2 expected-fail, 0 skips**
+- **Lean-core transport shims:** ROS2/MQTT live bridge logic moved from
+  `spanda-core/src/transport_live.rs` into `spanda-transport-ros2` and `spanda-transport-mqtt`; core
+  retains a thin `RuntimeValue` shim with `lean_core_shims` guard tests
+- **Lean-core transport adapters:** `TransportAdapter` implementations moved from
+  `spanda-core/src/transport.rs` into `spanda-transport-{ros2,mqtt,dds,websocket}`; ROS2 rclrs
+  consolidated in `spanda-transport-ros2`; Nav2/SLAM subprocess bridge moved to
+  `spanda-connectivity::adapter_bridge`; unused TLS deps removed from `spanda-core` (TLS remains in
+  `spanda-transport` and deploy crates)
+- **Lean-core provider kernel:** `ProviderRegistry` and provider trait contracts moved to
+  `spanda-runtime`; new `spanda-transport` crate for adapter traits and wire security;
+  `spanda-interpreter` staging crate; fleet orchestration moved to `spanda-fleet`
+- **Lean-core connectivity runtime split:** moved geofence math, connectivity/fault trigger mapping,
+  GPS drift/spoof simulation, and link impairment checks from
+  `spanda-core::connectivity_positioning` to `spanda-connectivity::runtime_sim`; core keeps
+  compatibility wrappers for AST/runtime value conversions
+- **Interpreter extraction staging:** expanded `spanda-runtime::RuntimeHost` with
+  connectivity/geofence/GPS-fault hooks and routed `spanda-core::runtime` trigger/failover/geofence
+  callsites through host methods to reduce direct core coupling
+- **Interpreter host injection:** `Interpreter` now stores an injectable `RuntimeHost`
+  (`InterpreterOptions::runtime_host`); remaining GPS reading and SIM identity paths route through
+  host hooks; `spanda-interpreter` re-exports `RuntimeHost`
+- **Interpreter module split:** connectivity trigger, geofence, and failover logic extracted from
+  `runtime.rs` into `runtime_connectivity.rs` as a staging step toward `spanda-interpreter`
+- **Interpreter submodule extraction:** navigation/SLAM (`runtime_navigation.rs`), robot methods
+  (`runtime_robot.rs`), and trigger dispatch (`runtime_triggers.rs`) split out of `runtime.rs` with
+  lean_core guard tests
+- **Interpreter robotics/sensors/twin split:** AI/mission/fleet/safety (`runtime_robotics.rs`),
+  sensor fusion (`runtime_sensors.rs`), and digital twin (`runtime_twin.rs`) extracted from
+  `runtime.rs` (~580 lines); `runtime.rs` down to ~7670 lines
+- **Interpreter builtins/audit/actuators split:** builtin dispatch (`runtime_builtins.rs`),
+  audit/ledger (`runtime_audit.rs`), actuator motion (`runtime_actuators.rs`), and shared helpers
+  (`runtime_helpers.rs`) extracted; `runtime.rs` down to ~6640 lines
+- **Interpreter eval cluster split:** expression evaluation, member/call dispatch, regex methods,
+  and binary operators moved to `runtime_eval.rs`; `runtime.rs` down to ~5750 lines
+- **Interpreter spawn/async split:** module calls, future resolution, spawn targets, and task-handle
+  queue processing moved to `runtime_spawn.rs`; `runtime.rs` down to ~5480 lines
+- **Interpreter execution split:** statement execution (`runtime_execute.rs`), scheduling/contracts
+  (`runtime_scheduler.rs`), robot setup (`runtime_setup.rs`), reliability
+  (`runtime_reliability.rs`), declarations (`runtime_declarations.rs`), program/trigger glue
+  (`runtime_program.rs`), and security helpers (`runtime_security.rs`) extracted; orchestrator down
+  to ~1790 lines
+- **Interpreter sources in `spanda-interpreter`:** all `runtime_*.rs` modules and `orchestrator.rs`
+  now live under `crates/spanda-interpreter/src/runtime/`; `spanda-core/src/runtime.rs` is a thin
+  `#[path]` include shim; smoke tests moved to `runtime_smoke.rs`
+
+### Changed
+
+- **Dependency security:** `cargo update` bumps `log` 0.4.33 and `quote` 1.0.46; npm upgrades
+  `vitest` to 3.2.6 (critical Dependabot) with `vite` override to 6.4.3 (`npm audit` clean); removed
+  unused TLS crates from `spanda-core` AES-256-GCM wire frames (`spanda/wire/v1:`),
+  `TransportWireFrame` with `source_id`, TLS session negotiation from cert/key secrets, rustls PEM
+  validation when cert files exist, broker URL TLS scheme auto-upgrade (`mqtts://`, `wss://`),
+  session-key derivation from robot secrets for `EncryptedMessage`, and production wire crypto
+  (replacing mock-session stubs)
+- **Python native bridge runtime:** upgraded optional `pyo3` from 0.23 to 0.29 and migrated bridge
+  GIL entrypoint to `Python::attach`; fixed embedded Python runner script syntax for native bridge
+  tests
+- **MQTT TLS dependency chain:** `spanda-transport-mqtt` now uses `rumqttc` 0.25.1 with
+  `default-features = false` + `use-native-tls`, removing the old `rustls-webpki <0.103.13` path
+  from the MQTT transport dependency graph
+- **VS Code marketplace readiness:** bundled LSP in extension VSIX, deploy-target autocomplete,
+  verify picker command, Spanda debug type (`editor/vscode/`)
+- **Hosted package registry:** `registry/index.json` + `spanda-openai` / `spanda-ros2` tarballs;
+  default `SPANDA_REGISTRY_URL`
+- **Live AI provider:** OpenAI via Python bridge — `docs/live-ai-provider.md`,
+  `examples/ffi_openai_live.sd`
 - **Twin replay JSON export:** `spanda twin export` and `--twin-export` on run/sim
 - **Web playground:** killer demo preset as default (`packages/web/`)
 - **Debug workflow:** `docs/debugging.md` — step through `task every` in VS Code
-- **Adoption docs:** `docs/adoption-path.md` (one-sprint Python + ROS2 wrap), `docs/ci-verify.md` (GitHub Actions / GitLab + `--json`), `docs/ros2-golden-path.md` (rclpy bridge golden path)
-- **Flagship showcase index:** `examples/showcase/README.md` — three evaluator entry points (safety, verify, sim); README trimmed to match
-- **End-to-end examples:** warehouse delivery, pick-and-place cell, fleet coordination, incident response, real-time patrol, validated telemetry, concurrent inspection (`examples/end_to_end/`)
-- **Feature examples:** `examples/features/` (16 focused demos) plus coverage index mapping every capability to a runnable file
-- **Tutorials index:** master catalog at `docs/tutorials/README.md` (all learning paths, topic guides, examples)
-- **Spanda for Dummies:** plain-English guide in `docs/spanda-for-dummies/` (cheat sheet, glossary, common mistakes)
-- **Spanda 101:** ten-lesson tutorial series in `docs/spanda-101/` (hello robot through end-to-end patrol)
-- **Examples ladder:** `examples/basics/` (11 progressive tutorials), `examples/integration/`, and `examples/end_to_end/` (safe patrol package + replay mission)
-- **Cross-platform installable packages:** cargo-dist release pipeline (Linux/macOS/Windows archives, shell/PowerShell installers, Windows MSI, Homebrew formula); see [docs/installation.md](docs/installation.md)
+- **Adoption docs:** `docs/adoption-path.md` (one-sprint Python + ROS2 wrap), `docs/ci-verify.md`
+  (GitHub Actions / GitLab + `--json`), `docs/ros2-golden-path.md` (rclpy bridge golden path)
+- **Flagship showcase index:** `examples/showcase/README.md` — three evaluator entry points (safety,
+  verify, sim); README trimmed to match
+- **End-to-end examples:** warehouse delivery, pick-and-place cell, fleet coordination, incident
+  response, real-time patrol, validated telemetry, concurrent inspection (`examples/end_to_end/`)
+- **Feature examples:** `examples/features/` (16 focused demos) plus coverage index mapping every
+  capability to a runnable file
+- **Tutorials index:** master catalog at `docs/tutorials/README.md` (all learning paths, topic
+  guides, examples)
+- **Spanda for Dummies:** plain-English guide in `docs/spanda-for-dummies/` (cheat sheet, glossary,
+  common mistakes)
+- **Spanda 101:** ten-lesson tutorial series in `docs/spanda-101/` (hello robot through end-to-end
+  patrol)
+- **Examples ladder:** `examples/basics/` (11 progressive tutorials), `examples/integration/`, and
+  `examples/end_to_end/` (safe patrol package + replay mission)
+- **Cross-platform installable packages:** cargo-dist release pipeline (Linux/macOS/Windows
+  archives, shell/PowerShell installers, Windows MSI, Homebrew formula); see
+  [docs/installation.md](docs/installation.md)
 - Deadline-aware tasks: `deadline`, `jitter <=`, `priority`, `isolated`
 - Latency pipelines: `pipeline name budget Nms { … }`
 - Watchdogs, operating `mode` blocks, `recover from`, `retry`/`fallback`
-- First-class regex: literals, `Regex` type, string methods, triggers, subscribe filters, `validate` rules
+- First-class regex: literals, `Regex` type, string methods, triggers, subscribe filters, `validate`
+  rules
 - Mission trace replay: `spanda replay`, `--record`, `--trace-realtime`, `--metrics-json`
 - Runtime telemetry: `PipelineMetrics`, `WatchdogMetrics`
-- Docs: `docs/realtime.md`, `docs/reliability.md`, `docs/watchdogs.md`, `docs/degraded-modes.md`, `docs/replay.md`, `docs/regex.md`
-- **Language reference:** `spanda reference`, `docs/spanda-reference.md` (JavaDoc-style `std.*`, builtins, types), `docs/man/` (man-page CLI docs)
+- Docs: `docs/realtime.md`, `docs/reliability.md`, `docs/watchdogs.md`, `docs/degraded-modes.md`,
+  `docs/replay.md`, `docs/regex.md`
+- **Language reference:** `spanda reference`, `docs/spanda-reference.md` (JavaDoc-style `std.*`,
+  builtins, types), `docs/man/` (man-page CLI docs)
 - **Compiler API index:** `docs/api-reference.md` (Rust/TypeScript modules and public functions)
 - Examples under `examples/realtime/` and `examples/regex/`
-- **GPS/GNSS positioning and wireless connectivity:** `requires_connectivity`, hardware `connectivity [ … ]`, WGS84 `geofence`, `connectivity_policy`, Bluetooth/BLE blocks, connectivity triggers (`on gps.lost`, `on network.disconnected`, `on gps.spoofed`), `std.positioning` / `std.connectivity` namespaces; TypeScript parser/runtime mirror with TS verify fallback and transport rebinding on failover; u-blox NEO-M8N UART GNSS stub in `lib_registry`; docs in `docs/positioning.md`, `docs/connectivity.md`, `docs/geofencing.md`, `docs/bluetooth.md`, `docs/cellular.md`; examples in `examples/connectivity/`
-- **GPS fault simulation at runtime:** `GpsSpoofing` offsets coordinates and degrades fix quality; `GpsDrift` accumulates positional drift over sim time; applied to GPS sensor reads and geofence checks in Rust and TypeScript; triggers `on gps.spoofed` and `on gps.drift`
-- **TypeScript hardware verify parity:** builtin profile registry, sensor/actuator/network/connectivity checks, timing and mission validation, resource budget, deploy resolution, AI model memory/GPU checks, adapter mapping, topic bandwidth estimation, and `simulate_compatibility` fault injection when Rust CLI is unavailable
-- **Transport reconnect on connectivity failover:** active transport adapter connects and resubscribes topic paths when `connectivity_policy` switches links; inactive stub adapters disconnect
-- **Cellular SIM identity:** `SimIdentity` type and `robot.sim_identity()` return ICCID/carrier/eSIM/attested fields; gated by `cellular.connect` under strict permissions
-- **Satellite emergency backhaul:** `Satellite` connectivity token maps to websocket transport; `SatelliteOutage` fault and `emergency: satellite` failover policies; example in `examples/connectivity/satellite_backup.sd`
-- **Cascade failover:** when fallback link is fault-impaired (`NetworkOutage`, `LteOutage`, etc.), runtime escalates to `emergency` link in the same step
-- **Documentation sync:** migration and getting-started guides updated for TypeScript hardware verify fallback
+- **GPS/GNSS positioning and wireless connectivity:** `requires_connectivity`, hardware
+  `connectivity [ … ]`, WGS84 `geofence`, `connectivity_policy`, Bluetooth/BLE blocks, connectivity
+  triggers (`on gps.lost`, `on network.disconnected`, `on gps.spoofed`), `std.positioning` /
+  `std.connectivity` namespaces; TypeScript parser/runtime mirror with TS verify fallback and
+  transport rebinding on failover; u-blox NEO-M8N UART GNSS stub in `lib_registry`; docs in
+  `docs/positioning.md`, `docs/connectivity.md`, `docs/geofencing.md`, `docs/bluetooth.md`,
+  `docs/cellular.md`; examples in `examples/connectivity/`
+- **GPS fault simulation at runtime:** `GpsSpoofing` offsets coordinates and degrades fix quality;
+  `GpsDrift` accumulates positional drift over sim time; applied to GPS sensor reads and geofence
+  checks in Rust and TypeScript; triggers `on gps.spoofed` and `on gps.drift`
+- **TypeScript hardware verify parity:** builtin profile registry,
+  sensor/actuator/network/connectivity checks, timing and mission validation, resource budget,
+  deploy resolution, AI model memory/GPU checks, adapter mapping, topic bandwidth estimation, and
+  `simulate_compatibility` fault injection when Rust CLI is unavailable
+- **Transport reconnect on connectivity failover:** active transport adapter connects and
+  resubscribes topic paths when `connectivity_policy` switches links; inactive stub adapters
+  disconnect
+- **Cellular SIM identity:** `SimIdentity` type and `robot.sim_identity()` return
+  ICCID/carrier/eSIM/attested fields; gated by `cellular.connect` under strict permissions
+- **Satellite emergency backhaul:** `Satellite` connectivity token maps to websocket transport;
+  `SatelliteOutage` fault and `emergency: satellite` failover policies; example in
+  `examples/connectivity/satellite_backup.sd`
+- **Cascade failover:** when fallback link is fault-impaired (`NetworkOutage`, `LteOutage`, etc.),
+  runtime escalates to `emergency` link in the same step
+- **Documentation sync:** migration and getting-started guides updated for TypeScript hardware
+  verify fallback
 
 ### Changed
 
-- `.gitignore` allows committed golden mission traces under `examples/` and `tests/golden/` while ignoring other runtime `.trace` files
-- Canonical repository moved to [Davalgi/Spanda](https://github.com/Davalgi/Spanda) (transferred from `sujaydavalgi/Spanda`); docs and package metadata URLs updated accordingly
-- Runtime now executes watchdogs (task heartbeats), `run_pipeline`, retry/fallback on injected faults, recovery handlers, jitter telemetry, and mission trace recording (`--record` writes `<file>.trace`)
+- `.gitignore` allows committed golden mission traces under `examples/` and `tests/golden/` while
+  ignoring other runtime `.trace` files
+- Canonical repository moved to [Davalgi/Spanda](https://github.com/Davalgi/Spanda) (transferred
+  from `sujaydavalgi/Spanda`); docs and package metadata URLs updated accordingly
+- Runtime now executes watchdogs (task heartbeats), `run_pipeline`, retry/fallback on injected
+  faults, recovery handlers, jitter telemetry, and mission trace recording (`--record` writes
+  `<file>.trace`)
 - Operating `mode` blocks execute on enter; topic QoS `deadline` violations are detected at runtime
 - `spanda replay --deterministic` re-runs the traced program and verifies frame parity
 - TypeScript mirror syncs parse/typecheck for realtime, reliability, regex, and replay features
-- Wall-clock RTOS scheduling via `--wall-clock`; frame-by-frame mission playback via `spanda replay --playback`
+- Wall-clock RTOS scheduling via `--wall-clock`; frame-by-frame mission playback via `spanda replay
+  --playback`
 - Mission traces (v2) embed robot state snapshots for playback without re-running program logic
 
 ## [0.1.0-alpha] - 2026-06-20
@@ -762,14 +2065,17 @@ First public alpha release. Spanda is ready for community evaluation.
 **Community**
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
 - GitHub issue templates: bug report, feature request, language proposal, package proposal
-- CI: Rust tests, TypeScript tests, `cargo fmt`, `cargo clippy`, LSP, WASM, ROS2 rclrs native (Ubuntu 22.04 + Humble)
+- CI: Rust tests, TypeScript tests, `cargo fmt`, `cargo clippy`, LSP, WASM, ROS2 rclrs native
+  (Ubuntu 22.04 + Humble)
 
 ### Known limitations
 
-- AI providers use mock backends by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `SPANDA_ONNX_MODEL_PATH` for live calls
+- AI providers use mock backends by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
+  `SPANDA_ONNX_MODEL_PATH` for live calls
 - ROS2 integration requires manual ROS Humble setup (experimental)
 - LLVM/native compilation is experimental; interpreter is the primary runtime
-- `spanda publish` mirrors to `registry/packages/`; hosted index lists 20 curated packages until `./scripts/build-registry.sh` is run
+- `spanda publish` mirrors to `registry/packages/`; hosted index lists 20 curated packages until
+  `./scripts/build-registry.sh` is run
 - VS Code extension VSIX builds in CI; Marketplace publish pending maintainer `VSCE_PAT`
 - Multi-robot examples run in-process by default; distributed orchestration uses HTTP fleet agents
 
@@ -792,15 +2098,19 @@ Post-alpha improvements on `main` (2026-06-20).
 ### Added
 
 **Triggers & concurrency**
-- Unified trigger execution model: events, messages, timers, conditions (`when`/`while`), state, safety, hardware, AI, verification, and twin triggers
+- Unified trigger execution model: events, messages, timers, conditions (`when`/`while`), state,
+  safety, hardware, AI, verification, and twin triggers
 - `TriggerRegistry` with priority ordering, per-tick storm limits, and `TriggerMetrics` telemetry
 - CLI trace flags: `--trace-triggers`, `--trace-events` on `run`, `sim`, and `fleet run`
-- Cooperative concurrency runtime: `spawn`, `join`, `parallel`, channels, `select`, per-task `budget { }`
+- Cooperative concurrency runtime: `spawn`, `join`, `parallel`, channels, `select`, per-task `budget
+  { }`
 - `spanda fleet run` for in-process multi-robot fleet simulation with deploy/peer wiring output
 - Runtime telemetry: `TaskMetrics`, `SchedulerMetrics`, `ExecutionMetrics` in `RunResult.metrics`
 - TypeScript interpreter parity for concurrency and fleet peer messaging
-- `examples/triggers_demo.sd`, `examples/concurrency.sd`, `examples/communication/multi_robot_fleet.sd`
-- [docs/triggers.md](docs/triggers.md), [docs/concurrency.md](docs/concurrency.md), [docs/product-strategy.md](docs/product-strategy.md)
+- `examples/triggers_demo.sd`, `examples/concurrency.sd`,
+  `examples/communication/multi_robot_fleet.sd`
+- [docs/triggers.md](docs/triggers.md), [docs/concurrency.md](docs/concurrency.md),
+  [docs/product-strategy.md](docs/product-strategy.md)
 
 **ROS 2**
 - Native `spanda-ros2-rclrs-native` cdylib for in-process ROS 2 I/O
@@ -810,7 +2120,8 @@ Post-alpha improvements on `main` (2026-06-20).
 **Developer experience**
 - Inline API documentation across all Rust crates and TypeScript sources
 - Contextual logic-block comments replacing generic placeholders
-- Doc tooling: `scripts/add_inline_docs.py`, `scripts/add_logic_block_docs.py`, `scripts/normalize_inline_docs.py`
+- Doc tooling: `scripts/add_inline_docs.py`, `scripts/add_logic_block_docs.py`,
+  `scripts/normalize_inline_docs.py`
 - VS Code extension scaffold operationalized (`editor/vscode`) with packaging workflow
 - Remote registry tarball caching for offline `spanda install`
 

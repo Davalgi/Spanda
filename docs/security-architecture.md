@@ -1,6 +1,7 @@
 # Security Architecture
 
-Spanda separates **security contracts** (core) from **crypto backends** (packages and `spanda-security`).
+Spanda separates **security contracts** (core) from **crypto backends** (packages and
+`spanda-security`).
 
 ## Core security surface
 
@@ -39,7 +40,8 @@ pub trait CryptoProvider {
 }
 ```
 
-Transport encryption uses `TransportSecurityConfig` and `TlsTransportSession` in core; live TLS/mTLS handshakes are optional features on transport shims (`spanda-mqtt`, `spanda-ros2`).
+Transport encryption uses `TransportSecurityConfig` and `TlsTransportSession` in core; live TLS/mTLS
+handshakes are optional features on transport shims (`spanda-mqtt`, `spanda-ros2`).
 
 ## Deploy and OTA security
 
@@ -47,7 +49,8 @@ Transport encryption uses `TransportSecurityConfig` and `TlsTransportSession` in
 - Agent verification: `--require-signature`, `--require-hash`, `--require-certify`
 - Certification proofs: `spanda certify prove`
 
-OTA rollout security moves to `spanda-ota` package over time; CLI commands remain unchanged via compatibility shims.
+OTA rollout security moves to `spanda-ota` package over time; CLI commands remain unchanged via
+compatibility shims.
 
 ## Related docs
 

@@ -1,6 +1,7 @@
 # Safety Auditor
 
-The **Autonomous Safety Auditor** performs static analysis to find deployment gaps before they reach the field.
+The **Autonomous Safety Auditor** performs static analysis to find deployment gaps before they reach
+the field.
 
 ## CLI
 

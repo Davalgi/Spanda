@@ -1,14 +1,18 @@
 # Attention Engine
 
 **Functional domain:** [Attention Engine](./functional-domains.md#attention-engine)  
-**Status: Beta** — health-mapped event prioritization for Control Center, telemetry, and API surfaces.
+**Status: Beta** — health-mapped event prioritization for Control Center, telemetry, and API
+surfaces.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)  
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 > Prior short guide: [attention-system.md](./attention-system.md)
 
 ## Purpose
 
-Reduce event overload and **alert fatigue** by prioritizing signals that matter for safety, missions, and operators. The Attention Engine ranks, suppresses, aggregates, and focuses events — it does not replace alerting infrastructure; it governs **what surfaces first**.
+Reduce event overload and **alert fatigue** by prioritizing signals that matter for safety,
+missions, and operators. The Attention Engine ranks, suppresses, aggregates, and focuses events — it
+does not replace alerting infrastructure; it governs **what surfaces first**.
 
 ## Responsibilities
 
@@ -38,7 +42,8 @@ attention_policy MissionFocus {
 
 ## Types (`spanda-autonomy`)
 
-`AttentionPolicy`, `AttentionScore`, `EventPriority`, `SignalPriority`, `AttentionWindow`, `SuppressionRule`
+`AttentionPolicy`, `AttentionScore`, `EventPriority`, `SignalPriority`, `AttentionWindow`,
+`SuppressionRule`
 
 ## Examples
 

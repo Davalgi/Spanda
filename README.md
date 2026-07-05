@@ -8,19 +8,32 @@
 
 *Build. Verify. Simulate. Deploy. Operate.*
 
-Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust, health, distributed autonomy, and governance.
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
+its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
+using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
+health, distributed autonomy, and governance.
 
-Spanda implements a [Cognitive & Resilience Architecture](docs/cognitive-resilience-architecture.md) inspired by proven engineering principles observed in biological nervous systems — functional concepts (reflexes, homeostasis, immunity, fusion, attention, memory) without biological anatomy in code.
+Spanda implements a [Cognitive & Resilience Architecture](docs/cognitive-resilience-architecture.md)
+inspired by proven engineering principles observed in biological nervous systems — functional
+concepts (reflexes, homeostasis, immunity, fusion, attention, memory) without biological anatomy in
+code.
 
-> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures.
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness,
+> emotions, or neural structures.
 
-Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed robot programs, safety gates, hardware verification, cascading TOML configuration, simulation, replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
+Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed
+robot programs, safety gates, hardware verification, cascading TOML configuration, simulation,
+replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
 
 **Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
 
 Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
 
-**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos, and integration testing. Not a full production claim: default AI and IoT paths are mock-backed unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) · [docs/release-readiness.md](docs/release-readiness.md) · path to v1.0: [docs/organizational-gates.md](docs/organizational-gates.md).
+**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos,
+and integration testing. Not a full production claim: default AI and IoT paths are mock-backed
+unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) ·
+[docs/release-readiness.md](docs/release-readiness.md) · path to v1.0:
+[docs/organizational-gates.md](docs/organizational-gates.md).
 
 ---
 
@@ -32,21 +45,35 @@ AI models are the mind.
 Actuators are the muscles.  
 Spanda is the intelligent pulse that transforms perception, intent, and safety into action.
 
-Autonomy is layered — reflex, spinal cord, brain — with the mind proposing and the pulse enforcing. [Nervous system →](docs/overview/philosophy.md#nervous-system)
+Autonomy is layered — reflex, spinal cord, brain — with the mind proposing and the pulse enforcing.
+[Nervous system →](docs/overview/philosophy.md#nervous-system)
 
-Spanda uses a **Cognitive & Resilience Architecture** inspired by proven engineering principles from biological nervous systems: local reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery, and attention management. The goal is not to imitate biology, but to apply measurable resilience patterns to safety-critical autonomous systems. [Cognitive & Resilience Architecture →](docs/cognitive-resilience-architecture.md)
+Spanda uses a **Cognitive & Resilience Architecture** inspired by proven engineering principles from
+biological nervous systems: local reflexes, distributed coordination, sensory fusion, homeostasis,
+platform immunity, operational memory, adaptive recovery, and attention management. The goal is not
+to imitate biology, but to apply measurable resilience patterns to safety-critical autonomous
+systems. [Cognitive & Resilience Architecture →](docs/cognitive-resilience-architecture.md)
 
-> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures. Biological concepts are used only where they provide measurable engineering benefits.
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness,
+> emotions, or neural structures. Biological concepts are used only where they provide measurable
+> engineering benefits.
 
-**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
+**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* —
+the creative vibration of consciousness and energy that manifests as expansion and contraction in
+all entities, bridging stillness and movement within consciousness; and the first stir of awareness
+that creates and sustains the universe.
 
 ---
 
 ## What is Spanda?
 
-Spanda is an **autonomous systems platform** built around the **Spanda Language** — a typed programming language where sensors, AI models, actuators, safety rules, and deployment targets are first-class concepts in source code.
+Spanda is an **autonomous systems platform** built around the **Spanda Language** — a typed
+programming language where sensors, AI models, actuators, safety rules, and deployment targets are
+first-class concepts in source code.
 
-You write a `robot` block with sensors, actuators, safety zones, and agents. The compiler enforces physical units, validates AI proposals before they reach hardware, and checks that your program fits the deployment target before you ship.
+You write a `robot` block with sensors, actuators, safety zones, and agents. The compiler enforces
+physical units, validates AI proposals before they reach hardware, and checks that your program fits
+the deployment target before you ship.
 
 ```spanda
 robot SafePatrol {
@@ -68,7 +95,8 @@ robot SafePatrol {
 }
 ```
 
-What Spanda is / isn't: [docs/overview/what-spanda-is.md](docs/overview/what-spanda-is.md) · Why Spanda (detail): [docs/overview/philosophy.md](docs/overview/philosophy.md)
+What Spanda is / isn't: [docs/overview/what-spanda-is.md](docs/overview/what-spanda-is.md) · Why
+Spanda (detail): [docs/overview/philosophy.md](docs/overview/philosophy.md)
 
 ---
 
@@ -84,13 +112,16 @@ Spanda is a **product ecosystem** — not only a language repository.
 | **[Platform Architecture v2.0](docs/platform-architecture.md)** | Layers, dependency rules, ownership, CI validation — **0 production upward waivers** |
 | **[Full roadmap](ROADMAP.md)** | Ownership model, dependency maps, timeline (Now / Next / Later / Long Term / Research) |
 
-**Product family:** Spanda Language → Runtime → Verify → Readiness → Assurance → Diagnosis → Recovery → Trust → Control Center → Registry → SDKs
+**Product family:** Spanda Language → Runtime → Verify → Readiness → Assurance → Diagnosis →
+Recovery → Trust → Control Center → Registry → SDKs
 
 ---
 
 ## Unified Entity Model
 
-Everything managed by Spanda is represented as an **Entity** — robots, humans, devices, wearables, packages, providers, missions, facilities, and cloud services share one common architecture for identity, health, readiness, trust, relationships, and lifecycle.
+Everything managed by Spanda is represented as an **Entity** — robots, humans, devices, wearables,
+packages, providers, missions, facilities, and cloud services share one common architecture for
+identity, health, readiness, trust, relationships, and lifecycle.
 
 ```text
 Entity
@@ -101,11 +132,18 @@ Entity
    Platform Services (Verify, Readiness, Device Pool, Fleet)
 ```
 
-- **Browse:** `spanda entity list --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · Control Center **Entities** tab · `GET /v1/entities`
-- **Verify:** `spanda entity verify rover-001 --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `POST /v1/entities/{id}/verify`
-- **Graph:** `spanda entity graph --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `GET /v1/entities/graph`
+- **Browse:** `spanda entity list --config
+  crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · Control Center **Entities** tab ·
+  `GET /v1/entities`
+- **Verify:** `spanda entity verify rover-001 --config
+  crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `POST /v1/entities/{id}/verify`
+- **Graph:** `spanda entity graph --config
+  crates/spanda-config/tests/fixtures/warehouse/spanda.toml` · `GET /v1/entities/graph`
 
-Guide: [docs/entity-model.md](docs/entity-model.md) · APIs: [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) · Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.4.2** on crates.io, PyPI, npm
+Guide: [docs/entity-model.md](docs/entity-model.md) · APIs:
+[docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) ·
+Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.4.2** on crates.io, PyPI,
+npm
 
 Entity CLI commands require a project `spanda.toml` or `--config` (warehouse fixture above).
 
@@ -135,7 +173,9 @@ spanda verify examples/showcase/hardware_compatibility.sd  # hardware fit
 spanda sim examples/showcase/killer_demo.sd        # simulate
 ```
 
-Install options: [docs/installation.md](docs/installation.md) · First project: [docs/getting-started.md](docs/getting-started.md) · Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
+Install options: [docs/installation.md](docs/installation.md) · First project:
+[docs/getting-started.md](docs/getting-started.md) · Troubleshooting:
+[docs/troubleshooting.md](docs/troubleshooting.md)
 
 **Official SDKs** (Control Center API clients):
 
@@ -145,7 +185,9 @@ pip install spanda-sdk
 npm install @davalgi-spanda/sdk
 ```
 
-Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-publishing.md) · Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · Versioning: [docs/control-center-versioning.md](docs/control-center-versioning.md) (`desktop-v0.6.3`)
+Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-publishing.md) ·
+Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · Versioning:
+[docs/control-center-versioning.md](docs/control-center-versioning.md) (`desktop-v0.6.3`)
 
 ---
 
@@ -192,13 +234,15 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | [docs/README.md](docs/README.md) | Full documentation index |
 | [docs/ci-architecture.md](docs/ci-architecture.md) | **Tiered CI** — Fast / Integration / Nightly, branch protection |
 
-CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Language API: [docs/spanda-reference.md](docs/spanda-reference.md)
+CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Language API:
+[docs/spanda-reference.md](docs/spanda-reference.md)
 
 ---
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · CI tiers: [docs/ci-architecture.md](docs/ci-architecture.md)
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · CI tiers:
+[docs/ci-architecture.md](docs/ci-architecture.md)
 
 ```bash
 ./scripts/ci-fast.sh

@@ -1,6 +1,7 @@
 # Spanda manual pages
 
-Man-page style CLI reference (markdown). Regenerate with `python3 scripts/generate_spanda_reference.py`.
+Man-page style CLI reference (markdown). Regenerate with `python3
+scripts/generate_spanda_reference.py`.
 
 | Page | Command |
 |------|--------|

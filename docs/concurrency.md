@@ -1,11 +1,13 @@
 # Spanda Concurrency Model
 
-Spanda uses a deterministic, cooperative concurrency model built around tasks, agents, messages, channels, and events.
+Spanda uses a deterministic, cooperative concurrency model built around tasks, agents, messages,
+channels, and events.
 
 ## Core model
 
 - Deterministic scheduling is the default runtime behavior for robot tasks.
-- Concurrency primitives are language-level (`task`, `spawn`, `await`, `select`, `channel`) instead of raw thread APIs.
+- Concurrency primitives are language-level (`task`, `spawn`, `await`, `select`, `channel`) instead
+  of raw thread APIs.
 - Agent boundaries are isolation boundaries; communication is message-based.
 - Topic/service/action communication is transport-agnostic (`local`, `ros2`, `mqtt`, `dds`, `sim`).
 
@@ -26,7 +28,8 @@ Priority levels:
 - `normal`
 - `low`
 
-Priority affects execution order when multiple tasks are due on the same tick. `critical` tasks execute first.
+Priority affects execution order when multiple tasks are due on the same tick. `critical` tasks
+execute first.
 
 Tasks may also omit `every` and use the runtime default period:
 
@@ -49,7 +52,8 @@ task mapping every 100ms {
 
 ## Async / await
 
-Async module functions return `Future<T>` in the type checker and are resolved by `await` in runtime execution.
+Async module functions return `Future<T>` in the type checker and are resolved by `await` in runtime
+execution.
 
 ```sd
 export async fn detect_objects() -> Pose {
@@ -61,7 +65,8 @@ let result = await detect_objects();
 
 ## Spawn, channels, and select
 
-`spawn` returns a `TaskHandle<T>` that can be joined explicitly. Fire-and-forget `spawn` statements still queue work for completion at the end of the current behavior.
+`spawn` returns a `TaskHandle<T>` that can be joined explicitly. Fire-and-forget `spawn` statements
+still queue work for completion at the end of the current behavior.
 
 ```sd
 let h = spawn planning();
@@ -100,7 +105,8 @@ parallel {
 let fused = _parallel;
 ```
 
-Each branch runs in an isolated environment. `let` bindings and spawned handles are joined deterministically and exposed as `_parallel` (`ParallelResults`).
+Each branch runs in an isolated environment. `let` bindings and spawned handles are joined
+deterministically and exposed as `_parallel` (`ParallelResults`).
 
 ```sd
 parallel {
@@ -132,7 +138,8 @@ Agent-to-agent links are declared with typed channels in robot declarations.
 
 ## Distributed and simulation execution
 
-Spanda communication abstractions are transport-backed and usable across local simulation and distributed deployments.
+Spanda communication abstractions are transport-backed and usable across local simulation and
+distributed deployments.
 
 - simulation transport: deterministic replay/twin workflows
 - ROS2 / MQTT / DDS / websocket transport kinds
@@ -146,7 +153,8 @@ For safety-critical loops:
 - keep periods short
 - isolate safety checks from non-critical AI workloads
 
-This ensures the scheduler services safety tasks before lower-priority workloads on each deterministic tick.
+This ensures the scheduler services safety tasks before lower-priority workloads on each
+deterministic tick.
 
 ## Runtime telemetry and CLI tracing
 
@@ -164,16 +172,19 @@ spanda run robot.sd --trace-scheduler --trace-tasks
 spanda sim robot.sd --replay --trace-scheduler
 ```
 
-Trace logs are prefixed with `trace-scheduler:`, `trace-task:`, or `trace-replay:` in the runtime log stream.
+Trace logs are prefixed with `trace-scheduler:`, `trace-task:`, or `trace-replay:` in the runtime
+log stream.
 
-See `examples/concurrency.sd` for a runnable program combining task priorities, spawn handles, parallel aggregation, and channels.
+See `examples/concurrency.sd` for a runnable program combining task priorities, spawn handles,
+parallel aggregation, and channels.
 
 ## Runtime budget enforcement
 
 Per-task `budget { }` blocks are validated at compile/verify time and enforced at runtime:
 
 - Measured task duration is compared against `cpu` and `battery` duty limits each tick.
-- Over-budget tasks log a violation and are skipped on subsequent ticks until duration estimates recover.
+- Over-budget tasks log a violation and are skipped on subsequent ticks until duration estimates
+  recover.
 
 ## Agent mailboxes
 
@@ -211,7 +222,8 @@ spanda lint --json robot.sd
 
 ## Fleet CLI
 
-`spanda fleet run` prints deploy targets and peer-robot wiring from a program, then runs the in-process simulation (same engine as `spanda run` / `spanda sim`):
+`spanda fleet run` prints deploy targets and peer-robot wiring from a program, then runs the
+in-process simulation (same engine as `spanda run` / `spanda sim`):
 
 ```bash
 spanda fleet run examples/communication/multi_robot_fleet.sd
@@ -225,9 +237,13 @@ Output includes:
 - `peer robot <name> knows <peer>` lines from `robot Peer;` declarations
 - final pose, battery, and replay trace when `--trace-*` flags are set
 
-This is a single-process fleet simulation today; true multi-process orchestration (one subprocess per deploy target) is planned separately.
+This is a single-process fleet simulation today; true multi-process orchestration (one subprocess
+per deploy target) is planned separately.
 
-For fleet **recovery** and **mission continuity** (takeover, delegation, succession) across deployed agents, see [fleet-distributed.md](./fleet-distributed.md), [self-healing.md](./self-healing.md), and [mission-continuity.md](./mission-continuity.md). CLI: `spanda demo self-healing`, `spanda demo continuity`.
+For fleet **recovery** and **mission continuity** (takeover, delegation, succession) across deployed
+agents, see [fleet-distributed.md](./fleet-distributed.md), [self-healing.md](./self-healing.md),
+and [mission-continuity.md](./mission-continuity.md). CLI: `spanda demo self-healing`, `spanda demo
+continuity`.
 
 ## TypeScript interpreter parity
 
@@ -240,6 +256,9 @@ The npm `spanda` package mirrors the Rust concurrency surface in the TypeScript 
 - `peer_send` and dotted `receive RoverA.pose` for fleet peer messaging
 - `publishPeer` in the comm transport layer
 
-Use `compile(source)` + `run(program, { backend })` from `src/compile.ts`, or the CLI with the default TS backend. Rust-native execution (`rust-cli` / `rust-native` backends) uses the same semantics via `spanda-core`.
+Use `compile(source)` + `run(program, { backend })` from `src/compile.ts`, or the CLI with the
+default TS backend. Rust-native execution (`rust-cli` / `rust-native` backends) uses the same
+semantics via `spanda-core`.
 
-Tests: `tests/concurrency.test.ts`, `tests/concurrency-extended.test.ts` (TS); `crates/spanda-core/tests/concurrency_extended.rs` (Rust).
+Tests: `tests/concurrency.test.ts`, `tests/concurrency-extended.test.ts` (TS);
+`crates/spanda-core/tests/concurrency_extended.rs` (Rust).

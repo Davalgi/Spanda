@@ -1,6 +1,7 @@
 # Versioning policy
 
-Spanda follows [Semantic Versioning 2.0.0](https://semver.org/). Each **release stream** has its own version line — bump **only the stream whose area changed**.
+Spanda follows [Semantic Versioning 2.0.0](https://semver.org/). Each **release stream** has its own
+version line — bump **only the stream whose area changed**.
 
 **Canonical roadmap milestones:** [ROADMAP.md](../ROADMAP.md#release-milestones)
 
@@ -13,7 +14,8 @@ Spanda follows [Semantic Versioning 2.0.0](https://semver.org/). Each **release 
 | **Control Center desktop** | Tauri shell, embedded UI packaging, desktop-only fixes | `packages/control-center-desktop/package.json`, `src-tauri/Cargo.toml`, `tauri.conf.json` | `desktop-vX.Y.Z` |
 | **gRPC proto** | Additive or breaking RPC changes | `crates/spanda-api/proto/spanda/v1/control_center.proto` | *(no tag — pin via `GET /v1/version`)* |
 
-**Rule:** Do **not** bump SDK or desktop when only the workspace changes, and vice versa. Streams may diverge (for example workspace `0.5.0`, SDK `0.5.1`, desktop `0.4.2`).
+**Rule:** Do **not** bump SDK or desktop when only the workspace changes, and vice versa. Streams
+may diverge (for example workspace `0.5.0`, SDK `0.5.1`, desktop `0.4.2`).
 
 ## Semver component guide (per stream)
 
@@ -47,9 +49,14 @@ Spanda follows [Semantic Versioning 2.0.0](https://semver.org/). Each **release 
 | Tauri shell, updater, packaging, desktop UI wiring | **patch** or **minor** |
 | Breaking desktop install/upgrade path | **major** |
 
-**Automatic desktop bump:** When a merged PR has a `release:*` label **and** changes Control Center paths (see `scripts/control_center_paths_changed.sh`), **Auto release** bumps the desktop stream with the same semver component and pushes `desktop-v*`.
+**Automatic desktop bump:** When a merged PR has a `release:*` label **and** changes Control Center
+paths (see `scripts/control_center_paths_changed.sh`), **Auto release** bumps the desktop stream
+with the same semver component and pushes `desktop-v*`.
 
-**Version display:** Control Center UI shows `vX.Y.Z` in the sidebar; `spanda control-center --version` and `spanda control-center status` report the UI semver; `GET /v1/version` and `GET /v1/instance` include `control_center_ui_version`. Full reference: [control-center-versioning.md](./control-center-versioning.md).
+**Version display:** Control Center UI shows `vX.Y.Z` in the sidebar; `spanda control-center
+--version` and `spanda control-center status` report the UI semver; `GET /v1/version` and `GET
+/v1/instance` include `control_center_ui_version`. Full reference:
+[control-center-versioning.md](./control-center-versioning.md).
 
 ## Bump commands
 
@@ -115,6 +122,7 @@ Pre-release checks:
 ## Related docs
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md#releases) — workspace and desktop auto release via PR labels
-- [control-center-versioning.md](./control-center-versioning.md) — Control Center UI/CLI/API version display and auto bump
+- [control-center-versioning.md](./control-center-versioning.md) — Control Center UI/CLI/API version
+  display and auto bump
 - [sdk-publishing.md](./sdk-publishing.md) — SDK registry secrets
 - [desktop-release-runbook.md](./desktop-release-runbook.md) — Tauri release

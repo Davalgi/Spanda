@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Phase:** Deploy, Operate · **Priority:** P1.1
 
-Detect mismatch between **expected** (approved baseline configuration, declared deploy posture, and program artifacts) and **actual** (live resolved configuration and on-device agent reports).
+Detect mismatch between **expected** (approved baseline configuration, declared deploy posture, and
+program artifacts) and **actual** (live resolved configuration and on-device agent reports).
 
 ## CLI
 
@@ -44,7 +45,8 @@ spanda readiness examples/showcase/secure_boot/rover.sd --agent Rover@Jetson
 
 ## Agent status fields
 
-Deploy agents (`spanda deploy agent`) and fleet agents (`spanda fleet agent`) expose drift fields on `GET /v1/status`:
+Deploy agents (`spanda deploy agent`) and fleet agents (`spanda fleet agent`) expose drift fields on
+`GET /v1/status`:
 
 - `program_hash` — set on rollout
 - `hardware_profile` — from deploy assignment or rollout payload
@@ -59,11 +61,16 @@ See [hardware-attestation.md](./hardware-attestation.md).
 
 ## Operational drift API (Control Center)
 
-`GET /v1/drift?baseline_id=<snapshot>` uses `detect_operational_drift_full` — config manifest drift, program alignment (when Control Center is started with `--program`), policy enforcement drift, and live fleet/deploy agent findings. Reports roll up into seven enterprise dimensions: configuration, firmware, package, provider, capability, policy, safety.
+`GET /v1/drift?baseline_id=<snapshot>` uses `detect_operational_drift_full` — config manifest drift,
+program alignment (when Control Center is started with `--program`), policy enforcement drift, and
+live fleet/deploy agent findings. Reports roll up into seven enterprise dimensions: configuration,
+firmware, package, provider, capability, policy, safety.
 
 ### Scheduled scans
 
-Set `SPANDA_DRIFT_SCAN_INTERVAL_SECS` (for example `3600`) when starting Control Center to run background scans against the latest config snapshot (or `SPANDA_DRIFT_SCAN_BASELINE_ID`). Failed scans emit `ConfigDrift` alerts; high-severity findings open SRE incidents automatically.
+Set `SPANDA_DRIFT_SCAN_INTERVAL_SECS` (for example `3600`) when starting Control Center to run
+background scans against the latest config snapshot (or `SPANDA_DRIFT_SCAN_BASELINE_ID`). Failed
+scans emit `ConfigDrift` alerts; high-severity findings open SRE incidents automatically.
 
 | Endpoint | Description |
 |----------|-------------|
@@ -78,7 +85,8 @@ spanda control-center drift scans
 
 ## Output
 
-`ConfigDriftReport` — structured findings with `dimension`, `severity`, `message`, and optional `path`. Medium-or-higher severity fails the check (exit code 1).
+`ConfigDriftReport` — structured findings with `dimension`, `severity`, `message`, and optional
+`path`. Medium-or-higher severity fails the check (exit code 1).
 
 ## Foundation
 
@@ -89,4 +97,5 @@ spanda control-center drift scans
 
 ## Related
 
-[configuration.md](./configuration.md) · [readiness.md](./readiness.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md)
+[configuration.md](./configuration.md) · [readiness.md](./readiness.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md)

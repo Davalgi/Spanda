@@ -8,7 +8,8 @@ Improve recovery strategy selection using historical outcomes.
 
 ## Types
 
-`RecoveryConfidence`, `RecoveryHistory`, `StrategySuccessRate`, `StrategyPreference`, `AdaptiveRecoveryPolicy`
+`RecoveryConfidence`, `RecoveryHistory`, `StrategySuccessRate`, `StrategyPreference`,
+`AdaptiveRecoveryPolicy`
 
 ## Examples
 

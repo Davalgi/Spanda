@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Phase:** Build, Operate · **Priority:** P0.1
 
-Visualize how a Spanda program composes missions, capabilities, hardware, providers, packages, and safety rules.
+Visualize how a Spanda program composes missions, capabilities, hardware, providers, packages, and
+safety rules.
 
 ## CLI
 

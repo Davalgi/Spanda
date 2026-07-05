@@ -1,6 +1,7 @@
 # Distributed fleet operations
 
-Spanda supports **multi-robot programs** locally (`spanda fleet run`) and **remote orchestration** when fleet agents are registered on the network.
+Spanda supports **multi-robot programs** locally (`spanda fleet run`) and **remote orchestration**
+when fleet agents are registered on the network.
 
 ## Local multi-robot
 
@@ -8,7 +9,8 @@ Spanda supports **multi-robot programs** locally (`spanda fleet run`) and **remo
 spanda fleet run examples/showcase/fleet_management/main.sd
 ```
 
-The interpreter sets up and executes each robot in isolation so coordinator-only robots (no actuators) do not shadow member bindings.
+The interpreter sets up and executes each robot in isolation so coordinator-only robots (no
+actuators) do not shadow member bindings.
 
 ## Remote orchestration
 
@@ -40,7 +42,8 @@ spanda fleet agent list --json
 spanda fleet orchestrate --remote --json examples/robotics/fleet_field_trial.sd
 ```
 
-`--remote` relays peer deliveries to registered fleet agents. JSON output includes `remote_relayed` and `remote_failed` counts per fleet block.
+`--remote` relays peer deliveries to registered fleet agents. JSON output includes `remote_relayed`
+and `remote_failed` counts per fleet block.
 
 ### 3. Mesh URL (optional)
 
@@ -62,11 +65,13 @@ spanda deploy rollout --remote --require-certify program.sd
 spanda deploy rollback --remote program.sd
 ```
 
-See [phase-18-security-hardening.md](./phase-18-security-hardening.md) for token requirements on non-loopback binds.
+See [phase-18-security-hardening.md](./phase-18-security-hardening.md) for token requirements on
+non-loopback binds.
 
 ## Fleet recovery (mesh + agents)
 
-When programs declare `recovery_policy` and robots are registered on the mesh, runtime recovery actions can relay through the coordinator:
+When programs declare `recovery_policy` and robots are registered on the mesh, runtime recovery
+actions can relay through the coordinator:
 
 ```bash
 export SPANDA_FLEET_MESH_URL=http://coordinator:9700
@@ -104,18 +109,24 @@ Upload program source, then trigger or receive recovery:
 
 Recovery fields on `GET /v1/status`:
 
-- `recovery_engine` — `interpreter` (live runtime dispatch), `assurance` (plan/validate fallback), or `fallback`
+- `recovery_engine` — `interpreter` (live runtime dispatch), `assurance` (plan/validate fallback),
+  or `fallback`
 - `recovery_validation` — `PASS`, `PARTIAL`, or `FAIL`
 - `recovery_active`, `recovery_actions_applied`, `recovery_mode`, `mission_paused`
 - `last_recovery_runtime_logs`, `last_recovery_evidence`
 
-Deployed agents prefer **interpreter recovery** (`execute_recovery_on_program`) for mode transitions, speed caps, mission pause, and connectivity restart. Fleet handoff actions (`reassign mission`, `promote`, `replace`) also relay **continuity takeover** through the mesh when `SPANDA_FLEET_MESH_URL` is set. Set `SPANDA_OPERATOR_APPROVAL=1` when testing high-risk actions without Approval topics.
+Deployed agents prefer **interpreter recovery** (`execute_recovery_on_program`) for mode
+transitions, speed caps, mission pause, and connectivity restart. Fleet handoff actions (`reassign
+mission`, `promote`, `replace`) also relay **continuity takeover** through the mesh when
+`SPANDA_FLEET_MESH_URL` is set. Set `SPANDA_OPERATOR_APPROVAL=1` when testing high-risk actions
+without Approval topics.
 
 See [self-healing.md](./self-healing.md) and [mission-continuity.md](./mission-continuity.md).
 
 ## Fleet continuity (mesh + agents)
 
-When programs declare `continuity_policy` or recovery performs mission handoff, takeover commands relay through the coordinator:
+When programs declare `continuity_policy` or recovery performs mission handoff, takeover commands
+relay through the coordinator:
 
 ```bash
 export SPANDA_FLEET_MESH_URL=http://coordinator:9700
@@ -153,11 +164,14 @@ Request body (JSON):
 
 Continuity fields on `GET /v1/status`:
 
-- `continuity_engine` — `interpreter` (live runtime dispatch), `assurance` (plan/validate fallback), or `fallback`
+- `continuity_engine` — `interpreter` (live runtime dispatch), `assurance` (plan/validate fallback),
+  or `fallback`
 - `continuity_validation` — `PASS`, `PARTIAL`, or `FAIL`
 - `continuity_successor`, `mission_progress_percent`, `continuity_active`
 
-Deployed agents prefer **interpreter continuity** (`execute_continuity_on_program`) for mission pause, successor resume, and checkpoint progress. Pair with `continuity_policy` in uploaded `.sd` source.
+Deployed agents prefer **interpreter continuity** (`execute_continuity_on_program`) for mission
+pause, successor resume, and checkpoint progress. Pair with `continuity_policy` in uploaded `.sd`
+source.
 
 See [mission-continuity.md](./mission-continuity.md).
 

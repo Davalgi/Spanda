@@ -1,6 +1,7 @@
 # Control Center API Reference (v1)
 
-Stable Control Center API served by `spanda control-center serve` and implemented in `crates/spanda-api`.
+Stable Control Center API served by `spanda control-center serve` and implemented in
+`crates/spanda-api`.
 
 For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-reference.md).
 
@@ -27,7 +28,8 @@ These endpoints delegate to the same Rust crates as CLI commands:
 
 ## Recovery Orchestrator (`/v1/recovery/*`)
 
-Platform-wide recovery intelligence — 14 REST routes mirroring `spanda recovery *` CLI. Full reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
+Platform-wide recovery intelligence — 14 REST routes mirroring `spanda recovery *` CLI. Full
+reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
 
 | Endpoint | CLI equivalent |
 |----------|----------------|
@@ -46,7 +48,8 @@ Platform-wide recovery intelligence — 14 REST routes mirroring `spanda recover
 | `GET /v1/recovery/recoverable-entities` | Recoverable entity registry |
 | `POST /v1/recovery/recommend` | Knowledge-base strategy recommendation |
 
-gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`, … (proto semver from `GET /v1/version` — currently **1.0.14**).
+gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`,
+`RecommendRecovery`, … (proto semver from `GET /v1/version` — currently **1.0.14**).
 
 | `POST /v1/programs/verify/hardware` | `spanda verify` |
 | `POST /v1/programs/verify/capabilities` | `spanda verify --capabilities` |
@@ -58,7 +61,9 @@ gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRe
 
 ### `GET /v1/instance`
 
-Returns runtime metadata for the running Control Center process: bind address, optional `--config` / `--program` paths, tenant, device pool summary, fleet agent count, and alert count. No authentication required.
+Returns runtime metadata for the running Control Center process: bind address, optional `--config` /
+`--program` paths, tenant, device pool summary, fleet agent count, and alert count. No
+authentication required.
 
 ```json
 {
@@ -75,7 +80,8 @@ Returns runtime metadata for the running Control Center process: bind address, o
 }
 ```
 
-Use `spanda control-center status [--discover]` to query from the CLI (see [control-center.md](./control-center.md)).
+Use `spanda control-center status [--discover]` to query from the CLI (see
+[control-center.md](./control-center.md)).
 
 ### Request body (program ops)
 
@@ -92,7 +98,8 @@ Use `spanda control-center status [--discover]` to query from the CLI (see [cont
 
 ## Cognitive & Resilience (`/v1/autonomy/*`)
 
-Functional domain summaries — mirror `spanda reflex`, `homeostasis`, `immunity`, `fusion`, `alerts` CLI. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+Functional domain summaries — mirror `spanda reflex`, `homeostasis`, `immunity`, `fusion`, `alerts`
+CLI. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
 
 | Endpoint | CLI / domain | Description |
 |----------|--------------|-------------|
@@ -105,13 +112,17 @@ Functional domain summaries — mirror `spanda reflex`, `homeostasis`, `immunity
 | `GET /v1/autonomy/memory` | — | Operational Memory — category refs + model |
 | `GET /v1/entities/{id}/autonomy` | — | Enriched `Entity.autonomy` profile |
 
-gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
+gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`,
+`GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`,
+`GetAutonomyMemory`, `GetEntityAutonomy`.
 
-SDK: [entity-sdk.md](./entity-sdk.md#cognitive--resilience-domain-clients) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md).
+SDK: [entity-sdk.md](./entity-sdk.md#cognitive--resilience-domain-clients) · Maturity:
+[cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md).
 
 ## Entity registry
 
-Full entity REST/gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [entity-sdk.md](./entity-sdk.md).
+Full entity REST/gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods:
+[entity-sdk.md](./entity-sdk.md).
 
 Read endpoints are unauthenticated by default; mutations require Bearer `SPANDA_API_KEY`.
 
@@ -151,7 +162,8 @@ Read endpoints are unauthenticated by default; mutations require Bearer `SPANDA_
 | `RelateEntities` | `POST /v1/entities/relationships` |
 | `SyncEntities` | `POST /v1/entities/sync` |
 
-Rust `GrpcClient` (`spanda-sdk` `grpc` feature) mirrors these; mutations send Bearer from `SPANDA_API_KEY`. See [entity-model.md](./entity-model.md) and [sdk-rust.md](./sdk-rust.md).
+Rust `GrpcClient` (`spanda-sdk` `grpc` feature) mirrors these; mutations send Bearer from
+`SPANDA_API_KEY`. See [entity-model.md](./entity-model.md) and [sdk-rust.md](./sdk-rust.md).
 
 ## Device registry
 
@@ -187,8 +199,10 @@ SDK wrappers mirror these in each language (`spanda-sdk` types modules).
 ## Versioning
 
 - API version prefix: `/v1/`
-- Policy: `GET /v1/version` — `control_center_ui_version` (Control Center UI semver), `spanda_version` (platform build), `grpc.proto_semver`, `grpc.rpc_count`
-- Runtime status: `GET /v1/instance` — includes `control_center_ui_version` for `spanda control-center status`
+- Policy: `GET /v1/version` — `control_center_ui_version` (Control Center UI semver),
+  `spanda_version` (platform build), `grpc.proto_semver`, `grpc.rpc_count`
+- Runtime status: `GET /v1/instance` — includes `control_center_ui_version` for `spanda
+  control-center status`
 - Operator CLI: `spanda control-center --version`
 - Full release streams and auto bump: [control-center-versioning.md](./control-center-versioning.md)
 - OpenAPI parity enforced by `crates/spanda-api/tests/openapi_parity_tests.rs`
@@ -210,7 +224,13 @@ gRPC-compatible JSON gateway for clients without tonic. Example:
 }
 ```
 
-Supported SDK methods include program ops (`EvaluateProgramReadiness`, `EvaluateProgramAssure`, `EvaluateProgramDiagnose`, `EvaluateProgramHeal`, `VerifyProgramHardware`, `VerifyProgramCapabilities`, `VerifyProgramMission`, `RunProgramSimulation`, `ReplayProgram`, `GetTrustProgram`) and entity reads (`ListEntities`, `GetEntity`, `GetEntityHealth`, `GetEntityTrust`, `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`, `GetEntityRelationships`, `GetEntityReadiness`, `VerifyEntity`). Entity mutations are **gRPC-only** (not exposed on the JSON-RPC gateway).
+Supported SDK methods include program ops (`EvaluateProgramReadiness`, `EvaluateProgramAssure`,
+`EvaluateProgramDiagnose`, `EvaluateProgramHeal`, `VerifyProgramHardware`,
+`VerifyProgramCapabilities`, `VerifyProgramMission`, `RunProgramSimulation`, `ReplayProgram`,
+`GetTrustProgram`) and entity reads (`ListEntities`, `GetEntity`, `GetEntityHealth`,
+`GetEntityTrust`, `GetEntityGraph`, `GetEntityTraceability`, `QueryEntities`,
+`GetEntityRelationships`, `GetEntityReadiness`, `VerifyEntity`). Entity mutations are **gRPC-only**
+(not exposed on the JSON-RPC gateway).
 
 ## Event types (WebSocket)
 

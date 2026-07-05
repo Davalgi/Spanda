@@ -1,18 +1,24 @@
 # Getting Started with Spanda
 
-**Spanda** is an autonomous systems platform with a safety-first **`.sd` language** at its core. This guide gets you from install to your first robot program in under 10 minutes.
+**Spanda** is an autonomous systems platform with a safety-first **`.sd` language** at its core.
+This guide gets you from install to your first robot program in under 10 minutes.
 
-> **Release note:** Current workspace release is **v0.6.3** (**evaluation / beta**). Default AI and transport paths are mock-backed unless you configure live backends — [known-limitations.md](./known-limitations.md) · [troubleshooting.md](./troubleshooting.md).
+> **Release note:** Current workspace release is **v0.6.3** (**evaluation / beta**). Default AI and
+> transport paths are mock-backed unless you configure live backends —
+> [known-limitations.md](./known-limitations.md) · [troubleshooting.md](./troubleshooting.md).
 
-*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see [philosophy](./overview/philosophy.md) for the body metaphor and etymology.
+*Pronounced **SPUN-duh** (/ˈspʌndə/)* — Sanskrit for *the divine pulse*; see
+[philosophy](./overview/philosophy.md) for the body metaphor and etymology.
 
-Platform map: [platform-overview.md](./platform-overview.md) · **All tutorials:** [Tutorials index](./tutorials/README.md)
+Platform map: [platform-overview.md](./platform-overview.md) · **All tutorials:** [Tutorials
+index](./tutorials/README.md)
 
 ---
 
 ## Installation
 
-Install prebuilt packages for Linux, macOS, and Windows from [GitHub Releases](https://github.com/Davalgi/Spanda/releases), or build from source below.
+Install prebuilt packages for Linux, macOS, and Windows from [GitHub
+Releases](https://github.com/Davalgi/Spanda/releases), or build from source below.
 
 See [installation.md](./installation.md) for shell/MSI/PowerShell installers and platform archives.
 
@@ -110,7 +116,8 @@ spanda test examples/basics/07_in_language_tests.sd
 | Packages | `examples/packages/` | Manifests, adapter packages, local deps — [README](../examples/packages/README.md) |
 | By feature | `examples/features/` | One file per capability — [README](../examples/features/README.md) |
 
-After the ladder, try [`examples/showcase/killer_demo.sd`](examples/showcase/killer_demo.sd) and [killer-demo.md](./killer-demo.md).
+After the ladder, try [`examples/showcase/killer_demo.sd`](examples/showcase/killer_demo.sd) and
+[killer-demo.md](./killer-demo.md).
 
 ---
 
@@ -181,7 +188,8 @@ spanda deploy agent register RoverProgram@JetsonOrin http://192.168.1.50:8765
 spanda deploy rollout examples/robotics/remote_ota_deployment.sd --remote --version 1.3.0
 ```
 
-See [robotics-platform.md](./robotics-platform.md) for missions, fleets, safety zones, and Nav2 integration.
+See [robotics-platform.md](./robotics-platform.md) for missions, fleets, safety zones, and Nav2
+integration.
 
 ### Run tests
 
@@ -214,7 +222,8 @@ spanda run src/main.sd --trace-triggers --trace-events
 spanda sim src/main.sd --replay --trace-scheduler
 ```
 
-Trace output appears in the runtime log stream with prefixes like `trace-scheduler:`, `trace-task:`, and `trace-trigger:`.
+Trace output appears in the runtime log stream with prefixes like `trace-scheduler:`, `trace-task:`,
+and `trace-trigger:`.
 
 ### Record and replay mission traces
 
@@ -358,7 +367,9 @@ npm run spanda -- check examples/rover.sd
 npm run spanda -- run examples/rover.sd
 ```
 
-Hardware verification (`spanda verify`) uses the native Rust CLI when built; otherwise the npm wrapper runs the TypeScript hardware verify fallback (sensors, connectivity, timing, AI models, topic bandwidth, and simulate faults).
+Hardware verification (`spanda verify`) uses the native Rust CLI when built; otherwise the npm
+wrapper runs the TypeScript hardware verify fallback (sensors, connectivity, timing, AI models,
+topic bandwidth, and simulate faults).
 
 ---
 
@@ -375,7 +386,8 @@ Open http://localhost:5173 to type-check and run programs in the browser.
 
 ## GPS, connectivity, and geofencing
 
-Spanda programs can declare wireless requirements, geofence zones, and failover policies at module scope, then react with `on gps.lost`, `on geofence Zone exited`, and similar triggers.
+Spanda programs can declare wireless requirements, geofence zones, and failover policies at module
+scope, then react with `on gps.lost`, `on geofence Zone exited`, and similar triggers.
 
 ```bash
 spanda check examples/connectivity/gps_navigation.sd
@@ -383,7 +395,9 @@ spanda check examples/connectivity/geofence_safety.sd
 spanda verify examples/connectivity/connectivity_hardware_verify.sd --target RoverV2
 ```
 
-See [positioning.md](positioning.md), [connectivity.md](connectivity.md), and [geofencing.md](geofencing.md) for syntax and verification details. The TypeScript parser, interpreter, and verify fallback mirror the Rust core for these constructs.
+See [positioning.md](positioning.md), [connectivity.md](connectivity.md), and
+[geofencing.md](geofencing.md) for syntax and verification details. The TypeScript parser,
+interpreter, and verify fallback mirror the Rust core for these constructs.
 
 ---
 
@@ -396,7 +410,11 @@ npm run build:rust
 npm run build --workspace=@spanda/lsp
 ```
 
-Spanda includes a first-party VS Code extension at `editor/vscode` with bundled LSP, verify diagnostics, deploy-target autocomplete, and DAP debugging. CI Integration packages the VSIX on every `main` push (`vscode-extension` job); path-filtered checks also run via [.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when extension or LSP files change.
+Spanda includes a first-party VS Code extension at `editor/vscode` with bundled LSP, verify
+diagnostics, deploy-target autocomplete, and DAP debugging. CI Integration packages the VSIX on
+every `main` push (`vscode-extension` job); path-filtered checks also run via
+[.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when
+extension or LSP files change.
 
 ### Editor support (v0.4)
 
@@ -439,7 +457,8 @@ See [debugging.md](./debugging.md) for the DAP workflow.
 
 ## Live AI and IoT (optional)
 
-When API keys or env flags are set, Spanda calls real providers via the Python bridge; otherwise mock backends apply.
+When API keys or env flags are set, Spanda calls real providers via the Python bridge; otherwise
+mock backends apply.
 
 ```bash
 export OPENAI_API_KEY=sk-your-key
@@ -471,15 +490,20 @@ spanda check examples/showcase/world_model_patrol.sd
 spanda run examples/showcase/world_model_patrol.sd
 ```
 
-Experimental Tier 3 CI scripts (MQTT, twin cloud, LLVM, cpp-native): [tier-3-golden-paths.md](./tier-3-golden-paths.md)
+Experimental Tier 3 CI scripts (MQTT, twin cloud, LLVM, cpp-native):
+[tier-3-golden-paths.md](./tier-3-golden-paths.md)
 
-Platform guides: [how-packages-work.md](./how-packages-work.md) · [how-providers-work.md](./how-providers-work.md) · [how-runtime-resolution-works.md](./how-runtime-resolution-works.md)
+Platform guides: [how-packages-work.md](./how-packages-work.md) ·
+[how-providers-work.md](./how-providers-work.md) ·
+[how-runtime-resolution-works.md](./how-runtime-resolution-works.md)
 
 ---
 
 ## Project configuration (optional)
 
-Multi-file TOML configuration for fleets, devices, providers, health, readiness, and assurance thresholds. The resolver merges `spanda.toml`, `[extends]` layers, and fragment files into `ResolvedSystemConfig` consumed by verify, run, readiness, and replay.
+Multi-file TOML configuration for fleets, devices, providers, health, readiness, and assurance
+thresholds. The resolver merges `spanda.toml`, `[extends]` layers, and fragment files into
+`ResolvedSystemConfig` consumed by verify, run, readiness, and replay.
 
 ```bash
 spanda config validate
@@ -495,7 +519,8 @@ spanda readiness rover.sd --config spanda.toml
 
 Warehouse example fixture: `crates/spanda-config/tests/fixtures/warehouse/`
 
-Guides: [configuration.md](./configuration.md) · [cascading-config.md](./cascading-config.md) · [device-tree.md](./device-tree.md) · [config-validation.md](./config-validation.md)
+Guides: [configuration.md](./configuration.md) · [cascading-config.md](./cascading-config.md) ·
+[device-tree.md](./device-tree.md) · [config-validation.md](./config-validation.md)
 
 ---
 
@@ -509,13 +534,15 @@ spanda health robot examples/hardware/capability_verification.sd --json
 spanda sim rover.sd --inject-health-faults
 ```
 
-Guides: [health-checks.md](./health-checks.md) · [kill-switch.md](./kill-switch.md) · [capability-traceability.md](./capability-traceability.md)
+Guides: [health-checks.md](./health-checks.md) · [kill-switch.md](./kill-switch.md) ·
+[capability-traceability.md](./capability-traceability.md)
 
 ---
 
 ## Mission assurance (optional)
 
-Mission-grade mission assurance: knowledge models, state estimation, anomaly detection, prognostics, mitigation, resilience, and assurance evidence.
+Mission-grade mission assurance: knowledge models, state estimation, anomaly detection, prognostics,
+mitigation, resilience, and assurance evidence.
 
 ```bash
 spanda demo assurance
@@ -546,7 +573,8 @@ Topic examples:
 | [`examples/resilience/`](../examples/resilience/README.md) | [resilience.md](./resilience.md) |
 | [`examples/mission/`](../examples/mission/README.md) | [mission-verification.md](./mission-verification.md) |
 
-Learned anomaly with optional ONNX: `SPANDA_ANOMALY_ONNX_MODEL_PATH=/path/to/model.onnx` — see [anomaly-detection.md](./anomaly-detection.md).
+Learned anomaly with optional ONNX: `SPANDA_ANOMALY_ONNX_MODEL_PATH=/path/to/model.onnx` — see
+[anomaly-detection.md](./anomaly-detection.md).
 
 Operational readiness (composes with assurance): [readiness.md](./readiness.md)
 
@@ -554,7 +582,8 @@ Operational readiness (composes with assurance): [readiness.md](./readiness.md)
 
 ## Self-healing & recovery (optional)
 
-Safety-first recovery: detect → diagnose → plan → validate → execute → verify → audit. Policies declare conditional actions; the runtime never bypasses safety validation or operator approval.
+Safety-first recovery: detect → diagnose → plan → validate → execute → verify → audit. Policies
+declare conditional actions; the runtime never bypasses safety validation or operator approval.
 
 ```bash
 spanda demo self-healing
@@ -584,7 +613,9 @@ spanda analyze-failure examples/showcase/self_healing/rover.sd --with-recovery
 
 ## Mission continuity (optional)
 
-Checkpoint resume, takeover, delegation, and succession when a robot or fleet member fails mid-mission. Pair `continuity_policy` with fleet programs for takeover mode inference and successor ranking.
+Checkpoint resume, takeover, delegation, and succession when a robot or fleet member fails
+mid-mission. Pair `continuity_policy` with fleet programs for takeover mode inference and successor
+ranking.
 
 ```bash
 spanda demo continuity
@@ -601,13 +632,17 @@ spanda succession examples/showcase/fleet_succession/delivery.sd --scope fleet
 spanda check examples/showcase/continuity/warehouse.sd --readiness-json
 ```
 
-Guide: [mission-continuity.md](./mission-continuity.md) · Package: `spanda-mission-continuity` (`assurance.continuity`) · Examples: [`examples/showcase/continuity/`](../examples/showcase/continuity/)
+Guide: [mission-continuity.md](./mission-continuity.md) · Package: `spanda-mission-continuity`
+(`assurance.continuity`) · Examples:
+[`examples/showcase/continuity/`](../examples/showcase/continuity/)
 
 ---
 
 ## Distributed decisions (optional)
 
-Hierarchical autonomy (brain / spinal cord / reflex): reflex safety, local bounded autonomy, fleet coordination, and control-center governance. Declare per-entity authority, local decision trees, and offline policy bounds.
+Hierarchical autonomy (brain / spinal cord / reflex): reflex safety, local bounded autonomy, fleet
+coordination, and control-center governance. Declare per-entity authority, local decision trees, and
+offline policy bounds.
 
 ```bash
 spanda decision list examples/showcase/distributed_decisions/main.sd
@@ -617,13 +652,16 @@ SPANDA_DECISION_TRACE=1 spanda sim examples/showcase/distributed_decisions/main.
 spanda decision trace mission.trace
 ```
 
-Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples: [`examples/showcase/distributed_decisions/`](../examples/showcase/distributed_decisions/)
+Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples:
+[`examples/showcase/distributed_decisions/`](../examples/showcase/distributed_decisions/)
 
 ---
 
 ## Cognitive & Resilience Architecture (optional)
 
-Extends distributed decisions with reflex arcs, homeostasis, platform immunity, sensory fusion, attention, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
+Extends distributed decisions with reflex arcs, homeostasis, platform immunity, sensory fusion,
+attention, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance
+windows — all entity-integrated.
 
 ```bash
 spanda reflex list
@@ -648,9 +686,12 @@ attention_policy MissionFocus {
 }
 ```
 
-Control Center **Cognitive & Resilience** tab (Health & incidents group) loads live data from `/v1/autonomy/*` and per-entity `/v1/entities/{id}/autonomy`.
+Control Center **Cognitive & Resilience** tab (Health & incidents group) loads live data from
+`/v1/autonomy/*` and per-entity `/v1/entities/{id}/autonomy`.
 
-Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke: `./scripts/cognitive_resilience_smoke.sh`
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity:
+[cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke:
+`./scripts/cognitive_resilience_smoke.sh`
 
 ---
 
@@ -698,13 +739,16 @@ spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 spanda verify examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 ```
 
-See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [policy-engine.md](./policy-engine.md).
+See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) ·
+[policy-engine.md](./policy-engine.md).
 
 ---
 
 ## Control Center (enterprise operations)
 
-**Stable** E1–E4 control plane for fleet operators. Full reference: [control-center.md](./control-center.md) · [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md).
+**Stable** E1–E4 control plane for fleet operators. Full reference:
+[control-center.md](./control-center.md) ·
+[enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md).
 
 ### Start the API and embedded UI
 
@@ -722,9 +766,18 @@ spanda control-center serve --bind 127.0.0.1:8080
 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 ```
 
-Open `http://127.0.0.1:8080` for the embedded Control Center UI, or use the React panel in `@davalgi-spanda/web` / the Tauri desktop shell (`npm run control-center:desktop:dev` with the API running). Full two-terminal start and rebuild checklist: [control-center.md — Local dev: start & rebuild](./control-center.md#local-dev-start--rebuild).
+Open `http://127.0.0.1:8080` for the embedded Control Center UI, or use the React panel in
+`@davalgi-spanda/web` / the Tauri desktop shell (`npm run control-center:desktop:dev` with the API
+running). Full two-terminal start and rebuild checklist: [control-center.md — Local dev: start &
+rebuild](./control-center.md#local-dev-start--rebuild).
 
-**API keys:** Run `spanda control-center api-key generate --export` to create a token, set `SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations. In the embedded UI you can paste the token and opt in to **Remember on this browser** (`localStorage`, per `host:port`). Full guide: [control-center.md — Authentication & API keys](./control-center.md#authentication--api-keys). Persistence issues: [troubleshooting.md — Control Center](./troubleshooting.md#serve-and-ui). If `api-key generate` errors, see [troubleshooting.md](./troubleshooting.md).
+**API keys:** Run `spanda control-center api-key generate --export` to create a token, set
+`SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations.
+In the embedded UI you can paste the token and opt in to **Remember on this browser**
+(`localStorage`, per `host:port`). Full guide: [control-center.md — Authentication & API
+keys](./control-center.md#authentication--api-keys). Persistence issues: [troubleshooting.md —
+Control Center](./troubleshooting.md#serve-and-ui). If `api-key generate` errors, see
+[troubleshooting.md](./troubleshooting.md).
 
 Remote API from the CLI (no server required on the client machine):
 
@@ -741,7 +794,10 @@ spanda control-center incidents list
 spanda control-center api get /v1/sre/summary
 ```
 
-Rate limits, WebSocket streaming, SIEM audit export, scheduled reports, and production policy env vars: [control-center.md](./control-center.md) · [control-center-rate-limits.md](./control-center-rate-limits.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+Rate limits, WebSocket streaming, SIEM audit export, scheduled reports, and production policy env
+vars: [control-center.md](./control-center.md) ·
+[control-center-rate-limits.md](./control-center-rate-limits.md) ·
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
 ### Production policy (optional)
 
@@ -764,7 +820,12 @@ export SPANDA_REPORT_SCHEDULE_INTERVAL_SECS=3600
 
 ### Field soak and stable promotion
 
-Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production SDK **0.4.2** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational** gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off ([security-audit-third-party.md](./security-audit-third-party.md)). See [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
+Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production
+SDK **0.4.2** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational**
+gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and
+third-party security audit sign-off
+([security-audit-third-party.md](./security-audit-third-party.md)). See
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
 ### Desktop shell
 
@@ -778,13 +839,22 @@ npm run control-center:desktop:dev
 
 Point the UI at a different API URL with `VITE_CONTROL_CENTER_URL=http://host:port`.
 
-Check the running version: sidebar shows `vX.Y.Z`, or `spanda control-center --version` / `spanda control-center status`.
+Check the running version: sidebar shows `vX.Y.Z`, or `spanda control-center --version` / `spanda
+control-center status`.
 
-**Production install (macOS):** download the **0.6.3** installer from the GitHub Release for tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (`.dmg` or workflow artifact if unsigned). Start the API with `spanda control-center serve`, then launch the desktop app. Maintainer release process: [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
+**Production install (macOS):** download the **0.6.3** installer from the GitHub Release for tag
+[`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (`.dmg` or
+workflow artifact if unsigned). Start the API with `spanda control-center serve`, then launch the
+desktop app. Maintainer release process: [desktop-release-runbook.md](./desktop-release-runbook.md)
+· [control-center-versioning.md](./control-center-versioning.md).
 
 ### Official SDKs
 
-Start Control Center with a program, then use **one** SDK that matches your app's language — all three are thin HTTP clients over the same API (no duplicated platform logic). Which to pick: [sdk.md — Why three SDKs?](./sdk.md#why-three-sdks). Demo serve examples and `--config` / `--program` combinations: [control-center.md — Run with `--config` and `--program`](./control-center.md#run-with-config-and-program).
+Start Control Center with a program, then use **one** SDK that matches your app's language — all
+three are thin HTTP clients over the same API (no duplicated platform logic). Which to pick: [sdk.md
+— Why three SDKs?](./sdk.md#why-three-sdks). Demo serve examples and `--config` / `--program`
+combinations: [control-center.md — Run with `--config` and
+`--program`](./control-center.md#run-with-config-and-program).
 
 ```bash
 cargo run -p spanda -- control-center serve \
@@ -820,7 +890,8 @@ import { SpandaClient } from "@davalgi-spanda/sdk";
 const report = await SpandaClient.local().readiness("rover.sd");
 ```
 
-Full guides: [sdk.md](./sdk.md) · [control-center-api.md](./control-center-api.md) · [sdk-publishing.md](./sdk-publishing.md) (maintainers: PyPI/npm release)
+Full guides: [sdk.md](./sdk.md) · [control-center-api.md](./control-center-api.md) ·
+[sdk-publishing.md](./sdk-publishing.md) (maintainers: PyPI/npm release)
 
 ### Legacy Python client (enterprise ops)
 
@@ -829,7 +900,8 @@ pip install -e 'packages/sdk-python[stream]'
 export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080
 ```
 
-See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift, OTA, and SRE helpers (`ControlCenterClient`).
+See [packages/sdk-python/README.md](../packages/sdk-python/README.md) for drift, OTA, and SRE
+helpers (`ControlCenterClient`).
 
 ---
 

@@ -1,8 +1,12 @@
 # Troubleshooting
 
-Symptom-first fixes for CLI install, official SDK setup, language errors, verification, runtime, fleet, integrations, and enterprise ops. For capability tiers and honest scope limits, see [known-limitations.md](./known-limitations.md). For language-specific mistakes, see [spanda-for-dummies/06-common-mistakes.md](./spanda-for-dummies/06-common-mistakes.md).
+Symptom-first fixes for CLI install, official SDK setup, language errors, verification, runtime,
+fleet, integrations, and enterprise ops. For capability tiers and honest scope limits, see
+[known-limitations.md](./known-limitations.md). For language-specific mistakes, see
+[spanda-for-dummies/06-common-mistakes.md](./spanda-for-dummies/06-common-mistakes.md).
 
-**Related:** [installation.md](./installation.md) · [getting-started.md](./getting-started.md) · [sdk.md](./sdk.md) · [control-center.md](./control-center.md) · [ci-verify.md](./ci-verify.md)
+**Related:** [installation.md](./installation.md) · [getting-started.md](./getting-started.md) ·
+[sdk.md](./sdk.md) · [control-center.md](./control-center.md) · [ci-verify.md](./ci-verify.md)
 
 ---
 
@@ -61,7 +65,8 @@ Confirm: `spanda check examples/hello_world.sd`
 
 ### Stale CLI binary
 
-Several installs can coexist (prebuilt release, `cargo install`, repo `target/debug` or `target/release`). The shell uses the first match on `PATH`.
+Several installs can coexist (prebuilt release, `cargo install`, repo `target/debug` or
+`target/release`). The shell uses the first match on `PATH`.
 
 ```bash
 which spanda
@@ -98,7 +103,8 @@ The `spanda` on your `PATH` predates Control Center CLI support.
 spanda control-center --help
 ```
 
-If that fails, reinstall (above) or use a current [GitHub Release](https://github.com/Davalgi/Spanda/releases). Inside the repo without installing:
+If that fails, reinstall (above) or use a current [GitHub
+Release](https://github.com/Davalgi/Spanda/releases). Inside the repo without installing:
 
 ```bash
 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
@@ -112,7 +118,8 @@ spanda control-center api-key generate --export
 # (usage has no control-center section)
 ```
 
-Same stale-binary issue: the CLI treats `api-key` as a filename, then fails on `generate`. Reinstall and retry.
+Same stale-binary issue: the CLI treats `api-key` as a filename, then fails on `generate`. Reinstall
+and retry.
 
 ### Typo: `api-keygenerate`
 
@@ -141,9 +148,15 @@ Error loading manifest: ...
 
 ## Official SDK install
 
-Official clients: Rust [`spanda-sdk`](https://crates.io/crates/spanda-sdk), Python [`spanda-sdk`](https://pypi.org/project/spanda-sdk/), TypeScript [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk). You only need **one** SDK per project — pick the language your app uses. Why three packages exist: [sdk.md — Why three SDKs?](./sdk.md#why-three-sdks). Overview and quick start: [sdk.md](./sdk.md). Python API reference: [sdk-python.md](./sdk-python.md).
+Official clients: Rust [`spanda-sdk`](https://crates.io/crates/spanda-sdk), Python
+[`spanda-sdk`](https://pypi.org/project/spanda-sdk/), TypeScript
+[`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk). You only need **one**
+SDK per project — pick the language your app uses. Why three packages exist: [sdk.md — Why three
+SDKs?](./sdk.md#why-three-sdks). Overview and quick start: [sdk.md](./sdk.md). Python API reference:
+[sdk-python.md](./sdk-python.md).
 
-Control Center must be running (or reachable) before SDK calls succeed — see [Control Center](#control-center).
+Control Center must be running (or reachable) before SDK calls succeed — see [Control
+Center](#control-center).
 
 ### Python: externally-managed-environment on pip install
 
@@ -153,7 +166,8 @@ error: externally-managed-environment
 × This environment is externally managed
 ```
 
-**Cause:** macOS Homebrew Python (and many Linux distros) block system-wide `pip install` per [PEP 668](https://peps.python.org/pep-0668/). This is expected — not a problem with `spanda-sdk`.
+**Cause:** macOS Homebrew Python (and many Linux distros) block system-wide `pip install` per [PEP
+668](https://peps.python.org/pep-0668/). This is expected — not a problem with `spanda-sdk`.
 
 **Fix — use a virtual environment:**
 
@@ -182,9 +196,11 @@ from spanda import SpandaClient
 client = SpandaClient.local()
 ```
 
-**Avoid** `--break-system-packages` unless you intentionally want to modify Homebrew or system Python.
+**Avoid** `--break-system-packages` unless you intentionally want to modify Homebrew or system
+Python.
 
-For ROS2 bridges and provider scripts that need extra deps, activate the same venv before running Python helpers — see [ROS2 integration](#ros2-integration).
+For ROS2 bridges and provider scripts that need extra deps, activate the same venv before running
+Python helpers — see [ROS2 integration](#ros2-integration).
 
 ### Rust: `cargo add` in the Spanda monorepo
 
@@ -194,7 +210,8 @@ error: `cargo add` could not determine which package to modify.
 Use the `--package` option to specify a package.
 ```
 
-**Cause:** You ran `cargo add` from the **Spanda repo root**, which is a Cargo workspace with many member crates. Cargo needs to know which crate should receive the dependency.
+**Cause:** You ran `cargo add` from the **Spanda repo root**, which is a Cargo workspace with many
+member crates. Cargo needs to know which crate should receive the dependency.
 
 **Fix — add to a specific workspace crate:**
 
@@ -210,7 +227,8 @@ Optional native gRPC client:
 cargo add spanda-sdk --package spanda-cli --features grpc
 ```
 
-**Use the local SDK crate (monorepo dev)** — edit that crate's `Cargo.toml` instead of pulling from crates.io:
+**Use the local SDK crate (monorepo dev)** — edit that crate's `Cargo.toml` instead of pulling from
+crates.io:
 
 ```toml
 spanda-sdk = { path = "../../crates/spanda-sdk" }
@@ -225,7 +243,8 @@ cd ~/my-robot-app
 cargo add spanda-sdk
 ```
 
-Plain `cargo add spanda-sdk` works when the current directory is a single-package project (not the Spanda workspace root).
+Plain `cargo add spanda-sdk` works when the current directory is a single-package project (not the
+Spanda workspace root).
 
 ### TypeScript / npm
 
@@ -257,7 +276,8 @@ Run `spanda check <file.sd> --json` and fix the **first** diagnostic. Common cas
 | Unknown identifier / type error | Typo or missing `hardware` / `sensor` decl | Compare with working example in `examples/basics/` |
 | `remote_signed` kill switch errors | No signature material configured | Add trust key / signature env — see [kill-switch.md](./kill-switch.md) |
 
-**Examples:** broken vs fixed AI safety — `examples/showcase/ai_safety_violation.sd` vs `rover_navigation.sd`.
+**Examples:** broken vs fixed AI safety — `examples/showcase/ai_safety_violation.sd` vs
+`rover_navigation.sd`.
 
 Full beginner list: [06-common-mistakes.md](./spanda-for-dummies/06-common-mistakes.md).
 
@@ -279,7 +299,8 @@ spanda verify src/main.sd --json --target RoverV1
 | CI fails only on one matrix cell | `--all-targets` found a weak profile | Filter nightly matrix or fix per-target issues |
 | `verify` unavailable | Native CLI not built | `npm run build:rust` — TS fallback covers most checks, not all |
 
-**CI rule:** fail on `ok: false` or `compatible: false` in JSON — do not parse human stdout. Templates: [ci-verify.md](./ci-verify.md).
+**CI rule:** fail on `ok: false` or `compatible: false` in JSON — do not parse human stdout.
+Templates: [ci-verify.md](./ci-verify.md).
 
 ---
 
@@ -295,7 +316,8 @@ spanda verify src/main.sd --json --target RoverV1
 | Deterministic replay differs | Wall-clock or non-deterministic provider | `spanda replay mission.trace --deterministic` |
 | Scheduler trace noisy | Many periodic tasks | Use `--trace-scheduler` only when debugging timing |
 
-Physics is **2D lite** — logic and safety testing, not Gazebo-class fidelity. See [known-limitations.md](./known-limitations.md).
+Physics is **2D lite** — logic and safety testing, not Gazebo-class fidelity. See
+[known-limitations.md](./known-limitations.md).
 
 ---
 
@@ -350,7 +372,9 @@ spanda control-center serve --bind 127.0.0.1:8080
 spanda control-center --version   # UI semver
 ```
 
-Manual dev key: `export SPANDA_API_KEY="my-local-dev-key"`. Same value as `Authorization: Bearer …` for mutations. Full guide: [control-center.md — Authentication](./control-center.md#authentication--api-keys).
+Manual dev key: `export SPANDA_API_KEY="my-local-dev-key"`. Same value as `Authorization: Bearer …`
+for mutations. Full guide: [control-center.md —
+Authentication](./control-center.md#authentication--api-keys).
 
 ### Serve and UI
 
@@ -392,7 +416,8 @@ Distributed fleet ops need **agents running before** remote orchestration.
 | In-process sim only | Default for multi-robot examples | Expected for local demos — wire agents for field validation |
 | Tamper / fleet correlation empty | No mesh ingest | `spanda tamper-check --mesh-url <url>` after shards ingested |
 
-**Smoke scripts:** `scripts/fleet_field_validation.sh`, `scripts/fleet_agent_recovery_smoke.sh`, `scripts/failover_drill_smoke.sh`.
+**Smoke scripts:** `scripts/fleet_field_validation.sh`, `scripts/fleet_agent_recovery_smoke.sh`,
+`scripts/failover_drill_smoke.sh`.
 
 Field validation checklist: [test-plan.md](./test-plan.md).
 
@@ -400,7 +425,8 @@ Field validation checklist: [test-plan.md](./test-plan.md).
 
 ## ROS2 integration
 
-Golden path: **rclpy bridge** with `SPANDA_ROS2_LIVE=1`. See [ros2-golden-path.md](./ros2-golden-path.md).
+Golden path: **rclpy bridge** with `SPANDA_ROS2_LIVE=1`. See
+[ros2-golden-path.md](./ros2-golden-path.md).
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
@@ -441,7 +467,8 @@ spanda run examples/features/live_anthropic.sd
 
 ## Live IoT and transports
 
-Live paths require **feature flags at build time** and **runtime env** — defaults are in-memory mock.
+Live paths require **feature flags at build time** and **runtime env** — defaults are in-memory
+mock.
 
 | Transport | Typical env | Build note |
 |-----------|-------------|------------|
@@ -541,7 +568,8 @@ npm install && npm run build:rust
 ./scripts/ci-fast.sh
 ```
 
-Gate index: [scripts/gates/README.md](../scripts/gates/README.md) · CI tiers: [ci-architecture.md](./ci-architecture.md).
+Gate index: [scripts/gates/README.md](../scripts/gates/README.md) · CI tiers:
+[ci-architecture.md](./ci-architecture.md).
 
 ---
 
@@ -554,7 +582,8 @@ Gate index: [scripts/gates/README.md](../scripts/gates/README.md) · CI tiers: [
 | No decision traces | Trace env off | `SPANDA_DECISION_TRACE=1` or `--record` on run/sim |
 | `GET /v1/decisions/traces` empty | Server not recording | Run program with trace emission; check API URL |
 
-See [offline-decisions.md](./offline-decisions.md) · [distributed-decisions.md](./distributed-decisions.md).
+See [offline-decisions.md](./offline-decisions.md) ·
+[distributed-decisions.md](./distributed-decisions.md).
 
 ---
 
@@ -607,6 +636,8 @@ Pass custom binary: `SPANDA_BIN=target/release/spanda ./scripts/<script>.sh`
 3. **Structured output** — prefer `--json` flags for bug reports.
 4. **Compare with examples** — `examples/basics/`, `examples/showcase/`.
 5. **Run targeted tests** — `cargo test -p <crate> <test_name>`.
-6. **File an issue** — [GitHub Issues](https://github.com/Davalgi/Spanda/issues) with reproducer and logs.
+6. **File an issue** — [GitHub Issues](https://github.com/Davalgi/Spanda/issues) with reproducer and
+   logs.
 
-If behavior contradicts [known-limitations.md](./known-limitations.md), that's a bug — please report it.
+If behavior contradicts [known-limitations.md](./known-limitations.md), that's a bug — please report
+it.

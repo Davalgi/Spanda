@@ -2,7 +2,8 @@
 
 [← Overview](./README.md)
 
-> **Flagship demos (5 min):** [flagship-demos.md](./flagship-demos.md) · **Examples ladder & `std.*`:** [library.md](./library.md) · **`.sd` samples:** [code-samples.md](./code-samples.md)
+> **Flagship demos (5 min):** [flagship-demos.md](./flagship-demos.md) · **Examples ladder &
+> `std.*`:** [library.md](./library.md) · **`.sd` samples:** [code-samples.md](./code-samples.md)
 
 ## Quick start (5 minutes)
 

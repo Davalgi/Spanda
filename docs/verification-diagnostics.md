@@ -1,8 +1,10 @@
 # Verification diagnostics
 
-Structured verification output for capability traceability, minimum-hardware safety, health checks, and kill switch policies — surfaced in the CLI, LSP, and CI.
+Structured verification output for capability traceability, minimum-hardware safety, health checks,
+and kill switch policies — surfaced in the CLI, LSP, and CI.
 
-**Example:** [`examples/hardware/capability_verification.sd`](../examples/hardware/capability_verification.sd)
+**Example:**
+[`examples/hardware/capability_verification.sd`](../examples/hardware/capability_verification.sd)
 
 ---
 
@@ -27,7 +29,9 @@ Categories include:
 
 ### Severity and suggested fixes
 
-Since Phase 30, diagnostics may include `suggested_fix` hints consumed by the LSP as quick-fix code actions. Phase 35 upgraded `remote_signed` without signed communication to **error** severity at verify time.
+Since Phase 30, diagnostics may include `suggested_fix` hints consumed by the LSP as quick-fix code
+actions. Phase 35 upgraded `remote_signed` without signed communication to **error** severity at
+verify time.
 
 ```bash
 spanda verify examples/security/remote_signed_kill_switch.sd --health
@@ -43,7 +47,9 @@ Emits operational readiness alongside type-check results (requires a successful 
 spanda check examples/showcase/readiness/rover.sd --readiness-json --json
 ```
 
-Readiness diagnostics use categories such as `readiness:hardware`, `readiness:health`, and `readiness:capabilities`, with spans on deploy targets, health checks, missions, or robot blocks when available.
+Readiness diagnostics use categories such as `readiness:hardware`, `readiness:health`, and
+`readiness:capabilities`, with spans on deploy targets, health checks, missions, or robot blocks
+when available.
 
 **Recovery-policy diagnostics** (merged into the same JSON when check succeeds):
 
@@ -63,9 +69,12 @@ Readiness diagnostics use categories such as `readiness:hardware`, `readiness:he
 | `continuity:handoff` | Recovery reassign without paired `continuity_policy` |
 | `continuity:mission` | Resume/checkpoint actions without `mission_plan` |
 
-The TypeScript LSP fallback (`scripts/lsp-readiness.mts`) mirrors recovery and continuity diagnostics when the native CLI is unavailable. The LSP exposes **quick-fix** actions for `continuity:*` and `recovery:*` categories when `suggested_fix` contains insertable Spanda snippets.
+The TypeScript LSP fallback (`scripts/lsp-readiness.mts`) mirrors recovery and continuity
+diagnostics when the native CLI is unavailable. The LSP exposes **quick-fix** actions for
+`continuity:*` and `recovery:*` categories when `suggested_fix` contains insertable Spanda snippets.
 
-See [self-healing.md](./self-healing.md), [mission-continuity.md](./mission-continuity.md), and [continuity-policies.md](./continuity-policies.md).
+See [self-healing.md](./self-healing.md), [mission-continuity.md](./mission-continuity.md), and
+[continuity-policies.md](./continuity-policies.md).
 
 ---
 
@@ -80,15 +89,18 @@ spanda trace capabilities rover.sd
 spanda safety check rover.sd --capabilities
 ```
 
-See [capability-traceability.md](./capability-traceability.md), [health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md).
+See [capability-traceability.md](./capability-traceability.md),
+[health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md).
 
 ---
 
 ## LSP integration
 
-The VS Code extension and `@spanda/lsp` cache verification diagnostics from the native CLI. Quick-fix code actions map `suggested_fix` strings to editor actions when available.
+The VS Code extension and `@spanda/lsp` cache verification diagnostics from the native CLI.
+Quick-fix code actions map `suggested_fix` strings to editor actions when available.
 
-Requires a built native CLI (`target/release/spanda`). See [debugging.md](./debugging.md) for the extension workflow.
+Requires a built native CLI (`target/release/spanda`). See [debugging.md](./debugging.md) for the
+extension workflow.
 
 ---
 

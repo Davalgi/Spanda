@@ -1,6 +1,9 @@
 # Spanda Plugin System
 
-Spanda plugins extend the platform **without modifying core**. They complement the existing **package** and **provider** systems — packages supply Spanda language modules and official providers; plugins add Control Center UI, CLI commands, and lifecycle hooks for readiness, assurance, diagnosis, recovery, trust, health, and telemetry.
+Spanda plugins extend the platform **without modifying core**. They complement the existing
+**package** and **provider** systems — packages supply Spanda language modules and official
+providers; plugins add Control Center UI, CLI commands, and lifecycle hooks for readiness,
+assurance, diagnosis, recovery, trust, health, and telemetry.
 
 ## Architecture
 
@@ -46,7 +49,8 @@ Spanda plugins extend the platform **without modifying core**. They complement t
 | **P1** | Native Rust dynamic library | Trusted local development only |
 | **P2** | TypeScript/JS (`index.js`) | Control Center UI plugins only |
 
-Default execution path: **sandboxed WASM**. Manifest-only plugins (metadata + hooks, no artifact) are supported for development and tests.
+Default execution path: **sandboxed WASM**. Manifest-only plugins (metadata + hooks, no artifact)
+are supported for development and tests.
 
 ## Registry trust tiers
 
@@ -102,4 +106,5 @@ curl -s http://127.0.0.1:8787/v1/plugins/control-center
 
 ## Crate layout
 
-Implementation lives in `crates/spanda-plugin/`. Installed plugins are stored under `.spanda/plugins/` in the project tree.
+Implementation lives in `crates/spanda-plugin/`. Installed plugins are stored under
+`.spanda/plugins/` in the project tree.

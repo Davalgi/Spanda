@@ -1,14 +1,22 @@
 # FFI and Ecosystem Interoperability
 
-Spanda is designed to **orchestrate** existing robotics and AI ecosystems — not replace Python, C++, or ROS2 overnight. The language provides typed boundaries, safety validation, and hardware verification at the Spanda layer while delegating heavy computation to mature libraries.
+Spanda is designed to **orchestrate** existing robotics and AI ecosystems — not replace Python, C++,
+or ROS2 overnight. The language provides typed boundaries, safety validation, and hardware
+verification at the Spanda layer while delegating heavy computation to mature libraries.
 
 ## Design principles
 
-1. **Orchestrate, don't rewrite** — Spanda programs coordinate perception, planning, safety, and actuation. Inference, SLAM, and low-level drivers stay in Python/C++ where the ecosystem is strongest.
-2. **Untrusted by default** — Outputs from external AI libraries are `ActionProposal` values until `safety.validate()` produces a `SafeAction`.
-3. **Explicit boundaries** — Every foreign call is declared with `extern fn` and typed at the Spanda boundary.
-4. **Capability-gated** — Agent `can [...]` and package capabilities control which foreign symbols a program may link.
-5. **Verify before deploy** — Hardware compatibility checks run regardless of whether actuation goes through Spanda or FFI.
+1. **Orchestrate, don't rewrite** — Spanda programs coordinate perception, planning, safety, and
+   actuation. Inference, SLAM, and low-level drivers stay in Python/C++ where the ecosystem is
+   strongest.
+2. **Untrusted by default** — Outputs from external AI libraries are `ActionProposal` values until
+   `safety.validate()` produces a `SafeAction`.
+3. **Explicit boundaries** — Every foreign call is declared with `extern fn` and typed at the Spanda
+   boundary.
+4. **Capability-gated** — Agent `can [...]` and package capabilities control which foreign symbols a
+   program may link.
+5. **Verify before deploy** — Hardware compatibility checks run regardless of whether actuation goes
+   through Spanda or FFI.
 
 ## Current status
 
@@ -23,14 +31,19 @@ Spanda is designed to **orchestrate** existing robotics and AI ecosystems — no
 | MQTT + Nav2 stack | **Documented** | Reference architecture: [mqtt-nav2-reference-architecture.md](./mqtt-nav2-reference-architecture.md) |
 | OpenCV / PyTorch / TensorFlow | Planned | Import paths reserved in std registry |
 
-Real native linking (dlopen, cxx) is **not** implemented yet. **`extern python fn`** calls use a **subprocess JSON bridge** by default when `python3` and `scripts/spanda_python_bridge.py` are available. Build with `--features python-native` on `spanda-core` for an **in-process PyO3** path (same handlers, no subprocess). Set `SPANDA_PYTHON_SUBPROCESS=1` to force subprocess mode even when PyO3 is enabled.
+Real native linking (dlopen, cxx) is **not** implemented yet. **`extern python fn`** calls use a
+**subprocess JSON bridge** by default when `python3` and `scripts/spanda_python_bridge.py` are
+available. Build with `--features python-native` on `spanda-core` for an **in-process PyO3** path
+(same handlers, no subprocess). Set `SPANDA_PYTHON_SUBPROCESS=1` to force subprocess mode even when
+PyO3 is enabled.
 
 ### Subprocess Python bridge (implemented)
 
 Bridge handlers include transport and AI shims (mock when optional deps absent):
 
 - `ros2_publish(topic, data)` — uses **rclpy** when installed, else mock metadata
-- `mqtt_publish(topic, payload)` — uses **paho-mqtt** when installed (`MQTT_BROKER` / `MQTT_PORT`), else mock
+- `mqtt_publish(topic, payload)` — uses **paho-mqtt** when installed (`MQTT_BROKER` / `MQTT_PORT`),
+  else mock
 - `openai_complete(prompt)` — calls OpenAI when `OPENAI_API_KEY` is set, else mock
 
 ```bash
@@ -56,7 +69,8 @@ extern python fn py_add(a: Int, b: Int) -> Int;
 let sum = py_add(2, 3);
 ```
 
-Protocol: Rust sends `{"fn":"py_add","args":[2,3]}` on stdin; Python returns `{"ok":true,"result":5}`.
+Protocol: Rust sends `{"fn":"py_add","args":[2,3]}` on stdin; Python returns
+`{"ok":true,"result":5}`.
 
 Calling `extern python fn` without a registered handler fails with `Unknown python extern 'name'`.
 
@@ -67,24 +81,30 @@ Calling `extern python fn` without a registered handler fails with `Unknown pyth
 | **Subprocess (default)** | CI, quick eval, no Rust rebuild | `python3` + `scripts/spanda_python_bridge.py`; set `SPANDA_PYTHON_SUBPROCESS=1` to force even when PyO3 is built |
 | **In-process PyO3** | Production latency, heavy per-call Python | Build `spanda-core` with `--features python-native`; same handler registry, no IPC overhead |
 
-Subprocess remains the fallback when the `python-native` feature is off, `python3` is missing, or `SPANDA_PYTHON_SUBPROCESS=1` is set.
+Subprocess remains the fallback when the `python-native` feature is off, `python3` is missing, or
+`SPANDA_PYTHON_SUBPROCESS=1` is set.
 
 ### In-process Python bridge (optional `python-native` feature)
 
-When `spanda-core` is built with `--features python-native`, `extern python fn` calls load handlers from the same bridge script in-process via PyO3 (stable ABI `abi3-py310`). Subprocess mode remains the default when the feature is off, or when `SPANDA_PYTHON_SUBPROCESS=1` is set.
+When `spanda-core` is built with `--features python-native`, `extern python fn` calls load handlers
+from the same bridge script in-process via PyO3 (stable ABI `abi3-py310`). Subprocess mode remains
+the default when the feature is off, or when `SPANDA_PYTHON_SUBPROCESS=1` is set.
 
-On Python versions newer than PyO3's supported range, set `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1` at build time.
+On Python versions newer than PyO3's supported range, set `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1` at
+build time.
 
 ```bash
 PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 cargo build -p spanda-cli --release --features python-native
 spanda run examples/ffi_python_extern.sd
 ```
 
-Golden path: `./scripts/python_native_golden_path.sh` (CI Nightly job `python-native-golden-path`). CLI feature mirrors `cpp-native`: `--features python-native` on `spanda-cli`.
+Golden path: `./scripts/python_native_golden_path.sh` (CI Nightly job `python-native-golden-path`).
+CLI feature mirrors `cpp-native`: `--features python-native` on `spanda-cli`.
 
 ### Subprocess C++ bridge (implemented)
 
-`spanda-core` compiles a small C++ helper at build time when a C++ compiler is available (`CXX` or `c++`). Override with:
+`spanda-core` compiles a small C++ helper at build time when a C++ compiler is available (`CXX` or
+`c++`). Override with:
 
 ```bash
 export SPANDA_CPP_BRIDGE=/path/to/spanda_cpp_bridge
@@ -102,13 +122,16 @@ extern cpp fn cpp_add(a: Int, b: Int) -> Int;
 let sum = cpp_add(2, 3);
 ```
 
-Uses the same JSON protocol as the Python bridge. Unknown handlers fail with `Unknown cpp extern 'name'`.
+Uses the same JSON protocol as the Python bridge. Unknown handlers fail with `Unknown cpp extern
+'name'`.
 
 Real static/dynamic linking via cxx/bindgen is **not** implemented yet.
 
 ### In-process C++ bridge (optional `cpp-native` feature)
 
-When `spanda-cli` is built with `--features cpp-native`, `extern cpp fn` calls the same handler dispatch in-process via a C ABI (`spanda_cpp_bridge_call`). Subprocess mode remains the default when the feature is off, or when `SPANDA_CPP_SUBPROCESS=1` is set.
+When `spanda-cli` is built with `--features cpp-native`, `extern cpp fn` calls the same handler
+dispatch in-process via a C ABI (`spanda_cpp_bridge_call`). Subprocess mode remains the default when
+the feature is off, or when `SPANDA_CPP_SUBPROCESS=1` is set.
 
 ```bash
 ./scripts/cpp_native_golden_path.sh
@@ -117,7 +140,8 @@ cargo build -p spanda-cli --release --features cpp-native
 spanda run examples/ffi_cpp_extern.sd
 ```
 
-CI job: CI Nightly `cpp-native-golden-path` · Index: [tier-3-golden-paths.md](./tier-3-golden-paths.md)
+CI job: CI Nightly `cpp-native-golden-path` · Index:
+[tier-3-golden-paths.md](./tier-3-golden-paths.md)
 
 ## Planned import syntax
 
@@ -151,7 +175,8 @@ extern cpp fn publish_ros_topic(topic: String, msg: Message);
 extern cpp fn run_slam(scan: Scan) -> Pose;
 ```
 
-At compile time, the type checker validates signatures. At link time, the bridge resolves symbols to:
+At compile time, the type checker validates signatures. At link time, the bridge resolves symbols
+to:
 
 - **Python** — embedded interpreter or subprocess RPC (PyO3 / IPC)
 - **C/C++** — static or dynamic link via cxx / bindgen
@@ -168,7 +193,10 @@ At compile time, the type checker validates signatures. At link time, the bridge
 | `action go_to` | `rclcpp_action::Server` |
 | `publish cmd_vel with ...` | `publish()` on typed adapter |
 
-The existing [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) demonstrates the intended surface. With `SPANDA_ROS2_LIVE=1` and a sourced ROS2 distro, publish/subscribe uses the rclpy bridge; otherwise transport falls back to the simulator. **Golden path:** [ros2-golden-path.md](./ros2-golden-path.md).
+The existing [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) demonstrates the intended
+surface. With `SPANDA_ROS2_LIVE=1` and a sourced ROS2 distro, publish/subscribe uses the rclpy
+bridge; otherwise transport falls back to the simulator. **Golden path:**
+[ros2-golden-path.md](./ros2-golden-path.md).
 
 ## AI / ML mapping (planned)
 
@@ -178,7 +206,8 @@ The existing [`examples/ros2_bridge.sd`](../examples/ros2_bridge.sd) demonstrate
 | `vision.detect(frame)` | PyTorch / ONNX Runtime via `import onnx.runtime` |
 | `ActionProposal` | Raw model output — never reaches actuators directly |
 
-Import registry entries (`onnx.runtime`, `tflite.runtime`, `tensorrt.runtime`, `openvino.runtime`) exist for metadata and future linking.
+Import registry entries (`onnx.runtime`, `tflite.runtime`, `tensorrt.runtime`, `openvino.runtime`)
+exist for metadata and future linking.
 
 ## Safety at the boundary
 
@@ -188,7 +217,8 @@ let action = safety.validate(proposal);         // SafeAction
 wheels.execute(action);                         // OK
 ```
 
-Direct actuator calls with foreign outputs remain a **compile error** unless the value is explicitly validated.
+Direct actuator calls with foreign outputs remain a **compile error** unless the value is explicitly
+validated.
 
 ## Deployment model
 
@@ -216,4 +246,5 @@ Direct actuator calls with foreign outputs remain a **compile error** unless the
 - [compiler-backend-roadmap.md](./compiler-backend-roadmap.md) — native code generation path
 - [packages.md](./packages.md) — package capabilities and trust levels
 - [security.md](./security.md) — capabilities, secrets, signed messages
-- [hardware-compatibility.md](./hardware-compatibility.md) — deploy verification before FFI-heavy workloads
+- [hardware-compatibility.md](./hardware-compatibility.md) — deploy verification before FFI-heavy
+  workloads

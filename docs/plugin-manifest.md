@@ -1,6 +1,7 @@
 # Plugin Manifest (`spanda.plugin.toml`)
 
-Every plugin ships a **`spanda.plugin.toml`** manifest at its root. This is separate from **`spanda.toml`** (Spanda language packages).
+Every plugin ships a **`spanda.plugin.toml`** manifest at its root. This is separate from
+**`spanda.toml`** (Spanda language packages).
 
 ## Minimal example
 
@@ -55,7 +56,8 @@ Install is rejected when the running Spanda version or API version is incompatib
 
 Plugins must declare every host capability they use. The runtime **denies undeclared access**.
 
-Supported capabilities include `entity.read`, `device.read`, `readiness.read`, `health.read`, `report.generate`, `network.outbound`, `filesystem.read`, and write variants.
+Supported capabilities include `entity.read`, `device.read`, `readiness.read`, `health.read`,
+`report.generate`, `network.outbound`, `filesystem.read`, and write variants.
 
 ## `[security]`
 
@@ -71,7 +73,8 @@ Supported capabilities include `entity.read`, `device.read`, `readiness.read`, `
 - `[hooks].enabled` — lifecycle and event hooks
 - `[control_center]` — panels, entity tabs, routes
 - `[cli].commands` — namespaced CLI commands
-- `[[recovery.extensions]]` — Recovery Orchestrator playbooks, strategies, validators (see [recovery-playbooks.md](recovery-playbooks.md))
+- `[[recovery.extensions]]` — Recovery Orchestrator playbooks, strategies, validators (see
+  [recovery-playbooks.md](recovery-playbooks.md))
 
 ```toml
 [[recovery.extensions]]

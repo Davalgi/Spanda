@@ -1,6 +1,7 @@
 # Damage-Risk Model
 
-**Status: Beta** — harm-risk index on entity autonomy profiles from health, trust, and metadata signals.
+**Status: Beta** — harm-risk index on entity autonomy profiles from health, trust, and metadata
+signals.
 
 ## Purpose
 
@@ -25,4 +26,5 @@ Risk-based recovery, mission abort, degraded mode, preventive maintenance, opera
 
 Entity field: `Entity.damage_risk`
 
-See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [damage-risk.md](./damage-risk.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) ·
+[damage-risk.md](./damage-risk.md).

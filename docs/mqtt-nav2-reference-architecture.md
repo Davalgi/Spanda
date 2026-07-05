@@ -1,8 +1,12 @@
 # MQTT + Nav2 reference architecture
 
-End-to-end layout for a **Spanda coordination layer** on top of an existing ROS 2 + Nav2 stack, with **live MQTT telemetry** to a ground station or cloud broker. Spanda orchestrates safety, missions, and package-backed I/O; Nav2, drivers, and SLAM remain ROS 2 nodes.
+End-to-end layout for a **Spanda coordination layer** on top of an existing ROS 2 + Nav2 stack, with
+**live MQTT telemetry** to a ground station or cloud broker. Spanda orchestrates safety, missions,
+and package-backed I/O; Nav2, drivers, and SLAM remain ROS 2 nodes.
 
-**Related:** [ros2-golden-path.md](./ros2-golden-path.md) · [robotics-platform.md](./robotics-platform.md) · [tier-3-golden-paths.md](./tier-3-golden-paths.md) · [autonomous_rover](../examples/showcase/autonomous_rover/)
+**Related:** [ros2-golden-path.md](./ros2-golden-path.md) ·
+[robotics-platform.md](./robotics-platform.md) · [tier-3-golden-paths.md](./tier-3-golden-paths.md)
+· [autonomous_rover](../examples/showcase/autonomous_rover/)
 
 ---
 
@@ -46,7 +50,8 @@ flowchart TB
 | **Telemetry** | Status to broker | `bus` + `topic` + `SPANDA_LIVE_MQTT=1` |
 | **Packages** | GPS, Wi-Fi, nav adapters | `spanda.toml` + provider dispatch |
 
-Spanda does **not** replace Nav2 planners, costmaps, or ROS 2 lifecycle — it publishes validated motion intent and subscribes to sensor topics through the bridge.
+Spanda does **not** replace Nav2 planners, costmaps, or ROS 2 lifecycle — it publishes validated
+motion intent and subscribes to sensor topics through the bridge.
 
 ---
 
@@ -142,7 +147,8 @@ Runtime env for a combined stack:
 | `SPANDA_LIVE_MQTT=1` | Live MQTT publish/subscribe |
 | `SPANDA_NAV2_CMD` | Optional external Nav2 subprocess hook |
 
-Package imports resolve through `spanda.toml` → lock → vendor → provider registry ([how-runtime-resolution-works.md](./how-runtime-resolution-works.md)).
+Package imports resolve through `spanda.toml` → lock → vendor → provider registry
+([how-runtime-resolution-works.md](./how-runtime-resolution-works.md)).
 
 ---
 
@@ -154,13 +160,15 @@ Package imports resolve through `spanda.toml` → lock → vendor → provider r
 | `robotics-golden-path` | [golden_path_deploy.sh](../examples/robotics/golden_path_deploy.sh) | Fleet + deploy |
 | `world-model-golden-path` | [world_model_golden_path.sh](../scripts/world_model_golden_path.sh) | Fusion → belief hook |
 
-ROS 2 live validation remains **manual** until the P0 ROS2 golden-path CI job lands ([tier-3-priority-plan.md](./tier-3-priority-plan.md)).
+ROS 2 live validation remains **manual** until the P0 ROS2 golden-path CI job lands
+([tier-3-priority-plan.md](./tier-3-priority-plan.md)).
 
 ---
 
 ## Incident and replay
 
-Record mission traces during sim or field runs, export twin JSON, and optionally upload for post-incident review:
+Record mission traces during sim or field runs, export twin JSON, and optionally upload for
+post-incident review:
 
 ```bash
 spanda sim examples/showcase/autonomous_rover/src/rover.sd --record
@@ -173,6 +181,8 @@ Workflow details: [replay.md](./replay.md).
 
 ## Next steps (Phase 24+)
 
-- Single showcase wiring **Nav2 bridge + MQTT telemetry + world_model belief** in one deployable example
+- Single showcase wiring **Nav2 bridge + MQTT telemetry + world_model belief** in one deployable
+  example
 - ROS2 golden-path CI job with sourced Humble in GitHub Actions
-- LLVM native binaries for Jetson/Pi targets — [llvm-embedded-benchmark.md](./llvm-embedded-benchmark.md)
+- LLVM native binaries for Jetson/Pi targets —
+  [llvm-embedded-benchmark.md](./llvm-embedded-benchmark.md)

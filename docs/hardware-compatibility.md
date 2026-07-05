@@ -1,10 +1,12 @@
 # Hardware Compatibility Verification
 
-Spanda Verify provides **built-in hardware compatibility verification** as part of the autonomous systems platform. The compiler answers:
+Spanda Verify provides **built-in hardware compatibility verification** as part of the autonomous
+systems platform. The compiler answers:
 
 > Will this program safely and correctly execute on this hardware profile before deployment?
 
-Verification runs at **compile time** (and optionally in **simulation mode** with fault injection). It is not a simple runtime guard.
+Verification runs at **compile time** (and optionally in **simulation mode** with fault injection).
+It is not a simple runtime guard.
 
 ## Quick start
 
@@ -41,7 +43,8 @@ hardware RoverV1 {
 }
 ```
 
-Built-in profiles: `RoverV1`, `RoverV2`, `JetsonOrin`, `RaspberryPi5`, `ESP32`. Program-declared `hardware` blocks merge into the profile registry.
+Built-in profiles: `RoverV1`, `RoverV2`, `JetsonOrin`, `RaspberryPi5`, `ESP32`. Program-declared
+`hardware` blocks merge into the profile registry.
 
 ### Deployment targets
 
@@ -89,7 +92,8 @@ task control_loop every 50ms {
 mission { duration: 2 h; }
 ```
 
-The verifier estimates energy draw (`power_draw_w × duration`) against `battery` capacity and reports errors or low-margin warnings.
+The verifier estimates energy draw (`power_draw_w × duration`) against `battery` capacity and
+reports errors or low-margin warnings.
 
 ### AI model compatibility
 
@@ -104,11 +108,14 @@ Checked against target memory and GPU (TOPS / presence).
 
 ### Timing verification
 
-Tasks (`task every Nms`) and behavior loops (`loop every Nms`) are compared to the hardware `min_period`. Aggregate CPU load from periodic work is estimated; violations produce errors or warnings.
+Tasks (`task every Nms`) and behavior loops (`loop every Nms`) are compared to the hardware
+`min_period`. Aggregate CPU load from periodic work is estimated; violations produce errors or
+warnings.
 
 ### Sensor and actuator verification
 
-Every declared `sensor` and `actuator` is matched against the target profile’s `sensors` / `actuators` lists. `observe { }` fused sensors are included.
+Every declared `sensor` and `actuator` is matched against the target profile’s `sensors` /
+`actuators` lists. `observe { }` fused sensors are included.
 
 ### Hardware adapter mapping
 
@@ -122,7 +129,8 @@ Logical devices map to builtin adapter traits at verification time:
 | `DifferentialDrive` | `MotorAdapter` |
 | `RoboticArm` | `ArmAdapter` |
 
-User-declared traits with matching names are recognized; builtins apply when hardware provides the physical device.
+User-declared traits with matching names are recognized; builtins apply when hardware provides the
+physical device.
 
 ### Simulation and fault injection
 
@@ -136,11 +144,13 @@ simulate_compatibility {
 }
 ```
 
-Use `spanda verify --simulate` or declare `simulate_compatibility` in the program. Faults mutate a copy of the target profile before checks run.
+Use `spanda verify --simulate` or declare `simulate_compatibility` in the program. Faults mutate a
+copy of the target profile before checks run.
 
 ### Compatibility matrix
 
-`spanda verify --all-targets` verifies each robot against every known hardware profile and prints a matrix:
+`spanda verify --all-targets` verifies each robot against every known hardware profile and prints a
+matrix:
 
 ```
 ── Compatibility Matrix ──
@@ -159,7 +169,9 @@ spanda verify examples/hardware/rover_deploy.sd --json
 spanda compatibility examples/hardware/rover_deploy.sd --json   # alias
 ```
 
-Human output uses ✓ / ⚠ / ✗ per check category. Exit code is `0` when compatible, `1` when incompatible or on parse/type errors. With `--all-targets`, the command always exits `0` after printing the matrix (some cells may be incompatible).
+Human output uses ✓ / ⚠ / ✗ per check category. Exit code is `0` when compatible, `1` when
+incompatible or on parse/type errors. With `--all-targets`, the command always exits `0` after
+printing the matrix (some cells may be incompatible).
 
 ### JSON output (`--json`)
 
@@ -186,7 +198,8 @@ Human output uses ✓ / ⚠ / ✗ per check category. Exit code is `0` when comp
 }
 ```
 
-`matrix` is present only with `--all-targets`. `ok` and `compatible` are both `false` when verification fails.
+`matrix` is present only with `--all-targets`. `ok` and `compatible` are both `false` when
+verification fails.
 
 TypeScript: `verifyViaCli(source, ["--target", "RoverV1"])` in `src/rust-bridge.ts`.
 
@@ -202,21 +215,24 @@ Implementation: `crates/spanda-core/src/hardware.rs`
 
 - `compatible` — no error-severity items
 - `target` — primary deployment target (if any)
-- `items` — categorized checks (`sensors`, `actuators`, `memory`, `timing`, `power`, `network`, `ai`, `adapter`, `simulate`, …)
+- `items` — categorized checks (`sensors`, `actuators`, `memory`, `timing`, `power`, `network`,
+  `ai`, `adapter`, `simulate`, …)
 - `matrix` — optional robot × target grid (`--all-targets`)
 
 Severity: `pass`, `warning`, `error`.
 
 ## IDE / LSP
 
-`packages/lsp` runs `spanda check` and `spanda verify` on save. Compatibility issues appear as `spanda-compat` diagnostics (errors and warnings with category prefix).
+`packages/lsp` runs `spanda check` and `spanda verify` on save. Compatibility issues appear as
+`spanda-compat` diagnostics (errors and warnings with category prefix).
 
 TypeScript tooling can call `verifyViaCli()` from `src/rust-bridge.ts`.
 
 ## Examples
 
 - `examples/hardware/rover_deploy.sd` — profile, deploy, sensor/actuator checks
-- `examples/hardware/full_compat.sd` — requirements, budgets, mission, multi-target deploy, fault simulation
+- `examples/hardware/full_compat.sd` — requirements, budgets, mission, multi-target deploy, fault
+  simulation
 
 ## Tests
 

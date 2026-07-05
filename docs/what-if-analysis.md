@@ -42,6 +42,9 @@ Per scenario: **Impact**, **Risk**, **Recovery Plan**, **Probability** (heuristi
 
 ## Integration
 
-Composes Recovery planner, Assurance resilience, Sim fault injection, Readiness degradation model. Control Center: `GET /v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf`. SDK: `analyticsWhatIf` / `analytics_what_if`. Stable promotion: [stable-hardening-what-if.md](./stable-hardening-what-if.md).
+Composes Recovery planner, Assurance resilience, Sim fault injection, Readiness degradation model.
+Control Center: `GET /v1/analytics/what-if`, gRPC `GetAnalyticsWhatIf`. SDK: `analyticsWhatIf` /
+`analytics_what_if`. Stable promotion: [stable-hardening-what-if.md](./stable-hardening-what-if.md).
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [chaos-engineering.md](./chaos-engineering.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[chaos-engineering.md](./chaos-engineering.md).

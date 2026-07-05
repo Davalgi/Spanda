@@ -1,6 +1,7 @@
 # Entity Health
 
-Health diagnostics for any entity are evaluated through `evaluate_entity_health`, composing device pool checks, fleet rollups, and optional program health checks.
+Health diagnostics for any entity are evaluated through `evaluate_entity_health`, composing device
+pool checks, fleet rollups, and optional program health checks.
 
 **Implementation:** `crates/spanda-readiness/src/entity_health.rs`
 
@@ -40,4 +41,5 @@ spanda entity health rover-001 --program patrol.sd --json
 | Fleet members | Child robot/device rollup |
 | Program checks | `evaluate_health_checks`, `evaluate_runtime_health` |
 
-See also: [entity-sdk.md](./entity-sdk.md), [entity-readiness.md](./entity-readiness.md), [entity-model.md](./entity-model.md).
+See also: [entity-sdk.md](./entity-sdk.md), [entity-readiness.md](./entity-readiness.md),
+[entity-model.md](./entity-model.md).

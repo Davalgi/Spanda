@@ -3,7 +3,8 @@
 Tracked defects and gaps that affect a credible Spanda release.
 Update this file when blockers are found, fixed, or reclassified.
 
-**GitHub issues:** each blocker has a linked issue labeled `release-blocker` plus severity (`P0`–`P3`) and `release-hardening`.
+**GitHub issues:** each blocker has a linked issue labeled `release-blocker` plus severity
+(`P0`–`P3`) and `release-hardening`.
 
 Filter open blockers:
 
@@ -44,7 +45,8 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 ## How to add a blocker
 
 1. Assign the next `RB-NNN` id.
-2. Create a GitHub issue titled `[RB-NNN] …` with labels `release-blocker`, severity (`P0`–`P3`), and `release-hardening`.
+2. Create a GitHub issue titled `[RB-NNN] …` with labels `release-blocker`, severity (`P0`–`P3`),
+   and `release-hardening`.
 3. Include reproduction steps that fail on `main`.
 4. Set severity honestly (mock-backed Stable claims are at least P1).
 5. Add a row here with the issue link.
@@ -52,7 +54,8 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 
 ## Path to v1.0
 
-Code release criteria for v0.6.3 are **met**. v1.0 requires organizational gates — see [organizational-gates.md](./organizational-gates.md):
+Code release criteria for v0.6.3 are **met**. v1.0 requires organizational gates — see
+[organizational-gates.md](./organizational-gates.md):
 
 | Gate | Status |
 |------|--------|
@@ -67,5 +70,7 @@ Code release criteria for v0.6.3 are **met**. v1.0 requires organizational gates
 - README command smoke + golden tests green in CI Integration (`core-smokes`)
 - Security regression suite green in CI Integration (`release-hardening`)
 - CI Fast required checks green on PRs — [ci-architecture.md](./ci-architecture.md)
-- [release-readiness.md](./release-readiness.md) recommendation is **Go** or **Go with documented limitations**
-- v1.0 additionally requires [organizational-gates.md](./organizational-gates.md) checklist (soak + audit)
+- [release-readiness.md](./release-readiness.md) recommendation is **Go** or **Go with documented
+  limitations**
+- v1.0 additionally requires [organizational-gates.md](./organizational-gates.md) checklist (soak +
+  audit)

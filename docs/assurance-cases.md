@@ -1,6 +1,7 @@
 # Assurance Cases
 
-Assurance cases link **evidence sources** into deployable safety arguments, composing with existing verification subsystems.
+Assurance cases link **evidence sources** into deployable safety arguments, composing with existing
+verification subsystems.
 
 ## Syntax
 

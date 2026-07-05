@@ -6,7 +6,8 @@ Back to [index](./README.md)
 
 ## Step 1: Get the `spanda` command
 
-**Fast path** — download a prebuilt binary from [GitHub Releases](https://github.com/Davalgi/Spanda/releases). See [installation.md](../installation.md).
+**Fast path** — download a prebuilt binary from [GitHub
+Releases](https://github.com/Davalgi/Spanda/releases). See [installation.md](../installation.md).
 
 **From source** (if you cloned the repo):
 
@@ -22,7 +23,8 @@ Sanity check:
 spanda check examples/hello_world.sd
 ```
 
-You should see a green check or “no type errors”. If not, fix `PATH` or use `./target/release/spanda`.
+You should see a green check or “no type errors”. If not, fix `PATH` or use
+`./target/release/spanda`.
 
 ---
 
@@ -68,7 +70,8 @@ Open `examples/basics/02_sensors_and_safety.sd` and run:
 spanda run examples/basics/02_sensors_and_safety.sd
 ```
 
-Now the robot has a **lidar**, **safety rules**, and a **loop** that reacts to distance. This is what most real programs look like — just a bit more code.
+Now the robot has a **lidar**, **safety rules**, and a **loop** that reacts to distance. This is
+what most real programs look like — just a bit more code.
 
 ---
 
@@ -96,4 +99,5 @@ spanda run src/main.sd
 
 ---
 
-**Next:** [Anatomy of a robot program](./03-robot-anatomy.md) · **Deeper dive:** [Spanda 101 Lesson 1](../spanda-101/01-hello-robot.md)
+**Next:** [Anatomy of a robot program](./03-robot-anatomy.md) · **Deeper dive:** [Spanda 101 Lesson
+1](../spanda-101/01-hello-robot.md)

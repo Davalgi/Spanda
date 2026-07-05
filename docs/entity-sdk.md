@@ -1,6 +1,8 @@
 # Entity SDK
 
-Official SDKs for the Unified Entity Model over Control Center **REST v1** and **gRPC**. All entity methods are thin HTTP/gRPC wrappers — evaluation logic lives in `spanda-readiness` and `spanda-trust`.
+Official SDKs for the Unified Entity Model over Control Center **REST v1** and **gRPC**. All entity
+methods are thin HTTP/gRPC wrappers — evaluation logic lives in `spanda-readiness` and
+`spanda-trust`.
 
 | SDK | Package | Source |
 |-----|---------|--------|
@@ -61,7 +63,10 @@ Smoke test (all three SDKs): `scripts/entity_model_smoke.sh`
 | Energy detail | `energy_system(id)` | `energySystem(id)` | `energy_system(id)` |
 | Floor map | `facility_floor_map(id)` | `facilityFloorMap(id)` | `facility_floor_map(id)` |
 
-gRPC (`GrpcClient`, `grpc` feature): `smart_spaces_summary`, `list_facilities`, `facility_readiness`, `zone_occupancy`, `list_energy_systems`, `emergency_status`, `smart_spaces_devices`, `smart_spaces_gateways`, `facility_health`, `facility_security`, `facility_floor_map`, `zone_environment`, `energy_system` — proto semver **1.0.5**.
+gRPC (`GrpcClient`, `grpc` feature): `smart_spaces_summary`, `list_facilities`,
+`facility_readiness`, `zone_occupancy`, `list_energy_systems`, `emergency_status`,
+`smart_spaces_devices`, `smart_spaces_gateways`, `facility_health`, `facility_security`,
+`facility_floor_map`, `zone_environment`, `energy_system` — proto semver **1.0.5**.
 
 API shapes: [entity-apis.md](./entity-apis.md)
 
@@ -101,9 +106,11 @@ client.tag_entity("bay-3", &json!({ "add": ["sdk"] }))?;
 client.sync_entities()?;
 ```
 
-Typed wrappers: `Entity`, `HealthReport`, `TrustReport` in `spanda_sdk::types`. Raw JSON is available on `.raw` fields.
+Typed wrappers: `Entity`, `HealthReport`, `TrustReport` in `spanda_sdk::types`. Raw JSON is
+available on `.raw` fields.
 
-**Example:** `cargo run -p spanda-sdk --example entity_mutations` (used by `scripts/entity_model_smoke.sh`)
+**Example:** `cargo run -p spanda-sdk --example entity_mutations` (used by
+`scripts/entity_model_smoke.sh`)
 
 ## Rust — gRPC
 
@@ -190,7 +197,8 @@ Install: `pip install spanda-sdk` or `pip install -e sdk/python`
 | SDK REST/gRPC | Control Center `--config` + `--program` | Fleet dashboards, integrations |
 | In-process Rust | `build_entity_registry(&resolved)` + engine fns | Custom tools embedding `spanda-readiness` |
 
-CLI and server paths call the **same engines** (`verify_entity`, `evaluate_entity_readiness`, etc.) with the same options structs.
+CLI and server paths call the **same engines** (`verify_entity`, `evaluate_entity_readiness`, etc.)
+with the same options structs.
 
 ## Error handling
 
@@ -206,7 +214,8 @@ Python: raises `SpandaError` subclasses
 
 ## Cognitive & Resilience domain clients
 
-Functional domain state lives on `Entity.autonomy` (`GET /v1/entities/{id}/autonomy`). Platform summaries use `/v1/autonomy/*`.
+Functional domain state lives on `Entity.autonomy` (`GET /v1/entities/{id}/autonomy`). Platform
+summaries use `/v1/autonomy/*`.
 
 | Domain | Rust | TypeScript | Python |
 |--------|------|------------|--------|
@@ -219,9 +228,11 @@ Functional domain state lives on `Entity.autonomy` (`GET /v1/entities/{id}/auton
 | Entity profile | `client.memory().entity_refs(id)` | `client.memory().entityRefs(id)` | `client.memory().entity_refs(id)` |
 | Facade (legacy) | `client.autonomy().list_reflex()` | `client.listAutonomyReflex()` | `client.list_autonomy_reflex()` |
 
-gRPC (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`, …
+gRPC (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyFusion`,
+`GetAutonomyMemory`, `GetEntityAutonomy`, …
 
-Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Migration: [cognitive-resilience-migration.md](./cognitive-resilience-migration.md)
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Migration:
+[cognitive-resilience-migration.md](./cognitive-resilience-migration.md)
 
 ## Related docs
 

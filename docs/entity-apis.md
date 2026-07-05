@@ -1,10 +1,12 @@
 # Entity APIs
 
-REST and gRPC reference for the **Unified Entity Model**. All routes are **additive** — existing `/v1/devices`, `/v1/robots`, `/v1/fleets`, and `/v1/programs/*` endpoints are unchanged.
+REST and gRPC reference for the **Unified Entity Model**. All routes are **additive** — existing
+`/v1/devices`, `/v1/robots`, `/v1/fleets`, and `/v1/programs/*` endpoints are unchanged.
 
 **Implementation:** `crates/spanda-api/src/sdk_ops.rs`, `entity_mutations.rs`, `handlers.rs`  
 **OpenAPI:** `GET /v1/openapi.json` (generated from handlers)  
-**gRPC proto:** `crates/spanda-api/proto/spanda/v1/control_center.proto` — pin semver and RPC count via `GET /v1/version` (currently **1.0.14**, **164** RPCs)
+**gRPC proto:** `crates/spanda-api/proto/spanda/v1/control_center.proto` — pin semver and RPC count
+via `GET /v1/version` (currently **1.0.14**, **164** RPCs)
 
 ## Authentication
 
@@ -13,11 +15,13 @@ REST and gRPC reference for the **Unified Entity Model**. All routes are **addit
 | Read (`GET`, `POST /v1/entities/query`, `POST …/verify`) | None by default |
 | Mutations (`register`, `tags`, `relationships`, `sync`) | `Authorization: Bearer <SPANDA_API_KEY>` |
 
-Mutations are audited when RBAC is enabled. gRPC mutations use the same Bearer token in request metadata.
+Mutations are audited when RBAC is enabled. gRPC mutations use the same Bearer token in request
+metadata.
 
 ## Versioning
 
-Every JSON response includes `"version": "v1"`. Pin gRPC clients with `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
+Every JSON response includes `"version": "v1"`. Pin gRPC clients with `GET /v1/version` →
+`grpc.proto_semver` and `grpc.rpc_count`.
 
 ## Endpoint summary
 
@@ -164,7 +168,8 @@ Returns `404` when the id is not in the registry projection.
 
 ## Evaluation endpoints
 
-Evaluation routes return **legacy snapshot fields** plus an enriched **`report`** when Control Center has loaded configuration (`--config`).
+Evaluation routes return **legacy snapshot fields** plus an enriched **`report`** when Control
+Center has loaded configuration (`--config`).
 
 | Endpoint | Engine | Guide |
 |----------|--------|-------|
@@ -254,7 +259,8 @@ When `file` is omitted, Control Center uses its `--program` if loaded.
 
 ## Mutations (overlay)
 
-Mutations update an in-memory **overlay** merged into `build_entity_registry()`. Call `POST /v1/entities/sync` to persist fragments to TOML.
+Mutations update an in-memory **overlay** merged into `build_entity_registry()`. Call `POST
+/v1/entities/sync` to persist fragments to TOML.
 
 ### `POST /v1/entities/register`
 
@@ -291,7 +297,8 @@ Mutations update an in-memory **overlay** merged into `build_entity_registry()`.
 }
 ```
 
-Relationship `kind` values: `depends_on`, `participates_in`, `assigned_to`, `hosts`, `controls`, `monitors`, and overlay extensions. See [entity-relationships.md](./entity-relationships.md).
+Relationship `kind` values: `depends_on`, `participates_in`, `assigned_to`, `hosts`, `controls`,
+`monitors`, and overlay extensions. See [entity-relationships.md](./entity-relationships.md).
 
 ### `POST /v1/entities/sync`
 
@@ -305,7 +312,8 @@ Default overlay file: `.spanda/entity-overlays.json` (override with `SPANDA_ENTI
 
 ## gRPC
 
-Start Control Center with `--grpc-bind`. All entity RPCs return `JsonResponse { json: "<same as REST body>" }`.
+Start Control Center with `--grpc-bind`. All entity RPCs return `JsonResponse { json: "<same as REST
+body>" }`.
 
 ```bash
 spanda control-center serve \
@@ -337,7 +345,9 @@ GET /v1/version
 
 ## JSON-RPC gateway
 
-`POST /v1/rpc` exposes **read-only** entity methods (list, get, graph, traceability, query, relationships, readiness). Mutations are **gRPC-only** (not on the JSON-RPC gateway). See [control-center-api.md](./control-center-api.md).
+`POST /v1/rpc` exposes **read-only** entity methods (list, get, graph, traceability, query,
+relationships, readiness). Mutations are **gRPC-only** (not on the JSON-RPC gateway). See
+[control-center-api.md](./control-center-api.md).
 
 ## CLI parity
 
@@ -354,7 +364,8 @@ GET /v1/version
 | `GET …/trust` | `spanda entity trust <id>` |
 | `POST …/verify` | `spanda entity verify <id>` |
 
-CLI evaluation runs engines **locally** against `--config`; REST/gRPC evaluation uses the Control Center loaded config and program.
+CLI evaluation runs engines **locally** against `--config`; REST/gRPC evaluation uses the Control
+Center loaded config and program.
 
 ## Related docs
 

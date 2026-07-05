@@ -2,7 +2,8 @@
 
 **Promoted 2026-07-02** — LATER differentiation pillar #15.
 
-**Related:** [autonomous-governance.md](./autonomous-governance.md) · [policy-engine.md](./policy-engine.md)
+**Related:** [autonomous-governance.md](./autonomous-governance.md) ·
+[policy-engine.md](./policy-engine.md)
 
 | Gate | Status |
 |------|--------|

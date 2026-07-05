@@ -1,20 +1,33 @@
 # Bio-Inspired Resilient Autonomy Architecture
 
-> **Canonical view:** [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md). This document is retained for backward compatibility and migration — see [cognitive-resilience-migration.md](./cognitive-resilience-migration.md).
+> **Canonical view:** [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md).
+> This document is retained for backward compatibility and migration — see
+> [cognitive-resilience-migration.md](./cognitive-resilience-migration.md).
 
-> **Canonical functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — Spanda Cognitive & Resilience Architecture with eleven functional domains and a [responsibility matrix](./responsibility-matrix.md). This document is retained for backward compatibility.
+> **Canonical functional view:**
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — Spanda Cognitive
+> & Resilience Architecture with eleven functional domains and a [responsibility
+> matrix](./responsibility-matrix.md). This document is retained for backward compatibility.
 
-Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. The goal is **not** to imitate biology, but to apply these proven resilience patterns to safety-critical autonomous systems.
+Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from
+biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis,
+adaptive recovery, platform immunity, and operational memory. The goal is **not** to imitate
+biology, but to apply these proven resilience patterns to safety-critical autonomous systems.
 
-> **Caution:** Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life. Biological metaphors are used only where they improve engineering resilience, safety, recovery, and explainability.
+> **Caution:** Spanda does not attempt to model consciousness, emotions, biological neurons, or
+> artificial life. Biological metaphors are used only where they improve engineering resilience,
+> safety, recovery, and explainability.
 
-This architecture **extends** the existing [Distributed Decision Architecture](./distributed-decisions.md) — it does not replace it.
+This architecture **extends** the existing [Distributed Decision
+Architecture](./distributed-decisions.md) — it does not replace it.
 
 ---
 
 ## Platform description
 
-Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for robots, devices, AI agents, humans, and intelligent environments.
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
+its core. It provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for
+robots, devices, AI agents, humans, and intelligent environments.
 
 ---
 
@@ -120,7 +133,9 @@ REST: `GET /v1/entities/{id}/autonomy`
 
 ## gRPC
 
-Autonomy REST routes mirror gRPC on Control Center (proto **1.0.14+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
+Autonomy REST routes mirror gRPC on Control Center (proto **1.0.14+**): `ListAutonomyReflexes`,
+`ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`,
+`GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
 
 ---
 
@@ -132,9 +147,12 @@ Implementation lives in **`spanda-autonomy`** (`crates/spanda-autonomy/`).
 
 ## Known limitations
 
-See [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture). Sensory fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under `.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
+See [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture). Sensory
+fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under
+`.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
 
-**Smoke:** `./scripts/cognitive_resilience_smoke.sh` (CI Integration job `bio-inspired-autonomy`; alias for `./scripts/bio_inspired_autonomy_smoke.sh`)
+**Smoke:** `./scripts/cognitive_resilience_smoke.sh` (CI Integration job `bio-inspired-autonomy`;
+alias for `./scripts/bio_inspired_autonomy_smoke.sh`)
 
 **Language:** `homeostasis_policy` and `attention_policy` declarations parse in `.sd` programs.
 
@@ -142,7 +160,8 @@ See [known-limitations.md](./known-limitations.md#cognitive--resilience-architec
 
 ## Related
 
-- [Distributed decisions](./distributed-decisions.md) — brain / spinal cord / reflex layers (**Stable**)
+- [Distributed decisions](./distributed-decisions.md) — brain / spinal cord / reflex layers
+  (**Stable**)
 - [Platform architecture](./platform-architecture.md)
 - [Recovery orchestrator](./recovery-orchestrator.md)
 - [Entity model](./entity-model.md)

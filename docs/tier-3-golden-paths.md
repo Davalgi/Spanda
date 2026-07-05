@@ -1,10 +1,15 @@
 # Tier 3 golden paths (CI)
 
-Runnable scripts and CI jobs that validate **experimental** Tier 3 capabilities and **v0.5 beta** P0 blockers. Phase 23 added platform wiring; Phase 24 extends v1.0-optional showcases; Phase 25 adds beta golden paths.
+Runnable scripts and CI jobs that validate **experimental** Tier 3 capabilities and **v0.5 beta** P0
+blockers. Phase 23 added platform wiring; Phase 24 extends v1.0-optional showcases; Phase 25 adds
+beta golden paths.
 
-**CI tiers:** PRs gate on **CI Fast**; golden paths and smokes run on **`main`** via **CI Integration** or **CI Nightly** (daily). Full job map: [ci-architecture.md](./ci-architecture.md#job-tier-map).
+**CI tiers:** PRs gate on **CI Fast**; golden paths and smokes run on **`main`** via **CI
+Integration** or **CI Nightly** (daily). Full job map:
+[ci-architecture.md](./ci-architecture.md#job-tier-map).
 
-See [tier-3-experimental.md](./tier-3-experimental.md) for feature status and [tier-3-priority-plan.md](./tier-3-priority-plan.md) for P0–P4 ordering.
+See [tier-3-experimental.md](./tier-3-experimental.md) for feature status and
+[tier-3-priority-plan.md](./tier-3-priority-plan.md) for P0–P4 ordering.
 
 ---
 
@@ -91,7 +96,8 @@ Then run any script from the repo root:
 
 - [ci-architecture.md](./ci-architecture.md) — tiered CI, branch protection, job map
 - [lean-core-roadmap.md](./lean-core-roadmap.md) — Phase 23–25 (complete), Phases 26–35 (complete)
-- [mqtt-nav2-reference-architecture.md](./mqtt-nav2-reference-architecture.md) — ROS2 + Nav2 + MQTT stack
+- [mqtt-nav2-reference-architecture.md](./mqtt-nav2-reference-architecture.md) — ROS2 + Nav2 + MQTT
+  stack
 - [llvm-embedded-benchmark.md](./llvm-embedded-benchmark.md) — Jetson/Pi cross-compile slice
 - [ffi-and-ecosystem.md](./ffi-and-ecosystem.md) — Python/C++/ROS2 bridges
 - [replay.md](./replay.md) — mission trace and twin export

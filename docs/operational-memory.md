@@ -3,7 +3,8 @@
 **Functional domain:** [Operational Memory](./functional-domains.md#operational-memory)  
 **Status: Beta**
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
@@ -25,4 +26,5 @@ Entity field: `Entity.memory_refs` (alias: `Entity.operationalMemory`)
 
 REST: `GET /v1/autonomy/memory` · SDK: `MemoryClient`
 
-See [operational-memory.md](./operational-memory.md), [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+See [operational-memory.md](./operational-memory.md),
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).

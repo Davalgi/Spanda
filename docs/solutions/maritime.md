@@ -1,6 +1,7 @@
 # Maritime — Solution Blueprint
 
-**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:** [examples/solutions/maritime/](../../examples/solutions/maritime/)
+**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:**
+[examples/solutions/maritime/](../../examples/solutions/maritime/)
 
 Official Solution Blueprint for autonomous vessels, port logistics, and shore coordination.
 
@@ -10,7 +11,8 @@ Official Solution Blueprint for autonomous vessels, port logistics, and shore co
 
 ## Purpose
 
-Operate autonomous or remotely supervised vessels with redundant navigation, corrosion-aware prognostics, GNSS-denied degradation, and shore takeover under high-latency links.
+Operate autonomous or remotely supervised vessels with redundant navigation, corrosion-aware
+prognostics, GNSS-denied degradation, and shore takeover under high-latency links.
 
 ## Platform pillars used
 
@@ -64,7 +66,8 @@ Vessel Stack
 
 ## Example projects
 
-- [examples/solutions/maritime/](../../examples/solutions/maritime/) — `harbor_patrol.sd`, `convoy_escort.sd`, `docking_assist.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
+- [examples/solutions/maritime/](../../examples/solutions/maritime/) — `harbor_patrol.sd`,
+  `convoy_escort.sd`, `docking_assist.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
 
 ## Simulation & replay
 
@@ -73,4 +76,5 @@ Vessel Stack
 
 ---
 
-**Related blueprints:** [Transportation](../ROADMAP.md#transportation) · [Defense](../ROADMAP.md#defense) · [Environmental Monitoring](./environmental-monitoring.md)
+**Related blueprints:** [Transportation](../ROADMAP.md#transportation) ·
+[Defense](../ROADMAP.md#defense) · [Environmental Monitoring](./environmental-monitoring.md)

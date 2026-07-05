@@ -1,6 +1,7 @@
 # Swarm Health
 
-Swarm health checks verify quorum and mesh connectivity. When fleet health is critical, swarm coordination logs events and may defer peer deliveries (Phase 34–35).
+Swarm health checks verify quorum and mesh connectivity. When fleet health is critical, swarm
+coordination logs events and may defer peer deliveries (Phase 34–35).
 
 **Example:** [`examples/robotics/swarm_coordination.sd`](../examples/robotics/swarm_coordination.sd)
 
@@ -26,7 +27,8 @@ spanda swarm coordinate examples/showcase/swarm_takeover/swarm.sd --failed Drone
 spanda health robot examples/robotics/swarm_coordination.sd --json
 ```
 
-Fleet health refinement runs via `apply_fleet_health_checks` when programs declare both `fleet` and `swarm` blocks.
+Fleet health refinement runs via `apply_fleet_health_checks` when programs declare both `fleet` and
+`swarm` blocks.
 
 ---
 

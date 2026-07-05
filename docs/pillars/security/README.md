@@ -2,7 +2,8 @@
 
 [← Pillars index](../README.md) · [ROADMAP § Pillar 5](../../ROADMAP.md#pillar-5--security-platform)
 
-Encryption, identity, certificates, RBAC, secrets, tamper detection, trust, threat modeling, policy, and compliance.
+Encryption, identity, certificates, RBAC, secrets, tamper detection, trust, threat modeling, policy,
+and compliance.
 
 ## Architecture & contracts
 
@@ -48,7 +49,8 @@ Encryption, identity, certificates, RBAC, secrets, tamper detection, trust, thre
 
 ## Smoke gates
 
-`scripts/tamper_smoke.sh` · `scripts/secure_boot_smoke.sh` · `scripts/security_assurance_smoke.sh` · `scripts/compliance_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/tamper_smoke.sh` · `scripts/secure_boot_smoke.sh` · `scripts/security_assurance_smoke.sh` ·
+`scripts/compliance_smoke.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
 
 ## Stable promotion
 

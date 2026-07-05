@@ -24,7 +24,8 @@ task sense every 50ms {
 }
 ```
 
-Tasks run on a scheduler with optional priority (`critical`, `high`, `low`) and resource budgets. Use them for control loops separate from one-shot behaviors.
+Tasks run on a scheduler with optional priority (`critical`, `high`, `low`) and resource budgets.
+Use them for control loops separate from one-shot behaviors.
 
 ---
 
@@ -107,7 +108,8 @@ spanda run examples/concurrency.sd --trace-scheduler --trace-tasks
 
 1. Add an `event LowBattery` to your robot
 2. Add `on LowBattery { wheels.stop(); }`
-3. In a task, emit `LowBattery` when a stub condition is true (e.g. always once after 5 loop iterations in simulation)
+3. In a task, emit `LowBattery` when a stub condition is true (e.g. always once after 5 loop
+   iterations in simulation)
 
 ---
 

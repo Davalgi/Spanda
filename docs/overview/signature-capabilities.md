@@ -2,7 +2,8 @@
 
 [← Overview](./README.md)
 
-Compact snapshot of Spanda's differentiated capabilities. Full roadmap: [differentiation-roadmap.md](../differentiation-roadmap.md).
+Compact snapshot of Spanda's differentiated capabilities. Full roadmap:
+[differentiation-roadmap.md](../differentiation-roadmap.md).
 
 | Capability | Status | Doc |
 |------------|--------|-----|

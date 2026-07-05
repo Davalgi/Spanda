@@ -16,7 +16,8 @@ Manage Spanda packages: manifests, dependencies, builds, and registry operations
 
 ## OPTIONS
 
-See `spanda init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`, `registry info`.
+See `spanda init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`,
+`registry info`.
 
 ## EXAMPLES
 
@@ -36,4 +37,5 @@ spanda publish
 
 ## SEE ALSO
 
-spanda-check(1), spanda-test(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-check(1), spanda-test(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

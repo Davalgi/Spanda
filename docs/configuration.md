@@ -1,6 +1,8 @@
 # Spanda Configuration
 
-Spanda uses **TOML as the primary human-authored configuration format** for autonomous systems. Machine-generated configs and API interchange may use **JSON**; both formats load through the same resolver.
+Spanda uses **TOML as the primary human-authored configuration format** for autonomous systems.
+Machine-generated configs and API interchange may use **JSON**; both formats load through the same
+resolver.
 
 ## Architecture
 
@@ -20,17 +22,20 @@ Readiness / Assurance / Diagnosis
 Runtime / Simulator
 ```
 
-Runtime, verifier, readiness, assurance, health, recovery, and package loading consume **`ResolvedSystemConfig`** via `spanda-config` integration helpers — not raw TOML/JSON files.
+Runtime, verifier, readiness, assurance, health, recovery, and package loading consume
+**`ResolvedSystemConfig`** via `spanda-config` integration helpers — not raw TOML/JSON files.
 
 ### Auto-resolution
 
 Commands that accept a `.sd` file automatically resolve config from the nearest `spanda.toml`:
 
-- `spanda run` / `spanda sim` / `spanda fleet run` — `--config` optional; attaches config to `RunOptions`
+- `spanda run` / `spanda sim` / `spanda fleet run` — `--config` optional; attaches config to
+  `RunOptions`
 - `spanda verify` — merges config validation into compatibility report
 - `spanda readiness` — uses fleet hardware profile, readiness weights, robot alignment
 - `spanda replay` — resolves config from trace source for deterministic replay and playback
-- `spanda assure` / `spanda diagnose` / `spanda mission verify` / `spanda recovery-coverage` — apply `[assurance]`, `[mission]`, `[recovery]` thresholds
+- `spanda assure` / `spanda diagnose` / `spanda mission verify` / `spanda recovery-coverage` — apply
+  `[assurance]`, `[mission]`, `[recovery]` thresholds
 - `spanda heal` / `spanda recover` — validate config before evaluation
 
 Use `--config <path/to/spanda.toml>` to point at a non-default manifest.
@@ -58,7 +63,8 @@ recovery = "spanda.recovery.toml"
 mission = "spanda.mission.toml"
 ```
 
-The existing `[package]` section for package management remains supported. When `[project]` is absent, the resolver derives project metadata from `[package]`.
+The existing `[package]` section for package management remains supported. When `[project]` is
+absent, the resolver derives project metadata from `[package]`.
 
 ## Cascading overrides
 
@@ -84,7 +90,8 @@ Strategies: `replace` (default), `append`, `merge_by_id`.
 
 ## Device identity
 
-Declare flat `[[devices]]` records (or extend fleet `[[fleet.robots.compute.devices]]`) with network and bus identity fields:
+Declare flat `[[devices]]` records (or extend fleet `[[fleet.robots.compute.devices]]`) with network
+and bus identity fields:
 
 ```toml
 [[devices]]
@@ -103,9 +110,14 @@ security_identity = "camera-front-001"
 robot_id = "rover-001"
 ```
 
-Supported identity fields include: `logical_name`, `serial`, `mac`/`mac_address`, `ip`/`ip_address`, `hostname`, `dns_name`, `mdns_name`, `endpoint`/`endpoint_url`, `protocol`, `port`, `bus`, `can_id`, `usb_path`, `pci_path`, `bluetooth_address`, `ble_uuid`, `cellular_imei`, `sim_iccid`, `gps_device_id`, `firmware_version`, `hardware_revision`, `security_identity`, `certificate_fingerprint`, `trust_level`, `redundant_group`, `failover_priority`.
+Supported identity fields include: `logical_name`, `serial`, `mac`/`mac_address`, `ip`/`ip_address`,
+`hostname`, `dns_name`, `mdns_name`, `endpoint`/`endpoint_url`, `protocol`, `port`, `bus`, `can_id`,
+`usb_path`, `pci_path`, `bluetooth_address`, `ble_uuid`, `cellular_imei`, `sim_iccid`,
+`gps_device_id`, `firmware_version`, `hardware_revision`, `security_identity`,
+`certificate_fingerprint`, `trust_level`, `redundant_group`, `failover_priority`.
 
-Reference fragments via `[config] network_devices = "spanda.network-devices.toml"` (merged into `[[devices]]` with `merge_by_id`).
+Reference fragments via `[config] network_devices = "spanda.network-devices.toml"` (merged into
+`[[devices]]` with `merge_by_id`).
 
 ## CLI
 
@@ -128,7 +140,8 @@ Reference fragments via `[config] network_devices = "spanda.network-devices.toml
 | `spanda readiness <file.sd> --config spanda.toml` | Readiness with config validation |
 | `spanda readiness <file.sd> --baseline <dir>` | Readiness with baseline drift checks |
 
-Add `--json` to any command for machine-readable output. Use `--config <path>` to point at a non-default manifest location.
+Add `--json` to any command for machine-readable output. Use `--config <path>` to point at a
+non-default manifest location.
 
 ## Integration
 

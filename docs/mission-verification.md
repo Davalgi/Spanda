@@ -1,6 +1,7 @@
 # Mission Verification
 
-Mission verification determines whether a declared mission is **achievable** on the configured robot and hardware target.
+Mission verification determines whether a declared mission is **achievable** on the configured robot
+and hardware target.
 
 ## Mission syntax
 

@@ -2,7 +2,8 @@
 
 **Status:** Experimental · **Timeline:** Now · **Path:** `examples/end_to_end/pick_and_place_cell/`
 
-Official Solution Blueprint for industrial arms, pick-and-place cells, OPC-UA/Matter integration, and predictive maintenance.
+Official Solution Blueprint for industrial arms, pick-and-place cells, OPC-UA/Matter integration,
+and predictive maintenance.
 
 **Full roadmap entry:** [ROADMAP.md § Smart Factory](../../ROADMAP.md#smart-factory)
 
@@ -10,7 +11,8 @@ Official Solution Blueprint for industrial arms, pick-and-place cells, OPC-UA/Ma
 
 ## Purpose
 
-Operate manufacturing cells with vision-guided manipulation, machine health monitoring, degraded-mode recovery, and executive readiness scorecards for shift handoff.
+Operate manufacturing cells with vision-guided manipulation, machine health monitoring,
+degraded-mode recovery, and executive readiness scorecards for shift handoff.
 
 ## Platform pillars used
 
@@ -81,7 +83,8 @@ Guide: [device-tree.md](../device-tree.md) · [robotics-platform.md](../robotics
 
 ## Control Center
 
-Executive scorecard and drift panels — [scorecards.md](../scorecards.md) · [drift-detection.md](../drift-detection.md)
+Executive scorecard and drift panels — [scorecards.md](../scorecards.md) ·
+[drift-detection.md](../drift-detection.md)
 
 ## Simulation & replay
 
@@ -101,8 +104,10 @@ spanda readiness src/main.sd --json
 
 ## Smoke gates
 
-`scripts/assurance_smoke.sh` · `scripts/showcase_smoke.sh` · [scripts/gates/README.md](../../scripts/gates/README.md)
+`scripts/assurance_smoke.sh` · `scripts/showcase_smoke.sh` ·
+[scripts/gates/README.md](../../scripts/gates/README.md)
 
 ---
 
-**Related blueprints:** [Warehouse Automation](./warehouse.md) · [Critical Infrastructure](../ROADMAP.md#critical-infrastructure)
+**Related blueprints:** [Warehouse Automation](./warehouse.md) · [Critical
+Infrastructure](../ROADMAP.md#critical-infrastructure)

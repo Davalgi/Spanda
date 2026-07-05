@@ -4,7 +4,9 @@
 
 ## Summary
 
-The Spanda roadmap was restructured into a **product ecosystem** presentation. Scope is unchanged — every feature, blueprint, and milestone from the prior `docs/roadmap.md` is preserved in **[ROADMAP.md](../ROADMAP.md)**.
+The Spanda roadmap was restructured into a **product ecosystem** presentation. Scope is unchanged —
+every feature, blueprint, and milestone from the prior `docs/roadmap.md` is preserved in
+**[ROADMAP.md](../ROADMAP.md)**.
 
 ## What changed
 
@@ -22,7 +24,8 @@ The Spanda roadmap was restructured into a **product ecosystem** presentation. S
 - No features removed or descoped
 - `docs/feature-status.md` remains the tier truth table
 - Topic guides (`docs/mission-continuity.md`, `docs/control-center.md`, etc.) unchanged
-- Deep-dive roadmaps (`enterprise-operations-roadmap.md`, `differentiation-roadmap.md`, …) unchanged — linked from pillars
+- Deep-dive roadmaps (`enterprise-operations-roadmap.md`, `differentiation-roadmap.md`, …) unchanged
+  — linked from pillars
 - Examples, packages, and crates layout unchanged (reorganization is **recommended**, not executed)
 
 ## Link updates
@@ -48,4 +51,5 @@ The Spanda roadmap was restructured into a **product ecosystem** presentation. S
 ## For website / README
 
 - README links to Platform Pillars and Solution Blueprints sections
-- Website nav: Platform, Language, Packages, Solutions, Architecture, Roadmap, Control Center, Documentation, Examples, Community
+- Website nav: Platform, Language, Packages, Solutions, Architecture, Roadmap, Control Center,
+  Documentation, Examples, Community

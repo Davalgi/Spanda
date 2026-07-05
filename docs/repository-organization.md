@@ -1,6 +1,8 @@
 # Repository organization recommendations
 
-**Purpose:** Improve discoverability across `docs/`, `examples/`, `packages/`, `crates/`, `website/`, and `.github/` **without deleting content**. This audit supports the [product roadmap](../ROADMAP.md).
+**Purpose:** Improve discoverability across `docs/`, `examples/`, `packages/`, `crates/`,
+`website/`, and `.github/` **without deleting content**. This audit supports the [product
+roadmap](../ROADMAP.md).
 
 **Status:** Recommendations only — physical moves are optional follow-up PRs.
 

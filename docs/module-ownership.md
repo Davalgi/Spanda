@@ -2,7 +2,8 @@
 
 Every Spanda module belongs to exactly one architectural layer and one ownership domain.
 
-**Parent:** [platform-architecture.md](./platform-architecture.md) · **Rules:** [dependency-rules.md](./dependency-rules.md)
+**Parent:** [platform-architecture.md](./platform-architecture.md) · **Rules:**
+[dependency-rules.md](./dependency-rules.md)
 
 Source of truth: [`scripts/architecture-manifest.yaml`](../scripts/architecture-manifest.yaml)
 
@@ -175,7 +176,9 @@ Source of truth: [`scripts/architecture-manifest.yaml`](../scripts/architecture-
 
 ## Registry packages
 
-Official `.sd` packages under `packages/registry/` are **not** workspace crates. They belong to the package ecosystem layer (Core Platform extension via provider traits). See [official-packages.md](./official-packages.md).
+Official `.sd` packages under `packages/registry/` are **not** workspace crates. They belong to the
+package ecosystem layer (Core Platform extension via provider traits). See
+[official-packages.md](./official-packages.md).
 
 ---
 
@@ -191,6 +194,7 @@ Official `.sd` packages under `packages/registry/` are **not** workspace crates.
 
 ## Orphan policy
 
-Leaf crates at foundation/compiler layers and interface entry points may have no dependents. Optional crates (`spanda-ros2-rclrs-native`) are excluded from orphan warnings.
+Leaf crates at foundation/compiler layers and interface entry points may have no dependents.
+Optional crates (`spanda-ros2-rclrs-native`) are excluded from orphan warnings.
 
 Crates with neither dependents nor dependencies outside optional set trigger a warning for review.

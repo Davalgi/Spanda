@@ -1,8 +1,11 @@
 # AR, VR & XR
 
-Spanda supports **augmented**, **virtual**, and **mixed** reality workflows through optional packages — not built-in AR/VR engines. Reference integrations target common platforms; industrial and vendor-specific glasses ship as additional packages.
+Spanda supports **augmented**, **virtual**, and **mixed** reality workflows through optional
+packages — not built-in AR/VR engines. Reference integrations target common platforms; industrial
+and vendor-specific glasses ship as additional packages.
 
-**Related:** [spatial-computing.md](./spatial-computing.md) · [hri-packages.md](./hri-packages.md) · [remote-expert.md](./remote-expert.md)
+**Related:** [spatial-computing.md](./spatial-computing.md) · [hri-packages.md](./hri-packages.md) ·
+[remote-expert.md](./remote-expert.md)
 
 ---
 
@@ -64,7 +67,8 @@ Mixed reality combines live physical context with digital overlays:
 | Recovery overlay | Active recovery plan, degraded mode |
 | Digital twin overlay | Twin mirror + replay buffer |
 
-XR sessions register as `XRSession` device-tree nodes with `capabilities` listing supported overlay types.
+XR sessions register as `XRSession` device-tree nodes with `capabilities` listing supported overlay
+types.
 
 ---
 

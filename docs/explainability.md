@@ -19,7 +19,11 @@ spanda explain decision <mission.trace> [--json]
 spanda explain <mission.trace> [--json]
 ```
 
-With `--config`, reports add **configuration validation**, **deployment gates preview** (including `composite_trust` and `secure_boot` when trust contracts are imported), and **package trust** sections. All program explains include a **composite_trust** category breakdown when source is available; programs importing `trust.jetson` or `trust.pi` also include a **secure_boot** section. With `--baseline`, adds a **drift** section comparing approved vs live configuration.
+With `--config`, reports add **configuration validation**, **deployment gates preview** (including
+`composite_trust` and `secure_boot` when trust contracts are imported), and **package trust**
+sections. All program explains include a **composite_trust** category breakdown when source is
+available; programs importing `trust.jetson` or `trust.pi` also include a **secure_boot** section.
+With `--baseline`, adds a **drift** section comparing approved vs live configuration.
 
 ## Capabilities by phase
 
@@ -42,6 +46,8 @@ spanda suggest rover.sd
 
 ## Crate
 
-`spanda-explain` — composes `spanda-assurance`, `spanda-readiness`, `spanda-hardware`, and `spanda-trust` diagnostics.
+`spanda-explain` — composes `spanda-assurance`, `spanda-readiness`, `spanda-hardware`, and
+`spanda-trust` diagnostics.
 
-See [diagnostics.md](./diagnostics.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [diagnostics.md](./diagnostics.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

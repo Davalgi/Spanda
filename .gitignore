@@ -1,9 +1,15 @@
-# mdBook build output and synced chapter sources
-# docs-site/book/
-# docs-site/src/repo-docs/
-
+# node / build
+node_modules/
 dist/
 target/
+
+# mdBook build output and synced chapter sources
+docs-site/book/
+docs-site/src/repo-docs/
+
+# Stray HTML exports from local doc builds (canonical sources are .md)
+docs/**/*.html
+examples/**/*.html
 
 # env
 .env
@@ -63,4 +69,3 @@ __pycache__/
 *$py.class
 .pytest_cache/
 *.egg-info/
-node_modules

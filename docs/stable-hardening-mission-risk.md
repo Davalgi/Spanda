@@ -2,7 +2,8 @@
 
 **Promoted 2026-07-02** — second NEXT differentiation pillar after What-If.
 
-**Related:** [mission-risk-analysis.md](./mission-risk-analysis.md) · [differentiation-roadmap.md](./differentiation-roadmap.md)
+**Related:** [mission-risk-analysis.md](./mission-risk-analysis.md) ·
+[differentiation-roadmap.md](./differentiation-roadmap.md)
 
 | Gate | Status |
 |------|--------|

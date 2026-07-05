@@ -17,7 +17,8 @@ reality and created confusion during release evaluation.
 
 For all release decisions, roadmap discussions, and community communication, use:
 
-1. [`docs/feature-status.md`](./feature-status.md) for Stable / Experimental / Planned / Deprecated status
+1. [`docs/feature-status.md`](./feature-status.md) for Stable / Experimental / Planned / Deprecated
+   status
 2. [`docs/architecture.md`](./architecture.md) for up-to-date compiler/runtime diagrams
 3. [`CHANGELOG.md`](../CHANGELOG.md) for release-level deltas
 

@@ -1,6 +1,7 @@
 # How Runtime Resolution Works
 
-Runtime resolution connects Spanda source imports to installed packages, provider backends, and the communication bus.
+Runtime resolution connects Spanda source imports to installed packages, provider backends, and the
+communication bus.
 
 ## End-to-end flow
 
@@ -23,7 +24,8 @@ flowchart TD
 
 ### 1. Project discovery
 
-`load_official_packages_for_source(path)` walks from the `.sd` file to the project root, then reads `spanda.lock` (or falls back to `spanda.toml` dependencies).
+`load_official_packages_for_source(path)` walks from the `.sd` file to the project root, then reads
+`spanda.lock` (or falls back to `spanda.toml` dependencies).
 
 ### 2. Module linking
 
@@ -36,11 +38,13 @@ Imports like `import positioning.gps` resolve to exported functions in the modul
 
 ### 3. Provider bootstrap
 
-`bootstrap_providers_for_packages` registers only providers for packages listed in the lockfile. Capabilities are granted per package (e.g. `spanda-mqtt` → `mqtt.publish`).
+`bootstrap_providers_for_packages` registers only providers for packages listed in the lockfile.
+Capabilities are granted per package (e.g. `spanda-mqtt` → `mqtt.publish`).
 
 ### 4. Transport routing
 
-`RoutingCommBus` selects sim, local, or registry-backed transports. Robot `topic` declarations with `transport: MQTT` route through the `spanda-mqtt` transport provider when installed.
+`RoutingCommBus` selects sim, local, or registry-backed transports. Robot `topic` declarations with
+`transport: MQTT` route through the `spanda-mqtt` transport provider when installed.
 
 ### 5. Call dispatch
 
@@ -53,7 +57,9 @@ When the interpreter calls an imported function (e.g. `read()` from `positioning
 
 ### 6. Verification integration
 
-`spanda verify` runs before deploy. It checks hardware profiles, memory, connectivity requirements, and package capability needs against declared `requires_hardware` and `requires_connectivity` blocks — independent of runtime loading but using the same manifest metadata.
+`spanda verify` runs before deploy. It checks hardware profiles, memory, connectivity requirements,
+and package capability needs against declared `requires_hardware` and `requires_connectivity` blocks
+— independent of runtime loading but using the same manifest metadata.
 
 ## CLI commands in the resolution chain
 

@@ -1,6 +1,7 @@
 # Pillar 7 — Developer Platform
 
-[← Pillars index](../README.md) · [ROADMAP § Pillar 7](../../ROADMAP.md#pillar-7--developer-platform)
+[← Pillars index](../README.md) · [ROADMAP § Pillar
+7](../../ROADMAP.md#pillar-7--developer-platform)
 
 CLI, REST/gRPC APIs, SDKs, documentation, editor integration, CI/CD, and onboarding.
 
@@ -56,8 +57,10 @@ spanda demo adas
 
 ## Examples index
 
-[examples/README.md](../../../examples/README.md) · [examples/showcase/README.md](../../../examples/showcase/README.md)
+[examples/README.md](../../../examples/README.md) ·
+[examples/showcase/README.md](../../../examples/showcase/README.md)
 
 ## Smoke gates
 
-`scripts/showcase_smoke.sh` · `scripts/killer_demo_golden_path.sh` · `scripts/ci_verify_golden_path.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)
+`scripts/showcase_smoke.sh` · `scripts/killer_demo_golden_path.sh` ·
+`scripts/ci_verify_golden_path.sh` · [scripts/gates/README.md](../../../scripts/gates/README.md)

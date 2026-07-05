@@ -1,6 +1,7 @@
 # Agentic Programming
 
-Spanda supports safety-gated agentic programming with tool permissions, memory scopes, and approval gates.
+Spanda supports safety-gated agentic programming with tool permissions, memory scopes, and approval
+gates.
 
 ## Example
 
@@ -29,15 +30,19 @@ agent Planner {
 - Capability grant/deny events are written to the audit trail when configured (Phase 31)
 - Reasoning traces captured for audit when `audit` is configured
 - `ActionProposal` must pass through `safety.validate` before actuator execution
-- Agent `plan` blocks with motion grants must return `SafeAction` — see [typed-handler-io.md](./typed-handler-io.md)
+- Agent `plan` blocks with motion grants must return `SafeAction` — see
+  [typed-handler-io.md](./typed-handler-io.md)
 
 **Examples:**
 
-- [`examples/features/agent_capabilities.sd`](../examples/features/agent_capabilities.sd) — populated `can[]`
-- [`examples/features/agent_can_deny.sd`](../examples/features/agent_can_deny.sd) — empty `can[]` denial
+- [`examples/features/agent_capabilities.sd`](../examples/features/agent_capabilities.sd) —
+  populated `can[]`
+- [`examples/features/agent_can_deny.sd`](../examples/features/agent_can_deny.sd) — empty `can[]`
+  denial
 
 ## Runtime
 
-`spanda-ai` provides `AgentRuntime` with mock and live AI paths. Capability enforcement runs in the interpreter.
+`spanda-ai` provides `AgentRuntime` with mock and live AI paths. Capability enforcement runs in the
+interpreter.
 
 See [Architecture — AI Safety](./architecture.md) and [Feature Status](./feature-status.md).

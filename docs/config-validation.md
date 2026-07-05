@@ -1,6 +1,7 @@
 # Configuration Validation
 
-`spanda config validate` runs structural and safety checks on the **resolved** configuration (after all layers and fragments are merged).
+`spanda config validate` runs structural and safety checks on the **resolved** configuration (after
+all layers and fragments are merged).
 
 ## Rules
 
@@ -43,7 +44,8 @@ Providers are validated against:
 
 ## Package validation
 
-Dependencies declared in merged config are collected for package loading. Full package resolution still flows through `spanda install` and the lockfile.
+Dependencies declared in merged config are collected for package loading. Full package resolution
+still flows through `spanda install` and the lockfile.
 
 ## Readiness integration
 
@@ -53,13 +55,16 @@ When running readiness with `--config`:
 spanda readiness patrol.sd --config spanda.toml
 ```
 
-Config validation runs first. Errors block readiness evaluation. The hardware profile from the first configured robot is used as the default `--target` when not specified.
+Config validation runs first. Errors block readiness evaluation. The hardware profile from the first
+configured robot is used as the default `--target` when not specified.
 
 ## Health and security
 
-- Robots without a `[health.robots.<id>]` policy appear in the config report under missing health policies.
+- Robots without a `[health.robots.<id>]` policy appear in the config report under missing health
+  policies.
 - Remote/networked devices should have `[security.devices.<id>]` identity entries.
 
 ## Exit codes
 
-`spanda config validate` exits non-zero when any **error**-severity finding is present. Warnings do not fail validation by default but appear in reports.
+`spanda config validate` exits non-zero when any **error**-severity finding is present. Warnings do
+not fail validation by default but appear in reports.

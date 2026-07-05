@@ -72,7 +72,9 @@ spanda diagnose src/highway_drive.sd fixtures/camera_failure_recovery.trace
 spanda explain driver_takeover/driver_takeover.sd fixtures/driver_takeover.trace
 ```
 
-Talking points: explainable emergency braking, camera obstruction, driver takeover. `highway_drive.trace` captures `behavior_tick` frames; `fixtures/` hold narrative scenarios; `sim_record/` demonstrates `task` scheduler ticks.
+Talking points: explainable emergency braking, camera obstruction, driver takeover.
+`highway_drive.trace` captures `behavior_tick` frames; `fixtures/` hold narrative scenarios;
+`sim_record/` demonstrates `task` scheduler ticks.
 
 ### 5. Assurance & Control Center (3 min)
 
@@ -93,7 +95,8 @@ spanda sim sim_record/lane_keep_task.sd --record
 spanda replay fixtures/aeb_activation.trace --playback
 ```
 
-Scenarios: heavy rain, snow, fog, night, camera/radar/LiDAR failure, GPS spoofing, CAN failure, emergency vehicle.
+Scenarios: heavy rain, snow, fog, night, camera/radar/LiDAR failure, GPS spoofing, CAN failure,
+emergency vehicle.
 
 ---
 
@@ -103,7 +106,8 @@ Scenarios: heavy rain, snow, fog, night, camera/radar/LiDAR failure, GPS spoofin
 spanda demo trust
 ```
 
-Cross-reference: GPS spoofing, tamper policy, secure boot — see [adas-security.md](./adas-security.md).
+Cross-reference: GPS spoofing, tamper policy, secure boot — see
+[adas-security.md](./adas-security.md).
 
 ---
 

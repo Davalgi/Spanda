@@ -1,8 +1,10 @@
 # Agriculture — Solution Blueprint
 
-**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:** [examples/solutions/agriculture/](../../examples/solutions/agriculture/)
+**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:**
+[examples/solutions/agriculture/](../../examples/solutions/agriculture/)
 
-Official Solution Blueprint for autonomous field robots, precision agriculture, and crop monitoring — composed from existing platform capabilities.
+Official Solution Blueprint for autonomous field robots, precision agriculture, and crop monitoring
+— composed from existing platform capabilities.
 
 **Full roadmap entry:** [ROADMAP.md § Agriculture](../../ROADMAP.md#agriculture)
 
@@ -10,7 +12,8 @@ Official Solution Blueprint for autonomous field robots, precision agriculture, 
 
 ## Purpose
 
-Deploy and operate autonomous tractors, sprayers, drones, and sensor networks with offline-capable connectivity, geofenced safety, and seasonal trace replay.
+Deploy and operate autonomous tractors, sprayers, drones, and sensor networks with offline-capable
+connectivity, geofenced safety, and seasonal trace replay.
 
 ## Platform pillars used
 
@@ -62,7 +65,8 @@ Field Robot (.sd)
 
 ## Example projects
 
-- [examples/solutions/agriculture/](../../examples/solutions/agriculture/) — `field_patrol.sd`, `spray_mission.sd`, `harvest_convoy.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
+- [examples/solutions/agriculture/](../../examples/solutions/agriculture/) — `field_patrol.sd`,
+  `spray_mission.sd`, `harvest_convoy.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
 
 ## Simulation & replay
 
@@ -71,4 +75,5 @@ Field Robot (.sd)
 
 ---
 
-**Related blueprints:** [Transportation](./adas.md) (delivery vehicles) · [Environmental Monitoring](./environmental-monitoring.md)
+**Related blueprints:** [Transportation](./adas.md) (delivery vehicles) · [Environmental
+Monitoring](./environmental-monitoring.md)

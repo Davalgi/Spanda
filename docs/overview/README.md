@@ -1,6 +1,7 @@
 # Spanda project overview
 
-Expanded home linked from the root [README.md](../../README.md). For hands-on steps start with [getting started](../getting-started.md).
+Expanded home linked from the root [README.md](../../README.md). For hands-on steps start with
+[getting started](../getting-started.md).
 
 ## Start here
 

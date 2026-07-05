@@ -1,8 +1,10 @@
 # Fleet Health
 
-Fleet-level health checks aggregate robot health, evaluate `require` clauses at runtime, and coordinate mission pauses when thresholds fail.
+Fleet-level health checks aggregate robot health, evaluate `require` clauses at runtime, and
+coordinate mission pauses when thresholds fail.
 
-**Example:** [`examples/features/fleet_health_require.sd`](../examples/features/fleet_health_require.sd)
+**Example:**
+[`examples/features/fleet_health_require.sd`](../examples/features/fleet_health_require.sd)
 
 ---
 

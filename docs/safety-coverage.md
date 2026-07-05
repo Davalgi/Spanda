@@ -2,7 +2,8 @@
 
 **Status:** Stable · **Horizon:** NOW · **Priority:** P0
 
-Coverage reporting for safety scenarios — identify what is protected, partially protected, or uncovered before deploy.
+Coverage reporting for safety scenarios — identify what is protected, partially protected, or
+uncovered before deploy.
 
 ## CLI
 
@@ -64,6 +65,9 @@ Per scenario: **Covered** · **Partially Covered** · **Uncovered**
 
 ## Implementation
 
-Extends `spanda-readiness` safety analysis — no duplicate safety logic. Scenario catalog ships in core; vendor-specific scenarios as packages.
+Extends `spanda-readiness` safety analysis — no duplicate safety logic. Scenario catalog ships in
+core; vendor-specific scenarios as packages.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [safety-auditor.md](./safety-auditor.md) · [minimum-hardware-safety.md](./minimum-hardware-safety.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[safety-auditor.md](./safety-auditor.md) ·
+[minimum-hardware-safety.md](./minimum-hardware-safety.md).

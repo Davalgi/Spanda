@@ -34,18 +34,22 @@ Exit codes:
 | Recovery / continuity | Policy declarations |
 | Fleet / mission plan | Program-level orchestration |
 
-Each change includes a recommended **impact** action (e.g. re-run verify, safety-coverage, deploy gate).
+Each change includes a recommended **impact** action (e.g. re-run verify, safety-coverage, deploy
+gate).
 
 ## Output
 
-`MissionDiffReport` with `added` / `removed` / `modified` counts, `has_deploy_impact`, `has_safety_impact`, and per-change rows.
+`MissionDiffReport` with `added` / `removed` / `modified` counts, `has_deploy_impact`,
+`has_safety_impact`, and per-change rows.
 
 ## Integration
 
-Complements `spanda config diff` (TOML layers) and configuration drift detection. Use in PR review and CI to block unsafe mission regressions.
+Complements `spanda config diff` (TOML layers) and configuration drift detection. Use in PR review
+and CI to block unsafe mission regressions.
 
 ## Crate
 
 `spanda-diff` — composes `spanda-ast` and `spanda-capability` inference.
 
-See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) · [drift-detection.md](./drift-detection.md).
+See [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) ·
+[drift-detection.md](./drift-detection.md).

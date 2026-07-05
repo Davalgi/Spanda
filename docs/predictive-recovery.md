@@ -1,6 +1,7 @@
 # Predictive Recovery
 
-The Recovery Orchestrator integrates telemetry to detect early failure indicators and trigger preventative recovery.
+The Recovery Orchestrator integrates telemetry to detect early failure indicators and trigger
+preventative recovery.
 
 ## Supported indicators
 
@@ -68,11 +69,13 @@ await client.recommendRecovery({ failure: "gps_loss" });
 
 ## Prognostics integration
 
-Program-level `prognostics` declarations in Spanda source complement telemetry scanning. See [self-healing.md](./self-healing.md) and assurance prognostics.
+Program-level `prognostics` declarations in Spanda source complement telemetry scanning. See
+[self-healing.md](./self-healing.md) and assurance prognostics.
 
 ## Learning
 
-Historical recovery outcomes feed the rule-based knowledge base (success rates, strategy effectiveness). No machine learning in Phase 2 — statistics and rules only.
+Historical recovery outcomes feed the rule-based knowledge base (success rates, strategy
+effectiveness). No machine learning in Phase 2 — statistics and rules only.
 
 ## See also
 

@@ -8,7 +8,8 @@ Spanda v0.5 beta includes **real AI provider paths** for `ai_model` blocks:
 | `anthropic` | `ANTHROPIC_API_KEY` set | Mock provider |
 | `onnx` | `SPANDA_ONNX_MODEL_PATH` set | Mock provider |
 
-When the key is set, `planner.reason(...)` calls the provider via the Python bridge; otherwise it falls back to the deterministic mock provider.
+When the key is set, `planner.reason(...)` calls the provider via the Python bridge; otherwise it
+falls back to the deterministic mock provider.
 
 **Examples (ai_model provider):**
 
@@ -128,11 +129,14 @@ Unsafe direct execution remains a **compile error** regardless of provider.
 
 `spanda-openai` ships import path `ai.openai` with `complete(prompt)` wrapping `openai_complete`.
 
-`spanda-anthropic` ships import path `ai.anthropic` with `complete(prompt)` wrapping `anthropic_complete`.
+`spanda-anthropic` ships import path `ai.anthropic` with `complete(prompt)` wrapping
+`anthropic_complete`.
 
-`spanda-onnx` ships import path `ai.onnx` with `infer(...)` wrapping the ONNX bridge when `SPANDA_ONNX_MODEL_PATH` is set.
+`spanda-onnx` ships import path `ai.onnx` with `infer(...)` wrapping the ONNX bridge when
+`SPANDA_ONNX_MODEL_PATH` is set.
 
-Default registry: `SPANDA_REGISTRY_URL` points at the hosted index in this repository (see [registry.md](./registry.md)).
+Default registry: `SPANDA_REGISTRY_URL` points at the hosted index in this repository (see
+[registry.md](./registry.md)).
 
 Golden path: `./scripts/registry_golden_path.sh` (CI Integration job `registry-golden-path`).
 

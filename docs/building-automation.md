@@ -1,10 +1,12 @@
 # Building Automation
 
-Building management, HVAC, lighting, access control, and life-safety orchestration for the [Smart Spaces & Ambient Intelligence](./solutions/smart-spaces.md) blueprint.
+Building management, HVAC, lighting, access control, and life-safety orchestration for the [Smart
+Spaces & Ambient Intelligence](./solutions/smart-spaces.md) blueprint.
 
 **Status:** Experimental (scaffold) · **Profile:** `smart_space`
 
-Spanda does **not** replace BACnet/KNX BMS products or home automation hubs. It verifies readiness, orchestrates missions, and produces assurance evidence across those systems.
+Spanda does **not** replace BACnet/KNX BMS products or home automation hubs. It verifies readiness,
+orchestrates missions, and produces assurance evidence across those systems.
 
 ---
 
@@ -36,7 +38,8 @@ Home (facility)
 └── Energy meter + solar (optional)
 ```
 
-Example: [examples/solutions/smart-spaces/smart-home/](../examples/solutions/smart-spaces/smart-home/)
+Example:
+[examples/solutions/smart-spaces/smart-home/](../examples/solutions/smart-spaces/smart-home/)
 
 ### Smart office
 
@@ -48,7 +51,8 @@ Office floor (zone)
 └── Cleaning robot → robot_assistance
 ```
 
-Example: [examples/solutions/smart-spaces/smart-office/](../examples/solutions/smart-spaces/smart-office/)
+Example:
+[examples/solutions/smart-spaces/smart-office/](../examples/solutions/smart-spaces/smart-office/)
 
 ### Smart building
 
@@ -62,7 +66,8 @@ Commercial tower (facility)
 └── Control Center NOC operator
 ```
 
-Example: [examples/solutions/smart-spaces/smart-building/](../examples/solutions/smart-spaces/smart-building/)
+Example:
+[examples/solutions/smart-spaces/smart-building/](../examples/solutions/smart-spaces/smart-building/)
 
 ---
 
@@ -76,14 +81,19 @@ Example: [examples/solutions/smart-spaces/smart-building/](../examples/solutions
 
 ### Native BACnet / KNX on site
 
-1. Install optional Python deps: `requirements-bacnet.txt` / `requirements-knx.txt` under each registry package.
-2. Set `SPANDA_LIVE_BACNET=1` or `SPANDA_LIVE_KNX=1` and network env vars (see [iot.md](./iot.md#live-hardware-optional)).
-3. Point `SPANDA_BACNET_CMD` / `SPANDA_KNX_CMD` at the package `scripts/read_*.sh` helpers, or build with `--features live-building` so Rust dispatches registry `read_*.py` before the Python bridge.
-4. Verify with `./scripts/smart_spaces_live_iot_smoke.sh` (mock) before `SPANDA_LIVE_IOT_HARDWARE=1` on the building network.
+1. Install optional Python deps: `requirements-bacnet.txt` / `requirements-knx.txt` under each
+   registry package.
+2. Set `SPANDA_LIVE_BACNET=1` or `SPANDA_LIVE_KNX=1` and network env vars (see
+   [iot.md](./iot.md#live-hardware-optional)).
+3. Point `SPANDA_BACNET_CMD` / `SPANDA_KNX_CMD` at the package `scripts/read_*.sh` helpers, or build
+   with `--features live-building` so Rust dispatches registry `read_*.py` before the Python bridge.
+4. Verify with `./scripts/smart_spaces_live_iot_smoke.sh` (mock) before `SPANDA_LIVE_IOT_HARDWARE=1`
+   on the building network.
 
 ### BMS sidecar (Home Assistant / MQTT)
 
-When BACnet/KNX are already aggregated by a hub, use a **sidecar bridge** instead of direct field-bus reads. See [smart-space-bms-bridge.md](./smart-space-bms-bridge.md).
+When BACnet/KNX are already aggregated by a hub, use a **sidecar bridge** instead of direct
+field-bus reads. See [smart-space-bms-bridge.md](./smart-space-bms-bridge.md).
 
 ```bash
 export SPANDA_LIVE_HOME_ASSISTANT=1
@@ -92,7 +102,8 @@ export SPANDA_HOME_ASSISTANT_TOKEN=your-long-lived-token
 ./scripts/smart_spaces_bms_sidecar_smoke.sh
 ```
 
-Provider pattern: packages implement `iot.*` import paths; missions use `requires capabilities` — see [iot.md](./iot.md).
+Provider pattern: packages implement `iot.*` import paths; missions use `requires capabilities` —
+see [iot.md](./iot.md).
 
 ---
 
@@ -118,7 +129,8 @@ Life-safety devices remain on certified hardware paths. Spanda:
 3. Records assurance evidence for inspection and insurance.
 4. Never blocks UL-listed panel functions — orchestrates *around* them.
 
-Emergency examples: [examples/solutions/smart-spaces/emergency-response/](../examples/solutions/smart-spaces/emergency-response/)
+Emergency examples:
+[examples/solutions/smart-spaces/emergency-response/](../examples/solutions/smart-spaces/emergency-response/)
 
 ---
 
@@ -131,7 +143,8 @@ Building automation twins mirror:
 - Gateway redundancy role (primary / standby)
 - Last readiness score per floor
 
-See [digital-twin.md](./digital-twin.md) and `spanda.devices.toml` twins section in the smart-spaces blueprint.
+See [digital-twin.md](./digital-twin.md) and `spanda.devices.toml` twins section in the smart-spaces
+blueprint.
 
 ---
 

@@ -2,7 +2,8 @@
 
 **Status:** Experimental (mock-first) · **Phase:** Build, Operate · **Priority:** P3.3
 
-Guardrailed scaffolding and static suggestions for Spanda programs. All generated output passes parse and typecheck before emission. No auto-deploy.
+Guardrailed scaffolding and static suggestions for Spanda programs. All generated output passes
+parse and typecheck before emission. No auto-deploy.
 
 ## CLI
 
@@ -25,10 +26,12 @@ spanda suggest examples/showcase/readiness/rover.sd [--json]
 
 ## Suggestions
 
-`spanda suggest` composes readiness scoring, safety audit findings, and policy-gap hints into actionable recommendations.
+`spanda suggest` composes readiness scoring, safety audit findings, and policy-gap hints into
+actionable recommendations.
 
 ## Crate
 
 `spanda-generate` — template scaffolds, validation, and rule-based suggestions.
 
-See [explainability.md](./explainability.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [explainability.md](./explainability.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

@@ -1,8 +1,10 @@
 # Distributed Decision Security
 
-Security validation, attack simulations, and enforcement status for Spanda's hierarchical distributed decision architecture.
+Security validation, attack simulations, and enforcement status for Spanda's hierarchical
+distributed decision architecture.
 
-**Status: Stable** — live attack simulations exercise enforcement code paths with constructed adversarial inputs.
+**Status: Stable** — live attack simulations exercise enforcement code paths with constructed
+adversarial inputs.
 
 ## What is production-ready
 
@@ -20,7 +22,8 @@ Security validation, attack simulations, and enforcement status for Spanda's hie
 
 ## What is simulated (not live adversarial)
 
-Attack simulations exercise **enforcement code paths** with constructed adversarial inputs. They do not spin up fleet mesh, inject network packets, or compromise real devices.
+Attack simulations exercise **enforcement code paths** with constructed adversarial inputs. They do
+not spin up fleet mesh, inject network packets, or compromise real devices.
 
 | Scenario | CLI | What runs |
 |----------|-----|-----------|
@@ -56,7 +59,8 @@ Enforcement checks:
 - **Decision timestamp** — staleness bounds via `validate_decision_timestamp`
 - **Authority scope** — layer alignment via `validate_authority_scope`
 
-**Note:** Decision tree hash is a non-crypto fingerprint for tamper detection in tests and traces. Offline policy signatures use real Ed25519 — do not mock in production paths.
+**Note:** Decision tree hash is a non-crypto fingerprint for tamper detection in tests and traces.
+Offline policy signatures use real Ed25519 — do not mock in production paths.
 
 ## Rule enforcement tests
 
@@ -113,7 +117,8 @@ export SPANDA_HSM_SIGN_SCRIPT=/opt/spanda/bin/hsm-sign.sh   # reads stdin, print
 export SPANDA_DECISION_POLICY_TRUST_KEY=<matching public key or material>
 ```
 
-The script receives the canonical signing payload on stdin and must print a hex-encoded Ed25519 signature on stdout. Set `SPANDA_HSM_SIGN_REQUIRED=1` to fail closed when the script errors.
+The script receives the canonical signing payload on stdin and must print a hex-encoded Ed25519
+signature on stdout. Set `SPANDA_HSM_SIGN_REQUIRED=1` to fail closed when the script errors.
 
 ## Former enhancements (resolved)
 

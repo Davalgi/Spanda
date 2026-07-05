@@ -1,6 +1,7 @@
 # Self-Correction
 
-Self-correction actions are typed recovery operations that restore degraded capability without uncontrolled autonomy.
+Self-correction actions are typed recovery operations that restore degraded capability without
+uncontrolled autonomy.
 
 ## Supported actions
 

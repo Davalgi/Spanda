@@ -1,8 +1,11 @@
 # Operator Capabilities
 
-Operator capabilities extend the **existing capability framework** — the same traceability matrices, `requires_capability` checks, and `spanda verify` flows used for robots apply to human operators. No separate verification engine.
+Operator capabilities extend the **existing capability framework** — the same traceability matrices,
+`requires_capability` checks, and `spanda verify` flows used for robots apply to human operators. No
+separate verification engine.
 
-**Related:** [capability-traceability.md](./capability-traceability.md) · [human-interaction.md](./human-interaction.md) · [human-readiness.md](./human-readiness.md)
+**Related:** [capability-traceability.md](./capability-traceability.md) ·
+[human-interaction.md](./human-interaction.md) · [human-readiness.md](./human-readiness.md)
 
 ---
 
@@ -22,7 +25,8 @@ Operator capabilities extend the **existing capability framework** — the same 
 | `forklift_operator` | Operator | Warehouse forklift missions |
 | `search_rescue_operator` | Emergency Responder | SAR collaborative missions |
 
-Packages may register additional operator capabilities in the capability registry (same mechanism as `spanda-nav` → `obstacle_avoidance`).
+Packages may register additional operator capabilities in the capability registry (same mechanism as
+`spanda-nav` → `obstacle_avoidance`).
 
 ---
 
@@ -55,7 +59,8 @@ requires_capability approve_mission {
 }
 ```
 
-Programs do **not** use new HRI-specific keywords — `requires_capability` and `continuity_policy` cover collaborative gates.
+Programs do **not** use new HRI-specific keywords — `requires_capability` and `continuity_policy`
+cover collaborative gates.
 
 ---
 
@@ -98,6 +103,8 @@ Deployment-specific overrides remain in `spanda.devices.toml`.
 
 ## Control Center
 
-The **Operator Readiness** panel shows capability coverage per team member. The **Approval Queue** blocks mission start until `approve_mission` capability is satisfied by an available, certified operator.
+The **Operator Readiness** panel shows capability coverage per team member. The **Approval Queue**
+blocks mission start until `approve_mission` capability is satisfied by an available, certified
+operator.
 
 See [control-center.md](./control-center.md#human-interaction-dashboard).

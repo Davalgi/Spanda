@@ -1,6 +1,8 @@
 # Python SDK (`spanda-sdk`)
 
-Official Python client for robotics scripts, notebooks, CI/CD, and ROS2 integrations. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this package when your application is written in Python.
+Official Python client for robotics scripts, notebooks, CI/CD, and ROS2 integrations. Part of the
+[official multi-language SDK family](./sdk.md#why-three-sdks) — use this package when your
+application is written in Python.
 
 ## Install
 
@@ -11,7 +13,9 @@ pip install spanda-sdk
 pip install "spanda-sdk[stream]"   # WebSocket telemetry extra
 ```
 
-On macOS Homebrew Python or other PEP 668–managed installs, use a virtual environment first — see [troubleshooting.md — Python SDK install](./troubleshooting.md#python-externally-managed-environment-on-pip-install).
+On macOS Homebrew Python or other PEP 668–managed installs, use a virtual environment first — see
+[troubleshooting.md — Python SDK
+install](./troubleshooting.md#python-externally-managed-environment-on-pip-install).
 
 From this monorepo (development):
 
@@ -21,7 +25,8 @@ pip install -e sdk/python
 pip install -e "sdk/python[stream]"
 ```
 
-Maintainers: see [Publishing SDKs](sdk-publishing.md) for PyPI tokens, GitHub secrets, and release tags.
+Maintainers: see [Publishing SDKs](sdk-publishing.md) for PyPI tokens, GitHub secrets, and release
+tags.
 
 ## Usage
 
@@ -77,7 +82,8 @@ memory = client.memory().summary()
 profile = client.memory().entity_refs("rover-001")
 ```
 
-Legacy methods (`list_autonomy_reflex()`, `get_autonomy_homeostasis()`, …) remain available. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+Legacy methods (`list_autonomy_reflex()`, `get_autonomy_homeostasis()`, …) remain available. Guide:
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
 
 ## Event stream
 
@@ -118,4 +124,5 @@ python -m pytest sdk/python
 
 ## Legacy client
 
-`packages/sdk-python` provides `ControlCenterClient` with enterprise ops helpers (drift, OTA, SRE). New integrations should use `SpandaClient` from `sdk/python`.
+`packages/sdk-python` provides `ControlCenterClient` with enterprise ops helpers (drift, OTA, SRE).
+New integrations should use `SpandaClient` from `sdk/python`.

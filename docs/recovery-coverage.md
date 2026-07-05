@@ -62,6 +62,8 @@ Derived from hardware profile, capability matrix, connectivity policies, and fle
 
 ## Implementation
 
-Extends `spanda-assurance` recovery module — composes `RecoveryPlanner` and failure classification. No duplicate recovery logic.
+Extends `spanda-assurance` recovery module — composes `RecoveryPlanner` and failure classification.
+No duplicate recovery logic.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [self-healing.md](./self-healing.md) · [recovery-policies.md](./recovery-policies.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[self-healing.md](./self-healing.md) · [recovery-policies.md](./recovery-policies.md).

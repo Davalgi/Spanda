@@ -17,7 +17,8 @@ Runnable `.sd` programs for learning, demos, and CI.
 | Showcase | [examples/showcase/](../../examples/showcase/README.md) | `spanda demo` programs |
 | Assurance | `examples/assurance/`, `examples/anomaly/`, … | Mission assurance domains |
 
-Flagship demos: [demos-and-examples.md](./demos-and-examples.md) · Code samples: [code-samples.md](./code-samples.md)
+Flagship demos: [demos-and-examples.md](./demos-and-examples.md) · Code samples:
+[code-samples.md](./code-samples.md)
 
 ## Standard library (`std.*`)
 
@@ -32,4 +33,5 @@ Modular namespaces — import only what you need (`import std.robotics;`).
 | `std.communication` | Topics, services, events |
 | `std.ai` | LLM, vision, reasoning types |
 
-Full reference: [standard-library.md](../standard-library.md) · [spanda-reference.md](../spanda-reference.md) · Samples: [examples/std/](../../examples/std/)
+Full reference: [standard-library.md](../standard-library.md) ·
+[spanda-reference.md](../spanda-reference.md) · Samples: [examples/std/](../../examples/std/)

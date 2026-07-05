@@ -8,7 +8,8 @@ Schedule maintenance, calibration, cleanup, updates, and optimization during low
 
 ## Types
 
-`MaintenanceWindow`, `SleepMode`, `LowActivityMode`, `ScheduledRecovery`, `CalibrationWindow`, `UpdateWindow`
+`MaintenanceWindow`, `SleepMode`, `LowActivityMode`, `ScheduledRecovery`, `CalibrationWindow`,
+`UpdateWindow`
 
 ## Examples
 
@@ -21,4 +22,5 @@ Schedule maintenance, calibration, cleanup, updates, and optimization during low
 
 Integrates with OTA, health, readiness, device registry, Control Center, governance.
 
-See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [platform-maintenance.md](./platform-maintenance.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) ·
+[platform-maintenance.md](./platform-maintenance.md).

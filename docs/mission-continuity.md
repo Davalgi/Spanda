@@ -1,19 +1,22 @@
 # Mission continuity
 
-Mission continuity ensures autonomous operations continue when robots fail, degrade, disconnect, or go offline. Spanda answers:
+Mission continuity ensures autonomous operations continue when robots fail, degrade, disconnect, or
+go offline. Spanda answers:
 
 - **Who can take over?**
 - **Can they safely take over?**
 - **Should the mission resume or restart?**
 - **What evidence supports the decision?**
 
-Related: [self-healing.md](./self-healing.md) · [mission-assurance.md](./mission-assurance.md) · [concurrency.md](./concurrency.md)
+Related: [self-healing.md](./self-healing.md) · [mission-assurance.md](./mission-assurance.md) ·
+[concurrency.md](./concurrency.md)
 
 ---
 
 ## Architecture
 
-The continuity framework lives in `spanda-assurance` and composes with readiness, recovery, capability, hardware verification, and trust gates.
+The continuity framework lives in `spanda-assurance` and composes with readiness, recovery,
+capability, hardware verification, and trust gates.
 
 | Component | Role |
 |-----------|------|
@@ -143,7 +146,8 @@ Candidates blocked when untrusted, compromised, tampered, or not mission-ready.
 
 ## `continuity_policy` syntax
 
-See [continuity-policies.md](./continuity-policies.md) for the full policy reference (triggers, actions, diagnostics, and fleet pairing).
+See [continuity-policies.md](./continuity-policies.md) for the full policy reference (triggers,
+actions, diagnostics, and fleet pairing).
 
 ```spanda
 continuity_policy WarehouseContinuity {
@@ -157,13 +161,15 @@ continuity_policy WarehouseContinuity {
 }
 ```
 
-Declared actions influence takeover mode inference (`resume`, `hot takeover`, `restart`, `human takeover`, etc.).
+Declared actions influence takeover mode inference (`resume`, `hot takeover`, `restart`, `human
+takeover`, etc.).
 
 ---
 
 ## Fleet runtime dispatch
 
-When `SPANDA_FLEET_MESH_URL` is set, the interpreter relays takeover commands through the mesh coordinator:
+When `SPANDA_FLEET_MESH_URL` is set, the interpreter relays takeover commands through the mesh
+coordinator:
 
 ```bash
 # Mesh coordinator
@@ -176,11 +182,15 @@ POST /v1/continuity/ack
 
 Peer topic: `fleet_takeover` (JSON `FleetContinuityRequest` payload).
 
-Agent status reports `continuity_engine`, `continuity_successor`, `mission_progress_percent`, and `continuity_validation`.
+Agent status reports `continuity_engine`, `continuity_successor`, `mission_progress_percent`, and
+`continuity_validation`.
 
 ### Durable checkpoints
 
-Mission state snapshots persist to `.spanda/mission-checkpoints.json` (override with `SPANDA_CONTINUITY_CHECKPOINTS`). When a robot fails, the interpreter writes a checkpoint; successors load persisted progress on cold/hot/resume takeover. TypeScript mirror: `src/continuity-checkpoint.ts`.
+Mission state snapshots persist to `.spanda/mission-checkpoints.json` (override with
+`SPANDA_CONTINUITY_CHECKPOINTS`). When a robot fails, the interpreter writes a checkpoint;
+successors load persisted progress on cold/hot/resume takeover. TypeScript mirror:
+`src/continuity-checkpoint.ts`.
 
 ### Swarm continuity
 
@@ -197,7 +207,8 @@ JSON output includes `continuity_handoff` per swarm group when `--failed` is set
 
 ## Static diagnostics
 
-`spanda check --readiness-json` and the LSP readiness path emit continuity diagnostics alongside recovery hints:
+`spanda check --readiness-json` and the LSP readiness path emit continuity diagnostics alongside
+recovery hints:
 
 | Category | Severity | Meaning |
 |----------|----------|---------|
@@ -207,19 +218,22 @@ JSON output includes `continuity_handoff` per swarm group when `--failed` is set
 | `continuity:handoff` | info | Recovery reassigns mission but no `continuity_policy` defines takeover mode |
 | `continuity:mission` | warning | Resume/checkpoint actions without a `mission_plan` |
 
-Rust: `spanda_assurance::collect_continuity_diagnostics`. TypeScript: `collectContinuityDiagnostics` in `src/continuity-diagnostics.ts`.
+Rust: `spanda_assurance::collect_continuity_diagnostics`. TypeScript: `collectContinuityDiagnostics`
+in `src/continuity-diagnostics.ts`.
 
 Policy syntax guide: [continuity-policies.md](./continuity-policies.md).
 
 ### Auto-trigger during run/sim
 
-When a program declares `continuity_policy`, the interpreter automatically evaluates takeover during:
+When a program declares `continuity_policy`, the interpreter automatically evaluates takeover
+during:
 
 - Hardware fault events (`run_hardware_triggers`)
 - Critical/degraded health transitions (`poll_runtime_health_changes`)
 - Recovery execution (`execute_recovery_runtime`)
 
-Look for log lines `continuity: auto-triggered for '…'` during `spanda run` / `spanda sim --inject-health-faults`.
+Look for log lines `continuity: auto-triggered for '…'` during `spanda run` / `spanda sim
+--inject-health-faults`.
 
 ---
 

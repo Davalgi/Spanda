@@ -12,7 +12,10 @@ spanda integrity rover.sd --baseline approved/rover.sd --json
 spanda integrity rover.sd --agent Rover@JetsonOrin --config spanda.toml --json
 ```
 
-Verify-time `spanda integrity` hashes hardware, missions, safety rules, policies, health policies, capabilities, deploy targets, and package imports. With `--baseline`, each artifact is **Trusted**, **Modified**, or **Unknown** (no baseline). With `--agent`, compares live agent `/v1/status` program hash and hardware profile against the declared deploy target.
+Verify-time `spanda integrity` hashes hardware, missions, safety rules, policies, health policies,
+capabilities, deploy targets, and package imports. With `--baseline`, each artifact is **Trusted**,
+**Modified**, or **Unknown** (no baseline). With `--agent`, compares live agent `/v1/status` program
+hash and hardware profile against the declared deploy target.
 
 ## Verified artifacts
 
@@ -29,12 +32,17 @@ Verify-time `spanda integrity` hashes hardware, missions, safety rules, policies
 
 ## Output
 
-`IntegrityReport` — per-artifact status: **Trusted**, **Modified**, or **Unknown**. Includes `secure_boot` coverage when `trust.jetson` or `trust.pi` is imported; optional live attestation via `SPANDA_ATTESTATION_ENDPOINT`. Agent comparison adds `attestation` and `boot_state` artifacts when `/v1/status` reports them.
+`IntegrityReport` — per-artifact status: **Trusted**, **Modified**, or **Unknown**. Includes
+`secure_boot` coverage when `trust.jetson` or `trust.pi` is imported; optional live attestation via
+`SPANDA_ATTESTATION_ENDPOINT`. Agent comparison adds `attestation` and `boot_state` artifacts when
+`/v1/status` reports them.
 
 See [hardware-attestation.md](./hardware-attestation.md).
 
 ## Foundation
 
-Builds on `spanda-audit`, deploy bundle signatures (`--require-signature`, `--require-hash`), and `spanda certify prove`.
+Builds on `spanda-audit`, deploy bundle signatures (`--require-signature`, `--require-hash`), and
+`spanda certify prove`.
 
-See [tamper-detection.md](./tamper-detection.md) · [audit-provenance.md](./audit-provenance.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [tamper-detection.md](./tamper-detection.md) · [audit-provenance.md](./audit-provenance.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

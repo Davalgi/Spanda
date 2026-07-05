@@ -36,9 +36,11 @@ spanda deploy gate rover.sd --json --config spanda.toml
 
 **Production policy** (`--policy production`) additionally requires:
 
-- No official package name overrides without registry provenance (no `spanda-mqtt = { path = "../evil" }`)
+- No official package name overrides without registry provenance (no `spanda-mqtt = { path =
+  "../evil" }`)
 - `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` in the environment
-- Every registry dependency in `spanda.lock` verifies against signed checksums in `registry/index.json`
+- Every registry dependency in `spanda.lock` verifies against signed checksums in
+  `registry/index.json`
 
 Example CI:
 
@@ -51,10 +53,12 @@ Deployment is **blocked** (exit code 1) when any gate fails.
 
 ## Foundation
 
-Extends `spanda-readiness` (`evaluate_deployment_gates`), safety auditor, and capability traceability. Complements `deploy rollout --require-certify`.
+Extends `spanda-readiness` (`evaluate_deployment_gates`), safety auditor, and capability
+traceability. Complements `deploy rollout --require-certify`.
 
 ## Integration
 
 Composes `spanda-readiness`, capability verification, health framework, and assurance evidence.
 
-See [readiness.md](./readiness.md) · [ci-verify.md](./ci-verify.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [readiness.md](./readiness.md) · [ci-verify.md](./ci-verify.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

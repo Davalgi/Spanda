@@ -1,6 +1,7 @@
 # OTLP collector HA deployment
 
-Guide for running Spanda Control Center observability exports against a highly available OpenTelemetry collector tier.
+Guide for running Spanda Control Center observability exports against a highly available
+OpenTelemetry collector tier.
 
 ## Architecture
 

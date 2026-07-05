@@ -2,7 +2,8 @@
 
 Back to [index](./README.md)
 
-Stick this on a sticky note. Full CLI reference: [spanda-reference.md](../spanda-reference.md) and [man/](../man/).
+Stick this on a sticky note. Full CLI reference: [spanda-reference.md](../spanda-reference.md) and
+[man/](../man/).
 
 ---
 

@@ -43,4 +43,5 @@ spanda demo continuity
 
 ## SEE ALSO
 
-spanda-recovery(1), spanda-fleet(1), [mission-continuity.md](../mission-continuity.md), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-recovery(1), spanda-fleet(1), [mission-continuity.md](../mission-continuity.md),
+[spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

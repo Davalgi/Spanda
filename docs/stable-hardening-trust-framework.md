@@ -19,4 +19,5 @@ SPANDA_TRUST_FRAMEWORK_SKIP_SOAK=1 SPANDA_TRUST_FRAMEWORK_SKIP_AUDIT=1 SPANDA_TR
 Field soak: `./scripts/trust_framework_field_soak_init.sh`  
 Audit prep: `./scripts/trust_framework_security_audit_prep.sh`
 
-**Note:** Trust **Graph** (NEXT pillar #9) is a separate capability — see [stable-hardening-trust-graph.md](./stable-hardening-trust-graph.md).
+**Note:** Trust **Graph** (NEXT pillar #9) is a separate capability — see
+[stable-hardening-trust-graph.md](./stable-hardening-trust-graph.md).

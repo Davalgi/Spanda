@@ -49,7 +49,10 @@ Mission → Decision → Evidence → Safety Check → Action
 ## Emission
 
 - Enabled during `run` / `sim` when `SPANDA_DECISION_TRACE=1` (default on with `--record`)
-- Distributed decision layers emit v3 payloads at continuity, recovery, safety reflex (kill switch, emergency stop, `safety.validate` rejection), live `decision_tree` evaluation during sim, and fleet mesh consensus when `SPANDA_DECISION_TRACE=1` or `--record` (see [distributed-decisions.md](./distributed-decisions.md))
+- Distributed decision layers emit v3 payloads at continuity, recovery, safety reflex (kill switch,
+  emergency stop, `safety.validate` rejection), live `decision_tree` evaluation during sim, and
+  fleet mesh consensus when `SPANDA_DECISION_TRACE=1` or `--record` (see
+  [distributed-decisions.md](./distributed-decisions.md))
 - Stored in mission trace files and telemetry store
 - Audit records cross-reference via `decision_id`
 
@@ -78,4 +81,6 @@ spanda explain mission.trace                     # human-readable decision expla
 
 `spanda-decision` — trace schema, emission hooks, audit integration.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [explainability.md](./explainability.md) · [replay.md](./replay.md) · [distributed-decisions.md](./distributed-decisions.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[explainability.md](./explainability.md) · [replay.md](./replay.md) ·
+[distributed-decisions.md](./distributed-decisions.md).

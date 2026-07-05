@@ -1,8 +1,11 @@
 # Spatial Computing
 
-Spatial computing in Spanda covers **shared workspaces**, **spatial anchors**, and **overlay workflows** that connect humans, wearables, AR/VR/XR devices, and robots — implemented through optional packages and solution blueprints, not core rendering engines.
+Spatial computing in Spanda covers **shared workspaces**, **spatial anchors**, and **overlay
+workflows** that connect humans, wearables, AR/VR/XR devices, and robots — implemented through
+optional packages and solution blueprints, not core rendering engines.
 
-**Related:** [ar-vr-xr.md](./ar-vr-xr.md) · [hri.md](./hri.md) · [solutions/spatial-computing.md](./solutions/spatial-computing.md)
+**Related:** [ar-vr-xr.md](./ar-vr-xr.md) · [hri.md](./hri.md) ·
+[solutions/spatial-computing.md](./solutions/spatial-computing.md)
 
 ---
 
@@ -31,7 +34,8 @@ Spatial computing in Spanda covers **shared workspaces**, **spatial anchors**, a
 6. Session ends → audit + replay capture
 ```
 
-Sessions are **not** managed by the core runtime — packages implement `SpatialSessionProvider` (planned provider trait) and register with the provider dispatch table.
+Sessions are **not** managed by the core runtime — packages implement `SpatialSessionProvider`
+(planned provider trait) and register with the provider dispatch table.
 
 ---
 

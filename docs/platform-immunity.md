@@ -3,7 +3,8 @@
 **Functional domain:** [Platform Immunity](./functional-domains.md#platform-immunity)  
 **Status: Beta** — built on trust, tamper detection, security, and device quarantine.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
@@ -11,7 +12,8 @@ Protect against unknown, untrusted, tampered, or compromised entities.
 
 ## Types
 
-`ImmunePolicy`, `QuarantineAction`, `ThreatResponse`, `TrustBoundaryViolation`, `ImmuneEvent`, `IsolationDecision`
+`ImmunePolicy`, `QuarantineAction`, `ThreatResponse`, `TrustBoundaryViolation`, `ImmuneEvent`,
+`IsolationDecision`
 
 ## Examples
 

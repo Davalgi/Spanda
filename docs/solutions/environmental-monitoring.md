@@ -1,16 +1,20 @@
 # Environmental Monitoring — Solution Blueprint
 
-**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:** [examples/solutions/environmental-monitoring/](../../examples/solutions/environmental-monitoring/)
+**Status:** Experimental (scaffold) · **Timeline:** Later · **Path:**
+[examples/solutions/environmental-monitoring/](../../examples/solutions/environmental-monitoring/)
 
-Official Solution Blueprint for distributed sensor networks monitoring air, water, and environmental conditions.
+Official Solution Blueprint for distributed sensor networks monitoring air, water, and environmental
+conditions.
 
-**Full roadmap entry:** [ROADMAP.md § Environmental Monitoring](../../ROADMAP.md#environmental-monitoring)
+**Full roadmap entry:** [ROADMAP.md § Environmental
+Monitoring](../../ROADMAP.md#environmental-monitoring)
 
 ---
 
 ## Purpose
 
-Deploy long-life battery sensor nodes with mesh telemetry, calibration gates, baseline drift detection, and cloud ingest for trend analysis and alerting.
+Deploy long-life battery sensor nodes with mesh telemetry, calibration gates, baseline drift
+detection, and cloud ingest for trend analysis and alerting.
 
 ## Platform pillars used
 
@@ -60,7 +64,8 @@ Sensor Network
 
 ## Example projects
 
-- [examples/solutions/environmental-monitoring/](../../examples/solutions/environmental-monitoring/) — `sensor_mesh.sd`, `gateway_bridge.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
+- [examples/solutions/environmental-monitoring/](../../examples/solutions/environmental-monitoring/)
+  — `sensor_mesh.sd`, `gateway_bridge.sd` (CI: `scripts/solution_blueprints_smoke.sh`)
 
 ## Simulation & replay
 
@@ -69,4 +74,5 @@ Sensor Network
 
 ---
 
-**Related blueprints:** [Agriculture](./agriculture.md) · [Critical Infrastructure](./adas.md) (compliance overlap)
+**Related blueprints:** [Agriculture](./agriculture.md) · [Critical Infrastructure](./adas.md)
+(compliance overlap)

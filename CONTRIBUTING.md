@@ -1,15 +1,19 @@
 # Contributing to Spanda
 
-Thank you for your interest in contributing to Spanda — an Autonomous Systems Platform with a safety-first programming language at its core.
+Thank you for your interest in contributing to Spanda — an Autonomous Systems Platform with a
+safety-first programming language at its core.
 
 ---
 
 ## Ways to contribute
 
 - **Bug reports** — use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.yml)
-- **Feature requests** — use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.yml)
-- **Language proposals** — use the [language proposal template](.github/ISSUE_TEMPLATE/language_proposal.yml)
-- **Package proposals** — use the [package proposal template](.github/ISSUE_TEMPLATE/package_proposal.yml)
+- **Feature requests** — use the [feature request
+  template](.github/ISSUE_TEMPLATE/feature_request.yml)
+- **Language proposals** — use the [language proposal
+  template](.github/ISSUE_TEMPLATE/language_proposal.yml)
+- **Package proposals** — use the [package proposal
+  template](.github/ISSUE_TEMPLATE/package_proposal.yml)
 - **Documentation** — fix typos, improve guides, add examples
 - **Examples** — add `.sd` programs that demonstrate real use cases
 - **Tests** — expand coverage for CLI, safety, verification, communication
@@ -72,7 +76,9 @@ python3 scripts/normalize_inline_docs.py
 
 ## Inline documentation
 
-Every module and function in Rust (`crates/`), TypeScript (`src/`, `packages/`), Python (`scripts/`), and Spanda (`.sd`) must follow the structured docstring standard in **[docs/coding-standards.md](docs/coding-standards.md)**.
+Every module and function in Rust (`crates/`), TypeScript (`src/`, `packages/`), Python
+(`scripts/`), and Spanda (`.sd`) must follow the structured docstring standard in
+**[docs/coding-standards.md](docs/coding-standards.md)**.
 
 ### Module headers
 
@@ -81,11 +87,14 @@ Every module and function in Rust (`crates/`), TypeScript (`src/`, `packages/`),
 
 ### Function API docs
 
-Place API documentation **inside** the function body (or `///` / JSDoc above the signature when required for rustdoc). Required sections: **Description**, **Inputs**, **Outputs**, **Example**.
+Place API documentation **inside** the function body (or `///` / JSDoc above the signature when
+required for rustdoc). Required sections: **Description**, **Inputs**, **Outputs**, **Example**.
 
 ### Block comments
 
-Before each meaningful logic block (`if`, `match`, loops, error paths), add a plain-English `//` comment explaining what that block does. Do not use generic placeholders like "Process each item" or prefix with `Logic:`.
+Before each meaningful logic block (`if`, `match`, loops, error paths), add a plain-English `//`
+comment explaining what that block does. Do not use generic placeholders like "Process each item" or
+prefix with `Logic:`.
 
 ### Tooling
 
@@ -132,9 +141,13 @@ tests/                  Vitest test suite
 docs/                   Documentation
 ```
 
-**Rule of thumb:** Language semantics changes land in the owning workspace crate (`spanda-parser`, `spanda-typecheck`, `spanda-interpreter`, …). Update `spanda-core` shims/re-exports when the public `spanda_core::` API changes. TypeScript mirror (`src/`) should stay in parity for parsing, types, and runtime behavior used in tests.
+**Rule of thumb:** Language semantics changes land in the owning workspace crate (`spanda-parser`,
+`spanda-typecheck`, `spanda-interpreter`, …). Update `spanda-core` shims/re-exports when the public
+`spanda_core::` API changes. TypeScript mirror (`src/`) should stay in parity for parsing, types,
+and runtime behavior used in tests.
 
-Crate dependency rule: first-party apps (`spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap`, `spanda-llvm`) import workspace crates directly; only external embedders need `spanda-core`.
+Crate dependency rule: first-party apps (`spanda-cli`, `spanda-node`, `spanda-wasm`, `spanda-dap`,
+`spanda-llvm`) import workspace crates directly; only external embedders need `spanda-core`.
 
 ---
 
@@ -144,7 +157,8 @@ Crate dependency rule: first-party apps (`spanda-cli`, `spanda-node`, `spanda-wa
 
 - Run `cargo fmt --all` before committing
 - Fix all `cargo clippy --workspace -- -D warnings` warnings
-- Add tests in the owning crate (`crates/spanda-*/tests/`, `crates/spanda-core/tests/`) or inline `#[test]` for new behavior
+- Add tests in the owning crate (`crates/spanda-*/tests/`, `crates/spanda-core/tests/`) or inline
+  `#[test]` for new behavior
 - Keep changes focused — one logical change per commit
 - Match existing module organization and naming
 
@@ -166,19 +180,22 @@ Crate dependency rule: first-party apps (`spanda-cli`, `spanda-node`, `spanda-wa
 
 ## How to add a language feature
 
-1. **Propose first** — open a [language proposal](.github/ISSUE_TEMPLATE/language_proposal.yml) for non-trivial syntax or semantics changes
+1. **Propose first** — open a [language proposal](.github/ISSUE_TEMPLATE/language_proposal.yml) for
+   non-trivial syntax or semantics changes
 2. **Implement in Rust** — lexer → parser → AST → type checker → runtime (in that order)
 3. **Add tests** — Rust integration tests + Vitest mirror tests
 4. **Update docs** — see [Keeping documentation in sync](#keeping-documentation-in-sync) below
 5. **Add an example** — demonstrate the feature in `examples/`
 
-For v0.1.0-alpha, we are **not** adding large new language features. Focus on stability, tests, and documentation unless the proposal is critical.
+For v0.1.0-alpha, we are **not** adding large new language features. Focus on stability, tests, and
+documentation unless the proposal is critical.
 
 ---
 
 ## Keeping documentation in sync
 
-**Rule:** Any long, big, or major update must include documentation updates in the same change set. Do not merge feature work with stale README or docs.
+**Rule:** Any long, big, or major update must include documentation updates in the same change set.
+Do not merge feature work with stale README or docs.
 
 ### What counts as major
 
@@ -188,7 +205,8 @@ For v0.1.0-alpha, we are **not** adding large new language features. Focus on st
 - Feature status or roadmap shifts
 - New showcase or reference examples
 
-Typos, internal refactors with no user-visible effect, and test-only changes usually do not need doc updates.
+Typos, internal refactors with no user-visible effect, and test-only changes usually do not need doc
+updates.
 
 ### Minimum checklist
 
@@ -216,7 +234,8 @@ Topic-specific docs (update when the area changed):
 - Roadmap / strategy: `docs/roadmap.md`, `docs/product-strategy.md`
 - Contributor workflow: this file (`CONTRIBUTING.md`)
 
-Also add a runnable example and link it from `README.md` or `docs/getting-started.md` when it is a key demo.
+Also add a runnable example and link it from `README.md` or `docs/getting-started.md` when it is a
+key demo.
 
 The Cursor rule `.cursor/rules/documentation-sync.mdc` enforces this for agent-assisted sessions.
 
@@ -233,21 +252,29 @@ spanda run examples/your_example.sd        # if it has runnable behavior
 spanda verify examples/your_example.sd     # if it has deploy targets
 ```
 
-3. Add to golden fixtures if it should stay runnable in CI (`tests/golden/manifest.json`). Mission trace files (`.trace`) may live under `examples/` or `tests/golden/`; other runtime traces stay gitignored.
-4. For tutorial-style programs, prefer numbered files under `examples/basics/` or topic dirs (`integration/`, `end_to_end/`, `features/`); see [examples/features/README.md](../examples/features/README.md) and [examples/basics/README.md](../examples/basics/README.md).
+3. Add to golden fixtures if it should stay runnable in CI (`tests/golden/manifest.json`). Mission
+   trace files (`.trace`) may live under `examples/` or `tests/golden/`; other runtime traces stay
+   gitignored.
+4. For tutorial-style programs, prefer numbered files under `examples/basics/` or topic dirs
+   (`integration/`, `end_to_end/`, `features/`); see
+   [examples/features/README.md](../examples/features/README.md) and
+   [examples/basics/README.md](../examples/basics/README.md).
 5. Reference it in README or `docs/getting-started.md` if it is a key demo
 
 ---
 
 ## Releases
 
-Spanda uses [Semantic Versioning](https://semver.org/). User-facing changes belong in `CHANGELOG.md` under `## [Unreleased]` in the same PR as the feature or fix.
+Spanda uses [Semantic Versioning](https://semver.org/). User-facing changes belong in `CHANGELOG.md`
+under `## [Unreleased]` in the same PR as the feature or fix.
 
-**When to bump:** See [docs/versioning.md](docs/versioning.md) — each stream (workspace, SDKs, desktop) has its own semver; bump **only** the stream whose area changed.
+**When to bump:** See [docs/versioning.md](docs/versioning.md) — each stream (workspace, SDKs,
+desktop) has its own semver; bump **only** the stream whose area changed.
 
 ### Automatic releases (preferred)
 
-After **CI Integration** passes on `main`, the **Auto release** workflow bumps the workspace version and pushes a `vX.Y.Z` tag when the **merged** pull request has one of these labels:
+After **CI Integration** passes on `main`, the **Auto release** workflow bumps the workspace version
+and pushes a `vX.Y.Z` tag when the **merged** pull request has one of these labels:
 
 | Label | When to use |
 |-------|-------------|
@@ -255,14 +282,23 @@ After **CI Integration** passes on `main`, the **Auto release** workflow bumps t
 | `release:minor` | Roadmap release milestone complete (v0.5, …) or substantial additive platform release |
 | `release:patch` | Bug fixes, stable promotions, and small updates within the current release line |
 
-Create the labels in the GitHub repo if they do not exist yet (`release:major`, `release:minor`, `release:patch`). Apply **one** release label before merging. The workflow bumps the **workspace** stream and pushes a `v*` tag that triggers cargo-dist **Release**. When the merged PR also changed Control Center paths (`packages/web`, `packages/control-center-desktop`, Control Center API/CLI), **Auto release** bumps the **desktop** stream too and pushes `desktop-v*`, which triggers the Tauri GitHub Release workflow. SDK releases still use `--stream sdk` locally — see [docs/versioning.md](docs/versioning.md) and [docs/control-center-versioning.md](docs/control-center-versioning.md).
+Create the labels in the GitHub repo if they do not exist yet (`release:major`, `release:minor`,
+`release:patch`). Apply **one** release label before merging. The workflow bumps the **workspace**
+stream and pushes a `v*` tag that triggers cargo-dist **Release**. When the merged PR also changed
+Control Center paths (`packages/web`, `packages/control-center-desktop`, Control Center API/CLI),
+**Auto release** bumps the **desktop** stream too and pushes `desktop-v*`, which triggers the Tauri
+GitHub Release workflow. SDK releases still use `--stream sdk` locally — see
+[docs/versioning.md](docs/versioning.md) and
+[docs/control-center-versioning.md](docs/control-center-versioning.md).
 
 | Control Center path check (local) | `./scripts/control_center_paths_changed.sh origin/main` — exit 0 when the diff touches Control Center |
 | Version display | Sidebar `vX.Y.Z`; `spanda control-center --version`; `GET /v1/version` → `control_center_ui_version` |
 
 ### Manual release
 
-Use **Actions → Bump version** when you need an ad-hoc semver bump without a labeled PR. Choose **workspace** or **desktop** stream; pick patch, minor, or major; leave **Push release tag** enabled to publish.
+Use **Actions → Bump version** when you need an ad-hoc semver bump without a labeled PR. Choose
+**workspace** or **desktop** stream; pick patch, minor, or major; leave **Push release tag** enabled
+to publish.
 
 ### Local dry run
 
@@ -277,12 +313,16 @@ python3 scripts/bump_version.py patch --stream desktop --dry-run
 
 1. Fork the repository and create a feature branch
 2. Make focused changes with tests
-3. Run `./scripts/ci-fast.sh` locally (or the individual commands in [docs/ci-architecture.md](docs/ci-architecture.md))
+3. Run `./scripts/ci-fast.sh` locally (or the individual commands in
+   [docs/ci-architecture.md](docs/ci-architecture.md))
 4. Open a PR against `main` with a clear description
-5. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk, cross-surface-check, cross-interface)
-6. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking more work
+5. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk,
+   cross-surface-check, cross-interface)
+6. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking
+   more work
 
-Cross-surface API changes: follow the checklist in [docs/ci-architecture.md#cross-surface-change-protocol](docs/ci-architecture.md#cross-surface-change-protocol).
+Cross-surface API changes: follow the checklist in
+[docs/ci-architecture.md#cross-surface-change-protocol](docs/ci-architecture.md#cross-surface-change-protocol).
 
 ---
 
@@ -303,4 +343,5 @@ This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). Be respectf
 
 ## Questions
 
-Open a [GitHub Discussion](https://github.com/Davalgi/Spanda/discussions) or issue if you are unsure where to start. We are happy to help newcomers find a good first contribution.
+Open a [GitHub Discussion](https://github.com/Davalgi/Spanda/discussions) or issue if you are unsure
+where to start. We are happy to help newcomers find a good first contribution.

@@ -2,11 +2,16 @@
 
 **Previous phase:** release hardening (v0.6.3) — **complete** (2026-07-04).
 
-**Current phase:** **Next horizon** — platform hardening and adoption after the evaluation/beta release.
+**Current phase:** **Next horizon** — platform hardening and adoption after the evaluation/beta
+release.
 
-v0.6.3 shipped with CI-backed quality gates and honest stability labels. Work now prioritizes **v1.0-bound capabilities**, **Experimental → Stable promotion**, and **organizational gate preparation** — not greenfield platform invention.
+v0.6.3 shipped with CI-backed quality gates and honest stability labels. Work now prioritizes
+**v1.0-bound capabilities**, **Experimental → Stable promotion**, and **organizational gate
+preparation** — not greenfield platform invention.
 
-**Organizational gates (field soak, third-party audit):** [organizational-gates.md](./organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51)
+**Organizational gates (field soak, third-party audit):**
+[organizational-gates.md](./organizational-gates.md) ·
+[#51](https://github.com/Davalgi/Spanda/issues/51)
 
 ## Allowed
 
@@ -17,8 +22,10 @@ v0.6.3 shipped with CI-backed quality gates and honest stability labels. Work no
 - Demo hardening (existing demos only)
 - SDK / REST / CLI / gRPC consistency fixes
 - Security regression fixes (trust, signatures, sandbox, tamper, privilege)
-- **Experimental → Stable promotion** when tier rules in [feature-status.md](./feature-status.md) are met (tests, non-mock default where required)
-- **Next-horizon items** listed in [ROADMAP.md § Next horizon priorities](../ROADMAP.md#next-horizon-priorities-post-v063)
+- **Experimental → Stable promotion** when tier rules in [feature-status.md](./feature-status.md)
+  are met (tests, non-mock default where required)
+- **Next-horizon items** listed in [ROADMAP.md § Next horizon
+  priorities](../ROADMAP.md#next-horizon-priorities-post-v063)
 - Field soak and audit prep automation (scripts, docs, CI probes — not bypassing human sign-off)
 
 ## Not allowed
@@ -27,7 +34,8 @@ v0.6.3 shipped with CI-backed quality gates and honest stability labels. Work no
 - New solution blueprints without roadmap approval
 - New architecture layers or protocols unrelated to v1.0 exit criteria
 - Labeling mock-default paths **Stable** for production marketing
-- Claiming **v1.0 production readiness** before [organizational-gates.md](./organizational-gates.md) exit checklist is met
+- Claiming **v1.0 production readiness** before [organizational-gates.md](./organizational-gates.md)
+  exit checklist is met
 
 ## Review checklist
 

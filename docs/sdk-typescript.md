@@ -1,6 +1,8 @@
 # TypeScript SDK (`@davalgi-spanda/sdk`)
 
-Official TypeScript/JavaScript client for Control Center UI, web dashboards, VS Code extensions, and cloud integrations. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this package when your application is written in TypeScript or JavaScript.
+Official TypeScript/JavaScript client for Control Center UI, web dashboards, VS Code extensions, and
+cloud integrations. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use
+this package when your application is written in TypeScript or JavaScript.
 
 ## Install
 
@@ -63,7 +65,8 @@ const [health, entities] = await Promise.all([
 
 ## Cognitive & Resilience domain clients
 
-Functional domain wrappers over `/v1/autonomy/*` (guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
+Functional domain wrappers over `/v1/autonomy/*` (guide:
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
 
 ```typescript
 import { SpandaClient } from "@davalgi-spanda/sdk";
@@ -104,4 +107,5 @@ cd sdk/typescript && npm test
 
 ## Publishing
 
-See [Publishing SDKs](sdk-publishing.md) for npm org `@davalgi-spanda`, `NPM_TOKEN`, release tags (`npm-sdk-v*`), and 90-day token rotation.
+See [Publishing SDKs](sdk-publishing.md) for npm org `@davalgi-spanda`, `NPM_TOKEN`, release tags
+(`npm-sdk-v*`), and 90-day token rotation.

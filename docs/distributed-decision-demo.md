@@ -2,7 +2,9 @@
 
 **Duration:** under 10 minutes  
 **Audience:** robotics engineers, fleet operators, safety reviewers  
-**Message:** When GPS fails mid-mission, Spanda keeps the robot safe at the reflex layer, recovers locally via a signed decision tree, escalates to fleet and Control Center, and leaves a replayable audit trail.
+**Message:** When GPS fails mid-mission, Spanda keeps the robot safe at the reflex layer, recovers
+locally via a signed decision tree, escalates to fleet and Control Center, and leaves a replayable
+audit trail.
 
 **Status: Stable** — signed trees, persistent escalation, and v3 signed traces.
 
@@ -49,7 +51,8 @@ spanda demo distributed-decisions
 
 ## Scenario
 
-A warehouse rover runs a patrol mission. GPS fails. The stack responds in layers without blocking reflex safety or waiting for central approval.
+A warehouse rover runs a patrol mission. GPS fails. The stack responds in layers without blocking
+reflex safety or waiting for central approval.
 
 ```mermaid
 sequenceDiagram
@@ -92,7 +95,8 @@ sequenceDiagram
 spanda decision list examples/showcase/distributed_decisions/gps_loss_recovery/mission.sd
 ```
 
-**Expected:** two decision trees (`ObstacleReflex` reflex, `GPSLossRecovery` local) and one offline policy (`RoverOffline`, 30 min max).
+**Expected:** two decision trees (`ObstacleReflex` reflex, `GPSLossRecovery` local) and one offline
+policy (`RoverOffline`, 30 min max).
 
 ```bash
 spanda decision inspect examples/showcase/distributed_decisions/gps_loss_recovery/mission.sd \
@@ -100,7 +104,8 @@ spanda decision inspect examples/showcase/distributed_decisions/gps_loss_recover
   --signal "gps.status == Failed=true,visual_odometry.available=true"
 ```
 
-**Expected:** `PASSED` — local authority permits degraded recovery when GPS fails and visual odometry is available.
+**Expected:** `PASSED` — local authority permits degraded recovery when GPS fails and visual
+odometry is available.
 
 ### 2 — Simulate offline GPS loss
 
@@ -109,7 +114,8 @@ spanda decision simulate examples/showcase/distributed_decisions/gps_loss_recove
   --offline --entity Rover001
 ```
 
-**Expected:** offline policy allows bounded recovery actions; forbidden actions (e.g. `disable_safety`) stay blocked.
+**Expected:** offline policy allows bounded recovery actions; forbidden actions (e.g.
+`disable_safety`) stay blocked.
 
 ### 3 — Run the mission with decision trace
 
@@ -119,7 +125,8 @@ spanda sim examples/showcase/distributed_decisions/gps_loss_recovery/mission.sd 
   --record --inject-health-faults
 ```
 
-**Expected:** writes `mission.trace` beside the source with `decision_tree_eval`, escalation, and safety/trust frames.
+**Expected:** writes `mission.trace` beside the source with `decision_tree_eval`, escalation, and
+safety/trust frames.
 
 ### 4 — Replay and audit
 
@@ -129,7 +136,8 @@ spanda decision trace examples/showcase/distributed_decisions/gps_loss_recovery/
 spanda audit decisions examples/showcase/distributed_decisions/gps_loss_recovery/mission.trace
 ```
 
-**Expected:** timeline shows GPS failure → local recovery → fleet notification → control-center escalation.
+**Expected:** timeline shows GPS failure → local recovery → fleet notification → control-center
+escalation.
 
 ### 5 — Assurance evidence
 
@@ -137,7 +145,8 @@ spanda audit decisions examples/showcase/distributed_decisions/gps_loss_recovery
 spanda assure examples/showcase/distributed_decisions/gps_loss_recovery/mission.sd
 ```
 
-**Expected:** assurance case `GpsLossAssurance` links simulation replay, health checks, and capability traceability.
+**Expected:** assurance case `GpsLossAssurance` links simulation replay, health checks, and
+capability traceability.
 
 ---
 
@@ -211,7 +220,8 @@ and the `distributed-decisions` CI Integration job.
 
 ## Layer examples (building blocks)
 
-The GPS loss mission composes patterns from smaller showcase examples. Use these when explaining individual layers:
+The GPS loss mission composes patterns from smaller showcase examples. Use these when explaining
+individual layers:
 
 | Example | Layer | Role in GPS demo |
 |---------|-------|------------------|
@@ -227,7 +237,9 @@ Architecture reference: [distributed-decisions.md](./distributed-decisions.md)
 
 ## Security proof
 
-Attack simulations validate enforcement on the same decision runtime. They are secondary to the GPS demo — run them after the walkthrough or point reviewers to [distributed-decision-security.md](./distributed-decision-security.md):
+Attack simulations validate enforcement on the same decision runtime. They are secondary to the GPS
+demo — run them after the walkthrough or point reviewers to
+[distributed-decision-security.md](./distributed-decision-security.md):
 
 ```bash
 spanda decision simulate-attack policy-tamper

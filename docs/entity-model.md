@@ -1,15 +1,21 @@
 # Unified Entity Model
 
-The **Unified Entity Model** is a foundational platform pillar in Spanda. Every object managed by the platform — robots, fleets, humans, wearables, devices, providers, packages, missions, facilities, and control centers — is represented as an **Entity** with shared properties, relationships, health, readiness, trust, security, and lifecycle semantics.
+The **Unified Entity Model** is a foundational platform pillar in Spanda. Every object managed by
+the platform — robots, fleets, humans, wearables, devices, providers, packages, missions,
+facilities, and control centers — is represented as an **Entity** with shared properties,
+relationships, health, readiness, trust, security, and lifecycle semantics.
 
 ## Why a unified model?
 
-As Spanda expands across industries (ADAS, healthcare, search & rescue, industrial automation, spatial computing), dedicated top-level models for each object type become inconsistent. The entity model provides:
+As Spanda expands across industries (ADAS, healthcare, search & rescue, industrial automation,
+spatial computing), dedicated top-level models for each object type become inconsistent. The entity
+model provides:
 
 - One **registry** and **graph** for traversal, dependency analysis, and impact analysis
 - One **query language** for operational questions (“which robots use firmware X?”)
 - One **Control Center** browse path for health, readiness, trust, and relationships
-- **Backward-compatible** APIs — existing `/v1/devices`, `/v1/robots`, `/v1/humans` routes remain unchanged
+- **Backward-compatible** APIs — existing `/v1/devices`, `/v1/robots`, `/v1/humans` routes remain
+  unchanged
 
 ## Architecture
 
@@ -45,7 +51,8 @@ The type taxonomy is **extensible**. Built-in kinds include:
 | Control | `command_center`, `control_center` |
 | Custom | `custom` string via `EntityKind::Custom` |
 
-Domain-specific TOML types (`HumanEntity`, `RobotNode`, `DeviceIdentityRecord`, …) remain the **source of truth**. They project into `EntityRecord` — they are not replaced.
+Domain-specific TOML types (`HumanEntity`, `RobotNode`, `DeviceIdentityRecord`, …) remain the
+**source of truth**. They project into `EntityRecord` — they are not replaced.
 
 ## Common properties
 
@@ -70,7 +77,8 @@ Every `EntityRecord` carries:
 | `lifecycle_state` | `discovered` → `archived` |
 | `owner`, `metadata`, `audit` | Governance |
 
-Legacy API field **`kind`** is preserved as an alias of `entity_type.as_str()` for SDK compatibility.
+Legacy API field **`kind`** is preserved as an alias of `entity_type.as_str()` for SDK
+compatibility.
 
 ## Entity capabilities
 
@@ -84,7 +92,8 @@ Capabilities are plain strings on the entity record. Examples:
 | Mission | `pause`, `resume`, `cancel` |
 | Package | `install`, `update`, `validate` |
 
-Capability requirements for missions continue to flow through readiness and assurance crates; entities expose the **inventory view**.
+Capability requirements for missions continue to flow through readiness and assurance crates;
+entities expose the **inventory view**.
 
 ## Health, readiness, trust, security, lifecycle
 
@@ -96,11 +105,15 @@ Capability requirements for missions continue to flow through readiness and assu
 | Lifecycle | `EntityLifecycleState` | Maps `DeviceLifecycleState` and availability |
 | Security | `EntitySecurityIdentity` | Certificates, permissions from TOML security sections |
 
-See also: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md), [entity-relationships.md](./entity-relationships.md), [entity-registry.md](./entity-registry.md), [entity-graph.md](./entity-graph.md), [entity-query-language.md](./entity-query-language.md).
+See also: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md),
+[entity-verification.md](./entity-verification.md),
+[entity-relationships.md](./entity-relationships.md), [entity-registry.md](./entity-registry.md),
+[entity-graph.md](./entity-graph.md), [entity-query-language.md](./entity-query-language.md).
 
 ## Cognitive & Resilience profile (`Entity.autonomy`)
 
-Functional domain state attaches via `EntityAutonomyProfile` on every entity. Populated by `spanda-autonomy` at registry load and enriched at `GET /v1/entities/{id}/autonomy`.
+Functional domain state attaches via `EntityAutonomyProfile` on every entity. Populated by
+`spanda-autonomy` at registry load and enriched at `GET /v1/entities/{id}/autonomy`.
 
 | Field | Functional domain | Type |
 |-------|-------------------|------|
@@ -113,11 +126,13 @@ Functional domain state attaches via `EntityAutonomyProfile` on every entity. Po
 | `damage_risk` | Damage Risk Assessment | `EntityDamageRisk` |
 | `recovery_confidence` | Adaptive Learning | `EntityRecoveryConfidence` |
 
-Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Matrix: [responsibility-matrix.md](./responsibility-matrix.md)
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Matrix:
+[responsibility-matrix.md](./responsibility-matrix.md)
 
 ## API (additive)
 
-Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [entity-sdk.md](./entity-sdk.md).
+Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods:
+[entity-sdk.md](./entity-sdk.md).
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -136,7 +151,10 @@ Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [
 | POST | `/v1/entities/relationships` | Relate two entities (Bearer) |
 | POST | `/v1/entities/sync` | Sync overlay to TOML fragments (Bearer) |
 
-**gRPC (tonic):** same JSON payloads via entity RPCs on `--grpc-bind` (pin proto semver via `GET /v1/version` — currently **1.0.14**, **164** RPCs). Mutations require Bearer metadata (Rust `GrpcClient` reads `SPANDA_API_KEY`). JSON-RPC gateway exposes read-only entity methods via `POST /v1/rpc`.
+**gRPC (tonic):** same JSON payloads via entity RPCs on `--grpc-bind` (pin proto semver via `GET
+/v1/version` — currently **1.0.14**, **164** RPCs). Mutations require Bearer metadata (Rust
+`GrpcClient` reads `SPANDA_API_KEY`). JSON-RPC gateway exposes read-only entity methods via `POST
+/v1/rpc`.
 
 Existing routes (`/v1/devices`, `/v1/robots`, `/v1/fleets`, `/v1/humans`, …) are unchanged.
 
@@ -156,7 +174,8 @@ Before adding a new top-level platform abstraction, ask:
 
 > **Should this be modeled as a new Entity kind?**
 
-If yes, extend `EntityKind`, add a projection in `build_entity_registry`, and document the mapping. See [../ROADMAP.md](../ROADMAP.md) — **Pillar 0 — Unified Entity Model**.
+If yes, extend `EntityKind`, add a projection in `build_entity_registry`, and document the mapping.
+See [../ROADMAP.md](../ROADMAP.md) — **Pillar 0 — Unified Entity Model**.
 
 Cross-references:
 
@@ -175,7 +194,8 @@ Cross-references:
 ### Phase 1 — Foundation (shipped)
 
 - [x] `EntityRecord`, `EntityRegistry`, `EntityGraph`, `EntityQuery` in `spanda-config`
-- [x] `build_entity_registry(&ResolvedSystemConfig)` projects fleet tree, device registry, human registry, logical map, packages, providers
+- [x] `build_entity_registry(&ResolvedSystemConfig)` projects fleet tree, device registry, human
+  registry, logical map, packages, providers
 - [x] Expanded `/v1/entities/*` REST API (backward compatible `kind` field)
 - [x] Control Center **Entities** tab
 - [x] SDK typed fields on `Entity`
@@ -190,13 +210,17 @@ Cross-references:
 
 - [x] Align `spanda-graph` dependency nodes with entity IDs
 - [x] Merge digital-thread device links into entity relationship store
-- [x] Unified traceability queries across program graph and entity graph (`GET /v1/entities/traceability`)
+- [x] Unified traceability queries across program graph and entity graph (`GET
+  /v1/entities/traceability`)
 
 ### Phase 4 — Industry extensions (Complete)
 
-- [x] Facility, building, zone entities from solution blueprint TOML (`spanda.facilities.toml`, `[[entity_kinds]]`)
-- [x] Medical device and ADAS-specific entity kinds with compliance metadata (`entity_kind`, `compliance_profile`, assurance/readiness/security profiles)
-- [x] Custom entity kinds via package manifests (`[entity_kinds]` on `PackageManifest`) and blueprint `[[entity_kinds]]`
+- [x] Facility, building, zone entities from solution blueprint TOML (`spanda.facilities.toml`,
+  `[[entity_kinds]]`)
+- [x] Medical device and ADAS-specific entity kinds with compliance metadata (`entity_kind`,
+  `compliance_profile`, assurance/readiness/security profiles)
+- [x] Custom entity kinds via package manifests (`[entity_kinds]` on `PackageManifest`) and
+  blueprint `[[entity_kinds]]`
 
 ### Phase 5 — Write path (Complete)
 
@@ -221,25 +245,35 @@ Cross-references:
 
 ### Stabilization (Complete)
 
-- [x] CI smoke script `scripts/entity_model_smoke.sh` (graph, traceability, query, mutations, TypeScript + Python SDK)
+- [x] CI smoke script `scripts/entity_model_smoke.sh` (graph, traceability, query, mutations,
+  TypeScript + Python SDK)
 - [x] Control Center **Entities** tab write UI (register, tag, relate, sync) with API key auth
-- [x] SDK parity: `registerEntity` / `register_entity`, `tagEntity` / `tag_entity`, `relateEntities` / `relate_entities`, `syncEntities` / `sync_entities`, `entityGraph` / `entity_graph`, `entityTraceability` / `entity_traceability`, `queryEntities` / `query_entities` (TypeScript, Python, Rust REST + Rust `GrpcClient` gRPC)
-- [x] Stable promotion gate: `scripts/entity_model_stable_promotion_gate.sh` + CI Nightly `entity-model-promotion-gate` — [entity-model-stable-promotion.md](./entity-model-stable-promotion.md)
+- [x] SDK parity: `registerEntity` / `register_entity`, `tagEntity` / `tag_entity`, `relateEntities`
+  / `relate_entities`, `syncEntities` / `sync_entities`, `entityGraph` / `entity_graph`,
+  `entityTraceability` / `entity_traceability`, `queryEntities` / `query_entities` (TypeScript,
+  Python, Rust REST + Rust `GrpcClient` gRPC)
+- [x] Stable promotion gate: `scripts/entity_model_stable_promotion_gate.sh` + CI Nightly
+  `entity-model-promotion-gate` —
+  [entity-model-stable-promotion.md](./entity-model-stable-promotion.md)
 
 ### Promotion to Stable — **Complete** (2026-06-29)
 
 - [x] Implementation phases 1–7 and stabilization checklist
-- [x] SDKs published at **0.4.2** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`
+- [x] SDKs published at **0.4.2** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install
+  @davalgi-spanda/sdk`
 - [x] `docs/feature-status.md` **Unified Entity Model** row set to **Stable**
-- [x] CI Integration `entity-model-smoke` and CI Nightly `entity-model-promotion-gate` (implementation checks)
+- [x] CI Integration `entity-model-smoke` and CI Nightly `entity-model-promotion-gate`
+  (implementation checks)
 
-Shared enterprise field soak and third-party audit sign-off remain tracked separately for broader platform Stable tiers — see [field-soak-gate.md](./field-soak-gate.md).
+Shared enterprise field soak and third-party audit sign-off remain tracked separately for broader
+platform Stable tiers — see [field-soak-gate.md](./field-soak-gate.md).
 
 ### Compatibility guarantees
 
 1. **No breaking changes** to existing REST routes or TOML schemas in Phase 1–3
 2. **`kind` field** on list responses remains stable for SDK consumers
-3. Domain crates (`HumanEntity`, `DeviceIdentityRecord`, …) stay authoritative for configuration authoring
+3. Domain crates (`HumanEntity`, `DeviceIdentityRecord`, …) stay authoritative for configuration
+   authoring
 
 ### Developer checklist — adding a new industry object
 

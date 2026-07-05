@@ -1,6 +1,7 @@
 # Installing Spanda
 
-Spanda ships prebuilt installable packages for **Linux**, **macOS**, and **Windows**. You can also build from source.
+Spanda ships prebuilt installable packages for **Linux**, **macOS**, and **Windows**. You can also
+build from source.
 
 ---
 
@@ -72,7 +73,8 @@ spanda check examples/hello_world.sd
 spanda control-center --help   # confirms enterprise-ops CLI is present
 ```
 
-If `control-center` is missing or `api-key generate` fails with `Unknown argument: generate`, your `PATH` binary is likely stale — see [troubleshooting.md](./troubleshooting.md).
+If `control-center` is missing or `api-key generate` fails with `Unknown argument: generate`, your
+`PATH` binary is likely stale — see [troubleshooting.md](./troubleshooting.md).
 
 ---
 
@@ -84,7 +86,8 @@ From a clone:
 ./scripts/install.sh
 ```
 
-This runs `cargo install --path crates/spanda-cli --locked` and installs the **`spanda`** binary (crate name `spanda`) to `~/.cargo/bin`.
+This runs `cargo install --path crates/spanda-cli --locked` and installs the **`spanda`** binary
+(crate name `spanda`) to `~/.cargo/bin`.
 
 ---
 
@@ -114,7 +117,8 @@ Add `target/release` to your `PATH`, or run via `npm run spanda:native -- <comma
 
 ## Package maintainers
 
-Releases are built with [cargo-dist](https://github.com/axodotdev/cargo-dist). Push a semver tag matching `Cargo.toml` (for example `v0.1.0`) to trigger `.github/workflows/release.yml`.
+Releases are built with [cargo-dist](https://github.com/axodotdev/cargo-dist). Push a semver tag
+matching `Cargo.toml` (for example `v0.1.0`) to trigger `.github/workflows/release.yml`.
 
 Local packaging:
 
@@ -138,7 +142,8 @@ Or install automatically:
 ./scripts/package-release.sh v0.1.0 --all --install-cross
 ```
 
-For official releases, prefer pushing a semver tag and letting GitHub Actions build every platform natively.
+For official releases, prefer pushing a semver tag and letting GitHub Actions build every platform
+natively.
 
 Regenerate dist CI after config changes:
 

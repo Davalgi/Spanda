@@ -1,6 +1,7 @@
 # Device Discovery
 
-Spanda discovers devices through **provider interfaces** — core ships built-in transports; live backends ship as registry packages.
+Spanda discovers devices through **provider interfaces** — core ships built-in transports; live
+backends ship as registry packages.
 
 ## Built-in transports
 
@@ -37,18 +38,25 @@ curl -X POST http://127.0.0.1:8080/v1/devices/discover \
   -d '{"subnet":"192.168.1.0/24","transports":["subnet","mdns"],"timeout_ms":2000}'
 ```
 
-Discovered matches are registered into the device pool (`registered` array in the response). Responses include `installed_packages` when registry discovery packages (for example `spanda-discovery-mdns`) are present under `packages/registry/` — matches are tagged `mdns:spanda-discovery-mdns` instead of bare `mdns`.
+Discovered matches are registered into the device pool (`registered` array in the response).
+Responses include `installed_packages` when registry discovery packages (for example
+`spanda-discovery-mdns`) are present under `packages/registry/` — matches are tagged
+`mdns:spanda-discovery-mdns` instead of bare `mdns`.
 
 ## Registry packages (runtime)
 
-When `packages/registry/spanda-discovery-mdns/` is on disk, the mDNS transport is wrapped with registry package metadata at runtime (`list_installed_discovery_packages()`). Additional transports (`spanda-discovery-ble`, `spanda-discovery-usb`, …) follow the same pattern as they land in the registry.
+When `packages/registry/spanda-discovery-mdns/` is on disk, the mDNS transport is wrapped with
+registry package metadata at runtime (`list_installed_discovery_packages()`). Additional transports
+(`spanda-discovery-ble`, `spanda-discovery-usb`, …) follow the same pattern as they land in the
+registry.
 
 Environment overrides for CI and headless hosts:
 
 - `SPANDA_DISCOVERY_SUBNET` — default CIDR when `subnet` is omitted
 - `SPANDA_DISCOVERY_MDNS_MATCHES` — comma list `name@ip` for deterministic mDNS results
 - `SPANDA_MQTT_BROKER` — broker host:port for MQTT probe
-- `SPANDA_DISCOVERY_NO_STUB=1` — return empty results instead of stub devices when live probes find nothing
+- `SPANDA_DISCOVERY_NO_STUB=1` — return empty results instead of stub devices when live probes find
+  nothing
 
 ## Provider contract
 
@@ -65,7 +73,8 @@ Register packages in `spanda.providers.toml`; do not hardcode vendor logic in `s
 
 ## Unknown devices
 
-Newly discovered devices enter **quarantined** or **discovered** state with `trust_level = unknown` until an operator approves trust.
+Newly discovered devices enter **quarantined** or **discovered** state with `trust_level = unknown`
+until an operator approves trust.
 
 ## Related
 

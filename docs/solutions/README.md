@@ -1,8 +1,11 @@
 # Official Solution Blueprints
 
-Spanda ships **Official Solution Blueprints** — reference architectures built entirely on existing platform capabilities. Each blueprint demonstrates how to compose **Platform Pillars**, packages, and providers for a specific industry **without** bloating the core.
+Spanda ships **Official Solution Blueprints** — reference architectures built entirely on existing
+platform capabilities. Each blueprint demonstrates how to compose **Platform Pillars**, packages,
+and providers for a specific industry **without** bloating the core.
 
-**Full index with cross-references:** [ROADMAP.md § Official Solution Blueprints](../ROADMAP.md#official-solution-blueprints)
+**Full index with cross-references:** [ROADMAP.md § Official Solution
+Blueprints](../ROADMAP.md#official-solution-blueprints)
 
 ---
 
@@ -26,9 +29,11 @@ Spanda ships **Official Solution Blueprints** — reference architectures built 
 | **Spatial Computing & HRI** | **Stable** | Next | [examples/solutions/spatial-computing/](../../examples/solutions/spatial-computing/) · [spatial-computing.md](./spatial-computing.md) |
 | **Smart Spaces & Ambient Intelligence** | **Stable** | Next | [smart-spaces.md](./smart-spaces.md) · [examples/solutions/smart-spaces/](../../examples/solutions/smart-spaces/) |
 
-**Also:** Compliance profiles showcase — [examples/showcase/compliance/](../../examples/showcase/compliance/)
+**Also:** Compliance profiles showcase —
+[examples/showcase/compliance/](../../examples/showcase/compliance/)
 
-**Scaffold CI:** `./scripts/solution_blueprints_smoke.sh` (agriculture, environmental monitoring, maritime) · `./scripts/smart_spaces_smoke.sh` (smart spaces)
+**Scaffold CI:** `./scripts/solution_blueprints_smoke.sh` (agriculture, environmental monitoring,
+maritime) · `./scripts/smart_spaces_smoke.sh` (smart spaces)
 
 ---
 
@@ -51,7 +56,8 @@ Each blueprint documents (see [ROADMAP.md](../ROADMAP.md) for full entries):
 
 ## ADAS & Autonomous Driving
 
-Safety-first intelligent vehicle workflows — lane keeping, adaptive cruise, emergency braking, sensor recovery, driver takeover, and highway pilot.
+Safety-first intelligent vehicle workflows — lane keeping, adaptive cruise, emergency braking,
+sensor recovery, driver takeover, and highway pilot.
 
 - **Architecture:** [adas.md](./adas.md)
 - **Device tree:** [automotive-device-tree.md](../automotive-device-tree.md)
@@ -66,16 +72,20 @@ spanda demo adas
 ./scripts/adas_smoke.sh
 ```
 
-See also: [compliance-profiles.md](../compliance-profiles.md) (ISO 26262) · [mission-continuity.md](../mission-continuity.md) · [control-center.md](../control-center.md)
+See also: [compliance-profiles.md](../compliance-profiles.md) (ISO 26262) ·
+[mission-continuity.md](../mission-continuity.md) · [control-center.md](../control-center.md)
 
 ---
 
 ## Spatial Computing & Human-Robot Collaboration
 
-Human–robot collaboration, wearables, AR/VR/XR, and collaborative autonomy — composes Device Registry, Capability Framework, Readiness, Continuity, Trust, and Control Center without core language extensions.
+Human–robot collaboration, wearables, AR/VR/XR, and collaborative autonomy — composes Device
+Registry, Capability Framework, Readiness, Continuity, Trust, and Control Center without core
+language extensions.
 
 - **Architecture:** [spatial-computing.md](./spatial-computing.md)
-- **Roadmap:** [human-interaction-spatial-computing-roadmap.md](../human-interaction-spatial-computing-roadmap.md)
+- **Roadmap:**
+[human-interaction-spatial-computing-roadmap.md](../human-interaction-spatial-computing-roadmap.md)
 - **Human entity:** [human-interaction.md](../human-interaction.md)
 - **Operator capabilities:** [operator-capabilities.md](../operator-capabilities.md)
 - **Human readiness:** [human-readiness.md](../human-readiness.md)
@@ -90,7 +100,8 @@ cd examples/solutions/spatial-computing && spanda check warehouse-ar/pick_missio
 
 ## Smart Spaces & Ambient Intelligence
 
-Safety-first orchestration for intelligent environments — IoT, robots, wearables, connected healthcare, and energy — without competing with Home Assistant or home automation hubs.
+Safety-first orchestration for intelligent environments — IoT, robots, wearables, connected
+healthcare, and energy — without competing with Home Assistant or home automation hubs.
 
 - **Architecture:** [smart-spaces.md](./smart-spaces.md)
 - **Building automation:** [building-automation.md](../building-automation.md)
@@ -112,8 +123,10 @@ cd examples/solutions/smart-spaces && spanda check smart-home/night_mode.sd
 
 Autonomous logistics — AMRs, pick-and-place, fleet coordination.
 
-- **Examples:** [warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) · [warehouse_robot.sd](../../examples/warehouse_robot.sd)
-- **Continuity walkthrough:** [tutorials/continuity-walkthrough.md](../tutorials/continuity-walkthrough.md)
+- **Examples:** [warehouse_delivery/](../../examples/end_to_end/warehouse_delivery/) ·
+  [warehouse_robot.sd](../../examples/warehouse_robot.sd)
+- **Continuity walkthrough:**
+  [tutorials/continuity-walkthrough.md](../tutorials/continuity-walkthrough.md)
 - **Pillars used:** Device & Fleet · Verification · Operations · Developer
 
 ---

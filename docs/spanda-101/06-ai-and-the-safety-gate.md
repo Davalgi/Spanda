@@ -1,11 +1,13 @@
 # Lesson 6 — AI and the safety gate
 
-**Goal:** Wire AI models into robots and understand why `ActionProposal` cannot drive actuators directly.
+**Goal:** Wire AI models into robots and understand why `ActionProposal` cannot drive actuators
+directly.
 
 **Examples:**
 
 - [`examples/showcase/rover_navigation.sd`](../../examples/showcase/rover_navigation.sd)
-- [`examples/showcase/ai_safety_violation.sd`](../../examples/showcase/ai_safety_violation.sd) (intentional compile error)
+- [`examples/showcase/ai_safety_violation.sd`](../../examples/showcase/ai_safety_violation.sd)
+  (intentional compile error)
 
 ---
 
@@ -22,7 +24,8 @@ let action = safety.validate(proposal);
 wheels.execute(action);
 ```
 
-`planner.reason(...)` returns an **`ActionProposal`**. Only **`safety.validate()`** produces a **`SafeAction`** that actuators accept.
+`planner.reason(...)` returns an **`ActionProposal`**. Only **`safety.validate()`** produces a
+**`SafeAction`** that actuators accept.
 
 ---
 
@@ -88,7 +91,8 @@ spanda check examples/showcase/rover_navigation.sd
 spanda run examples/showcase/rover_navigation.sd
 ```
 
-For the full flagship walkthrough (verify + sim + fault injection), see [killer-demo.md](../killer-demo.md).
+For the full flagship walkthrough (verify + sim + fault injection), see
+[killer-demo.md](../killer-demo.md).
 
 ---
 

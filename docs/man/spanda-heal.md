@@ -34,4 +34,5 @@ Recovery policies in `.sd` source.
 
 ## SEE ALSO
 
-spanda-diagnose(1), spanda-recovery(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-diagnose(1), spanda-recovery(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

@@ -14,12 +14,15 @@ spanda debug rover.sd --break 42
 - Breakpoints, step over, step into, continue
 - Variable inspection
 - Task, trigger, provider, safety, and hardware verification state
-- Debug events: trigger fired, task started/completed, deadline missed, safety validation failed, kill switch activated (`kill_switch_activated`), critical health (`health_critical`), message received, provider called
+- Debug events: trigger fired, task started/completed, deadline missed, safety validation failed,
+  kill switch activated (`kill_switch_activated`), critical health (`health_critical`), message
+  received, provider called
 
 ## VS Code
 
 Launch configuration uses `spanda-dap` over stdio. See `editor/vscode/README.md`.
 
-Status: **Experimental** — step-in/out partial; DAP hardened in core, full task/trigger/provider events via `--trace-*` flags.
+Status: **Experimental** — step-in/out partial; DAP hardened in core, full task/trigger/provider
+events via `--trace-*` flags.
 
 See [Debugging guide](./debugging.md) for details.

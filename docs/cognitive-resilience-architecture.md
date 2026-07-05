@@ -1,8 +1,16 @@
 # Spanda Cognitive & Resilience Architecture
 
-Spanda implements a **Cognitive & Resilience Architecture** — a functional view of platform responsibilities inspired by proven engineering principles observed in biological nervous systems. Rather than replicating biological anatomy, Spanda adopts functional concepts such as local reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery, and attention management to improve safety, resilience, and explainability.
+Spanda implements a **Cognitive & Resilience Architecture** — a functional view of platform
+responsibilities inspired by proven engineering principles observed in biological nervous systems.
+Rather than replicating biological anatomy, Spanda adopts functional concepts such as local
+reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational
+memory, adaptive recovery, and attention management to improve safety, resilience, and
+explainability.
 
-> **Important:** Spanda is **not** a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures. Biological concepts are used only where they provide measurable engineering benefits. Implementation modules are **not** named after brain anatomy (no Cortex, Cerebellum, Hippocampus, etc.).
+> **Important:** Spanda is **not** a biologically inspired AI platform and does not attempt to model
+> consciousness, emotions, or neural structures. Biological concepts are used only where they
+> provide measurable engineering benefits. Implementation modules are **not** named after brain
+> anatomy (no Cortex, Cerebellum, Hippocampus, etc.).
 
 This architecture **sits alongside** existing views — it does not replace them:
 
@@ -15,13 +23,17 @@ This architecture **sits alongside** existing views — it does not replace them
 | [Recovery Architecture](./recovery-orchestrator.md) | Plan, simulate, execute, audit recovery |
 | **Cognitive & Resilience Architecture** (this document) | Functional responsibility domains |
 
-**Implementation crate:** `spanda-autonomy` — wraps and integrates existing platform services; does not duplicate them.
+**Implementation crate:** `spanda-autonomy` — wraps and integrates existing platform services; does
+not duplicate them.
 
 ---
 
 ## Platform description
 
-**Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its core.** It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust, health, distributed autonomy, and governance.
+**Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its
+core.** It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
+using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
+health, distributed autonomy, and governance.
 
 ---
 
@@ -139,7 +151,8 @@ Sensors / Actuators / Devices
 
 ## Functional domains
 
-Eleven functional responsibility domains organize platform capabilities. Full definitions: [functional-domains.md](./functional-domains.md).
+Eleven functional responsibility domains organize platform capabilities. Full definitions:
+[functional-domains.md](./functional-domains.md).
 
 | Domain | Primary responsibility | Status |
 |--------|------------------------|--------|
@@ -159,7 +172,8 @@ Eleven functional responsibility domains organize platform capabilities. Full de
 
 ## Entity integration
 
-Every functional domain operates on **Entity** objects. Domain state attaches via `Entity.autonomy` (`EntityAutonomyProfile`):
+Every functional domain operates on **Entity** objects. Domain state attaches via `Entity.autonomy`
+(`EntityAutonomyProfile`):
 
 | Entity field | Functional domain |
 |--------------|-------------------|
@@ -181,7 +195,8 @@ REST: `GET /v1/entities/{id}/autonomy` — enriched profile with all domain snap
 
 ## Responsibility matrix
 
-Capability-to-domain mapping prevents service overlap: [responsibility-matrix.md](./responsibility-matrix.md).
+Capability-to-domain mapping prevents service overlap:
+[responsibility-matrix.md](./responsibility-matrix.md).
 
 ---
 
@@ -201,13 +216,17 @@ Domain clients wrap existing REST endpoints — no duplicate business logic:
 
 `AutonomyClient` remains as a backward-compatible facade. See [entity-sdk.md](./entity-sdk.md).
 
-gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
+gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`,
+`GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`,
+`GetEntityAutonomy`.
 
 ---
 
 ## Control Center
 
-The **Cognitive & Resilience** tab organizes live panels by functional domain: Strategic Planning summary, Reflex Events, Attention Queue, Homeostasis, Platform Immunity, Operational Memory, Damage Risk, Recovery Confidence. See [control-center.md](./control-center.md).
+The **Cognitive & Resilience** tab organizes live panels by functional domain: Strategic Planning
+summary, Reflex Events, Attention Queue, Homeostasis, Platform Immunity, Operational Memory, Damage
+Risk, Recovery Confidence. See [control-center.md](./control-center.md).
 
 ---
 
@@ -227,7 +246,9 @@ The **Cognitive & Resilience** tab organizes live panels by functional domain: S
 
 ## Migration
 
-Existing [bio-inspired-architecture.md](./bio-inspired-architecture.md) content is preserved. The Cognitive & Resilience Architecture is the **canonical functional view** going forward. See [cognitive-resilience-migration.md](./cognitive-resilience-migration.md).
+Existing [bio-inspired-architecture.md](./bio-inspired-architecture.md) content is preserved. The
+Cognitive & Resilience Architecture is the **canonical functional view** going forward. See
+[cognitive-resilience-migration.md](./cognitive-resilience-migration.md).
 
 ---
 

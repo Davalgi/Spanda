@@ -1,10 +1,12 @@
 # Spanda Package Registry
 
-Spanda's package registry ships a **hosted index** in this repository (`registry/index.json`). The CLI defaults to:
+Spanda's package registry ships a **hosted index** in this repository (`registry/index.json`). The
+CLI defaults to:
 
 `https://raw.githubusercontent.com/Davalgi/Spanda/main/registry`
 
-Override with **`SPANDA_REGISTRY_URL`** (supports `https://` and `file://` bases). Entries merge with the local stub registry for search and `spanda install`.
+Override with **`SPANDA_REGISTRY_URL`** (supports `https://` and `file://` bases). Entries merge
+with the local stub registry for search and `spanda install`.
 
 ## Searching packages
 
@@ -15,7 +17,12 @@ spanda registry search openai
 
 ## Curated packages (hosted)
 
-All **53** curated packages under `packages/registry/` are published in the hosted index. Tarballs live at `registry/packages/<name>/<version>` with SHA-256 digests and Ed25519 signatures in `registry/index.json` (`version_checksums`, `version_signatures`). Rebuild with `./scripts/build-registry.sh` (runs `scripts/update_registry_checksums.py`, which delegates to `registry-index-maintain`). CI verifies signatures against the trust key in `registry/TRUST_KEY` (hosted signing material: `spanda-hosted-registry-v1` unless `SPANDA_REGISTRY_SIGN_KEY` is set).
+All **53** curated packages under `packages/registry/` are published in the hosted index. Tarballs
+live at `registry/packages/<name>/<version>` with SHA-256 digests and Ed25519 signatures in
+`registry/index.json` (`version_checksums`, `version_signatures`). Rebuild with
+`./scripts/build-registry.sh` (runs `scripts/update_registry_checksums.py`, which delegates to
+`registry-index-maintain`). CI verifies signatures against the trust key in `registry/TRUST_KEY`
+(hosted signing material: `spanda-hosted-registry-v1` unless `SPANDA_REGISTRY_SIGN_KEY` is set).
 
 | Package | Category | Import paths |
 |---------|----------|--------------|
@@ -79,7 +86,8 @@ All **53** curated packages under `packages/registry/` are published in the host
 | `spanda-mission-continuity` | robotics | `assurance.continuity` |
 | `spanda-resilience` | robotics | `assurance.resilience` |
 
-Examples: [`examples/showcase/assurance/`](../examples/showcase/assurance/README.md) · Guide: [mission-assurance.md](./mission-assurance.md)
+Examples: [`examples/showcase/assurance/`](../examples/showcase/assurance/README.md) · Guide:
+[mission-assurance.md](./mission-assurance.md)
 
 ## Local stub packages
 
@@ -92,7 +100,8 @@ Examples: [`examples/showcase/assurance/`](../examples/showcase/assurance/README
 
 ## Planned framework packages
 
-Specialized adapter packages (not in the hosted index yet) are documented in [official-packages.md](./official-packages.md):
+Specialized adapter packages (not in the hosted index yet) are documented in
+[official-packages.md](./official-packages.md):
 
 | Package | Description |
 |---------|-------------|
@@ -139,7 +148,9 @@ Run `spanda install` after changing dependencies to regenerate `spanda.lock`.
 ./scripts/registry_golden_path.sh
 ```
 
-Uses `file://` registry base, verifies Ed25519 signatures via `registry/TRUST_KEY`, installs `spanda-openai` and `spanda-ros2`, and type-checks the scratch project. CI Integration job: `registry-golden-path`.
+Uses `file://` registry base, verifies Ed25519 signatures via `registry/TRUST_KEY`, installs
+`spanda-openai` and `spanda-ros2`, and type-checks the scratch project. CI Integration job:
+`registry-golden-path`.
 
 ## Publishing
 
@@ -147,7 +158,10 @@ Uses `file://` registry base, verifies Ed25519 signatures via `registry/TRUST_KE
 spanda publish
 ```
 
-Validates manifest, capabilities, hardware requirements, safety level, and license. On success, **`spanda publish` mirrors the bundle** to `registry/packages/<name>/<version>/` in this repository. Maintainers then run `./scripts/build-registry.sh` to refresh tarballs, SHA-256 checksums, and Ed25519 signatures in `registry/index.json`.
+Validates manifest, capabilities, hardware requirements, safety level, and license. On success,
+**`spanda publish` mirrors the bundle** to `registry/packages/<name>/<version>/` in this repository.
+Maintainers then run `./scripts/build-registry.sh` to refresh tarballs, SHA-256 checksums, and
+Ed25519 signatures in `registry/index.json`.
 
 When `SPANDA_REGISTRY_URL` is set, publish also uploads to the configured remote base.
 
@@ -167,10 +181,16 @@ The lockfile pins exact resolved versions for reproducibility.
 | `SPANDA_REGISTRY_REQUIRE_CHECKSUM=1` | Fail install/fetch when index checksum metadata is missing |
 | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` | Fail install/fetch when signatures are missing or invalid |
 
-For **production deployment**, set `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` and run `spanda deploy gate --policy production` so lockfile registry dependencies are audited against signed checksums in `registry/index.json`. See [deployment-gates.md](./deployment-gates.md).
+For **production deployment**, set `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` and run `spanda deploy gate
+--policy production` so lockfile registry dependencies are audited against signed checksums in
+`registry/index.json`. See [deployment-gates.md](./deployment-gates.md).
 
 ## Official vs community packages
 
-Packages under `packages/registry/` are **official** (curated catalog + hosted index). Community packages can be published to the same index but are not in the `framework_packages()` allowlist.
+Packages under `packages/registry/` are **official** (curated catalog + hosted index). Community
+packages can be published to the same index but are not in the `framework_packages()` allowlist.
 
-Only **registry-provenanced** official names receive built-in provider wiring at runtime. Path or git overrides of official names are allowed for development but do not count as official for providers or production deploy gates. See [packages.md](./packages.md) · [official-packages.md](./official-packages.md).
+Only **registry-provenanced** official names receive built-in provider wiring at runtime. Path or
+git overrides of official names are allowed for development but do not count as official for
+providers or production deploy gates. See [packages.md](./packages.md) ·
+[official-packages.md](./official-packages.md).

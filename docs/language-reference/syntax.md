@@ -23,4 +23,6 @@ export fn plan_path(start: Pose, goal: Pose) -> Path {
 
 ## Top-level declarations
 
-Programs may declare functions, structs, enums, traits, robots, hardware profiles, safety policies, and operational metadata. See [spanda-language.md](../spanda-language.md) for a tutorial walkthrough.
+Programs may declare functions, structs, enums, traits, robots, hardware profiles, safety policies,
+and operational metadata. See [spanda-language.md](../spanda-language.md) for a tutorial
+walkthrough.

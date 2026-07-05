@@ -1,6 +1,7 @@
 # Community Packages
 
-Spanda's package ecosystem supports community-contributed frameworks, drivers, adapters, and libraries for robotics, AI, simulation, and safety.
+Spanda's package ecosystem supports community-contributed frameworks, drivers, adapters, and
+libraries for robotics, AI, simulation, and safety.
 
 ## Package categories
 
@@ -59,11 +60,13 @@ import sensors.lidar;
 import std.sensors;
 ```
 
-The `provides` list declares symbols exported to consumers; `requires` lists runtime capabilities the driver needs.
+The `provides` list declares symbols exported to consumers; `requires` lists runtime capabilities
+the driver needs.
 
 ## Framework packages
 
-Framework packages wrap external systems (ROS 2, MQTT, Gazebo) and expose Spanda-native import paths:
+Framework packages wrap external systems (ROS 2, MQTT, Gazebo) and expose Spanda-native import
+paths:
 
 ```spanda
 import robotics.ros2;

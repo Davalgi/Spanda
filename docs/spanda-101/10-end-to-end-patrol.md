@@ -53,7 +53,8 @@ spanda replay replay_mission.trace --deterministic
 spanda replay replay_mission.trace --playback --from T+00:01
 ```
 
-See [replay.md](../replay.md). Golden traces can be committed under `examples/` per `.gitignore` rules.
+See [replay.md](../replay.md). Golden traces can be committed under `examples/` per `.gitignore`
+rules.
 
 ---
 
@@ -68,7 +69,8 @@ twin Shadow {
 }
 ```
 
-Used in `replay_mission.sd` and showcase demos. Full guide: `examples/showcase/digital_twin_demo.sd`.
+Used in `replay_mission.sd` and showcase demos. Full guide:
+`examples/showcase/digital_twin_demo.sd`.
 
 ---
 
@@ -126,4 +128,5 @@ Compare your solution to `examples/end_to_end/safe_patrol/`.
 
 **Congratulations — you have finished Spanda 101.**
 
-Return to the [curriculum index](./README.md) or explore [all examples](../../examples/basics/README.md).
+Return to the [curriculum index](./README.md) or explore [all
+examples](../../examples/basics/README.md).

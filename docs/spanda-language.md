@@ -1,8 +1,11 @@
 # Spanda Language Reference (v0.4 foundations)
 
-Spanda programs use the `.sd` extension. Programs are organized around **autonomous systems**, not OOP class hierarchies.
+Spanda programs use the `.sd` extension. Programs are organized around **autonomous systems**, not
+OOP class hierarchies.
 
-> **API reference:** [spanda-reference.md](./spanda-reference.md) lists every keyword, `std.*` type, built-in function/method (with signatures), and CLI command in JavaDoc / man-page form. Generate per-module docs with `spanda doc file.sd`.
+> **API reference:** [spanda-reference.md](./spanda-reference.md) lists every keyword, `std.*` type,
+> built-in function/method (with signatures), and CLI command in JavaDoc / man-page form. Generate
+> per-module docs with `spanda doc file.sd`.
 
 ## Modules
 
@@ -13,7 +16,8 @@ import navigation.path_planning;
 import std.robotics;
 ```
 
-Dotted module names (`navigation.path_planning`) identify compilation units in multi-file projects. Use **`export`**, **`public`**, or **`private`** on module-level functions:
+Dotted module names (`navigation.path_planning`) identify compilation units in multi-file projects.
+Use **`export`**, **`public`**, or **`private`** on module-level functions:
 
 ```spanda
 module navigation.path_planning;
@@ -25,7 +29,8 @@ export fn plan_path(from: Pose, to: Pose) -> Path {
 private fn internal_helper() -> Path { ... }
 ```
 
-Imported modules inject **exported** symbols into the importer's scope. Cross-file linking uses `ModuleRegistry` (see `compile_with_registry` / `RunOptions.module_registry`).
+Imported modules inject **exported** symbols into the importer's scope. Cross-file linking uses
+`ModuleRegistry` (see `compile_with_registry` / `RunOptions.module_registry`).
 
 Generic module functions:
 
@@ -103,11 +108,13 @@ robot R {
 }
 ```
 
-Traits define interfaces; bind implementations to agents with `impl Trait for AgentName { ... }` inside a robot block.
+Traits define interfaces; bind implementations to agents with `impl Trait for AgentName { ... }`
+inside a robot block.
 
 ## Result and Option
 
-`Result<T, E>` and `Option<T>` are first-class generic types. Construct and match them without exceptions:
+`Result<T, E>` and `Option<T>` are first-class generic types. Construct and match them without
+exceptions:
 
 ```spanda
 export fn navigate() -> Result<Path, NavError> {
@@ -128,7 +135,8 @@ match scan {
 
 ## Async and await
 
-Module functions may be declared `async`. Calls return `Future<T>`; use `await` inside behaviors, tasks, or other async functions:
+Module functions may be declared `async`. Calls return `Future<T>`; use `await` inside behaviors,
+tasks, or other async functions:
 
 ```spanda
 module maps;
@@ -171,7 +179,8 @@ robot R {
 - `channel()` — create a typed channel handle
 - `send(ch, value)` / `recv(ch)` — non-blocking send and receive builtins
 - `select { recv(ch) => ... }` — run the first arm whose channel has a message
-- `spawn callee(args);` — queue a module function call on the spawn queue (processed after behaviors and tests)
+- `spawn callee(args);` — queue a module function call on the spawn queue (processed after behaviors
+  and tests)
 - `join(handle)` — resolve a `Future<T>` or `TaskHandle<T>`
 - `parallel { ... }` — cooperative concurrent orchestration with `_parallel` results
 
@@ -254,7 +263,8 @@ spanda fmt program.sd
 spanda fmt --json program.sd   # returns formatted source without writing
 ```
 
-It normalizes indentation (2 spaces), spacing around types/operators, and block structure. Unparseable files fall back to whitespace normalization.
+It normalizes indentation (2 spaces), spacing around types/operators, and block structure.
+Unparseable files fall back to whitespace normalization.
 
 ## Linting
 
@@ -265,7 +275,8 @@ spanda lint program.sd
 spanda lint --json program.sd
 ```
 
-Rules include `missing-module`, `trailing-whitespace`, `line-length`, `empty-test`, `empty-behavior`, and `unused-import`.
+Rules include `missing-module`, `trailing-whitespace`, `line-length`, `empty-test`,
+`empty-behavior`, and `unused-import`.
 
 ## Documentation generation
 
@@ -313,7 +324,8 @@ task control_loop every 20ms requires lidar.nearest_distance > 0.4 m {
 }
 ```
 
-Tasks are scheduled with fixed intervals and validated by the type checker. Optional `budget { }` declares per-task resource limits checked at hardware verification time.
+Tasks are scheduled with fixed intervals and validated by the type checker. Optional `budget { }`
+declares per-task resource limits checked at hardware verification time.
 
 ## Hardware profiles and deployment
 
@@ -371,7 +383,8 @@ simulate_compatibility {
 }
 ```
 
-Faults modify the target profile during verification (camera/lidar/IMU removal, battery halving, network outage).
+Faults modify the target profile during verification (camera/lidar/IMU removal, battery halving,
+network outage).
 
 ## Behavioral verification
 
@@ -421,7 +434,9 @@ state_machine Delivery {
 }
 ```
 
-At runtime, transition with `enter StateName;` inside a behavior or task body. The runtime applies the transition to every state machine that declares a valid edge from its current state to the target.
+At runtime, transition with `enter StateName;` inside a behavior or task body. The runtime applies
+the transition to every state machine that declares a valid edge from its current state to the
+target.
 
 ```spanda
 behavior start_delivery() {
@@ -439,7 +454,9 @@ behavior move() requires lidar.nearest_distance > 0.5 m ensures true {
 
 ## Events and triggers
 
-Events are the simplest trigger form. The unified trigger model also supports timers, conditions, topics, state transitions, safety, hardware faults, AI outcomes, and twin divergence — see [triggers.md](./triggers.md).
+Events are the simplest trigger form. The unified trigger model also supports timers, conditions,
+topics, state transitions, safety, hardware faults, AI outcomes, and twin divergence — see
+[triggers.md](./triggers.md).
 
 ```spanda
 event ObstacleDetected;
@@ -481,7 +498,9 @@ let shadow_pose = RobotTwin.pose();
 let past_pose = RobotTwin.replay(index: 0, field: pose);
 ```
 
-`frame_count()` returns the number of buffered replay frames (when `replay true`). Mirrored fields (`pose`, `velocity`, etc.) are readable as methods on the twin name. `replay(index, field)` retrieves a historical snapshot.
+`frame_count()` returns the number of buffered replay frames (when `replay true`). Mirrored fields
+(`pose`, `velocity`, etc.) are readable as methods on the twin name. `replay(index, field)`
+retrieves a historical snapshot.
 
 ## Physical units
 
@@ -489,7 +508,10 @@ let past_pose = RobotTwin.replay(index: 0, field: pose);
 
 ## Verification, health, and kill switch
 
-Program-level declarations for capability traceability, runtime health, and emergency stops (Phases 27–35). See [health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md), [capability-traceability.md](./capability-traceability.md), [typed-handler-io.md](./typed-handler-io.md), [testing.md](./testing.md).
+Program-level declarations for capability traceability, runtime health, and emergency stops (Phases
+27–35). See [health-checks.md](./health-checks.md), [kill-switch.md](./kill-switch.md),
+[capability-traceability.md](./capability-traceability.md),
+[typed-handler-io.md](./typed-handler-io.md), [testing.md](./testing.md).
 
 ```spanda
 kill_switch EmergencyStop {
@@ -532,7 +554,14 @@ robot Rover {
 
 ## Mission assurance and autonomous operations
 
-Program-level declarations for knowledge models, state estimation, anomaly detection, prognostics, mitigation, mode management, mission planning, resilience, continuity policies, and assurance evidence. See [mission-assurance.md](./mission-assurance.md), [mission-continuity.md](./mission-continuity.md), [continuity-policies.md](./continuity-policies.md), [knowledge-models.md](./knowledge-models.md), [anomaly-detection.md](./anomaly-detection.md), [diagnostics.md](./diagnostics.md), [prognostics.md](./prognostics.md), [resilience.md](./resilience.md), and [assurance-cases.md](./assurance-cases.md).
+Program-level declarations for knowledge models, state estimation, anomaly detection, prognostics,
+mitigation, mode management, mission planning, resilience, continuity policies, and assurance
+evidence. See [mission-assurance.md](./mission-assurance.md),
+[mission-continuity.md](./mission-continuity.md),
+[continuity-policies.md](./continuity-policies.md), [knowledge-models.md](./knowledge-models.md),
+[anomaly-detection.md](./anomaly-detection.md), [diagnostics.md](./diagnostics.md),
+[prognostics.md](./prognostics.md), [resilience.md](./resilience.md), and
+[assurance-cases.md](./assurance-cases.md).
 
 ```spanda
 knowledge_model RoverModel {
@@ -605,7 +634,9 @@ assurance_case RoverSafetyCase {
 }
 ```
 
-CLI: `spanda assure`, `spanda anomaly scan`, `spanda state estimate`, `spanda diagnose`, `spanda prognostics`, `spanda mission verify`, `spanda resilience check`, `spanda mitigation plan`, `spanda continuity`, `spanda takeover`, `spanda delegate`, `spanda succession`.
+CLI: `spanda assure`, `spanda anomaly scan`, `spanda state estimate`, `spanda diagnose`, `spanda
+prognostics`, `spanda mission verify`, `spanda resilience check`, `spanda mitigation plan`, `spanda
+continuity`, `spanda takeover`, `spanda delegate`, `spanda succession`.
 
 Compile-fail tests inside `test` blocks:
 
@@ -618,7 +649,8 @@ test "rejects bad assignment" {
 }
 ```
 
-CLI: `spanda check --verification-json`, `spanda verify --health`, `spanda trace capabilities …`, `spanda sim --inject-health-faults`.
+CLI: `spanda check --verification-json`, `spanda verify --health`, `spanda trace capabilities …`,
+`spanda sim --inject-health-faults`.
 
 ## Examples
 

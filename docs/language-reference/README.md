@@ -1,6 +1,7 @@
 # Spanda Language Reference
 
-Structured reference for the Spanda (`.sd`) language. For a single generated document see [spanda-reference.md](../spanda-reference.md).
+Structured reference for the Spanda (`.sd`) language. For a single generated document see
+[spanda-reference.md](../spanda-reference.md).
 
 ## Topics
 

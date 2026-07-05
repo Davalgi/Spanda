@@ -1,6 +1,7 @@
 # Plugin Security
 
-Spanda plugins run under a **defense-in-depth** model: manifest validation, capability review, trust tiers, signature verification, sandboxing, and audit logging.
+Spanda plugins run under a **defense-in-depth** model: manifest validation, capability review, trust
+tiers, signature verification, sandboxing, and audit logging.
 
 ## Requirements
 
@@ -43,4 +44,5 @@ Require `spanda plugin install --approve-dangerous`:
 
 ## Relationship to packages
 
-Plugin security is **orthogonal** to package trust. Packages continue to use `spanda.toml` and registry provenance unchanged.
+Plugin security is **orthogonal** to package trust. Packages continue to use `spanda.toml` and
+registry provenance unchanged.

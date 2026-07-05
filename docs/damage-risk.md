@@ -1,14 +1,18 @@
 # Damage Risk Assessment
 
 **Functional domain:** [Damage Risk Assessment](./functional-domains.md#damage-risk-assessment)  
-**Status: Beta** — harm-risk index on entity autonomy profiles from health, trust, and metadata signals.
+**Status: Beta** — harm-risk index on entity autonomy profiles from health, trust, and metadata
+signals.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)  
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 > Implementation detail: [damage-risk-model.md](./damage-risk-model.md)
 
 ## Purpose
 
-Evaluate **potential harm** — not just errors. Damage risk models consequences: asset damage, operator injury, mission failure, and environmental harm. This drives preventative action, mission abort, degraded mode, and maintenance scheduling.
+Evaluate **potential harm** — not just errors. Damage risk models consequences: asset damage,
+operator injury, mission failure, and environmental harm. This drives preventative action, mission
+abort, degraded mode, and maintenance scheduling.
 
 Spanda does not model pain or biological harm — `SafetyPainIndex` is an engineering severity scalar.
 

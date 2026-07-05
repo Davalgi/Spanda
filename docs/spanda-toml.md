@@ -1,6 +1,8 @@
 # spanda.toml Reference
 
-The `spanda.toml` manifest describes a Spanda package — its metadata, dependencies, hardware requirements, capabilities, and safety level. For **autonomous system configuration** (fleet, devices, layered overrides), see also [configuration.md](configuration.md).
+The `spanda.toml` manifest describes a Spanda package — its metadata, dependencies, hardware
+requirements, capabilities, and safety level. For **autonomous system configuration** (fleet,
+devices, layered overrides), see also [configuration.md](configuration.md).
 
 ## Minimal manifest
 
@@ -47,7 +49,8 @@ Same format as `[dependencies]`, used only for development and testing.
 targets = ["RoverV1", "JetsonOrin"]
 ```
 
-Lists hardware profiles this package is designed for. Validated against built-in profiles from `spanda verify`.
+Lists hardware profiles this package is designed for. Validated against built-in profiles from
+`spanda verify`.
 
 ## `[capabilities]`
 
@@ -62,7 +65,9 @@ required = ["motion.propose", "actuator.execute.safe"]
 | `uses` | Capabilities the package consumes at runtime |
 | `required` | Capabilities the consuming application must grant |
 
-Known capabilities include: `network.outbound`, `network.inbound`, `camera.read`, `lidar.read`, `imu.read`, `gps.read`, `motion.propose`, `actuator.execute`, `actuator.execute.safe`, `serial.port`, `storage.read`, `storage.write`, `ai.inference`, `ros2.publish`, `ros2.subscribe`.
+Known capabilities include: `network.outbound`, `network.inbound`, `camera.read`, `lidar.read`,
+`imu.read`, `gps.read`, `motion.propose`, `actuator.execute`, `actuator.execute.safe`,
+`serial.port`, `storage.read`, `storage.write`, `ai.inference`, `ros2.publish`, `ros2.subscribe`.
 
 ## `[requires_hardware]`
 
@@ -75,7 +80,8 @@ sensors = ["Camera", "Lidar"]
 actuators = ["DriveUnit"]
 ```
 
-Integrates with the hardware compatibility verifier. Memory/storage accept `MB` or `GB` suffixes with optional `>=` prefix. GPU accepts `>=N TOPS`.
+Integrates with the hardware compatibility verifier. Memory/storage accept `MB` or `GB` suffixes
+with optional `>=` prefix. GPU accepts `>=N TOPS`.
 
 ## `[safety]`
 
@@ -111,7 +117,8 @@ Top-level array of package categories:
 categories = ["robotics", "sensors", "navigation"]
 ```
 
-Valid values: `ai`, `robotics`, `vision`, `navigation`, `manipulation`, `simulation`, `ros2`, `mqtt`, `hardware`, `sensors`, `actuators`, `digital-twin`, `safety`, `hri`, `testing`.
+Valid values: `ai`, `robotics`, `vision`, `navigation`, `manipulation`, `simulation`, `ros2`,
+`mqtt`, `hardware`, `sensors`, `actuators`, `digital-twin`, `safety`, `hri`, `testing`.
 
 ## `license_compat`
 
@@ -176,7 +183,8 @@ fleet = "merge_by_id"
 
 When `[project]` is omitted, the config resolver derives project name and version from `[package]`.
 
-Fragment files hold domain-specific TOML (device tree, providers, health policies, etc.). Resolve and validate with:
+Fragment files hold domain-specific TOML (device tree, providers, health policies, etc.). Resolve
+and validate with:
 
 ```bash
 spanda config resolve
@@ -187,8 +195,11 @@ spanda device discover
 spanda map verify rover.sd --config spanda.toml
 ```
 
-See [configuration.md](configuration.md), [cascading-config.md](cascading-config.md), [device-tree.md](device-tree.md), and [config-validation.md](config-validation.md).
+See [configuration.md](configuration.md), [cascading-config.md](cascading-config.md),
+[device-tree.md](device-tree.md), and [config-validation.md](config-validation.md).
 
 ## JSON configuration
 
-Machine-generated configs may use `.json` files. The `spanda-config` crate loads JSON and TOML through the same merge pipeline. JSON remains supported for lockfiles (`spanda.lock`), registry indexes, and deploy/fleet state — not as a replacement for human-authored project config.
+Machine-generated configs may use `.json` files. The `spanda-config` crate loads JSON and TOML
+through the same merge pipeline. JSON remains supported for lockfiles (`spanda.lock`), registry
+indexes, and deploy/fleet state — not as a replacement for human-authored project config.

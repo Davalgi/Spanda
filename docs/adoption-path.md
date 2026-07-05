@@ -1,6 +1,8 @@
 # Adoption path: wrap your existing Python + ROS2 stack
 
-Spanda is a **2–5k LOC coordination layer** — not a rewrite of your Python models, C++ drivers, or ROS2 graph. This guide is a one-sprint path for robotics engineers who already ship on Python + ROS2.
+Spanda is a **2–5k LOC coordination layer** — not a rewrite of your Python models, C++ drivers, or
+ROS2 graph. This guide is a one-sprint path for robotics engineers who already ship on Python +
+ROS2.
 
 ## What Spanda adds (and what it does not replace)
 
@@ -11,7 +13,8 @@ Spanda is a **2–5k LOC coordination layer** — not a rewrite of your Python m
 | C++ vendor SDKs | `extern cpp fn` at the boundary |
 | CI linting for Python | `spanda check` + `spanda verify` alongside existing jobs |
 
-**Positioning:** Spanda orchestrates perception → planning → safety → actuation. Your libraries stay where the ecosystem is strongest.
+**Positioning:** Spanda orchestrates perception → planning → safety → actuation. Your libraries stay
+where the ecosystem is strongest.
 
 ## One-sprint timeline
 
@@ -70,7 +73,8 @@ Run:
 spanda run my_robot.sd
 ```
 
-Bridge details: [ffi-and-ecosystem.md](./ffi-and-ecosystem.md). Example: [`examples/ffi_python_extern.sd`](../examples/ffi_python_extern.sd).
+Bridge details: [ffi-and-ecosystem.md](./ffi-and-ecosystem.md). Example:
+[`examples/ffi_python_extern.sd`](../examples/ffi_python_extern.sd).
 
 **Optional — in-process PyO3 (faster, no subprocess):**
 

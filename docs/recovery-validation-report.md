@@ -44,7 +44,9 @@ Response includes `report` and `validation` evidence arrays.
 
 ## Persistence
 
-Evidence history is stored in `control-center-recovery.json` under `SPANDA_CONTROL_CENTER_STATE_DIR` and survives Control Center restart. Verified by `recovery_history_persists_across_restart` in `tenant_persistence_tests.rs`.
+Evidence history is stored in `control-center-recovery.json` under `SPANDA_CONTROL_CENTER_STATE_DIR`
+and survives Control Center restart. Verified by `recovery_history_persists_across_restart` in
+`tenant_persistence_tests.rs`.
 
 ## Predictive and recommend endpoints
 

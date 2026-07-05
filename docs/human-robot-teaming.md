@@ -39,6 +39,8 @@ mission Patrol {
 | Escalation path | Escalation chain completeness |
 | Fallback path | Recovery policy on timeout |
 
-Builds on existing `requires approval`, `SPANDA_OPERATOR_APPROVAL`, and Recovery approval integration. Showcase: `examples/showcase/human_robot/approval_escalation.sd` · `spanda demo team`.
+Builds on existing `requires approval`, `SPANDA_OPERATOR_APPROVAL`, and Recovery approval
+integration. Showcase: `examples/showcase/human_robot/approval_escalation.sd` · `spanda demo team`.
 
-See [differentiation-roadmap.md](./differentiation-roadmap.md) · [self-healing.md](./self-healing.md) · [mission-contracts.md](./mission-contracts.md).
+See [differentiation-roadmap.md](./differentiation-roadmap.md) ·
+[self-healing.md](./self-healing.md) · [mission-contracts.md](./mission-contracts.md).

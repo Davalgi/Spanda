@@ -1,9 +1,11 @@
 # Sensory Fusion
 
 **Functional domain:** [Sensory Fusion](./functional-domains.md#sensory-fusion)  
-**Status: Beta** — rule-based entity-derived fusion (`health_status`, `readiness_status`, `trust_status`); live multi-sensor pipeline **Planned**.
+**Status: Beta** — rule-based entity-derived fusion (`health_status`, `readiness_status`,
+`trust_status`); live multi-sensor pipeline **Planned**.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
@@ -33,4 +35,5 @@ spanda fusion check
 
 REST: `GET /v1/autonomy/fusion` · SDK: `FusionClient`
 
-See [confidence-model.md](./confidence-model.md), [responsibility-matrix.md](./responsibility-matrix.md).
+See [confidence-model.md](./confidence-model.md),
+[responsibility-matrix.md](./responsibility-matrix.md).

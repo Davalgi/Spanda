@@ -1,6 +1,8 @@
 # Control Center API rate limits
 
-Spanda Control Center uses an in-memory token bucket per API key (`SPANDA_API_RATE_LIMIT_PER_MINUTE`). When exceeded, clients receive HTTP **429** with `Retry-After`.
+Spanda Control Center uses an in-memory token bucket per API key
+(`SPANDA_API_RATE_LIMIT_PER_MINUTE`). When exceeded, clients receive HTTP **429** with
+`Retry-After`.
 
 ## Recommended tiers
 
@@ -20,7 +22,8 @@ Before promoting to **Stable**, run:
 SPANDA_API_RATE_LIMIT_PER_MINUTE=300 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 ```
 
-Hammer read endpoints (`/v1/dashboard`, `/v1/devices`) from CI or `hey`/`wrk` and confirm 429 behavior above the configured limit.
+Hammer read endpoints (`/v1/dashboard`, `/v1/devices`) from CI or `hey`/`wrk` and confirm 429
+behavior above the configured limit.
 
 ## Client behavior
 

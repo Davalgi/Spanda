@@ -25,11 +25,13 @@ When multiple layers produce competing decisions, Spanda applies a **fixed prece
 
 ## API and engine
 
-The `resolve_conflict()` function in `spanda-decision` applies precedence automatically. Rejected alternatives are recorded in `DistributedDecisionRecord.rejected_alternatives`.
+The `resolve_conflict()` function in `spanda-decision` applies precedence automatically. Rejected
+alternatives are recorded in `DistributedDecisionRecord.rejected_alternatives`.
 
 ## Consensus vs conflict
 
-**Consensus** (quorum, majority, trust-weighted voting) applies within Layer 2 for fleet/swarm agreement.
+**Consensus** (quorum, majority, trust-weighted voting) applies within Layer 2 for fleet/swarm
+agreement.
 
 **Conflict resolution** applies **across layers** when decisions disagree.
 
@@ -40,4 +42,5 @@ spanda decision simulate mission.sd --network-partition
 spanda decision simulate mission.sd --fleet-coordinator-failure
 ```
 
-Attack scenarios (`spanda decision simulate-attack split_brain_coordinator`) test split-brain handling via quorum and backup leader promotion.
+Attack scenarios (`spanda decision simulate-attack split_brain_coordinator`) test split-brain
+handling via quorum and backup leader promotion.

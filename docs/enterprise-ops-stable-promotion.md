@@ -1,10 +1,14 @@
 # Enterprise Operations — Stable Promotion Runbook
 
-Operational checklist for promoting enterprise operations pillars from **Experimental** to **Stable** in `docs/feature-status.md`.
+Operational checklist for promoting enterprise operations pillars from **Experimental** to
+**Stable** in `docs/feature-status.md`.
 
-**Status (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable**. SDKs published at **0.4.2** (`crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`).
+**Status (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable**. SDKs published
+at **0.4.2** (`crates-sdk-v0.4.2`, `sdk-python-v0.4.2`, `npm-sdk-v0.4.2`).
 
-**Implementation status:** All per-pillar hardening items in [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) are **shipped** in code and CI.
+**Implementation status:** All per-pillar hardening items in
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) are **shipped** in code
+and CI.
 
 ---
 
@@ -53,7 +57,9 @@ SPANDA_ENTERPRISE_OPS_SKIP_AUDIT=1 \
 ## What the gate runs
 
 1. **Field soak** — 30-day clock ([field-soak-gate.md](./field-soak-gate.md))
-2. **Security audit prep** — local artifact from [security_audit_prep.sh](../scripts/security_audit_prep.sh); **external reviewer sign-off** still required ([security-audit-third-party.md](./security-audit-third-party.md))
+2. **Security audit prep** — local artifact from
+   [security_audit_prep.sh](../scripts/security_audit_prep.sh); **external reviewer sign-off** still
+   required ([security-audit-third-party.md](./security-audit-third-party.md))
 3. **`enterprise_ops_smoke.sh`** — E1–E4 Control Center API surface
 4. **`failover_drill_smoke.sh`** — device pool failover drill
 5. **`ota_fleet_soak.sh`** — quick OTA fleet soak (`SPANDA_OTA_FLEET_SOAK_QUICK=1`)

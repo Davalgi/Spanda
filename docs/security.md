@@ -1,6 +1,8 @@
 # Security
 
-Spanda separates **language-level agent capabilities**, **robot-level package permissions**, **trust tiers**, **secrets**, and **secure communication** policies. Audit and blockchain-related libraries integrate through the package capability system and `spanda-security` runtime.
+Spanda separates **language-level agent capabilities**, **robot-level package permissions**, **trust
+tiers**, **secrets**, and **secure communication** policies. Audit and blockchain-related libraries
+integrate through the package capability system and `spanda-security` runtime.
 
 ## Architecture
 
@@ -37,7 +39,8 @@ agent planner {
 }
 ```
 
-Enforced at runtime for sensor reads, AI actions, and **communication** (`publish`, `subscribe`, `call`, `execute`, `discover`).
+Enforced at runtime for sensor reads, AI actions, and **communication** (`publish`, `subscribe`,
+`call`, `execute`, `discover`).
 
 ### 2. Robot permissions (`.sd`)
 
@@ -47,7 +50,9 @@ robot Rover {
 }
 ```
 
-Grants package-level capabilities to the running program. When an `audit`, `identity`, or `mock_ledger` block is declared without an explicit `permissions` block, the runtime auto-grants the corresponding caps for backward compatibility.
+Grants package-level capabilities to the running program. When an `audit`, `identity`, or
+`mock_ledger` block is declared without an explicit `permissions` block, the runtime auto-grants the
+corresponding caps for backward compatibility.
 
 ### 3. Package capabilities (`spanda.toml`)
 
@@ -77,7 +82,8 @@ Validated by `spanda-package` before install/publish.
 | `actuator.execute` | High | Direct actuator control |
 | `actuator.execute.safe` | Medium | Actuator control via `SafeAction` only |
 
-High-risk capabilities produce **validation warnings** when packages declare them without application approval.
+High-risk capabilities produce **validation warnings** when packages declare them without
+application approval.
 
 ## Identity
 
@@ -88,7 +94,8 @@ identity RobotIdentity {
 }
 ```
 
-Device identity is attached to `SecurityContext` and used for signing audit records, secure topics, and provenance.
+Device identity is attached to `SecurityContext` and used for signing audit records, secure topics,
+and provenance.
 
 ## Secrets
 
@@ -97,7 +104,9 @@ secret api_key from env("API_KEY");
 secret dev_key from "literal-dev-key";
 ```
 
-Secrets resolve at runtime through `SecretStore`. Values are never logged in plaintext; audit entries use redacted labels. Secret names are available as opaque `Secret` bindings in robot scope and can be passed to `sign(data, key)`.
+Secrets resolve at runtime through `SecretStore`. Values are never logged in plaintext; audit
+entries use redacted labels. Secret names are available as opaque `Secret` bindings in robot scope
+and can be passed to `sign(data, key)`.
 
 ## Trust levels
 
@@ -105,7 +114,8 @@ Secrets resolve at runtime through `SecretStore`. Values are never logged in pla
 trust trusted;   // untrusted | restricted | trusted | certified
 ```
 
-Trust tiers gate secure endpoints. A robot at `restricted` cannot publish to a topic with `min_trust = trusted`.
+Trust tiers gate secure endpoints. A robot at `restricted` cannot publish to a topic with `min_trust
+= trusted`.
 
 ## Secure topics, services, and actions
 
@@ -124,9 +134,11 @@ service reset: ResetService secure {
 
 At runtime:
 
-- **Outbound** (`publish`, `send_goal`, `execute`): checks capabilities, trust, and signs payload when `signed = true`
+- **Outbound** (`publish`, `send_goal`, `execute`): checks capabilities, trust, and signs payload
+  when `signed = true`
 - **Inbound** (`subscribe`, `call`): verifies trust and signature policy
-- **Audit**: security events (`security.publish`, `security.audit.record`, …) append to the audit log when configured
+- **Audit**: security events (`security.publish`, `security.audit.record`, …) append to the audit
+  log when configured
 
 ### Crypto (`std.crypto`)
 
@@ -136,11 +148,14 @@ Spanda uses **Ed25519** signatures (via `ed25519-dalek` in Rust, `@noble/ed25519
 - `sign(data, key_material)` — Ed25519 signature (hex, 128 chars)
 - `verify_signature(data, signature, public_key_or_material)` — verify signature
 
-Signing material is hashed to a 32-byte seed. A 64-character hex string is treated as a raw public key for verification.
+Signing material is hashed to a 32-byte seed. A 64-character hex string is treated as a raw public
+key for verification.
 
 ### Strict permissions mode
 
-When a robot declares `permissions [ ... ]`, **strict mode** is enabled: capability auto-grants from `identity`, `audit`, and `mock_ledger` blocks are disabled. You must explicitly list every capability the program needs.
+When a robot declares `permissions [ ... ]`, **strict mode** is enabled: capability auto-grants from
+`identity`, `audit`, and `mock_ledger` blocks are disabled. You must explicitly list every
+capability the program needs.
 
 ```spanda
 robot R {
@@ -155,25 +170,32 @@ Security events flow through `SecurityContext::audit_event()` into `AuditRuntime
 
 - Capability denials (when checked before operations)
 - Secure publish/subscribe operations
-- `audit.record` / `audit.export` / `audit.create_provenance` gated by `audit.write`, `audit.read`, `identity.sign`
+- `audit.record` / `audit.export` / `audit.create_provenance` gated by `audit.write`, `audit.read`,
+  `identity.sign`
 
 See [audit-provenance.md](./audit-provenance.md) for audit block syntax and provenance.
 
 ## Safety levels
 
-Package safety levels (`experimental` → `certified`) are validated in `spanda-package` and documented separately. Runtime `TrustLevel` complements package safety for communication policy.
+Package safety levels (`experimental` → `certified`) are validated in `spanda-package` and
+documented separately. Runtime `TrustLevel` complements package safety for communication policy.
 
 ### Package provenance (supply chain)
 
-Official framework packages (`spanda-mqtt`, `spanda-ros2`, …) are defined in a static catalog, but **runtime provider wiring** and **trust scoring** require registry provenance:
+Official framework packages (`spanda-mqtt`, `spanda-ros2`, …) are defined in a static catalog, but
+**runtime provider wiring** and **trust scoring** require registry provenance:
 
 - Registry version constraints and lockfile `registry` sources qualify
 - Path to `packages/registry/<name>` qualifies for monorepo development
 - Path/git overrides of an official name elsewhere do **not** qualify
 
-`spanda trust --project` scores path/git name squatting at 0 on the `official_framework` factor. `spanda deploy gate --policy production` fails the `official_provenance` and `registry_signatures` gates when overrides exist or when `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` is unset / signatures do not verify.
+`spanda trust --project` scores path/git name squatting at 0 on the `official_framework` factor.
+`spanda deploy gate --policy production` fails the `official_provenance` and `registry_signatures`
+gates when overrides exist or when `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` is unset / signatures do
+not verify.
 
-See [how-packages-work.md](./how-packages-work.md) · [deployment-gates.md](./deployment-gates.md) · [package-trust.md](./package-trust.md).
+See [how-packages-work.md](./how-packages-work.md) · [deployment-gates.md](./deployment-gates.md) ·
+[package-trust.md](./package-trust.md).
 
 ## Rules for audit/blockchain libraries
 

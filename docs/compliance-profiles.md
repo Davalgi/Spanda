@@ -29,7 +29,8 @@ Industry-specific verification templates — not accredited certifications.
 - Tamper response policy (`tamper_policy`) for defense and medical profiles
 - Secure-boot contract import (`trust.jetson` / `trust.pi`) for defense and medical profiles
 
-Reports include an explicit **template notice** — profiles are engineering templates, not legal accreditation.
+Reports include an explicit **template notice** — profiles are engineering templates, not legal
+accreditation.
 
 ## CLI
 
@@ -46,7 +47,9 @@ spanda compliance report examples/showcase/compliance/defense_rover.sd --profile
 spanda compliance report examples/showcase/compliance/defense_rover.sd --profile defense --json
 ```
 
-`spanda compliance report` exports an **accreditation bundle** with evidence checklist, audit export ID, and explicit `template_only` status — suitable for engineering audit trails, not legal certification.
+`spanda compliance report` exports an **accreditation bundle** with evidence checklist, audit export
+ID, and explicit `template_only` status — suitable for engineering audit trails, not legal
+certification.
 
 ## Control Center (signed catalog)
 
@@ -58,13 +61,15 @@ curl -H "Authorization: Bearer $SPANDA_API_KEY" \
   "http://127.0.0.1:8080/v1/compliance/export?profile=defense"
 ```
 
-Templates ship in `crates/spanda-compliance/templates/` (defense, medical, iso26262, iso13849, iec61508). Re-sign after edits:
+Templates ship in `crates/spanda-compliance/templates/` (defense, medical, iso26262, iso13849,
+iec61508). Re-sign after edits:
 
 ```bash
 cargo run -p spanda-compliance --bin sign_catalog
 ```
 
-See [control-center.md](./control-center.md) · [security-audit-third-party.md](./security-audit-third-party.md).
+See [control-center.md](./control-center.md) ·
+[security-audit-third-party.md](./security-audit-third-party.md).
 
 ## Integration
 
@@ -72,6 +77,10 @@ Built on readiness, capability verification, and assurance evidence checks in `s
 
 **Disclaimer:** Profiles are **templates** for engineering discipline, not regulatory approval.
 
-Showcase: `examples/showcase/policy/warehouse.sd`, `examples/showcase/compliance/defense_rover.sd`, `examples/showcase/compliance/medical_rover.sd`, `examples/showcase/compliance/automotive_rover.sd`, `examples/showcase/compliance/machinery_rover.sd`, `examples/showcase/compliance/iec61508_rover.sd` · smoke: `scripts/compliance_smoke.sh`, `scripts/gaps_smoke.sh`
+Showcase: `examples/showcase/policy/warehouse.sd`, `examples/showcase/compliance/defense_rover.sd`,
+`examples/showcase/compliance/medical_rover.sd`, `examples/showcase/compliance/automotive_rover.sd`,
+`examples/showcase/compliance/machinery_rover.sd`, `examples/showcase/compliance/iec61508_rover.sd`
+· smoke: `scripts/compliance_smoke.sh`, `scripts/gaps_smoke.sh`
 
-See [policy-engine.md](./policy-engine.md) · [platform-maturity-roadmap.md](./platform-maturity-roadmap.md).
+See [policy-engine.md](./policy-engine.md) ·
+[platform-maturity-roadmap.md](./platform-maturity-roadmap.md).

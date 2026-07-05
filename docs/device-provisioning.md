@@ -1,6 +1,7 @@
 # Device Provisioning
 
-Provisioning moves a device from **discovered** to **ready for operations** through a gated workflow.
+Provisioning moves a device from **discovered** to **ready for operations** through a gated
+workflow.
 
 ## Workflow
 
@@ -63,7 +64,8 @@ Re-running provision for the same `device_id` is **idempotent** when:
 | Stale provisioning_id | New run generates a fresh report; prior `provisioning_id` is superseded in audit only |
 | Concurrent provision requests | Last successful write wins; use correlation IDs in mutation audit for ordering |
 
-Treat `POST /v1/provision` as a **gate check**, not a destructive reset — it does not retire or delete pool entries.
+Treat `POST /v1/provision` as a **gate check**, not a destructive reset — it does not retire or
+delete pool entries.
 
 ## Logical mapping example
 

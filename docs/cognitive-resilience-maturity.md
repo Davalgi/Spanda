@@ -1,6 +1,7 @@
 # Cognitive & Resilience — Capability Maturity
 
-Promotion criteria and current tier for each functional domain. Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+Promotion criteria and current tier for each functional domain. Canonical architecture:
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
 
 ## Current tiers (v0.6.3+)
 
@@ -71,4 +72,5 @@ Legacy alias: `./scripts/bio_inspired_autonomy_smoke.sh` (same checks).
 
 - [feature-status.md](./feature-status.md) — platform-wide matrix
 - [responsibility-matrix.md](./responsibility-matrix.md) — ownership
-- [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture) — fusion/recovery caveats
+- [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture) —
+  fusion/recovery caveats

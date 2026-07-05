@@ -1,8 +1,12 @@
 # Smart Spaces & Ambient Intelligence — Stable Hardening Checklist
 
-The Smart Spaces Solution Blueprint is shipped at **Stable** tier with CI smoke (`scripts/smart_spaces_smoke.sh`). **Promoted 2026-07-02** after `smart_spaces_promotion_gate.sh`.
+The Smart Spaces Solution Blueprint is shipped at **Stable** tier with CI smoke
+(`scripts/smart_spaces_smoke.sh`). **Promoted 2026-07-02** after `smart_spaces_promotion_gate.sh`.
 
-**Related:** [solutions/smart-spaces.md](./solutions/smart-spaces.md) · [feature-status.md](./feature-status.md) · [control-center.md](./control-center.md#smart-spaces-dashboard) · [field-soak-gate.md](./field-soak-gate.md)
+**Related:** [solutions/smart-spaces.md](./solutions/smart-spaces.md) ·
+[feature-status.md](./feature-status.md) ·
+[control-center.md](./control-center.md#smart-spaces-dashboard) ·
+[field-soak-gate.md](./field-soak-gate.md)
 
 ---
 

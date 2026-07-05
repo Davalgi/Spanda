@@ -1,8 +1,10 @@
 # What-If Analysis — Stable Hardening Checklist
 
-What-If Analysis is the first **NEXT** differentiation pillar promoted to **Stable** tier. **Promoted 2026-07-02** after `what_if_stable_promotion_gate.sh`.
+What-If Analysis is the first **NEXT** differentiation pillar promoted to **Stable** tier.
+**Promoted 2026-07-02** after `what_if_stable_promotion_gate.sh`.
 
-**Related:** [what-if-analysis.md](./what-if-analysis.md) · [feature-status.md](./feature-status.md) · [differentiation-roadmap.md](./differentiation-roadmap.md)
+**Related:** [what-if-analysis.md](./what-if-analysis.md) · [feature-status.md](./feature-status.md)
+· [differentiation-roadmap.md](./differentiation-roadmap.md)
 
 ---
 
@@ -56,9 +58,11 @@ The gate runs:
 
 ## Promotion status (2026-07-02)
 
-**Promoted to Stable** in `docs/feature-status.md`, [ROADMAP.md](../ROADMAP.md), and [differentiation-roadmap.md](./differentiation-roadmap.md).
+**Promoted to Stable** in `docs/feature-status.md`, [ROADMAP.md](../ROADMAP.md), and
+[differentiation-roadmap.md](./differentiation-roadmap.md).
 
-Remaining NEXT pillars (risk, forecast, trust graph, scorecards) promoted **Stable** — see sibling stable-hardening guides.
+Remaining NEXT pillars (risk, forecast, trust graph, scorecards) promoted **Stable** — see sibling
+stable-hardening guides.
 
 ### Ongoing organizational gates
 

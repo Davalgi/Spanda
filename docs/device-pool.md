@@ -1,10 +1,12 @@
 # Device Pool
 
-The **Device Pool** is Spanda's central inventory for physical hardware across robots, fleets, and swarms.
+The **Device Pool** is Spanda's central inventory for physical hardware across robots, fleets, and
+swarms.
 
 ## Device categories
 
-Track robots, sensors, actuators, accessories, compute modules, controllers, gateways, modems, cameras, GPS/GNSS, BLE devices, CAN devices, and ROS2/DDS/MQTT endpoints.
+Track robots, sensors, actuators, accessories, compute modules, controllers, gateways, modems,
+cameras, GPS/GNSS, BLE devices, CAN devices, and ROS2/DDS/MQTT endpoints.
 
 ## Lifecycle states
 
@@ -22,7 +24,8 @@ Track robots, sensors, actuators, accessories, compute modules, controllers, gat
 
 ## Configuration
 
-Declare devices in `spanda.devices.toml` (hierarchy) and/or `spanda.network-devices.toml` (flat `[[devices]]`).
+Declare devices in `spanda.devices.toml` (hierarchy) and/or `spanda.network-devices.toml` (flat
+`[[devices]]`).
 
 ```toml
 [[devices]]

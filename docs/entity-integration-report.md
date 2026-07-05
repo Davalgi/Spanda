@@ -5,7 +5,9 @@
 
 ## Summary
 
-The Unified Entity Model integrates registry, graph, query, traceability, verification, readiness, health, and trust across REST, gRPC, CLI, SDKs, and Control Center. Every managed object routes through `EntityRegistry` while preserving existing program- and device-level APIs.
+The Unified Entity Model integrates registry, graph, query, traceability, verification, readiness,
+health, and trust across REST, gRPC, CLI, SDKs, and Control Center. Every managed object routes
+through `EntityRegistry` while preserving existing program- and device-level APIs.
 
 ## Deliverables
 
@@ -75,9 +77,12 @@ flowchart TB
 
 ## Migration notes
 
-1. **Prefer entity verify for operational checks** — `spanda entity verify rover-001` replaces ad-hoc combinations of device inspect + verify when you need a single report.
-2. **Program context is optional** — hardware and mission checks run only when `--program` (CLI) or `file` (REST) is provided.
-3. **Dependency traversal is opt-in** — pass `--dependencies` or `"include_dependencies": true` to verify the full `depends_on` chain.
+1. **Prefer entity verify for operational checks** — `spanda entity verify rover-001` replaces
+   ad-hoc combinations of device inspect + verify when you need a single report.
+2. **Program context is optional** — hardware and mission checks run only when `--program` (CLI) or
+   `file` (REST) is provided.
+3. **Dependency traversal is opt-in** — pass `--dependencies` or `"include_dependencies": true` to
+   verify the full `depends_on` chain.
 4. **Existing workflows unchanged** — CI pipelines using `spanda verify` do not need updates.
 
 ## Validation results
@@ -112,4 +117,6 @@ scripts/entity_model_smoke.sh
 
 ## Stable promotion
 
-Entity model tier is **Stable** as of 2026-06-29. SDKs published at **0.4.2** (`sdk-python-v0.4.2`, `crates-sdk-v0.4.2`, `npm-sdk-v0.4.2`). See [entity-model-stable-promotion.md](./entity-model-stable-promotion.md) for gate history.
+Entity model tier is **Stable** as of 2026-06-29. SDKs published at **0.4.2** (`sdk-python-v0.4.2`,
+`crates-sdk-v0.4.2`, `npm-sdk-v0.4.2`). See
+[entity-model-stable-promotion.md](./entity-model-stable-promotion.md) for gate history.

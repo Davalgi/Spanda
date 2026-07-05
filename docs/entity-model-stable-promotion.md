@@ -2,7 +2,8 @@
 
 **Status:** **Promoted to Stable** (2026-06-29)
 
-Operational checklist used to promote **Unified Entity Model** from **Experimental** to **Stable** in `docs/feature-status.md`.
+Operational checklist used to promote **Unified Entity Model** from **Experimental** to **Stable**
+in `docs/feature-status.md`.
 
 ---
 
@@ -28,9 +29,11 @@ Operational checklist used to promote **Unified Entity Model** from **Experiment
 
 Previous release: **0.4.1** (`crates-sdk-v0.4.1`, `sdk-python-v0.4.1`, `npm-sdk-v0.4.1`).
 
-Publish workflows: `.github/workflows/publish-sdk-{rust,python,typescript}.yml` — triggered by tag push.
+Publish workflows: `.github/workflows/publish-sdk-{rust,python,typescript}.yml` — triggered by tag
+push.
 
-To republish a patch with new entity helpers, bump version in `crates/spanda-sdk/Cargo.toml`, `sdk/python/pyproject.toml`, and `sdk/typescript/package.json`, then:
+To republish a patch with new entity helpers, bump version in `crates/spanda-sdk/Cargo.toml`,
+`sdk/python/pyproject.toml`, and `sdk/typescript/package.json`, then:
 
 ```bash
 git tag sdk-python-v0.4.2 && git push origin sdk-python-v0.4.2
@@ -69,7 +72,10 @@ SPANDA_ENTITY_MODEL_SKIP_SOAK=1 SPANDA_ENTITY_MODEL_SKIP_AUDIT=1 \
 
 ## Enterprise platform gates (separate)
 
-Shared **30-day field soak** and **third-party security audit** sign-off still apply to broader enterprise-ops Stable promotion — [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md), [field-soak-gate.md](./field-soak-gate.md).
+Shared **30-day field soak** and **third-party security audit** sign-off still apply to broader
+enterprise-ops Stable promotion —
+[enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md),
+[field-soak-gate.md](./field-soak-gate.md).
 
 ---
 

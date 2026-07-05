@@ -1,8 +1,14 @@
 # Human Interaction
 
-Humans are **first-class entities** in Spanda's device registry and device tree — operators, technicians, supervisors, and other roles collaborate with robots, wearables, and spatial devices through configuration, capabilities, readiness, and Control Center workflows. No human-specific keywords are added to the `.sd` language.
+Humans are **first-class entities** in Spanda's device registry and device tree — operators,
+technicians, supervisors, and other roles collaborate with robots, wearables, and spatial devices
+through configuration, capabilities, readiness, and Control Center workflows. No human-specific
+keywords are added to the `.sd` language.
 
-**Related:** [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) · [operator-capabilities.md](./operator-capabilities.md) · [human-readiness.md](./human-readiness.md) · [device-tree.md](./device-tree.md)
+**Related:**
+[human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) ·
+[operator-capabilities.md](./operator-capabilities.md) · [human-readiness.md](./human-readiness.md)
+· [device-tree.md](./device-tree.md)
 
 ---
 
@@ -21,13 +27,15 @@ Humans are **first-class entities** in Spanda's device registry and device tree 
 | Researcher | Observation and experiment control | Sim / replay sessions |
 | Volunteer | Restricted operations under supervision | Limited robot scope |
 
-Roles map to **RBAC permission tokens** and **operator capabilities** — see [operator-capabilities.md](./operator-capabilities.md).
+Roles map to **RBAC permission tokens** and **operator capabilities** — see
+[operator-capabilities.md](./operator-capabilities.md).
 
 ---
 
 ## Human entity fields
 
-Declare humans in `spanda.devices.toml` (or a dedicated `spanda.humans.toml` referenced from `[config]`):
+Declare humans in `spanda.devices.toml` (or a dedicated `spanda.humans.toml` referenced from
+`[config]`):
 
 ```toml
 [[humans]]
@@ -122,7 +130,9 @@ See [wearables.md](./wearables.md) and [spatial-computing.md](./spatial-computin
 
 ## Human digital twin
 
-Operator, team, and training twins use the existing `twin` machinery — mirror fields track assignments, current task, mission state, equipment, safety status, optional health, and training history.
+Operator, team, and training twins use the existing `twin` machinery — mirror fields track
+assignments, current task, mission state, equipment, safety status, optional health, and training
+history.
 
 ```toml
 [[twins]]
@@ -143,10 +153,13 @@ Training twins link to VR replay sessions — see [ar-vr-xr.md](./ar-vr-xr.md).
 Human → Wearable → AR/VR/XR → Robot → Autonomous System → Control Center
 ```
 
-Context-aware workflows (hazard zone entry → wearable alert → AR warning → robot slows) compose readiness, alerting, mission continuity, and package-backed spatial overlays — see [hri.md](./hri.md).
+Context-aware workflows (hazard zone entry → wearable alert → AR warning → robot slows) compose
+readiness, alerting, mission continuity, and package-backed spatial overlays — see
+[hri.md](./hri.md).
 
 ---
 
 ## Solution blueprint
 
-Reference architecture: [solutions/spatial-computing.md](./solutions/spatial-computing.md) · `examples/solutions/spatial-computing/`
+Reference architecture: [solutions/spatial-computing.md](./solutions/spatial-computing.md) ·
+`examples/solutions/spatial-computing/`

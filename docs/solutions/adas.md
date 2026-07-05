@@ -2,7 +2,8 @@
 
 **Status:** **Stable** · **Profile:** ISO 26262 template · **Path:** `examples/solutions/adas/`
 
-Official Solution Blueprint demonstrating how Spanda supports intelligent vehicles using existing platform capabilities — no automotive-specific core language extensions.
+Official Solution Blueprint demonstrating how Spanda supports intelligent vehicles using existing
+platform capabilities — no automotive-specific core language extensions.
 
 ---
 
@@ -57,17 +58,21 @@ flowchart TB
 ### Design principles
 
 1. **Lean core** — ADAS logic lives in `.sd` programs and optional packages, not in language keywords.
-2. **Capability verification** — Logical capabilities (`lane_detection`, `emergency_braking`, …) map to sensors/actuators via `requires_capability` and `exposes capabilities`.
-3. **Readiness gates** — No ADAS function activates until sensors, calibration, firmware, health, and trust pass.
+2. **Capability verification** — Logical capabilities (`lane_detection`, `emergency_braking`, …) map
+   to sensors/actuators via `requires_capability` and `exposes capabilities`.
+3. **Readiness gates** — No ADAS function activates until sensors, calibration, firmware, health,
+   and trust pass.
 4. **Assurance evidence** — Every deployment produces an auditable evidence bundle.
-5. **Mission continuity** — Sensor loss triggers degraded mode, speed reduction, and driver takeover — never silent failure.
+5. **Mission continuity** — Sensor loss triggers degraded mode, speed reduction, and driver takeover
+   — never silent failure.
 6. **Explainability** — `spanda diagnose` and `spanda explain` produce human-readable event narratives.
 
 ---
 
 ## Applications
 
-Reference configurations for nine vehicle classes. Each uses the same blueprint with profile-specific speed limits, sensor requirements, and readiness thresholds.
+Reference configurations for nine vehicle classes. Each uses the same blueprint with
+profile-specific speed limits, sensor requirements, and readiness thresholds.
 
 | Application | Typical profile | Key capabilities | Notes |
 |-------------|-----------------|------------------|-------|
@@ -81,13 +86,21 @@ Reference configurations for nine vehicle classes. Each uses the same blueprint 
 | Campus mobility | `research` | Low-speed autonomy, pedestrian detection | Relaxed gates with warnings |
 | Construction equipment | `iso13849` | Obstacle detection, emergency braking | Machinery safety profile |
 
-Configure application-specific limits in `spanda.readiness.toml` and select compliance profile at verify time. Device-tree fixtures live under [`applications/`](../../examples/solutions/adas/applications/).
+Configure application-specific limits in `spanda.readiness.toml` and select compliance profile at
+verify time. Device-tree fixtures live under
+[`applications/`](../../examples/solutions/adas/applications/).
 
 Sim-recorded golden traces:
 
-- **Behavior loops:** [`src/highway_drive.trace`](../../examples/solutions/adas/src/highway_drive.trace) (`behavior_tick`, 20 frames @ 50ms)
-- **Task scheduler:** [`sim_record/lane_keep_task.trace`](../../examples/solutions/adas/sim_record/lane_keep_task.trace) (`scheduler_tick`)
-- **Lane keeping example:** [`lane_keeping/lane_keeping.trace`](../../examples/solutions/adas/lane_keeping/lane_keeping.trace) (`behavior_tick`, 33ms loop)
+- **Behavior loops:**
+  [`src/highway_drive.trace`](../../examples/solutions/adas/src/highway_drive.trace)
+  (`behavior_tick`, 20 frames @ 50ms)
+- **Task scheduler:**
+  [`sim_record/lane_keep_task.trace`](../../examples/solutions/adas/sim_record/lane_keep_task.trace)
+  (`scheduler_tick`)
+- **Lane keeping example:**
+  [`lane_keeping/lane_keeping.trace`](../../examples/solutions/adas/lane_keeping/lane_keeping.trace)
+  (`behavior_tick`, 33ms loop)
 
 ---
 
@@ -114,7 +127,8 @@ Reference implementations (demonstration workflows, not full perception algorith
 
 ## Sensor ecosystem
 
-Sensors and ECUs are modeled through hardware profiles and device-tree entries — see [automotive-device-tree.md](../automotive-device-tree.md).
+Sensors and ECUs are modeled through hardware profiles and device-tree entries — see
+[automotive-device-tree.md](../automotive-device-tree.md).
 
 | Device | Type | Provider package | Capabilities |
 |--------|------|------------------|--------------|
@@ -139,7 +153,8 @@ Sensors and ECUs are modeled through hardware profiles and device-tree entries �
 
 ## Vehicle capabilities
 
-ADAS logical capabilities are defined in the **device tree** (`spanda.devices.toml`) and mapped to **registry capabilities** for verification — no core language extensions required.
+ADAS logical capabilities are defined in the **device tree** (`spanda.devices.toml`) and mapped to
+**registry capabilities** for verification — no core language extensions required.
 
 | ADAS logical capability | Registry capability | Primary device |
 |-------------------------|---------------------|----------------|
@@ -167,7 +182,8 @@ robot Vehicle {
 }
 ```
 
-Device-tree entries attach ADAS logical names to physical sensors and ECUs for traceability matrices.
+Device-tree entries attach ADAS logical names to physical sensors and ECUs for traceability
+matrices.
 
 ---
 
@@ -193,7 +209,9 @@ See [adas-readiness.md](../adas-readiness.md).
 
 ## Assurance
 
-Assurance evidence bundles include sensor readiness, calibration status, capability verification, hardware verification, safety validation, traceability, replay references, software/package versions, and OTA history.
+Assurance evidence bundles include sensor readiness, calibration status, capability verification,
+hardware verification, safety validation, traceability, replay references, software/package
+versions, and OTA history.
 
 ```bash
 spanda compliance report src/highway_drive.sd --profile iso26262
@@ -213,7 +231,8 @@ spanda diagnose src/highway_drive.sd src/highway_drive.trace
 spanda explain src/highway_drive.trace
 ```
 
-Supported event types: emergency braking activation, lane departure intervention, driver takeover request, sensor degradation, GPS loss, camera obstruction, radar failure, LiDAR degradation.
+Supported event types: emergency braking activation, lane departure intervention, driver takeover
+request, sensor degradation, GPS loss, camera obstruction, radar failure, LiDAR degradation.
 
 ---
 
@@ -227,15 +246,18 @@ When a sensor fails, the continuity framework:
 4. Requests driver takeover if needed
 5. Generates assurance evidence
 
-Example: front camera fails → switch to radar + LiDAR → reduce speed 40% → continue in degraded mode or request takeover.
+Example: front camera fails → switch to radar + LiDAR → reduce speed 40% → continue in degraded mode
+or request takeover.
 
-See [sensor_failure_recovery/camera_failure.sd](../../examples/solutions/adas/sensor_failure_recovery/camera_failure.sd).
+See
+[sensor_failure_recovery/camera_failure.sd](../../examples/solutions/adas/sensor_failure_recovery/camera_failure.sd).
 
 ---
 
 ## Self-healing
 
-Safe recovery actions (always pass safety validation, capability verification, and hardware verification):
+Safe recovery actions (always pass safety validation, capability verification, and hardware
+verification):
 
 - Restart perception provider
 - Switch to redundant sensor
@@ -267,7 +289,8 @@ See [adas-replay.md](../adas-replay.md).
 
 ## Security
 
-Integrates the existing security framework for CAN intrusion, ECU firmware tampering, OTA validation, sensor spoofing, GPS spoofing, unauthorized providers, and certificate validation.
+Integrates the existing security framework for CAN intrusion, ECU firmware tampering, OTA
+validation, sensor spoofing, GPS spoofing, unauthorized providers, and certificate validation.
 
 See [adas-security.md](../adas-security.md).
 
@@ -301,11 +324,13 @@ spanda verify ros2_automotive/automotive_nav.sd --capabilities
 SPANDA_ROS2_LIVE=1 spanda run ros2_automotive/automotive_nav.sd
 ```
 
-Requires `spanda-ros2` in `spanda.toml`. See [`ros2_automotive/README.md`](../../examples/solutions/adas/ros2_automotive/README.md).
+Requires `spanda-ros2` in `spanda.toml`. See
+[`ros2_automotive/README.md`](../../examples/solutions/adas/ros2_automotive/README.md).
 
 ### Live automotive sensor bridges
 
-Env-gated distance reads for radar, LiDAR, and ultrasonic packages (hub fallback when live mode is off):
+Env-gated distance reads for radar, LiDAR, and ultrasonic packages (hub fallback when live mode is
+off):
 
 ```bash
 export SPANDA_LIVE_RADAR=1
@@ -323,15 +348,21 @@ export SPANDA_RADAR_CMD='echo 18.0'   # or: vendor_probe.sh {sensor}
 
 ## Stable promotion
 
-Blueprint ships at **Experimental** tier. Promotion gate: `./scripts/adas_stable_promotion_gate.sh` (30-day field soak + security audit + smoke + Control Center probe). See [stable-hardening-adas.md](../stable-hardening-adas.md).
+Blueprint ships at **Experimental** tier. Promotion gate: `./scripts/adas_stable_promotion_gate.sh`
+(30-day field soak + security audit + smoke + Control Center probe). See
+[stable-hardening-adas.md](../stable-hardening-adas.md).
 
 ---
 
 ## Control Center
 
-ADAS dashboard tab — vehicle health, sensor health, readiness, trust score, active alerts, driver takeover requests, OTA status, replay viewer, assurance reports.
+ADAS dashboard tab — vehicle health, sensor health, readiness, trust score, active alerts, driver
+takeover requests, OTA status, replay viewer, assurance reports.
 
-Grafana template: import `packages/registry/spanda-grafana-dashboards/dashboards/control-center-adas.json` and point at OTLP metrics from Control Center (`POST /v1/observability/otlp/export-metrics`). See [spanda-grafana-dashboards](../../packages/registry/spanda-grafana-dashboards/README.md).
+Grafana template: import
+`packages/registry/spanda-grafana-dashboards/dashboards/control-center-adas.json` and point at OTLP
+metrics from Control Center (`POST /v1/observability/otlp/export-metrics`). See
+[spanda-grafana-dashboards](../../packages/registry/spanda-grafana-dashboards/README.md).
 
 ```bash
 spanda control-center serve --config spanda.toml --program src/highway_drive.sd

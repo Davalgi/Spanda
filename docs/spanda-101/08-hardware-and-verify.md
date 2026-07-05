@@ -71,7 +71,8 @@ spanda verify rover.sd --simulate
 | `--simulate` | Include fault-injection scenarios |
 | `--json` | Machine-readable report for CI |
 
-Verification checks sensors, actuators, memory, timing, battery, and AI model requirements against the profile.
+Verification checks sensors, actuators, memory, timing, battery, and AI model requirements against
+the profile.
 
 ---
 

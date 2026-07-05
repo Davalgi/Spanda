@@ -1,6 +1,7 @@
 # How Packages Work
 
-Spanda packages are self-contained projects declared in `spanda.toml`. The runtime loads them in a fixed pipeline before executing your robot program.
+Spanda packages are self-contained projects declared in `spanda.toml`. The runtime loads them in a
+fixed pipeline before executing your robot program.
 
 ## Loading pipeline
 
@@ -43,11 +44,15 @@ spanda build            # install (quiet) + compile all sources
 spanda run src/main.sd  # loads packages automatically
 ```
 
-`spanda add` and `spanda remove` edit the manifest only. Run `spanda install` or `spanda update` to refresh `spanda.lock`.
+`spanda add` and `spanda remove` edit the manifest only. Run `spanda install` or `spanda update` to
+refresh `spanda.lock`.
 
 ## Official packages
 
-Official packages under `packages/registry/` export dotted module paths (e.g. `positioning.gps`, `communication.mqtt`). The `.sd` exports are thin scaffolds; live behavior is wired through [provider registration](./how-providers-work.md) when the package is **provenanced** in `spanda.lock`:
+Official packages under `packages/registry/` export dotted module paths (e.g. `positioning.gps`,
+`communication.mqtt`). The `.sd` exports are thin scaffolds; live behavior is wired through
+[provider registration](./how-providers-work.md) when the package is **provenanced** in
+`spanda.lock`:
 
 | Provenance | Built-in providers wire? |
 |------------|--------------------------|
@@ -56,9 +61,11 @@ Official packages under `packages/registry/` export dotted module paths (e.g. `p
 | Path to canonical `packages/registry/<name>` | Yes (monorepo dev) |
 | Path/git override of an official name elsewhere | **No** — `.sd` stubs only |
 
-Reusing an official package name with a path or git override emits an `official_provenance` validation warning and excludes the name from provider bootstrap.
+Reusing an official package name with a path or git override emits an `official_provenance`
+validation warning and excludes the name from provider bootstrap.
 
-See [official-packages.md](./official-packages.md) and [packages.md](./packages.md) for the full catalog.
+See [official-packages.md](./official-packages.md) and [packages.md](./packages.md) for the full
+catalog.
 
 ## Validation
 
@@ -70,7 +77,9 @@ See [official-packages.md](./official-packages.md) and [packages.md](./packages.
 - Safety levels (`[safety]`)
 - Official package provenance (`official_provenance` warning on name squatting)
 
-Unauthorized or incompatible packages produce actionable diagnostics before runtime. Production rollout should also run `spanda deploy gate --policy production` (see [deployment-gates.md](./deployment-gates.md)).
+Unauthorized or incompatible packages produce actionable diagnostics before runtime. Production
+rollout should also run `spanda deploy gate --policy production` (see
+[deployment-gates.md](./deployment-gates.md)).
 
 ## Project layout
 

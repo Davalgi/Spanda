@@ -1,8 +1,10 @@
 # Offline Decisions
 
-**Status: Stable** — Ed25519 signed offline policies tested; production deployment requires trust key configuration.
+**Status: Stable** — Ed25519 signed offline policies tested; production deployment requires trust
+key configuration.
 
-Entities maintain a **local policy cache** so they can operate safely when disconnected from the control center.
+Entities maintain a **local policy cache** so they can operate safely when disconnected from the
+control center.
 
 ## Local policy cache
 
@@ -37,7 +39,8 @@ offline_policy RoverOffline {
 }
 ```
 
-When `SPANDA_DECISION_REQUIRE_SIGNED_OFFLINE_POLICY=1`, runtime verifies each offline policy signature against `SPANDA_DECISION_POLICY_TRUST_KEY` before permitting tree actions.
+When `SPANDA_DECISION_REQUIRE_SIGNED_OFFLINE_POLICY=1`, runtime verifies each offline policy
+signature against `SPANDA_DECISION_POLICY_TRUST_KEY` before permitting tree actions.
 
 ## Offline rules
 
@@ -59,7 +62,9 @@ spanda decision cache sync mission.sd [--sign] [--key <hex>] [--cache <path>]
 spanda decision cache clear [--policy <name>] [--cache <path>]
 ```
 
-Signed policies persist to `.spanda/decision-policy-cache.json` (override with `SPANDA_DECISION_POLICY_CACHE`). Runtime merges cached signatures when program source omits the `signature` field.
+Signed policies persist to `.spanda/decision-policy-cache.json` (override with
+`SPANDA_DECISION_POLICY_CACHE`). Runtime merges cached signatures when program source omits the
+`signature` field.
 
 ## API
 
@@ -67,4 +72,6 @@ Signed policies persist to `.spanda/decision-policy-cache.json` (override with `
 
 `GET /v1/decision-policy-cache` — inspect the persisted signed policy cache.
 
-`POST /v1/programs/simulation` with `"execute": true`, `"decision_trace": true`, and `"record_trace": true` — run a sim that emits v3 decision frames (Control Center **Run sim with traces** uses this).
+`POST /v1/programs/simulation` with `"execute": true`, `"decision_trace": true`, and
+`"record_trace": true` — run a sim that emits v3 decision frames (Control Center **Run sim with
+traces** uses this).

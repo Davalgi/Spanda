@@ -1,8 +1,10 @@
 # Hosted Twin Cloud SaaS
 
-**Status:** Experimental (product pilot) · **OSS backend:** Experimental · **Deploy:** [deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/)
+**Status:** Experimental (product pilot) · **OSS backend:** Experimental · **Deploy:**
+[deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/)
 
-Multi-tenant Twin Cloud runs as a dedicated Control Center deployment (or twin-cloud-only service) that stores mission twin snapshots per tenant.
+Multi-tenant Twin Cloud runs as a dedicated Control Center deployment (or twin-cloud-only service)
+that stores mission twin snapshots per tenant.
 
 ## Architecture
 
@@ -17,7 +19,9 @@ Multi-tenant Twin Cloud runs as a dedicated Control Center deployment (or twin-c
                     └─────────────────────────────────────┘
 ```
 
-The open-source Control Center embeds the same `/v1/twins/*` backend for development. Production pilots use the [Docker Compose scaffold](../deploy/twin-cloud-hosted/README.md) or your own orchestration (Kubernetes, systemd, bare metal).
+The open-source Control Center embeds the same `/v1/twins/*` backend for development. Production
+pilots use the [Docker Compose scaffold](../deploy/twin-cloud-hosted/README.md) or your own
+orchestration (Kubernetes, systemd, bare metal).
 
 ## Deployment options
 
@@ -54,13 +58,16 @@ spanda twin cloud push patrol.sd
 | `SPANDA_TWIN_CLOUD_URL` | Edge/client base URL (client-side) |
 | `SPANDA_TWIN_CLOUD_API_KEY` | Edge/client Bearer token |
 
-Each API key may carry a `tenant_id`; keys must match the instance tenant or requests receive **403 tenant mismatch** (see `scripts/hosted_twin_cloud_smoke.sh`).
+Each API key may carry a `tenant_id`; keys must match the instance tenant or requests receive **403
+tenant mismatch** (see `scripts/hosted_twin_cloud_smoke.sh`).
 
 ## Tenant onboarding runbook
 
 1. **Provision stack** — deploy compose/K8s with unique `SPANDA_TENANT_ID` and persistent volume.
-2. **Issue operator key** — `spanda control-center api-key generate --export` on the host, or admin API `POST /v1/admin/api-keys` with matching `tenant_id`.
-3. **Smoke** — `./scripts/hosted_twin_cloud_smoke.sh` (local) or `SPANDA_TWIN_CLOUD_URL=… ./scripts/twin_cloud_saas_smoke.sh`.
+2. **Issue operator key** — `spanda control-center api-key generate --export` on the host, or admin
+   API `POST /v1/admin/api-keys` with matching `tenant_id`.
+3. **Smoke** — `./scripts/hosted_twin_cloud_smoke.sh` (local) or `SPANDA_TWIN_CLOUD_URL=…
+   ./scripts/twin_cloud_saas_smoke.sh`.
 4. **Edge config** — fleet agents set `SPANDA_TWIN_CLOUD_URL` + `SPANDA_TWIN_CLOUD_API_KEY`.
 5. **Monitor** — Control Center `/v1/twins`, Administration twin registry tab, optional OTLP export.
 
@@ -87,7 +94,8 @@ client.sync_twin()
 client.get_twin_history("patrol")
 ```
 
-Publish new SDK builds: `./scripts/publish_sdk_release.sh` (after [sdk-publishing.md](./sdk-publishing.md) secrets are configured).
+Publish new SDK builds: `./scripts/publish_sdk_release.sh` (after
+[sdk-publishing.md](./sdk-publishing.md) secrets are configured).
 
 ## Product checklist (hosted pilot → GA)
 

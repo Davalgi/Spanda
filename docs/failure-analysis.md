@@ -2,7 +2,8 @@
 
 Failure impact analysis answers: **what happens if a component breaks?**
 
-It evaluates common failure scenarios against the robot's declared hardware, connectivity, and capabilities.
+It evaluates common failure scenarios against the robot's declared hardware, connectivity, and
+capabilities.
 
 ## CLI
 
@@ -41,4 +42,5 @@ If LTE fails:
 use spanda_readiness::{analyze_failure, FailureAnalysisReport};
 ```
 
-Combine with [simulation fault injection](../examples/showcase/health_monitoring/) and [root cause analysis](root-cause-analysis.md) for full failure lifecycle coverage.
+Combine with [simulation fault injection](../examples/showcase/health_monitoring/) and [root cause
+analysis](root-cause-analysis.md) for full failure lifecycle coverage.

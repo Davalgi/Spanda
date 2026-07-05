@@ -1,6 +1,7 @@
 # Operational Risk Model
 
-Operational risk describes the **severity of harm or mission impact** if an autonomous system fails or acts incorrectly.
+Operational risk describes the **severity of harm or mission impact** if an autonomous system fails
+or acts incorrectly.
 
 ## Risk tiers
 

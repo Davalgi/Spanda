@@ -1,8 +1,11 @@
 # Publishing the official SDKs
 
-How to publish **Spanda Rust, Python, and TypeScript** SDKs from this repository using GitHub Actions.
+How to publish **Spanda Rust, Python, and TypeScript** SDKs from this repository using GitHub
+Actions.
 
-**Version policy:** SDKs use an **independent semver line** from workspace and desktop — bump with `python3 scripts/bump_version.py patch --stream sdk` only when SDK client APIs change. See [versioning.md](./versioning.md).
+**Version policy:** SDKs use an **independent semver line** from workspace and desktop — bump with
+`python3 scripts/bump_version.py patch --stream sdk` only when SDK client APIs change. See
+[versioning.md](./versioning.md).
 
 ## Packages and registries
 
@@ -18,7 +21,8 @@ Version numbers live in (bump together via `--stream sdk`):
 - `sdk/python/pyproject.toml` → `[project].version`
 - `sdk/typescript/package.json` → `"version"`
 
-Tag suffix must match the SDK version (for example `sdk-python-v0.5.1` when SDK `version = "0.5.1"`).
+Tag suffix must match the SDK version (for example `sdk-python-v0.5.1` when SDK `version =
+"0.5.1"`).
 
 ### Control Center desktop (GitHub Releases)
 
@@ -39,9 +43,13 @@ python3 scripts/bump_version.py patch --stream desktop
 git tag desktop-v0.6.3 && git push origin desktop-v0.6.3
 ```
 
-**Automatic desktop release:** When a merged PR has a `release:*` label and changes Control Center paths, **Auto release** bumps desktop and pushes `desktop-v*` (same semver component as workspace). See [control-center-versioning.md](./control-center-versioning.md).
+**Automatic desktop release:** When a merged PR has a `release:*` label and changes Control Center
+paths, **Auto release** bumps desktop and pushes `desktop-v*` (same semver component as workspace).
+See [control-center-versioning.md](./control-center-versioning.md).
 
-Workflow: [desktop-release.yml](../.github/workflows/desktop-release.yml). Optional secrets: `TAURI_UPDATER_PUBKEY`, `TAURI_SIGNING_PRIVATE_KEY`, `APPLE_SIGNING_IDENTITY`, `APPLE_NOTARIZE_PROFILE`. See [desktop-release-runbook.md](./desktop-release-runbook.md).
+Workflow: [desktop-release.yml](../.github/workflows/desktop-release.yml). Optional secrets:
+`TAURI_UPDATER_PUBKEY`, `TAURI_SIGNING_PRIVATE_KEY`, `APPLE_SIGNING_IDENTITY`,
+`APPLE_NOTARIZE_PROFILE`. See [desktop-release-runbook.md](./desktop-release-runbook.md).
 
 ## One-time setup: GitHub secrets
 
@@ -59,7 +67,8 @@ Both publish workflows read **repository secrets** (not committed files).
 
 You need **admin** (or equivalent) access on the repository to create secrets.
 
-**Never** commit tokens to the repo, paste them in issues/PRs, or store them in `.pypirc` / `.npmrc` under version control.
+**Never** commit tokens to the repo, paste them in issues/PRs, or store them in `.pypirc` / `.npmrc`
+under version control.
 
 ---
 
@@ -71,7 +80,8 @@ You need **admin** (or equivalent) access on the repository to create secrets.
 2. **Account settings → API Tokens** → **New Token**.
 3. Name it (for example `spanda-github-actions`) and copy the token.
 
-Tokens expire (for example **365 days**). Set a calendar reminder to create a new token and update `CRATES_IO_TOKEN` in GitHub before expiry.
+Tokens expire (for example **365 days**). Set a calendar reminder to create a new token and update
+`CRATES_IO_TOKEN` in GitHub before expiry.
 
 ### Add to GitHub
 
@@ -86,7 +96,8 @@ On tag push `crates-sdk-v*`:
 2. `cargo package -p spanda-sdk`
 3. `cargo publish -p spanda-sdk`
 
-Manual trigger: **Actions → Publish Rust SDK → Run workflow** (tests/package only; upload on matching tags).
+Manual trigger: **Actions → Publish Rust SDK → Run workflow** (tests/package only; upload on
+matching tags).
 
 Install after publish:
 
@@ -108,7 +119,8 @@ cargo add spanda-sdk --features grpc
    - **Scope:** entire account (first publish) or project `spanda-sdk` after it exists.
    - Copy the token immediately — PyPI shows it once. It starts with `pypi-AgEI...`.
 
-For PyPI uploads, the username is always `__token__`; GitHub Actions only needs the **token string** as the secret value.
+For PyPI uploads, the username is always `__token__`; GitHub Actions only needs the **token string**
+as the secret value.
 
 ### Add to GitHub
 
@@ -123,7 +135,8 @@ On tag push `sdk-python-v*`:
 2. Builds a wheel/sdist in `sdk/python/dist`
 3. Publishes via [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish)
 
-Manual trigger: **Actions → Publish Python SDK → Run workflow** (tests and build always run; upload only on matching tags).
+Manual trigger: **Actions → Publish Python SDK → Run workflow** (tests and build always run; upload
+only on matching tags).
 
 ---
 
@@ -131,13 +144,15 @@ Manual trigger: **Actions → Publish Python SDK → Run workflow** (tests and b
 
 ### Why `@davalgi-spanda` and not `@spanda`
 
-The npm organization name **`spanda`** is already taken by another account. Scoped packages must live under an org or user you control. This repo publishes TypeScript as:
+The npm organization name **`spanda`** is already taken by another account. Scoped packages must
+live under an org or user you control. This repo publishes TypeScript as:
 
 ```text
 @davalgi-spanda/sdk
 ```
 
-Create the org at [npmjs.com/org/create](https://www.npmjs.com/org/create) if needed. **Public packages under an org are free** — the org itself does not expire.
+Create the org at [npmjs.com/org/create](https://www.npmjs.com/org/create) if needed. **Public
+packages under an org are free** — the org itself does not expire.
 
 ### Create an npm access token
 
@@ -153,7 +168,8 @@ Copy the token (`npm_...`).
 
 ### 90-day token rotation
 
-The **organization does not expire** — only the **access token** does. npm caps write-enabled granular tokens at 90 days.
+The **organization does not expire** — only the **access token** does. npm caps write-enabled
+granular tokens at 90 days.
 
 Before expiry:
 
@@ -198,7 +214,8 @@ From repo root:
 ./scripts/verify_sdk_publish_ready.sh
 ```
 
-This runs Python tests, builds a PyPI wheel, runs TypeScript tests/build, and checks related packages — without uploading.
+This runs Python tests, builds a PyPI wheel, runs TypeScript tests/build, and checks related
+packages — without uploading.
 
 Individual checks:
 
@@ -235,7 +252,10 @@ Or edit manually:
 
 Commit and push to `main`.
 
-**Current release line:** **0.5.6** — Recovery Orchestrator client methods (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto semver from `GET /v1/version` — currently **1.0.14**). Prior **0.5.5** added Twin Cloud history, import-replay, and gRPC twins.
+**Current release line:** **0.5.6** — Recovery Orchestrator client methods (`getRecoveryPredictive`,
+`listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto semver
+from `GET /v1/version` — currently **1.0.14**). Prior **0.5.5** added Twin Cloud history,
+import-replay, and gRPC twins.
 
 ### 2. Verify locally
 
@@ -262,7 +282,8 @@ git push origin crates-sdk-v${VERSION} sdk-python-v${VERSION} npm-sdk-v${VERSION
 
 ### 4. Watch CI
 
-**GitHub → Actions** — confirm **Publish Rust SDK**, **Publish Python SDK**, and **Publish TypeScript SDK** succeed.
+**GitHub → Actions** — confirm **Publish Rust SDK**, **Publish Python SDK**, and **Publish
+TypeScript SDK** succeed.
 
 ### 5. Verify install
 
@@ -282,7 +303,8 @@ node -e "import('@davalgi-spanda/sdk').then(m => console.log(m.SpandaClient.loca
 ./scripts/verify_sdk_published.sh 0.5.5
 ```
 
-GitHub Actions: **Verify published SDKs** (`sdk-publish-verify.yml`) — weekly or manual `workflow_dispatch`.
+GitHub Actions: **Verify published SDKs** (`sdk-publish-verify.yml`) — weekly or manual
+`workflow_dispatch`.
 
 Check registry pages:
 
@@ -314,7 +336,8 @@ Set a calendar reminder before each token expires and update the GitHub secret.
 | Version already exists on registry | Re-used tag/version | Bump `version` in manifest; new tag |
 | Workflow green but package missing | Publish step skipped | Publish runs only on tag push, not `workflow_dispatch` alone |
 
-If a token was exposed (chat, log, commit), **revoke it immediately** on PyPI/npm and create a new one.
+If a token was exposed (chat, log, commit), **revoke it immediately** on PyPI/npm and create a new
+one.
 
 ---
 
@@ -328,11 +351,13 @@ If a token was exposed (chat, log, commit), **revoke it immediately** on PyPI/np
 | [publish-npm-web.yml](../.github/workflows/publish-npm-web.yml) | `npm-web-v*` | `@davalgi-spanda/web` |
 | [desktop-release.yml](../.github/workflows/desktop-release.yml) | `desktop-v*` | `@spanda/control-center-desktop` (GitHub Release) |
 
-Legacy Python enterprise client: `packages/sdk-python` — not published by the canonical SDK workflow.
+Legacy Python enterprise client: `packages/sdk-python` — not published by the canonical SDK
+workflow.
 
 ### Web panel (`@davalgi-spanda/web`)
 
-Same `NPM_TOKEN` and org as the TypeScript SDK. Package lives in `packages/web/` with exports for `ControlCenterPanel` and `index.css`.
+Same `NPM_TOKEN` and org as the TypeScript SDK. Package lives in `packages/web/` with exports for
+`ControlCenterPanel` and `index.css`.
 
 ```bash
 git tag npm-web-v0.4.0

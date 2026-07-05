@@ -2,7 +2,8 @@
 
 **Status:** Pilot (managed service) · **OSS backend:** **Stable** at `/v1/twins/*`
 
-Commercial hosted Twin Cloud builds on the open-source Control Center twin registry. This document covers **product** concerns beyond the OSS pilot ([hosted-twin-cloud.md](./hosted-twin-cloud.md)).
+Commercial hosted Twin Cloud builds on the open-source Control Center twin registry. This document
+covers **product** concerns beyond the OSS pilot ([hosted-twin-cloud.md](./hosted-twin-cloud.md)).
 
 ## Deployment options
 
@@ -52,7 +53,8 @@ Meter these dimensions per `tenant_id`:
 - `GET /v1/twins/{id}/history` (egress-heavy)
 - Stored snapshot count (PVC/object store size)
 
-Export via Control Center audit (`GET /v1/audit/mutations`) or OTLP metrics to your billing pipeline.
+Export via Control Center audit (`GET /v1/audit/mutations`) or OTLP metrics to your billing
+pipeline.
 
 ## SLA operations
 

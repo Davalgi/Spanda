@@ -2,9 +2,11 @@
 
 **Duration:** under 5 minutes  
 **Audience:** robotics engineers, safety reviewers, technical evaluators  
-**Message:** Spanda blocks unsafe AI at compile time, verifies hardware fit before deploy, and simulates safe execution with runtime safety rules.
+**Message:** Spanda blocks unsafe AI at compile time, verifies hardware fit before deploy, and
+simulates safe execution with runtime safety rules.
 
-This is the flagship demonstration for Spanda v0.5 beta. Run it locally or adapt the script for conference talks and README videos.
+This is the flagship demonstration for Spanda v0.5 beta. Run it locally or adapt the script for
+conference talks and README videos.
 
 ---
 
@@ -107,9 +109,11 @@ JSON for CI integration:
 spanda verify examples/showcase/killer_demo.sd --json
 ```
 
-**Expected:** compatible with `RoverV1`; checks include memory, sensors, actuators, task timing, mission battery estimate, and AI model requirements.
+**Expected:** compatible with `RoverV1`; checks include memory, sensors, actuators, task timing,
+mission battery estimate, and AI model requirements.
 
-**Talking point:** *"Will this program run on this robot?"* is answered before flash/deploy — not after integration debugging.
+**Talking point:** *"Will this program run on this robot?"* is answered before flash/deploy — not
+after integration debugging.
 
 ---
 
@@ -119,7 +123,8 @@ spanda verify examples/showcase/killer_demo.sd --json
 spanda sim examples/showcase/killer_demo.sd
 ```
 
-**Expected:** interpreter runs the patrol loop; when simulated lidar range drops below `0.5 m`, the `stop_if` rule triggers emergency stop behavior.
+**Expected:** interpreter runs the patrol loop; when simulated lidar range drops below `0.5 m`, the
+`stop_if` rule triggers emergency stop behavior.
 
 **Talking point:** Design → check → verify → sim is a single toolchain, not four separate tools.
 
@@ -135,7 +140,8 @@ simulate_compatibility {
 }
 ```
 
-Re-run verify and point out warnings or margin changes in the report when simulation mode evaluates degraded battery assumptions:
+Re-run verify and point out warnings or margin changes in the report when simulation mode evaluates
+degraded battery assumptions:
 
 ```bash
 spanda verify examples/showcase/killer_demo.sd --simulate
@@ -184,7 +190,8 @@ Keep the narrative focused. Do **not** include in the same 5-minute flow:
 - Multi-robot fleet orchestration
 - MQTT/DDS live transport
 
-Those are documented elsewhere and dilute the core story: **safety-typed AI + hardware verify + sim-first development**.
+Those are documented elsewhere and dilute the core story: **safety-typed AI + hardware verify +
+sim-first development**.
 
 ---
 
@@ -217,4 +224,5 @@ CI job: `killer-demo-golden-path` in `.github/workflows/ci-integration.yml`.
 
 [v0.5 beta — Curate killer demo program](https://github.com/Davalgi/Spanda/issues/4)
 
-**Debug in VS Code:** [debugging.md](./debugging.md) — step through `task every` loops with `spanda-dap`.
+**Debug in VS Code:** [debugging.md](./debugging.md) — step through `task every` loops with
+`spanda-dap`.

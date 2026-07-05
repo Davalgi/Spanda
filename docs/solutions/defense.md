@@ -1,8 +1,10 @@
 # Defense — Solution Blueprint
 
-**Status:** Experimental · **Timeline:** Next · **Path:** `examples/showcase/secure_boot/`, `examples/security/`
+**Status:** Experimental · **Timeline:** Next · **Path:** `examples/showcase/secure_boot/`,
+`examples/security/`
 
-Official Solution Blueprint for secure autonomous systems with tamper resistance, attestation, RBAC, and defense compliance evidence.
+Official Solution Blueprint for secure autonomous systems with tamper resistance, attestation, RBAC,
+and defense compliance evidence.
 
 **Full roadmap entry:** [ROADMAP.md § Defense](../../ROADMAP.md#defense)
 
@@ -10,7 +12,8 @@ Official Solution Blueprint for secure autonomous systems with tamper resistance
 
 ## Purpose
 
-Deploy field systems where trust, tamper detection, secure operator commands, and audit trails are mandatory — composing Security and Verification pillars without defense-specific language keywords.
+Deploy field systems where trust, tamper detection, secure operator commands, and audit trails are
+mandatory — composing Security and Verification pillars without defense-specific language keywords.
 
 ## Platform pillars used
 
@@ -42,7 +45,8 @@ Defense Stack
 | `c2_node` | Command and control |
 | `operator` | Certified human operator |
 
-Guides: [trust-boundaries.md](../trust-boundaries.md) · [operator-capabilities.md](../operator-capabilities.md)
+Guides: [trust-boundaries.md](../trust-boundaries.md) ·
+[operator-capabilities.md](../operator-capabilities.md)
 
 ## Packages & providers
 
@@ -123,4 +127,5 @@ Third-party audit prep: [security-audit-third-party.md](../security-audit-third-
 
 ---
 
-**Related blueprints:** [Critical Infrastructure](../ROADMAP.md#critical-infrastructure) · [Search & Rescue](./spatial-computing.md)
+**Related blueprints:** [Critical Infrastructure](../ROADMAP.md#critical-infrastructure) · [Search &
+Rescue](./spatial-computing.md)

@@ -4,7 +4,8 @@
 
 ## Purpose
 
-Reduce event overload; prioritize important signals for telemetry, alerting, diagnosis, and Control Center dashboards.
+Reduce event overload; prioritize important signals for telemetry, alerting, diagnosis, and Control
+Center dashboards.
 
 ## Language
 
@@ -17,7 +18,8 @@ attention_policy MissionFocus {
 
 ## Types
 
-`AttentionPolicy`, `AttentionScore`, `EventPriority`, `SignalPriority`, `AttentionWindow`, `SuppressionRule`
+`AttentionPolicy`, `AttentionScore`, `EventPriority`, `SignalPriority`, `AttentionWindow`,
+`SuppressionRule`
 
 ## Examples
 
@@ -30,4 +32,5 @@ attention_policy MissionFocus {
 - REST: `GET /v1/autonomy/attention`
 - gRPC: `GetAutonomyAttention`
 
-See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [attention-engine.md](./attention-engine.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) ·
+[attention-engine.md](./attention-engine.md).

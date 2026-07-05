@@ -1,6 +1,7 @@
 # Platform Pillars
 
-Navigation hub for the eight **Platform Pillars** in [ROADMAP.md](../../ROADMAP.md#platform-pillars).
+Navigation hub for the eight **Platform Pillars** in
+[ROADMAP.md](../../ROADMAP.md#platform-pillars).
 
 | # | Pillar | Hub |
 |---|--------|-----|

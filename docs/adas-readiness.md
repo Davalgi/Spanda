@@ -30,7 +30,8 @@ From `spanda.readiness.toml`:
 
 **Optional (degraded mode without):** front LiDAR, stereo camera, driver monitor
 
-If a required sensor is offline, readiness score drops below threshold and ADAS functions are blocked.
+If a required sensor is offline, readiness score drops below threshold and ADAS functions are
+blocked.
 
 ---
 
@@ -67,7 +68,8 @@ spanda readiness examples/solutions/adas/lane_keeping/lane_keeping.sd \
 | Parking Assist | `parking_assist` | 80 |
 | Low-Speed Autonomy | `steering_control`, `obstacle_detection` | 85 |
 
-Function-specific thresholds are enforced via mission `requires capabilities` blocks; readiness score gates the overall deploy decision.
+Function-specific thresholds are enforced via mission `requires capabilities` blocks; readiness
+score gates the overall deploy decision.
 
 ---
 
@@ -87,7 +89,9 @@ spanda control-center serve \
 
 ## Integration with compliance
 
-ISO 26262 profile requires min readiness score 90, kill switch, secure comm, tamper policy, assurance case, and ≥2 health checks. ADAS blueprint adds ≥4 health checks and sensor/calibration gates.
+ISO 26262 profile requires min readiness score 90, kill switch, secure comm, tamper policy,
+assurance case, and ≥2 health checks. ADAS blueprint adds ≥4 health checks and sensor/calibration
+gates.
 
 ```bash
 spanda verify src/highway_drive.sd --profile iso26262 --json

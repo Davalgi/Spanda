@@ -1,6 +1,7 @@
 # Stable hardening — Recovery Orchestrator
 
-Checklist for **Stable** tier promotion of the Recovery Orchestrator (`spanda-recovery`, REST `/v1/recovery/*` — 14 routes, gRPC proto semver from `GET /v1/version` — currently **1.0.14**).
+Checklist for **Stable** tier promotion of the Recovery Orchestrator (`spanda-recovery`, REST
+`/v1/recovery/*` — 14 routes, gRPC proto semver from `GET /v1/version` — currently **1.0.14**).
 
 ## Gate script
 
@@ -10,12 +11,17 @@ Checklist for **Stable** tier promotion of the Recovery Orchestrator (`spanda-re
 
 Runs:
 
-1. `scripts/recovery_orchestrator_smoke.sh` — crate, REST API, gRPC, and CLI (including `recovery explain`)
-2. Control Center probe — `GET /v1/recovery/playbooks`, `GET /v1/recovery/history`, `POST /v1/recovery/plan`, `GET /v1/recovery/predictive`, `GET /v1/recovery/recoverable-entities`, `POST /v1/recovery/recommend`
+1. `scripts/recovery_orchestrator_smoke.sh` — crate, REST API, gRPC, and CLI (including `recovery
+   explain`)
+2. Control Center probe — `GET /v1/recovery/playbooks`, `GET /v1/recovery/history`, `POST
+   /v1/recovery/plan`, `GET /v1/recovery/predictive`, `GET /v1/recovery/recoverable-entities`, `POST
+   /v1/recovery/recommend`
 
-Skip smoke only: `SPANDA_RECOVERY_SKIP_SMOKE=1 ./scripts/recovery_orchestrator_stable_promotion_gate.sh`
+Skip smoke only: `SPANDA_RECOVERY_SKIP_SMOKE=1
+./scripts/recovery_orchestrator_stable_promotion_gate.sh`
 
-Skip field soak timer in CI: `SPANDA_RECOVERY_SKIP_SOAK=1` (default in `.github/workflows/ci-nightly.yml` job `recovery-orchestrator-stable-promotion-gate`).
+Skip field soak timer in CI: `SPANDA_RECOVERY_SKIP_SOAK=1` (default in
+`.github/workflows/ci-nightly.yml` job `recovery-orchestrator-stable-promotion-gate`).
 
 ### Field soak (organizational gate)
 
@@ -25,7 +31,8 @@ Start the 30-day clock once per deployment:
 ./scripts/recovery_orchestrator_field_soak_init.sh
 ```
 
-Soak file default: `.spanda/recovery-field-soak-start.txt` (`SPANDA_RECOVERY_FIELD_SOAK_START_FILE`). See [field-soak-gate.md](./field-soak-gate.md).
+Soak file default: `.spanda/recovery-field-soak-start.txt`
+(`SPANDA_RECOVERY_FIELD_SOAK_START_FILE`). See [field-soak-gate.md](./field-soak-gate.md).
 
 ## Smoke (CI)
 
@@ -52,7 +59,9 @@ Soak file default: `.spanda/recovery-field-soak-start.txt` (`SPANDA_RECOVERY_FIE
 
 ## Persistence
 
-Recovery evidence history is written to `control-center-recovery.json` under `SPANDA_CONTROL_CENTER_STATE_DIR` after orchestrator execute. See [recovery-validation-report.md](./recovery-validation-report.md).
+Recovery evidence history is written to `control-center-recovery.json` under
+`SPANDA_CONTROL_CENTER_STATE_DIR` after orchestrator execute. See
+[recovery-validation-report.md](./recovery-validation-report.md).
 
 ## See also
 

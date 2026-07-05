@@ -42,7 +42,8 @@ bus = "can0"
 capabilities = ["move", "stop", "emergency_stop"]
 ```
 
-Place fleet/device definitions in `spanda.devices.toml` or `spanda.fleet.toml` and reference them from `[config]` in `spanda.toml`.
+Place fleet/device definitions in `spanda.devices.toml` or `spanda.fleet.toml` and reference them
+from `[config]` in `spanda.toml`.
 
 ## Device fields
 
@@ -93,7 +94,8 @@ security_identity = "camera-front-001"
 robot_id = "rover-001"
 ```
 
-Reference via `[config] network_devices = "spanda.network-devices.toml"` in `spanda.toml`. Records merge with fleet nested devices on matching `id`.
+Reference via `[config] network_devices = "spanda.network-devices.toml"` in `spanda.toml`. Records
+merge with fleet nested devices on matching `id`.
 
 ## CLI inspection
 
@@ -109,10 +111,14 @@ spanda map verify patrol.sd --config spanda.toml
 
 ## Logical-to-physical mapping
 
-`LogicalPhysicalMap` connects program-level robot/sensor/actuator names to configured physical devices. Sensors are classified by type (GPS, Lidar, Camera, IMU). Actuators include drive units, arms, and motors.
+`LogicalPhysicalMap` connects program-level robot/sensor/actuator names to configured physical
+devices. Sensors are classified by type (GPS, Lidar, Camera, IMU). Actuators include drive units,
+arms, and motors.
 
-Safety rules require actuators to declare `emergency_stop` in `capabilities` and reject `trusted = false` on actuator devices.
+Safety rules require actuators to declare `emergency_stop` in `capabilities` and reject `trusted =
+false` on actuator devices.
 
 ## Hardware profiles
 
-Each robot may set `hardware_profile` (e.g. `RoverV1`, `JetsonOrin`). Validation checks that configured devices match the profile's expected sensors and actuators.
+Each robot may set `hardware_profile` (e.g. `RoverV1`, `JetsonOrin`). Validation checks that
+configured devices match the profile's expected sensors and actuators.

@@ -1,8 +1,11 @@
 # Human Readiness
 
-The **Readiness Engine** extends to human operators, teams, and collaborative missions — same weighted scoring model as robot readiness, with optional health dimensions gated by deployment policy.
+The **Readiness Engine** extends to human operators, teams, and collaborative missions — same
+weighted scoring model as robot readiness, with optional health dimensions gated by deployment
+policy.
 
-**Related:** [readiness.md](./readiness.md) · [operator-capabilities.md](./operator-capabilities.md) · [wearables.md](./wearables.md)
+**Related:** [readiness.md](./readiness.md) · [operator-capabilities.md](./operator-capabilities.md)
+· [wearables.md](./wearables.md)
 
 ---
 
@@ -109,7 +112,8 @@ spanda control-center readiness run  # includes human rollup (planned API)
 
 ## Control Center
 
-**Operator Readiness** panel shows per-operator and team rollup with dimension breakdown. Failed dimensions link to certification renewal and wearable diagnostics.
+**Operator Readiness** panel shows per-operator and team rollup with dimension breakdown. Failed
+dimensions link to certification renewal and wearable diagnostics.
 
 See [control-center.md](./control-center.md#human-interaction-dashboard).
 
@@ -117,6 +121,9 @@ See [control-center.md](./control-center.md#human-interaction-dashboard).
 
 ## ADAS parallel
 
-Driver readiness in the ADAS blueprint ([adas-readiness.md](./adas-readiness.md)) is the automotive specialization of operator readiness — `driver_monitoring` capability and `driver_takeover` continuity.
+Driver readiness in the ADAS blueprint ([adas-readiness.md](./adas-readiness.md)) is the automotive
+specialization of operator readiness — `driver_monitoring` capability and `driver_takeover`
+continuity.
 
-Human collaboration profiles generalize this pattern for warehouse, healthcare, SAR, and field service.
+Human collaboration profiles generalize this pattern for warehouse, healthcare, SAR, and field
+service.

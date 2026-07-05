@@ -3,12 +3,15 @@
 **Functional domain:** [Adaptive Learning](./functional-domains.md#adaptive-learning)  
 **Status: Experimental** — rule-based statistics and confidence updates; **no ML dependency**.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)  
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 > Recovery learning detail: [adaptive-recovery.md](./adaptive-recovery.md)
 
 ## Purpose
 
-Improve operational decisions using **historical outcomes**. Adaptive operations cover recovery strategy selection, confidence updates, and historical recommendations — implemented as transparent rules and statistics, not opaque models.
+Improve operational decisions using **historical outcomes**. Adaptive operations cover recovery
+strategy selection, confidence updates, and historical recommendations — implemented as transparent
+rules and statistics, not opaque models.
 
 ## Capabilities (initial)
 
@@ -27,7 +30,8 @@ Improve operational decisions using **historical outcomes**. Adaptive operations
 
 ## Types (`spanda-autonomy`)
 
-`RecoveryConfidence`, `RecoveryHistory`, `StrategySuccessRate`, `StrategyPreference`, `AdaptiveRecoveryPolicy`
+`RecoveryConfidence`, `RecoveryHistory`, `StrategySuccessRate`, `StrategyPreference`,
+`AdaptiveRecoveryPolicy`
 
 ## Examples
 
@@ -63,6 +67,7 @@ spanda recovery learning-report
 
 ## Future (not required now)
 
-ML-backed strategy selection may arrive via official packages — the functional domain boundary remains the same; only the recommendation backend would change.
+ML-backed strategy selection may arrive via official packages — the functional domain boundary
+remains the same; only the recommendation backend would change.
 
 See [responsibility-matrix.md](./responsibility-matrix.md#adaptive-learning).

@@ -1,6 +1,7 @@
 # Mission Assurance
 
-Spanda provides mission-grade mission assurance as a **lean-core platform layer** integrated with existing readiness, health, traceability, and safety systems.
+Spanda provides mission-grade mission assurance as a **lean-core platform layer** integrated with
+existing readiness, health, traceability, and safety systems.
 
 ## Architecture
 
@@ -11,7 +12,8 @@ Spanda provides mission-grade mission assurance as a **lean-core platform layer*
                    →  optional packages (spanda-anomaly, spanda-diagnosis, …)
 ```
 
-Core defines **interfaces and data models**. Heavy algorithms (ML anomaly detection, advanced prognostics) live in optional packages under `packages/registry/`.
+Core defines **interfaces and data models**. Heavy algorithms (ML anomaly detection, advanced
+prognostics) live in optional packages under `packages/registry/`.
 
 ## Language constructs
 
@@ -29,7 +31,8 @@ Core defines **interfaces and data models**. Heavy algorithms (ML anomaly detect
 | `continuity_policy` | Takeover, delegation, and succession on robot/fleet failure |
 | `assurance_case` | Links evidence sources |
 
-At runtime, `state_estimator` wires `SensorFusion` bindings after robot sensors are registered. One estimator also aliases `fusion` for parity with `observe { }` programs.
+At runtime, `state_estimator` wires `SensorFusion` bindings after robot sensors are registered. One
+estimator also aliases `fusion` for parity with `observe { }` programs.
 
 ## CLI
 
@@ -56,7 +59,9 @@ All commands support `--json`, `--markdown`, and `--html`.
 spanda demo assurance
 ```
 
-Runs `check`, `assure`, `anomaly scan`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`, and `readiness` on [`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd).
+Runs `check`, `assure`, `anomaly scan`, `state estimate`, `prognostics`, `mission verify`,
+`resilience check`, `mitigation plan`, and `readiness` on
+[`examples/showcase/assurance/rover.sd`](../examples/showcase/assurance/rover.sd).
 
 ## Official packages (mission assurance)
 
@@ -72,7 +77,8 @@ Runs `check`, `assure`, `anomaly scan`, `state estimate`, `prognostics`, `missio
 | `spanda-mission-continuity` | `assurance.continuity` | Mission continuity and takeover assurance |
 | `spanda-resilience` | `assurance.resilience` | Resilience and recovery |
 
-Lean core provides static analysis (`spanda-assurance` crate) and runtime wiring (fusion, learned anomaly polling). Packages extend algorithms via provider dispatch.
+Lean core provides static analysis (`spanda-assurance` crate) and runtime wiring (fusion, learned
+anomaly polling). Packages extend algorithms via provider dispatch.
 
 ### Learned anomaly + ONNX
 
@@ -83,7 +89,9 @@ anomaly_detector NavigationML {
 }
 ```
 
-Runtime invokes `scan_learned(detector, observed, volatility)`. Set `SPANDA_ANOMALY_ONNX_MODEL_PATH` (or `SPANDA_ONNX_MODEL_PATH`) for ONNX inference (2-feature input: observed, volatility). See [anomaly-detection.md](anomaly-detection.md).
+Runtime invokes `scan_learned(detector, observed, volatility)`. Set `SPANDA_ANOMALY_ONNX_MODEL_PATH`
+(or `SPANDA_ONNX_MODEL_PATH`) for ONNX inference (2-feature input: observed, volatility). See
+[anomaly-detection.md](anomaly-detection.md).
 
 ### Weighted sensor fusion
 

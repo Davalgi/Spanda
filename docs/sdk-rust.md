@@ -1,6 +1,7 @@
 # Rust SDK (`spanda-sdk`)
 
-Official Rust client for Spanda Control Center API v1. Part of the [official multi-language SDK family](./sdk.md#why-three-sdks) — use this crate when your application is written in Rust.
+Official Rust client for Spanda Control Center API v1. Part of the [official multi-language SDK
+family](./sdk.md#why-three-sdks) — use this crate when your application is written in Rust.
 
 ## Install
 
@@ -49,7 +50,8 @@ fn main() -> Result<(), spanda_sdk::SpandaError> {
 
 ## Cognitive & Resilience domain clients
 
-REST wrappers for functional domains (see [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
+REST wrappers for functional domains (see
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
 
 ```rust
 use spanda_sdk::SpandaClient;
@@ -145,9 +147,12 @@ rt.block_on(async {
 | `get_governance()` | `GetGovernance` |
 | `get_operational_risk()` | `GetOperationalRisk` |
 
-Proto semver **1.0.14+** for autonomy fusion/memory RPCs. REST domain clients (`client.reflex()`, `client.homeostasis()`, …) remain the default integration path.
+Proto semver **1.0.14+** for autonomy fusion/memory RPCs. REST domain clients (`client.reflex()`,
+`client.homeostasis()`, …) remain the default integration path.
 
-REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center. Set `SPANDA_API_KEY` before `GrpcClient::connect` so mutation RPCs send Bearer metadata. See [Publishing SDKs](sdk-publishing.md) for crates.io release (`crates-sdk-v*` tag, `CRATES_IO_TOKEN`).
+REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center. Set
+`SPANDA_API_KEY` before `GrpcClient::connect` so mutation RPCs send Bearer metadata. See [Publishing
+SDKs](sdk-publishing.md) for crates.io release (`crates-sdk-v*` tag, `CRATES_IO_TOKEN`).
 
 ## Error handling
 

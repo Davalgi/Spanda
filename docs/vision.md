@@ -1,8 +1,11 @@
 # Spanda Vision
 
-**Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.** *The pulse of autonomous intelligence.*
+**Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.**
+*The pulse of autonomous intelligence.*
 
-The **Spanda Language** (`.sd`) remains the expressive center — robot-native syntax, safety types, and physical units. The platform adds verification, simulation, replay, health, fleet, packages, and providers around that core.
+The **Spanda Language** (`.sd`) remains the expressive center — robot-native syntax, safety types,
+and physical units. The platform adds verification, simulation, replay, health, fleet, packages, and
+providers around that core.
 
 Platform guide: [platform-overview.md](./platform-overview.md)
 
@@ -16,11 +19,17 @@ AI models are the mind.
 Actuators are the muscles.  
 Spanda is the intelligent pulse that transforms perception, intent, and safety into action.
 
-Autonomy is layered: reflex for safety, spinal cord for bounded local action, brain for strategy — with AI as mind, not master. [Expanded philosophy](./overview/philosophy.md#nervous-system)
+Autonomy is layered: reflex for safety, spinal cord for bounded local action, brain for strategy —
+with AI as mind, not master. [Expanded philosophy](./overview/philosophy.md#nervous-system)
 
-**Cognitive & Resilience Architecture** extends that hierarchy with homeostasis, platform immunity, sensory fusion, operational memory, and adaptive recovery — [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+**Cognitive & Resilience Architecture** extends that hierarchy with homeostasis, platform immunity,
+sensory fusion, operational memory, and adaptive recovery —
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
 
-**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
+**Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* —
+the creative vibration of consciousness and energy that manifests as expansion and contraction in
+all entities, bridging stillness and movement within consciousness; and the first stir of awareness
+that creates and sustains the universe.
 
 Expanded philosophy: [overview/philosophy.md](./overview/philosophy.md)
 
@@ -28,7 +37,8 @@ Expanded philosophy: [overview/philosophy.md](./overview/philosophy.md)
 
 ## The problem
 
-Autonomous systems — robots, drones, industrial arms, warehouse fleets, humanoid assistants — are built from fragments:
+Autonomous systems — robots, drones, industrial arms, warehouse fleets, humanoid assistants — are
+built from fragments:
 
 - Python for AI and glue code
 - C++ for drivers and real-time control
@@ -37,13 +47,16 @@ Autonomous systems — robots, drones, industrial arms, warehouse fleets, humano
 - Manual deployment checklists
 - Simulation environments that diverge from production
 
-No single language treats **perception, intelligence, safety, verification, and deployment** as unified first-class concepts. Teams spend more time integrating than innovating.
+No single language treats **perception, intelligence, safety, verification, and deployment** as
+unified first-class concepts. Teams spend more time integrating than innovating.
 
 ---
 
 ## The vision
 
-Spanda is the platform where autonomous systems are **designed, validated, simulated, deployed, and operated** — with the `.sd` language as the core and AI treated as untrusted input, hardware fit checked before code ships.
+Spanda is the platform where autonomous systems are **designed, validated, simulated, deployed, and
+operated** — with the `.sd` language as the core and AI treated as untrusted input, hardware fit
+checked before code ships.
 
 ```
 Sensors → Perception → AI Planning → Safety Gate → Actuators
@@ -51,7 +64,9 @@ Sensors → Perception → AI Planning → Safety Gate → Actuators
            Digital Twin              Hardware Verify
 ```
 
-We believe the next generation of robotics and autonomous agents needs a **platform** that speaks their domain natively — with a dedicated language at the center, not a general-purpose language with libraries bolted on.
+We believe the next generation of robotics and autonomous agents needs a **platform** that speaks
+their domain natively — with a dedicated language at the center, not a general-purpose language with
+libraries bolted on.
 
 ---
 
@@ -59,27 +74,35 @@ We believe the next generation of robotics and autonomous agents needs a **platf
 
 ### AI
 
-AI models are **advisors**, not drivers. LLMs and vision models propose `ActionProposal` values; only `safety.validate()` produces `SafeAction` that may reach actuators. Agents have goals, memory, and tools — but always within safety and capability constraints.
+AI models are **advisors**, not drivers. LLMs and vision models propose `ActionProposal` values;
+only `safety.validate()` produces `SafeAction` that may reach actuators. Agents have goals, memory,
+and tools — but always within safety and capability constraints.
 
 ### Robotics
 
-Sensors, actuators, trajectories, safety zones, and deterministic task scheduling are language primitives — not framework imports. Physical units (`m/s`, `rad`, `m`) are enforced at compile time.
+Sensors, actuators, trajectories, safety zones, and deterministic task scheduling are language
+primitives — not framework imports. Physical units (`m/s`, `rad`, `m`) are enforced at compile time.
 
 ### Digital Twins
 
-Every physical robot can have a `twin` that mirrors pose, velocity, and sensor state. Replay buffers enable post-incident analysis and simulation sync. Live cloud twin telemetry is on the roadmap.
+Every physical robot can have a `twin` that mirrors pose, velocity, and sensor state. Replay buffers
+enable post-incident analysis and simulation sync. Live cloud twin telemetry is on the roadmap.
 
 ### Safety
 
-Safety is not optional middleware. It is woven into the type system (`ActionProposal` vs `SafeAction`), runtime monitor (`stop_if`, zones, emergency stop), and verification (`verify { }` behavioral assertions).
+Safety is not optional middleware. It is woven into the type system (`ActionProposal` vs
+`SafeAction`), runtime monitor (`stop_if`, zones, emergency stop), and verification (`verify { }`
+behavioral assertions).
 
 ### Verification
 
-Before deployment, Spanda answers: *does this program fit this hardware?* Memory, sensors, timing, power, network, and AI model requirements are checked against hardware profiles via `spanda verify`.
+Before deployment, Spanda answers: *does this program fit this hardware?* Memory, sensors, timing,
+power, network, and AI model requirements are checked against hardware profiles via `spanda verify`.
 
 ### Human-Machine Interaction
 
-Agents can interact with humans through structured communication primitives — topics, services, actions, and event handlers — with audit trails for accountability.
+Agents can interact with humans through structured communication primitives — topics, services,
+actions, and event handlers — with audit trails for accountability.
 
 ---
 
@@ -92,7 +115,8 @@ Agents can interact with humans through structured communication primitives — 
 | A deploy-time verification tool | Just another robotics framework |
 | Open source and community-driven | A proprietary platform lock-in |
 
-Spanda **orchestrates** existing ecosystems. Train models in Python. Write drivers in C++. Deploy coordination logic in Spanda.
+Spanda **orchestrates** existing ecosystems. Train models in Python. Write drivers in C++. Deploy
+coordination logic in Spanda.
 
 ---
 
@@ -120,13 +144,15 @@ The first public release establishes credibility:
 - CI/CD with Rust and TypeScript test suites
 - Community contribution infrastructure
 
-This is the foundation. The vision scales from a single rover to fleets of autonomous systems — all speaking Spanda.
+This is the foundation. The vision scales from a single rover to fleets of autonomous systems — all
+speaking Spanda.
 
 ---
 
 ## Join us
 
-Spanda is open source under Apache-2.0. We welcome contributors, roboticists, safety engineers, and AI researchers.
+Spanda is open source under Apache-2.0. We welcome contributors, roboticists, safety engineers, and
+AI researchers.
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [GitHub Issues](https://github.com/Davalgi/Spanda/issues)

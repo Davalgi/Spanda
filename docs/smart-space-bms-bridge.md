@@ -1,8 +1,12 @@
 # Smart Space BMS sidecar bridge
 
-Use an external **building management sidecar** when BACnet/KNX field buses are already aggregated by Home Assistant, OpenHAB, MQTT, or a vendor BMS. Spanda remains the **safety and readiness orchestrator**; the sidecar stays the **device authority**.
+Use an external **building management sidecar** when BACnet/KNX field buses are already aggregated
+by Home Assistant, OpenHAB, MQTT, or a vendor BMS. Spanda remains the **safety and readiness
+orchestrator**; the sidecar stays the **device authority**.
 
-**Related:** [smart-space-packages.md](./smart-space-packages.md) · [building-automation.md](./building-automation.md) · [iot.md](./iot.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md)
+**Related:** [smart-space-packages.md](./smart-space-packages.md) ·
+[building-automation.md](./building-automation.md) · [iot.md](./iot.md) ·
+[solutions/smart-spaces.md](./solutions/smart-spaces.md)
 
 ---
 
@@ -32,7 +36,8 @@ Field devices (BACnet / KNX / Matter / Zigbee)
   Readiness · verify · missions · Control Center
 ```
 
-Layering matches [smart-space-packages.md](./smart-space-packages.md): external hubs own pairing; Spanda packages read state and issue **verified commands** only after readiness gates pass.
+Layering matches [smart-space-packages.md](./smart-space-packages.md): external hubs own pairing;
+Spanda packages read state and issue **verified commands** only after readiness gates pass.
 
 ---
 
@@ -74,7 +79,8 @@ export SPANDA_HOME_ASSISTANT_FORCE_MOCK=1
 | `co2-lobby` | `sensor.lobby_co2` |
 | `ahu-12` | `climate.floor_12_ahu` |
 
-Twin and readiness config reference logical device ids; provider dispatch resolves live values through the bridge.
+Twin and readiness config reference logical device ids; provider dispatch resolves live values
+through the bridge.
 
 ---
 
@@ -86,7 +92,8 @@ When a BMS publishes to MQTT:
 2. Set `SPANDA_LIVE_MQTT=1` and broker URL (see [iot.md](./iot.md)).
 3. Map topics in mission code or provider bootstrap — e.g. `building/tower-demo/ahu-12/present-value`.
 
-Spanda does not ship a universal topic map; each deployment documents topics beside `spanda.devices.toml`.
+Spanda does not ship a universal topic map; each deployment documents topics beside
+`spanda.devices.toml`.
 
 ---
 
@@ -102,7 +109,8 @@ export SPANDA_BACNET_TARGET=10.0.12.100
 export SPANDA_ROOT=/path/to/Spanda   # optional — locates registry scripts
 ```
 
-Read order: `SPANDA_BACNET_CMD` → registry `read_point.py` (with `live-building`) → bacpypes3 Python bridge → mock.
+Read order: `SPANDA_BACNET_CMD` → registry `read_point.py` (with `live-building`) → bacpypes3 Python
+bridge → mock.
 
 ---
 
@@ -118,6 +126,7 @@ SPANDA_BMS_SIDECAR_LIVE=1 ./scripts/smart_spaces_bms_sidecar_smoke.sh # live HA 
 
 ## Operational notes
 
-- Keep life-safety sensors on certified paths; do not route fire panel inputs only through consumer hubs without engineering review.
+- Keep life-safety sensors on certified paths; do not route fire panel inputs only through consumer
+  hubs without engineering review.
 - Use `spanda readiness` and `spanda verify` before enabling automations that act on sidecar state.
 - Document sidecar entity ↔ Spanda device mapping in facility runbooks for auditors.

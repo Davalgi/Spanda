@@ -1,6 +1,7 @@
 # Identity
 
-Spanda device and operator identity extends the audit `DeviceIdentity` model with trust metadata for secure communication.
+Spanda device and operator identity extends the audit `DeviceIdentity` model with trust metadata for
+secure communication.
 
 ## Robot identity
 
@@ -34,6 +35,8 @@ Trust tiers: `untrusted`, `restricted`, `trusted`, `certified`, `verified`.
 
 ## Audit integration
 
-Identity feeds `spanda-audit` provenance and `security.*` audit events. Device IDs appear in signed envelopes; key material is never logged.
+Identity feeds `spanda-audit` provenance and `security.*` audit events. Device IDs appear in signed
+envelopes; key material is never logged.
 
-See also [Secure communication](secure-communication.md) and [Trust boundaries](trust-boundaries.md).
+See also [Secure communication](secure-communication.md) and [Trust
+boundaries](trust-boundaries.md).

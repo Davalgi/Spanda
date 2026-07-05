@@ -14,7 +14,8 @@ spanda adr rover.sd --out .spanda/adr
 
 ## Generated records
 
-ADR generation inspects deploy targets, capabilities, safety caps, missions, kill switches, health/recovery/operational policies, and assurance cases.
+ADR generation inspects deploy targets, capabilities, safety caps, missions, kill switches,
+health/recovery/operational policies, and assurance cases.
 
 Each record includes:
 

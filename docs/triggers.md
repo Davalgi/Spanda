@@ -1,8 +1,11 @@
 # Trigger-Based Execution
 
-Spanda autonomous systems are **trigger-driven**. Sensors publish data, timers elapse, safety conditions change, state machines transition, and AI agents complete goals — each of these is a **trigger** that can invoke reactive handler code.
+Spanda autonomous systems are **trigger-driven**. Sensors publish data, timers elapse, safety
+conditions change, state machines transition, and AI agents complete goals — each of these is a
+**trigger** that can invoke reactive handler code.
 
-The unified trigger model extends existing Spanda primitives (`event`/`on`/`emit`, `task every`, topics, state machines, safety) rather than replacing them.
+The unified trigger model extends existing Spanda primitives (`event`/`on`/`emit`, `task every`,
+topics, state machines, safety) rather than replacing them.
 
 ## Philosophy
 
@@ -14,7 +17,8 @@ Autonomous robots do not run a single linear program. They:
 - Transition through operational states
 - Coordinate AI planning with hardware constraints
 
-Triggers make this reactive structure a **first-class language concept** with shared registration, priority ordering, metrics, and scheduler integration.
+Triggers make this reactive structure a **first-class language concept** with shared registration,
+priority ordering, metrics, and scheduler integration.
 
 ## Trigger Categories
 
@@ -83,7 +87,8 @@ when lidar.nearest_distance < 1.0 m {
 }
 ```
 
-The compiler validates that the condition expression is boolean. Conditions are **edge-triggered** (fire once when becoming true).
+The compiler validates that the condition expression is boolean. Conditions are **edge-triggered**
+(fire once when becoming true).
 
 For continuous monitoring while a condition holds, use `while`:
 
@@ -93,7 +98,8 @@ while battery.level < 20% {
 }
 ```
 
-Level triggers fire on each scheduler tick while the condition is true (subject to trigger storm limits).
+Level triggers fire on each scheduler tick while the condition is true (subject to trigger storm
+limits).
 
 ### Verification-driven
 
@@ -114,7 +120,8 @@ on verification Warning {
 
 ### Hardware-driven
 
-Hardware triggers dispatch when `simulate_compatibility` faults are injected, sensor reads fail repeatedly, or comm faults match sensor types:
+Hardware triggers dispatch when `simulate_compatibility` faults are injected, sensor reads fail
+repeatedly, or comm faults match sensor types:
 
 ```spanda
 simulate_compatibility { fault LidarFailure; }
@@ -136,7 +143,8 @@ on ai ConfidenceLow {
 }
 ```
 
-`GoalCompleted` fires after a successful `agent.plan()`. `ConfidenceLow` fires when `planner.reason()` returns low confidence (derived from sensor context).
+`GoalCompleted` fires after a successful `agent.plan()`. `ConfidenceLow` fires when
+`planner.reason()` returns low confidence (derived from sensor context).
 
 ### Twin-driven
 
@@ -150,7 +158,8 @@ on twin FaultInjected {
 }
 ```
 
-Twin divergence is detected when mirrored shadow state diverges from live robot state beyond a threshold. Fault injection via `simulate_compatibility` or comm faults dispatches `FaultInjected`.
+Twin divergence is detected when mirrored shadow state diverges from live robot state beyond a
+threshold. Fault injection via `simulate_compatibility` or comm faults dispatches `FaultInjected`.
 
 ### State-driven
 
@@ -222,7 +231,8 @@ All triggers register in a unified `TriggerRegistry` at robot setup:
 
 ### Hardware-Aware Execution
 
-A per-tick dispatch limit (`MAX_TRIGGERS_PER_TICK`, default 64) prevents trigger storms from overwhelming devices.
+A per-tick dispatch limit (`MAX_TRIGGERS_PER_TICK`, default 64) prevents trigger storms from
+overwhelming devices.
 
 ## Observability
 
@@ -235,7 +245,8 @@ spanda sim robot.sd --trace-events
 
 ## Simulation and Replay
 
-Trigger execution uses the same interpreter path in `spanda run`, `spanda sim`, and replay modes. Timer triggers advance with simulation time.
+Trigger execution uses the same interpreter path in `spanda run`, `spanda sim`, and replay modes.
+Timer triggers advance with simulation time.
 
 ## See Also
 

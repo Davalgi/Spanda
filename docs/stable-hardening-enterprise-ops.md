@@ -1,8 +1,12 @@
 # Enterprise Operations — Stable Hardening Checklist
 
-Phases **E1–E4** are shipped at **Stable** tier with CI smoke (`scripts/enterprise_ops_smoke.sh`, `scripts/control_center_desktop_smoke.sh`). This checklist tracked hardening before promotion; all implementation gates are **shipped**.
+Phases **E1–E4** are shipped at **Stable** tier with CI smoke (`scripts/enterprise_ops_smoke.sh`,
+`scripts/control_center_desktop_smoke.sh`). This checklist tracked hardening before promotion; all
+implementation gates are **shipped**.
 
-**Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [feature-status.md](./feature-status.md) · [roadmap.md](./roadmap.md) · [control-center.md](./control-center.md)
+**Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) ·
+[feature-status.md](./feature-status.md) · [roadmap.md](./roadmap.md) ·
+[control-center.md](./control-center.md)
 
 ---
 
@@ -117,13 +121,22 @@ When promoting a pillar from **Experimental** → **Stable**, verify:
 
 ## Promotion status (Experimental → Stable)
 
-**Promoted 2026-06-28.** All 20 enterprise operations pillars are **Stable** in `docs/feature-status.md` and [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md). Promotion followed `enterprise_ops_stable_promotion_gate.sh` (implementation + smoke checks).
+**Promoted 2026-06-28.** All 20 enterprise operations pillars are **Stable** in
+`docs/feature-status.md` and [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md).
+Promotion followed `enterprise_ops_stable_promotion_gate.sh` (implementation + smoke checks).
 
 **Organizational gates (ongoing, separate from tier):**
 
-1. **30-day field soak** — [field-soak-gate.md](./field-soak-gate.md) (`scripts/enterprise_ops_field_soak_init.sh`, `scripts/field_soak_gate.sh`)
-2. **Third-party security audit sign-off** — [security-audit-third-party.md](./security-audit-third-party.md) (`scripts/security_audit_prep.sh`)
-3. **Desktop production releases** — ✅ **0.4.2** via `desktop-v0.4.2` (initial Stable promotion); **current** **0.6.3** via `desktop-v0.6.3` with sidebar/CLI/API version display and auto bump ([control-center-versioning.md](./control-center-versioning.md), [desktop-release-runbook.md](./desktop-release-runbook.md)); optional Apple signing secrets upgrade unsigned CI bundles to notarized builds
+1. **30-day field soak** — [field-soak-gate.md](./field-soak-gate.md)
+   (`scripts/enterprise_ops_field_soak_init.sh`, `scripts/field_soak_gate.sh`)
+2. **Third-party security audit sign-off** —
+   [security-audit-third-party.md](./security-audit-third-party.md)
+   (`scripts/security_audit_prep.sh`)
+3. **Desktop production releases** — ✅ **0.4.2** via `desktop-v0.4.2` (initial Stable promotion);
+   **current** **0.6.3** via `desktop-v0.6.3` with sidebar/CLI/API version display and auto bump
+   ([control-center-versioning.md](./control-center-versioning.md),
+   [desktop-release-runbook.md](./desktop-release-runbook.md)); optional Apple signing secrets
+   upgrade unsigned CI bundles to notarized builds
 
 **Runbook:** [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md)
 
@@ -143,4 +156,5 @@ When promoting a pillar from **Experimental** → **Stable**, verify:
 - [control-center.md](./control-center.md) — API and UI reference
 - [device-pool.md](./device-pool.md) · [device-provisioning.md](./device-provisioning.md)
 - [telemetry-store.md](./telemetry-store.md) · [drift-detection.md](./drift-detection.md)
-- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — Phase A–D stable hardening (separate track)
+- [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) — Phase A–D stable hardening
+  (separate track)

@@ -34,4 +34,5 @@ Generated artifact at `--out`.
 
 ## SEE ALSO
 
-spanda-deploy(1), spanda-compile-native(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-deploy(1), spanda-compile-native(1), [spanda(1)](./spanda.md),
+[spanda-reference.md](../spanda-reference.md)

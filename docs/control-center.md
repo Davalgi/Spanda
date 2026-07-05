@@ -1,10 +1,15 @@
 # Control Center
 
-Web-based operational visibility for fleets, devices, readiness, and alerts. Phase E1 ships a REST API v1 and embedded UI served by the native CLI.
+Web-based operational visibility for fleets, devices, readiness, and alerts. Phase E1 ships a REST
+API v1 and embedded UI served by the native CLI.
 
-**Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [device-pool.md](./device-pool.md) · [device-provisioning.md](./device-provisioning.md) · [telemetry-store.md](./telemetry-store.md) · [configuration.md](./configuration.md) · [troubleshooting.md](./troubleshooting.md) (stale CLI, `Unknown argument: generate`)
+**Related:** [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) ·
+[device-pool.md](./device-pool.md) · [device-provisioning.md](./device-provisioning.md) ·
+[telemetry-store.md](./telemetry-store.md) · [configuration.md](./configuration.md) ·
+[troubleshooting.md](./troubleshooting.md) (stale CLI, `Unknown argument: generate`)
 
-**Roadmap:** Control Center Pillar 6 enhancement backlog is **Stable** (see [feature-status.md](./feature-status.md)).
+**Roadmap:** Control Center Pillar 6 enhancement backlog is **Stable** (see
+[feature-status.md](./feature-status.md)).
 
 ---
 
@@ -41,11 +46,13 @@ spanda control-center status --url http://127.0.0.1:8081 --json
 ./target/release/spanda control-center stop --url http://127.0.0.1:8080
 ```
 
-Copy-paste `--config` / `--program` examples: [Local dev — Run with `--config` and `--program`](#run-with-config-and-program).
+Copy-paste `--config` / `--program` examples: [Local dev — Run with `--config` and
+`--program`](#run-with-config-and-program).
 
 ### Instance lifecycle
 
-`control-center serve` runs until stopped. Each start binds a TCP port; interrupted smoke tests and `cargo run … serve` wrappers can leave orphaned listeners on random ports.
+`control-center serve` runs until stopped. Each start binds a TCP port; interrupted smoke tests and
+`cargo run … serve` wrappers can leave orphaned listeners on random ports.
 
 | Task | Command |
 |------|---------|
@@ -55,7 +62,9 @@ Copy-paste `--config` / `--program` examples: [Local dev — Run with `--config`
 | Stop one URL | `spanda control-center stop --url http://127.0.0.1:8080` |
 | Force kill | `spanda control-center stop --force` |
 
-CI smoke scripts source [`scripts/lib/control_center_smoke_lib.sh`](../scripts/lib/control_center_smoke_lib.sh) to kill the listener on `CC_SMOKE_BIND` on `EXIT`, `INT`, and `TERM` (not only the `cargo run` wrapper PID).
+CI smoke scripts source
+[`scripts/lib/control_center_smoke_lib.sh`](../scripts/lib/control_center_smoke_lib.sh) to kill the
+listener on `CC_SMOKE_BIND` on `EXIT`, `INT`, and `TERM` (not only the `cargo run` wrapper PID).
 
 ### Access the UI
 
@@ -66,11 +75,13 @@ CI smoke scripts source [`scripts/lib/control_center_smoke_lib.sh`](../scripts/l
 | **Desktop (Tauri)** | Start the API first, then `npm run control-center:desktop:dev` (Vite on port **5174**); optional `VITE_CONTROL_CENTER_URL=http://host:port`. Sign in via the in-app token banner — no rebuild required for operator keys. |
 | **Remote CLI** | `export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080` then `spanda control-center dashboard` (see [Remote CLI](#remote-cli-rest-parity)) |
 
-Read-only views and `GET /v1/*` endpoints work without authentication. Mutations (`POST`, `PATCH`, `DELETE`) require a Bearer token — configure keys on the server before calling those endpoints.
+Read-only views and `GET /v1/*` endpoints work without authentication. Mutations (`POST`, `PATCH`,
+`DELETE`) require a Bearer token — configure keys on the server before calling those endpoints.
 
 ### Local dev: start & rebuild
 
-Control Center has three layers. The API must run separately for every UI path except read-only CLI inspection.
+Control Center has three layers. The API must run separately for every UI path except read-only CLI
+inspection.
 
 | Layer | Package / crate | Role |
 |-------|-----------------|------|
@@ -104,7 +115,8 @@ cargo run -p spanda -- control-center stop
 cargo run -p spanda -- control-center serve --bind 127.0.0.1:8080
 ```
 
-With `--config` and `--program`, see [Run with `--config` and `--program`](#run-with-config-and-program).
+With `--config` and `--program`, see [Run with `--config` and
+`--program`](#run-with-config-and-program).
 
 **Browser only:** open `http://127.0.0.1:8080/` — no second terminal.
 
@@ -114,9 +126,11 @@ With `--config` and `--program`, see [Run with `--config` and `--program`](#run-
 npm run control-center:desktop:dev
 ```
 
-Equivalent: `npm run dev --workspace=@spanda/control-center-desktop`. Vite listens on port **5174**. Point at a non-default API with `VITE_CONTROL_CENTER_URL=http://host:port`.
+Equivalent: `npm run dev --workspace=@spanda/control-center-desktop`. Vite listens on port **5174**.
+Point at a non-default API with `VITE_CONTROL_CENTER_URL=http://host:port`.
 
-More detail: [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md).
+More detail:
+[packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md).
 
 #### Rebuild after code changes
 
@@ -151,21 +165,24 @@ Or `TAURI_BUILD=1 ./scripts/build_control_center_desktop.sh` for the CI-style in
 
 #### Run with `--config` and `--program`
 
-`control-center serve` accepts two optional paths. They are **independent** — mix any config with any program, or pass only one.
+`control-center serve` accepts two optional paths. They are **independent** — mix any config with
+any program, or pass only one.
 
 | Flag | Path | What it loads |
 |------|------|----------------|
 | **`--config`** | Project directory **or** `spanda.toml` file | Device pool, discovery fixtures, facilities, fleet layout, Smart Spaces / ADAS device trees, HRI policy seeds |
 | **`--program`** | `.sd` mission file | Default program for readiness, simulation, replay, traceability, govern-and-trace, recovery context |
 
-**Path forms:** `--config` accepts either a directory (looks for `spanda.toml` inside) or the file directly — both work:
+**Path forms:** `--config` accepts either a directory (looks for `spanda.toml` inside) or the file
+directly — both work:
 
 ```bash
 --config crates/spanda-config/tests/fixtures/warehouse
 --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml   # equivalent
 ```
 
-Run from the **repository root** unless paths are absolute. After changing flags, stop and restart `serve` (see [Which `spanda`?](#which-spanda) below).
+Run from the **repository root** unless paths are absolute. After changing flags, stop and restart
+`serve` (see [Which `spanda`?](#which-spanda) below).
 
 **What needs which flag:**
 
@@ -180,7 +197,8 @@ Run from the **repository root** unless paths are absolute. After changing flags
 
 ##### Which `spanda`?
 
-Examples use **both** common invocations. Paths (`--config`, `--program`) are identical — only the binary prefix changes.
+Examples use **both** common invocations. Paths (`--config`, `--program`) are identical — only the
+binary prefix changes.
 
 | Invocation | When to use | Stop a local server |
 |------------|-------------|---------------------|
@@ -199,13 +217,17 @@ cargo build -p spanda --release
 spanda --version
 ```
 
-If `spanda control-center` is missing or flags like `api-key generate` fail, the installed binary may be stale — see [troubleshooting.md — Stale CLI binary](./troubleshooting.md#stale-cli-binary). Use `./target/release/spanda` from a fresh `cargo build` or reinstall.
+If `spanda control-center` is missing or flags like `api-key generate` fail, the installed binary
+may be stale — see [troubleshooting.md — Stale CLI binary](./troubleshooting.md#stale-cli-binary).
+Use `./target/release/spanda` from a fresh `cargo build` or reinstall.
 
 ##### Copy-paste examples
 
-Each example shows **release build** and **installed** forms. Swap `--config` / `--program` as needed; add `--bind 127.0.0.1:8080` to override the default listen address.
+Each example shows **release build** and **installed** forms. Swap `--config` / `--program` as
+needed; add `--bind 127.0.0.1:8080` to override the default listen address.
 
-**Enterprise ops** — warehouse device pool + compliance rover (same as `scripts/enterprise_ops_smoke.sh`):
+**Enterprise ops** — warehouse device pool + compliance rover (same as
+`scripts/enterprise_ops_smoke.sh`):
 
 ```bash
 ./target/release/spanda control-center serve \
@@ -411,7 +433,8 @@ spanda control-center serve \
   --program examples/solutions/adas/src/highway_drive.sd
 ```
 
-See [solutions/adas/applications](../examples/solutions/adas/applications/README.md) for more ADAS device trees.
+See [solutions/adas/applications](../examples/solutions/adas/applications/README.md) for more ADAS
+device trees.
 
 **Config only** (pool panels; no default mission):
 
@@ -439,7 +462,9 @@ spanda control-center serve \
   --program examples/solutions/adas/src/highway_drive.sd
 ```
 
-Open `http://127.0.0.1:8080/` or run `npm run control-center:desktop:dev` in a second terminal. Demo catalog: [overview/flagship-demos.md](./overview/flagship-demos.md) · [showcase/README.md](../examples/showcase/README.md).
+Open `http://127.0.0.1:8080/` or run `npm run control-center:desktop:dev` in a second terminal. Demo
+catalog: [overview/flagship-demos.md](./overview/flagship-demos.md) ·
+[showcase/README.md](../examples/showcase/README.md).
 
 | Demo / UI focus | Highlights |
 |-----------------|------------|
@@ -455,7 +480,8 @@ Open `http://127.0.0.1:8080/` or run `npm run control-center:desktop:dev` in a s
 
 ## Authentication & API keys
 
-Generate a random operator token with the CLI, or choose your own secret for local dev. Clients send the token as `Authorization: Bearer <token>` on mutating requests.
+Generate a random operator token with the CLI, or choose your own secret for local dev. Clients send
+the token as `Authorization: Bearer <token>` on mutating requests.
 
 ### Generate a key (recommended)
 
@@ -474,13 +500,25 @@ eval "$(spanda control-center api-key generate --export)"
 spanda control-center serve
 ```
 
-When `SPANDA_API_KEY` is unset and no `SPANDA_API_KEYS_FILE` is loaded, `control-center serve` prints a warning with the same generate command.
+When `SPANDA_API_KEY` is unset and no `SPANDA_API_KEYS_FILE` is loaded, `control-center serve`
+prints a warning with the same generate command.
 
-If `generate` fails with `Unknown argument: generate` and top-level help has no `control-center` section, reinstall the CLI — see [troubleshooting.md — Unknown argument: generate](./troubleshooting.md#unknown-argument-generate-misleading-error).
+If `generate` fails with `Unknown argument: generate` and top-level help has no `control-center`
+section, reinstall the CLI — see [troubleshooting.md — Unknown argument:
+generate](./troubleshooting.md#unknown-argument-generate-misleading-error).
 
-The embedded Control Center UI shows an **Operator API key** banner when no token is configured in the browser. Paste a token registered on the server (`SPANDA_API_KEYS_FILE` or `SPANDA_API_KEY` at `serve` time). With **Remember on this browser** checked (default), the token is stored in `localStorage` scoped to the Control Center origin (`host:port`) and restored on refresh; use **Forget token** to clear it. The UI verifies the token with `POST /v1/alerts/test` before saving. Same-origin XSS could read a stored token — use **Forget** on shared machines. The `@davalgi-spanda/web` panel uses `VITE_SPANDA_API_KEY` at dev/build time instead.
+The embedded Control Center UI shows an **Operator API key** banner when no token is configured in
+the browser. Paste a token registered on the server (`SPANDA_API_KEYS_FILE` or `SPANDA_API_KEY` at
+`serve` time). With **Remember on this browser** checked (default), the token is stored in
+`localStorage` scoped to the Control Center origin (`host:port`) and restored on refresh; use
+**Forget token** to clear it. The UI verifies the token with `POST /v1/alerts/test` before saving.
+Same-origin XSS could read a stored token — use **Forget** on shared machines. The
+`@davalgi-spanda/web` panel uses `VITE_SPANDA_API_KEY` at dev/build time instead.
 
-**Browser storage key:** `spanda.control_center.bearer_token.v1:<host>` (for example `spanda.control_center.bearer_token.v1:127.0.0.1:8080`). Each `host:port` has its own entry; changing bind port or hostname requires pasting the token again unless you migrate the key in DevTools → Application → Local Storage.
+**Browser storage key:** `spanda.control_center.bearer_token.v1:<host>` (for example
+`spanda.control_center.bearer_token.v1:127.0.0.1:8080`). Each `host:port` has its own entry;
+changing bind port or hostname requires pasting the token again unless you migrate the key in
+DevTools → Application → Local Storage.
 
 ### Single operator key (local dev)
 
@@ -509,7 +547,8 @@ openssl rand -hex 32
 python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Export the output as `SPANDA_API_KEY` on the server and distribute it securely to operators. Do not commit tokens to git.
+Export the output as `SPANDA_API_KEY` on the server and distribute it securely to operators. Do not
+commit tokens to git.
 
 ### Multiple keys with roles
 
@@ -551,7 +590,10 @@ Keys from `SPANDA_API_KEYS_FILE` are **merged** with any key from `SPANDA_API_KE
 | `auditor` | Read-only (no mutations) |
 | `guest` | Read-only (no mutations) |
 
-Inspect the live permission matrix: `GET /v1/rbac/matrix`. After pasting a Bearer token in the UI (embedded HTML or `@davalgi-spanda/web` / Tauri desktop), `GET /v1/rbac/me` returns your `role`, `key_id`, `tenant_id`, and allowed mutation `permissions` — the UI uses this to show your role badge, filter tabs by role, and enable action buttons per permission.
+Inspect the live permission matrix: `GET /v1/rbac/matrix`. After pasting a Bearer token in the UI
+(embedded HTML or `@davalgi-spanda/web` / Tauri desktop), `GET /v1/rbac/me` returns your `role`,
+`key_id`, `tenant_id`, and allowed mutation `permissions` — the UI uses this to show your role
+badge, filter tabs by role, and enable action buttons per permission.
 
 ### Administration (administrator role)
 
@@ -585,7 +627,8 @@ Persisted to `.spanda/admin-users.json`.
 | `GET /v1/admin/alert-channels` | Current dispatcher channels |
 | `PUT /v1/admin/alert-channels` | Replace channels (webhook, email, PagerDuty, Teams, log) |
 
-Persisted to `.spanda/alert-channels.json`. When unset, channels load from `SPANDA_ALERT_*` environment variables.
+Persisted to `.spanda/alert-channels.json`. When unset, channels load from `SPANDA_ALERT_*`
+environment variables.
 
 ### Simulation and Replay
 
@@ -595,7 +638,8 @@ Persisted to `.spanda/alert-channels.json`. When unset, channels load from `SPAN
 | `POST /v1/programs/simulation` | Plan or execute simulation (`execute`, `inject_health_faults`, `record_trace`, `decision_trace`) |
 | `POST /v1/programs/replay` | Inspect, deterministic replay, or playback |
 
-Control Center **Simulation** and **Replay** tabs expose these workflows in the desktop and web panel.
+Control Center **Simulation** and **Replay** tabs expose these workflows in the desktop and web
+panel.
 
 ### Mission control
 
@@ -617,7 +661,10 @@ Control Center **Simulation** and **Replay** tabs expose these workflows in the 
 | `POST /v1/programs/explain` | Explainability report — body `{ "mode": "program\|readiness\|verify\|safety\|decision\|trace", "file": "…" }` |
 | `POST /v1/programs/audit/decisions` | Decision audit trail from a `.trace` — optional `"explain": true` |
 
-Control Center **Differentiation** tab (Governance group) surfaces contract verify, explain modes, and trace audit. **Assurance/Diagnosis** runs `POST /v1/programs/assure` and `/diagnose`. **Traceability** loads the capability matrix via `POST /v1/programs/verify/capabilities` with `traceability: true`. **Playground** can load the server program via `GET /v1/programs/source`.
+Control Center **Differentiation** tab (Governance group) surfaces contract verify, explain modes,
+and trace audit. **Assurance/Diagnosis** runs `POST /v1/programs/assure` and `/diagnose`.
+**Traceability** loads the capability matrix via `POST /v1/programs/verify/capabilities` with
+`traceability: true`. **Playground** can load the server program via `GET /v1/programs/source`.
 
 ### What requires authentication
 
@@ -628,9 +675,16 @@ Control Center **Differentiation** tab (Governance group) surfaces contract veri
 | `POST` / `PATCH` / `PUT` / `DELETE` (provision, OTA, approvals, quarantine, …) | Yes — `Authorization: Bearer <token>` |
 | gRPC mutating RPCs | Same Bearer token in metadata |
 
-**Multi-tenant isolation:** Set `SPANDA_TENANT_ID` on the Control Center instance (default `default`). Each key may include a `tenant_id` field; authenticated requests with a mismatched tenant return `403`.
+**Multi-tenant isolation:** Set `SPANDA_TENANT_ID` on the Control Center instance (default
+`default`). Each key may include a `tenant_id` field; authenticated requests with a mismatched
+tenant return `403`.
 
-**Storage:** Server-side keys are matched as plain strings (not hashed). Treat them like passwords — restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on compromise. The embedded UI may optionally persist a pasted Bearer token in browser `localStorage` under `spanda.control_center.bearer_token.v1:<host>` (per `host:port`, opt-in via **Remember on this browser**); this does not register the key on the server and is readable by any script on the same origin. Clear with **Forget token** or remove the key in browser DevTools.
+**Storage:** Server-side keys are matched as plain strings (not hashed). Treat them like passwords —
+restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on compromise. The embedded UI may
+optionally persist a pasted Bearer token in browser `localStorage` under
+`spanda.control_center.bearer_token.v1:<host>` (per `host:port`, opt-in via **Remember on this
+browser**); this does not register the key on the server and is readable by any script on the same
+origin. Clear with **Forget token** or remove the key in browser DevTools.
 
 ### ADAS dashboard
 
@@ -646,7 +700,9 @@ spanda control-center serve \
   --program examples/solutions/adas/src/highway_drive.sd
 ```
 
-The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, trust score, alerts, OTA status, assurance/diagnosis summaries, and replay workflow links. See [solutions/adas.md](./solutions/adas.md).
+The **ADAS** tab shows vehicle health, sensor health, readiness pool summary, trust score, alerts,
+OTA status, assurance/diagnosis summaries, and replay workflow links. See
+[solutions/adas.md](./solutions/adas.md).
 
 ### Recovery dashboard
 
@@ -669,11 +725,13 @@ The **Recovery** tab (operator+ roles with `Operate` permission) shows:
 | **Graph** | Recovery dependency graph (`GET /v1/recovery/graph`) — nodes and edges |
 | **Actions** | Plan, simulate, and execute recovery via REST (Bearer token required for execute) |
 
-Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
+Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference:
+[recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
 
 ### Cognitive & Resilience dashboard
 
-The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Operate` permission) organizes live panels by **functional domain**:
+The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Operate` permission)
+organizes live panels by **functional domain**:
 
 | Panel | Functional domain | Content |
 |-------|-------------------|---------|
@@ -686,9 +744,14 @@ The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Op
 | **Damage Risk** | Damage Risk Assessment | Entity `damage_risk` from autonomy profile |
 | **Recovery Confidence** | Adaptive Learning | Platform recovery confidence + entity profile |
 
-Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
+Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`,
+`GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
 
-**Beta** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke: `./scripts/cognitive_resilience_smoke.sh`
+**Beta** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in
+[ROADMAP.md](../ROADMAP.md). Guide:
+[cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity:
+[cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke:
+`./scripts/cognitive_resilience_smoke.sh`
 
 ### Human Interaction dashboard
 
@@ -704,9 +767,13 @@ spanda control-center serve \
   --program examples/solutions/spatial-computing/warehouse-ar/pick_mission.sd
 ```
 
-The **Humans** tab shows operator dashboard, wearable inventory, AR/HRI sessions, VR training links, and health opt-in policy. The same panels ship in `@davalgi-spanda/web` `ControlCenterPanel` (parity with embedded HTML).
+The **Humans** tab shows operator dashboard, wearable inventory, AR/HRI sessions, VR training links,
+and health opt-in policy. The same panels ship in `@davalgi-spanda/web` `ControlCenterPanel` (parity
+with embedded HTML).
 
-Before promoting Human Interaction to **Stable**: start HRI field soak (`date -u +%Y-%m-%d > .spanda/hri-field-soak-start.txt`), then run `./scripts/hri_stable_promotion_gate.sh` — see [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md).
+Before promoting Human Interaction to **Stable**: start HRI field soak (`date -u +%Y-%m-%d >
+.spanda/hri-field-soak-start.txt`), then run `./scripts/hri_stable_promotion_gate.sh` — see
+[stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md).
 
 **Experimental (H4)** — Human Interaction tab and panels:
 
@@ -738,7 +805,8 @@ Planned REST endpoints (experimental — humans/wearables/health and HRI session
 | `GET /v1/operator/mission/approvals` | Mission approval queue (H6) |
 | `POST /v1/hri/sessions/{id}/annotate` | AR annotation publish |
 
-See [solutions/spatial-computing.md](./solutions/spatial-computing.md) · [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md).
+See [solutions/spatial-computing.md](./solutions/spatial-computing.md) ·
+[human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md).
 
 ### Smart Spaces dashboard
 
@@ -754,7 +822,8 @@ spanda control-center serve \
   --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
 ```
 
-The **Smart Spaces** tab (experimental) shows building and facility operations across residential, commercial, and campus deployments. See [solutions/smart-spaces.md](./solutions/smart-spaces.md).
+The **Smart Spaces** tab (experimental) shows building and facility operations across residential,
+commercial, and campus deployments. See [solutions/smart-spaces.md](./solutions/smart-spaces.md).
 
 **Experimental** — Smart Spaces tab and panels:
 
@@ -812,7 +881,8 @@ spanda control-center api get /v1/zones/floor-12/occupancy
 
 ### Remote CLI (REST parity)
 
-Query a running Control Center without curl — uses `SPANDA_CONTROL_CENTER_URL` (default `http://127.0.0.1:8080`) and `SPANDA_API_KEY` for mutations:
+Query a running Control Center without curl — uses `SPANDA_CONTROL_CENTER_URL` (default
+`http://127.0.0.1:8080`) and `SPANDA_API_KEY` for mutations:
 
 ```bash
 export SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080
@@ -897,7 +967,9 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 | `GetAnalyticsReadinessForecast` | Readiness degradation forecast (`GET /v1/analytics/readiness-forecast` parity) |
 | `GetAnalyticsTrustGraph` | Trust-weighted dependency graph (`GET /v1/analytics/trust-graph` parity) |
 
-Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — package `spanda.v1`. Pin semver and RPC count via `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count` (currently **1.0.14**, **164** RPCs). gRPC reflection is enabled when tonic-reflection is compiled in.
+Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — package `spanda.v1`. Pin semver
+and RPC count via `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count` (currently
+**1.0.14**, **164** RPCs). gRPC reflection is enabled when tonic-reflection is compiled in.
 
 ```bash
 # Example with grpcurl (reflection or proto file)
@@ -986,27 +1058,46 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | `/v1/audit/mutations` | GET | Bearer | Hash-chained mutation audit trail |
 | `/v1/audit/mutations/export` | GET | Bearer | SIEM export (`?format=cef` or `jsonl`) |
 
-Authenticate mutations with `Authorization: Bearer <token>`. See [Authentication & API keys](#authentication--api-keys) for how to create and configure tokens.
+Authenticate mutations with `Authorization: Bearer <token>`. See [Authentication & API
+keys](#authentication--api-keys) for how to create and configure tokens.
 
-**HA persistence:** Alert history and API trace log hydrate from `.spanda/control-center-alerts.json` and `.spanda/control-center-traces.json` on startup (override directory with `SPANDA_CONTROL_CENTER_STATE_DIR`).
+**HA persistence:** Alert history and API trace log hydrate from
+`.spanda/control-center-alerts.json` and `.spanda/control-center-traces.json` on startup (override
+directory with `SPANDA_CONTROL_CENTER_STATE_DIR`).
 
-**API versioning:** `GET /v1/version` documents supported versions and returns `control_center_ui_version` (UI semver) and `spanda_version` (platform build). Clients may send `X-Spanda-Api-Version: v1`; unsupported values return `400`. Breaking changes ship under a new `/v2/` path prefix. Operator CLI: `spanda control-center --version`. See [control-center-versioning.md](./control-center-versioning.md).
+**API versioning:** `GET /v1/version` documents supported versions and returns
+`control_center_ui_version` (UI semver) and `spanda_version` (platform build). Clients may send
+`X-Spanda-Api-Version: v1`; unsupported values return `400`. Breaking changes ship under a new
+`/v2/` path prefix. Operator CLI: `spanda control-center --version`. See
+[control-center-versioning.md](./control-center-versioning.md).
 
-**Rate limiting:** Set `SPANDA_API_RATE_LIMIT_PER_MINUTE` (per API key, or `anonymous` when unauthenticated). Excess requests return HTTP `429` with `Retry-After` (REST) or gRPC `RESOURCE_EXHAUSTED`.
+**Rate limiting:** Set `SPANDA_API_RATE_LIMIT_PER_MINUTE` (per API key, or `anonymous` when
+unauthenticated). Excess requests return HTTP `429` with `Retry-After` (REST) or gRPC
+`RESOURCE_EXHAUSTED`.
 
-**Mutation audit:** Successful `POST`/`PATCH`/`PUT`/`DELETE` requests append hash-chained audit records (`GET /v1/audit/mutations`, Bearer required). Export for SIEM: `GET /v1/audit/mutations/export?format=cef|jsonl`. Persisted to `.spanda/control-center-mutations.jsonl` (override with `SPANDA_MUTATION_AUDIT_PATH`).
+**Mutation audit:** Successful `POST`/`PATCH`/`PUT`/`DELETE` requests append hash-chained audit
+records (`GET /v1/audit/mutations`, Bearer required). Export for SIEM: `GET
+/v1/audit/mutations/export?format=cef|jsonl`. Persisted to `.spanda/control-center-mutations.jsonl`
+(override with `SPANDA_MUTATION_AUDIT_PATH`).
 
-**Production policy:** Set `SPANDA_PRODUCTION_POLICY=production` to enable fleet defaults: OTA certification required (`SPANDA_OTA_REQUIRE_CERTIFY`), discovery TLS required (`SPANDA_DISCOVERY_REQUIRE_TLS`). See [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+**Production policy:** Set `SPANDA_PRODUCTION_POLICY=production` to enable fleet defaults: OTA
+certification required (`SPANDA_OTA_REQUIRE_CERTIFY`), discovery TLS required
+(`SPANDA_DISCOVERY_REQUIRE_TLS`). See
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
-**Scheduled reports:** Background delivery when `SPANDA_REPORT_SCHEDULE_INTERVAL_SECS` is set (e.g. `3600`). Schedules persist under `SPANDA_CONTROL_CENTER_STATE_DIR`.
+**Scheduled reports:** Background delivery when `SPANDA_REPORT_SCHEDULE_INTERVAL_SECS` is set (e.g.
+`3600`). Schedules persist under `SPANDA_CONTROL_CENTER_STATE_DIR`.
 
-**Discovery TLS:** `SPANDA_DISCOVERY_REQUIRE_TLS` blocks insecure `http://` / `mqtt://` endpoints; `SPANDA_DISCOVERY_TLS_CA_BUNDLE` points at vendor CA PEM. Registry package: `spanda-discovery-tls`.
+**Discovery TLS:** `SPANDA_DISCOVERY_REQUIRE_TLS` blocks insecure `http://` / `mqtt://` endpoints;
+`SPANDA_DISCOVERY_TLS_CA_BUNDLE` points at vendor CA PEM. Registry package: `spanda-discovery-tls`.
 
-**SRE burn monitor:** Fast-burn alerts when `SPANDA_SRE_BURN_SCAN_INTERVAL_SECS` > 0 (`SPANDA_SRE_BURN_RATE_FAST`, `SPANDA_SRE_BURN_WINDOW_HOURS`).
+**SRE burn monitor:** Fast-burn alerts when `SPANDA_SRE_BURN_SCAN_INTERVAL_SECS` > 0
+(`SPANDA_SRE_BURN_RATE_FAST`, `SPANDA_SRE_BURN_WINDOW_HOURS`).
 
 **Drift scans:** Background scheduler when `SPANDA_DRIFT_SCAN_INTERVAL_SECS` > 0.
 
-Pass optional `X-Correlation-ID` on any request; the server echoes it on the response and records traces for `/v1/observability/traces`.
+Pass optional `X-Correlation-ID` on any request; the server echoes it on the response and records
+traces for `/v1/observability/traces`.
 
 Govern-and-trace endpoints require a loaded program:
 
@@ -1019,7 +1110,11 @@ spanda control-center serve --config spanda.toml --program rover.sd
 
 ## Control Center UI sections
 
-The embedded HTML at `/` and the `@davalgi-spanda/web` Control Center panel share the same operational tabs. After signing in with a Bearer token, `GET /v1/rbac/me` drives **role-aware navigation**: each role (administrator, supervisor, developer, operator, safety_officer, auditor, guest) sees a tailored tab set, dashboard workspace panel, per-tab hints, and action buttons gated by RBAC permissions (`Deploy`, `Operate`, `Approve`, `Provision`, etc.).
+The embedded HTML at `/` and the `@davalgi-spanda/web` Control Center panel share the same
+operational tabs. After signing in with a Bearer token, `GET /v1/rbac/me` drives **role-aware
+navigation**: each role (administrator, supervisor, developer, operator, safety_officer, auditor,
+guest) sees a tailored tab set, dashboard workspace panel, per-tab hints, and action buttons gated
+by RBAC permissions (`Deploy`, `Operate`, `Approve`, `Provision`, etc.).
 
 The `@davalgi-spanda/web` Control Center panel includes:
 
@@ -1050,9 +1145,18 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | **Marketplace** | Installed plugin and Control Center panel browser |
 | **Chaos** | Fault injection catalog and simulation (`/v1/chaos/*`) |
 
-**Enhancements on existing tabs:** SRE observability bridge (Grafana embed when `SPANDA_GRAFANA_URL` is set, Jaeger/trace links), config change history + deploy gate modal, bulk device quarantine/trust, OTA rollout progress, decision policy editor, Smart Spaces floor-plan SVG, analytics trust graph + certification pack download, Twin Cloud usage meters, OIDC/Slack OAuth wizards with callback landing pages (`/admin/oauth/*`) and PKCE, offline dashboard cache, plugin bundle loader, Humans collaboration graph + AR annotate, entity graph default view, saved connection profile switcher, Discovery transport wizards, desktop `spawn_control_center_api` + native notifications + system tray.
+**Enhancements on existing tabs:** SRE observability bridge (Grafana embed when `SPANDA_GRAFANA_URL`
+is set, Jaeger/trace links), config change history + deploy gate modal, bulk device
+quarantine/trust, OTA rollout progress, decision policy editor, Smart Spaces floor-plan SVG,
+analytics trust graph + certification pack download, Twin Cloud usage meters, OIDC/Slack OAuth
+wizards with callback landing pages (`/admin/oauth/*`) and PKCE, offline dashboard cache, plugin
+bundle loader, Humans collaboration graph + AR annotate, entity graph default view, saved connection
+profile switcher, Discovery transport wizards, desktop `spawn_control_center_api` + native
+notifications + system tray.
 
-**New REST APIs:** `GET /v1/fleet/map`, `GET /v1/config/history`, `GET /v1/deploy/gate`, `GET|PUT /v1/admin/oidc`, `POST /v1/admin/oidc/sync`, `GET|POST /v1/admin/slack`, `GET /v1/chaos/injections`, `POST /v1/chaos/simulate`. **gRPC server reflection** enabled (tonic-reflection).
+**New REST APIs:** `GET /v1/fleet/map`, `GET /v1/config/history`, `GET /v1/deploy/gate`, `GET|PUT
+/v1/admin/oidc`, `POST /v1/admin/oidc/sync`, `GET|POST /v1/admin/slack`, `GET /v1/chaos/injections`,
+`POST /v1/chaos/simulate`. **gRPC server reflection** enabled (tonic-reflection).
 
 ---
 
@@ -1064,7 +1168,8 @@ export SPANDA_API_KEY=your-key
 python -c "from spanda_sdk import ControlCenterClient; print(ControlCenterClient().health())"
 ```
 
-Integration tests: `SPANDA_SDK_INTEGRATION=1 SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080 pytest packages/sdk-python/tests`
+Integration tests: `SPANDA_SDK_INTEGRATION=1 SPANDA_CONTROL_CENTER_URL=http://127.0.0.1:8080 pytest
+packages/sdk-python/tests`
 
 WebSocket streaming (`pip install -e 'packages/sdk-python[stream]'`):
 
@@ -1086,7 +1191,8 @@ curl -H "Authorization: Bearer $SPANDA_API_KEY" \
 
 Preview payload: `GET /v1/observability/otlp/traces`
 
-Live telemetry WebSocket: `ws://127.0.0.1:8080/v1/stream/telemetry` (hello + telemetry/trace/alert events)
+Live telemetry WebSocket: `ws://127.0.0.1:8080/v1/stream/telemetry` (hello + telemetry/trace/alert
+events)
 
 ---
 
@@ -1131,7 +1237,8 @@ Configure delivery channels via environment variables:
 | `SPANDA_ALERT_DEDUP_WINDOW_*_SECS` | Per-severity dedup windows before dispatch |
 | `SPANDA_PAGERDUTY_WEBHOOK_SECRET` | Optional HMAC for inbound PagerDuty webhook |
 
-Registry packages: `spanda-alert-pagerduty` (bi-directional sync), `spanda-alert-escalation`, `spanda-alert-slack`, `spanda-alert-teams`.
+Registry packages: `spanda-alert-pagerduty` (bi-directional sync), `spanda-alert-escalation`,
+`spanda-alert-slack`, `spanda-alert-teams`.
 
 Default: log to stderr.
 
@@ -1152,13 +1259,22 @@ Default: log to stderr.
 
 ## Stable promotion
 
-Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in code**. SDKs **0.4.2** (registry) and Control Center desktop **0.6.3** (`desktop-v0.6.3`, with sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining organizational gates: third-party security audit sign-off and 30-day field soak. See [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) · [field-soak-gate.md](./field-soak-gate.md) · [security-audit-third-party.md](./security-audit-third-party.md) · [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
+Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in
+code**. SDKs **0.4.2** (registry) and Control Center desktop **0.6.3** (`desktop-v0.6.3`, with
+sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining
+organizational gates: third-party security audit sign-off and 30-day field soak. See
+[stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) ·
+[field-soak-gate.md](./field-soak-gate.md) ·
+[security-audit-third-party.md](./security-audit-third-party.md) ·
+[desktop-release-runbook.md](./desktop-release-runbook.md) ·
+[control-center-versioning.md](./control-center-versioning.md).
 
 ---
 
 ## Versioning
 
-Control Center has an independent **desktop release stream** (`desktop-v*`) and a **UI semver** shown in the sidebar, CLI, and API.
+Control Center has an independent **desktop release stream** (`desktop-v*`) and a **UI semver**
+shown in the sidebar, CLI, and API.
 
 | Surface | How to read the version |
 |---------|-------------------------|
@@ -1167,9 +1283,13 @@ Control Center has an independent **desktop release stream** (`desktop-v*`) and 
 | API | `GET /v1/version` → `control_center_ui_version` · `GET /v1/instance` |
 | Serve startup | `Spanda Control Center vX.Y.Z listening on …` |
 
-**Automatic bump:** PRs labeled `release:patch|minor|major` that change Control Center paths trigger a matching desktop bump after CI Integration on `main`. **Manual:** `python3 scripts/bump_version.py minor --stream desktop`.
+**Automatic bump:** PRs labeled `release:patch|minor|major` that change Control Center paths trigger
+a matching desktop bump after CI Integration on `main`. **Manual:** `python3 scripts/bump_version.py
+minor --stream desktop`.
 
-Full policy, path list, and troubleshooting: **[control-center-versioning.md](./control-center-versioning.md)** · release runbook: [desktop-release-runbook.md](./desktop-release-runbook.md).
+Full policy, path list, and troubleshooting:
+**[control-center-versioning.md](./control-center-versioning.md)** · release runbook:
+[desktop-release-runbook.md](./desktop-release-runbook.md).
 
 ---
 
@@ -1183,12 +1303,27 @@ Package: `@spanda/control-center-desktop` (`packages/control-center-desktop`).
 2. Dev shell: `npm run control-center:desktop:dev` (Vite on port **5174**)
 3. Optional API URL: `VITE_CONTROL_CENTER_URL=http://host:port`
 
-The desktop shell reuses `ControlCenterPanel` from `@davalgi-spanda/web`; it does not embed `spanda-api`. Production installers ship via **`desktop-v*`** tags → `.github/workflows/desktop-release.yml` → GitHub Release (macOS `.dmg` / `.app.tar.gz`) plus workflow artifacts. Pre-flight: `./scripts/verify_desktop_release_ready.sh`. Optional codesign/notarize: `./scripts/sign_tauri_macos.sh` when Apple secrets are set. See [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) · [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
+The desktop shell reuses `ControlCenterPanel` from `@davalgi-spanda/web`; it does not embed
+`spanda-api`. Production installers ship via **`desktop-v*`** tags →
+`.github/workflows/desktop-release.yml` → GitHub Release (macOS `.dmg` / `.app.tar.gz`) plus
+workflow artifacts. Pre-flight: `./scripts/verify_desktop_release_ready.sh`. Optional
+codesign/notarize: `./scripts/sign_tauri_macos.sh` when Apple secrets are set. See
+[packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) ·
+[desktop-release-runbook.md](./desktop-release-runbook.md) ·
+[control-center-versioning.md](./control-center-versioning.md).
 
-**Current release:** **0.6.3** — tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) on GitHub Releases.
+**Current release:** **0.6.3** — tag
+[`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) on GitHub
+Releases.
 
 ---
 
 ## Status
 
-**Stable** (Phase E1–E4). Includes device pool provisioning, multi-transport discovery with production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export, SLO burn-rate monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs **0.4.2**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API version display.
+**Stable** (Phase E1–E4). Includes device pool provisioning, multi-transport discovery with
+production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export, SLO burn-rate
+monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled
+report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report
+composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs
+**0.4.2**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API
+version display.

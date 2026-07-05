@@ -1,14 +1,18 @@
 # Platform Homeostasis
 
 **Functional domain:** [Homeostasis Engine](./functional-domains.md#homeostasis-engine)  
-**Status: Beta** — entity health/readiness/trust signals plus scheduler telemetry from recent `run`/`sim`.
+**Status: Beta** — entity health/readiness/trust signals plus scheduler telemetry from recent
+`run`/`sim`.
 
-> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)  
+> Canonical architecture:
+> [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 > Prior short guide: [homeostasis.md](./homeostasis.md) (retained for CLI/API quick reference)
 
 ## Purpose
 
-Maintain **stable operating conditions before failures occur**. Homeostasis monitors platform and entity signals, detects drift, and recommends or triggers corrective actions through existing Health, Telemetry, Recovery, and Readiness services.
+Maintain **stable operating conditions before failures occur**. Homeostasis monitors platform and
+entity signals, detects drift, and recommends or triggers corrective actions through existing
+Health, Telemetry, Recovery, and Readiness services.
 
 Spanda does **not** simulate biological regulation — homeostasis is an engineering stability loop.
 
@@ -45,7 +49,8 @@ homeostasis_policy PlatformStability {
 
 ## Types (`spanda-autonomy`)
 
-`HomeostasisPolicy`, `StabilityRange`, `StabilityMetric`, `DriftSignal`, `CorrectionAction`, `StabilityReport`
+`HomeostasisPolicy`, `StabilityRange`, `StabilityMetric`, `DriftSignal`, `CorrectionAction`,
+`StabilityReport`
 
 ## Examples
 

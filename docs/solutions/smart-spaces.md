@@ -2,11 +2,18 @@
 
 **Status:** **Stable** · **Profile:** `smart_space` · **Path:** `examples/solutions/smart-spaces/`
 
-Official Solution Blueprint for **safety-first verification, orchestration, readiness, assurance, and trust** in intelligent environments — from homes and offices to hospitals, factories, campuses, and cities.
+Official Solution Blueprint for **safety-first verification, orchestration, readiness, assurance,
+and trust** in intelligent environments — from homes and offices to hospitals, factories, campuses,
+and cities.
 
-**Spanda is not a home automation platform.** It does not compete with Home Assistant, OpenHAB, Apple Home, Google Home, Amazon Alexa, or SmartThings. Spanda composes above those ecosystems through optional provider packages, adding verified readiness, mission continuity, assurance evidence, and operator trust for environments that combine IoT, robots, wearables, connected healthcare, AI agents, and energy systems.
+**Spanda is not a home automation platform.** It does not compete with Home Assistant, OpenHAB,
+Apple Home, Google Home, Amazon Alexa, or SmartThings. Spanda composes above those ecosystems
+through optional provider packages, adding verified readiness, mission continuity, assurance
+evidence, and operator trust for environments that combine IoT, robots, wearables, connected
+healthcare, AI agents, and energy systems.
 
-**Full roadmap entry:** [ROADMAP.md § Smart Spaces & Ambient Intelligence](../../ROADMAP.md#smart-spaces--ambient-intelligence)
+**Full roadmap entry:** [ROADMAP.md § Smart Spaces & Ambient
+Intelligence](../../ROADMAP.md#smart-spaces--ambient-intelligence)
 
 ---
 
@@ -70,13 +77,20 @@ flowchart TB
 
 ### Design principles
 
-1. **Lean core** — Building logic lives in `.sd` programs, TOML config, and optional packages; no smart-home keywords in the language.
-2. **Safety-first orchestration** — Readiness gates before night mode, lockdown, evacuation, or energy optimization; never silent automation failure.
-3. **Unified Entity Model** — Buildings, floors, rooms, zones, occupants, gateways, and devices are entity graph nodes.
-4. **Interoperability, not replacement** — Home Assistant, Matter hubs, and BMS systems remain authoritative for device control; Spanda verifies and orchestrates missions across them.
-5. **Mission continuity** — Gateway failover, backup lighting controllers, alternate service robots — explicit continuity policies.
-6. **Assurance evidence** — Security, readiness, emergency systems, medical devices, and access control produce auditable bundles.
-7. **Scale without core bloat** — Home to smart city uses the same pillars; deployment scale changes device tree depth and package selection only.
+1. **Lean core** — Building logic lives in `.sd` programs, TOML config, and optional packages; no
+   smart-home keywords in the language.
+2. **Safety-first orchestration** — Readiness gates before night mode, lockdown, evacuation, or
+   energy optimization; never silent automation failure.
+3. **Unified Entity Model** — Buildings, floors, rooms, zones, occupants, gateways, and devices are
+   entity graph nodes.
+4. **Interoperability, not replacement** — Home Assistant, Matter hubs, and BMS systems remain
+   authoritative for device control; Spanda verifies and orchestrates missions across them.
+5. **Mission continuity** — Gateway failover, backup lighting controllers, alternate service robots
+   — explicit continuity policies.
+6. **Assurance evidence** — Security, readiness, emergency systems, medical devices, and access
+   control produce auditable bundles.
+7. **Scale without core bloat** — Home to smart city uses the same pillars; deployment scale changes
+   device tree depth and package selection only.
 
 ---
 
@@ -96,7 +110,8 @@ flowchart TB
 
 ## Applications
 
-Reference architectures for twelve deployment targets. Each reuses the same blueprint with profile-specific readiness thresholds, entity depth, and package sets.
+Reference architectures for twelve deployment targets. Each reuses the same blueprint with
+profile-specific readiness thresholds, entity depth, and package sets.
 
 | Application | Scale | Primary missions | Key packages |
 |-------------|-------|------------------|--------------|
@@ -117,7 +132,8 @@ Reference architectures for twelve deployment targets. Each reuses the same blue
 
 ## Entity model
 
-All smart space components map to the [Unified Entity Model](../entity-model.md). Specialized kinds extend the canonical graph:
+All smart space components map to the [Unified Entity Model](../entity-model.md). Specialized kinds
+extend the canonical graph:
 
 | Entity | `entity_kind` | Role |
 |--------|---------------|------|
@@ -199,7 +215,8 @@ See [iot.md](../iot.md) · [smart-space-packages.md](../smart-space-packages.md)
 
 ### Live building I/O (BACnet / KNX)
 
-Commercial blueprints read BMS points through optional packages and env bridges — no smart-home keywords in the language.
+Commercial blueprints read BMS points through optional packages and env bridges — no smart-home
+keywords in the language.
 
 | Layer | BACnet | KNX |
 |-------|--------|-----|
@@ -229,7 +246,8 @@ SPANDA_LIVE_IOT_HARDWARE=1 ./scripts/smart_spaces_live_iot_smoke.sh  # on-site h
 
 ### BMS sidecar (Home Assistant / MQTT)
 
-When BACnet/KNX are already aggregated by a hub, use a **sidecar bridge** instead of direct field-bus reads. See [smart-space-bms-bridge.md](../smart-space-bms-bridge.md).
+When BACnet/KNX are already aggregated by a hub, use a **sidecar bridge** instead of direct
+field-bus reads. See [smart-space-bms-bridge.md](../smart-space-bms-bridge.md).
 
 ```bash
 export SPANDA_LIVE_HOME_ASSISTANT=1
@@ -264,7 +282,8 @@ Logical capabilities verified before missions activate:
 
 ## Readiness
 
-Operational go/no-go before mode changes and emergency missions. Profile: `smart_space` in `spanda.readiness.toml`.
+Operational go/no-go before mode changes and emergency missions. Profile: `smart_space` in
+`spanda.readiness.toml`.
 
 | Question | Readiness dimension |
 |----------|---------------------|
@@ -337,13 +356,15 @@ Service robot unavailable
   → Degrade cleaning mission scope
 ```
 
-Configured via `continuity_policy` and `recovery_policy` blocks — same primitives as [mission-continuity.md](../mission-continuity.md).
+Configured via `continuity_policy` and `recovery_policy` blocks — same primitives as
+[mission-continuity.md](../mission-continuity.md).
 
 ---
 
 ## Human interaction
 
-Composes [Spatial Computing](./spatial-computing.md) and [human-interaction.md](../human-interaction.md):
+Composes [Spatial Computing](./spatial-computing.md) and
+[human-interaction.md](../human-interaction.md):
 
 | Modality | Use in smart spaces |
 |----------|---------------------|
@@ -360,7 +381,8 @@ Composes [Spatial Computing](./spatial-computing.md) and [human-interaction.md](
 
 ## Connected healthcare
 
-Integrates [Connected Healthcare](../../ROADMAP.md#connected-healthcare) blueprint — not duplicated here.
+Integrates [Connected Healthcare](../../ROADMAP.md#connected-healthcare) blueprint — not duplicated
+here.
 
 | Workflow | Bridge |
 |----------|--------|
@@ -372,13 +394,15 @@ Integrates [Connected Healthcare](../../ROADMAP.md#connected-healthcare) bluepri
 | Remote patient monitoring | MQTT / BLE providers |
 | Emergency alerting | Assurance + operator approval |
 
-Path: [examples/solutions/spatial-computing/wearable-health/](../../examples/solutions/spatial-computing/wearable-health/)
+Path:
+[examples/solutions/spatial-computing/wearable-health/](../../examples/solutions/spatial-computing/wearable-health/)
 
 ---
 
 ## Energy management
 
-Solar, battery storage, EV charging, demand response, and backup power — see [energy-management.md](../energy-management.md).
+Solar, battery storage, EV charging, demand response, and backup power — see
+[energy-management.md](../energy-management.md).
 
 Package: `spanda-energy` · Example: `energy-management/demand_response.sd`
 
@@ -386,7 +410,8 @@ Package: `spanda-energy` · Example: `energy-management/demand_response.sd`
 
 ## Security
 
-Identity, certificates, encryption, tamper detection, access control, trust verification, audit logging — see [smart-space-security.md](../smart-space-security.md).
+Identity, certificates, encryption, tamper detection, access control, trust verification, audit
+logging — see [smart-space-security.md](../smart-space-security.md).
 
 Config: `examples/solutions/smart-spaces/spanda.security.toml`
 
@@ -400,7 +425,8 @@ spanda control-center serve \
   --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
 ```
 
-**Smart Spaces** tab (experimental): buildings, rooms, occupancy, devices, robots, wearables, health, readiness, trust, energy, security, environmental status, emergency status.
+**Smart Spaces** tab (experimental): buildings, rooms, occupancy, devices, robots, wearables,
+health, readiness, trust, energy, security, environmental status, emergency status.
 
 See [control-center.md](../control-center.md#smart-spaces-dashboard)
 
@@ -416,7 +442,9 @@ See [control-center.md](../control-center.md#smart-spaces-dashboard)
 | Occupancy twin | Presence, counts, flow |
 | Environment twin | AQ, temperature, humidity baselines |
 
-Simulation scenarios: fire, flood, power failure, network failure, gateway failure, HVAC failure, robot failure, medical emergency, security breach, water leak — via `spanda sim` and fault injection.
+Simulation scenarios: fire, flood, power failure, network failure, gateway failure, HVAC failure,
+robot failure, medical emergency, security breach, water leak — via `spanda sim` and fault
+injection.
 
 **Golden traces (deterministic replay):**
 

@@ -4,15 +4,21 @@
 **Release line:** v0.4.0 (tagged 2026-06-22)  
 **Scope:** All roadmap documents vs. implementation, registry, CI, and TypeScript mirror.
 
-Canonical status for ongoing release decisions remains [`feature-status.md`](./feature-status.md). This file captures point-in-time audit findings and closure tracking.
+Canonical status for ongoing release decisions remains [`feature-status.md`](./feature-status.md).
+This file captures point-in-time audit findings and closure tracking.
 
 ---
 
 ## Executive summary
 
-The **codebase is ahead of the v0.4.0 tag** on `main`: mission continuity runtime, telemetry OTLP/fleet aggregation, and web Operations/Telemetry panels shipped after the tag. **v0.5 P0 golden paths are 4/5 complete** (only VS Code Marketplace publish blocked on `VSCE_PAT`). **Differentiation NOW** items have topic guides and architecture specs but **no implementation crates yet** — that is the primary engineering focus for v0.5 after Marketplace.
+The **codebase is ahead of the v0.4.0 tag** on `main`: mission continuity runtime, telemetry
+OTLP/fleet aggregation, and web Operations/Telemetry panels shipped after the tag. **v0.5 P0 golden
+paths are 4/5 complete** (only VS Code Marketplace publish blocked on `VSCE_PAT`). **Differentiation
+NOW** items have topic guides and architecture specs but **no implementation crates yet** — that is
+the primary engineering focus for v0.5 after Marketplace.
 
-**Registry:** 38 packages indexed consistently (`packages/registry/`, `registry/packages/`, `registry/index.json`).
+**Registry:** 38 packages indexed consistently (`packages/registry/`, `registry/packages/`,
+`registry/index.json`).
 
 ---
 
@@ -87,7 +93,8 @@ The **codebase is ahead of the v0.4.0 tag** on `main`: mission continuity runtim
 
 ### v0.5 beta P1 (adoption enablers)
 
-All **Complete** per [tier-3-priority-plan.md](./tier-3-priority-plan.md): CI verify guide, PyO3 golden path, LSP deploy hints, showcase trim, adoption quickstart.
+All **Complete** per [tier-3-priority-plan.md](./tier-3-priority-plan.md): CI verify guide, PyO3
+golden path, LSP deploy hints, showcase trim, adoption quickstart.
 
 ### Differentiation NOW (v0.5+ engineering)
 
@@ -112,7 +119,8 @@ All **Complete** per [tier-3-priority-plan.md](./tier-3-priority-plan.md): CI ve
 
 ## Lean-core Phases 1–35
 
-Phases **27–35** remain backed by code and `phase*_gaps.rs` tests. Phases **25–26** (v0.5 P0/P1 golden paths) are **complete** except Marketplace publish.
+Phases **27–35** remain backed by code and `phase*_gaps.rs` tests. Phases **25–26** (v0.5 P0/P1
+golden paths) are **complete** except Marketplace publish.
 
 ---
 
@@ -144,7 +152,8 @@ Rebuild: `./scripts/build-registry.sh`
 ## Recommended next actions
 
 1. **Set `VSCE_PAT`** and publish VS Code extension — unblocks v0.5 beta tag.
-2. **Implement differentiation NOW** in order: Mission Contracts → Explainability → Decision Audit Trail → Safety/Recovery Coverage.
+2. **Implement differentiation NOW** in order: Mission Contracts → Explainability → Decision Audit
+   Trail → Safety/Recovery Coverage.
 3. **Add** `scripts/differentiation_smoke.sh` and `spanda demo differentiation` when first CLI lands.
 4. **Regenerate** `spanda-reference.md` when differentiation syntax stabilizes.
 

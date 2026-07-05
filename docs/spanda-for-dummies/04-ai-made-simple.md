@@ -91,10 +91,12 @@ behavior run() {
 
 ## “But I trust my model”
 
-Trust the model for *ideas*. Don't trust unvalidated output for *torque on a motor*. Safety rules (`max_speed`, `stop_if`, zones) still apply after validation.
+Trust the model for *ideas*. Don't trust unvalidated output for *torque on a motor*. Safety rules
+(`max_speed`, `stop_if`, zones) still apply after validation.
 
 For the full demo with verify + sim: [killer-demo.md](../killer-demo.md).
 
 ---
 
-**Next:** [The ten commands you'll actually use](./05-commands-cheat-sheet.md) · **Lesson:** [Spanda 101 — AI and the safety gate](../spanda-101/06-ai-and-the-safety-gate.md)
+**Next:** [The ten commands you'll actually use](./05-commands-cheat-sheet.md) · **Lesson:** [Spanda
+101 — AI and the safety gate](../spanda-101/06-ai-and-the-safety-gate.md)

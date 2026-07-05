@@ -8,7 +8,8 @@ Reduce alert fatigue while escalating repeated or worsening issues.
 
 ## Types
 
-`HabituationPolicy`, `SensitizationPolicy`, `AlertSuppression`, `AlertEscalation`, `RepetitionPattern`, `AlertFatigueMetric`
+`HabituationPolicy`, `SensitizationPolicy`, `AlertSuppression`, `AlertEscalation`,
+`RepetitionPattern`, `AlertFatigueMetric`
 
 ## Examples
 
