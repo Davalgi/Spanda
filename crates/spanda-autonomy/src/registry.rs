@@ -2,9 +2,10 @@
 //!
 use crate::entity::{enrich_entity_autonomy, EntityAutonomyContext};
 use crate::immunity::{evaluate_quarantine_decision, ImmunePolicy};
+use crate::memory::enrich_entity_memory_refs;
 use crate::reflex::list_reflex_actions;
 use spanda_config::entity::{EntityRecord, EntityRegistry, EntityTrustStatus};
-use spanda_config::entity_autonomy::{EntityAutonomyProfile, EntityMemoryRefs, EntityReflexSummary};
+use spanda_config::entity_autonomy::{EntityAutonomyProfile, EntityReflexSummary};
 
 /// Attach default autonomy stubs to every entity in the registry.
 pub fn apply_registry_autonomy_profiles(registry: &mut EntityRegistry) {
@@ -56,11 +57,11 @@ fn attach_entity_autonomy_stub(entity: &mut EntityRecord) {
         })
         .collect();
     entity.autonomy = Some(EntityAutonomyProfile {
-        reflexes,
-        memory_refs: Some(EntityMemoryRefs {
-            semantic: vec![format!("entity:{}", entity.id)],
-            ..Default::default()
-        }),
+        reflexes: reflexes.clone(),
+        memory_refs: Some(enrich_entity_memory_refs(
+            entity,
+            &reflexes.iter().map(|r| r.id.clone()).collect::<Vec<_>>(),
+        )),
         ..Default::default()
     });
 }

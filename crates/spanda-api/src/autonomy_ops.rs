@@ -183,9 +183,6 @@ pub fn fusion_summary(state: &ControlCenterState) -> HttpResponse {
     let mut summaries = Vec::new();
     for entity in registry.entities.values().take(20) {
         let ctx = EntityAutonomyContext::from_entity(entity);
-        if ctx.sensor_readings.is_empty() {
-            continue;
-        }
         let fused = fuse_observations(
             &format!("entity:{}", entity.id),
             &ctx.sensor_readings,
@@ -197,16 +194,20 @@ pub fn fusion_summary(state: &ControlCenterState) -> HttpResponse {
             "meets_policy": fused.confidence.meets_policy,
             "conflicts": fused.conflicts.len(),
             "sources": ctx.sensor_readings.len(),
+            "source_labels": ctx.sensor_readings.iter().map(|r| &r.source).collect::<Vec<_>>(),
         }));
     }
     json_ok(&serde_json::json!({
         "version": API_VERSION,
+        "policy": "rule_based",
+        "entities_evaluated": summaries.len(),
         "fusion": summaries,
     }))
 }
 
 /// GET /v1/autonomy/memory — operational memory references across entities.
 pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
+    use spanda_autonomy::memory::build_operational_memory_model;
     let registry = state.entity_registry();
     let entries: Vec<_> = registry
         .entities
@@ -215,13 +216,11 @@ pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
         .filter_map(|entity| {
             entity.autonomy.as_ref().and_then(|profile| {
                 profile.memory_refs.as_ref().map(|refs| {
+                    let model = build_operational_memory_model(refs);
                     serde_json::json!({
                         "entity_id": entity.id,
-                        "working": refs.working.len(),
-                        "episodic": refs.episodic.len(),
-                        "semantic": refs.semantic.len(),
-                        "procedural": refs.procedural.len(),
-                        "reflex": refs.reflex.len(),
+                        "refs": refs,
+                        "model": model,
                     })
                 })
             })
@@ -229,6 +228,7 @@ pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
         .collect();
     json_ok(&serde_json::json!({
         "version": API_VERSION,
+        "entities_with_memory": entries.len(),
         "memory": entries,
     }))
 }

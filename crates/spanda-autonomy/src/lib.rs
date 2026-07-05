@@ -38,7 +38,7 @@ pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, Entity
 pub use registry::apply_registry_autonomy_profiles;
 pub use runtime::{
     entity_damage_risk_index, platform_telemetry_snapshot, recovery_confidence_from_history,
-    update_platform_telemetry, PlatformTelemetrySnapshot,
+    sensor_readings_from_entity, update_platform_telemetry, PlatformTelemetrySnapshot,
 };
 pub use fusion::{
     detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
@@ -62,7 +62,8 @@ pub use maintenance::{
     UpdateWindow,
 };
 pub use memory::{
-    categorize_memory, map_trace_to_memory, EpisodicMemory, MemoryCategory, OperationalMemoryModel,
+    build_operational_memory_model, categorize_memory, enrich_entity_memory_refs,
+    map_trace_to_memory, EpisodicMemory, MemoryCategory, OperationalMemoryModel,
     ProceduralMemory, ReflexMemory, SemanticMemory, WorkingMemory,
 };
 pub use peripheral::{

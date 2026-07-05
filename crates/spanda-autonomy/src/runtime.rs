@@ -6,6 +6,7 @@ use crate::adaptive_recovery::{
     compute_recovery_confidence, AdaptiveRecoveryPolicy, RecoveryHistory,
 };
 use crate::damage_risk::{evaluate_damage_risk, RiskSignal};
+use crate::fusion::SensorConfidence;
 use crate::homeostasis::StabilityMetric;
 use crate::types::AutonomySeverity;
 use spanda_config::entity::{
@@ -55,7 +56,7 @@ impl EntityAutonomyContext {
         let risk_signals = damage_risk_signals_from_entity(entity);
         Self {
             metrics,
-            sensor_readings: Vec::new(),
+            sensor_readings: sensor_readings_from_entity(entity),
             risk_signals,
             recovery_history: Vec::new(),
             fleet_id: entity.metadata.get("fleet_id").cloned(),
@@ -188,6 +189,60 @@ fn damage_risk_signals_from_entity(entity: &EntityRecord) -> Vec<RiskSignal> {
         });
     }
     signals
+}
+
+/// Derive synthetic multi-source readings from entity health, readiness, and trust for fusion.
+pub fn sensor_readings_from_entity(entity: &EntityRecord) -> Vec<SensorConfidence> {
+    let health_value = match entity.health_status {
+        EntityHealthStatus::Healthy => 1.0,
+        EntityHealthStatus::Warning => 0.7,
+        EntityHealthStatus::Degraded => 0.45,
+        EntityHealthStatus::Critical => 0.1,
+        EntityHealthStatus::Offline => 0.0,
+        EntityHealthStatus::Unknown => 0.5,
+    };
+    let readiness_value = match entity.readiness_status {
+        EntityReadinessStatus::Ready => 1.0,
+        EntityReadinessStatus::Partial => 0.55,
+        EntityReadinessStatus::NotReady => 0.2,
+        EntityReadinessStatus::Unknown => 0.5,
+    };
+    let trust_value = match entity.trust_status {
+        EntityTrustStatus::Verified => 1.0,
+        EntityTrustStatus::Trusted => 0.9,
+        EntityTrustStatus::Untrusted => 0.3,
+        EntityTrustStatus::Compromised => 0.05,
+        EntityTrustStatus::Unknown => 0.5,
+    };
+    let mut readings = vec![
+        SensorConfidence {
+            source: "health_status".into(),
+            value: health_value,
+            confidence: 0.85,
+            timestamp: None,
+        },
+        SensorConfidence {
+            source: "readiness_status".into(),
+            value: readiness_value,
+            confidence: 0.8,
+            timestamp: None,
+        },
+        SensorConfidence {
+            source: "trust_status".into(),
+            value: trust_value,
+            confidence: 0.75,
+            timestamp: None,
+        },
+    ];
+    if let Some(battery) = entity.metadata.get("battery_pct").and_then(|v| v.parse().ok()) {
+        readings.push(SensorConfidence {
+            source: "battery_pct".into(),
+            value: battery,
+            confidence: 0.9,
+            timestamp: None,
+        });
+    }
+    readings
 }
 
 /// Compute recovery confidence score for an entity from orchestrator history.

@@ -129,6 +129,15 @@ fn attention_and_recovery_interaction() {
 
 /// Operational Memory + Replay: trace artifacts map to episodic memory category.
 #[test]
+fn fusion_entity_derived_sensor_readings() {
+    let entity = sample_robot("robot-fusion", EntityHealthStatus::Degraded, EntityTrustStatus::Trusted);
+    let readings = spanda_autonomy::sensor_readings_from_entity(&entity);
+    assert!(readings.len() >= 3);
+    let fused = fuse_observations("health_bundle", &readings, &ConfidencePolicy::default());
+    assert!(fused.confidence.score > 0.0);
+}
+
+#[test]
 fn operational_memory_and_replay_interaction() {
     assert_eq!(categorize_memory("trace"), spanda_autonomy::MemoryCategory::Episodic);
     assert_eq!(categorize_memory("replay"), spanda_autonomy::MemoryCategory::Episodic);
@@ -141,6 +150,31 @@ fn operational_memory_and_replay_interaction() {
         .and_then(|a| a.memory_refs.as_ref())
         .expect("memory refs");
     assert!(!refs.semantic.is_empty());
+    assert!(!refs.procedural.is_empty());
+    assert!(!refs.episodic.is_empty());
+}
+
+#[test]
+fn registry_memory_refs_include_categories() {
+    let mut registry = spanda_config::EntityRegistry::default();
+    registry.entities.insert(
+        "robot-mem".into(),
+        EntityRecord {
+            id: "robot-mem".into(),
+            entity_type: EntityKind::Robot,
+            ..Default::default()
+        },
+    );
+    spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
+    let refs = registry
+        .get("robot-mem")
+        .unwrap()
+        .autonomy
+        .as_ref()
+        .and_then(|a| a.memory_refs.as_ref())
+        .expect("memory refs");
+    assert!(!refs.reflex.is_empty());
+    assert!(refs.procedural.iter().any(|p| p.contains("playbook")));
 }
 
 /// Damage Risk + Mission Planning: elevated risk index implies protective action.

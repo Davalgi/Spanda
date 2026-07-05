@@ -8,12 +8,13 @@ use crate::damage_risk::{evaluate_damage_risk, RiskSignal};
 use crate::fusion::{fuse_observations, ConfidencePolicy, SensorConfidence};
 use crate::homeostasis::{evaluate_homeostasis, HomeostasisPolicy, StabilityMetric};
 use crate::immunity::{evaluate_quarantine_decision, ImmunePolicy};
+use crate::memory::enrich_entity_memory_refs;
 use crate::reflex::{list_reflex_actions, ReflexAction};
 use crate::types::AutonomySeverity;
 use spanda_config::entity::{EntityHealthStatus, EntityRecord};
 use spanda_config::entity_autonomy::{
     EntityAttentionSnapshot, EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk,
-    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence,
+    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityRecoveryConfidence,
     EntityReflexSummary,
 };
 
@@ -130,16 +131,14 @@ fn default_profile_for_entity(entity: &EntityRecord) -> EntityAutonomyProfile {
         .into_iter()
         .map(|r| reflex_to_summary(&r))
         .collect();
+    let reflex_ids: Vec<String> = reflexes.iter().map(|r| r.id.clone()).collect();
     EntityAutonomyProfile {
         reflexes,
         attention: None,
         confidence: None,
         homeostasis: None,
         immunity_status: None,
-        memory_refs: Some(EntityMemoryRefs {
-            semantic: vec![format!("entity:{}", entity.id)],
-            ..Default::default()
-        }),
+        memory_refs: Some(enrich_entity_memory_refs(entity, &reflex_ids)),
         damage_risk: None,
         recovery_confidence: None,
         metadata: Default::default(),
