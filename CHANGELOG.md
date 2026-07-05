@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Known limitations doc:** synced to v0.6.3, organizational gates, live-backend setup links, runtime notice behavior — [known-limitations.md](docs/known-limitations.md).
 - **Release readiness:** REST `/v1/recovery/*` and gRPC marked covered by cross-interface smoke; phase set to Next horizon — [release-readiness.md](docs/release-readiness.md).
 
+### Fixed
+
+- **Dependabot / wasmtime:** bump optional `wasmtime` dependency for `spanda-plugin` WASM loader from 28.x to **36.x** (≥ 36.0.7) — resolves 26 open GitHub Dependabot alerts (CVE-2026-34987 and related April 2026 Wasmtime advisories).
+
 ## [0.6.3] - 2026-07-04
 
 ### Added
