@@ -721,6 +721,8 @@ impl Parser {
         let mut operating_modes = Vec::new();
         let mut mission_plans = Vec::new();
         let mut resilience_policies = Vec::new();
+        let homeostasis_policies = Vec::new();
+        let attention_policies = Vec::new();
         let mut recovery_policies = Vec::new();
         let mut tamper_policies = Vec::new();
         let mut continuity_policies = Vec::new();
@@ -877,6 +879,8 @@ impl Parser {
             operating_modes,
             mission_plans,
             resilience_policies,
+            homeostasis_policies,
+            attention_policies,
             recovery_policies,
             tamper_policies,
             continuity_policies,

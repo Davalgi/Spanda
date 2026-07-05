@@ -120,4 +120,5 @@ Replay <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_ro
   t=0.0ms provider_call Object {"category": String("transport"), "failed": Bool(false), "function": String("publish_topic"), "module": String("communication.mqtt"), "provider_key": String("spanda-mqtt::project")}
 
 Demo complete. See examples/showcase/autonomous_rover/README.md
+[spanda] Program uses AI models/agents; live AI is not configured — mock backend active. See docs/known-limitations.md#ai-and-providers (SPANDA_QUIET=1 to hide).
   ⚠ package requires manual review (level: experimental)

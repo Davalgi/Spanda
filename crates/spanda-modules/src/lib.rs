@@ -241,6 +241,8 @@ mod tests {
             operating_modes: vec![],
             mission_plans: vec![],
             resilience_policies: vec![],
+            homeostasis_policies: vec![],
+            attention_policies: vec![],
             recovery_policies: vec![],
             tamper_policies: vec![],
             continuity_policies: vec![],

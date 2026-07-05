@@ -550,6 +550,10 @@ pub enum Program {
         #[serde(default)]
         resilience_policies: Vec<crate::assurance_decl::ResiliencePolicyDecl>,
         #[serde(default)]
+        homeostasis_policies: Vec<crate::assurance_decl::HomeostasisPolicyDecl>,
+        #[serde(default)]
+        attention_policies: Vec<crate::assurance_decl::AttentionPolicyDecl>,
+        #[serde(default)]
         recovery_policies: Vec<crate::assurance_decl::RecoveryPolicyDecl>,
         #[serde(default)]
         tamper_policies: Vec<crate::assurance_decl::TamperPolicyDecl>,

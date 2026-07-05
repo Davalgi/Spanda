@@ -51,13 +51,19 @@ fn cmd_reflex_list(args: &[String]) {
     println!("{}", format_report(&actions, format));
 }
 
+fn reflex_hint(args: &[String]) -> &str {
+    args.iter()
+        .find(|a| {
+            !a.starts_with('-')
+                && !matches!(a.as_str(), "list" | "simulate" | "trace" | "check" | "report")
+        })
+        .map(String::as_str)
+        .unwrap_or("emergency")
+}
+
 fn cmd_reflex_simulate(args: &[String]) {
     let format = parse_format(args);
-    let hint = args
-        .iter()
-        .find(|a| !a.starts_with('-'))
-        .map(String::as_str)
-        .unwrap_or("");
+    let hint = reflex_hint(args);
     let actions = list_reflex_actions();
     let selected = evaluate_reflex_priority(&actions, hint);
     let report = serde_json::json!({
@@ -70,11 +76,7 @@ fn cmd_reflex_simulate(args: &[String]) {
 
 fn cmd_reflex_trace(args: &[String]) {
     let format = parse_format(args);
-    let hint = args
-        .iter()
-        .find(|a| !a.starts_with('-'))
-        .map(String::as_str)
-        .unwrap_or("emergency");
+    let hint = reflex_hint(args);
     let actions = list_reflex_actions();
     if let Some(action) = evaluate_reflex_priority(&actions, hint) {
         let trace = spanda_autonomy::ReflexTrace {

@@ -163,6 +163,28 @@ pub enum ResiliencePolicyDecl {
     },
 }
 
+/// Homeostasis policy declaration (preview — parser support planned).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum HomeostasisPolicyDecl {
+    HomeostasisPolicyDecl {
+        name: String,
+        metrics: Vec<String>,
+        span: Span,
+    },
+}
+
+/// Attention policy declaration (preview — parser support planned).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind")]
+pub enum AttentionPolicyDecl {
+    AttentionPolicyDecl {
+        name: String,
+        rules: Vec<String>,
+        span: Span,
+    },
+}
+
 /// Conditional branch inside a tamper policy (`on tamper severity Critical { ... }`).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TamperPolicyBranch {
