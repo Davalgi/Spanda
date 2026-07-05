@@ -200,6 +200,13 @@ service ControlCenter {
   rpc GetRecoveryPredictive(JsonBodyRequest) returns (JsonResponse);
   rpc ListRecoverableEntities(Empty) returns (JsonResponse);
   rpc RecommendRecovery(JsonBodyRequest) returns (JsonResponse);
+  // Bio-inspired autonomy (mirrors /v1/autonomy/*)
+  rpc ListAutonomyReflexes(Empty) returns (JsonResponse);
+  rpc ListAutonomyReflexTraces(Empty) returns (JsonResponse);
+  rpc GetAutonomyHomeostasis(Empty) returns (JsonResponse);
+  rpc GetAutonomyImmunity(Empty) returns (JsonResponse);
+  rpc GetAutonomyAttention(Empty) returns (JsonResponse);
+  rpc GetEntityAutonomy(EntityIdRequest) returns (JsonResponse);
   // Administration and mission control (mirrors /v1/admin/* and /v1/operator/missions)
   rpc ListAdminApiKeys(Empty) returns (JsonResponse);
   rpc CreateAdminApiKey(JsonBodyRequest) returns (JsonResponse);

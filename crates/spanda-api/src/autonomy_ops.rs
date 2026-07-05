@@ -175,3 +175,33 @@ pub fn entity_autonomy(state: &ControlCenterState, entity_id: &str) -> HttpRespo
         "recovery_confidence_score": recovery_confidence,
     }))
 }
+
+/// JSON string helper for gRPC parity.
+pub fn list_reflex_json(state: &ControlCenterState) -> String {
+    list_reflex(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn list_reflex_traces_json(state: &ControlCenterState) -> String {
+    list_reflex_traces(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn homeostasis_summary_json(state: &ControlCenterState) -> String {
+    homeostasis_summary(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn immunity_scan_json(state: &ControlCenterState) -> String {
+    immunity_scan(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn attention_queue_json(state: &ControlCenterState) -> String {
+    attention_queue(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn entity_autonomy_json(state: &ControlCenterState, entity_id: &str) -> String {
+    entity_autonomy(state, entity_id).body
+}

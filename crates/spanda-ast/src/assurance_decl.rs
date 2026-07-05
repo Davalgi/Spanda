@@ -163,7 +163,7 @@ pub enum ResiliencePolicyDecl {
     },
 }
 
-/// Homeostasis policy declaration (preview — parser support planned).
+/// Homeostasis policy declaration.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum HomeostasisPolicyDecl {
@@ -174,7 +174,7 @@ pub enum HomeostasisPolicyDecl {
     },
 }
 
-/// Attention policy declaration (preview — parser support planned).
+/// Attention policy declaration.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum AttentionPolicyDecl {

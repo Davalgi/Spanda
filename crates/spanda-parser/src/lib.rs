@@ -721,8 +721,8 @@ impl Parser {
         let mut operating_modes = Vec::new();
         let mut mission_plans = Vec::new();
         let mut resilience_policies = Vec::new();
-        let homeostasis_policies = Vec::new();
-        let attention_policies = Vec::new();
+        let mut homeostasis_policies = Vec::new();
+        let mut attention_policies = Vec::new();
         let mut recovery_policies = Vec::new();
         let mut tamper_policies = Vec::new();
         let mut continuity_policies = Vec::new();
@@ -814,6 +814,10 @@ impl Parser {
                 operational_policies.push(self.parse_operational_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "resilience_policy" {
                 resilience_policies.push(self.parse_resilience_policy()?);
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "homeostasis_policy" {
+                homeostasis_policies.push(self.parse_homeostasis_policy()?);
+            } else if self.check(TokenType::Ident) && self.peek().lexeme == "attention_policy" {
+                attention_policies.push(self.parse_attention_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "recovery_policy" {
                 recovery_policies.push(self.parse_recovery_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "tamper_policy" {
@@ -9843,6 +9847,70 @@ impl Parser {
         Ok(ResiliencePolicyDecl::ResiliencePolicyDecl {
             name,
             strategies,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_homeostasis_policy(
+        &mut self,
+    ) -> Result<spanda_ast::assurance_decl::HomeostasisPolicyDecl, SpandaError> {
+        use spanda_ast::assurance_decl::HomeostasisPolicyDecl;
+        let start = self.advance();
+        let name = self.parse_label("Expected homeostasis_policy name")?;
+        self.expect(
+            TokenType::Lbrace,
+            "Expected '{' after homeostasis_policy name",
+        )?;
+        let mut metrics = Vec::new();
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "metric" {
+                self.advance();
+                metrics.push(self.parse_label("Expected metric name")?);
+                self.expect(TokenType::Semicolon, "Expected ';' after metric")?;
+            } else {
+                return Err(SpandaError::Parse {
+                    message: "Expected metric in homeostasis_policy".into(),
+                    line: self.peek().line,
+                    column: self.peek().column,
+                });
+            }
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close homeostasis_policy")?;
+        Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
+            name,
+            metrics,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_attention_policy(
+        &mut self,
+    ) -> Result<spanda_ast::assurance_decl::AttentionPolicyDecl, SpandaError> {
+        use spanda_ast::assurance_decl::AttentionPolicyDecl;
+        let start = self.advance();
+        let name = self.parse_label("Expected attention_policy name")?;
+        self.expect(
+            TokenType::Lbrace,
+            "Expected '{' after attention_policy name",
+        )?;
+        let mut rules = Vec::new();
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "rule" {
+                self.advance();
+                rules.push(self.parse_label("Expected rule name")?);
+                self.expect(TokenType::Semicolon, "Expected ';' after rule")?;
+            } else {
+                return Err(SpandaError::Parse {
+                    message: "Expected rule in attention_policy".into(),
+                    line: self.peek().line,
+                    column: self.peek().column,
+                });
+            }
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close attention_policy")?;
+        Ok(AttentionPolicyDecl::AttentionPolicyDecl {
+            name,
+            rules,
             span: self.span_from(&start, &end),
         })
     }

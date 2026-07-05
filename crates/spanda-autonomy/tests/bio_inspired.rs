@@ -234,3 +234,45 @@ fn runtime_reflex_trace_buffer_records_hint() {
             .any(|t| t.entity_id == "robot-trace-test" && t.reflex_id.contains("obstacle"))
     );
 }
+
+#[test]
+fn platform_telemetry_enriches_homeostasis_metrics() {
+    spanda_autonomy::update_platform_telemetry(spanda_autonomy::PlatformTelemetrySnapshot {
+        scheduler_ticks: 120,
+        emergency_stops: 1,
+        deadline_misses: 3,
+        avg_task_duration_ms: 42.0,
+        provider_failures: 2,
+    });
+    let entity = EntityRecord {
+        id: "robot-telemetry".into(),
+        entity_type: EntityKind::Robot,
+        health_status: EntityHealthStatus::Healthy,
+        ..Default::default()
+    };
+    let ctx = EntityAutonomyContext::from_entity(&entity);
+    assert!(ctx.metrics.iter().any(|m| m.name == "scheduler_ticks"));
+    assert!(ctx.metrics.iter().any(|m| m.name == "runtime_load_pct"));
+}
+
+#[test]
+fn tamper_metadata_triggers_quarantine_overlay() {
+    let mut registry = spanda_config::EntityRegistry::default();
+    registry.entities.insert(
+        "robot-tamper".into(),
+        EntityRecord {
+            id: "robot-tamper".into(),
+            entity_type: EntityKind::Robot,
+            health_status: EntityHealthStatus::Healthy,
+            trust_status: EntityTrustStatus::Trusted,
+            metadata: [("tamper.detected".into(), "true".into())]
+                .into_iter()
+                .collect(),
+            ..Default::default()
+        },
+    );
+    spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
+    let entity = registry.get("robot-tamper").unwrap();
+    assert_eq!(entity.trust_status, EntityTrustStatus::Compromised);
+    assert_eq!(entity.metadata.get("autonomy.quarantined"), Some(&"true".into()));
+}

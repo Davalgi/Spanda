@@ -36,7 +36,10 @@ pub use damage_risk::{
 };
 pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, EntityAutonomyContext};
 pub use registry::apply_registry_autonomy_profiles;
-pub use runtime::{entity_damage_risk_index, recovery_confidence_from_history};
+pub use runtime::{
+    entity_damage_risk_index, platform_telemetry_snapshot, recovery_confidence_from_history,
+    update_platform_telemetry, PlatformTelemetrySnapshot,
+};
 pub use fusion::{
     detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
     SensorConfidence, SignalAgreement, SignalConflict,
@@ -71,6 +74,7 @@ pub use reflex::{
     ReflexTrace,
 };
 pub use trace_buffer::{
-    list_recorded_reflex_traces, record_reflex_trace, record_runtime_reflex,
+    default_trace_store_path, list_recorded_reflex_traces, load_reflex_traces_from_disk,
+    persist_reflex_traces_to_disk, record_reflex_trace, record_runtime_reflex,
 };
 pub use types::*;

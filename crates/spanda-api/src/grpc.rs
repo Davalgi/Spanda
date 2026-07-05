@@ -1609,6 +1609,66 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn list_autonomy_reflexes(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::list_reflex_json(state))
+            .map(Response::new)
+    }
+
+    async fn list_autonomy_reflex_traces(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::list_reflex_traces_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_autonomy_homeostasis(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::homeostasis_summary_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_autonomy_immunity(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::immunity_scan_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_autonomy_attention(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::attention_queue_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_entity_autonomy(
+        &self,
+        request: Request<EntityIdRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let entity_id = request.into_inner().entity_id;
+        self.with_state(|state| crate::autonomy_ops::entity_autonomy_json(state, &entity_id))
+            .map(Response::new)
+    }
+
     async fn list_admin_api_keys(
         &self,
         request: Request<Empty>,

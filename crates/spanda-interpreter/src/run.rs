@@ -14,6 +14,22 @@ use spanda_typecheck::ModuleRegistry;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+fn telemetry_snapshot_from_metrics(
+    metrics: &spanda_runtime::telemetry::RuntimeTelemetry,
+) -> spanda_autonomy::PlatformTelemetrySnapshot {
+    let deadline_misses: u64 = metrics.tasks.values().map(|t| t.missed_deadlines).sum();
+    let duration_sum: f64 = metrics.tasks.values().map(|t| t.last_duration_ms).sum();
+    let task_count = metrics.tasks.len().max(1) as f64;
+    let provider_failures: u64 = metrics.providers.values().map(|p| p.failures).sum();
+    spanda_autonomy::PlatformTelemetrySnapshot {
+        scheduler_ticks: metrics.scheduler.scheduler_ticks,
+        emergency_stops: metrics.scheduler.emergency_stops,
+        deadline_misses,
+        avg_task_duration_ms: duration_sum / task_count,
+        provider_failures,
+    }
+}
+
 /// Execute a type-checked program with simulation and optional provider wiring.
 pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, SpandaError> {
     // Description:
@@ -191,6 +207,7 @@ pub fn run_program(program: &Program, options: RunOptions) -> Result<RunResult, 
         }
     }
     let run_logs = logs.borrow().clone();
+    spanda_autonomy::update_platform_telemetry(telemetry_snapshot_from_metrics(&metrics));
     Ok(RunResult {
         state,
         events,

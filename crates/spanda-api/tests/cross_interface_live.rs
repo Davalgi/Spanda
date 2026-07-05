@@ -107,3 +107,46 @@ async fn grpc_recovery_plan_matches_rest() {
         grpc.json
     );
 }
+
+#[tokio::test]
+async fn grpc_autonomy_matches_rest() {
+    let grpc_bind = require_env("SPANDA_XIFACE_GRPC_BIND");
+    let http_base = require_env("SPANDA_XIFACE_HTTP_BASE");
+
+    let rest = ureq::get(&format!("{http_base}/v1/autonomy/reflex"))
+        .call()
+        .expect("rest autonomy reflex")
+        .into_json::<serde_json::Value>()
+        .expect("rest autonomy reflex json");
+    assert!(rest.get("reflexes").is_some(), "rest reflex missing: {rest}");
+
+    let mut client = connect_grpc(&grpc_bind).await;
+    let grpc = client
+        .list_autonomy_reflexes(Empty {})
+        .await
+        .expect("grpc autonomy reflex")
+        .into_inner();
+    assert!(
+        grpc.json.contains("reflex.emergency_stop"),
+        "grpc reflex missing catalog: {}",
+        grpc.json
+    );
+
+    let rest_homeo = ureq::get(&format!("{http_base}/v1/autonomy/homeostasis"))
+        .call()
+        .expect("rest homeostasis")
+        .into_json::<serde_json::Value>()
+        .expect("rest homeostasis json");
+    assert!(rest_homeo.get("reports").is_some(), "rest homeostasis: {rest_homeo}");
+
+    let grpc_homeo = client
+        .get_autonomy_homeostasis(Empty {})
+        .await
+        .expect("grpc homeostasis")
+        .into_inner();
+    assert!(
+        grpc_homeo.json.contains("reports"),
+        "grpc homeostasis missing reports: {}",
+        grpc_homeo.json
+    );
+}

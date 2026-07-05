@@ -108,6 +108,7 @@ pub fn hydrate_runtime_state(state: &mut ControlCenterState) {
     crate::report_scheduler::hydrate_report_schedules(state);
     crate::admin_users::hydrate_admin_users(state);
     crate::alert_channels::hydrate_alert_channels(state);
+    spanda_autonomy::load_reflex_traces_from_disk();
 }
 
 /// Persist alerts and traces to disk.
@@ -159,5 +160,6 @@ pub fn persist_runtime_state(state: &ControlCenterState) -> Result<(), String> {
         serde_json::to_string_pretty(&recovery).map_err(|error| error.to_string())?,
     )
     .map_err(|error| error.to_string())?;
+    spanda_autonomy::persist_reflex_traces_to_disk()?;
     Ok(())
 }
