@@ -196,7 +196,10 @@ fn entity_integration_autonomy_profile() {
     let profile = entity.autonomy.as_ref().unwrap();
     assert!(profile.homeostasis.as_ref().is_some_and(|h| !h.stable));
     assert!(profile.damage_risk.as_ref().is_some_and(|d| d.index > 0.0));
-    assert!(profile.attention.as_ref().is_some_and(|a| a.queue_depth > 0));
+    assert!(profile
+        .attention
+        .as_ref()
+        .is_some_and(|a| a.queue_depth > 0));
 }
 
 #[test]
@@ -229,11 +232,9 @@ fn runtime_reflex_trace_buffer_records_hint() {
         "brake_and_hold",
     );
     let traces = spanda_autonomy::list_recorded_reflex_traces();
-    assert!(
-        traces
-            .iter()
-            .any(|t| t.entity_id == "robot-trace-test" && t.reflex_id.contains("obstacle"))
-    );
+    assert!(traces
+        .iter()
+        .any(|t| t.entity_id == "robot-trace-test" && t.reflex_id.contains("obstacle")));
 }
 
 #[test]
@@ -275,5 +276,8 @@ fn tamper_metadata_triggers_quarantine_overlay() {
     spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
     let entity = registry.get("robot-tamper").unwrap();
     assert_eq!(entity.trust_status, EntityTrustStatus::Compromised);
-    assert_eq!(entity.metadata.get("autonomy.quarantined"), Some(&"true".into()));
+    assert_eq!(
+        entity.metadata.get("autonomy.quarantined"),
+        Some(&"true".into())
+    );
 }

@@ -7,8 +7,8 @@ use spanda_autonomy::{
     analyze_alert_fatigue, apply_habituation, apply_sensitization, compute_recovery_confidence,
     evaluate_homeostasis, evaluate_quarantine_decision, evaluate_reflex_priority,
     fuse_observations, list_reflex_actions, AdaptiveRecoveryPolicy, ConfidencePolicy,
-    HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory,
-    RepetitionPattern, SensitizationPolicy, SensorConfidence, StabilityMetric,
+    HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory, RepetitionPattern,
+    SensitizationPolicy, SensorConfidence, StabilityMetric,
 };
 use spanda_config::build_entity_registry;
 use std::process;
@@ -55,7 +55,10 @@ fn reflex_hint(args: &[String]) -> &str {
     args.iter()
         .find(|a| {
             !a.starts_with('-')
-                && !matches!(a.as_str(), "list" | "simulate" | "trace" | "check" | "report")
+                && !matches!(
+                    a.as_str(),
+                    "list" | "simulate" | "trace" | "check" | "report"
+                )
         })
         .map(String::as_str)
         .unwrap_or("emergency")

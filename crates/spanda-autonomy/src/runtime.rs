@@ -144,7 +144,11 @@ fn stability_metrics_from_entity(entity: &EntityRecord) -> Vec<StabilityMetric> 
         value: memory,
         unit: "pct".into(),
     });
-    if let Some(battery) = entity.metadata.get("battery_pct").and_then(|v| v.parse().ok()) {
+    if let Some(battery) = entity
+        .metadata
+        .get("battery_pct")
+        .and_then(|v| v.parse().ok())
+    {
         metrics.push(StabilityMetric {
             name: "battery_pct".into(),
             value: battery,
@@ -234,7 +238,11 @@ pub fn sensor_readings_from_entity(entity: &EntityRecord) -> Vec<SensorConfidenc
             timestamp: None,
         },
     ];
-    if let Some(battery) = entity.metadata.get("battery_pct").and_then(|v| v.parse().ok()) {
+    if let Some(battery) = entity
+        .metadata
+        .get("battery_pct")
+        .and_then(|v| v.parse().ok())
+    {
         readings.push(SensorConfidence {
             source: "battery_pct".into(),
             value: battery,

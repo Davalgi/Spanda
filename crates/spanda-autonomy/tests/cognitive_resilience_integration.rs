@@ -1,16 +1,16 @@
 //! Cross-domain integration tests for the Cognitive & Resilience Architecture.
 //!
+use spanda_autonomy::attention::compute_attention_score;
+use spanda_autonomy::types::AutonomySeverity;
 use spanda_autonomy::{
     apply_habituation, attach_default_autonomy_profile, categorize_memory,
     compute_recovery_confidence, detect_signal_conflict, enrich_entity_autonomy,
     evaluate_damage_risk, evaluate_homeostasis, evaluate_quarantine_decision,
-    evaluate_reflex_priority, fuse_observations, list_reflex_actions,
-    rank_events, AdaptiveRecoveryPolicy, AttentionPolicy, ConfidencePolicy, EntityAutonomyContext,
+    evaluate_reflex_priority, fuse_observations, list_reflex_actions, rank_events,
+    AdaptiveRecoveryPolicy, AttentionPolicy, ConfidencePolicy, EntityAutonomyContext,
     EventPriority, HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory,
     RepetitionPattern, RiskSignal, SensorConfidence, StabilityMetric,
 };
-use spanda_autonomy::attention::compute_attention_score;
-use spanda_autonomy::types::AutonomySeverity;
 use spanda_config::entity::{
     EntityHealthStatus, EntityKind, EntityReadinessStatus, EntityRecord, EntityTrustStatus,
 };
@@ -29,7 +29,11 @@ fn sample_robot(id: &str, health: EntityHealthStatus, trust: EntityTrustStatus) 
 /// Reflex + Homeostasis: unstable homeostasis should correlate with reflex-eligible entity state.
 #[test]
 fn reflex_and_homeostasis_interaction() {
-    let entity = sample_robot("robot-h", EntityHealthStatus::Degraded, EntityTrustStatus::Trusted);
+    let entity = sample_robot(
+        "robot-h",
+        EntityHealthStatus::Degraded,
+        EntityTrustStatus::Trusted,
+    );
     let metrics = vec![StabilityMetric {
         name: "memory_pct".into(),
         value: 96.0,
@@ -65,7 +69,11 @@ fn fusion_and_readiness_interaction() {
     let fused = fuse_observations("position", &readings, &ConfidencePolicy::default());
     assert!(!fused.confidence.meets_policy);
 
-    let mut entity = sample_robot("robot-f", EntityHealthStatus::Healthy, EntityTrustStatus::Trusted);
+    let mut entity = sample_robot(
+        "robot-f",
+        EntityHealthStatus::Healthy,
+        EntityTrustStatus::Trusted,
+    );
     entity.readiness_status = EntityReadinessStatus::Partial;
     let ctx = EntityAutonomyContext {
         sensor_readings: readings,
@@ -73,13 +81,20 @@ fn fusion_and_readiness_interaction() {
     };
     enrich_entity_autonomy(&mut entity, &ctx);
     let profile = entity.autonomy.as_ref().unwrap();
-    assert!(profile.confidence.as_ref().is_some_and(|c| !c.conflicts.is_empty()));
+    assert!(profile
+        .confidence
+        .as_ref()
+        .is_some_and(|c| !c.conflicts.is_empty()));
 }
 
 /// Immunity + Trust: untrusted entity triggers quarantine aligned with trust status.
 #[test]
 fn immunity_and_trust_interaction() {
-    let entity = sample_robot("robot-i", EntityHealthStatus::Healthy, EntityTrustStatus::Untrusted);
+    let entity = sample_robot(
+        "robot-i",
+        EntityHealthStatus::Healthy,
+        EntityTrustStatus::Untrusted,
+    );
     let decision = evaluate_quarantine_decision(&entity, &ImmunePolicy::platform_defaults());
     assert!(decision.quarantine);
 
@@ -99,13 +114,11 @@ fn immunity_and_trust_interaction() {
     spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
     let updated = registry.get("robot-tamper").unwrap();
     assert_eq!(updated.trust_status, EntityTrustStatus::Compromised);
-    assert!(
-        updated
-            .autonomy
-            .as_ref()
-            .and_then(|a| a.immunity_status.as_ref())
-            .is_some_and(|i| i.quarantined)
-    );
+    assert!(updated
+        .autonomy
+        .as_ref()
+        .and_then(|a| a.immunity_status.as_ref())
+        .is_some_and(|i| i.quarantined));
 }
 
 /// Attention + Recovery: recovery-related events rank above routine telemetry.
@@ -124,13 +137,20 @@ fn attention_and_recovery_interaction() {
         AutonomySeverity::High,
     );
     let window = rank_events(vec![routine, recovery_event], &AttentionPolicy::default());
-    assert_eq!(window.items.first().map(|i| i.event_id.as_str()), Some("recovery-1"));
+    assert_eq!(
+        window.items.first().map(|i| i.event_id.as_str()),
+        Some("recovery-1")
+    );
 }
 
 /// Operational Memory + Replay: trace artifacts map to episodic memory category.
 #[test]
 fn fusion_entity_derived_sensor_readings() {
-    let entity = sample_robot("robot-fusion", EntityHealthStatus::Degraded, EntityTrustStatus::Trusted);
+    let entity = sample_robot(
+        "robot-fusion",
+        EntityHealthStatus::Degraded,
+        EntityTrustStatus::Trusted,
+    );
     let readings = spanda_autonomy::sensor_readings_from_entity(&entity);
     assert!(readings.len() >= 3);
     let fused = fuse_observations("health_bundle", &readings, &ConfidencePolicy::default());
@@ -139,10 +159,20 @@ fn fusion_entity_derived_sensor_readings() {
 
 #[test]
 fn operational_memory_and_replay_interaction() {
-    assert_eq!(categorize_memory("trace"), spanda_autonomy::MemoryCategory::Episodic);
-    assert_eq!(categorize_memory("replay"), spanda_autonomy::MemoryCategory::Episodic);
+    assert_eq!(
+        categorize_memory("trace"),
+        spanda_autonomy::MemoryCategory::Episodic
+    );
+    assert_eq!(
+        categorize_memory("replay"),
+        spanda_autonomy::MemoryCategory::Episodic
+    );
 
-    let mut entity = sample_robot("robot-m", EntityHealthStatus::Healthy, EntityTrustStatus::Trusted);
+    let mut entity = sample_robot(
+        "robot-m",
+        EntityHealthStatus::Healthy,
+        EntityTrustStatus::Trusted,
+    );
     attach_default_autonomy_profile(&mut entity);
     let refs = entity
         .autonomy
@@ -190,7 +220,11 @@ fn damage_risk_and_mission_planning_interaction() {
     assert!(risk.index > 0.0);
     assert!(!risk.protective_actions.is_empty());
 
-    let mut entity = sample_robot("robot-d", EntityHealthStatus::Critical, EntityTrustStatus::Trusted);
+    let mut entity = sample_robot(
+        "robot-d",
+        EntityHealthStatus::Critical,
+        EntityTrustStatus::Trusted,
+    );
     let ctx = EntityAutonomyContext {
         risk_signals: signals,
         ..Default::default()
@@ -254,5 +288,7 @@ fn adaptive_recovery_and_orchestrator_interaction() {
         trend: "worsening".into(),
     }];
     let suppressions = apply_habituation(&patterns, &HabituationPolicy::default());
-    assert!(suppressions.iter().any(|s| !s.suppressed || s.label == "recovery_failed"));
+    assert!(suppressions
+        .iter()
+        .any(|s| !s.suppressed || s.label == "recovery_failed"));
 }

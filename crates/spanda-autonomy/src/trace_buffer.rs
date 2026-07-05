@@ -143,7 +143,10 @@ mod tests {
         let _guard = TEST_LOCK.lock().expect("test lock");
         let dir = tempfile::tempdir().expect("tempdir");
         let path = dir.path().join("traces.json");
-        std::env::set_var("SPANDA_AUTONOMY_TRACE_FILE", path.to_string_lossy().as_ref());
+        std::env::set_var(
+            "SPANDA_AUTONOMY_TRACE_FILE",
+            path.to_string_lossy().as_ref(),
+        );
         record_reflex_trace(ReflexTrace {
             reflex_id: "reflex.test".into(),
             entity_id: "robot-test".into(),

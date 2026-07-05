@@ -118,7 +118,10 @@ async fn grpc_autonomy_matches_rest() {
         .expect("rest autonomy reflex")
         .into_json::<serde_json::Value>()
         .expect("rest autonomy reflex json");
-    assert!(rest.get("reflexes").is_some(), "rest reflex missing: {rest}");
+    assert!(
+        rest.get("reflexes").is_some(),
+        "rest reflex missing: {rest}"
+    );
 
     let mut client = connect_grpc(&grpc_bind).await;
     let grpc = client
@@ -137,7 +140,10 @@ async fn grpc_autonomy_matches_rest() {
         .expect("rest homeostasis")
         .into_json::<serde_json::Value>()
         .expect("rest homeostasis json");
-    assert!(rest_homeo.get("reports").is_some(), "rest homeostasis: {rest_homeo}");
+    assert!(
+        rest_homeo.get("reports").is_some(),
+        "rest homeostasis: {rest_homeo}"
+    );
 
     let grpc_homeo = client
         .get_autonomy_homeostasis(Empty {})
@@ -155,7 +161,10 @@ async fn grpc_autonomy_matches_rest() {
         .expect("rest fusion")
         .into_json::<serde_json::Value>()
         .expect("rest fusion json");
-    assert!(rest_fusion.get("fusion").is_some(), "rest fusion: {rest_fusion}");
+    assert!(
+        rest_fusion.get("fusion").is_some(),
+        "rest fusion: {rest_fusion}"
+    );
 
     let grpc_fusion = client
         .get_autonomy_fusion(Empty {})
@@ -173,7 +182,10 @@ async fn grpc_autonomy_matches_rest() {
         .expect("rest memory")
         .into_json::<serde_json::Value>()
         .expect("rest memory json");
-    assert!(rest_memory.get("memory").is_some(), "rest memory: {rest_memory}");
+    assert!(
+        rest_memory.get("memory").is_some(),
+        "rest memory: {rest_memory}"
+    );
 
     let grpc_memory = client
         .get_autonomy_memory(Empty {})

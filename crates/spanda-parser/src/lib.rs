@@ -9875,7 +9875,10 @@ impl Parser {
                 });
             }
         }
-        let end = self.expect(TokenType::Rbrace, "Expected '}' to close homeostasis_policy")?;
+        let end = self.expect(
+            TokenType::Rbrace,
+            "Expected '}' to close homeostasis_policy",
+        )?;
         Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
             name,
             metrics,

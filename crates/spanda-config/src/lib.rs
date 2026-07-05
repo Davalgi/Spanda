@@ -110,7 +110,7 @@ pub use entity::{
     EntitySecurityIdentity, EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,
 };
 pub use entity_autonomy::{
-    EntityAutonomyProfile, EntityAttentionSnapshot, EntityConfidenceSnapshot, EntityDamageRisk,
+    EntityAttentionSnapshot, EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk,
     EntityHomeostasisSnapshot, EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence,
     EntityReflexSummary,
 };

@@ -123,7 +123,10 @@ pub fn enrich_entity_memory_refs(
     refs.procedural.push("recovery.playbooks".into());
     refs.procedural.push("decision.policies".into());
     refs.episodic.push(format!("trace:{}", entity.id));
-    if matches!(entity.entity_type, EntityKind::Mission | EntityKind::Incident) {
+    if matches!(
+        entity.entity_type,
+        EntityKind::Mission | EntityKind::Incident
+    ) {
         refs.episodic.push(format!("mission:{}", entity.id));
     }
     if let Some(mission_id) = entity.metadata.get("mission_id") {

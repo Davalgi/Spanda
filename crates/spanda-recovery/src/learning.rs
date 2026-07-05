@@ -166,10 +166,7 @@ pub fn compute_metrics(
 }
 
 /// Per-entity adaptive recovery confidence via spanda-autonomy rule-based learning.
-pub fn entity_autonomy_recovery_confidence(
-    entity_id: &str,
-    history: &RecoveryHistoryStore,
-) -> f64 {
+pub fn entity_autonomy_recovery_confidence(entity_id: &str, history: &RecoveryHistoryStore) -> f64 {
     use spanda_autonomy::adaptive_recovery::RecoveryHistory as AutonomyRecoveryHistory;
     use spanda_autonomy::recovery_confidence_from_history;
     let entries: Vec<AutonomyRecoveryHistory> = history

@@ -1,5 +1,6 @@
 //! REST API for bio-inspired resilient autonomy (CLI/SDK parity).
 //!
+use spanda_autonomy::adaptive_recovery::RecoveryHistory;
 use spanda_autonomy::attention::{compute_attention_score, AttentionPolicy, EventPriority};
 use spanda_autonomy::reflex::{evaluate_reflex_priority, ReflexTrace};
 use spanda_autonomy::types::AutonomySeverity;
@@ -8,7 +9,6 @@ use spanda_autonomy::{
     list_reflex_actions, rank_events, recovery_confidence_from_history, EntityAutonomyContext,
     HomeostasisPolicy, ImmunePolicy,
 };
-use spanda_autonomy::adaptive_recovery::RecoveryHistory;
 use spanda_deploy_http::HttpResponse;
 
 use crate::handlers::json_ok;
@@ -130,10 +130,7 @@ pub fn attention_queue(state: &ControlCenterState) -> HttpResponse {
             _ => continue,
         };
         scores.push(compute_attention_score(
-            &entity.id,
-            &label,
-            priority,
-            severity,
+            &entity.id, &label, priority, severity,
         ));
     }
     let window = rank_events(scores, &AttentionPolicy::default());
@@ -164,10 +161,7 @@ pub fn entity_autonomy(state: &ControlCenterState, entity_id: &str) -> HttpRespo
         .collect();
     let ctx = EntityAutonomyContext::from_entity(&entity).with_recovery_history(recovery_history);
     enrich_entity_autonomy(&mut entity, &ctx);
-    let recovery_confidence = recovery_confidence_from_history(
-        entity_id,
-        &ctx.recovery_history,
-    );
+    let recovery_confidence = recovery_confidence_from_history(entity_id, &ctx.recovery_history);
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "entity_id": entity_id,

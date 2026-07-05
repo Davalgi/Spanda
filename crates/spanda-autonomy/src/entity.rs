@@ -14,8 +14,7 @@ use crate::types::AutonomySeverity;
 use spanda_config::entity::{EntityHealthStatus, EntityRecord};
 use spanda_config::entity_autonomy::{
     EntityAttentionSnapshot, EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk,
-    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityRecoveryConfidence,
-    EntityReflexSummary,
+    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityRecoveryConfidence, EntityReflexSummary,
 };
 
 /// Context for enriching entity autonomy from platform state.

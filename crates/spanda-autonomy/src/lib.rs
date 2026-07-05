@@ -35,11 +35,6 @@ pub use damage_risk::{
     evaluate_damage_risk, DamageRisk, HarmPotential, ProtectiveAction, RiskSignal, SafetyPainIndex,
 };
 pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, EntityAutonomyContext};
-pub use registry::apply_registry_autonomy_profiles;
-pub use runtime::{
-    entity_damage_risk_index, platform_telemetry_snapshot, recovery_confidence_from_history,
-    sensor_readings_from_entity, update_platform_telemetry, PlatformTelemetrySnapshot,
-};
 pub use fusion::{
     detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
     SensorConfidence, SignalAgreement, SignalConflict,
@@ -63,8 +58,8 @@ pub use maintenance::{
 };
 pub use memory::{
     build_operational_memory_model, categorize_memory, enrich_entity_memory_refs,
-    map_trace_to_memory, EpisodicMemory, MemoryCategory, OperationalMemoryModel,
-    ProceduralMemory, ReflexMemory, SemanticMemory, WorkingMemory,
+    map_trace_to_memory, EpisodicMemory, MemoryCategory, OperationalMemoryModel, ProceduralMemory,
+    ReflexMemory, SemanticMemory, WorkingMemory,
 };
 pub use peripheral::{
     EdgeCoordinator, LocalAutonomyNode, PeripheralAutonomyLayer, PeripheralNode,
@@ -73,6 +68,11 @@ pub use peripheral::{
 pub use reflex::{
     evaluate_reflex_priority, list_reflex_actions, ReflexAction, ReflexArc, ReflexController,
     ReflexTrace,
+};
+pub use registry::apply_registry_autonomy_profiles;
+pub use runtime::{
+    entity_damage_risk_index, platform_telemetry_snapshot, recovery_confidence_from_history,
+    sensor_readings_from_entity, update_platform_telemetry, PlatformTelemetrySnapshot,
 };
 pub use trace_buffer::{
     default_trace_store_path, list_recorded_reflex_traces, load_reflex_traces_from_disk,
