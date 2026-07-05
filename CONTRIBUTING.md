@@ -42,9 +42,17 @@ npm test
 # Rust
 cargo test --workspace
 
-# Both (recommended before PR)
-npm test && cargo test --workspace
+# Full PR gate (matches CI Fast workflow)
+./scripts/ci-fast.sh
 ```
+
+Optional pre-push hook (fmt + cross-surface check):
+
+```bash
+./scripts/setup-githooks.sh
+```
+
+See [docs/ci-architecture.md](docs/ci-architecture.md) for tiered CI (Fast / Integration / Nightly).
 
 ### Format and lint
 
@@ -239,7 +247,7 @@ Spanda uses [Semantic Versioning](https://semver.org/). User-facing changes belo
 
 ### Automatic releases (preferred)
 
-After CI passes on `main`, the **Auto release** workflow bumps the workspace version and pushes a `vX.Y.Z` tag when the **merged** pull request has one of these labels:
+After **CI Integration** passes on `main`, the **Auto release** workflow bumps the workspace version and pushes a `vX.Y.Z` tag when the **merged** pull request has one of these labels:
 
 | Label | When to use |
 |-------|-------------|
@@ -265,9 +273,12 @@ python3 scripts/bump_version.py minor --dry-run
 
 1. Fork the repository and create a feature branch
 2. Make focused changes with tests
-3. Run the full test suite locally
+3. Run `./scripts/ci-fast.sh` locally (or the individual commands in [docs/ci-architecture.md](docs/ci-architecture.md))
 4. Open a PR against `main` with a clear description
-5. CI must pass (Rust tests, fmt, clippy, TypeScript tests, build, ROS2 rclrs native job on Ubuntu 22.04)
+5. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk, cross-surface-check, cross-interface)
+6. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking more work
+
+Cross-surface API changes: follow the checklist in [docs/ci-architecture.md#cross-surface-change-protocol](docs/ci-architecture.md#cross-surface-change-protocol).
 
 ---
 

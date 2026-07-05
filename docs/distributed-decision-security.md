@@ -143,7 +143,7 @@ The `distributed-decisions` CI job runs:
 - GPS loss recovery flagship demo
 - Decision trace validation and audit
 
-See `.github/workflows/ci.yml` job `distributed-decisions`.
+See `.github/workflows/ci-integration.yml` job `distributed-decisions`.
 
 ## Related
 

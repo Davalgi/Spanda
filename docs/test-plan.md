@@ -121,7 +121,11 @@ spanda readiness examples/showcase/policy/warehouse.sd --policy WarehousePolicy
 
 ## CI
 
-`.github/workflows/ci.yml`: TypeScript tests, Rust tests, architecture validation (`validate_architecture.py`), WASM + web build, enterprise ops smoke (when enabled), `smart-spaces-promotion-gate` (API + live probe after smoke).
+Tiered workflows — see [ci-architecture.md](./ci-architecture.md):
+
+- **CI Fast** (`.github/workflows/ci-fast.yml`): PR gate — fmt, clippy, workspace tests, SDK tests, cross-interface
+- **CI Integration** (`.github/workflows/ci-integration.yml`): `main` smokes, golden paths, LSP, WASM, release-hardening
+- **CI Nightly** (`.github/workflows/ci-nightly.yml`): promotion gates, ROS2, audit, desktop builds
 
 ## Acceptance criteria per feature
 

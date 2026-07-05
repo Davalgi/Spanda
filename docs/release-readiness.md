@@ -11,25 +11,33 @@ Snapshot for **v0.6.3** (evaluation / beta). Update when quality gates or phase 
 
 | Gate | Status | Notes |
 |------|--------|-------|
-| `cargo fmt --all -- --check` | Required in CI | `.github/workflows/ci.yml` rust job |
-| `cargo clippy --workspace -- -D warnings` | Required in CI | Same |
-| `cargo build -p spanda --release` | Required in CI | Used by smoke jobs |
-| `cargo doc --workspace --no-deps` | Required in CI | Same |
+| **CI Fast** (`lint-rust`, `test-rust`, `test-typescript`, SDK tests, `cross-interface`) | Required on PRs | [.github/workflows/ci-fast.yml](../.github/workflows/ci-fast.yml) |
+| **CI Integration** (smokes, golden paths, LSP, WASM) | Required on `main` after merge | [.github/workflows/ci-integration.yml](../.github/workflows/ci-integration.yml) |
+| **CI Nightly** (promotion gates, ROS2, audit, desktop) | Signal only | [.github/workflows/ci-nightly.yml](../.github/workflows/ci-nightly.yml) |
+| Local parity | `./scripts/ci-fast.sh` | [ci-architecture.md](./ci-architecture.md) |
+
+## Build status (compile gates)
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| `cargo fmt --all -- --check` | CI Fast `lint-rust` | |
+| `cargo clippy --workspace -- -D warnings` | CI Fast `lint-rust` | |
+| `cargo build -p spanda --release` | CI Fast `build-spanda` (once per workflow) | Artifact reused in integration |
+| `cargo doc --workspace --no-deps` | CI Integration `docs-build` | |
 
 ## Test status
 
 | Suite | Status | Notes |
 |-------|--------|-------|
-| `cargo test --workspace` | Required in CI | Includes security + property regressions |
-| `npm test` (repo TypeScript) | Required in CI | typescript job |
-| Python SDK (`sdk/python`) | Required in CI | pytest |
-| TypeScript SDK (`sdk/typescript`) | Required in CI | npm test |
-| README command smoke | Required in CI | `tests/readme_commands/run.sh` |
-| Golden-output flagship commands | Required in CI | `tests/readme_commands/run.sh --golden` |
-| Cross-interface consistency | Required in CI | `scripts/cross_interface_consistency.sh` |
-| Cognitive & Resilience smoke | Required in CI | `scripts/cognitive_resilience_smoke.sh` |
-| Security regressions | Required in CI | plugin / package / decision / recovery tests |
-| Property-style parsers | Required in CI | parser, manifest, config, policy, capability |
+| `cargo test --workspace` | CI Fast `test-rust` | |
+| `npm test` (repo TypeScript) | CI Fast `test-typescript` | |
+| Python SDK (`sdk/python`) | CI Fast `test-python-sdk` | pytest |
+| TypeScript SDK (`sdk/typescript`) | CI Fast `test-ts-sdk` | npm test |
+| Cross-interface consistency | CI Fast + Integration | `scripts/cross_interface_consistency.sh` |
+| README command smoke + golden | CI Integration `core-smokes` | `tests/readme_commands/run.sh` |
+| Cognitive & Resilience smoke | CI Integration | `scripts/cognitive_resilience_smoke.sh` |
+| Security regressions | CI Integration `release-hardening` | plugin / package / decision / recovery tests |
+| Property-style parsers | CI Integration `release-hardening` | parser, manifest, config, policy, capability |
 
 ## Docs status
 

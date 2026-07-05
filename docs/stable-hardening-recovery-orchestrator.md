@@ -15,7 +15,7 @@ Runs:
 
 Skip smoke only: `SPANDA_RECOVERY_SKIP_SMOKE=1 ./scripts/recovery_orchestrator_stable_promotion_gate.sh`
 
-Skip field soak timer in CI: `SPANDA_RECOVERY_SKIP_SOAK=1` (default in `.github/workflows/ci.yml` job `recovery-orchestrator-stable-promotion-gate`).
+Skip field soak timer in CI: `SPANDA_RECOVERY_SKIP_SOAK=1` (default in `.github/workflows/ci-nightly.yml` job `recovery-orchestrator-stable-promotion-gate`).
 
 ### Field soak (organizational gate)
 

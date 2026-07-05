@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rust `GrpcClient` autonomy RPCs:** `list_autonomy_reflexes`, `get_autonomy_fusion`, `get_autonomy_memory`, and related methods; SDK guides updated (`sdk-rust.md`, `sdk-typescript.md`, `sdk-python.md`).
 - **Control Center Strategic Planning panel:** governance and deployment profile summary on Cognitive & Resilience tab.
 - **Capability maturity pass:** entity-derived sensory fusion (`sensor_readings_from_entity`), enriched operational memory refs + `OperationalMemoryModel` on `/v1/autonomy/memory`; promotion tiers documented in [cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md); [platform-maintenance.md](docs/platform-maintenance.md) domain guide; `scripts/cognitive_resilience_smoke.sh` CI alias.
+- **Tiered CI:** CI Fast (PR gate), CI Integration (`main` smokes/golden paths), CI Nightly (promotion gates, ROS2, audit) — [ci-architecture.md](docs/ci-architecture.md); local `./scripts/ci-fast.sh`, optional `.githooks/pre-push`, `scripts/check_cross_surface.sh`.
 - **`spanda-autonomy` crate:** core types, entity `autonomy` profile integration, CLI commands (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`), REST `/v1/autonomy/*` and `/v1/entities/{id}/autonomy`, SDK `AutonomyClient`, Control Center **Resilient Autonomy** tab (live REST panels).
 - **Bio-inspired autonomy Phase A–C:** OpenAPI parity for autonomy routes; entity registry auto-profiles; TypeScript/Python SDK methods; Control Center live REST panels; README golden tests; runtime entity context from health/trust; recovery↔autonomy confidence bridge; in-process reflex trace buffer wired from kill switch and reflex decision trees; `homeostasis_policy` / `attention_policy` in `.sd`; `scripts/bio_inspired_autonomy_smoke.sh`.
 - **Bio-inspired autonomy Phase D + platform hardening:** parse `homeostasis_policy` / `attention_policy` in `.sd`; scheduler telemetry homeostasis; tamper→quarantine registry overlay; file-backed reflex traces; gRPC autonomy RPCs (proto 1.0.13); cross-interface autonomy checks; CI job `bio-inspired-autonomy`; field soak clock documented (started 2026-06-29).
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CI restructure:** replaced monolithic `.github/workflows/ci.yml` with **CI Fast** (PR required), **CI Integration** (`main` after merge), and **CI Nightly** (cron + manual). Auto-release now waits for CI Integration. `cargo audit` moved to nightly.
 - **Public positioning:** README, getting-started, and release docs state **v0.6.3 evaluation / beta** with links to known limitations and organizational gates.
 - **Phase policy:** [scope-control.md](docs/scope-control.md) transitions from release hardening to **Next horizon** (hardening + adoption toward v1.0).
 - **Release milestones:** [ROADMAP.md](ROADMAP.md) adds v0.6.3 milestone; v1.0 section includes organizational gate table.
@@ -39,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **TypeScript mirror:** `compile.ts` fallback `Program` stub includes `decisionTrees` and `offlinePolicies`.
+- **Rustfmt:** autonomy/API cross-interface test formatting drift.
 - **Dependabot / wasmtime:** bump optional `wasmtime` dependency for `spanda-plugin` WASM loader from 28.x to **36.x** (≥ 36.0.7) — resolves 26 open GitHub Dependabot alerts (CVE-2026-34987 and related April 2026 Wasmtime advisories).
 
 ## [0.6.3] - 2026-07-04

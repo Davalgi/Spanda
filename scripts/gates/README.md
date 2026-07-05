@@ -2,7 +2,9 @@
 
 Index of regression and promotion gates organized by **Platform Pillar** and **Solution Blueprint**.
 
-**Architecture validation:** `python3 scripts/validate_architecture.py --check-manifest-sync` · **Blueprints:** `python3 scripts/validate_blueprints.py` (both in CI `rust` job)
+**Architecture validation:** `python3 scripts/validate_architecture.py --check-manifest-sync` · **Blueprints:** `python3 scripts/validate_blueprints.py` (both in CI Fast `lint-rust`)
+
+**Local PR gate:** `./scripts/ci-fast.sh` · **CI tiers:** [docs/ci-architecture.md](../docs/ci-architecture.md)
 
 **Run all examples:** `./scripts/check_all_examples.sh`
 

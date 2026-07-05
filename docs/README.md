@@ -37,6 +37,8 @@
 | [spanda-101/README.md](./spanda-101/README.md) | **Spanda 101 — 10-lesson tutorial series (basics → end-to-end)** |
 | [installation.md](./installation.md) | **Prebuilt packages for Linux, macOS, and Windows** |
 | [troubleshooting.md](./troubleshooting.md) | **CLI install, SDK setup, verify, fleet, ROS2, Control Center, CI — symptom-first fixes** |
+| [ci-architecture.md](./ci-architecture.md) | **Tiered CI (Fast / Integration / Nightly), branch protection, cross-surface protocol** |
+| [ci-verify.md](./ci-verify.md) | **Customer CI templates for `spanda verify`** |
 | [architecture.md](./architecture.md) | **Compiler pipeline with diagrams** |
 | [platform-architecture.md](./platform-architecture.md) | **Platform Architecture v2.0 — layers, governance, validation** |
 | [layered-architecture.md](./layered-architecture.md) | **Official layer stack and crate mapping** |

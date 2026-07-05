@@ -534,11 +534,10 @@ See [editor/vscode/README.md](../editor/vscode/README.md) · [debugging.md](./de
 
 ```bash
 npm install && npm run build:rust
-cargo test --workspace
-npm test
+./scripts/ci-fast.sh
 ```
 
-Gate index: [scripts/gates/README.md](../scripts/gates/README.md).
+Gate index: [scripts/gates/README.md](../scripts/gates/README.md) · CI tiers: [ci-architecture.md](./ci-architecture.md).
 
 ---
 

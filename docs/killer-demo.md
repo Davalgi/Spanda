@@ -209,7 +209,7 @@ When the native CLI is built, run the golden path script or the showcase test su
 npm test -- tests/showcase.test.ts
 ```
 
-CI job: `killer-demo-golden-path` in `.github/workflows/ci.yml`.
+CI job: `killer-demo-golden-path` in `.github/workflows/ci-integration.yml`.
 
 ---
 

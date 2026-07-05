@@ -8,7 +8,7 @@ Formal validation envelope produced by the Recovery Orchestrator dry-run and exe
 ./scripts/recovery_orchestrator_stable_promotion_gate.sh
 ```
 
-CI job: `recovery-orchestrator-stable-promotion-gate` in `.github/workflows/ci.yml`.
+CI job: `recovery-orchestrator-stable-promotion-gate` in `.github/workflows/ci-nightly.yml`.
 
 Field soak (30-day organizational gate):
 
