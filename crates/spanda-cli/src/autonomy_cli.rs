@@ -7,7 +7,7 @@ use spanda_autonomy::{
     analyze_alert_fatigue, apply_habituation, apply_sensitization, compute_recovery_confidence,
     evaluate_homeostasis, evaluate_quarantine_decision, evaluate_reflex_priority,
     fuse_observations, list_reflex_actions, AdaptiveRecoveryPolicy, ConfidencePolicy,
-    EntityAutonomyContext, HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory,
+    HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory,
     RepetitionPattern, SensitizationPolicy, SensorConfidence, StabilityMetric,
 };
 use spanda_config::build_entity_registry;
@@ -29,7 +29,6 @@ fn entity_id_arg(args: &[String]) -> Option<String> {
         .cloned()
         .or_else(|| {
             load_system_config_from_cli_args(args)
-                .ok()
                 .and_then(|cfg| build_entity_registry(&cfg).entities.keys().next().cloned())
         })
 }
@@ -316,9 +315,9 @@ fn demo_recovery_history(entity_id: &str) -> Vec<RecoveryHistory> {
 }
 
 fn load_registry(args: &[String]) -> spanda_config::EntityRegistry {
-    if let Ok(resolved) = load_system_config_from_cli_args(args) {
-        ensure_config_valid(&resolved).ok();
-        return build_entity_registry(&resolved);
+    if let Some(resolved) = load_system_config_from_cli_args(args) {
+        ensure_config_valid(Some(resolved.as_ref()));
+        return build_entity_registry(resolved.as_ref());
     }
     spanda_config::EntityRegistry::default()
 }
