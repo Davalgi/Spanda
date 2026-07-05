@@ -677,6 +677,7 @@ The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Op
 
 | Panel | Functional domain | Content |
 |-------|-------------------|---------|
+| **Strategic Planning** | Strategic Planning | Governance summary and deployment profiles (`GET /v1/governance`, `/v1/deployment-profiles`) |
 | **Reflex Events** | Reflex & Safety | Platform reflex actions and traces (`GET /v1/autonomy/reflex*`) |
 | **Attention Queue** | Attention Engine | Prioritized event window (`GET /v1/autonomy/attention`) |
 | **Homeostasis** | Homeostasis Engine | Entity stability reports (`GET /v1/autonomy/homeostasis`) |

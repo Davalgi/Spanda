@@ -32,6 +32,8 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
   const [memory, setMemory] = useState<unknown[]>([]);
   const [recoveryConfidence, setRecoveryConfidence] = useState<number | null>(null);
   const [entityAutonomy, setEntityAutonomy] = useState<Record<string, unknown> | null>(null);
+  const [strategicPlanning, setStrategicPlanning] = useState<Record<string, unknown> | null>(null);
+  const [entityCount, setEntityCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +73,20 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
       const entitiesPayload = (await fetchJson(baseUrl, "/v1/entities", authHeaders)) as {
         entities?: Array<{ id?: string }>;
       };
-      const firstId = entitiesPayload.entities?.[0]?.id;
+      const entities = entitiesPayload.entities ?? [];
+      setEntityCount(entities.length);
+
+      const [governancePayload, profilesPayload] = await Promise.all([
+        fetchJson(baseUrl, "/v1/governance", authHeaders).catch(() => null),
+        fetchJson(baseUrl, "/v1/deployment-profiles", authHeaders).catch(() => null),
+      ]);
+      setStrategicPlanning({
+        governance: governancePayload,
+        deployment_profiles: profilesPayload,
+        entity_inventory: entities.length,
+      });
+
+      const firstId = entities[0]?.id;
       if (firstId) {
         const autonomy = (await fetchJson(
           baseUrl,
@@ -142,6 +157,14 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
           },
         ]}
       />
+
+      <CcSection
+        title="Strategic Planning"
+        hint="Governance, deployment profiles, and entity inventory — mission planning context."
+      >
+        <pre className="cc-code-block">{JSON.stringify(strategicPlanning, null, 2)}</pre>
+        <p className="cc-muted">Entities in registry: {entityCount}</p>
+      </CcSection>
 
       <CcSection
         title="Reflex Events"
