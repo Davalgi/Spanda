@@ -21,6 +21,7 @@ pub mod discovery_tls;
 pub mod discovery_transport;
 pub mod drift;
 pub mod entity;
+pub mod entity_autonomy;
 pub mod entity_overlay;
 pub mod error;
 pub mod facility;
@@ -103,10 +104,14 @@ pub use drift::{
 pub use entity::{
     apply_runtime_mission_overlay, apply_traceability_overlay, build_entity_registry,
     mission_entity_id, runtime_missions_from_approval_seeds, DigitalThreadTraceabilityLink,
-    EntityAuditInfo, EntityGovernanceMeta, EntityGraph, EntityHealthStatus, EntityKind, EntityLifecycleState,
-    EntityLocation, EntityQuery, EntityQueryResult, EntityReadinessStatus, EntityRecord,
-    EntityRegistry, EntityRelationship, EntityRelationshipKind, EntitySecurityIdentity,
-    EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,
+    EntityAuditInfo, EntityGovernanceMeta, EntityGraph, EntityHealthStatus, EntityKind,
+    EntityLifecycleState, EntityLocation, EntityQuery, EntityQueryResult, EntityReadinessStatus,
+    EntityRecord, EntityRegistry, EntityRelationship, EntityRelationshipKind,
+    EntitySecurityIdentity, EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,
+};
+pub use entity_autonomy::{
+    EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk, EntityHomeostasisSnapshot,
+    EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence, EntityReflexSummary,
 };
 pub use entity_overlay::{
     apply_entity_mutation_overlay, default_entity_overlay_path, load_entity_overlay,

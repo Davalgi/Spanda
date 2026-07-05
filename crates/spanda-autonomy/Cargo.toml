@@ -1,0 +1,20 @@
+[package]
+name = "spanda-autonomy"
+version.workspace = true
+edition.workspace = true
+description = "Bio-inspired resilient autonomy — reflex, fusion, homeostasis, immunity, attention, memory, and adaptive recovery"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+spanda-config = { path = "../spanda-config" }
+spanda-decision = { path = "../spanda-decision" }
+spanda-recovery = { path = "../spanda-recovery" }
+
+[dev-dependencies]
+tempfile = "3"

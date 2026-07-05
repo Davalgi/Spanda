@@ -56,6 +56,7 @@ members = [
     "crates/spanda-runtime-faults",
     "crates/spanda-contract",
     "crates/spanda-explain",
+    "crates/spanda-autonomy",
     "crates/spanda-decision",
     "crates/spanda-graph",
     "crates/spanda-threat",

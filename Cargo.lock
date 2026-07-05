@@ -2450,6 +2450,7 @@ dependencies = [
 name = "spanda"
 version = "0.6.3"
 dependencies = [
+ "chrono",
  "serde",
  "serde_json",
  "spanda-adr",
@@ -2457,6 +2458,7 @@ dependencies = [
  "spanda-assurance",
  "spanda-ast",
  "spanda-audit",
+ "spanda-autonomy",
  "spanda-capability",
  "spanda-certify",
  "spanda-chaos",
@@ -2548,6 +2550,7 @@ dependencies = [
  "spanda-assurance",
  "spanda-ast",
  "spanda-audit",
+ "spanda-autonomy",
  "spanda-capability",
  "spanda-certify",
  "spanda-chaos",
@@ -2630,6 +2633,19 @@ dependencies = [
  "serde_json",
  "sha2",
  "thiserror 2.0.18",
+]
+
+[[package]]
+name = "spanda-autonomy"
+version = "0.6.3"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "spanda-config",
+ "spanda-decision",
+ "spanda-recovery",
+ "tempfile",
 ]
 
 [[package]]

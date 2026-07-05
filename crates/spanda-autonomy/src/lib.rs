@@ -1,0 +1,68 @@
+//! Bio-inspired resilient autonomy architecture for Spanda.
+//!
+//! Extends distributed decision architecture with engineering patterns inspired
+//! by biological nervous systems: reflex arcs, peripheral autonomy, sensory fusion,
+//! attention, homeostasis, platform immunity, operational memory, habituation,
+//! damage-risk modeling, adaptive recovery, and maintenance windows.
+//!
+pub mod adaptive_recovery;
+pub mod attention;
+pub mod damage_risk;
+pub mod entity;
+pub mod format;
+pub mod fusion;
+pub mod habituation;
+pub mod homeostasis;
+pub mod immunity;
+pub mod maintenance;
+pub mod memory;
+pub mod peripheral;
+pub mod reflex;
+pub mod types;
+
+pub use adaptive_recovery::{
+    compute_recovery_confidence, compute_strategy_preference, AdaptiveRecoveryPolicy,
+    RecoveryConfidence, RecoveryHistory, StrategyPreference, StrategySuccessRate,
+};
+pub use attention::{
+    compute_attention_score, rank_events, AttentionPolicy, AttentionScore, AttentionWindow,
+    EventPriority, SignalPriority, SuppressionRule,
+};
+pub use damage_risk::{
+    evaluate_damage_risk, DamageRisk, HarmPotential, ProtectiveAction, RiskSignal, SafetyPainIndex,
+};
+pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, EntityAutonomyContext};
+pub use fusion::{
+    detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
+    SensorConfidence, SignalAgreement, SignalConflict,
+};
+pub use habituation::{
+    analyze_alert_fatigue, apply_habituation, apply_sensitization, AlertEscalation,
+    AlertFatigueMetric, AlertSuppression, HabituationPolicy, RepetitionPattern,
+    SensitizationPolicy,
+};
+pub use homeostasis::{
+    evaluate_homeostasis, CorrectionAction, DriftSignal, HomeostasisPolicy, StabilityMetric,
+    StabilityRange, StabilityReport,
+};
+pub use immunity::{
+    evaluate_immunity, evaluate_quarantine_decision, ImmuneEvent, ImmunePolicy, IsolationDecision,
+    QuarantineAction, ThreatResponse, TrustBoundaryViolation,
+};
+pub use maintenance::{
+    CalibrationWindow, LowActivityMode, MaintenanceWindow, ScheduledRecovery, SleepMode,
+    UpdateWindow,
+};
+pub use memory::{
+    categorize_memory, map_trace_to_memory, EpisodicMemory, MemoryCategory, OperationalMemoryModel,
+    ProceduralMemory, ReflexMemory, SemanticMemory, WorkingMemory,
+};
+pub use peripheral::{
+    EdgeCoordinator, LocalAutonomyNode, PeripheralAutonomyLayer, PeripheralNode,
+    RegionalCoordinator,
+};
+pub use reflex::{
+    evaluate_reflex_priority, list_reflex_actions, ReflexAction, ReflexArc, ReflexController,
+    ReflexTrace,
+};
+pub use types::*;

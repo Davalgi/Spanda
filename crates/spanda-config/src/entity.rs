@@ -491,9 +491,7 @@ impl EntityGovernanceMeta {
         let certification_status = metadata.get("governance.certification_status").cloned();
         let risk_level = metadata.get("governance.risk_level").cloned();
         let responsible_person = metadata.get("governance.responsible_person").cloned();
-        let responsible_organization = metadata
-            .get("governance.responsible_organization")
-            .cloned();
+        let responsible_organization = metadata.get("governance.responsible_organization").cloned();
         let mission_owner = metadata.get("governance.mission_owner").cloned();
         let deployment_owner = metadata.get("governance.deployment_owner").cloned();
         let emergency_contact = metadata.get("governance.emergency_contact").cloned();
@@ -617,6 +615,9 @@ pub struct EntityRecord {
     pub audit: Option<EntityAuditInfo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub governance: Option<EntityGovernanceMeta>,
+    /// Bio-inspired resilient autonomy profile (reflex, confidence, homeostasis, immunity, memory, damage risk, recovery).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub autonomy: Option<crate::entity_autonomy::EntityAutonomyProfile>,
 }
 
 impl EntityRecord {
@@ -640,6 +641,7 @@ impl EntityRecord {
             "capabilities": self.capabilities,
             "tags": self.tags,
             "governance": self.governance,
+            "autonomy": self.autonomy,
         })
     }
 }
@@ -2422,22 +2424,19 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
                 .insert("governance.autonomy_level".into(), value.to_string());
         }
         if let Some(value) = deployment_profile {
-            entity.metadata.insert(
-                "governance.deployment_profile".into(),
-                value.to_string(),
-            );
+            entity
+                .metadata
+                .insert("governance.deployment_profile".into(), value.to_string());
         }
         if let Some(value) = maturity {
-            entity.metadata.insert(
-                "governance.operational_maturity".into(),
-                value.to_string(),
-            );
+            entity
+                .metadata
+                .insert("governance.operational_maturity".into(), value.to_string());
         }
         if let Some(value) = certification {
-            entity.metadata.insert(
-                "governance.certification_status".into(),
-                value.to_string(),
-            );
+            entity
+                .metadata
+                .insert("governance.certification_status".into(), value.to_string());
         }
         if let Some(value) = risk {
             entity
@@ -2467,10 +2466,9 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
                 .insert("governance.deployment_owner".into(), value.to_string());
         }
         if let Some(value) = standards {
-            entity.metadata.insert(
-                "governance.standards_profiles".into(),
-                value.to_string(),
-            );
+            entity
+                .metadata
+                .insert("governance.standards_profiles".into(), value.to_string());
         }
         if let Some(value) = constraints {
             entity
@@ -2540,6 +2538,7 @@ impl Default for EntityRecord {
             metadata: HashMap::new(),
             audit: None,
             governance: None,
+            autonomy: None,
         }
     }
 }
