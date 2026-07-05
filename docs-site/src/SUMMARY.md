@@ -4,71 +4,71 @@
 
 # Getting Started
 
-- [Getting Started](../../docs/getting-started.md)
-- [Philosophy & Why Spanda](../../docs/overview/philosophy.md)
-- [Platform Overview](../../docs/platform-overview.md)
-- [Language Guide](../../docs/spanda-language.md)
+- [Getting Started](./repo-docs/docs/getting-started.md)
+- [Philosophy & Why Spanda](./repo-docs/docs/overview/philosophy.md)
+- [Platform Overview](./repo-docs/docs/platform-overview.md)
+- [Language Guide](./repo-docs/docs/spanda-language.md)
 
 # CLI Reference
 
-- [CLI Overview](../../docs/overview/cli.md)
-- [Man Pages Index](../../docs/man/README.md)
-- [spanda(1)](../../docs/man/spanda.md)
+- [CLI Overview](./repo-docs/docs/overview/cli.md)
+- [Man Pages Index](./repo-docs/docs/man/README.md)
+- [spanda(1)](./repo-docs/docs/man/spanda.md)
 
 # Language Reference
 
-- [Language Reference Index](../../docs/language-reference/README.md)
-- [Syntax](../../docs/language-reference/syntax.md)
-- [Types](../../docs/language-reference/types.md)
-- [Functions](../../docs/language-reference/functions.md)
-- [Agents](../../docs/language-reference/agents.md)
-- [Tasks](../../docs/language-reference/tasks.md)
-- [Triggers](../../docs/language-reference/triggers.md)
-- [Safety](../../docs/language-reference/safety.md)
-- [Hardware](../../docs/language-reference/hardware.md)
-- [Capabilities](../../docs/language-reference/capabilities.md)
-- [Health Checks](../../docs/language-reference/health-checks.md)
-- [Packages](../../docs/language-reference/packages.md)
-- [Recovery](../../docs/language-reference/recovery.md)
-- [Continuity](../../docs/language-reference/continuity.md)
-- [Full Generated Reference](../../docs/spanda-reference.md)
+- [Language Reference Index](./repo-docs/docs/language-reference/README.md)
+- [Syntax](./repo-docs/docs/language-reference/syntax.md)
+- [Types](./repo-docs/docs/language-reference/types.md)
+- [Functions](./repo-docs/docs/language-reference/functions.md)
+- [Agents](./repo-docs/docs/language-reference/agents.md)
+- [Tasks](./repo-docs/docs/language-reference/tasks.md)
+- [Triggers](./repo-docs/docs/language-reference/triggers.md)
+- [Safety](./repo-docs/docs/language-reference/safety.md)
+- [Hardware](./repo-docs/docs/language-reference/hardware.md)
+- [Capabilities](./repo-docs/docs/language-reference/capabilities.md)
+- [Health Checks](./repo-docs/docs/language-reference/health-checks.md)
+- [Packages](./repo-docs/docs/language-reference/packages.md)
+- [Recovery](./repo-docs/docs/language-reference/recovery.md)
+- [Continuity](./repo-docs/docs/language-reference/continuity.md)
+- [Full Generated Reference](./repo-docs/docs/spanda-reference.md)
 
 # API Reference
 
-- [Rust API Index](../../docs/api-reference.md)
-- [Architecture](../../docs/architecture.md)
+- [Rust API Index](./repo-docs/docs/api-reference.md)
+- [Architecture](./repo-docs/docs/architecture.md)
 
 # Package & Provider Reference
 
-- [Packages](../../docs/packages.md)
-- [Registry](../../docs/registry.md)
-- [FFI and Ecosystem](../../docs/ffi-and-ecosystem.md)
+- [Packages](./repo-docs/docs/packages.md)
+- [Registry](./repo-docs/docs/registry.md)
+- [FFI and Ecosystem](./repo-docs/docs/ffi-and-ecosystem.md)
 
 # Man Pages
 
-- [Man Pages](../../docs/man/README.md)
+- [Man Pages](./repo-docs/docs/man/README.md)
 
 # Examples
 
-- [Examples Index](../../examples/README.md)
-- [Demo Script](../../docs/demo-script.md)
+- [Examples Index](./repo-docs/examples/README.md)
+- [Demo Script](./repo-docs/docs/demo-script.md)
 
 # Operations
 
-- [Safety Model](../../docs/architecture.md)
-- [Hardware Verification](../../docs/hardware-compatibility.md)
-- [Kill Switch](../../docs/kill-switch.md)
-- [Health Checks](../../docs/health-checks.md)
-- [Fleet Health](../../docs/fleet-health.md)
-- [Mission Continuity](../../docs/mission-continuity.md)
-- [Continuity Policies](../../docs/continuity-policies.md)
-- [Self-Healing](../../docs/self-healing.md)
-- [Native Deploy](../../docs/native-deploy.md)
-- [ROS 2 Golden Path](../../docs/ros2-golden-path.md)
+- [Safety Model](./repo-docs/docs/architecture.md)
+- [Hardware Verification](./repo-docs/docs/hardware-compatibility.md)
+- [Kill Switch](./repo-docs/docs/kill-switch.md)
+- [Health Checks](./repo-docs/docs/health-checks.md)
+- [Fleet Health](./repo-docs/docs/fleet-health.md)
+- [Mission Continuity](./repo-docs/docs/mission-continuity.md)
+- [Continuity Policies](./repo-docs/docs/continuity-policies.md)
+- [Self-Healing](./repo-docs/docs/self-healing.md)
+- [Native Deploy](./repo-docs/docs/native-deploy.md)
+- [ROS 2 Golden Path](./repo-docs/docs/ros2-golden-path.md)
 
 # Project
 
-- [Architecture Diagrams](../../docs/diagrams/README.md)
-- [Benchmarks](../../docs/benchmarks.md)
-- [Known Limitations](../../docs/known-limitations.md)
-- [Roadmap](../../docs/roadmap.md)
+- [Architecture Diagrams](./repo-docs/docs/diagrams/README.md)
+- [Benchmarks](./repo-docs/docs/benchmarks.md)
+- [Known Limitations](./repo-docs/docs/known-limitations.md)
+- [Roadmap](./repo-docs/docs/roadmap.md)
