@@ -21,6 +21,10 @@ Spanda has grown from a language and compiler into a complete autonomous systems
 
 Architecture consistency is now as important as adding features. This document establishes the **official platform architecture**, **dependency rules**, and **ownership boundaries** without removing existing functionality or redesigning working components.
 
+### Bio-inspired resilient autonomy
+
+Spanda extends distributed decisions with a [bio-inspired resilient autonomy architecture](./bio-inspired-architecture.md): reflex arcs, peripheral autonomy, sensory fusion, attention, homeostasis, platform immunity, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all integrated with the Entity model.
+
 ---
 
 ## Layered model

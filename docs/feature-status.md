@@ -31,6 +31,7 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
 | **Distributed decisions** | Decision trees, offline policy, signed trees, v3 signed traces, persistent escalation, conflict resolution — **Stable** |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
+| **Bio-inspired resilient autonomy** | Reflex (Beta), peripheral autonomy (Beta), platform immunity (Beta), fusion/confidence (Experimental), attention/homeostasis/memory/damage-risk/maintenance (Preview), habituation/adaptive recovery (Experimental) — [bio-inspired-architecture.md](./bio-inspired-architecture.md) |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
 
 ## v0.4.0 — Deploy & tooling

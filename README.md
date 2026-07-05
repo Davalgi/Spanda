@@ -8,6 +8,8 @@
 
 *Build. Verify. Simulate. Deploy. Operate.*
 
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for robots, devices, AI agents, humans, and intelligent environments.
+
 Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed robot programs, safety gates, hardware verification, cascading TOML configuration, simulation, replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
 
 **Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
@@ -27,6 +29,10 @@ Actuators are the muscles.
 Spanda is the intelligent pulse that transforms perception, intent, and safety into action.
 
 Autonomy is layered — reflex, spinal cord, brain — with the mind proposing and the pulse enforcing. [Nervous system →](docs/overview/philosophy.md#nervous-system)
+
+Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. The goal is not to imitate biology, but to apply these proven resilience patterns to safety-critical autonomous systems. [Bio-inspired architecture →](docs/bio-inspired-architecture.md)
+
+> Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life. Biological metaphors are used only where they improve engineering resilience, safety, recovery, and explainability.
 
 **Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
 

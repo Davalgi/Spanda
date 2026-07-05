@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Bio-inspired resilient autonomy architecture:** extends distributed decisions with reflex arcs, peripheral autonomy, sensory fusion, attention, homeostasis, platform immunity, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — [bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
+- **`spanda-autonomy` crate:** core types, entity `autonomy` profile integration, CLI commands (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`), REST `/v1/autonomy/*` and `/v1/entities/{id}/autonomy`, SDK `AutonomyClient`, Control Center **Resilient Autonomy** tab (placeholder panels).
 - **NOW differentiation REST APIs:** `GET /v1/programs/source`, `POST /v1/programs/contract/verify`, `POST /v1/programs/explain`, `POST /v1/programs/audit/decisions` — CLI parity for mission contracts, explainability, and decision audit trail.
 - **Control Center Differentiation tab:** mission contract verify, explain modes, and trace-based decision audit wired to new program APIs.
 - **Control Center promotion:** Assurance/Diagnosis panel runs `POST /v1/programs/assure` and `/diagnose`; Traceability loads capability matrix from API; Playground loads server program via `/v1/programs/source`.

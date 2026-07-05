@@ -128,6 +128,11 @@
 | [continuity-policies.md](./continuity-policies.md) | **`continuity_policy` syntax, takeover modes, and fleet handoff** |
 | [mission-continuity.md](./mission-continuity.md) | **Mission continuity, takeover, delegation, and succession** |
 | [distributed-decisions.md](./distributed-decisions.md) | **Distributed decision architecture — reflex, local, fleet, control center layers** |
+| [bio-inspired-architecture.md](./bio-inspired-architecture.md) | **Bio-inspired resilient autonomy — extends distributed decisions** |
+| [reflex-architecture.md](./reflex-architecture.md) | Reflex arc — immediate local safety |
+| [peripheral-autonomy.md](./peripheral-autonomy.md) | Peripheral autonomy hierarchy |
+| [homeostasis.md](./homeostasis.md) | Homeostasis — safe operating range |
+| [platform-immunity.md](./platform-immunity.md) | Platform immunity and quarantine |
 | [distributed-decision-security.md](./distributed-decision-security.md) | **Security validation, attack simulations, enforcement tests** |
 | [distributed-decision-demo.md](./distributed-decision-demo.md) | **Flagship GPS loss recovery demo** |
 | [stable-hardening-distributed-decisions.md](./stable-hardening-distributed-decisions.md) | **Stable promotion checklist — distributed decisions** |

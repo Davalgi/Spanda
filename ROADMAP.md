@@ -44,6 +44,8 @@ Unified Entity Model (all platform objects)
 
 **Lifecycle:** **Build · Verify · Simulate · Deploy · Operate · Observe · Recover · Govern · Audit · Continuously Improve**
 
+**Bio-inspired resilience:** Extends distributed decisions with reflex arcs, peripheral autonomy, sensory fusion, homeostasis, platform immunity, operational memory, and adaptive recovery — [docs/bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
+
 **Lean-core identity:** contracts in workspace crates; vendor SDKs and heavy UI in optional packages.
 
 ---
@@ -288,6 +290,26 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | REST `/v1/decisions*`, `/v1/decisions/traces`, `/v1/decision-policy-cache`, SDK methods, Control Center Decisions tab | **Stable** |
 | `spanda demo distributed-decisions` | **Stable** |
 | Examples `examples/showcase/distributed_decisions/` | **Stable** |
+
+**Bio-inspired resilient autonomy** (extends distributed decisions — [bio-inspired-architecture.md](docs/bio-inspired-architecture.md)):
+
+| Item | Tier |
+|------|------|
+| `spanda-autonomy` crate, entity `autonomy` profile | **Preview** |
+| Reflex architecture (CLI, API, decision layer 0 integration) | **Beta** |
+| Peripheral autonomy hierarchy | **Beta** |
+| Platform immunity (trust/tamper/quarantine integration) | **Beta** |
+| Sensory fusion + confidence model | **Experimental** |
+| Attention system | **Preview** |
+| Homeostasis | **Preview** |
+| Operational memory categories | **Preview** |
+| Habituation / sensitization | **Experimental** |
+| Damage-risk model | **Preview** |
+| Adaptive recovery confidence | **Experimental** |
+| Maintenance / sleep mode | **Preview** |
+| CLI (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`) | **Preview** |
+| REST `/v1/autonomy/*`, `/v1/entities/{id}/autonomy`, SDK `AutonomyClient` | **Preview** |
+| Control Center Resilient Autonomy tab | **Preview** (placeholder panels) |
 
 **Self-healing detail:**
 

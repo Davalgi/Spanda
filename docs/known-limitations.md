@@ -54,6 +54,17 @@ Honest constraints for **v0.6.3** evaluators. For capability tiers see [feature-
 - ROS2 adapter requires **ROS Humble** and manual setup on Linux (`SPANDA_ROS2_LIVE=1` for live topics).
 - Windows support is via MSI/prebuilt CLI; some golden paths are Linux/macOS only in CI.
 
+## Bio-inspired resilient autonomy
+
+- **Preview / Experimental tiers** — see [feature-status.md](./feature-status.md) and [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+- Sensory fusion validators are rule-based; no live multi-sensor fusion pipeline yet.
+- Attention scoring and Control Center **Resilient Autonomy** tab are placeholder panels.
+- Adaptive recovery learning is statistics-based (no ML).
+- Maintenance/sleep mode scheduling is declarative; full OTA window integration is partial.
+- Habituation/sensitization applies to CLI-reported alert analysis, not all telemetry backends.
+
+---
+
 ## Organizational gates (not code blockers)
 
 Enterprise operations and solution blueprints ship as **Stable** in code and CI, but full production claims still require:

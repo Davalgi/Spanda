@@ -4,7 +4,9 @@
   <img src="../assets/image/low_res_logo.png" alt="Spanda logo" width="280">
 </p>
 
-**Spanda is an Autonomous Systems Platform with a safety-first programming language at its core.**
+**Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its core.**
+
+Spanda provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for robots, devices, AI agents, humans, and intelligent environments.
 
 Short form: *The Autonomous Systems Platform.*
 
@@ -48,6 +50,14 @@ Spanda Platform
 ├── Spanda Providers
 └── Enterprise Operations (Control Center, Device Pool, APIs, …)
 ```
+
+### Bio-inspired resilient autonomy
+
+Spanda uses a hierarchical, resilient autonomy architecture inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. This **extends** the [Distributed Decision Architecture](./distributed-decisions.md) without replacing it.
+
+> Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life.
+
+Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md)
 
 ### Spanda Language (.sd)
 
