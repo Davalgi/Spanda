@@ -40,8 +40,10 @@ pub mod smart_spaces;
 pub mod smart_spaces_panels;
 pub mod state;
 pub mod twin_cloud;
+pub mod version_info;
 pub mod versioning;
 pub mod ws;
 
 pub use server::{run_control_center_server, ControlCenterOptions};
 pub use state::ControlCenterState;
+pub use version_info::CONTROL_CENTER_UI_VERSION;

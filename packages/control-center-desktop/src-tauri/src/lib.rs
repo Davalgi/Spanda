@@ -132,7 +132,8 @@ fn desktop_features() -> serde_json::Value {
         "offline_cache": true,
         "bundled_api": bundled_api,
         "bundled_api_hint": "Run: spanda control-center serve --bind 127.0.0.1:8080",
-        "spawn_api_command": "spawn_control_center_api"
+        "spawn_api_command": "spawn_control_center_api",
+        "app_version": env!("CARGO_PKG_VERSION")
     })
 }
 

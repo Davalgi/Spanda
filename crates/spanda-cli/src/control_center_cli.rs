@@ -16,6 +16,13 @@ struct LocalSpandaListener {
 }
 
 pub fn control_center_dispatch(args: &[String]) {
+    if args.len() == 1 && (args[0] == "--version" || args[0] == "-V") {
+        println!(
+            "spanda control-center {}",
+            spanda_api::CONTROL_CENTER_UI_VERSION
+        );
+        return;
+    }
     if args.is_empty() || args[0] == "--help" || args[0] == "-h" {
         print_usage();
         process::exit(if args.is_empty() { 1 } else { 0 });
@@ -59,6 +66,7 @@ fn print_usage() {
         "Usage:\n  \
          spanda control-center serve [--bind <addr>] [--grpc-bind <addr>] [--config <spanda.toml>] [--program <file.sd>] [--once]\n  \
          spanda control-center status [--json] [--url <base>] [--discover]\n  \
+         spanda control-center --version\n  \
          spanda control-center stop [--json] [--url <base>] [--force]\n  \
          spanda control-center api <get|post> <path> [--body <json>] [--url <base>] [--auth|--no-auth]\n  \
          spanda control-center dashboard [--url <base>]\n  \
@@ -414,6 +422,11 @@ fn print_instance_status(base_url: &str, value: &serde_json::Value, json: bool) 
     let failed = pool.and_then(|v| v.get("failed")).and_then(|v| v.as_u64());
 
     println!("Spanda Control Center @ {base_url}");
+    if let Some(ui_version) = value.get("control_center_ui_version").and_then(|v| v.as_str()) {
+        println!("  UI version:    {ui_version}");
+    } else if let Some(version) = value.get("version").and_then(|v| v.as_str()) {
+        println!("  API version:   {version}");
+    }
     println!("  Service:       {service}");
     println!("  Status:        {overall}");
     println!("  Tenant:        {tenant}");

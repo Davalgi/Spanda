@@ -701,6 +701,8 @@ fn instance_info(state: &ControlCenterState) -> HttpResponse {
     json_ok(&serde_json::json!({
         "ok": true,
         "version": API_VERSION,
+        "control_center_ui_version": crate::version_info::CONTROL_CENTER_UI_VERSION,
+        "spanda_version": env!("CARGO_PKG_VERSION"),
         "service": "spanda-control-center",
         "tenant_id": state.tenant_id,
         "bind": state.bind_addr,
@@ -721,6 +723,8 @@ fn instance_info(state: &ControlCenterState) -> HttpResponse {
 fn api_version_info() -> HttpResponse {
     json_ok(&serde_json::json!({
         "version": API_VERSION,
+        "control_center_ui_version": crate::version_info::CONTROL_CENTER_UI_VERSION,
+        "spanda_version": env!("CARGO_PKG_VERSION"),
         "api_version": crate::versioning::SUPPORTED_API_VERSION,
         "supported_versions": [crate::versioning::SUPPORTED_API_VERSION],
         "grpc": crate::grpc_policy::policy_json(),

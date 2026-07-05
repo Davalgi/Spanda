@@ -55,6 +55,7 @@ fn version_endpoint_documents_policy() {
     );
     assert_eq!(response.status, 200);
     assert!(response.body.contains("supported_versions"));
+    assert!(response.body.contains("control_center_ui_version"));
     assert!(response.body.contains("grpc"));
     assert!(response.body.contains("proto_semver"));
     assert!(response.body.contains("/v2/"));

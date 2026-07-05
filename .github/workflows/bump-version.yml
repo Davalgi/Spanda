@@ -1,7 +1,7 @@
-# Bump workspace semver and optionally push a release tag.
+# Bump semver and optionally push a release tag.
 #
 # Run manually from Actions → "Bump version". Choose patch, minor, or major.
-# When "Push release tag" is enabled, pushes vX.Y.Z which triggers release.yml.
+# When "Push release tag" is enabled, pushes vX.Y.Z or desktop-vX.Y.Z.
 #
 # For routine releases, prefer labeling the PR (release:major|minor|patch) so
 # "Auto release" runs after CI on merge. Use this workflow for ad-hoc bumps.
@@ -11,6 +11,14 @@ name: Bump version
 on:
   workflow_dispatch:
     inputs:
+      stream:
+        description: Release stream to bump
+        required: true
+        type: choice
+        default: workspace
+        options:
+          - workspace
+          - desktop
       bump:
         description: Semver component to increment
         required: true
@@ -21,7 +29,7 @@ on:
           - minor
           - major
       push_tag:
-        description: Push v* tag to trigger the release workflow
+        description: Push release tag to trigger downstream workflows
         required: true
         type: boolean
         default: true
@@ -34,4 +42,5 @@ jobs:
     uses: ./.github/workflows/release-bump.yml
     with:
       bump: ${{ inputs.bump }}
+      stream: ${{ inputs.stream }}
       push_tag: ${{ inputs.push_tag }}

@@ -1,6 +1,6 @@
 [package]
 name = "spanda-control-center-desktop"
-version = "0.5.0"
+version = "0.6.3"
 description = "Tauri desktop shell for Spanda Control Center"
 edition = "2021"
 

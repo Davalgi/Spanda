@@ -6,6 +6,7 @@
 #   release:patch — fixes and small updates
 #
 # The bump commits to main and pushes vX.Y.Z, which triggers release.yml (cargo-dist).
+# When the PR also changed Control Center paths, a matching desktop-v* tag is pushed too.
 
 name: Auto release
 
@@ -27,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       bump: ${{ steps.label.outputs.bump }}
+      desktop_bump: ${{ steps.label.outputs.desktop_bump }}
       skip: ${{ steps.skip.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +40,7 @@ jobs:
         id: skip
         run: |
           MSG=$(git log -1 --format=%s)
-          if [[ "$MSG" == chore:\ release\ v* ]]; then
+          if [[ "$MSG" == chore:\ release\ v* ]] || [[ "$MSG" == chore:\ release\ desktop\ v* ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
             echo "Already a release bump commit; skipping auto-release."
           else
@@ -56,6 +58,7 @@ jobs:
           if [ -z "$PR_JSON" ]; then
             echo "No associated pull request; skipping auto-release."
             echo "bump=" >> "$GITHUB_OUTPUT"
+            echo "desktop_bump=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           LABELS=$(echo "$PR_JSON" | jq -r '.labels[].name' | tr '\n' ' ')
@@ -70,6 +73,24 @@ jobs:
           fi
           echo "bump=$bump" >> "$GITHUB_OUTPUT"
 
+          desktop_bump=""
+          if [ -n "$bump" ]; then
+            PR_NUM=$(echo "$PR_JSON" | jq -r '.number')
+            mapfile -t FILES < <(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUM}/files" --jq '.[].filename')
+            for path in "${FILES[@]}"; do
+              case "$path" in
+                packages/control-center-desktop/*|packages/web/*|crates/spanda-api/src/control_center*|crates/spanda-api/src/static/control-center-ui/*|crates/spanda-cli/src/control_center*|scripts/sync_control_center_embedded_ui.sh|scripts/control_center_*|scripts/verify_desktop_release_ready.sh)
+                  desktop_bump="$bump"
+                  break
+                  ;;
+              esac
+            done
+          fi
+          echo "desktop_bump=$desktop_bump" >> "$GITHUB_OUTPUT"
+          if [ -n "$desktop_bump" ]; then
+            echo "Control Center paths changed; will bump desktop stream (${desktop_bump})."
+          fi
+
   release:
     needs: detect
     if: >-
@@ -81,5 +102,21 @@ jobs:
     uses: ./.github/workflows/release-bump.yml
     with:
       bump: ${{ needs.detect.outputs.bump }}
+      stream: workspace
       push_tag: true
       ref: ${{ github.event.workflow_run.head_sha }}
+
+  desktop-release:
+    needs: [detect, release]
+    if: >-
+      needs.detect.result == 'success' &&
+      needs.detect.outputs.skip != 'true' &&
+      needs.detect.outputs.desktop_bump != ''
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release-bump.yml
+    with:
+      bump: ${{ needs.detect.outputs.desktop_bump }}
+      stream: desktop
+      push_tag: true
+      ref: main

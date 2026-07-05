@@ -723,6 +723,14 @@ tr.decision-row-escalation td {
   font-size: 0.95rem;
 }
 
+.cc-sidebar-version {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  color: #6e7681;
+  font-family: "JetBrains Mono", monospace;
+}
+
 .cc-sidebar-host {
   display: block;
   margin-top: 0.2rem;

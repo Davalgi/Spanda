@@ -16,6 +16,7 @@ import {
 import { type ControlCenterTab } from "./controlCenterRbac";
 import { useControlCenterAuth } from "./useControlCenterAuth";
 import { useControlCenterCoreData } from "./useControlCenterCoreData";
+import { useControlCenterVersion } from "./useControlCenterVersion";
 import { useDesktopIntegration } from "./useDesktopIntegration";
 import { useDeviceWorkflow } from "./useDeviceWorkflow";
 
@@ -66,6 +67,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
   }, [activeProfile?.id, rbacCtx?.tenant_id]);
 
   useDesktopIntegration({ baseUrl: base });
+  const controlCenterVersion = useControlCenterVersion();
 
   const switchProfile = useCallback((profileId: string) => {
     setActiveProfileId(profileId);
@@ -120,6 +122,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
       <aside className="cc-sidebar">
         <div className="cc-sidebar-brand">
           <span className="cc-sidebar-title">Control Center</span>
+          <span className="cc-sidebar-version">v{controlCenterVersion}</span>
           <span className="cc-sidebar-host" title={base}>
             {apiHost}
           </span>

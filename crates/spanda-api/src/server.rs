@@ -53,7 +53,11 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
 
     let listener = TcpListener::bind(&options.bind)
         .map_err(|e| format!("bind {} failed: {e}", options.bind))?;
-    eprintln!("Spanda Control Center listening on http://{}", options.bind);
+    eprintln!(
+        "Spanda Control Center v{} listening on http://{}",
+        crate::version_info::CONTROL_CENTER_UI_VERSION,
+        options.bind
+    );
     {
         let guard = state.lock().map_err(|e| e.to_string())?;
         if guard.api_keys.keys.is_empty() {

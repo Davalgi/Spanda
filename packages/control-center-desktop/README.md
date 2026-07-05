@@ -81,6 +81,23 @@ The desktop app does not embed the Rust API server; operators typically run the 
 
 Full start and rebuild checklist (all three layers): [docs/control-center.md — Local dev: start & rebuild](../../docs/control-center.md#local-dev-start--rebuild).
 
+## Version
+
+| Surface | Command / location |
+|---------|-------------------|
+| UI sidebar | `vX.Y.Z` under **Control Center** (Tauri uses desktop shell semver) |
+| CLI | `spanda control-center --version` |
+| API | `GET /v1/version` → `control_center_ui_version` |
+
+Desktop shell semver lives in three synced manifests (`package.json`, `src-tauri/Cargo.toml`, `tauri.conf.json`). **Current release: 0.6.3** (`desktop-v0.6.3`).
+
+Bump and release: [docs/control-center-versioning.md](../../docs/control-center-versioning.md) · [docs/desktop-release-runbook.md](../../docs/desktop-release-runbook.md).
+
+```bash
+./scripts/verify_desktop_release_ready.sh
+python3 scripts/bump_version.py patch --stream desktop --dry-run
+```
+
 ## Auto-update
 
 The Tauri shell includes `tauri-plugin-updater`. In development builds, `active` defaults to `false`. For production releases:
@@ -94,4 +111,4 @@ See [docs/desktop-release-runbook.md](../../docs/desktop-release-runbook.md).
 
 ## Status
 
-**Stable** — dev workflow, CI signing scaffold, env-gated updater wiring, and **production release tags** (`desktop-v*`) are shipped. First production release: **`desktop-v0.4.2`** (GitHub Release + macOS workflow artifacts). Optional Apple codesign/notarization when `APPLE_SIGNING_IDENTITY` and `APPLE_NOTARIZE_PROFILE` secrets are configured. See [docs/stable-hardening-enterprise-ops.md](../../docs/stable-hardening-enterprise-ops.md) and [docs/desktop-release-runbook.md](../../docs/desktop-release-runbook.md).
+**Stable** — dev workflow, CI signing scaffold, env-gated updater wiring, sidebar/CLI/API version display, **automatic desktop bump** on labeled Control Center PRs, and **production release tags** (`desktop-v*`). **Current release: `desktop-v0.6.3`**. Optional Apple codesign/notarization when `APPLE_SIGNING_IDENTITY` and `APPLE_NOTARIZE_PROFILE` secrets are configured. See [docs/control-center-versioning.md](../../docs/control-center-versioning.md) · [docs/stable-hardening-enterprise-ops.md](../../docs/stable-hardening-enterprise-ops.md) · [docs/desktop-release-runbook.md](../../docs/desktop-release-runbook.md).
