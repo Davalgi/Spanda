@@ -19,6 +19,7 @@ spanda-audit = { path = "../spanda-audit" }
 spanda-config = { path = "../spanda-config" }
 spanda-governance = { path = "../spanda-governance" }
 spanda-readiness = { path = "../spanda-readiness" }
+spanda-autonomy = { path = "../spanda-autonomy" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-runtime-faults = { path = "../spanda-runtime-faults" }
 spanda-trust = { path = "../spanda-trust" }

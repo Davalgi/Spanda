@@ -114,6 +114,16 @@ impl<B: RobotBackend> Interpreter<B> {
                 "remote_signed": remote_signed,
             }),
         );
+        let entity = self
+            .active_robot_name
+            .clone()
+            .unwrap_or_else(|| "robot".into());
+        spanda_autonomy::record_runtime_reflex(
+            entity,
+            "emergency",
+            format!("kill_switch '{name}'"),
+            "halt_actuators",
+        );
         for stmt in &body {
             let _ = self.execute_stmt(stmt);
         }

@@ -257,6 +257,22 @@ impl<B: RobotBackend> Interpreter<B> {
         if let Err(err) = self.dispatch_decision_tree_actions(program, entity, &result.actions) {
             self.log(format!("decision_tree: action dispatch error: {err}"));
         }
+        if layer == "reflex" {
+            let hint = if result.condition_matched.contains("obstacle") {
+                "obstacle"
+            } else if result.actions.iter().any(|a| a.contains("emergency")) {
+                "emergency"
+            } else {
+                "reflex"
+            };
+            let action = result.actions.first().cloned().unwrap_or_default();
+            spanda_autonomy::record_runtime_reflex(
+                entity,
+                hint,
+                result.condition_matched.clone(),
+                action,
+            );
+        }
     }
 
     fn authorize_decision_action(

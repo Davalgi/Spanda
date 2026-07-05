@@ -197,3 +197,40 @@ fn entity_integration_autonomy_profile() {
     assert!(profile.homeostasis.as_ref().is_some_and(|h| !h.stable));
     assert!(profile.damage_risk.as_ref().is_some_and(|d| d.index > 0.0));
 }
+
+#[test]
+fn registry_autonomy_profiles_applied() {
+    let mut registry = spanda_config::EntityRegistry::default();
+    registry.entities.insert(
+        "robot-1".into(),
+        EntityRecord {
+            id: "robot-1".into(),
+            entity_type: EntityKind::Robot,
+            health_status: EntityHealthStatus::Degraded,
+            readiness_status: EntityReadinessStatus::Ready,
+            trust_status: EntityTrustStatus::Trusted,
+            ..Default::default()
+        },
+    );
+    spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
+    let entity = registry.get("robot-1").unwrap();
+    assert!(entity.autonomy.is_some());
+    assert!(!entity.autonomy.as_ref().unwrap().reflexes.is_empty());
+    assert!(entity.autonomy.as_ref().unwrap().homeostasis.is_some());
+}
+
+#[test]
+fn runtime_reflex_trace_buffer_records_hint() {
+    spanda_autonomy::record_runtime_reflex(
+        "robot-trace-test",
+        "obstacle",
+        "lidar.nearest_distance",
+        "brake_and_hold",
+    );
+    let traces = spanda_autonomy::list_recorded_reflex_traces();
+    assert!(
+        traces
+            .iter()
+            .any(|t| t.entity_id == "robot-trace-test" && t.reflex_id.contains("obstacle"))
+    );
+}

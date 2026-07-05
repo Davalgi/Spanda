@@ -165,6 +165,27 @@ pub fn compute_metrics(
     }
 }
 
+/// Per-entity adaptive recovery confidence via spanda-autonomy rule-based learning.
+pub fn entity_autonomy_recovery_confidence(
+    entity_id: &str,
+    history: &RecoveryHistoryStore,
+) -> f64 {
+    use spanda_autonomy::adaptive_recovery::RecoveryHistory as AutonomyRecoveryHistory;
+    use spanda_autonomy::recovery_confidence_from_history;
+    let entries: Vec<AutonomyRecoveryHistory> = history
+        .evidence
+        .iter()
+        .filter(|e| e.entities_involved.iter().any(|id| id == entity_id))
+        .map(|e| AutonomyRecoveryHistory {
+            entity_id: entity_id.into(),
+            strategy: e.strategy.label().to_string(),
+            success: e.status == RecoveryStatus::Success,
+            duration_ms: e.duration_secs.saturating_mul(1000),
+        })
+        .collect();
+    recovery_confidence_from_history(entity_id, &entries)
+}
+
 /// Recommend strategy from knowledge base for a failure pattern.
 pub fn recommend_strategy(
     knowledge: &RecoveryKnowledgeBase,

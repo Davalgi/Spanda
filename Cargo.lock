@@ -2644,7 +2644,6 @@ dependencies = [
  "serde_json",
  "spanda-config",
  "spanda-decision",
- "spanda-recovery",
  "tempfile",
 ]
 
@@ -3102,6 +3101,7 @@ dependencies = [
  "spanda-ai",
  "spanda-ast",
  "spanda-audit",
+ "spanda-autonomy",
  "spanda-comm",
  "spanda-concurrency",
  "spanda-connectivity",
@@ -3342,6 +3342,7 @@ dependencies = [
  "spanda-assurance",
  "spanda-ast",
  "spanda-audit",
+ "spanda-autonomy",
  "spanda-config",
  "spanda-governance",
  "spanda-lexer",
