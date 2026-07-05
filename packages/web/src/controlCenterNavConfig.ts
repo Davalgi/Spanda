@@ -120,7 +120,7 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   marketplace: "Installed plugins and Control Center panel extensions.",
   chaos: "Fault injection catalog and chaos simulation.",
   "resilient-autonomy":
-    "Bio-inspired resilience — reflex events, attention, homeostasis, immunity, memory, recovery confidence, damage risk.",
+    "Cognitive & Resilience — reflex events, attention queue, homeostasis, platform immunity, operational memory, damage risk, recovery confidence.",
 };
 
 export function tabLabel(name: ControlCenterTab): string {
@@ -136,7 +136,7 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "replay") return "Replay";
   if (name === "provisioning") return "Provisioning";
   if (name === "discovery") return "Discovery";
-  if (name === "resilient-autonomy") return "Resilient Autonomy";
+  if (name === "resilient-autonomy") return "Cognitive & Resilience";
   if (name === "fleet-map") return "Fleet map";
   if (name === "telemetry") return "Telemetry";
   if (name === "trends") return "Trends";
