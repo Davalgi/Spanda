@@ -109,6 +109,7 @@
 | `scripts/security_audit_prep.sh` | Third-party audit intake artifact |
 | `scripts/verify_sdk_publish_ready.sh` | PyPI + npm pack readiness (no publish) |
 | `scripts/verify_desktop_release_ready.sh` | Desktop version sync + Tauri compile smoke |
+| `scripts/control_center_paths_changed.sh` | Control Center path diff (feeds auto desktop release) |
 
 ## CLI verification
 

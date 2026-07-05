@@ -34,8 +34,12 @@ Keep these three files on the same semver before tagging:
 
 ```bash
 ./scripts/verify_desktop_release_ready.sh
-git tag desktop-v0.5.0 && git push origin desktop-v0.5.0
+# Or bump first:
+python3 scripts/bump_version.py patch --stream desktop
+git tag desktop-v0.6.3 && git push origin desktop-v0.6.3
 ```
+
+**Automatic desktop release:** When a merged PR has a `release:*` label and changes Control Center paths, **Auto release** bumps desktop and pushes `desktop-v*` (same semver component as workspace). See [control-center-versioning.md](./control-center-versioning.md).
 
 Workflow: [desktop-release.yml](../.github/workflows/desktop-release.yml). Optional secrets: `TAURI_UPDATER_PUBKEY`, `TAURI_SIGNING_PRIVATE_KEY`, `APPLE_SIGNING_IDENTITY`, `APPLE_NOTARIZE_PROFILE`. See [desktop-release-runbook.md](./desktop-release-runbook.md).
 

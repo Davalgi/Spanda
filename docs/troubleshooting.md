@@ -347,6 +347,7 @@ spanda deploy agent readiness Rover@JetsonOrin --runtime --json
 ```bash
 eval "$(spanda control-center api-key generate --export)"
 spanda control-center serve --bind 127.0.0.1:8080
+spanda control-center --version   # UI semver
 ```
 
 Manual dev key: `export SPANDA_API_KEY="my-local-dev-key"`. Same value as `Authorization: Bearer …` for mutations. Full guide: [control-center.md — Authentication](./control-center.md#authentication--api-keys).
@@ -362,6 +363,9 @@ Manual dev key: `export SPANDA_API_KEY="my-local-dev-key"`. Same value as `Autho
 | Token save fails in UI | Server must accept the token (`POST /v1/alerts/test`); restart `serve` after changing `SPANDA_API_KEYS_FILE`; reinstall CLI if embedded HTML is stale (`cargo install --path crates/spanda-cli --force`) |
 | Remote CLI cannot reach API | `export SPANDA_CONTROL_CENTER_URL=http://host:port` |
 | Desktop app blank | Start API first; `VITE_CONTROL_CENTER_URL` — [control-center.md](./control-center.md#access-the-ui) |
+| Sidebar shows `vdev` | Dev Vite shell without production define — expected in some dev modes; use a release build or desktop bundle for real semver |
+| UI version ≠ `spanda control-center --version` | Rebuild CLI/API after UI bump; sync embedded assets (`./scripts/sync_control_center_embedded_ui.sh`) — [control-center-versioning.md](./control-center-versioning.md) |
+| `verify_desktop_release_ready.sh` fails | Align `package.json`, `Cargo.toml`, `tauri.conf.json` — `python3 scripts/bump_version.py patch --stream desktop` |
 | gRPC client fails | Start with `--grpc-bind 127.0.0.1:50051`; check firewall |
 | Rate limited | `SPANDA_API_RATE_LIMIT_PER_MINUTE` — [control-center-rate-limits.md](./control-center-rate-limits.md) |
 

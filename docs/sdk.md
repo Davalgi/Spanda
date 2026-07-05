@@ -10,7 +10,7 @@ Official SDKs integrate with Spanda through the **Control Center API** (`spanda-
 | Python | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) on PyPI | P1 | Stable (v0.4.2 — publish via `sdk-python-v0.4.2`) |
 | TypeScript | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) on npm | P2 | Stable (v0.4.2 published) |
 | Web panel | [`@davalgi-spanda/web`](https://www.npmjs.com/package/@davalgi-spanda/web) on npm | — | Experimental (publish via `npm-web-v*`) |
-| Desktop | `@spanda/control-center-desktop` (Tauri) | — | Stable (v0.4.2 — publish via `desktop-v0.4.2` GitHub Release) |
+| Desktop | `@spanda/control-center-desktop` (Tauri) | — | Stable (v0.6.3 — publish via `desktop-v0.6.3` GitHub Release) |
 
 Install from registries:
 
@@ -23,7 +23,7 @@ npm install @davalgi-spanda/web
 
 Install failures (PEP 668 on Python, `cargo add` in the Spanda monorepo): [troubleshooting.md — Official SDK install](./troubleshooting.md#official-sdk-install).
 
-Maintainers: [Publishing SDKs](sdk-publishing.md) (`crates-sdk-v*`, `sdk-python-v*`, `npm-sdk-v*`, `desktop-v*` tags).
+Maintainers: [Publishing SDKs](sdk-publishing.md) (`crates-sdk-v*`, `sdk-python-v*`, `npm-sdk-v*`, `desktop-v*` tags) · [Control Center versioning](control-center-versioning.md).
 
 Legacy Python client: `packages/sdk-python` (Control Center helpers; use `sdk/python` for full SDK surface).
 
@@ -168,6 +168,7 @@ All SDKs expose structured errors:
 - [Cognitive & Resilience domain clients](cognitive-resilience-architecture.md#sdk-and-api) — `ReflexClient`, `HomeostasisClient`, `FusionClient`, …
 - [Recovery Orchestrator SDK](recovery-sdk.md) — `planRecovery`, `getRecoveryPredictive`, `listRecoverableEntities`, … (SDK **0.5.6+**)
 - [Publishing SDKs (PyPI / npm / desktop)](sdk-publishing.md)
+- [Control Center versioning (UI / CLI / desktop releases)](control-center-versioning.md)
 - [Control Center API](control-center-api.md)
 
 ## Examples

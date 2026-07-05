@@ -2,7 +2,9 @@
 
 Production macOS builds and optional signed auto-update for `@spanda/control-center-desktop`.
 
-**Current release:** **0.5.0** — tag [`desktop-v0.5.0`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.5.0) (GitHub Release + workflow artifacts).
+**Current release:** **0.6.3** — tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (GitHub Release + workflow artifacts).
+
+Full versioning policy (UI display, CLI, API fields, automatic bumps): **[control-center-versioning.md](./control-center-versioning.md)**.
 
 ---
 
@@ -16,7 +18,8 @@ Production macOS builds and optional signed auto-update for `@spanda/control-cen
 
 1. Start the API: `spanda control-center serve --bind 127.0.0.1:8080`
 2. Install the desktop app from the GitHub Release
-3. Optional: `VITE_CONTROL_CENTER_URL` at dev time; production builds default to local API URL from env
+3. Confirm version: sidebar shows `vX.Y.Z`, or `spanda control-center --version`
+4. Optional: `VITE_CONTROL_CENTER_URL` at dev time; production builds default to local API URL from env
 
 ---
 
@@ -49,31 +52,45 @@ Keep these three files on the **same semver** before tagging:
 
 This runs `control_center_desktop_smoke.sh` (Tauri `cargo check`) and fails on version mismatch.
 
+The **Control Center UI** semver (`packages/web`) is a separate workspace manifest but is shown in the sidebar and API; align it with desktop releases when shipping coordinated Control Center features. See [control-center-versioning.md](./control-center-versioning.md).
+
 ---
 
 ## Release a new version
 
-### 1. Bump versions
+### Automatic (preferred)
 
-Update all three manifest files above (for example `0.4.3`), then:
+1. Label the PR before merge: `release:patch`, `release:minor`, or `release:major`.
+2. Ensure the PR changes Control Center paths (see `scripts/control_center_paths_changed.sh`).
+3. Merge to `main`; after **CI Integration** passes, **Auto release** bumps desktop and pushes `desktop-v*`.
+
+### Manual
+
+#### 1. Bump versions
 
 ```bash
+python3 scripts/bump_version.py minor --stream desktop --dry-run
+python3 scripts/bump_version.py minor --stream desktop
 ./scripts/verify_desktop_release_ready.sh
 git add packages/control-center-desktop/
-git commit -m "release(control-center-desktop): bump to 0.4.3"
+git commit -m "chore: release desktop v0.6.4"
 git push origin main
 ```
 
-### 2. Tag and push
+Or edit all three manifest files manually, then run `./scripts/verify_desktop_release_ready.sh`.
+
+#### 2. Tag and push
 
 ```bash
-git tag desktop-v0.4.3
-git push origin desktop-v0.4.3
+git tag desktop-v0.6.4
+git push origin desktop-v0.6.4
 ```
 
 Tag pattern **`desktop-v*`** must match the semver in the manifests.
 
-### 3. Watch CI
+**Alternative:** Actions → **Bump version** → stream **desktop**, choose patch/minor/major, enable **Push release tag**.
+
+#### 3. Watch CI
 
 **GitHub → Actions → Desktop Control Center release**
 
@@ -140,16 +157,18 @@ Until updater secrets are configured, operators install new versions manually fr
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `verify_desktop_release_ready.sh` version mismatch | `package.json` / `Cargo.toml` / `tauri.conf.json` out of sync | Align semver in all three files |
+| `verify_desktop_release_ready.sh` version mismatch | `package.json` / `Cargo.toml` / `tauri.conf.json` out of sync | `python3 scripts/bump_version.py patch --stream desktop` or align manually |
 | Tag pushed, no GitHub Release | Workflow failed before release step | Check Actions log; fix build; new patch tag |
 | Release has no `.dmg` | Bundle step failed or wrong paths | Download workflow artifact instead |
 | App won't open on macOS | Unsigned build | Right-click → Open, or configure Apple signing secrets and re-release |
 | Desktop can't reach API | API not running or wrong URL | Start `spanda control-center serve`; set `VITE_CONTROL_CENTER_URL` in dev |
+| Sidebar version ≠ installed desktop tag | Streams diverged or old API | Match `desktop-v*` install with running API build; see [control-center-versioning.md](./control-center-versioning.md) |
 
 ---
 
 ## Related
 
+- [control-center-versioning.md](./control-center-versioning.md) — semver streams, UI/CLI/API display, auto bump
 - [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md)
 - [sdk-publishing.md](./sdk-publishing.md) — SDK + desktop tag table
 - [control-center.md](./control-center.md) — API and UI reference

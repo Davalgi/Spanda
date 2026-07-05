@@ -255,16 +255,20 @@ After **CI Integration** passes on `main`, the **Auto release** workflow bumps t
 | `release:minor` | Roadmap release milestone complete (v0.5, …) or substantial additive platform release |
 | `release:patch` | Bug fixes, stable promotions, and small updates within the current release line |
 
-Create the labels in the GitHub repo if they do not exist yet (`release:major`, `release:minor`, `release:patch`). Apply **one** release label before merging. The workflow bumps **workspace only** and pushes a `v*` tag that triggers cargo-dist **Release**. SDK and desktop releases use `--stream sdk` / `--stream desktop` locally and their own tags — see [docs/versioning.md](docs/versioning.md).
+Create the labels in the GitHub repo if they do not exist yet (`release:major`, `release:minor`, `release:patch`). Apply **one** release label before merging. The workflow bumps the **workspace** stream and pushes a `v*` tag that triggers cargo-dist **Release**. When the merged PR also changed Control Center paths (`packages/web`, `packages/control-center-desktop`, Control Center API/CLI), **Auto release** bumps the **desktop** stream too and pushes `desktop-v*`, which triggers the Tauri GitHub Release workflow. SDK releases still use `--stream sdk` locally — see [docs/versioning.md](docs/versioning.md) and [docs/control-center-versioning.md](docs/control-center-versioning.md).
+
+| Control Center path check (local) | `./scripts/control_center_paths_changed.sh origin/main` — exit 0 when the diff touches Control Center |
+| Version display | Sidebar `vX.Y.Z`; `spanda control-center --version`; `GET /v1/version` → `control_center_ui_version` |
 
 ### Manual release
 
-Use **Actions → Bump version** when you need an ad-hoc semver bump without a labeled PR. Choose patch, minor, or major; leave **Push release tag** enabled to publish.
+Use **Actions → Bump version** when you need an ad-hoc semver bump without a labeled PR. Choose **workspace** or **desktop** stream; pick patch, minor, or major; leave **Push release tag** enabled to publish.
 
 ### Local dry run
 
 ```bash
 python3 scripts/bump_version.py minor --dry-run
+python3 scripts/bump_version.py patch --stream desktop --dry-run
 ```
 
 ---

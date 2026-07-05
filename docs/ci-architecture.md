@@ -10,6 +10,13 @@ Spanda CI is split into **three tiers** so pull requests stay fast while `main` 
 
 **Auto release** (`.github/workflows/auto-release.yml`) waits for **CI Integration** success on `main`, not nightly.
 
+When the merged PR has a `release:major|minor|patch` label:
+
+1. Bumps **workspace** → tag `vX.Y.Z` → cargo-dist Release.
+2. If Control Center paths changed (`scripts/control_center_paths_changed.sh`), bumps **desktop** → tag `desktop-vX.Y.Z` → [desktop-release.yml](../.github/workflows/desktop-release.yml).
+
+Manual ad-hoc bumps: **Actions → Bump version** (stream **workspace** or **desktop**). See [control-center-versioning.md](./control-center-versioning.md).
+
 ---
 
 ## CI Fast (PR gate ~12–15 min)

@@ -912,7 +912,8 @@ grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control
 | Endpoint | Method | Auth | Description |
 |----------|--------|------|-------------|
 | `/v1/health` | GET | — | Liveness |
-| `/v1/instance` | GET | — | Runtime status (bind, config/program paths, pool summary) |
+| `/v1/instance` | GET | — | Runtime status (bind, config/program paths, pool summary, `control_center_ui_version`) |
+| `/v1/version` | GET | — | API versioning policy; `control_center_ui_version`, `spanda_version`, gRPC proto metadata |
 | `/v1/tenant` | GET | — | Active tenant (`SPANDA_TENANT_ID`) |
 | `/v1/dashboard` | GET | — | Device pool summary, fleet agent count, alerts |
 | `/v1/devices` | GET | — | Device pool entries |
@@ -988,7 +989,7 @@ Authenticate mutations with `Authorization: Bearer <token>`. See [Authentication
 
 **HA persistence:** Alert history and API trace log hydrate from `.spanda/control-center-alerts.json` and `.spanda/control-center-traces.json` on startup (override directory with `SPANDA_CONTROL_CENTER_STATE_DIR`).
 
-**API versioning:** `GET /v1/version` documents supported versions. Clients may send `X-Spanda-Api-Version: v1`; unsupported values return `400`. Breaking changes ship under a new `/v2/` path prefix.
+**API versioning:** `GET /v1/version` documents supported versions and returns `control_center_ui_version` (UI semver) and `spanda_version` (platform build). Clients may send `X-Spanda-Api-Version: v1`; unsupported values return `400`. Breaking changes ship under a new `/v2/` path prefix. Operator CLI: `spanda control-center --version`. See [control-center-versioning.md](./control-center-versioning.md).
 
 **Rate limiting:** Set `SPANDA_API_RATE_LIMIT_PER_MINUTE` (per API key, or `anonymous` when unauthenticated). Excess requests return HTTP `429` with `Retry-After` (REST) or gRPC `RESOURCE_EXHAUSTED`.
 
@@ -1150,7 +1151,24 @@ Default: log to stderr.
 
 ## Stable promotion
 
-Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in code**. SDKs **0.4.2** and Control Center desktop **0.4.2** (`desktop-v0.4.2`) are published via registry tags and GitHub Releases. Remaining organizational gates: third-party security audit sign-off and 30-day field soak. See [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) · [field-soak-gate.md](./field-soak-gate.md) · [security-audit-third-party.md](./security-audit-third-party.md) · [desktop-release-runbook.md](./desktop-release-runbook.md).
+Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in code**. SDKs **0.4.2** (registry) and Control Center desktop **0.6.3** (`desktop-v0.6.3`, with sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining organizational gates: third-party security audit sign-off and 30-day field soak. See [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) · [field-soak-gate.md](./field-soak-gate.md) · [security-audit-third-party.md](./security-audit-third-party.md) · [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
+
+---
+
+## Versioning
+
+Control Center has an independent **desktop release stream** (`desktop-v*`) and a **UI semver** shown in the sidebar, CLI, and API.
+
+| Surface | How to read the version |
+|---------|-------------------------|
+| UI sidebar | `vX.Y.Z` under the Control Center title |
+| CLI | `spanda control-center --version` · `spanda control-center status` → `UI version` |
+| API | `GET /v1/version` → `control_center_ui_version` · `GET /v1/instance` |
+| Serve startup | `Spanda Control Center vX.Y.Z listening on …` |
+
+**Automatic bump:** PRs labeled `release:patch|minor|major` that change Control Center paths trigger a matching desktop bump after CI Integration on `main`. **Manual:** `python3 scripts/bump_version.py minor --stream desktop`.
+
+Full policy, path list, and troubleshooting: **[control-center-versioning.md](./control-center-versioning.md)** · release runbook: [desktop-release-runbook.md](./desktop-release-runbook.md).
 
 ---
 
@@ -1164,12 +1182,12 @@ Package: `@spanda/control-center-desktop` (`packages/control-center-desktop`).
 2. Dev shell: `npm run control-center:desktop:dev` (Vite on port **5174**)
 3. Optional API URL: `VITE_CONTROL_CENTER_URL=http://host:port`
 
-The desktop shell reuses `ControlCenterPanel` from `@davalgi-spanda/web`; it does not embed `spanda-api`. Production installers ship via **`desktop-v*`** tags → `.github/workflows/desktop-release.yml` → GitHub Release (macOS `.dmg` / `.app.tar.gz`) plus workflow artifacts. Pre-flight: `./scripts/verify_desktop_release_ready.sh`. Optional codesign/notarize: `./scripts/sign_tauri_macos.sh` when Apple secrets are set. See [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) · [desktop-release-runbook.md](./desktop-release-runbook.md).
+The desktop shell reuses `ControlCenterPanel` from `@davalgi-spanda/web`; it does not embed `spanda-api`. Production installers ship via **`desktop-v*`** tags → `.github/workflows/desktop-release.yml` → GitHub Release (macOS `.dmg` / `.app.tar.gz`) plus workflow artifacts. Pre-flight: `./scripts/verify_desktop_release_ready.sh`. Optional codesign/notarize: `./scripts/sign_tauri_macos.sh` when Apple secrets are set. See [packages/control-center-desktop/README.md](../packages/control-center-desktop/README.md) · [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
 
-**Current release:** **0.4.2** — tag `desktop-v0.4.2` on GitHub Releases.
+**Current release:** **0.6.3** — tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) on GitHub Releases.
 
 ---
 
 ## Status
 
-**Stable** (Phase E1–E4). Includes device pool provisioning, multi-transport discovery with production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export, SLO burn-rate monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs **0.4.2**, and Tauri desktop **0.4.2** production release (`desktop-v0.4.2`).
+**Stable** (Phase E1–E4). Includes device pool provisioning, multi-transport discovery with production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export, SLO burn-rate monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs **0.4.2**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API version display.

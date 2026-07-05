@@ -764,7 +764,7 @@ export SPANDA_REPORT_SCHEDULE_INTERVAL_SECS=3600
 
 ### Field soak and stable promotion
 
-Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production SDK **0.4.2** and desktop **0.4.2** (`desktop-v0.4.2`) are published. Remaining **organizational** gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off ([security-audit-third-party.md](./security-audit-third-party.md)). See [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
+Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production SDK **0.4.2** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational** gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off ([security-audit-third-party.md](./security-audit-third-party.md)). See [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
 ### Desktop shell
 
@@ -778,7 +778,9 @@ npm run control-center:desktop:dev
 
 Point the UI at a different API URL with `VITE_CONTROL_CENTER_URL=http://host:port`.
 
-**Production install (macOS):** download the **0.4.2** installer from the GitHub Release for tag [`desktop-v0.4.2`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.4.2) (`.dmg` or workflow artifact if unsigned). Start the API with `spanda control-center serve`, then launch the desktop app. Maintainer release process: [desktop-release-runbook.md](./desktop-release-runbook.md).
+Check the running version: sidebar shows `vX.Y.Z`, or `spanda control-center --version` / `spanda control-center status`.
+
+**Production install (macOS):** download the **0.6.3** installer from the GitHub Release for tag [`desktop-v0.6.3`](https://github.com/Davalgi/Spanda/releases/tag/desktop-v0.6.3) (`.dmg` or workflow artifact if unsigned). Start the API with `spanda control-center serve`, then launch the desktop app. Maintainer release process: [desktop-release-runbook.md](./desktop-release-runbook.md) · [control-center-versioning.md](./control-center-versioning.md).
 
 ### Official SDKs
 

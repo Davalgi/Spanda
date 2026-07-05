@@ -31,7 +31,7 @@ Beyond core language features, Spanda prioritizes **adoption, trust, and operati
 
 **P0 (organizational, parallel):** 30-day field soak + third-party security audit — [organizational-gates.md](./organizational-gates.md) · [#51](https://github.com/Davalgi/Spanda/issues/51).
 
-**Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI, official SDKs **0.4.2**, Tauri desktop **0.4.2**, WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see [control-center.md](./control-center.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
+**Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI with `--version`, official SDKs **0.4.2**, Tauri desktop **0.6.3** (auto `desktop-v*` on labeled CC PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see [control-center.md](./control-center.md) · [control-center-versioning.md](./control-center-versioning.md) · [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
 **Deferred:** VS Code Marketplace publish (needs `VSCE_PAT`).
 

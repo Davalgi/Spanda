@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Control Center versioning:** sidebar shows UI semver (`vX.Y.Z`); `spanda control-center --version` and `status` report it; `GET /v1/version` and `/v1/instance` expose `control_center_ui_version`. **Auto release** bumps the desktop stream and pushes `desktop-v*` when a labeled PR changes Control Center paths. Guide: [docs/control-center-versioning.md](docs/control-center-versioning.md). Updated [desktop-release-runbook.md](docs/desktop-release-runbook.md), [versioning.md](docs/versioning.md), [CONTRIBUTING.md](CONTRIBUTING.md), [control-center.md](docs/control-center.md), and related docs.
 - **Cognitive & Resilience Architecture:** canonical functional view with eleven responsibility domains, [responsibility matrix](docs/responsibility-matrix.md), and domain guides — [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md). Prior [bio-inspired-architecture.md](docs/bio-inspired-architecture.md) retained for backward compatibility.
 - **`Entity.attention`** snapshot on `EntityAutonomyProfile`; domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`) in Rust, TypeScript, and Python; REST `GET /v1/autonomy/fusion` and `/v1/autonomy/memory`.
 - **Control Center Cognitive & Resilience tab:** panels organized by functional domain (reflex events, attention queue, homeostasis, platform immunity, operational memory, damage risk, recovery confidence).

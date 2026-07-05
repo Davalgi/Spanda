@@ -201,6 +201,7 @@
 | [sdk-typescript.md](./sdk-typescript.md) | TypeScript SDK (`@davalgi-spanda/sdk`) |
 | [sdk-publishing.md](./sdk-publishing.md) | **Publishing SDKs** — PyPI/npm tokens, GitHub secrets, release tags |
 | [versioning.md](./versioning.md) | **Versioning policy** — milestone → semver (patch/minor/major), release streams, checklists |
+| [control-center-versioning.md](./control-center-versioning.md) | **Control Center versioning** — UI/CLI/API display, `desktop-v*` auto bump, path detection |
 | [api-contract.json](./api-contract.json) | JSON schema for diagnostics, run results, and verify output |
 | [standard-library.md](./standard-library.md) | Standard library overview and design |
 | [robotics-platform.md](./robotics-platform.md) | **Robotics platform: missions, fleet, safety zones, navigation, fusion, package strategy** |
@@ -222,7 +223,7 @@
 | [field-soak-gate.md](./field-soak-gate.md) | **30-day field pilot gate before Stable promotion** |
 | [security-audit-third-party.md](./security-audit-third-party.md) | **Third-party security audit scope and prep workflow** |
 | [desktop-release-runbook.md](./desktop-release-runbook.md) | **Control Center desktop `desktop-v*` tags, GitHub Releases, optional signing** |
-| [control-center.md](./control-center.md) | **Control Center — `spanda control-center serve`, REST v1, Tauri desktop 0.4.2** |
+| [control-center.md](./control-center.md) | **Control Center — `spanda control-center serve`, REST v1, Tauri desktop 0.6.3** |
 | [mission-contracts.md](./mission-contracts.md) | **Mission Contracts — guarantees, constraints, assumptions** |
 | [decision-audit-trail.md](./decision-audit-trail.md) | **Decision audit trail — mission → decision → evidence → action** |
 | [safety-coverage.md](./safety-coverage.md) | **Safety scenario coverage reporting** |

@@ -187,7 +187,10 @@ SDK wrappers mirror these in each language (`spanda-sdk` types modules).
 ## Versioning
 
 - API version prefix: `/v1/`
-- Policy: `GET /v1/version` (includes `grpc.proto_semver` and `grpc.rpc_count`)
+- Policy: `GET /v1/version` — `control_center_ui_version` (Control Center UI semver), `spanda_version` (platform build), `grpc.proto_semver`, `grpc.rpc_count`
+- Runtime status: `GET /v1/instance` — includes `control_center_ui_version` for `spanda control-center status`
+- Operator CLI: `spanda control-center --version`
+- Full release streams and auto bump: [control-center-versioning.md](./control-center-versioning.md)
 - OpenAPI parity enforced by `crates/spanda-api/tests/openapi_parity_tests.rs`
 
 ## Authentication

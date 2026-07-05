@@ -47,6 +47,10 @@ Spanda follows [Semantic Versioning 2.0.0](https://semver.org/). Each **release 
 | Tauri shell, updater, packaging, desktop UI wiring | **patch** or **minor** |
 | Breaking desktop install/upgrade path | **major** |
 
+**Automatic desktop bump:** When a merged PR has a `release:*` label **and** changes Control Center paths (see `scripts/control_center_paths_changed.sh`), **Auto release** bumps the desktop stream with the same semver component and pushes `desktop-v*`.
+
+**Version display:** Control Center UI shows `vX.Y.Z` in the sidebar; `spanda control-center --version` and `spanda control-center status` report the UI semver; `GET /v1/version` and `GET /v1/instance` include `control_center_ui_version`. Full reference: [control-center-versioning.md](./control-center-versioning.md).
+
 ## Bump commands
 
 ```bash
@@ -92,13 +96,13 @@ Pre-release checks:
 ./scripts/verify_desktop_release_ready.sh  # before desktop tag
 ```
 
-## Current versions (2026-07-02)
+## Current versions (2026-07-05)
 
 | Stream | Version | Last tag |
 |--------|---------|----------|
 | Workspace / CLI | **0.5.0** | `v0.5.0` |
 | Official SDKs | **0.5.0** | `crates-sdk-v0.5.0`, `sdk-python-v0.5.0`, `npm-sdk-v0.5.0` |
-| Control Center desktop | **0.5.0** | `desktop-v0.5.0` |
+| Control Center desktop | **0.6.3** | `desktop-v0.6.3` |
 
 ## Checklist
 
@@ -110,6 +114,7 @@ Pre-release checks:
 
 ## Related docs
 
-- [CONTRIBUTING.md](../CONTRIBUTING.md#releases) — workspace auto release via PR labels
+- [CONTRIBUTING.md](../CONTRIBUTING.md#releases) — workspace and desktop auto release via PR labels
+- [control-center-versioning.md](./control-center-versioning.md) — Control Center UI/CLI/API version display and auto bump
 - [sdk-publishing.md](./sdk-publishing.md) — SDK registry secrets
 - [desktop-release-runbook.md](./desktop-release-runbook.md) — Tauri release
