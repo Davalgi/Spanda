@@ -173,6 +173,42 @@ PY
 echo "== gRPC recovery + health parity =="
 cargo test -p spanda-api --test cross_interface_live --quiet
 
+echo "== autonomy reflex consistency =="
+cli_reflex="$(run_spanda reflex list --json)"
+rest_reflex="$(fetch /v1/autonomy/reflex)"
+python3 - "$cli_reflex" "$rest_reflex" <<'PY'
+import json, sys
+cli = json.loads(sys.argv[1])
+rest = json.loads(sys.argv[2])
+cli_ids = {r["id"] for r in cli} if isinstance(cli, list) else {r["id"] for r in cli.get("reflexes", cli)}
+rest_ids = {r["id"] for r in rest.get("reflexes", [])}
+assert "reflex.emergency_stop" in cli_ids
+assert cli_ids == rest_ids, (cli_ids - rest_ids, rest_ids - cli_ids)
+print("autonomy reflex list ok")
+PY
+
+echo "== autonomy homeostasis consistency =="
+cli_homeo="$(run_spanda homeostasis check --json)"
+rest_homeo="$(fetch /v1/autonomy/homeostasis)"
+python3 - "$cli_homeo" "$rest_homeo" <<'PY'
+import json, sys
+cli = json.loads(sys.argv[1])
+rest = json.loads(sys.argv[2])
+assert "stable" in cli or "metrics" in cli
+assert "reports" in rest
+print("autonomy homeostasis ok")
+PY
+
+echo "== autonomy entity profile consistency =="
+rest_entity="$(fetch /v1/entities/rover-001/autonomy)"
+python3 - "$rest_entity" <<'PY'
+import json, sys
+payload = json.loads(sys.argv[1])
+assert payload.get("entity_id") == "rover-001"
+assert payload.get("autonomy") is not None
+print("entity autonomy ok")
+PY
+
 echo "== decision list / traces consistency =="
 cli_decisions="$(run_spanda decision list "$DECISIONS")"
 rest_traces="$(fetch "/v1/decisions/traces?file=${DECISIONS}" 2>/dev/null || echo '{}')"
@@ -207,6 +243,12 @@ if (!graph) {
   console.error('TS SDK entityGraph empty');
   process.exit(1);
 }
+const reflex = await client.listAutonomyReflexes();
+const reflexes = reflex?.reflexes ?? reflex;
+if (!Array.isArray(reflexes) || reflexes.length === 0) {
+  console.error('TS SDK listAutonomyReflexes empty', reflex);
+  process.exit(1);
+}
 console.log('typescript sdk ok');
 "
 )
@@ -224,6 +266,9 @@ ids = {e.get("id") for e in payload}
 assert "rover-001" in ids, entities
 graph = client.entity_graph()
 assert graph is not None
+reflex = client.list_autonomy_reflexes()
+reflexes = reflex.get("reflexes", reflex) if isinstance(reflex, dict) else reflex
+assert reflexes, reflex
 print("python sdk ok")
 PY
 

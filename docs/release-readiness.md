@@ -27,6 +27,7 @@ Snapshot for **v0.6.3** (evaluation / beta). Update when quality gates or phase 
 | README command smoke | Required in CI | `tests/readme_commands/run.sh` |
 | Golden-output flagship commands | Required in CI | `tests/readme_commands/run.sh --golden` |
 | Cross-interface consistency | Required in CI | `scripts/cross_interface_consistency.sh` |
+| Bio-inspired autonomy smoke | Required in CI | `scripts/bio_inspired_autonomy_smoke.sh` |
 | Security regressions | Required in CI | plugin / package / decision / recovery tests |
 | Property-style parsers | Required in CI | parser, manifest, config, policy, capability |
 

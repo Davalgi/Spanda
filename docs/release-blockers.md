@@ -28,7 +28,7 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 | RB-004 | [#48](https://github.com/Davalgi/Spanda/issues/48) | `spanda recovery plan … --failure gps` returns `Plans (0)` while explain succeeds | Recovery orchestrator | P1 | `spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps` | — | **Fixed** — failure-only plans target program robots; empty plans no longer pass |
 | RB-005 | [#49](https://github.com/Davalgi/Spanda/issues/49) | `LOCAL_REGISTRY` stub omits packages present under `packages/registry/` | Package manager | P2 | `spanda install` without monorepo index for packages only on disk | — | **Fixed** — on-disk packages resolve and no longer warn as missing from stub |
 | RB-006 | [#50](https://github.com/Davalgi/Spanda/issues/50) | Many features labeled **Stable** while default AI/IoT paths are mock-backed | Feature status | P1 | Review `docs/feature-status.md` agent/AI and live transport rows | — | **Mitigated** — honesty audit section; AI agents Mock-backed; organizational soak still open via RB-007 |
-| RB-007 | [#51](https://github.com/Davalgi/Spanda/issues/51) | Organizational gates (field soak, third-party security audit) incomplete | Enterprise ops / blueprints | P2 | Promotion gates skip soak/audit in CI | — | Open — documented; not code blockers |
+| RB-007 | [#51](https://github.com/Davalgi/Spanda/issues/51) | Organizational gates (field soak, third-party security audit) incomplete | Enterprise ops / blueprints | P2 | Promotion gates skip soak/audit in CI | — | **In progress** — field soak started 2026-06-29; audit prep script available |
 | RB-008 | [#52](https://github.com/Davalgi/Spanda/issues/52) | Recovery plan empty plans may mislead operators | Recovery / docs | P2 | Same as RB-004 | — | **Fixed** — empty plans report `Passed: false` with what/why/where/fix text |
 | RB-009 | [#53](https://github.com/Davalgi/Spanda/issues/53) | Cross-interface consistency not historically enforced in CI | QA / SDKs | P1 | Manual CLI vs REST vs SDK drift | — | **Mitigated** — `scripts/cross_interface_consistency.sh` + CI job |
 | RB-010 | [#54](https://github.com/Davalgi/Spanda/issues/54) | README commands lacked automated smoke/golden coverage | QA | P0 | Broken README commands undetected | — | **Fixed** — `tests/readme_commands/` harness |
@@ -39,7 +39,7 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 
 | Priority | Issues |
 |----------|--------|
-| **P2** | [#51](https://github.com/Davalgi/Spanda/issues/51) (RB-007) — organizational field soak / third-party audit |
+| **P2** | [#51](https://github.com/Davalgi/Spanda/issues/51) (RB-007) — organizational field soak / third-party audit | Field soak **in progress** (started 2026-06-29) |
 
 ## How to add a blocker
 

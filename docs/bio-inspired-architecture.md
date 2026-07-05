@@ -123,11 +123,11 @@ Implementation lives in **`spanda-autonomy`** (`crates/spanda-autonomy/`).
 
 ## Known limitations
 
-See [known-limitations.md](./known-limitations.md#bio-inspired-resilient-autonomy). Sensory fusion and attention remain rule-based; adaptive recovery uses statistics, not ML. Live reflex traces are buffered in-process during `run`/`sim` and exposed via REST when the API server shares the process.
+See [known-limitations.md](./known-limitations.md#bio-inspired-resilient-autonomy). Sensory fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under `.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
 
-**Smoke:** `./scripts/bio_inspired_autonomy_smoke.sh`
+**Smoke:** `./scripts/bio_inspired_autonomy_smoke.sh` (CI job `bio-inspired-autonomy`)
 
-**AST preview:** `homeostasis_policy` and `attention_policy` declaration slots exist on `Program` for future `.sd` syntax; parser keywords are not wired yet.
+**Language:** `homeostasis_policy` and `attention_policy` declarations parse in `.sd` programs.
 
 ---
 

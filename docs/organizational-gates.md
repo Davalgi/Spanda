@@ -75,7 +75,7 @@ Use this when preparing the `1.0.0` workspace tag:
 
 | # | Item | Owner | Status |
 |---|------|-------|--------|
-| 1 | Field soak ≥ 30 days | Ops / pilot team | Open |
+| 1 | Field soak ≥ 30 days | Ops / pilot team | **In progress** — started 2026-06-29 (`.spanda/field-soak-start.txt`) |
 | 2 | Third-party security audit sign-off | Security | Open |
 | 3 | RB-007 closed or explicitly accepted in release notes | Maintainers | Open |
 | 4 | Open P0/P1 release blockers | Engineering | **Met** (v0.6.3) |
