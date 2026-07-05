@@ -50,6 +50,7 @@ spanda-readiness = { path = "../spanda-readiness" }
 spanda-config = { path = "../spanda-config" }
 spanda-runtime-faults = { path = "../spanda-runtime-faults" }
 spanda-assurance = { path = "../spanda-assurance", features = ["certify-runtime"] }
+spanda-autonomy = { path = "../spanda-autonomy" }
 spanda-recovery = { path = "../spanda-recovery" }
 spanda-audit = { path = "../spanda-audit" }
 spanda-contract = { path = "../spanda-contract" }
@@ -90,6 +91,7 @@ spanda-sir = { path = "../spanda-sir" }
 spanda-typecheck = { path = "../spanda-typecheck" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
 
 [features]
 default = ["llvm"]

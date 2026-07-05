@@ -42,5 +42,7 @@ fn twin_history_and_import_paths_build() {
         .api_key("test-key")
         .build();
     assert!(client.get_twin_history("patrol").is_err());
-    assert!(client.import_twin_replay("patrol.sd", Some("patrol")).is_err());
+    assert!(client
+        .import_twin_replay("patrol.sd", Some("patrol"))
+        .is_err());
 }

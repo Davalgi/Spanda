@@ -69,9 +69,8 @@ pub fn handle_request(
         return (response, correlation_id);
     }
     if path == "/" || path == "/control-center" {
-        let response = crate::control_center_ui::serve_static(path).unwrap_or_else(|| {
-            html_ok(include_str!("static/control-center.html"))
-        });
+        let response = crate::control_center_ui::serve_static(path)
+            .unwrap_or_else(|| html_ok(include_str!("static/control-center.html")));
         e3::record_trace(
             state,
             &correlation_id,
@@ -322,13 +321,9 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
-    if let Some(response) = crate::admin_ops::route_admin(
-        state,
-        path,
-        &request.method,
-        &request.body,
-        ctx.as_ref(),
-    ) {
+    if let Some(response) =
+        crate::admin_ops::route_admin(state, path, &request.method, &request.body, ctx.as_ref())
+    {
         e3::record_trace(
             state,
             &correlation_id,
@@ -422,9 +417,7 @@ pub fn handle_request(
         ("/v1/decisions/simulate", "POST") => {
             crate::decision_ops::simulate_decisions(state, &request.body)
         }
-        ("/v1/decisions/escalations", "GET") => {
-            crate::decision_ops::list_escalations(state, query)
-        }
+        ("/v1/decisions/escalations", "GET") => crate::decision_ops::list_escalations(state, query),
         ("/v1/decisions/escalate", "POST") => {
             crate::decision_ops::escalate_decision(state, &request.body)
         }
@@ -435,7 +428,9 @@ pub fn handle_request(
         ("/v1/decision-policy-cache", "GET") => {
             crate::decision_ops::list_decision_policy_cache(state, query)
         }
-        ("/v1/decisions/mesh", "GET") => crate::decision_ops::fleet_decision_mesh_status(state, query),
+        ("/v1/decisions/mesh", "GET") => {
+            crate::decision_ops::fleet_decision_mesh_status(state, query)
+        }
         ("/v1/decisions/mesh/conflicts", "GET") => {
             crate::decision_ops::fleet_decision_mesh_conflicts(state, query)
         }
@@ -481,13 +476,15 @@ pub fn handle_request(
         ("/v1/programs/contract/verify", "POST") => {
             crate::sdk_ops::program_contract_verify(state, &request.body)
         }
-        ("/v1/programs/explain", "POST") => {
-            crate::sdk_ops::program_explain(state, &request.body)
-        }
+        ("/v1/programs/explain", "POST") => crate::sdk_ops::program_explain(state, &request.body),
         ("/v1/programs/audit/decisions", "POST") => {
             crate::sdk_ops::program_audit_decisions(state, &request.body)
         }
         ("/v1/recovery/plans", "GET") => crate::recovery_ops::list_recovery_plans(state),
+        ("/v1/autonomy/reflex", "GET") => crate::autonomy_ops::list_reflex(state),
+        ("/v1/autonomy/homeostasis", "GET") => crate::autonomy_ops::homeostasis_summary(state),
+        ("/v1/autonomy/immunity", "GET") => crate::autonomy_ops::immunity_scan(state),
+        ("/v1/autonomy/attention", "GET") => crate::autonomy_ops::attention_queue(state),
         ("/v1/recovery/history", "GET") => crate::recovery_ops::recovery_history(state),
         ("/v1/recovery/plan", "POST") => crate::recovery_ops::recovery_plan(state, &request.body),
         ("/v1/recovery/simulate", "POST") => {
@@ -505,9 +502,7 @@ pub fn handle_request(
         ("/v1/recovery/explain", "POST") => {
             crate::recovery_ops::recovery_explain(state, &request.body)
         }
-        ("/v1/recovery/predictive", "GET") => {
-            crate::recovery_ops::recovery_predictive(state, None)
-        }
+        ("/v1/recovery/predictive", "GET") => crate::recovery_ops::recovery_predictive(state, None),
         ("/v1/recovery/predictive", "POST") => {
             crate::recovery_ops::recovery_predictive(state, Some(&request.body))
         }
@@ -599,15 +594,16 @@ pub fn handle_request(
         }
         ("/v1/compliance/profiles", "GET") => e4::compliance_profiles_catalog(),
         ("/v1/governance", "GET") => crate::governance_ops::governance_summary(),
-        ("/v1/compliance", "GET") => {
-            crate::governance_ops::compliance_summary(state, ctx.as_ref())
-        }
+        ("/v1/compliance", "GET") => crate::governance_ops::compliance_summary(state, ctx.as_ref()),
         ("/v1/compliance/check", "POST") => {
             crate::governance_ops::compliance_check(state, query, Some(&request.body), ctx.as_ref())
         }
-        ("/v1/governance/validate", "POST") => {
-            crate::governance_ops::governance_validate(state, query, Some(&request.body), ctx.as_ref())
-        }
+        ("/v1/governance/validate", "POST") => crate::governance_ops::governance_validate(
+            state,
+            query,
+            Some(&request.body),
+            ctx.as_ref(),
+        ),
         ("/v1/certifications", "GET") => {
             crate::governance_ops::certifications_list(state, ctx.as_ref())
         }
@@ -622,9 +618,12 @@ pub fn handle_request(
         ("/v1/certifications/report", "GET") => {
             crate::governance_ops::certification_report(state, query, ctx.as_ref())
         }
-        ("/v1/deployment/verify", "POST") => {
-            crate::governance_ops::deployment_verify(state, query, Some(&request.body), ctx.as_ref())
-        }
+        ("/v1/deployment/verify", "POST") => crate::governance_ops::deployment_verify(
+            state,
+            query,
+            Some(&request.body),
+            ctx.as_ref(),
+        ),
         ("/v1/governance/policies", "GET") => crate::governance_ops::policies_list(ctx.as_ref()),
         ("/v1/governance/policies/assign", "POST") => {
             crate::governance_ops::policies_assign(&request.body, ctx.as_ref())
@@ -1296,6 +1295,7 @@ fn route_sdk_entities(
             ("relationships", "GET") => {
                 Some(crate::sdk_ops::entity_relationships(state, entity_id))
             }
+            ("autonomy", "GET") => Some(crate::autonomy_ops::entity_autonomy(state, entity_id)),
             ("tags", "POST") => Some(crate::entity_mutations::entity_tag(
                 state, entity_id, body, ctx,
             )),

@@ -3,6 +3,7 @@
 mod adr_cli;
 mod assurance_cli;
 mod assurance_runtime;
+mod autonomy_cli;
 mod bundled_registry;
 mod certify_cli;
 mod certify_pack;
@@ -30,10 +31,10 @@ mod fault_cli;
 mod fault_runtime;
 mod generate_cli;
 mod governance_cli;
-mod operational_governance_cli;
 mod graph_cli;
 mod integrity_cli;
 mod network_cli;
+mod operational_governance_cli;
 mod package;
 mod plugin_cli;
 mod plugin_runtime;
@@ -1575,9 +1576,13 @@ fn main() {
 
     if command == "governance" {
         match args.get(2).map(String::as_str) {
-            Some("validate") => operational_governance_cli::governance_validate_dispatch(&args[3..]),
+            Some("validate") => {
+                operational_governance_cli::governance_validate_dispatch(&args[3..])
+            }
             Some("report") => operational_governance_cli::governance_report_dispatch(&args[3..]),
-            Some("framework") => operational_governance_cli::governance_framework_dispatch(&args[3..]),
+            Some("framework") => {
+                operational_governance_cli::governance_framework_dispatch(&args[3..])
+            }
             _ => governance_cli::governance_dispatch(&args[2..]),
         }
         let _ = io::stdout().flush();
@@ -1587,7 +1592,9 @@ fn main() {
     if command == "certification" {
         match args.get(2).map(String::as_str) {
             Some("list") => operational_governance_cli::certification_list_dispatch(&args[3..]),
-            Some("inspect") => operational_governance_cli::certification_inspect_dispatch(&args[3..]),
+            Some("inspect") => {
+                operational_governance_cli::certification_inspect_dispatch(&args[3..])
+            }
             Some("report") => operational_governance_cli::certification_report_dispatch(&args[3..]),
             _ => {
                 eprintln!("Usage: spanda certification list|inspect|report ...");
@@ -1938,10 +1945,51 @@ fn main() {
 
     if command == "recovery-report" || command == "recovery" {
         if command == "recovery" {
-            recovery_cli::recovery_dispatch(&args[2..]);
+            let sub = args.get(2).map(String::as_str).unwrap_or("");
+            if sub == "confidence" || sub == "learning-report" {
+                autonomy_cli::recovery_confidence_dispatch(&args[2..]);
+            } else {
+                recovery_cli::recovery_dispatch(&args[2..]);
+            }
         } else {
             recovery_cli::cmd_recovery_report(&args[2..]);
         }
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "reflex" {
+        autonomy_cli::reflex_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "fusion" {
+        autonomy_cli::fusion_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "confidence" {
+        autonomy_cli::confidence_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "homeostasis" {
+        autonomy_cli::homeostasis_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "immunity" {
+        autonomy_cli::immunity_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "alerts" {
+        autonomy_cli::alerts_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }

@@ -324,10 +324,7 @@ impl SpandaClient {
     pub fn patch_admin_user(&self, user_id: &str, body: &Value) -> SpandaResult<Value> {
         self.request(
             "PATCH",
-            &format!(
-                "/v1/admin/users/{}",
-                Self::encode_query_component(user_id)
-            ),
+            &format!("/v1/admin/users/{}", Self::encode_query_component(user_id)),
             Some(body),
             true,
         )
@@ -337,10 +334,7 @@ impl SpandaClient {
     pub fn delete_admin_user(&self, user_id: &str) -> SpandaResult<Value> {
         self.request(
             "DELETE",
-            &format!(
-                "/v1/admin/users/{}",
-                Self::encode_query_component(user_id)
-            ),
+            &format!("/v1/admin/users/{}", Self::encode_query_component(user_id)),
             None,
             true,
         )
@@ -1086,16 +1080,14 @@ pub struct DeploymentProfileClient(SpandaClient);
 
 impl DeploymentProfileClient {
     pub fn list(&self) -> SpandaResult<Value> {
-        self.0.request("GET", "/v1/deployment-profiles", None, false)
+        self.0
+            .request("GET", "/v1/deployment-profiles", None, false)
     }
 
     pub fn get(&self, name: &str) -> SpandaResult<Value> {
         self.0.request(
             "GET",
-            &format!(
-                "/v1/deployment-profiles?name={}",
-                Self::encode(name)
-            ),
+            &format!("/v1/deployment-profiles?name={}", Self::encode(name)),
             None,
             false,
         )
@@ -1103,6 +1095,54 @@ impl DeploymentProfileClient {
 
     fn encode(raw: &str) -> String {
         SpandaClient::encode_query_component(raw)
+    }
+}
+
+/// Autonomy / resilient architecture client stubs.
+#[derive(Debug, Clone)]
+pub struct AutonomyClient(SpandaClient);
+
+impl AutonomyClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/reflex
+    pub fn list_reflex(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/reflex", None, true)
+    }
+
+    /// GET /v1/autonomy/homeostasis
+    pub fn homeostasis_summary(&self) -> SpandaResult<Value> {
+        self.0
+            .request("GET", "/v1/autonomy/homeostasis", None, true)
+    }
+
+    /// GET /v1/autonomy/immunity
+    pub fn immunity_scan(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/immunity", None, true)
+    }
+
+    /// GET /v1/autonomy/attention
+    pub fn attention_queue(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/attention", None, true)
+    }
+
+    /// GET /v1/entities/{id}/autonomy
+    pub fn entity_autonomy(&self, entity_id: &str) -> SpandaResult<Value> {
+        self.0.request(
+            "GET",
+            &format!("/v1/entities/{entity_id}/autonomy"),
+            None,
+            true,
+        )
+    }
+}
+
+impl SpandaClient {
+    /// Resilient autonomy API client.
+    pub fn autonomy(&self) -> AutonomyClient {
+        AutonomyClient::new(self.clone())
     }
 }
 

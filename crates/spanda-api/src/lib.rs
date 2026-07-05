@@ -1,22 +1,23 @@
 //! REST API v1 for Spanda Control Center.
 //!
+pub mod admin_ops;
 pub mod admin_users;
 pub mod alert_channels;
-pub mod admin_ops;
 pub mod audit_log;
-pub mod correlation;
+pub mod autonomy_ops;
 pub mod control_center_extras;
 pub mod control_center_ui;
+pub mod correlation;
 pub mod decision_ops;
 pub mod differentiation_ops;
 pub mod drift_collect;
 pub mod drift_scheduler;
 pub mod e3;
 pub mod e4;
-pub mod governance_ops;
 pub mod entity_mutations;
 pub mod entity_runtime;
 pub mod entity_traceability;
+pub mod governance_ops;
 pub mod grpc;
 pub mod grpc_policy;
 pub mod handlers;

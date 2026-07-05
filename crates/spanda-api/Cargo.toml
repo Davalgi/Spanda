@@ -30,6 +30,7 @@ spanda-policy = { path = "../spanda-policy" }
 spanda-plugin = { path = "../spanda-plugin", default-features = false, features = ["api-host"] }
 spanda-parser = { path = "../spanda-parser" }
 spanda-assurance = { path = "../spanda-assurance" }
+spanda-autonomy = { path = "../spanda-autonomy" }
 spanda-contract = { path = "../spanda-contract" }
 spanda-explain = { path = "../spanda-explain" }
 spanda-capability = { path = "../spanda-capability" }
