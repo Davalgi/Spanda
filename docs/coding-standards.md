@@ -220,7 +220,7 @@ Apply this standard across:
 
 ## CI enforcement
 
-CI runs `python3 scripts/validate_documentation.py --warn --report` on every pull request. Missing structured documentation emits **warnings** only; builds do not fail yet.
+CI runs `python3 scripts/validate_documentation.py --warn --report` in CI Integration `docs-build` (and CI Fast `docs-validate` for docs-only PRs). Missing structured documentation emits **warnings** only; builds do not fail yet.
 
 ## Legacy format
 

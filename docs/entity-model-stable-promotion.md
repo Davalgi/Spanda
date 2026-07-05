@@ -11,8 +11,8 @@ Operational checklist used to promote **Unified Entity Model** from **Experiment
 | Step | Status |
 |------|--------|
 | Phases 1–7 implementation + stabilization | ✅ Shipped on `main` |
-| `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) | ✅ CI |
-| `entity-model-promotion-gate` (implementation checks with soak/audit skip in CI) | ✅ CI |
+| `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) | ✅ CI Integration `entity-model-smoke` |
+| `entity-model-promotion-gate` (implementation checks with soak/audit skip in CI) | ✅ CI Nightly `entity-model-promotion-gate` |
 | SDK **0.4.2** published | ✅ See [SDK publish](#sdk-publish) |
 | `docs/feature-status.md` → **Stable** | ✅ |
 

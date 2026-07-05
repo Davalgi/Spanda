@@ -30,7 +30,7 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 | RB-006 | [#50](https://github.com/Davalgi/Spanda/issues/50) | Many features labeled **Stable** while default AI/IoT paths are mock-backed | Feature status | P1 | Review `docs/feature-status.md` agent/AI and live transport rows | — | **Mitigated** — honesty audit section; AI agents Mock-backed; organizational soak still open via RB-007 |
 | RB-007 | [#51](https://github.com/Davalgi/Spanda/issues/51) | Organizational gates (field soak, third-party security audit) incomplete | Enterprise ops / blueprints | P2 | Promotion gates skip soak/audit in CI | — | **In progress** — field soak started 2026-06-29; audit prep script available |
 | RB-008 | [#52](https://github.com/Davalgi/Spanda/issues/52) | Recovery plan empty plans may mislead operators | Recovery / docs | P2 | Same as RB-004 | — | **Fixed** — empty plans report `Passed: false` with what/why/where/fix text |
-| RB-009 | [#53](https://github.com/Davalgi/Spanda/issues/53) | Cross-interface consistency not historically enforced in CI | QA / SDKs | P1 | Manual CLI vs REST vs SDK drift | — | **Mitigated** — `scripts/cross_interface_consistency.sh` + CI job |
+| RB-009 | [#53](https://github.com/Davalgi/Spanda/issues/53) | Cross-interface consistency not historically enforced in CI | QA / SDKs | P1 | Manual CLI vs REST vs SDK drift | — | **Mitigated** — `scripts/cross_interface_consistency.sh` + CI Fast/Integration |
 | RB-010 | [#54](https://github.com/Davalgi/Spanda/issues/54) | README commands lacked automated smoke/golden coverage | QA | P0 | Broken README commands undetected | — | **Fixed** — `tests/readme_commands/` harness |
 | RB-011 | [#55](https://github.com/Davalgi/Spanda/issues/55) | v3 decision signature verifies embedded `signing_payload` only; outer `decision` fields can diverge | Decision security | P1 | Mutate `decision` on a signed v3 payload; `verify_v3_decision_signature` still returns Ok | — | **Fixed** — outer fields must match signing payload before signature verify |
 | RB-012 | [#56](https://github.com/Davalgi/Spanda/issues/56) | Parser `previous`/`advance` underflow panic on empty/start position | Parser | P0 | Property test seeds (`robot`, `{{{{`, empty-ish streams) | — | **Fixed** — use `saturating_sub(1)` |
@@ -64,7 +64,8 @@ Code release criteria for v0.6.3 are **met**. v1.0 requires organizational gates
 
 - No open **P0** items
 - All **P1** items fixed or explicitly accepted with user-visible docs
-- README command smoke + golden tests green in CI
-- Security regression suite green
+- README command smoke + golden tests green in CI Integration (`core-smokes`)
+- Security regression suite green in CI Integration (`release-hardening`)
+- CI Fast required checks green on PRs — [ci-architecture.md](./ci-architecture.md)
 - [release-readiness.md](./release-readiness.md) recommendation is **Go** or **Go with documented limitations**
 - v1.0 additionally requires [organizational-gates.md](./organizational-gates.md) checklist (soak + audit)

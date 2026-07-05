@@ -227,7 +227,7 @@ Goal: address post–Phase 17 audit findings without changing the lean-core depe
 | Registry tarball SHA-256 + safe extraction (`spanda-package`) | **Complete** |
 | Agent auth required on non-loopback bind | **Complete** |
 | Bridge subprocess timeouts (`SPANDA_BRIDGE_TIMEOUT_SECS`) | **Complete** |
-| `cargo audit` in CI | **Complete** |
+| `cargo audit` in CI | **Complete** — CI Nightly `security-audit` |
 | Pipeline benchmark (`spanda-driver`) | **Complete** |
 | Slim CLI feature (`--no-default-features` + `--features slim`) | **Complete** |
 | Panic audit (`runtime_twin`, agent helpers) | **Complete** |
@@ -460,7 +460,7 @@ Goal: fully close the six remaining partial areas from the 14-item verification/
 | Event handler `-> Type` return validation (Rust + TypeScript mirror) | **Complete** |
 | `on kill_switch Name { }` trigger syntax + typecheck + runtime dispatch | **Complete** |
 | `remote_signed` kill switch runtime signature enforcement (`kill_switch_signature` in `RunOptions`) | **Complete** |
-| VS Code extension CI workflow (`.github/workflows/vscode-extension-ci.yml`) | **Complete** |
+| VS Code extension CI | **Complete** — CI Integration `vscode-extension` + path-filtered [vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) |
 | IoT protocol dispatch for zigbee/lora/matter/canbus + package `.sd` stubs | **Complete** |
 | Live Anthropic provider (`ANTHROPIC_API_KEY`, `spanda-anthropic` package) | **Complete** |
 | Fleet-target health refinement via `apply_fleet_health_checks` + swarm coordination hooks | **Complete** |

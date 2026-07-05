@@ -25,7 +25,7 @@ Spanda should not compete as a general-purpose language, Python replacement, Rus
 
 Beyond core language features, Spanda prioritizes **adoption, trust, and operations** — see [platform-maturity-roadmap.md](./platform-maturity-roadmap.md), [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md), and [differentiation-roadmap.md](./differentiation-roadmap.md). Planned areas compose existing engines (`spanda-readiness`, `spanda-assurance`, `spanda-security`) rather than replacing them.
 
-**Shipped (v0.6.3 evaluation/beta):** release-hardening CI suite, honest mock-default labeling, closed code blockers — [release-readiness.md](./release-readiness.md). Public positioning: **evaluation / beta**, not full production.
+**Shipped (v0.6.3 evaluation/beta):** release-hardening CI suite (CI Integration), honest mock-default labeling, closed code blockers — [release-readiness.md](./release-readiness.md). PR gate: [ci-architecture.md](./ci-architecture.md).
 
 **NOW (Next horizon, P1):** differentiation signature capabilities (mission contracts, explainability, decision audit trail); Control Center Stable promotion.
 

@@ -129,11 +129,13 @@ Registry catalog: [docs/official-packages.md](../docs/official-packages.md) (**3
 
 ## Regression & CI
 
-All examples are type-checked in CI:
+All examples are type-checked in CI Integration (`core-smokes` job on `main`):
 
 ```bash
 ./scripts/check_all_examples.sh
 ```
+
+PR gate locally: `./scripts/ci-fast.sh` · CI tiers: [docs/ci-architecture.md](../docs/ci-architecture.md)
 
 Golden fixtures: [`tests/golden/manifest.json`](../tests/golden/manifest.json) · Vitest: `npm test -- tests/golden/rust.test.ts`
 

@@ -167,7 +167,7 @@ See [mission-continuity.md](./mission-continuity.md).
 ./examples/robotics/golden_path_deploy.sh
 ```
 
-CI job: `robotics-golden-path`.
+CI Integration job: `robotics-golden-path`.
 
 ## Related
 

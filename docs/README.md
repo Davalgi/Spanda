@@ -53,7 +53,7 @@
 | [lean-core-roadmap.md](./lean-core-roadmap.md) | **Phased plan — Phases 1–35 complete; crate extraction and verification/DX** |
 | [phase-18-security-hardening.md](./phase-18-security-hardening.md) | **Post–Phase 17 security/stability/performance hardening** |
 | [tier-3-experimental.md](./tier-3-experimental.md) | **Tier 3 experimental foundations (Phase 22–23)** |
-| [tier-3-golden-paths.md](./tier-3-golden-paths.md) | **Tier 3 CI golden paths — scripts, jobs, feature flags** |
+| [tier-3-golden-paths.md](./tier-3-golden-paths.md) | **Tier 3 CI golden paths — scripts, jobs, tiers (Fast / Integration / Nightly)** |
 | [tier-3-priority-plan.md](./tier-3-priority-plan.md) | **Priority plan: beta → experimental hardening → v1.0 → production Tier 3** |
 | [provider-interfaces.md](./provider-interfaces.md) | **Provider trait contracts for packages** |
 | [official-packages.md](./official-packages.md) | **Official package catalog** |

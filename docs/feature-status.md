@@ -124,7 +124,7 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **FFI** | `extern python`/`extern cpp` subprocess bridges; optional `cpp-native` in-process | PyO3 path is Tier 2 adoption unlock |
 | **World models** | `world_model { }` block parser; `fusion.read()` → belief hook; `world_model.update` / `belief` / `export`; Rust + TS typecheck parity | Minimal belief buffer; see [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) |
 | **Ledger / provenance** | `spanda-ledger` provider → `MockLedgerBackend` | Mock chain only; no production blockchain adapters |
-| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; CI `mqtt-golden-path` | DDS is UDP JSON shim, not full DDS middleware |
+| **MQTT / DDS live** | `SPANDA_LIVE_MQTT=1`, `--features live-mqtt`; CI Nightly `mqtt-golden-path` | DDS is UDP JSON shim, not full DDS middleware |
 | **Self-hosting bootstrap** | `examples/self_host/lexer_keywords.sd`; Rust parity tests | Rust compiler remains authoritative |
 | **LSP** | Diagnostics, completion, hover, rename, verification quick-fixes | Requires built native CLI; VS Code extension with bundled LSP; continuity/recovery policy quick-fixes; CI builds VSIX |
 | **DAP debugger** | Breakpoints, step over/in/out, `every` trigger entry | VS Code + `spanda-dap`; tested in `phase34_gaps.rs` / `phase35_gaps.rs` |
@@ -238,7 +238,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and [tier-3-golden-paths.
 | Feature | Status | Notes |
 |---------|--------|-------|
 | python.* / cpp.* imports | **Experimental** | Subprocess bridges |
-| ROS2 adapter | **Experimental** | Native rclrs cdylib; CI job on Ubuntu 22.04 + Humble |
+| ROS2 adapter | **Experimental** | Native rclrs cdylib; CI Nightly `ros2-rclrs-native` on Ubuntu 22.04 + Humble |
 | Transport adapters | **Experimental** | In-memory + optional rclrs/rclpy |
 | Package manager | **Stable** | Hosted index + local mirror; `spanda publish` copies to `registry/packages/` |
 | LLVM / native codegen | **Experimental** | `compile-native` early stage |
@@ -306,7 +306,7 @@ Remaining review: any row still marked **Stable** whose *default* path is simula
 - ROS2 integration requires manual ROS Humble setup and is not the default simulator transport.
 - Native compilation via LLVM is **experimental**; the tree-walking interpreter is the primary runtime.
 - `spanda publish` mirrors bundles to `registry/packages/` in-repo; remote upload requires `SPANDA_REGISTRY_URL`. Run `./scripts/build-registry.sh` to refresh the hosted index after adding scaffolds under `packages/registry/`.
-- VS Code extension builds in CI (`verify_vscode_vsix.sh`); **Marketplace publish** pending maintainer `VSCE_PAT`.
+- VS Code extension builds in CI Integration + path-filtered `vscode-extension-ci.yml`; **Marketplace publish** pending maintainer `VSCE_PAT`.
 - Multi-robot fleet examples run in a single process by default; distributed orchestration uses HTTP fleet agents and an optional fleet mesh coordinator (`spanda fleet mesh start`, `--mesh-url` on orchestrate/swarm).
 - Organizational field soak and third-party security audit remain open for enterprise ops and solution blueprints ([#51](https://github.com/Davalgi/Spanda/issues/51)).
 
@@ -326,7 +326,7 @@ Remaining review: any row still marked **Stable** whose *default* path is simula
 | Full native binary deploy | Experimental | `spanda deploy --target native`, `compile-native` (clang + llvm feature) |
 | Blockchain / ledger cloud | Stubbed | Audit records local; see `future-blockchain-support.md` |
 
-Nothing in the **Supported** list above is known broken in CI (`cargo test --workspace`, `npm test`, `cargo fmt`, `cargo clippy`, ROS2 rclrs native on Ubuntu 22.04).
+Nothing in the **Supported** list above is known broken in CI Fast (`./scripts/ci-fast.sh`) or CI Integration on `main`. ROS2 rclrs native and `cargo audit` run in **CI Nightly**. See [ci-architecture.md](./ci-architecture.md).
 
 ---
 

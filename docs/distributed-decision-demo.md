@@ -205,7 +205,7 @@ The GPS loss demo is exercised end-to-end in:
 ./scripts/distributed_decisions_smoke.sh
 ```
 
-and the `distributed-decisions` CI job.
+and the `distributed-decisions` CI Integration job.
 
 ---
 

@@ -189,6 +189,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | [examples/README.md](examples/README.md) | Runnable examples library |
 | [docs/plugins.md](docs/plugins.md) | Plugin system — install, trust tiers, Control Center panels |
 | [docs/README.md](docs/README.md) | Full documentation index |
+| [docs/ci-architecture.md](docs/ci-architecture.md) | **Tiered CI** — Fast / Integration / Nightly, branch protection |
 
 CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Language API: [docs/spanda-reference.md](docs/spanda-reference.md)
 
@@ -196,10 +197,10 @@ CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Lang
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · CI tiers: [docs/ci-architecture.md](docs/ci-architecture.md)
 
 ```bash
-cargo test --workspace && npm test
+./scripts/ci-fast.sh
 ```
 
 ---

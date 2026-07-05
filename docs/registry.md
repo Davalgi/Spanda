@@ -139,7 +139,7 @@ Run `spanda install` after changing dependencies to regenerate `spanda.lock`.
 ./scripts/registry_golden_path.sh
 ```
 
-Uses `file://` registry base, verifies Ed25519 signatures via `registry/TRUST_KEY`, installs `spanda-openai` and `spanda-ros2`, and type-checks the scratch project. CI job: `registry-golden-path`.
+Uses `file://` registry base, verifies Ed25519 signatures via `registry/TRUST_KEY`, installs `spanda-openai` and `spanda-ros2`, and type-checks the scratch project. CI Integration job: `registry-golden-path`.
 
 ## Publishing
 

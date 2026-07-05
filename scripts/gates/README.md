@@ -139,26 +139,28 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 
 ## Stable promotion gates
 
-| Gate | Script | Doc |
-|------|--------|-----|
-| ADAS Stable | `adas_stable_promotion_gate.sh` | [stable-hardening-adas.md](../../docs/stable-hardening-adas.md) |
-| Enterprise ops Stable | `field_soak_gate.sh` | [field-soak-gate.md](../../docs/field-soak-gate.md) |
-| Enterprise ops Stable | `enterprise_ops_stable_promotion_gate.sh` | [enterprise-ops-stable-promotion.md](../../docs/enterprise-ops-stable-promotion.md) |
-| Entity model Stable | `entity_model_stable_promotion_gate.sh` | [entity-model-stable-promotion.md](../../docs/entity-model-stable-promotion.md) |
-| HRI Stable | `hri_stable_promotion_gate.sh` | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
-| Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
-| What-If Stable | `what_if_stable_promotion_gate.sh` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |
-| Mission Risk Stable | `risk_stable_promotion_gate.sh` | [stable-hardening-mission-risk.md](../../docs/stable-hardening-mission-risk.md) |
-| Readiness Forecast Stable | `forecast_stable_promotion_gate.sh` | [stable-hardening-readiness-forecast.md](../../docs/stable-hardening-readiness-forecast.md) |
-| Trust Graph Stable | `trust_graph_stable_promotion_gate.sh` | [stable-hardening-trust-graph.md](../../docs/stable-hardening-trust-graph.md) |
-| Scorecards Stable | `scorecard_stable_promotion_gate.sh` | [stable-hardening-scorecards.md](../../docs/stable-hardening-scorecards.md) |
-| LATER Stable | `later_differentiation_stable_promotion_gate.sh` | [stable-hardening-mission-time-travel.md](../../docs/stable-hardening-mission-time-travel.md) (+ sibling LATER guides) |
-| Twin cloud export (legacy) | `twin_cloud_golden_path.sh` | [tier-3-golden-paths.md](../../docs/tier-3-golden-paths.md) |
-| Twin Cloud SaaS | `twin_cloud_saas_smoke.sh` | [twin-cloud.md](../../docs/twin-cloud.md) |
-| Trust Framework Stable | `trust_framework_stable_promotion_gate.sh` | [stable-hardening-trust-framework.md](../../docs/stable-hardening-trust-framework.md) |
-| Differentiation Experimental | `differentiation_promotion_gate.sh` | [differentiation-roadmap.md](../../docs/differentiation-roadmap.md) |
-| Recovery Orchestrator Stable | `recovery_orchestrator_stable_promotion_gate.sh` | [stable-hardening-recovery-orchestrator.md](../../docs/stable-hardening-recovery-orchestrator.md) |
-| Recovery Orchestrator Stable | `recovery_orchestrator_field_soak_init.sh` | Field soak prep |
+All promotion gates run in **CI Nightly** (soak/audit skipped in CI). Smokes without promotion run in **CI Integration** on `main`. See [ci-architecture.md](../docs/ci-architecture.md#job-tier-map).
+
+| Gate | Script | CI job | Doc |
+|------|--------|--------|-----|
+| ADAS Stable | `adas_stable_promotion_gate.sh` | `adas-promotion-gate` | [stable-hardening-adas.md](../../docs/stable-hardening-adas.md) |
+| Enterprise ops Stable | `field_soak_gate.sh` | — (local/org) | [field-soak-gate.md](../../docs/field-soak-gate.md) |
+| Enterprise ops Stable | `enterprise_ops_stable_promotion_gate.sh` | `enterprise-ops-promotion-gate` | [enterprise-ops-stable-promotion.md](../../docs/enterprise-ops-stable-promotion.md) |
+| Entity model Stable | `entity_model_stable_promotion_gate.sh` | `entity-model-promotion-gate` | [entity-model-stable-promotion.md](../../docs/entity-model-stable-promotion.md) |
+| HRI Stable | `hri_stable_promotion_gate.sh` | — (run locally; not in nightly yet) | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
+| Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | `smart-spaces-promotion-gate` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
+| What-If Stable | `what_if_stable_promotion_gate.sh` | `what-if-stable-promotion-gate` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |
+| Mission Risk Stable | `risk_stable_promotion_gate.sh` | `next-differentiation-stable-gates` | [stable-hardening-mission-risk.md](../../docs/stable-hardening-mission-risk.md) |
+| Readiness Forecast Stable | `forecast_stable_promotion_gate.sh` | `next-differentiation-stable-gates` | [stable-hardening-readiness-forecast.md](../../docs/stable-hardening-readiness-forecast.md) |
+| Trust Graph Stable | `trust_graph_stable_promotion_gate.sh` | `next-differentiation-stable-gates` | [stable-hardening-trust-graph.md](../../docs/stable-hardening-trust-graph.md) |
+| Scorecards Stable | `scorecard_stable_promotion_gate.sh` | `next-differentiation-stable-gates` | [stable-hardening-scorecards.md](../../docs/stable-hardening-scorecards.md) |
+| LATER Stable | `later_differentiation_stable_promotion_gate.sh` | `later-differentiation-stable-gates` | [stable-hardening-mission-time-travel.md](../../docs/stable-hardening-mission-time-travel.md) (+ sibling LATER guides) |
+| Twin cloud export (legacy) | `twin_cloud_golden_path.sh` | `twin-cloud-stable-promotion-gate` | [tier-3-golden-paths.md](../../docs/tier-3-golden-paths.md) |
+| Twin Cloud SaaS | `twin_cloud_saas_smoke.sh` | `twin-cloud-golden-path` | [twin-cloud.md](../../docs/twin-cloud.md) |
+| Trust Framework Stable | `trust_framework_stable_promotion_gate.sh` | `trust-framework-stable-gate` | [stable-hardening-trust-framework.md](../../docs/stable-hardening-trust-framework.md) |
+| Differentiation Experimental | `differentiation_promotion_gate.sh` | `differentiation-promotion-gate` | [differentiation-roadmap.md](../../docs/differentiation-roadmap.md) |
+| Recovery Orchestrator Stable | `recovery_orchestrator_stable_promotion_gate.sh` | `recovery-orchestrator-stable-promotion-gate` | [stable-hardening-recovery-orchestrator.md](../../docs/stable-hardening-recovery-orchestrator.md) |
+| Recovery Orchestrator field soak | `recovery_orchestrator_field_soak_init.sh` | — (local/org) | Field soak prep |
 
 ---
 

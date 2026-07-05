@@ -1127,7 +1127,7 @@ Version bump policy: [docs/versioning.md](docs/versioning.md). Each stream (work
 | VS Code Marketplace listing | **Deferred** — needs `VSCE_PAT` (manual publisher setup) |
 | Mission Contracts, Explainability, Audit Trail, Coverage CLIs | **Stable** |
 
-**Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until `VSCE_PAT` is configured.
+**Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI Integration job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until `VSCE_PAT` is configured.
 
 ### v0.6.3 — Release hardening (current tag)
 

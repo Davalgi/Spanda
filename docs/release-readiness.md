@@ -121,7 +121,7 @@ Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labele
 
 **Go with documented limitations** — evaluation / beta release **shipped** as workspace **v0.6.3**.
 
-1. Release-hardening suites are in CI (README smoke, goldens, cross-interface, security regressions)
+1. Release-hardening suites run in CI Integration (`core-smokes`, `release-hardening`) after CI Fast passes on PRs
 2. Feature-status honesty audit is respected (mock-default AI is **Mock-backed**, not production Stable alone)
 3. Organizational field soak and third-party security audit ([#51](https://github.com/Davalgi/Spanda/issues/51)) remain explicitly out of scope for this code release
 

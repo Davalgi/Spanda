@@ -36,14 +36,14 @@
 | Twin Cloud SaaS | **Stable** (OSS) | `scripts/twin_cloud_stable_promotion_gate.sh`, `scripts/verify_sdk_published.sh` |
 | Differentiation promotion gate | 15 pillars smoke + showcase check + topic guides | `scripts/differentiation_promotion_gate.sh` |
 | What-If Stable promotion | soak + smoke + analytics API + Control Center probe | `scripts/what_if_stable_promotion_gate.sh`, [stable-hardening-what-if.md](./stable-hardening-what-if.md) |
-| NEXT Stable promotion (risk, forecast, trust graph, scorecard) | per-pillar gates + Control Center probes | `scripts/{risk,forecast,trust_graph,scorecard}_stable_promotion_gate.sh`, CI `next-differentiation-stable-gates` |
-| LATER Stable promotion | soak + later smoke + topic guides Stable | `scripts/later_differentiation_stable_promotion_gate.sh`, CI `later-differentiation-stable-gates` |
-| Trust Framework Stable promotion | soak + audit + trust smokes + Control Center `/v1/trust/program` | `scripts/trust_framework_stable_promotion_gate.sh`, CI `trust-framework-stable-gate` |
+| NEXT Stable promotion (risk, forecast, trust graph, scorecard) | per-pillar gates + Control Center probes | `scripts/{risk,forecast,trust_graph,scorecard}_stable_promotion_gate.sh`, CI Nightly `next-differentiation-stable-gates` |
+| LATER Stable promotion | soak + later smoke + topic guides Stable | `scripts/later_differentiation_stable_promotion_gate.sh`, CI Nightly `later-differentiation-stable-gates` |
+| Trust Framework Stable promotion | soak + audit + trust smokes + Control Center `/v1/trust/program` | `scripts/trust_framework_stable_promotion_gate.sh`, CI Nightly `trust-framework-stable-gate` |
 | Bundled examples sync | NEXT/LATER showcases + decision-trail trace | `scripts/sync_bundled_examples.sh` |
 | Decision diagnostics | `decision_tree` / `offline_policy` / authority parity Rust ↔ TS | `crates/spanda-decision/src/diagnostics.rs`, `src/decision-diagnostics.ts` |
 | Swarm continuity | member-lost handoff + mesh relay | `crates/spanda-fleet/src/swarm_continuity.rs`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Self-healing runtime | auto-trigger, approval retry, mesh relay | `crates/spanda-interpreter/tests/recovery_runtime.rs`, `scripts/self_healing_smoke.sh` |
-| **Recovery Orchestrator** | plan/simulate/execute, graph, playbooks, predictive, recommend, persistence, gRPC, plugins | `crates/spanda-recovery/tests/orchestrator_tests.rs`, `crates/spanda-api/tests/recovery_api_tests.rs`, `tenant_persistence_tests` (`recovery_history_persists_across_restart`), `openapi_parity_tests`, `grpc_tests` (`grpc_recovery_*`), `scripts/recovery_orchestrator_smoke.sh`, CI `recovery-orchestrator-stable-promotion-gate` |
+| **Recovery Orchestrator** | plan/simulate/execute, graph, playbooks, predictive, recommend, persistence, gRPC, plugins | `crates/spanda-recovery/tests/orchestrator_tests.rs`, `crates/spanda-api/tests/recovery_api_tests.rs`, `tenant_persistence_tests` (`recovery_history_persists_across_restart`), `openapi_parity_tests`, `grpc_tests` (`grpc_recovery_*`), `scripts/recovery_orchestrator_smoke.sh`, CI Nightly `recovery-orchestrator-stable-promotion-gate` |
 | Fleet field validation | multi-process agents + mesh orchestrate | `scripts/fleet_field_validation.sh` |
 | gRPC Control Center | tonic (see `GET /v1/version` → `grpc.rpc_count`; full REST parity except `/v1/rpc`) | `crates/spanda-api/tests/grpc_tests.rs`, `grpc_live_probe.rs` |
 | API rate limit + versioning | `SPANDA_API_RATE_LIMIT_PER_MINUTE`, `GET /v1/version`, `X-Spanda-Api-Version` | `crates/spanda-api/tests/api_policy_tests.rs` |
@@ -60,7 +60,7 @@
 | OTLP metrics (Control Center) | `GET /v1/observability/otlp/metrics`, `POST /v1/observability/otlp/export-metrics` | `crates/spanda-ops/src/otlp_metrics.rs`, `scripts/enterprise_ops_smoke.sh` |
 | Fleet agent interpreter recovery | HTTP deploy + `/v1/recovery/execute` | `scripts/fleet_agent_recovery_smoke.sh`, `crates/spanda-fleet/tests/mesh_integration.rs` |
 | Operational drift (full) | program + agent dimensions | `crates/spanda-config/src/operational_drift.rs` |
-| Platform architecture validation | layer classification, zero-waiver baseline, SCC, TypeScript layers, manifest sync | `scripts/validate_architecture.py --check-manifest-sync` (CI `rust` job) |
+| Platform architecture validation | layer classification, zero-waiver baseline, SCC, TypeScript layers, manifest sync | `scripts/validate_architecture.py --check-manifest-sync` (CI Fast `lint-rust`) |
 | Platform event transitions | health/readiness/degraded emit-on-change | `crates/spanda-readiness/tests/platform_events.rs` |
 | Plugin system | manifest, security, lifecycle, hooks, registry fetch | `crates/spanda-plugin/tests/integration.rs` |
 | Solution blueprint governance | no workspace crates or Rust in blueprint trees | `scripts/validate_blueprints.py` (CI `rust` job) |

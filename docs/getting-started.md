@@ -396,7 +396,7 @@ npm run build:rust
 npm run build --workspace=@spanda/lsp
 ```
 
-Spanda includes a first-party VS Code extension at `editor/vscode` with bundled LSP, verify diagnostics, deploy-target autocomplete, and DAP debugging. CI builds and verifies the VSIX on every push (`.github/workflows/vscode-extension-ci.yml`).
+Spanda includes a first-party VS Code extension at `editor/vscode` with bundled LSP, verify diagnostics, deploy-target autocomplete, and DAP debugging. CI Integration packages the VSIX on every `main` push (`vscode-extension` job); path-filtered checks also run via [.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when extension or LSP files change.
 
 ### Editor support (v0.4)
 

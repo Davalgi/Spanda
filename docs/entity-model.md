@@ -224,14 +224,14 @@ Cross-references:
 - [x] CI smoke script `scripts/entity_model_smoke.sh` (graph, traceability, query, mutations, TypeScript + Python SDK)
 - [x] Control Center **Entities** tab write UI (register, tag, relate, sync) with API key auth
 - [x] SDK parity: `registerEntity` / `register_entity`, `tagEntity` / `tag_entity`, `relateEntities` / `relate_entities`, `syncEntities` / `sync_entities`, `entityGraph` / `entity_graph`, `entityTraceability` / `entity_traceability`, `queryEntities` / `query_entities` (TypeScript, Python, Rust REST + Rust `GrpcClient` gRPC)
-- [x] Stable promotion gate: `scripts/entity_model_stable_promotion_gate.sh` + CI `entity-model-promotion-gate` — [entity-model-stable-promotion.md](./entity-model-stable-promotion.md)
+- [x] Stable promotion gate: `scripts/entity_model_stable_promotion_gate.sh` + CI Nightly `entity-model-promotion-gate` — [entity-model-stable-promotion.md](./entity-model-stable-promotion.md)
 
 ### Promotion to Stable — **Complete** (2026-06-29)
 
 - [x] Implementation phases 1–7 and stabilization checklist
 - [x] SDKs published at **0.4.2** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`
 - [x] `docs/feature-status.md` **Unified Entity Model** row set to **Stable**
-- [x] CI `entity_model_smoke.sh` and `entity-model-promotion-gate` (implementation checks)
+- [x] CI Integration `entity-model-smoke` and CI Nightly `entity-model-promotion-gate` (implementation checks)
 
 Shared enterprise field soak and third-party audit sign-off remain tracked separately for broader platform Stable tiers — see [field-soak-gate.md](./field-soak-gate.md).
 

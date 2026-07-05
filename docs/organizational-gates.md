@@ -10,8 +10,8 @@ Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51) in [relea
 
 | Claim | Status |
 |-------|--------|
-| Language, verify, sim, replay, recovery, continuity demos | **Supported for evaluation** — README smoke + golden tests in CI |
-| Control Center, REST v1, SDKs | **Supported for evaluation** — cross-interface consistency in CI |
+| Language, verify, sim, replay, recovery, continuity demos | **Supported for evaluation** — README smoke + golden tests in CI Integration |
+| Control Center, REST v1, SDKs | **Supported for evaluation** — cross-interface consistency in CI Fast + Integration |
 | Default AI / in-memory transport | **Mock-backed** — live paths require env and optional features |
 | Enterprise ops pillars (E1–E4) | **Stable in code/CI** — organizational soak and external audit not yet complete |
 | Full production readiness | **Not claimed** until gates below are accepted |
@@ -79,7 +79,7 @@ Use this when preparing the `1.0.0` workspace tag:
 | 2 | Third-party security audit sign-off | Security | Open |
 | 3 | RB-007 closed or explicitly accepted in release notes | Maintainers | Open |
 | 4 | Open P0/P1 release blockers | Engineering | **Met** (v0.6.3) |
-| 5 | CI release-hardening suite green | CI | **Met** |
+| 5 | CI Fast + Integration green on `main` | CI | **Met** — see [ci-architecture.md](./ci-architecture.md) |
 | 6 | [known-limitations.md](./known-limitations.md) matches shipped behavior | Docs | **Met** |
 | 7 | Native codegen / device pool / RBAC promotion criteria (code) | Engineering | Partial — see [ROADMAP.md](../ROADMAP.md) v1.0 table |
 

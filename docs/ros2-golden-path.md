@@ -124,10 +124,12 @@ Handlers use `std_msgs/String` for generic payloads today. Typed `geometry_msgs/
 
 ## CI status
 
-| Check | CI job | What it proves |
-|-------|--------|----------------|
-| rclpy live bridge | `ros2-golden-path` | Publish on `/cmd_vel` with `SPANDA_ROS2_LIVE=1` |
-| rclrs native crate | `ros2-rclrs-native` | Native library loads under ROS2 Humble |
+Both jobs run in **CI Nightly** (Ubuntu 22.04 + ROS 2 Humble). See [ci-architecture.md](./ci-architecture.md).
+
+| Check | CI job | Tier | What it proves |
+|-------|--------|------|----------------|
+| rclpy live bridge | `ros2-golden-path` | Nightly | Publish on `/cmd_vel` with `SPANDA_ROS2_LIVE=1` |
+| rclrs native crate | `ros2-rclrs-native` | Nightly | Native library loads under ROS2 Humble |
 
 Run locally: `./scripts/ros2_golden_path.sh` (requires ROS 2 Humble and rclpy; skips gracefully when absent).
 

@@ -132,7 +132,7 @@ Implementation lives in **`spanda-autonomy`** (`crates/spanda-autonomy/`).
 
 See [known-limitations.md](./known-limitations.md#bio-inspired-resilient-autonomy). Sensory fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under `.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
 
-**Smoke:** `./scripts/bio_inspired_autonomy_smoke.sh` (CI job `bio-inspired-autonomy`)
+**Smoke:** `./scripts/cognitive_resilience_smoke.sh` (CI Integration job `bio-inspired-autonomy`; alias for `./scripts/bio_inspired_autonomy_smoke.sh`)
 
 **Language:** `homeostasis_policy` and `attention_policy` declarations parse in `.sd` programs.
 

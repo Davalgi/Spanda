@@ -186,7 +186,7 @@ Week 3: add `--simulate` on release branches for fault-injection warnings.
 
 Full walkthrough: [killer-demo.md](./killer-demo.md). Adoption path: [adoption-path.md](./adoption-path.md).
 
-Golden path: `./scripts/ci_verify_golden_path.sh` (CI job `ci-verify-golden-path`).
+Golden path: `./scripts/ci_verify_golden_path.sh` (CI Integration job `ci-verify-golden-path`).
 
 ## Related
 

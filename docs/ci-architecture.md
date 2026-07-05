@@ -128,4 +128,85 @@ npm install && npm run build:rust
 
 Gate script index: [scripts/gates/README.md](../scripts/gates/README.md).
 
-Related: [ci-verify.md](./ci-verify.md) (customer CI for `spanda verify`), [troubleshooting.md](./troubleshooting.md#ci-and-release-builds).
+Related: [ci-verify.md](./ci-verify.md) (customer CI for `spanda verify`), [troubleshooting.md](./troubleshooting.md#ci-and-release-builds), [tier-3-golden-paths.md](./tier-3-golden-paths.md) (golden path job index).
+
+---
+
+## Job tier map
+
+Use this table when updating docs or stable-hardening guides. Workflow file names are stable; job names match GitHub Actions UI.
+
+### CI Fast (`.github/workflows/ci-fast.yml`)
+
+| Job | Script / check |
+|-----|----------------|
+| `lint-rust` | fmt, clippy, architecture, blueprints, registry index |
+| `test-rust` | `cargo test --workspace` |
+| `test-typescript` | `npm test`, `npm run build` |
+| `test-python-sdk` | `pytest sdk/python` |
+| `test-ts-sdk` | `npm test` in `sdk/typescript` |
+| `cross-surface-check` | `scripts/check_cross_surface.sh` |
+| `build-spanda` | `cargo build -p spanda --release` → artifact |
+| `cross-interface` | `scripts/cross_interface_consistency.sh` |
+| `docs-validate` | `validate_documentation.py` (docs-only PRs) |
+
+### CI Integration (`.github/workflows/ci-integration.yml`)
+
+| Job | Script / check |
+|-----|----------------|
+| `core-smokes` | `readiness_smoke`, `sdk_smoke`, `check_all_examples`, readme smoke + golden |
+| `docs-build` | `cargo doc`, mdBook, `generate_spanda_reference.py` |
+| `distributed-decisions` | `distributed_decisions_smoke.sh` |
+| `bio-inspired-autonomy` | `cognitive_resilience_smoke.sh` |
+| `release-hardening` | security + property regressions, cross-interface |
+| `robotics-golden-path` | `examples/robotics/golden_path_deploy.sh` |
+| `telemetry-golden-path` | `telemetry_store_golden_path.sh` |
+| `twin-cloud-golden-path` | `twin_cloud_unified_path.sh`, `hosted_twin_cloud_smoke.sh` |
+| `registry-golden-path` | `registry_golden_path.sh` |
+| `ci-verify-golden-path` | `ci_verify_golden_path.sh` |
+| `killer-demo-golden-path` | `killer_demo_golden_path.sh` |
+| `showcase-smoke` | `showcase_smoke.sh` |
+| `adas-smoke` | `adas_smoke.sh` |
+| `agriculture-smoke` | `solution_blueprints_smoke.sh` |
+| `smart-spaces-smoke` | `smart_spaces_smoke.sh` |
+| `enterprise-ops-smoke` | `enterprise_ops_smoke.sh` |
+| `operational-governance-smoke` | `operational_governance_smoke.sh` (smoke only) |
+| `entity-model-smoke` | `entity_model_smoke.sh` |
+| `differentiation-smoke` | `differentiation_smoke.sh` |
+| `lsp` | `@spanda/lsp` build + tests |
+| `wasm` | wasm32 checks + `npm run web:build` |
+| `vscode-extension` | VSIX package via `editor/vscode` |
+
+Path-filtered extension checks also run via [.github/workflows/vscode-extension-ci.yml](../.github/workflows/vscode-extension-ci.yml) when `editor/vscode/**` or `packages/lsp/**` change.
+
+### CI Nightly (`.github/workflows/ci-nightly.yml`)
+
+| Job | Script / check |
+|-----|----------------|
+| `security-audit` | `cargo audit` |
+| `mqtt-golden-path` | `mqtt_golden_path.sh` |
+| `twin-cloud-stable-promotion-gate` | `twin_cloud_stable_promotion_gate.sh` |
+| `llvm-golden-path` | `llvm_golden_path.sh` |
+| `llvm-embedded-golden-path` | `llvm_embedded_golden_path.sh` |
+| `cpp-native-golden-path` | `cpp_native_golden_path.sh` |
+| `ledger-golden-path` | `ledger_golden_path.sh` |
+| `self-host-lexer-golden-path` | `self_host_lexer_golden_path.sh` |
+| `world-model-golden-path` | `world_model_golden_path.sh` |
+| `live-ai-golden-path` | `live_ai_golden_path.sh` |
+| `live-iot-golden-path` | `live_iot_golden_path.sh` |
+| `python-native-golden-path` | `python_native_golden_path.sh` |
+| `ros2-golden-path` | `ros2_golden_path.sh` |
+| `ros2-rclrs-native` | `spanda-ros2-rclrs-native` + `transport_rclrs` |
+| `recovery-orchestrator-stable-promotion-gate` | `recovery_orchestrator_stable_promotion_gate.sh` |
+| `smart-spaces-promotion-gate` | `smart_spaces_promotion_gate.sh` |
+| `adas-promotion-gate` | `adas_stable_promotion_gate.sh` |
+| `enterprise-ops-promotion-gate` | `enterprise_ops_stable_promotion_gate.sh` |
+| `entity-model-promotion-gate` | `entity_model_stable_promotion_gate.sh` |
+| `differentiation-promotion-gate` | `differentiation_promotion_gate.sh` |
+| `what-if-stable-promotion-gate` | `what_if_stable_promotion_gate.sh` |
+| `next-differentiation-stable-gates` | risk, forecast, trust graph, scorecard gates |
+| `later-differentiation-stable-gates` | `later_differentiation_stable_promotion_gate.sh` |
+| `trust-framework-stable-gate` | `trust_framework_stable_promotion_gate.sh` |
+| `operational-governance-promotion-gate` | `operational_governance_stable_promotion_gate.sh` |
+| `control-center-desktop` | Tauri Linux build |
+| `control-center-desktop-bundle` | macOS bundle + optional codesign |

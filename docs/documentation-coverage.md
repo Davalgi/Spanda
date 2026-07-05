@@ -114,7 +114,7 @@ Public APIs missing one or more required sections. Run `python3 scripts/validate
 
 ## CI enforcement
 
-CI runs `python3 scripts/validate_documentation.py --warn --report` on every pull request. Warnings are emitted for public APIs that lack structured documentation; builds do not fail yet.
+CI runs `python3 scripts/validate_documentation.py --warn --report` in CI Integration `docs-build` (and CI Fast `docs-validate` for docs-only PRs). Warnings are emitted for public APIs that lack structured documentation; builds do not fail yet.
 
 ## Regenerating
 

@@ -80,7 +80,7 @@ PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 cargo build -p spanda-cli --release --feat
 spanda run examples/ffi_python_extern.sd
 ```
 
-Golden path: `./scripts/python_native_golden_path.sh` (CI job `python-native-golden-path`). CLI feature mirrors `cpp-native`: `--features python-native` on `spanda-cli`.
+Golden path: `./scripts/python_native_golden_path.sh` (CI Nightly job `python-native-golden-path`). CLI feature mirrors `cpp-native`: `--features python-native` on `spanda-cli`.
 
 ### Subprocess C++ bridge (implemented)
 
@@ -117,7 +117,7 @@ cargo build -p spanda-cli --release --features cpp-native
 spanda run examples/ffi_cpp_extern.sd
 ```
 
-CI job: `cpp-native-golden-path` · Index: [tier-3-golden-paths.md](./tier-3-golden-paths.md)
+CI job: CI Nightly `cpp-native-golden-path` · Index: [tier-3-golden-paths.md](./tier-3-golden-paths.md)
 
 ## Planned import syntax
 

@@ -92,7 +92,7 @@ Before each meaningful logic block (`if`, `match`, loops, error paths), add a pl
 | Script | Purpose |
 |--------|---------|
 | `scripts/validate_documentation.py` | Audit coverage; CI warnings |
-| `scripts/validate_architecture.py` | Layer classification, zero-waiver baseline, manifest sync (CI) |
+| `scripts/validate_architecture.py` | Layer classification, zero-waiver baseline, manifest sync (CI Fast `lint-rust`) |
 | `scripts/sync_architecture_manifest.sh` | Regenerate `architecture-manifest.json` after YAML edits |
 | `scripts/add_structured_api_docs.py` | Generate structured API doc blocks |
 | `scripts/fix_structured_doc_gaps.py` | Fix empty Inputs and legacy single-line comments |

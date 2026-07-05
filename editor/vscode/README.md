@@ -67,7 +67,7 @@ code --install-extension spanda-vscode-0.1.0.vsix
 
 `vscode:prepublish` runs `bundle-vscode-extension.sh` automatically before `vsce package` / `vsce publish` — no separate bundle step needed.
 
-CI builds and verifies the VSIX on every push (`.github/workflows/vscode-extension-ci.yml`). Marketplace publish runs on tag release when `VSCE_PAT` is set.
+CI Integration packages the VSIX on every `main` push (`vscode-extension` job in `.github/workflows/ci-integration.yml`). Path-filtered checks also run via `.github/workflows/vscode-extension-ci.yml` when `editor/vscode/**` or `packages/lsp/**` change. Marketplace publish runs on tag release when `VSCE_PAT` is set.
 
 Verify a local VSIX build without publishing:
 

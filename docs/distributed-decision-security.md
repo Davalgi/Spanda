@@ -135,7 +135,7 @@ The script receives the canonical signing payload on stdin and must print a hex-
 
 ## CI
 
-The `distributed-decisions` CI job runs:
+The `distributed-decisions` CI Integration job runs:
 
 - `cargo test -p spanda-decision`
 - Rule enforcement and attack simulation tests

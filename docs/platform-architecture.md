@@ -145,13 +145,13 @@ Solution blueprints under `examples/solutions/` **compose** platform capabilitie
 
 ## Validation and CI
 
-Architecture governance is enforced by `scripts/validate_architecture.py`:
+Architecture governance is enforced by `scripts/validate_architecture.py` in **CI Fast** (`lint-rust`). Tier map: [ci-architecture.md](./ci-architecture.md).
 
 | Check | Behavior |
 |-------|----------|
 | Module classification | Every workspace crate must appear in `scripts/architecture-manifest.yaml` |
-| Layer violations | Upward Rust dependencies fail CI; `dependency_waivers` is empty (0 baseline) |
-| Circular dependencies | Any new strongly connected component in production deps fails CI |
+| Layer violations | Upward Rust dependencies fail CI Fast; `dependency_waivers` is empty (0 baseline) |
+| Circular dependencies | Any new strongly connected component in production deps fails CI Fast |
 | Duplicate entity types | Warn if forbidden types appear outside `spanda-config` |
 | TypeScript layer imports | Fail on new upward imports; `typescript_dependency_waivers` is empty (0 baseline) |
 | Manifest YAML/JSON sync | Fail when `.json` is stale |
@@ -183,7 +183,7 @@ The lean-core refactor (Phases 1–17) established workspace crate boundaries do
 3. **Solution blueprint** governance above interfaces
 4. **Enforceable dependency rules** with regression baselines
 
-As of **Phase 8** (Platform Architecture v2.1), the production Rust and TypeScript graphs have **zero upward dependency waivers** and **zero SCC waivers**. Any new upward edge or circular strongly connected component fails CI unless an architecture review adds a tracked waiver with a ticket ID. See [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) for the completed burn-down history.
+As of **Phase 8** (Platform Architecture v2.1), the production Rust and TypeScript graphs have **zero upward dependency waivers** and **zero SCC waivers**. Any new upward edge or circular strongly connected component fails CI Fast unless an architecture review adds a tracked waiver with a ticket ID. See [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) for the completed burn-down history.
 
 ---
 
