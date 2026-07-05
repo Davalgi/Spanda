@@ -298,8 +298,10 @@ export function ControlCenterTabContent({
       );
 
     case "assurance":
+      return <AssuranceDiagnosisPanel baseUrl={baseUrl} focus="assurance" />;
+
     case "diagnosis":
-      return <AssuranceDiagnosisPanel baseUrl={baseUrl} />;
+      return <AssuranceDiagnosisPanel baseUrl={baseUrl} focus="diagnosis" />;
 
     case "administration":
       return (

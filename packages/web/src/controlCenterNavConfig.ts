@@ -88,6 +88,8 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   provisioning: "Trust, provision, and assign devices to robots.",
   health: "Device pool health rollup and breakdown.",
   alerts: "Operational alerts sorted by severity.",
+  assurance: "Assurance policy summary and program-level assure checks.",
+  diagnosis: "Diagnosis policy summary and program-level diagnose checks.",
   readiness: "Mission readiness impact and blocked devices.",
   sre: "Availability, SLOs, incidents, and observability traces.",
   recovery: "Incident playbooks, orchestration, and rollback.",
