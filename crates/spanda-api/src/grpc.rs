@@ -1659,6 +1659,26 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn get_autonomy_fusion(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::fusion_summary_json(state))
+            .map(Response::new)
+    }
+
+    async fn get_autonomy_memory(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(|state| crate::autonomy_ops::memory_summary_json(state))
+            .map(Response::new)
+    }
+
     async fn get_entity_autonomy(
         &self,
         request: Request<EntityIdRequest>,

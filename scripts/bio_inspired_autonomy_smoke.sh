@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Smoke bio-inspired resilient autonomy: crate tests, CLI reports, API types.
+# Smoke Cognitive & Resilience autonomy: crate tests, CLI reports, cross-domain integration.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,6 +13,9 @@ fi
 
 echo "== spanda-autonomy crate tests =="
 cargo test -p spanda-autonomy --quiet
+
+echo "== cognitive & resilience cross-domain integration =="
+cargo test -p spanda-autonomy --test cognitive_resilience_integration --quiet
 
 echo "== reflex CLI =="
 run_spanda reflex list >/dev/null
@@ -40,4 +43,4 @@ run_spanda recovery confidence >/dev/null
 echo "== entity autonomy profile (warehouse fixture) =="
 run_spanda entity list --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml >/dev/null
 
-echo "== bio-inspired autonomy smoke OK =="
+echo "== cognitive & resilience autonomy smoke OK =="

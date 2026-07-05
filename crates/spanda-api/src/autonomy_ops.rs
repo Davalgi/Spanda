@@ -178,7 +178,7 @@ pub fn entity_autonomy(state: &ControlCenterState, entity_id: &str) -> HttpRespo
 
 /// GET /v1/autonomy/fusion — sensory fusion confidence summary across entities.
 pub fn fusion_summary(state: &ControlCenterState) -> HttpResponse {
-    use spanda_autonomy::fusion::{fuse_observations, ConfidencePolicy, SensorConfidence};
+    use spanda_autonomy::fusion::{fuse_observations, ConfidencePolicy};
     let registry = state.entity_registry();
     let mut summaries = Vec::new();
     for entity in registry.entities.values().take(20) {
@@ -256,6 +256,16 @@ pub fn immunity_scan_json(state: &ControlCenterState) -> String {
 /// JSON string helper for gRPC parity.
 pub fn attention_queue_json(state: &ControlCenterState) -> String {
     attention_queue(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn fusion_summary_json(state: &ControlCenterState) -> String {
+    fusion_summary(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn memory_summary_json(state: &ControlCenterState) -> String {
+    memory_summary(state).body
 }
 
 /// JSON string helper for gRPC parity.

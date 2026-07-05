@@ -149,4 +149,40 @@ async fn grpc_autonomy_matches_rest() {
         "grpc homeostasis missing reports: {}",
         grpc_homeo.json
     );
+
+    let rest_fusion = ureq::get(&format!("{http_base}/v1/autonomy/fusion"))
+        .call()
+        .expect("rest fusion")
+        .into_json::<serde_json::Value>()
+        .expect("rest fusion json");
+    assert!(rest_fusion.get("fusion").is_some(), "rest fusion: {rest_fusion}");
+
+    let grpc_fusion = client
+        .get_autonomy_fusion(Empty {})
+        .await
+        .expect("grpc fusion")
+        .into_inner();
+    assert!(
+        grpc_fusion.json.contains("fusion"),
+        "grpc fusion missing field: {}",
+        grpc_fusion.json
+    );
+
+    let rest_memory = ureq::get(&format!("{http_base}/v1/autonomy/memory"))
+        .call()
+        .expect("rest memory")
+        .into_json::<serde_json::Value>()
+        .expect("rest memory json");
+    assert!(rest_memory.get("memory").is_some(), "rest memory: {rest_memory}");
+
+    let grpc_memory = client
+        .get_autonomy_memory(Empty {})
+        .await
+        .expect("grpc memory")
+        .into_inner();
+    assert!(
+        grpc_memory.json.contains("memory"),
+        "grpc memory missing field: {}",
+        grpc_memory.json
+    );
 }

@@ -209,6 +209,18 @@ assert payload.get("autonomy") is not None
 print("entity autonomy ok")
 PY
 
+echo "== autonomy fusion / memory consistency =="
+rest_fusion="$(fetch /v1/autonomy/fusion)"
+rest_memory="$(fetch /v1/autonomy/memory)"
+python3 - "$rest_fusion" "$rest_memory" <<'PY'
+import json, sys
+fusion = json.loads(sys.argv[1])
+memory = json.loads(sys.argv[2])
+assert "fusion" in fusion
+assert "memory" in memory
+print("autonomy fusion/memory ok")
+PY
+
 echo "== decision list / traces consistency =="
 cli_decisions="$(run_spanda decision list "$DECISIONS")"
 rest_traces="$(fetch "/v1/decisions/traces?file=${DECISIONS}" 2>/dev/null || echo '{}')"
@@ -249,6 +261,11 @@ if (!Array.isArray(reflexes) || reflexes.length === 0) {
   console.error('TS SDK listAutonomyReflexes empty', reflex);
   process.exit(1);
 }
+const fusion = await client.fusion().summary();
+if (!fusion || typeof fusion !== 'object') {
+  console.error('TS SDK fusion().summary empty', fusion);
+  process.exit(1);
+}
 console.log('typescript sdk ok');
 "
 )
@@ -269,6 +286,8 @@ assert graph is not None
 reflex = client.list_autonomy_reflexes()
 reflexes = reflex.get("reflexes", reflex) if isinstance(reflex, dict) else reflex
 assert reflexes, reflex
+fusion = client.fusion().summary()
+assert isinstance(fusion, dict), fusion
 print("python sdk ok")
 PY
 
