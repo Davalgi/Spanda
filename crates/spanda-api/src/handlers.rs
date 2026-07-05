@@ -486,6 +486,8 @@ pub fn handle_request(
         ("/v1/autonomy/homeostasis", "GET") => crate::autonomy_ops::homeostasis_summary(state),
         ("/v1/autonomy/immunity", "GET") => crate::autonomy_ops::immunity_scan(state),
         ("/v1/autonomy/attention", "GET") => crate::autonomy_ops::attention_queue(state),
+        ("/v1/autonomy/fusion", "GET") => crate::autonomy_ops::fusion_summary(state),
+        ("/v1/autonomy/memory", "GET") => crate::autonomy_ops::memory_summary(state),
         ("/v1/recovery/history", "GET") => crate::recovery_ops::recovery_history(state),
         ("/v1/recovery/plan", "POST") => crate::recovery_ops::recovery_plan(state, &request.body),
         ("/v1/recovery/simulate", "POST") => {

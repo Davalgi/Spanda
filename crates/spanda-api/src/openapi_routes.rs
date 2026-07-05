@@ -476,6 +476,14 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/autonomy/fusion",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/memory",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/entities/{id}/autonomy",
     },
     ApiRoute {

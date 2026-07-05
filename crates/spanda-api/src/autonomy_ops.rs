@@ -176,6 +176,63 @@ pub fn entity_autonomy(state: &ControlCenterState, entity_id: &str) -> HttpRespo
     }))
 }
 
+/// GET /v1/autonomy/fusion — sensory fusion confidence summary across entities.
+pub fn fusion_summary(state: &ControlCenterState) -> HttpResponse {
+    use spanda_autonomy::fusion::{fuse_observations, ConfidencePolicy, SensorConfidence};
+    let registry = state.entity_registry();
+    let mut summaries = Vec::new();
+    for entity in registry.entities.values().take(20) {
+        let ctx = EntityAutonomyContext::from_entity(entity);
+        if ctx.sensor_readings.is_empty() {
+            continue;
+        }
+        let fused = fuse_observations(
+            &format!("entity:{}", entity.id),
+            &ctx.sensor_readings,
+            &ConfidencePolicy::default(),
+        );
+        summaries.push(serde_json::json!({
+            "entity_id": entity.id,
+            "score": fused.confidence.score,
+            "meets_policy": fused.confidence.meets_policy,
+            "conflicts": fused.conflicts.len(),
+            "sources": ctx.sensor_readings.len(),
+        }));
+    }
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "fusion": summaries,
+    }))
+}
+
+/// GET /v1/autonomy/memory — operational memory references across entities.
+pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
+    let registry = state.entity_registry();
+    let entries: Vec<_> = registry
+        .entities
+        .values()
+        .take(20)
+        .filter_map(|entity| {
+            entity.autonomy.as_ref().and_then(|profile| {
+                profile.memory_refs.as_ref().map(|refs| {
+                    serde_json::json!({
+                        "entity_id": entity.id,
+                        "working": refs.working.len(),
+                        "episodic": refs.episodic.len(),
+                        "semantic": refs.semantic.len(),
+                        "procedural": refs.procedural.len(),
+                        "reflex": refs.reflex.len(),
+                    })
+                })
+            })
+        })
+        .collect();
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "memory": entries,
+    }))
+}
+
 /// JSON string helper for gRPC parity.
 pub fn list_reflex_json(state: &ControlCenterState) -> String {
     list_reflex(state).body

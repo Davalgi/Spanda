@@ -1,4 +1,4 @@
-//! Entity-attached bio-inspired resilient autonomy profile fields.
+//! Entity-attached cognitive & resilience autonomy profile fields.
 //!
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -73,6 +73,19 @@ pub struct EntityDamageRisk {
     pub protective_action: Option<String>,
 }
 
+/// Attention snapshot for an entity — ranked event focus and suppression state.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub struct EntityAttentionSnapshot {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub top_priority: Option<String>,
+    #[serde(default)]
+    pub queue_depth: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub focused_event: Option<String>,
+    #[serde(default)]
+    pub suppressed_count: u32,
+}
+
 /// Adaptive recovery confidence for an entity.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct EntityRecoveryConfidence {
@@ -84,11 +97,13 @@ pub struct EntityRecoveryConfidence {
     pub attempts: u32,
 }
 
-/// Bio-inspired resilient autonomy profile attached to every entity.
+/// Cognitive & resilience autonomy profile attached to every entity.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct EntityAutonomyProfile {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub reflexes: Vec<EntityReflexSummary>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attention: Option<EntityAttentionSnapshot>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub confidence: Option<EntityConfidenceSnapshot>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

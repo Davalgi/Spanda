@@ -110,8 +110,9 @@ pub use entity::{
     EntitySecurityIdentity, EntityTrustStatus, ProgramGraphTraceabilityEdge, RuntimeMissionEntity,
 };
 pub use entity_autonomy::{
-    EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk, EntityHomeostasisSnapshot,
-    EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence, EntityReflexSummary,
+    EntityAutonomyProfile, EntityAttentionSnapshot, EntityConfidenceSnapshot, EntityDamageRisk,
+    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence,
+    EntityReflexSummary,
 };
 pub use entity_overlay::{
     apply_entity_mutation_overlay, default_entity_overlay_path, load_entity_overlay,

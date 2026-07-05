@@ -1,17 +1,20 @@
-//! Entity integration for bio-inspired autonomy profiles.
+//! Entity integration for cognitive & resilience autonomy profiles.
 //!
 use crate::adaptive_recovery::{
     compute_recovery_confidence, AdaptiveRecoveryPolicy, RecoveryHistory,
 };
+use crate::attention::{compute_attention_score, rank_events, AttentionPolicy, EventPriority};
 use crate::damage_risk::{evaluate_damage_risk, RiskSignal};
 use crate::fusion::{fuse_observations, ConfidencePolicy, SensorConfidence};
 use crate::homeostasis::{evaluate_homeostasis, HomeostasisPolicy, StabilityMetric};
 use crate::immunity::{evaluate_quarantine_decision, ImmunePolicy};
 use crate::reflex::{list_reflex_actions, ReflexAction};
-use spanda_config::entity::EntityRecord;
+use crate::types::AutonomySeverity;
+use spanda_config::entity::{EntityHealthStatus, EntityRecord};
 use spanda_config::entity_autonomy::{
-    EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk, EntityHomeostasisSnapshot,
-    EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence, EntityReflexSummary,
+    EntityAttentionSnapshot, EntityAutonomyProfile, EntityConfidenceSnapshot, EntityDamageRisk,
+    EntityHomeostasisSnapshot, EntityImmunityStatus, EntityMemoryRefs, EntityRecoveryConfidence,
+    EntityReflexSummary,
 };
 
 /// Context for enriching entity autonomy from platform state.
@@ -106,6 +109,7 @@ pub fn enrich_entity_autonomy(entity: &mut EntityRecord, ctx: &EntityAutonomyCon
                 .collect(),
             last_report_at: None,
         });
+        profile.attention = Some(attention_snapshot_for_entity(&entity_snapshot));
         profile.confidence = confidence;
         profile.immunity_status = Some(EntityImmunityStatus {
             quarantined: immunity.quarantine,
@@ -128,6 +132,7 @@ fn default_profile_for_entity(entity: &EntityRecord) -> EntityAutonomyProfile {
         .collect();
     EntityAutonomyProfile {
         reflexes,
+        attention: None,
         confidence: None,
         homeostasis: None,
         immunity_status: None,
@@ -148,5 +153,39 @@ fn reflex_to_summary(action: &ReflexAction) -> EntityReflexSummary {
         priority: action.priority,
         enabled: action.enabled,
         last_triggered_at: None,
+    }
+}
+
+fn attention_snapshot_for_entity(entity: &EntityRecord) -> EntityAttentionSnapshot {
+    let (priority, severity, label) = match entity.health_status {
+        EntityHealthStatus::Critical => (
+            EventPriority::Critical,
+            AutonomySeverity::Critical,
+            format!("health_critical:{}", entity.id),
+        ),
+        EntityHealthStatus::Degraded => (
+            EventPriority::Urgent,
+            AutonomySeverity::High,
+            format!("health_degraded:{}", entity.id),
+        ),
+        EntityHealthStatus::Warning => (
+            EventPriority::Important,
+            AutonomySeverity::Medium,
+            format!("health_warning:{}", entity.id),
+        ),
+        _ => (
+            EventPriority::Routine,
+            AutonomySeverity::Info,
+            format!("routine:{}", entity.id),
+        ),
+    };
+    let score = compute_attention_score(&entity.id, &label, priority, severity);
+    let window = rank_events(vec![score], &AttentionPolicy::default());
+    let top = window.items.first();
+    EntityAttentionSnapshot {
+        top_priority: top.map(|t| format!("{:?}", t.priority)),
+        queue_depth: window.items.len() as u32,
+        focused_event: top.map(|t| t.label.clone()),
+        suppressed_count: window.items.iter().filter(|i| i.suppressed).count() as u32,
     }
 }
