@@ -196,6 +196,7 @@ fn entity_integration_autonomy_profile() {
     let profile = entity.autonomy.as_ref().unwrap();
     assert!(profile.homeostasis.as_ref().is_some_and(|h| !h.stable));
     assert!(profile.damage_risk.as_ref().is_some_and(|d| d.index > 0.0));
+    assert!(profile.attention.as_ref().is_some_and(|a| a.queue_depth > 0));
 }
 
 #[test]
