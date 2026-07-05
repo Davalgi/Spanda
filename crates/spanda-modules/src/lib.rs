@@ -244,6 +244,8 @@ mod tests {
             recovery_policies: vec![],
             tamper_policies: vec![],
             continuity_policies: vec![],
+            decision_trees: vec![],
+            offline_policies: vec![],
             operational_policies: vec![],
             assurance_cases: vec![],
             runtime_fault_triggers: vec![],
