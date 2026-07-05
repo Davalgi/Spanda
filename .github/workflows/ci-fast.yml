@@ -1,0 +1,182 @@
+name: CI Fast
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-fast-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+      docs: ${{ steps.filter.outputs.docs }}
+      workflow: ${{ steps.filter.outputs.workflow }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'crates/**'
+              - 'src/**'
+              - 'sdk/**'
+              - 'packages/**'
+              - 'scripts/**'
+              - 'tests/**'
+              - 'examples/**'
+              - 'registry/**'
+              - 'proto/**'
+              - 'Cargo.toml'
+              - 'Cargo.lock'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig*.json'
+            docs:
+              - 'docs/**'
+              - 'docs-site/**'
+              - '**/*.md'
+            workflow:
+              - '.github/**'
+
+  docs-validate:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.docs == 'true' &&
+      needs.changes.outputs.code != 'true' &&
+      needs.changes.outputs.workflow != 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/validate_documentation.py --warn --report
+
+  lint-rust:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace -- -D warnings
+      - run: cargo build -p spanda-core --no-default-features
+      - run: cargo run -q -p spanda-package --bin registry-index-maintain -- --verify
+      - run: python3 scripts/validate_architecture.py --check-manifest-sync
+      - run: python3 scripts/validate_blueprints.py
+
+  test-rust:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+      - run: cargo test --workspace
+
+  test-typescript:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  test-python-sdk:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: PYTHONPATH=sdk/python python -m pytest sdk/python
+
+  test-ts-sdk:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci --prefix sdk/typescript && npm test --prefix sdk/typescript
+
+  cross-surface-check:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: chmod +x scripts/check_cross_surface.sh
+      - run: ./scripts/check_cross_surface.sh origin/${{ github.base_ref || 'main' }}
+
+  build-spanda:
+    runs-on: ubuntu-latest
+    needs: [changes, lint-rust, test-rust]
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+      - run: cargo build -p spanda --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spanda-bin
+          path: target/release/spanda
+          retention-days: 1
+
+  cross-interface:
+    runs-on: ubuntu-latest
+    needs: [changes, build-spanda]
+    if: >-
+      needs.changes.outputs.code == 'true' ||
+      needs.changes.outputs.workflow == 'true' ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/cross_interface_consistency.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cross_interface_consistency.sh

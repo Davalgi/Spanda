@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Installed by scripts/setup-githooks.sh into .githooks/pre-push
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$ROOT"
+
+echo "pre-push: cargo fmt --check"
+cargo fmt --all -- --check
+
+echo "pre-push: cross-surface coupling"
+./scripts/check_cross_surface.sh origin/main
+
+echo "pre-push: ok (run ./scripts/ci-fast.sh before opening a PR)"

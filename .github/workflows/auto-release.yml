@@ -1,4 +1,4 @@
-# Auto-release after CI passes on main when the merged PR carries a release label.
+# Auto-release after CI Integration passes on main when the merged PR carries a release label.
 #
 # Label a PR before merge:
 #   release:major — breaking changes / major features
@@ -11,7 +11,7 @@ name: Auto release
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["CI Integration"]
     types:
       - completed
 

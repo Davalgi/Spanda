@@ -1,0 +1,11 @@
+name: Setup Rust toolchain
+description: Rust stable with fmt/clippy, protoc, and cargo cache.
+
+runs:
+  using: composite
+  steps:
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt, clippy
+    - uses: ./.github/actions/install-protoc
+    - uses: Swatinem/rust-cache@v2

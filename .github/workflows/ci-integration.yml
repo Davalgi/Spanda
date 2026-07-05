@@ -1,0 +1,426 @@
+name: CI Integration
+
+on:
+  workflow_run:
+    workflows: ["CI Fast"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: ci-integration-${{ github.workflow }}-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI Fast passed on main; running integration tier."
+
+  build-spanda:
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - run: cargo build -p spanda --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spanda-bin
+          path: target/release/spanda
+          retention-days: 1
+
+  docs-build:
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - run: cargo doc --workspace --no-deps
+      - run: python3 scripts/validate_documentation.py --warn --report
+      - run: cargo build -p spanda --release
+      - run: cargo run -q -p spanda --release -- doc examples/ --out /tmp/spanda-doc-test
+      - run: python3 scripts/generate_spanda_reference.py
+      - run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          ./mdbook build docs-site
+
+  core-smokes:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/readiness_smoke.sh scripts/sdk_smoke.sh scripts/check_all_examples.sh
+          chmod +x tests/readme_commands/run.sh
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/readiness_smoke.sh
+          ./scripts/sdk_smoke.sh
+          ./scripts/check_all_examples.sh
+          ./tests/readme_commands/run.sh
+          ./tests/readme_commands/run.sh --golden
+
+  distributed-decisions:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/distributed_decisions_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/distributed_decisions_smoke.sh
+
+  bio-inspired-autonomy:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/cognitive_resilience_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cognitive_resilience_smoke.sh
+
+  release-hardening:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: npm ci --prefix sdk/typescript
+      - run: |
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          chmod +x scripts/cross_interface_consistency.sh tests/readme_commands/run.sh
+          ./scripts/cross_interface_consistency.sh
+      - run: cargo test -p spanda-plugin --test security_regression --test property_manifest
+      - run: cargo test -p spanda-package --test security_regression --test property_manifest
+      - run: cargo test -p spanda-decision --test security_regression
+      - run: cargo test -p spanda-recovery --test security_regression
+      - run: cargo test -p spanda-parser --test property_parser
+      - run: cargo test -p spanda-config --test property_resolver
+      - run: cargo test -p spanda-policy --test property_policy
+      - run: cargo test -p spanda-capability --test property_registry
+
+  robotics-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x examples/robotics/golden_path_deploy.sh
+      - run: |
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          ./examples/robotics/golden_path_deploy.sh
+
+  telemetry-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/telemetry_store_golden_path.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/telemetry_store_golden_path.sh
+
+  twin-cloud-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/twin_cloud_unified_path.sh scripts/hosted_twin_cloud_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/twin_cloud_unified_path.sh
+          ./scripts/hosted_twin_cloud_smoke.sh
+
+  registry-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/registry_golden_path.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          ./scripts/registry_golden_path.sh
+
+  ci-verify-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/ci_verify_golden_path.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          ./scripts/ci_verify_golden_path.sh
+
+  killer-demo-golden-path:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/killer_demo_golden_path.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          ./scripts/killer_demo_golden_path.sh
+
+  showcase-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: npm ci
+      - run: |
+          chmod +x scripts/showcase_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/showcase_smoke.sh
+
+  adas-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/adas_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/adas_smoke.sh
+
+  agriculture-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/solution_blueprints_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/solution_blueprints_smoke.sh
+
+  smart-spaces-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: |
+          chmod +x scripts/smart_spaces_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          ./scripts/smart_spaces_smoke.sh
+
+  enterprise-ops-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/enterprise_ops_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/enterprise_ops_smoke.sh
+
+  operational-governance-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/operational_governance_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/operational_governance_smoke.sh
+
+  entity-model-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: cargo build -p spanda-sdk --examples
+      - run: npm ci
+      - run: chmod +x scripts/entity_model_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_model_smoke.sh
+
+  differentiation-smoke:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: chmod +x scripts/differentiation_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/differentiation_smoke.sh
+
+  lsp:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: npm ci
+      - run: npm run build --workspace=@spanda/lsp
+      - run: npm test -- tests/lsp.test.ts
+
+  wasm:
+    needs: build-spanda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: ./.github/actions/setup-rust
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo check -p spanda-telemetry-store --target wasm32-unknown-unknown --no-default-features
+      - run: cargo check -p spanda-wasm --target wasm32-unknown-unknown
+      - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - run: npm run build:wasm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci
+      - run: npm run web:build
+
+  vscode-extension:
+    needs: [build-spanda, lsp]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=@spanda/lsp
+      - run: npm install --prefix editor/vscode
+      - run: npm run package:ci --prefix editor/vscode

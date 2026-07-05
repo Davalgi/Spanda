@@ -1,0 +1,32 @@
+name: With spanda release binary
+description: Download a prebuilt spanda artifact or compile release locally.
+
+inputs:
+  artifact-name:
+    description: Artifact name from build-spanda job
+    required: false
+    default: spanda-bin
+  build-if-missing:
+    description: When true, compile release if artifact download is skipped
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Download spanda binary artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: target/release/
+      continue-on-error: true
+    - name: Build spanda release when artifact is unavailable
+      if: inputs.build-if-missing == 'true'
+      shell: bash
+      run: |
+        if [[ ! -x target/release/spanda ]]; then
+          cargo build -p spanda --release
+        fi
+    - name: Ensure spanda binary is executable
+      shell: bash
+      run: chmod +x target/release/spanda
