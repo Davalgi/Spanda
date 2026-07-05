@@ -1,0 +1,56 @@
+[
+  {
+    "action": "halt_actuators",
+    "id": "reflex.emergency_stop",
+    "name": "Emergency stop",
+    "trigger": "kill_switch | collision_imminent"
+    "priority": 255,
+    "severity": "critical",
+    "enabled": true
+  },
+  {
+    "action": "brake_and_hold",
+    "id": "reflex.obstacle",
+    "name": "Obstacle imminent",
+    "trigger": "lidar.nearest_distance < safety.min_distance"
+    "priority": 200,
+    "severity": "critical",
+    "enabled": true
+  },
+  {
+    "action": "disable_actuator",
+    "id": "reflex.overcurrent",
+    "name": "Actuator overcurrent",
+    "trigger": "actuator.current > actuator.max_current"
+    "priority": 190,
+    "severity": "high",
+    "enabled": true
+  },
+  {
+    "action": "reduce_load_and_cool",
+    "id": "reflex.thermal",
+    "name": "Thermal runaway",
+    "trigger": "temperature > thermal.limit"
+    "priority": 180,
+    "severity": "high",
+    "enabled": true
+  },
+  {
+    "action": "reject_command",
+    "id": "reflex.untrusted_cmd",
+    "name": "Untrusted command rejected",
+    "trigger": "command.trust != trusted"
+    "priority": 170,
+    "severity": "high",
+    "enabled": true
+  },
+  {
+    "action": "block_actuator",
+    "id": "reflex.unsafe_actuator",
+    "name": "Unsafe actuator request blocked",
+    "trigger": "safety.validate(proposal) == fail"
+    "priority": 160,
+    "severity": "high",
+    "enabled": true
+  }
+]

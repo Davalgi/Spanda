@@ -113,6 +113,7 @@ impl ControlCenterState {
         }
         crate::entity_traceability::enrich_entity_registry(self, &mut registry);
         spanda_config::apply_entity_mutation_overlay(&mut registry, &self.entity_overlay);
+        spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
         registry
     }
 

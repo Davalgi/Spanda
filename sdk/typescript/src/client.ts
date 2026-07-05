@@ -156,6 +156,30 @@ export class SpandaClient {
     return this.request("POST", "/v1/recovery/recommend", body);
   }
 
+  async listAutonomyReflex(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/reflex");
+  }
+
+  async listAutonomyReflexTraces(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/reflex/traces");
+  }
+
+  async getAutonomyHomeostasis(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/homeostasis");
+  }
+
+  async scanAutonomyImmunity(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/immunity");
+  }
+
+  async getAutonomyAttention(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/attention");
+  }
+
+  async getEntityAutonomy(entityId: string): Promise<JsonValue> {
+    return this.request("GET", `/v1/entities/${encodeURIComponent(entityId)}/autonomy`);
+  }
+
   async listAdminApiKeys(): Promise<JsonValue> {
     return this.request("GET", "/v1/admin/api-keys", undefined, true);
   }

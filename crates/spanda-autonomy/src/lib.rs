@@ -18,6 +18,9 @@ pub mod maintenance;
 pub mod memory;
 pub mod peripheral;
 pub mod reflex;
+pub mod registry;
+pub mod runtime;
+pub mod trace_buffer;
 pub mod types;
 
 pub use adaptive_recovery::{
@@ -32,6 +35,8 @@ pub use damage_risk::{
     evaluate_damage_risk, DamageRisk, HarmPotential, ProtectiveAction, RiskSignal, SafetyPainIndex,
 };
 pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, EntityAutonomyContext};
+pub use registry::apply_registry_autonomy_profiles;
+pub use runtime::{entity_damage_risk_index, recovery_confidence_from_history};
 pub use fusion::{
     detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
     SensorConfidence, SignalAgreement, SignalConflict,
@@ -64,5 +69,8 @@ pub use peripheral::{
 pub use reflex::{
     evaluate_reflex_priority, list_reflex_actions, ReflexAction, ReflexArc, ReflexController,
     ReflexTrace,
+};
+pub use trace_buffer::{
+    list_recorded_reflex_traces, record_reflex_trace, record_runtime_reflex,
 };
 pub use types::*;

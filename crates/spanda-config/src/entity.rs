@@ -852,6 +852,7 @@ pub fn build_entity_registry(resolved: &ResolvedSystemConfig) -> EntityRegistry 
     link_zone_references(&mut registry);
     apply_compliance_metadata(&mut registry, resolved);
     apply_governance_metadata(&mut registry, resolved);
+    apply_autonomy_profile_stubs(&mut registry);
 
     if let Some(fleet_id) = resolved.fleet_id() {
         if let Some(org_id) = registry
@@ -2503,6 +2504,23 @@ fn apply_governance_metadata(registry: &mut EntityRegistry, resolved: &ResolvedS
                 .insert("governance.approval_chain".into(), chain.clone());
         }
         entity.governance = EntityGovernanceMeta::from_metadata(&entity.metadata);
+    }
+}
+
+/// Attach minimal autonomy profile stubs so every entity exposes `autonomy` in API/CLI.
+fn apply_autonomy_profile_stubs(registry: &mut EntityRegistry) {
+    use crate::entity_autonomy::{EntityAutonomyProfile, EntityMemoryRefs};
+    for entity in registry.entities.values_mut() {
+        if entity.autonomy.is_some() {
+            continue;
+        }
+        entity.autonomy = Some(EntityAutonomyProfile {
+            memory_refs: Some(EntityMemoryRefs {
+                semantic: vec![format!("entity:{}", entity.id)],
+                ..Default::default()
+            }),
+            ..Default::default()
+        });
     }
 }
 

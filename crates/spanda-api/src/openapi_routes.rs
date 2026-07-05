@@ -455,6 +455,30 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
         path: "/v1/recovery/recommend",
     },
     ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/reflex",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/reflex/traces",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/homeostasis",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/immunity",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/autonomy/attention",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/entities/{id}/autonomy",
+    },
+    ApiRoute {
         method: "POST",
         path: "/v1/programs/verify/hardware",
     },

@@ -1,0 +1,23 @@
+{
+  "entity_id": "",
+  "stable": true,
+  "metrics": [
+    {
+      "name": "cpu_pct",
+      "value": 55.0,
+      "unit": "pct"
+    },
+    {
+      "name": "memory_pct",
+      "value": 62.0,
+      "unit": "pct"
+    },
+    {
+      "name": "battery_pct",
+      "value": 72.0,
+      "unit": "pct"
+    }
+  ],
+  "drift_signals": [],
+  "corrections": []
+}

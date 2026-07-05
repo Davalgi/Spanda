@@ -482,6 +482,7 @@ pub fn handle_request(
         }
         ("/v1/recovery/plans", "GET") => crate::recovery_ops::list_recovery_plans(state),
         ("/v1/autonomy/reflex", "GET") => crate::autonomy_ops::list_reflex(state),
+        ("/v1/autonomy/reflex/traces", "GET") => crate::autonomy_ops::list_reflex_traces(state),
         ("/v1/autonomy/homeostasis", "GET") => crate::autonomy_ops::homeostasis_summary(state),
         ("/v1/autonomy/immunity", "GET") => crate::autonomy_ops::immunity_scan(state),
         ("/v1/autonomy/attention", "GET") => crate::autonomy_ops::attention_queue(state),

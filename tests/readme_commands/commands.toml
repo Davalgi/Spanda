@@ -105,3 +105,17 @@ args = ["diagnose", "examples/showcase/assurance/rover.sd"]
 source = "flagship"
 markers = ["Diagnosis Report", "Passed: true"]
 golden = true
+
+[[command]]
+id = "reflex_list"
+args = ["reflex", "list", "--json"]
+source = "docs/bio-inspired-architecture.md"
+markers = ["reflex.emergency_stop", "Emergency stop"]
+golden = true
+
+[[command]]
+id = "homeostasis_check"
+args = ["homeostasis", "check", "--json"]
+source = "docs/bio-inspired-architecture.md"
+markers = ["entity_id", "stable"]
+golden = true

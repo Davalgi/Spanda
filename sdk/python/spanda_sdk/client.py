@@ -131,6 +131,27 @@ class SpandaClient:
     def recommend_recovery(self, body: Optional[Mapping[str, Any]] = None) -> Any:
         return self._request("POST", "/v1/recovery/recommend", body or {})
 
+    def list_autonomy_reflex(self) -> Any:
+        return self._request("GET", "/v1/autonomy/reflex")
+
+    def list_autonomy_reflex_traces(self) -> Any:
+        return self._request("GET", "/v1/autonomy/reflex/traces")
+
+    def get_autonomy_homeostasis(self) -> Any:
+        return self._request("GET", "/v1/autonomy/homeostasis")
+
+    def scan_autonomy_immunity(self) -> Any:
+        return self._request("GET", "/v1/autonomy/immunity")
+
+    def get_autonomy_attention(self) -> Any:
+        return self._request("GET", "/v1/autonomy/attention")
+
+    def get_entity_autonomy(self, entity_id: str) -> Any:
+        return self._request(
+            "GET",
+            f"/v1/entities/{urllib.parse.quote(entity_id, safe='')}/autonomy",
+        )
+
     def list_admin_api_keys(self) -> Any:
         return self._request("GET", "/v1/admin/api-keys", auth=True)
 
