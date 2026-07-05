@@ -121,8 +121,10 @@ export function ControlCenterPanel({ apiBase }: Props) {
     <div className="cc-shell">
       <aside className="cc-sidebar">
         <div className="cc-sidebar-brand">
-          <span className="cc-sidebar-title">Control Center</span>
-          <span className="cc-sidebar-version">v{controlCenterVersion}</span>
+          <div className="cc-sidebar-title-row">
+            <span className="cc-sidebar-title">Control Center</span>
+            <span className="cc-sidebar-version">v{controlCenterVersion}</span>
+          </div>
           <span className="cc-sidebar-host" title={base}>
             {apiHost}
           </span>
@@ -137,6 +139,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
         />
         <div className="cc-sidebar-footer">
           <ControlCenterAuthBanner
+            compact
             apiHost={apiHost}
             effectiveRole={effectiveRole}
             roleMeta={roleMeta}

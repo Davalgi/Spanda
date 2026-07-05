@@ -591,6 +591,18 @@ tr.decision-row-escalation td {
   background: #161b22;
 }
 
+.cc-auth-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.cc-auth-identity code,
+.cc-auth-tenant code {
+  font-size: 0.8rem;
+}
+
 .cc-auth-setup {
   margin: 0.75rem 0;
   padding: 0.75rem;
@@ -713,28 +725,33 @@ tr.decision-row-escalation td {
 
 .cc-sidebar-brand {
   flex-shrink: 0;
-  padding: 1rem 1rem 0.75rem;
+  padding: 0.75rem 1rem 0.6rem;
   border-bottom: 1px solid #21262d;
 }
 
+.cc-sidebar-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
 .cc-sidebar-title {
-  display: block;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .cc-sidebar-version {
-  display: block;
-  margin-top: 0.15rem;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: #6e7681;
   font-family: "JetBrains Mono", monospace;
+  white-space: nowrap;
 }
 
 .cc-sidebar-host {
   display: block;
-  margin-top: 0.2rem;
-  font-size: 0.72rem;
+  margin-top: 0.15rem;
+  font-size: 0.68rem;
   color: #8b949e;
   font-family: "JetBrains Mono", monospace;
   white-space: nowrap;
@@ -831,15 +848,64 @@ tr.decision-row-escalation td {
 .cc-sidebar-footer {
   flex-shrink: 0;
   border-top: 1px solid #21262d;
-  padding: 0.5rem 0.75rem 0.75rem;
-  max-height: min(36vh, 280px);
+  padding: 0.4rem 0.65rem 0.5rem;
+  max-height: min(24vh, 160px);
   overflow: auto;
 }
 
 .cc-sidebar-footer .cc-auth-status {
   margin: 0;
-  padding: 0.5rem;
+  padding: 0.35rem 0.45rem;
+  font-size: 0.72rem;
+}
+
+.cc-sidebar-footer .cc-auth-status-compact {
+  padding: 0.3rem 0.4rem;
+}
+
+.cc-sidebar-footer .cc-auth-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.35rem;
+}
+
+.cc-sidebar-footer .cc-auth-identity code,
+.cc-sidebar-footer .cc-auth-tenant code {
+  font-size: 0.68rem;
+}
+
+.cc-sidebar-footer .cc-forget-btn {
+  margin-left: auto;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.35rem;
+}
+
+.cc-sidebar-footer .cc-profile-switcher {
+  margin-bottom: 0.35rem;
+}
+
+.cc-sidebar-footer .cc-profile-switcher-compact {
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.cc-sidebar-footer .cc-profile-switcher-compact label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  font-size: 0.72rem;
+}
+
+.cc-sidebar-footer .cc-profile-add-btn {
+  flex-shrink: 0;
+  min-width: 1.75rem;
+  padding: 0.25rem 0.45rem;
   font-size: 0.8rem;
+}
+
+.cc-sidebar-footer .cc-profile-add {
+  margin-bottom: 0.35rem;
 }
 
 .cc-sidebar-footer .cc-perm-tags {

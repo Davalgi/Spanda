@@ -3,6 +3,8 @@ import type { ControlCenterProfile } from "./controlCenterProfiles";
 import { RBAC_ACTIONS } from "./controlCenterRbac";
 
 type Props = {
+  /** Tighter layout for the sidebar footer (drops redundant host/summary copy). */
+  compact?: boolean;
   apiHost: string;
   effectiveRole: string;
   roleMeta: { label: string; summary: string };
@@ -23,6 +25,7 @@ type Props = {
 };
 
 export function ControlCenterAuthBanner({
+  compact = false,
   apiHost,
   effectiveRole,
   roleMeta,
@@ -64,10 +67,11 @@ export function ControlCenterAuthBanner({
   return (
     <>
       {profiles.length > 0 && (
-        <div className="cc-profile-switcher">
+        <div className={`cc-profile-switcher${compact ? " cc-profile-switcher-compact" : ""}`}>
           <label>
-            Connection
+            {compact ? null : "Connection"}
             <select
+              aria-label="Connection"
               value={activeProfileId ?? profiles[0]?.id}
               onChange={(event) => onSwitchProfile(event.target.value)}
             >
@@ -79,8 +83,14 @@ export function ControlCenterAuthBanner({
               ))}
             </select>
           </label>
-          <button type="button" className="secondary" onClick={() => setShowAddConnection((v) => !v)}>
-            Add
+          <button
+            type="button"
+            className="secondary cc-profile-add-btn"
+            onClick={() => setShowAddConnection((v) => !v)}
+            aria-expanded={showAddConnection}
+            aria-label="Add connection"
+          >
+            {compact ? "+" : "Add"}
           </button>
         </div>
       )}
@@ -108,37 +118,41 @@ export function ControlCenterAuthBanner({
       )}
 
       {hasToken && !showAuthSetup && (
-        <div className="cc-auth-status">
-          <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>
-          {keyId ? (
-            <>
-              {" "}
-              — <code>{keyId}</code>
-            </>
-          ) : null}
-          {tenantId ? (
-            <>
-              {" "}
-              · tenant <code>{tenantId}</code>
-            </>
-          ) : null}
-          {" on "}
-          <code>{apiHost}</code>
-          <span className="demo-hint"> — {roleMeta.summary}</span>
-          <div className="cc-perm-tags">
-            {RBAC_ACTIONS.map((action) => (
-              <span
-                key={action}
-                className={`cc-perm-tag${permissions.includes(action) ? " ok" : ""}`}
-              >
-                {action}
+        <div className={`cc-auth-status${compact ? " cc-auth-status-compact" : ""}`}>
+          <div className="cc-auth-status-row">
+            <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>
+            {keyId ? (
+              <span className="cc-auth-identity">
+                <code>{keyId}</code>
               </span>
-            ))}
+            ) : null}
+            {tenantId ? (
+              <span className="cc-auth-tenant">
+                <code>{tenantId}</code>
+              </span>
+            ) : null}
+            {!envKeyLocked && (
+              <button type="button" className="secondary cc-forget-btn" onClick={onForget}>
+                {compact ? "Forget" : "Forget token"}
+              </button>
+            )}
           </div>
-          {!envKeyLocked && (
-            <button type="button" className="secondary cc-forget-btn" onClick={onForget}>
-              Forget token
-            </button>
+          {!compact && (
+            <>
+              {" on "}
+              <code>{apiHost}</code>
+              <span className="demo-hint"> — {roleMeta.summary}</span>
+              <div className="cc-perm-tags">
+                {RBAC_ACTIONS.map((action) => (
+                  <span
+                    key={action}
+                    className={`cc-perm-tag${permissions.includes(action) ? " ok" : ""}`}
+                  >
+                    {action}
+                  </span>
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}
