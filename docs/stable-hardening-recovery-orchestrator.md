@@ -1,6 +1,6 @@
 # Stable hardening — Recovery Orchestrator
 
-Checklist for **Stable** tier promotion of the Recovery Orchestrator (`spanda-recovery`, REST `/v1/recovery/*` — 14 routes, gRPC proto **1.0.11**).
+Checklist for **Stable** tier promotion of the Recovery Orchestrator (`spanda-recovery`, REST `/v1/recovery/*` — 14 routes, gRPC proto semver from `GET /v1/version` — currently **1.0.14**).
 
 ## Gate script
 

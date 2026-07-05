@@ -4,7 +4,7 @@ REST and gRPC reference for the **Unified Entity Model**. All routes are **addit
 
 **Implementation:** `crates/spanda-api/src/sdk_ops.rs`, `entity_mutations.rs`, `handlers.rs`  
 **OpenAPI:** `GET /v1/openapi.json` (generated from handlers)  
-**gRPC proto:** `crates/spanda-api/proto/spanda/v1/control_center.proto` — semver **1.0.3**, **83 RPCs**
+**gRPC proto:** `crates/spanda-api/proto/spanda/v1/control_center.proto` — pin semver and RPC count via `GET /v1/version` (currently **1.0.14**, **164** RPCs)
 
 ## Authentication
 
@@ -329,8 +329,8 @@ GET /v1/version
 ```json
 {
   "grpc": {
-    "proto_semver": "1.0.3",
-    "rpc_count": 83
+    "proto_semver": "1.0.14",
+    "rpc_count": 164
   }
 }
 ```

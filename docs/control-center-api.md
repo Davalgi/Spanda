@@ -46,7 +46,7 @@ Platform-wide recovery intelligence — 14 REST routes mirroring `spanda recover
 | `GET /v1/recovery/recoverable-entities` | Recoverable entity registry |
 | `POST /v1/recovery/recommend` | Knowledge-base strategy recommendation |
 
-gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`, … (proto **1.0.11**).
+gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`, … (proto semver from `GET /v1/version` — currently **1.0.14**).
 
 | `POST /v1/programs/verify/hardware` | `spanda verify` |
 | `POST /v1/programs/verify/capabilities` | `spanda verify --capabilities` |

@@ -101,7 +101,7 @@ Orchestrator evidence history is stored in `control-center-recovery.json` (under
 - **Mission Continuity** — delegation, takeover, succession strategies
 - **Fleet** — fleet redistribution playbooks
 - **Plugins** — `[recovery.extensions]` in `spanda.plugin.toml` (playbook, strategy, validator); `on_recovery_completed` hook after execute; example: `examples/plugins/recovery-plugin/`
-- **gRPC** — proto **1.0.11** mirrors REST (14 recovery RPCs including `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`)
+- **gRPC** — pin proto semver via `GET /v1/version` (currently **1.0.14**); mirrors REST (14 recovery RPCs including `GetRecoveryPredictive`, `ListRecoverableEntities`, `RecommendRecovery`)
 - **Control Center** — **Recovery** tab: plans, metrics, playbooks, history, graph (nodes/edges), plan/simulate/execute actions
 
 ## CI & promotion

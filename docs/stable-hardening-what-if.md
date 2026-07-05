@@ -15,7 +15,7 @@ What-If Analysis is the first **NEXT** differentiation pillar promoted to **Stab
 | Demo | `spanda demo what-if` | **Shipped** |
 | Showcase | `examples/showcase/what_if/gps_failure.sd` | **Shipped** |
 | Control Center REST | `GET /v1/analytics/what-if` | **Shipped** |
-| Control Center gRPC | `GetAnalyticsWhatIf` (proto 1.0.6) | **Shipped** |
+| Control Center gRPC | `GetAnalyticsWhatIf` (proto **1.0.14**) | **Shipped** |
 | SDK wrappers | Rust / Python / TypeScript `analyticsWhatIf` | **Shipped** |
 | Stable gate script | `scripts/what_if_stable_promotion_gate.sh` | **Shipped** |
 | Field soak | 30-day operational pilot | **Pending** — `.spanda/what-if-field-soak-start.txt` |

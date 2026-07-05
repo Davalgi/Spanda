@@ -45,4 +45,4 @@ spanda homeostasis report
 - REST: `GET /v1/autonomy/homeostasis`
 - gRPC: `GetAutonomyHomeostasis`
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [platform-homeostasis.md](./platform-homeostasis.md).

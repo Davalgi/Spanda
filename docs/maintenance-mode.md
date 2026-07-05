@@ -21,4 +21,4 @@ Schedule maintenance, calibration, cleanup, updates, and optimization during low
 
 Integrates with OTA, health, readiness, device registry, Control Center, governance.
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [platform-maintenance.md](./platform-maintenance.md).

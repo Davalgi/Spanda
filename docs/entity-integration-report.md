@@ -15,7 +15,7 @@ The Unified Entity Model integrates registry, graph, query, traceability, verifi
 | Verification engine | ✅ | `crates/spanda-readiness/src/entity_verify.rs` |
 | Readiness / health / trust engines | ✅ | `entity_readiness.rs`, `entity_health.rs`, `spanda-trust/entity_trust.rs` |
 | REST API (14 routes) | ✅ | `crates/spanda-api/src/sdk_ops.rs`, `entity_mutations.rs` |
-| gRPC entity RPCs (proto 1.0.3) | ✅ | `crates/spanda-api/proto/spanda/v1/control_center.proto` |
+| gRPC entity RPCs (proto **1.0.14**, 164 RPCs) | ✅ | `crates/spanda-api/proto/spanda/v1/control_center.proto` |
 | CLI | ✅ | `spanda entity *` in `crates/spanda-cli/src/entity_cli.rs` |
 | Rust / TS / Python SDK | ✅ | `crates/spanda-sdk`, `sdk/typescript`, `sdk/python` |
 | Control Center Entities tab | ✅ | `packages/web/src/EntityGraphPanel.tsx` |

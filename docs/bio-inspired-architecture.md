@@ -1,5 +1,7 @@
 # Bio-Inspired Resilient Autonomy Architecture
 
+> **Canonical view:** [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md). This document is retained for backward compatibility and migration — see [cognitive-resilience-migration.md](./cognitive-resilience-migration.md).
+
 > **Canonical functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — Spanda Cognitive & Resilience Architecture with eleven functional domains and a [responsibility matrix](./responsibility-matrix.md). This document is retained for backward compatibility.
 
 Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. The goal is **not** to imitate biology, but to apply these proven resilience patterns to safety-critical autonomous systems.
@@ -130,7 +132,7 @@ Implementation lives in **`spanda-autonomy`** (`crates/spanda-autonomy/`).
 
 ## Known limitations
 
-See [known-limitations.md](./known-limitations.md#bio-inspired-resilient-autonomy). Sensory fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under `.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
+See [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture). Sensory fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex traces persist under `.spanda/autonomy-reflex-traces.json` and are emitted during `run`/`sim`.
 
 **Smoke:** `./scripts/cognitive_resilience_smoke.sh` (CI Integration job `bio-inspired-autonomy`; alias for `./scripts/bio_inspired_autonomy_smoke.sh`)
 

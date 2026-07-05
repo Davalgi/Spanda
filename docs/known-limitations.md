@@ -54,10 +54,10 @@ Honest constraints for **v0.6.3** evaluators. For capability tiers see [feature-
 - ROS2 adapter requires **ROS Humble** and manual setup on Linux (`SPANDA_ROS2_LIVE=1` for live topics).
 - Windows support is via MSI/prebuilt CLI; some golden paths are Linux/macOS only in CI.
 
-## Bio-inspired resilient autonomy
+## Cognitive & Resilience Architecture
 
-- **Beta / Experimental tiers** — see [feature-status.md](./feature-status.md) and [bio-inspired-architecture.md](./bio-inspired-architecture.md).
-- Sensory fusion validators are rule-based; no live multi-sensor fusion pipeline yet.
+- **Beta / Experimental tiers** — see [feature-status.md](./feature-status.md), [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md), and [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+- Sensory fusion is entity-derived and rule-based (**Beta**); live multi-sensor pipeline is **Planned**.
 - Control Center **Cognitive & Resilience** tab uses live REST panels; gRPC parity ships for `/v1/autonomy/*`.
 - Homeostasis merges entity health with interpreter scheduler telemetry when a recent `run`/`sim` completed.
 - Reflex traces persist to `.spanda/autonomy-reflex-traces.json` (override with `SPANDA_AUTONOMY_TRACE_FILE`).

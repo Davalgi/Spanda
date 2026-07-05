@@ -26,4 +26,4 @@ Device / Reflex Controller
 
 Entity graph, device tree, fleet, mission continuity, delegation, takeover, offline policies.
 
-See [distributed-decisions.md](./distributed-decisions.md) and [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [distributed-decisions.md](./distributed-decisions.md) and [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).

@@ -897,10 +897,11 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 | `GetAnalyticsReadinessForecast` | Readiness degradation forecast (`GET /v1/analytics/readiness-forecast` parity) |
 | `GetAnalyticsTrustGraph` | Trust-weighted dependency graph (`GET /v1/analytics/trust-graph` parity) |
 
-Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — **proto semver `1.0.6`** (package `spanda.v1`). gRPC reflection is disabled; pin the proto file or read `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count`.
+Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — package `spanda.v1`. Pin semver and RPC count via `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count` (currently **1.0.14**, **164** RPCs). gRPC reflection is enabled when tonic-reflection is compiled in.
 
 ```bash
-# Example with grpcurl (reflection not enabled — use proto file)
+# Example with grpcurl (reflection or proto file)
+grpcurl -plaintext 127.0.0.1:50051 list
 grpcurl -plaintext -import-path crates/spanda-api/proto -proto spanda/v1/control_center.proto \
   -d '{}' 127.0.0.1:50051 spanda.v1.ControlCenter/Health
 ```

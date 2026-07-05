@@ -71,4 +71,4 @@ Legacy alias: `./scripts/bio_inspired_autonomy_smoke.sh` (same checks).
 
 - [feature-status.md](./feature-status.md) — platform-wide matrix
 - [responsibility-matrix.md](./responsibility-matrix.md) — ownership
-- [known-limitations.md](./known-limitations.md#bio-inspired-resilient-autonomy) — fusion/recovery caveats
+- [known-limitations.md](./known-limitations.md#cognitive--resilience-architecture) — fusion/recovery caveats

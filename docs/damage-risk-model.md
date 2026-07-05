@@ -25,4 +25,4 @@ Risk-based recovery, mission abort, degraded mode, preventive maintenance, opera
 
 Entity field: `Entity.damage_risk`
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [damage-risk.md](./damage-risk.md).

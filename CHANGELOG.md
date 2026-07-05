@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **CI restructure:** replaced monolithic `.github/workflows/ci.yml` with **CI Fast** (PR required), **CI Integration** (`main` after merge), and **CI Nightly** (cron + manual). Auto-release now waits for CI Integration. `cargo audit` moved to nightly.
-- **Documentation sync:** tiered CI references across README, feature-status, tier-3 golden paths, gates index, release/organizational docs, and topic guides — [ci-architecture.md](docs/ci-architecture.md#job-tier-map).
+- **Documentation sync (full pass):** proto semver **1.0.14** and **164** RPCs pinned via `GET /v1/version`; Cognitive & Resilience naming replaces bio-inspired primary links across guides; gRPC reflection note corrected; tier and maturity docs aligned — [entity-apis.md](docs/entity-apis.md), [control-center.md](docs/control-center.md), [known-limitations.md](docs/known-limitations.md).
 - **Public positioning:** README, getting-started, and release docs state **v0.6.3 evaluation / beta** with links to known limitations and organizational gates.
 - **Phase policy:** [scope-control.md](docs/scope-control.md) transitions from release hardening to **Next horizon** (hardening + adoption toward v1.0).
 - **Release milestones:** [ROADMAP.md](ROADMAP.md) adds v0.6.3 milestone; v1.0 section includes organizational gate table.

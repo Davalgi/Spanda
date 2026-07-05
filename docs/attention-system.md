@@ -30,4 +30,4 @@ attention_policy MissionFocus {
 - REST: `GET /v1/autonomy/attention`
 - gRPC: `GetAutonomyAttention`
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [attention-engine.md](./attention-engine.md).

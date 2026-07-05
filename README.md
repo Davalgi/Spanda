@@ -126,7 +126,7 @@ spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps  # or
 spanda recovery explain examples/showcase/self_healing/rover.sd --failure gps
 spanda demo continuity     # takeover, delegation, succession
 spanda decision list examples/showcase/distributed_decisions/main.sd  # brain/spinal-cord/reflex autonomy
-spanda reflex list --json              # bio-inspired reflex catalog
+spanda reflex list --json              # Cognitive & Resilience reflex catalog
 spanda homeostasis check --json        # platform stability snapshot
 
 # Or step by step:
@@ -161,7 +161,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Known limitations** | [docs/known-limitations.md](docs/known-limitations.md) · mock/live backend setup in [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **v0.6.3 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
-| **Cognitive & Resilience Architecture** | **Beta** — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · domain SDK clients · Control Center **Cognitive & Resilience** tab |
+| **Cognitive & Resilience Architecture** | **Beta** — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · [docs/cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md) · domain SDK clients · Control Center **Cognitive & Resilience** tab |
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |
@@ -178,6 +178,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | [ROADMAP.md](ROADMAP.md) | **Product roadmap** — pillars, blueprints, timeline |
 | [docs/getting-started.md](docs/getting-started.md) | First robot in 10 minutes |
 | [docs/control-center.md](docs/control-center.md) | **Control Center** — start API/UI, rebuild, `serve` with `--config` and `--program` |
+| [docs/control-center-versioning.md](docs/control-center-versioning.md) | **Control Center versioning** — UI/CLI/API semver, `desktop-v*` auto release |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, SDK install, verify, fleet, ROS2, Control Center |
 | [docs/known-limitations.md](docs/known-limitations.md) | Honest scope limits, mock backends, organizational gates |
 | [docs/organizational-gates.md](docs/organizational-gates.md) | v0.6.3 → v1.0 path — field soak, security audit, exit checklist |

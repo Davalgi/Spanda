@@ -157,7 +157,7 @@ Use this table when updating docs or stable-hardening guides. Workflow file name
 | `core-smokes` | `readiness_smoke`, `sdk_smoke`, `check_all_examples`, readme smoke + golden |
 | `docs-build` | `cargo doc`, mdBook, `generate_spanda_reference.py` |
 | `distributed-decisions` | `distributed_decisions_smoke.sh` |
-| `bio-inspired-autonomy` | `cognitive_resilience_smoke.sh` |
+| `bio-inspired-autonomy` (cognitive resilience) | `cognitive_resilience_smoke.sh` |
 | `release-hardening` | security + property regressions, cross-interface |
 | `robotics-golden-path` | `examples/robotics/golden_path_deploy.sh` |
 | `telemetry-golden-path` | `telemetry_store_golden_path.sh` |

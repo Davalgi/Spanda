@@ -136,7 +136,7 @@ Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [
 | POST | `/v1/entities/relationships` | Relate two entities (Bearer) |
 | POST | `/v1/entities/sync` | Sync overlay to TOML fragments (Bearer) |
 
-**gRPC (tonic):** same JSON payloads via entity RPCs on `--grpc-bind` (proto semver **1.0.3**, **83 RPCs**). Mutations require Bearer metadata (Rust `GrpcClient` reads `SPANDA_API_KEY`). JSON-RPC gateway exposes read-only entity methods via `POST /v1/rpc`.
+**gRPC (tonic):** same JSON payloads via entity RPCs on `--grpc-bind` (pin proto semver via `GET /v1/version` — currently **1.0.14**, **164** RPCs). Mutations require Bearer metadata (Rust `GrpcClient` reads `SPANDA_API_KEY`). JSON-RPC gateway exposes read-only entity methods via `POST /v1/rpc`.
 
 Existing routes (`/v1/devices`, `/v1/robots`, `/v1/fleets`, `/v1/humans`, …) are unchanged.
 

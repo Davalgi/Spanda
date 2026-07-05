@@ -621,7 +621,7 @@ Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples: [`exa
 
 ---
 
-## Bio-inspired resilient autonomy (optional)
+## Cognitive & Resilience Architecture (optional)
 
 Extends distributed decisions with reflex arcs, homeostasis, platform immunity, sensory fusion, attention, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
 

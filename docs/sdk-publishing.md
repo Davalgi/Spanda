@@ -235,7 +235,7 @@ Or edit manually:
 
 Commit and push to `main`.
 
-**Current release line:** **0.5.6** — Recovery Orchestrator client methods (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto **1.0.11**). Prior **0.5.5** added Twin Cloud history, import-replay, and gRPC twins.
+**Current release line:** **0.5.6** — Recovery Orchestrator client methods (`getRecoveryPredictive`, `listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto semver from `GET /v1/version` — currently **1.0.14**). Prior **0.5.5** added Twin Cloud history, import-replay, and gRPC twins.
 
 ### 2. Verify locally
 

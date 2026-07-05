@@ -77,7 +77,7 @@ Recovery evidence history (`GET /v1/recovery/history`) is backed by `control-cen
 - [recovery-sdk.md](./recovery-sdk.md)
 - [recovery-orchestrator.md](./recovery-orchestrator.md)
 
-## gRPC (proto 1.0.11)
+## gRPC (proto semver from `GET /v1/version` — currently **1.0.14**)
 
 Mirrors REST with `JsonResponse` envelopes on `spanda.v1.ControlCenter`:
 

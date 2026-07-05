@@ -2,7 +2,7 @@
 
 SDK methods for the Recovery Orchestrator across Rust, Python, and TypeScript.
 
-**SDK version:** **0.5.6+** adds `getRecoveryPredictive`, `listRecoverableEntities`, and `recommendRecovery`. Rust gRPC (`spanda-sdk` feature `grpc`, proto **1.0.11**) mirrors the same three RPCs.
+**SDK version:** **0.5.6+** adds `getRecoveryPredictive`, `listRecoverableEntities`, and `recommendRecovery`. Rust gRPC (`spanda-sdk` feature `grpc`, proto semver from `GET /v1/version` — currently **1.0.14**) mirrors the same three RPCs.
 
 ## Rust (`spanda-sdk`)
 

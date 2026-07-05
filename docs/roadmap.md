@@ -15,7 +15,9 @@ The roadmap outgrew a single `docs/` guide. It now spans language, runtime, veri
 | **Full roadmap** | [ROADMAP.md](../ROADMAP.md) |
 | Platform overview | [platform-overview.md](./platform-overview.md) |
 | Feature status | [feature-status.md](./feature-status.md) |
-| Migration notes | [roadmap-migration.md](./roadmap-migration.md) |
+| Cognitive & Resilience Architecture | [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) |
+| CI architecture | [ci-architecture.md](./ci-architecture.md) |
+| Control Center versioning | [control-center-versioning.md](./control-center-versioning.md) |
 | Repository organization | [repository-organization.md](./repository-organization.md) |
 | Solution blueprints | [solutions/README.md](./solutions/README.md) |
 | Enterprise operations | [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) |

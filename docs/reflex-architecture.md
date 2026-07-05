@@ -45,4 +45,4 @@ spanda reflex trace obstacle
 
 `GET /v1/autonomy/reflex`
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+See [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
