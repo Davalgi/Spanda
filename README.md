@@ -161,7 +161,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Known limitations** | [docs/known-limitations.md](docs/known-limitations.md) · mock/live backend setup in [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **v0.6.3 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
-| **Bio-inspired resilient autonomy** | **Beta** — [docs/bio-inspired-architecture.md](docs/bio-inspired-architecture.md) · `spanda reflex` / `homeostasis` / `immunity` · Control Center **Resilient Autonomy** tab |
+| **Cognitive & Resilience Architecture** | **Beta** — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · domain SDK clients · Control Center **Cognitive & Resilience** tab |
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |

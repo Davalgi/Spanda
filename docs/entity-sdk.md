@@ -204,6 +204,25 @@ Rust: `SpandaError::Connection`, `SpandaError::Api`
 TypeScript: `ConnectionError`, `SpandaError`  
 Python: raises `SpandaError` subclasses
 
+## Cognitive & Resilience domain clients
+
+Functional domain state lives on `Entity.autonomy` (`GET /v1/entities/{id}/autonomy`). Platform summaries use `/v1/autonomy/*`.
+
+| Domain | Rust | TypeScript | Python |
+|--------|------|------------|--------|
+| Reflex & Safety | `client.reflex().list()` | `client.reflex().list()` | `client.reflex().list()` |
+| Homeostasis | `client.homeostasis().summary()` | `client.homeostasis().summary()` | `client.homeostasis().summary()` |
+| Platform Immunity | `client.immunity().scan()` | `client.immunity().scan()` | `client.immunity().scan()` |
+| Attention | `client.attention().queue()` | `client.attention().queue()` | `client.attention().queue()` |
+| Sensory Fusion | `client.fusion().summary()` | `client.fusion().summary()` | `client.fusion().summary()` |
+| Operational Memory | `client.memory().summary()` | `client.memory().summary()` | `client.memory().summary()` |
+| Entity profile | `client.memory().entity_refs(id)` | `client.memory().entityRefs(id)` | `client.memory().entity_refs(id)` |
+| Facade (legacy) | `client.autonomy().list_reflex()` | `client.listAutonomyReflex()` | `client.list_autonomy_reflex()` |
+
+gRPC (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`, …
+
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Migration: [cognitive-resilience-migration.md](./cognitive-resilience-migration.md)
+
 ## Related docs
 
 - [entity-apis.md](./entity-apis.md) — REST/gRPC reference
