@@ -114,8 +114,14 @@ fn v3_envelope_signature_roundtrip() {
 #[test]
 fn layer_str_precedence_maps_reflex_and_fleet() {
     assert_eq!(layer_str_precedence_key("reflex"), "local_immediate_safety");
-    assert_eq!(layer_str_precedence_key("group_fleet"), "fleet_coordination");
-    assert_eq!(layer_str_precedence_key("safety_kill_switch"), "safety_kill_switch");
+    assert_eq!(
+        layer_str_precedence_key("group_fleet"),
+        "fleet_coordination"
+    );
+    assert_eq!(
+        layer_str_precedence_key("safety_kill_switch"),
+        "safety_kill_switch"
+    );
 }
 
 #[test]

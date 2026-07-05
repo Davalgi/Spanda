@@ -5,7 +5,13 @@ use spanda_capability::{capability_registry, lookup_capability};
 #[test]
 fn capability_registry_never_panics_on_unknown_names() {
     // Unknown capability names must resolve without panicking.
-    let names = ["", "lidar.read", "no.such.capability", "!!!", &"a".repeat(128)];
+    let names = [
+        "",
+        "lidar.read",
+        "no.such.capability",
+        "!!!",
+        &"a".repeat(128),
+    ];
     for name in names {
         let _ = std::panic::catch_unwind(|| {
             let _ = lookup_capability(name);

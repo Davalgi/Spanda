@@ -8,7 +8,7 @@ use crate::entity_governance::{
 use crate::policy::list_standards_profiles;
 use crate::types::ValidationSeverity;
 use serde::{Deserialize, Serialize};
-use spanda_config::entity::{EntityRegistry, EntityRecord};
+use spanda_config::entity::{EntityRecord, EntityRegistry};
 use spanda_config::ResolvedSystemConfig;
 
 /// System-wide compliance check report.
@@ -165,7 +165,8 @@ pub fn run_compliance_check(
 
     let entities_checked = entity_reports.len();
     let entities_failed = entities_checked.saturating_sub(passed_count);
-    let passed = entities_failed == 0 && warnings.is_empty().then_some(true).unwrap_or(!opts.strict);
+    let passed =
+        entities_failed == 0 && warnings.is_empty().then_some(true).unwrap_or(!opts.strict);
 
     ComplianceCheckReport {
         passed,
@@ -230,8 +231,14 @@ pub fn validate_governance(
                 message: format!("Unknown deployment profile '{name}'"),
                 entity_id: None,
             });
-            actions.push(format!("Select a valid deployment profile from: {}", 
-                list_deployment_profiles().iter().map(|p| p.kind.as_str()).collect::<Vec<_>>().join(", ")));
+            actions.push(format!(
+                "Select a valid deployment profile from: {}",
+                list_deployment_profiles()
+                    .iter()
+                    .map(|p| p.kind.as_str())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ));
         }
     }
 
@@ -244,8 +251,16 @@ pub fn validate_governance(
         });
     }
 
-    if system_gov.accountability.as_ref().map(|a| a.is_complete_for_production()).unwrap_or(false) == false
-        && system_gov.operational_maturity.map(|m| m.allows_live_deployment()).unwrap_or(false)
+    if system_gov
+        .accountability
+        .as_ref()
+        .map(|a| a.is_complete_for_production())
+        .unwrap_or(false)
+        == false
+        && system_gov
+            .operational_maturity
+            .map(|m| m.allows_live_deployment())
+            .unwrap_or(false)
     {
         findings.push(ComplianceItem {
             severity: ValidationSeverity::Missing,
@@ -262,7 +277,10 @@ pub fn validate_governance(
     actions.extend(compliance.recommended_actions.clone());
 
     let has_blocking = findings.iter().any(|f| {
-        matches!(f.severity, ValidationSeverity::Missing | ValidationSeverity::Action)
+        matches!(
+            f.severity,
+            ValidationSeverity::Missing | ValidationSeverity::Action
+        )
     });
     let passed = !has_blocking && compliance.passed;
 

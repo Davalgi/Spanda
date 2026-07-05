@@ -868,7 +868,9 @@ async fn grpc_admin_and_mission_endpoints() {
         tonic::metadata::MetadataValue::try_from("Bearer grpc-admin-test-key").unwrap();
 
     let mut keys_req = tonic::Request::new(Empty {});
-    keys_req.metadata_mut().insert("authorization", auth_header.clone());
+    keys_req
+        .metadata_mut()
+        .insert("authorization", auth_header.clone());
     let keys = client
         .list_admin_api_keys(keys_req)
         .await
@@ -877,7 +879,9 @@ async fn grpc_admin_and_mission_endpoints() {
     assert!(keys.json.contains("\"keys\""));
 
     let mut users_req = tonic::Request::new(Empty {});
-    users_req.metadata_mut().insert("authorization", auth_header.clone());
+    users_req
+        .metadata_mut()
+        .insert("authorization", auth_header.clone());
     let users = client
         .list_admin_users(users_req)
         .await

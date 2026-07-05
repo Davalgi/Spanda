@@ -1,8 +1,6 @@
 //! Live attack simulation integration tests.
 
-use spanda_decision::{
-    run_attack_simulation, AttackScenario,
-};
+use spanda_decision::{run_attack_simulation, AttackScenario};
 
 #[test]
 fn attack_policy_tampering_blocked() {
@@ -15,10 +13,7 @@ fn attack_policy_tampering_blocked() {
 fn attack_replayed_decision_blocked() {
     let result = run_attack_simulation(AttackScenario::ReplayedDecision);
     assert!(result.blocked);
-    assert_eq!(
-        result.evidence["replay_rejected"].as_bool(),
-        Some(true)
-    );
+    assert_eq!(result.evidence["replay_rejected"].as_bool(), Some(true));
 }
 
 #[test]

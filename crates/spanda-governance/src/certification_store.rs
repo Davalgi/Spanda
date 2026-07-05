@@ -1,6 +1,8 @@
 //! Persistent certification record store — independent from health posture.
 //!
-use crate::certification::{CertificationEvidence, CertificationRecord, EntityCertificationSummary};
+use crate::certification::{
+    CertificationEvidence, CertificationRecord, EntityCertificationSummary,
+};
 use crate::types::CertificationStatus;
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -54,11 +56,8 @@ impl CertificationStore {
     }
 
     pub fn summary_for_entity(&self, entity_id: &str) -> EntityCertificationSummary {
-        let records: Vec<CertificationRecord> = self
-            .for_scope(entity_id)
-            .into_iter()
-            .cloned()
-            .collect();
+        let records: Vec<CertificationRecord> =
+            self.for_scope(entity_id).into_iter().cloned().collect();
         let status = records
             .iter()
             .map(|r| r.status)
@@ -102,7 +101,11 @@ impl CertificationStore {
         Ok(record)
     }
 
-    pub fn add_evidence(&mut self, id: &str, evidence: CertificationEvidence) -> Result<(), String> {
+    pub fn add_evidence(
+        &mut self,
+        id: &str,
+        evidence: CertificationEvidence,
+    ) -> Result<(), String> {
         let record = self
             .records
             .iter_mut()
@@ -155,10 +158,7 @@ pub fn format_certification_report(report: &CertificationReport, json: bool) -> 
     if json {
         return serde_json::to_string_pretty(report).unwrap_or_else(|_| "{}".into());
     }
-    let mut lines = vec![
-        "Certification Report".into(),
-        "====================".into(),
-    ];
+    let mut lines = vec!["Certification Report".into(), "====================".into()];
     if let Some(id) = report.entity_id.as_ref() {
         lines.push(format!("Entity: {id}"));
     }

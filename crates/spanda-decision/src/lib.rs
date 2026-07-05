@@ -4,10 +4,10 @@
 
 mod authority;
 mod conflict;
-mod enforcement;
 mod consensus;
 mod diagnostics;
 mod emit;
+mod enforcement;
 mod engine;
 mod escalation;
 mod escalation_store;
@@ -30,6 +30,15 @@ pub use conflict::{resolve_conflict, CompetingDecision, ConflictResolution};
 pub use consensus::{resolve_consensus, ConsensusResult, ConsensusStrategy, ConsensusVote};
 pub use diagnostics::collect_decision_diagnostics;
 pub use emit::{decision_trace_enabled, v3_decision_payload};
+pub use enforcement::{
+    cached_policy_must_be_signed, clear_nonce_registry, detect_policy_tampering,
+    governance_requires_human_approval, high_risk_requires_central_approval,
+    local_action_respects_kill_switch, local_action_respects_safety_boundaries,
+    offline_decision_expired, policy_hash, reflex_may_act_without_central, register_decision_nonce,
+    resolve_split_brain, tamper_policy_for_test, untrusted_entity_may_not_takeover,
+    validate_authority_scope, validate_decision_timestamp, validate_decision_trace_payload,
+    verify_decision_tree_hash, NonceRegistry, TraceValidationResult, TRACE_REQUIRED_FIELDS,
+};
 pub use engine::{
     evaluate_distributed_decisions, format_distributed_report, DecisionContext,
     DistributedDecisionReport,
@@ -59,16 +68,6 @@ pub use report::{
     DecisionEvidence, DecisionRecord, DecisionTimeline,
 };
 pub use runtime_bridge::{register_platform_runtime, DecisionBackedRuntime};
-pub use enforcement::{
-    cached_policy_must_be_signed, clear_nonce_registry, detect_policy_tampering,
-    governance_requires_human_approval, high_risk_requires_central_approval,
-    local_action_respects_kill_switch,
-    local_action_respects_safety_boundaries, offline_decision_expired, policy_hash,
-    reflex_may_act_without_central, register_decision_nonce, resolve_split_brain,
-    tamper_policy_for_test, untrusted_entity_may_not_takeover, validate_authority_scope,
-    validate_decision_timestamp, validate_decision_trace_payload, verify_decision_tree_hash,
-    NonceRegistry, TraceValidationResult, TRACE_REQUIRED_FIELDS,
-};
 pub use security::{
     detect_tampered_decision_trace, run_attack_simulation, security_audit, simulate_attack,
     threat_model_summary, validate_security_envelope, AttackScenario, AttackSimulationResult,

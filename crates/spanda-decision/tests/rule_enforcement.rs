@@ -1,20 +1,19 @@
 //! Rule enforcement integration tests for distributed decision architecture.
 
+use serde_json::json;
 use spanda_decision::{
     clear_nonce_registry, default_safety_boundaries, entity_may_decide_locally,
     evaluate_distributed_decisions, evaluate_tree, extract_decision_authorities,
     extract_decision_trees, extract_offline_policies, high_risk_requires_central_approval,
     local_action_respects_kill_switch, local_action_respects_safety_boundaries,
-    offline_decision_expired, policy_hash, reflex_may_act_without_central,
-    register_decision_nonce, resolve_split_brain, sign_offline_policy,
-    tamper_policy_for_test, tree_hash, untrusted_entity_may_not_takeover,
-    validate_decision_trace_payload, validate_offline_policy_trust,
-    verify_decision_tree_hash, verify_offline_policy_signature, CompetingDecision,
-    DecisionContext, DecisionLayer, NonceRegistry,
+    offline_decision_expired, policy_hash, reflex_may_act_without_central, register_decision_nonce,
+    resolve_split_brain, sign_offline_policy, tamper_policy_for_test, tree_hash,
+    untrusted_entity_may_not_takeover, validate_decision_trace_payload,
+    validate_offline_policy_trust, verify_decision_tree_hash, verify_offline_policy_signature,
+    CompetingDecision, DecisionContext, DecisionLayer, NonceRegistry,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
-use serde_json::json;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
@@ -26,11 +25,26 @@ fn parse_sd(source: &str) -> spanda_ast::nodes::Program {
 
 #[test]
 fn reflex_safety_actions_run_without_central_approval() {
-    assert!(reflex_may_act_without_central("emergency_stop", DecisionLayer::Reflex));
-    assert!(reflex_may_act_without_central("stop_motor", DecisionLayer::Reflex));
-    assert!(reflex_may_act_without_central("kill_switch", DecisionLayer::Reflex));
-    assert!(!reflex_may_act_without_central("emergency_stop", DecisionLayer::ControlCenter));
-    assert!(!reflex_may_act_without_central("update_firmware", DecisionLayer::Reflex));
+    assert!(reflex_may_act_without_central(
+        "emergency_stop",
+        DecisionLayer::Reflex
+    ));
+    assert!(reflex_may_act_without_central(
+        "stop_motor",
+        DecisionLayer::Reflex
+    ));
+    assert!(reflex_may_act_without_central(
+        "kill_switch",
+        DecisionLayer::Reflex
+    ));
+    assert!(!reflex_may_act_without_central(
+        "emergency_stop",
+        DecisionLayer::ControlCenter
+    ));
+    assert!(!reflex_may_act_without_central(
+        "update_firmware",
+        DecisionLayer::Reflex
+    ));
 }
 
 #[test]
@@ -82,7 +96,10 @@ fn high_risk_actions_require_central_authorization() {
     };
     let report = evaluate_distributed_decisions(&program, &ctx);
     assert!(!report.passed);
-    assert!(report.messages.iter().any(|m| m.contains("central approval")));
+    assert!(report
+        .messages
+        .iter()
+        .any(|m| m.contains("central approval")));
 }
 
 #[test]
@@ -256,7 +273,11 @@ fn decision_trace_payload_requires_proof_fields() {
         }
     });
     let result = validate_decision_trace_payload(&complete);
-    assert!(result.valid, "missing: {:?}, errors: {:?}", result.missing_fields, result.errors);
+    assert!(
+        result.valid,
+        "missing: {:?}, errors: {:?}",
+        result.missing_fields, result.errors
+    );
 
     let incomplete = json!({ "decision_id": "dd-002" });
     let bad = validate_decision_trace_payload(&incomplete);

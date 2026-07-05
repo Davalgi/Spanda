@@ -96,11 +96,7 @@ impl PolicyStore {
             let signer = actor.unwrap_or("system");
             Self::sign_policy(&mut policy, signer, material);
         }
-        let id = format!(
-            "pol-{}-{}",
-            entity_id,
-            self.assignments.len() + 1
-        );
+        let id = format!("pol-{}-{}", entity_id, self.assignments.len() + 1);
         let audit_id = format!("audit-{}", id);
         let assignment = PolicyAssignment {
             id: id.clone(),
@@ -126,11 +122,7 @@ impl PolicyStore {
 
     /// Detach a policy assignment and append an audit entry.
     pub fn detach(&mut self, assignment_id: &str, actor: Option<&str>) -> bool {
-        let Some(pos) = self
-            .assignments
-            .iter()
-            .position(|a| a.id == assignment_id)
-        else {
+        let Some(pos) = self.assignments.iter().position(|a| a.id == assignment_id) else {
             return false;
         };
         let assignment = self.assignments.remove(pos);
@@ -163,7 +155,11 @@ impl PolicyStore {
 }
 
 /// Build a default policy reference for a kind/name pair.
-pub fn policy_ref(kind: GovernancePolicyKind, name: &str, version: Option<&str>) -> GovernancePolicyRef {
+pub fn policy_ref(
+    kind: GovernancePolicyKind,
+    name: &str,
+    version: Option<&str>,
+) -> GovernancePolicyRef {
     let mut policy = GovernancePolicyRef::new(kind, name);
     policy.version = version.map(String::from);
     policy

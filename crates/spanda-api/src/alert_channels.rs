@@ -46,7 +46,8 @@ pub fn persist_alert_channels(state: &ControlCenterState) -> Result<(), String> 
     }
     fs::write(
         path,
-        serde_json::to_string_pretty(&state.alert_channel_store).map_err(|error| error.to_string())?,
+        serde_json::to_string_pretty(&state.alert_channel_store)
+            .map_err(|error| error.to_string())?,
     )
     .map_err(|error| error.to_string())
 }

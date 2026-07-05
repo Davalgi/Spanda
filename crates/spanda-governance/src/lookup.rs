@@ -2,8 +2,8 @@
 //!
 use spanda_config::entity::EntityRecord;
 use spanda_config::{
-    apply_entity_mutation_overlay, default_entity_overlay_path, load_entity_overlay, ConfigResolver,
-    SpandaManifest,
+    apply_entity_mutation_overlay, default_entity_overlay_path, load_entity_overlay,
+    ConfigResolver, SpandaManifest,
 };
 use std::env;
 use std::path::PathBuf;

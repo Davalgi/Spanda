@@ -180,9 +180,7 @@ pub fn run_simulation(
             if influence.recovery_escalation_required {
                 if let Some(gov) = entity.governance.as_ref() {
                     if let Some(contact) = gov.escalation_contact.as_ref() {
-                        governance_notes.push(format!(
-                            "{entity_id}: escalate to {contact}"
-                        ));
+                        governance_notes.push(format!("{entity_id}: escalate to {contact}"));
                     } else if let Some(person) = gov.responsible_person.as_ref() {
                         governance_notes.push(format!(
                             "{entity_id}: escalate to responsible person {person}"
@@ -208,10 +206,7 @@ pub fn run_simulation(
 }
 
 /// Pick recoverable entities for a failure when `--entity` is omitted.
-fn failure_targets_for_registry(
-    registry: &EntityRegistry,
-    failure: &str,
-) -> Vec<(String, String)> {
+fn failure_targets_for_registry(registry: &EntityRegistry, failure: &str) -> Vec<(String, String)> {
     // Prefer robots and other recoverable kinds from the program/registry.
     let recoverable = list_recoverable_entities(registry);
     let targets: Vec<(String, String)> = if !recoverable.is_empty() {

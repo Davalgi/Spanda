@@ -527,7 +527,10 @@ mod ondisk_lookup_tests {
     #[test]
     fn looks_up_ondisk_wifi_package() {
         let entry = lookup_registry_entry("spanda-wifi");
-        assert!(entry.is_some(), "spanda-wifi should resolve from packages/registry");
+        assert!(
+            entry.is_some(),
+            "spanda-wifi should resolve from packages/registry"
+        );
         assert_eq!(entry.unwrap().name(), "spanda-wifi");
     }
 }

@@ -1,7 +1,7 @@
 //! Recovery Orchestrator REST API contract tests.
 use spanda_api::recovery_ops::{
-    recovery_explain, recovery_history, recovery_playbooks, recovery_plan, recovery_policies,
-    recovery_predictive, recovery_recoverable_entities, recovery_recommend, recovery_simulate,
+    recovery_explain, recovery_history, recovery_plan, recovery_playbooks, recovery_policies,
+    recovery_predictive, recovery_recommend, recovery_recoverable_entities, recovery_simulate,
     RecoveryRequest,
 };
 use spanda_api::state::ControlCenterState;

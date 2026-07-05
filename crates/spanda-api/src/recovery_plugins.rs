@@ -55,7 +55,10 @@ pub fn orchestrator_for_state(state: &ControlCenterState) -> RecoveryOrchestrato
 }
 
 /// Persist orchestrator evidence history back to Control Center state.
-pub fn save_orchestrator_history(state: &mut ControlCenterState, orchestrator: RecoveryOrchestrator) {
+pub fn save_orchestrator_history(
+    state: &mut ControlCenterState,
+    orchestrator: RecoveryOrchestrator,
+) {
     state.recovery_history = orchestrator.into_history();
     let _ = persist_runtime_state(state);
 }

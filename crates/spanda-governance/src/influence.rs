@@ -57,7 +57,9 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
 
     let autonomy = gov.autonomy_level.unwrap_or(AutonomyLevel::Manual);
     let risk = gov.risk_level.unwrap_or(OperationalRisk::Negligible);
-    let maturity = gov.operational_maturity.unwrap_or(DeploymentMaturity::Concept);
+    let maturity = gov
+        .operational_maturity
+        .unwrap_or(DeploymentMaturity::Concept);
     let cert_status = gov
         .certification
         .as_ref()
@@ -79,15 +81,17 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
 
     if maturity.allows_live_deployment() && !cert_status.is_operational() {
         influence.blocks_live_deployment = true;
-        influence.readiness_blockers.push(GovernanceInfluenceFinding {
-            factor: "governance.certification".into(),
-            severity: "high".into(),
-            message: format!(
-                "Live maturity '{}' requires validated/certified status (current: {})",
-                maturity.as_str(),
-                cert_status.as_str()
-            ),
-        });
+        influence
+            .readiness_blockers
+            .push(GovernanceInfluenceFinding {
+                factor: "governance.certification".into(),
+                severity: "high".into(),
+                message: format!(
+                    "Live maturity '{}' requires validated/certified status (current: {})",
+                    maturity.as_str(),
+                    cert_status.as_str()
+                ),
+            });
     }
 
     if maturity.allows_live_deployment() {
@@ -114,14 +118,16 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
             .map(|a| !a.approval_chain.is_empty())
             .unwrap_or(false);
         if !has_chain {
-            influence.decision_blockers.push(GovernanceInfluenceFinding {
-                factor: "governance.approval_chain".into(),
-                severity: "high".into(),
-                message: format!(
-                    "Risk '{}' requires an approval chain before autonomous decisions",
-                    risk.as_str()
-                ),
-            });
+            influence
+                .decision_blockers
+                .push(GovernanceInfluenceFinding {
+                    factor: "governance.approval_chain".into(),
+                    severity: "high".into(),
+                    message: format!(
+                        "Risk '{}' requires an approval chain before autonomous decisions",
+                        risk.as_str()
+                    ),
+                });
         }
     }
 
@@ -140,23 +146,27 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
                     entity.trust_status.as_str()
                 ),
             });
-            influence.readiness_blockers.push(GovernanceInfluenceFinding {
-                factor: "governance.autonomy_trust".into(),
-                severity: "high".into(),
-                message: format!(
-                    "Autonomy '{}' blocked until trust posture is trusted or verified",
-                    autonomy.as_str()
-                ),
-            });
+            influence
+                .readiness_blockers
+                .push(GovernanceInfluenceFinding {
+                    factor: "governance.autonomy_trust".into(),
+                    severity: "high".into(),
+                    message: format!(
+                        "Autonomy '{}' blocked until trust posture is trusted or verified",
+                        autonomy.as_str()
+                    ),
+                });
         }
     }
 
     if risk.requires_simulation() && maturity < DeploymentMaturity::Simulation {
-        influence.readiness_blockers.push(GovernanceInfluenceFinding {
-            factor: "governance.simulation".into(),
-            severity: "medium".into(),
-            message: "Medium+ risk requires at least simulation maturity".into(),
-        });
+        influence
+            .readiness_blockers
+            .push(GovernanceInfluenceFinding {
+                factor: "governance.simulation".into(),
+                severity: "medium".into(),
+                message: "Medium+ risk requires at least simulation maturity".into(),
+            });
     }
 
     if influence.recovery_escalation_required {
@@ -171,15 +181,17 @@ pub fn influence_for_entity(entity: &EntityRecord) -> GovernanceInfluence {
     }
 
     if influence.requires_human_approval {
-        influence.decision_blockers.push(GovernanceInfluenceFinding {
-            factor: "governance.human_approval".into(),
-            severity: "medium".into(),
-            message: format!(
-                "Autonomy '{}' / risk '{}' requires human approval for autonomous actions",
-                autonomy.as_str(),
-                risk.as_str()
-            ),
-        });
+        influence
+            .decision_blockers
+            .push(GovernanceInfluenceFinding {
+                factor: "governance.human_approval".into(),
+                severity: "medium".into(),
+                message: format!(
+                    "Autonomy '{}' / risk '{}' requires human approval for autonomous actions",
+                    autonomy.as_str(),
+                    risk.as_str()
+                ),
+            });
     }
 
     influence

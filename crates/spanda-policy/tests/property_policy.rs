@@ -13,7 +13,14 @@ fn empty_program() -> spanda_ast::nodes::Program {
 fn policy_engine_never_panics_on_unknown_policy_names() {
     // Unknown policy names must fail closed without panicking.
     let program = empty_program();
-    let names = ["", "default", "production", "no-such-policy", "!!!", &"a".repeat(64)];
+    let names = [
+        "",
+        "default",
+        "production",
+        "no-such-policy",
+        "!!!",
+        &"a".repeat(64),
+    ];
     for name in names {
         let _ = std::panic::catch_unwind(|| {
             let _ = evaluate_policy(&program, name, "property-test");

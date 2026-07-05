@@ -50,7 +50,11 @@ impl PersistedEscalationStore {
     }
 
     /// Grant an escalation and remove from pending.
-    pub fn grant(&mut self, escalation_id: &str, approver: &str) -> Result<EscalationGrant, String> {
+    pub fn grant(
+        &mut self,
+        escalation_id: &str,
+        approver: &str,
+    ) -> Result<EscalationGrant, String> {
         let pending = self
             .pending
             .remove(escalation_id)
@@ -62,7 +66,8 @@ impl PersistedEscalationStore {
             approved_at_ms: current_time_ms(),
             reason: pending.reason,
         };
-        self.granted.insert(escalation_id.to_string(), grant.clone());
+        self.granted
+            .insert(escalation_id.to_string(), grant.clone());
         self.updated_at_ms = current_time_ms();
         Ok(grant)
     }
@@ -83,7 +88,8 @@ impl PersistedEscalationStore {
             approved_at_ms: current_time_ms(),
             reason: reason.to_string(),
         };
-        self.granted.insert(escalation_id.to_string(), grant.clone());
+        self.granted
+            .insert(escalation_id.to_string(), grant.clone());
         self.updated_at_ms = current_time_ms();
         grant
     }
@@ -199,7 +205,11 @@ pub fn approve_escalation_with_store(
     if !escalation.pending_approval {
         return Err("escalation does not require approval".into());
     }
-    approve_escalation_persisted(&escalation.escalation_id, approver, Some(&escalation.entity_id))?;
+    approve_escalation_persisted(
+        &escalation.escalation_id,
+        approver,
+        Some(&escalation.entity_id),
+    )?;
     escalation.pending_approval = false;
     escalation.reason = format!("{} (approved by {approver})", escalation.reason);
     Ok(())

@@ -210,13 +210,11 @@ impl RecoveryOrchestrator {
 
         let knowledge = load_knowledge(program);
         let metrics = compute_metrics(&self.history, &knowledge);
-        let passed = results.iter().all(|r| {
-        r.status != spanda_runtime::recovery_types::RecoveryStatus::Failed
-    }) && plan_report.passed
-        && plugin_validation_passed(
-            self.plugin_registry(),
-            &plan_report.plans,
-        );
+        let passed = results
+            .iter()
+            .all(|r| r.status != spanda_runtime::recovery_types::RecoveryStatus::Failed)
+            && plan_report.passed
+            && plugin_validation_passed(self.plugin_registry(), &plan_report.plans);
 
         OrchestratorRecoveryReport {
             plans: plan_report.plans,

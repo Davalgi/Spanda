@@ -164,14 +164,13 @@ fn serve_connection(
 
     let mut guard = state.lock().map_err(|e| e.to_string())?;
     let (response, correlation_id) = handle_request(&mut guard, &request, &raw);
-    let content_type = crate::control_center_ui::content_type_for_path(path)
-        .unwrap_or_else(|| {
-            if path == "/" || path == "/control-center" {
-                "text/html; charset=utf-8"
-            } else {
-                "application/json"
-            }
-        });
+    let content_type = crate::control_center_ui::content_type_for_path(path).unwrap_or_else(|| {
+        if path == "/" || path == "/control-center" {
+            "text/html; charset=utf-8"
+        } else {
+            "application/json"
+        }
+    });
     let encoded = encode_response(&response, content_type, Some(&correlation_id));
     stream
         .write_all(encoded.as_bytes())

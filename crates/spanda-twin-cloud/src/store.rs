@@ -78,7 +78,11 @@ impl TwinCloudStore {
             .filter(|snapshot| tenant_id.is_none_or(|tenant| snapshot.tenant_id.as_str() == tenant))
             .map(|snapshot| {
                 let mut summary = snapshot.summary();
-                summary.history_count = self.history.get(&summary.twin_id).map(|v| v.len()).unwrap_or(0);
+                summary.history_count = self
+                    .history
+                    .get(&summary.twin_id)
+                    .map(|v| v.len())
+                    .unwrap_or(0);
                 summary
             })
             .collect()

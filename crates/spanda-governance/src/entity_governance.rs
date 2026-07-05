@@ -9,7 +9,9 @@ use crate::types::{
     OperationalConstraint, OperationalRisk, StandardsProfileKind, ValidationSeverity,
 };
 use serde::{Deserialize, Serialize};
-use spanda_config::entity::{EntityHealthStatus, EntityReadinessStatus, EntityRecord, EntityRegistry, EntityTrustStatus};
+use spanda_config::entity::{
+    EntityHealthStatus, EntityReadinessStatus, EntityRecord, EntityRegistry, EntityTrustStatus,
+};
 
 /// Optional governance attributes for any entity.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
@@ -141,10 +143,7 @@ pub fn evaluate_entity_governance(
                 findings.push(GovernanceFinding {
                     severity: ValidationSeverity::Missing,
                     code: "GOV_APPROVAL_CHAIN".into(),
-                    message: format!(
-                        "Risk level {} requires an approval chain",
-                        risk.as_str()
-                    ),
+                    message: format!("Risk level {} requires an approval chain", risk.as_str()),
                     field: Some("accountability.approval_chain".into()),
                 });
                 actions.push("Define an approval chain for high-risk operations".into());
@@ -271,7 +270,9 @@ pub fn evaluate_entity_governance(
             ValidationSeverity::Missing | ValidationSeverity::Action
         )
     });
-    let has_warnings = findings.iter().any(|f| f.severity == ValidationSeverity::Warning);
+    let has_warnings = findings
+        .iter()
+        .any(|f| f.severity == ValidationSeverity::Warning);
     let passed = !has_blocking && (!opts.strict || !has_warnings);
 
     EntityGovernanceReport {
@@ -356,7 +357,10 @@ pub fn governance_from_entity(record: &EntityRecord) -> EntityGovernance {
         accountability.emergency_contact =
             Some(crate::human_accountability::AccountabilityContact {
                 email: Some(email.clone()),
-                name: record.metadata.get("governance.emergency_contact_name").cloned(),
+                name: record
+                    .metadata
+                    .get("governance.emergency_contact_name")
+                    .cloned(),
                 ..Default::default()
             });
     }
@@ -364,7 +368,10 @@ pub fn governance_from_entity(record: &EntityRecord) -> EntityGovernance {
         accountability.escalation_contact =
             Some(crate::human_accountability::AccountabilityContact {
                 email: Some(email.clone()),
-                name: record.metadata.get("governance.escalation_contact_name").cloned(),
+                name: record
+                    .metadata
+                    .get("governance.escalation_contact_name")
+                    .cloned(),
                 ..Default::default()
             });
     }
@@ -451,16 +458,14 @@ pub fn stamp_entity_governance(record: &mut EntityRecord, governance: &EntityGov
     if let Some(accountability) = governance.accountability.as_ref() {
         if let Some(person) = accountability.responsible_person.as_ref() {
             record.owner = Some(person.clone());
-            record.metadata.insert(
-                "governance.responsible_person".into(),
-                person.clone(),
-            );
+            record
+                .metadata
+                .insert("governance.responsible_person".into(), person.clone());
         }
         if let Some(org) = accountability.responsible_organization.as_ref() {
-            record.metadata.insert(
-                "governance.responsible_organization".into(),
-                org.clone(),
-            );
+            record
+                .metadata
+                .insert("governance.responsible_organization".into(), org.clone());
         }
         if let Some(owner) = accountability.mission_owner.as_ref() {
             record
@@ -479,10 +484,9 @@ pub fn stamp_entity_governance(record: &mut EntityRecord, governance: &EntityGov
                     .insert("governance.emergency_contact".into(), email.clone());
             }
             if let Some(name) = contact.name.as_ref() {
-                record.metadata.insert(
-                    "governance.emergency_contact_name".into(),
-                    name.clone(),
-                );
+                record
+                    .metadata
+                    .insert("governance.emergency_contact_name".into(), name.clone());
             }
         }
         if let Some(contact) = accountability.escalation_contact.as_ref() {
@@ -492,10 +496,9 @@ pub fn stamp_entity_governance(record: &mut EntityRecord, governance: &EntityGov
                     .insert("governance.escalation_contact".into(), email.clone());
             }
             if let Some(name) = contact.name.as_ref() {
-                record.metadata.insert(
-                    "governance.escalation_contact_name".into(),
-                    name.clone(),
-                );
+                record
+                    .metadata
+                    .insert("governance.escalation_contact_name".into(), name.clone());
             }
         }
         if !accountability.approval_chain.is_empty() {

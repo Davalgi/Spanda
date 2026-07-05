@@ -5,8 +5,8 @@ use crate::authority::{
 };
 use crate::conflict::{resolve_conflict, CompetingDecision};
 use crate::offline::{
-    offline_policy_signing_payload, validate_offline_policy_trust,
-    verify_offline_policy_signature, OfflinePolicySpec,
+    offline_policy_signing_payload, validate_offline_policy_trust, verify_offline_policy_signature,
+    OfflinePolicySpec,
 };
 use crate::trees::{tree_hash, DecisionTreeSpec};
 use crate::types::{DecisionAuthority, DecisionLayer, DecisionSecurityEnvelope};
@@ -24,7 +24,10 @@ pub fn policy_hash(spec: &OfflinePolicySpec) -> String {
 }
 
 /// Verify that a decision tree hash matches the live tree specification.
-pub fn verify_decision_tree_hash(spec: &DecisionTreeSpec, expected_hash: &str) -> Result<(), String> {
+pub fn verify_decision_tree_hash(
+    spec: &DecisionTreeSpec,
+    expected_hash: &str,
+) -> Result<(), String> {
     let actual = tree_hash(spec);
     if actual == expected_hash {
         Ok(())
@@ -70,7 +73,11 @@ pub fn clear_nonce_registry() {
 }
 
 /// Validate timestamp is within acceptable bounds (default 5 minutes).
-pub fn validate_decision_timestamp(timestamp_ms: f64, max_age_ms: f64, now_ms: f64) -> Result<(), String> {
+pub fn validate_decision_timestamp(
+    timestamp_ms: f64,
+    max_age_ms: f64,
+    now_ms: f64,
+) -> Result<(), String> {
     if timestamp_ms <= 0.0 {
         return Err("invalid decision timestamp".into());
     }
@@ -87,7 +94,9 @@ pub fn validate_decision_timestamp(timestamp_ms: f64, max_age_ms: f64, now_ms: f
 }
 
 /// Validate required security envelope fields and validation flags.
-pub fn validate_security_envelope_fields(envelope: &DecisionSecurityEnvelope) -> Result<(), String> {
+pub fn validate_security_envelope_fields(
+    envelope: &DecisionSecurityEnvelope,
+) -> Result<(), String> {
     if envelope.entity_id.is_empty() {
         return Err("missing entity identity".into());
     }
@@ -107,9 +116,14 @@ pub fn validate_security_envelope_fields(envelope: &DecisionSecurityEnvelope) ->
 }
 
 /// Validate authority scope matches the decision layer.
-pub fn validate_authority_scope(envelope: &DecisionSecurityEnvelope, layer: DecisionLayer) -> Result<(), String> {
+pub fn validate_authority_scope(
+    envelope: &DecisionSecurityEnvelope,
+    layer: DecisionLayer,
+) -> Result<(), String> {
     let expected = format!("{layer:?}");
-    if envelope.authority_scope.contains(&expected.replace('_', " "))
+    if envelope
+        .authority_scope
+        .contains(&expected.replace('_', " "))
         || envelope.authority_scope.eq_ignore_ascii_case(&expected)
         || envelope.authority_scope.contains(&expected.to_lowercase())
     {
@@ -129,11 +143,15 @@ pub fn reflex_may_act_without_central(action: &str, layer: DecisionLayer) -> boo
     matches!(
         action,
         "emergency_stop" | "stop_motor" | "cut_actuator_power" | "kill_switch" | "e_stop"
-    ) || action.contains("stop") || action.contains("kill")
+    ) || action.contains("stop")
+        || action.contains("kill")
 }
 
 /// Local decisions cannot bypass safety boundaries.
-pub fn local_action_respects_safety_boundaries(action: &str, layer: DecisionLayer) -> Result<(), String> {
+pub fn local_action_respects_safety_boundaries(
+    action: &str,
+    layer: DecisionLayer,
+) -> Result<(), String> {
     for boundary in default_safety_boundaries() {
         if !action.contains(&boundary.action) && boundary.action != action {
             continue;
@@ -172,7 +190,9 @@ pub fn high_risk_requires_central_approval(
         return Ok(());
     };
     if auth.requires_central_approval.iter().any(|a| a == action) {
-        return Err(format!("action '{action}' requires central approval/quorum"));
+        return Err(format!(
+            "action '{action}' requires central approval/quorum"
+        ));
     }
     if !entity_may_decide_locally(auth, action) && !auth.local_actions.is_empty() {
         return Err(format!("action '{action}' not in local_decision_authority"));
@@ -215,7 +235,10 @@ pub fn governance_requires_human_approval(
 }
 
 /// Offline decisions expire when duration exceeds policy max.
-pub fn offline_decision_expired(spec: &OfflinePolicySpec, offline_minutes: u32) -> Result<(), String> {
+pub fn offline_decision_expired(
+    spec: &OfflinePolicySpec,
+    offline_minutes: u32,
+) -> Result<(), String> {
     if offline_minutes > spec.max_duration_minutes {
         return Err(format!(
             "offline duration {offline_minutes}m exceeds max {}m — decision expired",
@@ -252,7 +275,9 @@ pub fn untrusted_entity_may_not_takeover(
 }
 
 /// Resolve split-brain conflicts using documented precedence.
-pub fn resolve_split_brain(decisions: &[CompetingDecision]) -> Result<crate::conflict::ConflictResolution, String> {
+pub fn resolve_split_brain(
+    decisions: &[CompetingDecision],
+) -> Result<crate::conflict::ConflictResolution, String> {
     resolve_conflict(decisions).ok_or_else(|| "no competing decisions to resolve".into())
 }
 
@@ -288,11 +313,20 @@ pub fn validate_decision_trace_payload(payload: &serde_json::Value) -> TraceVali
     let envelope = payload.get("security_envelope");
     if let Some(env) = envelope {
         for key in ["entity_id", "policy_version", "nonce"] {
-            if env.get(key).and_then(|v| v.as_str()).unwrap_or("").is_empty() {
+            if env
+                .get(key)
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .is_empty()
+            {
                 missing.push(format!("security_envelope.{key}"));
             }
         }
-        if env.get("safety_validation_passed").and_then(|v| v.as_bool()) != Some(true) {
+        if env
+            .get("safety_validation_passed")
+            .and_then(|v| v.as_bool())
+            != Some(true)
+        {
             errors.push("safety validation not passed".into());
         }
     } else {
@@ -335,9 +369,7 @@ pub fn validate_decision_trace_payload(payload: &serde_json::Value) -> TraceVali
 /// Build a tampered policy copy for attack simulation (test-only helper).
 pub fn tamper_policy_for_test(spec: &OfflinePolicySpec) -> OfflinePolicySpec {
     let mut tampered = spec.clone();
-    tampered
-        .allowed_actions
-        .push("disable_safety".into());
+    tampered.allowed_actions.push("disable_safety".into());
     tampered
 }
 

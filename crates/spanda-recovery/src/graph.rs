@@ -338,23 +338,29 @@ fn relationship_to_edge(rel: &EntityRelationship) -> RecoveryGraphEdge {
 }
 
 /// Overlay program robot declarations into an entity registry when config is absent.
-pub fn enrich_registry_from_program(program: &spanda_ast::nodes::Program, registry: &mut EntityRegistry) {
+pub fn enrich_registry_from_program(
+    program: &spanda_ast::nodes::Program,
+    registry: &mut EntityRegistry,
+) {
     use spanda_config::entity::{
         EntityHealthStatus, EntityLifecycleState, EntityReadinessStatus, EntityRecord,
         EntityTrustStatus,
     };
     for robot in program.robots() {
         let id = robot.name().to_string();
-        registry.entities.entry(id.clone()).or_insert_with(|| EntityRecord {
-            id,
-            name: Some(robot.name().to_string()),
-            display_name: Some(robot.name().to_string()),
-            entity_type: EntityKind::Robot,
-            lifecycle_state: EntityLifecycleState::Active,
-            health_status: EntityHealthStatus::Healthy,
-            readiness_status: EntityReadinessStatus::Ready,
-            trust_status: EntityTrustStatus::Trusted,
-            ..Default::default()
-        });
+        registry
+            .entities
+            .entry(id.clone())
+            .or_insert_with(|| EntityRecord {
+                id,
+                name: Some(robot.name().to_string()),
+                display_name: Some(robot.name().to_string()),
+                entity_type: EntityKind::Robot,
+                lifecycle_state: EntityLifecycleState::Active,
+                health_status: EntityHealthStatus::Healthy,
+                readiness_status: EntityReadinessStatus::Ready,
+                trust_status: EntityTrustStatus::Trusted,
+                ..Default::default()
+            });
     }
 }

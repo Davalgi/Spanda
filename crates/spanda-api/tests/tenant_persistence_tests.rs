@@ -117,7 +117,11 @@ fn runtime_state_persists_twin_cloud_snapshots() {
     let reloaded = ControlCenterState::new();
     assert_eq!(reloaded.twin_cloud_store.list_owned().len(), 1);
     assert_eq!(
-        reloaded.twin_cloud_store.get("patrol").expect("patrol").twin_id,
+        reloaded
+            .twin_cloud_store
+            .get("patrol")
+            .expect("patrol")
+            .twin_id,
         "patrol"
     );
 }

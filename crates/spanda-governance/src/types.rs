@@ -3,7 +3,9 @@
 use serde::{Deserialize, Serialize};
 
 /// SAE-style autonomy level for entity decision authority.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum AutonomyLevel {
     /// Level 0 — full human control, no automation.
@@ -75,7 +77,9 @@ impl AutonomyLevel {
 }
 
 /// Deployment maturity stage for operational lifecycle governance.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum DeploymentMaturity {
     #[default]
@@ -137,7 +141,9 @@ impl DeploymentMaturity {
 }
 
 /// Certification lifecycle state — independent from health posture.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum CertificationStatus {
     #[default]
@@ -191,7 +197,9 @@ impl CertificationStatus {
 }
 
 /// Operational risk tier influencing decision authority and recovery posture.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum OperationalRisk {
     #[default]

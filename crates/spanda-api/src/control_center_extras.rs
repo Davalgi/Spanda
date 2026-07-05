@@ -7,9 +7,7 @@ use spanda_chaos::{default_injections, run_chaos_experiment, ChaosExperimentOpti
 use spanda_config::{default_snapshots_dir, list_config_snapshots};
 use spanda_deploy_http::HttpResponse;
 use spanda_fleet::remote::{default_fleet_agents_path, load_fleet_agent_registry};
-use spanda_readiness::{
-    evaluate_deployment_gates, DeploymentGatePolicy, ReadinessOptions,
-};
+use spanda_readiness::{evaluate_deployment_gates, DeploymentGatePolicy, ReadinessOptions};
 use spanda_security::{ApiKeyStore, RbacAction, RbacContext, Role};
 use std::collections::HashMap;
 use std::fs;
@@ -61,20 +59,26 @@ fn coords_from_metadata(metadata: &HashMap<String, String>) -> Option<(f64, f64)
     parse_lat_lng_pair(lat, lng)
 }
 
-fn coords_from_location(
-    location: &spanda_config::EntityLocation,
-) -> Option<(f64, f64)> {
+fn coords_from_location(location: &spanda_config::EntityLocation) -> Option<(f64, f64)> {
     let coords = location.coordinates.as_ref()?;
     if let Some(table) = coords.as_table() {
         let lat = table
             .get("lat")
             .or_else(|| table.get("latitude"))
-            .and_then(|value| value.as_float().or_else(|| value.as_integer().map(|n| n as f64)))?;
+            .and_then(|value| {
+                value
+                    .as_float()
+                    .or_else(|| value.as_integer().map(|n| n as f64))
+            })?;
         let lng = table
             .get("lng")
             .or_else(|| table.get("longitude"))
             .or_else(|| table.get("lon"))
-            .and_then(|value| value.as_float().or_else(|| value.as_integer().map(|n| n as f64)))?;
+            .and_then(|value| {
+                value
+                    .as_float()
+                    .or_else(|| value.as_integer().map(|n| n as f64))
+            })?;
         return Some((lng, lat));
     }
     if let Some(array) = coords.as_array() {
@@ -134,7 +138,10 @@ pub fn fleet_map_json(state: &ControlCenterState) -> HttpResponse {
     // let response = fleet_map_json(&state);
 
     let mut markers = Vec::new();
-    let fleet_id = state.resolved.as_ref().and_then(|resolved| resolved.fleet_id());
+    let fleet_id = state
+        .resolved
+        .as_ref()
+        .and_then(|resolved| resolved.fleet_id());
 
     if let Some(resolved) = state.resolved.as_ref() {
         if let Some(fleet) = resolved.device_tree.fleet.as_ref() {
@@ -287,7 +294,10 @@ pub fn config_history_json(_state: &ControlCenterState) -> HttpResponse {
     }
 
     history.sort_by(|left, right| {
-        let left_ts = left.get("timestamp").and_then(|value| value.as_f64()).unwrap_or(0.0);
+        let left_ts = left
+            .get("timestamp")
+            .and_then(|value| value.as_f64())
+            .unwrap_or(0.0);
         let right_ts = right
             .get("timestamp")
             .and_then(|value| value.as_f64())
@@ -408,7 +418,9 @@ fn fetch_oidc_discovery(issuer: &str) -> Option<serde_json::Value> {
     serde_json::from_str(&body).ok()
 }
 
-fn userinfo_to_directory_entry(userinfo: &serde_json::Value) -> Option<crate::admin_users::OidcDirectoryEntry> {
+fn userinfo_to_directory_entry(
+    userinfo: &serde_json::Value,
+) -> Option<crate::admin_users::OidcDirectoryEntry> {
     let user_id = userinfo
         .get("sub")
         .or_else(|| userinfo.get("user_id"))
@@ -654,8 +666,7 @@ pub fn admin_oidc_authorize_url(body: &str, ctx: Option<&RbacContext>) -> HttpRe
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
-    let request: AdminOidcAuthorizeRequest =
-        serde_json::from_str(body).unwrap_or_default();
+    let request: AdminOidcAuthorizeRequest = serde_json::from_str(body).unwrap_or_default();
     let mut config = load_admin_oidc();
     let Some(issuer) = config.issuer.as_deref() else {
         return bad_request("issuer not configured");
@@ -1125,8 +1136,8 @@ pub fn admin_slack_oauth_callback(body: &str, ctx: Option<&RbacContext>) -> Http
         Ok(response) => response.into_string().unwrap_or_default(),
         Err(error) => return bad_request(&format!("slack oauth failed: {error}")),
     };
-    let parsed: serde_json::Value =
-        serde_json::from_str(&response_body).unwrap_or_else(|_| serde_json::json!({ "raw": response_body }));
+    let parsed: serde_json::Value = serde_json::from_str(&response_body)
+        .unwrap_or_else(|_| serde_json::json!({ "raw": response_body }));
     if parsed.get("ok").and_then(|value| value.as_bool()) != Some(true) {
         return bad_request(
             parsed
@@ -1203,7 +1214,8 @@ pub fn chaos_simulate_json(state: &ControlCenterState, body: &str) -> HttpRespon
     // Example:
     // let response = chaos_simulate_json(&state, body);
 
-    let payload: serde_json::Value = serde_json::from_str(body).unwrap_or_else(|_| serde_json::json!({}));
+    let payload: serde_json::Value =
+        serde_json::from_str(body).unwrap_or_else(|_| serde_json::json!({}));
     let requested: Vec<String> = payload
         .get("injections")
         .and_then(|value| value.as_array())
@@ -1306,9 +1318,11 @@ pub fn deploy_gate_json(state: &ControlCenterState) -> HttpResponse {
         }
     }
 
-    let ready = checklist
-        .iter()
-        .all(|item| item.get("passed").and_then(|value| value.as_bool()).unwrap_or(false));
+    let ready = checklist.iter().all(|item| {
+        item.get("passed")
+            .and_then(|value| value.as_bool())
+            .unwrap_or(false)
+    });
 
     json_ok(&serde_json::json!({
         "version": API_VERSION,

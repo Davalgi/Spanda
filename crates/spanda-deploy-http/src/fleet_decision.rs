@@ -162,10 +162,10 @@ pub fn fetch_fleet_decision_mesh_status(
         token,
     )?;
     let status = http_request("GET", &mesh_base_url(mesh_url, "v1/status"), None, token)?;
-    let nonce_json: serde_json::Value =
-        serde_json::from_str(&nonce.body).unwrap_or_else(|_| serde_json::json!({ "raw": nonce.body }));
-    let status_json: serde_json::Value =
-        serde_json::from_str(&status.body).unwrap_or_else(|_| serde_json::json!({ "raw": status.body }));
+    let nonce_json: serde_json::Value = serde_json::from_str(&nonce.body)
+        .unwrap_or_else(|_| serde_json::json!({ "raw": nonce.body }));
+    let status_json: serde_json::Value = serde_json::from_str(&status.body)
+        .unwrap_or_else(|_| serde_json::json!({ "raw": status.body }));
     Ok(serde_json::json!({
         "ok": true,
         "mesh_url": mesh_url,
@@ -182,7 +182,9 @@ fn mesh_base_url(mesh_url: &str, path: &str) -> String {
     }
 }
 
-fn parse_vote_ingest_response(response: HttpResponse) -> Result<FleetDecisionVoteIngestResponse, String> {
+fn parse_vote_ingest_response(
+    response: HttpResponse,
+) -> Result<FleetDecisionVoteIngestResponse, String> {
     if (200..300).contains(&response.status) {
         return serde_json::from_str(&response.body)
             .map_err(|error| format!("invalid fleet decision vote ingest JSON: {error}"));

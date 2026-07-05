@@ -146,49 +146,45 @@ impl<B: RobotBackend> Interpreter<B> {
             return;
         }
 
-        let (results_to_dispatch, rejected_alternatives): (Vec<_>, Vec<_>) =
-            if candidates.len() > 1 {
-                let competing: Vec<CompetingDecision> = candidates
+        let (results_to_dispatch, rejected_alternatives): (Vec<_>, Vec<_>) = if candidates.len() > 1
+        {
+            let competing: Vec<CompetingDecision> = candidates
+                .iter()
+                .map(|r| CompetingDecision {
+                    layer_precedence: layer_str_precedence_key(&r.layer).into(),
+                    entity_id: entity.clone(),
+                    action: r.actions.first().cloned().unwrap_or_default(),
+                    reason: format!("tree '{}' matched '{}'", r.tree_name, r.condition_matched),
+                })
+                .collect();
+            if let Some(resolution) = resolve_conflict(&competing) {
+                let winner = resolution.winner.clone();
+                let rejected: Vec<serde_json::Value> = resolution
+                    .rejected
                     .iter()
-                    .map(|r| CompetingDecision {
-                        layer_precedence: layer_str_precedence_key(&r.layer).into(),
-                        entity_id: entity.clone(),
-                        action: r.actions.first().cloned().unwrap_or_default(),
-                        reason: format!(
-                            "tree '{}' matched '{}'",
-                            r.tree_name, r.condition_matched
-                        ),
+                    .map(|d| {
+                        serde_json::json!({
+                            "entity_id": d.entity_id,
+                            "action": d.action,
+                            "reason": d.reason,
+                            "precedence_applied": resolution.precedence_applied,
+                        })
                     })
                     .collect();
-                if let Some(resolution) = resolve_conflict(&competing) {
-                    let winner = resolution.winner.clone();
-                    let rejected: Vec<serde_json::Value> = resolution
-                        .rejected
-                        .iter()
-                        .map(|d| {
-                            serde_json::json!({
-                                "entity_id": d.entity_id,
-                                "action": d.action,
-                                "reason": d.reason,
-                                "precedence_applied": resolution.precedence_applied,
-                            })
-                        })
-                        .collect();
-                    let winners: Vec<_> = candidates
-                        .into_iter()
-                        .filter(|r| {
-                            r.actions.first().map(String::as_str) == Some(winner.action.as_str())
-                                || r.tree_name == "SafetyReflex"
-                                    && winner.action.contains("emergency")
-                        })
-                        .collect();
-                    (winners, rejected)
-                } else {
-                    (candidates, vec![])
-                }
+                let winners: Vec<_> = candidates
+                    .into_iter()
+                    .filter(|r| {
+                        r.actions.first().map(String::as_str) == Some(winner.action.as_str())
+                            || r.tree_name == "SafetyReflex" && winner.action.contains("emergency")
+                    })
+                    .collect();
+                (winners, rejected)
             } else {
                 (candidates, vec![])
-            };
+            }
+        } else {
+            (candidates, vec![])
+        };
 
         for result in results_to_dispatch {
             self.emit_decision_tree_result(&program, &entity, &result, &rejected_alternatives);
@@ -250,7 +246,10 @@ impl<B: RobotBackend> Interpreter<B> {
                     entity,
                     action,
                     &layer_str_precedence_key(&result.layer),
-                    &format!("tree '{}' matched '{}'", result.tree_name, result.condition_matched),
+                    &format!(
+                        "tree '{}' matched '{}'",
+                        result.tree_name, result.condition_matched
+                    ),
                     &round_id,
                 );
             }
@@ -369,10 +368,7 @@ impl<B: RobotBackend> Interpreter<B> {
         condition.contains(changed) || self.decision_signals.get(changed).copied().unwrap_or(false)
     }
 
-    fn resolve_decision_via_fleet_mesh(
-        &self,
-        round_id: &str,
-    ) -> Option<ConflictResolution> {
+    fn resolve_decision_via_fleet_mesh(&self, round_id: &str) -> Option<ConflictResolution> {
         let url = std::env::var("SPANDA_FLEET_MESH_URL").ok()?;
         let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
         let conflict = fetch_fleet_decision_conflict(&url, round_id, token.as_deref()).ok()?;
@@ -500,13 +496,7 @@ impl<B: RobotBackend> Interpreter<B> {
         let votes: Vec<(String, String, f64)> = members
             .iter()
             .enumerate()
-            .map(|(i, m)| {
-                (
-                    m.clone(),
-                    resolved_action.clone(),
-                    1.0 - (i as f64 * 0.1),
-                )
-            })
+            .map(|(i, m)| (m.clone(), resolved_action.clone(), 1.0 - (i as f64 * 0.1)))
             .collect();
         let quorum = if members.is_empty() {
             0.5

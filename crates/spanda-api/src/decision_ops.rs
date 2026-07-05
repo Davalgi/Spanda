@@ -143,11 +143,8 @@ pub fn escalate_decision(_state: &ControlCenterState, body: &str) -> HttpRespons
         Ok(req) => req,
         Err(e) => return bad_request(&format!("invalid body: {e}")),
     };
-    match approve_escalation_persisted(
-        &req.escalation_id,
-        &req.approver,
-        req.entity_id.as_deref(),
-    ) {
+    match approve_escalation_persisted(&req.escalation_id, &req.approver, req.entity_id.as_deref())
+    {
         Ok(grant) => json_ok(&serde_json::json!({
             "api_version": API_VERSION,
             "ok": true,

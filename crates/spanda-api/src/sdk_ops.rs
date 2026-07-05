@@ -10,19 +10,20 @@ use spanda_assurance::{
     assure_program_with_config, diagnose_from_trace, diagnose_program_with_config,
     evaluate_recovery, MissionAssuranceSummary,
 };
-use spanda_contract::{verify_contract, ContractVerificationReport};
-use spanda_decision::{audit_decisions_from_trace, explain_decisions_from_trace, DecisionAuditReport};
-use spanda_explain::{
-    explain_decision_trace, explain_program_with_options, explain_readiness, explain_safety,
-    explain_trace, explain_verify, ExplainProgramOptions, ExplainReport,
-};
 use spanda_capability::{
     capability_traceability, evaluate_health_checks, infer_robot_capabilities,
 };
 use spanda_config::verify_with_system_config;
 use spanda_config::EntityQuery;
+use spanda_contract::{verify_contract, ContractVerificationReport};
+use spanda_decision::{
+    audit_decisions_from_trace, explain_decisions_from_trace, DecisionAuditReport,
+};
 use spanda_deploy_http::HttpResponse;
-use std::path::{Path, PathBuf};
+use spanda_explain::{
+    explain_decision_trace, explain_program_with_options, explain_readiness, explain_safety,
+    explain_trace, explain_verify, ExplainProgramOptions, ExplainReport,
+};
 use spanda_hardware::VerifyOptions;
 use spanda_readiness::{
     evaluate_entity_health, evaluate_entity_readiness, evaluate_readiness_with_runtime,
@@ -31,6 +32,7 @@ use spanda_readiness::{
 };
 use spanda_trust::{evaluate_composite_trust, CompositeTrustOptions};
 use spanda_trust::{evaluate_entity_trust, EntityTrustOptions};
+use std::path::{Path, PathBuf};
 
 fn entity_not_found(message: &str) -> HttpResponse {
     HttpResponse {
@@ -304,33 +306,36 @@ pub fn program_explain(state: &ControlCenterState, body: &str) -> HttpResponse {
     if !path.exists() {
         return entity_not_found(&format!("file not found: {}", path.display()));
     }
-    let mode = req.mode.as_deref().unwrap_or("program").to_ascii_lowercase();
+    let mode = req
+        .mode
+        .as_deref()
+        .unwrap_or("program")
+        .to_ascii_lowercase();
     let file_label = path.to_str().unwrap_or("program");
-    let report: Result<ExplainReport, String> = if path.extension().and_then(|ext| ext.to_str()) == Some("trace")
-        || mode == "trace"
-    {
-        explain_trace(file_label)
-    } else if mode == "decision" {
-        explain_decision_trace(file_label)
-    } else if path.extension().and_then(|ext| ext.to_str()) == Some("sd") {
-        let (program, source, _) = match parse_program_file(&path) {
-            Ok(value) => value,
-            Err(error) => return bad_request(&error),
+    let report: Result<ExplainReport, String> =
+        if path.extension().and_then(|ext| ext.to_str()) == Some("trace") || mode == "trace" {
+            explain_trace(file_label)
+        } else if mode == "decision" {
+            explain_decision_trace(file_label)
+        } else if path.extension().and_then(|ext| ext.to_str()) == Some("sd") {
+            let (program, source, _) = match parse_program_file(&path) {
+                Ok(value) => value,
+                Err(error) => return bad_request(&error),
+            };
+            let explain_options = ExplainProgramOptions {
+                source: Some(&source),
+                system_config: system_config_ref(state),
+                baseline_config: None,
+            };
+            Ok(match mode.as_str() {
+                "readiness" => explain_readiness(&program, file_label),
+                "verify" => explain_verify(&program, file_label),
+                "safety" => explain_safety(&program, file_label),
+                _ => explain_program_with_options(&program, file_label, &explain_options),
+            })
+        } else {
+            Err(format!("unsupported explain target: {}", path.display()))
         };
-        let explain_options = ExplainProgramOptions {
-            source: Some(&source),
-            system_config: system_config_ref(state),
-            baseline_config: None,
-        };
-        Ok(match mode.as_str() {
-            "readiness" => explain_readiness(&program, file_label),
-            "verify" => explain_verify(&program, file_label),
-            "safety" => explain_safety(&program, file_label),
-            _ => explain_program_with_options(&program, file_label, &explain_options),
-        })
-    } else {
-        Err(format!("unsupported explain target: {}", path.display()))
-    };
     match report {
         Ok(report) => json_ok(&serde_json::json!({
             "version": API_VERSION,
@@ -766,22 +771,22 @@ pub fn program_traces_list(state: &ControlCenterState, query: &str) -> HttpRespo
         .clamp(1, 200);
     let root = state
         .project_root()
-        .or_else(|| state.program_path.as_ref().and_then(|p| p.parent().map(|d| d.to_path_buf())))
+        .or_else(|| {
+            state
+                .program_path
+                .as_ref()
+                .and_then(|p| p.parent().map(|d| d.to_path_buf()))
+        })
         .unwrap_or_else(|| PathBuf::from("."));
     let mut traces = Vec::new();
     if let Ok(entries) = std::fs::read_dir(&root) {
         collect_trace_files(&root, entries, &mut traces, limit);
     }
     traces.sort_by(|a, b| {
-        b
-            .get("modified_ms")
+        b.get("modified_ms")
             .and_then(|v| v.as_f64())
             .unwrap_or(0.0)
-            .partial_cmp(
-                &a.get("modified_ms")
-                    .and_then(|v| v.as_f64())
-                    .unwrap_or(0.0),
-            )
+            .partial_cmp(&a.get("modified_ms").and_then(|v| v.as_f64()).unwrap_or(0.0))
             .unwrap_or(std::cmp::Ordering::Equal)
     });
     if traces.len() > limit {
@@ -838,9 +843,11 @@ fn collect_trace_files(
 }
 
 fn parse_query_param(query: &str, key: &str) -> Option<String> {
-    query
-        .split('&')
-        .find_map(|pair| pair.split_once('=').filter(|(k, _)| *k == key).map(|(_, v)| v.to_string()))
+    query.split('&').find_map(|pair| {
+        pair.split_once('=')
+            .filter(|(k, _)| *k == key)
+            .map(|(_, v)| v.to_string())
+    })
 }
 
 /// POST /v1/programs/replay — replay or inspect a mission trace (CLI parity).

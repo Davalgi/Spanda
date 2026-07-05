@@ -51,7 +51,9 @@ fn transport_live_configured(kind: TransportKind) -> bool {
                 || std::env::var("SPANDA_MQTT_LIVE").is_ok()
         }
         TransportKind::Dds => std::env::var("SPANDA_LIVE_DDS").ok().as_deref() == Some("1"),
-        TransportKind::Websocket => std::env::var("SPANDA_LIVE_WEBSOCKET").ok().as_deref() == Some("1"),
+        TransportKind::Websocket => {
+            std::env::var("SPANDA_LIVE_WEBSOCKET").ok().as_deref() == Some("1")
+        }
         TransportKind::Local | TransportKind::Sim => true,
     }
 }
@@ -70,9 +72,7 @@ pub fn warn_ai_mock_fallback(requested_provider: &str) {
     };
     warn_once(
         &format!("ai:{}", requested_provider.to_ascii_lowercase()),
-        &format!(
-            "AI provider '{requested_provider}' is using the mock backend — {fix}"
-        ),
+        &format!("AI provider '{requested_provider}' is using the mock backend — {fix}"),
     );
 }
 

@@ -77,7 +77,13 @@ impl StandardsProfileRef {
 
 fn standards_defaults(
     kind: &crate::types::StandardsProfileKind,
-) -> (Vec<String>, Vec<String>, Vec<String>, Vec<String>, Vec<String>) {
+) -> (
+    Vec<String>,
+    Vec<String>,
+    Vec<String>,
+    Vec<String>,
+    Vec<String>,
+) {
     match kind {
         crate::types::StandardsProfileKind::FunctionalSafety => (
             vec!["hazard_analysis".into(), "safety_case".into()],

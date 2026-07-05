@@ -45,10 +45,7 @@ pub fn serve_static(path: &str) -> Option<HttpResponse> {
         Cow::Borrowed(bytes) => String::from_utf8_lossy(bytes).into_owned(),
         Cow::Owned(bytes) => String::from_utf8_lossy(&bytes).into_owned(),
     };
-    Some(HttpResponse {
-        status: 200,
-        body,
-    })
+    Some(HttpResponse { status: 200, body })
 }
 
 #[cfg(test)]

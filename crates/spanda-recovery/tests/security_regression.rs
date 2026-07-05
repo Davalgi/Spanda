@@ -23,14 +23,22 @@ fn recovery_privilege_escalation_requires_approval_for_safety_failures() {
         max_escalation_level: RecoveryEscalationLevel::Level7HumanIntervention,
         ..EntityRecoveryPolicy::default()
     }];
-    let decision = decide_recovery(&entity, "safety_critical_brake_failure", &policies, &registry, None);
+    let decision = decide_recovery(
+        &entity,
+        "safety_critical_brake_failure",
+        &policies,
+        &registry,
+        None,
+    );
     assert!(
         !decision.automatic,
         "safety failure must not auto-recover: {decision:?}"
     );
     assert!(
-        decision.explanations.iter().any(|e| e.to_lowercase().contains("approval")
-            || e.to_lowercase().contains("safety")),
+        decision
+            .explanations
+            .iter()
+            .any(|e| e.to_lowercase().contains("approval") || e.to_lowercase().contains("safety")),
         "expected approval/safety explanation: {:?}",
         decision.explanations
     );

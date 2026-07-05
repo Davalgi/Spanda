@@ -168,10 +168,7 @@ pub fn format_deployment_verify(report: &DeploymentVerifyReport, json: bool) -> 
     let mut lines = vec![
         "Deployment Verification Report".into(),
         "==============================".into(),
-        format!(
-            "Result: {}",
-            if report.passed { "PASS" } else { "FAIL" }
-        ),
+        format!("Result: {}", if report.passed { "PASS" } else { "FAIL" }),
     ];
     if let Some(profile) = report.deployment_profile.as_ref() {
         lines.push(format!("Deployment Profile: {profile}"));

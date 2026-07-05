@@ -663,12 +663,10 @@ pub fn rpc_gateway(
             serde_json::from_str(&crate::admin_ops::admin_api_keys_list_json(state, ctx))
                 .unwrap_or_default()
         }
-        "spanda.v1.ControlCenter/CreateAdminApiKey" => {
-            serde_json::from_str(&crate::admin_ops::admin_api_keys_create_json(
-                state, body_json, ctx,
-            ))
-            .unwrap_or_default()
-        }
+        "spanda.v1.ControlCenter/CreateAdminApiKey" => serde_json::from_str(
+            &crate::admin_ops::admin_api_keys_create_json(state, body_json, ctx),
+        )
+        .unwrap_or_default(),
         "spanda.v1.ControlCenter/PatchAdminApiKey" => {
             let key_id = rpc_body_id(body_json, "key_id").unwrap_or_default();
             serde_json::from_str(&crate::admin_ops::admin_api_keys_patch_json(
@@ -687,12 +685,10 @@ pub fn rpc_gateway(
             serde_json::from_str(&crate::admin_users::admin_users_list_json(state, ctx))
                 .unwrap_or_default()
         }
-        "spanda.v1.ControlCenter/CreateAdminUser" => {
-            serde_json::from_str(
-                &crate::admin_users::admin_users_create(state, body_json, ctx).body,
-            )
-            .unwrap_or_default()
-        }
+        "spanda.v1.ControlCenter/CreateAdminUser" => serde_json::from_str(
+            &crate::admin_users::admin_users_create(state, body_json, ctx).body,
+        )
+        .unwrap_or_default(),
         "spanda.v1.ControlCenter/PatchAdminUser" => {
             let user_id = rpc_body_id(body_json, "user_id").unwrap_or_default();
             serde_json::from_str(
@@ -702,27 +698,21 @@ pub fn rpc_gateway(
         }
         "spanda.v1.ControlCenter/DeleteAdminUser" => {
             let user_id = rpc_body_id(body_json, "user_id").unwrap_or_default();
-            serde_json::from_str(
-                &crate::admin_users::admin_users_delete(state, &user_id, ctx).body,
-            )
-            .unwrap_or_default()
-        }
-        "spanda.v1.ControlCenter/GetAdminIntegrations" => {
-            serde_json::from_str(&crate::admin_ops::admin_integrations_summary_json(state, ctx))
+            serde_json::from_str(&crate::admin_users::admin_users_delete(state, &user_id, ctx).body)
                 .unwrap_or_default()
         }
-        "spanda.v1.ControlCenter/GetAlertChannels" => {
-            serde_json::from_str(&crate::alert_channels::admin_alert_channels_get_json(
-                state, ctx,
-            ))
-            .unwrap_or_default()
-        }
-        "spanda.v1.ControlCenter/UpdateAlertChannels" => {
-            serde_json::from_str(&crate::alert_channels::admin_alert_channels_put_json(
-                state, body_json, ctx,
-            ))
-            .unwrap_or_default()
-        }
+        "spanda.v1.ControlCenter/GetAdminIntegrations" => serde_json::from_str(
+            &crate::admin_ops::admin_integrations_summary_json(state, ctx),
+        )
+        .unwrap_or_default(),
+        "spanda.v1.ControlCenter/GetAlertChannels" => serde_json::from_str(
+            &crate::alert_channels::admin_alert_channels_get_json(state, ctx),
+        )
+        .unwrap_or_default(),
+        "spanda.v1.ControlCenter/UpdateAlertChannels" => serde_json::from_str(
+            &crate::alert_channels::admin_alert_channels_put_json(state, body_json, ctx),
+        )
+        .unwrap_or_default(),
         "spanda.v1.ControlCenter/ListOperatorMissions" => {
             serde_json::from_str(&crate::admin_ops::operator_missions_list_json(state))
                 .unwrap_or_default()
@@ -730,24 +720,18 @@ pub fn rpc_gateway(
         "spanda.v1.ControlCenter/ListOperatorMissionApprovals" => {
             serde_json::from_str(&mission_approvals_list(state).body).unwrap_or_default()
         }
-        "spanda.v1.ControlCenter/OperatorMissionPause" => {
-            serde_json::from_str(&crate::admin_ops::operator_mission_pause_json(
-                state, body_json, ctx,
-            ))
-            .unwrap_or_default()
-        }
-        "spanda.v1.ControlCenter/OperatorMissionResume" => {
-            serde_json::from_str(&crate::admin_ops::operator_mission_resume_json(
-                state, body_json, ctx,
-            ))
-            .unwrap_or_default()
-        }
-        "spanda.v1.ControlCenter/OperatorMissionCancel" => {
-            serde_json::from_str(&crate::admin_ops::operator_mission_cancel_json(
-                state, body_json, ctx,
-            ))
-            .unwrap_or_default()
-        }
+        "spanda.v1.ControlCenter/OperatorMissionPause" => serde_json::from_str(
+            &crate::admin_ops::operator_mission_pause_json(state, body_json, ctx),
+        )
+        .unwrap_or_default(),
+        "spanda.v1.ControlCenter/OperatorMissionResume" => serde_json::from_str(
+            &crate::admin_ops::operator_mission_resume_json(state, body_json, ctx),
+        )
+        .unwrap_or_default(),
+        "spanda.v1.ControlCenter/OperatorMissionCancel" => serde_json::from_str(
+            &crate::admin_ops::operator_mission_cancel_json(state, body_json, ctx),
+        )
+        .unwrap_or_default(),
         "spanda.v1.ControlCenter/ListProgramTraces" => {
             serde_json::from_str(&crate::sdk_ops::program_traces_list_json(state, query))
                 .unwrap_or_default()

@@ -1,7 +1,7 @@
 //! Report formatting for CLI and API output.
 //!
-use crate::validate::{ComplianceCheckReport, GovernanceValidationReport};
 use crate::entity_governance::EntityGovernanceReport;
+use crate::validate::{ComplianceCheckReport, GovernanceValidationReport};
 use serde_json;
 
 pub fn format_compliance_report(report: &ComplianceCheckReport, json: bool) -> String {
@@ -11,10 +11,7 @@ pub fn format_compliance_report(report: &ComplianceCheckReport, json: bool) -> S
     let mut lines = vec![
         "Compliance Check Report".into(),
         "=======================".into(),
-        format!(
-            "Result: {}",
-            if report.passed { "PASS" } else { "FAIL" }
-        ),
+        format!("Result: {}", if report.passed { "PASS" } else { "FAIL" }),
         format!(
             "Entities: {} checked, {} passed, {} failed",
             report.summary.entities_checked,
@@ -28,14 +25,24 @@ pub fn format_compliance_report(report: &ComplianceCheckReport, json: bool) -> S
     if !report.warnings.is_empty() {
         lines.push("Warnings:".into());
         for item in &report.warnings {
-            lines.push(format!("  [{}] {} — {}", item.code, item.entity_id.as_deref().unwrap_or("-"), item.message));
+            lines.push(format!(
+                "  [{}] {} — {}",
+                item.code,
+                item.entity_id.as_deref().unwrap_or("-"),
+                item.message
+            ));
         }
         lines.push(String::new());
     }
     if !report.missing_requirements.is_empty() {
         lines.push("Missing Requirements:".into());
         for item in &report.missing_requirements {
-            lines.push(format!("  [{}] {} — {}", item.code, item.entity_id.as_deref().unwrap_or("-"), item.message));
+            lines.push(format!(
+                "  [{}] {} — {}",
+                item.code,
+                item.entity_id.as_deref().unwrap_or("-"),
+                item.message
+            ));
         }
         lines.push(String::new());
     }
@@ -55,10 +62,7 @@ pub fn format_governance_validation(report: &GovernanceValidationReport, json: b
     let mut lines = vec![
         "Governance Validation Report".into(),
         "============================".into(),
-        format!(
-            "Result: {}",
-            if report.passed { "PASS" } else { "FAIL" }
-        ),
+        format!("Result: {}", if report.passed { "PASS" } else { "FAIL" }),
     ];
     if let Some(profile) = report.deployment_profile.as_ref() {
         lines.push(format!("Deployment Profile: {profile}"));
@@ -72,9 +76,7 @@ pub fn format_governance_validation(report: &GovernanceValidationReport, json: b
         for item in &report.findings {
             lines.push(format!(
                 "  [{:?}] {} — {}",
-                item.severity,
-                item.code,
-                item.message
+                item.severity, item.code, item.message
             ));
         }
         lines.push(String::new());

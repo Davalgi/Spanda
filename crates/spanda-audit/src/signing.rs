@@ -39,8 +39,9 @@ struct MockHsmSigningBackend {
 
 impl MockHsmSigningBackend {
     fn from_env() -> Result<Self, String> {
-        let key_id = std::env::var("SPANDA_DECISION_SIGNING_KEY_ID")
-            .map_err(|_| "SPANDA_DECISION_SIGNING_KEY_ID required for mock_hsm backend".to_string())?;
+        let key_id = std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").map_err(|_| {
+            "SPANDA_DECISION_SIGNING_KEY_ID required for mock_hsm backend".to_string()
+        })?;
         let key_material = std::env::var("SPANDA_DECISION_POLICY_SIGNING_KEY")
             .or_else(|_| std::env::var("SPANDA_POLICY_SIGNING_KEY"))
             .map_err(|_| {
@@ -94,7 +95,8 @@ impl ScriptHsmSigningBackend {
 
 impl SigningBackend for ScriptHsmSigningBackend {
     fn sign_utf8(&self, data: &str, key_ref: &str) -> Result<String, String> {
-        let key_id = std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").unwrap_or_else(|_| key_ref.to_string());
+        let key_id =
+            std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").unwrap_or_else(|_| key_ref.to_string());
         let sig = sign_with_external_hsm(data, &key_id, key_ref);
         if sig.is_empty() {
             return Err("external HSM signing returned empty signature".into());
@@ -122,36 +124,38 @@ fn signing_backend_kind_from_env() -> SigningBackendKind {
 
 fn active_backend() -> &'static dyn SigningBackend {
     static BACKEND: OnceLock<Box<dyn SigningBackend>> = OnceLock::new();
-    BACKEND.get_or_init(|| match signing_backend_kind_from_env() {
-        SigningBackendKind::MockHsm => match MockHsmSigningBackend::from_env() {
-            Ok(backend) => Box::new(backend),
-            Err(error) => {
-                eprintln!("mock HSM backend init failed ({error}); falling back to software");
-                Box::new(SoftwareSigningBackend)
-            }
-        },
-        SigningBackendKind::ScriptHsm => match ScriptHsmSigningBackend::new("script_hsm") {
-            Ok(backend) => Box::new(backend),
-            Err(error) => {
-                eprintln!("script HSM backend init failed ({error}); falling back to software");
-                Box::new(SoftwareSigningBackend)
-            }
-        },
-        SigningBackendKind::Tpm2Hsm => match ScriptHsmSigningBackend::new("tpm2_hsm") {
-            Ok(backend) => Box::new(backend),
-            Err(error) => {
-                eprintln!("tpm2 HSM backend init failed ({error}); falling back to software");
-                Box::new(SoftwareSigningBackend)
-            }
-        },
-        SigningBackendKind::Software => Box::new(SoftwareSigningBackend),
-    })
-    .as_ref()
+    BACKEND
+        .get_or_init(|| match signing_backend_kind_from_env() {
+            SigningBackendKind::MockHsm => match MockHsmSigningBackend::from_env() {
+                Ok(backend) => Box::new(backend),
+                Err(error) => {
+                    eprintln!("mock HSM backend init failed ({error}); falling back to software");
+                    Box::new(SoftwareSigningBackend)
+                }
+            },
+            SigningBackendKind::ScriptHsm => match ScriptHsmSigningBackend::new("script_hsm") {
+                Ok(backend) => Box::new(backend),
+                Err(error) => {
+                    eprintln!("script HSM backend init failed ({error}); falling back to software");
+                    Box::new(SoftwareSigningBackend)
+                }
+            },
+            SigningBackendKind::Tpm2Hsm => match ScriptHsmSigningBackend::new("tpm2_hsm") {
+                Ok(backend) => Box::new(backend),
+                Err(error) => {
+                    eprintln!("tpm2 HSM backend init failed ({error}); falling back to software");
+                    Box::new(SoftwareSigningBackend)
+                }
+            },
+            SigningBackendKind::Software => Box::new(SoftwareSigningBackend),
+        })
+        .as_ref()
 }
 
 /// Resolve the signing key reference from env or caller material.
 pub fn resolve_signing_key_ref(fallback_material: &str) -> String {
-    std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").unwrap_or_else(|_| fallback_material.to_string())
+    std::env::var("SPANDA_DECISION_SIGNING_KEY_ID")
+        .unwrap_or_else(|_| fallback_material.to_string())
 }
 
 /// Sign UTF-8 data using the active backend (`SPANDA_CRYPTO_BACKEND`).

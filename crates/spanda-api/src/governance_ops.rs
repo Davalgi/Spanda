@@ -39,11 +39,7 @@ pub fn compliance_summary(state: &ControlCenterState, ctx: Option<&RbacContext>)
     let Some(resolved) = state.resolved_config() else {
         return bad_request("No configuration loaded");
     };
-    let report = run_compliance_check(
-        &registry,
-        resolved,
-        &ValidationOptions::default(),
-    );
+    let report = run_compliance_check(&registry, resolved, &ValidationOptions::default());
     json_ok(&serde_json::json!({
         "version": "v1",
         "passed": report.passed,
@@ -286,10 +282,7 @@ pub fn policies_list(ctx: Option<&RbacContext>) -> HttpResponse {
     }))
 }
 
-pub fn policies_assign(
-    body: &str,
-    ctx: Option<&RbacContext>,
-) -> HttpResponse {
+pub fn policies_assign(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
@@ -445,13 +438,11 @@ pub fn accountability_update(
             .insert("governance.escalation_contact".into(), contact);
     }
     if let Some(chain) = req.approval_chain {
-        entity.metadata.insert(
-            "governance.approval_chain".into(),
-            chain.join("|"),
-        );
+        entity
+            .metadata
+            .insert("governance.approval_chain".into(), chain.join("|"));
     }
-    entity.governance =
-        spanda_config::EntityGovernanceMeta::from_metadata(&entity.metadata);
+    entity.governance = spanda_config::EntityGovernanceMeta::from_metadata(&entity.metadata);
 
     state
         .entity_overlay
@@ -489,10 +480,7 @@ pub fn policies_detach(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
     let mut store = PolicyStore::load(&path);
     let actor = ctx.map(|c| c.key_id.as_str());
     if !store.detach(&req.assignment_id, actor) {
-        return bad_request(&format!(
-            "assignment '{}' not found",
-            req.assignment_id
-        ));
+        return bad_request(&format!("assignment '{}' not found", req.assignment_id));
     }
     if let Err(error) = store.save(&path) {
         return bad_request(&error);
@@ -531,10 +519,7 @@ pub fn governance_summary_json() -> String {
 }
 
 /// JSON body for gRPC `GetCompliance` (parity with `GET /v1/compliance`).
-pub fn compliance_summary_json(
-    state: &ControlCenterState,
-    ctx: Option<&RbacContext>,
-) -> String {
+pub fn compliance_summary_json(state: &ControlCenterState, ctx: Option<&RbacContext>) -> String {
     compliance_summary(state, ctx).body
 }
 
@@ -557,10 +542,7 @@ pub fn governance_validate_json(
 }
 
 /// JSON body for gRPC `ListCertifications` (parity with `GET /v1/certifications`).
-pub fn certifications_list_json(
-    state: &ControlCenterState,
-    ctx: Option<&RbacContext>,
-) -> String {
+pub fn certifications_list_json(state: &ControlCenterState, ctx: Option<&RbacContext>) -> String {
     certifications_list(state, ctx).body
 }
 

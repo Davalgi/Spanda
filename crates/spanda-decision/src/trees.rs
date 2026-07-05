@@ -180,8 +180,7 @@ pub fn validate_decision_tree_trust(spec: &DecisionTreeSpec) -> Result<(), Strin
     }
 
     let trust_key = decision_tree_trust_key().ok_or_else(|| {
-        "SPANDA_DECISION_POLICY_TRUST_KEY not configured for decision tree verification"
-            .to_string()
+        "SPANDA_DECISION_POLICY_TRUST_KEY not configured for decision tree verification".to_string()
     })?;
 
     if !verify_decision_tree_signature(spec, &trust_key) {

@@ -87,7 +87,8 @@ pub fn resolve_mesh_decision_conflict(
     if votes.is_empty() {
         return Err("decision vote list is empty".into());
     }
-    let resolution = resolve_conflict(votes).ok_or_else(|| "conflict resolution failed".to_string())?;
+    let resolution =
+        resolve_conflict(votes).ok_or_else(|| "conflict resolution failed".to_string())?;
     let response = FleetDecisionConflictResponse {
         ok: true,
         round_id: round_id.to_string(),

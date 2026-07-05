@@ -221,7 +221,11 @@ fn cmd_twin_cloud_list(args: &[String]) {
     for twin in response.twins {
         println!(
             "{} program={} readiness={} mission_ready={} history={}",
-            twin.twin_id, twin.program, twin.readiness_score, twin.mission_ready, twin.history_count
+            twin.twin_id,
+            twin.program,
+            twin.readiness_score,
+            twin.mission_ready,
+            twin.history_count
         );
     }
 }
@@ -317,7 +321,10 @@ fn cmd_twin_cloud_import_replay(args: &[String]) {
             process::exit(1);
         });
     if json {
-        println!("{}", serde_json::to_string_pretty(&response).unwrap_or_default());
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&response).unwrap_or_default()
+        );
     } else {
         println!(
             "Twin cloud import-replay OK: {}",

@@ -76,11 +76,7 @@ pub fn sign_decision_envelope(payload: &str, signing_key: &str) -> String {
 }
 
 /// Verify a v3 decision envelope signature.
-pub fn verify_decision_envelope_signature(
-    payload: &str,
-    signature: &str,
-    trust_key: &str,
-) -> bool {
+pub fn verify_decision_envelope_signature(payload: &str, signature: &str, trust_key: &str) -> bool {
     verify_signature(payload, signature, trust_key)
 }
 
@@ -122,18 +118,19 @@ pub fn v3_decision_payload_with_extras(
         .clone()
         .or_else(|| evidence.get("tree_hash").and_then(|_| Some("1.0.0".into())))
         .unwrap_or_else(|| "1.0.0".into());
-    let policy_hash = extras
-        .policy_hash
-        .or_else(|| evidence.get("policy_hash").and_then(|v| v.as_str()).map(str::to_string));
+    let policy_hash = extras.policy_hash.or_else(|| {
+        evidence
+            .get("policy_hash")
+            .and_then(|v| v.as_str())
+            .map(str::to_string)
+    });
     let tree_hash = extras.tree_hash.or_else(|| {
         evidence
             .get("tree_hash")
             .and_then(|v| v.as_str())
             .map(str::to_string)
     });
-    let authority_scope = extras
-        .authority_scope
-        .unwrap_or_else(|| layer.to_string());
+    let authority_scope = extras.authority_scope.unwrap_or_else(|| layer.to_string());
     let sim_ms = extras.sim_time_ms.unwrap_or(0.0);
     let nonce = format!("n-{sim_ms:.0}-{decision_id}");
     let audit_record_id = extras
@@ -152,7 +149,8 @@ pub fn v3_decision_payload_with_extras(
         &nonce,
         sim_ms,
     );
-    let signature = decision_signing_key().map(|key| sign_decision_envelope(&signing_payload, &key));
+    let signature =
+        decision_signing_key().map(|key| sign_decision_envelope(&signing_payload, &key));
 
     let mut envelope = json!({
         "entity_id": entity_id,

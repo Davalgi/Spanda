@@ -408,9 +408,8 @@ fn mesh_coordinator_correlates_ingested_tamper_traces() {
 fn mesh_coordinator_resolves_decision_conflicts_and_shared_nonce() {
     init_runtimes();
     use spanda_deploy_http::{
-        fetch_fleet_decision_conflict, ingest_fleet_decision_vote,
-        register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest,
-        FleetDecisionVoteIngestRequest,
+        fetch_fleet_decision_conflict, ingest_fleet_decision_vote, register_fleet_decision_nonce,
+        FleetDecisionNonceRegisterRequest, FleetDecisionVoteIngestRequest,
     };
 
     let registry = FleetAgentRegistry::default();

@@ -10144,7 +10144,8 @@ impl Parser {
                 });
             } else {
                 return Err(SpandaError::Parse {
-                    message: "Expected 'when' branch, 'version', or 'signature' in decision_tree".into(),
+                    message: "Expected 'when' branch, 'version', or 'signature' in decision_tree"
+                        .into(),
                     line: self.peek().line,
                     column: self.peek().column,
                 });

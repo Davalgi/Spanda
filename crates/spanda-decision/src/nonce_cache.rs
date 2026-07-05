@@ -138,9 +138,7 @@ fn mesh_nonce_required() -> bool {
 }
 
 fn register_mesh_nonce(mesh_url: &str, nonce: &str) -> Result<(), String> {
-    use spanda_deploy_http::{
-        register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest,
-    };
+    use spanda_deploy_http::{register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest};
     let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
     let entity_id = std::env::var("SPANDA_ROBOT_NAME")
         .ok()

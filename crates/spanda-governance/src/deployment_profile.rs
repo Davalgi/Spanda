@@ -199,7 +199,10 @@ fn profile_defaults(
             vec!["perception".into(), "lane_keeping".into(), "aeb".into()],
             vec!["camera".into(), "radar".into(), "lidar".into()],
             vec!["iso26262".into(), "iso21448".into()],
-            vec![OperationalConstraint::Outdoor, OperationalConstraint::GpsAvailability],
+            vec![
+                OperationalConstraint::Outdoor,
+                OperationalConstraint::GpsAvailability,
+            ],
             vec![
                 StandardsProfileKind::Automotive,
                 StandardsProfileKind::FunctionalSafety,
@@ -212,7 +215,10 @@ fn profile_defaults(
             vec!["hvac_control".into(), "access_control".into()],
             vec!["iot_gateway".into()],
             vec![],
-            vec![OperationalConstraint::Indoor, OperationalConstraint::Connectivity],
+            vec![
+                OperationalConstraint::Indoor,
+                OperationalConstraint::Connectivity,
+            ],
             vec![StandardsProfileKind::Cybersecurity],
         ),
         DeploymentProfileKind::OperatingRoom => (
@@ -252,7 +258,8 @@ pub fn list_deployment_profiles() -> Vec<DeploymentProfile> {
 /// Resolve a deployment profile by name.
 pub fn deployment_profile_by_name(name: &str) -> Option<DeploymentProfile> {
     let kind = DeploymentProfileKind::parse(name);
-    if matches!(kind, DeploymentProfileKind::Custom(ref n) if n == name && !DeploymentProfileKind::all_builtin().contains(&kind)) {
+    if matches!(kind, DeploymentProfileKind::Custom(ref n) if n == name && !DeploymentProfileKind::all_builtin().contains(&kind))
+    {
         // Custom profiles not in builtin list still resolve if explicitly named.
         return Some(DeploymentProfile::builtin(kind));
     }

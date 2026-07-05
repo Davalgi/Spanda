@@ -6,7 +6,8 @@ use spanda_deploy_http::HttpRequest;
 use std::path::PathBuf;
 
 fn differentiation_program() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/showcase/differentiation/warehouse.sd")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/showcase/differentiation/warehouse.sd")
 }
 
 fn handle_get(state: &mut ControlCenterState, path: &str) -> spanda_deploy_http::HttpResponse {
@@ -42,7 +43,8 @@ fn handle_post(
 }
 
 fn differentiation_state() -> ControlCenterState {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/showcase/differentiation");
+    let root =
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/showcase/differentiation");
     let mut state = ControlCenterState::new().with_config_path(root);
     state.program_path = Some(differentiation_program());
     state
@@ -61,11 +63,7 @@ fn program_contract_verify_returns_report() {
 #[test]
 fn program_explain_program_mode() {
     let mut state = differentiation_state();
-    let response = handle_post(
-        &mut state,
-        "/v1/programs/explain",
-        r#"{"mode":"program"}"#,
-    );
+    let response = handle_post(&mut state, "/v1/programs/explain", r#"{"mode":"program"}"#);
     assert_eq!(response.status, 200, "{}", response.body);
     let body: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert!(body["report"]["sections"].is_array());

@@ -25,9 +25,8 @@ async fn connect_grpc(bind: &str) -> ControlCenterClient<Channel> {
 }
 
 fn require_env(name: &str) -> String {
-    std::env::var(name).unwrap_or_else(|_| {
-        panic!("{name} must be set by scripts/cross_interface_consistency.sh")
-    })
+    std::env::var(name)
+        .unwrap_or_else(|_| panic!("{name} must be set by scripts/cross_interface_consistency.sh"))
 }
 
 #[tokio::test]
@@ -44,7 +43,8 @@ async fn grpc_health_matches_rest() {
         rest.get("status")
             .and_then(|value| value.as_str())
             .is_some()
-            || rest.get("ok")
+            || rest
+                .get("ok")
                 .and_then(|value| value.as_bool())
                 .unwrap_or(false),
         "rest health missing status/ok: {rest}"

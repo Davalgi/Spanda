@@ -1,6 +1,6 @@
 //! Property-style config resolver tests.
 
-use spanda_config::{ConfigResolver, EntityQuery, build_entity_registry};
+use spanda_config::{build_entity_registry, ConfigResolver, EntityQuery};
 use std::path::PathBuf;
 
 #[test]

@@ -7,7 +7,8 @@ use crate::enforcement::{
     validate_decision_trace_payload, validate_security_envelope_fields,
 };
 use crate::offline::{
-    sign_offline_policy, validate_offline_action, verify_offline_policy_signature, OfflinePolicySpec,
+    sign_offline_policy, validate_offline_action, verify_offline_policy_signature,
+    OfflinePolicySpec,
 };
 use crate::types::DecisionSecurityEnvelope;
 use serde::{Deserialize, Serialize};
@@ -99,7 +100,9 @@ pub fn security_audit() -> Vec<SecurityAuditFinding> {
             scenario: AttackScenario::SplitBrainMesh,
             detected: true,
             severity: "critical".into(),
-            mitigation: "Fleet mesh conflict aggregation with layer precedence and shared nonce registry".into(),
+            mitigation:
+                "Fleet mesh conflict aggregation with layer precedence and shared nonce registry"
+                    .into(),
         },
     ]
 }
@@ -174,8 +177,12 @@ fn simulate_fake_coordinator() -> AttackSimulationResult {
         requires_central_approval: vec!["fleet_takeover".into(), "reassign_mission".into()],
         layer: crate::types::DecisionLayer::GroupFleet,
     };
-    let blocked = fake.requires_central_approval.contains(&"fleet_takeover".into())
-        || fake.requires_central_approval.contains(&"reassign_mission".into());
+    let blocked = fake
+        .requires_central_approval
+        .contains(&"fleet_takeover".into())
+        || fake
+            .requires_central_approval
+            .contains(&"reassign_mission".into());
 
     AttackSimulationResult {
         scenario: AttackScenario::FakeCoordinator,
@@ -344,7 +351,13 @@ fn simulate_split_brain_mesh() -> AttackSimulationResult {
                 FleetDecisionVoteIngestRequest,
             };
             let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();
-            let round = format!("attack-sim-{}", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis()).unwrap_or(0));
+            let round = format!(
+                "attack-sim-{}",
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_millis())
+                    .unwrap_or(0)
+            );
             for vote in &decisions {
                 let _ = ingest_fleet_decision_vote(
                     &mesh_url,
@@ -381,7 +394,9 @@ fn simulate_split_brain_mesh() -> AttackSimulationResult {
         scenario: AttackScenario::SplitBrainMesh,
         blocked: safety_wins && nonce_replay_blocked,
         severity: "critical".into(),
-        mitigation: "Mesh coordinator resolves competing votes; shared nonce registry rejects replays".into(),
+        mitigation:
+            "Mesh coordinator resolves competing votes; shared nonce registry rejects replays"
+                .into(),
         evidence: json!({
             "competing_decisions": decisions.len(),
             "winner_action": resolution.as_ref().map(|r| r.winner.action.clone()),

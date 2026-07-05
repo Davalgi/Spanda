@@ -84,9 +84,7 @@ pub fn admin_api_keys_create(
     }
     let token = generate_api_key_token();
     let key_id = format!("key-{}", crate::handlers::now_ms() as u64);
-    let tenant_id = request
-        .tenant_id
-        .unwrap_or_else(|| state.tenant_id.clone());
+    let tenant_id = request.tenant_id.unwrap_or_else(|| state.tenant_id.clone());
     let record = ApiKeyRecord {
         key_id: key_id.clone(),
         token: token.clone(),
@@ -253,7 +251,9 @@ fn set_mission_state(
         .cloned()
         .or_else(|| registry.get(&entity_id).cloned())
         .ok_or_else(|| format!("entity '{entity_id}' not found"))?;
-    record.metadata.insert("mission_state".into(), new_state.into());
+    record
+        .metadata
+        .insert("mission_state".into(), new_state.into());
     let (health, readiness, lifecycle) = mission_status_to_entity_state(new_state);
     record.health_status = health;
     record.readiness_status = readiness;
@@ -447,13 +447,19 @@ pub fn route_admin(
         return Some(crate::control_center_extras::admin_oidc_put(body, ctx));
     }
     if path == "/v1/admin/oidc/sync" && method == "POST" {
-        return Some(crate::control_center_extras::admin_oidc_sync(state, body, ctx));
+        return Some(crate::control_center_extras::admin_oidc_sync(
+            state, body, ctx,
+        ));
     }
     if path == "/v1/admin/oidc/authorize-url" && method == "POST" {
-        return Some(crate::control_center_extras::admin_oidc_authorize_url(body, ctx));
+        return Some(crate::control_center_extras::admin_oidc_authorize_url(
+            body, ctx,
+        ));
     }
     if path == "/v1/admin/oidc/oauth/callback" && method == "POST" {
-        return Some(crate::control_center_extras::admin_oidc_oauth_callback(state, body, ctx));
+        return Some(crate::control_center_extras::admin_oidc_oauth_callback(
+            state, body, ctx,
+        ));
     }
     if path == "/v1/admin/slack" && method == "GET" {
         return Some(crate::control_center_extras::admin_slack_get(ctx));
@@ -462,10 +468,14 @@ pub fn route_admin(
         return Some(crate::control_center_extras::admin_slack_post(body, ctx));
     }
     if path == "/v1/admin/slack/oauth-url" && method == "POST" {
-        return Some(crate::control_center_extras::admin_slack_oauth_url(body, ctx));
+        return Some(crate::control_center_extras::admin_slack_oauth_url(
+            body, ctx,
+        ));
     }
     if path == "/v1/admin/slack/oauth/callback" && method == "POST" {
-        return Some(crate::control_center_extras::admin_slack_oauth_callback(body, ctx));
+        return Some(crate::control_center_extras::admin_slack_oauth_callback(
+            body, ctx,
+        ));
     }
     let rest = path.strip_prefix("/v1/admin/api-keys/")?;
     match method {

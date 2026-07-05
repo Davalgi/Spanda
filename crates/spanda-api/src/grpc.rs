@@ -867,10 +867,8 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let ctx = self.rbac_from_request(&request);
-        self.with_state(|state| {
-            crate::governance_ops::compliance_summary_json(state, ctx.as_ref())
-        })
-        .map(Response::new)
+        self.with_state(|state| crate::governance_ops::compliance_summary_json(state, ctx.as_ref()))
+            .map(Response::new)
     }
 
     async fn check_compliance(
@@ -1700,7 +1698,11 @@ impl ControlCenter for GrpcControlCenter {
         let body = request.into_inner().body_json;
         let user_id = serde_json::from_str::<serde_json::Value>(&body)
             .ok()
-            .and_then(|v| v.get("user_id").and_then(|id| id.as_str()).map(String::from))
+            .and_then(|v| {
+                v.get("user_id")
+                    .and_then(|id| id.as_str())
+                    .map(String::from)
+            })
             .ok_or_else(|| Status::invalid_argument("user_id required in body_json"))?;
         self.with_state_mut(|state| {
             crate::admin_users::admin_users_patch(state, &user_id, &body, ctx.as_ref()).body
@@ -1717,7 +1719,11 @@ impl ControlCenter for GrpcControlCenter {
         let body = request.into_inner().body_json;
         let user_id = serde_json::from_str::<serde_json::Value>(&body)
             .ok()
-            .and_then(|v| v.get("user_id").and_then(|id| id.as_str()).map(String::from))
+            .and_then(|v| {
+                v.get("user_id")
+                    .and_then(|id| id.as_str())
+                    .map(String::from)
+            })
             .ok_or_else(|| Status::invalid_argument("user_id required in body_json"))?;
         self.with_state_mut(|state| {
             crate::admin_users::admin_users_delete(state, &user_id, ctx.as_ref()).body
@@ -1829,10 +1835,7 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
-    async fn list_twins(
-        &self,
-        request: Request<Empty>,
-    ) -> Result<Response<JsonResponse>, Status> {
+    async fn list_twins(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         self.with_state(crate::twin_cloud::list_twins_json)
             .map(Response::new)
@@ -1866,9 +1869,7 @@ impl ControlCenter for GrpcControlCenter {
         let ctx = self.rbac_from_request(&request);
         let query = request.into_inner().query;
         let json = self
-            .with_state_mut(|state| {
-                crate::twin_cloud::sync_twin_json(state, &query, ctx.as_ref())
-            })?
+            .with_state_mut(|state| crate::twin_cloud::sync_twin_json(state, &query, ctx.as_ref()))?
             .json;
         self.respond_mutation("SyncTwin", json, ctx)
     }
