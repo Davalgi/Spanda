@@ -1,5 +1,7 @@
-# node / build
-node_modules/
+# mdBook build output and synced chapter sources
+# docs-site/book/
+# docs-site/src/repo-docs/
+
 dist/
 target/
 
@@ -61,3 +63,4 @@ __pycache__/
 *$py.class
 .pytest_cache/
 *.egg-info/
+node_modules
