@@ -671,6 +671,22 @@ The **Recovery** tab (operator+ roles with `Operate` permission) shows:
 
 Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
 
+### Resilient Autonomy dashboard
+
+The **Resilient Autonomy** tab (Governance group; operator+ with `Operate` permission) shows live bio-inspired autonomy data:
+
+| Panel | Content |
+|-------|---------|
+| **Reflex catalog** | Platform reflex actions (`GET /v1/autonomy/reflex`) |
+| **Reflex traces** | Runtime or catalog traces (`GET /v1/autonomy/reflex/traces`) |
+| **Homeostasis** | Entity stability reports (`GET /v1/autonomy/homeostasis`) |
+| **Immunity** | Quarantine scan (`GET /v1/autonomy/immunity`) |
+| **Attention** | Prioritized event window (`GET /v1/autonomy/attention`) |
+
+Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
+
+**Experimental** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
+
 ### Human Interaction dashboard
 
 Launch with the Spatial Computing & Human-Robot Collaboration blueprint:
@@ -1016,6 +1032,7 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Digital Thread | Interactive capability→device graph with filters |
 | Traceability | Trust and identity trace view |
 | Recovery | Orchestrator plans, metrics, playbooks, history, graph, plan/simulate/execute |
+| Resilient Autonomy | Reflex catalog/traces, homeostasis, immunity, attention (`/v1/autonomy/*`) |
 | Administration | API keys, users, alert channels, integrations (administrator) |
 | Simulation | Program sim execute with decision traces |
 | Replay | Trace library, deterministic replay |

@@ -21,6 +21,7 @@
 | Policy cache CLI/API | `cache show|sync|clear`, REST + gRPC cache listing, SDK wrappers | `spanda decision cache`, `GET /v1/decision-policy-cache`, `ListDecisionPolicyCache`, smoke script |
 | Program sim traces | API sim emits v3 frames + mission trace | `program_simulation` with `decision_trace`/`record_trace`, Control Center button |
 | Distributed decisions demo | One-command evaluator path | `spanda demo distributed-decisions`, smoke script |
+| Bio-inspired autonomy | reflex/homeostasis/immunity CLI, entity profiles, REST+gRPC | `crates/spanda-autonomy/tests/bio_inspired.rs`, `scripts/bio_inspired_autonomy_smoke.sh`, cross-interface autonomy checks |
 | Differentiation decision trail | audit + explain decision on v3 trace | `examples/showcase/differentiation/decision_trail/`, `scripts/differentiation_smoke.sh` |
 | What-if analysis | scenario impact, risk, recovery plan, probability | `crates/spanda-whatif/tests/gps_failure.rs`, `scripts/what_if_smoke.sh` |
 | Mission risk scoring | deployment risk score and mitigations | `crates/spanda-risk/tests/deployment_risk.rs`, `scripts/risk_smoke.sh` |

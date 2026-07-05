@@ -621,6 +621,39 @@ Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples: [`exa
 
 ---
 
+## Bio-inspired resilient autonomy (optional)
+
+Extends distributed decisions with reflex arcs, homeostasis, platform immunity, sensory fusion, attention, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
+
+```bash
+spanda reflex list
+spanda reflex simulate emergency
+spanda homeostasis check --json
+spanda immunity quarantine
+spanda fusion analyze
+spanda alerts analyze
+spanda recovery confidence
+```
+
+Language policies (optional in `.sd` programs):
+
+```spanda
+homeostasis_policy PlatformStability {
+    metric cpu_pct;
+    metric memory_pct;
+}
+
+attention_policy MissionFocus {
+    rule boost_critical_health;
+}
+```
+
+Control Center **Resilient Autonomy** tab (Governance group) loads live data from `/v1/autonomy/*` and per-entity `/v1/entities/{id}/autonomy`.
+
+Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
+
+---
+
 ## Documentation
 
 Generate API docs from `.sd` source (JavaDoc-style `///` comments are included):

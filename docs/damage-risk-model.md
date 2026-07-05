@@ -1,6 +1,6 @@
 # Damage-Risk Model
 
-**Status: Preview**
+**Status: Beta** — harm-risk index on entity autonomy profiles from health, trust, and metadata signals.
 
 ## Purpose
 

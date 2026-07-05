@@ -68,12 +68,12 @@ Sensors / Actuators / Devices
 | Peripheral Autonomy | Avoid over-centralization | **Beta** | [peripheral-autonomy.md](./peripheral-autonomy.md) |
 | Sensory Fusion | Multi-source confidence | **Experimental** | [sensory-fusion.md](./sensory-fusion.md) |
 | Confidence Model | Conflict detection and fallback | **Experimental** | [confidence-model.md](./confidence-model.md) |
-| Attention System | Event prioritization | **Preview** | [attention-system.md](./attention-system.md) |
-| Homeostasis | Safe operating range | **Preview** | [homeostasis.md](./homeostasis.md) |
+| Attention System | Event prioritization | **Beta** | [attention-system.md](./attention-system.md) |
+| Homeostasis | Safe operating range | **Beta** | [homeostasis.md](./homeostasis.md) |
 | Platform Immunity | Quarantine untrusted entities | **Beta** | [platform-immunity.md](./platform-immunity.md) |
 | Operational Memory | Engineering memory categories | **Preview** | [operational-memory.md](./operational-memory.md) |
 | Habituation / Sensitization | Alert fatigue management | **Experimental** | [habituation-sensitization.md](./habituation-sensitization.md) |
-| Damage-Risk Model | Harm potential, not just errors | **Preview** | [damage-risk-model.md](./damage-risk-model.md) |
+| Damage-Risk Model | Harm potential, not just errors | **Beta** | [damage-risk-model.md](./damage-risk-model.md) |
 | Adaptive Recovery | Rule-based strategy learning | **Experimental** | [adaptive-recovery.md](./adaptive-recovery.md) |
 | Maintenance / Sleep Mode | Low-risk maintenance windows | **Preview** | [maintenance-mode.md](./maintenance-mode.md) |
 
@@ -112,6 +112,10 @@ REST: `GET /v1/entities/{id}/autonomy`
 | `spanda alerts fatigue-report` | Alert fatigue metrics |
 | `spanda recovery confidence` | Recovery confidence from history |
 | `spanda recovery learning-report` | Strategy preference report |
+
+## gRPC
+
+Autonomy REST routes mirror gRPC on Control Center (proto **1.0.13+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetEntityAutonomy`.
 
 ---
 

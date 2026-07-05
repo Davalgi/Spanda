@@ -122,6 +122,8 @@ spanda recovery plan examples/showcase/self_healing/rover.sd --failure gps  # or
 spanda recovery explain examples/showcase/self_healing/rover.sd --failure gps
 spanda demo continuity     # takeover, delegation, succession
 spanda decision list examples/showcase/distributed_decisions/main.sd  # brain/spinal-cord/reflex autonomy
+spanda reflex list --json              # bio-inspired reflex catalog
+spanda homeostasis check --json        # platform stability snapshot
 
 # Or step by step:
 spanda check examples/showcase/killer_demo.sd      # type-check
@@ -155,6 +157,7 @@ Guide: [docs/sdk.md](docs/sdk.md) · Publish: [docs/sdk-publishing.md](docs/sdk-
 | **Known limitations** | [docs/known-limitations.md](docs/known-limitations.md) · mock/live backend setup in [docs/troubleshooting.md](docs/troubleshooting.md) |
 | **v0.6.3 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
+| **Bio-inspired resilient autonomy** | **Beta** — [docs/bio-inspired-architecture.md](docs/bio-inspired-architecture.md) · `spanda reflex` / `homeostasis` / `immunity` · Control Center **Resilient Autonomy** tab |
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |

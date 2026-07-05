@@ -580,6 +580,17 @@ resilience_policy RoverResilience {
     strategy graceful_degradation;
 }
 
+homeostasis_policy RoverStability {
+    metric cpu_pct;
+    metric memory_pct;
+    metric battery_pct;
+}
+
+attention_policy MissionFocus {
+    rule suppress_low_priority;
+    rule boost_critical_health;
+}
+
 continuity_policy WarehouseContinuity {
   on robot_failed {
     takeover hot;
