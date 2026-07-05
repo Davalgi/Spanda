@@ -648,9 +648,9 @@ attention_policy MissionFocus {
 }
 ```
 
-Control Center **Resilient Autonomy** tab (Governance group) loads live data from `/v1/autonomy/*` and per-entity `/v1/entities/{id}/autonomy`.
+Control Center **Cognitive & Resilience** tab (Health & incidents group) loads live data from `/v1/autonomy/*` and per-entity `/v1/entities/{id}/autonomy`.
 
-Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke: `./scripts/cognitive_resilience_smoke.sh`
 
 ---
 

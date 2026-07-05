@@ -132,6 +132,8 @@
 | [functional-domains.md](./functional-domains.md) | **Eleven functional domain definitions** |
 | [responsibility-matrix.md](./responsibility-matrix.md) | **Capability → domain → service ownership matrix** |
 | [cognitive-resilience-migration.md](./cognitive-resilience-migration.md) | **Migration from bio-inspired naming** |
+| [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) | **Capability maturity tiers and promotion criteria** |
+| [platform-maintenance.md](./platform-maintenance.md) | **Maintenance & Optimization domain guide** |
 | [bio-inspired-architecture.md](./bio-inspired-architecture.md) | **Bio-inspired resilient autonomy (prior naming)** |
 | [reflex-architecture.md](./reflex-architecture.md) | Reflex arc — immediate local safety |
 | [peripheral-autonomy.md](./peripheral-autonomy.md) | Peripheral autonomy hierarchy |

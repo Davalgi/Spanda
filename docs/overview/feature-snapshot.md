@@ -30,7 +30,7 @@ Compact snapshot — full matrix: [feature-status.md](../feature-status.md)
 | WASM | **Experimental** | Browser check/run/verify; limited vs native CLI |
 | ROS2 | **Experimental** | rclrs/rclpy bridge; requires ROS Humble setup |
 | Distributed decisions | **Stable** | Brain/spinal-cord/reflex layers, `decision_tree`, offline policy, live traces |
-| Bio-inspired resilient autonomy | **Beta** | Reflex, homeostasis, immunity, REST+gRPC, Control Center tab — [bio-inspired-architecture.md](../bio-inspired-architecture.md) |
+| Cognitive & Resilience Architecture | **Beta** | Eleven functional domains, REST+gRPC, domain SDK clients, CC tab — [cognitive-resilience-architecture.md](../cognitive-resilience-architecture.md) |
 | Control Center | **Stable** | `spanda control-center serve` (REST v1 + optional `--grpc-bind` tonic), embedded UI, Tauri desktop **0.4.2** (`desktop-v0.4.2` GitHub Release) — [desktop-release-runbook.md](../desktop-release-runbook.md) |
 | Official SDKs | **Stable** | **0.4.2** on [crates.io/spanda-sdk](https://crates.io/crates/spanda-sdk), [PyPI](https://pypi.org/project/spanda-sdk/), [npm @davalgi-spanda/sdk](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
 | Control Center desktop | **Stable** | `@spanda/control-center-desktop` **0.4.2** — tag `desktop-v*` → GitHub Release |

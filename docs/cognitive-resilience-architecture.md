@@ -148,12 +148,12 @@ Eleven functional responsibility domains organize platform capabilities. Full de
 | [Reflex & Safety](./functional-domains.md#reflex--safety) | Emergency stop, kill switch, local safety | **Beta** |
 | [Homeostasis Engine](./platform-homeostasis.md) | Stable operating conditions | **Beta** |
 | [Platform Immunity](./platform-immunity.md) | Quarantine, isolation, re-admission | **Beta** |
-| [Sensory Fusion](./sensory-fusion.md) | Multi-source confidence | **Experimental** |
+| [Sensory Fusion](./sensory-fusion.md) | Multi-source confidence | **Beta** (entity-derived rule-based fusion) |
 | [Attention Engine](./attention-engine.md) | Event prioritization, alert fatigue | **Beta** |
-| [Operational Memory](./operational-memory.md) | Mission state, replay, playbooks | **Preview** |
+| [Operational Memory](./operational-memory.md) | Mission state, replay, playbooks | **Beta** |
 | [Adaptive Learning](./adaptive-operations.md) | Rule-based outcome learning | **Experimental** |
 | [Damage Risk Assessment](./damage-risk.md) | Harm potential modeling | **Beta** |
-| [Maintenance & Optimization](./functional-domains.md#maintenance--optimization) | OTA, calibration, cleanup | **Stable** (OTA) / **Preview** (sleep mode) |
+| [Maintenance & Optimization](./platform-maintenance.md) | OTA, calibration, maintenance windows | **Stable** (OTA) / **Beta** (windows) |
 
 ---
 

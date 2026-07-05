@@ -1,6 +1,6 @@
 # Maintenance and Sleep Mode
 
-**Status: Preview**
+**Status: Beta**
 
 ## Purpose
 

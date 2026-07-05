@@ -1049,7 +1049,7 @@ Engineering focus after the evaluation/beta release. **Organizational gates** (s
 |----------|-------|---------------------|-------------|
 | **P0** | Organizational gates | 30-day field soak, third-party security audit prep + sign-off ([#51](https://github.com/Davalgi/Spanda/issues/51)) | v1.0 blocker |
 | **P1** | Differentiation hardening | Mission contracts, explainability, decision audit trail — **Control Center + REST wired** (2026-07-04) | Stable |
-| **P1** | Control Center promotion | Playground server load, traceability matrix, assurance/diagnosis program APIs, Differentiation + Resilient Autonomy tabs — **partial ship** (2026-07-04) | Experimental → Stable |
+| **P1** | Control Center promotion | Playground server load, traceability matrix, assurance/diagnosis program APIs, Differentiation + Cognitive & Resilience tabs — **partial ship** (2026-07-04) | Beta → Stable |
 | **P2** | Adoption blockers | VS Code Marketplace publish (needs `VSCE_PAT`) | Stable (extension) |
 | **P2** | Live paths | Swarm quorum, live vehicle I/O, env-gated AI/IoT golden paths | Experimental → Stable |
 | **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |

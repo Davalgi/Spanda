@@ -1,7 +1,7 @@
 # Sensory Fusion
 
 **Functional domain:** [Sensory Fusion](./functional-domains.md#sensory-fusion)  
-**Status: Experimental** — rule-based validators; no live sensor fusion pipeline yet.
+**Status: Beta** — rule-based entity-derived fusion (`health_status`, `readiness_status`, `trust_status`); live multi-sensor pipeline **Planned**.
 
 > Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 

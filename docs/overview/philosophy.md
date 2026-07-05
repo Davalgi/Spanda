@@ -33,7 +33,7 @@ The body metaphor describes *what* each part is on one robot. At fleet scale and
 
 **Spanda is the pulse** that routes intent across this hierarchy, enforces boundaries at each layer, and keeps every decision auditable and replayable.
 
-Technical detail: [distributed-decisions.md](../distributed-decisions.md) · Bio-inspired extensions: [bio-inspired-architecture.md](../bio-inspired-architecture.md)
+Technical detail: [distributed-decisions.md](../distributed-decisions.md) · Cognitive & Resilience extensions: [cognitive-resilience-architecture.md](../cognitive-resilience-architecture.md)
 
 Long-form vision: [vision.md](../vision.md) · Product positioning: [product-strategy.md](../product-strategy.md)
 

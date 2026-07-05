@@ -78,7 +78,7 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 **Entity touchpoints:** `Entity.confidence`.
 
-**Status:** **Experimental** — see [sensory-fusion.md](./sensory-fusion.md).
+**Status:** **Beta** — see [sensory-fusion.md](./sensory-fusion.md).
 
 ---
 
@@ -110,7 +110,7 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 **Entity touchpoints:** `Entity.operationalMemory` (`memory_refs`).
 
-**Status:** **Preview** — see [operational-memory.md](./operational-memory.md).
+**Status:** **Beta** — see [operational-memory.md](./operational-memory.md).
 
 ---
 
@@ -148,4 +148,4 @@ Overview: [cognitive-resilience-architecture.md](./cognitive-resilience-architec
 
 **Entity touchpoints:** `Entity.lifecycle_state`, firmware/software version fields.
 
-**Status:** OTA **Stable**; maintenance/sleep mode **Preview**.
+**Status:** OTA **Stable**; maintenance/sleep mode **Beta** — see [platform-maintenance.md](./platform-maintenance.md).

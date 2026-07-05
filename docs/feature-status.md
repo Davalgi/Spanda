@@ -31,7 +31,7 @@ Platform overview: [platform-overview.md](./platform-overview.md) · Release har
 | **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
 | **Distributed decisions** | Decision trees, offline policy, signed trees, v3 signed traces, persistent escalation, conflict resolution — **Stable** |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
-| **Cognitive & Resilience Architecture** | Eleven functional domains; reflex/peripheral/immunity **Beta** (entity profiles, REST+gRPC, CC panels, domain SDK clients); homeostasis/attention **Beta** (`Entity.attention`); fusion/memory REST+gRPC **Beta**; adaptive recovery **Experimental**; maintenance **Preview** — [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · CI: `scripts/bio_inspired_autonomy_smoke.sh` |
+| **Cognitive & Resilience Architecture** | Eleven functional domains; reflex/immunity/homeostasis/attention **Beta**; fusion/memory/operational memory **Beta** (entity-derived fusion, enriched memory refs); adaptive recovery **Experimental**; maintenance types **Beta**; CC Cognitive & Resilience tab **Beta** — [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
 
 ## v0.4.0 — Deploy & tooling

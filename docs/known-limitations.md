@@ -58,7 +58,7 @@ Honest constraints for **v0.6.3** evaluators. For capability tiers see [feature-
 
 - **Beta / Experimental tiers** — see [feature-status.md](./feature-status.md) and [bio-inspired-architecture.md](./bio-inspired-architecture.md).
 - Sensory fusion validators are rule-based; no live multi-sensor fusion pipeline yet.
-- Control Center **Resilient Autonomy** tab uses live REST panels; gRPC parity ships for `/v1/autonomy/*`.
+- Control Center **Cognitive & Resilience** tab uses live REST panels; gRPC parity ships for `/v1/autonomy/*`.
 - Homeostasis merges entity health with interpreter scheduler telemetry when a recent `run`/`sim` completed.
 - Reflex traces persist to `.spanda/autonomy-reflex-traces.json` (override with `SPANDA_AUTONOMY_TRACE_FILE`).
 - Adaptive recovery learning is statistics-based (no ML).

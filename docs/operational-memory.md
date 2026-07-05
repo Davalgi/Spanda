@@ -1,7 +1,7 @@
 # Operational Memory Model
 
 **Functional domain:** [Operational Memory](./functional-domains.md#operational-memory)  
-**Status: Preview**
+**Status: Beta**
 
 > Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 

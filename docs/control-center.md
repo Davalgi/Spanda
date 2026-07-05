@@ -688,7 +688,7 @@ The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Op
 
 Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
 
-**Experimental** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
+**Beta** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke: `./scripts/cognitive_resilience_smoke.sh`
 
 ### Human Interaction dashboard
 

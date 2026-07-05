@@ -10,7 +10,7 @@ For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-r
 |-----------|--------|
 | REST | `http://host:8080/v1/*` |
 | OpenAPI | `GET /v1/openapi.json` |
-| gRPC | `ControlCenter` service — proto semver from `GET /v1/version` → `grpc.proto_semver` (currently **1.0.11**); see `proto/spanda/v1/control_center.proto` |
+| gRPC | `ControlCenter` service — proto semver from `GET /v1/version` → `grpc.proto_semver` (currently **1.0.14**); see `proto/spanda/v1/control_center.proto` |
 | WebSocket | `WS /v1/stream/telemetry` |
 | JSON-RPC gateway | `POST /v1/rpc` |
 
@@ -89,6 +89,25 @@ Use `spanda control-center status [--discover]` to query from the CLI (see [cont
 ```
 
 `file` is optional when Control Center was started with `--program`.
+
+## Cognitive & Resilience (`/v1/autonomy/*`)
+
+Functional domain summaries — mirror `spanda reflex`, `homeostasis`, `immunity`, `fusion`, `alerts` CLI. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+
+| Endpoint | CLI / domain | Description |
+|----------|--------------|-------------|
+| `GET /v1/autonomy/reflex` | `spanda reflex list` | Reflex & Safety — platform reflex catalog |
+| `GET /v1/autonomy/reflex/traces` | `spanda reflex trace` | Runtime/file-backed reflex traces |
+| `GET /v1/autonomy/homeostasis` | `spanda homeostasis check` | Homeostasis Engine — stability reports |
+| `GET /v1/autonomy/immunity` | `spanda immunity scan` | Platform Immunity — quarantine scan |
+| `GET /v1/autonomy/attention` | `spanda alerts analyze` | Attention Engine — prioritized event window |
+| `GET /v1/autonomy/fusion` | `spanda fusion check` | Sensory Fusion — entity-derived multi-source confidence |
+| `GET /v1/autonomy/memory` | — | Operational Memory — category refs + model |
+| `GET /v1/entities/{id}/autonomy` | — | Enriched `Entity.autonomy` profile |
+
+gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
+
+SDK: [entity-sdk.md](./entity-sdk.md#cognitive--resilience-domain-clients) · Maturity: [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md).
 
 ## Entity registry
 

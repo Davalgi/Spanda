@@ -4,6 +4,8 @@
 
 Platform components: [platform-overview.md](./platform-overview.md). For diagrams and crate detail, see [architecture.md](./architecture.md) and [lean-core.md](./lean-core.md).
 
+**Functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — eleven responsibility domains (reflex, homeostasis, immunity, fusion, attention, memory, adaptive recovery) integrated with the Entity model via `spanda-autonomy`.
+
 ## System diagram
 
 ```mermaid

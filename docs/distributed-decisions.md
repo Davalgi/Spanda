@@ -29,7 +29,7 @@ Central orchestration **must not block** immediate safety reflexes.
 
 ## Bio-inspired extension
 
-This architecture is extended (not replaced) by the [Bio-Inspired Resilient Autonomy Architecture](./bio-inspired-architecture.md): sensory fusion, homeostasis, platform immunity, operational memory, attention, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
+This architecture is extended (not replaced) by the [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md): sensory fusion, homeostasis, platform immunity, operational memory, attention, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all entity-integrated.
 
 Offline operation is **bounded by signed policy** with expiration.
 
