@@ -30,6 +30,7 @@ import { ProvisioningPanel } from "./ProvisioningPanel";
 import { ReadinessPanel } from "./ReadinessPanel";
 import { RecoveryPanel } from "./RecoveryPanel";
 import { ReplayPanel } from "./ReplayPanel";
+import { ResilientAutonomyPanel } from "./ResilientAutonomyPanel";
 import { SecurityPanel } from "./SecurityPanel";
 import { SimulationPanel } from "./SimulationPanel";
 import { SmartSpacesPanel } from "./SmartSpacesPanel";
@@ -275,6 +276,9 @@ export function ControlCenterTabContent({
       return (
         <RecoveryPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
       );
+
+    case "resilient-autonomy":
+      return <ResilientAutonomyPanel baseUrl={baseUrl} authHeaders={authHeaders} />;
 
     case "mission":
       return (

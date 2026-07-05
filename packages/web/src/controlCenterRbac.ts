@@ -54,7 +54,8 @@ export type ControlCenterTab =
   | "reports"
   | "playground"
   | "marketplace"
-  | "chaos";
+  | "chaos"
+  | "resilient-autonomy";
 
 export const RBAC_ACTIONS: RbacAction[] = [
   "Deploy",
@@ -112,6 +113,7 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   playground: ["administrator", "supervisor", "developer"],
   marketplace: ["administrator", "supervisor", "developer"],
   chaos: ["administrator", "supervisor", "developer"],
+  "resilient-autonomy": ["*"],
 };
 
 export const ROLE_META: Record<

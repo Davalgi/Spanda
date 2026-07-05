@@ -42,6 +42,7 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
       "assurance",
       "diagnosis",
       "recovery",
+      "resilient-autonomy",
       "sre",
       "chaos",
     ],
@@ -118,6 +119,8 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   playground: "In-browser WASM check and run for Spanda programs.",
   marketplace: "Installed plugins and Control Center panel extensions.",
   chaos: "Fault injection catalog and chaos simulation.",
+  "resilient-autonomy":
+    "Bio-inspired resilience — reflex events, attention, homeostasis, immunity, memory, recovery confidence, damage risk.",
 };
 
 export function tabLabel(name: ControlCenterTab): string {
@@ -133,6 +136,7 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "replay") return "Replay";
   if (name === "provisioning") return "Provisioning";
   if (name === "discovery") return "Discovery";
+  if (name === "resilient-autonomy") return "Resilient Autonomy";
   if (name === "fleet-map") return "Fleet map";
   if (name === "telemetry") return "Telemetry";
   if (name === "trends") return "Trends";
