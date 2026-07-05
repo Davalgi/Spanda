@@ -745,6 +745,88 @@ impl GrpcClient {
         Self::parse_json(resp.into_inner().json)
     }
 
+    /// List platform reflex actions via `ListAutonomyReflexes`.
+    pub async fn list_autonomy_reflexes(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_autonomy_reflexes(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// List reflex traces via `ListAutonomyReflexTraces`.
+    pub async fn list_autonomy_reflex_traces(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .list_autonomy_reflex_traces(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Homeostasis summary via `GetAutonomyHomeostasis`.
+    pub async fn get_autonomy_homeostasis(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_autonomy_homeostasis(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Immunity scan via `GetAutonomyImmunity`.
+    pub async fn get_autonomy_immunity(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_autonomy_immunity(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Attention queue via `GetAutonomyAttention`.
+    pub async fn get_autonomy_attention(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_autonomy_attention(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Sensory fusion summary via `GetAutonomyFusion`.
+    pub async fn get_autonomy_fusion(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_autonomy_fusion(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Operational memory summary via `GetAutonomyMemory`.
+    pub async fn get_autonomy_memory(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_autonomy_memory(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Entity autonomy profile via `GetEntityAutonomy`.
+    pub async fn get_entity_autonomy(&mut self, entity_id: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_entity_autonomy(EntityIdRequest {
+                entity_id: entity_id.into(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
     /// List API keys via `ListAdminApiKeys`.
     pub async fn list_admin_api_keys(&mut self) -> SpandaResult<Value> {
         let resp = self
