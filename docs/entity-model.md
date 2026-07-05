@@ -98,6 +98,23 @@ Capability requirements for missions continue to flow through readiness and assu
 
 See also: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md), [entity-verification.md](./entity-verification.md), [entity-relationships.md](./entity-relationships.md), [entity-registry.md](./entity-registry.md), [entity-graph.md](./entity-graph.md), [entity-query-language.md](./entity-query-language.md).
 
+## Cognitive & Resilience profile (`Entity.autonomy`)
+
+Functional domain state attaches via `EntityAutonomyProfile` on every entity. Populated by `spanda-autonomy` at registry load and enriched at `GET /v1/entities/{id}/autonomy`.
+
+| Field | Functional domain | Type |
+|-------|-------------------|------|
+| `reflexes` | Reflex & Safety | `Vec<EntityReflexSummary>` |
+| `attention` | Attention Engine | `EntityAttentionSnapshot` |
+| `confidence` | Sensory Fusion | `EntityConfidenceSnapshot` |
+| `homeostasis` | Homeostasis Engine | `EntityHomeostasisSnapshot` |
+| `immunity_status` | Platform Immunity | `EntityImmunityStatus` |
+| `memory_refs` | Operational Memory | `EntityMemoryRefs` |
+| `damage_risk` | Damage Risk Assessment | `EntityDamageRisk` |
+| `recovery_confidence` | Adaptive Learning | `EntityRecoveryConfidence` |
+
+Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Matrix: [responsibility-matrix.md](./responsibility-matrix.md)
+
 ## API (additive)
 
 Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [entity-sdk.md](./entity-sdk.md).
@@ -112,6 +129,7 @@ Full REST and gRPC reference: [entity-apis.md](./entity-apis.md). SDK methods: [
 | GET | `/v1/entities/{id}/health` | Health snapshot |
 | GET | `/v1/entities/{id}/readiness` | Readiness snapshot |
 | POST | `/v1/entities/{id}/verify` | Unified verification (hardware, mission, fleet, device pool) |
+| GET | `/v1/entities/{id}/autonomy` | Cognitive & resilience profile (enriched) |
 | GET | `/v1/entities/traceability` | Unified traceability (entity + program graph) |
 | POST | `/v1/entities/register` | Register or update entity overlay (Bearer) |
 | POST | `/v1/entities/{id}/tags` | Add or remove tags (Bearer) |

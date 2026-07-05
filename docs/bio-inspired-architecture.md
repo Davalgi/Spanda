@@ -1,5 +1,7 @@
 # Bio-Inspired Resilient Autonomy Architecture
 
+> **Canonical functional view:** [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) — Spanda Cognitive & Resilience Architecture with eleven functional domains and a [responsibility matrix](./responsibility-matrix.md). This document is retained for backward compatibility.
+
 Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. The goal is **not** to imitate biology, but to apply these proven resilience patterns to safety-critical autonomous systems.
 
 > **Caution:** Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life. Biological metaphors are used only where they improve engineering resilience, safety, recovery, and explainability.
@@ -84,6 +86,7 @@ Sensors / Actuators / Devices
 Every concept attaches to the unified [Entity model](./entity-model.md) via `EntityAutonomyProfile`:
 
 - `Entity.reflexes` — registered reflex summaries
+- `Entity.attention` — attention snapshot (priority, queue depth)
 - `Entity.confidence` — fused observation confidence
 - `Entity.homeostasis` — stability snapshot
 - `Entity.immunity_status` — quarantine state

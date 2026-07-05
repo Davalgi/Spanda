@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Cognitive & Resilience Architecture:** canonical functional view with eleven responsibility domains, [responsibility matrix](docs/responsibility-matrix.md), and domain guides — [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md). Prior [bio-inspired-architecture.md](docs/bio-inspired-architecture.md) retained for backward compatibility.
+- **`Entity.attention`** snapshot on `EntityAutonomyProfile`; domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`) in Rust, TypeScript, and Python; REST `GET /v1/autonomy/fusion` and `/v1/autonomy/memory`.
+- **Control Center Cognitive & Resilience tab:** panels organized by functional domain (reflex events, attention queue, homeostasis, platform immunity, operational memory, damage risk, recovery confidence).
+- **Cross-domain integration tests:** `crates/spanda-autonomy/tests/cognitive_resilience_integration.rs` — reflex+homeostasis, fusion+readiness, immunity+trust, attention+recovery, memory+replay, damage risk+mission, adaptive recovery+orchestrator.
+
 - **Bio-inspired resilient autonomy architecture:** extends distributed decisions with reflex arcs, peripheral autonomy, sensory fusion, attention, homeostasis, platform immunity, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — [bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
 - **`spanda-autonomy` crate:** core types, entity `autonomy` profile integration, CLI commands (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`), REST `/v1/autonomy/*` and `/v1/entities/{id}/autonomy`, SDK `AutonomyClient`, Control Center **Resilient Autonomy** tab (live REST panels).
 - **Bio-inspired autonomy Phase A–C:** OpenAPI parity for autonomy routes; entity registry auto-profiles; TypeScript/Python SDK methods; Control Center live REST panels; README golden tests; runtime entity context from health/trust; recovery↔autonomy confidence bridge; in-process reflex trace buffer wired from kill switch and reflex decision trees; `homeostasis_policy` / `attention_policy` in `.sd`; `scripts/bio_inspired_autonomy_smoke.sh`.

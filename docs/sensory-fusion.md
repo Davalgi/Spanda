@@ -1,6 +1,9 @@
 # Sensory Fusion
 
+**Functional domain:** [Sensory Fusion](./functional-domains.md#sensory-fusion)  
 **Status: Experimental** — rule-based validators; no live sensor fusion pipeline yet.
+
+> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
@@ -26,4 +29,8 @@ Lower readiness, trigger diagnosis, require fallback, escalate if safety-critica
 spanda fusion check
 ```
 
-See [confidence-model.md](./confidence-model.md).
+## API
+
+REST: `GET /v1/autonomy/fusion` · SDK: `FusionClient`
+
+See [confidence-model.md](./confidence-model.md), [responsibility-matrix.md](./responsibility-matrix.md).

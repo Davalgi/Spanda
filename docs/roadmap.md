@@ -21,6 +21,7 @@ The roadmap outgrew a single `docs/` guide. It now spans language, runtime, veri
 | Enterprise operations | [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) |
 | Differentiation | [differentiation-roadmap.md](./differentiation-roadmap.md) |
 | Platform maturity | [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
+| Cognitive & Resilience Architecture | [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) |
 | Human interaction & spatial computing | [human-interaction-spatial-computing-roadmap.md](./human-interaction-spatial-computing-roadmap.md) |
 | Product strategy | [product-strategy.md](./product-strategy.md) |
 | Codebase audit | [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md) |

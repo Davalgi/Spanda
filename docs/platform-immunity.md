@@ -1,6 +1,9 @@
 # Platform Immunity
 
+**Functional domain:** [Platform Immunity](./functional-domains.md#platform-immunity)  
 **Status: Beta** — built on trust, tamper detection, security, and device quarantine.
+
+> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 

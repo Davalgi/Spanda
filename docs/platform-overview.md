@@ -6,7 +6,7 @@
 
 **Spanda is a safety-first Autonomous Systems Platform with a dedicated programming language at its core.**
 
-Spanda provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for robots, devices, AI agents, humans, and intelligent environments.
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust, health, distributed autonomy, and governance.
 
 Short form: *The Autonomous Systems Platform.*
 
@@ -51,13 +51,13 @@ Spanda Platform
 └── Enterprise Operations (Control Center, Device Pool, APIs, …)
 ```
 
-### Bio-inspired resilient autonomy
+### Cognitive & Resilience Architecture
 
-Spanda uses a hierarchical, resilient autonomy architecture inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. This **extends** the [Distributed Decision Architecture](./distributed-decisions.md) without replacing it.
+Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md) inspired by proven engineering principles observed in biological nervous systems. Rather than replicating biological anatomy, it adopts functional concepts such as local reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery, and attention management to improve safety, resilience, and explainability. This **extends** the [Distributed Decision Architecture](./distributed-decisions.md) without replacing it.
 
-> Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life.
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures. Biological concepts are used only where they provide measurable engineering benefits.
 
-Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md)
+Guides: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · [functional-domains.md](./functional-domains.md) · [responsibility-matrix.md](./responsibility-matrix.md)
 
 ### Spanda Language (.sd)
 

@@ -671,21 +671,23 @@ The **Recovery** tab (operator+ roles with `Operate` permission) shows:
 
 Same panels ship in `@davalgi-spanda/web` `RecoveryPanel`. API reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./recovery-sdk.md).
 
-### Resilient Autonomy dashboard
+### Cognitive & Resilience dashboard
 
-The **Resilient Autonomy** tab (Governance group; operator+ with `Operate` permission) shows live bio-inspired autonomy data:
+The **Cognitive & Resilience** tab (Health & incidents group; operator+ with `Operate` permission) organizes live panels by **functional domain**:
 
-| Panel | Content |
-|-------|---------|
-| **Reflex catalog** | Platform reflex actions (`GET /v1/autonomy/reflex`) |
-| **Reflex traces** | Runtime or catalog traces (`GET /v1/autonomy/reflex/traces`) |
-| **Homeostasis** | Entity stability reports (`GET /v1/autonomy/homeostasis`) |
-| **Immunity** | Quarantine scan (`GET /v1/autonomy/immunity`) |
-| **Attention** | Prioritized event window (`GET /v1/autonomy/attention`) |
+| Panel | Functional domain | Content |
+|-------|-------------------|---------|
+| **Reflex Events** | Reflex & Safety | Platform reflex actions and traces (`GET /v1/autonomy/reflex*`) |
+| **Attention Queue** | Attention Engine | Prioritized event window (`GET /v1/autonomy/attention`) |
+| **Homeostasis** | Homeostasis Engine | Entity stability reports (`GET /v1/autonomy/homeostasis`) |
+| **Platform Immunity** | Platform Immunity | Quarantine scan (`GET /v1/autonomy/immunity`) |
+| **Operational Memory** | Operational Memory | Memory category refs (`GET /v1/autonomy/memory`) |
+| **Damage Risk** | Damage Risk Assessment | Entity `damage_risk` from autonomy profile |
+| **Recovery Confidence** | Adaptive Learning | Platform recovery confidence + entity profile |
 
 Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
 
-**Experimental** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [bio-inspired-architecture.md](./bio-inspired-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
+**Experimental** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in [ROADMAP.md](../ROADMAP.md). Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Smoke: `./scripts/bio_inspired_autonomy_smoke.sh`
 
 ### Human Interaction dashboard
 
@@ -1032,7 +1034,7 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Digital Thread | Interactive capability→device graph with filters |
 | Traceability | Trust and identity trace view |
 | Recovery | Orchestrator plans, metrics, playbooks, history, graph, plan/simulate/execute |
-| Resilient Autonomy | Reflex catalog/traces, homeostasis, immunity, attention (`/v1/autonomy/*`) |
+| Cognitive & Resilience | Functional domain panels — reflex, attention, homeostasis, immunity, memory, damage risk (`/v1/autonomy/*`) |
 | Administration | API keys, users, alert channels, integrations (administrator) |
 | Simulation | Program sim execute with decision traces |
 | Replay | Trace library, deterministic replay |

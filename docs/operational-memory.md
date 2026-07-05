@@ -1,6 +1,9 @@
 # Operational Memory Model
 
+**Functional domain:** [Operational Memory](./functional-domains.md#operational-memory)  
 **Status: Preview**
+
+> Canonical architecture: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
 
 ## Purpose
 
@@ -18,6 +21,8 @@ Organize platform memory into useful engineering categories — not biological m
 
 Replay, diagnosis, recovery, assurance, entity graph, decision traceability.
 
-Entity field: `Entity.memory_refs`
+Entity field: `Entity.memory_refs` (alias: `Entity.operationalMemory`)
 
-See [bio-inspired-architecture.md](./bio-inspired-architecture.md).
+REST: `GET /v1/autonomy/memory` · SDK: `MemoryClient`
+
+See [operational-memory.md](./operational-memory.md), [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).

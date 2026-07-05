@@ -2,7 +2,8 @@
 
 [← Overview](./README.md) · Crate layers: [layers.md](./layers.md)
 
-> **Canonical deep dive:** [architecture.md](../architecture.md) · [lean-core.md](../lean-core.md)
+> **Canonical deep dive:** [architecture.md](../architecture.md) · [lean-core.md](../lean-core.md)  
+> **Functional view:** [cognitive-resilience-architecture.md](../cognitive-resilience-architecture.md)
 
 Spanda uses a **lean-core, package-first** workspace. `spanda-driver` orchestrates compile and run; `spanda-interpreter` is the runtime composition root. Hardware compatibility checks are exposed via `spanda-core::hardware_verify`. Platform Architecture v2.1 enforces **zero production upward dependency waivers** in CI — see [platform-architecture.md](../platform-architecture.md).
 

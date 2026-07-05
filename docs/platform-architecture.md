@@ -21,9 +21,11 @@ Spanda has grown from a language and compiler into a complete autonomous systems
 
 Architecture consistency is now as important as adding features. This document establishes the **official platform architecture**, **dependency rules**, and **ownership boundaries** without removing existing functionality or redesigning working components.
 
-### Bio-inspired resilient autonomy
+### Cognitive & Resilience Architecture
 
-Spanda extends distributed decisions with a [bio-inspired resilient autonomy architecture](./bio-inspired-architecture.md): reflex arcs, peripheral autonomy, sensory fusion, attention, homeostasis, platform immunity, operational memory, habituation, damage-risk modeling, adaptive recovery, and maintenance windows — all integrated with the Entity model.
+Spanda implements a [Cognitive & Resilience Architecture](./cognitive-resilience-architecture.md) — a functional view of platform responsibilities inspired by proven engineering principles from biological nervous systems. Eleven functional domains (strategic planning, operational coordination, reflex & safety, homeostasis, platform immunity, sensory fusion, attention, operational memory, adaptive learning, damage risk, maintenance) map to existing platform services via the [responsibility matrix](./responsibility-matrix.md). Implementation: `spanda-autonomy` crate.
+
+Prior naming: [bio-inspired-architecture.md](./bio-inspired-architecture.md) (retained, backward compatible).
 
 ---
 
@@ -196,3 +198,7 @@ As of **Phase 8** (Platform Architecture v2.1), the production Rust and TypeScri
 | [event-model.md](./event-model.md) | Common event schema and publishers |
 | [design-principles.md](./design-principles.md) | Guiding principles for contributors |
 | [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) | Completed waiver burn-down history (Phases 1–8) |
+| [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) | Functional responsibility domains |
+| [functional-domains.md](./functional-domains.md) | Eleven domain definitions |
+| [responsibility-matrix.md](./responsibility-matrix.md) | Capability ownership matrix |
+| [bio-inspired-architecture.md](./bio-inspired-architecture.md) | Prior bio-inspired naming (redirects to cognitive-resilience) |

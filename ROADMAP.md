@@ -44,7 +44,7 @@ Unified Entity Model (all platform objects)
 
 **Lifecycle:** **Build · Verify · Simulate · Deploy · Operate · Observe · Recover · Govern · Audit · Continuously Improve**
 
-**Bio-inspired resilience:** Extends distributed decisions with reflex arcs, peripheral autonomy, sensory fusion, homeostasis, platform immunity, operational memory, and adaptive recovery — [docs/bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
+**Cognitive & Resilience Architecture:** Functional responsibility domains (reflex & safety, homeostasis, platform immunity, sensory fusion, attention, operational memory, adaptive learning, damage risk) — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · [responsibility-matrix.md](docs/responsibility-matrix.md). Prior naming: [bio-inspired-architecture.md](docs/bio-inspired-architecture.md).
 
 **Lean-core identity:** contracts in workspace crates; vendor SDKs and heavy UI in optional packages.
 
@@ -291,11 +291,12 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | `spanda demo distributed-decisions` | **Stable** |
 | Examples `examples/showcase/distributed_decisions/` | **Stable** |
 
-**Bio-inspired resilient autonomy** (extends distributed decisions — [bio-inspired-architecture.md](docs/bio-inspired-architecture.md)):
+**Cognitive & Resilience Architecture** (extends distributed decisions — [cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md)):
 
 | Item | Tier |
 |------|------|
 | `spanda-autonomy` crate, entity `autonomy` profile | **Beta** |
+| `Entity.attention` on autonomy profile | **Beta** |
 | Reflex architecture (CLI, API, decision layer 0 integration, file-backed traces) | **Beta** |
 | Peripheral autonomy hierarchy | **Beta** |
 | Platform immunity (trust/tamper/quarantine integration) | **Beta** |
@@ -308,8 +309,9 @@ Full analysis: [docs/differentiation-roadmap.md](docs/differentiation-roadmap.md
 | Adaptive recovery confidence | **Experimental** |
 | Maintenance / sleep mode | **Preview** |
 | CLI (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`) | **Beta** |
-| REST `/v1/autonomy/*`, gRPC autonomy RPCs, `/v1/entities/{id}/autonomy`, SDK methods | **Beta** |
-| Control Center Resilient Autonomy tab | **Experimental** (live REST panels) |
+| Domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`, `RiskClient`) | **Beta** |
+| REST `/v1/autonomy/*` (+ `/fusion`, `/memory`), gRPC autonomy RPCs, `/v1/entities/{id}/autonomy`, SDK methods | **Beta** |
+| Control Center Cognitive & Resilience tab | **Experimental** (functional domain panels) |
 
 **Self-healing detail:**
 

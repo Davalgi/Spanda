@@ -8,7 +8,11 @@
 
 *Build. Verify. Simulate. Deploy. Operate.*
 
-Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It provides readiness, assurance, diagnosis, recovery, trust, and distributed autonomy for robots, devices, AI agents, humans, and intelligent environments.
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust, health, distributed autonomy, and governance.
+
+Spanda implements a [Cognitive & Resilience Architecture](docs/cognitive-resilience-architecture.md) inspired by proven engineering principles observed in biological nervous systems — functional concepts (reflexes, homeostasis, immunity, fusion, attention, memory) without biological anatomy in code.
+
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures.
 
 Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed robot programs, safety gates, hardware verification, cascading TOML configuration, simulation, replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
 
@@ -30,9 +34,9 @@ Spanda is the intelligent pulse that transforms perception, intent, and safety i
 
 Autonomy is layered — reflex, spinal cord, brain — with the mind proposing and the pulse enforcing. [Nervous system →](docs/overview/philosophy.md#nervous-system)
 
-Spanda uses a **hierarchical, resilient autonomy architecture** inspired by proven principles from biological nervous systems: local reflexes, distributed control, sensory fusion, system homeostasis, adaptive recovery, platform immunity, and operational memory. The goal is not to imitate biology, but to apply these proven resilience patterns to safety-critical autonomous systems. [Bio-inspired architecture →](docs/bio-inspired-architecture.md)
+Spanda uses a **Cognitive & Resilience Architecture** inspired by proven engineering principles from biological nervous systems: local reflexes, distributed coordination, sensory fusion, homeostasis, platform immunity, operational memory, adaptive recovery, and attention management. The goal is not to imitate biology, but to apply measurable resilience patterns to safety-critical autonomous systems. [Cognitive & Resilience Architecture →](docs/cognitive-resilience-architecture.md)
 
-> Spanda does not attempt to model consciousness, emotions, biological neurons, or artificial life. Biological metaphors are used only where they improve engineering resilience, safety, recovery, and explainability.
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness, emotions, or neural structures. Biological concepts are used only where they provide measurable engineering benefits.
 
 **Spanda** (*Pronounced **SPUN-duh** (/ˈspʌndə/)*) is a Sanskrit term meaning *the divine pulse* — the creative vibration of consciousness and energy that manifests as expansion and contraction in all entities, bridging stillness and movement within consciousness; and the first stir of awareness that creates and sustains the universe.
 
