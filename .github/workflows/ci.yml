@@ -87,8 +87,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: ./.github/actions/install-protoc
       - run: cargo build -p spanda --release
-      - run: chmod +x scripts/bio_inspired_autonomy_smoke.sh
-      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/bio_inspired_autonomy_smoke.sh
+      - run: chmod +x scripts/cognitive_resilience_smoke.sh scripts/bio_inspired_autonomy_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cognitive_resilience_smoke.sh
 
   security-audit:
     runs-on: ubuntu-latest

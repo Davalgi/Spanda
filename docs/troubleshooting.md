@@ -587,7 +587,7 @@ Use these to reproduce CI failures locally:
 | Recovery Orchestrator | `scripts/recovery_orchestrator_smoke.sh` |
 | Recovery Orchestrator (Stable gate) | `scripts/recovery_orchestrator_stable_promotion_gate.sh` |
 | Distributed decisions | `scripts/distributed_decisions_smoke.sh` |
-| Bio-inspired autonomy | `scripts/bio_inspired_autonomy_smoke.sh` |
+| Cognitive & Resilience | `scripts/cognitive_resilience_smoke.sh` |
 | ROS2 / adoption | `scripts/showcase_smoke.sh` |
 | Smart Spaces | `scripts/smart_spaces_smoke.sh` |
 | OTA fleet execute | `scripts/ota_fleet_execute_smoke.sh` |
