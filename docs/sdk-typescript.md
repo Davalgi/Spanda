@@ -61,6 +61,34 @@ const [health, entities] = await Promise.all([
 ]);
 ```
 
+## Cognitive & Resilience domain clients
+
+Functional domain wrappers over `/v1/autonomy/*` (guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
+
+```typescript
+import { SpandaClient } from "@davalgi-spanda/sdk";
+
+const client = SpandaClient.local();
+const reflexes = await client.reflex().list();
+const homeostasis = await client.homeostasis().summary();
+const immunity = await client.immunity().scan();
+const attention = await client.attention().queue();
+const fusion = await client.fusion().summary();
+const memory = await client.memory().summary();
+const profile = await client.memory().entityRefs("rover-001");
+```
+
+Legacy methods (`listAutonomyReflex()`, `getAutonomyHomeostasis()`, …) remain available.
+
+| Client | Methods |
+|--------|---------|
+| `ReflexClient` | `list()`, `traces()` |
+| `HomeostasisClient` | `summary()` |
+| `ImmunityClient` | `scan()` |
+| `AttentionClient` | `queue()` |
+| `FusionClient` | `summary()` |
+| `MemoryClient` | `summary()`, `entityRefs(id)` |
+
 ## Examples
 
 ```bash

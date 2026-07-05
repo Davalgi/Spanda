@@ -62,6 +62,23 @@ client.sync_entities()
 
 Mutation endpoints require `SPANDA_API_KEY`.
 
+## Cognitive & Resilience domain clients
+
+```python
+from spanda_sdk import SpandaClient
+
+client = SpandaClient.local()
+reflexes = client.reflex().list()
+homeostasis = client.homeostasis().summary()
+immunity = client.immunity().scan()
+attention = client.attention().queue()
+fusion = client.fusion().summary()
+memory = client.memory().summary()
+profile = client.memory().entity_refs("rover-001")
+```
+
+Legacy methods (`list_autonomy_reflex()`, `get_autonomy_homeostasis()`, …) remain available. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
+
 ## Event stream
 
 ```python

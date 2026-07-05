@@ -47,6 +47,37 @@ fn main() -> Result<(), spanda_sdk::SpandaError> {
 | `get_trust(entity_id)` | `GET /v1/entities/{id}/trust` |
 | `get_package_trust(name, version)` | `GET /v1/trust/package` |
 
+## Cognitive & Resilience domain clients
+
+REST wrappers for functional domains (see [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)):
+
+```rust
+use spanda_sdk::SpandaClient;
+
+let client = SpandaClient::local();
+let reflexes = client.reflex().list()?;
+let homeostasis = client.homeostasis().summary()?;
+let immunity = client.immunity().scan()?;
+let attention = client.attention().queue()?;
+let fusion = client.fusion().summary()?;
+let memory = client.memory().summary()?;
+let profile = client.memory().entity_refs("rover-001")?;
+// Legacy facade:
+let legacy = client.autonomy().list_reflex()?;
+```
+
+| Client | Method | REST |
+|--------|--------|------|
+| `ReflexClient` | `list()`, `traces()` | `/v1/autonomy/reflex*` |
+| `HomeostasisClient` | `summary()` | `/v1/autonomy/homeostasis` |
+| `ImmunityClient` | `scan()` | `/v1/autonomy/immunity` |
+| `AttentionClient` | `queue()` | `/v1/autonomy/attention` |
+| `FusionClient` | `summary()` | `/v1/autonomy/fusion` |
+| `MemoryClient` | `summary()`, `entity_refs(id)` | `/v1/autonomy/memory`, entity autonomy |
+| `AutonomyClient` | facade | same routes (backward compatible) |
+
+Entity field reference: [entity-sdk.md](./entity-sdk.md#cognitive--resilience-domain-clients).
+
 ## Authentication
 
 ```rust
@@ -103,6 +134,18 @@ rt.block_on(async {
 | `relate_entities(body)` | `RelateEntities` (Bearer via `SPANDA_API_KEY`) |
 | `sync_entities()` | `SyncEntities` (Bearer via `SPANDA_API_KEY`) |
 | `list_devices()` | `ListDevices` |
+| `list_autonomy_reflexes()` | `ListAutonomyReflexes` |
+| `list_autonomy_reflex_traces()` | `ListAutonomyReflexTraces` |
+| `get_autonomy_homeostasis()` | `GetAutonomyHomeostasis` |
+| `get_autonomy_immunity()` | `GetAutonomyImmunity` |
+| `get_autonomy_attention()` | `GetAutonomyAttention` |
+| `get_autonomy_fusion()` | `GetAutonomyFusion` |
+| `get_autonomy_memory()` | `GetAutonomyMemory` |
+| `get_entity_autonomy(id)` | `GetEntityAutonomy` |
+| `get_governance()` | `GetGovernance` |
+| `get_operational_risk()` | `GetOperationalRisk` |
+
+Proto semver **1.0.14+** for autonomy fusion/memory RPCs. REST domain clients (`client.reflex()`, `client.homeostasis()`, …) remain the default integration path.
 
 REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center. Set `SPANDA_API_KEY` before `GrpcClient::connect` so mutation RPCs send Bearer metadata. See [Publishing SDKs](sdk-publishing.md) for crates.io release (`crates-sdk-v*` tag, `CRATES_IO_TOKEN`).
 
