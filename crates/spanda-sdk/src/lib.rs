@@ -14,8 +14,9 @@ pub mod types;
 pub mod grpc;
 
 pub use client::{
-    AuthConfig, CertificationClient, ComplianceClient, DeploymentProfileClient, GovernanceClient,
-    RiskClient, SpandaClient, SpandaClientBuilder,
+    AttentionClient, AuthConfig, AutonomyClient, CertificationClient, ComplianceClient,
+    DeploymentProfileClient, FusionClient, GovernanceClient, HomeostasisClient, ImmunityClient,
+    MemoryClient, ReflexClient, RiskClient, SpandaClient, SpandaClientBuilder,
 };
 pub use error::SpandaError;
 pub use stream::EventStream;

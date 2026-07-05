@@ -1098,7 +1098,114 @@ impl DeploymentProfileClient {
     }
 }
 
-/// Autonomy / resilient architecture client stubs.
+/// Reflex & Safety domain client — wraps `/v1/autonomy/reflex*`.
+#[derive(Debug, Clone)]
+pub struct ReflexClient(SpandaClient);
+
+impl ReflexClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/reflex
+    pub fn list(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/reflex", None, true)
+    }
+
+    /// GET /v1/autonomy/reflex/traces
+    pub fn traces(&self) -> SpandaResult<Value> {
+        self.0
+            .request("GET", "/v1/autonomy/reflex/traces", None, true)
+    }
+}
+
+/// Homeostasis Engine domain client.
+#[derive(Debug, Clone)]
+pub struct HomeostasisClient(SpandaClient);
+
+impl HomeostasisClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/homeostasis
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0
+            .request("GET", "/v1/autonomy/homeostasis", None, true)
+    }
+}
+
+/// Platform Immunity domain client.
+#[derive(Debug, Clone)]
+pub struct ImmunityClient(SpandaClient);
+
+impl ImmunityClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/immunity
+    pub fn scan(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/immunity", None, true)
+    }
+}
+
+/// Attention Engine domain client.
+#[derive(Debug, Clone)]
+pub struct AttentionClient(SpandaClient);
+
+impl AttentionClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/attention
+    pub fn queue(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/attention", None, true)
+    }
+}
+
+/// Sensory Fusion domain client.
+#[derive(Debug, Clone)]
+pub struct FusionClient(SpandaClient);
+
+impl FusionClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/fusion
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/fusion", None, true)
+    }
+}
+
+/// Operational Memory domain client.
+#[derive(Debug, Clone)]
+pub struct MemoryClient(SpandaClient);
+
+impl MemoryClient {
+    pub fn new(client: SpandaClient) -> Self {
+        Self(client)
+    }
+
+    /// GET /v1/autonomy/memory
+    pub fn summary(&self) -> SpandaResult<Value> {
+        self.0.request("GET", "/v1/autonomy/memory", None, true)
+    }
+
+    /// GET /v1/entities/{id}/autonomy — entity memory refs in autonomy profile.
+    pub fn entity_refs(&self, entity_id: &str) -> SpandaResult<Value> {
+        self.0.request(
+            "GET",
+            &format!("/v1/entities/{entity_id}/autonomy"),
+            None,
+            true,
+        )
+    }
+}
+
+/// Cognitive & resilience facade — backward-compatible autonomy client.
 #[derive(Debug, Clone)]
 pub struct AutonomyClient(SpandaClient);
 
@@ -1109,50 +1216,79 @@ impl AutonomyClient {
 
     /// GET /v1/autonomy/reflex
     pub fn list_reflex(&self) -> SpandaResult<Value> {
-        self.0.request("GET", "/v1/autonomy/reflex", None, true)
+        self.0.reflex().list()
     }
 
     /// GET /v1/autonomy/homeostasis
     pub fn homeostasis_summary(&self) -> SpandaResult<Value> {
-        self.0
-            .request("GET", "/v1/autonomy/homeostasis", None, true)
+        self.0.homeostasis().summary()
     }
 
     /// GET /v1/autonomy/immunity
     pub fn immunity_scan(&self) -> SpandaResult<Value> {
-        self.0.request("GET", "/v1/autonomy/immunity", None, true)
+        self.0.immunity().scan()
     }
 
     /// GET /v1/autonomy/attention
     pub fn attention_queue(&self) -> SpandaResult<Value> {
-        self.0.request("GET", "/v1/autonomy/attention", None, true)
+        self.0.attention().queue()
     }
 
     /// GET /v1/entities/{id}/autonomy
     pub fn entity_autonomy(&self, entity_id: &str) -> SpandaResult<Value> {
-        self.0.request(
-            "GET",
-            &format!("/v1/entities/{entity_id}/autonomy"),
-            None,
-            true,
-        )
+        self.0.memory().entity_refs(entity_id)
     }
 }
 
 impl SpandaClient {
-    /// Resilient autonomy API client.
+    /// Reflex & Safety domain client.
+    pub fn reflex(&self) -> ReflexClient {
+        ReflexClient::new(self.clone())
+    }
+
+    /// Homeostasis Engine domain client.
+    pub fn homeostasis(&self) -> HomeostasisClient {
+        HomeostasisClient::new(self.clone())
+    }
+
+    /// Platform Immunity domain client.
+    pub fn immunity(&self) -> ImmunityClient {
+        ImmunityClient::new(self.clone())
+    }
+
+    /// Attention Engine domain client.
+    pub fn attention(&self) -> AttentionClient {
+        AttentionClient::new(self.clone())
+    }
+
+    /// Sensory Fusion domain client.
+    pub fn fusion(&self) -> FusionClient {
+        FusionClient::new(self.clone())
+    }
+
+    /// Operational Memory domain client.
+    pub fn memory(&self) -> MemoryClient {
+        MemoryClient::new(self.clone())
+    }
+
+    /// Cognitive & resilience facade (backward compatible).
     pub fn autonomy(&self) -> AutonomyClient {
         AutonomyClient::new(self.clone())
     }
 }
 
-/// Operational risk client.
+/// Damage Risk Assessment domain client.
 #[derive(Debug, Clone)]
 pub struct RiskClient(SpandaClient);
 
 impl RiskClient {
     pub fn summary(&self) -> SpandaResult<Value> {
         self.0.request("GET", "/v1/risk", None, true)
+    }
+
+    /// Entity damage risk via autonomy profile enrichment.
+    pub fn entity_damage_risk(&self, entity_id: &str) -> SpandaResult<Value> {
+        self.0.memory().entity_refs(entity_id)
     }
 }
 

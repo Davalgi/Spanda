@@ -17,6 +17,14 @@ from spanda_sdk.governance_clients import (
     GovernanceClient,
     RiskClient,
 )
+from spanda_sdk.cognitive_clients import (
+    AttentionClient,
+    FusionClient,
+    HomeostasisClient,
+    ImmunityClient,
+    MemoryClient,
+    ReflexClient,
+)
 from spanda_sdk.stream import TelemetryStream
 
 __all__ = ["SpandaClient", "SpandaError", "TelemetryStream"]
@@ -151,6 +159,12 @@ class SpandaClient:
             "GET",
             f"/v1/entities/{urllib.parse.quote(entity_id, safe='')}/autonomy",
         )
+
+    def get_autonomy_fusion(self) -> Any:
+        return self._request("GET", "/v1/autonomy/fusion")
+
+    def get_autonomy_memory(self) -> Any:
+        return self._request("GET", "/v1/autonomy/memory")
 
     def list_admin_api_keys(self) -> Any:
         return self._request("GET", "/v1/admin/api-keys", auth=True)
@@ -577,3 +591,21 @@ class SpandaClient:
     @property
     def risk_client(self) -> RiskClient:
         return RiskClient(self)
+
+    def reflex(self) -> ReflexClient:
+        return ReflexClient(self)
+
+    def homeostasis(self) -> HomeostasisClient:
+        return HomeostasisClient(self)
+
+    def immunity(self) -> ImmunityClient:
+        return ImmunityClient(self)
+
+    def attention(self) -> AttentionClient:
+        return AttentionClient(self)
+
+    def fusion(self) -> FusionClient:
+        return FusionClient(self)
+
+    def memory(self) -> MemoryClient:
+        return MemoryClient(self)

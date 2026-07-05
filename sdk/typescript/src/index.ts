@@ -1,3 +1,11 @@
+export {
+  AttentionClient,
+  FusionClient,
+  HomeostasisClient,
+  ImmunityClient,
+  MemoryClient,
+  ReflexClient,
+} from "./cognitiveClients.js";
 export { SpandaClient, EventStream, type SpandaClientOptions } from "./client.js";
 export {
   CertificationClient,

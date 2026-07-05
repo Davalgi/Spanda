@@ -8,6 +8,14 @@ import {
   GovernanceClient,
   RiskClient,
 } from "./governanceClients.js";
+import {
+  AttentionClient,
+  FusionClient,
+  HomeostasisClient,
+  ImmunityClient,
+  MemoryClient,
+  ReflexClient,
+} from "./cognitiveClients.js";
 import { Entity, JsonValue, ReadinessReport } from "./types.js";
 
 export interface SpandaClientOptions {
@@ -178,6 +186,38 @@ export class SpandaClient {
 
   async getEntityAutonomy(entityId: string): Promise<JsonValue> {
     return this.request("GET", `/v1/entities/${encodeURIComponent(entityId)}/autonomy`);
+  }
+
+  async getAutonomyFusion(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/fusion");
+  }
+
+  async getAutonomyMemory(): Promise<JsonValue> {
+    return this.request("GET", "/v1/autonomy/memory");
+  }
+
+  reflex(): ReflexClient {
+    return new ReflexClient(this);
+  }
+
+  homeostasis(): HomeostasisClient {
+    return new HomeostasisClient(this);
+  }
+
+  immunity(): ImmunityClient {
+    return new ImmunityClient(this);
+  }
+
+  attention(): AttentionClient {
+    return new AttentionClient(this);
+  }
+
+  fusion(): FusionClient {
+    return new FusionClient(this);
+  }
+
+  memory(): MemoryClient {
+    return new MemoryClient(this);
   }
 
   async listAdminApiKeys(): Promise<JsonValue> {
