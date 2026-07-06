@@ -1,9 +1,22 @@
 //! Security foundation integration tests.
 
 use spanda_core::{check, compile, run, RunOptions};
+use spanda_runtime::security_runtime::SecurityRuntime;
 use spanda_security::{
-    CapabilitySet, PackagePermissions, RobotIdentity, SecurePolicy, SecurityContext, TrustLevel,
+    CapabilitySet, PackagePermissions, RobotIdentity, SecurePolicy, SecurityBackedRuntime,
+    SecurityContext, TrustLevel,
 };
+
+fn security_backed_runtime() -> Box<dyn SecurityRuntime> {
+    Box::new(SecurityBackedRuntime::new())
+}
+
+fn secured_run_options() -> RunOptions {
+    RunOptions {
+        security_runtime_factory: Some(security_backed_runtime),
+        ..Default::default()
+    }
+}
 
 #[test]
 fn security_example_type_checks() {
@@ -93,7 +106,7 @@ robot R {
   }
 }
 "#;
-    let err = run(source, RunOptions::default()).expect_err("unsigned secure topic should fail");
+    let err = run(source, secured_run_options()).expect_err("unsigned secure topic should fail");
     assert!(
         err.to_string().contains("Identity required") || err.to_string().contains("identity"),
         "expected identity requirement, got: {err}"
@@ -287,7 +300,7 @@ robot R {
   behavior run() { audit.record("e", "p"); }
 }
 "#;
-    let err = run(source, RunOptions::default())
+    let err = run(source, secured_run_options())
         .expect_err("strict permissions should block audit.write");
     assert!(
         err.to_string().contains("capability denied"),
