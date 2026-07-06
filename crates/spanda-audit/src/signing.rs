@@ -99,7 +99,10 @@ impl SigningBackend for ScriptHsmSigningBackend {
             std::env::var("SPANDA_DECISION_SIGNING_KEY_ID").unwrap_or_else(|_| key_ref.to_string());
         let sig = sign_with_external_hsm(data, &key_id, key_ref);
         if sig.is_empty() {
-            return Err("external HSM signing returned empty signature".into());
+            if self.fallback_material.is_empty() {
+                return Err("external HSM signing returned empty signature".into());
+            }
+            return Ok(software_sign(data, &self.fallback_material));
         }
         Ok(sig)
     }
