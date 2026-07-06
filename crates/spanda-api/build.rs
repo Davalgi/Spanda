@@ -9,7 +9,12 @@ fn control_center_ui_version() -> String {
             trimmed
                 .strip_prefix("\"version\":")
                 .or_else(|| trimmed.strip_prefix("\"version\" :"))
-                .map(|rest| rest.trim().trim_matches('"').trim_end_matches(',').to_string())
+                .map(|rest| {
+                    rest.trim()
+                        .trim_matches('"')
+                        .trim_end_matches(',')
+                        .to_string()
+                })
         })
         .filter(|value| !value.is_empty())
         .unwrap_or_else(|| "0.0.0".to_string())

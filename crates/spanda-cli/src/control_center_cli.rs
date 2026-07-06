@@ -422,7 +422,10 @@ fn print_instance_status(base_url: &str, value: &serde_json::Value, json: bool) 
     let failed = pool.and_then(|v| v.get("failed")).and_then(|v| v.as_u64());
 
     println!("Spanda Control Center @ {base_url}");
-    if let Some(ui_version) = value.get("control_center_ui_version").and_then(|v| v.as_str()) {
+    if let Some(ui_version) = value
+        .get("control_center_ui_version")
+        .and_then(|v| v.as_str())
+    {
         println!("  UI version:    {ui_version}");
     } else if let Some(version) = value.get("version").and_then(|v| v.as_str()) {
         println!("  API version:   {version}");
