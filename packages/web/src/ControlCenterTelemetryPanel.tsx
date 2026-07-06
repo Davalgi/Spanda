@@ -64,7 +64,11 @@ export function ControlCenterTelemetryPanel({ baseUrl }: Props) {
         title="Live telemetry stream"
         hint="WebSocket /v1/stream/telemetry — resume offsets on reconnect."
         actions={
-          <button type="button" onClick={() => setStreaming((value) => !value)}>
+          <button
+            type="button"
+            aria-pressed={streaming}
+            onClick={() => setStreaming((value) => !value)}
+          >
             {streaming ? "Stop stream" : "Start stream"}
           </button>
         }

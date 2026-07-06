@@ -143,7 +143,12 @@ export function DecisionsPanel({ baseUrl, authHeaders }: Props) {
             <button type="button" onClick={() => void runSimWithTraces()} disabled={busy || simBusy}>
               {simBusy ? "Running sim…" : "Run sim with traces"}
             </button>
-            <button type="button" onClick={() => setLiveTrace((live) => !live)} disabled={busy}>
+            <button
+              type="button"
+              aria-pressed={liveTrace}
+              onClick={() => setLiveTrace((live) => !live)}
+              disabled={busy}
+            >
               {liveTrace ? "Live trace on (3s)" : "Live trace off"}
             </button>
           </div>

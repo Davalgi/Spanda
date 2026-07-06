@@ -76,11 +76,13 @@ export function ControlCenterNav({
       <div className="cc-nav-groups">
         {visibleGroups.map((group) => {
           const isOpen = normalizedQuery ? true : !collapsed[group.id];
+          const groupHasActive =
+            !pluginTab && activeTab != null && group.tabs.includes(activeTab);
           return (
             <section key={group.id} className="cc-nav-group">
               <button
                 type="button"
-                className="cc-nav-group-toggle"
+                className={`cc-nav-group-toggle${groupHasActive ? " has-active" : ""}`}
                 onClick={() => toggleGroup(group.id)}
                 aria-expanded={isOpen ? "true" : "false"}
               >

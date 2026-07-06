@@ -85,6 +85,24 @@ button {
 button.primary {
   background: #238636;
   border-color: #238636;
+  color: #ffffff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #2ea043;
+  border-color: #2ea043;
+}
+
+button.secondary {
+  border-color: #484f58;
+  background: #21262d;
+  color: #c9d1d9;
+}
+
+button.secondary:hover:not(:disabled) {
+  border-color: #6e7681;
+  background: #30363d;
+  color: #e6edf3;
 }
 
 button:disabled {
@@ -509,7 +527,8 @@ tr.decision-row-escalation td {
 
 .entity-list li button.selected {
   border-color: #6366f1;
-  background: #6366f122;
+  background: #6366f133;
+  color: #a5b4fc;
 }
 
 .entity-health-dot {
@@ -812,6 +831,14 @@ tr.decision-row-escalation td {
   letter-spacing: 0.05em;
 }
 
+.cc-nav-group-toggle.has-active {
+  color: #3fb950;
+}
+
+.cc-nav-group-toggle.has-active .cc-nav-chevron {
+  color: #3fb950;
+}
+
 .cc-nav-chevron {
   font-size: 0.65rem;
 }
@@ -840,9 +867,48 @@ tr.decision-row-escalation td {
 }
 
 .cc-nav-item.active {
+  background: #23863640;
+  border-color: #3fb950;
+  color: #56d364;
+  font-weight: 500;
+}
+
+/* Active / toggled controls across Control Center panels */
+.cc-shell button[aria-pressed="true"] {
   background: #23863633;
   border-color: #238636;
   color: #3fb950;
+}
+
+.cc-shell button[aria-pressed="true"].cc-btn-on-info {
+  background: #388bfd22;
+  border-color: #388bfd;
+  color: #79c0ff;
+}
+
+/* Action buttons in the main pane — blue accent for clickable controls */
+.cc-shell .cc-main button:not(.primary):not(.secondary):not(.cc-link-btn):not(.cc-wizard-toggle) {
+  border-color: #388bfd;
+  color: #c9e6ff;
+  background: #388bfd1f;
+}
+
+.cc-shell .cc-main button:not(.primary):not(.secondary):not(.cc-link-btn):not(.cc-wizard-toggle):hover:not(:disabled) {
+  border-color: #58a6ff;
+  color: #ffffff;
+  background: #388bfd33;
+}
+
+.cc-shell .cc-main button.secondary {
+  border-color: #484f58;
+  color: #c9d1d9;
+  background: #21262d;
+}
+
+.cc-shell .cc-main button.secondary:hover:not(:disabled) {
+  border-color: #58a6ff;
+  color: #79c0ff;
+  background: #388bfd18;
 }
 
 .cc-sidebar-footer {
@@ -895,6 +961,31 @@ tr.decision-row-escalation td {
   margin-left: auto;
   font-size: 0.68rem;
   padding: 0.15rem 0.35rem;
+  border-color: #30363d;
+  background: #21262d;
+  color: #8b949e;
+}
+
+.cc-sidebar-footer .cc-forget-btn:hover:not(:disabled) {
+  border-color: #484f58;
+  color: #c9d1d9;
+  background: #30363d;
+}
+
+.cc-sidebar-footer .cc-profile-add-btn {
+  flex-shrink: 0;
+  min-width: 1.75rem;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.8rem;
+  border-color: #30363d;
+  background: #21262d;
+  color: #8b949e;
+}
+
+.cc-sidebar-footer .cc-profile-add-btn:hover:not(:disabled) {
+  border-color: #484f58;
+  color: #c9d1d9;
+  background: #30363d;
 }
 
 .cc-sidebar-footer .cc-profile-switcher {
@@ -911,13 +1002,6 @@ tr.decision-row-escalation td {
   align-items: center;
   gap: 0;
   font-size: 0.72rem;
-}
-
-.cc-sidebar-footer .cc-profile-add-btn {
-  flex-shrink: 0;
-  min-width: 1.75rem;
-  padding: 0.25rem 0.45rem;
-  font-size: 0.8rem;
 }
 
 .cc-sidebar-footer .cc-profile-add {
@@ -1025,15 +1109,27 @@ tr.decision-row-escalation td {
 }
 
 .cc-stat-card.tone-ok {
-  border-color: #23863655;
+  border-color: #23863688;
+}
+
+.cc-stat-card.tone-ok .cc-stat-value {
+  color: #3fb950;
 }
 
 .cc-stat-card.tone-warn {
-  border-color: #9e6a0355;
+  border-color: #9e6a0388;
+}
+
+.cc-stat-card.tone-warn .cc-stat-value {
+  color: #d29922;
 }
 
 .cc-stat-card.tone-danger {
-  border-color: #da363355;
+  border-color: #da363388;
+}
+
+.cc-stat-card.tone-danger .cc-stat-value {
+  color: #ffa198;
 }
 
 .cc-stat-label {
@@ -1624,7 +1720,12 @@ html:has(.cc-desktop-app) body {
 
 .cc-wizard-step.state-active {
   border-color: #388bfd;
-  background: #388bfd12;
+  background: #388bfd18;
+}
+
+.cc-wizard-step.state-active .cc-wizard-step-index {
+  background: #388bfd;
+  color: #ffffff;
 }
 
 .cc-wizard-step.state-failed {
@@ -1692,7 +1793,11 @@ html:has(.cc-desktop-app) body {
 
 .cc-transport-card.selected {
   border-color: #388bfd;
-  background: #388bfd12;
+  background: #388bfd18;
+}
+
+.cc-transport-card.selected .cc-transport-label {
+  color: #79c0ff;
 }
 
 .cc-transport-card input {
