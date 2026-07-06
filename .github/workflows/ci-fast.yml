@@ -179,5 +179,9 @@ jobs:
       - uses: ./.github/actions/with-spanda-bin
         with:
           build-if-missing: "false"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci --prefix sdk/typescript && npm run build --prefix sdk/typescript
       - run: chmod +x scripts/cross_interface_consistency.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cross_interface_consistency.sh
