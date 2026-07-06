@@ -8,6 +8,35 @@
 
 *Build. Verify. Simulate. Deploy. Operate.*
 
+<p align="center">
+
+![Rust](https://img.shields.io/badge/Rust-000000?style=flat&logo=rust&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tauri](https://img.shields.io/badge/Tauri-24C8DB?style=flat&logo=tauri&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![gRPC](https://img.shields.io/badge/gRPC-4285F4?style=flat&logo=grpc&logoColor=white)
+![ROS](https://img.shields.io/badge/ROS-22314E?style=flat&logo=ros&logoColor=white)
+
+<br>
+
+![CI](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
+![CI Integration](https://github.com/Davalgi/Spanda/actions/workflows/ci-integration.yml/badge.svg)
+![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
+![last commit](https://img.shields.io/github/last-commit/Davalgi/Spanda)
+![license](https://img.shields.io/github/license/Davalgi/Spanda)
+![contributors](https://img.shields.io/github/contributors/Davalgi/Spanda)
+![open issues](https://img.shields.io/github/issues/Davalgi/Spanda)
+![open PRs](https://img.shields.io/github/issues-pr/Davalgi/Spanda)
+![top language](https://img.shields.io/github/languages/top/Davalgi/Spanda)
+
+<br>
+
+![Hosted on GitHub](https://img.shields.io/badge/Hosted%20on-GitHub-181717?style=flat&logo=github&logoColor=white)
+![Badges by Shields.io](https://img.shields.io/badge/Badges%20by-Shields.io-brightgreen)
+
+</p>
+
 Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
 its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
 using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
