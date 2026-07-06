@@ -34,7 +34,7 @@ https://github.com/Davalgi/Spanda/issues?q=is%3Aissue+is%3Aopen+label%3Arelease-
 | RB-009 | [#53](https://github.com/Davalgi/Spanda/issues/53) | Cross-interface consistency not historically enforced in CI | QA / SDKs | P1 | Manual CLI vs REST vs SDK drift | — | **Mitigated** — `scripts/cross_interface_consistency.sh` + CI Fast/Integration |
 | RB-010 | [#54](https://github.com/Davalgi/Spanda/issues/54) | README commands lacked automated smoke/golden coverage | QA | P0 | Broken README commands undetected | — | **Fixed** — `tests/readme_commands/` harness |
 | RB-011 | [#55](https://github.com/Davalgi/Spanda/issues/55) | v3 decision signature verifies embedded `signing_payload` only; outer `decision` fields can diverge | Decision security | P1 | Mutate `decision` on a signed v3 payload; `verify_v3_decision_signature` still returns Ok | — | **Fixed** — outer fields must match signing payload before signature verify |
-| RB-012 | [#56](https://github.com/Davalgi/Spanda/issues/56) | Parser `previous`/`advance` underflow panic on empty/start position | Parser | P0 | Property test seeds (`robot`, `{{{{`, empty-ish streams) | — | **Fixed** — use `saturating_sub(1)` |
+| RB-012 | [#56](https://github.com/Davalgi/Spanda/issues/56) | Parser `previous`/`advance` underflow panic on empty/start position | Parser | P0 | Property test seeds (`robot`, `&#123;&#123;&#123;&#123;`, empty-ish streams) | — | **Fixed** — use `saturating_sub(1)` |
 
 ## Open issues (priority)
 
