@@ -17,23 +17,31 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 ![gRPC](https://img.shields.io/badge/gRPC-4285F4?style=flat&logo=grpc&logoColor=white)
 ![ROS](https://img.shields.io/badge/ROS-22314E?style=flat&logo=ros&logoColor=white)
+![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=flat&logo=webassembly&logoColor=white)
+![MQTT](https://img.shields.io/badge/MQTT-660066?style=flat&logo=eclipsemosquitto&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
+
+<br>
+
+[![crates.io](https://img.shields.io/crates/v/spanda-sdk?logo=rust)](https://crates.io/crates/spanda-sdk)
+[![PyPI](https://img.shields.io/pypi/v/spanda-sdk?logo=pypi)](https://pypi.org/project/spanda-sdk/)
+[![npm](https://img.shields.io/npm/v/@davalgi-spanda/sdk?logo=npm)](https://www.npmjs.com/package/@davalgi-spanda/sdk)
+[![docs](https://img.shields.io/badge/docs-mdBook-orange?logo=rust)](https://davalgi.github.io/Spanda/)
+![status](https://img.shields.io/badge/status-evaluation%20%2F%20beta-yellow)
+![safety](https://img.shields.io/badge/focus-safety--first-blue)
+![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
+![license](https://img.shields.io/github/license/Davalgi/Spanda)
 
 <br>
 
 ![CI](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
-![CI Integration](https://github.com/Davalgi/Spanda/actions/workflows/ci-integration.yml/badge.svg)
-![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
 ![last commit](https://img.shields.io/github/last-commit/Davalgi/Spanda)
-![license](https://img.shields.io/github/license/Davalgi/Spanda)
+![commit activity](https://img.shields.io/github/commit-activity/y/Davalgi/Spanda)
 ![contributors](https://img.shields.io/github/contributors/Davalgi/Spanda)
+![stars](https://img.shields.io/github/stars/Davalgi/Spanda?style=social)
 ![open issues](https://img.shields.io/github/issues/Davalgi/Spanda)
 ![open PRs](https://img.shields.io/github/issues-pr/Davalgi/Spanda)
 ![top language](https://img.shields.io/github/languages/top/Davalgi/Spanda)
-
-<br>
-
-![Hosted on GitHub](https://img.shields.io/badge/Hosted%20on-GitHub-181717?style=flat&logo=github&logoColor=white)
-![Badges by Shields.io](https://img.shields.io/badge/Badges%20by-Shields.io-brightgreen)
 
 </p>
 
