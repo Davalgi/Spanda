@@ -1,6 +1,7 @@
 /** Cognitive & Resilience Architecture domain SDK clients. */
 
-import type { JsonValue, SpandaClient } from "./client.js";
+import type { SpandaClient } from "./client.js";
+import type { JsonValue } from "./types.js";
 
 export class ReflexClient {
   constructor(private readonly client: SpandaClient) {}

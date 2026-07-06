@@ -682,6 +682,41 @@ export class SpandaClient {
     return (payload.result as JsonValue | undefined) ?? payload;
   }
 
+  async getGovernance(): Promise<JsonValue> {
+    return this.request("GET", "/v1/governance");
+  }
+
+  async validateGovernance(body: JsonValue = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/governance/validate", body, true);
+  }
+
+  async getComplianceSummary(): Promise<JsonValue> {
+    return this.request("GET", "/v1/compliance", undefined, true);
+  }
+
+  async checkCompliance(body: JsonValue = {}): Promise<JsonValue> {
+    return this.request("POST", "/v1/compliance/check", body, true);
+  }
+
+  async listCertifications(): Promise<JsonValue> {
+    return this.request("GET", "/v1/certifications", undefined, true);
+  }
+
+  async listDeploymentProfiles(): Promise<JsonValue> {
+    return this.request("GET", "/v1/deployment-profiles");
+  }
+
+  async getDeploymentProfile(name: string): Promise<JsonValue> {
+    return this.request(
+      "GET",
+      `/v1/deployment-profiles?name=${encodeURIComponent(name)}`,
+    );
+  }
+
+  async getRiskSummary(): Promise<JsonValue> {
+    return this.request("GET", "/v1/risk", undefined, true);
+  }
+
   governance(): GovernanceClient {
     return new GovernanceClient(this);
   }
