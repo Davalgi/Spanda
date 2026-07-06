@@ -3,9 +3,13 @@
   "info": {
     "title": "Spanda Control Center API",
     "version": "1.0.0",
-    "description": "REST v1 gateway for enterprise operations — device pool, provisioning, drift, OTA, trust, SRE."
+    "description": "REST v1 gateway for enterprise operations \u2014 device pool, provisioning, drift, OTA, trust, SRE."
   },
-  "servers": [{ "url": "http://127.0.0.1:8080" }],
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -18,318 +22,1093 @@
       "correlationId": {
         "name": "X-Correlation-ID",
         "in": "header",
-        "schema": { "type": "string" },
+        "schema": {
+          "type": "string"
+        },
         "description": "Optional request correlation ID; echoed in response"
       }
     }
   },
   "paths": {
-    "/v1/health": {
-      "get": {
-        "summary": "Liveness",
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/v1/instance": {
-      "get": {
-        "summary": "Runtime status (bind, config, program, pool summary)",
-        "responses": { "200": { "description": "Control Center instance metadata" } }
-      }
-    },
-    "/v1/tenant": {
-      "get": {
-        "summary": "Active Control Center tenant (SPANDA_TENANT_ID)",
-        "responses": { "200": { "description": "Tenant scope metadata" } }
-      }
-    },
-    "/v1/version": {
-      "get": {
-        "summary": "API versioning policy",
-        "responses": { "200": { "description": "Supported API versions" } }
-      }
-    },
-    "/v1/openapi.json": {
-      "get": {
-        "summary": "OpenAPI 3.1 specification for this API",
-        "responses": { "200": { "description": "OpenAPI document" } }
-      }
-    },
-    "/v1/dashboard": {
-      "get": {
-        "summary": "Operations dashboard summary",
-        "responses": { "200": { "description": "Device pool and alert counts" } }
-      }
-    },
-    "/v1/devices": {
-      "get": {
-        "summary": "List devices in the device pool",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Device inventory" } }
-      }
-    },
-    "/v1/devices/discover": {
-      "post": {
-        "summary": "Run multi-transport device discovery",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "transports": { "type": "array", "items": { "type": "string" } }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Discovery results" } }
-      }
-    },
-    "/v1/devices/{id}": {
-      "get": {
-        "summary": "Get device by id",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Device record" }, "404": { "description": "Not found" } }
-      },
-      "patch": {
-        "summary": "Update device lifecycle_state",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": { "lifecycle_state": { "type": "string" } },
-                "required": ["lifecycle_state"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Device updated" } }
-      }
-    },
-    "/v1/devices/{id}/provision": {
-      "post": {
-        "summary": "Provision a discovered device",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Provision result" } }
-      }
-    },
-    "/v1/devices/{id}/assign": {
-      "post": {
-        "summary": "Assign device to robot or fleet",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Assignment result" } }
-      }
-    },
-    "/v1/devices/{id}/quarantine": {
-      "post": {
-        "summary": "Quarantine a device",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Quarantine result" } }
-      }
-    },
-    "/v1/devices/{id}/trust": {
-      "post": {
-        "summary": "Trust / approve a device after operator review",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Trust result" } }
-      }
-    },
-    "/v1/robots": {
-      "get": {
-        "summary": "List robots with assigned devices",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Robot inventory" } }
-      }
-    },
-    "/v1/fleets": {
-      "get": {
-        "summary": "List fleets",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Fleet inventory" } }
-      }
-    },
-    "/v1/device-tree": {
-      "get": {
-        "summary": "Hierarchical device tree",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Device tree" } }
-      }
-    },
-    "/v1/device-reports": {
-      "get": {
-        "summary": "Device pool reports bundle",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Inventory, trust, calibration, readiness reports" } }
-      }
-    },
-    "/v1/failover/chains": {
-      "get": {
-        "summary": "Redundant device failover chains",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Failover chain definitions" } }
-      }
-    },
-    "/v1/fleet/agents": {
-      "get": {
-        "summary": "Registered fleet agents",
-        "responses": { "200": { "description": "Fleet agent registry" } }
-      }
-    },
-    "/v1/alerts": {
-      "get": {
-        "summary": "Alert history",
-        "responses": { "200": { "description": "Alert list" } }
-      }
-    },
-    "/v1/alerts/test": {
-      "post": {
-        "summary": "Dispatch test alert",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Test alert recorded" } }
-      }
-    },
     "/v1/admin/alert-channels": {
       "get": {
         "summary": "Get configured alert notification channels",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Alert channel configuration" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alert channel configuration"
+          }
+        }
       },
       "put": {
         "summary": "Replace alert notification channels",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Updated channel configuration" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated channel configuration"
+          }
+        }
       }
     },
     "/v1/admin/api-keys": {
       "get": {
         "summary": "List API keys (metadata only)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "API key inventory" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API key inventory"
+          }
+        }
       },
       "post": {
         "summary": "Create API key",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Created key with one-time token" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created key with one-time token"
+          }
+        }
       }
     },
     "/v1/admin/api-keys/{key_id}": {
       "patch": {
         "summary": "Update API key metadata",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "key_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Updated key" } }
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated key"
+          }
+        }
       },
       "delete": {
         "summary": "Revoke API key",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "key_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Key revoked" } }
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key revoked"
+          }
+        }
       }
     },
     "/v1/admin/integrations": {
       "get": {
         "summary": "Admin integrations summary",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Integrations status" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integrations status"
+          }
+        }
+      }
+    },
+    "/v1/admin/oidc": {
+      "get": {
+        "summary": "OIDC integration configuration (no secrets)",
+        "responses": {
+          "200": {
+            "description": "OIDC integration configuration (no secrets)"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update OIDC integration settings",
+        "responses": {
+          "200": {
+            "description": "Update OIDC integration settings"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/oidc/authorize-url": {
+      "post": {
+        "summary": "Build OIDC authorization URL for admin OAuth",
+        "responses": {
+          "200": {
+            "description": "Build OIDC authorization URL for admin OAuth"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/oidc/oauth/callback": {
+      "post": {
+        "summary": "Exchange authorization code and import userinfo",
+        "responses": {
+          "200": {
+            "description": "Exchange authorization code and import userinfo"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/oidc/sync": {
+      "post": {
+        "summary": "Fetch OIDC discovery and import directory users",
+        "responses": {
+          "200": {
+            "description": "Fetch OIDC discovery and import directory users"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/slack": {
+      "get": {
+        "summary": "Slack OAuth wizard status",
+        "responses": {
+          "200": {
+            "description": "Slack OAuth wizard status"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Configure Slack OAuth wizard fields",
+        "responses": {
+          "200": {
+            "description": "Configure Slack OAuth wizard fields"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/slack/oauth-url": {
+      "post": {
+        "summary": "Build Slack app OAuth authorization URL",
+        "responses": {
+          "200": {
+            "description": "Build Slack app OAuth authorization URL"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/slack/oauth/callback": {
+      "post": {
+        "summary": "Exchange Slack OAuth code and store webhook",
+        "responses": {
+          "200": {
+            "description": "Exchange Slack OAuth code and store webhook"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
       }
     },
     "/v1/admin/users": {
       "get": {
         "summary": "List Control Center users",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "User directory" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User directory"
+          }
+        }
       },
       "post": {
         "summary": "Create user",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Created user" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created user"
+          }
+        }
       }
     },
     "/v1/admin/users/{user_id}": {
       "patch": {
         "summary": "Update user",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Updated user" } }
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated user"
+          }
+        }
       },
       "delete": {
         "summary": "Delete user",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "User removed" } }
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User removed"
+          }
+        }
       }
     },
-    "/v1/secrets": {
+    "/v1/alerts": {
       "get": {
-        "summary": "Secret metadata (no values)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Secret metadata list" } }
+        "summary": "Alert history",
+        "responses": {
+          "200": {
+            "description": "Alert list"
+          }
+        }
       }
     },
-    "/v1/rbac/matrix": {
-      "get": {
-        "summary": "Role permission matrix",
-        "responses": { "200": { "description": "RBAC matrix" } }
-      }
-    },
-    "/v1/rbac/me": {
-      "get": {
-        "summary": "Authenticated operator role and permissions",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Current RBAC context" } }
-      }
-    },
-    "/v1/provision": {
+    "/v1/alerts/test": {
       "post": {
-        "summary": "Run discover → ready provisioning workflow",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Provision result" } }
+        "summary": "Dispatch test alert",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test alert recorded"
+          }
+        }
       }
     },
-    "/v1/config/snapshots": {
+    "/v1/analytics/certification-pack": {
       "get": {
-        "summary": "List configuration snapshots",
-        "responses": { "200": { "description": "Snapshot metadata" } }
+        "summary": "Certification evidence pack",
+        "parameters": [
+          {
+            "name": "strict",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certification pack composition"
+          }
+        }
+      }
+    },
+    "/v1/analytics/governance": {
+      "get": {
+        "summary": "Autonomous governance policy evaluation",
+        "parameters": [
+          {
+            "name": "policy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Policy evaluation report"
+          }
+        }
+      }
+    },
+    "/v1/analytics/human-teaming": {
+      "get": {
+        "summary": "Human/robot teaming verification",
+        "responses": {
+          "200": {
+            "description": "Approval and escalation paths"
+          }
+        }
+      }
+    },
+    "/v1/analytics/mission-risk": {
+      "get": {
+        "summary": "Mission deployment risk score",
+        "responses": {
+          "200": {
+            "description": "Mission risk assessment"
+          }
+        }
+      }
+    },
+    "/v1/analytics/mission-twin": {
+      "get": {
+        "summary": "Digital mission twin report",
+        "responses": {
+          "200": {
+            "description": "Mission twin state and risks"
+          }
+        }
+      }
+    },
+    "/v1/analytics/readiness": {
+      "get": {
+        "summary": "Readiness trends and forecast",
+        "parameters": [
+          {
+            "name": "forecast_days",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Readiness analytics"
+          }
+        }
+      }
+    },
+    "/v1/analytics/readiness-forecast": {
+      "get": {
+        "summary": "Readiness degradation forecast",
+        "parameters": [
+          {
+            "name": "horizon",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "all",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Readiness forecast report"
+          }
+        }
+      }
+    },
+    "/v1/analytics/time-travel": {
+      "get": {
+        "summary": "Mission time travel trace inspection",
+        "parameters": [
+          {
+            "name": "at",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "inspect",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "trace",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical mission state snapshot"
+          }
+        }
+      }
+    },
+    "/v1/analytics/trust-graph": {
+      "get": {
+        "summary": "Trust-weighted dependency graph",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "text",
+                "mermaid",
+                "dot"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust graph payload"
+          }
+        }
+      }
+    },
+    "/v1/analytics/what-if": {
+      "get": {
+        "summary": "What-if failure scenario analysis",
+        "parameters": [
+          {
+            "name": "scenario",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "all",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "What-if report"
+          }
+        }
+      }
+    },
+    "/v1/assurance/summary": {
+      "get": {
+        "summary": "Assurance policy summary",
+        "responses": {
+          "200": {
+            "description": "Assurance summary"
+          }
+        }
+      }
+    },
+    "/v1/audit/mutations": {
+      "get": {
+        "summary": "Mutation audit trail",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hash-chained mutation records"
+          }
+        }
+      }
+    },
+    "/v1/audit/mutations/export": {
+      "get": {
+        "summary": "Export mutation audit for SIEM (CEF or JSONL)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "cef",
+                "jsonl"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SIEM export payload"
+          }
+        }
+      }
+    },
+    "/v1/autonomy/attention": {
+      "get": {
+        "summary": "Attention queue from entity health and readiness signals",
+        "responses": {
+          "200": {
+            "description": "Attention queue from entity health and readiness signals"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/fusion": {
+      "get": {
+        "summary": "Sensory fusion confidence summary across entities",
+        "responses": {
+          "200": {
+            "description": "Sensory fusion confidence summary across entities"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/homeostasis": {
+      "get": {
+        "summary": "Platform homeostasis summary from entity signals",
+        "responses": {
+          "200": {
+            "description": "Platform homeostasis summary from entity signals"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/immunity": {
+      "get": {
+        "summary": "Immunity scan across entities",
+        "responses": {
+          "200": {
+            "description": "Immunity scan across entities"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/memory": {
+      "get": {
+        "summary": "Operational memory references across entities",
+        "responses": {
+          "200": {
+            "description": "Operational memory references across entities"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/reflex": {
+      "get": {
+        "summary": "List platform reflex actions",
+        "responses": {
+          "200": {
+            "description": "List platform reflex actions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/autonomy/reflex/traces": {
+      "get": {
+        "summary": "Reflex trace catalog from runtime buffer and defaults",
+        "responses": {
+          "200": {
+            "description": "Reflex trace catalog from runtime buffer and defaults"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/certifications": {
+      "get": {
+        "summary": "Certification inventory",
+        "responses": {
+          "200": {
+            "description": "Certification inventory"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/certifications/report": {
+      "get": {
+        "summary": "Certification report",
+        "responses": {
+          "200": {
+            "description": "Certification report"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/chaos/injections": {
+      "get": {
+        "summary": "Supported chaos injection catalog",
+        "responses": {
+          "200": {
+            "description": "Supported chaos injection catalog"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/chaos/simulate": {
+      "post": {
+        "summary": "Run chaos experiment when a program is loaded",
+        "responses": {
+          "200": {
+            "description": "Run chaos experiment when a program is loaded"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/compliance": {
+      "get": {
+        "summary": "Compliance summary",
+        "responses": {
+          "200": {
+            "description": "Compliance summary"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/compliance/check": {
+      "post": {
+        "summary": "Run compliance check",
+        "responses": {
+          "200": {
+            "description": "Run compliance check"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/compliance/evidence": {
+      "get": {
+        "summary": "List append-only compliance evidence records",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evidence log entries"
+          }
+        }
+      }
+    },
+    "/v1/compliance/export": {
+      "get": {
+        "summary": "Compliance accreditation export",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "profile",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "defense"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compliance bundle"
+          }
+        }
       },
       "post": {
-        "summary": "Save configuration snapshot",
-        "security": [{ "bearerAuth": [] }],
+        "summary": "Compliance export with JSON body profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compliance bundle"
+          }
+        }
+      }
+    },
+    "/v1/compliance/profiles": {
+      "get": {
+        "summary": "Signed compliance profile catalog",
+        "responses": {
+          "200": {
+            "description": "Verified profile templates"
+          }
+        }
+      }
+    },
+    "/v1/config/approvals": {
+      "get": {
+        "summary": "List config publish approval requests",
+        "responses": {
+          "200": {
+            "description": "Approval queue"
+          }
+        }
+      },
+      "post": {
+        "summary": "Submit a snapshot for operator approval",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "label": { "type": "string" },
+                  "snapshot_id": {
+                    "type": "string"
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "required_approvals": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Distinct approvers required (defaults to SPANDA_CONFIG_APPROVALS_REQUIRED or 1)"
+                  }
+                },
+                "required": [
+                  "snapshot_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approval request created"
+          }
+        }
+      }
+    },
+    "/v1/config/approvals/{id}/approve": {
+      "post": {
+        "summary": "Approve and publish snapshot to runtime",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vote recorded; publish when quorum.met is true"
+          }
+        }
+      }
+    },
+    "/v1/config/approvals/{id}/reject": {
+      "post": {
+        "summary": "Reject a pending config publish request",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approval rejected"
+          }
+        }
+      }
+    },
+    "/v1/config/history": {
+      "get": {
+        "summary": "Configuration snapshots plus config-related audit mutations",
+        "responses": {
+          "200": {
+            "description": "Configuration snapshots plus config-related audit mutations"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/config/snapshots": {
+      "get": {
+        "summary": "List configuration snapshots",
+        "responses": {
+          "200": {
+            "description": "Snapshot metadata"
+          }
+        }
+      },
+      "post": {
+        "summary": "Save configuration snapshot",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
                   "encrypt": {
                     "type": "boolean",
                     "description": "AES-256-GCM at rest (requires SPANDA_CONFIG_SNAPSHOT_KEY or SPANDA_CONFIG_SNAPSHOT_ENCRYPT=1)"
@@ -339,299 +1118,112 @@
             }
           }
         },
-        "responses": { "200": { "description": "Snapshot saved" } }
+        "responses": {
+          "200": {
+            "description": "Snapshot saved"
+          }
+        }
       }
     },
-    "/v1/discovery": {
+    "/v1/dashboard": {
       "get": {
-        "summary": "Package-backed device discovery",
-        "parameters": [
-          { "name": "transport", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Discovery matches" } }
+        "summary": "Operations dashboard summary",
+        "responses": {
+          "200": {
+            "description": "Device pool and alert counts"
+          }
+        }
       }
     },
-    "/v1/health/summary": {
+    "/v1/decision-policies": {
       "get": {
-        "summary": "Device pool health rollup",
-        "responses": { "200": { "description": "Health summary" } }
-      }
-    },
-    "/v1/plugins": {
-      "get": {
-        "summary": "List installed plugins",
-        "responses": { "200": { "description": "Plugin inventory" } }
-      }
-    },
-    "/v1/plugins/control-center": {
-      "get": {
-        "summary": "List enabled Control Center UI plugins",
-        "responses": { "200": { "description": "Control Center plugin manifests" } }
-      }
-    },
-    "/v1/assurance/summary": {
-      "get": {
-        "summary": "Assurance policy summary",
-        "responses": { "200": { "description": "Assurance summary" } }
-      }
-    },
-    "/v1/diagnosis/summary": {
-      "get": {
-        "summary": "Diagnosis policy summary",
-        "responses": { "200": { "description": "Diagnosis summary" } }
-      }
-    },
-    "/v1/readiness/run": {
-      "post": {
-        "summary": "Run readiness checks with device pool impact",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Readiness report" } }
-      }
-    },
-    "/v1/drift": {
-      "get": {
-        "summary": "Operational drift report",
+        "summary": "Offline policy specs from loaded program",
         "parameters": [
           {
-            "name": "baseline_id",
+            "name": "file",
             "in": "query",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": { "200": { "description": "Drift rollup across 7 dimensions" } }
-      }
-    },
-    "/v1/drift/scans": {
-      "get": {
-        "summary": "List recorded operational drift scans",
-        "responses": { "200": { "description": "Scan history (scheduled and manual)" } }
-      }
-    },
-    "/v1/drift/scan": {
-      "post": {
-        "summary": "Run operational drift scan and record result",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "baseline_id": { "type": "string", "description": "Defaults to latest snapshot or SPANDA_DRIFT_SCAN_BASELINE_ID" }
-                }
-              }
+            "schema": {
+              "type": "string"
             }
           }
-        },
-        "responses": { "200": { "description": "Scan record with alert dispatch on failure" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offline policies"
+          }
+        }
       }
     },
-    "/v1/ota/plan": {
-      "post": {
-        "summary": "Plan OTA rollout (canary, staged, blue_green)",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "strategy": { "type": "string", "enum": ["all", "canary", "staged", "blue_green"] },
-                  "version": { "type": "string" },
-                  "canary_percent": { "type": "integer" },
-                  "dry_run": { "type": "boolean" },
-                  "rollback_on_readiness_fail": { "type": "boolean", "description": "Rollback agent when post-deploy readiness fails" },
-                  "readiness_runtime": { "type": "boolean", "description": "Include runtime checks in post-deploy readiness gate" },
-                  "assignments": { "type": "array", "items": { "type": "object" } }
-                },
-                "required": ["strategy", "version"]
-              }
+    "/v1/decision-policy-cache": {
+      "get": {
+        "summary": "Persisted signed offline policy cache on disk",
+        "parameters": [
+          {
+            "name": "cache",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
-        },
-        "responses": { "200": { "description": "Rollout plan" } }
-      }
-    },
-    "/v1/ota/execute": {
-      "post": {
-        "summary": "Execute OTA rollout against deploy agents (dry_run supported)",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "strategy": { "type": "string", "enum": ["all", "canary", "staged", "blue_green"] },
-                  "version": { "type": "string" },
-                  "canary_percent": { "type": "integer" },
-                  "dry_run": { "type": "boolean" },
-                  "rollback_on_readiness_fail": { "type": "boolean", "description": "Rollback agent when post-deploy readiness fails" },
-                  "readiness_runtime": { "type": "boolean", "description": "Include runtime checks in post-deploy readiness gate" },
-                  "assignments": { "type": "array", "items": { "type": "object" } }
-                },
-                "required": ["strategy", "version"]
-              }
-            }
+        ],
+        "responses": {
+          "200": {
+            "description": "Policy cache entries"
           }
-        },
-        "responses": { "200": { "description": "Rollout result" } }
-      }
-    },
-    "/v1/ota/status": {
-      "get": {
-        "summary": "Deploy state from .spanda/deploy-state.json",
-        "responses": { "200": { "description": "OTA state" } }
-      }
-    },
-    "/v1/trust/package": {
-      "get": {
-        "summary": "Package trust evaluation",
-        "parameters": [
-          { "name": "name", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "version", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Trust score report" } }
-      }
-    },
-    "/v1/trust/program": {
-      "get": {
-        "summary": "Composite program trust evaluation (CLI parity)",
-        "parameters": [
-          { "name": "file", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Program trust report" } }
-      }
-    },
-    "/v1/entities": {
-      "get": {
-        "summary": "Unified entity inventory (all platform objects)",
-        "parameters": [
-          { "name": "kind", "in": "query", "schema": { "type": "string" } },
-          { "name": "health_status", "in": "query", "schema": { "type": "string" } },
-          { "name": "search", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity list" } }
-      }
-    },
-    "/v1/entities/graph": {
-      "get": {
-        "summary": "Full entity graph for traversal and visualization",
-        "responses": { "200": { "description": "Entity graph" } }
-      }
-    },
-    "/v1/entities/traceability": {
-      "get": {
-        "summary": "Unified entity, program, and digital-thread traceability",
-        "parameters": [
-          { "name": "entity_id", "in": "query", "schema": { "type": "string" } },
-          { "name": "capability", "in": "query", "schema": { "type": "string" } },
-          { "name": "device_id", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Traceability report" } }
-      }
-    },
-    "/v1/entities/register": {
-      "post": {
-        "summary": "Register entity in mutation overlay",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Registered entity" } }
-      }
-    },
-    "/v1/entities/relationships": {
-      "post": {
-        "summary": "Relate two entities in mutation overlay",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Relationship edge" } }
-      }
-    },
-    "/v1/entities/sync": {
-      "post": {
-        "summary": "Sync mutation overlay entities to TOML fragments",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Sync result" } }
-      }
-    },
-    "/v1/entities/query": {
-      "post": {
-        "summary": "Structured entity query",
-        "responses": { "200": { "description": "Query result" } }
-      }
-    },
-    "/v1/entities/{id}": {
-      "get": {
-        "summary": "Get entity by id",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity record" }, "404": { "description": "Not found" } }
-      }
-    },
-    "/v1/entities/{id}/tags": {
-      "post": {
-        "summary": "Add or remove tags on an entity overlay record",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Updated entity tags" } }
-      }
-    },
-    "/v1/entities/{id}/relationships": {
-      "get": {
-        "summary": "Relationship edges, impact analysis, dependency chain",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity relationships" } }
-      }
-    },
-    "/v1/entities/{id}/health": {
-      "get": {
-        "summary": "Health status for any entity",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity health" } }
-      }
-    },
-    "/v1/entities/{id}/readiness": {
-      "get": {
-        "summary": "Readiness status for any entity",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity readiness" } }
-      }
-    },
-    "/v1/entities/{id}/trust": {
-      "get": {
-        "summary": "Trust and security metadata for an entity",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity trust" } }
-      }
-    },
-    "/v1/entities/{id}/decisions": {
-      "get": {
-        "summary": "Distributed decision architecture for an entity",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Entity decision metadata" } }
+        }
       }
     },
     "/v1/decisions": {
       "get": {
         "summary": "List decision architecture for loaded program",
         "parameters": [
-          { "name": "file", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "file",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "responses": { "200": { "description": "Authorities, trees, offline policies" } }
+        "responses": {
+          "200": {
+            "description": "Authorities, trees, offline policies"
+          }
+        }
+      }
+    },
+    "/v1/decisions/escalate": {
+      "post": {
+        "summary": "Approve a pending decision escalation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "escalation_id",
+                  "approver"
+                ],
+                "properties": {
+                  "escalation_id": {
+                    "type": "string"
+                  },
+                  "approver": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Escalation result"
+          }
+        }
       }
     },
     "/v1/decisions/simulate": {
@@ -643,64 +1235,1802 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" },
-                  "offline": { "type": "boolean", "default": false }
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "offline": {
+                    "type": "boolean",
+                    "default": false
+                  }
                 }
               }
             }
           }
         },
-        "responses": { "200": { "description": "Simulation report" } }
-      }
-    },
-    "/v1/decisions/escalate": {
-      "post": {
-        "summary": "Approve a pending decision escalation",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["escalation_id", "approver"],
-                "properties": {
-                  "escalation_id": { "type": "string" },
-                  "approver": { "type": "string" },
-                  "entity_id": { "type": "string" }
-                }
-              }
-            }
+        "responses": {
+          "200": {
+            "description": "Simulation report"
           }
-        },
-        "responses": { "200": { "description": "Escalation result" } }
-      }
-    },
-    "/v1/decision-policies": {
-      "get": {
-        "summary": "Offline policy specs from loaded program",
-        "parameters": [
-          { "name": "file", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Offline policies" } }
+        }
       }
     },
     "/v1/decisions/traces": {
       "get": {
         "summary": "List v3 distributed decision trace frames",
         "parameters": [
-          { "name": "trace", "in": "query", "schema": { "type": "string" } },
-          { "name": "file", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "trace",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "responses": { "200": { "description": "Decision trace frames" } }
+        "responses": {
+          "200": {
+            "description": "Decision trace frames"
+          }
+        }
       }
     },
-    "/v1/decision-policy-cache": {
+    "/v1/deploy/gate": {
       "get": {
-        "summary": "Persisted signed offline policy cache on disk",
-        "parameters": [
-          { "name": "cache", "in": "query", "schema": { "type": "string" } }
+        "summary": "Deployment readiness summary and checklist",
+        "responses": {
+          "200": {
+            "description": "Deployment readiness summary and checklist"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/deployment-profiles": {
+      "get": {
+        "summary": "Deployment profile catalog",
+        "responses": {
+          "200": {
+            "description": "Deployment profile catalog"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/deployment/verify": {
+      "post": {
+        "summary": "Verify deployment readiness",
+        "responses": {
+          "200": {
+            "description": "Verify deployment readiness"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Policy cache entries" } }
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/device-reports": {
+      "get": {
+        "summary": "Device pool reports bundle",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory, trust, calibration, readiness reports"
+          }
+        }
+      }
+    },
+    "/v1/device-tree": {
+      "get": {
+        "summary": "Hierarchical device tree",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device tree"
+          }
+        }
+      }
+    },
+    "/v1/devices": {
+      "get": {
+        "summary": "List devices in the device pool",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device inventory"
+          }
+        }
+      }
+    },
+    "/v1/devices/discover": {
+      "post": {
+        "summary": "Run multi-transport device discovery",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transports": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Discovery results"
+          }
+        }
+      }
+    },
+    "/v1/devices/{id}": {
+      "get": {
+        "summary": "Get device by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device record"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update device lifecycle_state",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lifecycle_state": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "lifecycle_state"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Device updated"
+          }
+        }
+      }
+    },
+    "/v1/devices/{id}/assign": {
+      "post": {
+        "summary": "Assign device to robot or fleet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignment result"
+          }
+        }
+      }
+    },
+    "/v1/devices/{id}/provision": {
+      "post": {
+        "summary": "Provision a discovered device",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provision result"
+          }
+        }
+      }
+    },
+    "/v1/devices/{id}/quarantine": {
+      "post": {
+        "summary": "Quarantine a device",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quarantine result"
+          }
+        }
+      }
+    },
+    "/v1/devices/{id}/trust": {
+      "post": {
+        "summary": "Trust / approve a device after operator review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust result"
+          }
+        }
+      }
+    },
+    "/v1/diagnosis/summary": {
+      "get": {
+        "summary": "Diagnosis policy summary",
+        "responses": {
+          "200": {
+            "description": "Diagnosis summary"
+          }
+        }
+      }
+    },
+    "/v1/digital-thread/query": {
+      "get": {
+        "summary": "Capability-to-device digital thread query",
+        "parameters": [
+          {
+            "name": "capability",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lifecycle_phase",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "requirement",
+                "design",
+                "deploy",
+                "operate",
+                "retire"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Digital thread report with graph"
+          }
+        }
+      }
+    },
+    "/v1/discovery": {
+      "get": {
+        "summary": "Package-backed device discovery",
+        "parameters": [
+          {
+            "name": "transport",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discovery matches"
+          }
+        }
+      }
+    },
+    "/v1/drift": {
+      "get": {
+        "summary": "Operational drift report",
+        "parameters": [
+          {
+            "name": "baseline_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Drift rollup across 7 dimensions"
+          }
+        }
+      }
+    },
+    "/v1/drift/scan": {
+      "post": {
+        "summary": "Run operational drift scan and record result",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "baseline_id": {
+                    "type": "string",
+                    "description": "Defaults to latest snapshot or SPANDA_DRIFT_SCAN_BASELINE_ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scan record with alert dispatch on failure"
+          }
+        }
+      }
+    },
+    "/v1/drift/scans": {
+      "get": {
+        "summary": "List recorded operational drift scans",
+        "responses": {
+          "200": {
+            "description": "Scan history (scheduled and manual)"
+          }
+        }
+      }
+    },
+    "/v1/emergency/status": {
+      "get": {
+        "summary": "Emergency and life-safety status with continuity pairs",
+        "responses": {
+          "200": {
+            "description": "Emergency status"
+          }
+        }
+      }
+    },
+    "/v1/energy/systems": {
+      "get": {
+        "summary": "Energy systems (solar, battery, EV, demand response)",
+        "responses": {
+          "200": {
+            "description": "Energy system list"
+          }
+        }
+      }
+    },
+    "/v1/energy/systems/{id}": {
+      "get": {
+        "summary": "Energy system detail (SOC, generation, EV session)",
+        "responses": {
+          "200": {
+            "description": "Energy system detail"
+          }
+        }
+      }
+    },
+    "/v1/entities": {
+      "get": {
+        "summary": "Unified entity inventory (all platform objects)",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "health_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity list"
+          }
+        }
+      }
+    },
+    "/v1/entities/graph": {
+      "get": {
+        "summary": "Full entity graph for traversal and visualization",
+        "responses": {
+          "200": {
+            "description": "Entity graph"
+          }
+        }
+      }
+    },
+    "/v1/entities/query": {
+      "post": {
+        "summary": "Structured entity query",
+        "responses": {
+          "200": {
+            "description": "Query result"
+          }
+        }
+      }
+    },
+    "/v1/entities/register": {
+      "post": {
+        "summary": "Register entity in mutation overlay",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered entity"
+          }
+        }
+      }
+    },
+    "/v1/entities/relationships": {
+      "post": {
+        "summary": "Relate two entities in mutation overlay",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relationship edge"
+          }
+        }
+      }
+    },
+    "/v1/entities/sync": {
+      "post": {
+        "summary": "Sync mutation overlay entities to TOML fragments",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync result"
+          }
+        }
+      }
+    },
+    "/v1/entities/traceability": {
+      "get": {
+        "summary": "Unified entity, program, and digital-thread traceability",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "capability",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "device_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Traceability report"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}": {
+      "get": {
+        "summary": "Get entity by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity record"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/autonomy": {
+      "get": {
+        "summary": "Entity autonomy profile with runtime enrichment",
+        "responses": {
+          "200": {
+            "description": "Entity autonomy profile with runtime enrichment"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/entities/{id}/decisions": {
+      "get": {
+        "summary": "Distributed decision architecture for an entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity decision metadata"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/health": {
+      "get": {
+        "summary": "Health status for any entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity health"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/readiness": {
+      "get": {
+        "summary": "Readiness status for any entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity readiness"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/relationships": {
+      "get": {
+        "summary": "Relationship edges, impact analysis, dependency chain",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity relationships"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/tags": {
+      "post": {
+        "summary": "Add or remove tags on an entity overlay record",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated entity tags"
+          }
+        }
+      }
+    },
+    "/v1/entities/{id}/trust": {
+      "get": {
+        "summary": "Trust and security metadata for an entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity trust"
+          }
+        }
+      }
+    },
+    "/v1/executive/scorecard": {
+      "get": {
+        "summary": "Executive mission scorecard",
+        "responses": {
+          "200": {
+            "description": "Scorecard rollup"
+          }
+        }
+      }
+    },
+    "/v1/facilities": {
+      "get": {
+        "summary": "List facilities, zones, and gateways from smart-space config",
+        "responses": {
+          "200": {
+            "description": "Facility inventory"
+          }
+        }
+      }
+    },
+    "/v1/facilities/{id}/floor-map": {
+      "get": {
+        "summary": "Facility zone floor map tree",
+        "responses": {
+          "200": {
+            "description": "Floor map"
+          }
+        }
+      }
+    },
+    "/v1/facilities/{id}/health": {
+      "get": {
+        "summary": "Facility device pool health rollup",
+        "responses": {
+          "200": {
+            "description": "Facility health"
+          }
+        }
+      }
+    },
+    "/v1/facilities/{id}/readiness": {
+      "get": {
+        "summary": "Facility readiness score, gateways, zones, and continuity pairs",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Facility readiness"
+          }
+        }
+      }
+    },
+    "/v1/facilities/{id}/security": {
+      "get": {
+        "summary": "Facility security and access control status",
+        "responses": {
+          "200": {
+            "description": "Security status"
+          }
+        }
+      }
+    },
+    "/v1/failover/chains": {
+      "get": {
+        "summary": "Redundant device failover chains",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Failover chain definitions"
+          }
+        }
+      }
+    },
+    "/v1/fleet/agents": {
+      "get": {
+        "summary": "Registered fleet agents",
+        "responses": {
+          "200": {
+            "description": "Fleet agent registry"
+          }
+        }
+      }
+    },
+    "/v1/fleet/map": {
+      "get": {
+        "summary": "Fleet map markers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Geospatial fleet markers from robots, agents, entities, and devices"
+          }
+        }
+      }
+    },
+    "/v1/fleets": {
+      "get": {
+        "summary": "List fleets",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fleet inventory"
+          }
+        }
+      }
+    },
+    "/v1/governance": {
+      "get": {
+        "summary": "Governance summary",
+        "responses": {
+          "200": {
+            "description": "Governance summary"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/governance/accountability": {
+      "get": {
+        "summary": "Accountability records",
+        "responses": {
+          "200": {
+            "description": "Accountability records"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Replace accountability records",
+        "responses": {
+          "200": {
+            "description": "Replace accountability records"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Append accountability record",
+        "responses": {
+          "200": {
+            "description": "Append accountability record"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/governance/audit": {
+      "get": {
+        "summary": "Governance audit trail",
+        "responses": {
+          "200": {
+            "description": "Governance audit trail"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/governance/policies": {
+      "get": {
+        "summary": "List governance policies",
+        "responses": {
+          "200": {
+            "description": "List governance policies"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/governance/policies/assign": {
+      "post": {
+        "summary": "Assign governance policy",
+        "responses": {
+          "200": {
+            "description": "Assign governance policy"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/governance/policies/detach": {
+      "post": {
+        "summary": "Detach governance policy",
+        "responses": {
+          "200": {
+            "description": "Detach governance policy"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/governance/validate": {
+      "post": {
+        "summary": "Validate governance posture",
+        "responses": {
+          "200": {
+            "description": "Validate governance posture"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "summary": "Liveness",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/health/summary": {
+      "get": {
+        "summary": "Device pool health rollup",
+        "responses": {
+          "200": {
+            "description": "Health summary"
+          }
+        }
+      }
+    },
+    "/v1/hri/collaboration": {
+      "get": {
+        "summary": "Live collaboration participant graph (humans, robots, sessions)",
+        "responses": {
+          "200": {
+            "description": "Collaboration graph"
+          }
+        }
+      }
+    },
+    "/v1/hri/context": {
+      "get": {
+        "summary": "Hazard zones and human location context snapshot",
+        "responses": {
+          "200": {
+            "description": "Context awareness snapshot"
+          }
+        }
+      }
+    },
+    "/v1/hri/sessions": {
+      "get": {
+        "summary": "List configured and active HRI collaboration sessions",
+        "responses": {
+          "200": {
+            "description": "HRI session list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Start a remote expert or collaborative HRI session",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session started"
+          }
+        }
+      }
+    },
+    "/v1/hri/sessions/{id}/annotate": {
+      "post": {
+        "summary": "Publish an AR annotation to an active HRI session",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Annotation recorded"
+          }
+        }
+      }
+    },
+    "/v1/hri/sessions/{id}/replay": {
+      "get": {
+        "summary": "Replay artifact metadata for an HRI session",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replay metadata"
+          }
+        }
+      }
+    },
+    "/v1/human-health/policy": {
+      "get": {
+        "summary": "Human health telemetry opt-in policy (config + env gate)",
+        "responses": {
+          "200": {
+            "description": "Health privacy policy"
+          }
+        }
+      }
+    },
+    "/v1/humans": {
+      "get": {
+        "summary": "List configured human operators and collaborators",
+        "responses": {
+          "200": {
+            "description": "Human entity list"
+          }
+        }
+      }
+    },
+    "/v1/humans/readiness": {
+      "get": {
+        "summary": "Team readiness rollup with per-operator summary",
+        "responses": {
+          "200": {
+            "description": "Team readiness report"
+          }
+        }
+      }
+    },
+    "/v1/humans/twins": {
+      "get": {
+        "summary": "Human digital twin metadata with health mirror gating",
+        "responses": {
+          "200": {
+            "description": "Human twin list"
+          }
+        }
+      }
+    },
+    "/v1/humans/{id}/readiness": {
+      "get": {
+        "summary": "Per-operator readiness, certifications, and wearables",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operator readiness"
+          }
+        }
+      }
+    },
+    "/v1/instance": {
+      "get": {
+        "summary": "Runtime status (bind, config, program, pool summary)",
+        "responses": {
+          "200": {
+            "description": "Control Center instance metadata"
+          }
+        }
+      }
+    },
+    "/v1/integrations/pagerduty/webhook": {
+      "post": {
+        "summary": "PagerDuty inbound incident sync (acknowledge/resolve)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incident synced"
+          }
+        }
+      }
+    },
+    "/v1/observability/backend": {
+      "get": {
+        "summary": "Configured OTLP collector endpoints (SPANDA_OTEL_COLLECTOR_URL)",
+        "responses": {
+          "200": {
+            "description": "Observability backend summary"
+          }
+        }
+      }
+    },
+    "/v1/observability/otlp/export": {
+      "post": {
+        "summary": "Push API traces to OTLP collector",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "endpoint",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export result"
+          }
+        }
+      }
+    },
+    "/v1/observability/otlp/export-metrics": {
+      "post": {
+        "summary": "Push API metrics to OTLP collector",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "endpoint",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export result"
+          }
+        }
+      }
+    },
+    "/v1/observability/otlp/metrics": {
+      "get": {
+        "summary": "OTLP/JSON metrics preview",
+        "responses": {
+          "200": {
+            "description": "resourceMetrics payload"
+          }
+        }
+      }
+    },
+    "/v1/observability/otlp/traces": {
+      "get": {
+        "summary": "OTLP/JSON trace preview for Jaeger",
+        "responses": {
+          "200": {
+            "description": "resourceSpans payload"
+          }
+        }
+      }
+    },
+    "/v1/observability/traces": {
+      "get": {
+        "summary": "Recent API trace records (OTLP-compatible export path)",
+        "responses": {
+          "200": {
+            "description": "Trace log"
+          }
+        }
+      }
+    },
+    "/v1/openapi.json": {
+      "get": {
+        "summary": "OpenAPI 3.1 specification for this API",
+        "responses": {
+          "200": {
+            "description": "OpenAPI document"
+          }
+        }
+      }
+    },
+    "/v1/operator/mission/approvals": {
+      "get": {
+        "summary": "List pending and resolved mission approval requests",
+        "responses": {
+          "200": {
+            "description": "Mission approval queue"
+          }
+        }
+      }
+    },
+    "/v1/operator/mission/approve": {
+      "post": {
+        "summary": "Approve or reject a mission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission decision recorded"
+          }
+        }
+      }
+    },
+    "/v1/operator/mission/cancel": {
+      "post": {
+        "summary": "Cancel a mission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission cancelled"
+          }
+        }
+      }
+    },
+    "/v1/operator/mission/pause": {
+      "post": {
+        "summary": "Pause a running mission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission paused"
+          }
+        }
+      }
+    },
+    "/v1/operator/mission/resume": {
+      "post": {
+        "summary": "Resume a paused mission",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission resumed"
+          }
+        }
+      }
+    },
+    "/v1/operator/missions": {
+      "get": {
+        "summary": "List missions with runtime state",
+        "responses": {
+          "200": {
+            "description": "Mission inventory"
+          }
+        }
+      }
+    },
+    "/v1/operator/quarantine": {
+      "post": {
+        "summary": "Quarantine a device",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device quarantined"
+          }
+        }
+      }
+    },
+    "/v1/ota/execute": {
+      "post": {
+        "summary": "Execute OTA rollout against deploy agents (dry_run supported)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "strategy": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "canary",
+                      "staged",
+                      "blue_green"
+                    ]
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "canary_percent": {
+                    "type": "integer"
+                  },
+                  "dry_run": {
+                    "type": "boolean"
+                  },
+                  "rollback_on_readiness_fail": {
+                    "type": "boolean",
+                    "description": "Rollback agent when post-deploy readiness fails"
+                  },
+                  "readiness_runtime": {
+                    "type": "boolean",
+                    "description": "Include runtime checks in post-deploy readiness gate"
+                  },
+                  "assignments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "required": [
+                  "strategy",
+                  "version"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rollout result"
+          }
+        }
+      }
+    },
+    "/v1/ota/plan": {
+      "post": {
+        "summary": "Plan OTA rollout (canary, staged, blue_green)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "strategy": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "canary",
+                      "staged",
+                      "blue_green"
+                    ]
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "canary_percent": {
+                    "type": "integer"
+                  },
+                  "dry_run": {
+                    "type": "boolean"
+                  },
+                  "rollback_on_readiness_fail": {
+                    "type": "boolean",
+                    "description": "Rollback agent when post-deploy readiness fails"
+                  },
+                  "readiness_runtime": {
+                    "type": "boolean",
+                    "description": "Include runtime checks in post-deploy readiness gate"
+                  },
+                  "assignments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "required": [
+                  "strategy",
+                  "version"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rollout plan"
+          }
+        }
+      }
+    },
+    "/v1/ota/status": {
+      "get": {
+        "summary": "Deploy state from .spanda/deploy-state.json",
+        "responses": {
+          "200": {
+            "description": "OTA state"
+          }
+        }
+      }
+    },
+    "/v1/plugins": {
+      "get": {
+        "summary": "List installed plugins",
+        "responses": {
+          "200": {
+            "description": "Plugin inventory"
+          }
+        }
+      }
+    },
+    "/v1/plugins/control-center": {
+      "get": {
+        "summary": "List enabled Control Center UI plugins",
+        "responses": {
+          "200": {
+            "description": "Control Center plugin manifests"
+          }
+        }
+      }
+    },
+    "/v1/plugins/control-center/{plugin}/bundle": {
+      "get": {
+        "summary": "TypeScript panel artifact when present",
+        "responses": {
+          "200": {
+            "description": "TypeScript panel artifact when present"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "plugin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/programs/assure": {
+      "post": {
+        "summary": "Mission assurance evaluation (CLI parity)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assurance report"
+          }
+        }
+      }
+    },
+    "/v1/programs/audit/decisions": {
+      "post": {
+        "summary": "Decision audit trail from a mission trace",
+        "responses": {
+          "200": {
+            "description": "Decision audit trail from a mission trace"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/programs/contract/verify": {
+      "post": {
+        "summary": "Mission contract verification",
+        "responses": {
+          "200": {
+            "description": "Mission contract verification"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/programs/diagnose": {
+      "post": {
+        "summary": "Diagnose program or trace (CLI parity)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Diagnosis report"
+          }
+        }
+      }
+    },
+    "/v1/programs/explain": {
+      "post": {
+        "summary": "Explainability report",
+        "responses": {
+          "200": {
+            "description": "Explainability report"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
       }
     },
     "/v1/programs/readiness": {
@@ -712,47 +3042,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "file": { "type": "string" },
-                  "target": { "type": "string" },
-                  "include_runtime": { "type": "boolean" }
+                  "file": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "include_runtime": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
           }
         },
-        "responses": { "200": { "description": "Readiness report" } }
-      }
-    },
-    "/v1/programs/assure": {
-      "post": {
-        "summary": "Mission assurance evaluation (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": { "file": { "type": "string" } }
-              }
-            }
+        "responses": {
+          "200": {
+            "description": "Readiness report"
           }
-        },
-        "responses": { "200": { "description": "Assurance report" } }
-      }
-    },
-    "/v1/programs/diagnose": {
-      "post": {
-        "summary": "Diagnose program or trace (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": { "file": { "type": "string" } }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Diagnosis report" } }
+        }
       }
     },
     "/v1/programs/recovery/heal": {
@@ -763,280 +3071,20 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": { "file": { "type": "string" } }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Recovery report" } }
-      }
-    },
-    "/v1/recovery/plans": {
-      "get": {
-        "summary": "List active recovery plans",
-        "responses": { "200": { "description": "Recovery plans" } }
-      }
-    },
-    "/v1/recovery/history": {
-      "get": {
-        "summary": "Recovery evidence history",
-        "responses": { "200": { "description": "Recovery history" } }
-      }
-    },
-    "/v1/recovery/plan": {
-      "post": {
-        "summary": "Plan recovery via orchestrator",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
                 "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" },
-                  "failure": { "type": "string" },
-                  "playbook": { "type": "string" }
+                  "file": {
+                    "type": "string"
+                  }
                 }
               }
             }
           }
         },
-        "responses": { "200": { "description": "Orchestrator recovery report" } }
-      }
-    },
-    "/v1/recovery/simulate": {
-      "post": {
-        "summary": "Simulate recovery without side effects",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" },
-                  "failure": { "type": "string" }
-                }
-              }
-            }
+        "responses": {
+          "200": {
+            "description": "Recovery report"
           }
-        },
-        "responses": { "200": { "description": "Simulation report" } }
-      }
-    },
-    "/v1/recovery/execute": {
-      "post": {
-        "summary": "Execute recovery via orchestrator",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" },
-                  "failure": { "type": "string" },
-                  "force_execute": { "type": "boolean" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Execution report" } }
-      }
-    },
-    "/v1/recovery/validate": {
-      "post": {
-        "summary": "Validate recovery plan (dry-run)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" },
-                  "failure": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Validation report" } }
-      }
-    },
-    "/v1/recovery/playbooks": {
-      "get": {
-        "summary": "List recovery playbooks",
-        "responses": { "200": { "description": "Playbook catalog" } }
-      }
-    },
-    "/v1/recovery/metrics": {
-      "get": {
-        "summary": "Aggregated recovery metrics",
-        "responses": { "200": { "description": "Recovery metrics" } }
-      }
-    },
-    "/v1/recovery/graph": {
-      "get": {
-        "summary": "Recovery graph for entity subtree",
-        "parameters": [
-          {
-            "name": "entity_id",
-            "in": "query",
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": { "200": { "description": "Recovery graph" } }
-      }
-    },
-    "/v1/recovery/policies": {
-      "get": {
-        "summary": "Entity recovery policies",
-        "responses": { "200": { "description": "Recovery policies" } }
-      }
-    },
-    "/v1/recovery/explain": {
-      "post": {
-        "summary": "Explain recovery decision",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "entity_id": { "type": "string" },
-                  "failure": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Recovery decision" } }
-      }
-    },
-    "/v1/recovery/predictive": {
-      "get": {
-        "summary": "Telemetry-driven predictive recovery indicators",
-        "responses": { "200": { "description": "Predictive indicators" } }
-      },
-      "post": {
-        "summary": "Predictive indicators for program context",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "entity_id": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Predictive indicators" } }
-      }
-    },
-    "/v1/recovery/recoverable-entities": {
-      "get": {
-        "summary": "List recoverable entities from orchestrator registry",
-        "responses": { "200": { "description": "Recoverable entities" } }
-      }
-    },
-    "/v1/recovery/recommend": {
-      "post": {
-        "summary": "Knowledge-base recovery strategy recommendation",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "failure": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Strategy recommendation" } }
-      }
-    },
-    "/v1/programs/verify/hardware": {
-      "post": {
-        "summary": "Hardware compatibility verification (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "target": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Hardware verification report" } }
-      }
-    },
-    "/v1/programs/verify/capabilities": {
-      "post": {
-        "summary": "Capability verification (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "traceability": { "type": "boolean" }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Capability verification report" } }
-      }
-    },
-    "/v1/programs/verify/mission": {
-      "post": {
-        "summary": "Mission verification (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": { "file": { "type": "string" } }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Mission verification report" } }
-      }
-    },
-    "/v1/programs/simulation": {
-      "post": {
-        "summary": "Simulation planning or driver execution (CLI parity)",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": { "type": "string" },
-                  "execute": { "type": "boolean", "default": false, "description": "Run driver when true" },
-                  "decision_trace": { "type": "boolean", "default": false, "description": "Emit v3 decision trace frames" },
-                  "record_trace": { "type": "boolean", "default": false, "description": "Write mission trace file" },
-                  "inject_health_faults": { "type": "boolean", "default": false }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "Simulation result" } }
+        }
       }
     },
     "/v1/programs/replay": {
@@ -1048,602 +3096,632 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "file": { "type": "string" },
-                  "deterministic": { "type": "boolean", "default": false },
-                  "playback": { "type": "boolean", "default": false }
+                  "file": {
+                    "type": "string"
+                  },
+                  "deterministic": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "playback": {
+                    "type": "boolean",
+                    "default": false
+                  }
                 }
               }
             }
           }
         },
-        "responses": { "200": { "description": "Replay result" } }
+        "responses": {
+          "200": {
+            "description": "Replay result"
+          }
+        }
       }
     },
-    "/v1/programs/traces": {
-      "get": {
-        "summary": "List mission trace files in project",
-        "parameters": [
-          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
-          { "name": "project", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Trace file inventory" } }
-      }
-    },
-    "/v1/sre/summary": {
-      "get": {
-        "summary": "SRE availability and incident rollup",
-        "responses": { "200": { "description": "SRE metrics" } }
-      }
-    },
-    "/v1/sre/incidents": {
-      "get": {
-        "summary": "List operational incidents",
-        "responses": { "200": { "description": "Incident list" } }
-      },
+    "/v1/programs/simulation": {
       "post": {
-        "summary": "Open an incident",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Incident created" } }
-      }
-    },
-    "/v1/sre/incidents/{id}/ack": {
-      "post": {
-        "summary": "Acknowledge an incident",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Incident acknowledged" } }
-      }
-    },
-    "/v1/sre/incidents/{id}/resolve": {
-      "post": {
-        "summary": "Resolve an incident",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Incident resolved" } }
-      }
-    },
-    "/v1/integrations/pagerduty/webhook": {
-      "post": {
-        "summary": "PagerDuty inbound incident sync (acknowledge/resolve)",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Incident synced" } }
-      }
-    },
-    "/v1/observability/traces": {
-      "get": {
-        "summary": "Recent API trace records (OTLP-compatible export path)",
-        "responses": { "200": { "description": "Trace log" } }
-      }
-    },
-    "/v1/observability/backend": {
-      "get": {
-        "summary": "Configured OTLP collector endpoints (SPANDA_OTEL_COLLECTOR_URL)",
-        "responses": { "200": { "description": "Observability backend summary" } }
-      }
-    },
-    "/v1/observability/otlp/traces": {
-      "get": {
-        "summary": "OTLP/JSON trace preview for Jaeger",
-        "responses": { "200": { "description": "resourceSpans payload" } }
-      }
-    },
-    "/v1/observability/otlp/metrics": {
-      "get": {
-        "summary": "OTLP/JSON metrics preview",
-        "responses": { "200": { "description": "resourceMetrics payload" } }
-      }
-    },
-    "/v1/observability/otlp/export": {
-      "post": {
-        "summary": "Push API traces to OTLP collector",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "endpoint", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Export result" } }
-      }
-    },
-    "/v1/observability/otlp/export-metrics": {
-      "post": {
-        "summary": "Push API metrics to OTLP collector",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "endpoint", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Export result" } }
-      }
-    },
-    "/v1/compliance/export": {
-      "get": {
-        "summary": "Compliance accreditation export",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "profile", "in": "query", "schema": { "type": "string", "default": "defense" } }
-        ],
-        "responses": { "200": { "description": "Compliance bundle" } }
-      },
-      "post": {
-        "summary": "Compliance export with JSON body profile",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Compliance bundle" } }
-      }
-    },
-    "/v1/compliance/profiles": {
-      "get": {
-        "summary": "Signed compliance profile catalog",
-        "responses": { "200": { "description": "Verified profile templates" } }
-      }
-    },
-    "/v1/digital-thread/query": {
-      "get": {
-        "summary": "Capability-to-device digital thread query",
-        "parameters": [
-          { "name": "capability", "in": "query", "schema": { "type": "string" } },
-          { "name": "device_id", "in": "query", "schema": { "type": "string" } },
-          { "name": "lifecycle_phase", "in": "query", "schema": { "type": "string", "enum": ["requirement", "design", "deploy", "operate", "retire"] } }
-        ],
-        "responses": { "200": { "description": "Digital thread report with graph" } }
-      }
-    },
-    "/v1/executive/scorecard": {
-      "get": {
-        "summary": "Executive mission scorecard",
-        "responses": { "200": { "description": "Scorecard rollup" } }
-      }
-    },
-    "/v1/analytics/readiness": {
-      "get": {
-        "summary": "Readiness trends and forecast",
-        "parameters": [
-          { "name": "forecast_days", "in": "query", "schema": { "type": "integer" } }
-        ],
-        "responses": { "200": { "description": "Readiness analytics" } }
-      }
-    },
-    "/v1/analytics/what-if": {
-      "get": {
-        "summary": "What-if failure scenario analysis",
-        "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string" } },
-          { "name": "all", "in": "query", "schema": { "type": "boolean" } }
-        ],
-        "responses": { "200": { "description": "What-if report" } }
-      }
-    },
-    "/v1/analytics/mission-risk": {
-      "get": {
-        "summary": "Mission deployment risk score",
-        "responses": { "200": { "description": "Mission risk assessment" } }
-      }
-    },
-    "/v1/analytics/readiness-forecast": {
-      "get": {
-        "summary": "Readiness degradation forecast",
-        "parameters": [
-          { "name": "horizon", "in": "query", "schema": { "type": "string" } },
-          { "name": "all", "in": "query", "schema": { "type": "boolean" } }
-        ],
-        "responses": { "200": { "description": "Readiness forecast report" } }
-      }
-    },
-    "/v1/analytics/trust-graph": {
-      "get": {
-        "summary": "Trust-weighted dependency graph",
-        "parameters": [
-          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["json", "text", "mermaid", "dot"] } }
-        ],
-        "responses": { "200": { "description": "Trust graph payload" } }
-      }
-    },
-    "/v1/analytics/mission-twin": {
-      "get": {
-        "summary": "Digital mission twin report",
-        "responses": { "200": { "description": "Mission twin state and risks" } }
-      }
-    },
-    "/v1/analytics/certification-pack": {
-      "get": {
-        "summary": "Certification evidence pack",
-        "parameters": [
-          { "name": "strict", "in": "query", "schema": { "type": "boolean" } }
-        ],
-        "responses": { "200": { "description": "Certification pack composition" } }
-      }
-    },
-    "/v1/analytics/time-travel": {
-      "get": {
-        "summary": "Mission time travel trace inspection",
-        "parameters": [
-          { "name": "at", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "inspect", "in": "query", "schema": { "type": "string" } },
-          { "name": "trace", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Historical mission state snapshot" } }
-      }
-    },
-    "/v1/analytics/human-teaming": {
-      "get": {
-        "summary": "Human/robot teaming verification",
-        "responses": { "200": { "description": "Approval and escalation paths" } }
-      }
-    },
-    "/v1/analytics/governance": {
-      "get": {
-        "summary": "Autonomous governance policy evaluation",
-        "parameters": [
-          { "name": "policy", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Policy evaluation report" } }
-      }
-    },
-    "/v1/twins": {
-      "get": {
-        "summary": "List mission twin snapshots",
-        "responses": { "200": { "description": "Twin Cloud registry summaries" } }
-      }
-    },
-    "/v1/twins/{id}": {
-      "get": {
-        "summary": "Get latest mission twin snapshot",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Latest twin snapshot" } }
-      }
-    },
-    "/v1/twins/{id}/history": {
-      "get": {
-        "summary": "List mission twin snapshot history",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Twin snapshot history" } }
-      }
-    },
-    "/v1/twins/{id}/snapshots": {
-      "post": {
-        "summary": "Push mission twin snapshot",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Stored twin snapshot" } }
-      }
-    },
-    "/v1/twins/import-replay": {
-      "post": {
-        "summary": "Import legacy twin replay JSON as structured snapshot",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Imported twin snapshot" } }
-      }
-    },
-    "/v1/twins/sync": {
-      "post": {
-        "summary": "Sync mission twin for loaded program",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "twin_id", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Stored twin snapshot" } }
-      }
-    },
-    "/v1/reports/export": {
-      "get": {
-        "summary": "Combined executive report export",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["markdown", "json", "pdf"] } },
-          { "name": "profile", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Report payload" } }
-      }
-    },
-    "/v1/reports/schedules": {
-      "get": {
-        "summary": "List scheduled report deliveries",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Report schedule list" } }
-      },
-      "post": {
-        "summary": "Create scheduled report delivery",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Created schedule" } }
-      }
-    },
-    "/v1/audit/mutations": {
-      "get": {
-        "summary": "Mutation audit trail",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Hash-chained mutation records" } }
-      }
-    },
-    "/v1/audit/mutations/export": {
-      "get": {
-        "summary": "Export mutation audit for SIEM (CEF or JSONL)",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "format", "in": "query", "schema": { "type": "string", "enum": ["cef", "jsonl"] } }
-        ],
-        "responses": { "200": { "description": "SIEM export payload" } }
-      }
-    },
-    "/v1/operator/quarantine": {
-      "post": {
-        "summary": "Quarantine a device",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Device quarantined" } }
-      }
-    },
-    "/v1/operator/mission/approvals": {
-      "get": {
-        "summary": "List pending and resolved mission approval requests",
-        "responses": { "200": { "description": "Mission approval queue" } }
-      }
-    },
-    "/v1/operator/mission/approve": {
-      "post": {
-        "summary": "Approve or reject a mission",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Mission decision recorded" } }
-      }
-    },
-    "/v1/operator/missions": {
-      "get": {
-        "summary": "List missions with runtime state",
-        "responses": { "200": { "description": "Mission inventory" } }
-      }
-    },
-    "/v1/operator/mission/pause": {
-      "post": {
-        "summary": "Pause a running mission",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Mission paused" } }
-      }
-    },
-    "/v1/operator/mission/resume": {
-      "post": {
-        "summary": "Resume a paused mission",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Mission resumed" } }
-      }
-    },
-    "/v1/operator/mission/cancel": {
-      "post": {
-        "summary": "Cancel a mission",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Mission cancelled" } }
-      }
-    },
-    "/v1/config/approvals": {
-      "get": {
-        "summary": "List config publish approval requests",
-        "responses": { "200": { "description": "Approval queue" } }
-      },
-      "post": {
-        "summary": "Submit a snapshot for operator approval",
-        "security": [{ "bearerAuth": [] }],
+        "summary": "Simulation planning or driver execution (CLI parity)",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "snapshot_id": { "type": "string" },
-                  "note": { "type": "string" },
-                  "required_approvals": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "description": "Distinct approvers required (defaults to SPANDA_CONFIG_APPROVALS_REQUIRED or 1)"
+                  "file": {
+                    "type": "string"
+                  },
+                  "execute": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run driver when true"
+                  },
+                  "decision_trace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Emit v3 decision trace frames"
+                  },
+                  "record_trace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Write mission trace file"
+                  },
+                  "inject_health_faults": {
+                    "type": "boolean",
+                    "default": false
                   }
-                },
-                "required": ["snapshot_id"]
+                }
               }
             }
           }
         },
-        "responses": { "200": { "description": "Approval request created" } }
+        "responses": {
+          "200": {
+            "description": "Simulation result"
+          }
+        }
       }
     },
-    "/v1/config/approvals/{id}/approve": {
-      "post": {
-        "summary": "Approve and publish snapshot to runtime",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Vote recorded; publish when quorum.met is true" } }
-      }
-    },
-    "/v1/config/approvals/{id}/reject": {
-      "post": {
-        "summary": "Reject a pending config publish request",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Approval rejected" } }
-      }
-    },
-    "/v1/compliance/evidence": {
+    "/v1/programs/source": {
       "get": {
-        "summary": "List append-only compliance evidence records",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Evidence log entries" } }
+        "summary": "Source text for the loaded or requested program file",
+        "responses": {
+          "200": {
+            "description": "Source text for the loaded or requested program file"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
-    "/v1/hri/sessions": {
+    "/v1/programs/traces": {
       "get": {
-        "summary": "List configured and active HRI collaboration sessions",
-        "responses": { "200": { "description": "HRI session list" } }
+        "summary": "List mission trace files in project",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "project",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trace file inventory"
+          }
+        }
+      }
+    },
+    "/v1/programs/verify/capabilities": {
+      "post": {
+        "summary": "Capability verification (CLI parity)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "traceability": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Capability verification report"
+          }
+        }
+      }
+    },
+    "/v1/programs/verify/hardware": {
+      "post": {
+        "summary": "Hardware compatibility verification (CLI parity)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hardware verification report"
+          }
+        }
+      }
+    },
+    "/v1/programs/verify/mission": {
+      "post": {
+        "summary": "Mission verification (CLI parity)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mission verification report"
+          }
+        }
+      }
+    },
+    "/v1/provision": {
+      "post": {
+        "summary": "Run discover \u2192 ready provisioning workflow",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provision result"
+          }
+        }
+      }
+    },
+    "/v1/rbac/matrix": {
+      "get": {
+        "summary": "Role permission matrix",
+        "responses": {
+          "200": {
+            "description": "RBAC matrix"
+          }
+        }
+      }
+    },
+    "/v1/rbac/me": {
+      "get": {
+        "summary": "Authenticated operator role and permissions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current RBAC context"
+          }
+        }
+      }
+    },
+    "/v1/readiness/run": {
+      "post": {
+        "summary": "Run readiness checks with device pool impact",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Readiness report"
+          }
+        }
+      }
+    },
+    "/v1/recovery/execute": {
+      "post": {
+        "summary": "Execute recovery via orchestrator",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  },
+                  "force_execute": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution report"
+          }
+        }
+      }
+    },
+    "/v1/recovery/explain": {
+      "post": {
+        "summary": "Explain recovery decision",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recovery decision"
+          }
+        }
+      }
+    },
+    "/v1/recovery/graph": {
+      "get": {
+        "summary": "Recovery graph for entity subtree",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recovery graph"
+          }
+        }
+      }
+    },
+    "/v1/recovery/history": {
+      "get": {
+        "summary": "Recovery evidence history",
+        "responses": {
+          "200": {
+            "description": "Recovery history"
+          }
+        }
+      }
+    },
+    "/v1/recovery/metrics": {
+      "get": {
+        "summary": "Aggregated recovery metrics",
+        "responses": {
+          "200": {
+            "description": "Recovery metrics"
+          }
+        }
+      }
+    },
+    "/v1/recovery/plan": {
+      "post": {
+        "summary": "Plan recovery via orchestrator",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  },
+                  "playbook": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Orchestrator recovery report"
+          }
+        }
+      }
+    },
+    "/v1/recovery/plans": {
+      "get": {
+        "summary": "List active recovery plans",
+        "responses": {
+          "200": {
+            "description": "Recovery plans"
+          }
+        }
+      }
+    },
+    "/v1/recovery/playbooks": {
+      "get": {
+        "summary": "List recovery playbooks",
+        "responses": {
+          "200": {
+            "description": "Playbook catalog"
+          }
+        }
+      }
+    },
+    "/v1/recovery/policies": {
+      "get": {
+        "summary": "Entity recovery policies",
+        "responses": {
+          "200": {
+            "description": "Recovery policies"
+          }
+        }
+      }
+    },
+    "/v1/recovery/predictive": {
+      "get": {
+        "summary": "Telemetry-driven predictive recovery indicators",
+        "responses": {
+          "200": {
+            "description": "Predictive indicators"
+          }
+        }
       },
       "post": {
-        "summary": "Start a remote expert or collaborative HRI session",
-        "security": [{ "bearerAuth": [] }],
-        "responses": { "200": { "description": "Session started" } }
+        "summary": "Predictive indicators for program context",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Predictive indicators"
+          }
+        }
       }
     },
-    "/v1/hri/sessions/{id}/annotate": {
+    "/v1/recovery/recommend": {
       "post": {
-        "summary": "Publish an AR annotation to an active HRI session",
-        "security": [{ "bearerAuth": [] }],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "summary": "Knowledge-base recovery strategy recommendation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Strategy recommendation"
+          }
+        }
+      }
+    },
+    "/v1/recovery/recoverable-entities": {
+      "get": {
+        "summary": "List recoverable entities from orchestrator registry",
+        "responses": {
+          "200": {
+            "description": "Recoverable entities"
+          }
+        }
+      }
+    },
+    "/v1/recovery/simulate": {
+      "post": {
+        "summary": "Simulate recovery without side effects",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Simulation report"
+          }
+        }
+      }
+    },
+    "/v1/recovery/validate": {
+      "post": {
+        "summary": "Validate recovery plan (dry-run)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string"
+                  },
+                  "entity_id": {
+                    "type": "string"
+                  },
+                  "failure": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation report"
+          }
+        }
+      }
+    },
+    "/v1/reports/export": {
+      "get": {
+        "summary": "Combined executive report export",
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Annotation recorded" } }
-      }
-    },
-    "/v1/hri/sessions/{id}/replay": {
-      "get": {
-        "summary": "Replay artifact metadata for an HRI session",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "markdown",
+                "json",
+                "pdf"
+              ]
+            }
+          },
+          {
+            "name": "profile",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "responses": { "200": { "description": "Replay metadata" } }
+        "responses": {
+          "200": {
+            "description": "Report payload"
+          }
+        }
       }
     },
-    "/v1/hri/collaboration": {
+    "/v1/reports/schedules": {
       "get": {
-        "summary": "Live collaboration participant graph (humans, robots, sessions)",
-        "responses": { "200": { "description": "Collaboration graph" } }
-      }
-    },
-    "/v1/hri/context": {
-      "get": {
-        "summary": "Hazard zones and human location context snapshot",
-        "responses": { "200": { "description": "Context awareness snapshot" } }
-      }
-    },
-    "/v1/humans": {
-      "get": {
-        "summary": "List configured human operators and collaborators",
-        "responses": { "200": { "description": "Human entity list" } }
-      }
-    },
-    "/v1/humans/readiness": {
-      "get": {
-        "summary": "Team readiness rollup with per-operator summary",
-        "responses": { "200": { "description": "Team readiness report" } }
-      }
-    },
-    "/v1/humans/twins": {
-      "get": {
-        "summary": "Human digital twin metadata with health mirror gating",
-        "responses": { "200": { "description": "Human twin list" } }
-      }
-    },
-    "/v1/humans/{id}/readiness": {
-      "get": {
-        "summary": "Per-operator readiness, certifications, and wearables",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "summary": "List scheduled report deliveries",
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Operator readiness" } }
-      }
-    },
-    "/v1/wearables": {
-      "get": {
-        "summary": "Wearable inventory with health opt-in gate status",
-        "responses": { "200": { "description": "Wearable list" } }
-      }
-    },
-    "/v1/human-health/policy": {
-      "get": {
-        "summary": "Human health telemetry opt-in policy (config + env gate)",
-        "responses": { "200": { "description": "Health privacy policy" } }
-      }
-    },
-    "/v1/facilities": {
-      "get": {
-        "summary": "List facilities, zones, and gateways from smart-space config",
-        "responses": { "200": { "description": "Facility inventory" } }
-      }
-    },
-    "/v1/facilities/{id}/readiness": {
-      "get": {
-        "summary": "Facility readiness score, gateways, zones, and continuity pairs",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "responses": {
+          "200": {
+            "description": "Report schedule list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create scheduled report delivery",
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Facility readiness" } }
+        "responses": {
+          "200": {
+            "description": "Created schedule"
+          }
+        }
       }
     },
-    "/v1/zones/{id}/occupancy": {
+    "/v1/risk": {
       "get": {
-        "summary": "Zone occupancy snapshot and digital twin mirror",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        "summary": "Risk summary",
+        "responses": {
+          "200": {
+            "description": "Risk summary"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/robots": {
+      "get": {
+        "summary": "List robots with assigned devices",
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
-        "responses": { "200": { "description": "Zone occupancy" } }
-      }
-    },
-    "/v1/energy/systems": {
-      "get": {
-        "summary": "Energy systems (solar, battery, EV, demand response)",
-        "responses": { "200": { "description": "Energy system list" } }
-      }
-    },
-    "/v1/emergency/status": {
-      "get": {
-        "summary": "Emergency and life-safety status with continuity pairs",
-        "responses": { "200": { "description": "Emergency status" } }
-      }
-    },
-    "/v1/smart-spaces/summary": {
-      "get": {
-        "summary": "Smart Spaces blueprint rollup (facilities, energy, emergency)",
-        "responses": { "200": { "description": "Smart Spaces summary" } }
-      }
-    },
-    "/v1/smart-spaces/devices": {
-      "get": {
-        "summary": "Smart Spaces IoT device inventory",
-        "parameters": [
-          { "name": "facility_id", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Device inventory" } }
-      }
-    },
-    "/v1/smart-spaces/gateways": {
-      "get": {
-        "summary": "Smart Spaces gateway reachability status",
-        "parameters": [
-          { "name": "facility_id", "in": "query", "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "Gateway status list" } }
-      }
-    },
-    "/v1/facilities/{id}/floor-map": {
-      "get": {
-        "summary": "Facility zone floor map tree",
-        "responses": { "200": { "description": "Floor map" } }
-      }
-    },
-    "/v1/facilities/{id}/security": {
-      "get": {
-        "summary": "Facility security and access control status",
-        "responses": { "200": { "description": "Security status" } }
-      }
-    },
-    "/v1/facilities/{id}/health": {
-      "get": {
-        "summary": "Facility device pool health rollup",
-        "responses": { "200": { "description": "Facility health" } }
-      }
-    },
-    "/v1/zones/{id}/environment": {
-      "get": {
-        "summary": "Zone environmental readings and baselines",
-        "responses": { "200": { "description": "Environmental status" } }
-      }
-    },
-    "/v1/energy/systems/{id}": {
-      "get": {
-        "summary": "Energy system detail (SOC, generation, EV session)",
-        "responses": { "200": { "description": "Energy system detail" } }
+        "responses": {
+          "200": {
+            "description": "Robot inventory"
+          }
+        }
       }
     },
     "/v1/rpc": {
@@ -1656,15 +3734,391 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "method": { "type": "string" },
-                  "params": { "type": "object" }
+                  "method": {
+                    "type": "string"
+                  },
+                  "params": {
+                    "type": "object"
+                  }
                 },
-                "required": ["method"]
+                "required": [
+                  "method"
+                ]
               }
             }
           }
         },
-        "responses": { "200": { "description": "RPC result" } }
+        "responses": {
+          "200": {
+            "description": "RPC result"
+          }
+        }
+      }
+    },
+    "/v1/secrets": {
+      "get": {
+        "summary": "Secret metadata (no values)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Secret metadata list"
+          }
+        }
+      }
+    },
+    "/v1/smart-spaces/devices": {
+      "get": {
+        "summary": "Smart Spaces IoT device inventory",
+        "parameters": [
+          {
+            "name": "facility_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device inventory"
+          }
+        }
+      }
+    },
+    "/v1/smart-spaces/gateways": {
+      "get": {
+        "summary": "Smart Spaces gateway reachability status",
+        "parameters": [
+          {
+            "name": "facility_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gateway status list"
+          }
+        }
+      }
+    },
+    "/v1/smart-spaces/summary": {
+      "get": {
+        "summary": "Smart Spaces blueprint rollup (facilities, energy, emergency)",
+        "responses": {
+          "200": {
+            "description": "Smart Spaces summary"
+          }
+        }
+      }
+    },
+    "/v1/sre/incidents": {
+      "get": {
+        "summary": "List operational incidents",
+        "responses": {
+          "200": {
+            "description": "Incident list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Open an incident",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incident created"
+          }
+        }
+      }
+    },
+    "/v1/sre/incidents/{id}/ack": {
+      "post": {
+        "summary": "Acknowledge an incident",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incident acknowledged"
+          }
+        }
+      }
+    },
+    "/v1/sre/incidents/{id}/resolve": {
+      "post": {
+        "summary": "Resolve an incident",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incident resolved"
+          }
+        }
+      }
+    },
+    "/v1/sre/summary": {
+      "get": {
+        "summary": "SRE availability and incident rollup",
+        "responses": {
+          "200": {
+            "description": "SRE metrics"
+          }
+        }
+      }
+    },
+    "/v1/tenant": {
+      "get": {
+        "summary": "Active Control Center tenant (SPANDA_TENANT_ID)",
+        "responses": {
+          "200": {
+            "description": "Tenant scope metadata"
+          }
+        }
+      }
+    },
+    "/v1/trust/package": {
+      "get": {
+        "summary": "Package trust evaluation",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust score report"
+          }
+        }
+      }
+    },
+    "/v1/trust/program": {
+      "get": {
+        "summary": "Composite program trust evaluation (CLI parity)",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Program trust report"
+          }
+        }
+      }
+    },
+    "/v1/twins": {
+      "get": {
+        "summary": "List mission twin snapshots",
+        "responses": {
+          "200": {
+            "description": "Twin Cloud registry summaries"
+          }
+        }
+      }
+    },
+    "/v1/twins/import-replay": {
+      "post": {
+        "summary": "Import legacy twin replay JSON as structured snapshot",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Imported twin snapshot"
+          }
+        }
+      }
+    },
+    "/v1/twins/sync": {
+      "post": {
+        "summary": "Sync mission twin for loaded program",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "twin_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored twin snapshot"
+          }
+        }
+      }
+    },
+    "/v1/twins/{id}": {
+      "get": {
+        "summary": "Get latest mission twin snapshot",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest twin snapshot"
+          }
+        }
+      }
+    },
+    "/v1/twins/{id}/history": {
+      "get": {
+        "summary": "List mission twin snapshot history",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Twin snapshot history"
+          }
+        }
+      }
+    },
+    "/v1/twins/{id}/snapshots": {
+      "post": {
+        "summary": "Push mission twin snapshot",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored twin snapshot"
+          }
+        }
+      }
+    },
+    "/v1/version": {
+      "get": {
+        "summary": "API versioning policy",
+        "responses": {
+          "200": {
+            "description": "Supported API versions"
+          }
+        }
+      }
+    },
+    "/v1/wearables": {
+      "get": {
+        "summary": "Wearable inventory with health opt-in gate status",
+        "responses": {
+          "200": {
+            "description": "Wearable list"
+          }
+        }
+      }
+    },
+    "/v1/zones/{id}/environment": {
+      "get": {
+        "summary": "Zone environmental readings and baselines",
+        "responses": {
+          "200": {
+            "description": "Environmental status"
+          }
+        }
+      }
+    },
+    "/v1/zones/{id}/occupancy": {
+      "get": {
+        "summary": "Zone occupancy snapshot and digital twin mirror",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zone occupancy"
+          }
+        }
       }
     }
   }
