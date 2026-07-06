@@ -2,11 +2,24 @@
 
 use spanda_core::ast::RobotDecl;
 use spanda_core::comm::BusDecl;
-use spanda_core::{check, lexer::tokenize, parser::parse};
+use spanda_core::{check, lexer::tokenize, parser::parse, RunOptions};
+use spanda_runtime::security_runtime::SecurityRuntime;
 use spanda_security::{
-    security_check, EncryptedMessage, EncryptionMode, SecurePolicy, TrustBoundaryKind,
-    TrustBoundaryRegistry,
+    security_check, EncryptedMessage, EncryptionMode, SecurePolicy, SecurityBackedRuntime,
+    TrustBoundaryKind, TrustBoundaryRegistry,
 };
+
+fn security_backed_runtime() -> Box<dyn SecurityRuntime> {
+    Box::new(SecurityBackedRuntime::new())
+}
+
+fn secured_run_options() -> RunOptions {
+    RunOptions {
+        max_loop_iterations: 1,
+        security_runtime_factory: Some(security_backed_runtime),
+        ..Default::default()
+    }
+}
 
 #[test]
 fn secure_bus_block_parses() {
@@ -432,14 +445,8 @@ robot R {
   behavior run() { BadAgent.plan(); }
 }
 "#;
-    let err = spanda_core::run(
-        source,
-        spanda_core::RunOptions {
-            max_loop_iterations: 1,
-            ..Default::default()
-        },
-    )
-    .expect_err("untrusted agent should be rejected");
+    let err = spanda_core::run(source, secured_run_options())
+        .expect_err("untrusted agent should be rejected");
     assert!(
         err.to_string().contains("untrusted") || err.to_string().contains("Untrusted"),
         "got: {err}"
@@ -564,14 +571,8 @@ robot R {
   }
 }
 "#;
-    let err = spanda_core::run(
-        source,
-        spanda_core::RunOptions {
-            max_loop_iterations: 1,
-            ..Default::default()
-        },
-    )
-    .expect_err("unencrypted publish over mqtt should fail robot_to_robot boundary");
+    let err = spanda_core::run(source, secured_run_options())
+        .expect_err("unencrypted publish over mqtt should fail robot_to_robot boundary");
     assert!(
         err.to_string().to_lowercase().contains("encryption"),
         "got: {err}"
