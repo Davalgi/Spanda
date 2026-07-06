@@ -255,10 +255,10 @@ if (!graph) {
   console.error('TS SDK entityGraph empty');
   process.exit(1);
 }
-const reflex = await client.listAutonomyReflexes();
+const reflex = await client.listAutonomyReflex();
 const reflexes = reflex?.reflexes ?? reflex;
 if (!Array.isArray(reflexes) || reflexes.length === 0) {
-  console.error('TS SDK listAutonomyReflexes empty', reflex);
+  console.error('TS SDK listAutonomyReflex empty', reflex);
   process.exit(1);
 }
 const fusion = await client.fusion().summary();
