@@ -107,8 +107,12 @@ export function CcMiniStats({ items }: { items: MiniStat[] }) {
     <div className="cc-mini-stats">
       {items.map((item) => (
         <div key={item.label} className={`cc-mini-stat${item.tone ? ` tone-${item.tone}` : ""}`}>
-          <span className="cc-mini-stat-label">{item.label}</span>
-          <span className="cc-mini-stat-value">{item.value}</span>
+          <span className="cc-mini-stat-label" title={item.label}>
+            {item.label}
+          </span>
+          <span className="cc-mini-stat-value" title={String(item.value)}>
+            {item.value}
+          </span>
         </div>
       ))}
     </div>

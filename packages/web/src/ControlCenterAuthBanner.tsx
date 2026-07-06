@@ -119,26 +119,51 @@ export function ControlCenterAuthBanner({
 
       {hasToken && !showAuthSetup && (
         <div className={`cc-auth-status${compact ? " cc-auth-status-compact" : ""}`}>
-          <div className="cc-auth-status-row">
-            <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>
-            {keyId ? (
-              <span className="cc-auth-identity">
-                <code>{keyId}</code>
-              </span>
-            ) : null}
-            {tenantId ? (
-              <span className="cc-auth-tenant">
-                <code>{tenantId}</code>
-              </span>
-            ) : null}
-            {!envKeyLocked && (
-              <button type="button" className="secondary cc-forget-btn" onClick={onForget}>
-                {compact ? "Forget" : "Forget token"}
-              </button>
-            )}
-          </div>
-          {!compact && (
+          {compact ? (
             <>
+              <div className="cc-auth-status-row cc-auth-status-row-top">
+                <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>
+                {!envKeyLocked && (
+                  <button type="button" className="secondary cc-forget-btn" onClick={onForget}>
+                    Forget
+                  </button>
+                )}
+              </div>
+              {(keyId || tenantId) && (
+                <div className="cc-auth-status-row cc-auth-status-row-meta">
+                  {keyId ? (
+                    <span className="cc-auth-identity">
+                      <code>{keyId}</code>
+                    </span>
+                  ) : null}
+                  {tenantId ? (
+                    <span className="cc-auth-tenant">
+                      <code>{tenantId}</code>
+                    </span>
+                  ) : null}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="cc-auth-status-row">
+                <span className={`cc-role-badge ${effectiveRole}`}>{roleMeta.label}</span>
+                {keyId ? (
+                  <span className="cc-auth-identity">
+                    <code>{keyId}</code>
+                  </span>
+                ) : null}
+                {tenantId ? (
+                  <span className="cc-auth-tenant">
+                    <code>{tenantId}</code>
+                  </span>
+                ) : null}
+                {!envKeyLocked && (
+                  <button type="button" className="secondary cc-forget-btn" onClick={onForget}>
+                    Forget token
+                  </button>
+                )}
+              </div>
               {" on "}
               <code>{apiHost}</code>
               <span className="demo-hint"> — {roleMeta.summary}</span>
