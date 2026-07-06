@@ -1,7 +1,31 @@
 //! Runtime certification gate tests.
 
+use spanda_ast::nodes::Program;
 use spanda_certify::enforce_certification_runtime;
 use spanda_driver::{compile, run, RunOptions};
+use spanda_runtime::hooks::RuntimeHooks;
+use std::sync::Arc;
+
+struct CertifyRuntimeHooks;
+
+impl RuntimeHooks for CertifyRuntimeHooks {
+    fn enforce_certification(&self, program: &Program, enforce: bool) -> Result<(), String> {
+        if enforce {
+            enforce_certification_runtime(program, true).map_err(|error| error.to_string())
+        } else {
+            Ok(())
+        }
+    }
+}
+
+fn certify_run_options() -> RunOptions {
+    RunOptions {
+        enforce_certify: true,
+        runtime_hooks: Some(Arc::new(CertifyRuntimeHooks)),
+        max_loop_iterations: 1,
+        ..Default::default()
+    }
+}
 
 #[test]
 fn enforce_certify_blocks_deploy_without_metadata() {
@@ -67,13 +91,6 @@ fn run_with_enforce_certify_flag_fails_for_ota_example() {
     //     let result = spanda_certify::runtime_gate::run_with_enforce_certify_flag_fails_for_ota_example();
 
     let source = include_str!("../../../examples/robotics/ota_deployment.sd");
-    let result = run(
-        source,
-        RunOptions {
-            enforce_certify: true,
-            max_loop_iterations: 1,
-            ..Default::default()
-        },
-    );
+    let result = run(source, certify_run_options());
     assert!(result.is_err());
 }

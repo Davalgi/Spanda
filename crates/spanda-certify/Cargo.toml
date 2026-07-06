@@ -19,3 +19,4 @@ spanda-hardware = { path = "../spanda-hardware" }
 [dev-dependencies]
 spanda-config = { path = "../spanda-config" }
 spanda-driver = { path = "../spanda-driver" }
+spanda-runtime = { path = "../spanda-runtime" }

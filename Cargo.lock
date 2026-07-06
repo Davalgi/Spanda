@@ -2655,6 +2655,7 @@ dependencies = [
  "spanda-driver",
  "spanda-error",
  "spanda-hardware",
+ "spanda-runtime",
 ]
 
 [[package]]
