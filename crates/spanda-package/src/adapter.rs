@@ -601,6 +601,39 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
             import_paths: &["access.lock"],
         },
         FrameworkPackage {
+            name: "spanda-standards-automotive",
+            description: "Standards profile scaffold for automotive compliance checks and evidence",
+            category: super::category::PackageCategory::Safety,
+            import_paths: &["governance.standards.automotive"],
+        },
+        FrameworkPackage {
+            name: "spanda-standards-cybersecurity",
+            description: "Standards profile scaffold for cybersecurity compliance checks and evidence",
+            category: super::category::PackageCategory::Safety,
+            import_paths: &["governance.standards.cybersecurity"],
+        },
+        FrameworkPackage {
+            name: "spanda-standards-functional_safety",
+            description:
+                "Standards profile scaffold for functional-safety compliance checks and evidence",
+            category: super::category::PackageCategory::Safety,
+            import_paths: &["governance.standards.functional_safety"],
+        },
+        FrameworkPackage {
+            name: "spanda-standards-industrial_safety",
+            description:
+                "Standards profile scaffold for industrial-safety compliance checks and evidence",
+            category: super::category::PackageCategory::Safety,
+            import_paths: &["governance.standards.industrial_safety"],
+        },
+        FrameworkPackage {
+            name: "spanda-standards-medical_device",
+            description:
+                "Standards profile scaffold for medical-device compliance checks and evidence",
+            category: super::category::PackageCategory::Safety,
+            import_paths: &["governance.standards.medical_device"],
+        },
+        FrameworkPackage {
             name: "spanda-environment",
             description: "Air quality and environmental sensing",
             category: super::category::PackageCategory::Sensors,
