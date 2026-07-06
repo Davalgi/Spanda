@@ -61,9 +61,11 @@ pub fn effective_bus_security(
 /// Map a transport name to the trust boundary it typically crosses.
 pub fn boundary_for_transport_name(transport: &str) -> Option<TrustBoundaryKind> {
     match transport {
-        "mqtt" | "websocket" | "dds" | "ros2" => Some(TrustBoundaryKind::RobotToCloud),
-        "sim" | "in_memory" => None,
-        _ => Some(TrustBoundaryKind::RobotToRobot),
+        "local" | "sim" | "ble" | "in_memory" => Some(TrustBoundaryKind::RobotInternal),
+        "ros2" | "dds" | "mqtt" => Some(TrustBoundaryKind::RobotToRobot),
+        "websocket" => Some(TrustBoundaryKind::OperatorToRobot),
+        "wifi" | "cellular" => Some(TrustBoundaryKind::RobotToCloud),
+        _ => None,
     }
 }
 
