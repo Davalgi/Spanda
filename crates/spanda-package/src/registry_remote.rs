@@ -526,6 +526,8 @@ mod ondisk_lookup_tests {
 
     #[test]
     fn looks_up_ondisk_wifi_package() {
+        let _guard = crate::testing::env_lock();
+        std::env::remove_var("SPANDA_REGISTRY_URL");
         let entry = lookup_registry_entry("spanda-wifi");
         assert!(
             entry.is_some(),

@@ -10,6 +10,7 @@ pub enum SafetyLevel {
     #[default]
     Experimental,
     SimulationOnly,
+    #[serde(alias = "hardware")]
     HardwareSafe,
     Certified,
 }
@@ -125,7 +126,7 @@ impl FromStr for SafetyLevel {
         match s {
             "experimental" => Ok(Self::Experimental),
             "simulation_only" => Ok(Self::SimulationOnly),
-            "hardware_safe" => Ok(Self::HardwareSafe),
+            "hardware" | "hardware_safe" => Ok(Self::HardwareSafe),
             "certified" => Ok(Self::Certified),
             other => Err(format!("unknown safety level '{other}'")),
         }

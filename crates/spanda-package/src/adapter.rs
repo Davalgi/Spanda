@@ -608,7 +608,8 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
         },
         FrameworkPackage {
             name: "spanda-standards-cybersecurity",
-            description: "Standards profile scaffold for cybersecurity compliance checks and evidence",
+            description:
+                "Standards profile scaffold for cybersecurity compliance checks and evidence",
             category: super::category::PackageCategory::Safety,
             import_paths: &["governance.standards.cybersecurity"],
         },
