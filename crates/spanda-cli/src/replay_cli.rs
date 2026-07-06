@@ -9,6 +9,7 @@ use std::process;
 use std::sync::Arc;
 
 /// Replay or inspect a mission trace with optional deterministic verification.
+#[allow(clippy::too_many_arguments)]
 pub fn human_replay(
     trace_file: &str,
     from: Option<&str>,

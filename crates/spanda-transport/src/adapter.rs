@@ -2,7 +2,6 @@
 
 use crate::security::{TlsTransportSession, TransportSecurityConfig};
 use spanda_ast::comm_decl::TransportKind;
-use spanda_runtime::security_types::EncryptionMode;
 use spanda_runtime::RuntimeValue;
 use std::collections::{HashMap, VecDeque};
 

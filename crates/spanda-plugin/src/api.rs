@@ -57,10 +57,6 @@ impl PluginApiContext {
         &self.plugin_name
     }
 
-    pub(crate) fn gate(&self, surface: PluginApiSurface) -> PluginResult<()> {
-        enforce_capability(&self.capabilities, surface.read_capability())
-    }
-
     pub(crate) fn gate_entity(&self) -> PluginResult<()> {
         self.gate_surface(PluginApiSurface::Entity)
     }

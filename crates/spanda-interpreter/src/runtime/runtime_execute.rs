@@ -6,7 +6,6 @@ use super::{
 };
 use spanda_ast::comm_decl::DiscoverFilter;
 use spanda_ast::nodes::{Expr, SpandaType, Stmt};
-use spanda_comm::CommBus;
 use spanda_debug::stmt_line;
 use spanda_error::SpandaError;
 use spanda_runtime::triggers::SystemTriggerCategory;

@@ -135,19 +135,16 @@ pub fn should_trigger_preventative(indicators: &[PredictiveIndicator]) -> bool {
 }
 
 fn scan_telemetry_object(value: &Value, prefix: &str, out: &mut Vec<PredictiveIndicator>) {
-    match value {
-        Value::Object(map) => {
-            for (key, val) in map {
-                let path = if prefix.is_empty() {
-                    key.clone()
-                } else {
-                    format!("{prefix}.{key}")
-                };
-                check_metric_pattern(&path, val, out);
-                scan_telemetry_object(val, &path, out);
-            }
+    if let Value::Object(map) = value {
+        for (key, val) in map {
+            let path = if prefix.is_empty() {
+                key.clone()
+            } else {
+                format!("{prefix}.{key}")
+            };
+            check_metric_pattern(&path, val, out);
+            scan_telemetry_object(val, &path, out);
         }
-        _ => {}
     }
 }
 

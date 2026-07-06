@@ -14,7 +14,7 @@ fn project_root_or_cwd() -> PathBuf {
 }
 
 fn resolve_project_root() -> PathBuf {
-    find_project_root(&project_root_or_cwd()).unwrap_or_else(|| project_root_or_cwd())
+    find_project_root(&project_root_or_cwd()).unwrap_or_else(project_root_or_cwd)
 }
 
 fn open_manager() -> PluginManager {

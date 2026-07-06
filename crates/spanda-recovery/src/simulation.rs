@@ -89,11 +89,12 @@ pub fn run_simulation(
 
             let matched_playbook: Option<RecoveryPlaybook> =
                 if let Some(name) = request.playbook.as_ref() {
-                    find_playbook(&playbooks, name).map(|p| p.clone())
+                    find_playbook(&playbooks, name).cloned()
                 } else {
                     match_playbooks(&playbooks, &failure)
-                        .first()
-                        .map(|p| (*p).clone())
+                        .into_iter()
+                        .next()
+                        .cloned()
                 };
 
             let strategies: Vec<_> = if let Some(ref pb) = matched_playbook {

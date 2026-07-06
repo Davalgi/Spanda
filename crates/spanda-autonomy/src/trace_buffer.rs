@@ -1,6 +1,6 @@
 //! In-process and file-backed reflex trace buffer for runtime and API replay.
 //!
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
 use chrono::Utc;

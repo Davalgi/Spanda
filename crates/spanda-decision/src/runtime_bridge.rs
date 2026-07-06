@@ -131,21 +131,21 @@ impl DecisionRuntime for DecisionBackedRuntime {
         }
 
         for boundary in default_safety_boundaries() {
-            if action_key.contains(&boundary.action) || action.contains(&boundary.action) {
-                if boundary.requires_approval {
-                    let chain = build_escalation_chain(
-                        entity_id,
-                        EscalationReason::HumanApprovalRequired,
-                        DecisionLayer::LocalEntity,
-                    );
-                    return DecisionActionVerdict {
-                        permitted: false,
-                        reason: boundary.reason.clone(),
-                        requires_escalation: true,
-                        escalation_id: chain.last().map(|e| e.escalation_id.clone()),
-                        policy_version: Some(policy_version.clone()),
-                    };
-                }
+            if (action_key.contains(&boundary.action) || action.contains(&boundary.action))
+                && boundary.requires_approval
+            {
+                let chain = build_escalation_chain(
+                    entity_id,
+                    EscalationReason::HumanApprovalRequired,
+                    DecisionLayer::LocalEntity,
+                );
+                return DecisionActionVerdict {
+                    permitted: false,
+                    reason: boundary.reason.clone(),
+                    requires_escalation: true,
+                    escalation_id: chain.last().map(|e| e.escalation_id.clone()),
+                    policy_version: Some(policy_version.clone()),
+                };
             }
         }
 

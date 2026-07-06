@@ -93,24 +93,23 @@ pub fn evaluate_entity_governance(
     let entity = registry.get(entity_id);
 
     if let Some(autonomy) = governance.autonomy_level {
-        if autonomy.requires_human_approval() {
-            if governance
+        if autonomy.requires_human_approval()
+            && governance
                 .accountability
                 .as_ref()
                 .and_then(|a| a.responsible_person.as_ref())
                 .is_none()
-            {
-                findings.push(GovernanceFinding {
-                    severity: ValidationSeverity::Missing,
-                    code: "GOV_HUMAN_APPROVAL".into(),
-                    message: format!(
-                        "Autonomy level {} requires a responsible person for human approval",
-                        autonomy.as_str()
-                    ),
-                    field: Some("accountability.responsible_person".into()),
-                });
-                actions.push("Assign a responsible person for human approval workflows".into());
-            }
+        {
+            findings.push(GovernanceFinding {
+                severity: ValidationSeverity::Missing,
+                code: "GOV_HUMAN_APPROVAL".into(),
+                message: format!(
+                    "Autonomy level {} requires a responsible person for human approval",
+                    autonomy.as_str()
+                ),
+                field: Some("accountability.responsible_person".into()),
+            });
+            actions.push("Assign a responsible person for human approval workflows".into());
         }
         if let Some(record) = entity {
             let trust_sufficient = matches!(

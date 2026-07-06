@@ -56,9 +56,11 @@ pub fn load_recovery_policies(
     // Ensure every recoverable entity has at least a default policy.
     for entity in registry.list() {
         if is_policy_eligible(&entity.entity_type) && !by_id.contains_key(&entity.id) {
-            let mut p = EntityRecoveryPolicy::default();
-            p.entity_id = entity.id.clone();
-            p.entity_kind = Some(entity.entity_type.clone());
+            let p = EntityRecoveryPolicy {
+                entity_id: entity.id.clone(),
+                entity_kind: Some(entity.entity_type.clone()),
+                ..Default::default()
+            };
             by_id.insert(entity.id.clone(), p);
         }
     }
@@ -140,6 +142,7 @@ pub fn policy_for_entity<'a>(
 }
 
 /// Parse a single policy TOML table.
+#[allow(clippy::field_reassign_with_default)]
 fn parse_policy_table(name: &str, table: &toml::Value) -> Option<EntityRecoveryPolicy> {
     let t = table.as_table()?;
     let mut policy = EntityRecoveryPolicy::default();

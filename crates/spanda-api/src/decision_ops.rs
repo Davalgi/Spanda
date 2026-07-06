@@ -184,10 +184,7 @@ pub fn list_decision_traces(state: &ControlCenterState, query: &str) -> HttpResp
     let trace_path = if let Some(path) = parse_query_param(query, "trace") {
         std::path::PathBuf::from(path)
     } else if let Some(program_file) = parse_query_param(query, "file") {
-        let root = state
-            .project_root()
-            .map(std::path::PathBuf::from)
-            .unwrap_or_default();
+        let root = state.project_root().unwrap_or_default();
         let path = if root.as_os_str().is_empty() {
             std::path::PathBuf::from(&program_file)
         } else {

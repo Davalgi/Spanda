@@ -238,7 +238,7 @@ fn load_program(
     let Some(path) = state.program_path.as_ref() else {
         return Err("no program loaded; use control-center serve --program <file.sd>".into());
     };
-    parse_program_file(path).map(|(program, source, label)| (program, source, label))
+    parse_program_file(path)
 }
 
 #[cfg(test)]

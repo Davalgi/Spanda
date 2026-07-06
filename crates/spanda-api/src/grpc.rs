@@ -1475,7 +1475,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::list_recovery_plans_json(state))
+        self.with_state(crate::recovery_ops::list_recovery_plans_json)
             .map(Response::new)
     }
 
@@ -1485,7 +1485,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::recovery_history_json(state))
+        self.with_state(crate::recovery_ops::recovery_history_json)
             .map(Response::new)
     }
 
@@ -1535,7 +1535,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::recovery_playbooks_json(state))
+        self.with_state(crate::recovery_ops::recovery_playbooks_json)
             .map(Response::new)
     }
 
@@ -1545,7 +1545,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::recovery_metrics_json(state))
+        self.with_state(crate::recovery_ops::recovery_metrics_json)
             .map(Response::new)
     }
 
@@ -1565,7 +1565,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::recovery_policies_json(state))
+        self.with_state(crate::recovery_ops::recovery_policies_json)
             .map(Response::new)
     }
 
@@ -1595,7 +1595,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::recovery_ops::recovery_recoverable_entities_json(state))
+        self.with_state(crate::recovery_ops::recovery_recoverable_entities_json)
             .map(Response::new)
     }
 
@@ -1615,7 +1615,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::list_reflex_json(state))
+        self.with_state(crate::autonomy_ops::list_reflex_json)
             .map(Response::new)
     }
 
@@ -1625,7 +1625,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::list_reflex_traces_json(state))
+        self.with_state(crate::autonomy_ops::list_reflex_traces_json)
             .map(Response::new)
     }
 
@@ -1635,7 +1635,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::homeostasis_summary_json(state))
+        self.with_state(crate::autonomy_ops::homeostasis_summary_json)
             .map(Response::new)
     }
 
@@ -1645,7 +1645,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::immunity_scan_json(state))
+        self.with_state(crate::autonomy_ops::immunity_scan_json)
             .map(Response::new)
     }
 
@@ -1655,7 +1655,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::attention_queue_json(state))
+        self.with_state(crate::autonomy_ops::attention_queue_json)
             .map(Response::new)
     }
 
@@ -1665,7 +1665,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::fusion_summary_json(state))
+        self.with_state(crate::autonomy_ops::fusion_summary_json)
             .map(Response::new)
     }
 
@@ -1675,7 +1675,7 @@ impl ControlCenter for GrpcControlCenter {
     ) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         let _ = request.into_inner();
-        self.with_state(|state| crate::autonomy_ops::memory_summary_json(state))
+        self.with_state(crate::autonomy_ops::memory_summary_json)
             .map(Response::new)
     }
 

@@ -87,25 +87,25 @@ pub fn evaluate_immunity(entity: &EntityRecord, policy: &ImmunePolicy) -> Vec<Im
             detail: "Entity trust is compromised".into(),
         });
     }
-    if policy.block_unsigned_plugins {
-        if entity.metadata.get("plugin.unsigned") == Some(&"true".into()) {
-            events.push(ImmuneEvent {
-                entity_id: entity.id.clone(),
-                kind: "unsigned_plugin".into(),
-                response: ThreatResponse::Block,
-                detail: "Unsigned plugin detected".into(),
-            });
-        }
+    if policy.block_unsigned_plugins
+        && entity.metadata.get("plugin.unsigned") == Some(&"true".into())
+    {
+        events.push(ImmuneEvent {
+            entity_id: entity.id.clone(),
+            kind: "unsigned_plugin".into(),
+            response: ThreatResponse::Block,
+            detail: "Unsigned plugin detected".into(),
+        });
     }
-    if policy.reject_spoofed_sensors {
-        if entity.metadata.get("sensor.spoofing_detected") == Some(&"true".into()) {
-            events.push(ImmuneEvent {
-                entity_id: entity.id.clone(),
-                kind: "sensor_spoofing".into(),
-                response: ThreatResponse::Quarantine,
-                detail: "Sensor spoofing signal rejected".into(),
-            });
-        }
+    if policy.reject_spoofed_sensors
+        && entity.metadata.get("sensor.spoofing_detected") == Some(&"true".into())
+    {
+        events.push(ImmuneEvent {
+            entity_id: entity.id.clone(),
+            kind: "sensor_spoofing".into(),
+            response: ThreatResponse::Quarantine,
+            detail: "Sensor spoofing signal rejected".into(),
+        });
     }
     events
 }

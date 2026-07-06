@@ -255,7 +255,7 @@ pub fn agent_health(entry: &FleetAgentEntry) -> Result<bool, String> {
         // Record heartbeat via the injected device telemetry sink.
         let sink = spanda_runtime::device_telemetry_sink::device_telemetry_sink();
         if sink.persist_enabled() {
-            let _ = sink.record_device_heartbeat(
+            sink.record_device_heartbeat(
                 &entry.robot_name,
                 sink.wall_timestamp_ms(),
                 Some(entry.robot_name.as_str()),

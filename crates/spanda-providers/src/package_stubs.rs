@@ -665,30 +665,9 @@ impl StubLedgerChain {
 }
 
 /// Ledger provider backed by the in-process mock chain (`spanda-ledger` package).
+#[derive(Default)]
 pub struct LedgerPackageStub {
     backend: StubLedgerChain,
-}
-
-impl Default for LedgerPackageStub {
-    fn default() -> Self {
-        // Description:
-        //     Provide the default value for this type.
-        //
-        // Inputs:
-        //     None.
-        //
-        // Outputs:
-        //     result: Self
-        //         Return value from `default`.
-        //
-        // Example:
-
-        //     let result = spanda_providers::package_stubs::default();
-
-        Self {
-            backend: StubLedgerChain::default(),
-        }
-    }
 }
 
 impl LedgerProvider for LedgerPackageStub {

@@ -304,7 +304,7 @@ impl<B: RobotBackend> Interpreter<B> {
         let rejected = evidence
             .get("rejected_alternatives")
             .and_then(|v| v.as_array())
-            .map(|items| items.clone())
+            .cloned()
             .unwrap_or_default();
         let payload = spanda_runtime::v3_decision_payload_with_extras(
             &decision_id,

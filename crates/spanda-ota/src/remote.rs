@@ -291,7 +291,7 @@ pub fn agent_health(entry: &DeployAgentEntry) -> Result<bool, String> {
         let sink = spanda_runtime::device_telemetry_sink::device_telemetry_sink();
         if sink.persist_enabled() {
             let device_id = entry.target.clone();
-            let _ = sink.record_device_heartbeat(
+            sink.record_device_heartbeat(
                 &device_id,
                 sink.wall_timestamp_ms(),
                 None,

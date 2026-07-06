@@ -197,7 +197,7 @@ pub fn admin_integrations_summary(
         .map(|channel| format!("{channel:?}"))
         .collect();
     let mut observability = spanda_ops::observability_backend_summary();
-    if let Some(url) = std::env::var("SPANDA_GRAFANA_URL").ok() {
+    if let Ok(url) = std::env::var("SPANDA_GRAFANA_URL") {
         if let Some(obj) = observability.as_object_mut() {
             obj.insert("grafana_url".into(), serde_json::Value::String(url));
         }

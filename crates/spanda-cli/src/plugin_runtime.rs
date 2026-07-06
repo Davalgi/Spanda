@@ -55,6 +55,7 @@ pub fn register_platform_event_runtime() {
     ));
 }
 
+#[allow(dead_code)]
 pub fn dispatch_report_hook(path: &str) {
     let Some(hook) = spanda_plugin::bridge::hook_for_report_request(path) else {
         return;

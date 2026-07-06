@@ -233,11 +233,7 @@ fn projected_risks(readiness: &ReadinessReport, safety_coverage_pct: u32) -> Vec
         ));
     }
     for issue in readiness.issues.iter().take(3) {
-        risks.push(format!(
-            "{}: {}",
-            format!("{:?}", issue.severity),
-            issue.message
-        ));
+        risks.push(format!("{:?}: {}", issue.severity, issue.message));
     }
     risks
 }

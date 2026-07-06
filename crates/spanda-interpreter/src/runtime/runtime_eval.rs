@@ -5,7 +5,6 @@ use super::{Interpreter, IntoSpandaError, RobotBackend, RuntimeError, RuntimeVal
 use spanda_ai::{execute_agent_plan, mock_analyze_frame, mock_camera_frame, PlanExecutor};
 use spanda_ast::comm_decl::DiscoverFilter;
 use spanda_ast::nodes::{AgentDecl, BinaryOp, Expr, LiteralValue, Stmt, UnaryOp, UnitKind};
-use spanda_comm::CommBus;
 use spanda_error::SpandaError;
 use spanda_regex_lang::{regex_capture, regex_find, regex_matches, regex_replace, regex_split};
 use spanda_runtime::triggers::SystemTriggerCategory;

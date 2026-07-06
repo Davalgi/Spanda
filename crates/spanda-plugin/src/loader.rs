@@ -172,13 +172,13 @@ impl LoadedPlugin {
                 "load",
                 "loaded sandboxed WASM plugin",
             );
-            return Ok(Self {
+            Ok(Self {
                 manifest,
                 format: LoadFormat::Wasm,
                 artifact_path,
                 sandbox,
                 wasm_engine: Some(WasmEngineState { engine, module }),
-            });
+            })
         }
         #[cfg(not(feature = "wasm-loader"))]
         {

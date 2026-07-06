@@ -6,7 +6,6 @@ use super::super::super::simulator::{create_default_simulator, SimulatorConfig};
 use super::{Interpreter, RobotBackend};
 use serde::{Deserialize, Serialize};
 use spanda_ast::nodes::Program;
-use spanda_comm::CommBus;
 use spanda_error::SpandaError;
 use spanda_runtime::robotics::MissionState;
 use spanda_runtime::value::RuntimeValue;

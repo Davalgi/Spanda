@@ -245,7 +245,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.post_fleet_member_decision_vote(
                     entity,
                     action,
-                    &layer_str_precedence_key(&result.layer),
+                    layer_str_precedence_key(&result.layer),
                     &format!(
                         "tree '{}' matched '{}'",
                         result.tree_name, result.condition_matched

@@ -153,7 +153,7 @@ pub fn fleet_map_json(state: &ControlCenterState) -> HttpResponse {
                     "robot",
                     None,
                     Some("configured"),
-                    fleet_id.as_deref(),
+                    fleet_id,
                 );
             }
         }
@@ -168,7 +168,7 @@ pub fn fleet_map_json(state: &ControlCenterState) -> HttpResponse {
             "fleet_agent",
             None,
             Some("registered"),
-            fleet_id.as_deref(),
+            fleet_id,
         );
     }
 
@@ -191,7 +191,7 @@ pub fn fleet_map_json(state: &ControlCenterState) -> HttpResponse {
             "entity",
             coords,
             Some(entity.health_status.as_str()),
-            fleet_id.as_deref(),
+            fleet_id,
         );
     }
 
@@ -203,7 +203,7 @@ pub fn fleet_map_json(state: &ControlCenterState) -> HttpResponse {
             "device",
             None,
             Some(device.lifecycle_state.as_str()),
-            fleet_id.as_deref(),
+            fleet_id,
         );
     }
 

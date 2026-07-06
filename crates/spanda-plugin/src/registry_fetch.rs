@@ -68,7 +68,7 @@ fn try_fetch_as_package(name: &str, version: &str, project_root: &Path) -> Optio
         name,
         version,
         &cache_dir,
-        entry.version_sha256(version).as_deref(),
+        entry.version_sha256(version),
         entry.version_signature(version),
     )
     .ok()?;

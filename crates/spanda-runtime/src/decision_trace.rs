@@ -45,6 +45,7 @@ fn decision_trust_key() -> Option<String> {
 }
 
 /// Canonical signing payload for a v3 decision security envelope.
+#[allow(clippy::too_many_arguments)]
 pub fn decision_envelope_signing_payload(
     decision_id: &str,
     entity_id: &str,
@@ -103,6 +104,7 @@ pub fn v3_decision_payload(
 }
 
 /// Build an enriched v3 decision record with policy version, tree hash, and security envelope.
+#[allow(clippy::too_many_arguments)]
 pub fn v3_decision_payload_with_extras(
     decision_id: &str,
     mission: Option<&str>,
@@ -116,7 +118,7 @@ pub fn v3_decision_payload_with_extras(
     let policy_version = extras
         .policy_version
         .clone()
-        .or_else(|| evidence.get("tree_hash").and_then(|_| Some("1.0.0".into())))
+        .or_else(|| evidence.get("tree_hash").map(|_| "1.0.0".into()))
         .unwrap_or_else(|| "1.0.0".into());
     let policy_hash = extras.policy_hash.or_else(|| {
         evidence

@@ -165,8 +165,11 @@ pub fn run_compliance_check(
 
     let entities_checked = entity_reports.len();
     let entities_failed = entities_checked.saturating_sub(passed_count);
-    let passed =
-        entities_failed == 0 && warnings.is_empty().then_some(true).unwrap_or(!opts.strict);
+    let passed = if entities_failed == 0 && warnings.is_empty() {
+        true
+    } else {
+        !opts.strict
+    };
 
     ComplianceCheckReport {
         passed,
@@ -251,12 +254,11 @@ pub fn validate_governance(
         });
     }
 
-    if system_gov
+    if !system_gov
         .accountability
         .as_ref()
         .map(|a| a.is_complete_for_production())
         .unwrap_or(false)
-        == false
         && system_gov
             .operational_maturity
             .map(|m| m.allows_live_deployment())

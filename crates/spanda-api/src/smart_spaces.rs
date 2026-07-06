@@ -28,7 +28,7 @@ pub(crate) fn nested_table_array<'a>(raw: &'a toml::Value, keys: &[&str]) -> Vec
         .unwrap_or_default()
 }
 
-fn facility_entries<'a>(raw: &'a toml::Value) -> Vec<&'a toml::Value> {
+fn facility_entries(raw: &toml::Value) -> Vec<&toml::Value> {
     nested_table_array(raw, &["facilities"])
 }
 
@@ -45,7 +45,7 @@ pub(crate) fn collect_facility_nested<'a>(
     collected
 }
 
-pub(crate) fn collect_zone_devices<'a>(raw: &'a toml::Value) -> Vec<&'a toml::Value> {
+pub(crate) fn collect_zone_devices(raw: &toml::Value) -> Vec<&toml::Value> {
     let mut collected = nested_table_array(raw, &["facilities", "zones", "devices"]);
     for zone in collect_facility_nested(raw, "zones") {
         if let Some(items) = zone.get("devices").and_then(|v| v.as_array()) {
@@ -408,7 +408,7 @@ fn evaluate_facility_readiness(
 
     let wireless_ids: Vec<String> = entries_for_facility(raw, facility_id, "gateways")
         .into_iter()
-        .chain(entries_for_facility(raw, facility_id, "robots").into_iter())
+        .chain(entries_for_facility(raw, facility_id, "robots"))
         .filter(|entry| {
             table_field_str(entry, "type")
                 .map(|kind| {

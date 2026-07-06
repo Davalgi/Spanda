@@ -372,7 +372,7 @@ fn parse_playbook_step(value: &toml::Value, default_order: u32) -> Option<Playbo
     let strategy = table
         .get("strategy")
         .and_then(|v| v.as_str())
-        .map(|s| crate::policy::parse_strategy_for_playbook(s))
+        .map(crate::policy::parse_strategy_for_playbook)
         .unwrap_or(OrchestratorStrategy::Retry);
     let escalation_level = table
         .get("escalation_level")

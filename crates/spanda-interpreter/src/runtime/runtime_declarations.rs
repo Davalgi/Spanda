@@ -6,8 +6,6 @@ use spanda_ai::{create_agent_runtime, MemoryStore};
 use spanda_ast::nodes::{
     ActionDecl, ActuatorDecl, AgentDecl, SensorBinding, SensorDecl, ServiceDecl, TopicDecl,
 };
-use spanda_comm::CommBus;
-
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn define_topic(&mut self, topic: &TopicDecl) {
         // Description:

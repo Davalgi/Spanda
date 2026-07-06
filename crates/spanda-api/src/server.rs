@@ -4,7 +4,7 @@ use crate::handlers::{encode_response, handle_request};
 use crate::state::{shared_state, SharedState};
 use crate::ws::{is_telemetry_stream_upgrade, serve_telemetry_websocket};
 use spanda_deploy_http::{parse_http_request, read_http_request};
-use std::io::{Read, Write};
+use std::io::Write;
 use std::net::{Shutdown, TcpListener, TcpStream};
 use std::path::PathBuf;
 use std::sync::Arc;

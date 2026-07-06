@@ -14,31 +14,31 @@ pub enum MemoryCategory {
 }
 
 /// Fast local rules and safety reflexes.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ReflexMemory {
     pub rules: Vec<String>,
 }
 
 /// Current mission context.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct WorkingMemory {
     pub context_keys: Vec<String>,
 }
 
 /// Mission traces, incidents, replays.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct EpisodicMemory {
     pub trace_ids: Vec<String>,
 }
 
 /// Entity graph, knowledge graph, relationships.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct SemanticMemory {
     pub graph_refs: Vec<String>,
 }
 
 /// Recovery playbooks, decision policies, procedures.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ProceduralMemory {
     pub playbook_ids: Vec<String>,
 }
@@ -51,40 +51,6 @@ pub struct OperationalMemoryModel {
     pub episodic: EpisodicMemory,
     pub semantic: SemanticMemory,
     pub procedural: ProceduralMemory,
-}
-
-impl Default for ReflexMemory {
-    fn default() -> Self {
-        Self { rules: vec![] }
-    }
-}
-
-impl Default for WorkingMemory {
-    fn default() -> Self {
-        Self {
-            context_keys: vec![],
-        }
-    }
-}
-
-impl Default for EpisodicMemory {
-    fn default() -> Self {
-        Self { trace_ids: vec![] }
-    }
-}
-
-impl Default for SemanticMemory {
-    fn default() -> Self {
-        Self { graph_refs: vec![] }
-    }
-}
-
-impl Default for ProceduralMemory {
-    fn default() -> Self {
-        Self {
-            playbook_ids: vec![],
-        }
-    }
 }
 
 /// Map a trace or artifact reference to a memory category.

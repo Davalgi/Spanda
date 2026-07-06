@@ -20,16 +20,9 @@ use crate::trust::TrustLevel as SecTrustLevel;
 use crate::trust_boundary::TrustBoundaryKind as SecTrustBoundaryKind;
 
 /// Full security runtime delegating to `spanda-security::SecurityContext`.
+#[derive(Default)]
 pub struct SecurityBackedRuntime {
     inner: SecurityContext,
-}
-
-impl Default for SecurityBackedRuntime {
-    fn default() -> Self {
-        Self {
-            inner: SecurityContext::new(),
-        }
-    }
 }
 
 impl SecurityBackedRuntime {
@@ -85,15 +78,6 @@ fn map_boundary(boundary: TrustBoundaryKind) -> SecTrustBoundaryKind {
         TrustBoundaryKind::RobotToRobot => SecTrustBoundaryKind::RobotToRobot,
         TrustBoundaryKind::RobotToCloud => SecTrustBoundaryKind::RobotToCloud,
         TrustBoundaryKind::OperatorToRobot => SecTrustBoundaryKind::OperatorToRobot,
-    }
-}
-
-fn map_boundary_back(boundary: SecTrustBoundaryKind) -> TrustBoundaryKind {
-    match boundary {
-        SecTrustBoundaryKind::RobotInternal => TrustBoundaryKind::RobotInternal,
-        SecTrustBoundaryKind::RobotToRobot => TrustBoundaryKind::RobotToRobot,
-        SecTrustBoundaryKind::RobotToCloud => TrustBoundaryKind::RobotToCloud,
-        SecTrustBoundaryKind::OperatorToRobot => TrustBoundaryKind::OperatorToRobot,
     }
 }
 

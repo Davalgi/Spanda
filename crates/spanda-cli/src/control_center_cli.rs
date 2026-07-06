@@ -521,7 +521,7 @@ fn discover_local_spanda_listeners() -> Vec<LocalSpandaListener> {
             listeners.push(listener);
         }
         listeners.sort_by(|left, right| left.url.cmp(&right.url));
-        return listeners;
+        listeners
     }
     #[cfg(not(unix))]
     {
@@ -530,15 +530,9 @@ fn discover_local_spanda_listeners() -> Vec<LocalSpandaListener> {
 }
 
 fn parse_lsof_listener_line(line: &str) -> Option<LocalSpandaListener> {
-    let Some(tcp_part) = line.split("TCP ").nth(1) else {
-        return None;
-    };
-    let Some(address) = tcp_part.split_whitespace().next() else {
-        return None;
-    };
-    let Some((host, port)) = address.rsplit_once(':') else {
-        return None;
-    };
+    let tcp_part = line.split("TCP ").nth(1)?;
+    let address = tcp_part.split_whitespace().next()?;
+    let (host, port) = address.rsplit_once(':')?;
     let host = if host == "*" { "127.0.0.1" } else { host };
     let mut parts = line.split_whitespace();
     let _command = parts.next()?;

@@ -6,7 +6,7 @@ use spanda_ast::comm_decl::{QosDecl, TransportKind};
 use spanda_ast::foundations::{CapabilityDecl, TaskPriority};
 use spanda_ast::nodes::{Expr, Program, RobotDecl, Stmt};
 use spanda_audit::{AuditRuntime, MockLedgerBackend};
-use spanda_comm::{default_comm_bus_factory_fn, CommBus, CommBusFactory, CommBusHost};
+use spanda_comm::{default_comm_bus_factory_fn, CommBusFactory, CommBusHost};
 use spanda_concurrency::ConcurrencyRuntime;
 use spanda_connectivity_runtime::ConnectivityPolicyRuntime;
 use spanda_debug::DebugController;

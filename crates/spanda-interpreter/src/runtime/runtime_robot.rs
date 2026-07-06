@@ -5,7 +5,6 @@ use super::{
     get_string, pose_from_state, velocity_from_state, Interpreter, RobotBackend, RuntimeValue,
 };
 use spanda_ast::nodes::Expr;
-use spanda_comm::CommBus;
 use spanda_error::SpandaError;
 use spanda_safety::Pose2d;
 

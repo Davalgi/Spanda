@@ -615,7 +615,7 @@ fn render_global_functions(out: &mut String) {
     }
 }
 
-fn render_robot_methods(host: &dyn TypeCheckHost, out: &mut String) {
+fn render_robot_methods(_host: &dyn TypeCheckHost, out: &mut String) {
     // Description:
     //     Render robot methods.
     //

@@ -116,9 +116,7 @@ impl DeploymentProfile {
     }
 }
 
-fn profile_defaults(
-    kind: &DeploymentProfileKind,
-) -> (
+type ProfileDefaults = (
     String,
     OperationalRisk,
     AutonomyLevel,
@@ -127,7 +125,9 @@ fn profile_defaults(
     Vec<String>,
     Vec<OperationalConstraint>,
     Vec<StandardsProfileKind>,
-) {
+);
+
+fn profile_defaults(kind: &DeploymentProfileKind) -> ProfileDefaults {
     match kind {
         DeploymentProfileKind::Warehouse => (
             "Warehouse".to_string(),

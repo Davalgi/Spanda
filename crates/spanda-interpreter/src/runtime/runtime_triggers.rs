@@ -4,7 +4,6 @@
 use super::{trigger_category_label, Interpreter, RobotBackend, RuntimeValue};
 use spanda_ast::foundations::TriggerKind;
 use spanda_ast::nodes::Expr;
-use spanda_comm::CommBus;
 use spanda_error::SpandaError;
 use spanda_runtime::triggers::SystemTriggerCategory;
 
