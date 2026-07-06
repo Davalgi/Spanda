@@ -5,7 +5,7 @@ use super::{
     runtime_velocity, Environment, Interpreter, IntoSpandaError, RobotBackend, RuntimeError,
     RuntimeValue, RUNTIME_TASK_COST_MS,
 };
-use crate::platform_events::emit_degraded_mode_entered;
+use super::super::super::platform_events::emit_degraded_mode_entered;
 use spanda_ast::nodes::{Expr, RobotDecl};
 use spanda_error::SpandaError;
 use spanda_runtime::reliability_runtime::{
