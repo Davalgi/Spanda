@@ -358,6 +358,48 @@
       "owner": "assurance",
       "responsibility": "Chaos engineering experiments."
     },
+    "spanda-autonomy": {
+      "layer": "platform_services",
+      "owner": "autonomy",
+      "responsibility": "Bio-inspired autonomy — reflex",
+      "homeostasis": null,
+      "immunity": null,
+      "memory.": null
+    },
+    "spanda-governance": {
+      "layer": "platform_services",
+      "owner": "governance",
+      "responsibility": "Operational governance",
+      "deployment profiles": null,
+      "certification validation.": null
+    },
+    "spanda-plugin": {
+      "layer": "platform_services",
+      "owner": "plugins",
+      "responsibility": "Versioned capability-controlled plugin system."
+    },
+    "spanda-recovery": {
+      "layer": "platform_services",
+      "owner": "recovery",
+      "responsibility": "Recovery orchestrator — planning",
+      "coordination": null,
+      "validation.": null
+    },
+    "spanda-risk": {
+      "layer": "platform_services",
+      "owner": "governance",
+      "responsibility": "Mission deployment risk scoring."
+    },
+    "spanda-twin-cloud": {
+      "layer": "platform_services",
+      "owner": "control-center",
+      "responsibility": "Digital mission twin cloud sync."
+    },
+    "spanda-whatif": {
+      "layer": "platform_services",
+      "owner": "diagnosis",
+      "responsibility": "What-if failure scenario analysis."
+    },
     "spanda-estimate": {
       "layer": "platform_services",
       "owner": "assurance",
@@ -620,10 +662,6 @@
     {
       "path": "examples/solutions/spatial-computing",
       "name": "Spatial Computing"
-    },
-    {
-      "path": "examples/solutions/smart-spaces",
-      "name": "Smart Spaces"
     }
   ],
   "canonical_entity_types": {
@@ -720,7 +758,26 @@
     }
   },
   "dependency_waivers": [
-
+    {
+      "from": "spanda-fleet",
+      "to": "spanda-decision",
+      "reason": "Fleet decision vote ingestion uses decision runtime types."
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-decision",
+      "reason": "Distributed decision trace emission during program execution."
+    },
+    {
+      "from": "spanda-interpreter",
+      "to": "spanda-autonomy",
+      "reason": "Runtime autonomy hooks during program execution."
+    },
+    {
+      "from": "spanda-providers",
+      "to": "spanda-plugin",
+      "reason": "Official package bootstrap wires plugin host providers."
+    }
   ],
   "circular_dependency_waivers": [
 

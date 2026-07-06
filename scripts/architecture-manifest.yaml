@@ -115,6 +115,13 @@ rust_crates:
   spanda-score: { layer: platform_services, owner: assurance, responsibility: Autonomous systems scorecard. }
   spanda-compliance: { layer: platform_services, owner: assurance, responsibility: Industry compliance profiles. }
   spanda-chaos: { layer: platform_services, owner: assurance, responsibility: Chaos engineering experiments. }
+  spanda-autonomy: { layer: platform_services, owner: autonomy, responsibility: Bio-inspired autonomy — reflex, homeostasis, immunity, memory. }
+  spanda-governance: { layer: platform_services, owner: governance, responsibility: Operational governance, deployment profiles, certification validation. }
+  spanda-plugin: { layer: platform_services, owner: plugins, responsibility: Versioned capability-controlled plugin system. }
+  spanda-recovery: { layer: platform_services, owner: recovery, responsibility: Recovery orchestrator — planning, coordination, validation. }
+  spanda-risk: { layer: platform_services, owner: governance, responsibility: Mission deployment risk scoring. }
+  spanda-twin-cloud: { layer: platform_services, owner: control-center, responsibility: Digital mission twin cloud sync. }
+  spanda-whatif: { layer: platform_services, owner: diagnosis, responsibility: What-if failure scenario analysis. }
   spanda-estimate: { layer: platform_services, owner: assurance, responsibility: Mission resource estimation. }
   spanda-policy: { layer: platform_services, owner: policy, responsibility: Operational policy evaluation. }
   spanda-tamper: { layer: platform_services, owner: security, responsibility: Tamper and integrity analysis. }
@@ -333,7 +340,19 @@ event_types:
 
 # Known dependency layer violations — baseline for regression detection.
 # Format: from -> to (from_layer depends on to_layer where to_layer >= from_layer).
-dependency_waivers: []
+dependency_waivers:
+  - from: spanda-fleet
+    to: spanda-decision
+    reason: Fleet decision vote ingestion uses decision runtime types.
+  - from: spanda-interpreter
+    to: spanda-decision
+    reason: Distributed decision trace emission during program execution.
+  - from: spanda-interpreter
+    to: spanda-autonomy
+    reason: Runtime autonomy hooks during program execution.
+  - from: spanda-providers
+    to: spanda-plugin
+    reason: Official package bootstrap wires plugin host providers.
 
 # Known circular dependency baselines — production graph must stay acyclic.
 circular_dependency_waivers: []
