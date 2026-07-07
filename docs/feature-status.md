@@ -269,12 +269,12 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 
 | Pillar | Status | Key surfaces |
 |--------|--------|--------------|
-| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel (RBAC-aware tabs, sidebar version, Administration user/key/alert config, Mission/Simulation/Replay, drift, trust, compliance, SRE, executive); Tauri desktop **0.6.3** (`desktop-v0.6.3`) — [control-center-versioning.md](./control-center-versioning.md) |
+| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel (RBAC-aware tabs, hashed API keys, OIDC session JWT SSO, optional read-auth, sidebar version, Administration user/key/alert config, Mission/Simulation/Replay, drift, trust, compliance, SRE, executive); Tauri desktop **0.6.3** (`desktop-v0.6.3`) — [authentication.md](./authentication.md) · [control-center-versioning.md](./control-center-versioning.md) |
 | **Device Pool** | **Stable** | Lifecycle states, assign/trust/quarantine/retire, failover chains; multi-tenant API key scoping |
 | **Device Discovery** | **Stable** | Subnet, mDNS, BLE, USB, CAN, MQTT, ROS2 host probes; production TLS policy (`SPANDA_DISCOVERY_REQUIRE_TLS`, `spanda-discovery-tls`) |
 | **Provisioning** | **Stable** | `POST /v1/provision`, discover → ready workflow |
 | **Configuration Management** | **Stable** | Snapshots, diff, resolve; approval queue + publish-on-approve (`/v1/config/approvals`) |
-| **RBAC** | **Stable** | 7 roles, `SPANDA_API_KEY`, `/v1/rbac/matrix` |
+| **RBAC** | **Stable** | 7 roles; hashed file-backed API keys; session JWTs after OIDC; `/v1/auth/*`, `/v1/rbac/matrix` — [authentication.md](./authentication.md) |
 | **Secret Management** | **Stable** | `ManagedSecretVault`, rotation metadata |
 | **Telemetry** | **Stable** | Health/readiness/mission signals; trend analysis; forecasting **Planned** |
 | **Alerting** | **Stable** | Webhook, email, PagerDuty (bi-directional sync), Teams; per-severity dedup; registry alert packages |

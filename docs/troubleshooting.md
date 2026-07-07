@@ -384,7 +384,7 @@ Authentication](./control-center.md#authentication--api-keys).
 | Mutations 401/403 | Set `SPANDA_API_KEY` or `SPANDA_API_KEYS_FILE` on server; paste token in embedded UI banner |
 | Token not remembered after refresh | Ensure **Remember on this browser** is checked before saving; token is scoped per `host:port` (`spanda.control_center.bearer_token.v1:<host>`) — a new bind port needs a fresh paste; private/incognito mode may block `localStorage` |
 | Clear stored browser token | Click **Forget token** in the UI banner, or DevTools → Application → Local Storage → remove `spanda.control_center.bearer_token.v1:<host>` |
-| Token save fails in UI | Server must accept the token (`POST /v1/alerts/test`); restart `serve` after changing `SPANDA_API_KEYS_FILE`; reinstall CLI if embedded HTML is stale (`cargo install --path crates/spanda-cli --force`) |
+| Token save fails in UI | Server must accept the token (`GET /v1/auth/session` or `POST /v1/alerts/test`); for SSO configure OIDC in Administration and use **Sign in with SSO**; restart `serve` after changing `SPANDA_API_KEYS_FILE`; reinstall CLI if embedded HTML is stale (`cargo install --path crates/spanda-cli --force`) |
 | Remote CLI cannot reach API | `export SPANDA_CONTROL_CENTER_URL=http://host:port` |
 | Desktop app blank | Start API first; `VITE_CONTROL_CENTER_URL` — [control-center.md](./control-center.md#access-the-ui) |
 | Sidebar shows `vdev` | Dev Vite shell without production define — expected in some dev modes; use a release build or desktop bundle for real semver |
@@ -594,6 +594,8 @@ High-impact variables that commonly cause "it works on my machine" failures:
 | Variable | When unset (typical) | When set |
 |----------|----------------------|----------|
 | `SPANDA_API_KEY` | Control Center mutations rejected | Bearer auth for ops API |
+| `SPANDA_API_KEY_PEPPER` | Production key hashing | Set to random hex in production — [authentication.md](./authentication.md) |
+| `SPANDA_API_REQUIRE_AUTH_READS` | Sensitive GETs return 401 | Set `1` when Control Center is network-exposed |
 | `SPANDA_CONTROL_CENTER_URL` | Remote CLI defaults to `http://127.0.0.1:8080` | Points CLI at remote server |
 | `SPANDA_ROS2_LIVE` | Mock ROS2 transport | Live rclpy bridge |
 | `SPANDA_LIVE_AI` | Mock AI (unless keys alone enable) | Force live provider path |
