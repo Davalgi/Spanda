@@ -283,7 +283,7 @@ ids = {e.get("id") for e in payload}
 assert "rover-001" in ids, entities
 graph = client.entity_graph()
 assert graph is not None
-reflex = client.list_autonomy_reflexes()
+reflex = client.list_autonomy_reflex()
 reflexes = reflex.get("reflexes", reflex) if isinstance(reflex, dict) else reflex
 assert reflexes, reflex
 fusion = client.fusion().summary()
