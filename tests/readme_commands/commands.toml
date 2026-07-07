@@ -119,3 +119,38 @@ args = ["homeostasis", "check", "--json"]
 source = "docs/bio-inspired-architecture.md"
 markers = ["entity_id", "stable"]
 golden = true
+
+[[command]]
+id = "workflow_check_gps_stack"
+args = ["check", "examples/workflows/gps_loss_full_stack.sd"]
+source = "examples/workflows/README.md"
+markers = ["no type errors"]
+golden = false
+
+[[command]]
+id = "workflow_decision_list"
+args = ["decision", "list", "examples/workflows/gps_loss_full_stack.sd"]
+source = "examples/workflows/README.md"
+markers = ["Decision architecture", "GPSLossRecovery"]
+golden = true
+
+[[command]]
+id = "workflow_heal"
+args = ["heal", "examples/workflows/gps_loss_full_stack.sd"]
+source = "examples/workflows/README.md"
+markers = ["gps.failed", "Safety Validation"]
+golden = false
+
+[[command]]
+id = "workflow_continuity"
+args = ["continuity", "examples/workflows/fleet_patrol_handoff.sd", "--failed", "PatrolAlpha", "--progress", "55", "--trigger", "robot_failed"]
+source = "examples/workflows/README.md"
+markers = ["Mission Continuity Report", "Can Continue: true"]
+golden = false
+
+[[command]]
+id = "workflow_differentiation_list"
+args = ["decision", "list", "examples/workflows/differentiation_audit_trail.sd"]
+source = "examples/workflows/README.md"
+markers = ["Decision architecture", "GPSLossReflex"]
+golden = true

@@ -1,0 +1,8 @@
+Decision architecture in examples/workflows/differentiation_audit_trail.sd
+  Authorities: 1
+    Scanner001 — local: [emergency_stop, degraded_mode, obstacle_avoidance], central: [override_safety_policy, update_firmware]
+  Decision trees: 2
+    GPSLossReflex (LocalEntity, 1 branches)
+    ObstacleReflex (Reflex, 1 branches)
+  Offline policies: 1
+    ScannerOffline (max 15 min)
