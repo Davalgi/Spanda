@@ -151,7 +151,7 @@ jobs:
 
   build-spanda:
     runs-on: ubuntu-latest
-    needs: [changes, lint-rust, test-rust]
+    needs: [changes, lint-rust]
     if: >-
       needs.changes.outputs.code == 'true' ||
       needs.changes.outputs.workflow == 'true' ||
@@ -159,16 +159,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-rust
-      - run: cargo build -p spanda --release
-      - uses: actions/upload-artifact@v4
-        with:
-          name: spanda-bin
-          path: target/release/spanda
-          retention-days: 1
+      - uses: ./.github/actions/fetch-or-build-spanda
 
   cross-interface:
     runs-on: ubuntu-latest
-    needs: [changes, build-spanda]
+    needs: [changes, build-spanda, test-rust]
     if: >-
       needs.changes.outputs.code == 'true' ||
       needs.changes.outputs.workflow == 'true' ||

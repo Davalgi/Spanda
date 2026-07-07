@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **CI spanda binary handoff:** `.github/actions/fetch-or-build-spanda` reuses the release binary
+  across CI Fast, CI Integration, and CI Nightly instead of compiling independently in each workflow.
+  CI Fast `build-spanda` now runs in parallel with `test-rust`; Integration `docs-build` reuses the
+  shared artifact. See [docs/ci-architecture.md](docs/ci-architecture.md).
+
 ### Added
 
 - **Platform policy feature examples:** minimal

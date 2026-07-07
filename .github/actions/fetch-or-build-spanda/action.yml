@@ -1,0 +1,117 @@
+name: Fetch or build spanda release binary
+description: >-
+  Download a spanda release binary from a prior workflow run when available,
+  otherwise compile locally and optionally publish an artifact for downstream jobs.
+
+inputs:
+  artifact-name:
+    description: Artifact name to download or upload
+    required: false
+    default: spanda-bin
+  source-run-id:
+    description: Workflow run ID to download the artifact from
+    required: false
+    default: ""
+  source-workflow:
+    description: Workflow file name to search when resolving by commit SHA
+    required: false
+    default: ""
+  source-sha:
+    description: Commit SHA to match when searching source-workflow runs
+    required: false
+    default: ""
+  source-branch:
+    description: Branch filter when searching source-workflow runs
+    required: false
+    default: main
+  fallback-source-workflow:
+    description: Secondary workflow file to search when the primary search finds no artifact
+    required: false
+    default: ""
+  upload-artifact:
+    description: Upload the resolved binary for jobs in this workflow run
+    required: false
+    default: "true"
+  artifact-retention-days:
+    description: Days to retain the uploaded artifact
+    required: false
+    default: "1"
+
+outputs:
+  source:
+    description: How the binary was obtained (download-run, download-search, build)
+    value: ${{ steps.resolve.outputs.source }}
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch or build spanda release binary
+      id: resolve
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        ARTIFACT_NAME: ${{ inputs.artifact-name }}
+        SOURCE_RUN_ID: ${{ inputs.source-run-id }}
+        SOURCE_WORKFLOW: ${{ inputs.source-workflow }}
+        SOURCE_SHA: ${{ inputs.source-sha }}
+        SOURCE_BRANCH: ${{ inputs.source-branch }}
+        FALLBACK_SOURCE_WORKFLOW: ${{ inputs.fallback-source-workflow }}
+        REPOSITORY: ${{ github.repository }}
+      run: |
+        set -euo pipefail
+        mkdir -p target/release
+
+        try_download_run() {
+          local run_id="$1"
+          gh run download "$run_id" \
+            --name "$ARTIFACT_NAME" \
+            --dir target/release \
+            --repo "$REPOSITORY"
+        }
+
+        try_download_search() {
+          local workflow="$1"
+          local run_id
+          run_id="$(gh run list \
+            --workflow "$workflow" \
+            --branch "$SOURCE_BRANCH" \
+            --status success \
+            --json databaseId,headSha \
+            --jq ".[] | select(.headSha == \"$SOURCE_SHA\") | .databaseId" \
+            | head -1)"
+          if [[ -z "$run_id" ]]; then
+            return 1
+          fi
+          try_download_run "$run_id"
+        }
+
+        SOURCE="build"
+
+        if [[ -n "$SOURCE_RUN_ID" ]]; then
+          if try_download_run "$SOURCE_RUN_ID"; then
+            SOURCE="download-run"
+          fi
+        elif [[ -n "$SOURCE_WORKFLOW" && -n "$SOURCE_SHA" ]]; then
+          if try_download_search "$SOURCE_WORKFLOW"; then
+            SOURCE="download-search"
+          elif [[ -n "$FALLBACK_SOURCE_WORKFLOW" ]] && try_download_search "$FALLBACK_SOURCE_WORKFLOW"; then
+            SOURCE="download-search-fallback"
+          fi
+        fi
+
+        if [[ ! -x target/release/spanda ]]; then
+          cargo build -p spanda --release
+          SOURCE="build"
+        fi
+
+        chmod +x target/release/spanda
+        echo "source=$SOURCE" >> "$GITHUB_OUTPUT"
+        echo "Obtained spanda binary via: $SOURCE"
+
+    - name: Upload spanda binary artifact
+      if: inputs.upload-artifact == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: target/release/spanda
+        retention-days: ${{ inputs.artifact-retention-days }}

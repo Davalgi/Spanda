@@ -35,12 +35,15 @@ Runs on every pull request and every push to `main`.
 | `test-python-sdk` | `pytest` in `sdk/python` |
 | `test-ts-sdk` | `npm test` in `sdk/typescript` |
 | `cross-surface-check` | `scripts/check_cross_surface.sh` |
-| `build-spanda` | One release build; uploads `spanda-bin` artifact |
-| `cross-interface` | `scripts/cross_interface_consistency.sh` using artifact |
+| `build-spanda` | One release build (or artifact reuse); uploads `spanda-bin` |
+| `cross-interface` | `scripts/cross_interface_consistency.sh` using artifact (waits for `test-rust`) |
 | `docs-validate` | Documentation audit when **only** docs/markdown changed |
 
 **Path filters:** docs-only PRs skip Rust/TS/Python jobs and run `docs-validate` instead. Any change
 under `crates/`, `src/`, `sdk/`, workflows, etc. runs the full fast gate.
+
+`build-spanda` runs in parallel with `test-rust` (after `lint-rust` only) to shorten the PR
+critical path.
 
 **Local parity:**
 
@@ -60,8 +63,10 @@ Optional pre-push hook (fmt + cross-surface only):
 
 Triggered by `workflow_run` after **CI Fast** completes successfully on a `main` push.
 
-Builds `spanda` **once**, uploads an artifact, and reuses it across smoke and golden-path jobs (no
-per-job release compiles).
+Reuses the `spanda-bin` artifact from the triggering CI Fast run when available (via
+`.github/actions/fetch-or-build-spanda`); falls back to a local release build if the download fails.
+Uploads the resolved binary once for smoke and golden-path jobs (no per-job release compiles).
+`docs-build` waits on `build-spanda` and uses the same artifact instead of compiling again.
 
 Includes: readme smoke + golden output, core smokes, distributed decisions, cognitive resilience,
 release hardening security/property tests, key golden paths (robotics, telemetry, twin cloud,
@@ -74,12 +79,30 @@ extension packaging, and docs/mdBook build.
 
 Scheduled at **06:00 UTC** and available via **Actions → CI Nightly → Run workflow**.
 
+Reuses the `spanda-bin` artifact from the latest successful **CI Integration** run for the checked-out
+commit when available; otherwise tries **CI Fast**, then compiles locally.
+
 Includes: `cargo audit`, promotion gates (Stable hardening scripts with soak/audit skipped in CI),
 ROS 2, MQTT, LLVM, embedded cross-compile, live AI/IoT, Python native, desktop/Tauri builds, and
 remaining tier-3 golden paths.
 
 Nightly failures do **not** block PR merge or auto-release. Triage them like production monitoring
 alerts.
+
+---
+
+## Spanda binary handoff
+
+All three tiers share [`.github/actions/fetch-or-build-spanda`](../.github/actions/fetch-or-build-spanda/action.yml):
+
+| Workflow | Binary source |
+|----------|----------------|
+| **CI Fast** | Always compiles (source of truth for PRs and `main` pushes) |
+| **CI Integration** | Downloads from the triggering CI Fast run; builds on miss |
+| **CI Nightly** | Downloads from latest green CI Integration for `HEAD`, then CI Fast; builds on miss |
+
+Each workflow still uploads `spanda-bin` for its own downstream jobs via
+[`.github/actions/with-spanda-bin`](../.github/actions/with-spanda-bin/action.yml).
 
 ---
 

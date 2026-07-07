@@ -12,6 +12,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   gate:
@@ -31,25 +32,27 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - uses: ./.github/actions/setup-rust
-      - run: cargo build -p spanda --release
-      - uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/fetch-or-build-spanda
         with:
-          name: spanda-bin
-          path: target/release/spanda
-          retention-days: 1
+          source-run-id: ${{ github.event.workflow_run.id }}
 
   docs-build:
-    needs: gate
+    needs: build-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
       - run: cargo doc --workspace --no-deps
       - run: python3 scripts/validate_documentation.py --warn --report
-      - run: cargo build -p spanda --release
-      - run: cargo run -q -p spanda --release -- doc examples/ --out /tmp/spanda-doc-test
+      - name: Generate example docs with release binary
+        env:
+          SPANDA_BIN: ${{ github.workspace }}/target/release/spanda
+        run: "$SPANDA_BIN" doc examples/ --out /tmp/spanda-doc-test
       - run: python3 scripts/generate_spanda_reference.py
       - run: python3 scripts/sync_mdbook_sources.py
       - run: |
