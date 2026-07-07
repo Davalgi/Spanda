@@ -2,13 +2,18 @@ name: CI Integration
 
 on:
   workflow_run:
-    workflows: ["ci-fast.yml"]
+    workflows: ["CI Fast"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
 
 concurrency:
-  group: ci-integration-${{ github.event.workflow_run.head_sha || github.sha }}
+  group: >-
+    ci-integration-${{
+      github.event_name == 'workflow_run'
+      && github.event.workflow_run.head_sha
+      || github.run_id
+    }}
   cancel-in-progress: true
 
 permissions:
