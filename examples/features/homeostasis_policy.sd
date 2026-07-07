@@ -1,0 +1,22 @@
+// Feature: homeostasis_policy — platform stability metrics in source
+//
+//   spanda check examples/features/homeostasis_policy.sd
+//   spanda homeostasis check --json
+//
+// Docs: docs/cognitive-resilience-architecture.md
+// Smoke: ./scripts/cognitive_resilience_smoke.sh
+
+homeostasis_policy PlatformStability {
+    metric cpu_pct;
+    metric memory_pct;
+    metric battery_pct;
+}
+
+robot Rover {
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() {
+        loop every 100ms { }
+    }
+}

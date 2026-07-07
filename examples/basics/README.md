@@ -68,3 +68,5 @@ See [end_to_end/README.md](../end_to_end/README.md) for the full catalog.
 | `packages/` | Package manifest layouts — [README](../packages/README.md) |
 
 Next step after basics: [Spanda for Dummies](../../docs/spanda-for-dummies/README.md), [Spanda 101](../../docs/spanda-101/README.md), [getting-started.md](../../docs/getting-started.md), and [showcase/killer_demo.sd](../showcase/killer_demo.sd).
+
+Platform differentiators (lessons 11–12): [distributed decisions](../../docs/spanda-101/11-distributed-decisions.md) · [recovery & continuity](../../docs/spanda-101/12-platform-policies.md).

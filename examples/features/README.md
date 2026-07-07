@@ -93,6 +93,24 @@ spanda run examples/features/enum_payload.sd
 
 ---
 
+## Platform differentiators (v0.6+)
+
+Declarative policy blocks and distributed autonomy — minimal files here, full scenarios under
+`showcase/`.
+
+| Feature | Example | Showcase / CLI |
+|---------|---------|----------------|
+| `local_decision_authority` / `decision_tree` / `offline_policy` | [`features/decision_tree.sd`](./decision_tree.sd) | `showcase/distributed_decisions/` · `spanda decision *` |
+| `recovery_policy` | [`features/recovery_policy.sd`](./recovery_policy.sd) | `showcase/self_healing/` · `spanda heal` / `recover` |
+| `continuity_policy` | [`features/continuity_policy.sd`](./continuity_policy.sd) | `showcase/continuity/` · `spanda continuity` / `takeover` |
+| `homeostasis_policy` | [`features/homeostasis_policy.sd`](./homeostasis_policy.sd) | `spanda homeostasis check` · [cognitive-resilience-architecture.md](../../docs/cognitive-resilience-architecture.md) |
+| `attention_policy` | [`features/attention_policy.sd`](./attention_policy.sd) | `spanda reflex list` · Cognitive & Resilience tab |
+| Mission assurance suite | `showcase/assurance/rover.sd` | `spanda demo assurance` — [mission-assurance.md](../../docs/mission-assurance.md) |
+| Self-healing fleet | `showcase/fleet_recovery/fleet.sd` | `spanda demo self-healing` |
+| Differentiation analytics | `showcase/differentiation/` | `spanda demo differentiation` |
+
+---
+
 ## Real-time & reliability
 
 | Feature | Example |

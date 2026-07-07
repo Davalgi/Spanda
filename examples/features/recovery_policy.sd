@@ -1,0 +1,35 @@
+// Feature: recovery_policy — declarative failure response in source
+//
+//   spanda check examples/features/recovery_policy.sd
+//   spanda heal examples/features/recovery_policy.sd
+//   spanda recover examples/features/recovery_policy.sd --failure gps
+//
+// Docs: docs/self-healing.md
+// Full showcase: examples/showcase/self_healing/rover.sd
+
+operating_mode DegradedMode { degraded; }
+operating_mode SafeMode { safe; }
+
+recovery_policy RoverRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+    on lidar.failed {
+        reduce_speed 0.3 m/s;
+        enter safe_mode;
+    }
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+
+    safety { max_speed = 1.2 m/s; }
+
+    behavior patrol() {
+        wheels.drive(0.5 m/s);
+    }
+}

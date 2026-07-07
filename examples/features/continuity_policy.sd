@@ -1,0 +1,29 @@
+// Feature: continuity_policy — checkpoint resume and mission handoff
+//
+//   spanda check examples/features/continuity_policy.sd
+//   spanda continuity examples/features/continuity_policy.sd \
+//     --failed RoverAlpha --progress 60 --trigger robot_failed
+//
+// Docs: docs/mission-continuity.md
+// Full showcase: examples/showcase/continuity/warehouse.sd
+
+continuity_policy PatrolContinuity {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+    }
+}
+
+robot RoverAlpha {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { wheels.drive(0.3 m/s); }
+}
+
+robot RoverBeta {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { wheels.drive(0.3 m/s); }
+}

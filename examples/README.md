@@ -77,6 +77,35 @@ capability).
 
 ---
 
+## Platform features (v0.6+)
+
+Policy blocks and distributed autonomy in `.sd` source — start with minimal feature files, then run
+full showcase demos.
+
+| Capability | Minimal example | Showcase / demo |
+|------------|-----------------|-----------------|
+| Distributed decisions | [`features/decision_tree.sd`](features/decision_tree.sd) | [`showcase/distributed_decisions/`](showcase/distributed_decisions/) · `spanda demo distributed-decisions` |
+| Self-healing | [`features/recovery_policy.sd`](features/recovery_policy.sd) | [`showcase/self_healing/`](showcase/self_healing/) · `spanda demo self-healing` |
+| Mission continuity | [`features/continuity_policy.sd`](features/continuity_policy.sd) | [`showcase/continuity/`](showcase/continuity/) · `spanda demo continuity` |
+| Homeostasis policy | [`features/homeostasis_policy.sd`](features/homeostasis_policy.sd) | `spanda homeostasis check` |
+| Attention policy | [`features/attention_policy.sd`](features/attention_policy.sd) | `spanda reflex list` |
+| Mission assurance | [`showcase/assurance/rover.sd`](showcase/assurance/rover.sd) | `spanda demo assurance` |
+| Differentiation | [`showcase/differentiation/`](showcase/differentiation/) | `spanda demo differentiation` |
+
+Guides: [distributed-decisions.md](../docs/distributed-decisions.md) ·
+[self-healing.md](../docs/self-healing.md) · [mission-continuity.md](../docs/mission-continuity.md) ·
+[cognitive-resilience-architecture.md](../docs/cognitive-resilience-architecture.md) ·
+[Spanda 101 lesson 11](../docs/spanda-101/11-distributed-decisions.md)
+
+```bash
+spanda check examples/features/decision_tree.sd
+spanda decision list examples/features/decision_tree.sd
+spanda heal examples/features/recovery_policy.sd
+spanda continuity examples/features/continuity_policy.sd --failed RoverAlpha --progress 60 --trigger robot_failed
+```
+
+---
+
 ## By topic
 
 | Topic | Directory | Doc |

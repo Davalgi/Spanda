@@ -1,0 +1,21 @@
+// Feature: attention_policy — priority rules for mission focus
+//
+//   spanda check examples/features/attention_policy.sd
+//   spanda reflex list --json
+//
+// Docs: docs/cognitive-resilience-architecture.md
+// Smoke: ./scripts/cognitive_resilience_smoke.sh
+
+attention_policy MissionFocus {
+    rule suppress_low_priority;
+    rule boost_critical_health;
+}
+
+robot Rover {
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() {
+        loop every 100ms { }
+    }
+}

@@ -1,0 +1,41 @@
+// Feature: distributed decisions — local authority, decision trees, offline policy
+//
+//   spanda check examples/features/decision_tree.sd
+//   spanda decision list examples/features/decision_tree.sd
+//   spanda decision simulate-attack examples/features/decision_tree.sd --offline
+//
+// Docs: docs/distributed-decisions.md
+// Full showcase: examples/showcase/distributed_decisions/
+
+robot Rover {
+    local_decision_authority [emergency_stop, degraded_mode, return_home];
+    requires_central_approval [update_firmware, override_safety_policy];
+
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+
+    behavior patrol() {
+        loop every 50ms { }
+    }
+}
+
+decision_tree GPSLossRecovery local {
+    when gps.status == Failed {
+        enter degraded_mode;
+        reduce_speed 0.4 m/s;
+    }
+}
+
+decision_tree ObstacleReflex reflex {
+    when obstacle.detected {
+        stop_motor;
+    }
+}
+
+offline_policy RoverOffline {
+    max_duration = 30 min;
+    allowed_actions [pause_mission, return_home];
+    forbidden_actions [disable_safety];
+}
