@@ -178,6 +178,66 @@
       "file": "examples/features/safety_zones.sd",
       "check": "pass",
       "run": { "maxLoopIterations": 5 }
+    },
+    {
+      "file": "examples/features/decision_tree.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/decision_tree_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/recovery_policy.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/recovery_policy_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/continuity_policy.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/continuity_policy_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/triggers_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/kill_switch_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/verify_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/assurance_blocks_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/features/fleet_swarm_options.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/workflows/gps_loss_full_stack.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/workflows/offline_signed_autonomy.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/workflows/fleet_patrol_handoff.sd",
+      "check": "pass"
+    },
+    {
+      "file": "examples/workflows/differentiation_audit_trail.sd",
+      "check": "pass"
     }
   ]
 }

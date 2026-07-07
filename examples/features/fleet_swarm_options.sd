@@ -1,0 +1,51 @@
+// Feature options: fleet, swarm, OTA deploy targets
+//
+//   spanda check examples/features/fleet_swarm_options.sd
+//   spanda verify examples/features/fleet_swarm_options.sd --all-targets
+//   spanda fleet run examples/features/fleet_swarm_options.sd --trace-scheduler
+//   spanda swarm coordinate examples/features/fleet_swarm_options.sd
+//
+// Docs: docs/concurrency.md · OTA: examples/robotics/ota_deployment.sd
+
+hardware JetsonOrin {
+  cpu: CortexA78;
+  memory: 8 GB;
+  sensors [ Lidar, Camera ];
+  actuators [ DifferentialDrive ];
+}
+
+robot ScoutAlpha {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+  safety { max_speed = 1.0 m/s; }
+  behavior patrol() { wheels.drive(0.3 m/s); }
+}
+
+robot ScoutBeta {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+  safety { max_speed = 1.0 m/s; }
+  behavior patrol() { wheels.drive(0.3 m/s); }
+}
+
+fleet ScoutFleet {
+  ScoutAlpha;
+  ScoutBeta;
+}
+
+swarm ScoutSwarm {
+  fleet ScoutFleet;
+  policy round_robin;
+}
+
+mission_plan ConvoyPatrol {
+  step route_a;
+  step route_b;
+}
+
+deploy ScoutAlpha to JetsonOrin;
+deploy ScoutBeta to JetsonOrin;
+
+simulate_compatibility {
+  fault NetworkOutage;
+}

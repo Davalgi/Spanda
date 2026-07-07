@@ -1,0 +1,70 @@
+// Feature options: triggers — on, every, when, while, state, safety, hardware, twin, AI
+//
+// Trigger kinds: event, message/topic, timer (every), condition (when/while),
+//                state machine, safety, hardware, twin, AI, verification
+//
+//   spanda check examples/features/triggers_options.sd
+//   spanda run examples/features/triggers_options.sd --trace-triggers
+//
+// Docs: docs/triggers.md · Full catalog: examples/triggers_demo.sd
+
+message PoseMsg {
+  x: Distance;
+  y: Distance;
+}
+
+robot TriggerOptions {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+  topic lidar_scan: String subscribe on "/scan";
+  topic status: String publish on "/status";
+
+  safety {
+    max_speed = 1.0 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  event ObstacleDetected;
+
+  on ObstacleDetected {
+    wheels.stop();
+  }
+
+  on lidar_scan {
+    publish status with "scan_received";
+  }
+
+  every 100ms {
+    publish status with "pose_tick";
+  }
+
+  every 1s {
+    publish status with "status_heartbeat";
+  }
+
+  when lidar.nearest_distance < 1.0 m {
+    wheels.stop();
+  }
+
+  while lidar.nearest_distance < 2.0 m {
+    wheels.drive(linear: 0.1 m/s, angular: 0.0 rad/s);
+  }
+
+  on safety EmergencyStop priority critical {
+    wheels.stop();
+  }
+
+  state_machine Mission {
+    state Idle;
+    state Navigating;
+    transition Idle -> Navigating;
+  }
+
+  on state Entered(Navigating) {
+    publish status with "navigation_started";
+  }
+
+  behavior patrol() {
+    loop every 200ms { }
+  }
+}

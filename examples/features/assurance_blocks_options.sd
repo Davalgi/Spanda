@@ -1,0 +1,76 @@
+// Feature options: mission assurance blocks — knowledge, estimation, anomaly, prognostics, mitigation
+//
+// Blocks: knowledge_model, state_estimator, anomaly_detector, on anomaly,
+//         prognostics, mitigation, resilience_policy, assurance_case
+//
+//   spanda check examples/features/assurance_blocks_options.sd
+//   spanda assure examples/features/assurance_blocks_options.sd
+//   spanda state estimate examples/features/assurance_blocks_options.sd
+//   spanda anomaly scan examples/features/assurance_blocks_options.sd
+//   spanda prognostics examples/features/assurance_blocks_options.sd
+//
+// Docs: docs/mission-assurance.md · Full showcase: examples/showcase/assurance/rover.sd
+
+hardware RoverV1 {
+    sensors [GPS, Camera, Lidar];
+    actuators [DifferentialDrive];
+}
+
+knowledge_model RoverModel {
+    component gps;
+    component camera;
+    component wheels;
+    dependency navigation requires [gps, wheels];
+    dependency obstacle_avoidance requires [camera, lidar];
+}
+
+state_estimator RoverState {
+    inputs [gps.fix, imu.data, wheel_odometry];
+    output StateEstimate;
+}
+
+anomaly_detector NavigationAnomaly {
+    learned backend assurance.anomaly;
+    expected gps.accuracy <= 3 m;
+    expected localization.confidence >= 0.85;
+}
+
+on anomaly NavigationAnomaly severity High {
+    diagnose root_cause;
+    enter degraded_mode;
+    audit.record("navigation_anomaly");
+}
+
+prognostics BatteryPrognostics {
+    predict battery.remaining_useful_life;
+    warn_if remaining_useful_life < 30 min;
+}
+
+mitigation GPSLostMitigation {
+    if gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+}
+
+operating_mode DegradedMode { degraded; }
+
+resilience_policy RoverResilience {
+    strategy graceful_degradation;
+}
+
+assurance_case RoverSafetyCase {
+    evidence hardware_verification;
+    evidence health_checks;
+    evidence simulation_replay;
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor camera: Camera;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.2 m/s; }
+    behavior patrol() { wheels.drive(0.4 m/s); }
+}

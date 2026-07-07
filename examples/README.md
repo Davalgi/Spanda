@@ -116,6 +116,7 @@ Multi-feature command sequences — [`workflows/`](workflows/)
 | GPS loss full stack | [`workflows/gps_loss_full_stack.sd`](workflows/gps_loss_full_stack.sd) | `decision` → `heal` → `recover` → `continuity` → `sim` → `assure` |
 | Offline signed autonomy | [`workflows/offline_signed_autonomy.sd`](workflows/offline_signed_autonomy.sd) | `sign-policy` → `cache` → `simulate --offline` → `simulate-attack` |
 | Fleet patrol handoff | [`workflows/fleet_patrol_handoff.sd`](workflows/fleet_patrol_handoff.sd) | `succession` → `takeover` → `delegate` → `fleet run` |
+| Differentiation audit trail | [`workflows/differentiation_audit_trail.sd`](workflows/differentiation_audit_trail.sd) | `sim --record` → `audit decisions` → `explain decision` |
 
 ```bash
 spanda check examples/workflows/gps_loss_full_stack.sd

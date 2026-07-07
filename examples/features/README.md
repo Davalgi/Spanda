@@ -40,6 +40,20 @@ spanda run examples/features/enum_payload.sd
 
 ---
 
+## Triggers, verify, assurance, fleet (options)
+
+| Feature | Minimal | All options |
+|---------|---------|-------------|
+| Trigger catalog | `triggers_demo.sd`, `integration/triggers_minimal.sd` | [`triggers_options.sd`](./triggers_options.sd) |
+| Kill switch | [`kill_switch.sd`](./kill_switch.sd) | [`kill_switch_options.sd`](./kill_switch_options.sd) |
+| Verify + deploy | `integration/verify_walkthrough.sd` | [`verify_options.sd`](./verify_options.sd) |
+| Mission assurance blocks | `showcase/assurance/rover.sd` | [`assurance_blocks_options.sd`](./assurance_blocks_options.sd) |
+| Fleet / swarm / OTA | `robotics/ota_deployment.sd` | [`fleet_swarm_options.sd`](./fleet_swarm_options.sd) |
+
+Guide: [platform-feature-examples.md](../../docs/platform-feature-examples.md#other-language-features-options-examples)
+
+---
+
 ## Robotics & safety
 
 | Feature | Example |

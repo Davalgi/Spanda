@@ -1,0 +1,61 @@
+// Feature options: verify — requires_hardware, hardware, deploy, verify, simulate_compatibility
+//
+//   spanda check examples/features/verify_options.sd
+//   spanda verify examples/features/verify_options.sd --target RoverV1 --json
+//   spanda verify examples/features/verify_options.sd --all-targets --simulate
+//   spanda check examples/features/verify_options.sd --verification-json
+//
+// Docs: docs/hardware-compatibility.md · docs/verification-diagnostics.md
+
+requires_hardware {
+  memory >= 2 GB;
+  sensors [ Camera, Lidar ];
+}
+
+hardware RoverV1 {
+  cpu: CortexA78;
+  memory: 4 GB;
+  sensors [ Camera, Lidar, IMU ];
+  actuators [ DifferentialDrive ];
+  battery { capacity: 100 Wh; }
+  timing { min_period: 10 ms; }
+}
+
+robot VerifyRover {
+  sensor camera: Camera on "/camera";
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  mission { duration: 1 h; }
+
+  safety {
+    max_speed = 1.5 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  task control_loop every 50ms {
+    budget {
+      cpu <= 25%;
+      memory <= 256 MB;
+    }
+    let scan = lidar.read();
+    wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
+  }
+
+  verify {
+    robot.velocity().linear <= 1.5 m/s;
+  }
+
+  behavior patrol() {
+    let scan = lidar.read();
+    let _ = scan;
+    wheels.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+  }
+}
+
+simulate_compatibility {
+  fault BatteryDegradation;
+  fault NetworkOutage;
+}
+
+deploy VerifyRover to RoverV1;

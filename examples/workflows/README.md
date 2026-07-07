@@ -19,6 +19,7 @@ spanda check examples/workflows/gps_loss_full_stack.sd
 | **GPS loss full stack** | [`gps_loss_full_stack.sd`](./gps_loss_full_stack.sd) | Decision trees, offline policy, recovery, continuity, homeostasis, attention, assurance | `decision list`, `heal`, `recover`, `continuity`, `sim --inject-failure`, `assure` |
 | **Offline signed autonomy** | [`offline_signed_autonomy.sd`](./offline_signed_autonomy.sd) | Offline policy, decision tree, recovery, signing, attack simulation | `decision sign-policy`, `sign-tree`, `cache show`, `simulate --offline`, `simulate-attack` |
 | **Fleet patrol handoff** | [`fleet_patrol_handoff.sd`](./fleet_patrol_handoff.sd) | Multi-robot fleet, continuity, recovery, succession, takeover | `succession`, `takeover`, `delegate`, `continuity`, `fleet run` |
+| **Differentiation audit trail** | [`differentiation_audit_trail.sd`](./differentiation_audit_trail.sd) | Decision trace, audit, explain, contract verify | `sim --record`, `audit decisions`, `explain decision` |
 
 ---
 
@@ -27,6 +28,19 @@ spanda check examples/workflows/gps_loss_full_stack.sd
 1. **GPS loss full stack** — see how decisions, recovery, and continuity compose on one rover  
 2. **Offline signed autonomy** — policy signing, cache, and offline abuse simulation  
 3. **Fleet patrol handoff** — multi-robot handoff and fleet coordination  
+4. **Differentiation audit trail** — decision trace audit and explainability  
+
+---
+
+## Other feature options
+
+| Area | Options file |
+|------|--------------|
+| Triggers | [`features/triggers_options.sd`](../features/triggers_options.sd) |
+| Kill switch | [`features/kill_switch_options.sd`](../features/kill_switch_options.sd) |
+| Verify / deploy | [`features/verify_options.sd`](../features/verify_options.sd) |
+| Assurance blocks | [`features/assurance_blocks_options.sd`](../features/assurance_blocks_options.sd) |
+| Fleet / swarm / OTA | [`features/fleet_swarm_options.sd`](../features/fleet_swarm_options.sd) |
 
 ---
 

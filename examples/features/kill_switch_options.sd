@@ -1,0 +1,50 @@
+// Feature options: kill_switch — local action, remote_signed, on kill_switch handler
+//
+// Options: priority (critical), action { }, remote_signed, on kill_switch handler
+//
+//   spanda check examples/features/kill_switch_options.sd
+//   spanda sim examples/features/kill_switch_options.sd --trigger-kill-switch LocalStop
+//   spanda verify examples/features/kill_switch_options.sd --health
+//
+// Docs: docs/kill-switch.md · Remote-signed: examples/security/remote_signed_kill_switch.sd
+
+kill_switch LocalStop {
+    priority: critical;
+    action {
+        stop_all_actuators();
+        audit.record("kill_switch_local");
+    }
+}
+
+kill_switch RemoteStop {
+    priority: critical;
+    remote_signed;
+    action {
+        stop_all_actuators();
+        enter emergency_mode;
+    }
+}
+
+robot Rover {
+    identity RobotIdentity {
+        id: "rover-1";
+        public_key: "demo-key";
+    }
+    actuator wheels: DifferentialDrive;
+
+    safety {
+        max_speed = 1.0 m/s;
+    }
+
+    on kill_switch LocalStop {
+        stop_all_actuators();
+    }
+
+    on kill_switch RemoteStop {
+        stop_all_actuators();
+    }
+
+    behavior run() {
+        wheels.stop();
+    }
+}
