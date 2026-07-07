@@ -70,7 +70,10 @@ fn permissive_permissions_use_hardware_catalog() {
 
     let perms = spanda_package::validation::ApplicationPermissions::permissive();
     assert!(perms.hardware_targets.iter().any(|t| t == "JetsonOrin"));
-    assert!(perms.hardware_targets.iter().any(|t| t == "SmartSpaceGatewayV1"));
+    assert!(perms
+        .hardware_targets
+        .iter()
+        .any(|t| t == "SmartSpaceGatewayV1"));
     assert!(perms.hardware_targets.iter().any(|t| t == "BuildingEdgeV1"));
 }
 

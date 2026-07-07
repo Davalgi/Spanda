@@ -1,14 +1,18 @@
 # Lesson 11 — Distributed decisions
 
-**Goal:** Declare which decisions a robot can make locally versus which require central approval, and
+**Goal:** Declare which decisions a robot can make locally versus which require central approval,
+and
 encode offline and reflex decision trees in source.
 
 **Examples:**
 
 - [`examples/features/decision_tree.sd`](../../examples/features/decision_tree.sd) — minimal
-- [`examples/features/decision_tree_options.sd`](../../examples/features/decision_tree_options.sd) — all scopes and nested branches
-- [`examples/features/offline_policy_options.sd`](../../examples/features/offline_policy_options.sd) — signing and action lists
-- [`examples/workflows/offline_signed_autonomy.sd`](../../examples/workflows/offline_signed_autonomy.sd) — stitched signing workflow
+- [`examples/features/decision_tree_options.sd`](../../examples/features/decision_tree_options.sd) —
+  all scopes and nested branches
+- [`examples/features/offline_policy_options.sd`](../../examples/features/offline_policy_options.sd)
+  — signing and action lists
+- [`examples/workflows/offline_signed_autonomy.sd`](../../examples/workflows/offline_signed_autonomy.sd)
+  — stitched signing workflow
 
 **Options reference:** [platform-feature-examples.md](../platform-feature-examples.md)
 

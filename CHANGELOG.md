@@ -9,16 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Platform policy feature examples:** minimal `examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd` files; updated feature index, examples hub, README hero snippet, [code-samples.md](docs/overview/code-samples.md), and Spanda 101 lessons 11–12 (distributed decisions, recovery/continuity/cognitive policies).
-- **Platform feature options and stitched workflows:** `examples/features/*_options.sd` (all fields per policy block), `examples/workflows/` (GPS loss full stack, offline signed autonomy, fleet patrol handoff), and [platform-feature-examples.md](docs/platform-feature-examples.md).
-- **Extended feature options and workflows:** triggers, kill switch, verify/deploy, assurance blocks, fleet/swarm options; differentiation audit-trail workflow; Spanda for Dummies chapter 8; Control Center playground example; README command golden smokes for workflows.
+- **Platform policy feature examples:** minimal
+  `examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd`
+  files; updated feature index, examples hub, README hero snippet,
+  [code-samples.md](docs/overview/code-samples.md), and Spanda 101 lessons 11–12 (distributed
+  decisions, recovery/continuity/cognitive policies).
+- **Platform feature options and stitched workflows:** `examples/features/*_options.sd` (all fields
+  per policy block), `examples/workflows/` (GPS loss full stack, offline signed autonomy, fleet
+  patrol handoff), and [platform-feature-examples.md](docs/platform-feature-examples.md).
+- **Extended feature options and workflows:** triggers, kill switch, verify/deploy, assurance
+  blocks, fleet/swarm options; differentiation audit-trail workflow; Spanda for Dummies chapter 8;
+  Control Center playground example; README command golden smokes for workflows.
 - **Control Center authentication hardening:** `AuthHandler` unifies API key and session JWT
   validation; file-backed keys persist **HMAC-SHA256 hashes** only (legacy plaintext migrated on
   load); short-lived **HS256 session JWTs** after OIDC sign-in; public `/v1/auth/*` routes;
   optional read-auth via `SPANDA_API_REQUIRE_AUTH_READS` / `SPANDA_API_REQUIRE_AUTH_ALL_READS`;
   Control Center UI **Sign in with SSO**. Guide: [docs/authentication.md](docs/authentication.md).
   Updated [README.md](README.md), [getting-started.md](docs/getting-started.md),
-  [control-center.md](docs/control-center.md), [security-audit-third-party.md](docs/security-audit-third-party.md),
+  [control-center.md](docs/control-center.md),
+[security-audit-third-party.md](docs/security-audit-third-party.md),
   enterprise ops smoke (`GET /v1/auth/config`), and security-audit prep.
 - **Control Center versioning:** sidebar shows UI semver (`vX.Y.Z`); `spanda control-center
   --version` and `status` report it; `GET /v1/version` and `/v1/instance` expose
@@ -1785,11 +1794,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Core `mission` (named steps + lifecycle), program-level `fleet`, `safety_zone`, and `certify` metadata
-  (optional `level` block), extended `observe`/`fusion.read()` with `confidence` and `state_estimate`,
+- Core `mission` (named steps + lifecycle), program-level `fleet`, `safety_zone`, and `certify`
+  metadata
+  (optional `level` block), extended `observe`/`fusion.read()` with `confidence` and
+`state_estimate`,
   `std.navigation` / `std.fusion` / `std.slam` namespaces, navigation runtime helpers; program-level
-  safety zone speed caps (motion allowed in cap zones); TypeScript parser/type-checker and interpreter
-  parity; Nav2 golden-path publish on `navigation.navigate()` when `/cmd_vel` is declared; **OTA deploy
+  safety zone speed caps (motion allowed in cap zones); TypeScript parser/type-checker and
+interpreter
+  parity; Nav2 golden-path publish on `navigation.navigate()` when `/cmd_vel` is declared; **OTA
+deploy
   CLI** (`spanda deploy plan|rollout|rollback|status` with canary/staged strategies); **fleet
   orchestrator** (`spanda fleet orchestrate`); verify warning when deploy targets lack certification
   metadata; examples in `examples/robotics/`; tests in `crates/spanda-core/tests/` and

@@ -6,12 +6,17 @@ resilience — without scattering imperative glue code through behaviors.
 **Examples:**
 
 - [`examples/features/recovery_policy.sd`](../../examples/features/recovery_policy.sd) — minimal
-- [`examples/features/recovery_policy_options.sd`](../../examples/features/recovery_policy_options.sd) — all `on` branches
-- [`examples/features/continuity_policy_options.sd`](../../examples/features/continuity_policy_options.sd) — triggers and fleet handoff
-- [`examples/features/cognitive_policies_options.sd`](../../examples/features/cognitive_policies_options.sd) — homeostasis + attention
-- [`examples/workflows/gps_loss_full_stack.sd`](../../examples/workflows/gps_loss_full_stack.sd) — stitched workflow
+- [`examples/features/recovery_policy_options.sd`](../../examples/features/recovery_policy_options.sd)
+  — all `on` branches
+- [`examples/features/continuity_policy_options.sd`](../../examples/features/continuity_policy_options.sd)
+  — triggers and fleet handoff
+- [`examples/features/cognitive_policies_options.sd`](../../examples/features/cognitive_policies_options.sd)
+  — homeostasis + attention
+- [`examples/workflows/gps_loss_full_stack.sd`](../../examples/workflows/gps_loss_full_stack.sd) —
+  stitched workflow
 
-**Options reference:** [platform-feature-examples.md](../platform-feature-examples.md) · **Workflows:**
+**Options reference:** [platform-feature-examples.md](../platform-feature-examples.md) ·
+**Workflows:**
 [workflows/README.md](../../examples/workflows/README.md)
 
 Guides: [self-healing.md](../self-healing.md) · [mission-continuity.md](../mission-continuity.md) ·
