@@ -153,4 +153,6 @@ spanda continuity examples/features/continuity_policy.sd --failed RoverAlpha --p
 See also: [killer-demo.md](../killer-demo.md) ·
 [hardware-compatibility.md](../hardware-compatibility.md) ·
 [distributed-decisions.md](../distributed-decisions.md) ·
+[platform-feature-examples.md](../platform-feature-examples.md) ·
+[examples/workflows/README.md](../../examples/workflows/README.md) ·
 [examples/features/README.md](../../examples/features/README.md)

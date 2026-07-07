@@ -250,6 +250,7 @@ Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · V
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
 | **Demos & examples** | [docs/overview/demos-and-examples.md](docs/overview/demos-and-examples.md) |
 | **Code samples** | [docs/overview/code-samples.md](docs/overview/code-samples.md) |
+| **Platform feature examples** | [docs/platform-feature-examples.md](docs/platform-feature-examples.md) · [examples/workflows/](examples/workflows/) |
 | **Differentiators** | [docs/overview/differentiators.md](docs/overview/differentiators.md) |
 
 **Full overview index:** [docs/overview/README.md](docs/overview/README.md)

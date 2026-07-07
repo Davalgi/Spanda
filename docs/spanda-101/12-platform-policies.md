@@ -5,10 +5,14 @@ resilience — without scattering imperative glue code through behaviors.
 
 **Examples:**
 
-- [`examples/features/recovery_policy.sd`](../../examples/features/recovery_policy.sd)
-- [`examples/features/continuity_policy.sd`](../../examples/features/continuity_policy.sd)
-- [`examples/features/homeostasis_policy.sd`](../../examples/features/homeostasis_policy.sd)
-- [`examples/features/attention_policy.sd`](../../examples/features/attention_policy.sd)
+- [`examples/features/recovery_policy.sd`](../../examples/features/recovery_policy.sd) — minimal
+- [`examples/features/recovery_policy_options.sd`](../../examples/features/recovery_policy_options.sd) — all `on` branches
+- [`examples/features/continuity_policy_options.sd`](../../examples/features/continuity_policy_options.sd) — triggers and fleet handoff
+- [`examples/features/cognitive_policies_options.sd`](../../examples/features/cognitive_policies_options.sd) — homeostasis + attention
+- [`examples/workflows/gps_loss_full_stack.sd`](../../examples/workflows/gps_loss_full_stack.sd) — stitched workflow
+
+**Options reference:** [platform-feature-examples.md](../platform-feature-examples.md) · **Workflows:**
+[workflows/README.md](../../examples/workflows/README.md)
 
 Guides: [self-healing.md](../self-healing.md) · [mission-continuity.md](../mission-continuity.md) ·
 [cognitive-resilience-architecture.md](../cognitive-resilience-architecture.md)
@@ -75,14 +79,15 @@ tab.
 ## Try it
 
 ```bash
-spanda check examples/features/recovery_policy.sd
+spanda check examples/features/recovery_policy_options.sd
 spanda heal examples/features/recovery_policy.sd
 spanda recover examples/features/recovery_policy.sd --failure gps
 
-spanda continuity examples/features/continuity_policy.sd \
-  --failed RoverAlpha --progress 60 --trigger robot_failed
+spanda continuity examples/features/continuity_policy_options.sd \
+  --failed RoverAlpha --progress 72 --trigger robot_failed
 
 spanda homeostasis check --json
+spanda check examples/workflows/gps_loss_full_stack.sd
 spanda demo self-healing
 spanda demo continuity
 ```
@@ -101,6 +106,7 @@ spanda demo continuity
 
 | Next step | Resource |
 |-----------|----------|
+| Platform options + workflows | [platform-feature-examples.md](../platform-feature-examples.md) · [workflows/README.md](../../examples/workflows/README.md) |
 | Full showcase index | [examples/showcase/README.md](../../examples/showcase/README.md) |
 | Feature lookup | [examples/features/README.md](../../examples/features/README.md) |
 | Mission assurance | [mission-assurance.md](../mission-assurance.md) + `spanda demo assurance` |

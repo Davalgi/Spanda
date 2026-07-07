@@ -14,6 +14,7 @@ Expanded home linked from the root [README.md](../../README.md). For hands-on st
 | [feature-snapshot.md](./feature-snapshot.md) | Compact feature status table |
 | [demos-and-examples.md](./demos-and-examples.md) | All demos, pillars, and example tracks |
 | [code-samples.md](./code-samples.md) | Flagship `.sd` examples |
+| [platform-feature-examples.md](../platform-feature-examples.md) | Platform policy options + stitched workflows |
 
 ## Platform
 

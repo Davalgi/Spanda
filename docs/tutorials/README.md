@@ -11,6 +11,7 @@ runnable examples.
 | Structured lessons + exercises | [Spanda 101](../spanda-101/README.md) | ~3.5 hours |
 | First robot in 10 minutes | [Getting started](../getting-started.md) | ~10 min |
 | Browse runnable code | [Examples library](../../examples/README.md) | self-paced |
+| Platform policy options + workflows | [platform-feature-examples.md](../platform-feature-examples.md) | reference |
 | Impress someone in a meeting | [Killer demo](../killer-demo.md) | ~5 min |
 | Mission assurance suite | [Mission assurance](../mission-assurance.md) + `spanda demo assurance` | ~5 min |
 
