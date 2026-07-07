@@ -451,12 +451,17 @@
     }
 
     async function verifyApiKey(value) {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + value,
+      };
+      const sessionRes = await fetch("/v1/auth/session", { headers });
+      if (sessionRes.ok) {
+        return sessionRes.json();
+      }
       const res = await fetch("/v1/alerts/test", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + value,
-        },
+        headers,
       });
       if (!res.ok) {
         throw new Error("token rejected (" + res.status + ")");
@@ -464,7 +469,55 @@
       return res.json();
     }
 
-    function initAuthSetup() {
+    async function signInWithOidc() {
+      const redirectUri = location.origin + "/admin/oauth/oidc/callback";
+      const authRes = await fetch("/v1/auth/oidc/authorize-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ redirect_uri: redirectUri }),
+      });
+      if (!authRes.ok) {
+        throw new Error("OIDC authorize failed (" + authRes.status + ")");
+      }
+      const authBody = await authRes.json();
+      if (!authBody.authorize_url) {
+        throw new Error("authorize_url missing");
+      }
+      const popup = window.open(authBody.authorize_url, "spanda-oidc", "width=520,height=720");
+      if (!popup) {
+        throw new Error("popup blocked — allow popups for this site");
+      }
+      return new Promise((resolve, reject) => {
+        const onMessage = async (event) => {
+          if (event.origin !== location.origin) return;
+          if (!event.data || event.data.type !== "spanda-oidc-oauth" || !event.data.code) return;
+          window.removeEventListener("message", onMessage);
+          try {
+            const callbackRes = await fetch("/v1/auth/oidc/callback", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                code: String(event.data.code),
+                state: event.data.state ? String(event.data.state) : undefined,
+              }),
+            });
+            const callbackBody = await callbackRes.json();
+            if (!callbackRes.ok || !callbackBody.session_token) {
+              reject(new Error("OIDC callback failed (" + callbackRes.status + ")"));
+              return;
+            }
+            await verifyApiKey(callbackBody.session_token);
+            await setApiKey(callbackBody.session_token, { persist: true });
+            resolve(callbackBody);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        window.addEventListener("message", onMessage);
+      });
+    }
+
+    async function initAuthSetup() {
       if (window.SPANDA_API_KEY) {
         void setApiKey(window.SPANDA_API_KEY, { persist: false });
         return;
@@ -475,11 +528,21 @@
         void setApiKey(stored, { persist: false });
         return;
       }
+      let oidcLoginEnabled = false;
+      try {
+        const configRes = await fetch("/v1/auth/config");
+        if (configRes.ok) {
+          const configBody = await configRes.json();
+          oidcLoginEnabled = Boolean(configBody.oidc_login_enabled);
+        }
+      } catch (_error) {
+        oidcLoginEnabled = false;
+      }
       const panel = document.getElementById("auth-setup");
       panel.hidden = false;
       panel.innerHTML = `
-        <h2>Operator API key</h2>
-        <p>Mutations require a Bearer token registered on the server (<code>SPANDA_API_KEY</code> or <code>SPANDA_API_KEYS_FILE</code>).</p>
+        <h2>Operator sign-in</h2>
+        <p>Mutations require a Bearer token registered on the server (<code>SPANDA_API_KEY</code> or <code>SPANDA_API_KEYS_FILE</code>) or an OIDC session.</p>
         <p class="hint">Roles: <strong>administrator</strong> (full), <strong>supervisor</strong> (no delete), <strong>developer</strong> (deploy/operate), <strong>operator</strong> (incidents/recovery), <strong>safety_officer</strong> (approve/shutdown), <strong>auditor</strong> (read-only audit/compliance). Tabs and actions adapt to your role after sign-in.</p>
         <pre>spanda control-center api-key generate --export</pre>
         <p>Paste the token below. Optionally remember it in this browser (same origin only, scoped to <code>${location.host}</code>).</p>
@@ -492,6 +555,7 @@
           Remember on this browser
         </label>
         <button type="button" id="auth-key-save">Use token</button>
+        ${oidcLoginEnabled ? '<button type="button" id="auth-oidc-save" class="secondary" style="margin-left:0.5rem;">Sign in with SSO</button>' : ""}
         <span id="auth-key-error" class="error" hidden></span>`;
       document.getElementById("auth-key-save").addEventListener("click", async () => {
         const value = (document.getElementById("auth-key-input").value || "").trim();
@@ -510,6 +574,19 @@
             ". Ensure the server was started with this key in SPANDA_API_KEYS_FILE or SPANDA_API_KEY.";
         }
       });
+      const oidcBtn = document.getElementById("auth-oidc-save");
+      if (oidcBtn) {
+        oidcBtn.addEventListener("click", async () => {
+          const errorEl = document.getElementById("auth-key-error");
+          errorEl.hidden = true;
+          try {
+            await signInWithOidc();
+          } catch (error) {
+            errorEl.hidden = false;
+            errorEl.textContent = "SSO failed: " + error.message;
+          }
+        });
+      }
     }
 
     initAuthSetup();
