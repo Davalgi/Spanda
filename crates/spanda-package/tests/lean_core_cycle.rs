@@ -70,4 +70,16 @@ fn permissive_permissions_use_hardware_catalog() {
 
     let perms = spanda_package::validation::ApplicationPermissions::permissive();
     assert!(perms.hardware_targets.iter().any(|t| t == "JetsonOrin"));
+    assert!(perms.hardware_targets.iter().any(|t| t == "SmartSpaceGatewayV1"));
+    assert!(perms.hardware_targets.iter().any(|t| t == "BuildingEdgeV1"));
+}
+
+#[test]
+fn smart_spaces_blueprint_manifest_validates() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/solutions/smart-spaces");
+    let text = std::fs::read_to_string(root.join("spanda.toml")).expect("read spanda.toml");
+    let manifest = spanda_package::PackageManifest::parse_str(&text).expect("parse manifest");
+    let perms = spanda_package::validation::ApplicationPermissions::permissive();
+    spanda_package::validate_package_in(&manifest, &perms, Some(&root)).expect("validate");
 }
