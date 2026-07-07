@@ -60,6 +60,7 @@ rust_out
 !examples/**/*.trace
 !tests/golden/**/*.trace
 !crates/spanda-cli/bundled-examples/examples/showcase/differentiation/decision_trail/main.trace
+!crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/src/rover.trace
 # Local sim recordings (not committed fixtures)
 examples/robotics/*.trace
 
