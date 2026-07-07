@@ -31,9 +31,10 @@ This guide is the friendly on-ramp. When you want structured lessons with exerci
 | II | [AI without the scary parts](./04-ai-made-simple.md) | Why the compiler says “no” to raw LLM output |
 | II | [The ten commands you'll actually use](./05-commands-cheat-sheet.md) | CLI cheat sheet |
 | III | [Oops — common mistakes](./06-common-mistakes.md) | Fixes for the errors everyone hits once |
+| III | [Platform policies in plain English](./08-platform-policies.md) | Offline, recovery, continuity — no jargon |
 | III | [Glossary](./07-glossary.md) | Jargon → English |
 
-**Total read time:** ~45 minutes. Skim the cheat sheet and glossary anytime.
+**Total read time:** ~50 minutes. Skim the cheat sheet and glossary anytime.
 
 ---
 
@@ -94,6 +95,7 @@ Spanda is **not** trying to replace your favorite language. It orchestrates perc
 | First project in 10 min | [getting-started.md](../getting-started.md) |
 | Flagship demo | [killer-demo.md](../killer-demo.md) |
 | Full language spec | [spanda-language.md](../spanda-language.md) |
+| Platform policy examples | [platform-feature-examples.md](../platform-feature-examples.md) |
 | Examples library | [examples/README.md](../../examples/README.md) |
 
 ---

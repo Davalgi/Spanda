@@ -46,6 +46,7 @@ Curated paths for your first programs.
 | 5 | [Ten commands cheat sheet](../spanda-for-dummies/05-commands-cheat-sheet.md) |
 | 6 | [Common mistakes](../spanda-for-dummies/06-common-mistakes.md) |
 | 7 | [Glossary](../spanda-for-dummies/07-glossary.md) |
+| 8 | [Platform policies](../spanda-for-dummies/08-platform-policies.md) |
 
 ### Spanda 101 (lessons)
 

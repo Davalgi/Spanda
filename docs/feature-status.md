@@ -80,6 +80,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Adapter package verify** | `spanda verify-adapter` — validate `[adapter]` provides/requires against registry metadata |
 | **Tooling** | Native CLI (`check`, `verify`, `run`, `sim`, `fleet`, `deploy`, `fmt`, `lint`, `doc`), package manager (`init`, `build`, `test`, `install`), **prebuilt installable packages** (Linux/macOS/Windows via GitHub Releases) |
 | **Showcase demos** | `spanda demo {rover,safety,verify,fleet,health,readiness,assurance,self-healing,continuity,adas}`; `examples/showcase/*`; `examples/solutions/adas/` (**Stable** — [stable-hardening-adas.md](./stable-hardening-adas.md)) |
+| **Platform policy examples** | Minimal + options: `examples/features/{decision_tree,recovery_policy,continuity_policy,*_options}.sd`; stitched workflows: `examples/workflows/`; guide: [platform-feature-examples.md](./platform-feature-examples.md) (**Stable** docs) |
 | **Security / audit** | Capabilities, secrets, signed messages, audit records |
 | **Secure communication** | `secure_comm`, encrypted buses, trusted-source publish/receive enforcement, AES-GCM wire frames, TLS session + rustls PEM validation, `spanda security check|audit`, TS runtime parity |
 | **Digital twins** | `twin`, mirror fields, replay buffer, `twin sync` telemetry |

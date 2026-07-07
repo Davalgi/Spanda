@@ -22,6 +22,14 @@ Stick this on a sticky note. Full CLI reference: [spanda-reference.md](../spanda
 | 9 | `spanda replay mission.trace` | Inspect a recorded mission |
 | 10 | `spanda fleet run file.sd` | Multi-robot in-process sim |
 
+**Platform policies** (after basics): [Chapter 8](./08-platform-policies.md)
+
+| Command | When to use it |
+|---------|----------------|
+| `spanda decision list file.sd` | See decision trees and offline bounds |
+| `spanda heal file.sd` | Diagnose failures and recovery path |
+| `spanda continuity file.sd --failed X` | Mission handoff / successor ranking |
+
 ---
 
 ## Copy-paste recipes

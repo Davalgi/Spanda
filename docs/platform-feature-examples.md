@@ -235,6 +235,7 @@ Multi-feature programs with full command sequences in file headers.
 | **GPS loss full stack** | Decisions + offline + recovery + continuity + cognitive + assurance | [`workflows/gps_loss_full_stack.sd`](../examples/workflows/gps_loss_full_stack.sd) |
 | **Offline signed autonomy** | Policy signing, cache, offline simulate, attack scenarios | [`workflows/offline_signed_autonomy.sd`](../examples/workflows/offline_signed_autonomy.sd) |
 | **Fleet patrol handoff** | Multi-robot fleet, succession, takeover, delegate | [`workflows/fleet_patrol_handoff.sd`](../examples/workflows/fleet_patrol_handoff.sd) |
+| **Differentiation audit trail** | Decision trace, audit, explain, contract verify | [`workflows/differentiation_audit_trail.sd`](../examples/workflows/differentiation_audit_trail.sd) |
 
 ### GPS loss full stack (example sequence)
 
@@ -249,6 +250,22 @@ spanda assure examples/workflows/gps_loss_full_stack.sd
 ```
 
 Index: [`examples/workflows/README.md`](../examples/workflows/README.md)
+
+---
+
+## Other language features (options examples)
+
+Beyond platform policies, these `*_options.sd` files document fields and CLI for core capabilities:
+
+| Area | Options file | Guide |
+|------|--------------|-------|
+| Triggers (`on` / `every` / `when` / `while` / state / safety) | [`features/triggers_options.sd`](../examples/features/triggers_options.sd) | [triggers.md](./triggers.md) |
+| Kill switch (local + `remote_signed`) | [`features/kill_switch_options.sd`](../examples/features/kill_switch_options.sd) | [kill-switch.md](./kill-switch.md) |
+| Verify + deploy + `requires_hardware` | [`features/verify_options.sd`](../examples/features/verify_options.sd) | [hardware-compatibility.md](./hardware-compatibility.md) |
+| Mission assurance blocks | [`features/assurance_blocks_options.sd`](../examples/features/assurance_blocks_options.sd) | [mission-assurance.md](./mission-assurance.md) |
+| Fleet + swarm + OTA deploy | [`features/fleet_swarm_options.sd`](../examples/features/fleet_swarm_options.sd) | [concurrency.md](./concurrency.md) |
+
+Full capability index: [`examples/features/README.md`](../examples/features/README.md)
 
 ---
 
