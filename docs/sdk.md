@@ -150,8 +150,9 @@ console.log(report.score);
 |------|----------------|
 | Local | Default `http://127.0.0.1:8080` — no auth for read-only program ops |
 | API key | `SPANDA_API_KEY` or client `api_key` / Bearer token |
+| Session JWT | OIDC sign-in — short-lived Bearer JWT (operators); see [authentication.md](./authentication.md) |
 | Remote | `SPANDA_CONTROL_CENTER_URL` |
-| mTLS / API keys (future) | Planned; do not hardcode secrets |
+| mTLS (transport) | Robot/fleet wire security — [secure-communication.md](./secure-communication.md) |
 
 ## Event stream
 

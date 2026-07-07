@@ -8,7 +8,7 @@ artifacts.
 
 | Area | Evidence |
 |------|----------|
-| API authentication | `SPANDA_API_KEY`, Bearer tokens, tenant isolation (`SPANDA_TENANT_ID`) |
+| API authentication | Hashed API keys (`token_hash`), session JWTs, Bearer header, tenant isolation — [authentication.md](./authentication.md) |
 | RBAC | `GET /v1/rbac/matrix`, mutation gating on POST/PATCH |
 | Secrets | `ManagedSecretVault`, no secret values in audit exports |
 | Persistence | `SPANDA_CONTROL_CENTER_STATE_DIR`, encrypted snapshots |

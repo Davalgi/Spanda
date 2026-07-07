@@ -571,7 +571,8 @@ Extends cascading TOML ([cascading-config.md](./cascading-config.md)):
 | Auditor | | | | | | | | |
 | Guest | | | | | | | | |
 
-Core: `spanda-security::rbac` with JWT/API-key auth at API boundary.
+Core: `spanda-security::rbac` with **hashed API-key** and **session JWT** auth at API boundary
+([authentication.md](./authentication.md)).
 
 ### 6.7 Secret Management
 

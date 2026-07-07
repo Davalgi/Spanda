@@ -230,6 +230,7 @@ guides, walkthroughs, and example libraries.
 | [security-audit-third-party.md](./security-audit-third-party.md) | **Third-party security audit scope and prep workflow** |
 | [desktop-release-runbook.md](./desktop-release-runbook.md) | **Control Center desktop `desktop-v*` tags, GitHub Releases, optional signing** |
 | [control-center.md](./control-center.md) | **Control Center — `spanda control-center serve`, REST v1, Tauri desktop 0.6.3** |
+| [authentication.md](./authentication.md) | **Control Center auth — hashed API keys, OIDC session JWTs, read-auth policy** |
 | [mission-contracts.md](./mission-contracts.md) | **Mission Contracts — guarantees, constraints, assumptions** |
 | [decision-audit-trail.md](./decision-audit-trail.md) | **Decision audit trail — mission → decision → evidence → action** |
 | [safety-coverage.md](./safety-coverage.md) | **Safety scenario coverage reporting** |

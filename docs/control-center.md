@@ -679,9 +679,17 @@ and trace audit. **Assurance/Diagnosis** runs `POST /v1/programs/assure` and `/d
 `default`). Each key may include a `tenant_id` field; authenticated requests with a mismatched
 tenant return `403`.
 
-**Storage:** Server-side keys are matched as plain strings (not hashed). Treat them like passwords —
-restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on compromise. The embedded UI may
-optionally persist a pasted Bearer token in browser `localStorage` under
+**Storage:** File-backed keys persist **HMAC-SHA256 hashes** only (`token_hash` in
+`api-keys.json`). Legacy plaintext entries are hashed on load. `SPANDA_API_KEY` env keys remain
+plaintext in memory for local dev. Set `SPANDA_API_KEY_PEPPER` in production. Session sign-in
+issues short-lived JWTs — see [authentication.md](./authentication.md).
+
+Optional read protection: `SPANDA_API_REQUIRE_AUTH_READS=1` or
+`SPANDA_API_REQUIRE_AUTH_ALL_READS=1`.
+
+Treat tokens like passwords — restrict file permissions on `SPANDA_API_KEYS_FILE` and rotate on
+compromise. The embedded UI may optionally persist a pasted Bearer token in browser
+`localStorage` under
 `spanda.control_center.bearer_token.v1:<host>` (per `host:port`, opt-in via **Remember on this
 browser**); this does not register the key on the server and is readable by any script on the same
 origin. Clear with **Forget token** or remove the key in browser DevTools.
