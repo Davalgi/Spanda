@@ -858,7 +858,7 @@ pub fn admin_oidc_oauth_callback(
     if let Some(entry) = userinfo_to_directory_entry(&userinfo) {
         let counts = crate::admin_users::import_oidc_directory(
             state,
-            &[entry.clone()],
+            std::slice::from_ref(&entry),
             &config.group_role_map,
         );
         created = counts.0;

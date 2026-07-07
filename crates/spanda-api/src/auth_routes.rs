@@ -124,8 +124,11 @@ fn auth_oidc_callback(
         return bad_request("userinfo missing sub");
     };
     let config = crate::control_center_extras::oidc_public_config();
-    let (created, updated) =
-        crate::admin_users::import_oidc_directory(state, &[entry.clone()], &config.group_role_map);
+    let (created, updated) = crate::admin_users::import_oidc_directory(
+        state,
+        std::slice::from_ref(&entry),
+        &config.group_role_map,
+    );
     let role = state
         .admin_user_store
         .find(&entry.user_id)
