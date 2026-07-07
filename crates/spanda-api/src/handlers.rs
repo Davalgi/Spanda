@@ -216,13 +216,9 @@ pub fn handle_request(
             return (response, correlation_id);
         }
     }
-    if let Some(response) = crate::auth_routes::route_auth(
-        state,
-        path,
-        &request.method,
-        &request.body,
-        ctx.as_ref(),
-    ) {
+    if let Some(response) =
+        crate::auth_routes::route_auth(state, path, &request.method, &request.body, ctx.as_ref())
+    {
         e3::record_trace(
             state,
             &correlation_id,

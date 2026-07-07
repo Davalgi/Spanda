@@ -1,6 +1,8 @@
 //! Unified authentication handler for Control Center REST and gRPC boundaries.
 //!
-use crate::api_key_hash::{api_key_pepper, constant_time_eq, hash_api_key_token, verify_api_key_token};
+use crate::api_key_hash::{
+    api_key_pepper, constant_time_eq, hash_api_key_token, verify_api_key_token,
+};
 use crate::rbac::{ApiKeyStore, RbacContext};
 use crate::session_token::SessionTokenIssuer;
 use serde::{Deserialize, Serialize};
@@ -131,7 +133,11 @@ impl AuthHandler {
     }
 
     /// Authenticate a bearer value against session JWTs and API keys.
-    pub fn authenticate(&self, api_keys: &ApiKeyStore, bearer: Option<&str>) -> Option<RbacContext> {
+    pub fn authenticate(
+        &self,
+        api_keys: &ApiKeyStore,
+        bearer: Option<&str>,
+    ) -> Option<RbacContext> {
         let token = Self::extract_bearer(bearer)?;
         if SessionTokenIssuer::looks_like_jwt(&token) {
             if let Ok(ctx) = self.sessions.verify(&token) {

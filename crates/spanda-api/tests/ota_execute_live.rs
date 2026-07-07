@@ -27,7 +27,11 @@ fn ota_execute_live_rollout_updates_agent() {
         "SPANDA_DEPLOY_AGENTS",
         agents_path.to_string_lossy().to_string(),
     );
-    let ctx = RbacContext::api_key("ota-live-test", Role::Administrator, spanda_security::default_tenant_id());
+    let ctx = RbacContext::api_key(
+        "ota-live-test",
+        Role::Administrator,
+        spanda_security::default_tenant_id(),
+    );
     let body = serde_json::json!({
         "strategy": "all",
         "version": "2.0.0",

@@ -500,9 +500,8 @@ pub fn oidc_build_authorize_url(
     if !config.client_secret_set {
         return Err("client_secret not configured".into());
     }
-    let discovery = fetch_oidc_discovery(issuer).ok_or_else(|| {
-        "failed to fetch discovery document".to_string()
-    })?;
+    let discovery = fetch_oidc_discovery(issuer)
+        .ok_or_else(|| "failed to fetch discovery document".to_string())?;
     let authorization_endpoint = discovery
         .get("authorization_endpoint")
         .and_then(|value| value.as_str())
@@ -539,7 +538,10 @@ pub fn oidc_build_authorize_url(
 }
 
 /// Exchange an OIDC authorization code for userinfo and clear ephemeral OAuth state.
-pub fn oidc_exchange_code(code: &str, state_param: Option<&str>) -> Result<serde_json::Value, String> {
+pub fn oidc_exchange_code(
+    code: &str,
+    state_param: Option<&str>,
+) -> Result<serde_json::Value, String> {
     let mut config = load_admin_oidc();
     if let Some(expected) = config.oauth_state.as_deref() {
         if state_param != Some(expected) {
@@ -560,9 +562,8 @@ pub fn oidc_exchange_code(code: &str, state_param: Option<&str>) -> Result<serde
         .clone()
         .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
         .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
-    let discovery = fetch_oidc_discovery(issuer).ok_or_else(|| {
-        "failed to fetch discovery document".to_string()
-    })?;
+    let discovery = fetch_oidc_discovery(issuer)
+        .ok_or_else(|| "failed to fetch discovery document".to_string())?;
     let token_endpoint = discovery
         .get("token_endpoint")
         .and_then(|value| value.as_str())
@@ -855,8 +856,11 @@ pub fn admin_oidc_oauth_callback(
     let mut session_role = None;
     let mut session_user_id = None;
     if let Some(entry) = userinfo_to_directory_entry(&userinfo) {
-        let counts =
-            crate::admin_users::import_oidc_directory(state, &[entry.clone()], &config.group_role_map);
+        let counts = crate::admin_users::import_oidc_directory(
+            state,
+            &[entry.clone()],
+            &config.group_role_map,
+        );
         created = counts.0;
         updated = counts.1;
         let role = state

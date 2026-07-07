@@ -1,10 +1,10 @@
 //! REST API v1 for Spanda Control Center.
 //!
-pub mod auth_routes;
 pub mod admin_ops;
 pub mod admin_users;
 pub mod alert_channels;
 pub mod audit_log;
+pub mod auth_routes;
 pub mod autonomy_ops;
 pub mod control_center_extras;
 pub mod control_center_ui;

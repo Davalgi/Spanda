@@ -9,7 +9,9 @@ use crate::report_scheduler::ReportScheduleStore;
 use spanda_audit::AuditRuntime;
 use spanda_config::{DeviceRegistry, ResolvedSystemConfig};
 use spanda_ops::{AlertDispatcher, AlertStore, IncidentStore};
-use spanda_security::{default_tenant_id, ApiKeyStore, AuthHandler, ManagedSecretVault, RateLimiter};
+use spanda_security::{
+    default_tenant_id, ApiKeyStore, AuthHandler, ManagedSecretVault, RateLimiter,
+};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 

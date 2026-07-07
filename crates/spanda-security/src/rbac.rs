@@ -124,7 +124,9 @@ impl ApiKeyStore {
         if let Ok(path) = std::env::var("SPANDA_API_KEYS_FILE") {
             if let Ok(content) = std::fs::read_to_string(path) {
                 if let Ok(keys) = serde_json::from_str::<Vec<ApiKeyRecord>>(&content) {
-                    store.keys.extend(keys.into_iter().map(Self::normalize_loaded_key));
+                    store
+                        .keys
+                        .extend(keys.into_iter().map(Self::normalize_loaded_key));
                 }
             }
         }

@@ -15,12 +15,12 @@ pub mod platform_events;
 pub mod policy;
 pub mod rate_limit;
 pub mod rbac;
-pub mod session_token;
 pub mod runtime;
 pub mod runtime_bridge;
 pub mod secret_vault;
 pub mod secrets;
 pub mod secure_comm;
+pub mod session_token;
 pub mod signed;
 pub mod tenant;
 pub mod trust;
@@ -28,6 +28,8 @@ pub mod trust_boundary;
 pub mod validate;
 pub mod wire_crypto;
 
+pub use api_key_hash::{api_key_pepper, hash_api_key_token, verify_api_key_token};
+pub use auth_handler::{hash_new_api_key_token, AuthHandler, AuthKind, ReadAuthPolicy};
 pub use capability::{
     capability_for_operation, is_known_capability, known_capabilities, CapabilitySet, Permission,
 };
@@ -44,18 +46,16 @@ pub use policy::{
     AuthenticationMode, BusSecurityConfig, EncryptionMode, IntegrityMode, SecureCommPolicy,
 };
 pub use rate_limit::RateLimiter;
-pub use api_key_hash::{api_key_pepper, hash_api_key_token, verify_api_key_token};
-pub use auth_handler::{hash_new_api_key_token, AuthHandler, AuthKind, ReadAuthPolicy};
 pub use rbac::{
     generate_api_key_token, permission_matrix, ApiKeyRecord, ApiKeyStore, RbacAction, RbacContext,
     Role,
 };
-pub use session_token::{SessionClaims, SessionTokenIssuer};
 pub use runtime::{SecurityContext, SecuritySnapshot};
 pub use runtime_bridge::SecurityBackedRuntime;
 pub use secret_vault::{ManagedSecretVault, SecretMetadata, SecretVaultBackend};
 pub use secrets::{SecretHandle, SecretSource, SecretStore};
 pub use secure_comm::{SecureEndpointRegistry, SecurePolicy};
+pub use session_token::{SessionClaims, SessionTokenIssuer};
 pub use signed::{Signature, SignedMessage};
 pub use tenant::{default_tenant_id, tenant_matches};
 pub use trust::TrustLevel;

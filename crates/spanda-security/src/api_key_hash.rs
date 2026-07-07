@@ -10,8 +10,7 @@ type HmacSha256 = Hmac<Sha256>;
 /// Set `SPANDA_API_KEY_PEPPER` in production. When unset, a dev-only default is used.
 pub fn api_key_pepper() -> String {
     std::env::var("SPANDA_API_KEY_PEPPER").unwrap_or_else(|_| {
-        std::env::var("SPANDA_CONTROL_CENTER_STATE_DIR")
-            .unwrap_or_else(|_| ".spanda".into())
+        std::env::var("SPANDA_CONTROL_CENTER_STATE_DIR").unwrap_or_else(|_| ".spanda".into())
     })
 }
 
@@ -32,8 +31,8 @@ pub fn hash_api_key_token(token: &str, pepper: &str) -> String {
     // Example:
     // let digest = hash_api_key_token("abc", &api_key_pepper());
 
-    let mut mac = HmacSha256::new_from_slice(pepper.as_bytes())
-        .expect("HMAC accepts arbitrary key length");
+    let mut mac =
+        HmacSha256::new_from_slice(pepper.as_bytes()).expect("HMAC accepts arbitrary key length");
     mac.update(token.as_bytes());
     hex::encode(mac.finalize().into_bytes())
 }

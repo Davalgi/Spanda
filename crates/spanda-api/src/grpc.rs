@@ -43,9 +43,7 @@ impl GrpcControlCenter {
     fn rbac_from_request<T>(&self, request: &Request<T>) -> Option<RbacContext> {
         let token = Self::bearer_token(request);
         let guard = self.state.lock().ok()?;
-        guard
-            .auth
-            .authenticate(&guard.api_keys, token.as_deref())
+        guard.auth.authenticate(&guard.api_keys, token.as_deref())
     }
 
     fn ensure_grpc_rbac(
