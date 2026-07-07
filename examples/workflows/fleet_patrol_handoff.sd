@@ -1,0 +1,113 @@
+// Stitched workflow: fleet patrol handoff — multi-robot continuity + recovery + decisions
+//
+// Full command sequence (run from repo root):
+//
+//   spanda check examples/workflows/fleet_patrol_handoff.sd
+//   spanda decision list examples/workflows/fleet_patrol_handoff.sd
+//   spanda succession examples/workflows/fleet_patrol_handoff.sd --failed PatrolAlpha --scope fleet
+//   spanda takeover examples/workflows/fleet_patrol_handoff.sd --failed PatrolAlpha --successor PatrolBeta --progress 55
+//   spanda delegate examples/workflows/fleet_patrol_handoff.sd --failed PatrolAlpha --to PatrolBeta
+//   spanda continuity examples/workflows/fleet_patrol_handoff.sd --failed PatrolAlpha --progress 55 --trigger robot_failed
+//   spanda heal examples/workflows/fleet_patrol_handoff.sd
+//   spanda recover examples/workflows/fleet_patrol_handoff.sd --failure gps
+//   spanda fleet run examples/workflows/fleet_patrol_handoff.sd --trace-scheduler
+//
+// Docs: docs/mission-continuity.md · docs/concurrency.md · docs/fleet-readiness.md
+
+mission_plan WarehousePatrol {
+    step aisle_a_scan;
+    step aisle_b_scan;
+    step dock_return;
+    constraint battery.level >= 15%;
+}
+
+recovery_policy FleetRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        enter degraded_mode;
+    }
+    on robot.failed {
+        reassign mission;
+        promote backup coordinator;
+    }
+}
+
+continuity_policy PatrolHandoff {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+        transfer state to successor;
+    }
+    on battery_critical {
+        promote backup coordinator;
+    }
+}
+
+continuity_policy CoordinatorFailover {
+    on coordinator.failed {
+        promote backup coordinator;
+        redistribute swarm tasks;
+    }
+}
+
+decision_tree PatrolReflex reflex {
+    when obstacle.detected {
+        stop_motor;
+    }
+}
+
+decision_tree GpsFailover local {
+    when gps.status == Failed {
+        enter degraded_mode;
+        reduce_speed 0.4 m/s;
+    }
+}
+
+robot PatrolAlpha {
+    local_decision_authority [emergency_stop, degraded_mode, return_home];
+    requires_central_approval [update_firmware];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { loop every 50ms { } }
+}
+
+robot PatrolBeta {
+    local_decision_authority [emergency_stop, degraded_mode, return_home];
+    requires_central_approval [update_firmware];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { loop every 50ms { } }
+}
+
+robot PatrolGamma {
+    local_decision_authority [emergency_stop, degraded_mode, return_home];
+    requires_central_approval [update_firmware];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { loop every 50ms { } }
+}
+
+fleet WarehousePatrol {
+    PatrolAlpha;
+    PatrolBeta;
+    PatrolGamma;
+}
+
+offline_policy FleetOffline {
+    max_duration = 30 min;
+    policy_version = "1.0.0";
+    allowed_actions [pause_mission, return_home, enter_degraded_mode];
+    forbidden_actions [disable_safety];
+}

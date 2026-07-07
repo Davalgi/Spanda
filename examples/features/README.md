@@ -95,19 +95,26 @@ spanda run examples/features/enum_payload.sd
 
 ## Platform differentiators (v0.6+)
 
-Declarative policy blocks and distributed autonomy — minimal files here, full scenarios under
-`showcase/`.
+Declarative policy blocks and distributed autonomy — minimal files here, **options** variants, and
+**stitched workflows** under [`workflows/`](../workflows/).
 
-| Feature | Example | Showcase / CLI |
-|---------|---------|----------------|
-| `local_decision_authority` / `decision_tree` / `offline_policy` | [`features/decision_tree.sd`](./decision_tree.sd) | `showcase/distributed_decisions/` · `spanda decision *` |
-| `recovery_policy` | [`features/recovery_policy.sd`](./recovery_policy.sd) | `showcase/self_healing/` · `spanda heal` / `recover` |
-| `continuity_policy` | [`features/continuity_policy.sd`](./continuity_policy.sd) | `showcase/continuity/` · `spanda continuity` / `takeover` |
-| `homeostasis_policy` | [`features/homeostasis_policy.sd`](./homeostasis_policy.sd) | `spanda homeostasis check` · [cognitive-resilience-architecture.md](../../docs/cognitive-resilience-architecture.md) |
-| `attention_policy` | [`features/attention_policy.sd`](./attention_policy.sd) | `spanda reflex list` · Cognitive & Resilience tab |
-| Mission assurance suite | `showcase/assurance/rover.sd` | `spanda demo assurance` — [mission-assurance.md](../../docs/mission-assurance.md) |
-| Self-healing fleet | `showcase/fleet_recovery/fleet.sd` | `spanda demo self-healing` |
-| Differentiation analytics | `showcase/differentiation/` | `spanda demo differentiation` |
+| Feature | Minimal | All options | Guide |
+|---------|---------|-------------|-------|
+| `local_decision_authority` / `decision_tree` / `offline_policy` | [`decision_tree.sd`](./decision_tree.sd) | [`decision_tree_options.sd`](./decision_tree_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#decision_tree) |
+| `offline_policy` (standalone) | (in `decision_tree.sd`) | [`offline_policy_options.sd`](./offline_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#offline_policy) |
+| `recovery_policy` | [`recovery_policy.sd`](./recovery_policy.sd) | [`recovery_policy_options.sd`](./recovery_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#recovery_policy) |
+| `continuity_policy` | [`continuity_policy.sd`](./continuity_policy.sd) | [`continuity_policy_options.sd`](./continuity_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#continuity_policy) |
+| `homeostasis_policy` / `attention_policy` | [`homeostasis_policy.sd`](./homeostasis_policy.sd), [`attention_policy.sd`](./attention_policy.sd) | [`cognitive_policies_options.sd`](./cognitive_policies_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#homeostasis_policy--attention_policy) |
+
+**Stitched workflows:** [`workflows/README.md`](../workflows/README.md) · flagship showcases below.
+
+| Showcase / CLI | Path |
+|----------------|------|
+| Distributed decisions | `showcase/distributed_decisions/` · `spanda decision *` |
+| Self-healing | `showcase/self_healing/` · `spanda heal` / `recover` |
+| Mission continuity | `showcase/continuity/` · `spanda continuity` / `takeover` |
+| Mission assurance | `showcase/assurance/rover.sd` · `spanda demo assurance` |
+| Differentiation analytics | `showcase/differentiation/` · `spanda demo differentiation` |
 
 ---
 

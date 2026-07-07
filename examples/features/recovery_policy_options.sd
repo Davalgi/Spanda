@@ -1,0 +1,57 @@
+// Feature options: recovery_policy — multiple on branches and recovery actions
+//
+// on conditions: gps.failed, lidar.failed, battery.critical, connectivity.lost, …
+// actions: switch_to, reduce_speed, enter *_mode, pause_mission, restart connectivity, …
+//
+//   spanda check examples/features/recovery_policy_options.sd
+//   spanda heal examples/features/recovery_policy_options.sd
+//   spanda recover examples/features/recovery_policy_options.sd --failure gps
+//   spanda recover examples/features/recovery_policy_options.sd --failure lidar
+//   spanda sim examples/features/recovery_policy_options.sd --inject-failure gps
+//   spanda recovery-report examples/features/recovery_policy_options.sd
+//
+// Docs: docs/self-healing.md · docs/recovery-orchestrator.md
+
+operating_mode NormalMode { normal; }
+operating_mode DegradedMode { degraded; }
+operating_mode SafeMode { safe; }
+operating_mode RecoveryMode { recovery; }
+
+recovery_policy RoverRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+    on lidar.failed {
+        reduce_speed 0.3 m/s;
+        enter safe_mode;
+    }
+    on battery.critical {
+        pause_mission;
+        enter safe_mode;
+    }
+    on connectivity.lost {
+        restart connectivity;
+        enter degraded_mode;
+    }
+}
+
+mitigation SensorDegradation {
+    if gps.failed {
+        switch_to visual_odometry;
+        enter degraded_mode;
+    }
+}
+
+health_check RoverHealth for robot Rover {
+    check battery.level >= 20%;
+}
+
+robot Rover {
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.2 m/s; }
+    behavior patrol() { wheels.drive(0.5 m/s); }
+}

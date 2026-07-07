@@ -1,0 +1,91 @@
+// Stitched workflow: offline signed autonomy — policy → sign → simulate → audit
+//
+// Full command sequence (run from repo root):
+//
+//   spanda check examples/workflows/offline_signed_autonomy.sd
+//   spanda decision list examples/workflows/offline_signed_autonomy.sd
+//   spanda decision policy examples/workflows/offline_signed_autonomy.sd
+//   spanda decision sign-policy examples/workflows/offline_signed_autonomy.sd --policy RoverOffline --write-cache
+//   spanda decision sign-tree examples/workflows/offline_signed_autonomy.sd --tree OfflineContinue --write-cache
+//   spanda decision cache show
+//   spanda decision simulate examples/workflows/offline_signed_autonomy.sd --offline
+//   spanda decision simulate-attack examples/workflows/offline_signed_autonomy.sd --offline-abuse
+//   spanda decision security-audit
+//   spanda audit decisions examples/workflows/offline_signed_autonomy.trace
+//
+// Docs: docs/distributed-decisions.md · docs/decision-conflict-resolution.md
+
+robot Rover {
+    local_decision_authority [
+        continue_current_safe_mission,
+        return_home,
+        pause_mission,
+        enter_degraded_mode,
+        reduce_speed
+    ];
+    requires_central_approval [
+        update_firmware,
+        override_safety_policy,
+        disable_kill_switch
+    ];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    safety { max_speed = 1.0 m/s; }
+
+    behavior patrol() {
+        loop every 50ms { }
+    }
+}
+
+decision_tree OfflineContinue local {
+    version = "1.0.0";
+    when gps.status == Failed {
+        if visual_odometry.available {
+            switch_to visual_odometry;
+            reduce_speed 0.6 m/s;
+            enter degraded_mode;
+        } else {
+            pause_mission;
+            return_home;
+        }
+    }
+}
+
+offline_policy RoverOffline {
+    max_duration = 45 min;
+    policy_version = "1.0.0";
+    allowed_actions [
+        continue_current_safe_mission,
+        return_home,
+        pause_mission,
+        enter_degraded_mode,
+        reduce_speed
+    ];
+    forbidden_actions [
+        start_new_high_risk_mission,
+        disable_safety,
+        accept_unknown_device,
+        override_safety_policy
+    ];
+}
+
+recovery_policy ConnectivityLoss {
+    on connectivity.lost {
+        enter degraded_mode;
+        reduce_speed 0.5 m/s;
+    }
+}
+
+continuity_policy OfflineEscalation {
+    on connectivity.lost {
+        escalate to control center;
+    }
+}
+
+mission_plan OfflinePatrol {
+    step patrol_segment_a;
+    step patrol_segment_b;
+}

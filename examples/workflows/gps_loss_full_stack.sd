@@ -1,0 +1,144 @@
+// Stitched workflow: GPS loss — decisions → recovery → continuity → assurance
+//
+// Full command sequence (run from repo root):
+//
+//   spanda check examples/workflows/gps_loss_full_stack.sd
+//   spanda verify examples/workflows/gps_loss_full_stack.sd --target RoverPlatform --simulate
+//   spanda decision list examples/workflows/gps_loss_full_stack.sd
+//   spanda decision inspect examples/workflows/gps_loss_full_stack.sd --entity Rover001
+//   spanda heal examples/workflows/gps_loss_full_stack.sd
+//   spanda recover examples/workflows/gps_loss_full_stack.sd --failure gps
+//   spanda continuity examples/workflows/gps_loss_full_stack.sd --failed Rover001 --progress 65 --trigger robot_failed
+//   spanda sim examples/workflows/gps_loss_full_stack.sd --inject-failure gps --record
+//   spanda replay examples/workflows/gps_loss_full_stack.trace --show-faults
+//   spanda assure examples/workflows/gps_loss_full_stack.sd
+//
+// Docs: docs/distributed-decisions.md · docs/self-healing.md · docs/mission-continuity.md
+
+hardware RoverPlatform {
+    sensors [GPS, Lidar, Camera];
+    actuators [DifferentialDrive];
+    connectivity [WiFi, LTE];
+}
+
+operating_mode DegradedMode { degraded; }
+operating_mode SafeMode { safe; }
+
+homeostasis_policy PatrolStability {
+    metric cpu_pct;
+    metric battery_pct;
+}
+
+attention_policy PatrolFocus {
+    rule boost_critical_health;
+}
+
+robot Rover001 {
+    local_decision_authority [
+        emergency_stop,
+        sensor_failover,
+        degraded_mode,
+        return_home,
+        reduce_speed
+    ];
+    requires_central_approval [
+        resume_high_risk_mission,
+        override_safety_policy,
+        update_firmware
+    ];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    sensor camera: Camera;
+    actuator drive: DifferentialDrive;
+    mode degraded { }
+    mode safe { }
+    safety { max_speed = 1.0 m/s; }
+
+    behavior patrol_mission() {
+        loop every 50ms { }
+    }
+}
+
+decision_tree ObstacleReflex reflex {
+    version = "1.0.0";
+    when obstacle.detected {
+        stop_motor;
+        cut_actuator_power;
+    }
+}
+
+decision_tree GPSLossRecovery local {
+    version = "1.0.0";
+    when gps.status == Failed {
+        if visual_odometry.available {
+            switch_to visual_odometry;
+            reduce_speed 0.5 m/s;
+            enter degraded_mode;
+        } else if operator.available {
+            request_takeover;
+        } else {
+            pause_mission;
+            enter safe_mode;
+        }
+    }
+}
+
+offline_policy RoverOffline {
+    max_duration = 30 min;
+    policy_version = "1.0.0";
+    allowed_actions [return_home, pause_mission, enter_degraded_mode, reduce_speed];
+    forbidden_actions [disable_safety, start_new_high_risk_mission];
+}
+
+recovery_policy GpsLossRecovery {
+    on gps.failed {
+        switch_to visual_odometry;
+        reduce_speed 0.5 m/s;
+        enter degraded_mode;
+    }
+    on lidar.failed {
+        reduce_speed 0.3 m/s;
+        enter safe_mode;
+    }
+}
+
+continuity_policy FleetTakeover {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+        promote backup coordinator;
+    }
+}
+
+continuity_policy GpsEscalation {
+    on gps_health.degraded {
+        notify fleet;
+        escalate to control center;
+    }
+}
+
+mission_plan GpsLossPatrol {
+    step patrol_route_a;
+    step patrol_route_b;
+    step return_home;
+}
+
+fleet PatrolFleet {
+    Rover001;
+}
+
+knowledge_model GpsLossKnowledge {
+    component gps;
+    component visual_odometry;
+    dependency navigation requires [gps];
+}
+
+assurance_case GpsLossAssurance {
+    evidence simulation_replay;
+    evidence health_checks;
+}
+
+health_check RoverHealth for robot Rover001 {
+    check battery.level >= 20%;
+}

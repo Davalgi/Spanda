@@ -2,7 +2,7 @@
 
 Complete workflows that combine multiple Spanda capabilities — deploy, verify, AI safety, communication, real-time, twins, and packages.
 
-**Tutorial:** [Spanda 101 Lesson 10](../../docs/spanda-101/10-end-to-end-patrol.md) · **Feature index:** [examples/features/README.md](../features/README.md)
+**Tutorial:** [Spanda 101 Lesson 10](../../docs/spanda-101/10-end-to-end-patrol.md) · **Feature index:** [examples/features/README.md](../features/README.md) · **Stitched workflows:** [examples/workflows/README.md](../workflows/README.md) · **Options reference:** [platform-feature-examples.md](../../docs/platform-feature-examples.md)
 
 ```bash
 spanda check examples/end_to_end/warehouse_delivery/src/main.sd
@@ -35,7 +35,8 @@ spanda fleet run examples/end_to_end/fleet_coordination.sd
 4. `replay_mission.sd` — record and deterministic replay  
 5. `fleet_coordination.sd` — `spanda fleet run`  
 6. `incident_response.sd` — failure handling  
-7. `pick_and_place_cell/` — manipulation cell  
+7. [`workflows/gps_loss_full_stack.sd`](../workflows/gps_loss_full_stack.sd) — platform policy stack  
+8. `pick_and_place_cell/` — manipulation cell  
 
 ---
 

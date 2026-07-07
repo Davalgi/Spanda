@@ -1,0 +1,92 @@
+// Feature options: decision_tree — scopes, version, signature, nested branches
+//
+// Scopes: reflex | local | fleet
+// Tree fields: version, signature, when { if/else if/else, actions }
+//
+//   spanda check examples/features/decision_tree_options.sd
+//   spanda decision list examples/features/decision_tree_options.sd
+//   spanda decision inspect examples/features/decision_tree_options.sd --entity Rover
+//   spanda decision sign-tree examples/features/decision_tree_options.sd --tree GPSLossRecovery --write-cache
+//
+// Docs: docs/distributed-decisions.md · docs/local-decision-trees.md
+
+robot Rover {
+    local_decision_authority [
+        emergency_stop,
+        obstacle_avoidance,
+        degraded_mode,
+        return_home,
+        sensor_failover,
+        reduce_speed
+    ];
+    requires_central_approval [
+        resume_high_risk_mission,
+        override_safety_policy,
+        disable_kill_switch,
+        update_firmware
+    ];
+
+    sensor gps: GPS;
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    mode degraded { }
+    mode safe { }
+    safety { max_speed = 1.0 m/s; }
+
+    behavior patrol() {
+        loop every 50ms { }
+    }
+}
+
+decision_tree ObstacleReflex reflex {
+    version = "1.0.0";
+    when obstacle.detected {
+        stop_motor;
+        cut_actuator_power;
+    }
+}
+
+decision_tree GPSLossRecovery local {
+    version = "1.0.0";
+    when gps.status == Failed {
+        if visual_odometry.available {
+            switch_to visual_odometry;
+            reduce_speed 0.5 m/s;
+            enter degraded_mode;
+        } else if operator.available {
+            request_takeover;
+        } else {
+            pause_mission;
+            enter safe_mode;
+        }
+    }
+}
+
+decision_tree FleetReassign fleet {
+    version = "1.0.0";
+    when coordinator.status == Failed {
+        promote backup coordinator;
+        reassign mission;
+    }
+}
+
+offline_policy RoverOffline {
+    max_duration = 45 min;
+    policy_version = "1.0.0";
+    allowed_actions [
+        continue_current_safe_mission,
+        return_home,
+        pause_mission,
+        enter_degraded_mode,
+        reduce_speed
+    ];
+    forbidden_actions [
+        start_new_high_risk_mission,
+        disable_safety,
+        accept_unknown_device
+    ];
+}
+
+fleet PatrolFleet {
+    Rover;
+}

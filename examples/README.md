@@ -72,6 +72,7 @@ capability).
 | **1 — Basics** | [`basics/`](basics/) | [README](basics/README.md) | Lessons 1–5, 9 |
 | **2 — Integration** | [`integration/`](integration/) | triggers, concurrency, verify | Lessons 7–8 |
 | **3 — Features** | [`features/`](features/) | [README](features/README.md) | Lookup by topic |
+| **3b — Workflows** | [`workflows/`](workflows/) | [README](workflows/README.md) | Lessons 11–12 |
 | **4 — End-to-end** | [`end_to_end/`](end_to_end/) | [README](end_to_end/README.md) | Lesson 10 |
 | **5 — Packages** | [`packages/`](packages/) | [README](packages/README.md) | Lesson 9 |
 
@@ -95,13 +96,29 @@ full showcase demos.
 Guides: [distributed-decisions.md](../docs/distributed-decisions.md) ·
 [self-healing.md](../docs/self-healing.md) · [mission-continuity.md](../docs/mission-continuity.md) ·
 [cognitive-resilience-architecture.md](../docs/cognitive-resilience-architecture.md) ·
+[platform-feature-examples.md](../docs/platform-feature-examples.md) ·
 [Spanda 101 lesson 11](../docs/spanda-101/11-distributed-decisions.md)
 
 ```bash
 spanda check examples/features/decision_tree.sd
+spanda check examples/features/decision_tree_options.sd
 spanda decision list examples/features/decision_tree.sd
 spanda heal examples/features/recovery_policy.sd
 spanda continuity examples/features/continuity_policy.sd --failed RoverAlpha --progress 60 --trigger robot_failed
+```
+
+## Stitched workflows
+
+Multi-feature command sequences — [`workflows/`](workflows/)
+
+| Workflow | File | Commands chained |
+|----------|------|------------------|
+| GPS loss full stack | [`workflows/gps_loss_full_stack.sd`](workflows/gps_loss_full_stack.sd) | `decision` → `heal` → `recover` → `continuity` → `sim` → `assure` |
+| Offline signed autonomy | [`workflows/offline_signed_autonomy.sd`](workflows/offline_signed_autonomy.sd) | `sign-policy` → `cache` → `simulate --offline` → `simulate-attack` |
+| Fleet patrol handoff | [`workflows/fleet_patrol_handoff.sd`](workflows/fleet_patrol_handoff.sd) | `succession` → `takeover` → `delegate` → `fleet run` |
+
+```bash
+spanda check examples/workflows/gps_loss_full_stack.sd
 ```
 
 ---

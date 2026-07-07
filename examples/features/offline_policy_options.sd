@@ -1,0 +1,48 @@
+// Feature options: offline_policy — duration, versioning, signing, action lists
+//
+// Fields: max_duration, policy_version, signature, expires_at,
+//         allowed_actions[], forbidden_actions[]
+//
+//   spanda check examples/features/offline_policy_options.sd
+//   spanda decision policy examples/features/offline_policy_options.sd
+//   spanda decision sign-policy examples/features/offline_policy_options.sd --policy RoverOffline --write-cache
+//   spanda decision cache show
+//   spanda decision simulate examples/features/offline_policy_options.sd --offline
+//   spanda decision simulate-attack examples/features/offline_policy_options.sd --offline-abuse
+//
+// Docs: docs/distributed-decisions.md · docs/decision-authority.md
+
+robot Rover {
+    local_decision_authority [return_home, pause_mission, enter_degraded_mode];
+    requires_central_approval [update_firmware];
+
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() { loop every 50ms { } }
+}
+
+offline_policy RoverOffline {
+    max_duration = 60 min;
+    policy_version = "2.1.0";
+    allowed_actions [
+        continue_current_safe_mission,
+        return_home,
+        pause_mission,
+        enter_degraded_mode,
+        reduce_speed
+    ];
+    forbidden_actions [
+        start_new_high_risk_mission,
+        disable_safety,
+        accept_unknown_device,
+        override_safety_policy
+    ];
+}
+
+offline_policy ShortWindow {
+    max_duration = 15 min;
+    policy_version = "1.0.0";
+    allowed_actions [pause_mission, return_home];
+    forbidden_actions [disable_safety];
+}

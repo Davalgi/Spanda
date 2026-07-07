@@ -1,0 +1,43 @@
+// Feature options: homeostasis_policy + attention_policy — metrics and priority rules
+//
+// homeostasis_policy metrics: cpu_pct, memory_pct, battery_pct, …
+// attention_policy rules: suppress_low_priority, boost_critical_health, …
+//
+//   spanda check examples/features/cognitive_policies_options.sd
+//   spanda homeostasis check --json
+//   spanda reflex list --json
+//   spanda fusion analyze
+//   spanda immunity quarantine
+//   spanda recovery confidence
+//   ./scripts/cognitive_resilience_smoke.sh
+//
+// Docs: docs/cognitive-resilience-architecture.md · docs/cognitive-resilience-maturity.md
+
+homeostasis_policy PlatformStability {
+    metric cpu_pct;
+    metric memory_pct;
+    metric battery_pct;
+}
+
+homeostasis_policy EdgeNodeStability {
+    metric cpu_pct;
+    metric memory_pct;
+}
+
+attention_policy MissionFocus {
+    rule suppress_low_priority;
+    rule boost_critical_health;
+}
+
+attention_policy FleetOperations {
+    rule suppress_low_priority;
+}
+
+robot Rover {
+    sensor lidar: Lidar;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior patrol() {
+        loop every 100ms { }
+    }
+}

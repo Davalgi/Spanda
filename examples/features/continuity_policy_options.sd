@@ -1,0 +1,70 @@
+// Feature options: continuity_policy — triggers, takeover modes, fleet handoff
+//
+// on triggers: robot.failed, battery_critical, gps_health.degraded, coordinator.failed, …
+// actions: resume from checkpoint, reassign mission, promote backup coordinator,
+//          transfer state to successor, notify fleet, escalate to control center, …
+//
+//   spanda check examples/features/continuity_policy_options.sd
+//   spanda continuity examples/features/continuity_policy_options.sd --failed RoverAlpha --progress 72 --trigger robot_failed
+//   spanda takeover examples/features/continuity_policy_options.sd --failed RoverAlpha --successor RoverBeta --progress 72
+//   spanda delegate examples/features/continuity_policy_options.sd --failed RoverAlpha --to RoverBeta
+//   spanda succession examples/features/continuity_policy_options.sd --failed RoverAlpha --scope fleet
+//
+// Docs: docs/mission-continuity.md
+
+mission_plan WarehouseScan {
+    step navigate_aisle;
+    step scan_shelf_a;
+    step scan_shelf_b;
+    step return_dock;
+}
+
+continuity_policy WarehouseContinuity {
+    on robot.failed {
+        resume from checkpoint;
+        reassign mission;
+        transfer state to successor;
+    }
+    on battery_critical {
+        promote backup coordinator;
+        reassign mission;
+    }
+}
+
+continuity_policy FleetEscalation {
+    on gps_health.degraded {
+        notify fleet;
+        escalate to control center;
+    }
+    on coordinator.failed {
+        promote backup coordinator;
+        redistribute swarm tasks;
+    }
+}
+
+fleet ScannerFleet {
+    RoverAlpha;
+    RoverBeta;
+    RoverGamma;
+}
+
+robot RoverAlpha {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior scan() { wheels.drive(0.3 m/s); }
+}
+
+robot RoverBeta {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior scan() { wheels.drive(0.3 m/s); }
+}
+
+robot RoverGamma {
+    sensor gps: GPS;
+    actuator wheels: DifferentialDrive;
+    safety { max_speed = 1.0 m/s; }
+    behavior scan() { wheels.drive(0.3 m/s); }
+}
