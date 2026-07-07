@@ -179,6 +179,7 @@ fn api_keys_file_merges_with_env_key() {
         serde_json::to_string(&vec![spanda_security::ApiKeyRecord {
             key_id: "file-key".into(),
             token: "file-token".into(),
+            token_hash: None,
             role: Role::Operator,
             label: None,
             tenant_id: "default".into(),

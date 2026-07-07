@@ -6,11 +6,7 @@ use spanda_security::{RbacContext, Role};
 use tempfile::TempDir;
 
 fn admin_ctx() -> RbacContext {
-    RbacContext {
-        key_id: "admin".into(),
-        role: Role::Administrator,
-        tenant_id: "default".into(),
-    }
+    RbacContext::api_key("admin", Role::Administrator, "default")
 }
 
 #[test]

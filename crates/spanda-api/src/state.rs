@@ -9,7 +9,7 @@ use crate::report_scheduler::ReportScheduleStore;
 use spanda_audit::AuditRuntime;
 use spanda_config::{DeviceRegistry, ResolvedSystemConfig};
 use spanda_ops::{AlertDispatcher, AlertStore, IncidentStore};
-use spanda_security::{default_tenant_id, ApiKeyStore, ManagedSecretVault, RateLimiter};
+use spanda_security::{default_tenant_id, ApiKeyStore, AuthHandler, ManagedSecretVault, RateLimiter};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -22,6 +22,7 @@ pub struct ControlCenterState {
     pub grpc_bind: Option<String>,
     pub resolved: Option<ResolvedSystemConfig>,
     pub api_keys: ApiKeyStore,
+    pub auth: AuthHandler,
     pub secret_vault: ManagedSecretVault,
     pub alert_dispatcher: AlertDispatcher,
     pub alert_store: AlertStore,
@@ -49,6 +50,7 @@ impl ControlCenterState {
             grpc_bind: None,
             resolved: None,
             api_keys: ApiKeyStore::from_env_and_file(),
+            auth: AuthHandler::new(),
             secret_vault: ManagedSecretVault::new(),
             alert_dispatcher: AlertDispatcher::from_env(),
             alert_store: AlertStore::new(500),

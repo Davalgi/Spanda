@@ -455,6 +455,169 @@ fn userinfo_to_directory_entry(
     })
 }
 
+/// Public OIDC settings summary for `/v1/auth/config` and sign-in routes.
+#[derive(Debug, Clone)]
+pub struct OidcPublicConfig {
+    pub enabled: bool,
+    pub oauth_ready: bool,
+    pub issuer: Option<String>,
+    pub group_role_map: HashMap<String, String>,
+}
+
+/// Load OIDC integration settings without secrets for auth routes.
+pub fn oidc_public_config() -> OidcPublicConfig {
+    let config = load_admin_oidc();
+    OidcPublicConfig {
+        enabled: config.enabled,
+        oauth_ready: config.client_id.is_some() && config.client_secret_set,
+        issuer: config.issuer.clone(),
+        group_role_map: config.group_role_map.clone(),
+    }
+}
+
+/// Map OIDC userinfo JSON to a directory import row.
+pub fn oidc_userinfo_entry(
+    userinfo: &serde_json::Value,
+) -> Option<crate::admin_users::OidcDirectoryEntry> {
+    userinfo_to_directory_entry(userinfo)
+}
+
+/// Build an OIDC authorization URL with PKCE for operator sign-in.
+pub fn oidc_build_authorize_url(
+    redirect_uri: Option<String>,
+    require_enabled: bool,
+) -> Result<serde_json::Value, String> {
+    let mut config = load_admin_oidc();
+    if require_enabled && !config.enabled {
+        return Err("oidc not enabled".into());
+    }
+    let Some(issuer) = config.issuer.as_deref() else {
+        return Err("issuer not configured".into());
+    };
+    let Some(client_id) = config.client_id.as_deref() else {
+        return Err("client_id not configured".into());
+    };
+    if !config.client_secret_set {
+        return Err("client_secret not configured".into());
+    }
+    let discovery = fetch_oidc_discovery(issuer).ok_or_else(|| {
+        "failed to fetch discovery document".to_string()
+    })?;
+    let authorization_endpoint = discovery
+        .get("authorization_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if authorization_endpoint.is_empty() {
+        return Err("authorization_endpoint missing from discovery document".into());
+    }
+    let redirect = redirect_uri
+        .or_else(|| config.redirect_uri.clone())
+        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
+    let state = fresh_oauth_state();
+    let verifier = pkce_verifier();
+    let challenge = pkce_challenge(&verifier);
+    config.oauth_state = Some(state.clone());
+    config.oauth_code_verifier = Some(verifier);
+    config.redirect_uri = Some(redirect.clone());
+    persist_admin_oidc(&config)?;
+    Ok(serde_json::json!({
+        "version": API_VERSION,
+        "authorize_url": format!(
+            "{}?response_type=code&client_id={}&redirect_uri={}&scope={}&state={}&code_challenge={}&code_challenge_method=S256",
+            authorization_endpoint,
+            url_encode_component(client_id),
+            url_encode_component(&redirect),
+            url_encode_component("openid profile email"),
+            url_encode_component(&state),
+            url_encode_component(&challenge),
+        ),
+        "state": state,
+        "redirect_uri": redirect,
+        "pkce": true,
+    }))
+}
+
+/// Exchange an OIDC authorization code for userinfo and clear ephemeral OAuth state.
+pub fn oidc_exchange_code(code: &str, state_param: Option<&str>) -> Result<serde_json::Value, String> {
+    let mut config = load_admin_oidc();
+    if let Some(expected) = config.oauth_state.as_deref() {
+        if state_param != Some(expected) {
+            return Err("oauth state mismatch".into());
+        }
+    }
+    let Some(issuer) = config.issuer.as_deref() else {
+        return Err("issuer not configured".into());
+    };
+    let Some(client_id) = config.client_id.as_deref() else {
+        return Err("client_id not configured".into());
+    };
+    let Some(client_secret) = config.client_secret.as_deref() else {
+        return Err("client_secret not configured".into());
+    };
+    let redirect_uri = config
+        .redirect_uri
+        .clone()
+        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
+        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
+    let discovery = fetch_oidc_discovery(issuer).ok_or_else(|| {
+        "failed to fetch discovery document".to_string()
+    })?;
+    let token_endpoint = discovery
+        .get("token_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if token_endpoint.is_empty() {
+        return Err("token_endpoint missing from discovery document".into());
+    }
+    let mut form = format!(
+        "grant_type=authorization_code&code={}&redirect_uri={}&client_id={}&client_secret={}",
+        url_encode_component(code),
+        url_encode_component(&redirect_uri),
+        url_encode_component(client_id),
+        url_encode_component(client_secret),
+    );
+    if let Some(verifier) = config.oauth_code_verifier.as_deref() {
+        form.push_str("&code_verifier=");
+        form.push_str(&url_encode_component(verifier));
+    }
+    let token_response = ureq::post(token_endpoint)
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .send_string(&form)
+        .map_err(|error| format!("token exchange failed: {error}"))?
+        .into_string()
+        .unwrap_or_default();
+    let token_json: serde_json::Value = serde_json::from_str(&token_response)
+        .unwrap_or_else(|_| serde_json::json!({ "raw": token_response }));
+    let access_token = token_json
+        .get("access_token")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    if access_token.is_empty() {
+        return Err("access_token missing from token response".into());
+    }
+    let userinfo_endpoint = discovery
+        .get("userinfo_endpoint")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    let userinfo = if userinfo_endpoint.is_empty() {
+        serde_json::json!({})
+    } else {
+        ureq::get(userinfo_endpoint)
+            .set("Authorization", &format!("Bearer {access_token}"))
+            .call()
+            .ok()
+            .and_then(|response| response.into_string().ok())
+            .and_then(|body| serde_json::from_str(&body).ok())
+            .unwrap_or_else(|| serde_json::json!({}))
+    };
+    config.oauth_state = None;
+    config.oauth_code_verifier = None;
+    config.last_sync_at = Some(now_ms());
+    persist_admin_oidc(&config)?;
+    Ok(userinfo)
+}
+
 /// GET /v1/admin/oidc — OIDC integration configuration (no secrets).
 pub fn admin_oidc_get(ctx: Option<&RbacContext>) -> HttpResponse {
     // Return persisted OIDC settings for the admin console.
@@ -648,70 +811,14 @@ struct AdminOidcAuthorizeRequest {
 
 /// POST /v1/admin/oidc/authorize-url — build OIDC authorization URL for admin OAuth.
 pub fn admin_oidc_authorize_url(body: &str, ctx: Option<&RbacContext>) -> HttpResponse {
-    // Generate an OAuth authorization URL from OpenID discovery metadata.
-    //
-    // Parameters:
-    // - `body` — optional JSON `{ "redirect_uri": "..." }`
-    // - `ctx` — optional RBAC context
-    //
-    // Returns:
-    // HTTP 200 with `authorize_url` and `state` on success.
-    //
-    // Options:
-    // `SPANDA_OIDC_REDIRECT_URI` overrides the default redirect URI.
-    //
-    // Example:
-    // let response = admin_oidc_authorize_url(body, ctx.as_ref());
-
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
     let request: AdminOidcAuthorizeRequest = serde_json::from_str(body).unwrap_or_default();
-    let mut config = load_admin_oidc();
-    let Some(issuer) = config.issuer.as_deref() else {
-        return bad_request("issuer not configured");
-    };
-    let Some(client_id) = config.client_id.as_deref() else {
-        return bad_request("client_id not configured");
-    };
-    let discovery = fetch_oidc_discovery(issuer).unwrap_or_else(|| serde_json::json!({}));
-    let authorization_endpoint = discovery
-        .get("authorization_endpoint")
-        .and_then(|value| value.as_str())
-        .unwrap_or("");
-    if authorization_endpoint.is_empty() {
-        return bad_request("authorization_endpoint missing from discovery document");
+    match oidc_build_authorize_url(request.redirect_uri, false) {
+        Ok(payload) => json_ok(&payload),
+        Err(error) => bad_request(&error),
     }
-    let redirect_uri = request
-        .redirect_uri
-        .or_else(|| config.redirect_uri.clone())
-        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
-        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
-    let state = fresh_oauth_state();
-    let verifier = pkce_verifier();
-    let challenge = pkce_challenge(&verifier);
-    config.oauth_state = Some(state.clone());
-    config.oauth_code_verifier = Some(verifier);
-    config.redirect_uri = Some(redirect_uri.clone());
-    if let Err(error) = persist_admin_oidc(&config) {
-        return bad_request(&error);
-    }
-    let authorize_url = format!(
-        "{}?response_type=code&client_id={}&redirect_uri={}&scope={}&state={}&code_challenge={}&code_challenge_method=S256",
-        authorization_endpoint,
-        url_encode_component(client_id),
-        url_encode_component(&redirect_uri),
-        url_encode_component("openid profile email"),
-        url_encode_component(&state),
-        url_encode_component(&challenge),
-    );
-    json_ok(&serde_json::json!({
-        "version": API_VERSION,
-        "authorize_url": authorize_url,
-        "state": state,
-        "redirect_uri": redirect_uri,
-        "pkce": true,
-    }))
 }
 
 #[derive(Debug, Deserialize)]
@@ -727,22 +834,6 @@ pub fn admin_oidc_oauth_callback(
     body: &str,
     ctx: Option<&RbacContext>,
 ) -> HttpResponse {
-    // Exchange an OAuth authorization code for tokens and import the user profile.
-    //
-    // Parameters:
-    // - `state` — mutable Control Center state (user directory)
-    // - `body` — JSON `{ "code": "...", "state": "..." }`
-    // - `ctx` — optional RBAC context
-    //
-    // Returns:
-    // HTTP 200 with import counts on success.
-    //
-    // Options:
-    // Requires `client_secret` saved via PUT /v1/admin/oidc.
-    //
-    // Example:
-    // let response = admin_oidc_oauth_callback(state, body, ctx.as_ref());
-
     if !ApiKeyStore::check(ctx, RbacAction::Deploy) {
         return unauthorized();
     }
@@ -753,96 +844,33 @@ pub fn admin_oidc_oauth_callback(
     if request.code.trim().is_empty() {
         return bad_request("code required");
     }
-    let mut config = load_admin_oidc();
-    if let Some(expected) = config.oauth_state.as_deref() {
-        if request.state.as_deref() != Some(expected) {
-            return bad_request("oauth state mismatch");
-        }
-    }
-    let Some(issuer) = config.issuer.as_deref() else {
-        return bad_request("issuer not configured");
+    let userinfo = match oidc_exchange_code(request.code.trim(), request.state.as_deref()) {
+        Ok(info) => info,
+        Err(error) => return bad_request(&error),
     };
-    let Some(client_id) = config.client_id.as_deref() else {
-        return bad_request("client_id not configured");
-    };
-    let Some(client_secret) = config.client_secret.as_deref() else {
-        return bad_request("client_secret not configured");
-    };
-    let redirect_uri = config
-        .redirect_uri
-        .clone()
-        .or_else(|| std::env::var("SPANDA_OIDC_REDIRECT_URI").ok())
-        .unwrap_or_else(|| "http://127.0.0.1:8080/admin/oauth/oidc/callback".into());
-    let discovery = fetch_oidc_discovery(issuer).unwrap_or_else(|| serde_json::json!({}));
-    let token_endpoint = discovery
-        .get("token_endpoint")
-        .and_then(|value| value.as_str())
-        .unwrap_or("");
-    if token_endpoint.is_empty() {
-        return bad_request("token_endpoint missing from discovery document");
-    }
-    let form = {
-        let mut body = format!(
-            "grant_type=authorization_code&code={}&redirect_uri={}&client_id={}&client_secret={}",
-            url_encode_component(request.code.trim()),
-            url_encode_component(&redirect_uri),
-            url_encode_component(client_id),
-            url_encode_component(client_secret),
-        );
-        if let Some(verifier) = config.oauth_code_verifier.as_deref() {
-            body.push_str("&code_verifier=");
-            body.push_str(&url_encode_component(verifier));
-        }
-        body
-    };
-    let token_response = match ureq::post(token_endpoint)
-        .set("Content-Type", "application/x-www-form-urlencoded")
-        .send_string(&form)
-    {
-        Ok(response) => response.into_string().unwrap_or_default(),
-        Err(error) => return bad_request(&format!("token exchange failed: {error}")),
-    };
-    let token_json: serde_json::Value = serde_json::from_str(&token_response)
-        .unwrap_or_else(|_| serde_json::json!({ "raw": token_response }));
-    let access_token = token_json
-        .get("access_token")
-        .and_then(|value| value.as_str())
-        .unwrap_or("");
-    if access_token.is_empty() {
-        return bad_request("access_token missing from token response");
-    }
-    let userinfo_endpoint = discovery
-        .get("userinfo_endpoint")
-        .and_then(|value| value.as_str())
-        .unwrap_or("");
-    let userinfo = if userinfo_endpoint.is_empty() {
-        serde_json::json!({})
-    } else {
-        match ureq::get(userinfo_endpoint)
-            .set("Authorization", &format!("Bearer {access_token}"))
-            .call()
-        {
-            Ok(response) => response
-                .into_string()
-                .ok()
-                .and_then(|body| serde_json::from_str(&body).ok())
-                .unwrap_or_else(|| serde_json::json!({})),
-            Err(_) => serde_json::json!({}),
-        }
-    };
+    let config = load_admin_oidc();
     let mut created = 0usize;
     let mut updated = 0usize;
+    let mut session_token = None;
+    let mut session_role = None;
+    let mut session_user_id = None;
     if let Some(entry) = userinfo_to_directory_entry(&userinfo) {
         let counts =
-            crate::admin_users::import_oidc_directory(state, &[entry], &config.group_role_map);
+            crate::admin_users::import_oidc_directory(state, &[entry.clone()], &config.group_role_map);
         created = counts.0;
         updated = counts.1;
-    }
-    config.oauth_state = None;
-    config.oauth_code_verifier = None;
-    config.last_sync_at = Some(now_ms());
-    if let Err(error) = persist_admin_oidc(&config) {
-        return bad_request(&error);
+        let role = state
+            .admin_user_store
+            .find(&entry.user_id)
+            .map(|user| Role::parse(&user.role))
+            .unwrap_or(Role::Operator);
+        let issuer = spanda_security::SessionTokenIssuer::from_env();
+        let now = (now_ms() / 1000.0) as u64;
+        if let Ok(token) = issuer.issue(&entry.user_id, role, &state.tenant_id, now) {
+            session_token = Some(token);
+            session_role = Some(role);
+            session_user_id = Some(entry.user_id);
+        }
     }
     json_ok(&serde_json::json!({
         "version": API_VERSION,
@@ -850,7 +878,11 @@ pub fn admin_oidc_oauth_callback(
         "users_created": created,
         "users_updated": updated,
         "userinfo": userinfo,
-        "last_sync_at": config.last_sync_at,
+        "last_sync_at": load_admin_oidc().last_sync_at,
+        "session_token": session_token,
+        "session_role": session_role.map(|role| format!("{role:?}")),
+        "session_user_id": session_user_id,
+        "expires_in_secs": spanda_security::SessionTokenIssuer::from_env().ttl_secs(),
     }))
 }
 

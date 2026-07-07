@@ -4,11 +4,7 @@ use spanda_api::state::ControlCenterState;
 use spanda_security::{ApiKeyRecord, RbacContext, Role};
 
 fn admin_ctx() -> RbacContext {
-    RbacContext {
-        key_id: "admin".into(),
-        role: Role::Administrator,
-        tenant_id: "default".into(),
-    }
+    RbacContext::api_key("admin", Role::Administrator, "default")
 }
 
 #[test]
@@ -35,6 +31,7 @@ fn rpc_gateway_list_admin_api_keys_requires_administrator() {
     state.api_keys.keys.push(ApiKeyRecord {
         key_id: "admin".into(),
         token: "admin-token".into(),
+        token_hash: None,
         role: Role::Administrator,
         label: None,
         tenant_id: "default".into(),

@@ -9,7 +9,8 @@ use spanda_config::{
 };
 use spanda_deploy_http::HttpResponse;
 use spanda_security::{
-    generate_api_key_token, ApiKeyRecord, ApiKeyStore, RbacAction, RbacContext, Role,
+    generate_api_key_token, hash_new_api_key_token, ApiKeyRecord, ApiKeyStore, RbacAction,
+    RbacContext, Role,
 };
 
 const API_VERSION: &str = "v1";
@@ -87,7 +88,8 @@ pub fn admin_api_keys_create(
     let tenant_id = request.tenant_id.unwrap_or_else(|| state.tenant_id.clone());
     let record = ApiKeyRecord {
         key_id: key_id.clone(),
-        token: token.clone(),
+        token: String::new(),
+        token_hash: Some(hash_new_api_key_token(&token)),
         role,
         label: request.label,
         tenant_id,

@@ -6,11 +6,7 @@ use spanda_security::{ApiKeyRecord, RbacContext, Role};
 use tempfile::TempDir;
 
 fn admin_ctx() -> RbacContext {
-    RbacContext {
-        key_id: "admin".into(),
-        role: Role::Administrator,
-        tenant_id: "default".into(),
-    }
+    RbacContext::api_key("admin", Role::Administrator, "default")
 }
 
 #[test]
@@ -25,6 +21,7 @@ fn admin_api_keys_create_and_list() {
     state.api_keys.keys.push(ApiKeyRecord {
         key_id: "admin".into(),
         token: "admin-token".into(),
+        token_hash: None,
         role: Role::Administrator,
         label: None,
         tenant_id: "default".into(),
@@ -45,11 +42,7 @@ fn admin_api_keys_create_and_list() {
 #[test]
 fn admin_api_keys_list_requires_administrator() {
     let state = ControlCenterState::new();
-    let operator = RbacContext {
-        key_id: "op".into(),
-        role: Role::Operator,
-        tenant_id: "default".into(),
-    };
+    let operator = RbacContext::api_key("op", Role::Operator, "default");
     let list = admin_api_keys_list(&state, Some(&operator));
     assert_eq!(list.status, 401);
 }

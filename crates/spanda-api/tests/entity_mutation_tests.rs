@@ -19,6 +19,7 @@ fn warehouse_state() -> ControlCenterState {
     state.api_keys.keys.push(ApiKeyRecord {
         key_id: "entity-mutation-test".into(),
         token: "entity-mutation-test-key".into(),
+        token_hash: None,
         role: Role::Administrator,
         label: Some("entity mutation test".into()),
         tenant_id: state.tenant_id.clone(),

@@ -3306,6 +3306,123 @@
         }
       }
     },
+    "/v1/auth/config": {
+      "get": {
+        "summary": "Authentication configuration (OIDC availability, session TTL, read-auth flags)",
+        "responses": {
+          "200": {
+            "description": "Auth config"
+          }
+        }
+      }
+    },
+    "/v1/auth/session": {
+      "get": {
+        "summary": "Current session or API key principal",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session info"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/auth/session/refresh": {
+      "post": {
+        "summary": "Refresh an expired session JWT within the refresh window",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New session_token"
+          },
+          "400": {
+            "description": "Refresh failed"
+          }
+        }
+      }
+    },
+    "/v1/auth/oidc/authorize-url": {
+      "post": {
+        "summary": "Build OIDC authorization URL for operator SSO (PKCE)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "redirect_uri": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "authorize_url and state"
+          },
+          "400": {
+            "description": "OIDC not configured"
+          }
+        }
+      }
+    },
+    "/v1/auth/oidc/callback": {
+      "post": {
+        "summary": "Exchange OIDC authorization code for session JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "session_token and user import counts"
+          },
+          "400": {
+            "description": "Exchange failed"
+          }
+        }
+      }
+    },
     "/v1/rbac/me": {
       "get": {
         "summary": "Authenticated operator role and permissions",

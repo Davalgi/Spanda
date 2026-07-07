@@ -344,7 +344,7 @@ pub fn import_oidc_directory(
 }
 
 /// One user row from an OIDC directory import.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct OidcDirectoryEntry {
     pub user_id: String,
     #[serde(default)]

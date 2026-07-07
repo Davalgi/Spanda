@@ -149,8 +149,26 @@ pub fn handle_request(
         return (response, correlation_id);
     }
     let ctx = state
-        .api_keys
-        .authenticate(request.authorization.as_deref());
+        .auth
+        .authenticate(&state.api_keys, request.authorization.as_deref());
+    if state
+        .auth
+        .ensure_read_auth(&request.method, path, ctx.as_ref())
+        .is_err()
+    {
+        record_auth_failed("read_auth_required", None);
+        let response = unauthorized();
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            None,
+        );
+        return (response, correlation_id);
+    }
     if ctx.is_some() && !ApiKeyStore::check_tenant(ctx.as_ref(), &state.tenant_id) {
         let response = tenant_forbidden();
         e3::record_trace(
@@ -197,6 +215,24 @@ pub fn handle_request(
             );
             return (response, correlation_id);
         }
+    }
+    if let Some(response) = crate::auth_routes::route_auth(
+        state,
+        path,
+        &request.method,
+        &request.body,
+        ctx.as_ref(),
+    ) {
+        e3::record_trace(
+            state,
+            &correlation_id,
+            &request.method,
+            path,
+            response.status,
+            started_ms,
+            ctx.as_ref(),
+        );
+        return (response, correlation_id);
     }
     if path.starts_with("/v1/devices/") && request.method == "PATCH" {
         let id = path.trim_start_matches("/v1/devices/");
@@ -885,6 +921,8 @@ fn rbac_me(ctx: Option<&RbacContext>) -> HttpResponse {
         "key_id": context.key_id,
         "role": context.role,
         "tenant_id": context.tenant_id,
+        "auth_kind": context.auth_kind,
+        "user_id": context.user_id,
         "permissions": permissions,
     }))
 }
@@ -2372,6 +2410,7 @@ mod tests {
         state.api_keys.keys.push(spanda_security::ApiKeyRecord {
             key_id: "admin".into(),
             token: "secret-token".into(),
+            token_hash: None,
             role: spanda_security::Role::Administrator,
             label: None,
             tenant_id: "default".into(),

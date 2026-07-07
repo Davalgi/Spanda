@@ -128,6 +128,26 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/auth/config",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/auth/session",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/auth/session/refresh",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/auth/oidc/authorize-url",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/auth/oidc/callback",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/admin/api-keys",
     },
     ApiRoute {
