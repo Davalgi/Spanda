@@ -242,13 +242,15 @@ echo "  alerts list"
 run_spanda control-center alerts list | grep -q alerts
 
 echo "== E3 GET /v1/openapi.json =="
-fetch /v1/openapi.json | grep -q Spanda
-fetch /v1/openapi.json | grep -q '"/v1/digital-thread/query"'
-fetch /v1/openapi.json | grep -q '"/v1/compliance/export"'
-fetch /v1/openapi.json | grep -q '"/v1/compliance/profiles"'
-fetch /v1/openapi.json | grep -q '"/v1/reports/schedules"'
-fetch /v1/openapi.json | grep -q '"/v1/smart-spaces/summary"'
-fetch /v1/openapi.json | grep -q '"/v1/facilities"'
+# Fetch once: piping fetch to grep -q SIGPIPEs curl on this ~96KB body under pipefail.
+OPENAPI_JSON="$(fetch /v1/openapi.json)"
+grep -q Spanda <<<"$OPENAPI_JSON"
+grep -q '"/v1/digital-thread/query"' <<<"$OPENAPI_JSON"
+grep -q '"/v1/compliance/export"' <<<"$OPENAPI_JSON"
+grep -q '"/v1/compliance/profiles"' <<<"$OPENAPI_JSON"
+grep -q '"/v1/reports/schedules"' <<<"$OPENAPI_JSON"
+grep -q '"/v1/smart-spaces/summary"' <<<"$OPENAPI_JSON"
+grep -q '"/v1/facilities"' <<<"$OPENAPI_JSON"
 
 echo "== E3 OpenAPI REST parity test =="
 cargo test -p spanda-api --test openapi_parity_tests --quiet
