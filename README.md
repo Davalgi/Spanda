@@ -8,6 +8,33 @@
 
 *Build. Verify. Simulate. Deploy. Operate.*
 
+Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
+its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
+using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
+health, distributed autonomy, and governance.
+
+Spanda implements a [Cognitive & Resilience Architecture](docs/cognitive-resilience-architecture.md)
+inspired by proven engineering principles observed in biological nervous systems — functional
+concepts (reflexes, homeostasis, immunity, fusion, attention, memory) without biological anatomy in
+code.
+
+> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness,
+> emotions, or neural structures.
+
+Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed
+robot programs, safety gates, hardware verification, cascading TOML configuration, simulation,
+replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
+
+**Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
+
+Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
+
+**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos,
+and integration testing. Not a full production claim: default AI and IoT paths are mock-backed
+unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) ·
+[docs/release-readiness.md](docs/release-readiness.md) · path to v1.0:
+[docs/organizational-gates.md](docs/organizational-gates.md).
+
 <p align="center">
 
 ![Rust](https://img.shields.io/badge/Rust-000000?style=flat&logo=rust&logoColor=white)
@@ -44,33 +71,6 @@
 ![top language](https://img.shields.io/github/languages/top/Davalgi/Spanda)
 
 </p>
-
-Spanda is a **safety-first Autonomous Systems Platform** with a dedicated programming language at
-its core. It orchestrates robots, devices, AI agents, vehicles, humans, and intelligent environments
-using a unified Entity Model and built-in capabilities for readiness, assurance, recovery, trust,
-health, distributed autonomy, and governance.
-
-Spanda implements a [Cognitive & Resilience Architecture](docs/cognitive-resilience-architecture.md)
-inspired by proven engineering principles observed in biological nervous systems — functional
-concepts (reflexes, homeostasis, immunity, fusion, attention, memory) without biological anatomy in
-code.
-
-> Spanda is not a biologically inspired AI platform and does not attempt to model consciousness,
-> emotions, or neural structures.
-
-Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed
-robot programs, safety gates, hardware verification, cascading TOML configuration, simulation,
-replay, fleet operations, mission assurance, mission continuity, and **38** official packages.
-
-**Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
-
-Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
-
-**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos,
-and integration testing. Not a full production claim: default AI and IoT paths are mock-backed
-unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) ·
-[docs/release-readiness.md](docs/release-readiness.md) · path to v1.0:
-[docs/organizational-gates.md](docs/organizational-gates.md).
 
 ---
 
