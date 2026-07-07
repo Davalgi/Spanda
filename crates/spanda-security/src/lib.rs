@@ -3,6 +3,8 @@
 //! Provides identity, secrets, capability enforcement, signed messages,
 //! trust levels, package permissions, and secure communication policies.
 
+pub mod api_key_hash;
+pub mod auth_handler;
 pub mod capability;
 pub mod encrypted;
 pub mod error;
@@ -13,6 +15,7 @@ pub mod platform_events;
 pub mod policy;
 pub mod rate_limit;
 pub mod rbac;
+pub mod session_token;
 pub mod runtime;
 pub mod runtime_bridge;
 pub mod secret_vault;
@@ -41,10 +44,13 @@ pub use policy::{
     AuthenticationMode, BusSecurityConfig, EncryptionMode, IntegrityMode, SecureCommPolicy,
 };
 pub use rate_limit::RateLimiter;
+pub use api_key_hash::{api_key_pepper, hash_api_key_token, verify_api_key_token};
+pub use auth_handler::{hash_new_api_key_token, AuthHandler, AuthKind, ReadAuthPolicy};
 pub use rbac::{
     generate_api_key_token, permission_matrix, ApiKeyRecord, ApiKeyStore, RbacAction, RbacContext,
     Role,
 };
+pub use session_token::{SessionClaims, SessionTokenIssuer};
 pub use runtime::{SecurityContext, SecuritySnapshot};
 pub use runtime_bridge::SecurityBackedRuntime;
 pub use secret_vault::{ManagedSecretVault, SecretMetadata, SecretVaultBackend};

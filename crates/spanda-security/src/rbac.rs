@@ -45,24 +45,46 @@ pub enum RbacAction {
     Provision,
 }
 
-/// Authenticated request context after API key validation.
+/// Authenticated request context after API key or session validation.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RbacContext {
     pub key_id: String,
     pub role: Role,
     #[serde(default = "default_tenant_field")]
     pub tenant_id: String,
+    #[serde(default)]
+    pub auth_kind: crate::auth_handler::AuthKind,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
 }
 
 fn default_tenant_field() -> String {
     crate::tenant::default_tenant_id()
 }
 
-/// API key record (token value is stored hashed or as opaque secret).
+impl RbacContext {
+    /// Build RBAC context for a static API key principal.
+    pub fn api_key(key_id: impl Into<String>, role: Role, tenant_id: impl Into<String>) -> Self {
+        Self {
+            key_id: key_id.into(),
+            role,
+            tenant_id: tenant_id.into(),
+            auth_kind: crate::auth_handler::AuthKind::ApiKey,
+            user_id: None,
+        }
+    }
+}
+
+/// API key record. File-backed keys persist `token_hash` only; env keys keep plaintext in memory.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiKeyRecord {
     pub key_id: String,
+    /// Plaintext token — in-memory only (env default or immediately after create).
+    #[serde(default)]
     pub token: String,
+    /// HMAC-SHA256 hex digest for file-backed keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_hash: Option<String>,
     pub role: Role,
     #[serde(default)]
     pub label: Option<String>,
@@ -88,6 +110,7 @@ impl ApiKeyStore {
             store.keys.push(ApiKeyRecord {
                 key_id: "env-default".into(),
                 token,
+                token_hash: None,
                 role: Role::Administrator,
                 label: Some("SPANDA_API_KEY".into()),
                 tenant_id: tenant_id.clone(),
@@ -101,11 +124,20 @@ impl ApiKeyStore {
         if let Ok(path) = std::env::var("SPANDA_API_KEYS_FILE") {
             if let Ok(content) = std::fs::read_to_string(path) {
                 if let Ok(keys) = serde_json::from_str::<Vec<ApiKeyRecord>>(&content) {
-                    store.keys.extend(keys);
+                    store.keys.extend(keys.into_iter().map(Self::normalize_loaded_key));
                 }
             }
         }
         store
+    }
+
+    fn normalize_loaded_key(mut key: ApiKeyRecord) -> ApiKeyRecord {
+        // Migrate legacy plaintext file keys to hashed storage on load.
+        if key.token_hash.is_none() && !key.token.is_empty() {
+            key.token_hash = Some(crate::auth_handler::hash_new_api_key_token(&key.token));
+            key.token.clear();
+        }
+        key
     }
 
     pub fn authenticate(&self, bearer: Option<&str>) -> Option<RbacContext> {
@@ -113,14 +145,22 @@ impl ApiKeyStore {
         if token.is_empty() {
             return None;
         }
-        self.keys
-            .iter()
-            .find(|k| k.token == token)
-            .map(|k| RbacContext {
-                key_id: k.key_id.clone(),
-                role: k.role,
-                tenant_id: k.tenant_id.clone(),
+        self.keys.iter().find_map(|key| {
+            if !crate::auth_handler::verify_api_key_record(
+                token,
+                &key.token,
+                key.token_hash.as_deref(),
+            ) {
+                return None;
+            }
+            Some(RbacContext {
+                key_id: key.key_id.clone(),
+                role: key.role,
+                tenant_id: key.tenant_id.clone(),
+                auth_kind: crate::auth_handler::AuthKind::ApiKey,
+                user_id: None,
             })
+        })
     }
 
     pub fn check_tenant(ctx: Option<&RbacContext>, server_tenant: &str) -> bool {
@@ -189,9 +229,48 @@ impl ApiKeyStore {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
         }
-        let payload = serde_json::to_string_pretty(&self.file_backed_keys())
-            .map_err(|error| error.to_string())?;
+        let persisted: Vec<PersistedApiKeyRecord> = self
+            .file_backed_keys()
+            .into_iter()
+            .map(PersistedApiKeyRecord::from)
+            .collect();
+        let payload =
+            serde_json::to_string_pretty(&persisted).map_err(|error| error.to_string())?;
         std::fs::write(path, payload).map_err(|error| error.to_string())
+    }
+}
+
+/// On-disk API key shape — never stores plaintext tokens.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+struct PersistedApiKeyRecord {
+    pub key_id: String,
+    pub token_hash: String,
+    pub role: Role,
+    #[serde(default)]
+    pub label: Option<String>,
+    #[serde(default = "default_tenant_field")]
+    pub tenant_id: String,
+}
+
+impl From<ApiKeyRecord> for PersistedApiKeyRecord {
+    fn from(record: ApiKeyRecord) -> Self {
+        let token_hash = record
+            .token_hash
+            .or_else(|| {
+                if record.token.is_empty() {
+                    None
+                } else {
+                    Some(crate::auth_handler::hash_new_api_key_token(&record.token))
+                }
+            })
+            .unwrap_or_default();
+        Self {
+            key_id: record.key_id,
+            token_hash,
+            role: record.role,
+            label: record.label,
+            tenant_id: record.tenant_id,
+        }
     }
 }
 
