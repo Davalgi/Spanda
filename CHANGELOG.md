@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   load); short-lived **HS256 session JWTs** after OIDC sign-in; public `/v1/auth/*` routes;
   optional read-auth via `SPANDA_API_REQUIRE_AUTH_READS` / `SPANDA_API_REQUIRE_AUTH_ALL_READS`;
   Control Center UI **Sign in with SSO**. Guide: [docs/authentication.md](docs/authentication.md).
-  Updated [control-center.md](docs/control-center.md), [security-audit-third-party.md](docs/security-audit-third-party.md).
+  Updated [README.md](README.md), [getting-started.md](docs/getting-started.md),
+  [control-center.md](docs/control-center.md), [security-audit-third-party.md](docs/security-audit-third-party.md),
+  enterprise ops smoke (`GET /v1/auth/config`), and security-audit prep.
 - **Control Center versioning:** sidebar shows UI semver (`vX.Y.Z`); `spanda control-center
   --version` and `status` report it; `GET /v1/version` and `/v1/instance` expose
   `control_center_ui_version`. **Auto release** bumps the desktop stream and pushes `desktop-v*`

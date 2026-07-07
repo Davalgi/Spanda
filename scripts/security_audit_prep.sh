@@ -16,6 +16,11 @@ if cargo test -p spanda-api api_policy >/tmp/spanda-api-policy-tests.log 2>&1; t
   grep -q "test result: ok" /tmp/spanda-api-policy-tests.log && API_POLICY_OK=true
 fi
 
+AUTH_HANDLER_OK=false
+if cargo test -p spanda-api --test auth_handler_tests >/tmp/spanda-auth-handler-tests.log 2>&1; then
+  grep -q "test result: ok" /tmp/spanda-auth-handler-tests.log && AUTH_HANDLER_OK=true
+fi
+
 CARGO_AUDIT_STATUS="skipped"
 if command -v cargo-audit >/dev/null 2>&1; then
   if cargo audit --quiet 2>/dev/null; then
@@ -25,7 +30,7 @@ if command -v cargo-audit >/dev/null 2>&1; then
   fi
 fi
 
-export ROOT RBAC_OK API_POLICY_OK CARGO_AUDIT_STATUS
+export ROOT RBAC_OK API_POLICY_OK AUTH_HANDLER_OK CARGO_AUDIT_STATUS
 python3 - <<'PY' > "$OUT"
 import json, os, time
 root = os.environ.get("ROOT", ".")
@@ -35,11 +40,14 @@ report = {
     "checks": {
         "rbac_tests": os.environ.get("RBAC_OK") == "true",
         "api_policy_tests": os.environ.get("API_POLICY_OK") == "true",
+        "auth_handler_tests": os.environ.get("AUTH_HANDLER_OK") == "true",
         "cargo_audit": os.environ.get("CARGO_AUDIT_STATUS"),
     },
     "reviewer_packet": [
+        "docs/authentication.md",
         "docs/security-audit-third-party.md",
         "packages/registry/spanda-security-audit/README.md",
+        "GET /v1/auth/config",
         "GET /v1/rbac/matrix",
         "GET /v1/audit/mutations/export?format=cef",
     ],

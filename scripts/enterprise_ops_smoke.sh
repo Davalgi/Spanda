@@ -84,6 +84,9 @@ fetch /v1/fleet/agents | grep -q '"agents"'
 echo "== GET /v1/rbac/matrix =="
 fetch /v1/rbac/matrix | grep -q Administrator
 
+echo "== GET /v1/auth/config =="
+fetch /v1/auth/config | grep -q oidc_login_enabled
+
 echo "== POST /v1/alerts/test (authenticated) =="
 curl -sf -X POST \
   -H "Authorization: Bearer ${SPANDA_API_KEY}" \

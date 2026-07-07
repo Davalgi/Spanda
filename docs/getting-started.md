@@ -774,10 +774,11 @@ rebuild](./control-center.md#local-dev-start--rebuild).
 **API keys:** Run `spanda control-center api-key generate --export` to create a token, set
 `SPANDA_API_KEY` on the server, and use the same value as `Authorization: Bearer …` for mutations.
 In the embedded UI you can paste the token and opt in to **Remember on this browser**
-(`localStorage`, per `host:port`). Full guide: [control-center.md — Authentication & API
-keys](./control-center.md#authentication--api-keys). Persistence issues: [troubleshooting.md —
-Control Center](./troubleshooting.md#serve-and-ui). If `api-key generate` errors, see
-[troubleshooting.md](./troubleshooting.md).
+(`localStorage`, per `host:port`). **OIDC SSO** and production hardening (hashed keys, session
+JWTs, optional read-auth): [authentication.md](./authentication.md). Quick reference:
+[control-center.md — Authentication & API keys](./control-center.md#authentication--api-keys).
+Persistence issues: [troubleshooting.md — Control Center](./troubleshooting.md#serve-and-ui). If
+`api-key generate` errors, see [troubleshooting.md](./troubleshooting.md).
 
 Remote API from the CLI (no server required on the client machine):
 
@@ -806,7 +807,12 @@ export SPANDA_PRODUCTION_POLICY=production   # enables OTA certify + discovery T
 export SPANDA_OTA_REQUIRE_CERTIFY=1
 export SPANDA_DISCOVERY_REQUIRE_TLS=1
 export SPANDA_REPORT_SCHEDULE_INTERVAL_SECS=3600
+export SPANDA_API_KEY_PEPPER="$(openssl rand -hex 32)"      # hashed file-backed API keys
+export SPANDA_SESSION_JWT_SECRET="$(openssl rand -hex 32)"  # OIDC session JWT signing
+export SPANDA_API_REQUIRE_AUTH_READS=1                        # when API is network-exposed
 ```
+
+See [authentication.md](./authentication.md) for the full production auth checklist.
 
 ### Smoke test (API + desktop compile check)
 

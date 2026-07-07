@@ -10,6 +10,7 @@
 | Topic | Guide |
 |-------|--------|
 | Control Center | [control-center.md](../../control-center.md) |
+| Authentication | [authentication.md](../../authentication.md) |
 | Rate limits | [control-center-rate-limits.md](../../control-center-rate-limits.md) |
 | Desktop release | [desktop-release-runbook.md](../../desktop-release-runbook.md) |
 | Enterprise operations (20 pillars) | [enterprise-operations-roadmap.md](../../enterprise-operations-roadmap.md) |

@@ -257,6 +257,7 @@ Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · V
 | [ROADMAP.md](ROADMAP.md) | **Product roadmap** — pillars, blueprints, timeline |
 | [docs/getting-started.md](docs/getting-started.md) | First robot in 10 minutes |
 | [docs/control-center.md](docs/control-center.md) | **Control Center** — start API/UI, rebuild, `serve` with `--config` and `--program` |
+| [docs/authentication.md](docs/authentication.md) | **Control Center auth** — hashed API keys, OIDC session JWTs, read-auth policy |
 | [docs/control-center-versioning.md](docs/control-center-versioning.md) | **Control Center versioning** — UI/CLI/API semver, `desktop-v*` auto release |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, SDK install, verify, fleet, ROS2, Control Center |
 | [docs/known-limitations.md](docs/known-limitations.md) | Honest scope limits, mock backends, organizational gates |
