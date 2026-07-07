@@ -270,7 +270,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 
 | Pillar | Status | Key surfaces |
 |--------|--------|--------------|
-| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel (RBAC-aware tabs, hashed API keys, OIDC session JWT SSO, optional read-auth, sidebar version, Administration user/key/alert config, Mission/Simulation/Replay, drift, trust, compliance, SRE, executive); Tauri desktop **0.6.3** (`desktop-v0.6.3`) — [authentication.md](./authentication.md) · [control-center-versioning.md](./control-center-versioning.md) |
+| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel; RBAC tabs, OIDC SSO, API keys, admin config, mission/sim/replay, drift/trust/compliance/SRE; Tauri **0.6.3** (`desktop-v0.6.3`) — [authentication.md](./authentication.md) · [control-center-versioning.md](./control-center-versioning.md) |
 | **Device Pool** | **Stable** | Lifecycle states, assign/trust/quarantine/retire, failover chains; multi-tenant API key scoping |
 | **Device Discovery** | **Stable** | Subnet, mDNS, BLE, USB, CAN, MQTT, ROS2 host probes; production TLS policy (`SPANDA_DISCOVERY_REQUIRE_TLS`, `spanda-discovery-tls`) |
 | **Provisioning** | **Stable** | `POST /v1/provision`, discover → ready workflow |
