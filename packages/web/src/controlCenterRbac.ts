@@ -155,6 +155,8 @@ export type RbacContext = {
   role?: string;
   permissions?: string[];
   tenant_id?: string;
+  auth_kind?: "api_key" | "session";
+  user_id?: string;
 };
 
 export function roleKey(role: string | undefined): string {

@@ -651,6 +651,13 @@ function OidcSlackAdmin({
           ? `OAuth import: ${body.users_created ?? 0} created, ${body.users_updated ?? 0} updated.`
           : `OAuth callback failed: ${res.status}`,
       );
+      if (res.ok && body.session_token) {
+        window.dispatchEvent(
+          new CustomEvent("spanda-session-token", {
+            detail: { token: String(body.session_token) },
+          }),
+        );
+      }
       setOidcCode("");
       await loadAdmin();
     },

@@ -20,6 +20,8 @@ type Props = {
   onSwitchProfile: (profileId: string) => void;
   onAddConnection: (apiBase: string) => void;
   onVerify: (token: string, persist: boolean) => Promise<void>;
+  onSignInWithOidc?: () => Promise<void>;
+  oidcLoginEnabled?: boolean;
   onForget: () => void;
   onOpenSetup: () => void;
 };
@@ -41,6 +43,8 @@ export function ControlCenterAuthBanner({
   onSwitchProfile,
   onAddConnection,
   onVerify,
+  onSignInWithOidc,
+  oidcLoginEnabled = false,
   onForget,
   onOpenSetup,
 }: Props) {
@@ -220,6 +224,22 @@ export function ControlCenterAuthBanner({
           <button type="button" onClick={() => void submit()} disabled={busy || !input.trim()}>
             {busy ? "Verifying…" : "Use token"}
           </button>
+          {oidcLoginEnabled && onSignInWithOidc ? (
+            <button
+              type="button"
+              className="secondary"
+              disabled={busy}
+              onClick={() => {
+                setBusy(true);
+                setLocalError(null);
+                void onSignInWithOidc()
+                  .catch((error) => setLocalError(String(error)))
+                  .finally(() => setBusy(false));
+              }}
+            >
+              Sign in with SSO
+            </button>
+          ) : null}
           {(localError || authError) && (
             <p className="error">{localError ?? authError}</p>
           )}

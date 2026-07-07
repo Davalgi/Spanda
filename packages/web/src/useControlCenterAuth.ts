@@ -39,6 +39,20 @@ export function useControlCenterAuth({ apiBase }: Options) {
   const [rbacCtx, setRbacCtx] = useState<RbacContext | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [showAuthSetup, setShowAuthSetup] = useState(false);
+  const [oidcLoginEnabled, setOidcLoginEnabled] = useState(false);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const res = await fetch(`${base}/v1/auth/config`);
+        if (!res.ok) return;
+        const body = (await res.json()) as { oidc_login_enabled?: boolean };
+        setOidcLoginEnabled(Boolean(body.oidc_login_enabled));
+      } catch {
+        setOidcLoginEnabled(false);
+      }
+    })();
+  }, [base]);
 
   const authHeaders = useCallback((): HeadersInit => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -69,15 +83,23 @@ export function useControlCenterAuth({ apiBase }: Options) {
     async (value: string, persist: boolean) => {
       const trimmed = value.trim();
       if (!trimmed) return;
-      const res = await fetch(`${base}/v1/alerts/test`, {
-        method: "POST",
+      const sessionRes = await fetch(`${base}/v1/auth/session`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${trimmed}`,
         },
       });
-      if (!res.ok) {
-        throw new Error(`token rejected (${res.status})`);
+      if (!sessionRes.ok) {
+        const testRes = await fetch(`${base}/v1/alerts/test`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${trimmed}`,
+          },
+        });
+        if (!testRes.ok) {
+          throw new Error(`token rejected (${testRes.status})`);
+        }
       }
       setApiKeyState(trimmed);
       if (persist) {
@@ -92,6 +114,57 @@ export function useControlCenterAuth({ apiBase }: Options) {
     },
     [apiHost, base],
   );
+
+  const signInWithOidc = useCallback(async () => {
+    const redirectUri = `${window.location.origin}/admin/oauth/oidc/callback`;
+    const res = await fetch(`${base}/v1/auth/oidc/authorize-url`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ redirect_uri: redirectUri }),
+    });
+    if (!res.ok) {
+      throw new Error(`OIDC authorize failed (${res.status})`);
+    }
+    const body = (await res.json()) as { authorize_url?: string };
+    if (!body.authorize_url) {
+      throw new Error("authorize_url missing");
+    }
+    const popup = window.open(body.authorize_url, "spanda-oidc", "width=520,height=720");
+    if (!popup) {
+      throw new Error("popup blocked — allow popups for this site");
+    }
+    await new Promise<void>((resolve, reject) => {
+      const onMessage = (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+        if (event.data?.type !== "spanda-oidc-oauth" || !event.data.code) return;
+        window.removeEventListener("message", onMessage);
+        void (async () => {
+          try {
+            const callbackRes = await fetch(`${base}/v1/auth/oidc/callback`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                code: String(event.data.code),
+                state: event.data.state ? String(event.data.state) : undefined,
+              }),
+            });
+            const callbackBody = (await callbackRes.json()) as {
+              session_token?: string;
+            };
+            if (!callbackRes.ok || !callbackBody.session_token) {
+              reject(new Error(`OIDC callback failed (${callbackRes.status})`));
+              return;
+            }
+            await verifyAndSetApiKey(callbackBody.session_token, true);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        })();
+      };
+      window.addEventListener("message", onMessage);
+    });
+  }, [base, verifyAndSetApiKey]);
 
   const forgetToken = useCallback(() => {
     setApiKeyState("");
@@ -138,5 +211,7 @@ export function useControlCenterAuth({ apiBase }: Options) {
     isTabAllowed,
     hasToken,
     envKeyLocked: Boolean(envKey),
+    oidcLoginEnabled,
+    signInWithOidc,
   };
 }

@@ -53,6 +53,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
     setShowAuthSetup,
     authError,
     envKeyLocked,
+    oidcLoginEnabled,
+    signInWithOidc,
   } = auth;
 
   const [tab, setTab] = useState<ControlCenterTab>("dashboard");
@@ -155,6 +157,8 @@ export function ControlCenterPanel({ apiBase }: Props) {
             onSwitchProfile={switchProfile}
             onAddConnection={handleAddConnection}
             onVerify={verifyAndSetApiKey}
+            onSignInWithOidc={signInWithOidc}
+            oidcLoginEnabled={oidcLoginEnabled}
             onForget={forgetToken}
             onOpenSetup={() => setShowAuthSetup(true)}
           />
