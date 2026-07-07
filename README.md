@@ -114,6 +114,8 @@ the deployment target before you ship.
 
 ```spanda
 robot SafePatrol {
+  local_decision_authority [emergency_stop, degraded_mode];
+
   sensor lidar: Lidar;
   actuator wheels: DifferentialDrive;
   ai_model planner: LLM { provider: "mock"; model: "patrol"; }
@@ -126,11 +128,15 @@ robot SafePatrol {
   behavior patrol() {
     loop every 100ms {
       let proposal = planner.reason(prompt: "Plan motion", input: lidar.read());
-      wheels.execute(safety.validate(proposal));
+      wheels.execute(safety.validate(proposal));  // SafeAction gate — AI cannot drive hardware directly
     }
   }
 }
 ```
+
+Policy blocks (`decision_tree`, `recovery_policy`, `continuity_policy`, `homeostasis_policy`) extend
+this pattern — see [examples/features/](examples/features/) and [Spanda 101 lesson
+11](docs/spanda-101/11-distributed-decisions.md).
 
 What Spanda is / isn't: [docs/overview/what-spanda-is.md](docs/overview/what-spanda-is.md) · Why
 Spanda (detail): [docs/overview/philosophy.md](docs/overview/philosophy.md)

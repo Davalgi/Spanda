@@ -98,7 +98,7 @@ robot MyRover {
 **New to Spanda?** Pick your style (full list: [Tutorials index](./tutorials/README.md)):
 
 - [Spanda for Dummies](./spanda-for-dummies/README.md) — plain English, ~45 min read, cheat sheet
-- [Spanda 101](./spanda-101/README.md) — ten hands-on lessons with exercises (~3 hours)
+- [Spanda 101](./spanda-101/README.md) — twelve hands-on lessons with exercises (~3.5 hours)
 
 Progressive code examples live under [`examples/basics/`](examples/basics/README.md):
 

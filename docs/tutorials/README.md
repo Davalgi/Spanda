@@ -8,7 +8,7 @@ runnable examples.
 | I want… | Start here | Time |
 |---------|------------|------|
 | Plain English, no jargon | [Spanda for Dummies](../spanda-for-dummies/README.md) | ~45 min read |
-| Structured lessons + exercises | [Spanda 101](../spanda-101/README.md) | ~3 hours |
+| Structured lessons + exercises | [Spanda 101](../spanda-101/README.md) | ~3.5 hours |
 | First robot in 10 minutes | [Getting started](../getting-started.md) | ~10 min |
 | Browse runnable code | [Examples library](../../examples/README.md) | self-paced |
 | Impress someone in a meeting | [Killer demo](../killer-demo.md) | ~5 min |
@@ -30,7 +30,7 @@ Curated paths for your first programs.
 | Tutorial | Format | Best for |
 |----------|--------|----------|
 | [Spanda for Dummies](../spanda-for-dummies/README.md) | 7 short chapters, glossary, cheat sheet | Casual readers, managers, first week |
-| [Spanda 101](../spanda-101/README.md) | 10 lessons with exercises | Developers learning systematically |
+| [Spanda 101](../spanda-101/README.md) | 12 lessons with exercises | Developers learning systematically |
 | [Getting started](../getting-started.md) | Single quickstart doc | Install → first project → core commands |
 | [Installation](../installation.md) | Platform installers & PATH | Before any hands-on tutorial |
 
@@ -60,6 +60,8 @@ Curated paths for your first programs.
 | 8 | [Hardware and verify](../spanda-101/08-hardware-and-verify.md) | `integration/verify_walkthrough.sd` |
 | 9 | [Packages and tests](../spanda-101/09-packages-and-tests.md) | `basics/07_in_language_tests.sd` |
 | 10 | [End-to-end patrol](../spanda-101/10-end-to-end-patrol.md) | `end_to_end/safe_patrol/` |
+| 11 | [Distributed decisions](../spanda-101/11-distributed-decisions.md) | `features/decision_tree.sd` |
+| 12 | [Platform policies](../spanda-101/12-platform-policies.md) | `features/recovery_policy.sd` |
 
 ---
 

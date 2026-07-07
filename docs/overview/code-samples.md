@@ -95,5 +95,62 @@ deploy RoverMission to RoverV1;
 spanda verify examples/showcase/hardware_compatibility.sd --json
 ```
 
+## Distributed decisions
+
+```spanda
+robot Rover {
+  local_decision_authority [emergency_stop, degraded_mode];
+  requires_central_approval [update_firmware];
+
+  sensor gps: GPS;
+  actuator wheels: DifferentialDrive;
+  safety { max_speed = 1.0 m/s; }
+  behavior patrol() { loop every 50ms { } }
+}
+
+decision_tree GPSLossRecovery local {
+  when gps.status == Failed {
+    enter degraded_mode;
+    reduce_speed 0.4 m/s;
+  }
+}
+
+offline_policy RoverOffline {
+  max_duration = 30 min;
+  allowed_actions [pause_mission, return_home];
+  forbidden_actions [disable_safety];
+}
+```
+
+```bash
+spanda check examples/features/decision_tree.sd
+spanda decision list examples/features/decision_tree.sd
+```
+
+## Recovery and continuity policies
+
+```spanda
+recovery_policy RoverRecovery {
+  on gps.failed {
+    enter degraded_mode;
+    reduce_speed 0.5 m/s;
+  }
+}
+
+continuity_policy PatrolContinuity {
+  on robot.failed {
+    resume from checkpoint;
+    reassign mission;
+  }
+}
+```
+
+```bash
+spanda heal examples/features/recovery_policy.sd
+spanda continuity examples/features/continuity_policy.sd --failed RoverAlpha --progress 60 --trigger robot_failed
+```
+
 See also: [killer-demo.md](../killer-demo.md) ·
-[hardware-compatibility.md](../hardware-compatibility.md)
+[hardware-compatibility.md](../hardware-compatibility.md) ·
+[distributed-decisions.md](../distributed-decisions.md) ·
+[examples/features/README.md](../../examples/features/README.md)

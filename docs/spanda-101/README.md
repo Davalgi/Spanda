@@ -30,17 +30,23 @@ no jargon).
 | 8 | [Hardware profiles and verify](./08-hardware-and-verify.md) | `examples/integration/verify_walkthrough.sd` | 20 min |
 | 9 | [Packages and tests](./09-packages-and-tests.md) | `examples/basics/07_in_language_tests.sd` | 20 min |
 | 10 | [End-to-end patrol](./10-end-to-end-patrol.md) | `examples/end_to_end/safe_patrol/` | 30 min |
+| 11 | [Distributed decisions](./11-distributed-decisions.md) | `examples/features/decision_tree.sd` | 25 min |
+| 12 | [Platform policies](./12-platform-policies.md) | `examples/features/recovery_policy.sd` | 25 min |
 
-**Total:** ~3 hours at a comfortable pace.
+**Total:** ~3.5 hours at a comfortable pace.
 
 ---
 
 ## After Spanda 101
 
+Lessons 1–10 cover core language and deployment; **11–12** cover platform differentiators
+(distributed decisions, recovery, continuity, cognitive policies).
+
 | Next step | Resource |
 |-----------|----------|
 | All tutorials | [Tutorials index](../tutorials/README.md) |
 | Flagship safety demo | [killer-demo.md](../killer-demo.md) + `examples/showcase/killer_demo.sd` |
+| Platform policy examples | [examples/features/README.md](../../examples/features/README.md) |
 | Language reference | [spanda-language.md](../spanda-language.md) |
 | Full API index | [spanda-reference.md](../spanda-reference.md) |
 | Real-time & replay | [realtime.md](../realtime.md), [replay.md](../replay.md) |

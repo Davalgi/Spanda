@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Platform policy feature examples:** minimal `examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd` files; updated feature index, examples hub, README hero snippet, [code-samples.md](docs/overview/code-samples.md), and Spanda 101 lessons 11–12 (distributed decisions, recovery/continuity/cognitive policies).
 - **Control Center authentication hardening:** `AuthHandler` unifies API key and session JWT
   validation; file-backed keys persist **HMAC-SHA256 hashes** only (legacy plaintext migrated on
   load); short-lived **HS256 session JWTs** after OIDC sign-in; public `/v1/auth/*` routes;

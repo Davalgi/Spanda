@@ -32,15 +32,17 @@ Walkthrough: [killer-demo.md](../killer-demo.md) · Video script: [demo-script.m
 | **Assurance** | Mission assurance CLI suite | `spanda demo assurance` |
 | **Continuity** | Takeover, delegation, succession | `spanda demo continuity` |
 | **Distributed decisions** | GPS loss recovery across decision layers | `spanda demo distributed-decisions` |
+| **Platform policies** | Minimal `.sd` policy blocks | `spanda check examples/features/decision_tree.sd` |
 
-Showcase index: [examples/showcase/README.md](../../examples/showcase/README.md)
+Showcase index: [examples/showcase/README.md](../../examples/showcase/README.md) · Feature snippets:
+[examples/features/README.md](../../examples/features/README.md)
 
 ## Learn Spanda
 
 | Track | Guide | Time |
 |-------|-------|------|
 | Plain English | [Spanda for Dummies](../spanda-for-dummies/README.md) | ~45 min |
-| Hands-on course | [Spanda 101](../spanda-101/README.md) | ~3 hours |
+| Hands-on course | [Spanda 101](../spanda-101/README.md) | ~3.5 hours |
 | Quickstart | [Getting started](../getting-started.md) | ~10 min |
 
 Master examples index: [examples/README.md](../../examples/README.md)

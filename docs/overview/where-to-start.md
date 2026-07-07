@@ -52,6 +52,6 @@ started](../getting-started.md).
 | Track | Guide | Time |
 |-------|-------|------|
 | Plain English | [Spanda for Dummies](../spanda-for-dummies/README.md) | ~45 min |
-| Hands-on course | [Spanda 101](../spanda-101/README.md) | ~3 hours |
+| Hands-on course | [Spanda 101](../spanda-101/README.md) | ~3.5 hours |
 | Quickstart | [Getting started](../getting-started.md) | ~10 min |
 | All tutorials | [Tutorials index](../tutorials/README.md) | self-paced |

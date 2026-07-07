@@ -126,7 +126,8 @@ Compare your solution to `examples/end_to_end/safe_patrol/`.
 
 ---
 
-**Congratulations — you have finished Spanda 101.**
+**Next:** [Lesson 11 — Distributed decisions](./11-distributed-decisions.md) — policy blocks and
+offline autonomy beyond the patrol baseline.
 
 Return to the [curriculum index](./README.md) or explore [all
 examples](../../examples/basics/README.md).
