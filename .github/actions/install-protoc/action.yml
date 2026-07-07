@@ -8,11 +8,17 @@ runs:
       shell: bash
       run: |
         if command -v protoc >/dev/null 2>&1; then
+          protoc --version
           exit 0
         fi
         if [[ "${RUNNER_OS}" == "macOS" ]]; then
           brew install protobuf
         else
-          sudo apt-get update
-          sudo apt-get install -y protobuf-compiler
+          # Avoid apt on GitHub-hosted Ubuntu: Microsoft mirror repos are occasionally
+          # unsigned/broken and cause unrelated CI jobs (lint-rust) to fail on apt-get update.
+          PROTOC_VERSION=25.3
+          curl -fsSL -o /tmp/protoc.zip \
+            "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          sudo unzip -oq /tmp/protoc.zip -d /usr/local bin/protoc 'include/*'
         fi
+        protoc --version

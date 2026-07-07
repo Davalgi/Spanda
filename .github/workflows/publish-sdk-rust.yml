@@ -17,8 +17,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install protoc (grpc feature tests)
-        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+      - uses: ./.github/actions/install-protoc
       - name: Test spanda-sdk
         run: |
           cargo test -p spanda-sdk
