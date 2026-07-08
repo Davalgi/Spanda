@@ -24,6 +24,12 @@ if [[ -z "$PORT" ]]; then
 fi
 BIND="127.0.0.1:${PORT}"
 
+GRPC_PORT="${SPANDA_MESH_GRPC_SMOKE_PORT:-}"
+if [[ -z "$GRPC_PORT" ]]; then
+  GRPC_PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')
+fi
+GRPC_BIND="127.0.0.1:${GRPC_PORT}"
+
 fetch() {
   local path="$1"
   local attempt=0
@@ -59,9 +65,9 @@ echo "== CLI mesh health =="
 HEALTH_OUT="$(run_spanda mesh health --config "$CONFIG")"
 echo "$HEALTH_OUT" | grep -q 'Mesh Health'
 
-echo "== start control-center on ${BIND} =="
+echo "== start control-center on ${BIND} (gRPC ${GRPC_BIND}) =="
 CC_SMOKE_BIND="$BIND"
-run_spanda control-center serve --bind "$BIND" --config "$CONFIG" --program "$PROGRAM" &
+run_spanda control-center serve --bind "$BIND" --grpc-bind "$GRPC_BIND" --config "$CONFIG" --program "$PROGRAM" &
 CC_SMOKE_WRAPPER_PID=$!
 
 echo "== wait for /v1/health =="
@@ -99,6 +105,25 @@ if (!health.health) throw new Error('mesh health missing');
 const nodes = await c.meshNodes();
 if (!nodes.nodes) throw new Error('mesh nodes missing');
 console.log('ts-sdk mesh smoke ok');
+"
+  )
+fi
+
+echo "== TypeScript SDK gRPC mesh =="
+if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT}/sdk/typescript/package.json" ]]; then
+  (
+    cd "${ROOT}/sdk/typescript"
+    npm run build --silent 2>/dev/null || npm run build
+    SPANDA_GRPC_URL="${GRPC_BIND}" \
+    node --input-type=module -e "
+import { GrpcClient } from './dist/index.js';
+const client = await GrpcClient.connect({ address: process.env.SPANDA_GRPC_URL });
+const health = await client.getMeshHealth();
+if (!health.health) throw new Error('grpc mesh health missing');
+const graph = await client.getMeshGraph();
+if (!graph.graph || !Array.isArray(graph.graph.nodes)) throw new Error('grpc mesh graph missing');
+client.close();
+console.log('ts-sdk grpc mesh smoke ok');
 "
   )
 fi
