@@ -1,6 +1,7 @@
 # Mesh Leader / Coordinator Election
 
-Coordinator election selects a **communication/coordinator role only**. It does **not** grant safety, mission, or actuator authority.
+Coordinator election selects a **communication/coordinator role only**. It does **not** grant
+safety, mission, or actuator authority.
 
 ## Methods
 

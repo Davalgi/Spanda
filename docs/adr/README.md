@@ -26,7 +26,8 @@ Minor bug fixes and internal refactors without contract changes do not require A
 
 1. Copy [template.md](./template.md) to `NNNN-short-title.md` (next sequential number).
 2. Set **Status** to `Proposed`.
-3. Open a PR or link from an [architecture proposal issue](../../.github/ISSUE_TEMPLATE/architecture-proposal.md).
+3. Open a PR or link from an [architecture proposal
+   issue](../../.github/ISSUE_TEMPLATE/architecture-proposal.md).
 4. After Architecture Review, set status to `Accepted`, `Rejected`, or `Superseded`.
 5. Add a row to the index table below.
 
@@ -56,5 +57,6 @@ Minor bug fixes and internal refactors without contract changes do not require A
 
 - **Architecture proposals (issues)** — discussion and scorecard before implementation
 - **ADRs** — durable record of the decision and tradeoffs
-- **Platform architecture docs** — current state of the system ([platform-architecture.md](../platform-architecture.md))
+- **Platform architecture docs** — current state of the system
+  ([platform-architecture.md](../platform-architecture.md))
 - **RFCs** (optional) — exploratory designs; accepted outcomes become ADRs

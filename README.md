@@ -48,7 +48,8 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 ![ROS](https://img.shields.io/badge/ROS-22314E?style=flat&logo=ros&logoColor=white)
 ![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=flat&logo=webassembly&logoColor=white)
 ![MQTT](https://img.shields.io/badge/MQTT-660066?style=flat&logo=eclipsemosquitto&logoColor=white)
-![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
+![VS
+Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
 <br>
 ![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
 [![crates.io](https://img.shields.io/crates/v/spanda-sdk?logo=rust)](https://crates.io/crates/spanda-sdk)
@@ -204,7 +205,8 @@ Spanda Entity Mesh
 Entity Graph → Recovery / Mission / Readiness
 ```
 
-- **Discover:** `spanda mesh discover --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml`
+- **Discover:** `spanda mesh discover --config
+  crates/spanda-config/tests/fixtures/warehouse/spanda.toml`
 - **Route:** `spanda mesh route <source> <target> --config …`
 - **Health:** `spanda mesh health` · Control Center **Mesh** tab · `GET /v1/mesh/health`
 

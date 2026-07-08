@@ -56,7 +56,8 @@ spanda decision list <file.sd>
 spanda decision inspect <file.sd> --entity <RobotName> --action <action>
 ```
 
-Guide: [distributed-decisions.md](./distributed-decisions.md) · [decision-authority.md](./decision-authority.md)
+Guide: [distributed-decisions.md](./distributed-decisions.md) ·
+[decision-authority.md](./decision-authority.md)
 
 ---
 
@@ -125,7 +126,8 @@ spanda decision security-audit
 
 ## `recovery_policy`
 
-Maps subsystem failures to safe operating modes. Evaluated during `run`/`sim` and by `heal`/`recover`.
+Maps subsystem failures to safe operating modes. Evaluated during `run`/`sim` and by
+`heal`/`recover`.
 
 | Field | Type | Description |
 |-------|------|-------------|

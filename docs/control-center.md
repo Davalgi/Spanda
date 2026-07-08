@@ -1268,7 +1268,8 @@ Default: log to stderr.
 ## Stable promotion
 
 Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in
-code**. SDKs **0.5.5** (registry; workspace line **0.5.6**) and Control Center desktop **0.6.3** (`desktop-v0.6.3`, with
+code**. SDKs **0.5.5** (registry; workspace line **0.5.6**) and Control Center desktop **0.6.3**
+(`desktop-v0.6.3`, with
 sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining
 organizational gates: third-party security audit sign-off and 30-day field soak. See
 [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md) ·

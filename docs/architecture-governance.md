@@ -15,9 +15,11 @@ proposal must pass **Architecture Review** before it is accepted.
 
 ## Purpose
 
-Spanda has grown from a language and compiler into a full autonomous systems platform — entity model,
+Spanda has grown from a language and compiler into a full autonomous systems platform — entity
+model,
 recovery, distributed decisions, Control Center, SDKs, packages, providers, and solution blueprints.
-Without deliberate governance, platforms accumulate duplicate capabilities, inconsistent abstractions,
+Without deliberate governance, platforms accumulate duplicate capabilities, inconsistent
+abstractions,
 and unmaintainable surface area.
 
 Architecture governance exists to:
@@ -75,7 +77,8 @@ Every proposal must answer the twelve gate questions documented in
 11. **Maintainability** — long-term cost and ownership
 12. **Release impact** — complexity, footprint, learning curve
 
-Proposals that cannot justify duplication or architecture fit should be **rejected** or **redesigned**
+Proposals that cannot justify duplication or architecture fit should be **rejected** or
+**redesigned**
 to extend existing capabilities.
 
 ---
@@ -130,7 +133,8 @@ These complement — not replace — [design-principles.md](./design-principles.
 No architecture proposal may merge unless **all** of the following are complete:
 
 - [ ] **Architecture Review** completed (issue, ADR, or PR checklist)
-- [ ] **Duplication Analysis** completed — see [non-duplication-policy.md](./non-duplication-policy.md)
+- [ ] **Duplication Analysis** completed — see
+  [non-duplication-policy.md](./non-duplication-policy.md)
 - [ ] **Security Review** completed — Trust, authority, attack surface documented
 - [ ] **Compatibility Review** completed — APIs, SDKs, CLI, examples unaffected or migrated
 - [ ] **Entity Integration** documented — how entities are read, updated, or emitted

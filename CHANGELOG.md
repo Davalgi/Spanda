@@ -9,13 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for elected coordinator display; SVG neighborhood + **force-directed full mesh** graph with legend.
+- **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for
+  elected coordinator display; SVG neighborhood + **force-directed full mesh** graph with legend.
 
-- **TypeScript gRPC client:** `GrpcClient` on `@davalgi-spanda/sdk` with mesh RPC parity (`@grpc/grpc-js`, bundled proto).
+- **TypeScript gRPC client:** `GrpcClient` on `@davalgi-spanda/sdk` with mesh RPC parity
+  (`@grpc/grpc-js`, bundled proto).
 
-- **SDK mesh REST parity:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`, `mesh_simulate_partition` on Rust, TypeScript, and Python clients.
+- **SDK mesh REST parity:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`,
+  `mesh_simulate_partition` on Rust, TypeScript, and Python clients.
 
-- **Entity mesh Stable promotion path:** `entity_mesh_stable_promotion_gate.sh`, CI Nightly `entity-mesh-promotion-gate`, [entity-mesh-stable-promotion.md](docs/entity-mesh-stable-promotion.md).
+- **Entity mesh Stable promotion path:** `entity_mesh_stable_promotion_gate.sh`, CI Nightly
+  `entity-mesh-promotion-gate`,
+  [entity-mesh-stable-promotion.md](docs/entity-mesh-stable-promotion.md).
 
 - **Documentation version sync:** README, SDK guides, feature-status, ROADMAP, overview docs, and
   registry READMEs now cite published SDK **0.5.5** (workspace line **0.5.6**), desktop/workspace
@@ -27,13 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on `wasm32-unknown-unknown`. Native CLI and fleet enable the HTTP features explicitly.
 
 - **CI spanda binary handoff:** `.github/actions/fetch-or-build-spanda` reuses the release binary
-  across CI Fast, CI Integration, and CI Nightly instead of compiling independently in each workflow.
+  across CI Fast, CI Integration, and CI Nightly instead of compiling independently in each
+workflow.
   CI Fast `build-spanda` now runs in parallel with `test-rust`; Integration `docs-build` reuses the
   shared artifact. See [docs/ci-architecture.md](docs/ci-architecture.md).
 
 ### Added
 
-- **SDK 0.5.8:** TypeScript `GrpcClient` for Control Center mesh gRPC RPCs; Rust/Python patch alignment.
+- **SDK 0.5.8:** TypeScript `GrpcClient` for Control Center mesh gRPC RPCs; Rust/Python patch
+  alignment.
 
 - **SDK 0.5.7:** full mesh REST helpers (`meshGraph`, `meshDiscover`, `meshMergeReport`,
   `meshSimulatePartition`) on Rust, TypeScript, and Python clients.
@@ -47,11 +54,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Permanent architecture governance:** Architecture Review gate for platform changes — twelve-gate
   checklist, non-duplication policy, design review process, ADR template ([docs/adr/](docs/adr/)),
   [architecture proposal](.github/ISSUE_TEMPLATE/architecture-proposal.md) and
-  [PR template](.github/PULL_REQUEST_TEMPLATE.md), and [CONTRIBUTING.md](CONTRIBUTING.md#architecture-review)
+  [PR template](.github/PULL_REQUEST_TEMPLATE.md), and
+[CONTRIBUTING.md](CONTRIBUTING.md#architecture-review)
   requirements. ADR [0001](docs/adr/0001-permanent-architecture-governance.md). Start:
   [docs/architecture-governance.md](docs/architecture-governance.md).
 - **Platform policy feature examples:** minimal
-  `examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd`
+`examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd`
   files; updated feature index, examples hub, README hero snippet,
   [code-samples.md](docs/overview/code-samples.md), and Spanda 101 lessons 11–12 (distributed
   decisions, recovery/continuity/cognitive policies).

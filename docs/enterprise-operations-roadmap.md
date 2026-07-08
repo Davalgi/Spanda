@@ -850,7 +850,8 @@ WebSocket telemetry SDK — **shipped** (`POST /v1/observability/otlp/export`, `
 **Exit criteria:** Compliance report export; signed profile catalog; scheduled report delivery;
 digital thread lifecycle graph — **shipped** (`scripts/enterprise_ops_smoke.sh`). PDF executive
 export — **shipped** (`format=pdf`). Tauri desktop production release — **shipped**
-(`desktop-v0.4.2` initial Stable promotion; **current** `desktop-v0.6.3`, `scripts/verify_desktop_release_ready.sh`,
+(`desktop-v0.4.2` initial Stable promotion; **current** `desktop-v0.6.3`,
+`scripts/verify_desktop_release_ready.sh`,
 `.github/workflows/desktop-release.yml`). Stable promotion gates —
 [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 

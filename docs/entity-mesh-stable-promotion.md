@@ -76,7 +76,8 @@ See [entity-mesh.md](./entity-mesh.md#compatibility-rules).
 | `spanda-sdk` (Python) | `0.5.7` | `sdk-python-v0.5.7` | [PyPI](https://pypi.org/project/spanda-sdk/) |
 | `@davalgi-spanda/sdk` (npm) | `0.5.7` | `npm-sdk-v0.5.7` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
 
-Mesh additions in **0.5.7:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`, `mesh_simulate_partition`
+Mesh additions in **0.5.7:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`,
+`mesh_simulate_partition`
 (Rust `GrpcClient` mesh RPCs ship with the `grpc` feature on **0.5.6+**).
 
 ```bash

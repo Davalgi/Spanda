@@ -2,7 +2,8 @@
 
 **Trust-aware inter-entity communication and resilience** — not packet routing.
 
-Entity Mesh sits **above** transport providers (MQTT, DDS, ROS2, BLE, Wi-Fi, Ethernet, 5G, LoRa, satellite, local runtime) and adds entity-level capabilities:
+Entity Mesh sits **above** transport providers (MQTT, DDS, ROS2, BLE, Wi-Fi, Ethernet, 5G, LoRa,
+satellite, local runtime) and adds entity-level capabilities:
 
 - Entity and capability discovery
 - Trust-aware and readiness-aware routing
@@ -67,7 +68,8 @@ Use `--config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` for the
 | `meshFindCapability()` | `POST /v1/mesh/find-capability` | `FindMeshCapability` |
 | — | `POST /v1/mesh/simulate-partition` | `SimulateMeshPartition` |
 
-Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**). Rust `GrpcClient` (`grpc` feature):
+Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**). Rust `GrpcClient` (`grpc`
+feature):
 `get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`, `get_mesh_health`, `get_mesh_graph`,
 `find_mesh_capability`.
 

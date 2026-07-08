@@ -1,6 +1,7 @@
 # Mesh Sync
 
-Mesh sync propagates operational state across partitions on reconnection. **Secrets are never synced.**
+Mesh sync propagates operational state across partitions on reconnection. **Secrets are never
+synced.**
 
 ## Synchronized fields
 
@@ -19,7 +20,8 @@ Mesh sync propagates operational state across partitions on reconnection. **Secr
 
 ## Conflict resolution
 
-Conflicts (mission state, duplicate leader, diverged recovery, capability ads) use existing **decision conflict precedence** via `MeshMergePolicy`.
+Conflicts (mission state, duplicate leader, diverged recovery, capability ads) use existing
+**decision conflict precedence** via `MeshMergePolicy`.
 
 ## API
 

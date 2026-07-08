@@ -94,7 +94,8 @@ full showcase demos.
 | Differentiation | [`showcase/differentiation/`](showcase/differentiation/) | `spanda demo differentiation` |
 
 Guides: [distributed-decisions.md](../docs/distributed-decisions.md) ·
-[self-healing.md](../docs/self-healing.md) · [mission-continuity.md](../docs/mission-continuity.md) ·
+[self-healing.md](../docs/self-healing.md) · [mission-continuity.md](../docs/mission-continuity.md)
+·
 [cognitive-resilience-architecture.md](../docs/cognitive-resilience-architecture.md) ·
 [platform-feature-examples.md](../docs/platform-feature-examples.md) ·
 [Spanda 101 lesson 11](../docs/spanda-101/11-distributed-decisions.md)

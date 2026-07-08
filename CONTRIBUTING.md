@@ -221,7 +221,8 @@ Process details: [docs/design-review-process.md](docs/design-review-process.md).
 
 ### Pull requests
 
-All PRs use [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md). Architecture-affecting
+All PRs use [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md).
+Architecture-affecting
 PRs must link the approved issue or ADR and confirm the [quality
 gate](docs/architecture-governance.md#quality-gate):
 
@@ -237,16 +238,19 @@ gate](docs/architecture-governance.md#quality-gate):
 ### Roadmap items
 
 New items in [ROADMAP.md](ROADMAP.md) must include: Problem, Architecture Fit, Entity Integration,
-Existing Capability Extended, Duplication Analysis, Security Review, Test Plan, Demo Plan, and Release
+Existing Capability Extended, Duplication Analysis, Security Review, Test Plan, Demo Plan, and
+Release
 Impact. See [architecture-governance.md#roadmap-rule](docs/architecture-governance.md#roadmap-rule).
 
 ### Principles (summary)
 
-Extend before creating · Reuse before duplicating · Prefer providers and packages over core expansion
+Extend before creating · Reuse before duplicating · Prefer providers and packages over core
+expansion
 · Prefer Entity integration · Prefer additive API changes · Every feature demonstrable · Every
 capability testable · Every significant decision documented in an ADR.
 
-Full list: [docs/architecture-governance.md#architecture-principles](docs/architecture-governance.md#architecture-principles).
+Full list:
+[docs/architecture-governance.md#architecture-principles](docs/architecture-governance.md#architecture-principles).
 
 ---
 
@@ -392,7 +396,8 @@ python3 scripts/bump_version.py patch --stream desktop --dry-run
 5. Open a PR against `main` using the [PR template](.github/PULL_REQUEST_TEMPLATE.md)
 6. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk,
    cross-surface-check, cross-interface)
-7. Architecture-affecting PRs must pass the [quality gate](docs/architecture-governance.md#quality-gate)
+7. Architecture-affecting PRs must pass the [quality
+   gate](docs/architecture-governance.md#quality-gate)
 8. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking
    more work
 

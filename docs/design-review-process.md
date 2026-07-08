@@ -50,7 +50,8 @@ Architecture Review is **mandatory** before implementation merge for:
 - Test-only changes
 - Internal refactors within one crate preserving public contracts
 
-When uncertain, use the [architecture proposal template](../.github/ISSUE_TEMPLATE/architecture-proposal.md).
+When uncertain, use the [architecture proposal
+template](../.github/ISSUE_TEMPLATE/architecture-proposal.md).
 
 ---
 
@@ -72,10 +73,12 @@ For small PRs, the PR reviewer may act as architecture reviewer if they complete
 
 ### 1. Proposal
 
-Open a GitHub issue using [architecture-proposal.md](../.github/ISSUE_TEMPLATE/architecture-proposal.md)
+Open a GitHub issue using
+[architecture-proposal.md](../.github/ISSUE_TEMPLATE/architecture-proposal.md)
 **or** draft an ADR in `docs/adr/` for decisions already agreed offline.
 
-Include all twelve gates from [architecture-review-checklist.md](./architecture-review-checklist.md).
+Include all twelve gates from
+[architecture-review-checklist.md](./architecture-review-checklist.md).
 
 ### 2. Duplication search
 

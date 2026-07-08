@@ -10,7 +10,8 @@ extension of an existing subsystem has been evaluated and rejected with document
 
 ## Policy Statement
 
-Before adding any of the following, contributors and reviewers must confirm that no existing artifact
+Before adding any of the following, contributors and reviewers must confirm that no existing
+artifact
 already provides the same or substantially overlapping capability:
 
 - Workspace crate (`crates/spanda-*`)
@@ -69,7 +70,8 @@ Proposers must search and cite existing artifacts:
 
 1. [entity-overview.md](./entity-overview.md) — documentation map
 2. Recovery: [recovery-orchestrator.md](./recovery-orchestrator.md)
-3. Readiness / health / trust: [readiness.md](./readiness.md), [entity-health.md](./entity-health.md), [entity-trust.md](./entity-trust.md)
+3. Readiness / health / trust: [readiness.md](./readiness.md),
+   [entity-health.md](./entity-health.md), [entity-trust.md](./entity-trust.md)
 4. Decisions: [distributed-decisions.md](./distributed-decisions.md)
 
 ### Interfaces
@@ -143,7 +145,8 @@ Architecture reviewers must:
 1. Independently verify the duplication check (do not rely on proposer search alone)
 2. Recommend **extend** vs **create** with specific file/crate targets
 3. Block merge if duplication is unjustified
-4. Record outcome in the Architecture Scorecard ([architecture-review-checklist.md](./architecture-review-checklist.md))
+4. Record outcome in the Architecture Scorecard
+   ([architecture-review-checklist.md](./architecture-review-checklist.md))
 
 ---
 

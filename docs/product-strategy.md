@@ -46,7 +46,8 @@ explainability, decision audit trail); Control Center Stable promotion.
 [#51](https://github.com/Davalgi/Spanda/issues/51).
 
 **Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI
-with `--version`, official SDKs **0.5.5** (workspace line **0.5.6**), Tauri desktop **0.6.3** (auto `desktop-v*` on labeled CC
+with `--version`, official SDKs **0.5.5** (workspace line **0.5.6**), Tauri desktop **0.6.3** (auto
+`desktop-v*` on labeled CC
 PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see
 [control-center.md](./control-center.md) ·
 [control-center-versioning.md](./control-center-versioning.md) ·

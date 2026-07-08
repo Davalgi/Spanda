@@ -76,7 +76,8 @@ justification is weak, **reject or redesign**.
 
 - `crates/README.md` and workspace members
 - `packages/registry/` official packages
-- [platform-services.md](./platform-services.md) and [responsibility-matrix.md](./responsibility-matrix.md)
+- [platform-services.md](./platform-services.md) and
+  [responsibility-matrix.md](./responsibility-matrix.md)
 - [entity-overview.md](./entity-overview.md) documentation map
 - Existing REST/gRPC paths in [control-center-api.md](./control-center-api.md)
 
@@ -119,7 +120,8 @@ Reference: [platform-architecture.md](./platform-architecture.md) layered model.
 
 Avoid disconnected object models (`RobotRecord`, parallel inventories, blueprint-local registries).
 
-Reference: [entity-model.md](./entity-model.md), [entity-best-practices.md](./entity-best-practices.md).
+Reference: [entity-model.md](./entity-model.md),
+[entity-best-practices.md](./entity-best-practices.md).
 
 ---
 
@@ -127,7 +129,8 @@ Reference: [entity-model.md](./entity-model.md), [entity-best-practices.md](./en
 
 **Does it respect platform security contracts?**
 
-- [ ] Trust framework ([entity-trust.md](./entity-trust.md), [trust-framework.md](./trust-framework.md))
+- [ ] Trust framework ([entity-trust.md](./entity-trust.md),
+  [trust-framework.md](./trust-framework.md))
 - [ ] Secure messaging / decision traceability
 - [ ] Decision authority ([decision-authority.md](./decision-authority.md))
 - [ ] Governance ([governance.md](./governance.md))
@@ -229,7 +232,8 @@ If it cannot be demonstrated, reconsider whether it belongs in the platform.
 | Migration | | |
 
 - [ ] Named owner or module assignment ([module-ownership.md](./module-ownership.md))
-- [ ] No new permanent architecture waivers (target: zero — see [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md))
+- [ ] No new permanent architecture waivers (target: zero — see
+  [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md))
 
 ---
 

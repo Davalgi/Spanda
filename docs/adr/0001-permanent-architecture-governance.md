@@ -10,9 +10,11 @@
 
 ## Problem
 
-Spanda has grown from a language and compiler into a full autonomous systems platform — entity model,
+Spanda has grown from a language and compiler into a full autonomous systems platform — entity
+model,
 recovery, distributed decisions, Control Center, SDKs, packages, providers, and solution blueprints.
-Automated CI enforces layer rules and dependency direction (`validate_architecture.py`), but there was
+Automated CI enforces layer rules and dependency direction (`validate_architecture.py`), but there
+was
 no permanent **human review gate** for:
 
 - Intent and user problem clarity before new crates or services land
@@ -40,7 +42,8 @@ Establish **permanent Architecture Governance** as a required engineering proces
    Duplication Analysis, Security Review, Test Plan, Demo Plan, and Release Impact.
 5. **Scorecard** — proposals receive structured review outcomes: Strongly Recommend through Reject.
 
-Automated CI validation remains unchanged; this ADR adds **process and culture** on top of mechanical
+Automated CI validation remains unchanged; this ADR adds **process and culture** on top of
+mechanical
 enforcement.
 
 ---
@@ -64,7 +67,8 @@ enforcement.
 
 - **Description:** Require design docs but not PR template or roadmap rules.
 - **Pros:** Lighter weight.
-- **Cons:** Implementation often starts before review; decisions not indexed; roadmap stays unstructured.
+- **Cons:** Implementation often starts before review; decisions not indexed; roadmap stays
+  unstructured.
 
 ---
 

@@ -166,9 +166,11 @@ then reference it from the blueprint.
 Architecture governance is enforced by `scripts/validate_architecture.py` in **CI Fast**
 (`lint-rust`). Tier map: [ci-architecture.md](./ci-architecture.md).
 
-**Human review:** Automated checks enforce layer rules and dependency direction. Intent, duplication,
+**Human review:** Automated checks enforce layer rules and dependency direction. Intent,
+duplication,
 and cross-cutting fit are governed by the permanent [Architecture Review
-process](./architecture-governance.md) — see [architecture-review-checklist.md](./architecture-review-checklist.md)
+process](./architecture-governance.md) — see
+[architecture-review-checklist.md](./architecture-review-checklist.md)
 and [non-duplication-policy.md](./non-duplication-policy.md).
 
 | Check | Behavior |

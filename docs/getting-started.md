@@ -636,7 +636,8 @@ Guide: [mission-continuity.md](./mission-continuity.md) · Package: `spanda-miss
 (`assurance.continuity`) · Examples:
 [`examples/showcase/continuity/`](../examples/showcase/continuity/) · Minimal:
 [`examples/features/continuity_policy.sd`](../examples/features/continuity_policy.sd) ·
-Workflow: [`examples/workflows/fleet_patrol_handoff.sd`](../examples/workflows/fleet_patrol_handoff.sd) ·
+Workflow:
+[`examples/workflows/fleet_patrol_handoff.sd`](../examples/workflows/fleet_patrol_handoff.sd) ·
 [platform-feature-examples.md](./platform-feature-examples.md)
 
 ---
@@ -658,7 +659,8 @@ spanda decision trace mission.trace
 Guide: [distributed-decisions.md](./distributed-decisions.md) · Examples:
 [`examples/showcase/distributed_decisions/`](../examples/showcase/distributed_decisions/) ·
 Minimal: [`examples/features/decision_tree.sd`](../examples/features/decision_tree.sd) ·
-Options: [`examples/features/decision_tree_options.sd`](../examples/features/decision_tree_options.sd) ·
+Options:
+[`examples/features/decision_tree_options.sd`](../examples/features/decision_tree_options.sd) ·
 Workflows: [`examples/workflows/`](../examples/workflows/) ·
 [platform-feature-examples.md](./platform-feature-examples.md)
 
@@ -704,7 +706,8 @@ Control Center **Cognitive & Resilience** tab (Health & incidents group) loads l
 Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity:
 [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Examples:
 [`examples/features/homeostasis_policy.sd`](../examples/features/homeostasis_policy.sd),
-[`examples/features/cognitive_policies_options.sd`](../examples/features/cognitive_policies_options.sd) ·
+[`examples/features/cognitive_policies_options.sd`](../examples/features/cognitive_policies_options.sd)
+·
 [platform-feature-examples.md](./platform-feature-examples.md) · Smoke:
 `./scripts/cognitive_resilience_smoke.sh`
 

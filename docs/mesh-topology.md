@@ -1,6 +1,7 @@
 # Mesh Topology
 
-Entity Mesh topology is a **projection of the Entity Graph** plus live link metrics — not a separate disconnected graph.
+Entity Mesh topology is a **projection of the Entity Graph** plus live link metrics — not a separate
+disconnected graph.
 
 ## Core types
 
@@ -14,7 +15,10 @@ Entity Mesh topology is a **projection of the Entity Graph** plus live link metr
 
 ## Node state
 
-Each `MeshNode` tracks: `entity_id`, `node_id`, `transport`, `reachable`, `neighbors`, `capabilities`, `health`, `readiness`, `trust_score`, `latency`, `bandwidth`, `packet_loss`, `hop_count`, `last_seen`, `battery`, `role`, `coordinator_status`, `supported_protocols`, `security_identity`.
+Each `MeshNode` tracks: `entity_id`, `node_id`, `transport`, `reachable`, `neighbors`,
+`capabilities`, `health`, `readiness`, `trust_score`, `latency`, `bandwidth`, `packet_loss`,
+`hop_count`, `last_seen`, `battery`, `role`, `coordinator_status`, `supported_protocols`,
+`security_identity`.
 
 ## Discovery sources
 

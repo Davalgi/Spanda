@@ -1,6 +1,7 @@
 # Mesh Capability Routing
 
-Entities advertise capabilities through the existing **Capability Framework**. Mesh discovery projects registry capabilities into `MeshCapabilityAdvertisement`.
+Entities advertise capabilities through the existing **Capability Framework**. Mesh discovery
+projects registry capabilities into `MeshCapabilityAdvertisement`.
 
 ## Example
 
@@ -27,4 +28,5 @@ spanda mesh route coordinator robot-a
 
 `POST /v1/mesh/find-capability`
 
-Routing considers reachability, trust, readiness, health, identity, latency, bandwidth, hop count, battery, and mission priority.
+Routing considers reachability, trust, readiness, health, identity, latency, bandwidth, hop count,
+battery, and mission priority.

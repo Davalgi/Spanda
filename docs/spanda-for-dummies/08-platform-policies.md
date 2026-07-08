@@ -1,6 +1,7 @@
 # Chapter 8 — Platform policies in plain English
 
-Back to [index](./README.md) · Next: [Spanda 101 lesson 11](../spanda-101/11-distributed-decisions.md)
+Back to [index](./README.md) · Next: [Spanda 101 lesson
+11](../spanda-101/11-distributed-decisions.md)
 
 When your robot is **offline**, **fails mid-mission**, or needs to decide **without calling home**,
 Spanda lets you write the rules in the program — not in a spreadsheet or a runbook nobody reads.
@@ -94,7 +95,8 @@ Index: [`examples/workflows/README.md`](../../examples/workflows/README.md)
 | `spanda continuity file.sd --failed X --progress N` | Mission handoff report |
 | `spanda homeostasis check --json` | Platform stability snapshot |
 
-More: [Chapter 5 cheat sheet](./05-commands-cheat-sheet.md) · [getting-started.md](../getting-started.md)
+More: [Chapter 5 cheat sheet](./05-commands-cheat-sheet.md) ·
+[getting-started.md](../getting-started.md)
 
 ---
 

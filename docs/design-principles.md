@@ -122,7 +122,8 @@ path requiring architecture review — not a permanent escape hatch.
 
 Before merging a feature, confirm:
 
-- [ ] Architecture Review completed for platform or API changes ([architecture-governance.md](./architecture-governance.md))
+- [ ] Architecture Review completed for platform or API changes
+  ([architecture-governance.md](./architecture-governance.md))
 - [ ] Duplication analysis completed ([non-duplication-policy.md](./non-duplication-policy.md))
 - [ ] Module assigned to a layer and owner in the manifest
 - [ ] No new upward dependencies (or waiver with ticket)

@@ -1,10 +1,13 @@
 # Mesh Security
 
-Mesh communication reuses Spanda **secure messaging** — mesh does not bypass signing, encryption policy, or trust boundaries.
+Mesh communication reuses Spanda **secure messaging** — mesh does not bypass signing, encryption
+policy, or trust boundaries.
 
 ## Message envelope
 
-Every `MeshMessage` includes: `message_id`, `source_entity`, `target_entity`, `target_capability`, `route`, `priority`, `ttl`, `timestamp`, `nonce`, `signature`, `encryption_required`, `trust_requirement`, `payload_hash`, and optional `SignedMessage` envelope.
+Every `MeshMessage` includes: `message_id`, `source_entity`, `target_entity`, `target_capability`,
+`route`, `priority`, `ttl`, `timestamp`, `nonce`, `signature`, `encryption_required`,
+`trust_requirement`, `payload_hash`, and optional `SignedMessage` envelope.
 
 ## Validation
 
@@ -18,7 +21,8 @@ The mesh security layer rejects:
 
 ## Trust requirements
 
-`MeshTrustRequirement` controls `minimum_trust_score`, `require_signed`, `require_identity_match`, and `block_untrusted_relays`.
+`MeshTrustRequirement` controls `minimum_trust_score`, `require_signed`, `require_identity_match`,
+and `block_untrusted_relays`.
 
 ## Regression tests
 

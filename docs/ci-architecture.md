@@ -81,7 +81,8 @@ extension packaging, and docs/mdBook build.
 
 Scheduled at **06:00 UTC** and available via **Actions → CI Nightly → Run workflow**.
 
-Reuses the `spanda-bin` artifact from the latest successful **CI Integration** run for the checked-out
+Reuses the `spanda-bin` artifact from the latest successful **CI Integration** run for the
+checked-out
 commit when available; otherwise tries **CI Fast**, then compiles locally. Job `prepare-spanda`
 fetches or builds once; downstream jobs reuse the artifact.
 
@@ -96,7 +97,8 @@ alerts.
 
 ## Spanda binary handoff
 
-All three tiers share [`.github/actions/fetch-or-build-spanda`](../.github/actions/fetch-or-build-spanda/action.yml):
+All three tiers share
+[`.github/actions/fetch-or-build-spanda`](../.github/actions/fetch-or-build-spanda/action.yml):
 
 | Workflow | Binary source |
 |----------|----------------|

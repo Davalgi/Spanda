@@ -145,7 +145,8 @@ export SPANDA_API_KEY="<session_token>"
 
 ## RBAC and tenants
 
-Unchanged from prior releases — see [control-center.md](./control-center.md#authentication--api-keys).
+Unchanged from prior releases — see
+[control-center.md](./control-center.md#authentication--api-keys).
 
 - Mutations (`POST` / `PATCH` / `PUT` / `DELETE`) require a valid Bearer principal with the
   matching role action.
@@ -180,7 +181,8 @@ Failed read-auth returns **401** and records `AuthFailed` with reason `read_auth
 
 1. Set `SPANDA_API_KEY_PEPPER` and `SPANDA_SESSION_JWT_SECRET` to unique random values.
 2. Terminate TLS at ingress; do not bind Control Center to the public internet without TLS.
-3. Enable `SPANDA_API_REQUIRE_AUTH_READS=1` (or `ALL_READS`) when the API is reachable beyond localhost.
+3. Enable `SPANDA_API_REQUIRE_AUTH_READS=1` (or `ALL_READS`) when the API is reachable beyond
+   localhost.
 4. Restrict file permissions on `.spanda/api-keys.json` and state directory.
 5. Rotate API keys on compromise; session JWTs expire automatically.
 6. Run `./scripts/security_audit_prep.sh` before third-party review —
