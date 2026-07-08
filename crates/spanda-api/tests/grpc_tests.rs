@@ -768,6 +768,74 @@ async fn grpc_recovery_endpoints_with_self_healing_program() {
 }
 
 #[tokio::test]
+async fn grpc_mesh_endpoints_with_warehouse_config() {
+    let _guard = GRPC_TEST_LOCK.lock().unwrap();
+    let warehouse_src = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .join("spanda-config/tests/fixtures/warehouse");
+    let temp_dir = tempfile::tempdir().expect("temp config dir");
+    copy_dir_all(&warehouse_src, temp_dir.path());
+    let program = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("examples/showcase/compliance/defense_rover.sd");
+    let http_port = pick_port();
+    let grpc_port = pick_port();
+    let options = ControlCenterOptions {
+        bind: format!("127.0.0.1:{http_port}"),
+        grpc_bind: Some(format!("127.0.0.1:{grpc_port}")),
+        config_path: Some(temp_dir.path().to_path_buf()),
+        program_path: Some(program),
+        once: true,
+        timeout_ms: 500,
+        ..Default::default()
+    };
+    let grpc_bind = spawn_control_center(options);
+    let _temp_dir = temp_dir;
+    let mut client = connect(&grpc_bind).await;
+
+    let topology = client
+        .get_mesh_topology(Empty {})
+        .await
+        .expect("mesh topology")
+        .into_inner();
+    assert!(topology.json.contains("topology"));
+
+    let health = client
+        .get_mesh_health(Empty {})
+        .await
+        .expect("mesh health")
+        .into_inner();
+    assert!(health.json.contains("health"));
+
+    let nodes = client
+        .get_mesh_nodes(Empty {})
+        .await
+        .expect("mesh nodes")
+        .into_inner();
+    assert!(nodes.json.contains("nodes"));
+
+    let graph = client
+        .get_mesh_graph(Empty {})
+        .await
+        .expect("mesh graph")
+        .into_inner();
+    assert!(graph.json.contains("graph"));
+
+    let capability = client
+        .find_mesh_capability(spanda_api::grpc::spanda_v1::JsonBodyRequest {
+            body_json: r#"{"capability":"calibrate"}"#.into(),
+        })
+        .await
+        .expect("find mesh capability")
+        .into_inner();
+    assert!(capability.json.contains("matches"));
+}
+
+#[tokio::test]
 async fn grpc_analytics_endpoints_with_forecast_program() {
     let _guard = GRPC_TEST_LOCK.lock().unwrap();
     let program = PathBuf::from(env!("CARGO_MANIFEST_DIR"))

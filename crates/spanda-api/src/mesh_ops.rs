@@ -193,3 +193,53 @@ fn parse_query_param(query: &str, key: &str) -> Option<String> {
         }
     })
 }
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_topology_json(state: &ControlCenterState) -> String {
+    mesh_topology(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_nodes_json(state: &ControlCenterState) -> String {
+    mesh_nodes(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_routes_json(state: &ControlCenterState, query: &str) -> String {
+    mesh_routes(state, query).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_partitions_json(state: &ControlCenterState) -> String {
+    mesh_partitions(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_health_json(state: &ControlCenterState) -> String {
+    mesh_health(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_graph_json_api(state: &ControlCenterState) -> String {
+    mesh_graph(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_merge_report_json(state: &ControlCenterState) -> String {
+    mesh_merge_report(state).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_discover_json(state: &ControlCenterState, body: &str) -> String {
+    mesh_discover(state, body).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_find_capability_json(state: &ControlCenterState, body: &str) -> String {
+    mesh_find_capability(state, body).body
+}
+
+/// JSON string helper for gRPC parity.
+pub fn mesh_simulate_partition_json(state: &ControlCenterState, body: &str) -> String {
+    mesh_simulate_partition(state, body).body
+}

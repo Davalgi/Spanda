@@ -1,5 +1,5 @@
 syntax = "proto3";
-// Spanda Control Center gRPC API — proto semver 1.0.14 (package spanda.v1).
+// Spanda Control Center gRPC API — proto semver 1.0.15 (package spanda.v1).
 package spanda.v1;
 
 message Empty {}
@@ -200,6 +200,17 @@ service ControlCenter {
   rpc GetRecoveryPredictive(JsonBodyRequest) returns (JsonResponse);
   rpc ListRecoverableEntities(Empty) returns (JsonResponse);
   rpc RecommendRecovery(JsonBodyRequest) returns (JsonResponse);
+  // Entity Mesh (mirrors /v1/mesh/*)
+  rpc GetMeshTopology(Empty) returns (JsonResponse);
+  rpc GetMeshNodes(Empty) returns (JsonResponse);
+  rpc GetMeshRoutes(QueryRequest) returns (JsonResponse);
+  rpc GetMeshPartitions(Empty) returns (JsonResponse);
+  rpc GetMeshHealth(Empty) returns (JsonResponse);
+  rpc GetMeshGraph(Empty) returns (JsonResponse);
+  rpc GetMeshMergeReport(Empty) returns (JsonResponse);
+  rpc DiscoverMesh(JsonBodyRequest) returns (JsonResponse);
+  rpc FindMeshCapability(JsonBodyRequest) returns (JsonResponse);
+  rpc SimulateMeshPartition(JsonBodyRequest) returns (JsonResponse);
   // Cognitive & resilience autonomy (mirrors /v1/autonomy/*)
   rpc ListAutonomyReflexes(Empty) returns (JsonResponse);
   rpc ListAutonomyReflexTraces(Empty) returns (JsonResponse);

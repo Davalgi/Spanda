@@ -1609,6 +1609,106 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn get_mesh_topology(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_topology_json)
+            .map(Response::new)
+    }
+
+    async fn get_mesh_nodes(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_nodes_json)
+            .map(Response::new)
+    }
+
+    async fn get_mesh_routes(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(move |state| crate::mesh_ops::mesh_routes_json(state, &query))
+            .map(Response::new)
+    }
+
+    async fn get_mesh_partitions(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_partitions_json)
+            .map(Response::new)
+    }
+
+    async fn get_mesh_health(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_health_json)
+            .map(Response::new)
+    }
+
+    async fn get_mesh_graph(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_graph_json_api)
+            .map(Response::new)
+    }
+
+    async fn get_mesh_merge_report(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let _ = request.into_inner();
+        self.with_state(crate::mesh_ops::mesh_merge_report_json)
+            .map(Response::new)
+    }
+
+    async fn discover_mesh(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::mesh_ops::mesh_discover_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn find_mesh_capability(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::mesh_ops::mesh_find_capability_json(state, &body))
+            .map(Response::new)
+    }
+
+    async fn simulate_mesh_partition(
+        &self,
+        request: Request<JsonBodyRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let body = request.into_inner().body_json;
+        self.with_state(|state| crate::mesh_ops::mesh_simulate_partition_json(state, &body))
+            .map(Response::new)
+    }
+
     async fn list_autonomy_reflexes(
         &self,
         request: Request<Empty>,
