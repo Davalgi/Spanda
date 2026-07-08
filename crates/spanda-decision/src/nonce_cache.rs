@@ -112,7 +112,9 @@ pub fn register_persisted_nonce(nonce: &str) -> Result<(), String> {
                 }
                 Err(error) if mesh_nonce_required() => return Err(error),
                 Err(error) => {
-                    eprintln!("decision nonce mesh register failed, falling back to local: {error}");
+                    eprintln!(
+                        "decision nonce mesh register failed, falling back to local: {error}"
+                    );
                 }
             }
         }

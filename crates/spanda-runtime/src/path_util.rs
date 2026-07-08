@@ -64,16 +64,12 @@ pub fn resolve_trace_source_path(trace_parent: &Path, source: &str) -> PathBuf {
     }
 
     if path.is_file() {
-        return path
-            .canonicalize()
-            .unwrap_or_else(|_| path.to_path_buf());
+        return path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
     }
 
     let beside_trace = trace_parent.join(path);
     if beside_trace.is_file() {
-        return beside_trace
-            .canonicalize()
-            .unwrap_or(beside_trace);
+        return beside_trace.canonicalize().unwrap_or(beside_trace);
     }
 
     path.to_path_buf()
@@ -175,7 +171,9 @@ fn normalize_components(path: &Path) -> Vec<PathBuf> {
                 parts.pop();
             }
             Component::Normal(value) => parts.push(PathBuf::from(value)),
-            Component::RootDir | Component::Prefix(_) => parts.push(PathBuf::from(component.as_os_str())),
+            Component::RootDir | Component::Prefix(_) => {
+                parts.push(PathBuf::from(component.as_os_str()))
+            }
         }
     }
     parts

@@ -576,8 +576,7 @@ shared_utils = {{ path = "../shared" }}
             }),
         );
 
-        let result =
-            resolve_dependencies(&audit, &manifest, &ResolveOptions::default()).unwrap();
+        let result = resolve_dependencies(&audit, &manifest, &ResolveOptions::default()).unwrap();
         let locked = result.lockfile_deps.get("spanda-ledger").unwrap();
         match &locked.source {
             LockedSource::Local { path } => assert_eq!(path, &PathBuf::from("../pkg")),
