@@ -47,9 +47,7 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 ![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=flat&logo=webassembly&logoColor=white)
 ![MQTT](https://img.shields.io/badge/MQTT-660066?style=flat&logo=eclipsemosquitto&logoColor=white)
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
-
 <br>
-
 [![crates.io](https://img.shields.io/crates/v/spanda-sdk?logo=rust)](https://crates.io/crates/spanda-sdk)
 [![PyPI](https://img.shields.io/pypi/v/spanda-sdk?logo=pypi)](https://pypi.org/project/spanda-sdk/)
 [![npm](https://img.shields.io/npm/v/@davalgi-spanda/sdk?logo=npm)](https://www.npmjs.com/package/@davalgi-spanda/sdk)
@@ -58,22 +56,20 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 ![safety](https://img.shields.io/badge/focus-safety--first-blue)
 ![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
 ![license](https://img.shields.io/github/license/Davalgi/Spanda)
-
 <br>
-
 ![CI Fast](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
 ![CI Integration](https://github.com/Davalgi/Spanda/actions/workflows/ci-integration.yml/badge.svg)
 ![CI Nightly](https://github.com/Davalgi/Spanda/actions/workflows/ci-nightly.yml/badge.svg)
 ![last commit](https://img.shields.io/github/last-commit/Davalgi/Spanda)
 ![commit activity](https://img.shields.io/github/commit-activity/y/Davalgi/Spanda)
 ![contributors](https://img.shields.io/github/contributors/Davalgi/Spanda)
-![stars](https://img.shields.io/github/stars/Davalgi/Spanda?style=social)
-![forks](https://img.shields.io/github/forks/Davalgi/Spanda?style=social)
-![watchers](https://img.shields.io/github/watchers/Davalgi/Spanda?style=social)
 ![open issues](https://img.shields.io/github/issues/Davalgi/Spanda)
 ![open PRs](https://img.shields.io/github/issues-pr/Davalgi/Spanda)
 ![top language](https://img.shields.io/github/languages/top/Davalgi/Spanda)
-
+<br>
+![stars](https://img.shields.io/github/stars/Davalgi/Spanda?style=social)
+![forks](https://img.shields.io/github/forks/Davalgi/Spanda?style=social)
+![watchers](https://img.shields.io/github/watchers/Davalgi/Spanda?style=social)
 </p>
 
 ---
