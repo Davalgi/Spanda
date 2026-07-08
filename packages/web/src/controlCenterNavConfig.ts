@@ -149,6 +149,7 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "playground") return "Playground";
   if (name === "marketplace") return "Marketplace";
   if (name === "chaos") return "Chaos";
+  if (name === "mesh") return "Entity Mesh";
   return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");
 }
 

@@ -59,6 +59,9 @@ Smoke test (all three SDKs): `scripts/entity_model_smoke.sh`
 | Health | `mesh_health()` | `meshHealth()` | `mesh_health()` |
 | Partitions | `mesh_partitions()` | `meshPartitions()` | `mesh_partitions()` |
 
+gRPC (`GrpcClient`, `grpc` feature): `get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`,
+`get_mesh_health`, `get_mesh_graph`, `find_mesh_capability` (proto **1.0.15+**).
+
 See [entity-mesh.md](./entity-mesh.md).
 
 ### Smart Spaces (Control Center blueprint)

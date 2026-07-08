@@ -6,7 +6,7 @@ REST and gRPC reference for the **Unified Entity Model**. All routes are **addit
 **Implementation:** `crates/spanda-api/src/sdk_ops.rs`, `entity_mutations.rs`, `handlers.rs`  
 **OpenAPI:** `GET /v1/openapi.json` (generated from handlers)  
 **gRPC proto:** `crates/spanda-api/proto/spanda/v1/control_center.proto` — pin semver and RPC count
-via `GET /v1/version` (currently **1.0.14**, **164** RPCs)
+via `GET /v1/version` (currently **1.0.15**, **174** RPCs)
 
 ## Authentication
 
@@ -47,18 +47,18 @@ Every JSON response includes `"version": "v1"`. Pin gRPC clients with `GET /v1/v
 Entity-level trust-aware communication above transports. Full reference:
 [entity-mesh.md](./entity-mesh.md). Implementation: `crates/spanda-api/src/mesh_ops.rs`.
 
-| Method | Path | Auth |
-|--------|------|------|
-| `GET` | `/v1/mesh/topology` | — |
-| `GET` | `/v1/mesh/nodes` | — |
-| `GET` | `/v1/mesh/routes` | — |
-| `GET` | `/v1/mesh/partitions` | — |
-| `GET` | `/v1/mesh/health` | — |
-| `GET` | `/v1/mesh/graph` | — |
-| `GET` | `/v1/mesh/merge-report` | — |
-| `POST` | `/v1/mesh/discover` | — |
-| `POST` | `/v1/mesh/find-capability` | — |
-| `POST` | `/v1/mesh/simulate-partition` | — |
+| Method | Path | gRPC RPC | Auth |
+|--------|------|----------|------|
+| `GET` | `/v1/mesh/topology` | `GetMeshTopology` | — |
+| `GET` | `/v1/mesh/nodes` | `GetMeshNodes` | — |
+| `GET` | `/v1/mesh/routes` | `GetMeshRoutes` | — |
+| `GET` | `/v1/mesh/partitions` | `GetMeshPartitions` | — |
+| `GET` | `/v1/mesh/health` | `GetMeshHealth` | — |
+| `GET` | `/v1/mesh/graph` | `GetMeshGraph` | — |
+| `GET` | `/v1/mesh/merge-report` | `GetMeshMergeReport` | — |
+| `POST` | `/v1/mesh/discover` | `DiscoverMesh` | — |
+| `POST` | `/v1/mesh/find-capability` | `FindMeshCapability` | — |
+| `POST` | `/v1/mesh/simulate-partition` | `SimulateMeshPartition` | — |
 
 CLI parity: `spanda mesh discover|list|health|route|find|…`
 
@@ -357,8 +357,8 @@ GET /v1/version
 ```json
 {
   "grpc": {
-    "proto_semver": "1.0.14",
-    "rpc_count": 164
+    "proto_semver": "1.0.15",
+    "rpc_count": 174
   }
 }
 ```
