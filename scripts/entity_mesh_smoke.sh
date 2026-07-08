@@ -123,4 +123,7 @@ echo "== Rust SDK mesh =="
 SPANDA_CONTROL_CENTER_URL="http://${BIND}" \
   cargo run -q -p spanda-sdk --example entity_mesh
 
+echo "== gRPC mesh RPCs =="
+cargo test -p spanda-api --test grpc_tests grpc_mesh_endpoints_with_warehouse_config --quiet
+
 echo "Entity mesh smoke OK"
