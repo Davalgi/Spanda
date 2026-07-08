@@ -55,7 +55,8 @@ export type ControlCenterTab =
   | "playground"
   | "marketplace"
   | "chaos"
-  | "resilient-autonomy";
+  | "resilient-autonomy"
+  | "mesh";
 
 export const RBAC_ACTIONS: RbacAction[] = [
   "Deploy",
@@ -90,6 +91,7 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   decisions: ["administrator", "supervisor", "developer"],
   differentiation: ["administrator", "supervisor", "developer", "auditor"],
   recovery: ["administrator", "supervisor", "operator", "safety_officer"],
+  mesh: ["administrator", "supervisor", "operator", "safety_officer", "developer"],
   "digital-thread": ["*"],
   traceability: ["*"],
   analytics: ["administrator", "supervisor", "developer", "auditor"],

@@ -28,6 +28,7 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
       "operator",
       "mission",
       "continuity",
+      "mesh",
     ],
   },
   {
@@ -116,6 +117,7 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   telemetry: "Live WebSocket telemetry, traces, and alert stream.",
   trends: "Readiness history slopes and forecasted mission risk.",
   continuity: "Takeover, delegation, and mission pause during continuity events.",
+  mesh: "Autonomous Entity Mesh — topology, trusted routes, partitions, and coordinator status.",
   "fleet-map": "Geospatial or grid map of robots, agents, and devices.",
   reports: "Scheduled compliance report delivery and preview.",
   playground: "In-browser WASM check and run for Spanda programs.",

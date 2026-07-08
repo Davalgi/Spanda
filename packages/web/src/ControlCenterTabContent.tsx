@@ -29,6 +29,7 @@ import { OtaPanel } from "./OtaPanel";
 import { ProvisioningPanel } from "./ProvisioningPanel";
 import { ReadinessPanel } from "./ReadinessPanel";
 import { RecoveryPanel } from "./RecoveryPanel";
+import { MeshPanel } from "./MeshPanel";
 import { ReplayPanel } from "./ReplayPanel";
 import { ResilientAutonomyPanel } from "./ResilientAutonomyPanel";
 import { SecurityPanel } from "./SecurityPanel";
@@ -275,6 +276,11 @@ export function ControlCenterTabContent({
     case "recovery":
       return (
         <RecoveryPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
+      );
+
+    case "mesh":
+      return (
+        <MeshPanel baseUrl={baseUrl} authHeaders={authHeaders} can={can} hasToken={hasToken} />
       );
 
     case "resilient-autonomy":
