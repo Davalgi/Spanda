@@ -79,7 +79,7 @@ reloaded on Control Center startup.
 - [recovery-sdk.md](./recovery-sdk.md)
 - [recovery-orchestrator.md](./recovery-orchestrator.md)
 
-## gRPC (proto semver from `GET /v1/version` — currently **1.0.14**)
+## gRPC (proto semver from `GET /v1/version` — currently **1.0.15**)
 
 Mirrors REST with `JsonResponse` envelopes on `spanda.v1.ControlCenter`:
 

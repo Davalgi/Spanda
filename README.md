@@ -188,7 +188,7 @@ Entity
 
 Guide: [docs/entity-model.md](docs/entity-model.md) · APIs:
 [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) ·
-Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.5.5** on crates.io, PyPI,
+Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.5.8** on crates.io, PyPI,
 npm
 
 Entity CLI commands require a project `spanda.toml` or `--config` (warehouse fixture above).
@@ -208,7 +208,7 @@ Entity Graph → Recovery / Mission / Readiness
 - **Discover:** `spanda mesh discover --config
   crates/spanda-config/tests/fixtures/warehouse/spanda.toml`
 - **Route:** `spanda mesh route <source> <target> --config …`
-- **Health:** `spanda mesh health` · Control Center **Mesh** tab · `GET /v1/mesh/health`
+- **Health:** `spanda mesh health` · Control Center **Entity Mesh** tab · `GET /v1/mesh/health`
 
 Guide: [docs/entity-mesh.md](docs/entity-mesh.md) · Examples:
 [examples/showcase/entity_mesh/](examples/showcase/entity_mesh/)

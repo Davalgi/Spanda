@@ -82,7 +82,7 @@ These six capabilities define Spanda's market identity. Protect them in every re
 | 10 | Scorecards | `spanda score <file>` | `spanda-score` | **Stable** |
 
 Control Center REST `/v1/analytics/*` and gRPC `GetAnalytics*` RPCs (proto semver from `GET
-/v1/version` — currently **1.0.14**) expose NEXT analytics with REST parity.
+/v1/version` — currently **1.0.15**) expose NEXT analytics with REST parity.
 
 LATER analytics REST
 `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` and gRPC

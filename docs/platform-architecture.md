@@ -146,7 +146,7 @@ Events underpin telemetry, replay, Control Center, audit, and notifications.
 |---------|------------|---------------|
 | CLI | Semver via `spanda --version` | Entity/readiness JSON mirrors REST |
 | REST | `/v1/*` path prefix | `EntityRecord`, readiness reports |
-| gRPC | Proto semver from `GET /v1/version` (currently **1.0.14**, **164** RPCs) | Parity with REST entity RPCs |
+| gRPC | Proto semver from `GET /v1/version` (currently **1.0.15**, **174** RPCs) | Parity with REST entity RPCs |
 | SDKs | crates.io / npm / PyPI semver | Generated from OpenAPI/proto |
 
 Avoid duplicated DTOs — SDKs, REST, and gRPC share entity and readiness payloads.

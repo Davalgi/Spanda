@@ -1,7 +1,7 @@
 # Entity Model Integration Report
 
 **Date:** 2026-06-28  
-**Status:** Shipped (**Stable** tier) — Phases 1–18 complete; SDKs **0.5.5** on crates.io, PyPI, npm
+**Status:** Shipped (**Stable** tier) — Phases 1–18 complete; SDKs **0.5.8** on crates.io, PyPI, npm
 (entity tier shipped at **0.4.2**)
 
 ## Summary
@@ -18,7 +18,7 @@ through `EntityRegistry` while preserving existing program- and device-level API
 | Verification engine | ✅ | `crates/spanda-readiness/src/entity_verify.rs` |
 | Readiness / health / trust engines | ✅ | `entity_readiness.rs`, `entity_health.rs`, `spanda-trust/entity_trust.rs` |
 | REST API (14 routes) | ✅ | `crates/spanda-api/src/sdk_ops.rs`, `entity_mutations.rs` |
-| gRPC entity RPCs (proto **1.0.14**, 164 RPCs) | ✅ | `crates/spanda-api/proto/spanda/v1/control_center.proto` |
+| gRPC entity RPCs (proto **1.0.15**, 174 RPCs) | ✅ | `crates/spanda-api/proto/spanda/v1/control_center.proto` |
 | CLI | ✅ | `spanda entity *` in `crates/spanda-cli/src/entity_cli.rs` |
 | Rust / TS / Python SDK | ✅ | `crates/spanda-sdk`, `sdk/typescript`, `sdk/python` |
 | Control Center Entities tab | ✅ | `packages/web/src/EntityGraphPanel.tsx` |
@@ -119,5 +119,5 @@ scripts/entity_model_smoke.sh
 ## Stable promotion
 
 Entity model tier is **Stable** as of 2026-06-29. SDKs published at **0.4.2** for entity promotion
-(`sdk-python-v0.4.2`, `crates-sdk-v0.4.2`, `npm-sdk-v0.4.2`); **current** SDK **0.5.5**. See
+(`sdk-python-v0.4.2`, `crates-sdk-v0.4.2`, `npm-sdk-v0.4.2`); **current** SDK **0.5.8**. See
 [entity-model-stable-promotion.md](./entity-model-stable-promotion.md) for gate history.

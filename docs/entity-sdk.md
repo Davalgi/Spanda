@@ -249,7 +249,7 @@ summaries use `/v1/autonomy/*`.
 | Entity profile | `client.memory().entity_refs(id)` | `client.memory().entityRefs(id)` | `client.memory().entity_refs(id)` |
 | Facade (legacy) | `client.autonomy().list_reflex()` | `client.listAutonomyReflex()` | `client.list_autonomy_reflex()` |
 
-gRPC (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyFusion`,
+gRPC (proto **1.0.15+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`, `GetAutonomyFusion`,
 `GetAutonomyMemory`, `GetEntityAutonomy`, …
 
 Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Migration:

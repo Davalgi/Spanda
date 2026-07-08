@@ -11,7 +11,7 @@ For the Rust/TypeScript **compiler crate index**, see [api-reference.md](./api-r
 |-----------|--------|
 | REST | `http://host:8080/v1/*` |
 | OpenAPI | `GET /v1/openapi.json` |
-| gRPC | `ControlCenter` service — proto semver from `GET /v1/version` → `grpc.proto_semver` (currently **1.0.14**); see `proto/spanda/v1/control_center.proto` |
+| gRPC | `ControlCenter` service — proto semver from `GET /v1/version` → `grpc.proto_semver` (currently **1.0.15**); see `proto/spanda/v1/control_center.proto` |
 | WebSocket | `WS /v1/stream/telemetry` |
 | JSON-RPC gateway | `POST /v1/rpc` |
 
@@ -49,7 +49,7 @@ reference: [recovery-api.md](./recovery-api.md) · SDK: [recovery-sdk.md](./reco
 | `POST /v1/recovery/recommend` | Knowledge-base strategy recommendation |
 
 gRPC RPCs: `ListRecoveryPlans`, `PlanRecovery`, `GetRecoveryPredictive`, `ListRecoverableEntities`,
-`RecommendRecovery`, … (proto semver from `GET /v1/version` — currently **1.0.14**).
+`RecommendRecovery`, … (proto semver from `GET /v1/version` — currently **1.0.15**).
 
 | `POST /v1/programs/verify/hardware` | `spanda verify` |
 | `POST /v1/programs/verify/capabilities` | `spanda verify --capabilities` |
@@ -112,7 +112,7 @@ CLI. Guide: [cognitive-resilience-architecture.md](./cognitive-resilience-archit
 | `GET /v1/autonomy/memory` | — | Operational Memory — category refs + model |
 | `GET /v1/entities/{id}/autonomy` | — | Enriched `Entity.autonomy` profile |
 
-gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`,
+gRPC parity (proto **1.0.15+**): `ListAutonomyReflexes`, `ListAutonomyReflexTraces`,
 `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`,
 `GetAutonomyMemory`, `GetEntityAutonomy`.
 

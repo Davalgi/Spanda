@@ -89,7 +89,7 @@ roadmaps.
 | 10 | **Configuration Drift** | Operate, Verify | **Stable** | Expected vs actual parity across dimensions |
 | 11 | **OTA & Rollback** | Deploy | **Stable** | Canary, blue/green, phased rollout |
 | 12 | **Package Trust** | Verify, Build | **Stable** | Signature, reputation, vulnerability, coverage, compatibility scoring |
-| 13 | **SDKs** | Build, Operate | **Stable** (published **0.5.5**; workspace line **0.5.6**) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; admin/mission/trace/Twin Cloud/Recovery clients; CLI as reference |
+| 13 | **SDKs** | Build, Operate | **Stable** (published **0.5.8**; workspace line **0.5.8**) | Rust/Python/TypeScript SDKs on crates.io, PyPI, npm; REST v1, JSON-RPC, WebSocket; admin/mission/trace/Twin Cloud/Recovery clients; CLI as reference |
 | 14 | **Operator Workflows** | Operate, Recover | **Stable** | Mission approval, pause/resume/cancel, takeover, quarantine, device trust |
 | 15 | **SRE** | Operate, Observe | **Stable** | SLO/SLA, MTTR/MTBF, incident reporting |
 | 16 | **Reporting** | Govern, Audit | **Stable** | Fleet, mission, compliance, executive exports (incl. PDF) |
@@ -246,7 +246,7 @@ flowchart TB
 | **Simulation** | Active sim sessions, twin state | Launch sim, inject faults — **Shipped (v0.6+):** React `SimulationPanel` + embedded HTML; `POST /v1/programs/simulation` |
 | **Replay** | Trace library, deterministic playback | Replay, time-travel scrub — **Shipped (v0.6+):** React `ReplayPanel` + embedded HTML; `GET /v1/programs/traces`, `POST /v1/programs/replay` |
 | **Audit** | Decision audit trail, compliance evidence | Export evidence packs |
-| **Administration** | RBAC, secrets metadata, API keys | Manage users, roles, integrations — **Shipped (v0.6+):** user directory, API key CRUD, alert channel config UI, secrets/schedules, integrations summary; OpenAPI + JSON-RPC gateway + SDK **0.5.5** parity; **not yet:** external IdP/OIDC sync, Slack OAuth wizard, gRPC reflection |
+| **Administration** | RBAC, secrets metadata, API keys | Manage users, roles, integrations — **Shipped (v0.6+):** user directory, API key CRUD, alert channel config UI, secrets/schedules, integrations summary; OpenAPI + JSON-RPC gateway + SDK **0.5.8** parity; **not yet:** external IdP/OIDC sync, Slack OAuth wizard, gRPC reflection |
 
 ### Evolution from current UI
 
@@ -410,7 +410,7 @@ Diagnosis, Recovery, Security, Configuration, Simulation, Replay, Audit, Adminis
 channels, integrations), operator mission control (`/v1/operator/missions`, pause/resume/cancel),
 program traces (`GET /v1/programs/traces`); gRPC proto **1.0.9** (+17 RPCs); React
 `@davalgi-spanda/web` panels with RBAC tab gating; embedded HTML parity; OpenAPI static spec +
-JSON-RPC gateway routes with RBAC context; SDK **0.5.5** client methods (Rust REST/gRPC, Python,
+JSON-RPC gateway routes with RBAC context; SDK **0.5.8** client methods (Rust REST/gRPC, Python,
 TypeScript).
 
 **Remaining (administration):** none — OIDC and Slack OAuth authorization-code flows shipped.
@@ -673,9 +673,9 @@ Recovery, Health, Mission, and Fleet:
 | **REST** | **Experimental** | `/v1/*` + OpenAPI 3.1 (`GET /v1/openapi.json`); admin/mission/trace routes documented |
 | **gRPC** | **Experimental** | Native tonic `ControlCenter` service (`--grpc-bind`, **139 RPCs**, proto semver **1.0.9**); JSON-RPC gateway (`POST /v1/rpc`) includes admin RPCs with RBAC |
 | **WebSocket** | **Experimental** | `WS /v1/stream/telemetry` live telemetry |
-| **Python** | **Experimental** | `sdk/python` (`pip install spanda-sdk`, **0.5.5**) |
-| **TypeScript** | **Experimental** | `@davalgi-spanda/sdk` (**0.5.5**) |
-| **Rust** | **Experimental** | `spanda-sdk` crate (**0.5.5**); optional `grpc` feature |
+| **Python** | **Experimental** | `sdk/python` (`pip install spanda-sdk`, **0.5.8**) |
+| **TypeScript** | **Experimental** | `@davalgi-spanda/sdk` (**0.5.8**) |
+| **Rust** | **Experimental** | `spanda-sdk` crate (**0.5.8**); optional `grpc` feature |
 
 ### 6.14 Operator Workflows
 

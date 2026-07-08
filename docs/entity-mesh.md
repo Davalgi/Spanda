@@ -68,12 +68,18 @@ Use `--config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` for the
 | `meshFindCapability()` | `POST /v1/mesh/find-capability` | `FindMeshCapability` |
 | — | `POST /v1/mesh/simulate-partition` | `SimulateMeshPartition` |
 
-Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**). Rust `GrpcClient` (`grpc`
-feature):
-`get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`, `get_mesh_health`, `get_mesh_graph`,
-`find_mesh_capability`.
+Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**, **174** RPCs).
 
-REST/SDK reference: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md).
+| Client | Version | Mesh surface |
+|--------|---------|--------------|
+| Rust `SpandaClient` | **0.5.7+** | REST — `mesh_topology()`, `mesh_graph()`, `mesh_discover()`, … |
+| Python `SpandaClient` | **0.5.7+** | REST only (PyPI **0.5.8**) |
+| TypeScript `SpandaClient` | **0.5.7+** | REST — `meshTopology()`, `meshGraph()`, … |
+| Rust `GrpcClient` | **0.5.6+** (`grpc` feature) | `get_mesh_topology`, `get_mesh_health`, `get_mesh_graph`, … |
+| TypeScript `GrpcClient` | **0.5.8+** | `getMeshTopology`, `getMeshHealth`, `getMeshGraph`, … (`@grpc/grpc-js`) |
+
+REST/SDK reference: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md),
+[sdk-typescript.md](./sdk-typescript.md#grpc-client-control-center-tonic).
 
 ## Compatibility rules
 

@@ -8,9 +8,9 @@ runtime crates; the CLI and SDKs call the same APIs.
 
 | SDK | Package | Priority | Status |
 |-----|---------|----------|--------|
-| Rust | [`spanda-sdk`](https://crates.io/crates/spanda-sdk) on crates.io | P0 | Stable (v0.5.5 — publish via `crates-sdk-v0.5.5`; workspace line **0.5.6**) |
-| Python | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) on PyPI | P1 | Stable (v0.5.5 — publish via `sdk-python-v0.5.5`) |
-| TypeScript | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) on npm | P2 | Stable (v0.5.5 published) |
+| Rust | [`spanda-sdk`](https://crates.io/crates/spanda-sdk) on crates.io | P0 | Stable (v0.5.8 — publish via `crates-sdk-v0.5.8`) |
+| Python | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) on PyPI | P1 | Stable (v0.5.8 — publish via `sdk-python-v0.5.8`) |
+| TypeScript | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) on npm | P2 | Stable (v0.5.8 published) |
 | Web panel | [`@davalgi-spanda/web`](https://www.npmjs.com/package/@davalgi-spanda/web) on npm | — | Experimental (publish via `npm-web-v*`) |
 | Desktop | `@spanda/control-center-desktop` (Tauri) | — | Stable (v0.6.3 — publish via `desktop-v0.6.3` GitHub Release) |
 
@@ -181,6 +181,8 @@ All SDKs expose structured errors:
   `ReflexClient`, `HomeostasisClient`, `FusionClient`, …
 - [Recovery Orchestrator SDK](recovery-sdk.md) — `planRecovery`, `getRecoveryPredictive`,
   `listRecoverableEntities`, … (SDK **0.5.6+**)
+- [Entity Mesh SDK](entity-mesh.md#api--sdk) — `meshTopology`, `meshGraph`, `meshDiscover`, …
+  (REST **0.5.7+**; TypeScript `GrpcClient` **0.5.8+**)
 - [Publishing SDKs (PyPI / npm / desktop)](sdk-publishing.md)
 - [Control Center versioning (UI / CLI / desktop releases)](control-center-versioning.md)
 - [Control Center API](control-center-api.md)

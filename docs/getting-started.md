@@ -611,6 +611,28 @@ spanda analyze-failure examples/showcase/self_healing/rover.sd --with-recovery
 
 ---
 
+## Autonomous Entity Mesh (Experimental)
+
+**Entity-level** trust-aware communication and resilience above transports — distinct from
+`spanda fleet mesh start` (HTTP fleet relay).
+
+```bash
+spanda mesh discover --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+spanda mesh health --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+spanda mesh route rover-001 rover-002 --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml
+```
+
+| REST | `GET /v1/mesh/health`, `GET /v1/mesh/topology`, `POST /v1/mesh/discover`, … |
+| SDK | `meshTopology()`, `meshGraph()`, … (REST **0.5.7+**); TypeScript `GrpcClient` mesh RPCs (**0.5.8+**) |
+| Control Center | **Entity Mesh** tab — topology graph, coordinator, Discover/Refresh |
+| Smoke | `./scripts/entity_mesh_smoke.sh` |
+
+Guide: [entity-mesh.md](./entity-mesh.md) · Examples:
+[`examples/showcase/entity_mesh/`](../examples/showcase/entity_mesh/) · Stable promotion:
+[entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md)
+
+---
+
 ## Mission continuity (optional)
 
 Checkpoint resume, takeover, delegation, and succession when a robot or fleet member fails
@@ -845,7 +867,7 @@ See [authentication.md](./authentication.md) for the full production auth checkl
 ### Field soak and stable promotion
 
 Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production
-SDK **0.5.5** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational**
+SDK **0.5.8** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational**
 gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and
 third-party security audit sign-off
 ([security-audit-third-party.md](./security-audit-third-party.md)). See

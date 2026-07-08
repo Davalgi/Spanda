@@ -15,7 +15,7 @@ version line — bump **only the stream whose area changed**.
 | **gRPC proto** | Additive or breaking RPC changes | `crates/spanda-api/proto/spanda/v1/control_center.proto` | *(no tag — pin via `GET /v1/version`)* |
 
 **Rule:** Do **not** bump SDK or desktop when only the workspace changes, and vice versa. Streams
-may diverge (for example workspace `0.6.3`, SDK `0.5.5`, desktop `0.6.3`).
+may diverge (for example workspace `0.6.3`, SDK `0.5.8`, desktop `0.6.3`).
 
 ## Semver component guide (per stream)
 
@@ -108,8 +108,8 @@ Pre-release checks:
 | Stream | Version | Last tag |
 |--------|---------|----------|
 | Workspace / CLI | **0.6.3** | `v0.6.3` |
-| Official SDKs (published) | **0.5.5** | `crates-sdk-v0.5.5`, `sdk-python-v0.5.5`, `npm-sdk-v0.5.5` |
-| Official SDKs (workspace line) | **0.5.6** | *(pending publish)* |
+| Official SDKs (published) | **0.5.8** | `crates-sdk-v0.5.8`, `sdk-python-v0.5.8`, `npm-sdk-v0.5.8` |
+| Official SDKs (workspace line) | **0.5.8** | *(aligned with published)* |
 | Control Center desktop | **0.6.3** | `desktop-v0.6.3` |
 | Official registry packages | **89** | `packages/registry/` → `registry/index.json` |
 

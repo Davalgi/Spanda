@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [entity-mesh-stable-promotion.md](docs/entity-mesh-stable-promotion.md).
 
 - **Documentation version sync:** README, SDK guides, feature-status, ROADMAP, overview docs, and
-  registry READMEs now cite published SDK **0.5.5** (workspace line **0.5.6**), desktop/workspace
+  registry READMEs now cite published SDK **0.5.8**, proto **1.0.15** / **174** RPCs,
+desktop/workspace
   **v0.6.3**, and **89** official registry packages.
 
 - **Wasm32 dependency graph:** `spanda-deploy-http` is now optional behind `fleet-http` in
@@ -101,7 +102,7 @@ workflow.
   `crates/spanda-autonomy/tests/cognitive_resilience_integration.rs` — reflex+homeostasis,
   fusion+readiness, immunity+trust, attention+recovery, memory+replay, damage risk+mission, adaptive
   recovery+orchestrator.
-- **gRPC fusion/memory parity:** proto **1.0.14** adds `GetAutonomyFusion` and `GetAutonomyMemory`;
+- **gRPC fusion/memory parity:** proto **1.0.15** adds `GetAutonomyFusion` and `GetAutonomyMemory`;
   cross-interface and smoke scripts cover domain SDK clients.
 - **Rust `GrpcClient` autonomy RPCs:** `list_autonomy_reflexes`, `get_autonomy_fusion`,
   `get_autonomy_memory`, and related methods; SDK guides updated (`sdk-rust.md`,

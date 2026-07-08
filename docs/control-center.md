@@ -977,7 +977,7 @@ spanda control-center api post /v1/ota/plan --body '{"strategy":"canary","versio
 
 Proto: `crates/spanda-api/proto/spanda/v1/control_center.proto` — package `spanda.v1`. Pin semver
 and RPC count via `GET /v1/version` → `grpc.proto_semver` and `grpc.rpc_count` (currently
-**1.0.14**, **164** RPCs). gRPC reflection is enabled when tonic-reflection is compiled in.
+**1.0.15**, **174** RPCs). gRPC reflection is enabled when tonic-reflection is compiled in.
 
 ```bash
 # Example with grpcurl (reflection or proto file)
@@ -1268,7 +1268,7 @@ Default: log to stderr.
 ## Stable promotion
 
 Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in
-code**. SDKs **0.5.5** (registry; workspace line **0.5.6**) and Control Center desktop **0.6.3**
+code**. SDKs **0.5.8** (registry) and Control Center desktop **0.6.3**
 (`desktop-v0.6.3`, with
 sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining
 organizational gates: third-party security audit sign-off and 30-day field soak. See
@@ -1334,5 +1334,5 @@ production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export,
 monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled
 report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report
 composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs
-**0.5.5**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API
+**0.5.8**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API
 version display.

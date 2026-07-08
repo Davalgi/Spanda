@@ -147,7 +147,7 @@ rt.block_on(async {
 | `get_governance()` | `GetGovernance` |
 | `get_operational_risk()` | `GetOperationalRisk` |
 
-Proto semver **1.0.14+** for autonomy fusion/memory RPCs. REST domain clients (`client.reflex()`,
+Proto semver **1.0.15+** for autonomy fusion/memory RPCs. REST domain clients (`client.reflex()`,
 `client.homeostasis()`, …) remain the default integration path.
 
 REST + `rpc()` remain the default; gRPC requires `--grpc-bind` on Control Center. Set

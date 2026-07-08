@@ -133,7 +133,7 @@ REST: `GET /v1/entities/{id}/autonomy`
 
 ## gRPC
 
-Autonomy REST routes mirror gRPC on Control Center (proto **1.0.14+**): `ListAutonomyReflexes`,
+Autonomy REST routes mirror gRPC on Control Center (proto **1.0.15+**): `ListAutonomyReflexes`,
 `ListAutonomyReflexTraces`, `GetAutonomyHomeostasis`, `GetAutonomyImmunity`, `GetAutonomyAttention`,
 `GetAutonomyFusion`, `GetAutonomyMemory`, `GetEntityAutonomy`.
 

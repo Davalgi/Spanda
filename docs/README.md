@@ -72,6 +72,7 @@ guides, walkthroughs, and example libraries.
 | [configuration.md](./configuration.md) | **Cascading TOML configuration and ResolvedSystemConfig** |
 | [entity-model.md](./entity-model.md) | **Unified Entity Model — foundational platform abstraction** |
 | [entity-mesh.md](./entity-mesh.md) | **Autonomous Entity Mesh — trust-aware inter-entity communication (Experimental)** |
+| [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) | **Entity Mesh Experimental → Stable promotion checklist** |
 | [mesh-topology.md](./mesh-topology.md) | **Mesh topology and discovery** |
 | [mesh-security.md](./mesh-security.md) | **Mesh message security and signed envelopes** |
 | [mesh-partition-handling.md](./mesh-partition-handling.md) | **Partition detection, offline policy, merge** |

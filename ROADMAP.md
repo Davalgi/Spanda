@@ -140,7 +140,7 @@ lifecycle, relationships, and graph semantics.
 | **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Stable** | Now | Core |
 | **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Stable** | Now | Core |
 | **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Stable** | Now | Core |
-| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.5.5** published (entity tier shipped at **0.4.2**) | **Stable** | Now | Core + Control Center |
+| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.5.8** published (entity tier shipped at **0.4.2**) | **Stable** | Now | Core + Control Center |
 
 **Design rule:** Before introducing a new top-level platform abstraction, determine whether it
 should be a new **Entity kind** instead.
@@ -344,7 +344,7 @@ manage continuity.
 | **Takeover** | Resume, restart, partial, shadow, hot, cold, human modes | **Stable** | Now | Core |
 | **Swarm** | Quorum, mesh health, `spanda swarm coordinate` | **Experimental** | Next | Core |
 | **Fleet** | In-process + HTTP agents + mesh telemetry | **Stable** / distributed **Experimental** | Now | Core |
-| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, trust-aware routing above transports | **Experimental** | Now | Core |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), SDK REST **0.5.7+** / TS gRPC **0.5.8+**, Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` | **Experimental** | Now | Core |
 | **OTA** | Deploy plan, rollout, rollback, canary | **Stable** local / remote **Experimental** | Now | Core |
 | **Human entity model** | Roles, identity, certifications (HRI) | **Stable** | Next | Core |
 | **Operator capabilities** | Capability verification for humans | **Stable** | Next | Core |
@@ -552,7 +552,7 @@ tabs. Full spec: [docs/enterprise-operations-roadmap.md
 | **CLI** | `check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, … | **Stable** | Now | Core |
 | **REST API** | `spanda-api` REST v1, OpenAPI | **Stable** | Now | Core |
 | **gRPC** | tonic gRPC (139 RPCs, proto **1.0.9**), program-level + admin SDK parity | **Stable** | Now | Core |
-| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.5.5** — Twin Cloud, Recovery Orchestrator, admin/mission/trace clients; workspace line **0.5.6**) | Now | Core |
+| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.5.8** — Twin Cloud, Recovery Orchestrator, Entity Mesh, admin/mission/trace clients) | Now | Core |
 | **GitHub Pages** | mdBook docs site | **Stable** | Now | Core |
 | **Examples** | 9 bundled demos, showcase library | **Stable** | Now | Core |
 | **Templates** | `spanda init`, project scaffolds | **Stable** | Now | Core |

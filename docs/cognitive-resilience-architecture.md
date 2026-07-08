@@ -216,7 +216,7 @@ Domain clients wrap existing REST endpoints — no duplicate business logic:
 
 `AutonomyClient` remains as a backward-compatible facade. See [entity-sdk.md](./entity-sdk.md).
 
-gRPC parity (proto **1.0.14+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`,
+gRPC parity (proto **1.0.15+**): `ListAutonomyReflexes`, `GetAutonomyHomeostasis`,
 `GetAutonomyImmunity`, `GetAutonomyAttention`, `GetAutonomyFusion`, `GetAutonomyMemory`,
 `GetEntityAutonomy`.
 
