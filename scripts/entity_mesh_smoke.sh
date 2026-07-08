@@ -119,4 +119,8 @@ print("py-sdk mesh smoke ok")
 PY
 fi
 
+echo "== Rust SDK mesh =="
+SPANDA_CONTROL_CENTER_URL="http://${BIND}" \
+  cargo run -q -p spanda-sdk --example entity_mesh
+
 echo "Entity mesh smoke OK"

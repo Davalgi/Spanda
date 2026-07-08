@@ -41,3 +41,7 @@ path = "examples/device_inventory.rs"
 [[example]]
 name = "entity_mutations"
 path = "examples/entity_mutations.rs"
+
+[[example]]
+name = "entity_mesh"
+path = "examples/entity_mesh.rs"

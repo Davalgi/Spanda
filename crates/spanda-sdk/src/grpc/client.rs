@@ -745,6 +745,69 @@ impl GrpcClient {
         Self::parse_json(resp.into_inner().json)
     }
 
+    /// Mesh topology via `GetMeshTopology`.
+    pub async fn get_mesh_topology(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_mesh_topology(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Mesh nodes via `GetMeshNodes`.
+    pub async fn get_mesh_nodes(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_mesh_nodes(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Mesh routes via `GetMeshRoutes`.
+    pub async fn get_mesh_routes(&mut self, query: &str) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_mesh_routes(QueryRequest {
+                query: query.to_string(),
+            })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Mesh health via `GetMeshHealth`.
+    pub async fn get_mesh_health(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_mesh_health(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Mesh graph via `GetMeshGraph`.
+    pub async fn get_mesh_graph(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_mesh_graph(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Find mesh capability via `FindMeshCapability`.
+    pub async fn find_mesh_capability(&mut self, capability: &str) -> SpandaResult<Value> {
+        let body = serde_json::json!({ "capability": capability }).to_string();
+        let resp = self
+            .inner
+            .find_mesh_capability(JsonBodyRequest { body_json: body })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
     /// List platform reflex actions via `ListAutonomyReflexes`.
     pub async fn list_autonomy_reflexes(&mut self) -> SpandaResult<Value> {
         let resp = self
