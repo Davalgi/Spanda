@@ -61,7 +61,9 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 
 <br>
 
-![CI](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
+![CI Fast](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
+![CI Integration](https://github.com/Davalgi/Spanda/actions/workflows/ci-integration.yml/badge.svg)
+![CI Nightly](https://github.com/Davalgi/Spanda/actions/workflows/ci-nightly.yml/badge.svg)
 ![last commit](https://img.shields.io/github/last-commit/Davalgi/Spanda)
 ![commit activity](https://img.shields.io/github/commit-activity/y/Davalgi/Spanda)
 ![contributors](https://img.shields.io/github/contributors/Davalgi/Spanda)
