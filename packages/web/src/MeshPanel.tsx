@@ -7,7 +7,7 @@ import {
   CcSection,
 } from "./controlCenterUi";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
-import { MeshMiniGraph, type MeshGraphPayload } from "./MeshMiniGraph";
+import { MeshMiniGraph, type MeshGraphPayload, type MeshGraphViewMode } from "./MeshMiniGraph";
 
 type MeshNode = {
   entity_id: string;
@@ -72,6 +72,7 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [actionResult, setActionResult] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [graphView, setGraphView] = useState<MeshGraphViewMode>("full");
 
   const meshGraph = useMemo(() => parseMeshGraph(graph), [graph]);
 
@@ -232,7 +233,30 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
         )}
       </CcSection>
 
-      <CcSection title="Topology graph" hint="Purple = coordinator. Red/dashed edges = untrusted or inactive links.">
+      <CcSection
+        title="Topology graph"
+        hint="Full mesh uses force-directed layout. Neighborhood focuses on the selected entity."
+      >
+        {meshGraph && meshGraph.nodes.length > 0 ? (
+          <div className="cc-action-bar mesh-graph-view-toggle">
+            <button
+              type="button"
+              className={graphView === "full" ? "primary" : undefined}
+              disabled={busy}
+              onClick={() => setGraphView("full")}
+            >
+              Full mesh ({meshGraph.nodes.length})
+            </button>
+            <button
+              type="button"
+              className={graphView === "neighborhood" ? "primary" : undefined}
+              disabled={busy}
+              onClick={() => setGraphView("neighborhood")}
+            >
+              Neighborhood
+            </button>
+          </div>
+        ) : null}
         {!meshGraph || meshGraph.nodes.length === 0 ? (
           <CcEmptyState title="No graph data" />
         ) : (
@@ -242,6 +266,7 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
               selectedId={selectedId}
               onSelect={setSelectedId}
               coordinatorId={coordinatorId}
+              mode={graphView}
             />
             <details className="mesh-graph-raw">
               <summary>Raw graph JSON</summary>
