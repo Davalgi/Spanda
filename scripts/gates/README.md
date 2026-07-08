@@ -75,7 +75,7 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | `enterprise_ops_smoke.sh` | Control Center E1–E4 exit criteria |
 | `enterprise_ops_stable_promotion_gate.sh` | Enterprise ops Experimental → Stable (soak + audit + smokes) |
 | `entity_model_smoke.sh` | Unified entity model read + mutation + traceability APIs (REST, TypeScript, Python, Rust SDK) |
-| `entity_mesh_smoke.sh` | Autonomous Entity Mesh CLI + `/v1/mesh/*` REST + TypeScript/Python SDK |
+| `entity_mesh_smoke.sh` | Autonomous Entity Mesh CLI + `/v1/mesh/*` REST + Rust/TypeScript/Python SDK + gRPC mesh RPC test |
 | `entity_model_stable_promotion_gate.sh` | Entity model Experimental → Stable (soak + audit + smokes) |
 | `control_center_desktop_smoke.sh` | Tauri desktop shell |
 | `verify_desktop_release_ready.sh` | Desktop version sync + compile before `desktop-v*` tag |

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for elected coordinator display.
+
 - **Documentation version sync:** README, SDK guides, feature-status, ROADMAP, overview docs, and
   registry READMEs now cite published SDK **0.5.5** (workspace line **0.5.6**), desktop/workspace
   **v0.6.3**, and **89** official registry packages.

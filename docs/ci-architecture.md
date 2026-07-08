@@ -71,7 +71,8 @@ artifact instead of compiling again.
 
 Includes: readme smoke + golden output, core smokes, distributed decisions, cognitive resilience,
 release hardening security/property tests, key golden paths (robotics, telemetry, twin cloud,
-registry, ci-verify, killer demo), solution blueprint smokes, entity model smoke, LSP, WASM, VS Code
+registry, ci-verify, killer demo), solution blueprint smokes, entity model smoke, entity mesh smoke,
+LSP, WASM, VS Code
 extension packaging, and docs/mdBook build.
 
 ---
@@ -219,6 +220,7 @@ names match GitHub Actions UI.
 | `enterprise-ops-smoke` | `enterprise_ops_smoke.sh` |
 | `operational-governance-smoke` | `operational_governance_smoke.sh` (smoke only) |
 | `entity-model-smoke` | `entity_model_smoke.sh` |
+| `entity-mesh-smoke` | `entity_mesh_smoke.sh` (CLI, REST, SDK, gRPC mesh RPC test) |
 | `differentiation-smoke` | `differentiation_smoke.sh` |
 | `lsp` | `@spanda/lsp` build + tests |
 | `wasm` | wasm32 checks + `npm run web:build` |

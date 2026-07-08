@@ -54,16 +54,24 @@ Use `--config crates/spanda-config/tests/fixtures/warehouse/spanda.toml` for the
 
 ## API / SDK
 
-| Method | Endpoint |
-|--------|----------|
-| `meshTopology()` | `GET /v1/mesh/topology` |
-| `meshNodes()` | `GET /v1/mesh/nodes` |
-| `meshRoutes()` | `GET /v1/mesh/routes` |
-| `meshFindCapability()` | `POST /v1/mesh/find-capability` |
-| `meshHealth()` | `GET /v1/mesh/health` |
-| `meshPartitions()` | `GET /v1/mesh/partitions` |
-| — | `POST /v1/mesh/discover` |
-| — | `POST /v1/mesh/simulate-partition` |
+| Method | Endpoint | gRPC RPC |
+|--------|----------|----------|
+| `meshTopology()` | `GET /v1/mesh/topology` | `GetMeshTopology` |
+| `meshNodes()` | `GET /v1/mesh/nodes` | `GetMeshNodes` |
+| `meshRoutes()` | `GET /v1/mesh/routes` | `GetMeshRoutes` |
+| `meshHealth()` | `GET /v1/mesh/health` | `GetMeshHealth` |
+| `meshPartitions()` | `GET /v1/mesh/partitions` | `GetMeshPartitions` |
+| — | `GET /v1/mesh/graph` | `GetMeshGraph` |
+| — | `GET /v1/mesh/merge-report` | `GetMeshMergeReport` |
+| — | `POST /v1/mesh/discover` | `DiscoverMesh` |
+| `meshFindCapability()` | `POST /v1/mesh/find-capability` | `FindMeshCapability` |
+| — | `POST /v1/mesh/simulate-partition` | `SimulateMeshPartition` |
+
+Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**). Rust `GrpcClient` (`grpc` feature):
+`get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`, `get_mesh_health`, `get_mesh_graph`,
+`find_mesh_capability`.
+
+REST/SDK reference: [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md).
 
 ## Compatibility rules
 

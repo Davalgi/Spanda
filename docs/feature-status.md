@@ -130,7 +130,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Replay** | `replay true`, frame buffer, mission traces | In-process only; v2 traces embed state snapshots for `--playback` |
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
-| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, SDK `meshTopology()` … `meshPartitions()`, Control Center Mesh tab; `spanda-entity-mesh` crate | **Experimental** — entity-level trust-aware routing above transports; not packet routing; see [entity-mesh.md](./entity-mesh.md) |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), SDK `meshTopology()` … `meshPartitions()`, Control Center Entity Mesh tab; `spanda-entity-mesh` crate | **Experimental** — entity-level trust-aware routing above transports; not packet routing; see [entity-mesh.md](./entity-mesh.md) |
 | **OTA rollout** | Deploy plan/rollout/rollback/status | Local state file + HTTP deploy agents; `--require-certify` blocks uncertified rollouts |
 | **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
