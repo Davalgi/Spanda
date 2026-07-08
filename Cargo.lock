@@ -2526,6 +2526,7 @@ dependencies = [
  "spanda-diff",
  "spanda-docs",
  "spanda-driver",
+ "spanda-entity-mesh",
  "spanda-error",
  "spanda-estimate",
  "spanda-explain",
@@ -2613,6 +2614,7 @@ dependencies = [
  "spanda-decision",
  "spanda-deploy-http",
  "spanda-driver",
+ "spanda-entity-mesh",
  "spanda-explain",
  "spanda-fleet",
  "spanda-governance",
@@ -2995,6 +2997,25 @@ dependencies = [
  "spanda-runtime-host",
  "spanda-sir",
  "spanda-typecheck",
+]
+
+[[package]]
+name = "spanda-entity-mesh"
+version = "0.6.3"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "spanda-audit",
+ "spanda-capability",
+ "spanda-config",
+ "spanda-decision",
+ "spanda-lexer",
+ "spanda-parser",
+ "spanda-readiness",
+ "spanda-recovery",
+ "spanda-security",
+ "spanda-trust",
 ]
 
 [[package]]

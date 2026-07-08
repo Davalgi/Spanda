@@ -1,0 +1,26 @@
+[package]
+name = "spanda-entity-mesh"
+version.workspace = true
+edition.workspace = true
+description = "Spanda Autonomous Entity Mesh — trust-aware inter-entity communication and resilience"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+homepage.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+spanda-audit = { path = "../spanda-audit" }
+spanda-capability = { path = "../spanda-capability" }
+spanda-config = { path = "../spanda-config" }
+spanda-decision = { path = "../spanda-decision" }
+spanda-readiness = { path = "../spanda-readiness" }
+spanda-recovery = { path = "../spanda-recovery" }
+spanda-security = { path = "../spanda-security" }
+spanda-trust = { path = "../spanda-trust" }
+
+[dev-dependencies]
+spanda-lexer = { path = "../spanda-lexer" }
+spanda-parser = { path = "../spanda-parser" }

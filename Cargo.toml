@@ -67,6 +67,7 @@ members = [
     "crates/spanda-whatif",
     "crates/spanda-risk",
     "crates/spanda-estimate",
+    "crates/spanda-entity-mesh",
     "crates/spanda-compliance",
     "crates/spanda-governance",
     "crates/spanda-adr",
