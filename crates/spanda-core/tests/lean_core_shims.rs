@@ -1167,7 +1167,23 @@ fn fleet_and_ota_are_optional_embedder_features() {
         );
     }
     assert!(manifest.contains("default = [\"full\"]"));
-    assert!(manifest.contains("full = [\"ota\", \"fleet\", \"certify\", \"bridge\"]"));
+    for feature in [
+        "\"ota\"",
+        "\"fleet\"",
+        "\"certify\"",
+        "\"bridge\"",
+        "\"spanda-driver/full\"",
+        "\"spanda-interpreter/fleet-http\"",
+    ] {
+        assert!(
+            manifest.contains(feature),
+            "full feature set should include {feature}"
+        );
+    }
+    assert!(
+        manifest.contains("full = ["),
+        "full feature alias should be declared in Cargo.toml"
+    );
 }
 
 #[test]
