@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Permanent architecture governance:** Architecture Review gate for platform changes — twelve-gate
+  checklist, non-duplication policy, design review process, ADR template ([docs/adr/](docs/adr/)),
+  [architecture proposal](.github/ISSUE_TEMPLATE/architecture-proposal.md) and
+  [PR template](.github/PULL_REQUEST_TEMPLATE.md), and [CONTRIBUTING.md](CONTRIBUTING.md#architecture-review)
+  requirements. ADR [0001](docs/adr/0001-permanent-architecture-governance.md). Start:
+  [docs/architecture-governance.md](docs/architecture-governance.md).
 - **Platform policy feature examples:** minimal
   `examples/features/{decision_tree,recovery_policy,continuity_policy,homeostasis_policy,attention_policy}.sd`
   files; updated feature index, examples hub, README hero snippet,

@@ -280,6 +280,7 @@ Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · V
 | [docs/plugins.md](docs/plugins.md) | Plugin system — install, trust tiers, Control Center panels |
 | [docs/README.md](docs/README.md) | Full documentation index |
 | [docs/ci-architecture.md](docs/ci-architecture.md) | **Tiered CI** — Fast / Integration / Nightly, branch protection |
+| [docs/architecture-governance.md](docs/architecture-governance.md) | **Architecture Review gate** — non-duplication, checklist, ADRs |
 
 CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Language API:
 [docs/spanda-reference.md](docs/spanda-reference.md)
@@ -288,7 +289,8 @@ CLI reference: `spanda man <command>` · [docs/man/](docs/man/README.md) · Lang
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · CI tiers:
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · **Architecture
+Review:** [docs/architecture-governance.md](docs/architecture-governance.md) · CI tiers:
 [docs/ci-architecture.md](docs/ci-architecture.md)
 
 ```bash

@@ -12,6 +12,7 @@ Blueprints**.
 | **Feature truth table** | [docs/feature-status.md](docs/feature-status.md) |
 | **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |
+| **Architecture governance** | [docs/architecture-governance.md](docs/architecture-governance.md) · ADR [0001](docs/adr/0001-permanent-architecture-governance.md) |
 
 **Tiers:** **Stable** (tested, non-mock default) · **Beta** · **Experimental** · **Preview** ·
 **Stubbed** · **Mock-backed** · **Planned** · **Deprecated** — see
@@ -75,6 +76,45 @@ packages.
 | [Repository organization](#repository-organization) | Docs and code layout recommendations |
 | [Documentation index](#documentation-index) | Topic guides by pillar |
 | [Migration notes](#migration-notes) | From `docs/roadmap.md` |
+| [Architecture governance](#architecture-governance) | Review gate, roadmap item requirements |
+
+---
+
+## Architecture governance
+
+**Status:** **Shipped** (2026-07-08) — permanent engineering process, not a release blocker.
+
+Every new platform capability, crate, service, API, SDK, or roadmap item must pass [Architecture
+Review](docs/architecture-governance.md) before merge. Recorded in
+[ADR 0001](docs/adr/0001-permanent-architecture-governance.md).
+
+| Deliverable | Location |
+|-------------|----------|
+| Governance policy | [docs/architecture-governance.md](docs/architecture-governance.md) |
+| Twelve-gate checklist + scorecard | [docs/architecture-review-checklist.md](docs/architecture-review-checklist.md) |
+| Non-duplication policy | [docs/non-duplication-policy.md](docs/non-duplication-policy.md) |
+| Review workflow | [docs/design-review-process.md](docs/design-review-process.md) |
+| Architecture proposal issue | [.github/ISSUE_TEMPLATE/architecture-proposal.md](.github/ISSUE_TEMPLATE/architecture-proposal.md) |
+| Pull request template | [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) |
+| Contributor requirements | [CONTRIBUTING.md](CONTRIBUTING.md#architecture-review) |
+
+### Roadmap item requirements (new items)
+
+Every **new** roadmap item must include these sections before acceptance:
+
+| Section | Content |
+|---------|---------|
+| **Problem** | User pain, production scenario, measurable value |
+| **Architecture fit** | Layer: runtime, service, provider, package, SDK, CLI, Control Center, blueprint |
+| **Entity integration** | How the Unified Entity Model is used |
+| **Existing capability extended** | Prefer extend over create |
+| **Duplication analysis** | Crates, packages, APIs searched; justify if new component needed |
+| **Security review** | Trust, authority, immunity, attack surface |
+| **Test plan** | Unit, integration, CI tier |
+| **Demo plan** | Example, CLI, SDK, Control Center, or recorded walkthrough |
+| **Release impact** | Complexity, footprint, stream (workspace / sdk / desktop) |
+
+Existing roadmap rows may be backfilled when edited; bulk rewrite is not required.
 
 ---
 
@@ -1242,6 +1282,7 @@ Integration job: `differentiation-smoke`) — **met**. Marketplace publish remai
 | Property-style parser/manifest/config tests | **Shipped** |
 | Release blockers RB-001–RB-012 (code) | **Fixed or mitigated** — see [release-blockers.md](docs/release-blockers.md) |
 | Feature-status honesty (mock-default AI) | **Shipped** |
+| Permanent architecture governance | **Shipped** — [architecture-governance.md](docs/architecture-governance.md) · [ADR 0001](docs/adr/0001-permanent-architecture-governance.md) |
 | Organizational gates RB-007 | **Open** — [organizational-gates.md](docs/organizational-gates.md) |
 
 **Exit criteria:** [release-readiness.md](docs/release-readiness.md) **Go with documented

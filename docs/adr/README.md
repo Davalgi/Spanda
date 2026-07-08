@@ -36,7 +36,7 @@ Minor bug fixes and internal refactors without contract changes do not require A
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
-| — | *(no ADRs yet — use template for first decision)* | — | — |
+| [0001](./0001-permanent-architecture-governance.md) | Permanent Architecture Governance | Accepted | 2026-07-08 |
 
 ---
 
