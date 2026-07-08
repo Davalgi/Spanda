@@ -68,6 +68,8 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 ![commit activity](https://img.shields.io/github/commit-activity/y/Davalgi/Spanda)
 ![contributors](https://img.shields.io/github/contributors/Davalgi/Spanda)
 ![stars](https://img.shields.io/github/stars/Davalgi/Spanda?style=social)
+![forks](https://img.shields.io/github/forks/Davalgi/Spanda?style=social)
+![watchers](https://img.shields.io/github/watchers/Davalgi/Spanda?style=social)
 ![open issues](https://img.shields.io/github/issues/Davalgi/Spanda)
 ![open PRs](https://img.shields.io/github/issues-pr/Davalgi/Spanda)
 ![top language](https://img.shields.io/github/languages/top/Davalgi/Spanda)
