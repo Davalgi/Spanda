@@ -28,7 +28,7 @@ in `docs/feature-status.md`.
 |------|--------|
 | 30-day field soak (shared clock with enterprise ops) | ⏳ |
 | External security audit sign-off | ⏳ |
-| SDK publish with full mesh REST + gRPC surface | ⏳ |
+| SDK publish with full mesh REST + gRPC surface | ✅ **0.5.7** tagged (2026-07-08) — see [SDK publish](#sdk-publish) |
 | `docs/feature-status.md` → **Stable** | ⏳ |
 
 ---
@@ -65,3 +65,23 @@ CI Nightly job: `entity-mesh-promotion-gate` (soak/audit skipped).
 - Coordinator = **communication role only**
 
 See [entity-mesh.md](./entity-mesh.md#compatibility-rules).
+
+---
+
+## SDK publish
+
+| Package | Version | Tag | Registry |
+|---------|---------|-----|----------|
+| `spanda-sdk` (Rust) | `0.5.7` | `crates-sdk-v0.5.7` | [crates.io](https://crates.io/crates/spanda-sdk) |
+| `spanda-sdk` (Python) | `0.5.7` | `sdk-python-v0.5.7` | [PyPI](https://pypi.org/project/spanda-sdk/) |
+| `@davalgi-spanda/sdk` (npm) | `0.5.7` | `npm-sdk-v0.5.7` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+
+Mesh additions in **0.5.7:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`, `mesh_simulate_partition`
+(Rust `GrpcClient` mesh RPCs ship with the `grpc` feature on **0.5.6+**).
+
+```bash
+./scripts/verify_sdk_publish_ready.sh
+./scripts/publish_sdk_release.sh   # tags + push → GitHub Actions publish
+```
+
+See [sdk-publishing.md](./sdk-publishing.md).
