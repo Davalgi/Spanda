@@ -47,6 +47,11 @@ guides, walkthroughs, and example libraries.
 | [ci-verify.md](./ci-verify.md) | **Customer CI templates for `spanda verify`** |
 | [architecture.md](./architecture.md) | **Compiler pipeline with diagrams** |
 | [platform-architecture.md](./platform-architecture.md) | **Platform Architecture v2.0 — layers, governance, validation** |
+| [architecture-governance.md](./architecture-governance.md) | **Permanent Architecture Review gate — principles, quality gate, roadmap rule** |
+| [architecture-review-checklist.md](./architecture-review-checklist.md) | **Twelve-gate checklist and Architecture Scorecard** |
+| [non-duplication-policy.md](./non-duplication-policy.md) | **Non-duplication policy — extend before create** |
+| [design-review-process.md](./design-review-process.md) | **Design review workflow — proposal through merge** |
+| [adr/README.md](./adr/README.md) | **Architecture Decision Records (ADRs)** |
 | [layered-architecture.md](./layered-architecture.md) | **Official layer stack and crate mapping** |
 | [dependency-rules.md](./dependency-rules.md) | **Dependency rules, waiver process, anti-patterns** |
 | [module-ownership.md](./module-ownership.md) | **Module ownership matrix** |

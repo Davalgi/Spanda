@@ -3,6 +3,9 @@ contact_links:
   - name: Documentation
     url: https://github.com/Davalgi/Spanda/blob/main/docs/README.md
     about: Read the Spanda documentation
+  - name: Architecture Governance
+    url: https://github.com/Davalgi/Spanda/blob/main/docs/architecture-governance.md
+    about: Architecture Review gate and non-duplication policy
   - name: Feature Status
     url: https://github.com/Davalgi/Spanda/blob/main/docs/feature-status.md
     about: Check what is stable vs experimental

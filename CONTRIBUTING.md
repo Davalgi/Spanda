@@ -14,6 +14,9 @@ safety-first programming language at its core.
   template](.github/ISSUE_TEMPLATE/language_proposal.yml)
 - **Package proposals** — use the [package proposal
   template](.github/ISSUE_TEMPLATE/package_proposal.yml)
+- **Architecture proposals** — use the [architecture proposal
+  template](.github/ISSUE_TEMPLATE/architecture-proposal.md) for new platform capabilities,
+  crates, services, APIs, or cross-cutting design changes
 - **Documentation** — fix typos, improve guides, add examples
 - **Examples** — add `.sd` programs that demonstrate real use cases
 - **Tests** — expand coverage for CLI, safety, verification, communication
@@ -178,6 +181,75 @@ Crate dependency rule: first-party apps (`spanda-cli`, `spanda-node`, `spanda-wa
 
 ---
 
+## Architecture review
+
+Permanent governance for platform coherence and non-duplication. **Every architectural change must
+pass Architecture Review before merge.**
+
+**Start here:** [docs/architecture-governance.md](docs/architecture-governance.md)
+
+### When review is required
+
+Architecture Review is mandatory before implementing or merging:
+
+- New **platform services** or **runtime components**
+- New **communication layers** or transport abstractions
+- New or **breaking APIs** (REST, gRPC, CLI JSON)
+- New **SDK** surfaces (Rust, Python, TypeScript together)
+- New **workspace crates** under `crates/`
+- New **architecture diagrams** or layer changes
+- New **roadmap items** with platform scope
+- New **Control Center** features with platform impact
+- **Provider**, **plugin**, or **official package** changes that expand platform contracts
+
+Bug fixes, typos, and internal refactors with no contract change do not require a formal proposal —
+but the [PR template](.github/PULL_REQUEST_TEMPLATE.md) still applies when in doubt.
+
+### How to propose
+
+1. Open an [architecture proposal](.github/ISSUE_TEMPLATE/architecture-proposal.md) **before** large
+   implementation work.
+2. Complete the twelve gates in
+   [docs/architecture-review-checklist.md](docs/architecture-review-checklist.md).
+3. Perform duplication search per
+   [docs/non-duplication-policy.md](docs/non-duplication-policy.md).
+4. Wait for Architecture Review outcome (**Recommend** or better) before large builds.
+5. For **significant** decisions, add an ADR under [docs/adr/](docs/adr/) using
+   [docs/adr/template.md](docs/adr/template.md).
+
+Process details: [docs/design-review-process.md](docs/design-review-process.md).
+
+### Pull requests
+
+All PRs use [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md). Architecture-affecting
+PRs must link the approved issue or ADR and confirm the [quality
+gate](docs/architecture-governance.md#quality-gate):
+
+- Architecture Review completed
+- Duplication Analysis completed
+- Security Review completed (when applicable)
+- Compatibility Review completed
+- Entity Integration documented
+- Tests planned or added
+- Documentation updated
+- ADR created (major changes)
+
+### Roadmap items
+
+New items in [ROADMAP.md](ROADMAP.md) must include: Problem, Architecture Fit, Entity Integration,
+Existing Capability Extended, Duplication Analysis, Security Review, Test Plan, Demo Plan, and Release
+Impact. See [architecture-governance.md#roadmap-rule](docs/architecture-governance.md#roadmap-rule).
+
+### Principles (summary)
+
+Extend before creating · Reuse before duplicating · Prefer providers and packages over core expansion
+· Prefer Entity integration · Prefer additive API changes · Every feature demonstrable · Every
+capability testable · Every significant decision documented in an ADR.
+
+Full list: [docs/architecture-governance.md#architecture-principles](docs/architecture-governance.md#architecture-principles).
+
+---
+
 ## How to add a language feature
 
 1. **Propose first** — open a [language proposal](.github/ISSUE_TEMPLATE/language_proposal.yml) for
@@ -220,6 +292,7 @@ After major work, review and update every file that applies:
 | `docs/getting-started.md` | New commands, workflows, or demo paths |
 | `docs/README.md` | New guides or doc index changes |
 | `docs/platform-architecture.md` | Layer rules, CI governance, dependency policy |
+| `docs/architecture-governance.md` | Architecture Review gate, principles, quality gate |
 | `docs/architecture-waiver-burn-down.md` | Waiver baseline changes (should remain at 0) |
 
 Topic-specific docs (update when the area changed):
@@ -312,13 +385,15 @@ python3 scripts/bump_version.py patch --stream desktop --dry-run
 ## Pull request process
 
 1. Fork the repository and create a feature branch
-2. Make focused changes with tests
-3. Run `./scripts/ci-fast.sh` locally (or the individual commands in
+2. For platform or architectural changes, complete [Architecture review](#architecture-review) first
+3. Make focused changes with tests
+4. Run `./scripts/ci-fast.sh` locally (or the individual commands in
    [docs/ci-architecture.md](docs/ci-architecture.md))
-4. Open a PR against `main` with a clear description
-5. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk,
+5. Open a PR against `main` using the [PR template](.github/PULL_REQUEST_TEMPLATE.md)
+6. **CI Fast** must pass (lint-rust, test-rust, test-typescript, test-python-sdk, test-ts-sdk,
    cross-surface-check, cross-interface)
-6. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking
+7. Architecture-affecting PRs must pass the [quality gate](docs/architecture-governance.md#quality-gate)
+8. After merge to `main`, **CI Integration** runs automatically — keep `main` green before stacking
    more work
 
 Cross-surface API changes: follow the checklist in

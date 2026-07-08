@@ -2,7 +2,8 @@
 
 Guiding principles for Spanda Platform architecture and contribution decisions.
 
-**Parent:** [platform-architecture.md](./platform-architecture.md)
+**Parent:** [platform-architecture.md](./platform-architecture.md) ·
+**Governance:** [architecture-governance.md](./architecture-governance.md)
 
 ---
 
@@ -121,6 +122,8 @@ path requiring architecture review — not a permanent escape hatch.
 
 Before merging a feature, confirm:
 
+- [ ] Architecture Review completed for platform or API changes ([architecture-governance.md](./architecture-governance.md))
+- [ ] Duplication analysis completed ([non-duplication-policy.md](./non-duplication-policy.md))
 - [ ] Module assigned to a layer and owner in the manifest
 - [ ] No new upward dependencies (or waiver with ticket)
 - [ ] No new SCC members
@@ -128,3 +131,4 @@ Before merging a feature, confirm:
 - [ ] Events emitted for operational state changes
 - [ ] Docs updated for user-visible behavior
 - [ ] Blueprints unchanged unless composing the feature
+- [ ] ADR added for significant architectural decisions ([adr/README.md](./adr/README.md))

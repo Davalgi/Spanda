@@ -166,6 +166,11 @@ then reference it from the blueprint.
 Architecture governance is enforced by `scripts/validate_architecture.py` in **CI Fast**
 (`lint-rust`). Tier map: [ci-architecture.md](./ci-architecture.md).
 
+**Human review:** Automated checks enforce layer rules and dependency direction. Intent, duplication,
+and cross-cutting fit are governed by the permanent [Architecture Review
+process](./architecture-governance.md) — see [architecture-review-checklist.md](./architecture-review-checklist.md)
+and [non-duplication-policy.md](./non-duplication-policy.md).
+
 | Check | Behavior |
 |-------|----------|
 | Module classification | Every workspace crate must appear in `scripts/architecture-manifest.yaml` |
@@ -221,6 +226,11 @@ completed burn-down history.
 | [platform-services.md](./platform-services.md) | Service responsibilities and boundaries |
 | [event-model.md](./event-model.md) | Common event schema and publishers |
 | [design-principles.md](./design-principles.md) | Guiding principles for contributors |
+| [architecture-governance.md](./architecture-governance.md) | Permanent Architecture Review gate and quality gate |
+| [architecture-review-checklist.md](./architecture-review-checklist.md) | Twelve-gate checklist and scorecard |
+| [non-duplication-policy.md](./non-duplication-policy.md) | Extend-before-create duplication policy |
+| [design-review-process.md](./design-review-process.md) | Proposal-through-merge review workflow |
+| [adr/README.md](./adr/README.md) | Architecture Decision Records |
 | [architecture-waiver-burn-down.md](./architecture-waiver-burn-down.md) | Completed waiver burn-down history (Phases 1–8) |
 | [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) | Functional responsibility domains |
 | [functional-domains.md](./functional-domains.md) | Eleven domain definitions |
