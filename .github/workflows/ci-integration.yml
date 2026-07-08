@@ -49,8 +49,10 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: ./.github/actions/setup-rust
       - uses: ./.github/actions/fetch-or-build-spanda
+        id: fetch-spanda
         with:
-          source-run-id: ${{ github.event.workflow_run.id }}
+          source-run-id: ${{ github.event.workflow_run.id || '' }}
+          require-download: ${{ github.event_name == 'workflow_run' && 'true' || 'false' }}
 
   docs-build:
     needs: prepare-spanda

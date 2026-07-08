@@ -36,10 +36,16 @@ inputs:
     description: Days to retain the uploaded artifact
     required: false
     default: "1"
+  require-download:
+    description: >-
+      Fail when no artifact could be downloaded instead of compiling locally.
+      Use on CI Integration so smokes always run the CI Fast release binary.
+    required: false
+    default: "false"
 
 outputs:
   source:
-    description: How the binary was obtained (download-run, download-search, build)
+    description: How the binary was obtained (download-run, download-search, download-search-fallback, build)
     value: ${{ steps.resolve.outputs.source }}
 
 runs:
@@ -56,10 +62,18 @@ runs:
         SOURCE_SHA: ${{ inputs.source-sha }}
         SOURCE_BRANCH: ${{ inputs.source-branch }}
         FALLBACK_SOURCE_WORKFLOW: ${{ inputs.fallback-source-workflow }}
+        REQUIRE_DOWNLOAD: ${{ inputs.require-download }}
         REPOSITORY: ${{ github.repository }}
       run: |
         set -euo pipefail
         mkdir -p target/release
+
+        fail_require_download() {
+          if [[ "$REQUIRE_DOWNLOAD" == "true" ]]; then
+            echo "$1" >&2
+            exit 1
+          fi
+        }
 
         try_download_run() {
           local run_id="$1"
@@ -86,22 +100,43 @@ runs:
         }
 
         SOURCE="build"
+        DOWNLOAD_ATTEMPTED="false"
 
         if [[ -n "$SOURCE_RUN_ID" ]]; then
+          DOWNLOAD_ATTEMPTED="true"
           if try_download_run "$SOURCE_RUN_ID"; then
             SOURCE="download-run"
+          else
+            fail_require_download \
+              "Failed to download artifact '$ARTIFACT_NAME' from workflow run $SOURCE_RUN_ID."
           fi
         elif [[ -n "$SOURCE_WORKFLOW" && -n "$SOURCE_SHA" ]]; then
+          DOWNLOAD_ATTEMPTED="true"
           if try_download_search "$SOURCE_WORKFLOW"; then
             SOURCE="download-search"
           elif [[ -n "$FALLBACK_SOURCE_WORKFLOW" ]] && try_download_search "$FALLBACK_SOURCE_WORKFLOW"; then
             SOURCE="download-search-fallback"
+          else
+            fail_require_download \
+              "Failed to download artifact '$ARTIFACT_NAME' for commit $SOURCE_SHA from workflows $SOURCE_WORKFLOW${FALLBACK_SOURCE_WORKFLOW:+, $FALLBACK_SOURCE_WORKFLOW}."
           fi
+        elif [[ "$REQUIRE_DOWNLOAD" == "true" ]]; then
+          echo "require-download is enabled but no source-run-id or source-workflow/source-sha was provided." >&2
+          exit 1
         fi
 
         if [[ ! -x target/release/spanda ]]; then
+          if [[ "$DOWNLOAD_ATTEMPTED" == "true" ]]; then
+            fail_require_download \
+              "Artifact download completed but target/release/spanda is missing or not executable."
+          fi
           cargo build -p spanda --release
           SOURCE="build"
+        fi
+
+        if [[ "$REQUIRE_DOWNLOAD" == "true" && "$SOURCE" == "build" ]]; then
+          echo "require-download is enabled but the binary was not obtained from an artifact download." >&2
+          exit 1
         fi
 
         chmod +x target/release/spanda

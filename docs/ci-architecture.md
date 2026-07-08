@@ -63,9 +63,9 @@ Optional pre-push hook (fmt + cross-surface only):
 
 Triggered by `workflow_run` after **CI Fast** completes successfully on a `main` push.
 
-Reuses the `spanda-bin` artifact from the triggering CI Fast run when available (via
-`.github/actions/fetch-or-build-spanda`); falls back to a local release build if the download fails.
-Uploads the resolved binary once for smoke and golden-path jobs (no per-job release compiles).
+Reuses the `spanda-bin` artifact from the triggering CI Fast run (**required** — no silent
+rebuild; `prepare-spanda` fails if the artifact is missing). Manual `workflow_dispatch` may still
+compile locally when no source run is provided.
 Job `prepare-spanda` downloads from CI Fast when possible; `docs-build` waits on it and reuses the
 artifact instead of compiling again.
 
@@ -100,7 +100,7 @@ All three tiers share [`.github/actions/fetch-or-build-spanda`](../.github/actio
 | Workflow | Binary source |
 |----------|----------------|
 | **CI Fast** | Always compiles (source of truth for PRs and `main` pushes) |
-| **CI Integration** | Downloads from the triggering CI Fast run; builds on miss |
+| **CI Integration** | Downloads from the triggering CI Fast run (**required** on `workflow_run`; fails on miss) |
 | **CI Nightly** | Downloads from latest green CI Integration for `HEAD`, then CI Fast; builds on miss |
 
 Each workflow still uploads `spanda-bin` for its own downstream jobs via
@@ -200,7 +200,7 @@ names match GitHub Actions UI.
 
 | Job | Script / check |
 |-----|----------------|
-| `prepare-spanda` | `fetch-or-build-spanda` (download from CI Fast, else compile) → artifact |
+| `prepare-spanda` | `fetch-or-build-spanda` (`require-download` from triggering CI Fast run) → artifact |
 | `core-smokes` | `readiness_smoke`, `sdk_smoke`, `check_all_examples`, readme smoke + golden |
 | `docs-build` | `cargo doc`, mdBook, `generate_spanda_reference.py` |
 | `distributed-decisions` | `distributed_decisions_smoke.sh` |
