@@ -441,7 +441,10 @@ pub struct MeshHealthReport {
     pub reachable_nodes: u32,
     pub offline_nodes: Vec<String>,
     pub degraded_links: Vec<String>,
+    /// Recorded partition events (simulate/offline policy), not mere topology splits.
     pub active_partitions: u32,
+    /// Disconnected reachable clusters in current topology.
+    pub topology_components: u32,
     pub coordinator_status: Option<MeshCoordinatorStatus>,
     pub average_trust_score: f64,
     pub average_latency_ms: u32,

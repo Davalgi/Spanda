@@ -95,6 +95,10 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
           { label: "Reachable", value: String(health?.reachable_nodes ?? "—") },
           { label: "Partitions", value: String(health?.active_partitions ?? 0) },
           {
+            label: "Components",
+            value: String((health as { topology_components?: number })?.topology_components ?? 0),
+          },
+          {
             label: "Avg trust",
             value:
               health?.average_trust_score != null

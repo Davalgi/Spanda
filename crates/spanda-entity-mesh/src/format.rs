@@ -64,6 +64,10 @@ pub fn format_health(health: &MeshHealthReport, format: MeshFormat) -> String {
                 "Active partitions: {}\n",
                 health.active_partitions
             ));
+            out.push_str(&format!(
+                "Topology components: {}\n",
+                health.topology_components
+            ));
             if !health.offline_nodes.is_empty() {
                 out.push_str(&format!("Offline: {}\n", health.offline_nodes.join(", ")));
             }

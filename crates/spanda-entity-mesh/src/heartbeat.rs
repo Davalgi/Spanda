@@ -58,8 +58,9 @@ pub fn evaluate_mesh_health(mesh: &EntityMesh, policy: &MeshHeartbeatPolicy) -> 
         .map(|l| format!("{}->{}", l.from_entity, l.to_entity))
         .collect();
 
-    let partitions = detect_partitions(mesh);
-    let active_partitions = partitions.len() as u32;
+    let topology_splits = detect_partitions(mesh);
+    let active_partitions = mesh.partitions.iter().filter(|p| p.active).count() as u32;
+    let topology_components = topology_splits.len() as u32;
 
     let avg_trust = if mesh.nodes.is_empty() {
         0.0
@@ -83,6 +84,9 @@ pub fn evaluate_mesh_health(mesh: &EntityMesh, policy: &MeshHeartbeatPolicy) -> 
     if active_partitions > 0 {
         issues.push(format!("{active_partitions} active partition(s)"));
     }
+    if topology_components > 0 && active_partitions == 0 {
+        issues.push(format!("{topology_components} topology component(s)"));
+    }
     if avg_trust < policy.trust_degradation_threshold {
         issues.push("mesh trust degraded".into());
     }
@@ -96,6 +100,7 @@ pub fn evaluate_mesh_health(mesh: &EntityMesh, policy: &MeshHeartbeatPolicy) -> 
         offline_nodes: offline,
         degraded_links,
         active_partitions,
+        topology_components,
         coordinator_status: mesh.coordinator.as_ref().map(|c| c.status.clone()),
         average_trust_score: avg_trust,
         average_latency_ms: avg_latency,

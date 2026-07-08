@@ -379,6 +379,26 @@ jobs:
       - run: chmod +x scripts/entity_model_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_model_smoke.sh
 
+  entity-mesh-smoke:
+    needs: prepare-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: npm ci
+      - run: chmod +x scripts/entity_mesh_smoke.sh
+      - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_mesh_smoke.sh
+
   differentiation-smoke:
     needs: prepare-spanda
     runs-on: ubuntu-latest

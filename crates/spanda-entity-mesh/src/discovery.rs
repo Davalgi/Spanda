@@ -1,5 +1,6 @@
 //! Entity mesh registry, discovery, and topology management.
 //!
+use crate::election::{apply_coordinator, elect_coordinator, MeshElectionOptions};
 use crate::types::*;
 use spanda_config::entity::{
     EntityGraph, EntityHealthStatus, EntityRecord, EntityRegistry,
@@ -214,6 +215,9 @@ pub fn build_entity_mesh(registry: &EntityRegistry, mesh_id: &str) -> EntityMesh
     };
     apply_discovery(&mut mesh, &discovery);
     refresh_capability_ads(&mut mesh);
+    if let Ok(coordinator) = elect_coordinator(&mesh, &MeshElectionOptions::default()) {
+        apply_coordinator(&mut mesh, coordinator);
+    }
     mesh
 }
 
