@@ -192,6 +192,27 @@ npm
 
 Entity CLI commands require a project `spanda.toml` or `--config` (warehouse fixture above).
 
+### Autonomous Entity Mesh (Experimental)
+
+**Entity-level** trust-aware communication and resilience above transports — not packet routing.
+
+```text
+Transport (MQTT, DDS, ROS2, BLE, …)
+        ↓
+Spanda Entity Mesh
+        ↓
+Entity Graph → Recovery / Mission / Readiness
+```
+
+- **Discover:** `spanda mesh discover --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml`
+- **Route:** `spanda mesh route <source> <target> --config …`
+- **Health:** `spanda mesh health` · Control Center **Mesh** tab · `GET /v1/mesh/health`
+
+Guide: [docs/entity-mesh.md](docs/entity-mesh.md) · Examples:
+[examples/showcase/entity_mesh/](examples/showcase/entity_mesh/)
+
+Note: `spanda fleet mesh start` is the separate **fleet HTTP relay** coordinator.
+
 ---
 
 ## Quick start

@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Autonomous Entity Mesh (Experimental):** `spanda-entity-mesh` crate — trust-aware inter-entity
+  discovery, capability routing, partition handling, coordinator election, mission delegation
+  (via Recovery Orchestrator), secure messaging integration, CLI (`spanda mesh *`), REST
+  (`/v1/mesh/*`), Rust + TypeScript SDK methods, Control Center Mesh tab, examples under
+  `examples/showcase/entity_mesh/`, and docs ([entity-mesh.md](docs/entity-mesh.md)).
+
 - **Permanent architecture governance:** Architecture Review gate for platform changes — twelve-gate
   checklist, non-duplication policy, design review process, ADR template ([docs/adr/](docs/adr/)),
   [architecture proposal](.github/ISSUE_TEMPLATE/architecture-proposal.md) and

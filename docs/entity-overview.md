@@ -42,6 +42,7 @@ spanda entity readiness rover-001 --config "$CONFIG"
 | [entity-sdk.md](./entity-sdk.md) | Rust, TypeScript, and Python clients |
 | [entity-registry.md](./entity-registry.md) | Registry projection and inventory |
 | [entity-graph.md](./entity-graph.md) | Graph traversal and impact analysis |
+| [entity-mesh.md](./entity-mesh.md) | Autonomous Entity Mesh (Experimental) |
 | [entity-relationships.md](./entity-relationships.md) | Relationship taxonomy |
 | [entity-query-language.md](./entity-query-language.md) | Structured queries |
 | [entity-verification.md](./entity-verification.md) | `verify_entity` |

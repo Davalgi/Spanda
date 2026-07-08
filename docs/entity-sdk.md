@@ -48,6 +48,19 @@ Smoke test (all three SDKs): `scripts/entity_model_smoke.sh`
 | Relate | `relate_entities(&json)` | `relateEntities(body)` | `relate_entities(body)` | `relate_entities(&json)` |
 | Sync | `sync_entities()` | `syncEntities()` | `sync_entities()` | `sync_entities()` |
 
+### Autonomous Entity Mesh (Experimental)
+
+| Operation | Rust `SpandaClient` | TypeScript | Python |
+|-----------|---------------------|------------|--------|
+| Topology | `mesh_topology()` | `meshTopology()` | `mesh_topology()` |
+| Nodes | `mesh_nodes()` | `meshNodes()` | `mesh_nodes()` |
+| Routes | `mesh_routes()` | `meshRoutes()` | `mesh_routes()` |
+| Find capability | `mesh_find_capability(cap)` | `meshFindCapability(cap)` | `mesh_find_capability(cap)` |
+| Health | `mesh_health()` | `meshHealth()` | `mesh_health()` |
+| Partitions | `mesh_partitions()` | `meshPartitions()` | `mesh_partitions()` |
+
+See [entity-mesh.md](./entity-mesh.md).
+
 ### Smart Spaces (Control Center blueprint)
 
 | Operation | Rust `SpandaClient` | TypeScript | Python |

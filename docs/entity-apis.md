@@ -42,6 +42,26 @@ Every JSON response includes `"version": "v1"`. Pin gRPC clients with `GET /v1/v
 | `POST` | `/v1/entities/relationships` | `RelateEntities` | Bearer |
 | `POST` | `/v1/entities/sync` | `SyncEntities` | Bearer |
 
+## Autonomous Entity Mesh (Experimental)
+
+Entity-level trust-aware communication above transports. Full reference:
+[entity-mesh.md](./entity-mesh.md). Implementation: `crates/spanda-api/src/mesh_ops.rs`.
+
+| Method | Path | Auth |
+|--------|------|------|
+| `GET` | `/v1/mesh/topology` | — |
+| `GET` | `/v1/mesh/nodes` | — |
+| `GET` | `/v1/mesh/routes` | — |
+| `GET` | `/v1/mesh/partitions` | — |
+| `GET` | `/v1/mesh/health` | — |
+| `GET` | `/v1/mesh/graph` | — |
+| `GET` | `/v1/mesh/merge-report` | — |
+| `POST` | `/v1/mesh/discover` | — |
+| `POST` | `/v1/mesh/find-capability` | — |
+| `POST` | `/v1/mesh/simulate-partition` | — |
+
+CLI parity: `spanda mesh discover|list|health|route|find|…`
+
 ## List and query
 
 ### `GET /v1/entities`

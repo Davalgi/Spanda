@@ -344,6 +344,7 @@ manage continuity.
 | **Takeover** | Resume, restart, partial, shadow, hot, cold, human modes | **Stable** | Now | Core |
 | **Swarm** | Quorum, mesh health, `spanda swarm coordinate` | **Experimental** | Next | Core |
 | **Fleet** | In-process + HTTP agents + mesh telemetry | **Stable** / distributed **Experimental** | Now | Core |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, trust-aware routing above transports | **Experimental** | Now | Core |
 | **OTA** | Deploy plan, rollout, rollback, canary | **Stable** local / remote **Experimental** | Now | Core |
 | **Human entity model** | Roles, identity, certifications (HRI) | **Stable** | Next | Core |
 | **Operator capabilities** | Capability verification for humans | **Stable** | Next | Core |

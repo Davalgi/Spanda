@@ -71,6 +71,13 @@ guides, walkthroughs, and example libraries.
 | [how-packages-work.md](./how-packages-work.md) | **Package loading pipeline, provenance, and CLI workflow** |
 | [configuration.md](./configuration.md) | **Cascading TOML configuration and ResolvedSystemConfig** |
 | [entity-model.md](./entity-model.md) | **Unified Entity Model — foundational platform abstraction** |
+| [entity-mesh.md](./entity-mesh.md) | **Autonomous Entity Mesh — trust-aware inter-entity communication (Experimental)** |
+| [mesh-topology.md](./mesh-topology.md) | **Mesh topology and discovery** |
+| [mesh-security.md](./mesh-security.md) | **Mesh message security and signed envelopes** |
+| [mesh-partition-handling.md](./mesh-partition-handling.md) | **Partition detection, offline policy, merge** |
+| [mesh-leader-election.md](./mesh-leader-election.md) | **Mesh coordinator election (communication role only)** |
+| [mesh-capability-routing.md](./mesh-capability-routing.md) | **Capability-based mesh routing** |
+| [mesh-sync.md](./mesh-sync.md) | **Mesh state synchronization (no secrets)** |
 | [entity-overview.md](./entity-overview.md) | **Entity model overview and documentation map** |
 | [entity-apis.md](./entity-apis.md) | **Entity REST and gRPC API reference** |
 | [entity-sdk.md](./entity-sdk.md) | **Entity SDK — Rust, TypeScript, Python** |
