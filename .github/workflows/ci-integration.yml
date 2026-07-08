@@ -40,7 +40,7 @@ jobs:
     steps:
       - run: echo "CI Fast passed on main; running integration tier."
 
-  build-spanda:
+  prepare-spanda:
     needs: gate
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +53,7 @@ jobs:
           source-run-id: ${{ github.event.workflow_run.id }}
 
   docs-build:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,7 +77,7 @@ jobs:
           ./mdbook build docs-site
 
   core-smokes:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -98,7 +98,7 @@ jobs:
           ./tests/readme_commands/run.sh --golden
 
   distributed-decisions:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -113,7 +113,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/distributed_decisions_smoke.sh
 
   bio-inspired-autonomy:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -128,7 +128,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/cognitive_resilience_smoke.sh
 
   release-hardening:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -154,7 +154,7 @@ jobs:
       - run: cargo test -p spanda-capability --test property_registry
 
   robotics-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -171,7 +171,7 @@ jobs:
           ./examples/robotics/golden_path_deploy.sh
 
   telemetry-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -188,7 +188,7 @@ jobs:
           ./scripts/telemetry_store_golden_path.sh
 
   twin-cloud-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -206,7 +206,7 @@ jobs:
           ./scripts/hosted_twin_cloud_smoke.sh
 
   registry-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -222,7 +222,7 @@ jobs:
           ./scripts/registry_golden_path.sh
 
   ci-verify-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -238,7 +238,7 @@ jobs:
           ./scripts/ci_verify_golden_path.sh
 
   killer-demo-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -254,7 +254,7 @@ jobs:
           ./scripts/killer_demo_golden_path.sh
 
   showcase-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -276,7 +276,7 @@ jobs:
           ./scripts/showcase_smoke.sh
 
   adas-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -293,7 +293,7 @@ jobs:
           ./scripts/adas_smoke.sh
 
   agriculture-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -310,7 +310,7 @@ jobs:
           ./scripts/solution_blueprints_smoke.sh
 
   smart-spaces-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -327,7 +327,7 @@ jobs:
           ./scripts/smart_spaces_smoke.sh
 
   enterprise-ops-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -342,7 +342,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/enterprise_ops_smoke.sh
 
   operational-governance-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -357,7 +357,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/operational_governance_smoke.sh
 
   entity-model-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -378,7 +378,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_model_smoke.sh
 
   differentiation-smoke:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -393,7 +393,7 @@ jobs:
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/differentiation_smoke.sh
 
   lsp:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -412,7 +412,7 @@ jobs:
       - run: npm test -- tests/lsp.test.ts
 
   wasm:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -431,7 +431,7 @@ jobs:
       - run: npm run web:build
 
   vscode-extension:
-    needs: [build-spanda, lsp]
+    needs: [prepare-spanda, lsp]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

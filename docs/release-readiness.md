@@ -22,7 +22,7 @@ Snapshot for **v0.6.3** (evaluation / beta). Update when quality gates or phase 
 |------|--------|-------|
 | `cargo fmt --all -- --check` | CI Fast `lint-rust` | |
 | `cargo clippy --workspace -- -D warnings` | CI Fast `lint-rust` | |
-| `cargo build -p spanda --release` | CI Fast `build-spanda` (once per workflow) | Artifact reused in integration |
+| `cargo build -p spanda --release` | CI Fast `build-spanda`; Integration/Nightly `prepare-spanda` | Artifact reused downstream |
 | `cargo doc --workspace --no-deps` | CI Integration `docs-build` | |
 
 ## Test status

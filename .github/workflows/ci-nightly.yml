@@ -14,7 +14,7 @@ permissions:
   actions: read
 
 jobs:
-  build-spanda:
+  prepare-spanda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
       - run: cargo audit
 
   mqtt-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
       - run: ./scripts/mqtt_golden_path.sh
 
   twin-cloud-stable-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -65,7 +65,7 @@ jobs:
             ./scripts/twin_cloud_stable_promotion_gate.sh
 
   llvm-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
           SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/llvm_golden_path.sh
 
   llvm-embedded-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
           SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/llvm_embedded_golden_path.sh
 
   cpp-native-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -106,7 +106,7 @@ jobs:
       - run: ./scripts/cpp_native_golden_path.sh
 
   ledger-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
           ./scripts/ledger_golden_path.sh
 
   self-host-lexer-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -134,7 +134,7 @@ jobs:
           ./scripts/self_host_lexer_golden_path.sh
 
   world-model-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -148,7 +148,7 @@ jobs:
           ./scripts/world_model_golden_path.sh
 
   live-ai-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -162,7 +162,7 @@ jobs:
           ./scripts/live_ai_golden_path.sh
 
   live-iot-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -174,7 +174,7 @@ jobs:
       - run: ./scripts/live_iot_golden_path.sh
 
   python-native-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -193,7 +193,7 @@ jobs:
           PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
 
   ros2-golden-path:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
@@ -248,7 +248,7 @@ jobs:
           cargo test -p spanda-core --lib transport_rclrs
 
   recovery-orchestrator-stable-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -265,7 +265,7 @@ jobs:
             ./scripts/recovery_orchestrator_stable_promotion_gate.sh
 
   smart-spaces-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -281,7 +281,7 @@ jobs:
             ./scripts/smart_spaces_promotion_gate.sh
 
   adas-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -297,7 +297,7 @@ jobs:
             ./scripts/adas_stable_promotion_gate.sh
 
   enterprise-ops-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -315,7 +315,7 @@ jobs:
             ./scripts/enterprise_ops_stable_promotion_gate.sh
 
   entity-model-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -338,7 +338,7 @@ jobs:
             ./scripts/entity_model_stable_promotion_gate.sh
 
   differentiation-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -353,7 +353,7 @@ jobs:
             ./scripts/differentiation_promotion_gate.sh
 
   what-if-stable-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -369,7 +369,7 @@ jobs:
             ./scripts/what_if_stable_promotion_gate.sh
 
   next-differentiation-stable-gates:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -390,7 +390,7 @@ jobs:
           SPANDA_SCORECARD_SKIP_SOAK=1 SPANDA_SCORECARD_SKIP_SMOKE=1 ./scripts/scorecard_stable_promotion_gate.sh
 
   later-differentiation-stable-gates:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -406,7 +406,7 @@ jobs:
             ./scripts/later_differentiation_stable_promotion_gate.sh
 
   trust-framework-stable-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -423,7 +423,7 @@ jobs:
             ./scripts/trust_framework_stable_promotion_gate.sh
 
   operational-governance-promotion-gate:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -438,7 +438,7 @@ jobs:
           SPANDA_GOVERNANCE_SKIP_SOAK=1 ./scripts/operational_governance_stable_promotion_gate.sh
 
   control-center-desktop:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -460,7 +460,7 @@ jobs:
           SKIP_TAURI_LINUX_CARGO_CHECK: "1"
 
   control-center-desktop-bundle:
-    needs: build-spanda
+    needs: prepare-spanda
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4

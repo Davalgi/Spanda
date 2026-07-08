@@ -3,7 +3,7 @@ description: Download a prebuilt spanda artifact or compile release locally.
 
 inputs:
   artifact-name:
-    description: Artifact name from build-spanda job
+    description: Artifact name from prepare-spanda or build-spanda job
     required: false
     default: spanda-bin
   build-if-missing:

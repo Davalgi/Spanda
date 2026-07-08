@@ -35,7 +35,7 @@ Runs on every pull request and every push to `main`.
 | `test-python-sdk` | `pytest` in `sdk/python` |
 | `test-ts-sdk` | `npm test` in `sdk/typescript` |
 | `cross-surface-check` | `scripts/check_cross_surface.sh` |
-| `build-spanda` | One release build (or artifact reuse); uploads `spanda-bin` |
+| `build-spanda` | Release compile; uploads `spanda-bin` |
 | `cross-interface` | `scripts/cross_interface_consistency.sh` using artifact (waits for `test-rust`) |
 | `docs-validate` | Documentation audit when **only** docs/markdown changed |
 
@@ -66,7 +66,8 @@ Triggered by `workflow_run` after **CI Fast** completes successfully on a `main`
 Reuses the `spanda-bin` artifact from the triggering CI Fast run when available (via
 `.github/actions/fetch-or-build-spanda`); falls back to a local release build if the download fails.
 Uploads the resolved binary once for smoke and golden-path jobs (no per-job release compiles).
-`docs-build` waits on `build-spanda` and uses the same artifact instead of compiling again.
+Job `prepare-spanda` downloads from CI Fast when possible; `docs-build` waits on it and reuses the
+artifact instead of compiling again.
 
 Includes: readme smoke + golden output, core smokes, distributed decisions, cognitive resilience,
 release hardening security/property tests, key golden paths (robotics, telemetry, twin cloud,
@@ -80,7 +81,8 @@ extension packaging, and docs/mdBook build.
 Scheduled at **06:00 UTC** and available via **Actions → CI Nightly → Run workflow**.
 
 Reuses the `spanda-bin` artifact from the latest successful **CI Integration** run for the checked-out
-commit when available; otherwise tries **CI Fast**, then compiles locally.
+commit when available; otherwise tries **CI Fast**, then compiles locally. Job `prepare-spanda`
+fetches or builds once; downstream jobs reuse the artifact.
 
 Includes: `cargo audit`, promotion gates (Stable hardening scripts with soak/audit skipped in CI),
 ROS 2, MQTT, LLVM, embedded cross-compile, live AI/IoT, Python native, desktop/Tauri builds, and
@@ -198,6 +200,7 @@ names match GitHub Actions UI.
 
 | Job | Script / check |
 |-----|----------------|
+| `prepare-spanda` | `fetch-or-build-spanda` (download from CI Fast, else compile) → artifact |
 | `core-smokes` | `readiness_smoke`, `sdk_smoke`, `check_all_examples`, readme smoke + golden |
 | `docs-build` | `cargo doc`, mdBook, `generate_spanda_reference.py` |
 | `distributed-decisions` | `distributed_decisions_smoke.sh` |
@@ -229,6 +232,7 @@ Path-filtered extension checks also run via
 
 | Job | Script / check |
 |-----|----------------|
+| `prepare-spanda` | `fetch-or-build-spanda` (download from Integration/Fast, else compile) → artifact |
 | `security-audit` | `cargo audit` |
 | `mqtt-golden-path` | `mqtt_golden_path.sh` |
 | `twin-cloud-stable-promotion-gate` | `twin_cloud_stable_promotion_gate.sh` |
