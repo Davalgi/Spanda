@@ -7,6 +7,7 @@ export {
   ReflexClient,
 } from "./cognitiveClients.js";
 export { SpandaClient, EventStream, type SpandaClientOptions } from "./client.js";
+export { GrpcClient, parseGrpcJson, type GrpcClientOptions } from "./grpcClient.js";
 export {
   CertificationClient,
   ComplianceClient,

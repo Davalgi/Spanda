@@ -43,6 +43,26 @@ const client = new SpandaClient({
 });
 ```
 
+## gRPC client (Control Center tonic)
+
+Native gRPC over `@grpc/grpc-js` (proto **1.0.15+** bundled under `proto/`):
+
+```typescript
+import { GrpcClient } from "@davalgi-spanda/sdk";
+
+const grpc = await GrpcClient.connect({
+  address: process.env.SPANDA_GRPC_URL ?? "127.0.0.1:50051",
+  apiKey: process.env.SPANDA_API_KEY,
+});
+const health = await grpc.getMeshHealth();
+const graph = await grpc.getMeshGraph();
+grpc.close();
+```
+
+Entity Mesh RPCs: `getMeshTopology`, `getMeshNodes`, `getMeshRoutes`, `getMeshPartitions`,
+`getMeshHealth`, `getMeshGraph`, `getMeshMergeReport`, `discoverMesh`, `findMeshCapability`,
+`simulateMeshPartition`.
+
 ## Event stream
 
 ```typescript

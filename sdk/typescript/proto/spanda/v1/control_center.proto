@@ -1,0 +1,248 @@
+syntax = "proto3";
+// Spanda Control Center gRPC API — proto semver 1.0.15 (package spanda.v1).
+package spanda.v1;
+
+message Empty {}
+
+message HealthResponse {
+  string status = 1;
+}
+
+message JsonResponse {
+  string json = 1;
+}
+
+message DriftRequest {
+  string baseline_id = 1;
+}
+
+message ReadinessRequest {
+  string body_json = 1;
+}
+
+message TrustPackageRequest {
+  string package_name = 1;
+}
+
+message QueryRequest {
+  string query = 1;
+}
+
+message JsonBodyRequest {
+  string body_json = 1;
+}
+
+message DeviceIdRequest {
+  string device_id = 1;
+}
+
+message DeviceBodyRequest {
+  string device_id = 1;
+  string body_json = 2;
+}
+
+message IncidentIdRequest {
+  string incident_id = 1;
+}
+
+message IncidentBodyRequest {
+  string incident_id = 1;
+  string body_json = 2;
+}
+
+message ApprovalBodyRequest {
+  string approval_id = 1;
+  string body_json = 2;
+}
+
+message EntityIdRequest {
+  string entity_id = 1;
+}
+
+message EntityBodyRequest {
+  string entity_id = 1;
+  string body_json = 2;
+}
+
+service ControlCenter {
+  rpc Health(Empty) returns (HealthResponse);
+  rpc GetTenant(Empty) returns (JsonResponse);
+  rpc GetDashboard(Empty) returns (JsonResponse);
+  rpc ListAuditMutations(Empty) returns (JsonResponse);
+  rpc ListDevices(Empty) returns (JsonResponse);
+  rpc GetDevice(DeviceIdRequest) returns (JsonResponse);
+  rpc PatchDevice(DeviceBodyRequest) returns (JsonResponse);
+  rpc DeviceProvision(DeviceBodyRequest) returns (JsonResponse);
+  rpc DeviceAssign(DeviceBodyRequest) returns (JsonResponse);
+  rpc DeviceQuarantine(DeviceIdRequest) returns (JsonResponse);
+  rpc DeviceTrust(DeviceIdRequest) returns (JsonResponse);
+  rpc ListFleetAgents(Empty) returns (JsonResponse);
+  rpc EvaluateReadiness(ReadinessRequest) returns (JsonResponse);
+  rpc GetSreSummary(Empty) returns (JsonResponse);
+  rpc ListSreIncidents(Empty) returns (JsonResponse);
+  rpc CreateSreIncident(JsonBodyRequest) returns (JsonResponse);
+  rpc AckSreIncident(IncidentBodyRequest) returns (JsonResponse);
+  rpc ResolveSreIncident(IncidentIdRequest) returns (JsonResponse);
+  rpc GetTrustPackage(TrustPackageRequest) returns (JsonResponse);
+  rpc GetOpenApi(Empty) returns (JsonResponse);
+  rpc GetHealthSummary(Empty) returns (JsonResponse);
+  rpc GetAssuranceSummary(Empty) returns (JsonResponse);
+  rpc GetDiagnosisSummary(Empty) returns (JsonResponse);
+  rpc GetExecutiveScorecard(Empty) returns (JsonResponse);
+  rpc QueryDigitalThread(QueryRequest) returns (JsonResponse);
+  rpc GetOtaStatus(Empty) returns (JsonResponse);
+  rpc GetOtlpMetrics(Empty) returns (JsonResponse);
+  rpc GetObservabilityBackend(Empty) returns (JsonResponse);
+  rpc DiscoverDevices(QueryRequest) returns (JsonResponse);
+  rpc RunDiscovery(JsonBodyRequest) returns (JsonResponse);
+  rpc ProvisionDevice(JsonBodyRequest) returns (JsonResponse);
+  rpc PlanOta(JsonBodyRequest) returns (JsonResponse);
+  rpc ExecuteOta(JsonBodyRequest) returns (JsonResponse);
+  rpc ListRobots(Empty) returns (JsonResponse);
+  rpc ListFleets(Empty) returns (JsonResponse);
+  rpc ListAlerts(Empty) returns (JsonResponse);
+  rpc ListConfigSnapshots(Empty) returns (JsonResponse);
+  rpc SaveConfigSnapshot(JsonBodyRequest) returns (JsonResponse);
+  rpc TestAlert(Empty) returns (JsonResponse);
+  rpc GetDeviceTree(Empty) returns (JsonResponse);
+  rpc GetDeviceReports(Empty) returns (JsonResponse);
+  rpc GetFailoverChains(Empty) returns (JsonResponse);
+  rpc ListSecrets(Empty) returns (JsonResponse);
+  rpc GetRbacMatrix(Empty) returns (JsonResponse);
+  rpc GetAnalyticsReadiness(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsWhatIf(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsMissionRisk(Empty) returns (JsonResponse);
+  rpc GetAnalyticsReadinessForecast(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsTrustGraph(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsMissionTwin(Empty) returns (JsonResponse);
+  rpc GetAnalyticsCertificationPack(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsTimeTravel(QueryRequest) returns (JsonResponse);
+  rpc GetAnalyticsHumanTeaming(Empty) returns (JsonResponse);
+  rpc GetAnalyticsGovernance(QueryRequest) returns (JsonResponse);
+  rpc ExportReports(QueryRequest) returns (JsonResponse);
+  rpc GetObservabilityTraces(Empty) returns (JsonResponse);
+  rpc GetOtlpTraces(Empty) returns (JsonResponse);
+  rpc ExportOtlpTraces(QueryRequest) returns (JsonResponse);
+  rpc ExportOtlpMetrics(QueryRequest) returns (JsonResponse);
+  rpc OperatorQuarantine(JsonBodyRequest) returns (JsonResponse);
+  rpc OperatorMissionApprove(JsonBodyRequest) returns (JsonResponse);
+  rpc ExportCompliance(QueryRequest) returns (JsonResponse);
+  rpc ListComplianceEvidence(Empty) returns (JsonResponse);
+  // Operational governance (mirrors /v1/governance, /v1/compliance, /v1/certifications, /v1/deployment-profiles, /v1/risk)
+  rpc GetGovernance(Empty) returns (JsonResponse);
+  rpc GetCompliance(Empty) returns (JsonResponse);
+  rpc CheckCompliance(JsonBodyRequest) returns (JsonResponse);
+  rpc ValidateGovernance(JsonBodyRequest) returns (JsonResponse);
+  rpc ListCertifications(Empty) returns (JsonResponse);
+  rpc ListDeploymentProfiles(Empty) returns (JsonResponse);
+  rpc GetDeploymentProfile(QueryRequest) returns (JsonResponse);
+  rpc GetOperationalRisk(Empty) returns (JsonResponse);
+  rpc ListConfigApprovals(Empty) returns (JsonResponse);
+  rpc SubmitConfigApproval(JsonBodyRequest) returns (JsonResponse);
+  rpc ApproveConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
+  rpc RejectConfigApproval(ApprovalBodyRequest) returns (JsonResponse);
+  rpc DetectDrift(DriftRequest) returns (JsonResponse);
+  rpc EvaluateProgramReadiness(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramAssure(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramDiagnose(JsonBodyRequest) returns (JsonResponse);
+  rpc EvaluateProgramHeal(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramHardware(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramCapabilities(JsonBodyRequest) returns (JsonResponse);
+  rpc VerifyProgramMission(JsonBodyRequest) returns (JsonResponse);
+  rpc RunProgramSimulation(JsonBodyRequest) returns (JsonResponse);
+  rpc ReplayProgram(JsonBodyRequest) returns (JsonResponse);
+  rpc GetTrustProgram(QueryRequest) returns (JsonResponse);
+  rpc ListEntities(Empty) returns (JsonResponse);
+  rpc GetEntity(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityHealth(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityTrust(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityGraph(Empty) returns (JsonResponse);
+  rpc GetEntityTraceability(QueryRequest) returns (JsonResponse);
+  rpc QueryEntities(JsonBodyRequest) returns (JsonResponse);
+  rpc GetEntityRelationships(EntityIdRequest) returns (JsonResponse);
+  rpc GetEntityReadiness(EntityIdRequest) returns (JsonResponse);
+  rpc VerifyEntity(EntityBodyRequest) returns (JsonResponse);
+  rpc RegisterEntity(JsonBodyRequest) returns (JsonResponse);
+  rpc TagEntity(EntityBodyRequest) returns (JsonResponse);
+  rpc RelateEntities(JsonBodyRequest) returns (JsonResponse);
+  rpc SyncEntities(Empty) returns (JsonResponse);
+  rpc GetSmartSpacesSummary(Empty) returns (JsonResponse);
+  rpc ListFacilities(Empty) returns (JsonResponse);
+  rpc GetFacilityReadiness(EntityIdRequest) returns (JsonResponse);
+  rpc GetZoneOccupancy(EntityIdRequest) returns (JsonResponse);
+  rpc ListEnergySystems(Empty) returns (JsonResponse);
+  rpc GetEmergencyStatus(Empty) returns (JsonResponse);
+  rpc ListSmartSpacesDevices(QueryRequest) returns (JsonResponse);
+  rpc ListSmartSpacesGateways(QueryRequest) returns (JsonResponse);
+  rpc GetFacilityHealth(EntityIdRequest) returns (JsonResponse);
+  rpc GetFacilitySecurity(EntityIdRequest) returns (JsonResponse);
+  rpc GetFacilityFloorMap(EntityIdRequest) returns (JsonResponse);
+  rpc GetZoneEnvironment(EntityIdRequest) returns (JsonResponse);
+  rpc GetEnergySystem(EntityIdRequest) returns (JsonResponse);
+  rpc ListDecisions(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionPolicies(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionTraces(QueryRequest) returns (JsonResponse);
+  rpc ListDecisionPolicyCache(QueryRequest) returns (JsonResponse);
+  rpc SimulateDecisions(JsonBodyRequest) returns (JsonResponse);
+  rpc GetEntityDecisions(EntityIdRequest) returns (JsonResponse);
+  // Recovery Orchestrator (mirrors /v1/recovery/*)
+  rpc ListRecoveryPlans(Empty) returns (JsonResponse);
+  rpc GetRecoveryHistory(Empty) returns (JsonResponse);
+  rpc PlanRecovery(JsonBodyRequest) returns (JsonResponse);
+  rpc SimulateRecovery(JsonBodyRequest) returns (JsonResponse);
+  rpc ExecuteRecovery(JsonBodyRequest) returns (JsonResponse);
+  rpc ValidateRecovery(JsonBodyRequest) returns (JsonResponse);
+  rpc ListRecoveryPlaybooks(Empty) returns (JsonResponse);
+  rpc GetRecoveryMetrics(Empty) returns (JsonResponse);
+  rpc GetRecoveryGraph(QueryRequest) returns (JsonResponse);
+  rpc ListRecoveryPolicies(Empty) returns (JsonResponse);
+  rpc ExplainRecovery(JsonBodyRequest) returns (JsonResponse);
+  rpc GetRecoveryPredictive(JsonBodyRequest) returns (JsonResponse);
+  rpc ListRecoverableEntities(Empty) returns (JsonResponse);
+  rpc RecommendRecovery(JsonBodyRequest) returns (JsonResponse);
+  // Entity Mesh (mirrors /v1/mesh/*)
+  rpc GetMeshTopology(Empty) returns (JsonResponse);
+  rpc GetMeshNodes(Empty) returns (JsonResponse);
+  rpc GetMeshRoutes(QueryRequest) returns (JsonResponse);
+  rpc GetMeshPartitions(Empty) returns (JsonResponse);
+  rpc GetMeshHealth(Empty) returns (JsonResponse);
+  rpc GetMeshGraph(Empty) returns (JsonResponse);
+  rpc GetMeshMergeReport(Empty) returns (JsonResponse);
+  rpc DiscoverMesh(JsonBodyRequest) returns (JsonResponse);
+  rpc FindMeshCapability(JsonBodyRequest) returns (JsonResponse);
+  rpc SimulateMeshPartition(JsonBodyRequest) returns (JsonResponse);
+  // Cognitive & resilience autonomy (mirrors /v1/autonomy/*)
+  rpc ListAutonomyReflexes(Empty) returns (JsonResponse);
+  rpc ListAutonomyReflexTraces(Empty) returns (JsonResponse);
+  rpc GetAutonomyHomeostasis(Empty) returns (JsonResponse);
+  rpc GetAutonomyImmunity(Empty) returns (JsonResponse);
+  rpc GetAutonomyAttention(Empty) returns (JsonResponse);
+  rpc GetAutonomyFusion(Empty) returns (JsonResponse);
+  rpc GetAutonomyMemory(Empty) returns (JsonResponse);
+  rpc GetEntityAutonomy(EntityIdRequest) returns (JsonResponse);
+  // Administration and mission control (mirrors /v1/admin/* and /v1/operator/missions)
+  rpc ListAdminApiKeys(Empty) returns (JsonResponse);
+  rpc CreateAdminApiKey(JsonBodyRequest) returns (JsonResponse);
+  rpc PatchAdminApiKey(JsonBodyRequest) returns (JsonResponse);
+  rpc DeleteAdminApiKey(JsonBodyRequest) returns (JsonResponse);
+  rpc ListAdminUsers(Empty) returns (JsonResponse);
+  rpc CreateAdminUser(JsonBodyRequest) returns (JsonResponse);
+  rpc PatchAdminUser(JsonBodyRequest) returns (JsonResponse);
+  rpc DeleteAdminUser(JsonBodyRequest) returns (JsonResponse);
+  rpc GetAdminIntegrations(Empty) returns (JsonResponse);
+  rpc GetAlertChannels(Empty) returns (JsonResponse);
+  rpc UpdateAlertChannels(JsonBodyRequest) returns (JsonResponse);
+  rpc ListOperatorMissions(Empty) returns (JsonResponse);
+  rpc ListOperatorMissionApprovals(Empty) returns (JsonResponse);
+  rpc OperatorMissionPause(JsonBodyRequest) returns (JsonResponse);
+  rpc OperatorMissionResume(JsonBodyRequest) returns (JsonResponse);
+  rpc OperatorMissionCancel(JsonBodyRequest) returns (JsonResponse);
+  rpc ListProgramTraces(QueryRequest) returns (JsonResponse);
+  // Twin Cloud SaaS (mirrors /v1/twins/*)
+  rpc ListTwins(Empty) returns (JsonResponse);
+  rpc GetTwin(EntityIdRequest) returns (JsonResponse);
+  rpc GetTwinHistory(EntityIdRequest) returns (JsonResponse);
+  rpc SyncTwin(QueryRequest) returns (JsonResponse);
+  rpc PushTwinSnapshot(EntityBodyRequest) returns (JsonResponse);
+  rpc ImportTwinReplay(JsonBodyRequest) returns (JsonResponse);
+}

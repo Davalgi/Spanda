@@ -24,6 +24,16 @@ const report = await client.readiness("rover.sd");
 console.log(report.score);
 ```
 
+## gRPC
+
+```typescript
+import { GrpcClient } from "@davalgi-spanda/sdk";
+
+const grpc = await GrpcClient.connect({ address: "127.0.0.1:50051" });
+const mesh = await grpc.getMeshHealth();
+grpc.close();
+```
+
 ## Documentation
 
 - [docs/sdk-typescript.md](../../docs/sdk-typescript.md)
