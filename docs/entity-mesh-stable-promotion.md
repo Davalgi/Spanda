@@ -28,7 +28,7 @@ in `docs/feature-status.md`.
 |------|--------|
 | 30-day field soak (shared clock with enterprise ops) | ⏳ |
 | External security audit sign-off | ⏳ |
-| SDK publish with full mesh REST + gRPC surface | ✅ **0.5.7** tagged (2026-07-08) — see [SDK publish](#sdk-publish) |
+| SDK publish with full mesh REST + gRPC surface | ✅ **0.5.8** published (2026-07-08) — see [SDK publish](#sdk-publish) |
 | `docs/feature-status.md` → **Stable** | ⏳ |
 
 ---
@@ -72,13 +72,13 @@ See [entity-mesh.md](./entity-mesh.md#compatibility-rules).
 
 | Package | Version | Tag | Registry |
 |---------|---------|-----|----------|
-| `spanda-sdk` (Rust) | `0.5.7` | `crates-sdk-v0.5.7` | [crates.io](https://crates.io/crates/spanda-sdk) |
-| `spanda-sdk` (Python) | `0.5.7` | `sdk-python-v0.5.7` | [PyPI](https://pypi.org/project/spanda-sdk/) |
-| `@davalgi-spanda/sdk` (npm) | `0.5.7` | `npm-sdk-v0.5.7` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+| `spanda-sdk` (Rust) | `0.5.8` | `crates-sdk-v0.5.8` | [crates.io](https://crates.io/crates/spanda-sdk) |
+| `spanda-sdk` (Python) | `0.5.8` | `sdk-python-v0.5.8` | [PyPI](https://pypi.org/project/spanda-sdk/) |
+| `@davalgi-spanda/sdk` (npm) | `0.5.8` | `npm-sdk-v0.5.8` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
 
-Mesh additions in **0.5.7:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`,
-`mesh_simulate_partition`
-(Rust `GrpcClient` mesh RPCs ship with the `grpc` feature on **0.5.6+**).
+**0.5.8:** TypeScript `GrpcClient` with mesh gRPC RPCs. **0.5.7:** REST
+`meshGraph`, `meshDiscover`, `meshMergeReport`, `meshSimulatePartition`. Rust
+`GrpcClient` mesh RPCs ship with the `grpc` feature on **0.5.6+**.
 
 ```bash
 ./scripts/verify_sdk_publish_ready.sh
