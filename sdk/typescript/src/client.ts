@@ -409,6 +409,30 @@ export class SpandaClient {
     return this.request("GET", "/v1/entities/graph");
   }
 
+  async meshTopology(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/topology");
+  }
+
+  async meshNodes(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/nodes");
+  }
+
+  async meshRoutes(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/routes");
+  }
+
+  async meshFindCapability(capability: string): Promise<JsonValue> {
+    return this.request("POST", "/v1/mesh/find-capability", { capability });
+  }
+
+  async meshHealth(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/health");
+  }
+
+  async meshPartitions(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/partitions");
+  }
+
   async entityTraceability(
     query: { entityId?: string; capability?: string; deviceId?: string } = {},
   ): Promise<JsonValue> {

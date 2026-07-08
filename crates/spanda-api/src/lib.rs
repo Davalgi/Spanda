@@ -26,6 +26,7 @@ pub mod hri;
 pub mod humans;
 pub mod integrations;
 pub mod later_differentiation_ops;
+pub mod mesh_ops;
 pub mod observability;
 pub mod openapi_routes;
 pub mod persistence;

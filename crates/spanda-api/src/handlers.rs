@@ -512,6 +512,20 @@ pub fn handle_request(
         ("/v1/programs/audit/decisions", "POST") => {
             crate::sdk_ops::program_audit_decisions(state, &request.body)
         }
+        ("/v1/mesh/topology", "GET") => crate::mesh_ops::mesh_topology(state),
+        ("/v1/mesh/nodes", "GET") => crate::mesh_ops::mesh_nodes(state),
+        ("/v1/mesh/routes", "GET") => crate::mesh_ops::mesh_routes(state, query),
+        ("/v1/mesh/partitions", "GET") => crate::mesh_ops::mesh_partitions(state),
+        ("/v1/mesh/health", "GET") => crate::mesh_ops::mesh_health(state),
+        ("/v1/mesh/graph", "GET") => crate::mesh_ops::mesh_graph(state),
+        ("/v1/mesh/discover", "POST") => crate::mesh_ops::mesh_discover(state, &request.body),
+        ("/v1/mesh/find-capability", "POST") => {
+            crate::mesh_ops::mesh_find_capability(state, &request.body)
+        }
+        ("/v1/mesh/simulate-partition", "POST") => {
+            crate::mesh_ops::mesh_simulate_partition(state, &request.body)
+        }
+        ("/v1/mesh/merge-report", "GET") => crate::mesh_ops::mesh_merge_report(state),
         ("/v1/recovery/plans", "GET") => crate::recovery_ops::list_recovery_plans(state),
         ("/v1/autonomy/reflex", "GET") => crate::autonomy_ops::list_reflex(state),
         ("/v1/autonomy/reflex/traces", "GET") => crate::autonomy_ops::list_reflex_traces(state),

@@ -33,6 +33,7 @@ mod generate_cli;
 mod governance_cli;
 mod graph_cli;
 mod integrity_cli;
+mod mesh_cli;
 mod network_cli;
 mod operational_governance_cli;
 mod package;
@@ -232,6 +233,7 @@ fn usage() {
            spanda fleet orchestrate [--json] [--remote] [--mesh-url <http(s)://host:port>] [--mesh-token <t>] <file.sd>\n\
            spanda swarm coordinate [--json] [--mesh-url <http(s)://host:port>] [--mesh-token <t>] <file.sd>\n\
            spanda fleet mesh start [--bind <addr>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>]\n\
+           spanda mesh discover|list|inspect|topology|graph|health|route|find|capabilities|simulate-partition|merge-report [--config <spanda.toml>]\n\
            spanda fleet agent start [--bind <addr>] [--robot <name>] [--token <t>] [--tls-cert <pem>] [--tls-key <pem>]\n\
            spanda fleet agent register <RobotName> <http(s)://host:port> [--token <t>]\n\
            spanda fleet agent list [--json]\n\
@@ -1697,6 +1699,12 @@ fn main() {
 
     if command == "entity" {
         entity_cli::entity_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "mesh" {
+        mesh_cli::mesh_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }

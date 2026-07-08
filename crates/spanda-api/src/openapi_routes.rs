@@ -476,6 +476,46 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/mesh/topology",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/nodes",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/routes",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/partitions",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/health",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/graph",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/mesh/discover",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/mesh/find-capability",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/mesh/simulate-partition",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/mesh/merge-report",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/autonomy/reflex",
     },
     ApiRoute {

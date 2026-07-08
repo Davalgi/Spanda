@@ -315,6 +315,24 @@ class SpandaClient:
     def entity_graph(self) -> Any:
         return self._request("GET", "/v1/entities/graph")
 
+    def mesh_topology(self) -> Any:
+        return self._request("GET", "/v1/mesh/topology")
+
+    def mesh_nodes(self) -> Any:
+        return self._request("GET", "/v1/mesh/nodes")
+
+    def mesh_routes(self) -> Any:
+        return self._request("GET", "/v1/mesh/routes")
+
+    def mesh_find_capability(self, capability: str) -> Any:
+        return self._request("POST", "/v1/mesh/find-capability", {"capability": capability})
+
+    def mesh_health(self) -> Any:
+        return self._request("GET", "/v1/mesh/health")
+
+    def mesh_partitions(self) -> Any:
+        return self._request("GET", "/v1/mesh/partitions")
+
     def entity_traceability(
         self,
         *,

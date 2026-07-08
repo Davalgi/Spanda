@@ -38,6 +38,7 @@ spanda-chaos = { path = "../spanda-chaos" }
 spanda-hardware = { path = "../spanda-hardware" }
 spanda-readiness = { path = "../spanda-readiness" }
 spanda-recovery = { path = "../spanda-recovery" }
+spanda-entity-mesh = { path = "../spanda-entity-mesh" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-twin-cloud = { path = "../spanda-twin-cloud" }
 spanda-trust = { path = "../spanda-trust" }

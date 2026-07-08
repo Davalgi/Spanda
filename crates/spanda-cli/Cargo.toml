@@ -52,6 +52,7 @@ spanda-runtime-faults = { path = "../spanda-runtime-faults" }
 spanda-assurance = { path = "../spanda-assurance", features = ["certify-runtime"] }
 spanda-autonomy = { path = "../spanda-autonomy" }
 spanda-recovery = { path = "../spanda-recovery" }
+spanda-entity-mesh = { path = "../spanda-entity-mesh" }
 spanda-audit = { path = "../spanda-audit" }
 spanda-contract = { path = "../spanda-contract" }
 spanda-explain = { path = "../spanda-explain" }

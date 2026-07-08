@@ -246,6 +246,41 @@ impl SpandaClient {
         self.request("GET", &path, None, false)
     }
 
+    /// Fetch Autonomous Entity Mesh topology.
+    pub fn mesh_topology(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/topology", None, false)
+    }
+
+    /// List mesh nodes with reachability and trust state.
+    pub fn mesh_nodes(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/nodes", None, false)
+    }
+
+    /// Mesh route history or compute route when source/target query params provided via body.
+    pub fn mesh_routes(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/routes", None, false)
+    }
+
+    /// Find entities advertising a capability through the mesh.
+    pub fn mesh_find_capability(&self, capability: &str) -> SpandaResult<Value> {
+        self.request(
+            "POST",
+            "/v1/mesh/find-capability",
+            Some(&json!({ "capability": capability })),
+            false,
+        )
+    }
+
+    /// Mesh health summary (reachability, partitions, coordinator).
+    pub fn mesh_health(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/health", None, false)
+    }
+
+    /// Active and historical mesh partitions.
+    pub fn mesh_partitions(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/partitions", None, false)
+    }
+
     /// Explain recovery decision for entity failure.
     pub fn explain_recovery(&self, body: &Value) -> SpandaResult<Value> {
         self.request("POST", "/v1/recovery/explain", Some(body), false)
