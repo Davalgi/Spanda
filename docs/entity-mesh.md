@@ -95,4 +95,5 @@ Entity Mesh is **additive only**:
 
 ## Status
 
-**Experimental** — see [feature-status.md](./feature-status.md).
+**Experimental** — see [feature-status.md](./feature-status.md). Stable promotion checklist:
+[entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md).

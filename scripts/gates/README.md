@@ -76,6 +76,7 @@ Index of regression and promotion gates organized by **Platform Pillar** and **S
 | `enterprise_ops_stable_promotion_gate.sh` | Enterprise ops Experimental → Stable (soak + audit + smokes) |
 | `entity_model_smoke.sh` | Unified entity model read + mutation + traceability APIs (REST, TypeScript, Python, Rust SDK) |
 | `entity_mesh_smoke.sh` | Autonomous Entity Mesh CLI + `/v1/mesh/*` REST + Rust/TypeScript/Python SDK + gRPC mesh RPC test |
+| `entity_mesh_stable_promotion_gate.sh` | Entity Mesh Experimental → Stable (soak + audit + crate tests + smoke) |
 | `entity_model_stable_promotion_gate.sh` | Entity model Experimental → Stable (soak + audit + smokes) |
 | `control_center_desktop_smoke.sh` | Tauri desktop shell |
 | `verify_desktop_release_ready.sh` | Desktop version sync + compile before `desktop-v*` tag |
@@ -148,6 +149,7 @@ All promotion gates run in **CI Nightly** (soak/audit skipped in CI). Smokes wit
 | Enterprise ops Stable | `field_soak_gate.sh` | — (local/org) | [field-soak-gate.md](../../docs/field-soak-gate.md) |
 | Enterprise ops Stable | `enterprise_ops_stable_promotion_gate.sh` | `enterprise-ops-promotion-gate` | [enterprise-ops-stable-promotion.md](../../docs/enterprise-ops-stable-promotion.md) |
 | Entity model Stable | `entity_model_stable_promotion_gate.sh` | `entity-model-promotion-gate` | [entity-model-stable-promotion.md](../../docs/entity-model-stable-promotion.md) |
+| Entity mesh Stable | `entity_mesh_stable_promotion_gate.sh` | `entity-mesh-promotion-gate` | [entity-mesh-stable-promotion.md](../../docs/entity-mesh-stable-promotion.md) |
 | HRI Stable | `hri_stable_promotion_gate.sh` | — (run locally; not in nightly yet) | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
 | Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | `smart-spaces-promotion-gate` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
 | What-If Stable | `what_if_stable_promotion_gate.sh` | `what-if-stable-promotion-gate` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |

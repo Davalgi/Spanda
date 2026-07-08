@@ -58,6 +58,10 @@ Smoke test (all three SDKs): `scripts/entity_model_smoke.sh`
 | Find capability | `mesh_find_capability(cap)` | `meshFindCapability(cap)` | `mesh_find_capability(cap)` |
 | Health | `mesh_health()` | `meshHealth()` | `mesh_health()` |
 | Partitions | `mesh_partitions()` | `meshPartitions()` | `mesh_partitions()` |
+| Graph | `mesh_graph()` | `meshGraph()` | `mesh_graph()` |
+| Discover | `mesh_discover()` | `meshDiscover()` | `mesh_discover()` |
+| Merge report | `mesh_merge_report()` | `meshMergeReport()` | `mesh_merge_report()` |
+| Simulate partition | `mesh_simulate_partition(ids)` | `meshSimulatePartition(ids)` | `mesh_simulate_partition(ids)` |
 
 gRPC (`GrpcClient`, `grpc` feature): `get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`,
 `get_mesh_health`, `get_mesh_graph`, `find_mesh_capability` (proto **1.0.15+**).

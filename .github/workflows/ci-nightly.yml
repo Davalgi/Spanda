@@ -337,6 +337,29 @@ jobs:
           SPANDA_ENTITY_MODEL_SKIP_SOAK=1 SPANDA_ENTITY_MODEL_SKIP_AUDIT=1 \
             ./scripts/entity_model_stable_promotion_gate.sh
 
+  entity-mesh-promotion-gate:
+    needs: prepare-spanda
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/with-spanda-bin
+        with:
+          build-if-missing: "false"
+      - run: cargo build -p spanda-sdk --examples
+      - run: npm ci
+      - run: |
+          chmod +x scripts/entity_mesh_stable_promotion_gate.sh scripts/entity_mesh_smoke.sh
+          export PATH="${{ github.workspace }}/target/release:$PATH"
+          export SPANDA_BIN="${{ github.workspace }}/target/release/spanda"
+          SPANDA_ENTITY_MESH_SKIP_SOAK=1 SPANDA_ENTITY_MESH_SKIP_AUDIT=1 \
+            ./scripts/entity_mesh_stable_promotion_gate.sh
+
   differentiation-promotion-gate:
     needs: prepare-spanda
     runs-on: ubuntu-latest

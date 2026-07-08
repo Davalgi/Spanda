@@ -52,10 +52,12 @@ cleanup() {
 cc_smoke_trap cleanup
 
 echo "== CLI mesh discover =="
-run_spanda mesh discover --config "$CONFIG" | grep -q 'Discovered'
+DISCOVER_OUT="$(run_spanda mesh discover --config "$CONFIG")"
+echo "$DISCOVER_OUT" | grep -q 'Discovered'
 
 echo "== CLI mesh health =="
-run_spanda mesh health --config "$CONFIG" | grep -q 'Mesh Health'
+HEALTH_OUT="$(run_spanda mesh health --config "$CONFIG")"
+echo "$HEALTH_OUT" | grep -q 'Mesh Health'
 
 echo "== start control-center on ${BIND} =="
 CC_SMOKE_BIND="$BIND"

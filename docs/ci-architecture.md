@@ -254,6 +254,7 @@ Path-filtered extension checks also run via
 | `adas-promotion-gate` | `adas_stable_promotion_gate.sh` |
 | `enterprise-ops-promotion-gate` | `enterprise_ops_stable_promotion_gate.sh` |
 | `entity-model-promotion-gate` | `entity_model_stable_promotion_gate.sh` |
+| `entity-mesh-promotion-gate` | `entity_mesh_stable_promotion_gate.sh` |
 | `differentiation-promotion-gate` | `differentiation_promotion_gate.sh` |
 | `what-if-stable-promotion-gate` | `what_if_stable_promotion_gate.sh` |
 | `next-differentiation-stable-gates` | risk, forecast, trust graph, scorecard gates |

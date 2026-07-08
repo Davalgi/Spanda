@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for elected coordinator display.
+- **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for elected coordinator display; SVG neighborhood graph with trusted-link coloring.
+
+- **SDK mesh REST parity:** `mesh_graph`, `mesh_discover`, `mesh_merge_report`, `mesh_simulate_partition` on Rust, TypeScript, and Python clients.
+
+- **Entity mesh Stable promotion path:** `entity_mesh_stable_promotion_gate.sh`, CI Nightly `entity-mesh-promotion-gate`, [entity-mesh-stable-promotion.md](docs/entity-mesh-stable-promotion.md).
 
 - **Documentation version sync:** README, SDK guides, feature-status, ROADMAP, overview docs, and
   registry READMEs now cite published SDK **0.5.5** (workspace line **0.5.6**), desktop/workspace
@@ -26,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   shared artifact. See [docs/ci-architecture.md](docs/ci-architecture.md).
 
 ### Added
+
+- **SDK 0.5.7:** full mesh REST helpers (`meshGraph`, `meshDiscover`, `meshMergeReport`,
+  `meshSimulatePartition`) on Rust, TypeScript, and Python clients.
 
 - **Autonomous Entity Mesh (Experimental):** `spanda-entity-mesh` crate — trust-aware inter-entity
   discovery, capability routing, partition handling, coordinator election, mission delegation
