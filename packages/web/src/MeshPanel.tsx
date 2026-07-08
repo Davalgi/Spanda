@@ -20,8 +20,19 @@ type MeshHealth = {
   total_nodes?: number;
   reachable_nodes?: number;
   active_partitions?: number;
+  topology_components?: number;
   average_trust_score?: number;
+  coordinator_status?: string;
   issues?: string[];
+};
+
+type MeshCoordinator = {
+  entity_id?: string;
+  status?: string;
+};
+
+type MeshTopology = {
+  coordinator?: MeshCoordinator | null;
 };
 
 type Props = {
@@ -34,18 +45,21 @@ type Props = {
 export function MeshPanel({ baseUrl, authHeaders }: Props) {
   const [nodes, setNodes] = useState<MeshNode[]>([]);
   const [health, setHealth] = useState<MeshHealth | null>(null);
+  const [topology, setTopology] = useState<MeshTopology | null>(null);
   const [graph, setGraph] = useState<Record<string, unknown> | null>(null);
   const [partitions, setPartitions] = useState<unknown[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionResult, setActionResult] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setBusy(true);
     setError(null);
     try {
-      const [nodesRes, healthRes, graphRes, partitionsRes] = await Promise.all([
+      const [nodesRes, healthRes, topologyRes, graphRes, partitionsRes] = await Promise.all([
         fetch(`${baseUrl}/v1/mesh/nodes`, { headers: authHeaders() }),
         fetch(`${baseUrl}/v1/mesh/health`, { headers: authHeaders() }),
+        fetch(`${baseUrl}/v1/mesh/topology`, { headers: authHeaders() }),
         fetch(`${baseUrl}/v1/mesh/graph`, { headers: authHeaders() }),
         fetch(`${baseUrl}/v1/mesh/partitions`, { headers: authHeaders() }),
       ]);
@@ -56,6 +70,10 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
       if (healthRes.ok) {
         const body = await healthRes.json();
         setHealth((body.health as MeshHealth) ?? null);
+      }
+      if (topologyRes.ok) {
+        const body = await topologyRes.json();
+        setTopology((body.topology as MeshTopology) ?? null);
       }
       if (graphRes.ok) {
         const body = await graphRes.json();
@@ -76,7 +94,30 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
     void load();
   }, [load]);
 
-  useRegisterTabRefresh(load, busy);
+  useRegisterTabRefresh(load, { busy });
+
+  const discover = async () => {
+    setBusy(true);
+    setActionResult(null);
+    setError(null);
+    try {
+      const res = await fetch(`${baseUrl}/v1/mesh/discover`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: "{}",
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error(`discover ${res.status}`);
+      setActionResult(text);
+      await load();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const coordinatorId = topology?.coordinator?.entity_id ?? null;
 
   return (
     <div className="cc-panel">
@@ -93,10 +134,14 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
         items={[
           { label: "Nodes", value: String(health?.total_nodes ?? nodes.length) },
           { label: "Reachable", value: String(health?.reachable_nodes ?? "—") },
+          {
+            label: "Coordinator",
+            value: coordinatorId ?? "—",
+          },
           { label: "Partitions", value: String(health?.active_partitions ?? 0) },
           {
             label: "Components",
-            value: String((health as { topology_components?: number })?.topology_components ?? 0),
+            value: String(health?.topology_components ?? 0),
           },
           {
             label: "Avg trust",
@@ -108,9 +153,21 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
         ]}
       />
 
+      <CcSection title="Mesh actions" hint="Discovery refreshes entity reachability from the registry and entity graph.">
+        <div className="cc-action-bar">
+          <button type="button" disabled={busy} onClick={() => void load()}>
+            Refresh
+          </button>
+          <button type="button" className="primary" disabled={busy} onClick={() => void discover()}>
+            Discover
+          </button>
+        </div>
+        {actionResult ? <pre className="cc-action-result">{actionResult}</pre> : null}
+      </CcSection>
+
       <CcSection title="Entity reachability">
         {nodes.length === 0 ? (
-          <CcEmptyState title="No mesh nodes" description="Run spanda mesh discover or load a project with entities." />
+          <CcEmptyState title="No mesh nodes" description="Run Discover or load a project with entities." />
         ) : (
           <table className="cc-table">
             <thead>
