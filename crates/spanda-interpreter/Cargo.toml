@@ -34,7 +34,7 @@ spanda-deploy-http = { path = "../spanda-deploy-http", optional = true }
 
 [features]
 default = []
-fleet-http = ["dep:spanda-deploy-http"]
+fleet-http = ["dep:spanda-deploy-http", "spanda-decision/fleet-http"]
 live-ai = []
 
 [dev-dependencies]

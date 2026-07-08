@@ -14,7 +14,7 @@ serde_json = "1"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
 spanda-ast = { path = "../spanda-ast" }
 spanda-audit = { path = "../spanda-audit" }
-spanda-decision = { path = "../spanda-decision" }
+spanda-decision = { path = "../spanda-decision", features = ["fleet-http"] }
 spanda-deploy-http = { path = "../spanda-deploy-http" }
 spanda-interpreter = { path = "../spanda-interpreter", default-features = false }
 spanda-transport-routing = { path = "../spanda-transport-routing", default-features = false, features = ["transport-tls"] }
@@ -25,5 +25,5 @@ spanda-runtime = { path = "../spanda-runtime" }
 [dev-dependencies]
 spanda-deploy-http = { path = "../spanda-deploy-http" }
 spanda-driver = { path = "../spanda-driver" }
-spanda-tamper = { path = "../spanda-tamper" }
+spanda-tamper = { path = "../spanda-tamper", features = ["http"] }
 spanda-telemetry-store = { path = "../spanda-telemetry-store", default-features = false }

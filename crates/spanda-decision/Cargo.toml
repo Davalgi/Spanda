@@ -16,10 +16,15 @@ spanda-capability = { path = "../spanda-capability" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-audit = { path = "../spanda-audit" }
 spanda-config = { path = "../spanda-config" }
-spanda-deploy-http = { path = "../spanda-deploy-http" }
+spanda-deploy-http = { path = "../spanda-deploy-http", optional = true }
 spanda-governance = { path = "../spanda-governance" }
+
+[features]
+default = []
+fleet-http = ["dep:spanda-deploy-http"]
 
 [dev-dependencies]
 spanda-lexer = { path = "../spanda-lexer" }
 spanda-parser = { path = "../spanda-parser" }
+spanda-deploy-http = { path = "../spanda-deploy-http" }
 tempfile = "3"

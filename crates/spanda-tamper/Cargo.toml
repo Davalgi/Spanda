@@ -24,7 +24,7 @@ spanda-package = { path = "../spanda-package" }
 spanda-deploy-http = { path = "../spanda-deploy-http", optional = true }
 
 [features]
-default = ["http"]
+default = []
 http = ["dep:spanda-deploy-http", "spanda-spoofing/http"]
 
 [dev-dependencies]

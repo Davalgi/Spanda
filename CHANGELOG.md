@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Wasm32 dependency graph:** `spanda-deploy-http` is now optional behind `fleet-http` in
+  `spanda-decision` and behind `http` in `spanda-tamper` (default off). `spanda-core` disables
+  `spanda-driver` / `spanda-interpreter` default features so `spanda-wasm` no longer pulls `rustls`
+  on `wasm32-unknown-unknown`. Native CLI and fleet enable the HTTP features explicitly.
+
 - **CI spanda binary handoff:** `.github/actions/fetch-or-build-spanda` reuses the release binary
   across CI Fast, CI Integration, and CI Nightly instead of compiling independently in each workflow.
   CI Fast `build-spanda` now runs in parallel with `test-rust`; Integration `docs-build` reuses the

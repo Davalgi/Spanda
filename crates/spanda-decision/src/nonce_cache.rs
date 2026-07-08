@@ -101,16 +101,19 @@ pub fn register_persisted_nonce(nonce: &str) -> Result<(), String> {
         .map_err(|_| "nonce registry lock poisoned".to_string())?;
 
     if let Some(mesh_url) = fleet_mesh_nonce_url() {
-        match register_mesh_nonce(&mesh_url, nonce) {
-            Ok(()) => {
-                let mut registry = load_nonce_registry(None);
-                let _ = registry.register(nonce);
-                let _ = save_nonce_registry(&mut registry, None);
-                return Ok(());
-            }
-            Err(error) if mesh_nonce_required() => return Err(error),
-            Err(error) => {
-                eprintln!("decision nonce mesh register failed, falling back to local: {error}");
+        #[cfg(feature = "fleet-http")]
+        {
+            match register_mesh_nonce(&mesh_url, nonce) {
+                Ok(()) => {
+                    let mut registry = load_nonce_registry(None);
+                    let _ = registry.register(nonce);
+                    let _ = save_nonce_registry(&mut registry, None);
+                    return Ok(());
+                }
+                Err(error) if mesh_nonce_required() => return Err(error),
+                Err(error) => {
+                    eprintln!("decision nonce mesh register failed, falling back to local: {error}");
+                }
             }
         }
     }
@@ -137,6 +140,7 @@ fn mesh_nonce_required() -> bool {
         .unwrap_or(false)
 }
 
+#[cfg(feature = "fleet-http")]
 fn register_mesh_nonce(mesh_url: &str, nonce: &str) -> Result<(), String> {
     use spanda_deploy_http::{register_fleet_decision_nonce, FleetDecisionNonceRegisterRequest};
     let token = std::env::var("SPANDA_FLEET_MESH_TOKEN").ok();

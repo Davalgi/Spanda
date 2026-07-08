@@ -342,7 +342,9 @@ fn simulate_split_brain_mesh() -> AttackSimulationResult {
     let replay = nonce_registry.register(nonce);
     let nonce_replay_blocked = first.is_ok() && replay.is_err();
 
+    #[cfg(feature = "fleet-http")]
     let mut mesh_http_ok = None;
+    #[cfg(feature = "fleet-http")]
     if let Ok(mesh_url) = std::env::var("SPANDA_FLEET_MESH_URL") {
         if !mesh_url.is_empty() {
             use spanda_deploy_http::{
@@ -389,6 +391,8 @@ fn simulate_split_brain_mesh() -> AttackSimulationResult {
             mesh_http_ok = Some(http_conflict == Some(true) && http_nonce);
         }
     }
+    #[cfg(not(feature = "fleet-http"))]
+    let mesh_http_ok: Option<bool> = None;
 
     AttackSimulationResult {
         scenario: AttackScenario::SplitBrainMesh,
