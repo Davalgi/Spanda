@@ -1,6 +1,7 @@
 //! Deterministic mission trace recording and replay for simulation runs.
 //!
 use crate::error::RuntimeError;
+use crate::path_util::normalize_trace_source;
 use crate::robot_state::{PoseState, VelocityState};
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -148,8 +149,12 @@ impl MissionTrace {
         // Example:
         //     let result = spanda_runtime::replay::save(&self, path);
 
+        // Rewrite absolute source labels so committed traces stay machine-portable.
+        let mut portable = self.clone();
+        portable.source = normalize_trace_source(path.as_ref(), &self.source);
+
         // Encode as pretty JSON for human inspection and tooling.
-        let json = serde_json::to_string_pretty(self)
+        let json = serde_json::to_string_pretty(&portable)
             .map_err(|err| RuntimeError::new(format!("Failed to encode trace: {err}"), 0))?;
         fs::write(path, json)
             .map_err(|err| RuntimeError::new(format!("Failed to write trace file: {err}"), 0))

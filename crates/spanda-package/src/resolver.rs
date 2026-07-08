@@ -125,10 +125,11 @@ fn resolve_one(
                 PackageError::Dependency(format!("local path missing for {name}"))
             })?;
             let dep_manifest = load_dep_manifest(&path)?;
+            let stored_path = lockfile_local_path(project_root, spec, &path);
             Ok(LockedDependency {
                 name: name.to_string(),
                 version: dep_manifest.package.version.clone(),
-                source: LockedSource::Local { path },
+                source: LockedSource::Local { path: stored_path },
                 checksum: None,
             })
         }
@@ -182,6 +183,39 @@ fn resolve_one(
             })
         }
     }
+}
+
+fn lockfile_local_path(
+    project_root: &Path,
+    spec: &DependencySpec,
+    resolved: &Path,
+) -> std::path::PathBuf {
+    // Description:
+    //     Persist local dependency paths relative to the project root when possible.
+    //
+    // Parameters:
+    // - `project_root` — directory containing `spanda.toml`
+    // - `spec` — declared dependency specification from the manifest
+    // - `resolved` — absolute or project-relative resolved dependency path
+    //
+    // Returns:
+    // Portable lockfile path suitable for committing `spanda.lock`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let stored = lockfile_local_path(root, &spec, &resolved);
+
+    if let DependencySpec::Detail(detail) = spec {
+        if let Some(declared) = &detail.path {
+            if !declared.is_absolute() {
+                return declared.clone();
+            }
+        }
+    }
+
+    spanda_runtime::path_util::relativize_path(project_root, resolved)
 }
 
 fn package_root_for_locked(project_root: &Path, locked: &LockedDependency) -> std::path::PathBuf {
@@ -392,7 +426,10 @@ version = "{version}"
             resolve_dependencies(root.path(), &manifest, &ResolveOptions::default()).unwrap();
         let locked = result.lockfile_deps.get("my_lib").unwrap();
         assert_eq!(locked.version, "0.2.0");
-        assert!(matches!(locked.source, LockedSource::Local { .. }));
+        match &locked.source {
+            LockedSource::Local { path } => assert_eq!(path, &PathBuf::from("lib")),
+            other => panic!("expected local source, got {other:?}"),
+        }
     }
 
     #[test]
@@ -514,5 +551,37 @@ shared_utils = {{ path = "../shared" }}
             resolve_dependencies(root.path(), &manifest, &ResolveOptions::default()).unwrap();
         let locked = result.lockfile_deps.get("spanda-nav").unwrap();
         assert!(matches!(locked.source, LockedSource::Git { .. }));
+    }
+
+    #[test]
+    fn preserves_declared_parent_local_path_in_lockfile() {
+        let root = TempDir::new().unwrap();
+        let package = root.path().join("pkg");
+        let audit = root.path().join("audit");
+        fs::create_dir_all(&package).unwrap();
+        fs::create_dir_all(&audit).unwrap();
+        write_manifest(&package, "spanda-ledger", "0.1.0");
+        write_manifest(&audit, "ledger-anchor-audit", "0.1.0");
+
+        let mut manifest = PackageManifest::load_from_dir(&audit).unwrap();
+        manifest.dependencies.insert(
+            "spanda-ledger".into(),
+            DependencySpec::Detail(DependencyDetail {
+                version: None,
+                path: Some(PathBuf::from("../pkg")),
+                git: None,
+                branch: None,
+                tag: None,
+                rev: None,
+            }),
+        );
+
+        let result =
+            resolve_dependencies(&audit, &manifest, &ResolveOptions::default()).unwrap();
+        let locked = result.lockfile_deps.get("spanda-ledger").unwrap();
+        match &locked.source {
+            LockedSource::Local { path } => assert_eq!(path, &PathBuf::from("../pkg")),
+            other => panic!("expected local source, got {other:?}"),
+        }
     }
 }

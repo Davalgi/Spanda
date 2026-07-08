@@ -10,7 +10,7 @@
       "version": "0.1.0",
       "source": {
         "kind": "local",
-        "path": "/Users/sujay/Code/Spanda/packages/registry/spanda-ledger/examples/anchor_audit/../../"
+        "path": "../../"
       },
       "checksum": null
     }

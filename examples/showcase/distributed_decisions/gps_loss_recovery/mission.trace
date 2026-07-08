@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "source": "/Users/sujay/Code/Spanda/examples/showcase/distributed_decisions/gps_loss_recovery/mission.sd",
+  "source": "mission.sd",
   "deterministic": true,
   "frames": [
     {

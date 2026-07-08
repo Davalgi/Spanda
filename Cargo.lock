@@ -3457,6 +3457,7 @@ dependencies = [
  "spanda-error",
  "spanda-lexer",
  "spanda-parser",
+ "tempfile",
 ]
 
 [[package]]

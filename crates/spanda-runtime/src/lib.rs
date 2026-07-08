@@ -23,6 +23,7 @@ pub mod health_types;
 pub mod hooks;
 pub mod host;
 pub mod operational_policy;
+pub mod path_util;
 pub mod platform_event_runtime;
 pub mod provider_runtime;
 pub mod provider_types;
