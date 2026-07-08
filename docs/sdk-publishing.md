@@ -285,7 +285,7 @@ git push origin crates-sdk-v${VERSION} sdk-python-v${VERSION} npm-sdk-v${VERSION
 **GitHub → Actions** — confirm **Publish Rust SDK**, **Publish Python SDK**, and **Publish
 TypeScript SDK** succeed.
 
-### 5. Verify install
+### 5. Verify install (published **0.5.5**)
 
 ```bash
 pip install spanda-sdk==0.5.5
@@ -300,7 +300,7 @@ node -e "import('@davalgi-spanda/sdk').then(m => console.log(m.SpandaClient.loca
 ### 6. Verify registries (post-publish)
 
 ```bash
-./scripts/verify_sdk_published.sh 0.5.5
+./scripts/verify_sdk_published.sh 0.5.5   # latest published; use 0.5.6 after tagging
 ```
 
 GitHub Actions: **Verify published SDKs** (`sdk-publish-verify.yml`) — weekly or manual

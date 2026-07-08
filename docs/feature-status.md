@@ -1,6 +1,6 @@
 # Feature Status
 
-Honest snapshot of **Spanda Platform** capabilities as of **v0.5.0**. The Spanda Language (`.sd`) is
+Honest snapshot of **Spanda Platform** capabilities as of **v0.6.3**. The Spanda Language (`.sd`) is
 one component; this matrix covers verification, simulation, fleet, packages, and tooling as well.
 Use this document to understand what is production-ready, experimental, planned, or deprecated.
 
@@ -28,7 +28,7 @@ Stable. Simulated-only paths must say so explicitly.
 
 ---
 
-## v0.5.0 — Beta credibility (current)
+## v0.6.3 — Evaluation / beta (current)
 
 | Area | Status |
 |------|--------|
@@ -145,7 +145,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **WASM / web playground** | Browser check/run/verify | Limited surface vs native CLI |
 | **Live AI providers** | OpenAI, Anthropic, ONNX via Python bridge | Requires API keys or `SPANDA_ONNX_MODEL_PATH`; mock fallback by default |
 | **Live IoT bridges** | Modbus TCP, OPC-UA, zigbee, lora, matter, canbus | Env-gated (`SPANDA_LIVE_*=1`); in-memory hub fallback |
-| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **40** packages after `build-registry.sh` |
+| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **89** packages after `build-registry.sh` |
 | **Official package provenance** | Registry-only provider bootstrap; path/git name-squatting blocked | `OfficialProvenance` API; `official_provenance` install warning; production `deploy gate` hard-fail |
 | **Registry signature policy** | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` + lockfile signature audit | Required for production `deploy gate`; optional at install otherwise |
 
@@ -159,7 +159,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Platform maturity (Phase B)** | **Stable** — threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`, `readiness --policy`, `deploy gate --operational-policy`, runtime `--enforce-policy`) |
 | **Platform maturity (Phase C)** | **Stable** — chaos, readiness trends, resource estimation, compliance profiles, ADR (`spanda adr`) |
 | **Platform maturity (Phase D)** | **Stable** — verify-time tamper/integrity, composite program trust, secure-boot attestation, compliance accreditation export, decision explain, runtime policy, AI generate/suggest, spoof-check, security assurance, tamper_policy runtime |
-| **Enterprise operations (E1–E4)** | Control Center (`spanda control-center serve`, embedded UI, `ControlCenterPanel` in `@davalgi-spanda/web`, Tauri desktop **0.4.2**) |
+| **Enterprise operations (E1–E4)** | Control Center (`spanda control-center serve`, embedded UI, `ControlCenterPanel` in `@davalgi-spanda/web`, Tauri desktop **0.6.3**) |
 | | REST v1 (`spanda-api`); Device Pool lifecycle; host-backed discovery + pool ingest; RBAC v1 (`SPANDA_API_KEY`) |
 | | `ManagedSecretVault`, alerting core (`spanda-ops`); provisioning/snapshots/discovery (E2) |
 | | Operational drift/OTA/trust/SRE/operator APIs + Python SDK + WebSocket telemetry + OTLP trace export (E3) |
@@ -282,7 +282,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | **Configuration Drift** | **Stable** | Full operational drift API; scheduled scans (`SPANDA_DRIFT_SCAN_INTERVAL_SECS`); seven dimensions via `GET /v1/drift` |
 | **OTA & Rollback** | **Stable** | Canary, blue/green, phased dry-run; production `--require-certify` via `SPANDA_OTA_REQUIRE_CERTIFY` |
 | **Package Trust** | **Stable** | `spanda trust`, `/v1/trust/package`, trust score |
-| **SDKs** | **Stable** | Official Rust/Python/TypeScript clients **published** at **0.4.2** (`cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`) — entity read/eval/mutation helpers (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); `@davalgi-spanda/web` Control Center panel; program-level REST + gRPC; legacy `packages/sdk-python` |
+| **SDKs** | **Stable** | Official Rust/Python/TypeScript clients **published** at **0.5.5** (`cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`) — entity read/eval/mutation helpers (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); Twin Cloud and Recovery Orchestrator clients in **0.5.5+** / workspace **0.5.6**; `@davalgi-spanda/web` Control Center panel; program-level REST + gRPC; legacy `packages/sdk-python` |
 | **Operator Workflows** | **Stable** | Mission approve, takeover, quarantine, recovery approval |
 | **SRE** | **Stable** | `/v1/sre/summary` with `slo`, `burn_rate`, MTTR/MTBF hints; incident workflow; PagerDuty webhook sync; fast-burn background monitor |
 | **Reporting** | **Stable** | Markdown, JSON, PDF exports; scheduled webhook delivery (`GET/POST /v1/reports/schedules`) |
@@ -293,7 +293,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | **Unified Entity Model** | **Stable** | `EntityRegistry` projects fleet, devices, humans, providers, packages into entity graph |
 | | | Verification, readiness, health, and trust via `verify_entity` / `evaluate_entity_*` |
 | | | Control Center Entities tab with read/write mutations; CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) |
-| | | SDKs **0.4.2** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
+| | | SDKs **0.5.5** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
 | **Observability** | **Stable** | OTLP trace/metrics export, correlation IDs, WebSocket telemetry; `spanda-otel-collector`; Grafana templates (`spanda-grafana-dashboards`); HA collector guide |
 | **Digital Thread** | **Stable** | Full lifecycle graph (requirement → retirement); `GET /v1/digital-thread/query` with `lifecycle_phase` filter |
 
@@ -320,8 +320,8 @@ field soak and third-party security audit sign-off — remain tracked in
 [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
 **Enterprise ops (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable** after
-`enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.4.2** and desktop
-**0.4.2** (`desktop-v0.4.2`) published. Ongoing organizational gates — 30-day field soak
+`enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.5.5** and desktop
+**0.6.3** (`desktop-v0.6.3`) published. Ongoing organizational gates — 30-day field soak
 ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off — tracked in
 [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
@@ -343,7 +343,7 @@ Release-hardening pass against the strict labels above
 Remaining review: any row still marked **Stable** whose *default* path is simulated-only or
 docs-only should be demoted in a follow-up PR.
 
-## Known limitations (v0.5.0)
+## Known limitations (v0.6.3)
 
 - AI providers use **mock backends** by default; set `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
   `SPANDA_ONNX_MODEL_PATH` for live calls (`SPANDA_LIVE_AI=0` forces mock). Label: **Mock-backed**.

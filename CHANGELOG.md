@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Documentation version sync:** README, SDK guides, feature-status, ROADMAP, overview docs, and
+  registry READMEs now cite published SDK **0.5.5** (workspace line **0.5.6**), desktop/workspace
+  **v0.6.3**, and **89** official registry packages.
+
 - **Wasm32 dependency graph:** `spanda-deploy-http` is now optional behind `fleet-http` in
   `spanda-decision` and behind `http` in `spanda-tamper` (default off). `spanda-core` disables
   `spanda-driver` / `spanda-interpreter` default features so `spanda-wasm` no longer pulls `rustls`

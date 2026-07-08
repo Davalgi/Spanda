@@ -32,6 +32,6 @@ Compact snapshot — full matrix: [feature-status.md](../feature-status.md)
 | Distributed decisions | **Stable** | Brain/spinal-cord/reflex layers, `decision_tree`, offline policy, live traces |
 | Cognitive & Resilience Architecture | **Beta** | Eleven functional domains, REST+gRPC, domain SDK clients, CC tab — [cognitive-resilience-architecture.md](../cognitive-resilience-architecture.md) |
 | Control Center | **Stable** | `spanda control-center serve` (REST v1 + optional `--grpc-bind` tonic), embedded UI with sidebar version, Tauri desktop **0.6.3** (`desktop-v0.6.3`) — [control-center-versioning.md](../control-center-versioning.md) · [desktop-release-runbook.md](../desktop-release-runbook.md) |
-| Official SDKs | **Stable** | **0.4.2** on [crates.io/spanda-sdk](https://crates.io/crates/spanda-sdk), [PyPI](https://pypi.org/project/spanda-sdk/), [npm @davalgi-spanda/sdk](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+| Official SDKs | **Stable** | **0.5.5** on [crates.io/spanda-sdk](https://crates.io/crates/spanda-sdk), [PyPI](https://pypi.org/project/spanda-sdk/), [npm @davalgi-spanda/sdk](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
 | Control Center desktop | **Stable** | `@spanda/control-center-desktop` **0.6.3** — tag `desktop-v*` → GitHub Release; auto bump when labeled PR changes CC paths |
 | GitHub Pages / Docs Site | **Experimental** | mdBook under [docs-site/](../../docs-site/); build with `mdbook build docs-site` |

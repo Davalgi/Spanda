@@ -8,7 +8,7 @@ Thin HTTP client over REST `/v1/*` — no duplicated platform logic. Optional na
 
 ```toml
 [dependencies]
-spanda-sdk = "0.4.2"
+spanda-sdk = "0.5.5"
 ```
 
 Optional tonic client:

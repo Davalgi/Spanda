@@ -22,7 +22,7 @@
 
 | Path | Role |
 |------|------|
-| [packages/registry/](../../../packages/registry/) | **Authoritative** — 38 official package sources |
+| [packages/registry/](../../../packages/registry/) | **Authoritative** — 89 official package sources |
 | [registry/](../../../registry/) | Publish mirror / hosted index tarballs |
 | [crates/spanda-cli/bundled-registry/](../../../crates/spanda-cli/bundled-registry/) | CLI offline bundle snapshot |
 

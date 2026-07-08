@@ -8,9 +8,9 @@ runtime crates; the CLI and SDKs call the same APIs.
 
 | SDK | Package | Priority | Status |
 |-----|---------|----------|--------|
-| Rust | [`spanda-sdk`](https://crates.io/crates/spanda-sdk) on crates.io | P0 | Stable (v0.4.2 — publish via `crates-sdk-v0.4.2`) |
-| Python | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) on PyPI | P1 | Stable (v0.4.2 — publish via `sdk-python-v0.4.2`) |
-| TypeScript | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) on npm | P2 | Stable (v0.4.2 published) |
+| Rust | [`spanda-sdk`](https://crates.io/crates/spanda-sdk) on crates.io | P0 | Stable (v0.5.5 — publish via `crates-sdk-v0.5.5`; workspace line **0.5.6**) |
+| Python | [`spanda-sdk`](https://pypi.org/project/spanda-sdk/) on PyPI | P1 | Stable (v0.5.5 — publish via `sdk-python-v0.5.5`) |
+| TypeScript | [`@davalgi-spanda/sdk`](https://www.npmjs.com/package/@davalgi-spanda/sdk) on npm | P2 | Stable (v0.5.5 published) |
 | Web panel | [`@davalgi-spanda/web`](https://www.npmjs.com/package/@davalgi-spanda/web) on npm | — | Experimental (publish via `npm-web-v*`) |
 | Desktop | `@spanda/control-center-desktop` (Tauri) | — | Stable (v0.6.3 — publish via `desktop-v0.6.3` GitHub Release) |
 

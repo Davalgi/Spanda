@@ -100,7 +100,7 @@ lifecycle, relationships, and graph semantics.
 | **Graph unification** | Align `spanda-graph` + digital thread with entity IDs; `GET /v1/entities/traceability` | **Stable** | Now | Core |
 | **Industry extensions** | Facility/building/zone TOML, ADAS/medical compliance metadata, package entity kinds | **Stable** | Now | Core |
 | **Entity mutation API** | Register, tag, relate, sync overlay to TOML with audit | **Stable** | Now | Core |
-| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.4.2** published | **Stable** | Now | Core + Control Center |
+| **Entity stabilization** | CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK), SDK **0.5.5** published (entity tier shipped at **0.4.2**) | **Stable** | Now | Core + Control Center |
 
 **Design rule:** Before introducing a new top-level platform abstraction, determine whether it
 should be a new **Entity kind** instead.
@@ -511,7 +511,7 @@ tabs. Full spec: [docs/enterprise-operations-roadmap.md
 | **CLI** | `check`, `verify`, `run`, `sim`, `fleet`, `fmt`, `lint`, … | **Stable** | Now | Core |
 | **REST API** | `spanda-api` REST v1, OpenAPI | **Stable** | Now | Core |
 | **gRPC** | tonic gRPC (139 RPCs, proto **1.0.9**), program-level + admin SDK parity | **Stable** | Now | Core |
-| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.5.4** — admin/mission/trace clients) | Now | Core |
+| **SDKs** | Rust (`spanda-sdk`), Python (`sdk/python`), TypeScript (`@davalgi-spanda/sdk`), WebSocket telemetry | **Stable** — **published** to crates.io, PyPI, npm (**0.5.5** — Twin Cloud, Recovery Orchestrator, admin/mission/trace clients; workspace line **0.5.6**) | Now | Core |
 | **GitHub Pages** | mdBook docs site | **Stable** | Now | Core |
 | **Examples** | 9 bundled demos, showcase library | **Stable** | Now | Core |
 | **Templates** | `spanda init`, project scaffolds | **Stable** | Now | Core |
@@ -537,7 +537,7 @@ marketplace growth.
 
 | Area | Items | Tier | Timeline | Ownership |
 |------|-------|------|----------|-----------|
-| **Official Packages** | 38 registry packages (ROS2, MQTT, GPS, vision, …) | **Stable** scaffolds / live **Experimental** | Now | Package |
+| **Official Packages** | 89 registry packages (ROS2, MQTT, GPS, vision, …) | **Stable** scaffolds / live **Experimental** | Now | Package |
 | **Community Packages** | Publish mirror, community adapters | **Future** | Later | Package |
 | **Provider Packages** | Trait implementations per protocol | **Stable** / **Experimental** | Now | Provider |
 | **Protocol Packages** | CAN, V2X, OPC-UA, Matter, BLE, … | **Experimental** | Now | Provider |
@@ -1178,7 +1178,7 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 | Simulation | `spanda sim`, twins, replay, telemetry store | OTLP/fleet aggregation polish; Gazebo/Webots scaffolds |
 | Health | health_check, readiness engine | Swarm quorum hardening |
 | Fleet | In-process + HTTP agents + mesh telemetry | Distributed orchestration polish |
-| Packages | 38 official registry packages | Curated remote registry growth |
+| Packages | 89 official registry packages | Curated remote registry growth |
 | Developer Platform | CLI, 9 bundled demos, CI golden paths | VS Code Marketplace (blocked on `VSCE_PAT`) |
 | Mission assurance | Static analysis + learned anomaly (experimental) | Package-backed ML anomaly backends |
 | Mission continuity | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Field validation; swarm quorum hardening |
@@ -1219,7 +1219,7 @@ bumps independently when its area changes.
 |------|--------|
 | Killer demo + CI golden path | **Stable** |
 | Live AI + ROS2 rclpy golden path + CI | **Stable** |
-| Hosted registry (38 packages) + publish mirror | **Stable** |
+| Hosted registry (89 packages) + publish mirror | **Stable** |
 | CI verify guide + adoption paths | **Stable** |
 | VS Code Marketplace listing | **Deferred** — needs `VSCE_PAT` (manual publisher setup) |
 | Mission Contracts, Explainability, Audit Trail, Coverage CLIs | **Stable** |

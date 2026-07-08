@@ -1,6 +1,6 @@
 # Official Spanda packages
 
-**Authoritative source** for the 38 official registry packages. Each directory is a self-contained Spanda package with `spanda.toml`, source, tests, and README.
+**Authoritative source** for the 89 official registry packages. Each directory is a self-contained Spanda package with `spanda.toml`, source, tests, and README.
 
 ## Three registry paths
 

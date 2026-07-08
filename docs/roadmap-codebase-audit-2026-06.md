@@ -7,6 +7,9 @@
 Canonical status for ongoing release decisions remains [`feature-status.md`](./feature-status.md).
 This file captures point-in-time audit findings and closure tracking.
 
+**Superseded counts (2026-07-08):** **89** registry packages; SDK **0.5.5** published (workspace line
+**0.5.6**); workspace/desktop **v0.6.3**.
+
 ---
 
 ## Executive summary
