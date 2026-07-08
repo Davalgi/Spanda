@@ -35,6 +35,8 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 [docs/release-readiness.md](docs/release-readiness.md) · path to v1.0:
 [docs/organizational-gates.md](docs/organizational-gates.md).
 
+---
+
 <p align="center">
 
 ![Rust](https://img.shields.io/badge/Rust-000000?style=flat&logo=rust&logoColor=white)
@@ -48,13 +50,13 @@ unless live env is configured. See [docs/known-limitations.md](docs/known-limita
 ![MQTT](https://img.shields.io/badge/MQTT-660066?style=flat&logo=eclipsemosquitto&logoColor=white)
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visualstudiocode&logoColor=white)
 <br>
+![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
 [![crates.io](https://img.shields.io/crates/v/spanda-sdk?logo=rust)](https://crates.io/crates/spanda-sdk)
 [![PyPI](https://img.shields.io/pypi/v/spanda-sdk?logo=pypi)](https://pypi.org/project/spanda-sdk/)
 [![npm](https://img.shields.io/npm/v/@davalgi-spanda/sdk?logo=npm)](https://www.npmjs.com/package/@davalgi-spanda/sdk)
 [![docs](https://img.shields.io/badge/docs-mdBook-orange?logo=rust)](https://davalgi.github.io/Spanda/)
 ![status](https://img.shields.io/badge/status-evaluation%20%2F%20beta-yellow)
 ![safety](https://img.shields.io/badge/focus-safety--first-blue)
-![release](https://img.shields.io/github/v/release/Davalgi/Spanda?label=release)
 ![license](https://img.shields.io/github/license/Davalgi/Spanda)
 <br>
 ![CI Fast](https://github.com/Davalgi/Spanda/actions/workflows/ci-fast.yml/badge.svg)
