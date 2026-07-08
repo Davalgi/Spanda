@@ -5,9 +5,9 @@ use spanda_deploy_http::{serve_once, HttpResponse};
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_tamper::{attestation_env_lock, clear_attestation_env, evaluate_secure_boot_coverage};
-use std::path::PathBuf;
 #[cfg(feature = "http")]
 use std::net::TcpListener;
+use std::path::PathBuf;
 #[cfg(feature = "http")]
 use std::thread;
 #[cfg(feature = "http")]
