@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
 import {
   CcBadge,
@@ -7,6 +7,7 @@ import {
   CcSection,
 } from "./controlCenterUi";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
+import { MeshMiniGraph, type MeshGraphPayload } from "./MeshMiniGraph";
 
 type MeshNode = {
   entity_id: string;
@@ -42,6 +43,25 @@ type Props = {
   hasToken: boolean;
 };
 
+function parseMeshGraph(value: Record<string, unknown> | null): MeshGraphPayload | null {
+  if (!value) return null;
+  const nodes = Array.isArray(value.nodes) ? value.nodes : [];
+  const edges = Array.isArray(value.edges) ? value.edges : [];
+  return {
+    nodes: nodes.filter(
+      (node): node is MeshGraphPayload["nodes"][number] =>
+        typeof node === "object" && node != null && typeof (node as { id?: unknown }).id === "string",
+    ),
+    edges: edges.filter(
+      (edge): edge is MeshGraphPayload["edges"][number] =>
+        typeof edge === "object" &&
+        edge != null &&
+        typeof (edge as { from?: unknown }).from === "string" &&
+        typeof (edge as { to?: unknown }).to === "string",
+    ),
+  };
+}
+
 export function MeshPanel({ baseUrl, authHeaders }: Props) {
   const [nodes, setNodes] = useState<MeshNode[]>([]);
   const [health, setHealth] = useState<MeshHealth | null>(null);
@@ -51,6 +71,9 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionResult, setActionResult] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const meshGraph = useMemo(() => parseMeshGraph(graph), [graph]);
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -65,7 +88,14 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
       ]);
       if (nodesRes.ok) {
         const body = await nodesRes.json();
-        setNodes(Array.isArray(body.nodes) ? body.nodes : []);
+        const nextNodes = Array.isArray(body.nodes) ? body.nodes : [];
+        setNodes(nextNodes);
+        setSelectedId((current) => {
+          if (current && nextNodes.some((node: MeshNode) => node.entity_id === current)) {
+            return current;
+          }
+          return nextNodes[0]?.entity_id ?? null;
+        });
       }
       if (healthRes.ok) {
         const body = await healthRes.json();
@@ -181,7 +211,11 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
             </thead>
             <tbody>
               {nodes.map((node) => (
-                <tr key={node.entity_id}>
+                <tr
+                  key={node.entity_id}
+                  className={selectedId === node.entity_id ? "selected" : undefined}
+                  onClick={() => setSelectedId(node.entity_id)}
+                >
                   <td>{node.entity_id}</td>
                   <td>{node.transport ?? "—"}</td>
                   <td>
@@ -198,11 +232,22 @@ export function MeshPanel({ baseUrl, authHeaders }: Props) {
         )}
       </CcSection>
 
-      <CcSection title="Topology graph">
-        {!graph ? (
+      <CcSection title="Topology graph" hint="Purple = coordinator. Red/dashed edges = untrusted or inactive links.">
+        {!meshGraph || meshGraph.nodes.length === 0 ? (
           <CcEmptyState title="No graph data" />
         ) : (
-          <pre className="cc-action-result">{JSON.stringify(graph, null, 2)}</pre>
+          <>
+            <MeshMiniGraph
+              graph={meshGraph}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              coordinatorId={coordinatorId}
+            />
+            <details className="mesh-graph-raw">
+              <summary>Raw graph JSON</summary>
+              <pre className="cc-action-result">{JSON.stringify(meshGraph, null, 2)}</pre>
+            </details>
+          </>
         )}
       </CcSection>
 

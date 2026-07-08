@@ -544,6 +544,32 @@ tr.decision-row-escalation td {
   color: #8b949e;
 }
 
+.mesh-mini-graph svg {
+  width: 100%;
+  max-width: 36rem;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+}
+
+.mesh-graph-node {
+  cursor: pointer;
+}
+
+.mesh-graph-raw {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #8b949e;
+}
+
+.cc-table tr.selected td {
+  background: #6366f122;
+}
+
+.cc-table tbody tr {
+  cursor: pointer;
+}
+
 .entity-detail table {
   width: 100%;
   border-collapse: collapse;
