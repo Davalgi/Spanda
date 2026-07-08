@@ -333,6 +333,18 @@ class SpandaClient:
     def mesh_partitions(self) -> Any:
         return self._request("GET", "/v1/mesh/partitions")
 
+    def mesh_graph(self) -> Any:
+        return self._request("GET", "/v1/mesh/graph")
+
+    def mesh_discover(self) -> Any:
+        return self._request("POST", "/v1/mesh/discover", {})
+
+    def mesh_merge_report(self) -> Any:
+        return self._request("GET", "/v1/mesh/merge-report")
+
+    def mesh_simulate_partition(self, entity_ids: list[str]) -> Any:
+        return self._request("POST", "/v1/mesh/simulate-partition", {"entity_ids": entity_ids})
+
     def entity_traceability(
         self,
         *,

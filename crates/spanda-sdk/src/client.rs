@@ -281,6 +281,31 @@ impl SpandaClient {
         self.request("GET", "/v1/mesh/partitions", None, false)
     }
 
+    /// Mesh graph nodes and edges for visualization.
+    pub fn mesh_graph(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/graph", None, false)
+    }
+
+    /// Run mesh discovery against registry and entity graph sources.
+    pub fn mesh_discover(&self) -> SpandaResult<Value> {
+        self.request("POST", "/v1/mesh/discover", Some(&json!({})), false)
+    }
+
+    /// Partition merge report for active mesh splits.
+    pub fn mesh_merge_report(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/mesh/merge-report", None, false)
+    }
+
+    /// Simulate a mesh partition for the given entity ids.
+    pub fn mesh_simulate_partition(&self, entity_ids: &[&str]) -> SpandaResult<Value> {
+        self.request(
+            "POST",
+            "/v1/mesh/simulate-partition",
+            Some(&json!({ "entity_ids": entity_ids })),
+            false,
+        )
+    }
+
     /// Explain recovery decision for entity failure.
     pub fn explain_recovery(&self, body: &Value) -> SpandaResult<Value> {
         self.request("POST", "/v1/recovery/explain", Some(body), false)

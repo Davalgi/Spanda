@@ -433,6 +433,22 @@ export class SpandaClient {
     return this.request("GET", "/v1/mesh/partitions");
   }
 
+  async meshGraph(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/graph");
+  }
+
+  async meshDiscover(): Promise<JsonValue> {
+    return this.request("POST", "/v1/mesh/discover", {});
+  }
+
+  async meshMergeReport(): Promise<JsonValue> {
+    return this.request("GET", "/v1/mesh/merge-report");
+  }
+
+  async meshSimulatePartition(entityIds: string[]): Promise<JsonValue> {
+    return this.request("POST", "/v1/mesh/simulate-partition", { entity_ids: entityIds });
+  }
+
   async entityTraceability(
     query: { entityId?: string; capability?: string; deviceId?: string } = {},
   ): Promise<JsonValue> {
