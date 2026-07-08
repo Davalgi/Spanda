@@ -9,7 +9,7 @@ source "${ROOT}/scripts/lib/registry_env.sh"
 ensure_spanda_registry_url "$ROOT"
 
 echo "== attestation integration tests =="
-cargo test -p spanda-tamper --test attestation_integration -q
+cargo test -p spanda-tamper --features http --test attestation_integration -q
 cargo test -p spanda-tamper tpm -q
 cargo test -p spanda-config agent_drift_detects_missing_secure_boot_attestation -q
 cargo test -p spanda-ota --test agent_attestation agent_status_includes_attestation_from_environment -q

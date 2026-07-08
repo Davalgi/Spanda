@@ -1,12 +1,16 @@
 //! Integration test for live attestation HTTP endpoint merging.
 
+#[cfg(feature = "http")]
 use spanda_deploy_http::{serve_once, HttpResponse};
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
 use spanda_tamper::{attestation_env_lock, clear_attestation_env, evaluate_secure_boot_coverage};
-use std::net::TcpListener;
 use std::path::PathBuf;
+#[cfg(feature = "http")]
+use std::net::TcpListener;
+#[cfg(feature = "http")]
 use std::thread;
+#[cfg(feature = "http")]
 use std::time::Duration;
 
 fn repo_path(parts: &[&str]) -> PathBuf {
@@ -30,6 +34,7 @@ robot Rover {
 "#;
 
 #[test]
+#[cfg(feature = "http")]
 fn live_attestation_endpoint_merges_secure_boot_coverage() {
     let _guard = attestation_env_lock();
     clear_attestation_env();
