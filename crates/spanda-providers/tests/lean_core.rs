@@ -223,9 +223,9 @@ fn dispatch_gps_read_when_package_installed() {
     .expect("dispatch");
     match value {
         spanda_runtime::value::RuntimeValue::Object { type_name, .. } => {
-            assert_eq!(type_name, "GeoPoint");
+            assert_eq!(type_name, "GpsFix");
         }
-        other => panic!("expected GeoPoint, got {other:?}"),
+        other => panic!("expected GpsFix, got {other:?}"),
     }
 }
 

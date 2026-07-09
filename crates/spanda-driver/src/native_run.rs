@@ -17,6 +17,7 @@ use std::process::Command;
 
 /// Outcome of attempting native execution before interpreter fallback.
 #[cfg(feature = "llvm")]
+#[allow(clippy::large_enum_variant)]
 pub enum NativeRunAttempt {
     Executed(RunResult),
     Fallback { reason: String },

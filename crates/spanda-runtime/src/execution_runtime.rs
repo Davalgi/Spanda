@@ -18,9 +18,8 @@ pub enum ExecutionRuntime {
 impl ExecutionRuntime {
     /// Resolve runtime mode from CLI `--runtime` and `SPANDA_RUNTIME`.
     pub fn resolve(flag: Option<&str>) -> Self {
-        let from_flag = flag.and_then(Self::parse);
-        if from_flag.is_some() {
-            return from_flag.unwrap();
+        if let Some(from_flag) = flag.and_then(Self::parse) {
+            return from_flag;
         }
         std::env::var("SPANDA_RUNTIME")
             .ok()
