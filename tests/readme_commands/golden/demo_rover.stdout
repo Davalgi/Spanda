@@ -1,17 +1,17 @@
 == Autonomous Rover — flagship platform demo ==
 
 → Installing packages…
-  vendored spanda-gps → <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/.spanda/packages/spanda-gps
-  vendored spanda-mqtt → <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/.spanda/packages/spanda-mqtt
-  vendored spanda-nav → <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/.spanda/packages/spanda-nav
-  vendored spanda-wifi → <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/.spanda/packages/spanda-wifi
+  vendored spanda-gps → <ROOT>/examples/showcase/autonomous_rover/.spanda/packages/spanda-gps
+  vendored spanda-mqtt → <ROOT>/examples/showcase/autonomous_rover/.spanda/packages/spanda-mqtt
+  vendored spanda-nav → <ROOT>/examples/showcase/autonomous_rover/.spanda/packages/spanda-nav
+  vendored spanda-wifi → <ROOT>/examples/showcase/autonomous_rover/.spanda/packages/spanda-wifi
 ✓ Installed 4 dependencies → spanda.lock
   official packages: spanda-gps, spanda-mqtt, spanda-nav, spanda-wifi
 → Verify hardware fit
 {"ok":true,"compatible":true,"target":"RoverV1","items":[{"category":"connectivity_policy","message":"Connectivity policy 'RoverLink' parsed: preferred=wifi, fallback=cellular","severity":"pass","line":37,"column":1},{"category":"adapter","message":"Framework import 'positioning.gps' maps to spanda-gps — stub adapter (orchestration hook only)","severity":"pass","line":12,"column":1},{"category":"adapter","message":"Framework import 'communication.mqtt' maps to spanda-mqtt — stub adapter (orchestration hook only)","severity":"pass","line":13,"column":1},{"category":"simulate","message":"Applied fault 'BatteryDegradation' against 'RoverV1'","severity":"pass","line":108,"column":1},{"category":"simulate","message":"Applied fault 'GpsSignalLoss' against 'RoverV1'","severity":"pass","line":108,"column":1},{"category":"deploy","message":"Verifying robot 'AutonomousRover' against hardware 'RoverV1'","severity":"pass","line":43,"column":1},{"category":"sensors","message":"Sensor 'camera' (Camera) available on RoverV1","severity":"pass","line":44,"column":3},{"category":"sensors","message":"Sensor 'lidar' (Lidar) available on RoverV1","severity":"pass","line":45,"column":3},{"category":"sensors","message":"Sensor 'gps_sensor' (GPS) available on RoverV1","severity":"pass","line":46,"column":3},{"category":"actuators","message":"Actuator 'wheels' (DifferentialDrive) available on RoverV1","severity":"pass","line":47,"column":3},{"category":"memory","message":"Memory 4096 MB meets requirement >= 2048 MB","severity":"pass","line":16,"column":1},{"category":"sensors","message":"Required sensor 'Camera' available on RoverV1","severity":"pass","line":16,"column":1},{"category":"sensors","message":"Required sensor 'Lidar' available on RoverV1","severity":"pass","line":16,"column":1},{"category":"sensors","message":"Required sensor 'GPS' available on RoverV1","severity":"pass","line":16,"column":1},{"category":"connectivity","message":"Required connectivity 'wifi' present on 'RoverV1'","severity":"pass","line":21,"column":1},{"category":"connectivity","message":"Required connectivity 'gps' present on 'RoverV1'","severity":"pass","line":21,"column":1},{"category":"memory","message":"Task memory budget 64 MB within target 4096 MB","severity":"pass","line":75,"column":5},{"category":"cpu","message":"Estimated task CPU 0.5% within budget 10%","severity":"pass","line":75,"column":5},{"category":"memory","message":"Task memory budget 256 MB within target 4096 MB","severity":"pass","line":81,"column":5},{"category":"cpu","message":"Estimated task CPU 10.0% within budget 25%","severity":"pass","line":81,"column":5},{"category":"power","message":"Mission energy 20.0 Wh within battery capacity 50.0 Wh","severity":"pass","line":65,"column":3},{"category":"timing","message":"Task 'gps_telemetry' period 1000ms schedulable on 'RoverV1' (min 10ms)","severity":"pass","line":74,"column":3},{"category":"timing","message":"Task 'control_loop' period 50ms schedulable on 'RoverV1' (min 10ms)","severity":"pass","line":80,"column":3},{"category":"timing","message":"Behavior 'patrol' loop 100ms schedulable on 'RoverV1'","severity":"pass","line":86,"column":3},{"category":"timing","message":"Aggregate CPU load 15.5% within scheduling budget on 'RoverV1'","severity":"pass","line":43,"column":1},{"category":"adapter","message":"Builtin adapter 'CameraAdapter' maps sensor 'camera' (Camera) to RoverV1","severity":"pass","line":44,"column":3},{"category":"adapter","message":"Builtin adapter 'LidarAdapter' maps sensor 'lidar' (Lidar) to RoverV1","severity":"pass","line":45,"column":3},{"category":"adapter","message":"Builtin adapter 'GpsAdapter' maps sensor 'gps_sensor' (GPS) to RoverV1","severity":"pass","line":46,"column":3},{"category":"adapter","message":"Builtin adapter 'MotorAdapter' maps actuator 'wheels' (DifferentialDrive) to RoverV1","severity":"pass","line":47,"column":3},{"category":"network","message":"Topic 'telemetry_msg' (String) at 1 Hz ≈ 0.00 Mbps","severity":"pass","line":49,"column":3},{"category":"network","message":"Estimated topic bandwidth 0.00 Mbps within target 50 Mbps","severity":"pass","line":1,"column":1},{"category":"fleet.missing","message":"no [fleet] section in device configuration","severity":"warning","line":0,"column":0},{"category":"certify","message":"Deploy targets declared without certification metadata — add certify ISO13849 (or IEC61508 / ISO26262)","severity":"warning","line":1,"column":1},{"category":"certify","message":"Deploy target AutonomousRover@RoverV1 covered by certification proof checklist","severity":"pass","line":113,"column":1}]}
 → Simulate patrol
 
-🤖 Running robot from <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/src/rover.sd
+🤖 Running robot from <ROOT>/examples/showcase/autonomous_rover/src/rover.sd
 
 ── Final State ──
   Pose:     x=0.950 m, y=0.000 m, θ=0.000 rad
@@ -114,7 +114,7 @@
 ✓ Simulation complete
 
 → Replay recorded mission
-Replay <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_rover/src/rover.trace (3 frames from 0ms)
+Replay <ROOT>/examples/showcase/autonomous_rover/src/rover.trace (3 frames from 0ms)
   t=0.0ms provider_call Object {"category": String("connectivity"), "failed": Bool(false), "function": String("connect"), "module": String("connectivity.wifi"), "provider_key": String("spanda-wifi::project")}
   t=0.0ms provider_call Object {"category": String("positioning"), "failed": Bool(false), "function": String("read"), "module": String("positioning.gps"), "provider_key": String("spanda-gps::project")}
   t=0.0ms provider_call Object {"category": String("transport"), "failed": Bool(false), "function": String("publish_topic"), "module": String("communication.mqtt"), "provider_key": String("spanda-mqtt::project")}
@@ -122,3 +122,5 @@ Replay <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/autonomous_ro
 Demo complete. See examples/showcase/autonomous_rover/README.md
 [spanda] Program uses AI models/agents; live AI is not configured — mock backend active. See docs/known-limitations.md#ai-and-providers (SPANDA_QUIET=1 to hide).
   ⚠ package requires manual review (level: experimental)
+  ⚠ registry package 'spanda-gps' not in local registry stub
+  ⚠ registry package 'spanda-wifi' not in local registry stub

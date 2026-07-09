@@ -1,6 +1,6 @@
 == Self-healing — recovery policies, validation, fleet mesh ==
 
-✓ <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/self_healing/rover.sd — no type errors
+✓ <ROOT>/examples/showcase/self_healing/rover.sd — no type errors
 Issue:
 gps.failed
 
@@ -58,7 +58,7 @@ Provider -> Use bundled fallback provider or safe stop (75% success)
 Package -> Pin package version or install from registry (85% success)
   On Package failure: Pin package version or install from registry
 
-🤖 Running robot from <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/self_healing/rover.sd
+🤖 Running robot from <ROOT>/examples/showcase/self_healing/rover.sd
 
 ── Final State ──
   Pose:     x=0.000 m, y=0.000 m, θ=0.000 rad

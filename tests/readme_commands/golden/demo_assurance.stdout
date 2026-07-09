@@ -1,6 +1,6 @@
 == Mission assurance — knowledge, state, anomaly, resilience ==
 
-✓ <ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/assurance/rover.sd — no type errors
+✓ <ROOT>/examples/showcase/assurance/rover.sd — no type errors
 {
   "assurance": {
     "cases": [
@@ -84,7 +84,7 @@
       ]
     },
     "safety_case": {
-      "program": "<ROOT>/crates/spanda-cli/bundled-examples/examples/showcase/assurance/rover.sd",
+      "program": "<ROOT>/examples/showcase/assurance/rover.sd",
       "hardware_verification": {
         "compatible": true,
         "items": [
