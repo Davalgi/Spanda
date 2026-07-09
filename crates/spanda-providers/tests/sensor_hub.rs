@@ -38,16 +38,9 @@ fn package_dispatch_reads_imu_when_capability_granted() {
     clear_live_sensor_env();
     seed_sensor_demos();
     let mut registry = bootstrap_providers_for_packages(&["spanda-imu"]);
-    let value = dispatch_official_package_call(
-        &mut registry,
-        "sensors.imu",
-        "read",
-        &[],
-        None,
-        None,
-        0.0,
-    )
-    .expect("imu read dispatch");
+    let value =
+        dispatch_official_package_call(&mut registry, "sensors.imu", "read", &[], None, None, 0.0)
+            .expect("imu read dispatch");
     match value {
         RuntimeValue::Object { type_name, .. } => assert_eq!(type_name, "IMUReading"),
         other => panic!("expected IMU object, got {other:?}"),

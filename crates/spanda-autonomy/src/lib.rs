@@ -49,11 +49,11 @@ pub use homeostasis::{
     evaluate_homeostasis, CorrectionAction, DriftSignal, HomeostasisPolicy, StabilityMetric,
     StabilityRange, StabilityReport,
 };
-pub use live_sensors::{merge_live_sensor_readings, register_live_sensor_supplier};
 pub use immunity::{
     evaluate_immunity, evaluate_quarantine_decision, ImmuneEvent, ImmunePolicy, IsolationDecision,
     QuarantineAction, ThreatResponse, TrustBoundaryViolation,
 };
+pub use live_sensors::{merge_live_sensor_readings, register_live_sensor_supplier};
 pub use maintenance::{
     CalibrationWindow, LowActivityMode, MaintenanceWindow, ScheduledRecovery, SleepMode,
     UpdateWindow,

@@ -33,27 +33,27 @@ fn oidc_authorize_url_requires_issuer_and_client() {
 #[test]
 fn oidc_authorize_url_includes_pkce_when_configured() {
     with_temp_control_center_state(|| {
-    let put = admin_oidc_put(
-        r#"{
+        let put = admin_oidc_put(
+            r#"{
             "enabled": true,
             "issuer": "https://idp.example.com",
             "client_id": "cc-client",
             "client_secret": "secret",
             "redirect_uri": "http://127.0.0.1:8080/admin/oauth/oidc/callback"
         }"#,
-        Some(&deploy_ctx()),
-    );
-    assert_eq!(put.status, 200, "{}", put.body);
-    let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
-    assert!(
-        response.status == 200 || response.status == 400,
-        "authorize may fail without live discovery: {}",
-        response.body
-    );
-    if response.status == 200 {
-        assert!(response.body.contains("code_challenge"));
-        assert!(response.body.contains("\"pkce\":true"));
-    }
+            Some(&deploy_ctx()),
+        );
+        assert_eq!(put.status, 200, "{}", put.body);
+        let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
+        assert!(
+            response.status == 200 || response.status == 400,
+            "authorize may fail without live discovery: {}",
+            response.body
+        );
+        if response.status == 200 {
+            assert!(response.body.contains("code_challenge"));
+            assert!(response.body.contains("\"pkce\":true"));
+        }
     });
 }
 

@@ -4,9 +4,11 @@ use crate::value::RuntimeValue;
 use std::sync::{LazyLock, Mutex};
 
 /// Overlay live GPS/IMU/camera hardware reads onto simulated sensor values.
-pub type LiveSensorOverlay = fn(sensor_type: &str, sensor_name: &str, simulated: &RuntimeValue) -> RuntimeValue;
+pub type LiveSensorOverlay =
+    fn(sensor_type: &str, sensor_name: &str, simulated: &RuntimeValue) -> RuntimeValue;
 
-static LIVE_SENSOR_OVERLAY: LazyLock<Mutex<Option<LiveSensorOverlay>>> = LazyLock::new(|| Mutex::new(None));
+static LIVE_SENSOR_OVERLAY: LazyLock<Mutex<Option<LiveSensorOverlay>>> =
+    LazyLock::new(|| Mutex::new(None));
 
 /// Register a process-wide live sensor overlay (typically from `spanda-cli` + providers).
 pub fn register_live_sensor_overlay(overlay: LiveSensorOverlay) {

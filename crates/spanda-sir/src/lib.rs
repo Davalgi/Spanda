@@ -348,13 +348,41 @@ pub fn sir_native_eligible(sir: &SirProgram) -> bool {
         stmts.iter().all(|stmt| match stmt {
             SirStmt::Unsupported { .. } => false,
             SirStmt::LoopEvery { body, .. } => stmts_eligible(body),
-            SirStmt::IfBool { then_body, else_body, .. }
-            | SirStmt::IfVar { then_body, else_body, .. }
-            | SirStmt::IfCompareBool { then_body, else_body, .. }
-            | SirStmt::IfNotVar { then_body, else_body, .. }
-            | SirStmt::IfCompareDouble { then_body, else_body, .. }
-            | SirStmt::IfScanDistanceCompare { then_body, else_body, .. }
-            | SirStmt::IfRuntime { then_body, else_body, .. } => {
+            SirStmt::IfBool {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfVar {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfCompareBool {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfNotVar {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfCompareDouble {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfScanDistanceCompare {
+                then_body,
+                else_body,
+                ..
+            }
+            | SirStmt::IfRuntime {
+                then_body,
+                else_body,
+                ..
+            } => {
                 stmts_eligible(then_body)
                     && else_body.as_ref().is_none_or(|body| stmts_eligible(body))
             }

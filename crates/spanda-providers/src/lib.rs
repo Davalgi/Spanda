@@ -15,13 +15,8 @@ pub mod sensor_hub;
 pub mod transport_adapter;
 
 pub use automotive_hub::{
-    read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc, read_ultrasonic_distance,
-    read_v2x_message, seed_automotive_demos,
-};
-pub use sensor_hub::{
-    live_fusion_sensor_readings, overlay_sensor_reading, read_camera_as_runtime_value,
-    read_camera_sample, read_gps_as_runtime_value, read_gps_fix, read_imu_as_runtime_value,
-    read_imu_sample, seed_sensor_demos,
+    read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc,
+    read_ultrasonic_distance, read_v2x_message, seed_automotive_demos,
 };
 pub use bootstrap::{
     bootstrap_default_providers, bootstrap_providers_for_packages, official_package_for_transport,
@@ -32,4 +27,9 @@ pub use package_dispatch::{
     dispatch_official_package_call, official_package_for_module, ProviderDispatchContext,
 };
 pub use runtime_bridge::ProviderBackedRuntime;
+pub use sensor_hub::{
+    live_fusion_sensor_readings, overlay_sensor_reading, read_camera_as_runtime_value,
+    read_camera_sample, read_gps_as_runtime_value, read_gps_fix, read_imu_as_runtime_value,
+    read_imu_sample, seed_sensor_demos,
+};
 pub use transport_adapter::{adapter_config_to_runtime, TransportAdapterProvider};

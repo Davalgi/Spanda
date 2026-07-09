@@ -40,7 +40,10 @@ pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> 
 }
 
 /// Compile, certify (when enabled), and execute Spanda source with native-primary dispatch.
-pub fn run_with_source_dispatch(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
+pub fn run_with_source_dispatch(
+    source: &str,
+    options: RunOptions,
+) -> Result<RunResult, SpandaError> {
     #[cfg(feature = "llvm")]
     if options.execution_runtime.prefers_native() {
         match try_run_native(source, &options) {

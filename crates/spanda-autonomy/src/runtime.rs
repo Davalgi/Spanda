@@ -7,8 +7,8 @@ use crate::adaptive_recovery::{
 };
 use crate::damage_risk::{evaluate_damage_risk, RiskSignal};
 use crate::fusion::SensorConfidence;
-use crate::live_sensors::merge_live_sensor_readings;
 use crate::homeostasis::StabilityMetric;
+use crate::live_sensors::merge_live_sensor_readings;
 use crate::types::AutonomySeverity;
 use spanda_config::entity::{
     EntityHealthStatus, EntityReadinessStatus, EntityRecord, EntityTrustStatus,

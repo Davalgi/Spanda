@@ -539,9 +539,8 @@ pub fn read_gps_fix_live(sensor_id: &str) -> Option<(f64, f64, f64, f64)> {
     if !live_gps_enabled() {
         return None;
     }
-    read_csv_floats_via_external_cmd("SPANDA_GPS_CMD", sensor_id, 4).map(|values| {
-        (values[0], values[1], values[2], values[3])
-    })
+    read_csv_floats_via_external_cmd("SPANDA_GPS_CMD", sensor_id, 4)
+        .map(|values| (values[0], values[1], values[2], values[3]))
 }
 
 /// Read IMU sample from `SPANDA_IMU_CMD` when live (`roll,pitch,yaw,ax,ay,az`).
@@ -561,9 +560,8 @@ pub fn read_camera_sample_live(sensor_id: &str) -> Option<(u32, u32, f64)> {
     if !live_camera_enabled() {
         return None;
     }
-    read_csv_floats_via_external_cmd("SPANDA_CAMERA_CMD", sensor_id, 3).map(|values| {
-        (values[0] as u32, values[1] as u32, values[2])
-    })
+    read_csv_floats_via_external_cmd("SPANDA_CAMERA_CMD", sensor_id, 3)
+        .map(|values| (values[0] as u32, values[1] as u32, values[2]))
 }
 
 fn read_csv_floats_via_external_cmd(

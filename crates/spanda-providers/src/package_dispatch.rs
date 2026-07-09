@@ -1,18 +1,18 @@
 //! Runtime dispatch from official package module exports to provider registry backends.
 //!
-use crate::sensor_hub::{
-    read_camera_as_runtime_value, read_gps_as_runtime_value, read_imu_as_runtime_value,
-};
 use crate::anomaly_onnx::scan_learned_score;
 use crate::automotive_hub::{
-    read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc, read_ultrasonic_distance,
-    read_v2x_message,
+    read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc,
+    read_ultrasonic_distance, read_v2x_message,
 };
 use crate::iot_hub::{
     number_arg, publish_telemetry, read_bacnet_point, read_canbus_frame, read_knx_group,
     read_lora_payload, read_matter_cluster, read_modbus_register, read_opcua_node,
     read_string_stub, read_thread_endpoint, read_zigbee_attribute, read_zwave_value,
     register_device, send_command, string_arg, update_shadow,
+};
+use crate::sensor_hub::{
+    read_camera_as_runtime_value, read_gps_as_runtime_value, read_imu_as_runtime_value,
 };
 use spanda_runtime::fusion::{weight_for_sensor_type, weighted_confidence};
 use spanda_runtime::providers::{transport_registry_key, ProviderRegistry};
@@ -1127,9 +1127,7 @@ pub fn dispatch_official_package_call(
                 unit: spanda_ast::nodes::UnitKind::None,
             })
         }
-        ("automotive.uds", "diagnose")
-            if registry.has_capability("automotive.uds.diagnose") =>
-        {
+        ("automotive.uds", "diagnose") if registry.has_capability("automotive.uds.diagnose") => {
             let ecu = if args.is_empty() {
                 "powertrain-ecu".to_string()
             } else {
@@ -1149,9 +1147,7 @@ pub fn dispatch_official_package_call(
             );
             Some(RuntimeValue::String { value })
         }
-        ("automotive.v2x", "receive")
-            if registry.has_capability("automotive.v2x.receive") =>
-        {
+        ("automotive.v2x", "receive") if registry.has_capability("automotive.v2x.receive") => {
             let channel = if args.is_empty() {
                 "bsm".to_string()
             } else {

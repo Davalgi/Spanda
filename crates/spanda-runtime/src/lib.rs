@@ -4,8 +4,6 @@ pub mod assurance_runtime;
 pub mod backend_notice;
 pub mod classification;
 pub mod continuity_primitives;
-pub mod execution_runtime;
-pub mod live_sensor_overlay;
 pub mod continuity_types;
 pub mod decision_runtime;
 pub mod decision_trace;
@@ -13,6 +11,7 @@ pub mod device_telemetry_sink;
 pub mod environment;
 pub mod error;
 pub mod events;
+pub mod execution_runtime;
 pub mod fault_primitives;
 pub mod fault_runtime;
 pub mod fault_types;
@@ -24,6 +23,7 @@ pub mod health_primitives;
 pub mod health_types;
 pub mod hooks;
 pub mod host;
+pub mod live_sensor_overlay;
 pub mod operational_policy;
 pub mod path_util;
 pub mod platform_event_runtime;
@@ -60,8 +60,6 @@ pub use assurance_runtime::{
 pub use backend_notice::{
     emit_program_backend_notices, warn_ai_mock_fallback, warn_transport_mock_fallback,
 };
-pub use execution_runtime::ExecutionRuntime;
-pub use live_sensor_overlay::{apply_live_sensor_overlay, register_live_sensor_overlay};
 pub use classification::{
     module_classifications, official_package_names, ModuleClassification, ModuleOwnership,
 };
@@ -90,6 +88,7 @@ pub use device_telemetry_sink::{
 pub use environment::Environment;
 pub use error::RuntimeError;
 pub use events::EventBus;
+pub use execution_runtime::ExecutionRuntime;
 pub use fault_primitives::{
     empty_fault_scan_report, faults_from_hardware_signals, record_fault_in_trace,
 };
@@ -118,6 +117,7 @@ pub use health_primitives::{
 pub use health_types::{HealthCheckResult, HealthReport, HealthStatus, HealthTraceRow};
 pub use hooks::{NoopRuntimeHooks, RuntimeHooks, SharedRuntimeHooks};
 pub use host::{imports_enable_navigation, imports_enable_slam, RuntimeHost};
+pub use live_sensor_overlay::{apply_live_sensor_overlay, register_live_sensor_overlay};
 pub use operational_policy::{
     build_runtime_policy_monitor, check_runtime_policy_motion, RuntimePolicyMonitor,
     RuntimePolicyViolation,

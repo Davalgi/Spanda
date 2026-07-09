@@ -27,7 +27,10 @@ fn execution_runtime_parses_cli_flag() {
 #[test]
 fn execution_runtime_respects_env_when_no_flag() {
     std::env::set_var("SPANDA_RUNTIME", "interpreter");
-    assert_eq!(ExecutionRuntime::resolve(None), ExecutionRuntime::Interpreter);
+    assert_eq!(
+        ExecutionRuntime::resolve(None),
+        ExecutionRuntime::Interpreter
+    );
     std::env::remove_var("SPANDA_RUNTIME");
 }
 

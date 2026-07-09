@@ -3,8 +3,8 @@
 mod compile;
 mod debug_run;
 pub mod debug_session;
-pub mod pipeline;
 mod native_run;
+pub mod pipeline;
 mod recovery_run;
 mod replay;
 mod run;

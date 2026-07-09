@@ -80,7 +80,11 @@ impl SensorHub {
     }
 
     pub fn read_gps(&self, sensor_id: &str) -> GpsFix {
-        let key = if sensor_id.is_empty() { "gps" } else { sensor_id };
+        let key = if sensor_id.is_empty() {
+            "gps"
+        } else {
+            sensor_id
+        };
         self.gps.get(key).copied().unwrap_or(GpsFix {
             lat: 0.0,
             lon: 0.0,
@@ -90,7 +94,11 @@ impl SensorHub {
     }
 
     pub fn read_imu(&self, sensor_id: &str) -> ImuSample {
-        let key = if sensor_id.is_empty() { "imu" } else { sensor_id };
+        let key = if sensor_id.is_empty() {
+            "imu"
+        } else {
+            sensor_id
+        };
         self.imu.get(key).copied().unwrap_or(ImuSample {
             roll: 0.0,
             pitch: 0.0,
@@ -150,8 +158,7 @@ pub fn read_imu_sample(sensor_id: &str) -> ImuSample {
 
 /// Read camera metadata (live bridge when enabled, otherwise hub stub).
 pub fn read_camera_sample(sensor_id: &str) -> CameraSample {
-    if let Some((width, height, motion_score)) =
-        crate::iot_live::read_camera_sample_live(sensor_id)
+    if let Some((width, height, motion_score)) = crate::iot_live::read_camera_sample_live(sensor_id)
     {
         return CameraSample {
             width,

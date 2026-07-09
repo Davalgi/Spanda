@@ -107,10 +107,7 @@ pub fn try_run_native(source: &str, options: &RunOptions) -> NativeRunAttempt {
     }
     logs.insert(
         0,
-        format!(
-            "runtime: native ({})",
-            compile.executable.display()
-        ),
+        format!("runtime: native ({})", compile.executable.display()),
     );
 
     NativeRunAttempt::Executed(RunResult {
@@ -143,9 +140,7 @@ pub fn warn_native_fallback(reason: &str) {
     ) {
         return;
     }
-    eprintln!(
-        "[spanda] native runtime unavailable ({reason}); falling back to interpreter LTS"
-    );
+    eprintln!("[spanda] native runtime unavailable ({reason}); falling back to interpreter LTS");
 }
 
 #[cfg(not(feature = "llvm"))]
