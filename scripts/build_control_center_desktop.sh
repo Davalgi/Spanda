@@ -12,6 +12,9 @@ else
 fi
 
 if command -v npm >/dev/null 2>&1; then
+  echo "[control-center-desktop] build playground WASM for web shell"
+  chmod +x scripts/build-wasm.sh
+  ./scripts/build-wasm.sh
   echo "[control-center-desktop] npm install (workspace)"
   npm install --workspace=@spanda/control-center-desktop --ignore-scripts 2>/dev/null || npm install
   if [[ "${TAURI_BUILD:-0}" == "1" ]]; then

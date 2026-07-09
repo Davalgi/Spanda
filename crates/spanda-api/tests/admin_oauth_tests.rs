@@ -1,69 +1,57 @@
 //! OIDC and Slack OAuth administration endpoint tests.
 
+mod common;
+
+use common::TempStateDirGuard;
 use spanda_api::control_center_extras::{
     admin_oidc_authorize_url, admin_oidc_put, admin_slack_oauth_url,
 };
 use spanda_security::{RbacContext, Role};
-use tempfile::TempDir;
 
 fn deploy_ctx() -> RbacContext {
     RbacContext::api_key("admin", Role::Administrator, "default")
 }
 
-/// Isolate Control Center admin OAuth state so tests do not read `.spanda/admin-oidc.json`.
-fn with_temp_control_center_state<F: FnOnce()>(f: F) {
-    let dir = TempDir::new().expect("tempdir");
-    std::env::set_var(
-        "SPANDA_CONTROL_CENTER_STATE_DIR",
-        dir.path().to_string_lossy().to_string(),
-    );
-    f();
-    std::env::remove_var("SPANDA_CONTROL_CENTER_STATE_DIR");
-}
-
 #[test]
 fn oidc_authorize_url_requires_issuer_and_client() {
-    with_temp_control_center_state(|| {
-        let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
-        assert_eq!(response.status, 400);
-        assert!(response.body.contains("issuer"));
-    });
+    let _state = TempStateDirGuard::new();
+    let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
+    assert_eq!(response.status, 400);
+    assert!(response.body.contains("issuer"));
 }
 
 #[test]
 fn oidc_authorize_url_includes_pkce_when_configured() {
-    with_temp_control_center_state(|| {
-        let put = admin_oidc_put(
-            r#"{
+    let _state = TempStateDirGuard::new();
+    let put = admin_oidc_put(
+        r#"{
             "enabled": true,
             "issuer": "https://idp.example.com",
             "client_id": "cc-client",
             "client_secret": "secret",
             "redirect_uri": "http://127.0.0.1:8080/admin/oauth/oidc/callback"
         }"#,
-            Some(&deploy_ctx()),
-        );
-        assert_eq!(put.status, 200, "{}", put.body);
-        let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
-        assert!(
-            response.status == 200 || response.status == 400,
-            "authorize may fail without live discovery: {}",
-            response.body
-        );
-        if response.status == 200 {
-            assert!(response.body.contains("code_challenge"));
-            assert!(response.body.contains("\"pkce\":true"));
-        }
-    });
+        Some(&deploy_ctx()),
+    );
+    assert_eq!(put.status, 200, "{}", put.body);
+    let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
+    assert!(
+        response.status == 200 || response.status == 400,
+        "authorize may fail without live discovery: {}",
+        response.body
+    );
+    if response.status == 200 {
+        assert!(response.body.contains("code_challenge"));
+        assert!(response.body.contains("\"pkce\":true"));
+    }
 }
 
 #[test]
 fn slack_oauth_url_requires_client_id() {
-    with_temp_control_center_state(|| {
-        let response = admin_slack_oauth_url("{}", Some(&deploy_ctx()));
-        assert_eq!(response.status, 400);
-        assert!(response.body.contains("oauth_client_id"));
-    });
+    let _state = TempStateDirGuard::new();
+    let response = admin_slack_oauth_url("{}", Some(&deploy_ctx()));
+    assert_eq!(response.status, 400);
+    assert!(response.body.contains("oauth_client_id"));
 }
 
 #[test]
