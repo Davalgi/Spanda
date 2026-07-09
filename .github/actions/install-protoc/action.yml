@@ -17,11 +17,13 @@ runs:
         if [[ "${RUNNER_OS}" == "macOS" ]]; then
           brew install protobuf
         elif [[ "${RUNNER_OS}" == "Windows" ]]; then
-          curl -fsSL -o /tmp/protoc.zip \
+          INSTALL_DIR="${RUNNER_TEMP}/protoc"
+          mkdir -p "$INSTALL_DIR"
+          curl -fsSL -o "${RUNNER_TEMP}/protoc.zip" \
             "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-win64.zip"
-          unzip -oq /tmp/protoc.zip -d "$HOME/protoc" bin/protoc.exe 'include/*'
-          echo "$HOME/protoc/bin" >> "$GITHUB_PATH"
-          export PATH="$HOME/protoc/bin:$PATH"
+          unzip -oq "${RUNNER_TEMP}/protoc.zip" -d "$INSTALL_DIR"
+          echo "$INSTALL_DIR/bin" >> "$GITHUB_PATH"
+          export PATH="$INSTALL_DIR/bin:$PATH"
         else
           # Avoid apt on GitHub-hosted Ubuntu: Microsoft mirror repos are occasionally
           # unsigned/broken and cause unrelated CI jobs (lint-rust) to fail on apt-get update.
