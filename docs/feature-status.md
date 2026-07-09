@@ -1,6 +1,6 @@
 # Feature Status
 
-Honest snapshot of **Spanda Platform** capabilities as of **v0.6.3**. The Spanda Language (`.sd`) is
+Honest snapshot of **Spanda Platform** capabilities as of **v0.7.0**. The Spanda Language (`.sd`) is
 one component; this matrix covers verification, simulation, fleet, packages, and tooling as well.
 Use this document to understand what is production-ready, experimental, planned, or deprecated.
 
@@ -28,7 +28,7 @@ Stable. Simulated-only paths must say so explicitly.
 
 ---
 
-## v0.6.3 — Evaluation / beta (current)
+## v0.7.0 — Evaluation / beta (current)
 
 | Area | Status |
 |------|--------|

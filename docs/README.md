@@ -73,6 +73,7 @@ guides, walkthroughs, and example libraries.
 | [entity-model.md](./entity-model.md) | **Unified Entity Model — foundational platform abstraction** |
 | [entity-mesh.md](./entity-mesh.md) | **Autonomous Entity Mesh — trust-aware inter-entity communication (Experimental)** |
 | [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) | **Entity Mesh Experimental → Stable promotion checklist** |
+| [entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md) | **Entity Mesh 30-day field pilot — soak clock and weekly smoke** |
 | [mesh-topology.md](./mesh-topology.md) | **Mesh topology and discovery** |
 | [mesh-security.md](./mesh-security.md) | **Mesh message security and signed envelopes** |
 | [mesh-partition-handling.md](./mesh-partition-handling.md) | **Partition detection, offline policy, merge** |
@@ -197,7 +198,8 @@ guides, walkthroughs, and example libraries.
 | [registry.md](./registry.md) | **Hosted package registry, `spanda publish` mirror, and `spanda install`** |
 | [feature-status.md](./feature-status.md) | **Feature stability matrix (strict labels)** |
 | [scope-control.md](./scope-control.md) | **Next horizon phase — allowed vs not allowed** |
-| [organizational-gates.md](./organizational-gates.md) | **v0.6.3 → v1.0 path — field soak, security audit, exit checklist** |
+| [organizational-gates.md](./organizational-gates.md) | **v0.7.0 → v1.0 path — field soak, security audit, exit checklist** |
+| [workspace-release-v0.7.0.md](./workspace-release-v0.7.0.md) | **v0.7.0 workspace release prep — tag checklist** |
 | [release-blockers.md](./release-blockers.md) | **P0–P3 release blocker tracking** |
 | [release-readiness.md](./release-readiness.md) | **Release readiness report and recommendation** |
 | [roadmap-codebase-audit-2026-06.md](./roadmap-codebase-audit-2026-06.md) | **June 2026 roadmap vs codebase gap audit and closure tracking** |

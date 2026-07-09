@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-08
+
 ### Changed
 
 - **Control Center Entity Mesh tab:** coordinator stat, Refresh/Discover actions, topology fetch for
@@ -39,6 +41,11 @@ workflow.
   shared artifact. See [docs/ci-architecture.md](docs/ci-architecture.md).
 
 ### Added
+
+- **Entity Mesh field pilot:** dedicated 30-day soak clock
+  (`scripts/entity_mesh_field_soak_init.sh` → `.spanda/entity-mesh-field-soak-start.txt`),
+  [entity-mesh-field-pilot.md](docs/entity-mesh-field-pilot.md), promotion gate wired to the Entity
+  Mesh clock (separate from enterprise ops).
 
 - **SDK 0.5.8:** TypeScript `GrpcClient` for Control Center mesh gRPC RPCs; Rust/Python patch
   alignment.

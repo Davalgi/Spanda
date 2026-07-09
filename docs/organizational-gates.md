@@ -1,15 +1,15 @@
-# Organizational Gates — v0.6.3 → v1.0
+# Organizational Gates — v0.7.0 → v1.0
 
-**v0.6.3** shipped as an **evaluation / beta** release with CI-backed quality gates and honest
-stability labels. Code blockers for that release are closed; **organizational gates** remain before
-**v1.0 production positioning**.
+**v0.7.0** ships as an **evaluation / beta** workspace release with CI-backed quality gates and
+honest stability labels. **v0.6.3** was the prior evaluation line. Code blockers for the 0.6.x
+hardening release are closed; **organizational gates** remain before **v1.0 production positioning**.
 
 Tracked as [RB-007 / #51](https://github.com/Davalgi/Spanda/issues/51) in
 [release-blockers.md](./release-blockers.md).
 
 ---
 
-## What v0.6.3 means today
+## What v0.7.0 means today
 
 | Claim | Status |
 |-------|--------|
@@ -87,10 +87,11 @@ Use this when preparing the `1.0.0` workspace tag:
 
 | # | Item | Owner | Status |
 |---|------|-------|--------|
-| 1 | Field soak ≥ 30 days | Ops / pilot team | **In progress** — started 2026-06-29 (`.spanda/field-soak-start.txt`) |
+| 1 | Enterprise field soak ≥ 30 days | Ops / pilot team | **In progress** — started 2026-06-29 (`.spanda/field-soak-start.txt`) |
+| 1b | Entity Mesh field pilot ≥ 30 days | Ops / pilot team | **In progress** — started 2026-07-09 ([entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md)) |
 | 2 | Third-party security audit sign-off | Security | Open |
 | 3 | RB-007 closed or explicitly accepted in release notes | Maintainers | Open |
-| 4 | Open P0/P1 release blockers | Engineering | **Met** (v0.6.3) |
+| 4 | Open P0/P1 release blockers | Engineering | **Met** (v0.7.0 prep) |
 | 5 | CI Fast + Integration green on `main` | CI | **Met** — see [ci-architecture.md](./ci-architecture.md) |
 | 6 | [known-limitations.md](./known-limitations.md) matches shipped behavior | Docs | **Met** |
 | 7 | Native codegen / device pool / RBAC promotion criteria (code) | Engineering | Partial — see [ROADMAP.md](../ROADMAP.md) v1.0 table |

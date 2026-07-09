@@ -29,7 +29,7 @@ replay, fleet operations, mission assurance, mission continuity, and **89** offi
 
 Repository: [github.com/Davalgi/Spanda](https://github.com/Davalgi/Spanda)
 
-**Current release:** **v0.6.3** (2026-07-04) — **evaluation / beta**. Suitable for pilots, demos,
+**Current release:** **v0.7.0** (2026-07-08) — **evaluation / beta**. Suitable for pilots, demos,
 and integration testing. Not a full production claim: default AI and IoT paths are mock-backed
 unless live env is configured. See [docs/known-limitations.md](docs/known-limitations.md) ·
 [docs/release-readiness.md](docs/release-readiness.md) · path to v1.0:
@@ -211,7 +211,8 @@ Entity Graph → Recovery / Mission / Readiness
 - **Health:** `spanda mesh health` · Control Center **Entity Mesh** tab · `GET /v1/mesh/health`
 
 Guide: [docs/entity-mesh.md](docs/entity-mesh.md) · Examples:
-[examples/showcase/entity_mesh/](examples/showcase/entity_mesh/)
+[examples/showcase/entity_mesh/](examples/showcase/entity_mesh/) · Field pilot:
+[docs/entity-mesh-field-pilot.md](docs/entity-mesh-field-pilot.md)
 
 Note: `spanda fleet mesh start` is the separate **fleet HTTP relay** coordinator.
 
@@ -269,7 +270,7 @@ Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · V
 | **Platform components** | [docs/overview/platform-components.md](docs/overview/platform-components.md) |
 | **Feature status** | [docs/overview/feature-snapshot.md](docs/overview/feature-snapshot.md) · [docs/feature-status.md](docs/feature-status.md) |
 | **Known limitations** | [docs/known-limitations.md](docs/known-limitations.md) · mock/live backend setup in [docs/troubleshooting.md](docs/troubleshooting.md) |
-| **v0.6.3 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
+| **v0.7.0 → v1.0 gates** | [docs/organizational-gates.md](docs/organizational-gates.md) · field soak + security audit |
 | **Distributed decisions** | **Stable** — [docs/distributed-decisions.md](docs/distributed-decisions.md) · [docs/distributed-decision-demo.md](docs/distributed-decision-demo.md) · `spanda decision simulate-attack` |
 | **Cognitive & Resilience Architecture** | **Beta** — [docs/cognitive-resilience-architecture.md](docs/cognitive-resilience-architecture.md) · [docs/cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md) · domain SDK clients · Control Center **Cognitive & Resilience** tab |
 | **Recovery Orchestrator** | **Stable** — [docs/recovery-orchestrator.md](docs/recovery-orchestrator.md) · REST `/v1/recovery/*` · Control Center **Recovery** tab |
@@ -293,7 +294,8 @@ Desktop: [docs/desktop-release-runbook.md](docs/desktop-release-runbook.md) · V
 | [docs/control-center-versioning.md](docs/control-center-versioning.md) | **Control Center versioning** — UI/CLI/API semver, `desktop-v*` auto release |
 | [docs/troubleshooting.md](docs/troubleshooting.md) | Symptom-first fixes — CLI, SDK install, verify, fleet, ROS2, Control Center |
 | [docs/known-limitations.md](docs/known-limitations.md) | Honest scope limits, mock backends, organizational gates |
-| [docs/organizational-gates.md](docs/organizational-gates.md) | v0.6.3 → v1.0 path — field soak, security audit, exit checklist |
+| [docs/organizational-gates.md](docs/organizational-gates.md) | v0.7.0 → v1.0 path — field soak, security audit, exit checklist |
+| [docs/workspace-release-v0.7.0.md](docs/workspace-release-v0.7.0.md) | **v0.7.0 workspace release prep — tag checklist** |
 | [docs/sdk.md](docs/sdk.md) | **Official SDKs** — `cargo add spanda-sdk`, `pip install spanda-sdk`, `@davalgi-spanda/sdk` |
 | [docs/platform-overview.md](docs/platform-overview.md) | Platform components and workflow |
 | [docs/spanda-language.md](docs/spanda-language.md) | Language guide |
