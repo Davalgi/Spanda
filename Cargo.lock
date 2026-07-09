@@ -2992,6 +2992,7 @@ dependencies = [
  "spanda-error",
  "spanda-interpreter",
  "spanda-lexer",
+ "spanda-llvm",
  "spanda-parser",
  "spanda-runtime",
  "spanda-runtime-host",

@@ -342,6 +342,36 @@ pub fn lower_program(program: &Program) -> SirProgram {
     }
 }
 
+/// Return true when every lowered statement is supported by the LLVM native backend.
+pub fn sir_native_eligible(sir: &SirProgram) -> bool {
+    fn stmts_eligible(stmts: &[SirStmt]) -> bool {
+        stmts.iter().all(|stmt| match stmt {
+            SirStmt::Unsupported { .. } => false,
+            SirStmt::LoopEvery { body, .. } => stmts_eligible(body),
+            SirStmt::IfBool { then_body, else_body, .. }
+            | SirStmt::IfVar { then_body, else_body, .. }
+            | SirStmt::IfCompareBool { then_body, else_body, .. }
+            | SirStmt::IfNotVar { then_body, else_body, .. }
+            | SirStmt::IfCompareDouble { then_body, else_body, .. }
+            | SirStmt::IfScanDistanceCompare { then_body, else_body, .. }
+            | SirStmt::IfRuntime { then_body, else_body, .. } => {
+                stmts_eligible(then_body)
+                    && else_body.as_ref().is_none_or(|body| stmts_eligible(body))
+            }
+            SirStmt::MatchEnumUnit { arms, .. } => arms.iter().all(|arm| stmts_eligible(&arm.body)),
+            _ => true,
+        })
+    }
+
+    sir.functions.iter().all(|func| stmts_eligible(&func.body))
+        && sir.robots.iter().all(|robot| {
+            robot
+                .behaviors
+                .iter()
+                .all(|behavior| stmts_eligible(&behavior.body))
+        })
+}
+
 fn lower_function(func: &ModuleFnDecl, ctx: &LowerCtx) -> SirFunction {
     // Description:
     //     Lower function.

@@ -4,6 +4,7 @@ mod compile;
 mod debug_run;
 pub mod debug_session;
 pub mod pipeline;
+mod native_run;
 mod recovery_run;
 mod replay;
 mod run;
@@ -17,7 +18,7 @@ pub use debug_session::{DebugMachine, DebugStackFrame, DebugStepKind};
 pub use pipeline::{lower_to_sir, run_tests};
 pub use recovery_run::{execute_recovery_on_program, execute_recovery_source};
 pub use replay::{playback_mission, replay_mission};
-pub use run::{run, run_program, run_tests_with_registry};
+pub use run::{run, run_program, run_tests_with_registry, run_with_source_dispatch};
 pub use spanda_interpreter::{
     RecoveryRunOptions, RecoveryRunResult, RunOptions, RunResult, TestRunResult,
 };

@@ -9,6 +9,9 @@ use spanda_typecheck::ModuleRegistry;
 
 use crate::compile::{compile, compile_with_registry};
 
+#[cfg(feature = "llvm")]
+use crate::native_run::{try_run_native, warn_native_fallback, NativeRunAttempt};
+
 /// Compile, certify (when enabled), and execute Spanda source.
 pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
     // Description:
@@ -34,6 +37,27 @@ pub fn run(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> 
         compile(source)?.program
     };
     run_program(&program, options)
+}
+
+/// Compile, certify (when enabled), and execute Spanda source with native-primary dispatch.
+pub fn run_with_source_dispatch(source: &str, options: RunOptions) -> Result<RunResult, SpandaError> {
+    #[cfg(feature = "llvm")]
+    if options.execution_runtime.prefers_native() {
+        match try_run_native(source, &options) {
+            NativeRunAttempt::Executed(result) => return Ok(result),
+            NativeRunAttempt::Fallback { reason } => {
+                if options.execution_runtime.allows_interpreter_fallback() {
+                    warn_native_fallback(&reason);
+                } else {
+                    return Err(SpandaError::Runtime {
+                        message: format!("native runtime required but unavailable: {reason}"),
+                        line: 0,
+                    });
+                }
+            }
+        }
+    }
+    run(source, options)
 }
 
 /// Apply certify and FFI defaults, then execute a type-checked program.

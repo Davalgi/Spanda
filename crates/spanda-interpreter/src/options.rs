@@ -5,6 +5,7 @@ use spanda_comm::CommBusFactory;
 use spanda_ffi::FfiRegistry;
 use spanda_runtime::assurance_runtime::SharedAssuranceRuntime;
 use spanda_runtime::decision_runtime::SharedDecisionRuntime;
+use spanda_runtime::execution_runtime::ExecutionRuntime;
 use spanda_runtime::fault_runtime::SharedFaultRuntime;
 use spanda_runtime::hooks::SharedRuntimeHooks;
 use spanda_runtime::provider_runtime::SharedProviderRuntime;
@@ -83,6 +84,10 @@ pub struct RunOptions {
     #[serde(default)]
     pub persist_telemetry: bool,
 
+    /// Native LLVM vs interpreter dispatch (`auto` tries native first when eligible).
+    #[serde(default)]
+    pub execution_runtime: ExecutionRuntime,
+
     /// Enforce a named operational policy during run/sim execution.
     #[serde(default)]
     pub enforce_policy: Option<String>,
@@ -154,6 +159,7 @@ impl Default for RunOptions {
             kill_switch_signature: None,
             inject_health_faults: false,
             persist_telemetry: false,
+            execution_runtime: ExecutionRuntime::default(),
             enforce_policy: None,
             inbound_comm_messages: Vec::new(),
             ffi_registry: None,

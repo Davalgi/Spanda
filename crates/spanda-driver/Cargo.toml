@@ -20,12 +20,14 @@ spanda-bridge = { path = "../spanda-bridge", optional = true }
 spanda-debug = { path = "../spanda-debug" }
 spanda-runtime = { path = "../spanda-runtime" }
 spanda-sir = { path = "../spanda-sir" }
+spanda-llvm = { path = "../spanda-llvm", optional = true }
 serde = { version = "1", features = ["derive"] }
 
 [features]
 default = ["full"]
 full = ["bridge", "spanda-interpreter/fleet-http"]
 bridge = ["dep:spanda-bridge"]
+llvm = ["dep:spanda-llvm"]
 live-ai = ["spanda-interpreter/live-ai"]
 cpp-native = ["bridge", "spanda-bridge/cpp-native"]
 python-native = ["bridge", "spanda-bridge/python-native"]

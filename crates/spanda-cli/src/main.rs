@@ -74,8 +74,8 @@ use spanda_docs::{
     markdown_man_to_roff,
 };
 use spanda_driver::{
-    check, compile, compile_with_registry, lower_to_sir, run, run_debug, tokenize, RunOptions,
-    RunResult,
+    check, compile, compile_with_registry, lower_to_sir, run, run_debug, run_with_source_dispatch,
+    tokenize, RunOptions, RunResult,
 };
 use spanda_error::SpandaError;
 use spanda_format::format_source;
@@ -88,6 +88,7 @@ use spanda_lint::{lint, LintIssue, LintSeverity};
 use spanda_llvm::{compile_native, emit_module_ir_with_options, CompileNativeOptions};
 use spanda_parser::parse;
 use spanda_runtime::scheduler::SchedulerClock;
+use spanda_runtime::{register_live_sensor_overlay, ExecutionRuntime};
 use spanda_runtime_host::core_type_check_host;
 use spanda_security::validate::{security_audit, security_check, SecurityReport, SecuritySeverity};
 use spanda_sir::SirProgram;
@@ -224,8 +225,8 @@ fn usage() {
            spanda verify [--json] [--target <HardwareProfile>] [--policy <name>] [--profile <name>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
            spanda certify prove [--json] [--strict] [--out <file.json>] <file.sd>\n\
            spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
-           spanda run [--json] [--verbose] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--enforce-certify] <file.sd>\n\
-           spanda sim [--json] [--replay] [--twin-export <replay.json>] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--enforce-certify] [--enforce-policy <name>] <file.sd>\n\
+           spanda run [--json] [--verbose] [--runtime auto|native|interpreter] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--enforce-certify] <file.sd>\n\
+           spanda sim [--json] [--replay] [--runtime auto|native|interpreter] [--twin-export <replay.json>] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--enforce-certify] [--enforce-policy <name>] <file.sd>\n\
            spanda run [--enforce-policy <name>] <file.sd>\n\
            spanda replay <mission.trace> [--from T+mm:ss] [--deterministic] [--playback] [--config <spanda.toml>]\n\
            spanda twin export <file.sd> --out <replay.json>\n\
@@ -474,7 +475,7 @@ fn human_run(source: &str, file: &str, command: &str, opts: RunOptions) {
     let trace_providers = opts.trace_providers;
 
     // Match on run and handle each case.
-    match run(source, opts.clone()) {
+    match run_with_source_dispatch(source, opts.clone()) {
         Ok(result) => {
             let s = &result.state;
             println!("\n🤖 Running robot from {file}\n");
@@ -1518,6 +1519,8 @@ fn dispatch_package(command: &str, rest: &[String]) {
 fn main() {
     spanda_decision::register_platform_runtime();
     spanda_autonomy::register_live_sensor_supplier(spanda_providers::live_fusion_sensor_readings);
+    register_live_sensor_overlay(spanda_providers::overlay_sensor_reading);
+    spanda_providers::seed_sensor_demos();
     // Description:
     //     Main.
     //
@@ -2184,6 +2187,7 @@ fn main() {
     let mut persist_telemetry = false;
     let mut inject_failure: Option<String> = None;
     let mut config_path: Option<String> = None;
+    let mut runtime_flag: Option<String> = None;
     let mut i = 2;
 
     // Repeat while i < args.len().
@@ -2295,6 +2299,14 @@ fn main() {
             "--playback" => replay_playback = true,
             "--show-faults" => replay_show_faults = true,
             "--wall-clock" => wall_clock = true,
+            "--runtime" => {
+                i += 1;
+                if i >= args.len() {
+                    eprintln!("--runtime requires auto|native|interpreter");
+                    process::exit(1);
+                }
+                runtime_flag = Some(args[i].clone());
+            }
             "--from" => {
                 i += 1;
                 if i >= args.len() {
@@ -2623,6 +2635,7 @@ fn main() {
                     trigger_kill_switch,
                     inject_health_faults,
                     persist_telemetry,
+                    execution_runtime: ExecutionRuntime::resolve(runtime_flag.as_deref()),
                     ..Default::default()
                 },
                 config_flag,
@@ -2630,7 +2643,7 @@ fn main() {
 
             // Take this path when json.
             if json || metrics_json {
-                print_run_json(run(&source, opts));
+                print_run_json(run_with_source_dispatch(&source, opts));
             } else {
                 human_run(&source, &file, command, opts);
             }

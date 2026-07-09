@@ -96,7 +96,7 @@ chrono = { version = "0.4", default-features = false, features = ["clock"] }
 
 [features]
 default = ["llvm"]
-llvm = ["dep:spanda-llvm"]
+llvm = ["dep:spanda-llvm", "spanda-driver/llvm"]
 slim = []
 transport-tls = ["spanda-transport-routing/transport-tls"]
 live-mqtt = ["spanda-transport-routing/live-mqtt"]
