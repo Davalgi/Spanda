@@ -2,7 +2,7 @@
 
 Language support for Spanda (`.sd`) with bundled LSP diagnostics and debug adapter wiring.
 
-## Install from Marketplace
+## Install
 
 Search **Spanda** in the VS Code Extensions view (`spanda-lang.spanda-vscode`), or:
 
@@ -12,14 +12,13 @@ code --install-extension spanda-lang.spanda-vscode
 
 ## Prerequisites
 
-Install the native Spanda CLI so `check` and `verify` diagnostics work:
+Install the native Spanda CLI so `check` and `verify` diagnostics work. See the [Spanda getting started guide](https://github.com/Davalgi/Spanda/blob/main/docs/getting-started.md) for install options.
+
+Or build from source:
 
 ```bash
-curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/Davalgi/Spanda/releases/download/v0.1.0/spanda-cli-installer.sh | sh
+cargo build -p spanda-cli -p spanda-dap --release
 ```
-
-Or build from source: `cargo build -p spanda-cli -p spanda-dap --release`
 
 ## Features
 
@@ -39,7 +38,7 @@ Or build from source: `cargo build -p spanda-cli -p spanda-dap --release`
 | Setting | Description |
 |---------|-------------|
 | `spanda.cliPath` | Path to `spanda` binary (default: `spanda` on PATH) |
-| `spanda.languageServerPath` | Override bundled LSP server (monorepo dev only) |
+| `spanda.languageServerPath` | Override bundled LSP server (advanced) |
 
 ## Debug workflow
 
@@ -48,37 +47,8 @@ Or build from source: `cargo build -p spanda-cli -p spanda-dap --release`
 3. Run **Debug: Start Debugging** (Spanda configuration)
 4. Use Step Over to advance through periodic tasks
 
-See [docs/debugging.md](../../docs/debugging.md) and [docs/killer-demo.md](../../docs/killer-demo.md).
+More docs: [debugging](https://github.com/Davalgi/Spanda/blob/main/docs/debugging.md) · [killer demo](https://github.com/Davalgi/Spanda/blob/main/docs/killer-demo.md)
 
-## Build VSIX locally
+## Repository
 
-```bash
-./scripts/bundle-vscode-extension.sh
-cd editor/vscode && npm run package
-code --install-extension spanda-vscode-0.1.0.vsix
-```
-
-## Publish to Marketplace (maintainers)
-
-1. Create publisher `spanda-lang` on [Visual Studio Marketplace](https://marketplace.visualstudio.com/manage)
-2. Generate a Personal Access Token with **Marketplace → Manage**
-3. `npx vsce login spanda-lang` (or set `VSCE_PAT`)
-4. From `editor/vscode`: `npm run publish:marketplace`
-
-`vscode:prepublish` runs `bundle-vscode-extension.sh` automatically before `vsce package` / `vsce publish` — no separate bundle step needed.
-
-CI Integration packages the VSIX on every `main` push (`vscode-extension` job in `.github/workflows/ci-integration.yml`). Path-filtered checks also run via `.github/workflows/vscode-extension-ci.yml` when `editor/vscode/**` or `packages/lsp/**` change. Marketplace publish runs on tag release when `VSCE_PAT` is set.
-
-Verify a local VSIX build without publishing:
-
-```bash
-./scripts/verify_vscode_vsix.sh
-```
-
-## Monorepo development
-
-```bash
-npm run build --workspace=@spanda/lsp
-cd editor/vscode && npm run build
-# Press F5 in editor/vscode for Extension Development Host
-```
+https://github.com/Davalgi/Spanda

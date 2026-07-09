@@ -7,23 +7,26 @@ cd "$ROOT"
 npm run build --workspace=@spanda/lsp
 
 DEST="$ROOT/editor/vscode/server"
-rm -rf "$DEST/dist" "$DEST/node_modules"
+rm -rf "$DEST"
 mkdir -p "$DEST/dist"
-cp -r packages/lsp/dist/* "$DEST/dist/"
 
-# Production deps for the language server process.
+node "$ROOT/scripts/bundle-vscode-server.mjs"
 cat > "$DEST/package.json" <<'EOF'
 {
-  "name": "spanda-lsp-bundled",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "vscode-languageserver": "^9.0.1",
-    "vscode-languageserver-textdocument": "^1.0.12"
-  }
+  "type": "module"
 }
 EOF
-npm install --prefix "$DEST" --omit=dev
 
 npm run build --prefix editor/vscode
+
+# Bundle extension host code with vscode-languageclient (not shipped via root node_modules).
+npx esbuild "$ROOT/editor/vscode/dist/extension.js" \
+  --bundle \
+  --platform=node \
+  --format=cjs \
+  --outfile="$ROOT/editor/vscode/dist/extension.bundle.js" \
+  --external:vscode \
+  --log-level=warning
+mv "$ROOT/editor/vscode/dist/extension.bundle.js" "$ROOT/editor/vscode/dist/extension.js"
+
 echo "✓ Bundled LSP into editor/vscode/server/"

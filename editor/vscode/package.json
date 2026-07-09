@@ -2,25 +2,18 @@
   "name": "spanda-vscode",
   "displayName": "Spanda",
   "description": "Spanda Autonomous Systems Platform — VS Code support for Spanda Language (.sd): syntax, LSP check/verify diagnostics, debug",
-  "version": "0.7.0",
+  "version": "0.7.4",
   "publisher": "spanda-lang",
   "icon": "icons/spanda.png",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/Davalgi/Spanda#readme",
+  "bugs": {
+    "url": "https://github.com/Davalgi/Spanda/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Davalgi/Spanda.git"
   },
-  "files": [
-    "dist/**",
-    "server/**",
-    "syntaxes/**",
-    "snippets/**",
-    "icons/**",
-    "language-configuration.json",
-    "LICENSE",
-    "README.md",
-    "package.json"
-  ],
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -138,7 +131,7 @@
     "vscode:prepublish": "npm run bundle",
     "package": "npx @vscode/vsce package --allow-star-activation",
     "package:ci": "npm run build && npm run bundle && npm run package",
-    "publish:marketplace": "npx @vscode/vsce publish --allow-star-activation"
+    "publish:marketplace": "node ../../scripts/vscode-publish-marketplace.mjs"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
