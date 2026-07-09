@@ -43,9 +43,7 @@ pub fn validate_mesh_message(
         && message.trust_requirement.require_signed
         && message.signature.is_none()
     {
-        return MeshSecurityVerdict::Rejected(
-            "unsigned high-risk mesh command rejected".into(),
-        );
+        return MeshSecurityVerdict::Rejected("unsigned high-risk mesh command rejected".into());
     }
 
     if let Some(route) = &message.route {

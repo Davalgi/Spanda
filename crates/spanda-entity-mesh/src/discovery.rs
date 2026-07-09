@@ -3,8 +3,8 @@
 use crate::election::{apply_coordinator, elect_coordinator, MeshElectionOptions};
 use crate::types::*;
 use spanda_config::entity::{
-    EntityGraph, EntityHealthStatus, EntityRecord, EntityRegistry,
-    EntityRelationship, EntityRelationshipKind,
+    EntityGraph, EntityHealthStatus, EntityRecord, EntityRegistry, EntityRelationship,
+    EntityRelationshipKind,
 };
 use std::collections::HashSet;
 

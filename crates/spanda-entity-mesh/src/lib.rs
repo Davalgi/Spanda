@@ -34,8 +34,8 @@ pub use election::{
     MeshElectionMethod, MeshElectionOptions,
 };
 pub use format::{
-    format_capability_results, format_health, format_merge_report, format_node_list,
-    format_route, format_topology, mesh_graph_json, MeshFormat,
+    format_capability_results, format_health, format_merge_report, format_node_list, format_route,
+    format_topology, mesh_graph_json, MeshFormat,
 };
 pub use heartbeat::{
     coordinator_failed, evaluate_mesh_health, ingest_heartbeat, MeshHeartbeatPolicy,
