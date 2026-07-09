@@ -327,6 +327,9 @@ jobs:
           submodules: recursive
 
   vscode-extension:
+    # Builds VSIX on every workspace release; uploads to GitHub release.
+    # Marketplace publish: VSCE_PAT is configured; upload may fail until Microsoft
+    # clears the extension "suspicious content" scanner (publish step is non-blocking).
     name: Upload VS Code extension
     needs:
       - plan
@@ -350,6 +353,7 @@ jobs:
       - name: Upload VS Code extension artifact
         run: gh release upload "${{ needs.plan.outputs.tag }}" editor/vscode/*.vsix --clobber
       - name: Publish to Visual Studio Marketplace
+        continue-on-error: true
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
@@ -357,4 +361,5 @@ jobs:
             echo "VSCE_PAT not set; skip marketplace publish"
             exit 0
           fi
+          echo "Attempting Marketplace publish (VSCE_PAT configured; may fail until manual review)"
           npm run publish:marketplace --prefix editor/vscode
