@@ -3778,7 +3778,6 @@ dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
- "spanda-core",
  "spanda-driver",
  "spanda-error",
  "spanda-format",

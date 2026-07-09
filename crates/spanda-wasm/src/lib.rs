@@ -1,11 +1,12 @@
 //! src crate public API and re-exports.
 //!
 use serde::{Deserialize, Serialize};
-use spanda_core::verify_compatibility;
-use spanda_driver::{check, lower_to_sir, run, RunOptions, RunResult};
-use spanda_error::Diagnostic;
+use spanda_driver::{check, compile, lower_to_sir, run, RunOptions, RunResult};
+use spanda_error::{Diagnostic, SpandaError};
 use spanda_format::format_source;
-use spanda_hardware::{CompatItem, CompatSeverity, VerifyOptions};
+use spanda_hardware::{
+    verify_program_compatibility, CompatItem, CompatSeverity, CompatibilityReport, VerifyOptions,
+};
 use spanda_telemetry_store::{
     memory_append_json_line, memory_append_runtime_metrics, memory_clear, memory_render_otlp_json,
     memory_render_prometheus, memory_stats, wall_timestamp_ms,
@@ -195,6 +196,22 @@ struct VerifyResponse {
     ok: bool,
     compatible: bool,
     items: Vec<CompatItem>,
+}
+
+fn verify_compatibility(
+    source: &str,
+    options: &VerifyOptions,
+) -> Result<CompatibilityReport, SpandaError> {
+    // Compile the source program before running hardware compatibility checks.
+    let program = compile(source)?.program;
+
+    // Build the compatibility report and fold error-severity items into the overall flag.
+    let mut report = verify_program_compatibility(&program, options);
+    report.compatible = !report
+        .items
+        .iter()
+        .any(|item| item.severity == CompatSeverity::Error);
+    Ok(report)
 }
 
 #[wasm_bindgen]
