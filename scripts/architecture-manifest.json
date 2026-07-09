@@ -385,6 +385,13 @@
       "coordination": null,
       "validation.": null
     },
+    "spanda-entity-mesh": {
+      "layer": "platform_services",
+      "owner": "entity-mesh",
+      "responsibility": "Autonomous entity mesh — trust-aware routing",
+      "partitions": null,
+      "discovery.": null
+    },
     "spanda-risk": {
       "layer": "platform_services",
       "owner": "governance",
