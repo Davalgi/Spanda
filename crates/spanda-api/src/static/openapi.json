@@ -2045,6 +2045,176 @@
         }
       }
     },
+    "/v1/mesh/discover": {
+      "post": {
+        "summary": "Discover mesh nodes from runtime and entity graph",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Discovery result"
+          }
+        }
+      }
+    },
+    "/v1/mesh/find-capability": {
+      "post": {
+        "summary": "Find mesh nodes matching a capability",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "capability"
+                ],
+                "properties": {
+                  "capability": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Capability matches"
+          }
+        }
+      }
+    },
+    "/v1/mesh/graph": {
+      "get": {
+        "summary": "Mesh graph for visualization",
+        "responses": {
+          "200": {
+            "description": "Mesh graph JSON"
+          }
+        }
+      }
+    },
+    "/v1/mesh/health": {
+      "get": {
+        "summary": "Mesh health and coordinator status",
+        "responses": {
+          "200": {
+            "description": "Mesh health report"
+          }
+        }
+      }
+    },
+    "/v1/mesh/merge-report": {
+      "get": {
+        "summary": "Partition merge plan and report",
+        "responses": {
+          "200": {
+            "description": "Merge report"
+          }
+        }
+      }
+    },
+    "/v1/mesh/nodes": {
+      "get": {
+        "summary": "List mesh nodes",
+        "responses": {
+          "200": {
+            "description": "Mesh node inventory"
+          }
+        }
+      }
+    },
+    "/v1/mesh/partitions": {
+      "get": {
+        "summary": "List mesh partitions",
+        "responses": {
+          "200": {
+            "description": "Partition inventory"
+          }
+        }
+      }
+    },
+    "/v1/mesh/routes": {
+      "get": {
+        "summary": "Route history or trust-weighted path between entities",
+        "parameters": [
+          {
+            "name": "source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Route or route history"
+          }
+        }
+      }
+    },
+    "/v1/mesh/simulate-partition": {
+      "post": {
+        "summary": "Simulate a mesh partition for affected entities",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "entity_ids"
+                ],
+                "properties": {
+                  "entity_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Partition simulation report"
+          }
+        }
+      }
+    },
+    "/v1/mesh/topology": {
+      "get": {
+        "summary": "Mesh topology summary",
+        "responses": {
+          "200": {
+            "description": "Mesh topology"
+          }
+        }
+      }
+    },
     "/v1/executive/scorecard": {
       "get": {
         "summary": "Executive mission scorecard",
