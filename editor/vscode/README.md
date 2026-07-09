@@ -55,8 +55,9 @@ https://github.com/Davalgi/Spanda
 
 ## Maintainers
 
-Publishing to the Visual Studio Marketplace (PAT, publisher setup, CI, troubleshooting):
-[docs/vscode-marketplace-publish.md](../../docs/vscode-marketplace-publish.md).
+Marketplace status, PAT/CI setup, and troubleshooting:
+[docs/vscode-marketplace-publish.md](../../docs/vscode-marketplace-publish.md) (`VSCE_PAT` is configured;
+listing blocked pending Microsoft review).
 
 Local VSIX smoke test:
 

@@ -53,7 +53,7 @@ PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reportin
 [control-center-versioning.md](./control-center-versioning.md) ·
 [stable-hardening-enterprise-ops.md](./stable-hardening-enterprise-ops.md).
 
-**Deferred:** VS Code Marketplace publish (needs `VSCE_PAT`).
+**Deferred:** VS Code Marketplace public listing (PAT and publisher configured; blocked by automated scanner pending Microsoft review).
 
 ### Philosophy
 
@@ -265,7 +265,7 @@ Not needed: blockchain, self-hosting, fleet runtime.
 
 | Must have | Status |
 |-----------|--------|
-| Published VS Code extension with LSP | VSIX CI + local install; **only open blocker** — Marketplace pending `VSCE_PAT` |
+| Published VS Code extension with LSP | VSIX CI + GitHub release artifacts; `VSCE_PAT` configured; public Marketplace listing pending scanner review |
 | One live AI path (OpenAI or local ONNX via Python bridge) | **Done** — OpenAI, Anthropic, ONNX (Phase 33–35) |
 | One documented ROS2 golden path | **Done** — `ros2_golden_path.sh` |
 | `spanda verify` CI integration guide | **Done** — [ci-verify.md](./ci-verify.md) |

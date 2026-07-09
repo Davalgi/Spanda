@@ -170,7 +170,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **LLVM backend (production primary)** | Optimized native binaries replacing interpreter as default deploy path |
 | **Self-hosting compiler (full)** | Complete Spanda-authored compiler pipeline |
 | **ROS2 production adapter** | First-class, zero-config ROS2 deployment |
-| **VS Code Marketplace publish** | VSIX CI + local install ready; marketplace listing pending maintainer `VSCE_PAT` |
+| **VS Code Marketplace publish** | **Partial** — `VSCE_PAT` + publisher `spanda-lang` configured; VSIX on GitHub releases; public listing blocked by Marketplace scanner pending Microsoft review — [vscode-marketplace-publish.md](./vscode-marketplace-publish.md) |
 | **Production blockchain** | `spanda-ledger-ethereum` and related chain adapters |
 | **Full world models** | Knowledge graphs, beliefs, policies beyond minimal runtime |
 | **Twin cloud SaaS (hosted product)** | Managed multi-tenant service (billing, SLA, multi-region) — OSS `/v1/twins/*` is **Stable**; pilot at [deploy/twin-cloud-hosted/](../deploy/twin-cloud-hosted/) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
@@ -355,7 +355,7 @@ docs-only should be demoted in a follow-up PR.
   `SPANDA_REGISTRY_URL`. Run `./scripts/build-registry.sh` to refresh the hosted index after adding
   scaffolds under `packages/registry/`.
 - VS Code extension builds in CI Integration + path-filtered `vscode-extension-ci.yml`;
-  **Marketplace publish** pending maintainer `VSCE_PAT`.
+  **Marketplace listing** partial — `VSCE_PAT` configured; automated upload blocked pending Microsoft review ([vscode-marketplace-publish.md](./vscode-marketplace-publish.md)).
 - Multi-robot fleet examples run in a single process by default; distributed orchestration uses HTTP
   fleet agents and an optional fleet mesh coordinator (`spanda fleet mesh start`, `--mesh-url` on
   orchestrate/swarm).

@@ -181,7 +181,7 @@ concurrency, and developer ergonomics.
 | **Robot primitives** | `robot`, `sensor`, `actuator`, `task`, `agent` | **Stable** | Now | Core |
 | **Safety types** | `ActionProposal` → `SafeAction` compile-time gate | **Stable** | Now | Core |
 | **Self-hosting subset** | Compiler subset in Spanda | **Future** | Long Term | Core |
-| **VS Code** | Snippets, VSIX CI; Marketplace listing **Partial** (`VSCE_PAT`) | **Stable** / **Partial** | Now | Optional |
+| **VS Code** | Snippets, VSIX CI; Marketplace listing **Partial** (`VSCE_PAT` configured; scanner review pending) | **Stable** / **Partial** | Now | Optional |
 
 **Foundation:** Phases 1–35 complete — [docs/lean-core-roadmap.md](docs/lean-core-roadmap.md)
 
@@ -1186,7 +1186,7 @@ parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
 | **P0** | Organizational gates | 30-day field soak, third-party security audit prep + sign-off ([#51](https://github.com/Davalgi/Spanda/issues/51)) | v1.0 blocker |
 | **P1** | Differentiation hardening | Mission contracts, explainability, decision audit trail — **Control Center + REST wired** (2026-07-04) | Stable |
 | **P1** | Control Center promotion | Playground server load, traceability matrix, assurance/diagnosis program APIs, Differentiation + Cognitive & Resilience tabs — **partial ship** (2026-07-04) | Beta → Stable |
-| **P2** | Adoption blockers | VS Code Marketplace publish (needs `VSCE_PAT`) | Stable (extension) |
+| **P2** | Adoption blockers | VS Code Marketplace listing (PAT configured; Microsoft scanner review) | Stable (extension) |
 | **P2** | Live paths | Swarm quorum, live vehicle I/O, env-gated AI/IoT golden paths | Experimental → Stable |
 | **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |
 | **P3** | Solution blueprints | Warehouse, medical, agriculture scaffolds | Experimental |
@@ -1220,7 +1220,7 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 | Health | health_check, readiness engine | Swarm quorum hardening |
 | Fleet | In-process + HTTP agents + mesh telemetry | Distributed orchestration polish |
 | Packages | 89 official registry packages | Curated remote registry growth |
-| Developer Platform | CLI, 9 bundled demos, CI golden paths | VS Code Marketplace (blocked on `VSCE_PAT`) |
+| Developer Platform | CLI, 9 bundled demos, CI golden paths | VS Code Marketplace listing (scanner review; `VSCE_PAT` ready) |
 | Mission assurance | Static analysis + learned anomaly (experimental) | Package-backed ML anomaly backends |
 | Mission continuity | Runtime takeover, checkpoints, fleet mesh (**Stable**) | Field validation; swarm quorum hardening |
 | Self-healing | Recovery planner + CLI + runtime dispatch (**Stable**) | Recovery coverage hardening |
@@ -1262,12 +1262,12 @@ bumps independently when its area changes.
 | Live AI + ROS2 rclpy golden path + CI | **Stable** |
 | Hosted registry (89 packages) + publish mirror | **Stable** |
 | CI verify guide + adoption paths | **Stable** |
-| VS Code Marketplace listing | **Deferred** — needs `VSCE_PAT` (manual publisher setup) |
+| VS Code Marketplace listing | **In progress** — `VSCE_PAT` + publisher configured; public upload blocked pending Microsoft review |
 | Mission Contracts, Explainability, Audit Trail, Coverage CLIs | **Stable** |
 
 **Exit criteria:** `spanda demo differentiation` + `scripts/differentiation_smoke.sh` (CI
-Integration job: `differentiation-smoke`) — **met**. Marketplace publish remains optional until
-`VSCE_PAT` is configured.
+Integration job: `differentiation-smoke`) — **met**. Marketplace publish runs on release tags when
+`VSCE_PAT` is set; listing remains blocked until Microsoft clears the extension scanner.
 
 ### v0.7.0 — Entity Mesh and platform expansion (current line)
 

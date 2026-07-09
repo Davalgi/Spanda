@@ -55,7 +55,9 @@ Honest constraints for **v0.6.3** evaluators. For capability tiers see
 ## Tooling
 
 - **LSP** and **DAP** work with a built native CLI; VS Code extension builds in CI. **Marketplace
-  publish** pending maintainer `VSCE_PAT`.
+  listing** is partial: GitHub secret `VSCE_PAT` and publisher `spanda-lang` are configured; public
+  upload is blocked by the automated “suspicious content” scanner until Microsoft manual review.
+  Install from release VSIX or [vscode-marketplace-publish.md](./vscode-marketplace-publish.md).
 - **WASM playground** covers check/run/verify — smaller surface than native CLI.
 
 ## Security

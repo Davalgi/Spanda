@@ -370,10 +370,10 @@ bridge, and hosted registry install.
 | `live_ai_golden_path.sh` + CI job | **Complete** |
 | `ros2_cmd_vel_ping.sd` + `ros2_golden_path.sh` CI | **Complete** |
 | `registry_golden_path.sh` (file:// + signatures) CI | **Complete** |
-| VS Code extension marketplace publish | **Partial** — release workflow publishes when `VSCE_PAT` secret is set |
+| VS Code extension marketplace publish | **Partial** — `VSCE_PAT` secret configured; release workflow attempts publish; listing blocked by Marketplace scanner |
 
-Phase 25 P0 golden paths are **complete** except marketplace publish (requires maintainer
-`VSCE_PAT`).
+Phase 25 P0 golden paths are **complete** except marketplace listing (requires Microsoft manual
+review of extension upload; `VSCE_PAT` and publisher profile are configured).
 | P0 acceptance tracking in [tier-3-priority-plan.md](./tier-3-priority-plan.md) | **Complete** |
 
 See [killer-demo.md](./killer-demo.md), [live-ai-provider.md](./live-ai-provider.md),

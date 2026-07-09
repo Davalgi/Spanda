@@ -38,7 +38,7 @@ Not Tier 3 — these gate everything else. **Target: Q4 2026 beta.**
 
 | # | Work item | Acceptance criteria | Status |
 |---|-----------|---------------------|--------|
-| 1 | **Publish VS Code extension** | Marketplace install; LSP `check` + `verify` work out of the box | **Partial** — release workflow publishes when `VSCE_PAT` is set |
+| 1 | **Publish VS Code extension** | Marketplace install; LSP `check` + `verify` work out of the box | **Partial** — `VSCE_PAT` configured; release CI publishes on tags; listing blocked by scanner pending Microsoft review |
 | 2 | **Curate killer demo** | `examples/showcase/killer_demo.sd`; [killer-demo.md](./killer-demo.md); CI (`killer-demo-golden-path`) | **Complete** |
 | 3 | **One live AI provider path** | `OPENAI_API_KEY` → live call; mock fallback — [live-ai-provider.md](./live-ai-provider.md); CI (`live-ai-golden-path`) | **Complete** |
 | 4 | **One ROS2 golden path** | [ros2-golden-path.md](./ros2-golden-path.md); `/cmd_vel` validated; CI (`ros2-golden-path`) | **Complete** |

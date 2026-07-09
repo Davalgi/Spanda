@@ -5,14 +5,26 @@ Maintainer guide for publishing **`spanda-lang.spanda-vscode`** to the
 
 User-facing install docs live in [editor/vscode/README.md](../editor/vscode/README.md).
 
+## Current status (2026-07-09)
+
+| Step | Status |
+|------|--------|
+| Azure DevOps org + Marketplace PAT | **Done** — PAT rotated; GitHub Actions secret **`VSCE_PAT`** configured |
+| Publisher `spanda-lang` profile | **Done** — saved on [Manage Publishers](https://marketplace.visualstudio.com/manage) |
+| VSIX build (local + CI) | **Done** — esbuild bundle, ~12 files / ~200 KB; `verify_vscode_vsix.sh` |
+| Marketplace extension upload | **Blocked** — `Your extension has suspicious content` (automated scanner; no details). Awaiting [Microsoft manual review](https://aka.ms/marketplacepublishersupport) |
+| CI on release tags | **Ready** — `release.yml` uploads VSIX and attempts publish when `VSCE_PAT` is set; publish step is non-blocking until listing is approved |
+
+Until the extension listing is live, install from a [GitHub release VSIX](https://github.com/Davalgi/Spanda/releases) or `./scripts/verify_vscode_vsix.sh`.
+
 ## Overview
 
 | Item | Value |
 |------|--------|
 | Extension ID | `spanda-lang.spanda-vscode` |
 | Publisher ID | `spanda-lang` (must match `editor/vscode/package.json`) |
-| Local publish | `npm run publish:marketplace` from `editor/vscode/` |
-| CI publish | `.github/workflows/release.yml` when `VSCE_PAT` is set on a release tag |
+| Local publish | `npm run publish:marketplace` from `editor/vscode/` (uses `vsce login` or `VSCE_PAT` env) |
+| CI publish | `.github/workflows/release.yml` — uses GitHub secret **`VSCE_PAT`** on release tags |
 
 The VSIX is built with **esbuild** (no `server/node_modules` in the package). See
 `scripts/bundle-vscode-extension.sh` and `scripts/bundle-vscode-server.mjs`.
@@ -101,11 +113,20 @@ This runs:
 
 ## Publish via CI (release tags)
 
-1. Add repository secret **`VSCE_PAT`** (Marketplace PAT with **Manage** scope).
-2. Cut a workspace release (tag). The `vscode-extension` job in `.github/workflows/release.yml`:
-   - Builds the VSIX (`npm run package:ci`)
-   - Uploads it to the GitHub release
-   - Runs `npm run publish:marketplace` when `VSCE_PAT` is set
+GitHub Actions secret **`VSCE_PAT`** is configured on this repository (Marketplace PAT with
+**Manage** scope). On each workspace release tag, the `vscode-extension` job in
+`.github/workflows/release.yml`:
+
+1. Builds the VSIX (`npm run package:ci`)
+2. Uploads it to the GitHub release (always)
+3. Runs `npm run publish:marketplace` using `VSCE_PAT`
+
+The Marketplace publish step uses **`continue-on-error: true`** so release artifacts still ship
+while the automated “suspicious content” scanner blocks the public listing. Remove that guard after
+Microsoft approves the extension.
+
+To rotate the PAT: revoke the old token in Azure DevOps, create a new one, then
+`gh secret set VSCE_PAT` (see [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)).
 
 ## Verify after publish
 
@@ -132,7 +153,8 @@ If it still fails after a clean VSIX (~12 files, ~200 KB), email
 
 - Publisher: `spanda-lang`
 - Extension: `spanda-lang.spanda-vscode`
-- Version attempted
+- Version attempted (e.g. `0.7.4`)
+- Note: `VSCE_PAT` and publisher profile are configured; only the extension scanner blocks upload
 - GitHub: https://github.com/Davalgi/Spanda
 
 ### “Publisher Metadata has suspicious content”
