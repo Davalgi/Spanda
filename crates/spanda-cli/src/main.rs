@@ -1517,6 +1517,7 @@ fn dispatch_package(command: &str, rest: &[String]) {
 
 fn main() {
     spanda_decision::register_platform_runtime();
+    spanda_autonomy::register_live_sensor_supplier(spanda_providers::live_fusion_sensor_readings);
     // Description:
     //     Main.
     //

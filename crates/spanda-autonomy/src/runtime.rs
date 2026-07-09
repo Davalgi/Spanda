@@ -7,6 +7,7 @@ use crate::adaptive_recovery::{
 };
 use crate::damage_risk::{evaluate_damage_risk, RiskSignal};
 use crate::fusion::SensorConfidence;
+use crate::live_sensors::merge_live_sensor_readings;
 use crate::homeostasis::StabilityMetric;
 use crate::types::AutonomySeverity;
 use spanda_config::entity::{
@@ -56,7 +57,10 @@ impl EntityAutonomyContext {
         let risk_signals = damage_risk_signals_from_entity(entity);
         Self {
             metrics,
-            sensor_readings: sensor_readings_from_entity(entity),
+            sensor_readings: merge_live_sensor_readings(
+                &entity.id,
+                sensor_readings_from_entity(entity),
+            ),
             risk_signals,
             recovery_history: Vec::new(),
             fleet_id: entity.metadata.get("fleet_id").cloned(),

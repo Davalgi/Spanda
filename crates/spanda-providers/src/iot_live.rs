@@ -242,6 +242,26 @@ pub fn live_ultrasonic_enabled() -> bool {
     live_iot_flag("SPANDA_LIVE_ULTRASONIC")
 }
 
+/// Return true when live LIN vehicle bus reads are enabled.
+pub fn live_lin_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_LIN")
+}
+
+/// Return true when live UDS diagnostics reads are enabled.
+pub fn live_uds_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_UDS")
+}
+
+/// Return true when live V2X message reads are enabled.
+pub fn live_v2x_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_V2X")
+}
+
+/// Return true when live multi-sensor fusion supplier should merge automotive reads.
+pub fn live_fusion_sensors_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_FUSION_SENSORS")
+}
+
 pub fn read_zigbee_attribute_live(device: &str, cluster: &str) -> Option<String> {
     // Description:
     //     Read zigbee attribute live.
@@ -473,6 +493,30 @@ pub fn read_ultrasonic_distance_live(sensor_id: &str) -> Option<f64> {
             None
         }
     })
+}
+
+/// Read LIN signal from `SPANDA_LIN_CMD` when live mode is enabled.
+pub fn read_lin_signal_live(signal_id: &str) -> Option<f64> {
+    if !live_lin_enabled() {
+        return None;
+    }
+    read_distance_via_external_cmd("SPANDA_LIN_CMD", signal_id)
+}
+
+/// Read UDS DTC from `SPANDA_UDS_CMD` when live mode is enabled.
+pub fn read_uds_dtc_live(ecu_id: &str) -> Option<String> {
+    if !live_uds_enabled() {
+        return None;
+    }
+    read_string_via_external_cmd_single("SPANDA_UDS_CMD", ecu_id)
+}
+
+/// Read V2X payload from `SPANDA_V2X_CMD` when live mode is enabled.
+pub fn read_v2x_message_live(channel: &str) -> Option<String> {
+    if !live_v2x_enabled() {
+        return None;
+    }
+    read_string_via_external_cmd_single("SPANDA_V2X_CMD", channel)
 }
 
 fn read_distance_via_external_cmd(cmd_env: &str, sensor_id: &str) -> Option<f64> {

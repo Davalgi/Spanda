@@ -14,6 +14,7 @@ pub mod fusion;
 pub mod habituation;
 pub mod homeostasis;
 pub mod immunity;
+pub mod live_sensors;
 pub mod maintenance;
 pub mod memory;
 pub mod peripheral;
@@ -48,6 +49,7 @@ pub use homeostasis::{
     evaluate_homeostasis, CorrectionAction, DriftSignal, HomeostasisPolicy, StabilityMetric,
     StabilityRange, StabilityReport,
 };
+pub use live_sensors::{merge_live_sensor_readings, register_live_sensor_supplier};
 pub use immunity::{
     evaluate_immunity, evaluate_quarantine_decision, ImmuneEvent, ImmunePolicy, IsolationDecision,
     QuarantineAction, ThreatResponse, TrustBoundaryViolation,

@@ -53,3 +53,45 @@ fn live_radar_cmd_overrides_hub_stub() {
     assert!((value - 99.0).abs() < f64::EPSILON);
     clear_live_radar_env();
 }
+
+#[test]
+fn live_lin_cmd_overrides_hub_stub() {
+    let _lock = RadarEnvLock::acquire().expect("radar env lock");
+    std::env::remove_var("SPANDA_LIVE_LIN");
+    std::env::remove_var("SPANDA_LIN_CMD");
+    seed_automotive_demos();
+    std::env::set_var("SPANDA_LIVE_LIN", "1");
+    std::env::set_var("SPANDA_LIN_CMD", "echo 17.5");
+    let value = spanda_providers::read_lin_signal("steering-angle");
+    assert!((value - 17.5).abs() < f64::EPSILON);
+    std::env::remove_var("SPANDA_LIVE_LIN");
+    std::env::remove_var("SPANDA_LIN_CMD");
+}
+
+#[test]
+fn live_uds_cmd_overrides_hub_stub() {
+    let _lock = RadarEnvLock::acquire().expect("radar env lock");
+    std::env::remove_var("SPANDA_LIVE_UDS");
+    std::env::remove_var("SPANDA_UDS_CMD");
+    seed_automotive_demos();
+    std::env::set_var("SPANDA_LIVE_UDS", "1");
+    std::env::set_var("SPANDA_UDS_CMD", "echo C1234");
+    let value = spanda_providers::read_uds_dtc("powertrain-ecu");
+    assert_eq!(value, "C1234");
+    std::env::remove_var("SPANDA_LIVE_UDS");
+    std::env::remove_var("SPANDA_UDS_CMD");
+}
+
+#[test]
+fn live_v2x_cmd_overrides_hub_stub() {
+    let _lock = RadarEnvLock::acquire().expect("radar env lock");
+    std::env::remove_var("SPANDA_LIVE_V2X");
+    std::env::remove_var("SPANDA_V2X_CMD");
+    seed_automotive_demos();
+    std::env::set_var("SPANDA_LIVE_V2X", "1");
+    std::env::set_var("SPANDA_V2X_CMD", "echo hazard_ahead");
+    let value = spanda_providers::read_v2x_message("bsm");
+    assert_eq!(value, "hazard_ahead");
+    std::env::remove_var("SPANDA_LIVE_V2X");
+    std::env::remove_var("SPANDA_V2X_CMD");
+}

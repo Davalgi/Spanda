@@ -15,6 +15,9 @@ pub struct AutomotiveHub {
     radar_distances: HashMap<String, f64>,
     lidar_distances: HashMap<String, f64>,
     ultrasonic_distances: HashMap<String, f64>,
+    lin_signals: HashMap<String, f64>,
+    uds_dtcs: HashMap<String, String>,
+    v2x_messages: HashMap<String, String>,
 }
 
 impl AutomotiveHub {
@@ -27,6 +30,14 @@ impl AutomotiveHub {
             .insert("ultrasonic-array".into(), 1.2);
         self.ultrasonic_distances
             .insert("rear-ultrasonic".into(), 0.45);
+        self.lin_signals.insert("steering-angle".into(), 12.5);
+        self.lin_signals.insert("wheel-speed".into(), 42.0);
+        self.uds_dtcs
+            .insert("powertrain-ecu".into(), "P0420".into());
+        self.v2x_messages.insert(
+            "bsm".into(),
+            "speed:42.0;heading:180;position:lat,lon".into(),
+        );
     }
 
     pub fn read_radar(&self, sensor_id: &str) -> f64 {
@@ -54,6 +65,35 @@ impl AutomotiveHub {
             sensor_id
         };
         self.ultrasonic_distances.get(key).copied().unwrap_or(1.0)
+    }
+
+    pub fn read_lin_signal(&self, signal_id: &str) -> f64 {
+        let key = if signal_id.is_empty() {
+            "steering-angle"
+        } else {
+            signal_id
+        };
+        self.lin_signals.get(key).copied().unwrap_or(0.0)
+    }
+
+    pub fn read_uds_dtc(&self, ecu_id: &str) -> String {
+        let key = if ecu_id.is_empty() {
+            "powertrain-ecu"
+        } else {
+            ecu_id
+        };
+        self.uds_dtcs
+            .get(key)
+            .cloned()
+            .unwrap_or_else(|| "P0000".into())
+    }
+
+    pub fn read_v2x_message(&self, channel: &str) -> String {
+        let key = if channel.is_empty() { "bsm" } else { channel };
+        self.v2x_messages
+            .get(key)
+            .cloned()
+            .unwrap_or_else(|| "no_message".into())
     }
 }
 
@@ -84,4 +124,52 @@ pub fn read_ultrasonic_distance(sensor_id: &str) -> f64 {
         return value;
     }
     hub().lock().unwrap().read_ultrasonic(sensor_id)
+}
+
+/// Read LIN signal value (live bridge when enabled, otherwise hub stub).
+pub fn read_lin_signal(signal_id: &str) -> f64 {
+    if let Some(value) = crate::iot_live::read_lin_signal_live(signal_id) {
+        return value;
+    }
+    hub().lock().unwrap().read_lin_signal(signal_id)
+}
+
+/// Read UDS diagnostic trouble code string (live bridge when enabled, otherwise hub stub).
+pub fn read_uds_dtc(ecu_id: &str) -> String {
+    if let Some(value) = crate::iot_live::read_uds_dtc_live(ecu_id) {
+        return value;
+    }
+    hub().lock().unwrap().read_uds_dtc(ecu_id)
+}
+
+/// Read V2X message payload (live bridge when enabled, otherwise hub stub).
+pub fn read_v2x_message(channel: &str) -> String {
+    if let Some(value) = crate::iot_live::read_v2x_message_live(channel) {
+        return value;
+    }
+    hub().lock().unwrap().read_v2x_message(channel)
+}
+
+/// Live fusion samples mapped to GPS/IMU/camera proxies for cognitive sensory fusion.
+pub fn live_fusion_sensor_readings(_entity_id: &str) -> Vec<(String, f64, f64)> {
+    if !crate::iot_live::live_fusion_sensors_enabled() {
+        return Vec::new();
+    }
+    vec![
+        (
+            "gps_proxy_radar".into(),
+            read_radar_distance("front-radar"),
+            0.9,
+        ),
+        (
+            "imu_proxy_lidar".into(),
+            read_lidar_distance("front-lidar"),
+            0.85,
+        ),
+        (
+            "camera_proxy_ultrasonic".into(),
+            read_ultrasonic_distance("ultrasonic-array"),
+            0.8,
+        ),
+    ]
 }

@@ -25,7 +25,7 @@ pub enum AutonomySeverity {
 
 /// Known limitations for bio-inspired autonomy features.
 pub const KNOWN_LIMITATIONS: &[&str] = &[
-    "Sensory fusion validators are rule-based; no live sensor fusion pipeline yet.",
+    "Live multi-sensor fusion requires SPANDA_LIVE_FUSION_SENSORS=1 and a registered supplier; default path is entity-derived rule-based fusion.",
     "Attention scoring uses static policies; Control Center UI is placeholder-only.",
     "Adaptive recovery learning is statistics-based, not ML.",
     "Maintenance/sleep mode scheduling is declarative; OTA integration is partial.",

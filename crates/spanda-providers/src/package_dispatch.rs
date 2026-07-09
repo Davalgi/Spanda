@@ -1,7 +1,10 @@
 //! Runtime dispatch from official package module exports to provider registry backends.
 //!
 use crate::anomaly_onnx::scan_learned_score;
-use crate::automotive_hub::{read_lidar_distance, read_radar_distance, read_ultrasonic_distance};
+use crate::automotive_hub::{
+    read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc, read_ultrasonic_distance,
+    read_v2x_message,
+};
 use crate::iot_hub::{
     number_arg, publish_telemetry, read_bacnet_point, read_canbus_frame, read_knx_group,
     read_lora_payload, read_matter_cluster, read_modbus_register, read_opcua_node,
@@ -1050,6 +1053,73 @@ pub fn dispatch_official_package_call(
                 value,
                 unit: spanda_ast::nodes::UnitKind::None,
             })
+        }
+        ("automotive.lin", "read") if registry.has_capability("automotive.lin.read") => {
+            let signal = if args.is_empty() {
+                "steering-angle".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_lin_signal(&signal);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "automotive",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::Number {
+                value,
+                unit: spanda_ast::nodes::UnitKind::None,
+            })
+        }
+        ("automotive.uds", "diagnose")
+            if registry.has_capability("automotive.uds.diagnose") =>
+        {
+            let ecu = if args.is_empty() {
+                "powertrain-ecu".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_uds_dtc(&ecu);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "automotive",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::String { value })
+        }
+        ("automotive.v2x", "receive")
+            if registry.has_capability("automotive.v2x.receive") =>
+        {
+            let channel = if args.is_empty() {
+                "bsm".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_v2x_message(&channel);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "automotive",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(RuntimeValue::String { value })
         }
         ("assurance.anomaly", "scan_learned")
             if registry.has_capability("assurance.anomaly.scan") =>

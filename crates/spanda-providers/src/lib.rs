@@ -14,7 +14,8 @@ pub mod runtime_bridge;
 pub mod transport_adapter;
 
 pub use automotive_hub::{
-    read_lidar_distance, read_radar_distance, read_ultrasonic_distance, seed_automotive_demos,
+    live_fusion_sensor_readings, read_lidar_distance, read_lin_signal, read_radar_distance,
+    read_uds_dtc, read_ultrasonic_distance, read_v2x_message, seed_automotive_demos,
 };
 pub use bootstrap::{
     bootstrap_default_providers, bootstrap_providers_for_packages, official_package_for_transport,

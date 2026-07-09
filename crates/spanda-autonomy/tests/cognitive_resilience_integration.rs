@@ -7,9 +7,9 @@ use spanda_autonomy::{
     compute_recovery_confidence, detect_signal_conflict, enrich_entity_autonomy,
     evaluate_damage_risk, evaluate_homeostasis, evaluate_quarantine_decision,
     evaluate_reflex_priority, fuse_observations, list_reflex_actions, rank_events,
-    AdaptiveRecoveryPolicy, AttentionPolicy, ConfidencePolicy, EntityAutonomyContext,
-    EventPriority, HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory,
-    RepetitionPattern, RiskSignal, SensorConfidence, StabilityMetric,
+    register_live_sensor_supplier, AdaptiveRecoveryPolicy, AttentionPolicy, ConfidencePolicy,
+    EntityAutonomyContext, EventPriority, HabituationPolicy, HomeostasisPolicy, ImmunePolicy,
+    RecoveryHistory, RepetitionPattern, RiskSignal, SensorConfidence, StabilityMetric,
 };
 use spanda_config::entity::{
     EntityHealthStatus, EntityKind, EntityReadinessStatus, EntityRecord, EntityTrustStatus,
@@ -291,4 +291,25 @@ fn adaptive_recovery_and_orchestrator_interaction() {
     assert!(suppressions
         .iter()
         .any(|s| !s.suppressed || s.label == "recovery_failed"));
+}
+
+/// Live fusion supplier merges automotive proxy readings when env-gated.
+#[test]
+fn live_fusion_sensor_supplier_merges_readings() {
+    fn supplier(_entity_id: &str) -> Vec<(String, f64, f64)> {
+        vec![("gps_proxy_radar".into(), 42.0, 0.9)]
+    }
+    register_live_sensor_supplier(supplier);
+    std::env::set_var("SPANDA_LIVE_FUSION_SENSORS", "1");
+    let entity = sample_robot(
+        "robot-live",
+        EntityHealthStatus::Healthy,
+        EntityTrustStatus::Trusted,
+    );
+    let ctx = EntityAutonomyContext::from_entity(&entity);
+    assert!(ctx
+        .sensor_readings
+        .iter()
+        .any(|r| r.source == "gps_proxy_radar" && (r.value - 42.0).abs() < f64::EPSILON));
+    std::env::remove_var("SPANDA_LIVE_FUSION_SENSORS");
 }
