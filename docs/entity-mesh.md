@@ -73,7 +73,8 @@ Pin gRPC proto semver via `GET /v1/version` (currently **1.0.15**, **174** RPCs)
 | Client | Version | Mesh surface |
 |--------|---------|--------------|
 | Rust `SpandaClient` | **0.5.7+** | REST — `mesh_topology()`, `mesh_graph()`, `mesh_discover()`, … |
-| Python `SpandaClient` | **0.5.7+** | REST only (PyPI **0.5.8**) |
+| Python `SpandaClient` | **0.5.7+** | REST — `mesh_topology()`, `mesh_graph()`, … |
+| Python `GrpcClient` | **0.5.9+** (`spanda-sdk[grpc]`) | `get_mesh_topology`, `get_mesh_health`, … |
 | TypeScript `SpandaClient` | **0.5.7+** | REST — `meshTopology()`, `meshGraph()`, … |
 | Rust `GrpcClient` | **0.5.6+** (`grpc` feature) | `get_mesh_topology`, `get_mesh_health`, `get_mesh_graph`, … |
 | TypeScript `GrpcClient` | **0.5.8+** | `getMeshTopology`, `getMeshHealth`, `getMeshGraph`, … (`@grpc/grpc-js`) |

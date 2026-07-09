@@ -169,6 +169,9 @@ pub fn mesh_graph_json(mesh: &EntityMesh) -> serde_json::Value {
         "edges": mesh.links.iter().map(|l| json!({
             "from": l.from_entity,
             "to": l.to_entity,
+            "transport": l.transport.as_str(),
+            "latency_ms": l.latency_ms,
+            "packet_loss": l.packet_loss,
             "trusted": l.trusted,
             "active": l.active,
         })).collect::<Vec<_>>(),

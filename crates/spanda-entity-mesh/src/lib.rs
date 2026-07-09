@@ -18,6 +18,7 @@ pub mod partition;
 pub mod routing;
 pub mod security;
 pub mod sync;
+pub mod transport_discovery;
 pub mod types;
 
 pub use delegation::{
@@ -55,5 +56,9 @@ pub use security::{
 pub use sync::{
     apply_sync_states, collect_sync_payload, entity_to_sync_state, sync_payload_is_secret_free,
     MeshSyncOptions,
+};
+pub use transport_discovery::{
+    default_mesh_discovery_sources, discover_live_transport_nodes, infer_transport_from_entity,
+    parse_mesh_discovery_sources,
 };
 pub use types::*;

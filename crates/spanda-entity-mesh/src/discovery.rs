@@ -1,5 +1,9 @@
 //! Entity mesh registry, discovery, and topology management.
 //!
+use crate::transport_discovery::{
+    apply_live_transport_probes, default_mesh_discovery_sources, discover_live_transport_nodes,
+    infer_transport_from_entity,
+};
 use crate::election::{apply_coordinator, elect_coordinator, MeshElectionOptions};
 use crate::types::*;
 use spanda_config::entity::{
@@ -13,18 +17,52 @@ pub fn discover_mesh_nodes(
     registry: &EntityRegistry,
     sources: &[MeshDiscoverySource],
 ) -> MeshDiscoveryResult {
-    // Project entity registry records into mesh nodes for each requested source.
+    let effective_sources = if sources.is_empty() {
+        default_mesh_discovery_sources()
+    } else {
+        sources.to_vec()
+    };
+
+    let include_registry = effective_sources
+        .iter()
+        .any(|source| matches!(source, MeshDiscoverySource::LocalRuntime))
+        || effective_sources.is_empty();
+
     let mut discovered = Vec::new();
     let mut seen = HashSet::new();
 
-    for entity in registry.list() {
-        if !seen.insert(entity.id.clone()) {
-            continue;
+    if include_registry {
+        for entity in registry.list() {
+            if !seen.insert(entity.id.clone()) {
+                continue;
+            }
+            let transport = infer_transport_from_entity(entity);
+            discovered.push(entity_to_mesh_node(entity, transport));
         }
-        discovered.push(entity_to_mesh_node(entity, MeshTransport::LocalRuntime));
     }
 
-    if sources
+    for source in &effective_sources {
+        if !matches!(
+            source,
+            MeshDiscoverySource::Mqtt
+                | MeshDiscoverySource::Ros2
+                | MeshDiscoverySource::Dds
+        ) {
+            continue;
+        }
+        for live in discover_live_transport_nodes(source.clone()) {
+            if seen.insert(live.entity_id.clone()) {
+                discovered.push(live);
+            } else if let Some(node) = discovered.iter_mut().find(|n| n.entity_id == live.entity_id)
+            {
+                crate::transport_discovery::enrich_node_with_live_transport(node, &live);
+            }
+        }
+    }
+
+    apply_live_transport_probes(registry, &mut discovered, &effective_sources);
+
+    if effective_sources
         .iter()
         .any(|s| matches!(s, MeshDiscoverySource::EntityGraph))
     {
@@ -36,7 +74,7 @@ pub fn discover_mesh_nodes(
 
     MeshDiscoveryResult {
         discovered: discovered.clone(),
-        sources: sources.to_vec(),
+        sources: effective_sources,
         new_entities: discovered.len() as u32,
         updated_entities: 0,
     }

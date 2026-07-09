@@ -5,8 +5,8 @@ use spanda_entity_mesh::{
     apply_discovery, build_entity_mesh, build_merge_plan, compute_route, discover_mesh_nodes,
     evaluate_mesh_health, find_capability, format_capability_results, format_health,
     format_merge_report, format_node_list, format_route, format_topology, inspect_node, list_nodes,
-    merge_partitions, mesh_graph_json, simulate_partition, MeshDiscoverySource, MeshFormat,
-    MeshRouteOptions, MeshRoutingMode,
+    merge_partitions, mesh_graph_json, parse_mesh_discovery_sources, simulate_partition,
+    default_mesh_discovery_sources, MeshFormat, MeshRouteOptions, MeshRoutingMode,
 };
 use std::env;
 use std::path::{Path, PathBuf};
@@ -68,14 +68,35 @@ fn load_mesh(args: &[String]) -> spanda_entity_mesh::EntityMesh {
     build_entity_mesh(&registry, "cli")
 }
 
+fn mesh_sources_from_args(args: &[String]) -> Vec<spanda_entity_mesh::MeshDiscoverySource> {
+    let mut raw = Vec::new();
+    let mut index = 0;
+    while index < args.len() {
+        if args[index] == "--source" {
+            if let Some(value) = args.get(index + 1) {
+                raw.push(value.clone());
+                index += 2;
+                continue;
+            }
+        }
+        index += 1;
+    }
+    if raw.is_empty() {
+        return default_mesh_discovery_sources();
+    }
+    let parsed = parse_mesh_discovery_sources(&raw);
+    if parsed.is_empty() {
+        default_mesh_discovery_sources()
+    } else {
+        parsed
+    }
+}
+
 fn cmd_discover(args: &[String]) {
     let root = project_root(args);
     let resolved = load_resolved(&root);
     let registry = build_entity_registry(&resolved);
-    let sources = vec![
-        MeshDiscoverySource::LocalRuntime,
-        MeshDiscoverySource::EntityGraph,
-    ];
+    let sources = mesh_sources_from_args(args);
     let result = discover_mesh_nodes(&registry, &sources);
     let mut mesh = build_entity_mesh(&registry, "cli");
     apply_discovery(&mut mesh, &result);
@@ -264,7 +285,7 @@ fn print_usage() {
         "Spanda Autonomous Entity Mesh\n\
          \n\
          Usage:\n\
-           spanda mesh discover [--json] [--config <spanda.toml>]\n\
+           spanda mesh discover [--source <name>]... [--json] [--config <spanda.toml>]\n\
            spanda mesh list [--json]\n\
            spanda mesh inspect <entity-id> [--json]\n\
            spanda mesh topology [--json]\n\

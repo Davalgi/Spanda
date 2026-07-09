@@ -4,8 +4,9 @@ use serde::Deserialize;
 use spanda_deploy_http::HttpResponse;
 use spanda_entity_mesh::{
     apply_discovery, build_entity_mesh, build_merge_plan, compute_route, discover_mesh_nodes,
-    evaluate_mesh_health, find_capability, merge_partitions, mesh_graph_json, simulate_partition,
-    MeshDiscoverySource, MeshRouteOptions, MeshRoutingMode,
+    evaluate_mesh_health, find_capability, merge_partitions, mesh_graph_json, parse_mesh_discovery_sources,
+    simulate_partition, default_mesh_discovery_sources, parse_mesh_discovery_sources,
+    MeshRouteOptions, MeshRoutingMode,
 };
 
 use crate::handlers::{bad_request, json_ok};
@@ -107,12 +108,18 @@ pub struct MeshDiscoverRequest {
 
 /// POST /v1/mesh/discover
 pub fn mesh_discover(state: &ControlCenterState, body: &str) -> HttpResponse {
-    let _req: MeshDiscoverRequest = serde_json::from_str(body).unwrap_or_default();
+    let req: MeshDiscoverRequest = serde_json::from_str(body).unwrap_or_default();
     let registry = state.entity_registry();
-    let sources = vec![
-        MeshDiscoverySource::LocalRuntime,
-        MeshDiscoverySource::EntityGraph,
-    ];
+    let sources = if req.sources.is_empty() {
+        default_mesh_discovery_sources()
+    } else {
+        let parsed = parse_mesh_discovery_sources(&req.sources);
+        if parsed.is_empty() {
+            default_mesh_discovery_sources()
+        } else {
+            parsed
+        }
+    };
     let result = discover_mesh_nodes(&registry, &sources);
     let mut mesh = build_entity_mesh(&registry, "control-center");
     apply_discovery(&mut mesh, &result);

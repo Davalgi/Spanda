@@ -64,7 +64,7 @@ graph.
 |----------|------------------------|
 | Discovery, topology, health, partitions | Live MQTT/DDS/ROS2 mesh transport wiring |
 | Trust-aware routing on warehouse entities | Multi-site production mesh relay |
-| REST + SDK + gRPC smoke parity | Python gRPC client (REST-only on PyPI **0.5.8**) |
+| REST + SDK + gRPC smoke parity | Python gRPC via `spanda-sdk[grpc]` **0.5.9+** |
 | Partition simulate + merge report | CC graph time-travel / replay overlays |
 
 ---
