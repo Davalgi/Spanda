@@ -428,6 +428,7 @@ fn store_info_reports_backend_and_counts() {
 
 #[test]
 fn record_platform_event_persists_envelope() {
+    let _guard = isolate_telemetry_globals();
     use spanda_audit::platform_event::names;
     use spanda_audit::PlatformEvent;
     use spanda_telemetry_store::{configure_session_persist, global_store, record_platform_event};
@@ -455,4 +456,5 @@ fn record_platform_event_persists_envelope() {
         )),
         "expected platform event in telemetry store"
     );
+    configure_session_persist(false);
 }
