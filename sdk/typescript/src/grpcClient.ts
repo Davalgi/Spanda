@@ -88,7 +88,7 @@ function unaryJson(
       client,
       request,
       metadata,
-      (error, response) => {
+      (error: grpc.ServiceError | null, response?: JsonResponse) => {
         if (error) {
           reject(new ConnectionError(error.message));
           return;

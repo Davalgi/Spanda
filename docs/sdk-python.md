@@ -11,6 +11,7 @@ From PyPI (released packages):
 ```bash
 pip install spanda-sdk
 pip install "spanda-sdk[stream]"   # WebSocket telemetry extra
+pip install "spanda-sdk[grpc]"     # gRPC Control Center client (mesh RPCs)
 ```
 
 On macOS Homebrew Python or other PEP 668–managed installs, use a virtual environment first — see
@@ -66,6 +67,19 @@ client.sync_entities()
 ```
 
 Mutation endpoints require `SPANDA_API_KEY`.
+
+## gRPC client (mesh RPCs)
+
+```python
+from spanda_sdk.grpc_client import GrpcClient
+
+client = GrpcClient.connect()  # SPANDA_GRPC_URL, default 127.0.0.1:50051
+health = client.get_mesh_health()
+graph = client.get_mesh_graph()
+client.close()
+```
+
+Requires `pip install "spanda-sdk[grpc]"`. Mesh RPCs mirror TypeScript `GrpcClient` (SDK **0.5.9+**).
 
 ## Cognitive & Resilience domain clients
 

@@ -376,6 +376,7 @@ jobs:
           build-if-missing: "false"
       - run: cargo build -p spanda-sdk --examples
       - run: npm ci
+      - run: npm ci --prefix sdk/typescript
       - run: chmod +x scripts/entity_model_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_model_smoke.sh
 
@@ -396,6 +397,7 @@ jobs:
         with:
           build-if-missing: "false"
       - run: npm ci
+      - run: npm ci --prefix sdk/typescript
       - run: chmod +x scripts/entity_mesh_smoke.sh
       - run: SPANDA_BIN=${{ github.workspace }}/target/release/spanda ./scripts/entity_mesh_smoke.sh
 

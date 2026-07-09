@@ -95,6 +95,7 @@ echo "== TypeScript SDK mesh =="
 if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT}/sdk/typescript/package.json" ]]; then
   (
     cd "${ROOT}/sdk/typescript"
+    npm ci --silent 2>/dev/null || npm ci
     npm run build --silent 2>/dev/null || npm run build
     SPANDA_CONTROL_CENTER_URL="http://${BIND}" \
     node --input-type=module -e "
@@ -113,6 +114,7 @@ echo "== TypeScript SDK gRPC mesh =="
 if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT}/sdk/typescript/package.json" ]]; then
   (
     cd "${ROOT}/sdk/typescript"
+    npm ci --silent 2>/dev/null || npm ci
     npm run build --silent 2>/dev/null || npm run build
     SPANDA_GRPC_URL="${GRPC_BIND}" \
     node --input-type=module -e "
@@ -144,6 +146,29 @@ if "nodes" not in nodes:
     raise SystemExit("mesh nodes missing")
 print("py-sdk mesh smoke ok")
 PY
+fi
+
+echo "== Python SDK gRPC mesh =="
+if command -v python3 >/dev/null 2>&1 && [[ -f "${ROOT}/sdk/python/pyproject.toml" ]]; then
+  if python3 -c "import grpc" 2>/dev/null; then
+    PYTHONPATH="${ROOT}/sdk/python${PYTHONPATH:+:${PYTHONPATH}}" \
+    SPANDA_GRPC_URL="${GRPC_BIND}" \
+    python3 - <<'PY'
+from spanda_sdk.grpc_client import GrpcClient
+
+client = GrpcClient.connect(address=__import__("os").environ["SPANDA_GRPC_URL"])
+health = client.get_mesh_health()
+if "health" not in health:
+    raise SystemExit("grpc mesh health missing")
+graph = client.get_mesh_graph()
+if "graph" not in graph:
+    raise SystemExit("grpc mesh graph missing")
+client.close()
+print("py-sdk grpc mesh smoke ok")
+PY
+  else
+    echo "skip Python gRPC (install grpcio or spanda-sdk[grpc])"
+  fi
 fi
 
 echo "== Rust SDK mesh =="

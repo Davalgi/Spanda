@@ -114,6 +114,7 @@ echo "== TypeScript SDK entity mutations =="
 if command -v npm >/dev/null 2>&1 && [[ -f "${ROOT}/sdk/typescript/package.json" ]]; then
   (
     cd "${ROOT}/sdk/typescript"
+    npm ci --silent 2>/dev/null || npm ci
     npm run build --silent 2>/dev/null || npm run build
     SPANDA_CONTROL_CENTER_URL="http://${BIND}" \
     SPANDA_API_KEY="${SPANDA_API_KEY}" \

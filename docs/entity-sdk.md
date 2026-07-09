@@ -63,9 +63,10 @@ Smoke test (all three SDKs): `scripts/entity_model_smoke.sh`
 | Merge report | `mesh_merge_report()` | `meshMergeReport()` | `mesh_merge_report()` |
 | Simulate partition | `mesh_simulate_partition(ids)` | `meshSimulatePartition(ids)` | `mesh_simulate_partition(ids)` |
 
-gRPC (`GrpcClient`, Rust `grpc` feature; TypeScript native `@grpc/grpc-js`): `get_mesh_topology`,
-`get_mesh_nodes`, `get_mesh_routes`, `get_mesh_health`, `get_mesh_graph`, `find_mesh_capability`
-(Rust); `getMeshTopology`, `getMeshHealth`, `getMeshGraph`, … (TypeScript) — proto **1.0.15+**.
+gRPC (`GrpcClient`, Rust `grpc` feature; TypeScript `@grpc/grpc-js`; Python `spanda-sdk[grpc]`
+**0.5.9+`): `get_mesh_topology`, `get_mesh_nodes`, `get_mesh_routes`, `get_mesh_health`,
+`get_mesh_graph`, `find_mesh_capability` (Rust); `getMeshTopology`, `getMeshHealth`, …
+(TypeScript); `get_mesh_topology`, `get_mesh_health`, … (Python) — proto **1.0.15+**.
 
 See [entity-mesh.md](./entity-mesh.md).
 
