@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Python gRPC client:** `GrpcClient` on `spanda-sdk[grpc]` with mesh RPC parity (`grpcio`).
+- **Entity Mesh live transport discovery:** honor `sources` on discover (MQTT/ROS2/DDS when env-gated);
+  infer transport from entity tags; graph edges include transport/latency metrics.
+- **Control Center Entity Mesh UX:** discovery source toggles, route overlay, capability find,
+  partition simulate, merge report, transport filter on topology graph.
+
 ## [0.7.0] - 2026-07-08
 
 ### Changed

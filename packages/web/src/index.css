@@ -590,6 +590,10 @@ tr.decision-row-escalation td {
   background: #475569;
 }
 
+.mesh-legend-partition {
+  background: #f97316;
+}
+
 .mesh-legend-line {
   width: 1.25rem;
   height: 0;

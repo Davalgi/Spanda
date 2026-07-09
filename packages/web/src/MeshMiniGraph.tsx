@@ -21,6 +21,9 @@ export type MeshGraphNode = {
 export type MeshGraphEdge = {
   from: string;
   to: string;
+  transport?: string;
+  latency_ms?: number;
+  packet_loss?: number;
   trusted?: boolean;
   active?: boolean;
 };
@@ -38,6 +41,9 @@ type Props = {
   onSelect: (id: string) => void;
   coordinatorId?: string | null;
   mode?: MeshGraphViewMode;
+  highlightPath?: string[];
+  transportFilter?: string | null;
+  partitionNodeIds?: string[];
 };
 
 function neighborhoodNodes(graph: MeshGraphPayload, focus: string): MeshGraphNode[] {
@@ -49,13 +55,24 @@ function neighborhoodNodes(graph: MeshGraphPayload, focus: string): MeshGraphNod
   return graph.nodes.filter((node) => related.has(node.id)).slice(0, 18);
 }
 
+function matchesTransport(node: MeshGraphNode, filter: string | null | undefined): boolean {
+  if (!filter || filter === "all") return true;
+  return (node.transport ?? "local_runtime") === filter;
+}
+
 export function MeshMiniGraph({
   graph,
   selectedId,
   onSelect,
   coordinatorId,
   mode = "neighborhood",
+  highlightPath = [],
+  transportFilter = null,
+  partitionNodeIds = [],
 }: Props) {
+  const highlightSet = useMemo(() => new Set(highlightPath), [highlightPath]);
+  const partitionSet = useMemo(() => new Set(partitionNodeIds), [partitionNodeIds]);
+
   const layout = useMemo(() => {
     if (!graph || graph.nodes.length === 0) {
       return null;
@@ -64,8 +81,9 @@ export function MeshMiniGraph({
     const focus = selectedId ?? graph.nodes[0]?.id;
     if (!focus) return null;
 
-    const visibleNodes =
+    const baseNodes =
       mode === "full" ? graph.nodes : neighborhoodNodes(graph, focus);
+    const visibleNodes = baseNodes.filter((node) => matchesTransport(node, transportFilter));
     if (visibleNodes.length === 0) return null;
 
     const nodeIds = new Set(visibleNodes.map((node) => node.id));
@@ -89,7 +107,7 @@ export function MeshMiniGraph({
         : gridLayout(visibleNodes.map((node) => node.id));
 
     return { visibleNodes, edges, positions, width, height, focus };
-  }, [graph, selectedId, coordinatorId, mode]);
+  }, [graph, selectedId, coordinatorId, mode, transportFilter]);
 
   if (!layout) {
     return null;
@@ -104,7 +122,10 @@ export function MeshMiniGraph({
           <span className="mesh-legend-dot mesh-legend-coordinator" /> Coordinator
         </span>
         <span className="mesh-legend-item">
-          <span className="mesh-legend-dot mesh-legend-selected" /> Selected
+          <span className="mesh-legend-dot mesh-legend-selected" /> Selected / route
+        </span>
+        <span className="mesh-legend-item">
+          <span className="mesh-legend-dot mesh-legend-partition" /> Partition
         </span>
         <span className="mesh-legend-item">
           <span className="mesh-legend-dot mesh-legend-offline" /> Offline
@@ -122,8 +143,17 @@ export function MeshMiniGraph({
           const from = positions.get(edge.from);
           const to = positions.get(edge.to);
           if (!from || !to) return null;
-          const stroke =
-            edge.trusted === false ? "#ef4444" : edge.active === false ? "#94a3b8" : "#64748b";
+          const onPath =
+            highlightSet.size > 0 &&
+            highlightSet.has(edge.from) &&
+            highlightSet.has(edge.to);
+          const stroke = onPath
+            ? "#818cf8"
+            : edge.trusted === false
+              ? "#ef4444"
+              : edge.active === false
+                ? "#94a3b8"
+                : "#64748b";
           return (
             <line
               key={`${edge.from}-${edge.to}-${idx}`}
@@ -132,7 +162,7 @@ export function MeshMiniGraph({
               x2={to.x}
               y2={to.y}
               stroke={stroke}
-              strokeWidth={edge.active === false ? 1 : 1.5}
+              strokeWidth={onPath ? 2.5 : edge.active === false ? 1 : 1.5}
               strokeDasharray={edge.active === false ? "4 3" : undefined}
             />
           );
@@ -142,18 +172,31 @@ export function MeshMiniGraph({
           if (!pos) return null;
           const selected = node.id === focus;
           const isCoordinator = coordinatorId != null && node.id === coordinatorId;
-          const fill = !node.reachable
-            ? "#475569"
-            : isCoordinator
-              ? "#a855f7"
-              : selected
-                ? "#6366f1"
-                : "#334155";
+          const onPath = highlightSet.has(node.id);
+          const inPartition = partitionSet.has(node.id);
+          const dimmed =
+            transportFilter != null &&
+            transportFilter !== "all" &&
+            !matchesTransport(node, transportFilter);
+          const fill = dimmed
+            ? "#1e293b"
+            : !node.reachable
+              ? "#475569"
+              : inPartition
+                ? "#f97316"
+                : isCoordinator
+                  ? "#a855f7"
+                  : onPath
+                    ? "#818cf8"
+                    : selected
+                      ? "#6366f1"
+                      : "#334155";
           const title = [
             node.id,
             node.transport ? `transport: ${node.transport}` : null,
             node.trust_score != null ? `trust: ${node.trust_score.toFixed(2)}` : null,
             node.role ? `role: ${node.role}` : null,
+            inPartition ? "partition member" : null,
           ]
             .filter(Boolean)
             .join("\n");
@@ -163,8 +206,9 @@ export function MeshMiniGraph({
               <circle
                 cx={pos.x}
                 cy={pos.y}
-                r={selected || isCoordinator ? 14 : 10}
+                r={selected || isCoordinator || onPath ? 14 : 10}
                 fill={fill}
+                opacity={dimmed ? 0.35 : 1}
               />
               <text x={pos.x} y={pos.y + 24} textAnchor="middle" fontSize={9} fill="#e2e8f0">
                 {node.id.slice(0, mode === "full" ? 10 : 14)}
