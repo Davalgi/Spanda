@@ -150,6 +150,7 @@ All promotion gates run in **CI Nightly** (soak/audit skipped in CI). Smokes wit
 | Enterprise ops Stable | `enterprise_ops_stable_promotion_gate.sh` | `enterprise-ops-promotion-gate` | [enterprise-ops-stable-promotion.md](../../docs/enterprise-ops-stable-promotion.md) |
 | Entity model Stable | `entity_model_stable_promotion_gate.sh` | `entity-model-promotion-gate` | [entity-model-stable-promotion.md](../../docs/entity-model-stable-promotion.md) |
 | Entity mesh Stable | `entity_mesh_stable_promotion_gate.sh` | `entity-mesh-promotion-gate` | [entity-mesh-stable-promotion.md](../../docs/entity-mesh-stable-promotion.md) |
+| Entity mesh field soak | `entity_mesh_field_soak_init.sh` | — (local/org) | [entity-mesh-field-pilot.md](../../docs/entity-mesh-field-pilot.md) |
 | HRI Stable | `hri_stable_promotion_gate.sh` | — (run locally; not in nightly yet) | [stable-hardening-human-interaction.md](../../docs/stable-hardening-human-interaction.md) |
 | Smart Spaces scaffold | `smart_spaces_promotion_gate.sh` | `smart-spaces-promotion-gate` | [stable-hardening-smart-spaces.md](../../docs/stable-hardening-smart-spaces.md) |
 | What-If Stable | `what_if_stable_promotion_gate.sh` | `what-if-stable-promotion-gate` | [stable-hardening-what-if.md](../../docs/stable-hardening-what-if.md) |

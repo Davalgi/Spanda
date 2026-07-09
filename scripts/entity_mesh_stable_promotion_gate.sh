@@ -5,17 +5,18 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-SOAK_FILE="${SPANDA_FIELD_SOAK_START_FILE:-$ROOT/.spanda/field-soak-start.txt}"
+SOAK_FILE="${SPANDA_ENTITY_MESH_FIELD_SOAK_START_FILE:-$ROOT/.spanda/entity-mesh-field-soak-start.txt}"
 MIN_DAYS="${SPANDA_FIELD_SOAK_MIN_DAYS:-30}"
 AUDIT_FILE="${SPANDA_SECURITY_AUDIT_PREP_FILE:-$ROOT/.spanda/security-audit-prep.json}"
 
 echo "== Entity mesh stable promotion gate =="
 
 if [[ "${SPANDA_ENTITY_MESH_SKIP_SOAK:-0}" != "1" ]]; then
-  echo "--- Field soak (min ${MIN_DAYS} days, shared with enterprise ops) ---"
+  echo "--- Entity Mesh field pilot soak (min ${MIN_DAYS} days) ---"
   if [[ ! -f "$SOAK_FILE" ]]; then
     echo "missing soak start file: $SOAK_FILE" >&2
-    echo "Create with: ./scripts/enterprise_ops_field_soak_init.sh" >&2
+    echo "Create with: ./scripts/entity_mesh_field_soak_init.sh" >&2
+    echo "Pilot guide: docs/entity-mesh-field-pilot.md" >&2
     exit 1
   fi
   START_DATE="$(tr -d '[:space:]' < "$SOAK_FILE")"

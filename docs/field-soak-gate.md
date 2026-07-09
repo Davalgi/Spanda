@@ -58,3 +58,9 @@ For **Recovery Orchestrator** (separate clock), use `.spanda/recovery-field-soak
 `./scripts/recovery_orchestrator_stable_promotion_gate.sh` — see
 [stable-hardening-recovery-orchestrator.md](./stable-hardening-recovery-orchestrator.md). Start with
 `./scripts/recovery_orchestrator_field_soak_init.sh` (one-time).
+
+For **Autonomous Entity Mesh** (separate clock), use `.spanda/entity-mesh-field-soak-start.txt` and
+`./scripts/entity_mesh_stable_promotion_gate.sh` — see
+[entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md). Start the pilot with
+`./scripts/entity_mesh_field_soak_init.sh` (one-time). Weekly smoke:
+[entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md).

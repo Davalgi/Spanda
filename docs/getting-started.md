@@ -3,7 +3,7 @@
 **Spanda** is an autonomous systems platform with a safety-first **`.sd` language** at its core.
 This guide gets you from install to your first robot program in under 10 minutes.
 
-> **Release note:** Current workspace release is **v0.6.3** (**evaluation / beta**). Default AI and
+> **Release note:** Current workspace release is **v0.7.0** (**evaluation / beta**). Default AI and
 > transport paths are mock-backed unless you configure live backends —
 > [known-limitations.md](./known-limitations.md) · [troubleshooting.md](./troubleshooting.md).
 
@@ -629,7 +629,8 @@ spanda mesh route rover-001 rover-002 --config crates/spanda-config/tests/fixtur
 
 Guide: [entity-mesh.md](./entity-mesh.md) · Examples:
 [`examples/showcase/entity_mesh/`](../examples/showcase/entity_mesh/) · Stable promotion:
-[entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md)
+[entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) · Field pilot:
+[entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md)
 
 ---
 
