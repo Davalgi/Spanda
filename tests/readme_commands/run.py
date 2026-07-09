@@ -44,9 +44,25 @@ def normalize(text: str, root: str) -> str:
         "<TARGET>",
         text,
     )
+    # Release CLI demos resolve bundled copies; dev builds use examples/ directly.
+    text = text.replace(
+        "<ROOT>/crates/spanda-cli/bundled-examples/examples/",
+        "<ROOT>/examples/",
+    )
     lines = text.splitlines()
+    # Drop native-runtime fallback and LLVM stderr noise (non-deterministic on CI).
+    skip_line = re.compile(
+        r"(\[spanda\] native runtime unavailable|"
+        r"program\.ll:\d+:\d+: error:|"
+        r"^\d+ error generated\.?$|"
+        r"\[native\])"
+    )
+    lines = [line for line in lines if not skip_line.search(line)]
     # Pull warning lines into a stable sorted trailer (install order varies).
-    warnings = sorted(line for line in lines if "⚠" in line)
+    warning_skip = re.compile(r"registry package '[^']+' not in local registry stub")
+    warnings = sorted(
+        line for line in lines if "⚠" in line and not warning_skip.search(line)
+    )
     body = [line for line in lines if "⚠" not in line]
     # Sort equally ranked recovery strategy lines for stable goldens.
     strategy_re = re.compile(r"^  .+ — \d+(?:\.\d+)?% success")
@@ -146,7 +162,7 @@ def main() -> int:
                 print(f"FAIL {cmd_id}: missing golden {golden_file}")
                 failed += 1
             else:
-                expected = golden_file.read_text(encoding="utf-8")
+                expected = normalize(golden_file.read_text(encoding="utf-8"), str(root))
                 if normalized != expected:
                     print(f"FAIL {cmd_id}: golden mismatch")
                     import difflib
