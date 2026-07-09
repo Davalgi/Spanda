@@ -75,9 +75,7 @@ pub fn infer_transport_from_entity(entity: &EntityRecord) -> MeshTransport {
 
 fn live_transport_enabled(source: &MeshDiscoverySource) -> bool {
     match source {
-        MeshDiscoverySource::Mqtt => {
-            std::env::var("SPANDA_LIVE_MQTT").ok().as_deref() == Some("1")
-        }
+        MeshDiscoverySource::Mqtt => std::env::var("SPANDA_LIVE_MQTT").ok().as_deref() == Some("1"),
         MeshDiscoverySource::Ros2 | MeshDiscoverySource::Dds => {
             std::env::var("SPANDA_LIVE_ROS2").ok().as_deref() == Some("1")
                 || std::env::var("SPANDA_ROS2_LIVE").ok().as_deref() == Some("1")
@@ -100,10 +98,7 @@ fn transport_for_source(source: MeshDiscoverySource) -> MeshTransport {
     }
 }
 
-fn discovery_match_to_mesh_node(
-    discovery: &DiscoveryMatch,
-    transport: MeshTransport,
-) -> MeshNode {
+fn discovery_match_to_mesh_node(discovery: &DiscoveryMatch, transport: MeshTransport) -> MeshNode {
     let latency_ms = discovery.probe.latency_ms.map(|value| value as u32);
     MeshNode {
         entity_id: discovery.device_id.clone(),
@@ -195,11 +190,8 @@ mod tests {
 
     #[test]
     fn parse_mesh_sources_from_strings() {
-        let parsed = parse_mesh_discovery_sources(&[
-            "local_runtime".into(),
-            "mqtt".into(),
-            "ros2".into(),
-        ]);
+        let parsed =
+            parse_mesh_discovery_sources(&["local_runtime".into(), "mqtt".into(), "ros2".into()]);
         assert_eq!(
             parsed,
             vec![
@@ -218,9 +210,6 @@ mod tests {
             tags: vec!["mqtt-bridge".into()],
             ..EntityRecord::default()
         };
-        assert_eq!(
-            infer_transport_from_entity(&entity),
-            MeshTransport::Mqtt
-        );
+        assert_eq!(infer_transport_from_entity(&entity), MeshTransport::Mqtt);
     }
 }

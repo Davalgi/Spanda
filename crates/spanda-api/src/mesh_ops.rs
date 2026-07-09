@@ -3,9 +3,9 @@
 use serde::Deserialize;
 use spanda_deploy_http::HttpResponse;
 use spanda_entity_mesh::{
-    apply_discovery, build_entity_mesh, build_merge_plan, compute_route, discover_mesh_nodes,
-    evaluate_mesh_health, find_capability, merge_partitions, mesh_graph_json, parse_mesh_discovery_sources,
-    simulate_partition, default_mesh_discovery_sources, parse_mesh_discovery_sources,
+    apply_discovery, build_entity_mesh, build_merge_plan, compute_route,
+    default_mesh_discovery_sources, discover_mesh_nodes, evaluate_mesh_health, find_capability,
+    merge_partitions, mesh_graph_json, parse_mesh_discovery_sources, simulate_partition,
     MeshRouteOptions, MeshRoutingMode,
 };
 

@@ -2,11 +2,12 @@
 //!
 use spanda_config::{build_entity_registry, config_flag_from_args, ConfigResolver, SpandaManifest};
 use spanda_entity_mesh::{
-    apply_discovery, build_entity_mesh, build_merge_plan, compute_route, discover_mesh_nodes,
-    evaluate_mesh_health, find_capability, format_capability_results, format_health,
-    format_merge_report, format_node_list, format_route, format_topology, inspect_node, list_nodes,
-    merge_partitions, mesh_graph_json, parse_mesh_discovery_sources, simulate_partition,
-    default_mesh_discovery_sources, MeshFormat, MeshRouteOptions, MeshRoutingMode,
+    apply_discovery, build_entity_mesh, build_merge_plan, compute_route,
+    default_mesh_discovery_sources, discover_mesh_nodes, evaluate_mesh_health, find_capability,
+    format_capability_results, format_health, format_merge_report, format_node_list, format_route,
+    format_topology, inspect_node, list_nodes, merge_partitions, mesh_graph_json,
+    parse_mesh_discovery_sources, simulate_partition, MeshFormat, MeshRouteOptions,
+    MeshRoutingMode,
 };
 use std::env;
 use std::path::{Path, PathBuf};

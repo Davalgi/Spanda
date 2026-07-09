@@ -1,10 +1,10 @@
 //! Entity mesh registry, discovery, and topology management.
 //!
+use crate::election::{apply_coordinator, elect_coordinator, MeshElectionOptions};
 use crate::transport_discovery::{
     apply_live_transport_probes, default_mesh_discovery_sources, discover_live_transport_nodes,
     infer_transport_from_entity,
 };
-use crate::election::{apply_coordinator, elect_coordinator, MeshElectionOptions};
 use crate::types::*;
 use spanda_config::entity::{
     EntityGraph, EntityHealthStatus, EntityRecord, EntityRegistry, EntityRelationship,
@@ -44,16 +44,16 @@ pub fn discover_mesh_nodes(
     for source in &effective_sources {
         if !matches!(
             source,
-            MeshDiscoverySource::Mqtt
-                | MeshDiscoverySource::Ros2
-                | MeshDiscoverySource::Dds
+            MeshDiscoverySource::Mqtt | MeshDiscoverySource::Ros2 | MeshDiscoverySource::Dds
         ) {
             continue;
         }
         for live in discover_live_transport_nodes(source.clone()) {
             if seen.insert(live.entity_id.clone()) {
                 discovered.push(live);
-            } else if let Some(node) = discovered.iter_mut().find(|n| n.entity_id == live.entity_id)
+            } else if let Some(node) = discovered
+                .iter_mut()
+                .find(|n| n.entity_id == live.entity_id)
             {
                 crate::transport_discovery::enrich_node_with_live_transport(node, &live);
             }
