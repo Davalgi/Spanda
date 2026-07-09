@@ -142,6 +142,18 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
             import_paths: &["positioning.gps"],
         },
         FrameworkPackage {
+            name: "spanda-camera",
+            description: "Camera sensor adapters (stub)",
+            category: super::category::PackageCategory::Sensors,
+            import_paths: &["sensors.camera"],
+        },
+        FrameworkPackage {
+            name: "spanda-imu",
+            description: "IMU sensor adapters (stub)",
+            category: super::category::PackageCategory::Sensors,
+            import_paths: &["sensors.imu"],
+        },
+        FrameworkPackage {
             name: "spanda-lte",
             description: "LTE/cellular connectivity adapters (alias for spanda-cellular)",
             category: super::category::PackageCategory::Hardware,
