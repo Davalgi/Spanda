@@ -183,9 +183,7 @@ pub fn mesh_merge_report(state: &ControlCenterState) -> HttpResponse {
 
 fn parse_query_param(query: &str, key: &str) -> Option<String> {
     query.split('&').find_map(|pair| {
-        let mut parts = pair.splitn(2, '=');
-        let k = parts.next()?;
-        let v = parts.next()?;
+        let (k, v) = pair.split_once('=')?;
         if k == key {
             Some(v.to_string())
         } else {
