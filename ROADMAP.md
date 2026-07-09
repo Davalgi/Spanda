@@ -5,10 +5,10 @@ Blueprints**.
 
 | | |
 |---|---|
-| **Current release** | **v0.7.0** (evaluation/beta, 2026-07-08) — [known limitations](docs/known-limitations.md) · [release prep](docs/workspace-release-v0.7.0.md) |
+| **Current release** | **v0.7.0** (evaluation/beta, tagged 2026-07-09) — [GitHub Release](https://github.com/Davalgi/Spanda/releases/tag/v0.7.0) · [known limitations](docs/known-limitations.md) |
 | **Current phase** | **Next horizon** — hardening + adoption toward v1.0 ([docs/scope-control.md](docs/scope-control.md)) |
 | **Next milestone** | **v1.0** production positioning — after [organizational gates](docs/organizational-gates.md) / [#51](https://github.com/Davalgi/Spanda/issues/51) |
-| **Last audited** | 2026-07-08 — v0.7.0 prepped on `main`; **Go with documented limitations** |
+| **Last audited** | 2026-07-09 — **v0.7.0** tagged; SDK **0.5.9** published; **Go with documented limitations** |
 | **Feature truth table** | [docs/feature-status.md](docs/feature-status.md) |
 | **Release readiness** | [docs/release-readiness.md](docs/release-readiness.md) · [docs/release-blockers.md](docs/release-blockers.md) |
 | **Platform overview** | [docs/platform-overview.md](docs/platform-overview.md) |
@@ -1274,7 +1274,7 @@ Integration job: `differentiation-smoke`) — **met**. Marketplace publish remai
 **Theme:** Autonomous Entity Mesh (Experimental), Cognitive & Resilience Architecture, tiered CI,
 Control Center auth hardening, wasm32 dependency isolation.  
 **Version:** **0.7.0** (minor bump from v0.6.3).  
-**Prep:** [docs/workspace-release-v0.7.0.md](docs/workspace-release-v0.7.0.md) — tag `v0.7.0` pending.
+**Tagged:** 2026-07-09 — [`v0.7.0`](https://github.com/Davalgi/Spanda/releases/tag/v0.7.0) (Release workflow builds installers).
 
 | Item | Status |
 |------|--------|
@@ -1283,7 +1283,7 @@ Control Center auth hardening, wasm32 dependency isolation.
 | Cognitive & Resilience (11 domains, REST/gRPC, SDK clients) | **Shipped (Beta tab)** |
 | Tiered CI (Fast / Integration / Nightly) | **Shipped** |
 | Control Center auth (hashed keys, session JWT, OIDC) | **Shipped** |
-| SDK **0.5.8** (Entity Mesh REST + TS gRPC) | **Published** |
+| SDK **0.5.9** (Entity Mesh REST + Rust/TS/Python gRPC, live transport discovery) | **Published** |
 | Desktop **0.6.3** | **Published** (separate stream — unchanged) |
 
 **Exit criteria:** `./scripts/ci-fast.sh` + Integration smokes green; evaluation / beta positioning.

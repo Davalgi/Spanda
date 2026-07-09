@@ -1,8 +1,8 @@
 # Release Readiness Report
 
-Snapshot for **v0.7.0** (evaluation / beta). Update when quality gates or phase policy change.
+Snapshot for **v0.7.0** (evaluation / beta), tagged **2026-07-09**.
 
-**Release prep:** [workspace-release-v0.7.0.md](./workspace-release-v0.7.0.md)
+**Release:** [GitHub Release v0.7.0](https://github.com/Davalgi/Spanda/releases/tag/v0.7.0) · [workspace-release-v0.7.0.md](./workspace-release-v0.7.0.md)
 
 **Phase policy:** [scope-control.md](./scope-control.md) (Next horizon)  
 **Organizational path to v1.0:** [organizational-gates.md](./organizational-gates.md)  

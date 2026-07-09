@@ -130,7 +130,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Replay** | `replay true`, frame buffer, mission traces | In-process only; v2 traces embed state snapshots for `--playback` |
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
-| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), SDK `meshTopology()` … `meshSimulatePartition()` (REST **0.5.7+**); Rust/TS `GrpcClient` mesh RPCs (**0.5.8+** TS, Rust `grpc` feature); Control Center **Entity Mesh** tab with force-directed graph; `spanda-entity-mesh` crate; CI `entity_mesh_smoke.sh` | **Experimental** — entity-level trust-aware routing above transports; not packet routing; see [entity-mesh.md](./entity-mesh.md) · [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), live transport discovery (`sources` on discover when `SPANDA_LIVE_MQTT=1` / `SPANDA_LIVE_ROS2=1`); SDK `meshTopology()` … `meshSimulatePartition()` (REST **0.5.7+**); Rust/TS/Python `GrpcClient` mesh RPCs (**0.5.9+** Python `spanda-sdk[grpc]`); Control Center **Entity Mesh** tab (route overlay, partition simulate, transport filter); `spanda-entity-mesh` crate; CI `entity_mesh_smoke.sh` | **Experimental** — entity-level trust-aware routing above transports; not packet routing; see [entity-mesh.md](./entity-mesh.md) · [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
 | **OTA rollout** | Deploy plan/rollout/rollback/status | Local state file + HTTP deploy agents; `--require-certify` blocks uncertified rollouts |
 | **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
@@ -283,7 +283,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | **Configuration Drift** | **Stable** | Full operational drift API; scheduled scans (`SPANDA_DRIFT_SCAN_INTERVAL_SECS`); seven dimensions via `GET /v1/drift` |
 | **OTA & Rollback** | **Stable** | Canary, blue/green, phased dry-run; production `--require-certify` via `SPANDA_OTA_REQUIRE_CERTIFY` |
 | **Package Trust** | **Stable** | `spanda trust`, `/v1/trust/package`, trust score |
-| **SDKs** | **Stable** | Official Rust/Python/TypeScript clients **published** at **0.5.8** (`cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`) — entity read/eval/mutation helpers (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); Twin Cloud, Recovery Orchestrator, and Entity Mesh clients in **0.5.5+** (mesh REST **0.5.7+**, TS gRPC **0.5.8+**); `@davalgi-spanda/web` Control Center panel; program-level REST + gRPC; legacy `packages/sdk-python` |
+| **SDKs** | **Stable** | Official Rust/Python/TypeScript clients **published** at **0.5.9** (`cargo add spanda-sdk`, `pip install spanda-sdk`, `npm install @davalgi-spanda/sdk`) — entity read/eval/mutation helpers (`entityReadiness`, `entityRelationships`, gRPC `entity_health`/`entity_trust`); Twin Cloud, Recovery Orchestrator, and Entity Mesh clients in **0.5.5+** (mesh REST **0.5.7+**, gRPC **0.5.8+** TS/Rust, **0.5.9+** Python `spanda-sdk[grpc]`); `@davalgi-spanda/web` Control Center panel; program-level REST + gRPC; legacy `packages/sdk-python` |
 | **Operator Workflows** | **Stable** | Mission approve, takeover, quarantine, recovery approval |
 | **SRE** | **Stable** | `/v1/sre/summary` with `slo`, `burn_rate`, MTTR/MTBF hints; incident workflow; PagerDuty webhook sync; fast-burn background monitor |
 | **Reporting** | **Stable** | Markdown, JSON, PDF exports; scheduled webhook delivery (`GET/POST /v1/reports/schedules`) |
@@ -294,7 +294,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | **Unified Entity Model** | **Stable** | `EntityRegistry` projects fleet, devices, humans, providers, packages into entity graph |
 | | | Verification, readiness, health, and trust via `verify_entity` / `evaluate_entity_*` |
 | | | Control Center Entities tab with read/write mutations; CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) |
-| | | SDKs **0.5.8** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
+| | | SDKs **0.5.9** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
 | **Observability** | **Stable** | OTLP trace/metrics export, correlation IDs, WebSocket telemetry; `spanda-otel-collector`; Grafana templates (`spanda-grafana-dashboards`); HA collector guide |
 | **Digital Thread** | **Stable** | Full lifecycle graph (requirement → retirement); `GET /v1/digital-thread/query` with `lifecycle_phase` filter |
 
@@ -321,7 +321,7 @@ field soak and third-party security audit sign-off — remain tracked in
 [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
 
 **Enterprise ops (2026-06-28):** All 20 enterprise operations pillars promoted to **Stable** after
-`enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.5.8** and desktop
+`enterprise_ops_stable_promotion_gate.sh` (implementation checks). SDK **0.5.9** and desktop
 **0.6.3** (`desktop-v0.6.3`) published. Ongoing organizational gates — 30-day field soak
 ([field-soak-gate.md](./field-soak-gate.md)) and third-party security audit sign-off — tracked in
 [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md).
