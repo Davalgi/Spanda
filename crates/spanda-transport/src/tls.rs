@@ -43,21 +43,14 @@ pub fn parse_tls_endpoint(url: &str) -> Option<TlsEndpoint> {
     //     let result = spanda_transport::tls::parse_tls_endpoint(rl);
 
     let lower = url.to_ascii_lowercase();
-    let (use_tls, stripped, default_port) = if let Some(rest) = lower.strip_prefix("mqtts://") {
-        (true, rest, 8883_u16)
-    } else if let Some(rest) = lower.strip_prefix("mqtt://") {
-        (false, rest, 1883)
-    } else if let Some(rest) = lower.strip_prefix("wss://") {
-        (true, rest, 443)
-    } else if let Some(rest) = lower.strip_prefix("ws://") {
-        (false, rest, 80)
-    } else if let Some(rest) = lower.strip_prefix("dds+sec://") {
-        (true, rest, 7400)
-    } else if let Some(rest) = lower.strip_prefix("dds://") {
-        (false, rest, 7400)
-    } else {
-        return None;
-    };
+    let (use_tls, stripped, default_port) = lower
+        .strip_prefix("mqtts://")
+        .map(|rest| (true, rest, 8883_u16))
+        .or_else(|| lower.strip_prefix("mqtt://").map(|rest| (false, rest, 1883)))
+        .or_else(|| lower.strip_prefix("wss://").map(|rest| (true, rest, 443)))
+        .or_else(|| lower.strip_prefix("ws://").map(|rest| (false, rest, 80)))
+        .or_else(|| lower.strip_prefix("dds+sec://").map(|rest| (true, rest, 7400)))
+        .or_else(|| lower.strip_prefix("dds://").map(|rest| (false, rest, 7400)))?;
     let (host, port) = stripped
         .split_once(':')
         .map(|(h, p)| (h.to_string(), p.parse().unwrap_or(default_port)))
