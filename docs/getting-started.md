@@ -426,7 +426,7 @@ extension or LSP files change.
 | Go to definition | LSP |
 | Format on save | LSP `textDocument/formatting` |
 | Debug (DAP) | VS Code extension — `behavior`, `task every`, `every` triggers |
-| VS Code extension package | **Experimental** — local VSIX or Extension Development Host; Marketplace pending |
+| VS Code extension package | **Experimental** — local VSIX or Extension Development Host; [Marketplace publish guide](./vscode-marketplace-publish.md) for maintainers |
 
 To configure VS Code manually, add to `.vscode/settings.json`:
 
@@ -448,8 +448,10 @@ Then run it in VS Code Extension Development Host, or install a local VSIX:
 
 ```bash
 ./scripts/verify_vscode_vsix.sh
-code --install-extension editor/vscode/spanda-vscode-0.1.0.vsix
+code --install-extension editor/vscode/spanda-vscode-*.vsix
 ```
+
+Maintainers: [vscode-marketplace-publish.md](./vscode-marketplace-publish.md).
 
 See [debugging.md](./debugging.md) for the DAP workflow.
 

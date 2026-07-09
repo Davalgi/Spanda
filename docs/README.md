@@ -125,6 +125,7 @@ guides, walkthroughs, and example libraries.
 | [llvm-embedded-benchmark.md](./llvm-embedded-benchmark.md) | **LLVM aarch64 cross-compile slice (Jetson / Pi)** |
 | [live-ai-provider.md](./live-ai-provider.md) | **Live OpenAI, Anthropic, and ONNX paths via Python bridge** |
 | [debugging.md](./debugging.md) | **Debug `behavior`, `task every`, and `every` triggers in VS Code (DAP)** |
+| [vscode-marketplace-publish.md](./vscode-marketplace-publish.md) | **Publish the VS Code extension to the Marketplace (maintainers)** |
 | [health-checks.md](./health-checks.md) | **Health checks, fleet `require` clauses, and policies** |
 | [readiness.md](./readiness.md) | **Operational readiness engine and weighted go/no-go scoring** |
 | [mission-assurance.md](./mission-assurance.md) | **Mission assurance domains, CLI, packages, and examples** |

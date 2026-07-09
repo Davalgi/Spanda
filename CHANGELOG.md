@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Docs:** [vscode-marketplace-publish.md](docs/vscode-marketplace-publish.md) — maintainer guide for
+  VS Code Marketplace setup, PAT, publisher profile, local/CI publish, and troubleshooting.
 - **Python gRPC client:** `GrpcClient` on `spanda-sdk[grpc]` with mesh RPC parity (`grpcio`).
 - **Entity Mesh live transport discovery:** honor `sources` on discover (MQTT/ROS2/DDS when env-gated);
   infer transport from entity tags; graph edges include transport/latency metrics.

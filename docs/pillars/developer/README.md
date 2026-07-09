@@ -40,7 +40,7 @@ CLI, REST/gRPC APIs, SDKs, documentation, editor integration, CI/CD, and onboard
 
 | Topic | Guide |
 |-------|--------|
-| VS Code extension | [editor/vscode/](../../../editor/vscode/README.md) |
+| VS Code extension | [editor/vscode/](../../../editor/vscode/README.md) · [Marketplace publish](../../vscode-marketplace-publish.md) |
 | Web playground | [packages/web/](../../../packages/web/) |
 | WASM build | `scripts/build-wasm.sh` |
 

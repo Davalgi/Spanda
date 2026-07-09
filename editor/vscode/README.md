@@ -52,3 +52,14 @@ More docs: [debugging](https://github.com/Davalgi/Spanda/blob/main/docs/debuggin
 ## Repository
 
 https://github.com/Davalgi/Spanda
+
+## Maintainers
+
+Publishing to the Visual Studio Marketplace (PAT, publisher setup, CI, troubleshooting):
+[docs/vscode-marketplace-publish.md](../../docs/vscode-marketplace-publish.md).
+
+Local VSIX smoke test:
+
+```bash
+./scripts/verify_vscode_vsix.sh
+```
