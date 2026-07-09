@@ -50,7 +50,7 @@ Snapshot for **v0.7.0** (evaluation / beta), tagged **2026-07-09**.
 | Release blockers tracked | [release-blockers.md](./release-blockers.md) |
 | Scope control published | [scope-control.md](./scope-control.md) — Next horizon phase |
 | Organizational gates documented | [organizational-gates.md](./organizational-gates.md) |
-| Public v0.6.3 positioning | Evaluation / beta — README + [known-limitations.md](./known-limitations.md) |
+| Public v0.7.0 positioning | Evaluation / beta — README + [known-limitations.md](./known-limitations.md) |
 
 ## Demo status
 
@@ -128,7 +128,7 @@ Tracked in [release-blockers.md](./release-blockers.md) and GitHub issues labele
 
 ## Recommendation
 
-**Go with documented limitations** — evaluation / beta release **shipped** as workspace **v0.6.3**.
+**Go with documented limitations** — evaluation / beta release **shipped** as workspace **v0.7.0**.
 
 1. Release-hardening suites run in CI Integration (`core-smokes`, `release-hardening`) after CI Fast
    passes on PRs

@@ -26,7 +26,7 @@ Promotion criteria and current tier for each functional domain. Canonical archit
 - [x] Rule-based `fuse_observations` with conflict detection
 - [x] Entity-derived sensor bundle (`health_status`, `readiness_status`, `trust_status`)
 - [x] REST `/v1/autonomy/fusion` + gRPC `GetAutonomyFusion`
-- [ ] Live multi-sensor pipeline (GPS/IMU/camera) — **Planned** via packages
+- [ ] Live multi-sensor pipeline (GPS/IMU/camera) — **Beta** via `SPANDA_LIVE_FUSION_SENSORS=1` + automotive proxy supplier; full hardware pipelines via packages remain **Planned**
 - [ ] Readiness partial scoring wired from fusion conflicts in mission planner
 
 ### Operational Memory → Stable

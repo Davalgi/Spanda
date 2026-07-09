@@ -1,6 +1,6 @@
 # Autonomous Entity Mesh — Stable Promotion
 
-**Status:** **Experimental** (promotion checklist)
+**Status:** **Stable** (implementation promotion **2026-07-09**; organizational field pilot in progress)
 
 Operational checklist to promote **Autonomous Entity Mesh** from **Experimental** to **Stable**
 in `docs/feature-status.md`.
@@ -29,7 +29,7 @@ in `docs/feature-status.md`.
 | 30-day Entity Mesh field pilot (`entity_mesh_field_soak_init.sh`) | ⏳ Started **2026-07-09** — [entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md) |
 | External security audit sign-off | ⏳ |
 | SDK publish with full mesh REST + gRPC surface | ✅ **0.5.8** published (2026-07-08) — see [SDK publish](#sdk-publish) |
-| `docs/feature-status.md` → **Stable** | ⏳ |
+| `docs/feature-status.md` → **Stable** | ✅ Implementation tier (organizational soak open) |
 
 ---
 

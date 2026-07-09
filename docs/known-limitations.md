@@ -1,6 +1,6 @@
 # Known limitations
 
-Honest constraints for **v0.6.3** evaluators. For capability tiers see
+Honest constraints for **v0.7.0** evaluators. For capability tiers see
 [feature-status.md](./feature-status.md). For live-backend setup see
 [troubleshooting.md](./troubleshooting.md).
 
@@ -85,8 +85,9 @@ Honest constraints for **v0.6.3** evaluators. For capability tiers see
 - **Beta / Experimental tiers** — see [feature-status.md](./feature-status.md),
   [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md), and
   [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
-- Sensory fusion is entity-derived and rule-based (**Beta**); live multi-sensor pipeline is
-  **Planned**.
+- Sensory fusion is entity-derived and rule-based (**Beta**); optional live multi-sensor pipeline via
+  `SPANDA_LIVE_FUSION_SENSORS=1` merges automotive proxy reads (radar/lidar/ultrasonic) when a
+  supplier is registered at CLI startup.
 - Control Center **Cognitive & Resilience** tab uses live REST panels; gRPC parity ships for
   `/v1/autonomy/*`.
 - Homeostasis merges entity health with interpreter scheduler telemetry when a recent `run`/`sim`

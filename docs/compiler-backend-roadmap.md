@@ -65,6 +65,8 @@ Spanda source (.sd)
 - **`--target-triple`** on `llvm-ir` and `compile-native` selects the LLVM/clang target (e.g.
   `aarch64-unknown-linux-gnu`).
 - HAL profiles and conditional compilation for Jetson vs ESP32 remain planned.
+- **`scripts/llvm_golden_path.sh`** exercises `hello_world.sd` and `examples/showcase/autonomous_rover/rover.sd`
+  when `clang` is available (CI Nightly signal).
 
 ## Target platforms
 

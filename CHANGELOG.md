@@ -9,11 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Live vehicle I/O bridges:** env-gated LIN (`SPANDA_LIVE_LIN` / `SPANDA_LIN_CMD`), UDS
+  (`SPANDA_LIVE_UDS` / `SPANDA_UDS_CMD`), and V2X (`SPANDA_LIVE_V2X` / `SPANDA_V2X_CMD`) for ADAS
+  package dispatch; `scripts/adapters_vehicle_io_golden_path.sh`.
+- **Cognitive live fusion:** `SPANDA_LIVE_FUSION_SENSORS=1` merges automotive proxy readings into
+  entity sensory fusion via CLI-registered supplier.
+- **LLVM golden path:** `scripts/llvm_golden_path.sh` now includes `autonomous_rover/rover.sd`.
 - **Docs:** [vscode-marketplace-publish.md](docs/vscode-marketplace-publish.md) — maintainer guide for
   VS Code Marketplace setup, PAT, publisher profile, local/CI publish, and troubleshooting.
 
 ### Changed
 
+- **Autonomous Entity Mesh** promoted to **Stable** (implementation tier) in `docs/feature-status.md`;
+  organizational field pilot remains in progress.
+- **OIDC admin tests:** isolate Control Center state dir to prevent flaky reads of `.spanda/admin-oidc.json`.
+- **Documentation sync:** refreshed gap audit, known-limitations, and release-readiness for v0.7.0.
 - **VS Code Marketplace:** GitHub Actions secret `VSCE_PAT` configured; publisher `spanda-lang`
   profile saved; release workflow attempts publish on tags (`continue-on-error` until Microsoft
   clears extension scanner). Public listing still blocked with “suspicious content”.

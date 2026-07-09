@@ -40,6 +40,7 @@ Stable. Simulated-only paths must say so explicitly.
 | | Adaptive recovery **Experimental**; CC Cognitive & Resilience tab **Beta** |
 | | [architecture](./cognitive-resilience-architecture.md) · [maturity](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` |
 | **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), live transport discovery, SDK mesh REST + gRPC (**0.5.9+**), Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` — **Stable** (implementation); organizational field pilot **in progress** — [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
 
 ## v0.4.0 — Deploy & tooling
 
@@ -130,7 +131,6 @@ Stable. Simulated-only paths must say so explicitly.
 | **Replay** | `replay true`, frame buffer, mission traces | In-process only; v2 traces embed state snapshots for `--playback` |
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
-| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), live transport discovery (`sources` on discover when `SPANDA_LIVE_MQTT=1` / `SPANDA_LIVE_ROS2=1`); SDK `meshTopology()` … `meshSimulatePartition()` (REST **0.5.7+**); Rust/TS/Python `GrpcClient` mesh RPCs (**0.5.9+** Python `spanda-sdk[grpc]`); Control Center **Entity Mesh** tab (route overlay, partition simulate, transport filter); `spanda-entity-mesh` crate; CI `entity_mesh_smoke.sh` | **Experimental** — entity-level trust-aware routing above transports; not packet routing; see [entity-mesh.md](./entity-mesh.md) · [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
 | **OTA rollout** | Deploy plan/rollout/rollback/status | Local state file + HTTP deploy agents; `--require-certify` blocks uncertified rollouts |
 | **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
