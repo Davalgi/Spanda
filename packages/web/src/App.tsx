@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_SOURCE, EXAMPLES } from "./examples";
-import { checkSource, runSource, type CheckResponse, type RunResponse } from "./spanda-wasm";
+import { checkSource, loadWasm, runSource, type CheckResponse, type RunResponse } from "./spanda-wasm";
 import { ControlCenterPanel } from "./ControlCenterPanel";
 import { OperationsPanel } from "./OperationsPanel";
 import { TelemetryPanel } from "./TelemetryPanel";
@@ -22,8 +22,8 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    import("./spanda-wasm").then((m) => {
-      setBackend(m.isWasmLoaded() ? "wasm" : "unavailable");
+    void loadWasm().then((ok) => {
+      setBackend(ok ? "wasm" : "unavailable");
     });
   }, []);
 

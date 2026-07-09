@@ -13,12 +13,13 @@ const packageRoot = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   plugins: [react()],
   server: { port: 5173 },
+  assetsInclude: ["**/*.wasm"],
   resolve: {
     alias: {
       "@spanda/core": path.resolve(packageRoot, "../../src"),
     },
   },
   optimizeDeps: {
-    exclude: ["spanda-wasm"],
+    exclude: ["../wasm/spanda_wasm.js"],
   },
 });

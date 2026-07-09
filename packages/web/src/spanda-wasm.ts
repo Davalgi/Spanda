@@ -3,6 +3,17 @@
  * @module
  */
 
+import init, {
+  wasm_check as wasmCheck,
+  wasm_run as wasmRun,
+  wasm_telemetry_append as wasmTelemetryAppend,
+  wasm_telemetry_clear as wasmTelemetryClear,
+  wasm_telemetry_otlp as wasmTelemetryOtlp,
+  wasm_telemetry_prometheus as wasmTelemetryPrometheus,
+  wasm_telemetry_stats as wasmTelemetryStats,
+} from "../wasm/spanda_wasm.js";
+import wasmUrl from "../wasm/spanda_wasm_bg.wasm?url";
+
 export type Diagnostic = { message: string; line: number; column: number };
 
 export type CheckResponse = { ok: boolean; diagnostics: Diagnostic[] };
@@ -41,173 +52,52 @@ export type TelemetryResponse = {
   body?: string;
 };
 
-type SpandaWasmBindings = {
-  wasm_check: (source: string) => unknown;
-  wasm_run: (source: string, max: number) => unknown;
-  wasm_telemetry_clear: () => unknown;
-  wasm_telemetry_append: (line: string) => unknown;
-  wasm_telemetry_stats: () => unknown;
-  wasm_telemetry_prometheus: () => unknown;
-  wasm_telemetry_otlp: () => unknown;
-};
-
-let wasmModule: SpandaWasmBindings | null = null;
+let wasmReady = false;
+let wasmLoad: Promise<boolean> | null = null;
 
 export function isWasmLoaded(): boolean {
-  // Description:
-  //     IsWasmLoaded.
-  //
-  // Inputs:
-  //     None.
-  //
-  // Outputs:
-  //     result: boolean
-  //         Return value from `isWasmLoaded`.
-  //
-  // Example:
-  //     const result = isWasmLoaded();
-  // Description:
-  //     IsWasmLoaded.
-  //
-  // Inputs:
-  //     None.
-  //
-  // Outputs:
-  //     result: boolean
-  //         Return value from `isWasmLoaded`.
-  //
-  // Example:
-  //     const result = isWasmLoaded();
-
-  // const result = isWasmLoaded();
-  return wasmModule !== null;
+  return wasmReady;
 }
 
-async function ensureWasm(): Promise<void> {
-  // Description:
-  //     EnsureWasm.
-  //
-  // Inputs:
-  //     None.
-  //
-  // Outputs:
-  //     result: Promise<void>
-  //         Return value from `ensureWasm`.
-  //
-  // Example:
-  //     const result = ensureWasm();
-  // Description:
-  //     EnsureWasm.
-  //
-  // Inputs:
-  //     None.
-  //
-  // Outputs:
-  //     result: Promise<void>
-  //         Return value from `ensureWasm`.
-  //
-  // Example:
-  //     const result = ensureWasm();
+async function ensureWasm(): Promise<boolean> {
+  if (wasmReady) return true;
+  if (wasmLoad) return wasmLoad;
 
-  // const result = ensureWasm();
-  if (wasmModule) return;
+  wasmLoad = (async () => {
+    try {
+      await init(wasmUrl);
+      wasmReady = true;
+      return true;
+    } catch (error) {
+      wasmReady = false;
+      if (import.meta.env.DEV) {
+        console.error("Failed to load Spanda WASM module", error);
+      }
+      return false;
+    } finally {
+      wasmLoad = null;
+    }
+  })();
 
-  // Try the operation and handle failures below.
-  try {
-    const init = await import("../wasm/spanda_wasm.js");
-    await init.default();
-    wasmModule = {
-      wasm_check: (source) => init.wasm_check(source),
-      wasm_run: (source, max) => init.wasm_run(source, max),
-      wasm_telemetry_clear: () => init.wasm_telemetry_clear(),
-      wasm_telemetry_append: (line) => init.wasm_telemetry_append(line),
-      wasm_telemetry_stats: () => init.wasm_telemetry_stats(),
-      wasm_telemetry_prometheus: () => init.wasm_telemetry_prometheus(),
-      wasm_telemetry_otlp: () => init.wasm_telemetry_otlp(),
-    };
-  } catch {
-    wasmModule = null;
-  }
+  return wasmLoad;
+}
+
+export async function loadWasm(): Promise<boolean> {
+  return ensureWasm();
 }
 
 export async function checkSource(source: string): Promise<CheckResponse> {
-  // Description:
-  //     CheckSource.
-  //
-  // Inputs:
-  //     source: string
-  //         Caller-supplied source.
-  //
-  // Outputs:
-  //     result: Promise<CheckResponse>
-  //         Return value from `checkSource`.
-  //
-  // Example:
-  //     const result = checkSource(source);
-  // Description:
-  //     CheckSource.
-  //
-  // Inputs:
-  //     source: string
-  //         Caller-supplied source.
-  //
-  // Outputs:
-  //     result: Promise<CheckResponse>
-  //         Return value from `checkSource`.
-  //
-  // Example:
-  //     const result = checkSource(source);
-
-  // const result = checkSource(source);
-  await ensureWasm();
-
-  // continue when wasmModule is falsy.
-  if (!wasmModule) {
+  if (!(await ensureWasm())) {
     return { ok: false, diagnostics: [{ message: "WASM module not loaded", line: 1, column: 1 }] };
   }
-  return wasmModule.wasm_check(source) as CheckResponse;
+  return wasmCheck(source) as CheckResponse;
 }
 
 export async function runSource(source: string, maxLoopIterations: number): Promise<RunResponse> {
-  // Description:
-  //     RunSource.
-  //
-  // Inputs:
-  //     source: string
-  //         Caller-supplied source.
-  //     maxLoopIterations: number
-  //         Caller-supplied maxLoopIterations.
-  //
-  // Outputs:
-  //     result: Promise<RunResponse>
-  //         Return value from `runSource`.
-  //
-  // Example:
-  //     const result = runSource(source, maxLoopIterations);
-  // Description:
-  //     RunSource.
-  //
-  // Inputs:
-  //     source: string
-  //         Caller-supplied source.
-  //     maxLoopIterations: number
-  //         Caller-supplied maxLoopIterations.
-  //
-  // Outputs:
-  //     result: Promise<RunResponse>
-  //         Return value from `runSource`.
-  //
-  // Example:
-  //     const result = runSource(source, maxLoopIterations);
-
-  // const result = runSource(source, maxLoopIterations);
-  await ensureWasm();
-
-  // continue when wasmModule is falsy.
-  if (!wasmModule) {
+  if (!(await ensureWasm())) {
     return { ok: false, diagnostics: [{ message: "WASM module not loaded", line: 1, column: 1 }] };
   }
-  return wasmModule.wasm_run(source, maxLoopIterations) as RunResponse;
+  return wasmRun(source, maxLoopIterations) as RunResponse;
 }
 
 function telemetryUnavailable(): TelemetryResponse {
@@ -215,31 +105,26 @@ function telemetryUnavailable(): TelemetryResponse {
 }
 
 export async function telemetryClear(): Promise<TelemetryResponse> {
-  await ensureWasm();
-  if (!wasmModule) return telemetryUnavailable();
-  return wasmModule.wasm_telemetry_clear() as TelemetryResponse;
+  if (!(await ensureWasm())) return telemetryUnavailable();
+  return wasmTelemetryClear() as TelemetryResponse;
 }
 
 export async function telemetryAppend(line: string): Promise<TelemetryResponse> {
-  await ensureWasm();
-  if (!wasmModule) return telemetryUnavailable();
-  return wasmModule.wasm_telemetry_append(line) as TelemetryResponse;
+  if (!(await ensureWasm())) return telemetryUnavailable();
+  return wasmTelemetryAppend(line) as TelemetryResponse;
 }
 
 export async function telemetryStats(): Promise<TelemetryResponse> {
-  await ensureWasm();
-  if (!wasmModule) return telemetryUnavailable();
-  return wasmModule.wasm_telemetry_stats() as TelemetryResponse;
+  if (!(await ensureWasm())) return telemetryUnavailable();
+  return wasmTelemetryStats() as TelemetryResponse;
 }
 
 export async function telemetryPrometheus(): Promise<TelemetryResponse> {
-  await ensureWasm();
-  if (!wasmModule) return telemetryUnavailable();
-  return wasmModule.wasm_telemetry_prometheus() as TelemetryResponse;
+  if (!(await ensureWasm())) return telemetryUnavailable();
+  return wasmTelemetryPrometheus() as TelemetryResponse;
 }
 
 export async function telemetryOtlp(): Promise<TelemetryResponse> {
-  await ensureWasm();
-  if (!wasmModule) return telemetryUnavailable();
-  return wasmModule.wasm_telemetry_otlp() as TelemetryResponse;
+  if (!(await ensureWasm())) return telemetryUnavailable();
+  return wasmTelemetryOtlp() as TelemetryResponse;
 }
