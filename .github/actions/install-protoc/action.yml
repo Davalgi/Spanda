@@ -11,14 +11,31 @@ runs:
           protoc --version
           exit 0
         fi
+
+        PROTOC_VERSION=25.3
+
         if [[ "${RUNNER_OS}" == "macOS" ]]; then
           brew install protobuf
+        elif [[ "${RUNNER_OS}" == "Windows" ]]; then
+          curl -fsSL -o /tmp/protoc.zip \
+            "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-win64.zip"
+          unzip -oq /tmp/protoc.zip -d "$HOME/protoc" bin/protoc.exe 'include/*'
+          echo "$HOME/protoc/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/protoc/bin:$PATH"
         else
           # Avoid apt on GitHub-hosted Ubuntu: Microsoft mirror repos are occasionally
           # unsigned/broken and cause unrelated CI jobs (lint-rust) to fail on apt-get update.
-          PROTOC_VERSION=25.3
+          case "$(uname -m)" in
+            x86_64|amd64) PROTOC_ARCH=linux-x86_64 ;;
+            aarch64|arm64) PROTOC_ARCH=linux-aarch_64 ;;
+            *)
+              echo "unsupported Linux architecture: $(uname -m)" >&2
+              exit 1
+              ;;
+          esac
           curl -fsSL -o /tmp/protoc.zip \
-            "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+            "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-${PROTOC_ARCH}.zip"
           sudo unzip -oq /tmp/protoc.zip -d /usr/local bin/protoc 'include/*'
         fi
+
         protoc --version
