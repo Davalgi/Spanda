@@ -10,20 +10,29 @@ fn deploy_ctx() -> RbacContext {
     RbacContext::api_key("admin", Role::Administrator, "default")
 }
 
-#[test]
-fn oidc_authorize_url_requires_issuer_and_client() {
-    let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
-    assert_eq!(response.status, 400);
-    assert!(response.body.contains("issuer"));
-}
-
-#[test]
-fn oidc_authorize_url_includes_pkce_when_configured() {
+/// Isolate Control Center admin OAuth state so tests do not read `.spanda/admin-oidc.json`.
+fn with_temp_control_center_state<F: FnOnce()>(f: F) {
     let dir = TempDir::new().expect("tempdir");
     std::env::set_var(
         "SPANDA_CONTROL_CENTER_STATE_DIR",
         dir.path().to_string_lossy().to_string(),
     );
+    f();
+    std::env::remove_var("SPANDA_CONTROL_CENTER_STATE_DIR");
+}
+
+#[test]
+fn oidc_authorize_url_requires_issuer_and_client() {
+    with_temp_control_center_state(|| {
+        let response = admin_oidc_authorize_url("{}", Some(&deploy_ctx()));
+        assert_eq!(response.status, 400);
+        assert!(response.body.contains("issuer"));
+    });
+}
+
+#[test]
+fn oidc_authorize_url_includes_pkce_when_configured() {
+    with_temp_control_center_state(|| {
     let put = admin_oidc_put(
         r#"{
             "enabled": true,
@@ -45,14 +54,16 @@ fn oidc_authorize_url_includes_pkce_when_configured() {
         assert!(response.body.contains("code_challenge"));
         assert!(response.body.contains("\"pkce\":true"));
     }
-    std::env::remove_var("SPANDA_CONTROL_CENTER_STATE_DIR");
+    });
 }
 
 #[test]
 fn slack_oauth_url_requires_client_id() {
-    let response = admin_slack_oauth_url("{}", Some(&deploy_ctx()));
-    assert_eq!(response.status, 400);
-    assert!(response.body.contains("oauth_client_id"));
+    with_temp_control_center_state(|| {
+        let response = admin_slack_oauth_url("{}", Some(&deploy_ctx()));
+        assert_eq!(response.status, 400);
+        assert!(response.body.contains("oauth_client_id"));
+    });
 }
 
 #[test]
