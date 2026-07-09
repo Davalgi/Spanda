@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cognitive live fusion:** `SPANDA_LIVE_FUSION_SENSORS=1` merges automotive proxy readings into
   entity sensory fusion via CLI-registered supplier.
 - **LLVM golden path:** `scripts/llvm_golden_path.sh` now includes `autonomous_rover/rover.sd`.
+- **LLVM primary runtime:** `spanda run` / `spanda sim` try native codegen first (`--runtime auto|native|interpreter`, `SPANDA_RUNTIME`); interpreter remains LTS fallback.
+- **GPS/IMU/camera pipelines:** `sensor_hub` with hub stubs and live CMD bridges (`SPANDA_LIVE_GPS/IMU/CAMERA`); packages `spanda-imu`, `spanda-camera`; `scripts/sensor_pipeline_golden_path.sh`.
 - **Docs:** [vscode-marketplace-publish.md](docs/vscode-marketplace-publish.md) — maintainer guide for
   VS Code Marketplace setup, PAT, publisher profile, local/CI publish, and troubleshooting.
 

@@ -23,7 +23,7 @@ Supporting outputs today:
 |--------|---------|--------|
 | Diagnostics | `spanda check` | Implemented |
 | Compatibility report | `spanda verify` | Implemented |
-| Interpreted run | `spanda run` / `spanda sim` | Implemented |
+| Interpreted run | `spanda run` / `spanda sim` | Implemented (native-primary with interpreter LTS fallback) |
 | Formatted source | `spanda fmt` | Implemented |
 | Markdown docs | `spanda doc` | Implemented |
 | Skeleton codegen | `spanda codegen --target native\|wasm\|esp32` | Stubbed (SIR-aware template C/WASM/ESP32, not a real compiler) |
@@ -67,6 +67,8 @@ Spanda source (.sd)
 - HAL profiles and conditional compilation for Jetson vs ESP32 remain planned.
 - **`scripts/llvm_golden_path.sh`** exercises `hello_world.sd` and `examples/showcase/autonomous_rover/rover.sd`
   when `clang` is available (CI Nightly signal).
+- **`spanda run` / `spanda sim`** use native-primary dispatch (`ExecutionRuntime::Auto`); interpreter LTS
+  when SIR is ineligible or clang is missing (`--runtime`, `SPANDA_RUNTIME`).
 
 ## Target platforms
 

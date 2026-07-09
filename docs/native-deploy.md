@@ -1,8 +1,24 @@
 # Native deploy (LLVM)
 
-Spanda can emit a **linked native binary** for field deployment when the CLI is built with the
-`llvm` feature (default). This path complements the interpreter (`spanda run`) and WASM deploy
-manifest (`spanda deploy --target wasm`).
+Spanda uses **LLVM native codegen as the primary runtime** for `spanda run` and `spanda sim`
+when programs lower to eligible SIR and clang is available. The tree-walking interpreter
+remains the **long-term support (LTS)** path and is used automatically when native execution
+is unavailable or the program contains statements unsupported by native codegen.
+
+## Runtime selection
+
+| Mode | Flag / env | Behavior |
+|------|------------|----------|
+| **Auto** (default) | `--runtime auto` or `SPANDA_RUNTIME=auto` | Try native first; fall back to interpreter LTS with a warning |
+| **Native** | `--runtime native` or `SPANDA_RUNTIME=native` | Require native; error if unavailable |
+| **Interpreter LTS** | `--runtime interpreter` or `SPANDA_RUNTIME=interpreter` | Force interpreter only |
+
+```bash
+spanda run --runtime auto examples/showcase/killer_demo.sd
+SPANDA_RUNTIME=interpreter spanda sim rover.sd
+```
+
+Build the CLI with the `llvm` feature (default) for native-primary dispatch.
 
 ## Quick start
 
@@ -50,11 +66,13 @@ spanda compile-native --target-triple aarch64-unknown-linux-gnu \
 
 | Runtime | Best for |
 |---------|----------|
-| `spanda run` / `spanda sim` | Development, triggers, agents, full language surface |
-| Native binary | Fixed behaviors, edge nodes with clang toolchain, HAL-tuned builds |
+| **Auto / native** (`spanda run`, `spanda sim`) | Production deploys, edge nodes with clang, eligible programs |
+| **Interpreter LTS** (`--runtime interpreter`) | Full language surface, triggers, agents, development |
+| **Prebuilt binary** (`compile-native`, `deploy --target native`) | Fixed behaviors shipped as standalone executables |
+| WASM (`deploy --target wasm`) | Browser and lightweight embed targets |
 
 Native codegen covers a **subset** of the language today. Use `spanda check` and
-[known-limitations.md](./known-limitations.md) before relying on native output in production.
+[known-limitations.md](./known-limitations.md) before requiring native-only execution.
 
 ## CI
 
@@ -62,6 +80,7 @@ Native codegen covers a **subset** of the language today. Use `spanda check` and
 |-----|--------|
 | `llvm-golden-path` | `scripts/llvm_golden_path.sh` |
 | `llvm-embedded-golden-path` | `scripts/llvm_embedded_golden_path.sh` |
+| `sensor-pipeline-golden-path` | `scripts/sensor_pipeline_golden_path.sh` |
 
 ## Related
 

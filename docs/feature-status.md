@@ -135,7 +135,8 @@ Stable. Simulated-only paths must say so explicitly.
 | **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
 | **ROS2 adapter** | Native `rclrs` cdylib, rclpy daemon, CLI bridge | Requires ROS Humble; not default transport |
-| **LLVM / native codegen** | `spanda ir`, `llvm-ir`, `compile-native`; `scripts/llvm_golden_path.sh` | Early stage; not primary execution path |
+| **LLVM / native codegen** | `spanda run --runtime auto\|native\|interpreter`; `llvm-ir`, `compile-native`; `scripts/llvm_golden_path.sh` | **Primary** execution path when SIR eligible; interpreter LTS fallback |
+| **GPS / IMU / camera pipelines** | `spanda-gps`, `spanda-imu`, `spanda-camera`; `SPANDA_LIVE_GPS/IMU/CAMERA`; `scripts/sensor_pipeline_golden_path.sh` | Hub stubs + env-gated CMD bridges; fusion via `SPANDA_LIVE_FUSION_SENSORS` |
 | **FFI** | `extern python`/`extern cpp` subprocess bridges; optional `cpp-native` in-process | PyO3 path is Tier 2 adoption unlock |
 | **World models** | `world_model { }` block parser; `fusion.read()` → belief hook; `world_model.update` / `belief` / `export`; Rust + TS typecheck parity | Minimal belief buffer; see [world_model_patrol.sd](../examples/showcase/world_model_patrol.sd) |
 | **Ledger / provenance** | `spanda-ledger` provider → `MockLedgerBackend` | Mock chain only; no production blockchain adapters |
@@ -167,7 +168,7 @@ Stable. Simulated-only paths must say so explicitly.
 | | Compliance export/digital thread/executive scorecard/PDF reports (E4); **Stable** tier |
 | | [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) · [control-center.md](./control-center.md) |
 | **Enterprise operations (organizational gates)** | 30-day field soak completion (`enterprise_ops_field_soak_init.sh`); third-party security audit sign-off — tracked separately from tier promotion — [enterprise-ops-stable-promotion.md](./enterprise-ops-stable-promotion.md) |
-| **LLVM backend (production primary)** | Optimized native binaries replacing interpreter as default deploy path |
+| **LLVM backend (production primary)** | ✓ Auto-native dispatch on `spanda run`/`sim`; interpreter remains LTS fallback |
 | **Self-hosting compiler (full)** | Complete Spanda-authored compiler pipeline |
 | **ROS2 production adapter** | First-class, zero-config ROS2 deployment |
 | **VS Code Marketplace publish** | **Partial** — `VSCE_PAT` + publisher `spanda-lang` configured; VSIX on GitHub releases; public listing blocked by Marketplace scanner pending Microsoft review — [vscode-marketplace-publish.md](./vscode-marketplace-publish.md) |
