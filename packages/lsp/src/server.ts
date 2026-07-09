@@ -35,6 +35,16 @@ import { spawnSync } from "node:child_process";
 import { existsSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  checkSourceTsMonorepo,
+  readinessTsFallbackMonorepo,
+  runSymbolsMonorepo,
+} from "./monorepo-lsp-backend.js";
+
+declare const __SPANDA_MARKETPLACE__: boolean | undefined;
+
+const marketplaceBuild =
+  typeof __SPANDA_MARKETPLACE__ !== "undefined" && __SPANDA_MARKETPLACE__ === true;
 
 function repoRoot(): string {
   // Description:
@@ -250,7 +260,6 @@ const HARDWARE_PROFILES = [
   "ESP32",
 ] as const;
 
-const symbolScript = join(repoRoot(), "scripts/lsp-symbols.mts");
 const symbolCache = new Map<string, SpandaSymbol[]>();
 
 function runSymbols(args: string[]): unknown {
@@ -282,22 +291,10 @@ function runSymbols(args: string[]): unknown {
   //     const result = runSymbols(args);
 
   // const result = runSymbols(args);
-  const result = spawnSync(process.execPath, ["--import", "tsx", symbolScript, ...args], {
-    encoding: "utf-8",
-    cwd: repoRoot(),
-  });
-
-  // continue when trim is falsy.
-  if (!result.stdout?.trim()) {
+  if (marketplaceBuild) {
     return null;
   }
-
-  // Try the operation and handle failures below.
-  try {
-    return JSON.parse(result.stdout);
-  } catch {
-    return null;
-  }
+  return runSymbolsMonorepo(repoRoot(), args);
 }
 
 function refreshSymbolCache(uri: string, source: string): void {
@@ -574,27 +571,10 @@ function checkSourceTs(source: string): CliDiagnostic[] {
   //     const result = checkSourceTs(source);
 
   // const result = checkSourceTs(source);
-  const tmp = join(repoRoot(), ".spanda-lsp-ts-check.sd");
-  writeFileSync(tmp, source);
-  const script = join(repoRoot(), "scripts/lsp-ts-check.mts");
-  const result = spawnSync(process.execPath, ["--import", "tsx", script, tmp], {
-    encoding: "utf-8",
-    cwd: repoRoot(),
-  });
-
-  // Try the operation and handle failures below.
-  try {
-    unlinkSync(tmp);
-  } catch {
-    /* ignore */
+  if (marketplaceBuild) {
+    return [{ message: "Install the Spanda CLI for type diagnostics", line: 1, column: 1 }];
   }
-
-  // continue when trim is falsy.
-  if (!result.stdout?.trim()) {
-    return [{ message: result.stderr || "TypeScript check failed", line: 1, column: 1 }];
-  }
-  const parsed = JSON.parse(result.stdout) as { ok: boolean; diagnostics?: CliDiagnostic[] };
-  return parsed.ok ? [] : (parsed.diagnostics ?? []);
+  return checkSourceTsMonorepo(repoRoot(), source);
 }
 
 function verificationSource(source: string): CompatItem[] {
@@ -696,27 +676,11 @@ function readinessSource(source: string): CompatItem[] {
     }));
   }
 
-  const tmp = join(repoRoot(), ".spanda-lsp-readiness.sd");
-  writeFileSync(tmp, source);
-  const script = join(repoRoot(), "scripts/lsp-readiness.mts");
-  const result = spawnSync(process.execPath, ["--import", "tsx", script, tmp], {
-    encoding: "utf-8",
-  });
-
-  try {
-    unlinkSync(tmp);
-  } catch {
-    /* ignore */
-  }
-
-  if (!result.stdout?.trim()) {
+  if (marketplaceBuild) {
     return [];
   }
-  const ts = JSON.parse(result.stdout) as { ok: boolean; items?: CompatItem[] };
-  return (ts.items ?? []).map((item) => ({
-    ...item,
-    severity: item.severity === "info" ? "warning" : item.severity,
-  }));
+
+  return readinessTsFallbackMonorepo(repoRoot(), source);
 }
 
 function checkSource(source: string): CliDiagnostic[] {
