@@ -75,6 +75,7 @@ impl<B: RobotBackend> Interpreter<B> {
         } else {
             reading
         };
+        let reading = spanda_runtime::apply_live_sensor_overlay(sensor_type, name, reading);
         self.hardware_monitor
             .record_sensor_reading(name, sensor_type, &reading);
         self.telemetry_sink().record_sensor_reading(

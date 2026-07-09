@@ -1,0 +1,5 @@
+module sensors.imu;
+
+export fn read() -> Int {
+  return 0;
+}

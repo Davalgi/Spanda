@@ -1,5 +1,8 @@
 //! Runtime dispatch from official package module exports to provider registry backends.
 //!
+use crate::sensor_hub::{
+    read_camera_as_runtime_value, read_gps_as_runtime_value, read_imu_as_runtime_value,
+};
 use crate::anomaly_onnx::scan_learned_score;
 use crate::automotive_hub::{
     read_lidar_distance, read_lin_signal, read_radar_distance, read_uds_dtc, read_ultrasonic_distance,
@@ -83,6 +86,8 @@ pub fn official_package_for_module(module_path: &str) -> Option<&'static str> {
         "sensors.radar" => Some("spanda-radar"),
         "sensors.lidar" => Some("spanda-lidar"),
         "sensors.ultrasonic" => Some("spanda-ultrasonic"),
+        "sensors.imu" => Some("spanda-imu"),
+        "sensors.camera" => Some("spanda-camera"),
         "automotive.ethernet" => Some("spanda-automotive-ethernet"),
         "automotive.lin" => Some("spanda-lin"),
         "automotive.uds" => Some("spanda-uds"),
@@ -270,21 +275,26 @@ pub fn dispatch_official_package_call(
     let category = module_path.split('.').next().unwrap_or("provider");
 
     let dispatched = match (module_path, function_name) {
-        ("positioning.gps", "read") if registry.has_capability("positioning.read") => registry
-            .with_positioning(&key, |provider| provider.read_fix())
-            .inspect(|_| {
-                record_call(
-                    telemetry,
-                    mission_trace,
-                    sim_time_ms,
-                    &key,
-                    category,
-                    module_path,
-                    function_name,
-                    started,
-                    false,
-                );
-            }),
+        ("positioning.gps", "read") if registry.has_capability("positioning.read") => {
+            let sensor = if args.is_empty() {
+                "gps".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_gps_as_runtime_value(&sensor);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                category,
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(value)
+        }
         ("connectivity.wifi", "connect") if registry.has_capability("connectivity.wifi") => {
             registry
                 .with_connectivity(&key, |provider| provider.connect("wifi"))
@@ -1053,6 +1063,46 @@ pub fn dispatch_official_package_call(
                 value,
                 unit: spanda_ast::nodes::UnitKind::None,
             })
+        }
+        ("sensors.imu", "read") if registry.has_capability("sensors.imu.read") => {
+            let sensor = if args.is_empty() {
+                "imu".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_imu_as_runtime_value(&sensor);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "sensors",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(value)
+        }
+        ("sensors.camera", "read") if registry.has_capability("sensors.camera.read") => {
+            let sensor = if args.is_empty() {
+                "camera".to_string()
+            } else {
+                string_arg(args, 0)
+            };
+            let value = read_camera_as_runtime_value(&sensor);
+            record_call(
+                telemetry,
+                mission_trace,
+                sim_time_ms,
+                &key,
+                "sensors",
+                module_path,
+                function_name,
+                started,
+                false,
+            );
+            Some(value)
         }
         ("automotive.lin", "read") if registry.has_capability("automotive.lin.read") => {
             let signal = if args.is_empty() {

@@ -1,0 +1,5 @@
+module sensors.camera;
+
+export fn read() -> Int {
+  return 0;
+}

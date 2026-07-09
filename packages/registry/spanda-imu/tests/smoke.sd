@@ -1,0 +1,5 @@
+import sensors.imu;
+
+test "smoke" {
+    assert(true);
+}

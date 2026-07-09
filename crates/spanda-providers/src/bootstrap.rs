@@ -251,6 +251,12 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
     if names.contains("spanda-ultrasonic") {
         registry.grant_capability("sensors.ultrasonic.read");
     }
+    if names.contains("spanda-imu") {
+        registry.grant_capability("sensors.imu.read");
+    }
+    if names.contains("spanda-camera") {
+        registry.grant_capability("sensors.camera.read");
+    }
     if names.contains("spanda-automotive-ethernet") {
         registry.grant_capability("automotive.ethernet.connect");
     }
@@ -268,6 +274,12 @@ pub fn bootstrap_providers_for_packages(package_names: &[&str]) -> ProviderRegis
         || names.contains("spanda-ultrasonic")
     {
         crate::automotive_hub::seed_automotive_demos();
+    }
+    if names.contains("spanda-gps")
+        || names.contains("spanda-imu")
+        || names.contains("spanda-camera")
+    {
+        crate::sensor_hub::seed_sensor_demos();
     }
     if include_all || names.contains("spanda-anomaly") {
         registry.grant_capability("assurance.anomaly.scan");

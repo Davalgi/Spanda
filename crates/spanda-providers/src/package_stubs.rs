@@ -275,24 +275,27 @@ impl PositioningProvider for GpsPositioningStub {
 
         RuntimeValue::Object {
             type_name: "GeoPoint".into(),
-            fields: [
-                (
-                    "lat".into(),
-                    RuntimeValue::Number {
-                        value: 37.0,
-                        unit: spanda_ast::nodes::UnitKind::None,
-                    },
-                ),
-                (
-                    "lon".into(),
-                    RuntimeValue::Number {
-                        value: -122.0,
-                        unit: spanda_ast::nodes::UnitKind::None,
-                    },
-                ),
-            ]
-            .into_iter()
-            .collect(),
+            fields: match crate::sensor_hub::read_gps_as_runtime_value("gps") {
+                RuntimeValue::Object { fields, .. } => fields,
+                _ => [
+                    (
+                        "lat".into(),
+                        RuntimeValue::Number {
+                            value: 37.0,
+                            unit: spanda_ast::nodes::UnitKind::None,
+                        },
+                    ),
+                    (
+                        "lon".into(),
+                        RuntimeValue::Number {
+                            value: -122.0,
+                            unit: spanda_ast::nodes::UnitKind::None,
+                        },
+                    ),
+                ]
+                .into_iter()
+                .collect(),
+            },
         }
     }
 

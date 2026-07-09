@@ -257,7 +257,22 @@ pub fn live_v2x_enabled() -> bool {
     live_iot_flag("SPANDA_LIVE_V2X")
 }
 
-/// Return true when live multi-sensor fusion supplier should merge automotive reads.
+/// Return true when live GPS/GNSS pipeline reads are enabled.
+pub fn live_gps_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_GPS")
+}
+
+/// Return true when live IMU pipeline reads are enabled.
+pub fn live_imu_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_IMU")
+}
+
+/// Return true when live camera pipeline reads are enabled.
+pub fn live_camera_enabled() -> bool {
+    live_iot_flag("SPANDA_LIVE_CAMERA")
+}
+
+/// Return true when live multi-sensor fusion supplier should merge hardware reads.
 pub fn live_fusion_sensors_enabled() -> bool {
     live_iot_flag("SPANDA_LIVE_FUSION_SENSORS")
 }
@@ -517,6 +532,67 @@ pub fn read_v2x_message_live(channel: &str) -> Option<String> {
         return None;
     }
     read_string_via_external_cmd_single("SPANDA_V2X_CMD", channel)
+}
+
+/// Read GPS fix from `SPANDA_GPS_CMD` when live mode is enabled (`lat,lon,alt,heading`).
+pub fn read_gps_fix_live(sensor_id: &str) -> Option<(f64, f64, f64, f64)> {
+    if !live_gps_enabled() {
+        return None;
+    }
+    read_csv_floats_via_external_cmd("SPANDA_GPS_CMD", sensor_id, 4).map(|values| {
+        (values[0], values[1], values[2], values[3])
+    })
+}
+
+/// Read IMU sample from `SPANDA_IMU_CMD` when live (`roll,pitch,yaw,ax,ay,az`).
+pub fn read_imu_sample_live(sensor_id: &str) -> Option<(f64, f64, f64, f64, f64, f64)> {
+    if !live_imu_enabled() {
+        return None;
+    }
+    read_csv_floats_via_external_cmd("SPANDA_IMU_CMD", sensor_id, 6).map(|values| {
+        (
+            values[0], values[1], values[2], values[3], values[4], values[5],
+        )
+    })
+}
+
+/// Read camera metadata from `SPANDA_CAMERA_CMD` when live (`width,height,motion_score`).
+pub fn read_camera_sample_live(sensor_id: &str) -> Option<(u32, u32, f64)> {
+    if !live_camera_enabled() {
+        return None;
+    }
+    read_csv_floats_via_external_cmd("SPANDA_CAMERA_CMD", sensor_id, 3).map(|values| {
+        (values[0] as u32, values[1] as u32, values[2])
+    })
+}
+
+fn read_csv_floats_via_external_cmd(
+    cmd_env: &str,
+    sensor_id: &str,
+    expected: usize,
+) -> Option<Vec<f64>> {
+    let template = std::env::var(cmd_env)
+        .ok()
+        .filter(|value| !value.trim().is_empty())?;
+    let command = template.replace("{sensor}", sensor_id);
+    let output = std::process::Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    let values: Vec<f64> = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .next()?
+        .split(',')
+        .filter_map(|part| part.trim().parse().ok())
+        .collect();
+    if values.len() < expected {
+        return None;
+    }
+    Some(values)
 }
 
 fn read_distance_via_external_cmd(cmd_env: &str, sensor_id: &str) -> Option<f64> {

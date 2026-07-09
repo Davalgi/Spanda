@@ -149,27 +149,3 @@ pub fn read_v2x_message(channel: &str) -> String {
     }
     hub().lock().unwrap().read_v2x_message(channel)
 }
-
-/// Live fusion samples mapped to GPS/IMU/camera proxies for cognitive sensory fusion.
-pub fn live_fusion_sensor_readings(_entity_id: &str) -> Vec<(String, f64, f64)> {
-    if !crate::iot_live::live_fusion_sensors_enabled() {
-        return Vec::new();
-    }
-    vec![
-        (
-            "gps_proxy_radar".into(),
-            read_radar_distance("front-radar"),
-            0.9,
-        ),
-        (
-            "imu_proxy_lidar".into(),
-            read_lidar_distance("front-lidar"),
-            0.85,
-        ),
-        (
-            "camera_proxy_ultrasonic".into(),
-            read_ultrasonic_distance("ultrasonic-array"),
-            0.8,
-        ),
-    ]
-}
