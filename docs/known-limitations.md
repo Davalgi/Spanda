@@ -54,7 +54,7 @@ See the authoritative paragraph in
 In short: AI motion must use `safety.validate` → `execute(SafeAction)`; `drive`/`follow` cannot take
 `ActionProposal` components; `max_speed` and optional `max_angular` are clamped on the interpreter
 `drive`/`execute`/`validate` paths, and `follow(path:)` cruise speed is clamped by `max_speed` /
-zone caps. `follow(path:)` still does not re-derive SafeAction per waypoint.
+zone caps at call time and re-clamped each simulator tick as the robot moves through zones.
 
 ## Connectivity and IoT
 
