@@ -1,7 +1,7 @@
-// Feature options: homeostasis_policy + attention_policy — metrics and priority rules
+// Feature options: @policy homeostasis + attention — metrics and priority rules
 //
-// homeostasis_policy metrics: cpu_pct, memory_pct, battery_pct, …
-// attention_policy rules: suppress_low_priority, boost_critical_health, …
+// homeostasis metrics: cpu_pct, memory_pct, battery_pct, …
+// attention rules: suppress_low_priority, boost_critical_health, …
 //
 //   spanda check examples/features/cognitive_policies_options.sd
 //   spanda homeostasis check --json
@@ -13,23 +13,27 @@
 //
 // Docs: docs/cognitive-resilience-architecture.md · docs/cognitive-resilience-maturity.md
 
-homeostasis_policy PlatformStability {
+@policy(kind: "homeostasis")
+PlatformStability {
     metric cpu_pct;
     metric memory_pct;
     metric battery_pct;
 }
 
-homeostasis_policy EdgeNodeStability {
+@policy(kind: "homeostasis")
+EdgeNodeStability {
     metric cpu_pct;
     metric memory_pct;
 }
 
-attention_policy MissionFocus {
+@policy(kind: "attention")
+MissionFocus {
     rule suppress_low_priority;
     rule boost_critical_health;
 }
 
-attention_policy FleetOperations {
+@policy(kind: "attention")
+FleetOperations {
     rule suppress_low_priority;
 }
 

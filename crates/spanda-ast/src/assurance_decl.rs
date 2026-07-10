@@ -184,6 +184,9 @@ pub enum AttentionPolicyDecl {
     AttentionPolicyDecl {
         name: String,
         rules: Vec<String>,
+        /// True when parsed from legacy `attention_policy` keyword (vs `@policy`).
+        #[serde(default)]
+        legacy_syntax: bool,
         span: Span,
     },
 }

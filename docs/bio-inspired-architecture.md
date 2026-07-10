@@ -154,7 +154,8 @@ fusion remains rule-based; adaptive recovery uses statistics, not ML. Reflex tra
 **Smoke:** `./scripts/cognitive_resilience_smoke.sh` (CI Integration job `bio-inspired-autonomy`;
 alias for `./scripts/bio_inspired_autonomy_smoke.sh`)
 
-**Language:** `homeostasis_policy` and `attention_policy` declarations parse in `.sd` programs.
+**Language:** `@policy(kind: "homeostasis")` and `@policy(kind: "attention")` declarations parse in
+`.sd` programs (legacy `homeostasis_policy` / `attention_policy` still accepted with a lint).
 
 ---
 

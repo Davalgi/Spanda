@@ -640,6 +640,7 @@ class Parser {
     const missionPlans: import("../assurance_decl.js").MissionPlanDecl[] = [];
     const resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[] = [];
     const homeostasisPolicies: import("../assurance_decl.js").HomeostasisPolicyDecl[] = [];
+    const attentionPolicies: import("../assurance_decl.js").AttentionPolicyDecl[] = [];
     const recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[] = [];
     const continuityPolicies: import("../assurance_decl.js").ContinuityPolicyDecl[] = [];
     const decisionTrees: import("../assurance_decl.js").DecisionTreeDecl[] = [];
@@ -732,9 +733,11 @@ class Parser {
       } else if (this.check("IDENT") && this.peek().lexeme === "resilience_policy") {
         resiliencePolicies.push(parseResiliencePolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("AT_SIGN")) {
-        homeostasisPolicies.push(this.parseAtPolicyHomeostasis());
+        this.parseAtPolicy(homeostasisPolicies, attentionPolicies);
       } else if (this.check("IDENT") && this.peek().lexeme === "homeostasis_policy") {
         homeostasisPolicies.push(this.parseHomeostasisPolicy());
+      } else if (this.check("IDENT") && this.peek().lexeme === "attention_policy") {
+        attentionPolicies.push(this.parseAttentionPolicy());
       } else if (this.check("IDENT") && this.peek().lexeme === "recovery_policy") {
         recoveryPolicies.push(parseRecoveryPolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "continuity_policy") {
@@ -799,6 +802,7 @@ class Parser {
       missionPlans,
       resiliencePolicies,
       homeostasisPolicies,
+      attentionPolicies,
       recoveryPolicies,
       continuityPolicies,
       decisionTrees,
@@ -3937,20 +3941,63 @@ class Parser {
     };
   }
 
-  private parseAtPolicyHomeostasis(): import("../assurance_decl.js").HomeostasisPolicyDecl {
-    // Parse `@policy(kind: "homeostasis") Name { metric …; }` (preferred form).
+  private parseAttentionPolicy(): import("../assurance_decl.js").AttentionPolicyDecl {
+    // Parse legacy `attention_policy Name { rule …; }`.
     //
     // Parameters:
     // None.
     //
     // Returns:
-    // Homeostasis policy with `legacySyntax = false`.
+    // Attention policy with `legacySyntax = true`.
     //
     // Options:
-    // Only `kind: "homeostasis"` is supported in this PoC.
+    // None.
     //
     // Example:
-    // this.parseAtPolicyHomeostasis();
+    // this.parseAttentionPolicy();
+
+    const start = this.advance();
+    const name = this.parseLabel("Expected attention_policy name");
+    this.expect("LBRACE", "Expected '{' after attention_policy name");
+    const rules: string[] = [];
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "rule") {
+        this.advance();
+        rules.push(this.parseLabel("Expected rule name"));
+        this.expect("SEMICOLON", "Expected ';' after rule");
+      } else {
+        const t = this.peek();
+        throw new ParseError("Expected rule in attention_policy", t.line, t.column);
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close attention_policy");
+    return {
+      kind: "AttentionPolicyDecl",
+      name,
+      rules,
+      legacySyntax: true,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseAtPolicy(
+    homeostasisPolicies: import("../assurance_decl.js").HomeostasisPolicyDecl[],
+    attentionPolicies: import("../assurance_decl.js").AttentionPolicyDecl[],
+  ): void {
+    // Parse `@policy(kind: "…") Name { … }` into the matching list.
+    //
+    // Parameters:
+    // - `homeostasisPolicies` — destination for `kind: "homeostasis"`
+    // - `attentionPolicies` — destination for `kind: "attention"`
+    //
+    // Returns:
+    // Nothing; pushes into the matching array.
+    //
+    // Options:
+    // PoC kinds: `"homeostasis"` and `"attention"`.
+    //
+    // Example:
+    // this.parseAtPolicy(homeostasisPolicies, attentionPolicies);
 
     const start = this.expect("AT_SIGN", "Expected '@'");
     this.expect("POLICY", "Expected 'policy' after '@'");
@@ -3963,34 +4010,57 @@ class Parser {
     const kindVal = this.expect("STRING", "Expected policy kind string");
     const kind = String(kindVal.value);
     this.expect("RPAREN", "Expected ')' after @policy args");
-    if (kind !== "homeostasis") {
+    const name = this.parseLabel("Expected policy name after @policy(...)");
+    this.expect("LBRACE", "Expected '{' after policy name");
+
+    // Dispatch body parsing by policy kind.
+    if (kind === "homeostasis") {
+      const metrics: string[] = [];
+      while (!this.check("RBRACE") && !this.check("EOF")) {
+        if (this.check("IDENT") && this.peek().lexeme === "metric") {
+          this.advance();
+          metrics.push(this.parseLabel("Expected metric name"));
+          this.expect("SEMICOLON", "Expected ';' after metric");
+        } else {
+          const t = this.peek();
+          throw new ParseError("Expected metric in @policy homeostasis body", t.line, t.column);
+        }
+      }
+      const end = this.expect("RBRACE", "Expected '}' to close @policy body");
+      homeostasisPolicies.push({
+        kind: "HomeostasisPolicyDecl",
+        name,
+        metrics,
+        legacySyntax: false,
+        span: this.spanFrom(start, end),
+      });
+    } else if (kind === "attention") {
+      const rules: string[] = [];
+      while (!this.check("RBRACE") && !this.check("EOF")) {
+        if (this.check("IDENT") && this.peek().lexeme === "rule") {
+          this.advance();
+          rules.push(this.parseLabel("Expected rule name"));
+          this.expect("SEMICOLON", "Expected ';' after rule");
+        } else {
+          const t = this.peek();
+          throw new ParseError("Expected rule in @policy attention body", t.line, t.column);
+        }
+      }
+      const end = this.expect("RBRACE", "Expected '}' to close @policy body");
+      attentionPolicies.push({
+        kind: "AttentionPolicyDecl",
+        name,
+        rules,
+        legacySyntax: false,
+        span: this.spanFrom(start, end),
+      });
+    } else {
       throw new ParseError(
-        `Unsupported @policy kind '${kind}' (PoC supports only "homeostasis")`,
+        `Unsupported @policy kind '${kind}' (PoC supports "homeostasis" and "attention")`,
         kindVal.line,
         kindVal.column,
       );
     }
-    const name = this.parseLabel("Expected policy name after @policy(...)");
-    this.expect("LBRACE", "Expected '{' after policy name");
-    const metrics: string[] = [];
-    while (!this.check("RBRACE") && !this.check("EOF")) {
-      if (this.check("IDENT") && this.peek().lexeme === "metric") {
-        this.advance();
-        metrics.push(this.parseLabel("Expected metric name"));
-        this.expect("SEMICOLON", "Expected ';' after metric");
-      } else {
-        const t = this.peek();
-        throw new ParseError("Expected metric in @policy homeostasis body", t.line, t.column);
-      }
-    }
-    const end = this.expect("RBRACE", "Expected '}' to close @policy body");
-    return {
-      kind: "HomeostasisPolicyDecl",
-      name,
-      metrics,
-      legacySyntax: false,
-      span: this.spanFrom(start, end),
-    };
   }
 
   private parseBleService(): BleServiceDecl {

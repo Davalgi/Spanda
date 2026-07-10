@@ -626,13 +626,15 @@ resilience_policy RoverResilience {
     strategy graceful_degradation;
 }
 
-homeostasis_policy RoverStability {
+@policy(kind: "homeostasis")
+RoverStability {
     metric cpu_pct;
     metric memory_pct;
     metric battery_pct;
 }
 
-attention_policy MissionFocus {
+@policy(kind: "attention")
+MissionFocus {
     rule suppress_low_priority;
     rule boost_critical_health;
 }

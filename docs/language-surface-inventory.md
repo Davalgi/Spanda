@@ -107,11 +107,12 @@ trait PolicyHost {
 Shipped:
 
 - Inventory + design note
-- Lint rule `library-shaped-decl` on `homeostasis_policy` / `attention_policy`
-- **`@policy(kind: "homeostasis") Name { metric …; }`** parse path (sets `legacy_syntax = false`);
-  legacy `homeostasis_policy` still parses (`legacy_syntax = true`) and keeps the lint
+- Lint rule `library-shaped-decl` on legacy `homeostasis_policy` / `attention_policy` only
+- **`@policy(kind: "homeostasis")`** and **`@policy(kind: "attention")`** parse paths
+  (`legacy_syntax = false`); legacy keywords still parse (`legacy_syntax = true`)
+- Feature examples under `examples/features/` use the attribute form
 
-Still deferred: package `std.policies.*`, migrating official examples, hard-remove of keywords.
+Still deferred: package `std.policies.*`, hard-remove of legacy keywords.
 
 ## Non-goals
 

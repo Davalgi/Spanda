@@ -24,12 +24,14 @@ hardware RoverPlatform {
 operating_mode DegradedMode { degraded; }
 operating_mode SafeMode { safe; }
 
-homeostasis_policy PatrolStability {
+@policy(kind: "homeostasis")
+PatrolStability {
     metric cpu_pct;
     metric battery_pct;
 }
 
-attention_policy PatrolFocus {
+@policy(kind: "attention")
+PatrolFocus {
     rule boost_critical_health;
 }
 

@@ -64,13 +64,15 @@ CLI: `spanda continuity`, `spanda takeover`, `spanda succession`.
 Optional blocks that tie programs to the platform homeostasis and attention subsystems:
 
 ```spanda
-homeostasis_policy PlatformStability {
+@policy(kind: "homeostasis")
+PlatformStability {
     metric cpu_pct;
     metric memory_pct;
     metric battery_pct;
 }
 
-attention_policy MissionFocus {
+@policy(kind: "attention")
+MissionFocus {
     rule suppress_low_priority;
     rule boost_critical_health;
 }

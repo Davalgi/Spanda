@@ -34,7 +34,8 @@ Populated during `enrich_entity_autonomy()` from health/readiness severity mappi
 ## Language
 
 ```spanda
-attention_policy MissionFocus {
+@policy(kind: "attention")
+MissionFocus {
     rule suppress_low_priority;
     rule boost_critical_health;
 }

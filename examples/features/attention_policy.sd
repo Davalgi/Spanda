@@ -1,12 +1,14 @@
-// Feature: attention_policy — priority rules for mission focus
+// Feature: @policy(kind: "attention") — priority rules for mission focus
 //
 //   spanda check examples/features/attention_policy.sd
 //   spanda reflex list --json
 //
+// Legacy `attention_policy` still parses (lint warns). Prefer @policy.
 // Docs: docs/cognitive-resilience-architecture.md
 // Smoke: ./scripts/cognitive_resilience_smoke.sh
 
-attention_policy MissionFocus {
+@policy(kind: "attention")
+MissionFocus {
     rule suppress_low_priority;
     rule boost_critical_health;
 }

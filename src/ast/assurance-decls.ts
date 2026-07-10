@@ -182,3 +182,13 @@ export type HomeostasisPolicyDecl = {
   legacySyntax: boolean;
   span: Span;
 };
+
+/** Attention policy (`attention_policy` or `@policy(kind: "attention")`). */
+export type AttentionPolicyDecl = {
+  kind: "AttentionPolicyDecl";
+  name: string;
+  rules: string[];
+  /** True when parsed from legacy `attention_policy` (vs `@policy`). */
+  legacySyntax: boolean;
+  span: Span;
+};

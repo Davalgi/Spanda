@@ -199,6 +199,7 @@ export type Program = {
   missionPlans: import("../assurance_decl.js").MissionPlanDecl[];
   resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[];
   homeostasisPolicies: import("../assurance_decl.js").HomeostasisPolicyDecl[];
+  attentionPolicies: import("../assurance_decl.js").AttentionPolicyDecl[];
   recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[];
   continuityPolicies: import("../assurance_decl.js").ContinuityPolicyDecl[];
   decisionTrees: import("../assurance_decl.js").DecisionTreeDecl[];
