@@ -723,7 +723,7 @@ robot R {
         let source = r#"
 module demo;
 homeostasis_policy KeepAlive {
-  metric battery;
+  metric battery_pct;
 }
 robot R {
   actuator wheels: DifferentialDrive;
