@@ -14,7 +14,9 @@ pub mod units;
 pub use import_catalog::resolve_package_import;
 pub use security_capabilities::is_known_capability;
 pub use type_system::{
-    is_known_ai_provider, is_known_serialize_format, KNOWN_AI_PROVIDERS, KNOWN_SERIALIZE_FORMATS,
+    is_known_ai_provider, is_known_codegen_target, is_known_serialize_format,
+    typed_enum_variant_value, KNOWN_AI_PROVIDERS, KNOWN_CODEGEN_TARGETS, KNOWN_SERIALIZE_FORMATS,
+    TYPED_CONFIG_ENUMS,
 };
 
 pub use checker::{

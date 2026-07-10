@@ -38,9 +38,9 @@ let nav: Action<Command, Feedback, Path>;
 The compiler reports arity errors when generic parameters are missing or extra, e.g. `Array`
 requires exactly one type argument.
 
-### User-defined generics (Experimental)
+### User-defined generics (Stable subset)
 
-Spanda also supports **type parameters** on module functions and structs:
+Spanda supports **type parameters** on module functions and structs:
 
 ```spanda
 module std.collections;
@@ -54,19 +54,23 @@ struct Box<T> {
 }
 ```
 
-**Current limits (honest):**
+**Stable surface:**
 
 | Capability | Status |
 |------------|--------|
-| Module / export `fn` type params | Supported (inference from call args) |
-| `struct Name<T>` + `Name<Int> { … }` literals | Supported |
-| Empty `<>`, duplicate params, `T: Bound`, `where` | **Rejected** with clear parse errors |
+| Module / export `fn` type params | **Stable** (inference from call args) |
+| `struct Name<T>` + `Name<Int> { … }` literals | **Stable** |
+| Empty `<>`, duplicate params | **Rejected** with clear parse errors |
+
+**Not in this Stable subset (still rejected / unsupported):**
+
+| Capability | Status |
+|------------|--------|
+| `T: Bound`, `where` clauses | Rejected — planned separately |
 | Trait / enum / agent type params | Not supported |
 | Full Hindley–Milner inference | Not supported — annotate when ambiguous |
-| Cross-module generic struct export parity | Limited — prefer same-program declarations |
 
-Generics remain **Experimental** in [feature-status.md](./feature-status.md) until trait/enum
-generics and real bounds land with tests. Do not treat them as Stable language surface yet.
+See [feature-status.md](./feature-status.md).
 
 ## Traits and `impl` (Stable API)
 
@@ -91,18 +95,19 @@ Traits and `impl Trait for Agent` resolve after imports are expanded. Prefer `ex
 module so importers can `impl` it; private traits stay module-local. `dyn Trait` objects are
 supported for typed trait-object values.
 
-## Stringly seams (literal validation)
+## Closed typed enums (literal validation)
 
-Prefer **bare typed idents** where supported; string literals remain accepted. The type checker
-**rejects unknown** values for:
+Prefer **typed enum forms** where available; bare idents and string literals remain accepted. The
+type checker **rejects unknown** values for:
 
 | Seam | Accepted values |
 |------|-----------------|
-| `ai_model { provider: … }` | `mock`, `openai`, `anthropic`, `onnx` (ident or `"…"`) |
-| `serialize` / `deserialize` format | `json`, `yaml`, `binary` (ident or `"…"`) |
+| `ai_model { provider: … }` | `AiProvider.mock` / `.openai` / `.anthropic` / `.onnx` (also bare/`"…"`) |
+| `serialize` / `deserialize` format | `SerializeFormat.json` / `.yaml` / `.binary` (also bare/`"…"`) |
+| Codegen target (CLI / config) | `CodegenTarget.native` / `.wasm` / `.esp32` |
 
 Non-literal expressions (variables) remain runtime-checked. CLI `spanda codegen --target` accepts
-only `native`, `wasm`, or `esp32`.
+only `native`, `wasm`, or `esp32` (same closed set as `CodegenTarget`).
 
 ## Physical unit types
 
@@ -262,9 +267,9 @@ non-AI `drive(linear: …, angular: …)` remains valid and is envelope-clamped 
 speed (default 0.5 m/s, reduced by `max_speed` / zone caps at the call pose and again each
 simulator tick while following; also inside `safety.validate`); optional `max_angular = … rad/s`
 clamps turn rate on `drive` / `execute`; `stop_if`, zones, and emergency stop still gate motion via
-`before_motion`. **Not claimed:** `follow(path:)` does not re-derive a `SafeAction` token per
-waypoint (cruise is envelope-clamped, not re-validated as AI motion); hard real-time deadlines are
-intent/monitoring on the interpreter path, not OS-level guarantees.
+`before_motion`. **Follow path:** each simulator tick re-runs `validate_action_proposal` on the
+follow cruise (same gate as `safety.validate`) and stops the trajectory on reject. **Not claimed:**
+hard real-time deadlines are intent/monitoring on the interpreter path, not OS-level guarantees.
 
 ## Human interaction types
 

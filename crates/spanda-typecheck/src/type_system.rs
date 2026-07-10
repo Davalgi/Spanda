@@ -1095,11 +1095,17 @@ pub fn std_namespaces() -> HashMap<&'static str, &'static [&'static str]> {
     m
 }
 
-/// Built-in AI provider names accepted in `ai_model { provider: "…" }` string literals.
+/// Built-in AI provider names accepted in `ai_model { provider: … }` literals.
 pub const KNOWN_AI_PROVIDERS: &[&str] = &["mock", "openai", "anthropic", "onnx"];
 
-/// Formats accepted by `serialize` / `deserialize` string literals.
+/// Formats accepted by `serialize` / `deserialize` literals.
 pub const KNOWN_SERIALIZE_FORMATS: &[&str] = &["json", "yaml", "binary"];
+
+/// Targets accepted by `spanda codegen --target` / `CodegenTarget.*` config literals.
+pub const KNOWN_CODEGEN_TARGETS: &[&str] = &["native", "wasm", "esp32"];
+
+/// Closed typed-enum names for config / format literals.
+pub const TYPED_CONFIG_ENUMS: &[&str] = &["AiProvider", "SerializeFormat", "CodegenTarget"];
 
 pub fn is_known_ai_provider(name: &str) -> bool {
     // Return true when `name` matches a built-in AI provider (case-insensitive).
@@ -1137,10 +1143,86 @@ pub fn is_known_serialize_format(name: &str) -> bool {
     // Example:
     // assert!(is_known_serialize_format("JSON"));
 
-    // Compare against the built-in format list without regard to case.
     KNOWN_SERIALIZE_FORMATS
         .iter()
         .any(|known| known.eq_ignore_ascii_case(name))
+}
+
+pub fn is_known_codegen_target(name: &str) -> bool {
+    // Return true when `name` is a supported codegen target.
+    //
+    // Parameters:
+    // - `name` — target string (`native` / `wasm` / `esp32`)
+    //
+    // Returns:
+    // `true` for known targets.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // assert!(is_known_codegen_target("wasm"));
+
+    KNOWN_CODEGEN_TARGETS
+        .iter()
+        .any(|known| known.eq_ignore_ascii_case(name))
+}
+
+pub fn typed_enum_variant_value<'a>(
+    enum_name: &str,
+    variant: &'a str,
+) -> Result<&'a str, String> {
+    // Validate a closed typed-enum literal and return the variant name.
+    //
+    // Parameters:
+    // - `enum_name` — `AiProvider`, `SerializeFormat`, or `CodegenTarget`
+    // - `variant` — variant identifier (e.g. `mock`, `json`)
+    //
+    // Returns:
+    // The variant string when valid, or an error message.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // assert_eq!(typed_enum_variant_value("AiProvider", "mock").unwrap(), "mock");
+
+    match enum_name {
+        "AiProvider" => {
+            if is_known_ai_provider(variant) {
+                Ok(variant)
+            } else {
+                Err(format!(
+                    "Unknown AiProvider variant '{variant}' (use {})",
+                    KNOWN_AI_PROVIDERS.join(", ")
+                ))
+            }
+        }
+        "SerializeFormat" => {
+            if is_known_serialize_format(variant) {
+                Ok(variant)
+            } else {
+                Err(format!(
+                    "Unknown SerializeFormat variant '{variant}' (use {})",
+                    KNOWN_SERIALIZE_FORMATS.join(", ")
+                ))
+            }
+        }
+        "CodegenTarget" => {
+            if is_known_codegen_target(variant) {
+                Ok(variant)
+            } else {
+                Err(format!(
+                    "Unknown CodegenTarget variant '{variant}' (use {})",
+                    KNOWN_CODEGEN_TARGETS.join(", ")
+                ))
+            }
+        }
+        other => Err(format!(
+            "Unknown typed enum '{other}' (use {})",
+            TYPED_CONFIG_ENUMS.join(", ")
+        )),
+    }
 }
 
 #[cfg(test)]

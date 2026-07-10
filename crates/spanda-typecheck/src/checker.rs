@@ -6,8 +6,8 @@ use crate::message_registry::{is_comm_capability, MessageRegistry};
 use crate::module_registry::ModuleRegistry;
 use crate::type_system::{
     binary_physical_op_allowed, generic_arity, is_action_proposal_type, is_known_ai_provider,
-    is_known_serialize_format, physical_category, resolve_type_name, KNOWN_AI_PROVIDERS,
-    KNOWN_SERIALIZE_FORMATS,
+    is_known_serialize_format, physical_category, resolve_type_name, typed_enum_variant_value,
+    KNOWN_AI_PROVIDERS, KNOWN_SERIALIZE_FORMATS,
 };
 use crate::units::{self, unit_matches_named_type};
 use spanda_ast::comm_decl as comm;
@@ -3217,22 +3217,46 @@ impl<'h> TypeChecker<'h> {
             );
         }
 
-        // Reject unknown provider string literals so typos fail at check time.
+        // Reject unknown provider literals (string, bare ident, or AiProvider.variant).
         for entry in config {
             // Skip non-provider config keys.
             if entry.key != "provider" {
                 continue;
             }
 
-            // Validate only string provider values against the built-in set.
-            if let ConfigValue::String(provider) = &entry.value {
-                // Report unknown providers with the accepted list.
-                if !is_known_ai_provider(provider) {
+            match &entry.value {
+                ConfigValue::String(provider) => {
+                    // Report unknown providers with the accepted list.
+                    if !is_known_ai_provider(provider) {
+                        self.error(
+                            format!(
+                                "Unknown AI provider '{provider}' (use {} or AiProvider.<variant>)",
+                                KNOWN_AI_PROVIDERS.join(", ")
+                            ),
+                            entry.span.start.line,
+                            entry.span.start.column,
+                        );
+                    }
+                }
+                ConfigValue::EnumVariant { enum_name, variant } => {
+                    // Provider must use the AiProvider closed enum.
+                    if enum_name != "AiProvider" {
+                        self.error(
+                            format!(
+                                "AI provider must use AiProvider.<variant>, not {enum_name}.{variant}"
+                            ),
+                            entry.span.start.line,
+                            entry.span.start.column,
+                        );
+                        continue;
+                    }
+                    if let Err(message) = typed_enum_variant_value(enum_name, variant) {
+                        self.error(message, entry.span.start.line, entry.span.start.column);
+                    }
+                }
+                ConfigValue::Number(_) | ConfigValue::Bool(_) => {
                     self.error(
-                        format!(
-                            "Unknown AI provider '{provider}' (use {})",
-                            KNOWN_AI_PROVIDERS.join(", ")
-                        ),
+                        "AI provider must be a string, bare ident, or AiProvider.<variant>".into(),
                         entry.span.start.line,
                         entry.span.start.column,
                     );
@@ -3274,13 +3298,44 @@ impl<'h> TypeChecker<'h> {
         // Example:
         // self.check_serialize_format_expr(&format_arg);
 
-        // Validate string literals and bare format idents (json / yaml / binary).
+        // Validate string literals, bare format idents, and SerializeFormat.<variant>.
         let (format, span) = match expr {
             Expr::LiteralExpr {
                 value: LiteralValue::String(format),
                 span,
             } => (format.as_str(), span),
             Expr::IdentExpr { name, span } => (name.as_str(), span),
+            Expr::MemberExpr {
+                object,
+                property,
+                span,
+            } => {
+                // Accept SerializeFormat.json-style closed enums.
+                if let Expr::IdentExpr {
+                    name: enum_name, ..
+                } = object.as_ref()
+                {
+                    match typed_enum_variant_value(enum_name, property) {
+                        Ok(variant) if enum_name == "SerializeFormat" => (variant, span),
+                        Ok(_) => {
+                            self.error(
+                                format!(
+                                    "serialize/deserialize format must use SerializeFormat.<variant>, not {enum_name}.{property}"
+                                ),
+                                span.start.line,
+                                span.start.column,
+                            );
+                            return;
+                        }
+                        Err(message) => {
+                            self.error(message, span.start.line, span.start.column);
+                            return;
+                        }
+                    }
+                } else {
+                    return;
+                }
+            }
             _ => return,
         };
 
@@ -3288,7 +3343,7 @@ impl<'h> TypeChecker<'h> {
         if !is_known_serialize_format(format) {
             self.error(
                 format!(
-                    "Unknown serialize format '{format}' (use {})",
+                    "Unknown serialize format '{format}' (use {} or SerializeFormat.<variant>)",
                     KNOWN_SERIALIZE_FORMATS.join(", ")
                 ),
                 span.start.line,
