@@ -5356,10 +5356,7 @@ impl Parser {
         let start = self.advance();
         let assert_alias = start.token_type == TokenType::Assert;
         let keyword = if assert_alias { "assert" } else { "verify" };
-        self.expect(
-            TokenType::Lbrace,
-            &format!("Expected '{{' after {keyword}"),
-        )?;
+        self.expect(TokenType::Lbrace, &format!("Expected '{{' after {keyword}"))?;
         let mut rules = Vec::new();
         let mut warnings = Vec::new();
 

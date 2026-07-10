@@ -407,9 +407,7 @@ fn lint_library_shaped_decls(program: &Program, issues: &mut Vec<LintIssue>) {
     // Flag each attention_policy as library-shaped surface.
     for policy in attention_policies {
         let spanda_ast::assurance_decl::AttentionPolicyDecl::AttentionPolicyDecl {
-            name,
-            span,
-            ..
+            name, span, ..
         } = policy;
         issues.push(LintIssue {
             rule: "library-shaped-decl".into(),
@@ -526,9 +524,7 @@ fn lint_program_structure(program: &Program, issues: &mut Vec<LintIssue>) {
 
         // Prefer assert { } for runtime assertion blocks (vocabulary clarity).
         if let Some(spanda_ast::foundations::VerifyDecl::VerifyDecl {
-            assert_alias,
-            span,
-            ..
+            assert_alias, span, ..
         }) = verify
         {
             if !assert_alias {
@@ -680,10 +676,7 @@ robot R {
 "#;
         let report = lint(source).expect("lint should parse");
         assert!(
-            report
-                .issues
-                .iter()
-                .any(|i| i.rule == "verify-block-alias"),
+            report.issues.iter().any(|i| i.rule == "verify-block-alias"),
             "expected verify-block-alias warning, got {:?}",
             report.issues
         );
@@ -732,11 +725,9 @@ robot R {
 "#;
         let report = lint(source).expect("lint should parse");
         assert!(
-            report
-                .issues
-                .iter()
-                .any(|i| i.rule == "library-shaped-decl"
-                    && i.message.contains("homeostasis_policy")),
+            report.issues.iter().any(
+                |i| i.rule == "library-shaped-decl" && i.message.contains("homeostasis_policy")
+            ),
             "expected library-shaped-decl for homeostasis_policy, got {:?}",
             report.issues
         );

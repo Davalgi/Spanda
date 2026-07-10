@@ -17,10 +17,17 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: npm
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build WASM for web package
+        run: ./scripts/build-wasm.sh
       - run: npm ci
       - run: npm run build --workspace=@davalgi-spanda/web
       - name: Validate publish tarball

@@ -2945,7 +2945,10 @@ impl<'h> TypeChecker<'h> {
                 // Require an angular-velocity typed value for max_angular.
                 if !matches!(t, SpandaType::Number { .. }) || !units_compatible(t.unit(), *unit) {
                     self.error(
-                        format!("Expected value with unit '{}' for max_angular", unit.as_str()),
+                        format!(
+                            "Expected value with unit '{}' for max_angular",
+                            unit.as_str()
+                        ),
                         span.start.line,
                         span.start.column,
                     );

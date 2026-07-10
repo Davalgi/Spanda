@@ -91,7 +91,10 @@ impl<B: RobotBackend> Interpreter<B> {
                     y: pose.y,
                 };
                 let (clamped_linear, clamped_angular) = match self.safety_monitor.as_ref() {
-                    Some(m) => (m.clamp_speed_at_pose(linear, &pose2d), m.clamp_angular(angular)),
+                    Some(m) => (
+                        m.clamp_speed_at_pose(linear, &pose2d),
+                        m.clamp_angular(angular),
+                    ),
                     None => (linear, angular),
                 };
                 self.backend.execute_motion(MotionCommand::Drive {
@@ -195,9 +198,10 @@ impl<B: RobotBackend> Interpreter<B> {
                         y: pose.y,
                     };
                     let (clamped_linear, clamped_angular) = match self.safety_monitor.as_ref() {
-                        Some(m) => {
-                            (m.clamp_speed_at_pose(linear, &pose2d), m.clamp_angular(angular))
-                        }
+                        Some(m) => (
+                            m.clamp_speed_at_pose(linear, &pose2d),
+                            m.clamp_angular(angular),
+                        ),
                         None => (linear, angular),
                     };
                     self.backend.execute_motion(MotionCommand::Drive {
