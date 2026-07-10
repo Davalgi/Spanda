@@ -192,17 +192,18 @@ Guide: [mission-continuity.md](./mission-continuity.md)
 
 ---
 
-## `homeostasis_policy` / `attention_policy`
+## `@policy` homeostasis / attention
 
 Cognitive & Resilience Architecture hooks — platform stability metrics and attention rules.
+Prefer `@policy(kind: …)`; legacy `homeostasis_policy` / `attention_policy` still parse (lint warns).
 
-### `homeostasis_policy`
+### Homeostasis (`kind: "homeostasis"`)
 
 | Field | Values |
 |-------|--------|
 | `metric` | `cpu_pct`, `memory_pct`, `battery_pct`, … |
 
-### `attention_policy`
+### Attention (`kind: "attention"`)
 
 | Field | Values |
 |-------|--------|

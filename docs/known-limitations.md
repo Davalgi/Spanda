@@ -41,8 +41,8 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
   `T: Bound`, and `where` are rejected with clear errors —
   [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental).
 - `serialize`/`deserialize` and AI `provider` accept bare idents or strings (`json` / `mock`, …).
-- `@policy(kind: "homeostasis") Name { … }` PoC parses alongside legacy `homeostasis_policy`
-  (lint still warns on the keyword).
+- `@policy(kind: "homeostasis")` / `@policy(kind: "attention")` parse alongside legacy
+  `homeostasis_policy` / `attention_policy` (lint warns only on the keywords).
 - `spanda codegen --target` accepts only `native`, `wasm`, `esp32`.
 
 ## Safety model (precise guarantee)
