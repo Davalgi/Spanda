@@ -65,7 +65,7 @@ gRPC parity: `ListTwins`, `GetTwin`, `GetTwinHistory`, `SyncTwin`, `PushTwinSnap
 
 `packages/registry/spanda-twin-cloud` — `import twin.cloud;` in Spanda programs.
 
-## SDK (0.5.8)
+## SDK (0.5.9)
 
 Rust (`spanda-sdk`), Python (`spanda_sdk`), and TypeScript (`@davalgi/spanda-sdk`) expose:
 

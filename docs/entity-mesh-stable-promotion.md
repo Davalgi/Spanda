@@ -28,7 +28,7 @@ in `docs/feature-status.md`.
 |------|--------|
 | 30-day Entity Mesh field pilot (`entity_mesh_field_soak_init.sh`) | ⏳ Started **2026-07-09** — [entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md) |
 | External security audit sign-off | ⏳ |
-| SDK publish with full mesh REST + gRPC surface | ✅ **0.5.8** published (2026-07-08) — see [SDK publish](#sdk-publish) |
+| SDK publish with full mesh REST + gRPC surface | ✅ **0.5.9** published — see [SDK publish](#sdk-publish) |
 | `docs/feature-status.md` → **Stable** | ✅ Implementation tier (organizational soak open) |
 
 ---
@@ -72,11 +72,11 @@ See [entity-mesh.md](./entity-mesh.md#compatibility-rules).
 
 | Package | Version | Tag | Registry |
 |---------|---------|-----|----------|
-| `spanda-sdk` (Rust) | `0.5.8` | `crates-sdk-v0.5.8` | [crates.io](https://crates.io/crates/spanda-sdk) |
-| `spanda-sdk` (Python) | `0.5.8` | `sdk-python-v0.5.8` | [PyPI](https://pypi.org/project/spanda-sdk/) |
-| `@davalgi-spanda/sdk` (npm) | `0.5.8` | `npm-sdk-v0.5.8` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
+| `spanda-sdk` (Rust) | `0.5.9` | `crates-sdk-v0.5.9` | [crates.io](https://crates.io/crates/spanda-sdk) |
+| `spanda-sdk` (Python) | `0.5.9` | `sdk-python-v0.5.9` | [PyPI](https://pypi.org/project/spanda-sdk/) |
+| `@davalgi-spanda/sdk` (npm) | `0.5.9` | `npm-sdk-v0.5.9` | [npm](https://www.npmjs.com/package/@davalgi-spanda/sdk) |
 
-**0.5.8:** TypeScript `GrpcClient` with mesh gRPC RPCs. **0.5.7:** REST
+**0.5.9:** Python gRPC client; **0.5.8:** TypeScript `GrpcClient` with mesh gRPC RPCs. **0.5.7:** REST
 `meshGraph`, `meshDiscover`, `meshMergeReport`, `meshSimulatePartition`. Rust
 `GrpcClient` mesh RPCs ship with the `grpc` feature on **0.5.6+**.
 

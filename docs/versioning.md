@@ -15,7 +15,7 @@ version line — bump **only the stream whose area changed**.
 | **gRPC proto** | Additive or breaking RPC changes | `crates/spanda-api/proto/spanda/v1/control_center.proto` | *(no tag — pin via `GET /v1/version`)* |
 
 **Rule:** Do **not** bump SDK or desktop when only the workspace changes, and vice versa. Streams
-may diverge (for example workspace `0.6.3`, SDK `0.5.8`, desktop `0.6.3`).
+may diverge (for example workspace `0.7.0`, SDK `0.5.9`, desktop `0.6.3`).
 
 ## Semver component guide (per stream)
 

@@ -1268,7 +1268,7 @@ Default: log to stderr.
 ## Stable promotion
 
 Enterprise operations E1–E4 are **Stable** with full stable-hardening checklist items **shipped in
-code**. SDKs **0.5.8** (registry) and Control Center desktop **0.6.3**
+code**. SDKs **0.5.9** (registry) and Control Center desktop **0.6.3**
 (`desktop-v0.6.3`, with
 sidebar/CLI/API version display) are published via registry tags and GitHub Releases. Remaining
 organizational gates: third-party security audit sign-off and 30-day field soak. See
@@ -1334,5 +1334,5 @@ production TLS policy, WebSocket telemetry streaming, OTLP trace/metrics export,
 monitor, PagerDuty bi-directional sync, compliance export with **signed profile catalog**, scheduled
 report delivery, digital thread query with **full lifecycle graph UI**, executive scorecard, report
 composer (including PDF), Grafana dashboard templates (`spanda-grafana-dashboards`), official SDKs
-**0.5.8**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API
+**0.5.9**, and Tauri desktop **0.6.3** production release (`desktop-v0.6.3`) with sidebar/CLI/API
 version display.

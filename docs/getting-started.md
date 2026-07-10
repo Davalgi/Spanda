@@ -870,7 +870,7 @@ See [authentication.md](./authentication.md) for the full production auth checkl
 ### Field soak and stable promotion
 
 Enterprise operations pillars are **Stable** in [feature-status.md](./feature-status.md). Production
-SDK **0.5.8** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational**
+SDK **0.5.9** and desktop **0.6.3** (`desktop-v0.6.3`) are published. Remaining **organizational**
 gates (not tier blockers): 30-day field pilot ([field-soak-gate.md](./field-soak-gate.md)) and
 third-party security audit sign-off
 ([security-audit-third-party.md](./security-audit-third-party.md)). See
