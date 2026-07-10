@@ -64,7 +64,7 @@ spanda alerts fatigue-report
 
 | Surface | Endpoint / RPC |
 |---------|----------------|
-| REST | `GET /v1/autonomy/attention` |
+| REST | `GET /v1/autonomy/attention` (uses `@policy` rules when Control Center started with `--program`) |
 | gRPC | `GetAutonomyAttention` |
 | SDK | `AttentionClient::queue()` |
 | Entity | `GET /v1/entities/{id}/autonomy` → `attention` field |

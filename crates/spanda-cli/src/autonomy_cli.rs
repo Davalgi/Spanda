@@ -1,8 +1,7 @@
 //! CLI commands for bio-inspired resilient autonomy architecture.
 //!
 use crate::config_load::{ensure_config_valid, load_system_config_from_cli_args};
-use spanda_ast::assurance_decl::{AttentionPolicyDecl, HomeostasisPolicyDecl};
-use spanda_ast::nodes::Program;
+use spanda_ast::policy_extract::{attention_rule_names, homeostasis_metric_names};
 use spanda_autonomy::format::format_report;
 use spanda_autonomy::types::AutonomyReportFormat;
 use spanda_autonomy::{
@@ -327,16 +326,8 @@ fn homeostasis_policy_from_args(args: &[String]) -> HomeostasisPolicy {
     let Some(path) = program_path_arg(args) else {
         return HomeostasisPolicy::platform_defaults();
     };
-    let Program::Program {
-        homeostasis_policies,
-        ..
-    } = parse_program_file(Path::new(&path));
-    let mut names = Vec::new();
-    for policy in homeostasis_policies {
-        let HomeostasisPolicyDecl::HomeostasisPolicyDecl { metrics, .. } = policy;
-        names.extend(metrics);
-    }
-    HomeostasisPolicy::from_declared_metrics(&names)
+    let program = parse_program_file(Path::new(&path));
+    HomeostasisPolicy::from_declared_metrics(&homeostasis_metric_names(&program))
 }
 
 fn attention_policy_from_args(args: &[String]) -> AttentionPolicy {
@@ -357,15 +348,8 @@ fn attention_policy_from_args(args: &[String]) -> AttentionPolicy {
     let Some(path) = program_path_arg(args) else {
         return AttentionPolicy::from_declared_rules(&[]);
     };
-    let Program::Program {
-        attention_policies, ..
-    } = parse_program_file(Path::new(&path));
-    let mut names = Vec::new();
-    for policy in attention_policies {
-        let AttentionPolicyDecl::AttentionPolicyDecl { rules, .. } = policy;
-        names.extend(rules);
-    }
-    AttentionPolicy::from_declared_rules(&names)
+    let program = parse_program_file(Path::new(&path));
+    AttentionPolicy::from_declared_rules(&attention_rule_names(&program))
 }
 
 pub fn immunity_dispatch(args: &[String]) {

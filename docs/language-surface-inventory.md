@@ -121,7 +121,8 @@ Shipped package APIs: official **`spanda-policies`** → `std.policies.homeostas
 AST → evaluator wiring (shipped): `spanda homeostasis check --program <file.sd>` and
 `spanda attention check --program <file.sd>` apply declared metrics/rules via
 `HomeostasisPolicy::from_declared_metrics` / `AttentionPolicy::from_declared_rules`.
-Still optional: Control Center / REST using the same path.
+Control Center REST/gRPC (`GET /v1/autonomy/homeostasis|attention`) use the same path when
+started with `--program` (`policy_source`: `program` | `platform_defaults`).
 
 ## Non-goals
 

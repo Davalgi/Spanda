@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AST policy → autonomy CLI:** `spanda homeostasis check --program <file.sd>` and
   `spanda attention check --program <file.sd>` use declared `@policy` / legacy metrics and rules
   (`HomeostasisPolicy::from_declared_metrics` / `AttentionPolicy::from_declared_rules`).
+- **AST policy → Control Center:** `GET /v1/autonomy/homeostasis` and
+  `GET /v1/autonomy/attention` honor loaded `--program` decls (`policy_source` in the JSON).
 - **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
   work); unknown values rejected at check time.
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
