@@ -11,6 +11,9 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
 
 - The **tree-walking interpreter** is the primary execution path. LLVM native codegen is
   experimental (`spanda compile-native`, `spanda llvm-ir`).
+- **Real-time contracts** (`deadline`, `jitter`, priority, budgets) on the interpreter are
+  **intent + monitoring** (compile checks + miss telemetry), not OS hard real-time — see
+  [realtime.md](./realtime.md).
 - Simulation is **physics-lite 2D** — suitable for logic and safety testing, not high-fidelity
   Gazebo-class physics.
 - Multi-robot **fleet** examples default to **in-process** simulation with per-robot setup/execute.
@@ -24,10 +27,20 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
 
 - AI models use **mock backends** by default. Live OpenAI, Anthropic, and ONNX require API keys or
   model paths (`SPANDA_LIVE_AI=0` forces mock).
+- `provider:` string literals must be one of `mock`, `openai`, `anthropic`, `onnx` (checked at
+  compile time); unknown names no longer silently fall through as mock at check time.
 - Provider packages wire through an in-process registry; there is no managed cloud inference service.
 - Setup: [troubleshooting.md — Live AI and extern
   bridges](./troubleshooting.md#live-ai-and-extern-bridges) ·
   [live-ai-provider.md](./live-ai-provider.md)
+
+## Language surface (Experimental / stringly)
+
+- **User generics** are Experimental: module fn + struct type params only; no `where` bounds —
+  [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental).
+- **Traits** are same-program scoped (no `export trait` yet).
+- `serialize`/`deserialize` format literals must be `json`, `yaml`, or `binary`.
+- `spanda codegen --target` accepts only `native`, `wasm`, `esp32`.
 
 ## Safety model (precise guarantee)
 

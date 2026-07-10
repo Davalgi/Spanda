@@ -1073,6 +1073,54 @@ pub fn std_namespaces() -> HashMap<&'static str, &'static [&'static str]> {
     m
 }
 
+/// Built-in AI provider names accepted in `ai_model { provider: "…" }` string literals.
+pub const KNOWN_AI_PROVIDERS: &[&str] = &["mock", "openai", "anthropic", "onnx"];
+
+/// Formats accepted by `serialize` / `deserialize` string literals.
+pub const KNOWN_SERIALIZE_FORMATS: &[&str] = &["json", "yaml", "binary"];
+
+pub fn is_known_ai_provider(name: &str) -> bool {
+    // Return true when `name` matches a built-in AI provider (case-insensitive).
+    //
+    // Parameters:
+    // - `name` — provider string from an `ai_model` config entry
+    //
+    // Returns:
+    // `true` for mock, openai, anthropic, or onnx.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // assert!(is_known_ai_provider("OpenAI"));
+
+    // Compare against the built-in provider list without regard to case.
+    KNOWN_AI_PROVIDERS
+        .iter()
+        .any(|known| known.eq_ignore_ascii_case(name))
+}
+
+pub fn is_known_serialize_format(name: &str) -> bool {
+    // Return true when `name` is a supported serialize/deserialize format.
+    //
+    // Parameters:
+    // - `name` — format string literal passed to `serialize` / `deserialize`
+    //
+    // Returns:
+    // `true` for json, yaml, or binary.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // assert!(is_known_serialize_format("JSON"));
+
+    // Compare against the built-in format list without regard to case.
+    KNOWN_SERIALIZE_FORMATS
+        .iter()
+        .any(|known| known.eq_ignore_ascii_case(name))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1117,6 +1165,29 @@ mod tests {
         assert!(err.contains("expects 1"));
         let ok = resolve_generic_type("Array", &[goal]).unwrap();
         assert!(matches!(ok, SpandaType::Generic { .. }));
+    }
+
+    #[test]
+    fn known_ai_providers_and_serialize_formats() {
+        // Description:
+        //     Known ai providers and serialize formats.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        //     let result = spanda_typecheck::type_system::known_ai_providers_and_serialize_formats();
+
+        assert!(is_known_ai_provider("mock"));
+        assert!(is_known_ai_provider("OpenAI"));
+        assert!(!is_known_ai_provider("not-a-provider"));
+        assert!(is_known_serialize_format("json"));
+        assert!(is_known_serialize_format("YAML"));
+        assert!(!is_known_serialize_format("xml"));
     }
 
     #[test]

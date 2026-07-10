@@ -3,6 +3,13 @@
 Spanda schedules periodic robot tasks on a **deterministic simulation clock**. Tasks declare timing
 contracts; the compiler validates them; the runtime records deadline misses and jitter.
 
+> **Honesty (interpreter path):** On the default **tree-walking interpreter**, `deadline`,
+> `jitter`, `priority`, `critical isolated`, and pipeline budgets are **intent + monitoring** —
+> compile-time shape checks plus runtime telemetry / miss counters. They are **not** OS-level hard
+> real-time guarantees (no priority inheritance from a certified RTOS, no WCET proof). Wall-clock
+> sim mode (`--wall-clock`) still uses userspace sleeps. Native/LLVM codegen may tighten latency
+> but does not by itself make Spanda a hard-RT OS. See [known-limitations.md](./known-limitations.md).
+
 ## Deadline-aware tasks
 
 ```sd

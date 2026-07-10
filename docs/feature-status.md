@@ -147,7 +147,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **WASM / web playground** | Browser check/run/verify | Limited surface vs native CLI |
 | **Live AI providers** | OpenAI, Anthropic, ONNX via Python bridge | Requires API keys or `SPANDA_ONNX_MODEL_PATH`; mock fallback by default |
 | **Live IoT bridges** | Modbus TCP, OPC-UA, zigbee, lora, matter, canbus | Env-gated (`SPANDA_LIVE_*=1`); in-memory hub fallback |
-| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **89** packages after `build-registry.sh` |
+| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **91** packages after `build-registry.sh` |
 | **Official package provenance** | Registry-only provider bootstrap; path/git name-squatting blocked | `OfficialProvenance` API; `official_provenance` install warning; production `deploy gate` hard-fail |
 | **Registry signature policy** | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` + lockfile signature audit | Required for production `deploy gate`; optional at install otherwise |
 
@@ -201,8 +201,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | Type checker + units | **Stable** | Physical unit algebra enforced |
 | modules / imports | **Stable** | `spanda install` vendor support |
 | structs / enums / traits | **Stable** | Generic struct literals; enum payloads |
-| generics | **Experimental** | Module fn + struct type params |
-| trait objects (`dyn Trait`) | **Stable** | Rust + TS mirror |
+| generics | **Experimental** | Module fn + struct type params; **no** `where` bounds, trait/enum generics, or full inference — see [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental) |
+| trait objects (`dyn Trait`) | **Stable** | Same-program `trait` / `impl`; no `export trait` yet |
 | match / Result / Option | **Stable** | |
 | async / await | **Stable** | Cooperative single-threaded |
 | spawn / select / channels | **Stable** | Cooperative concurrency with TS mirror |
@@ -210,7 +210,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | test blocks | **Stable** | Rust runtime + TS `runTests()` |
 | `extern fn` / FFI | **Experimental** | Subprocess bridges; optional in-process |
 | Spanda IR (SIR) | **Stable** | JSON export via `spanda ir` |
-| Codegen / LLVM | **Experimental** | HAL profiles; conditional codegen |
+| Codegen / LLVM | **Experimental** | HAL profiles; conditional codegen; `--target native\|wasm\|esp32` |
 
 ### Autonomous systems
 
@@ -221,7 +221,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | ActionProposal → SafeAction | **Stable** | Compile + runtime; `drive`/`follow` reject AI motion components; `max_speed` / optional `max_angular` clamped on interpreter path |
 | safety zones / emergency stop | **Stable** | |
 | deterministic scheduler | **Stable** | `task every Nms` |
-| deadline / jitter / priority | **Stable** | Compile-time validation; runtime telemetry |
+| deadline / jitter / priority | **Stable** | Compile-time validation + runtime telemetry; **not** OS hard-RT on interpreter — [realtime.md](./realtime.md) |
 | pipelines / watchdogs / modes | **Stable** | See `docs/reliability.md`, `docs/watchdogs.md`, `docs/degraded-modes.md` |
 | mission trace replay | **Stable** | `--record`, `spanda replay --deterministic` / `--playback` |
 | persistent telemetry store | **Stable** | `--persist-telemetry`, `spanda telemetry`; JSONL (default) or SQLite; OTLP export/push/serve, `fleet-push`, sessions — [telemetry-store.md](./telemetry-store.md) |

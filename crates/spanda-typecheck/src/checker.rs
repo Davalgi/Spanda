@@ -5,8 +5,9 @@ use crate::host::TypeCheckHost;
 use crate::message_registry::{is_comm_capability, MessageRegistry};
 use crate::module_registry::ModuleRegistry;
 use crate::type_system::{
-    binary_physical_op_allowed, generic_arity, is_action_proposal_type, physical_category,
-    resolve_type_name,
+    binary_physical_op_allowed, generic_arity, is_action_proposal_type, is_known_ai_provider,
+    is_known_serialize_format, physical_category, resolve_type_name, KNOWN_AI_PROVIDERS,
+    KNOWN_SERIALIZE_FORMATS,
 };
 use crate::units::{self, unit_matches_named_type};
 use spanda_ast::comm_decl as comm;
@@ -3194,8 +3195,8 @@ impl<'h> TypeChecker<'h> {
         let AiModelDecl::AiModelDecl {
             name,
             model_type,
+            config,
             span,
-            ..
         } = model;
 
         // Take this path when ai model type for(model type).is none().
@@ -3205,6 +3206,29 @@ impl<'h> TypeChecker<'h> {
                 span.start.line,
                 span.start.column,
             );
+        }
+
+        // Reject unknown provider string literals so typos fail at check time.
+        for entry in config {
+            // Skip non-provider config keys.
+            if entry.key != "provider" {
+                continue;
+            }
+
+            // Validate only string provider values against the built-in set.
+            if let ConfigValue::String(provider) = &entry.value {
+                // Report unknown providers with the accepted list.
+                if !is_known_ai_provider(provider) {
+                    self.error(
+                        format!(
+                            "Unknown AI provider '{provider}' (use {})",
+                            KNOWN_AI_PROVIDERS.join(", ")
+                        ),
+                        entry.span.start.line,
+                        entry.span.start.column,
+                    );
+                }
+            }
         }
 
         // Take this path when self.symbols.contains key(name).
@@ -3224,6 +3248,43 @@ impl<'h> TypeChecker<'h> {
                 actuator_type: None,
             },
         );
+    }
+
+    fn check_serialize_format_expr(&mut self, expr: &Expr) {
+        // Reject unknown serialize/deserialize format string literals.
+        //
+        // Parameters:
+        // - `expr` — format argument expression (positional or named)
+        //
+        // Returns:
+        // Nothing; emits a diagnostic when a literal format is unknown.
+        //
+        // Options:
+        // Non-literal formats are left to runtime validation.
+        //
+        // Example:
+        // self.check_serialize_format_expr(&format_arg);
+
+        // Only validate string literals; variables stay runtime-checked.
+        let Expr::LiteralExpr {
+            value: LiteralValue::String(format),
+            span,
+        } = expr
+        else {
+            return;
+        };
+
+        // Report formats outside the supported json/yaml/binary set.
+        if !is_known_serialize_format(format) {
+            self.error(
+                format!(
+                    "Unknown serialize format '{format}' (use {})",
+                    KNOWN_SERIALIZE_FORMATS.join(", ")
+                ),
+                span.start.line,
+                span.start.column,
+            );
+        }
     }
 
     fn check_capability(&mut self, agent_name: &str, cap: &CapabilityDecl) {
@@ -5030,6 +5091,22 @@ impl<'h> TypeChecker<'h> {
                             arg.span.start.line,
                             arg.span.start.column,
                         );
+                    }
+                }
+
+                // Reject unknown serialize/deserialize format string literals early.
+                if name == "serialize" || name == "deserialize" {
+                    // Prefer a positional format argument when present.
+                    if args.len() >= 2 {
+                        self.check_serialize_format_expr(&args[1]);
+                    }
+
+                    // Also validate named `format:` arguments.
+                    for arg in named_args {
+                        // Skip unrelated named arguments.
+                        if arg.name == "format" {
+                            self.check_serialize_format_expr(&arg.value);
+                        }
                     }
                 }
                 return sig.returns.clone();
