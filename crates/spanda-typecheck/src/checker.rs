@@ -5189,6 +5189,24 @@ impl<'h> TypeChecker<'h> {
                     }
                 }
                 let actual = self.check_expr(&arg.value);
+
+                // Reject ActionProposal motion components on ungated drive/follow.
+                if type_name == "DifferentialDrive"
+                    && (property == "drive" || property == "follow")
+                    && crate::type_system::is_untrusted_motion_component(&actual)
+                {
+                    self.error(
+                        format!(
+                            "ActionProposal motion cannot feed actuator.{property}()\n\
+                             Found: {}\n\
+                             Hint: let action = safety.validate(proposal); wheels.execute(action);",
+                            display_type(&actual)
+                        ),
+                        arg.span.start.line,
+                        arg.span.start.column,
+                    );
+                }
+
                 self.assert_compatible(
                     expected,
                     &actual,
@@ -6143,16 +6161,20 @@ fn object_property(type_name: &str, property: &str) -> Option<SpandaType> {
         }),
         ("SimIdentity", "iccid" | "carrier") => Some(SpandaType::String),
         ("SimIdentity", "esim" | "attested") => Some(SpandaType::Bool),
-        ("ActionProposal" | "SafeAction" | "NavigationPolicy", "linear") => {
-            Some(SpandaType::Number {
-                unit: UnitKind::MPerS,
-            })
-        }
-        ("ActionProposal" | "SafeAction" | "NavigationPolicy", "angular") => {
-            Some(SpandaType::Number {
-                unit: UnitKind::RadPerS,
-            })
-        }
+        // ActionProposal motion components are opaque so they cannot feed
+        // DifferentialDrive.drive/follow — only safety.validate() → execute().
+        ("ActionProposal", "linear") => Some(SpandaType::Named {
+            name: "UntrustedLinear".into(),
+        }),
+        ("ActionProposal", "angular") => Some(SpandaType::Named {
+            name: "UntrustedAngular".into(),
+        }),
+        ("SafeAction" | "NavigationPolicy", "linear") => Some(SpandaType::Number {
+            unit: UnitKind::MPerS,
+        }),
+        ("SafeAction" | "NavigationPolicy", "angular") => Some(SpandaType::Number {
+            unit: UnitKind::RadPerS,
+        }),
         ("ActionProposal", "trace") => Some(SpandaType::Named {
             name: "ReasoningTrace".into(),
         }),
@@ -7416,6 +7438,18 @@ pub fn AI_VALUE_TYPES() -> HashMap<String, SpandaType> {
             "SafeAction".into(),
             SpandaType::Named {
                 name: "SafeAction".into(),
+            },
+        ),
+        (
+            "UntrustedLinear".into(),
+            SpandaType::Named {
+                name: "UntrustedLinear".into(),
+            },
+        ),
+        (
+            "UntrustedAngular".into(),
+            SpandaType::Named {
+                name: "UntrustedAngular".into(),
             },
         ),
         (

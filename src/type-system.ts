@@ -234,6 +234,9 @@ export function resolveTypeName(name: string): SpandaType {
       return { kind: "named", name: "ActionProposal" };
     case "SafeAction":
       return { kind: "named", name: "SafeAction" };
+    case "UntrustedLinear":
+    case "UntrustedAngular":
+      return { kind: "named", name: short };
     case "Command":
     case "Conversation":
     case "Speech":
@@ -608,6 +611,26 @@ export function isSafeActionType(ty: SpandaType): boolean {
 
   // const result = isSafeActionType(ty);
   return ty.kind === "named" && ty.name === "SafeAction";
+}
+
+export function isUntrustedMotionComponent(ty: SpandaType): boolean {
+  // True when `ty` is an opaque ActionProposal motion component.
+  //
+  // Parameters:
+  // - `ty` — candidate type from member access or a let-bound alias
+  //
+  // Returns:
+  // Whether the type is UntrustedLinear or UntrustedAngular.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // isUntrustedMotionComponent({ kind: "named", name: "UntrustedLinear" });
+
+  return (
+    ty.kind === "named" && (ty.name === "UntrustedLinear" || ty.name === "UntrustedAngular")
+  );
 }
 
 export function typeKindName(ty: SpandaType): string {

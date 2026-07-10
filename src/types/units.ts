@@ -494,6 +494,8 @@ export const AI_MODEL_TYPES: Record<string, SpandaType> = {
 export const AI_VALUE_TYPES: Record<string, SpandaType> = {
   ActionProposal: { kind: "named", name: "ActionProposal" },
   SafeAction: { kind: "named", name: "SafeAction" },
+  UntrustedLinear: { kind: "named", name: "UntrustedLinear" },
+  UntrustedAngular: { kind: "named", name: "UntrustedAngular" },
   Completion: { kind: "named", name: "Completion" },
   Detection: { kind: "named", name: "Detection" },
   Classification: { kind: "named", name: "Classification" },
@@ -874,8 +876,8 @@ export const OBJECT_PROPERTIES: Record<string, Record<string, SpandaType>> = {
     angular: { kind: "number", unit: "rad/s" },
   },
   ActionProposal: {
-    linear: { kind: "number", unit: "m/s" },
-    angular: { kind: "number", unit: "rad/s" },
+    linear: { kind: "named", name: "UntrustedLinear" },
+    angular: { kind: "named", name: "UntrustedAngular" },
     trace: { kind: "named", name: "ReasoningTrace" },
   },
   Goal: {

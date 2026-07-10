@@ -25,6 +25,7 @@ import {
   isActionProposalType,
   resolveTypeName,
   isSafeActionType,
+  isUntrustedMotionComponent,
   typeKindName,
 } from "../type-system.js";
 import type { ModuleRegistry } from "../modules/index.js";
@@ -3996,6 +3997,22 @@ class TypeChecker {
           continue;
         }
         const actual = this.checkExpr(arg.value);
+
+        // Reject ActionProposal motion components on ungated drive/follow.
+        if (
+          typeName === "DifferentialDrive" &&
+          (member.property === "drive" || member.property === "follow") &&
+          isUntrustedMotionComponent(actual)
+        ) {
+          this.error(
+            `ActionProposal motion cannot feed actuator.${member.property}()\n` +
+              `Found: ${actual.kind === "named" ? actual.name : typeKindName(actual)}\n` +
+              `Hint: let action = safety.validate(proposal); wheels.execute(action);`,
+            arg.span.start.line,
+            arg.span.start.column,
+          );
+        }
+
         this.assertCompatible(expected, actual, arg.span.start.line, arg.span.start.column);
       }
     }

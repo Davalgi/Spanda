@@ -147,6 +147,9 @@ pub fn resolve_type_name(name: &str) -> Result<SpandaType, String> {
         "SafeAction" => Ok(SpandaType::Named {
             name: "SafeAction".into(),
         }),
+        "UntrustedLinear" | "UntrustedAngular" => Ok(SpandaType::Named {
+            name: name.to_string(),
+        }),
         "Command" | "Conversation" | "Speech" | "Gesture" | "Emotion" | "Feedback" | "Approval" => {
             Ok(SpandaType::Named {
                 name: name.to_string(),
@@ -568,6 +571,30 @@ pub fn is_safe_action_type(ty: &SpandaType) -> bool {
     matches!(
         ty,
         SpandaType::Named { name } if name == "SafeAction"
+    )
+}
+
+pub fn is_untrusted_motion_component(ty: &SpandaType) -> bool {
+    // True when `ty` is an opaque ActionProposal motion component.
+    //
+    // Parameters:
+    // - `ty` — candidate type from member access or a let-bound alias
+    //
+    // Returns:
+    // Whether the type is `UntrustedLinear` or `UntrustedAngular`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // assert!(is_untrusted_motion_component(&SpandaType::Named {
+    //     name: "UntrustedLinear".into(),
+    // }));
+
+    // Match opaque AI motion component names produced by ActionProposal fields.
+    matches!(
+        ty,
+        SpandaType::Named { name } if name == "UntrustedLinear" || name == "UntrustedAngular"
     )
 }
 

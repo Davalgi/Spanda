@@ -200,6 +200,43 @@ describe("type system", () => {
     ).not.toThrow();
   });
 
+  it("rejects ActionProposal fields passed to drive", () => {
+    expectTypeCheckError(
+      `
+        robot R {
+          sensor lidar: Lidar on "/scan";
+          actuator wheels: DifferentialDrive;
+          ai_model planner: LLM { provider: "mock"; model: "p"; temperature: 0.1; }
+          safety { max_speed = 0.5 m/s; }
+          behavior run() {
+            let proposal: ActionProposal = planner.reason(prompt: "go");
+            wheels.drive(linear: proposal.linear, angular: proposal.angular);
+          }
+        }
+      `,
+      "ActionProposal",
+    );
+  });
+
+  it("rejects let-bound ActionProposal fields passed to drive", () => {
+    expectTypeCheckError(
+      `
+        robot R {
+          sensor lidar: Lidar on "/scan";
+          actuator wheels: DifferentialDrive;
+          ai_model planner: LLM { provider: "mock"; model: "p"; temperature: 0.1; }
+          safety { max_speed = 0.5 m/s; }
+          behavior run() {
+            let proposal: ActionProposal = planner.reason(prompt: "go");
+            let speed = proposal.linear;
+            wheels.drive(linear: speed, angular: 0.0 rad/s);
+          }
+        }
+      `,
+      "ActionProposal",
+    );
+  });
+
   it("rejects unknown type at parse time", () => {
     expectParseError(
       `

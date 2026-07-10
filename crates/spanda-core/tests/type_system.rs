@@ -402,6 +402,116 @@ robot R {
 }
 
 #[test]
+fn action_proposal_fields_cannot_feed_drive() {
+    // Reject drive() fed from ActionProposal.linear/angular (SafeAction bypass).
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // action_proposal_fields_cannot_feed_drive();
+
+    let source = r#"
+robot R {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+  ai_model planner: LLM { provider: "mock"; model: "p"; temperature: 0.1; }
+  safety { max_speed = 0.5 m/s; }
+  behavior run() {
+    let proposal: ActionProposal = planner.reason(prompt: "go");
+    wheels.drive(linear: proposal.linear, angular: proposal.angular);
+  }
+}
+"#;
+    let err = check(source).expect_err("ActionProposal fields must not feed drive()");
+    assert!(
+        err.diagnostics().iter().any(|d| {
+            d.message.contains("ActionProposal")
+                && (d.message.contains("drive") || d.message.contains("Untrusted"))
+        }),
+        "got {:?}",
+        err.diagnostics()
+    );
+}
+
+#[test]
+fn action_proposal_fields_cannot_feed_drive_via_let() {
+    // Reject let-bound ActionProposal motion components passed to drive().
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // action_proposal_fields_cannot_feed_drive_via_let();
+
+    let source = r#"
+robot R {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+  ai_model planner: LLM { provider: "mock"; model: "p"; temperature: 0.1; }
+  safety { max_speed = 0.5 m/s; }
+  behavior run() {
+    let proposal: ActionProposal = planner.reason(prompt: "go");
+    let speed = proposal.linear;
+    let turn = proposal.angular;
+    wheels.drive(linear: speed, angular: turn);
+  }
+}
+"#;
+    let err = check(source).expect_err("let-bound UntrustedLinear must not feed drive()");
+    assert!(
+        err.diagnostics().iter().any(|d| {
+            d.message.contains("ActionProposal")
+                || d.message.contains("UntrustedLinear")
+                || d.message.contains("UntrustedAngular")
+                || d.message.contains("Type mismatch")
+        }),
+        "got {:?}",
+        err.diagnostics()
+    );
+}
+
+#[test]
+fn literal_drive_still_typechecks() {
+    // Non-AI literal drive() remains the supported low-level motion API.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // literal_drive_still_typechecks();
+
+    let source = r#"
+robot R {
+  actuator wheels: DifferentialDrive;
+  safety { max_speed = 1.0 m/s; }
+  behavior run() {
+    wheels.drive(linear: 0.3 m/s, angular: 0.0 rad/s);
+  }
+}
+"#;
+    check(source).expect("literal drive should type-check");
+}
+
+#[test]
 fn unknown_type_fails_at_parse() {
     // Description:
     //     Unknown type fails at parse.
