@@ -1,1 +1,0 @@
-function n(){return Promise.resolve()}function u(){return{ok:!1,diagnostics:[{message:"WASM not built — run npm run build:wasm",line:1,column:1}]}}function e(){return{ok:!1,diagnostics:[{message:"WASM not built — run npm run build:wasm",line:1,column:1}]}}export{n as default,u as wasm_check,e as wasm_run};

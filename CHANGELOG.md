@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Control Center embedded UI version:** resynced SPA assets so the sidebar shows `packages/web`
+  semver (`1.0.0`) instead of a stale `0.6.3` bundle; fixed `CONTROL_CENTER_UI_VERSION` parse so
+  `/v1/version` no longer returns a trailing quote (`1.0.0"`).
+
 ## [1.0.0] - 2026-07-10
 
 ### Breaking
