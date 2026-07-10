@@ -384,19 +384,24 @@ fn lint_library_shaped_decls(program: &Program, issues: &mut Vec<LintIssue>) {
         ..
     } = program;
 
-    // Flag each homeostasis_policy as library-shaped surface.
+    // Flag each legacy homeostasis_policy as library-shaped surface.
     for policy in homeostasis_policies {
         let spanda_ast::assurance_decl::HomeostasisPolicyDecl::HomeostasisPolicyDecl {
             name,
+            legacy_syntax,
             span,
             ..
         } = policy;
+
+        // Skip preferred `@policy(kind: "homeostasis")` forms.
+        if !legacy_syntax {
+            continue;
+        }
         issues.push(LintIssue {
             rule: "library-shaped-decl".into(),
             message: format!(
-                "`homeostasis_policy {name}` is library-shaped syntax — see \
-                 docs/language-surface-inventory.md (migration to @policy attrs planned; \
-                 syntax remains supported)"
+                "`homeostasis_policy {name}` is library-shaped syntax — prefer \
+                 `@policy(kind: \"homeostasis\")` (see docs/language-surface-inventory.md)"
             ),
             line: span.start.line,
             column: span.start.column,
@@ -404,17 +409,24 @@ fn lint_library_shaped_decls(program: &Program, issues: &mut Vec<LintIssue>) {
         });
     }
 
-    // Flag each attention_policy as library-shaped surface.
+    // Flag each legacy attention_policy as library-shaped surface.
     for policy in attention_policies {
         let spanda_ast::assurance_decl::AttentionPolicyDecl::AttentionPolicyDecl {
-            name, span, ..
+            name,
+            legacy_syntax,
+            span,
+            ..
         } = policy;
+
+        // Skip preferred `@policy(kind: "attention")` forms.
+        if !legacy_syntax {
+            continue;
+        }
         issues.push(LintIssue {
             rule: "library-shaped-decl".into(),
             message: format!(
-                "`attention_policy {name}` is library-shaped syntax — see \
-                 docs/language-surface-inventory.md (migration to @policy attrs planned; \
-                 syntax remains supported)"
+                "`attention_policy {name}` is library-shaped syntax — prefer \
+                 `@policy(kind: \"attention\")` (see docs/language-surface-inventory.md)"
             ),
             line: span.start.line,
             column: span.start.column,
@@ -729,6 +741,48 @@ robot R {
                 |i| i.rule == "library-shaped-decl" && i.message.contains("homeostasis_policy")
             ),
             "expected library-shaped-decl for homeostasis_policy, got {:?}",
+            report.issues
+        );
+    }
+
+    #[test]
+    fn at_policy_forms_skip_library_shaped_lint() {
+        // Preferred `@policy` attribute forms should not warn.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // at_policy_forms_skip_library_shaped_lint();
+
+        let source = r#"
+module demo;
+@policy(kind: "homeostasis")
+KeepAlive {
+  metric battery_pct;
+}
+@policy(kind: "attention")
+Focus {
+  rule suppress_low_priority;
+}
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior b() { wheels.stop(); }
+}
+"#;
+        let report = lint(source).expect("lint should parse");
+        assert!(
+            !report
+                .issues
+                .iter()
+                .any(|i| i.rule == "library-shaped-decl"),
+            "preferred @policy forms should not warn, got {:?}",
             report.issues
         );
     }

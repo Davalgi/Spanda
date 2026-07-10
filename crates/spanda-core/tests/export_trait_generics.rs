@@ -290,3 +290,47 @@ robot R {
         }
     }
 }
+
+#[test]
+fn at_policy_attention_parses() {
+    // Description:
+    //     At policy attention parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let source = r#"
+@policy(kind: "attention")
+MissionFocus {
+  rule suppress_low_priority;
+}
+
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior run() { wheels.stop(); }
+}
+"#;
+    let tokens = tokenize(source).expect("tokenize @policy attention");
+    let program = parse(tokens).expect("parse @policy attention");
+    let Program::Program {
+        attention_policies, ..
+    } = program;
+    assert_eq!(attention_policies.len(), 1);
+    match &attention_policies[0] {
+        spanda_ast::assurance_decl::AttentionPolicyDecl::AttentionPolicyDecl {
+            name,
+            rules,
+            legacy_syntax,
+            ..
+        } => {
+            assert_eq!(name, "MissionFocus");
+            assert_eq!(rules, &["suppress_low_priority".to_string()]);
+            assert!(!legacy_syntax);
+        }
+    }
+}

@@ -333,6 +333,7 @@ export async function compileAsync(source: string, backend?: CompileBackend): Pr
             missionPlans: [],
             resiliencePolicies: [],
             homeostasisPolicies: [],
+            attentionPolicies: [],
             recoveryPolicies: [],
             continuityPolicies: [],
             assuranceCases: [],

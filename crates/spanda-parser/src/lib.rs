@@ -815,7 +815,7 @@ impl Parser {
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "resilience_policy" {
                 resilience_policies.push(self.parse_resilience_policy()?);
             } else if self.check(TokenType::AtSign) {
-                homeostasis_policies.push(self.parse_at_policy_homeostasis()?);
+                self.parse_at_policy(&mut homeostasis_policies, &mut attention_policies)?;
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "homeostasis_policy" {
                 homeostasis_policies.push(self.parse_homeostasis_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "attention_policy" {
@@ -10045,24 +10045,27 @@ impl Parser {
         })
     }
 
-    fn parse_at_policy_homeostasis(
+    fn parse_at_policy(
         &mut self,
-    ) -> Result<spanda_ast::assurance_decl::HomeostasisPolicyDecl, SpandaError> {
-        // Parse `@policy(kind: "homeostasis") Name { metric …; }` (preferred form).
+        homeostasis_policies: &mut Vec<spanda_ast::assurance_decl::HomeostasisPolicyDecl>,
+        attention_policies: &mut Vec<spanda_ast::assurance_decl::AttentionPolicyDecl>,
+    ) -> Result<(), SpandaError> {
+        // Parse `@policy(kind: "…") Name { … }` and push into the matching list.
         //
         // Parameters:
-        // None.
+        // - `homeostasis_policies` — destination for `kind: "homeostasis"`
+        // - `attention_policies` — destination for `kind: "attention"`
         //
         // Returns:
-        // A homeostasis policy decl with `legacy_syntax = false`.
+        // Ok when a supported kind was parsed; parse error otherwise.
         //
         // Options:
-        // Only `kind: "homeostasis"` is supported in this PoC.
+        // PoC kinds: `"homeostasis"` (metric body) and `"attention"` (rule body).
         //
         // Example:
-        // self.parse_at_policy_homeostasis()?
+        // self.parse_at_policy(&mut homeostasis, &mut attention)?;
 
-        use spanda_ast::assurance_decl::HomeostasisPolicyDecl;
+        use spanda_ast::assurance_decl::{AttentionPolicyDecl, HomeostasisPolicyDecl};
         let start = self.expect(TokenType::AtSign, "Expected '@'")?;
         self.expect(TokenType::Policy, "Expected 'policy' after '@'")?;
         self.expect(TokenType::Lparen, "Expected '(' after @policy")?;
@@ -10078,38 +10081,68 @@ impl Parser {
         let kind_val = self.expect(TokenType::String, "Expected policy kind string")?;
         let kind = str_val(&kind_val);
         self.expect(TokenType::Rparen, "Expected ')' after @policy args")?;
-        if kind != "homeostasis" {
-            return Err(SpandaError::Parse {
-                message: format!(
-                    "Unsupported @policy kind '{kind}' (PoC supports only \"homeostasis\")"
-                ),
-                line: kind_val.line,
-                column: kind_val.column,
-            });
-        }
         let name = self.parse_label("Expected policy name after @policy(...)")?;
         self.expect(TokenType::Lbrace, "Expected '{' after policy name")?;
-        let mut metrics = Vec::new();
-        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
-            if self.check(TokenType::Ident) && self.peek().lexeme == "metric" {
-                self.advance();
-                metrics.push(self.parse_label("Expected metric name")?);
-                self.expect(TokenType::Semicolon, "Expected ';' after metric")?;
-            } else {
+
+        // Dispatch body parsing by policy kind.
+        match kind.as_str() {
+            "homeostasis" => {
+                let mut metrics = Vec::new();
+                while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                    if self.check(TokenType::Ident) && self.peek().lexeme == "metric" {
+                        self.advance();
+                        metrics.push(self.parse_label("Expected metric name")?);
+                        self.expect(TokenType::Semicolon, "Expected ';' after metric")?;
+                    } else {
+                        return Err(SpandaError::Parse {
+                            message: "Expected metric in @policy homeostasis body".into(),
+                            line: self.peek().line,
+                            column: self.peek().column,
+                        });
+                    }
+                }
+                let end = self.expect(TokenType::Rbrace, "Expected '}' to close @policy body")?;
+                homeostasis_policies.push(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
+                    name,
+                    metrics,
+                    legacy_syntax: false,
+                    span: self.span_from(&start, &end),
+                });
+            }
+            "attention" => {
+                let mut rules = Vec::new();
+                while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+                    if self.check(TokenType::Ident) && self.peek().lexeme == "rule" {
+                        self.advance();
+                        rules.push(self.parse_label("Expected rule name")?);
+                        self.expect(TokenType::Semicolon, "Expected ';' after rule")?;
+                    } else {
+                        return Err(SpandaError::Parse {
+                            message: "Expected rule in @policy attention body".into(),
+                            line: self.peek().line,
+                            column: self.peek().column,
+                        });
+                    }
+                }
+                let end = self.expect(TokenType::Rbrace, "Expected '}' to close @policy body")?;
+                attention_policies.push(AttentionPolicyDecl::AttentionPolicyDecl {
+                    name,
+                    rules,
+                    legacy_syntax: false,
+                    span: self.span_from(&start, &end),
+                });
+            }
+            _ => {
                 return Err(SpandaError::Parse {
-                    message: "Expected metric in @policy homeostasis body".into(),
-                    line: self.peek().line,
-                    column: self.peek().column,
+                    message: format!(
+                        "Unsupported @policy kind '{kind}' (PoC supports \"homeostasis\" and \"attention\")"
+                    ),
+                    line: kind_val.line,
+                    column: kind_val.column,
                 });
             }
         }
-        let end = self.expect(TokenType::Rbrace, "Expected '}' to close @policy body")?;
-        Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
-            name,
-            metrics,
-            legacy_syntax: false,
-            span: self.span_from(&start, &end),
-        })
+        Ok(())
     }
 
     fn parse_attention_policy(
@@ -10140,6 +10173,7 @@ impl Parser {
         Ok(AttentionPolicyDecl::AttentionPolicyDecl {
             name,
             rules,
+            legacy_syntax: true,
             span: self.span_from(&start, &end),
         })
     }
