@@ -114,6 +114,8 @@ pub enum TokenType {
     Circle,
     Rect,
     At,
+    /// `@` attribute sigil (distinct from the `at` keyword).
+    AtSign,
     Radius,
     Size,
     EmergencyStop,
@@ -1293,6 +1295,18 @@ pub fn tokenize(source: &str) -> Result<Vec<Token>, LexerError> {
                     column: start_column,
                     offset: start_offset,
                 });
+            }
+            '@' => {
+                push_single(
+                    &mut tokens,
+                    TokenType::AtSign,
+                    "@",
+                    start_line,
+                    start_column,
+                    start_offset,
+                );
+                i += 1;
+                column += 1;
             }
             _ if is_digit(ch) || (ch == '.' && i + 1 < chars.len() && is_digit(chars[i + 1])) => {
                 let mut num_str = String::new();

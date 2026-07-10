@@ -94,6 +94,7 @@ export type TraitMethodDecl = {
 export type TraitDecl = {
   kind: "TraitDecl";
   name: string;
+  visibility?: Visibility;
   methods: TraitMethodDecl[];
   span: Span;
 };

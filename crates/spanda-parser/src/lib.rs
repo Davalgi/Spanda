@@ -745,8 +745,10 @@ impl Parser {
                 continue;
             }
 
-            // Take this path when self.is module fn start().
-            if self.is_module_fn_start() {
+            // Take this path when self.is trait start() (before module fn — `export trait`).
+            if self.is_trait_start() {
+                traits.push(self.parse_trait()?);
+            } else if self.is_module_fn_start() {
                 functions.push(self.parse_module_fn()?);
             } else if self.match_types(&[TokenType::Extern]) {
                 extern_functions.push(self.parse_extern_fn()?);
@@ -756,8 +758,6 @@ impl Parser {
                 structs.push(self.parse_struct()?);
             } else if self.check(TokenType::Enum) {
                 enums.push(self.parse_enum()?);
-            } else if self.check(TokenType::Trait) {
-                traits.push(self.parse_trait()?);
             } else if self.check(TokenType::Hardware) {
                 hardware_profiles.push(self.parse_hardware()?);
             } else if self.check(TokenType::Deploy) {
@@ -814,6 +814,8 @@ impl Parser {
                 operational_policies.push(self.parse_operational_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "resilience_policy" {
                 resilience_policies.push(self.parse_resilience_policy()?);
+            } else if self.check(TokenType::AtSign) {
+                homeostasis_policies.push(self.parse_at_policy_homeostasis()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "homeostasis_policy" {
                 homeostasis_policies.push(self.parse_homeostasis_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "attention_policy" {
@@ -3274,6 +3276,11 @@ impl Parser {
         // Example:
         //     let result = spanda_parser::is_module_fn_start(&self);
 
+        // Trait declarations share visibility keywords — defer those to `is_trait_start`.
+        if self.is_trait_start() {
+            return false;
+        }
+
         // Call check on the current instance.
         self.check(TokenType::Export)
             || self.check(TokenType::Public)
@@ -3301,11 +3308,41 @@ impl Parser {
         if !self.match_types(&[TokenType::Lt]) {
             return Ok(Vec::new());
         }
+
+        // Reject empty `<>` type-parameter lists.
+        if self.check(TokenType::Gt) {
+            let tok = self.peek().clone();
+            return Err(SpandaError::Parse {
+                message: "Expected at least one type parameter inside '<>'".into(),
+                line: tok.line,
+                column: tok.column,
+            });
+        }
         let mut params = Vec::new();
 
         // Run the loop body until it exits.
         loop {
-            params.push(self.parse_label("Expected type parameter name")?);
+            let param_tok = self.peek().clone();
+            let name = self.parse_label("Expected type parameter name")?;
+
+            // Reject unsupported trait bounds on type parameters (Experimental generics).
+            if self.check(TokenType::Colon) {
+                return Err(SpandaError::Parse {
+                    message: "Type bounds are not supported yet (Experimental generics)".into(),
+                    line: param_tok.line,
+                    column: param_tok.column,
+                });
+            }
+
+            // Reject duplicate type-parameter names in the same list.
+            if params.iter().any(|p| p == &name) {
+                return Err(SpandaError::Parse {
+                    message: format!("Duplicate type parameter '{name}'"),
+                    line: param_tok.line,
+                    column: param_tok.column,
+                });
+            }
+            params.push(name);
 
             // Take the branch when Comma]) is false.
             if !self.match_types(&[TokenType::Comma]) {
@@ -3313,6 +3350,16 @@ impl Parser {
             }
         }
         self.expect(TokenType::Gt, "Expected '>' after type parameters")?;
+
+        // Reject `where` clauses after type parameters (not implemented yet).
+        if self.check(TokenType::Where) {
+            let tok = self.peek().clone();
+            return Err(SpandaError::Parse {
+                message: "Where clauses are not supported yet (Experimental generics)".into(),
+                line: tok.line,
+                column: tok.column,
+            });
+        }
         Ok(params)
     }
 
@@ -3620,6 +3667,34 @@ impl Parser {
         })
     }
 
+    fn is_trait_start(&self) -> bool {
+        // True when the next tokens begin a trait declaration (optional visibility).
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Whether `parse_trait` should run.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // if self.is_trait_start() { ... }
+
+        // Accept bare `trait` or `export`/`public`/`private` followed by `trait`.
+        if self.check(TokenType::Trait) {
+            return true;
+        }
+        let vis = self.check(TokenType::Export)
+            || self.check(TokenType::Public)
+            || self.check(TokenType::Private);
+        if !vis || self.pos + 1 >= self.tokens.len() {
+            return false;
+        }
+        self.tokens[self.pos + 1].token_type == TokenType::Trait
+    }
+
     fn parse_trait(&mut self) -> Result<TraitDecl, SpandaError> {
         // Description:
         //     Parse trait.
@@ -3635,8 +3710,19 @@ impl Parser {
         // Example:
         //     let result = spanda_parser::parse_trait(&mut self);
 
-        // Compute start for the following logic.
-        let start = self.advance();
+        use spanda_ast::foundations::Visibility;
+        let start = self.peek().clone();
+        let mut visibility = Visibility::Private;
+
+        // Optional export/public/private before `trait`.
+        if self.match_types(&[TokenType::Export]) {
+            visibility = Visibility::Export;
+        } else if self.match_types(&[TokenType::Public]) {
+            visibility = Visibility::Public;
+        } else if self.match_types(&[TokenType::Private]) {
+            visibility = Visibility::Private;
+        }
+        self.expect(TokenType::Trait, "Expected 'trait'")?;
         let name = self.expect(TokenType::Ident, "Expected trait name")?;
         self.expect(TokenType::Lbrace, "Expected '{' after trait name")?;
         let mut methods = Vec::new();
@@ -3649,6 +3735,7 @@ impl Parser {
         Ok(TraitDecl::TraitDecl {
             doc: self.take_doc(),
             name: name.lexeme,
+            visibility,
             methods,
             span: self.span_from(&start, &end),
         })
@@ -6341,6 +6428,9 @@ impl Parser {
         // take this path when self.match types(&[TokenType::String]).
         if self.match_types(&[TokenType::String]) {
             Ok(ConfigValue::String(str_val(self.previous())))
+        } else if self.match_types(&[TokenType::Ident]) {
+            // Bare identifiers are typed config literals (e.g. provider: mock).
+            Ok(ConfigValue::String(self.previous().lexeme.clone()))
         } else if self.match_types(&[TokenType::True]) {
             Ok(ConfigValue::Bool(true))
         } else if self.match_types(&[TokenType::False]) {
@@ -9950,6 +10040,74 @@ impl Parser {
         Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
             name,
             metrics,
+            legacy_syntax: true,
+            span: self.span_from(&start, &end),
+        })
+    }
+
+    fn parse_at_policy_homeostasis(
+        &mut self,
+    ) -> Result<spanda_ast::assurance_decl::HomeostasisPolicyDecl, SpandaError> {
+        // Parse `@policy(kind: "homeostasis") Name { metric …; }` (preferred form).
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // A homeostasis policy decl with `legacy_syntax = false`.
+        //
+        // Options:
+        // Only `kind: "homeostasis"` is supported in this PoC.
+        //
+        // Example:
+        // self.parse_at_policy_homeostasis()?
+
+        use spanda_ast::assurance_decl::HomeostasisPolicyDecl;
+        let start = self.expect(TokenType::AtSign, "Expected '@'")?;
+        self.expect(TokenType::Policy, "Expected 'policy' after '@'")?;
+        self.expect(TokenType::Lparen, "Expected '(' after @policy")?;
+        let kind_key = self.expect(TokenType::Ident, "Expected 'kind' in @policy(...)")?;
+        if kind_key.lexeme != "kind" {
+            return Err(SpandaError::Parse {
+                message: "Expected 'kind' in @policy(...)".into(),
+                line: kind_key.line,
+                column: kind_key.column,
+            });
+        }
+        self.expect(TokenType::Colon, "Expected ':' after kind")?;
+        let kind_val = self.expect(TokenType::String, "Expected policy kind string")?;
+        let kind = str_val(&kind_val);
+        self.expect(TokenType::Rparen, "Expected ')' after @policy args")?;
+        if kind != "homeostasis" {
+            return Err(SpandaError::Parse {
+                message: format!(
+                    "Unsupported @policy kind '{kind}' (PoC supports only \"homeostasis\")"
+                ),
+                line: kind_val.line,
+                column: kind_val.column,
+            });
+        }
+        let name = self.parse_label("Expected policy name after @policy(...)")?;
+        self.expect(TokenType::Lbrace, "Expected '{' after policy name")?;
+        let mut metrics = Vec::new();
+        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
+            if self.check(TokenType::Ident) && self.peek().lexeme == "metric" {
+                self.advance();
+                metrics.push(self.parse_label("Expected metric name")?);
+                self.expect(TokenType::Semicolon, "Expected ';' after metric")?;
+            } else {
+                return Err(SpandaError::Parse {
+                    message: "Expected metric in @policy homeostasis body".into(),
+                    line: self.peek().line,
+                    column: self.peek().column,
+                });
+            }
+        }
+        let end = self.expect(TokenType::Rbrace, "Expected '}' to close @policy body")?;
+        Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
+            name,
+            metrics,
+            legacy_syntax: false,
             span: self.span_from(&start, &end),
         })
     }

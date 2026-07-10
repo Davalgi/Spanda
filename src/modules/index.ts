@@ -8,10 +8,11 @@ import { join } from "node:path";
 import { tokenize } from "../lexer/index.js";
 import { parse } from "../parser/index.js";
 import type { Program } from "../ast/nodes.js";
-import type { ModuleFnDecl } from "../foundations.js";
+import type { ModuleFnDecl, TraitDecl } from "../foundations.js";
 
 export type ModuleExports = {
   functions: Map<string, ModuleFnDecl>;
+  traits: Map<string, TraitDecl>;
 };
 
 export class ModuleRegistry {
@@ -34,10 +35,18 @@ export class ModuleRegistry {
 
     // const result = register(moduleName, program);
 
-    const exports: ModuleExports = { functions: new Map() };
+    const exports: ModuleExports = { functions: new Map(), traits: new Map() };
     for (const func of program.functions) {
       if (func.visibility === "export" || func.visibility === "public") {
         exports.functions.set(func.name, func);
+      }
+    }
+
+    // Export public/export traits for cross-module `impl` resolution.
+    for (const traitDecl of program.traits) {
+      const vis = traitDecl.visibility ?? "private";
+      if (vis === "export" || vis === "public") {
+        exports.traits.set(traitDecl.name, traitDecl);
       }
     }
     this.modules.set(moduleName, exports);

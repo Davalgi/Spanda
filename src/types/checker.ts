@@ -256,6 +256,11 @@ class TypeChecker {
           for (const [fname, fdecl] of registryExport.functions) {
             this.moduleFunctions.set(fname, fdecl);
           }
+
+          // Merge exported traits into the local trait table for `impl`.
+          for (const [, tdecl] of registryExport.traits) {
+            this.checkTrait(tdecl);
+          }
         }
       }
     }
@@ -2298,15 +2303,20 @@ class TypeChecker {
     // Example:
     // this.checkSerializeFormatExpr(formatArg);
 
-    // Only validate string literals; variables stay runtime-checked.
-    if (expr.kind !== "LiteralExpr" || typeof expr.value !== "string") {
+    // Validate string literals and bare format idents (json / yaml / binary).
+    let format: string | undefined;
+    if (expr.kind === "LiteralExpr" && typeof expr.value === "string") {
+      format = expr.value;
+    } else if (expr.kind === "IdentExpr") {
+      format = expr.name;
+    } else {
       return;
     }
 
     // Report formats outside the supported json/yaml/binary set.
-    if (!isKnownSerializeFormat(expr.value)) {
+    if (!isKnownSerializeFormat(format)) {
       this.error(
-        `Unknown serialize format '${expr.value}' (use ${KNOWN_SERIALIZE_FORMATS.join(", ")})`,
+        `Unknown serialize format '${format}' (use ${KNOWN_SERIALIZE_FORMATS.join(", ")})`,
         expr.span.start.line,
         expr.span.start.column,
       );

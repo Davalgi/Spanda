@@ -639,6 +639,7 @@ class Parser {
     const operatingModes: import("../assurance_decl.js").OperatingModeDecl[] = [];
     const missionPlans: import("../assurance_decl.js").MissionPlanDecl[] = [];
     const resiliencePolicies: import("../assurance_decl.js").ResiliencePolicyDecl[] = [];
+    const homeostasisPolicies: import("../assurance_decl.js").HomeostasisPolicyDecl[] = [];
     const recoveryPolicies: import("../assurance_decl.js").RecoveryPolicyDecl[] = [];
     const continuityPolicies: import("../assurance_decl.js").ContinuityPolicyDecl[] = [];
     const decisionTrees: import("../assurance_decl.js").DecisionTreeDecl[] = [];
@@ -664,7 +665,9 @@ class Parser {
     }
 
     while (!this.check("EOF")) {
-      if (this.isModuleFnStart()) {
+      if (this.isTraitStart()) {
+        traits.push(this.parseTrait());
+      } else if (this.isModuleFnStart()) {
         functions.push(this.parseModuleFn());
       } else if (this.match("EXTERN")) {
         externFunctions.push(this.parseExternFn());
@@ -674,8 +677,6 @@ class Parser {
         structs.push(this.parseStruct());
       } else if (this.check("ENUM")) {
         enums.push(this.parseEnum());
-      } else if (this.check("TRAIT")) {
-        traits.push(this.parseTrait());
       } else if (this.check("HARDWARE")) {
         hardwareProfiles.push(this.parseHardware());
       } else if (this.check("DEPLOY")) {
@@ -730,6 +731,10 @@ class Parser {
         assuranceCases.push(parseAssuranceCase(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "resilience_policy") {
         resiliencePolicies.push(parseResiliencePolicy(this as unknown as AssuranceParseCtx));
+      } else if (this.check("AT_SIGN")) {
+        homeostasisPolicies.push(this.parseAtPolicyHomeostasis());
+      } else if (this.check("IDENT") && this.peek().lexeme === "homeostasis_policy") {
+        homeostasisPolicies.push(this.parseHomeostasisPolicy());
       } else if (this.check("IDENT") && this.peek().lexeme === "recovery_policy") {
         recoveryPolicies.push(parseRecoveryPolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "continuity_policy") {
@@ -793,6 +798,7 @@ class Parser {
       operatingModes,
       missionPlans,
       resiliencePolicies,
+      homeostasisPolicies,
       recoveryPolicies,
       continuityPolicies,
       decisionTrees,
@@ -868,6 +874,10 @@ class Parser {
     //     const result = isModuleFnStart();
 
     // const result = isModuleFnStart();
+    // Trait declarations share visibility keywords — defer those to `isTraitStart`.
+    if (this.isTraitStart()) {
+      return false;
+    }
     return (
       this.check("EXPORT") ||
       this.check("PUBLIC") ||
@@ -875,7 +885,33 @@ class Parser {
       this.check("ASYNC") ||
       this.check("FN")
     );
-}
+  }
+
+  private isTraitStart(): boolean {
+    // True when the next tokens begin a trait declaration (optional visibility).
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Whether `parseTrait` should run.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // if (this.isTraitStart()) { ... }
+
+    // Accept bare `trait` or visibility followed by `trait`.
+    if (this.check("TRAIT")) {
+      return true;
+    }
+    const vis = this.check("EXPORT") || this.check("PUBLIC") || this.check("PRIVATE");
+    if (!vis || this.pos + 1 >= this.tokens.length) {
+      return false;
+    }
+    return this.tokens[this.pos + 1]?.type === "TRAIT";
+  }
 
   private parseTypeParams(): string[] {
     // Description:
@@ -905,19 +941,47 @@ class Parser {
 
     // const result = parseTypeParams();
     if (!this.match("LT")) return [];
+
+    // Reject empty `<>` type-parameter lists.
+    if (this.check("GT")) {
+      const tok = this.peek();
+      throw new ParseError("Expected at least one type parameter inside '<>'", tok.line, tok.column);
+    }
     const params: string[] = [];
 
-    // continue when check is falsy.
-    if (!this.check("GT")) {
+    // Evaluate do.
+    do {
+      const paramTok = this.peek();
+      const name = this.parseLabel("Expected type parameter name");
 
-      // Evaluate do.
-      do {
-        params.push(this.parseLabel("Expected type parameter name"));
-      } while (this.match("COMMA"));
-    }
+      // Reject unsupported trait bounds on type parameters (Experimental generics).
+      if (this.check("COLON")) {
+        throw new ParseError(
+          "Type bounds are not supported yet (Experimental generics)",
+          paramTok.line,
+          paramTok.column,
+        );
+      }
+
+      // Reject duplicate type-parameter names in the same list.
+      if (params.includes(name)) {
+        throw new ParseError(`Duplicate type parameter '${name}'`, paramTok.line, paramTok.column);
+      }
+      params.push(name);
+    } while (this.match("COMMA"));
     this.expect("GT", "Expected '>' after type parameters");
+
+    // Reject `where` clauses after type parameters (not implemented yet).
+    if (this.check("WHERE")) {
+      const tok = this.peek();
+      throw new ParseError(
+        "Where clauses are not supported yet (Experimental generics)",
+        tok.line,
+        tok.column,
+      );
+    }
     return params;
-}
+  }
 
   private parseModuleFn(): ModuleFnDecl {
     // Description:
@@ -1555,7 +1619,18 @@ class Parser {
     //     const result = parseTrait();
 
     // const result = parseTrait();
-    const start = this.advance();
+    const start = this.peek();
+    let visibility: import("../foundations.js").Visibility = "private";
+
+    // Optional export/public/private before `trait`.
+    if (this.match("EXPORT")) {
+      visibility = "export";
+    } else if (this.match("PUBLIC")) {
+      visibility = "public";
+    } else if (this.match("PRIVATE")) {
+      visibility = "private";
+    }
+    this.expect("TRAIT", "Expected 'trait'");
     const name = this.expect("IDENT", "Expected trait name");
     this.expect("LBRACE", "Expected '{' after trait name");
     const methods: TraitMethodDecl[] = [];
@@ -1568,10 +1643,11 @@ class Parser {
     return {
       kind: "TraitDecl",
       name: name.lexeme,
+      visibility,
       methods,
       span: this.spanFrom(start, end),
     };
-}
+  }
 
   private parseTraitMethod(): TraitMethodDecl {
     // Description:
@@ -3822,6 +3898,101 @@ class Parser {
     };
   }
 
+  private parseHomeostasisPolicy(): import("../assurance_decl.js").HomeostasisPolicyDecl {
+    // Parse legacy `homeostasis_policy Name { metric …; }`.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Homeostasis policy with `legacySyntax = true`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // this.parseHomeostasisPolicy();
+
+    const start = this.advance();
+    const name = this.parseLabel("Expected homeostasis_policy name");
+    this.expect("LBRACE", "Expected '{' after homeostasis_policy name");
+    const metrics: string[] = [];
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "metric") {
+        this.advance();
+        metrics.push(this.parseLabel("Expected metric name"));
+        this.expect("SEMICOLON", "Expected ';' after metric");
+      } else {
+        const t = this.peek();
+        throw new ParseError("Expected metric in homeostasis_policy", t.line, t.column);
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close homeostasis_policy");
+    return {
+      kind: "HomeostasisPolicyDecl",
+      name,
+      metrics,
+      legacySyntax: true,
+      span: this.spanFrom(start, end),
+    };
+  }
+
+  private parseAtPolicyHomeostasis(): import("../assurance_decl.js").HomeostasisPolicyDecl {
+    // Parse `@policy(kind: "homeostasis") Name { metric …; }` (preferred form).
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Homeostasis policy with `legacySyntax = false`.
+    //
+    // Options:
+    // Only `kind: "homeostasis"` is supported in this PoC.
+    //
+    // Example:
+    // this.parseAtPolicyHomeostasis();
+
+    const start = this.expect("AT_SIGN", "Expected '@'");
+    this.expect("POLICY", "Expected 'policy' after '@'");
+    this.expect("LPAREN", "Expected '(' after @policy");
+    const kindKey = this.expect("IDENT", "Expected 'kind' in @policy(...)");
+    if (kindKey.lexeme !== "kind") {
+      throw new ParseError("Expected 'kind' in @policy(...)", kindKey.line, kindKey.column);
+    }
+    this.expect("COLON", "Expected ':' after kind");
+    const kindVal = this.expect("STRING", "Expected policy kind string");
+    const kind = String(kindVal.value);
+    this.expect("RPAREN", "Expected ')' after @policy args");
+    if (kind !== "homeostasis") {
+      throw new ParseError(
+        `Unsupported @policy kind '${kind}' (PoC supports only "homeostasis")`,
+        kindVal.line,
+        kindVal.column,
+      );
+    }
+    const name = this.parseLabel("Expected policy name after @policy(...)");
+    this.expect("LBRACE", "Expected '{' after policy name");
+    const metrics: string[] = [];
+    while (!this.check("RBRACE") && !this.check("EOF")) {
+      if (this.check("IDENT") && this.peek().lexeme === "metric") {
+        this.advance();
+        metrics.push(this.parseLabel("Expected metric name"));
+        this.expect("SEMICOLON", "Expected ';' after metric");
+      } else {
+        const t = this.peek();
+        throw new ParseError("Expected metric in @policy homeostasis body", t.line, t.column);
+      }
+    }
+    const end = this.expect("RBRACE", "Expected '}' to close @policy body");
+    return {
+      kind: "HomeostasisPolicyDecl",
+      name,
+      metrics,
+      legacySyntax: false,
+      span: this.spanFrom(start, end),
+    };
+  }
+
   private parseBleService(): BleServiceDecl {
     // Description:
     //     ParseBleService.
@@ -5970,6 +6141,11 @@ class Parser {
     // const result = parseConfigValue();
     if (this.match("STRING")) {
       return this.previous().value as string;
+    }
+
+    // Bare identifiers are typed config literals (e.g. provider: mock).
+    if (this.match("IDENT")) {
+      return this.previous().lexeme;
     }
 
     // continue when this.match("TRUE").

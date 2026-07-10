@@ -6,10 +6,11 @@ use super::{
     runtime_velocity, Interpreter, IntoSpandaError, PoseValue, RobotBackend, RuntimeError,
     RuntimeValue,
 };
-use spanda_ast::nodes::{Expr, UnitKind};
+use spanda_ast::nodes::{Expr, LiteralValue, UnitKind};
 use spanda_audit::{sha256 as audit_sha256, sign as audit_sign, verify_signature};
 use spanda_error::SpandaError;
 use spanda_safety::interpolate_poses;
+use spanda_typecheck::is_known_serialize_format;
 use std::collections::HashMap;
 
 impl<B: RobotBackend> Interpreter<B> {
@@ -395,9 +396,11 @@ impl<B: RobotBackend> Interpreter<B> {
                     .transpose()?
                     .unwrap_or(RuntimeValue::Void);
                 let format = if args.len() > 1 {
-                    get_string(&self.eval_expr(&args[1])?, "json")
+                    self.format_arg_from_expr(&args[1])?
+                } else if let Some(arg) = named_args.iter().find(|a| a.name == "format") {
+                    self.format_arg_from_expr(&arg.value)?
                 } else {
-                    get_string(&self.get_named_arg_value(named_args, "format")?, "json")
+                    "json".into()
                 };
                 spanda_runtime::serialize::serialize_value(&value, &format).map_err(Into::into)
             }
@@ -410,9 +413,11 @@ impl<B: RobotBackend> Interpreter<B> {
                         RuntimeError::new("deserialize requires data", line).into_spanda()
                     })?;
                 let format = if args.len() > 1 {
-                    get_string(&self.eval_expr(&args[1])?, "json")
+                    self.format_arg_from_expr(&args[1])?
+                } else if let Some(arg) = named_args.iter().find(|a| a.name == "format") {
+                    self.format_arg_from_expr(&arg.value)?
                 } else {
-                    get_string(&self.get_named_arg_value(named_args, "format")?, "json")
+                    "json".into()
                 };
                 spanda_runtime::serialize::deserialize_value(&data, &format).map_err(Into::into)
             }
@@ -438,6 +443,32 @@ impl<B: RobotBackend> Interpreter<B> {
                 }
             }
             _ => Ok(RuntimeValue::Void),
+        }
+    }
+
+    fn format_arg_from_expr(&mut self, expr: &Expr) -> Result<String, SpandaError> {
+        // Resolve a serialize/deserialize format from a string literal, bare ident, or value.
+        //
+        // Parameters:
+        // - `expr` — format argument expression
+        //
+        // Returns:
+        // Format name string (defaults via caller when absent).
+        //
+        // Options:
+        // Bare idents `json` / `yaml` / `binary` skip symbol lookup.
+        //
+        // Example:
+        // let format = self.format_arg_from_expr(&args[1])?;
+
+        // Prefer typed format idents and string literals without evaluating as variables.
+        match expr {
+            Expr::IdentExpr { name, .. } if is_known_serialize_format(name) => Ok(name.clone()),
+            Expr::LiteralExpr {
+                value: LiteralValue::String(s),
+                ..
+            } => Ok(s.clone()),
+            _ => Ok(get_string(&self.eval_expr(expr)?, "json")),
         }
     }
 }

@@ -172,3 +172,13 @@ export type OfflinePolicyDecl = {
   expiresAtMs?: number | null;
   span: Span;
 };
+
+/** Homeostasis policy (`homeostasis_policy` or `@policy(kind: "homeostasis")`). */
+export type HomeostasisPolicyDecl = {
+  kind: "HomeostasisPolicyDecl";
+  name: string;
+  metrics: string[];
+  /** True when parsed from legacy `homeostasis_policy` (vs `@policy`). */
+  legacySyntax: boolean;
+  span: Span;
+};

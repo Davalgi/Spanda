@@ -583,6 +583,12 @@ impl<'h> TypeChecker<'h> {
                         for (fname, fdecl) in &exports.functions {
                             self.module_functions.insert(fname.clone(), fdecl.clone());
                         }
+
+                        // Clone exported traits so we can mutate the checker while registering them.
+                        let imported_traits: Vec<_> = exports.traits.values().cloned().collect();
+                        for tdecl in &imported_traits {
+                            self.check_trait(tdecl);
+                        }
                     }
                 }
             }
@@ -3268,13 +3274,14 @@ impl<'h> TypeChecker<'h> {
         // Example:
         // self.check_serialize_format_expr(&format_arg);
 
-        // Only validate string literals; variables stay runtime-checked.
-        let Expr::LiteralExpr {
-            value: LiteralValue::String(format),
-            span,
-        } = expr
-        else {
-            return;
+        // Validate string literals and bare format idents (json / yaml / binary).
+        let (format, span) = match expr {
+            Expr::LiteralExpr {
+                value: LiteralValue::String(format),
+                span,
+            } => (format.as_str(), span),
+            Expr::IdentExpr { name, span } => (name.as_str(), span),
+            _ => return,
         };
 
         // Report formats outside the supported json/yaml/binary set.
