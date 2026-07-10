@@ -35,6 +35,7 @@ export class Simulator implements RobotBackend {
   private eventLog: string[] = [];
   private published: PublishedMessage[] = [];
   private followQueue: PoseValue[] = [];
+  private followSpeed = 0.5;
   private serviceLog: string[] = [];
   private actionLog: string[] = [];
   private hal: HalBackend = createSimHal();
@@ -243,6 +244,11 @@ export class Simulator implements RobotBackend {
         break;
       case "follow":
         this.followQueue = [...cmd.waypoints];
+        this.followSpeed = Math.max(0, cmd.maxLinear);
+        // Publish the clamped cruise speed immediately so callers observe the envelope.
+        if (this.followQueue.length > 0) {
+          this.velocity = { linear: this.followSpeed, angular: 0 };
+        }
         this.eventLog.push(`follow(${cmd.waypoints.length} waypoints)`);
         break;
       case "stop":
@@ -310,7 +316,7 @@ export class Simulator implements RobotBackend {
         this.followQueue.shift();
         this.pose = { ...this.pose, x: target.x, y: target.y, theta: target.theta };
       } else {
-        const speed = 0.5;
+        const speed = this.followSpeed;
         this.pose.x += (dx / dist) * speed * dt;
         this.pose.y += (dy / dist) * speed * dt;
         this.pose.theta = Math.atan2(dy, dx);

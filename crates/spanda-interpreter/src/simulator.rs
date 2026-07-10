@@ -77,6 +77,7 @@ pub struct Simulator {
     event_log: Vec<String>,
     published: Vec<PublishedMessage>,
     follow_queue: Vec<PoseValue>,
+    follow_speed: f64,
     service_log: Vec<String>,
     action_log: Vec<String>,
     hal: SimHalBackend,
@@ -114,6 +115,7 @@ impl Simulator {
             event_log: Vec::new(),
             published: Vec::new(),
             follow_queue: Vec::new(),
+            follow_speed: 0.5,
             service_log: Vec::new(),
             action_log: Vec::new(),
             hal: create_sim_hal(),
@@ -507,8 +509,20 @@ impl RobotBackend for Simulator {
                 self.event_log
                     .push(format!("drive({:.2} m/s, {:.2} rad/s)", linear, angular));
             }
-            MotionCommand::Follow { waypoints, .. } => {
+            MotionCommand::Follow {
+                waypoints,
+                max_linear,
+                ..
+            } => {
                 self.follow_queue = waypoints;
+                self.follow_speed = max_linear.max(0.0);
+                // Publish the clamped cruise speed immediately so callers observe the envelope.
+                if !self.follow_queue.is_empty() {
+                    self.velocity = VelocityState {
+                        linear: self.follow_speed,
+                        angular: 0.0,
+                    };
+                }
                 self.event_log
                     .push(format!("follow({} waypoints)", self.follow_queue.len()));
             }
@@ -590,7 +604,7 @@ impl RobotBackend for Simulator {
                 self.pose.y = target.y;
                 self.pose.theta = target.theta;
             } else {
-                let speed = 0.5;
+                let speed = self.follow_speed;
                 self.pose.x += (dx / dist) * speed * dt;
                 self.pose.y += (dy / dist) * speed * dt;
                 self.pose.theta = dy.atan2(dx);

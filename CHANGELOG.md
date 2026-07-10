@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`follow(path:)` cruise clamp:** trajectory follow speed (default 0.5 m/s) is clamped by
+  `safety.max_speed` / zone caps on the interpreter path (Rust + TS), matching `drive`/`execute`.
 - **Stringly seam literal checks:** unknown `ai_model` `provider:` strings and
   `serialize`/`deserialize` format literals fail at type-check (`mock`/`openai`/`anthropic`/`onnx`;
   `json`/`yaml`/`binary`).

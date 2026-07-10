@@ -218,7 +218,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 |---------|--------|-------|
 | robot / sensor / actuator | **Stable** | |
 | agent / goal / task / skill | **Mock-backed** (Stable API) | Default mock AI backend; live providers optional |
-| ActionProposal → SafeAction | **Stable** | Compile + runtime; `drive`/`follow` reject AI motion components; `max_speed` / optional `max_angular` clamped on interpreter path |
+| ActionProposal → SafeAction | **Stable** | Compile + runtime; `drive`/`follow` reject AI motion components; `max_speed` / optional `max_angular` clamped on interpreter `drive`/`execute`/`follow` cruise |
 | safety zones / emergency stop | **Stable** | |
 | deterministic scheduler | **Stable** | `task every Nms` |
 | deadline / jitter / priority | **Stable** | Compile-time validation + runtime telemetry; **not** OS hard-RT on interpreter — [realtime.md](./realtime.md) |

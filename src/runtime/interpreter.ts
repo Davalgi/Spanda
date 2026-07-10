@@ -154,7 +154,7 @@ export type MotionCommand =
   | { kind: "drive"; linear: number; angular: number; actuator: string }
   | { kind: "stop"; actuator: string }
   | { kind: "move_to"; x: number; y: number; z: number; actuator: string }
-  | { kind: "follow"; waypoints: PoseValue[]; actuator: string }
+  | { kind: "follow"; waypoints: PoseValue[]; maxLinear: number; actuator: string }
   | { kind: "grip"; actuator: string }
   | { kind: "release"; actuator: string }
   | { kind: "open"; actuator: string }
@@ -5104,7 +5104,16 @@ export class Interpreter {
       case "follow": {
         const pathVal = this.getNamedArgValue(expr, "path");
         const waypoints = getTrajectoryWaypoints(pathVal) ?? [];
-        this.options.backend.executeMotion({ kind: "follow", waypoints, actuator: name });
+        // Default follow cruise matches the historical simulator constant.
+        const DEFAULT_FOLLOW_SPEED = 0.5;
+        const pose = this.options.backend.getState().pose;
+        const maxLinear = this.safetyMonitor?.clampSpeedAtPose(DEFAULT_FOLLOW_SPEED, pose) ?? DEFAULT_FOLLOW_SPEED;
+        this.options.backend.executeMotion({
+          kind: "follow",
+          waypoints,
+          maxLinear: Math.abs(maxLinear),
+          actuator: name,
+        });
         break;
       }
       case "move_to":

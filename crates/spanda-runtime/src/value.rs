@@ -350,6 +350,8 @@ pub enum MotionCommand {
     },
     Follow {
         waypoints: Vec<PoseValue>,
+        /// Cruise speed for trajectory tracking (m/s), already safety-clamped by the caller.
+        max_linear: f64,
         actuator: String,
     },
     Grip {
