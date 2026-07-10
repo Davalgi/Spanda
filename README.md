@@ -137,7 +137,7 @@ robot SafePatrol {
 }
 ```
 
-Policy blocks (`decision_tree`, `recovery_policy`, `continuity_policy`, `homeostasis_policy`) extend
+Policy blocks (`decision_tree`, `recovery_policy`, `continuity_policy`, `@policy` homeostasis/attention) extend
 this pattern — see [examples/features/](examples/features/) and [Spanda 101 lesson
 11](docs/spanda-101/11-distributed-decisions.md).
 

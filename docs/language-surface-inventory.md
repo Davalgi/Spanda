@@ -112,7 +112,7 @@ Shipped:
   (`legacy_syntax = false`); legacy keywords still parse (`legacy_syntax = true`)
 - Feature examples under `examples/features/` use the attribute form
 
-Still deferred: package `std.policies.*`, migrating remaining docs/workflows, hard-remove of keywords.
+Still deferred: package `std.policies.*`, hard-remove of legacy keywords.
 
 ## Non-goals
 

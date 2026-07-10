@@ -118,7 +118,7 @@ Declarative policy blocks and distributed autonomy — minimal files here, **opt
 | `offline_policy` (standalone) | (in `decision_tree.sd`) | [`offline_policy_options.sd`](./offline_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#offline_policy) |
 | `recovery_policy` | [`recovery_policy.sd`](./recovery_policy.sd) | [`recovery_policy_options.sd`](./recovery_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#recovery_policy) |
 | `continuity_policy` | [`continuity_policy.sd`](./continuity_policy.sd) | [`continuity_policy_options.sd`](./continuity_policy_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#continuity_policy) |
-| `homeostasis_policy` / `attention_policy` | [`homeostasis_policy.sd`](./homeostasis_policy.sd), [`attention_policy.sd`](./attention_policy.sd) | [`cognitive_policies_options.sd`](./cognitive_policies_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#homeostasis_policy--attention_policy) |
+| `@policy` homeostasis / attention | [`homeostasis_policy.sd`](./homeostasis_policy.sd), [`attention_policy.sd`](./attention_policy.sd) | [`cognitive_policies_options.sd`](./cognitive_policies_options.sd) | [platform-feature-examples.md](../../docs/platform-feature-examples.md#policy-homeostasis--attention) |
 
 **Stitched workflows:** [`workflows/README.md`](../workflows/README.md) · flagship showcases below.
 

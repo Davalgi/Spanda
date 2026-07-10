@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`export trait`:** traits can be `export`/`public` and imported across modules for `impl`.
 - **`@policy(kind: "homeostasis"|"attention")`:** attribute forms parse alongside legacy
-  `homeostasis_policy` / `attention_policy`; lint warns only on legacy keywords. Feature examples
-  use `@policy`.
+  `homeostasis_policy` / `attention_policy`; lint warns only on legacy keywords. Feature examples,
+  `gps_loss_full_stack` workflow, and cognitive docs use `@policy`.
 - **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
   work); unknown values rejected at check time.
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with

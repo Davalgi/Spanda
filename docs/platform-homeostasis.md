@@ -39,7 +39,8 @@ Spanda does **not** simulate biological regulation — homeostasis is an enginee
 ## Language
 
 ```spanda
-homeostasis_policy PlatformStability {
+@policy(kind: "homeostasis")
+PlatformStability {
     metric cpu_pct;
     metric memory_pct;
     metric battery_pct;

@@ -23,7 +23,7 @@ handoff, offline limits, and who gets to decide locally vs centrally.
 | `offline_policy` | “While disconnected, you may / may not …” | No firmware updates offline |
 | `recovery_policy` | “When sensor X fails, switch to backup mode” | Lidar fails → safe mode |
 | `continuity_policy` | “When robot dies, who continues the mission?” | Resume from checkpoint on Beta |
-| `homeostasis_policy` / `attention_policy` | Platform stability + priority rules | CPU high → throttle low-priority work |
+| `@policy` homeostasis / attention | Platform stability + priority rules | CPU high → throttle low-priority work |
 
 Full options reference: [platform-feature-examples.md](../platform-feature-examples.md)
 
