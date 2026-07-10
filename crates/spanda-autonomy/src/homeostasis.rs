@@ -79,6 +79,44 @@ impl HomeostasisPolicy {
             ],
         }
     }
+
+    /// Build a policy from `.sd` `@policy(kind: "homeostasis")` / `homeostasis_policy` metric names.
+    ///
+    /// Parameters:
+    /// - `metric_names` — declared metric identifiers from the program AST
+    ///
+    /// Returns:
+    /// Ranges filtered from `platform_defaults` for known names; unknown names get a
+    /// conservative 0..100 range with 80% warn line. Empty input yields `platform_defaults()`.
+    ///
+    /// Options:
+    /// None.
+    ///
+    /// Example:
+    /// let policy = HomeostasisPolicy::from_declared_metrics(&["cpu_pct".into()]);
+    pub fn from_declared_metrics(metric_names: &[String]) -> Self {
+        // Fall back to full platform defaults when the program declares no metrics.
+        if metric_names.is_empty() {
+            return Self::platform_defaults();
+        }
+        let defaults = Self::platform_defaults();
+        let mut ranges = Vec::new();
+
+        // Map each declared metric to a known range or a conservative placeholder.
+        for name in metric_names {
+            if let Some(range) = defaults.ranges.iter().find(|r| &r.metric == name) {
+                ranges.push(range.clone());
+            } else {
+                ranges.push(StabilityRange {
+                    metric: name.clone(),
+                    min: 0.0,
+                    max: 100.0,
+                    warn_pct: 0.8,
+                });
+            }
+        }
+        Self { ranges }
+    }
 }
 
 /// Homeostasis evaluation report.
@@ -168,5 +206,51 @@ fn suggest_correction(metric: &str, level: &str) -> String {
         ("latency_ms", _) => "switch_transport".into(),
         ("cpu_pct", _) => "reduce_workload".into(),
         _ => "investigate".into(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn from_declared_metrics_filters_defaults() {
+        // Description:
+        //     From declared metrics filters defaults.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        let policy = HomeostasisPolicy::from_declared_metrics(&[
+            "cpu_pct".into(),
+            "custom_metric".into(),
+        ]);
+        assert_eq!(policy.ranges.len(), 2);
+        assert_eq!(policy.ranges[0].metric, "cpu_pct");
+        assert_eq!(policy.ranges[0].max, 85.0);
+        assert_eq!(policy.ranges[1].metric, "custom_metric");
+        assert_eq!(policy.ranges[1].max, 100.0);
+    }
+
+    #[test]
+    fn from_declared_metrics_empty_uses_platform_defaults() {
+        // Description:
+        //     From declared metrics empty uses platform defaults.
+        //
+        // Inputs:
+        //     None.
+        //
+        // Outputs:
+        //     None.
+        //
+        // Example:
+
+        let policy = HomeostasisPolicy::from_declared_metrics(&[]);
+        assert_eq!(policy.ranges.len(), HomeostasisPolicy::platform_defaults().ranges.len());
     }
 }

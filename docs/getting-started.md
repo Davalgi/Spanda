@@ -706,6 +706,8 @@ windows — all entity-integrated.
 spanda reflex list
 spanda reflex simulate emergency
 spanda homeostasis check --json
+spanda homeostasis check --program examples/features/homeostasis_policy.sd --json
+spanda attention check --program examples/features/attention_policy.sd --json
 spanda immunity quarantine
 spanda fusion analyze
 spanda alerts analyze

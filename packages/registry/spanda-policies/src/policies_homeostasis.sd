@@ -1,25 +1,23 @@
 // std.policies.homeostasis — scaffolds for @policy(kind: "homeostasis")
 //
-// Evaluation stays in spanda-autonomy (`evaluate_homeostasis` / CLI
-// `spanda homeostasis check`). This module exports helpers and documents
+// Evaluation stays in spanda-autonomy (evaluate_homeostasis / CLI
+// spanda homeostasis check). This module exports helpers and documents
 // the preferred language surface from docs/language-surface-inventory.md.
 
 module std.policies.homeostasis;
 
-/** Stable import path / backend id for registry and providers. */
+// Stable import path / backend id for registry and providers.
 export fn homeostasis_backend_name() -> String {
     return "std.policies.homeostasis";
 }
 
-/** Policy kind string for `@policy(kind: …)` (must match parser PoC). */
+// Policy kind string for @policy(kind: ...) (must match parser PoC).
 export fn homeostasis_kind() -> String {
     return "homeostasis";
 }
 
-/**
- * Return 1 when `name` is a platform-default homeostasis metric
- * (`HomeostasisPolicy::platform_defaults` in spanda-autonomy).
- */
+// Return 1 when name is a platform-default homeostasis metric
+// (HomeostasisPolicy::platform_defaults in spanda-autonomy).
 export fn is_platform_metric(name: String) -> Int {
     if name == "cpu_pct" {
         return 1;
@@ -39,7 +37,7 @@ export fn is_platform_metric(name: String) -> Int {
     return 0;
 }
 
-/** Count of platform-default metric names (for smoke / docs). */
+// Count of platform-default metric names (for smoke / docs).
 export fn platform_metric_count() -> Int {
     return 5;
 }

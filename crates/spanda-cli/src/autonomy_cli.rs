@@ -1,16 +1,24 @@
 //! CLI commands for bio-inspired resilient autonomy architecture.
 //!
 use crate::config_load::{ensure_config_valid, load_system_config_from_cli_args};
+use spanda_ast::assurance_decl::{AttentionPolicyDecl, HomeostasisPolicyDecl};
+use spanda_ast::nodes::Program;
 use spanda_autonomy::format::format_report;
 use spanda_autonomy::types::AutonomyReportFormat;
 use spanda_autonomy::{
-    analyze_alert_fatigue, apply_habituation, apply_sensitization, compute_recovery_confidence,
-    evaluate_homeostasis, evaluate_quarantine_decision, evaluate_reflex_priority,
-    fuse_observations, list_reflex_actions, AdaptiveRecoveryPolicy, ConfidencePolicy,
-    HabituationPolicy, HomeostasisPolicy, ImmunePolicy, RecoveryHistory, RepetitionPattern,
-    SensitizationPolicy, SensorConfidence, StabilityMetric,
+    analyze_alert_fatigue, apply_habituation, apply_sensitization, compute_attention_score,
+    compute_recovery_confidence, evaluate_homeostasis, evaluate_quarantine_decision,
+    evaluate_reflex_priority, fuse_observations, list_reflex_actions, rank_events,
+    AdaptiveRecoveryPolicy, AttentionPolicy, ConfidencePolicy, EventPriority, HabituationPolicy,
+    HomeostasisPolicy, ImmunePolicy, RecoveryHistory, RepetitionPattern, SensitizationPolicy,
+    SensorConfidence, StabilityMetric,
 };
+use spanda_autonomy::types::AutonomySeverity;
 use spanda_config::build_entity_registry;
+use spanda_lexer::tokenize;
+use spanda_parser::parse;
+use std::fs;
+use std::path::Path;
 use std::process;
 
 fn parse_format(args: &[String]) -> AutonomyReportFormat {
@@ -25,7 +33,7 @@ fn parse_format(args: &[String]) -> AutonomyReportFormat {
 
 fn entity_id_arg(args: &[String]) -> Option<String> {
     args.iter()
-        .find(|a| !a.starts_with('-'))
+        .find(|a| !a.starts_with('-') && !a.ends_with(".sd") && *a != "check" && *a != "report")
         .cloned()
         .or_else(|| {
             load_system_config_from_cli_args(args)
@@ -164,21 +172,200 @@ pub fn homeostasis_dispatch(args: &[String]) {
         "check" => cmd_homeostasis_check(args),
         "report" => cmd_homeostasis_report(args),
         _ => {
-            eprintln!("Usage: spanda homeostasis {{check|report}} [--json] [entity_id]");
+            eprintln!(
+                "Usage: spanda homeostasis {{check|report}} [--json] [--program <file.sd>] [entity_id]"
+            );
             process::exit(1);
         }
     }
 }
 
 fn cmd_homeostasis_check(args: &[String]) {
+    // Evaluate homeostasis using platform defaults or metrics declared in `--program`.
+    //
+    // Parameters:
+    // - `args` — CLI args after `homeostasis check`
+    //
+    // Returns:
+    // Nothing; prints a formatted StabilityReport.
+    //
+    // Options:
+    // `--program <file.sd>` loads `@policy(kind: "homeostasis")` / `homeostasis_policy` metrics.
+    //
+    // Example:
+    // cmd_homeostasis_check(&args);
+
     let format = parse_format(args);
     let (entity, metrics) = load_entity_metrics(args);
-    let report = evaluate_homeostasis(&entity, &metrics, &HomeostasisPolicy::platform_defaults());
+    let policy = homeostasis_policy_from_args(args);
+    let report = evaluate_homeostasis(&entity, &metrics, &policy);
     println!("{}", format_report(&report, format));
 }
 
 fn cmd_homeostasis_report(args: &[String]) {
     cmd_homeostasis_check(args);
+}
+
+pub fn attention_dispatch(args: &[String]) {
+    match args.first().map(String::as_str).unwrap_or("") {
+        "check" => cmd_attention_check(args),
+        _ => {
+            eprintln!("Usage: spanda attention check [--json] [--program <file.sd>]");
+            process::exit(1);
+        }
+    }
+}
+
+fn cmd_attention_check(args: &[String]) {
+    // Rank demo events using attention rules from `--program` when provided.
+    //
+    // Parameters:
+    // - `args` — CLI args after `attention check`
+    //
+    // Returns:
+    // Nothing; prints a ranked AttentionWindow.
+    //
+    // Options:
+    // `--program <file.sd>` loads `@policy(kind: "attention")` / `attention_policy` rules.
+    //
+    // Example:
+    // cmd_attention_check(&args);
+
+    let format = parse_format(args);
+    let policy = attention_policy_from_args(args);
+    let scores = vec![
+        compute_attention_score("e1", "routine_telemetry", EventPriority::Routine, AutonomySeverity::Info),
+        compute_attention_score("e2", "battery_low", EventPriority::Important, AutonomySeverity::High),
+        compute_attention_score(
+            "e3",
+            "emergency_stop",
+            EventPriority::Critical,
+            AutonomySeverity::Critical,
+        ),
+    ];
+    let window = rank_events(scores, &policy);
+    let report = serde_json::json!({
+        "policy": {
+            "critical_first": policy.critical_first,
+            "suppress_routine_when_critical": policy.suppress_routine_when_critical,
+            "suppression_rules": policy.suppression_rules,
+        },
+        "window": window,
+    });
+    println!("{}", format_report(&report, format));
+}
+
+fn program_path_arg(args: &[String]) -> Option<String> {
+    // Resolve `--program <path>` or a positional `*.sd` path.
+    //
+    // Parameters:
+    // - `args` — CLI argument list
+    //
+    // Returns:
+    // Path to a `.sd` program when present.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let path = program_path_arg(args);
+
+    for (i, arg) in args.iter().enumerate() {
+        if arg == "--program" {
+            return args.get(i + 1).cloned();
+        }
+    }
+    args.iter()
+        .find(|a| a.ends_with(".sd") && !a.starts_with('-'))
+        .cloned()
+}
+
+fn parse_program_file(path: &Path) -> Program {
+    // Parse a Spanda source file into a Program AST.
+    //
+    // Parameters:
+    // - `path` — filesystem path to `.sd`
+    //
+    // Returns:
+    // Parsed program, or exits on failure.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let program = parse_program_file(Path::new("rover.sd"));
+
+    let source = fs::read_to_string(path).unwrap_or_else(|e| {
+        eprintln!("Failed to read {}: {e}", path.display());
+        process::exit(1);
+    });
+    let tokens = tokenize(&source).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        process::exit(1);
+    });
+    parse(tokens).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        process::exit(1);
+    })
+}
+
+fn homeostasis_policy_from_args(args: &[String]) -> HomeostasisPolicy {
+    // Build a homeostasis policy from optional `--program` declarations.
+    //
+    // Parameters:
+    // - `args` — CLI args that may include `--program`
+    //
+    // Returns:
+    // `HomeostasisPolicy` filtered to declared metrics, or platform defaults.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let policy = homeostasis_policy_from_args(args);
+
+    let Some(path) = program_path_arg(args) else {
+        return HomeostasisPolicy::platform_defaults();
+    };
+    let Program::Program {
+        homeostasis_policies,
+        ..
+    } = parse_program_file(Path::new(&path));
+    let mut names = Vec::new();
+    for policy in homeostasis_policies {
+        let HomeostasisPolicyDecl::HomeostasisPolicyDecl { metrics, .. } = policy;
+        names.extend(metrics);
+    }
+    HomeostasisPolicy::from_declared_metrics(&names)
+}
+
+fn attention_policy_from_args(args: &[String]) -> AttentionPolicy {
+    // Build an attention policy from optional `--program` declarations.
+    //
+    // Parameters:
+    // - `args` — CLI args that may include `--program`
+    //
+    // Returns:
+    // `AttentionPolicy` derived from declared rules, or critical-first defaults.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let policy = attention_policy_from_args(args);
+
+    let Some(path) = program_path_arg(args) else {
+        return AttentionPolicy::from_declared_rules(&[]);
+    };
+    let Program::Program {
+        attention_policies, ..
+    } = parse_program_file(Path::new(&path));
+    let mut names = Vec::new();
+    for policy in attention_policies {
+        let AttentionPolicyDecl::AttentionPolicyDecl { rules, .. } = policy;
+        names.extend(rules);
+    }
+    AttentionPolicy::from_declared_rules(&names)
 }
 
 pub fn immunity_dispatch(args: &[String]) {

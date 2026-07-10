@@ -118,6 +118,11 @@ Shipped package APIs: official **`spanda-policies`** → `std.policies.homeostas
 `std.policies.attention` (scaffolds; evaluation remains in `spanda-autonomy`). See
 [ADR 0002](./adr/0002-std-policies-package.md).
 
+AST → evaluator wiring (shipped): `spanda homeostasis check --program <file.sd>` and
+`spanda attention check --program <file.sd>` apply declared metrics/rules via
+`HomeostasisPolicy::from_declared_metrics` / `AttentionPolicy::from_declared_rules`.
+Still optional: Control Center / REST using the same path.
+
 ## Non-goals
 
 - Removing `safety` / `ai_model` / `agent` / ActionProposal gate from the grammar
