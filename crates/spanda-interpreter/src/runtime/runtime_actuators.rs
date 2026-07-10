@@ -112,21 +112,13 @@ impl<B: RobotBackend> Interpreter<B> {
                 {
                     return self.block_motion_for_policy(name, reason, line);
                 }
-                let pose = self.backend.get_state().pose;
-                let pose2d = Pose2d {
-                    x: pose.x,
-                    y: pose.y,
-                };
-                // Clamp follow cruise to max_speed / zone caps at the current pose.
-                let max_linear = match self.safety_monitor.as_ref() {
-                    Some(m) => m.clamp_speed_at_pose(DEFAULT_FOLLOW_SPEED, &pose2d).abs(),
-                    None => DEFAULT_FOLLOW_SPEED,
-                };
+                // Pass the unclamped request; reclamp at the current pose (and each tick).
                 self.backend.execute_motion(MotionCommand::Follow {
                     waypoints,
-                    max_linear,
+                    max_linear: DEFAULT_FOLLOW_SPEED,
                     actuator: name.to_string(),
                 });
+                self.reclamp_active_follow_cruise();
             }
             "move_to" => {
                 let x = get_number(&self.get_named_arg_value(named_args, "x")?, 0.0);

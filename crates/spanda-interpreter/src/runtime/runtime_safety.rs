@@ -4,7 +4,7 @@
 use super::{get_number, Interpreter, RobotBackend};
 use spanda_ast::nodes::{SafetyZoneDecl, ZoneShape};
 use spanda_error::SpandaError;
-use spanda_safety::{SafetyZoneRuntime, SafetyZoneShape};
+use spanda_safety::{Pose2d, SafetyZoneRuntime, SafetyZoneShape};
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn eval_safety_zone(
@@ -72,5 +72,36 @@ impl<B: RobotBackend> Interpreter<B> {
             }
         }
         Ok(runtime)
+    }
+
+    pub(super) fn reclamp_active_follow_cruise(&mut self) {
+        // Re-clamp follow cruise using the safety monitor at the current pose.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // self.reclamp_active_follow_cruise();
+
+        const DEFAULT_FOLLOW_SPEED: f64 = 0.5;
+        let Some(monitor) = self.safety_monitor.as_ref() else {
+            return;
+        };
+        let pose = self.backend.get_state().pose;
+        let pose2d = Pose2d {
+            x: pose.x,
+            y: pose.y,
+        };
+        // Clamp the default follow request at the live pose (zone + max_speed).
+        let capped = monitor
+            .clamp_speed_at_pose(DEFAULT_FOLLOW_SPEED, &pose2d)
+            .abs();
+        self.backend.reclamp_follow_cruise(capped);
     }
 }
