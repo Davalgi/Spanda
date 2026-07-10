@@ -103,6 +103,7 @@ Aliases: `spanda-sim-gazebo`, `spanda-sim-webots` (registry metadata).
 | `spanda-mission-planning` | `assurance.mission` | Mission planning assurance |
 | `spanda-mission-continuity` | `assurance.continuity` | Mission continuity and takeover assurance |
 | `spanda-resilience` | `assurance.resilience` | Resilience and recovery policies |
+| `spanda-policies` | `std.policies.homeostasis`, `std.policies.attention` | Cognitive policy scaffolds (`@policy`) |
 | `spanda-fusion` | `assurance.fusion` | Weighted sensor fusion backends |
 
 See [mission-assurance.md](mission-assurance.md) for language constructs and CLI commands.

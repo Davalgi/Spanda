@@ -1,0 +1,13 @@
+import std.policies.homeostasis;
+import std.policies.attention;
+
+test smoke {
+    assert homeostasis_backend_name() == "std.policies.homeostasis";
+    assert homeostasis_kind() == "homeostasis";
+    assert platform_metric_count() == 5;
+    assert is_platform_metric("cpu_pct") == 1;
+    assert attention_backend_name() == "std.policies.attention";
+    assert attention_kind() == "attention";
+    assert example_rule_count() == 2;
+    assert is_example_rule("boost_critical_health") == 1;
+}

@@ -23,6 +23,8 @@ export const STD_NAMESPACES = new Set([
   "std.audit",
   "std.crypto",
   "std.network",
+  "std.policies.homeostasis",
+  "std.policies.attention",
 ]);
 
 export function resolveStdImport(path: string): boolean {

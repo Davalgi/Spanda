@@ -14,7 +14,7 @@ roadmap](../ROADMAP.md).
 |-----------|------|---------------------|
 | `docs/` | 270+ markdown guides, mostly flat | Hard to find pillar vs blueprint vs deep-dive |
 | `examples/` | `basics/`, `showcase/`, `solutions/`, `end_to_end/`, `features/` | No pillar tags in README |
-| `packages/registry/` | 91 official packages | Duplicate mirror in `registry/` and `crates/spanda-cli/bundled-registry/` |
+| `packages/registry/` | 92 official packages | Duplicate mirror in `registry/` and `crates/spanda-cli/bundled-registry/` |
 | `crates/` | 80+ workspace crates | Good `crates/README.md`; missing pillar column |
 | `website/` | Static landing + solutions | Minimal nav; no roadmap page |
 | `.github/` | CI workflows | Smoke scripts not indexed by pillar |

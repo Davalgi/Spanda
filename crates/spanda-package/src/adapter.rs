@@ -475,6 +475,12 @@ pub fn framework_packages() -> &'static [FrameworkPackage] {
             import_paths: &["assurance.resilience"],
         },
         FrameworkPackage {
+            name: "spanda-policies",
+            description: "Cognitive policy scaffolds (std.policies.homeostasis / attention)",
+            category: super::category::PackageCategory::Robotics,
+            import_paths: &["std.policies.homeostasis", "std.policies.attention"],
+        },
+        FrameworkPackage {
             name: "spanda-fusion",
             description: "Weighted sensor fusion backends",
             category: super::category::PackageCategory::Robotics,

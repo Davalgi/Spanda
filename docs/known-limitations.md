@@ -43,6 +43,8 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
 - `serialize`/`deserialize` and AI `provider` accept bare idents or strings (`json` / `mock`, …).
 - `@policy(kind: "homeostasis")` / `@policy(kind: "attention")` parse alongside legacy
   `homeostasis_policy` / `attention_policy` (lint warns only on the keywords).
+- Official package `spanda-policies` exports `std.policies.homeostasis` /
+  `std.policies.attention` scaffolds; evaluation remains in `spanda-autonomy`.
 - `spanda codegen --target` accepts only `native`, `wasm`, `esp32`.
 
 ## Safety model (precise guarantee)

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`@policy(kind: "homeostasis"|"attention")`:** attribute forms parse alongside legacy
   `homeostasis_policy` / `attention_policy`; lint warns only on legacy keywords. Feature examples,
   `gps_loss_full_stack` workflow, and cognitive docs use `@policy`.
+- **`spanda-policies` official package:** `import std.policies.homeostasis` /
+  `std.policies.attention` scaffolds (evaluation stays in `spanda-autonomy`);
+  [ADR 0002](docs/adr/0002-std-policies-package.md).
+- **Multi-segment `import` paths:** `import a.b.c;` parses (needed for `std.policies.*`).
 - **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
   work); unknown values rejected at check time.
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
@@ -52,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   scope, and interpreter realtime as intent+monitoring (not OS hard-RT) in
   [spanda-type-system.md](docs/spanda-type-system.md), [realtime.md](docs/realtime.md),
   [feature-status.md](docs/feature-status.md), [known-limitations.md](docs/known-limitations.md).
-- **Doc drift:** SDK version **0.5.9** and official package count **91** aligned across README /
+- **Doc drift:** SDK version **0.5.9** and official package count **92** aligned across README /
   overview / versioning (sources of truth noted in [versioning.md](docs/versioning.md)).
 - **Autonomous Entity Mesh** promoted to **Stable** (implementation tier) in `docs/feature-status.md`;
   organizational field pilot remains in progress.

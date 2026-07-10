@@ -1,0 +1,14 @@
+[package]
+name = "spanda-policies"
+version = "0.1.0"
+description = "Platform cognitive policies: homeostasis and attention scaffolds (std.policies.*)"
+license = "Apache-2.0"
+
+[safety]
+level = "robotics"
+
+[capabilities]
+required = ["policies.homeostasis", "policies.attention"]
+
+[hardware]
+requirements = []
