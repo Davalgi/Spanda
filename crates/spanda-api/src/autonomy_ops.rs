@@ -1,5 +1,7 @@
 //! REST API for bio-inspired resilient autonomy (CLI/SDK parity).
 //!
+use spanda_ast::nodes::Program;
+use spanda_ast::policy_extract::{attention_rule_names, homeostasis_metric_names};
 use spanda_autonomy::adaptive_recovery::RecoveryHistory;
 use spanda_autonomy::attention::{compute_attention_score, AttentionPolicy, EventPriority};
 use spanda_autonomy::reflex::{evaluate_reflex_priority, ReflexTrace};
@@ -12,6 +14,7 @@ use spanda_autonomy::{
 use spanda_deploy_http::HttpResponse;
 
 use crate::handlers::json_ok;
+use crate::program::parse_program_file;
 use crate::recovery_plugins::orchestrator_for_state;
 use crate::state::ControlCenterState;
 
@@ -71,10 +74,102 @@ pub fn list_reflex_traces(state: &ControlCenterState) -> HttpResponse {
     }))
 }
 
+fn loaded_program(state: &ControlCenterState) -> Option<Program> {
+    // Parse the Control Center `--program` path when present.
+    //
+    // Parameters:
+    // - `state` — live Control Center state
+    //
+    // Returns:
+    // Parsed program, or `None` when no program is loaded / parse fails.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let program = loaded_program(state);
+
+    let path = state.program_path.as_ref()?;
+    parse_program_file(path).ok().map(|(program, _, _)| program)
+}
+
+fn homeostasis_policy_for_state(state: &ControlCenterState) -> (HomeostasisPolicy, &'static str) {
+    // Prefer metrics from the loaded program; otherwise platform defaults.
+    //
+    // Parameters:
+    // - `state` — live Control Center state
+    //
+    // Returns:
+    // Policy plus a `policy_source` label (`program` or `platform_defaults`).
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let (policy, source) = homeostasis_policy_for_state(state);
+
+    match loaded_program(state) {
+        Some(program) => {
+            let names = homeostasis_metric_names(&program);
+            if names.is_empty() {
+                (HomeostasisPolicy::platform_defaults(), "platform_defaults")
+            } else {
+                (
+                    HomeostasisPolicy::from_declared_metrics(&names),
+                    "program",
+                )
+            }
+        }
+        None => (HomeostasisPolicy::platform_defaults(), "platform_defaults"),
+    }
+}
+
+fn attention_policy_for_state(state: &ControlCenterState) -> (AttentionPolicy, &'static str) {
+    // Prefer rules from the loaded program; otherwise critical-first defaults.
+    //
+    // Parameters:
+    // - `state` — live Control Center state
+    //
+    // Returns:
+    // Policy plus a `policy_source` label (`program` or `platform_defaults`).
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let (policy, source) = attention_policy_for_state(state);
+
+    match loaded_program(state) {
+        Some(program) => {
+            let names = attention_rule_names(&program);
+            if names.is_empty() {
+                (AttentionPolicy::from_declared_rules(&[]), "platform_defaults")
+            } else {
+                (AttentionPolicy::from_declared_rules(&names), "program")
+            }
+        }
+        None => (AttentionPolicy::from_declared_rules(&[]), "platform_defaults"),
+    }
+}
+
 /// GET /v1/autonomy/homeostasis — platform homeostasis summary from entity signals.
 pub fn homeostasis_summary(state: &ControlCenterState) -> HttpResponse {
+    // Evaluate homeostasis using loaded `@policy` metrics when `--program` is set.
+    //
+    // Parameters:
+    // - `state` — live Control Center state
+    //
+    // Returns:
+    // JSON HTTP response with per-entity reports and `policy_source`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let response = homeostasis_summary(state);
+
     let registry = state.entity_registry();
-    let policy = HomeostasisPolicy::platform_defaults();
+    let (policy, policy_source) = homeostasis_policy_for_state(state);
     let reports: Vec<_> = registry
         .entities
         .values()
@@ -86,6 +181,7 @@ pub fn homeostasis_summary(state: &ControlCenterState) -> HttpResponse {
         .collect();
     json_ok(&serde_json::json!({
         "version": API_VERSION,
+        "policy_source": policy_source,
         "reports": reports,
     }))
 }
@@ -108,7 +204,22 @@ pub fn immunity_scan(state: &ControlCenterState) -> HttpResponse {
 
 /// GET /v1/autonomy/attention — attention queue from entity health/readiness signals.
 pub fn attention_queue(state: &ControlCenterState) -> HttpResponse {
+    // Rank attention using loaded `@policy` rules when `--program` is set.
+    //
+    // Parameters:
+    // - `state` — live Control Center state
+    //
+    // Returns:
+    // JSON HTTP response with ranked attention window and `policy_source`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let response = attention_queue(state);
+
     let registry = state.entity_registry();
+    let (policy, policy_source) = attention_policy_for_state(state);
     let mut scores = vec![compute_attention_score(
         "platform",
         "routine_telemetry",
@@ -133,9 +244,10 @@ pub fn attention_queue(state: &ControlCenterState) -> HttpResponse {
             &entity.id, &label, priority, severity,
         ));
     }
-    let window = rank_events(scores, &AttentionPolicy::default());
+    let window = rank_events(scores, &policy);
     json_ok(&serde_json::json!({
         "version": API_VERSION,
+        "policy_source": policy_source,
         "attention": window,
     }))
 }
