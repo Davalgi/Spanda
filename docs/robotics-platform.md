@@ -240,8 +240,11 @@ robot R {
 Integrates with existing safety monitor, geofencing, and `on safety` triggers. Program-level
 `safety_zone` speed caps are enforced at runtime via `SafetyMonitor.clamp_speed_at_pose()` when the
 robot is inside a matching named zone — motion remains allowed inside speed-cap zones (use `stop_if
-robot.in_zone(...)` for hard stops). The TypeScript interpreter mirrors the Rust runtime for fleet,
-mission, navigation, fusion, and zone caps (LSP/sim path).
+robot.in_zone(...)` for hard stops). Optional `safety { max_angular = … rad/s; }` clamps turn rate on
+the same interpreter `drive` / `execute` / `validate` paths as `max_speed`. The TypeScript interpreter
+mirrors the Rust runtime for fleet, mission, navigation, fusion, and zone caps (LSP/sim path).
+Authoritative AI + envelope guarantee:
+[spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).
 
 ### Certification metadata
 

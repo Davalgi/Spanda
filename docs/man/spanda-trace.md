@@ -35,5 +35,4 @@ Output trace file (`.trace`).
 
 ## SEE ALSO
 
-spanda-replay(1), spanda-run(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-replay(1), spanda-run(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

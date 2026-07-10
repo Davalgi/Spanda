@@ -38,5 +38,4 @@ Hardware profile definitions in the program or `hardware/` package paths.
 
 ## SEE ALSO
 
-spanda-check(1), spanda-run(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-check(1), spanda-run(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

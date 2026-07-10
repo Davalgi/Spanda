@@ -178,10 +178,26 @@ wheels.execute(action);   // OK
 
 ```spanda
 wheels.execute(proposal);   // COMPILE ERROR
+wheels.drive(linear: proposal.linear, angular: proposal.angular);  // COMPILE ERROR
 ```
 
-The type checker rejects `ActionProposal` passed to `actuator.execute()`. Only `SafeAction` from
-`safety.validate()` is permitted.
+The type checker rejects `ActionProposal` passed to `actuator.execute()`, and rejects
+`ActionProposal.linear` / `.angular` (opaque `UntrustedLinear` / `UntrustedAngular`) as arguments to
+`drive()` / `follow()`. Only `SafeAction` from `safety.validate()` may reach `execute()`. Literal
+non-AI `drive(linear: …, angular: …)` remains valid and is envelope-clamped at runtime.
+
+### Safety motion guarantee (authoritative)
+
+**Compile time:** AI output is typed as `ActionProposal`. Actuator `execute()` accepts only
+`SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components cannot feed
+`DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` /
+`follow(path:)` remain available as low-level APIs. **Runtime (interpreter `run`/`sim`):**
+`safety { max_speed = … }` clamps linear velocity on `drive` and `execute` (and inside
+`safety.validate`); optional `max_angular = … rad/s` clamps turn rate on the same paths; `stop_if`,
+zones, and emergency stop still gate motion via `before_motion`. Zone speed caps apply through
+`clamp_speed_at_pose`. **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp
+per-waypoint speeds; hard real-time deadlines are intent/monitoring on the interpreter path, not
+OS-level guarantees.
 
 ## Human interaction types
 

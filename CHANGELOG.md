@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`safety { max_angular = … rad/s; }`:** optional turn-rate envelope, clamped on interpreter
+  `drive` / `execute` / `safety.validate` (with `max_speed`).
+- **AI `drive` bypass gate:** `ActionProposal.linear` / `.angular` are opaque
+  (`UntrustedLinear` / `UntrustedAngular`) and cannot feed `DifferentialDrive.drive` / `follow`;
+  negative fixture `examples/showcase/ai_safety_drive_bypass.sd`.
 - **Live vehicle I/O bridges:** env-gated LIN (`SPANDA_LIVE_LIN` / `SPANDA_LIN_CMD`), UDS
   (`SPANDA_LIVE_UDS` / `SPANDA_UDS_CMD`), and V2X (`SPANDA_LIVE_V2X` / `SPANDA_V2X_CMD`) for ADAS
   package dispatch; `scripts/adapters_vehicle_io_golden_path.sh`.

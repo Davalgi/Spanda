@@ -34,5 +34,4 @@ Readiness reports may reference `spanda.toml` safety metadata.
 
 ## SEE ALSO
 
-spanda-verify(1), spanda-assure(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-verify(1), spanda-assure(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

@@ -12,8 +12,7 @@ spanda <command> [options] [arguments]
 
 ## DESCRIPTION
 
-The Spanda CLI drives the autonomous systems platform: check, verify, simulate, replay, fleet, and
-document `.sd` programs.
+The Spanda CLI drives the autonomous systems platform: check, verify, simulate, replay, fleet, and document `.sd` programs.
 
 ## COMMANDS
 
@@ -22,6 +21,7 @@ document `.sd` programs.
 - **run** — Execute a Spanda program on the interpreter backend.
 - **sim** — Run a program in the built-in simulator with optional trace recording.
 - **replay** — Replay or deterministically verify a recorded mission trace.
+- **telemetry** — Query the persistent telemetry store written by `--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`.
 - **test** — Run in-language `test` blocks and package test suites for a Spanda project.
 - **readiness** — Evaluate operational readiness: health, safety, fleet, and deployment gates.
 - **assure** — Run assurance workflows: anomaly coverage, prognostics, and assurance cases.
@@ -40,8 +40,7 @@ document `.sd` programs.
 - **codegen** — Generate deployable artifacts from a Spanda program.
 - **debug** — Start an interactive debug session.
 
-Package commands: `init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`,
-`registry info`.
+Package commands: `init`, `build`, `test`, `add`, `remove`, `install`, `publish`, `registry search`, `registry info`.
 
 ## SEE ALSO
 

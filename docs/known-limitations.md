@@ -29,6 +29,15 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
   bridges](./troubleshooting.md#live-ai-and-extern-bridges) ·
   [live-ai-provider.md](./live-ai-provider.md)
 
+## Safety model (precise guarantee)
+
+See the authoritative paragraph in
+[spanda-type-system.md — Safety motion guarantee](./spanda-type-system.md#safety-motion-guarantee-authoritative).
+In short: AI motion must use `safety.validate` → `execute(SafeAction)`; `drive`/`follow` cannot take
+`ActionProposal` components; `max_speed` and optional `max_angular` are clamped on the interpreter
+`drive`/`execute`/`validate` paths. `follow(path:)` is still a low-level path API without
+per-waypoint SafeAction re-validation.
+
 ## Connectivity and IoT
 
 - In-memory transport is the default. Live MQTT, WebSocket, DDS, Modbus, and OPC-UA require env

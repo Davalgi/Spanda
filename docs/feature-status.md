@@ -67,7 +67,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Compatibility verification** | `spanda verify`, `--target`, `--all-targets`, `--simulate`, `--json` |
 | **Simulation** | `spanda run` / `spanda sim`, physics-lite 2D backend, lidar/arm/drone models |
 | **Communication** | `message`, `topic`, `service`, `action`, `publish`/`call`/`send_goal`, in-memory transport |
-| **Safety validation** | Safety zones, `max_speed`, `stop_if`, emergency stop, compile-time `SafeAction` gate |
+| **Safety validation** | Safety zones, `max_speed`, optional `max_angular`, `stop_if`, emergency stop, compile-time `SafeAction` gate (including `drive`/`follow` AI bypass rejection) |
 | **Trigger-driven execution** | Unified `on` / `every` / `when` / `while`; event, message, timer, condition, state, safety, hardware, AI, verification, twin |
 | **Cooperative concurrency** | `spawn`, `join`, `parallel`, channels, `select`, per-task `budget { }`; TypeScript mirror parity |
 | **Fleet simulation** | `spanda fleet run` — in-process multi-robot with deploy/peer wiring |
@@ -218,7 +218,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 |---------|--------|-------|
 | robot / sensor / actuator | **Stable** | |
 | agent / goal / task / skill | **Mock-backed** (Stable API) | Default mock AI backend; live providers optional |
-| ActionProposal → SafeAction | **Stable** | Compile + runtime |
+| ActionProposal → SafeAction | **Stable** | Compile + runtime; `drive`/`follow` reject AI motion components; `max_speed` / optional `max_angular` clamped on interpreter path |
 | safety zones / emergency stop | **Stable** | |
 | deterministic scheduler | **Stable** | `task every Nms` |
 | deadline / jitter / priority | **Stable** | Compile-time validation; runtime telemetry |

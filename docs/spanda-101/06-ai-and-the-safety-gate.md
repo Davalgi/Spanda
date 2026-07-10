@@ -7,7 +7,9 @@ directly.
 
 - [`examples/showcase/rover_navigation.sd`](../../examples/showcase/rover_navigation.sd)
 - [`examples/showcase/ai_safety_violation.sd`](../../examples/showcase/ai_safety_violation.sd)
-  (intentional compile error)
+  (intentional compile error — `execute(ActionProposal)`)
+- [`examples/showcase/ai_safety_drive_bypass.sd`](../../examples/showcase/ai_safety_drive_bypass.sd)
+  (intentional compile error — `drive` fed from `ActionProposal` fields)
 
 ---
 
@@ -18,14 +20,17 @@ AI output is **untrusted**. Spanda enforces this at compile time:
 ```spanda
 // INVALID — compile error
 wheels.execute(proposal);
+wheels.drive(linear: proposal.linear, angular: proposal.angular);
 
-// VALID — only SafeAction reaches hardware
+// VALID — only SafeAction reaches hardware via execute()
 let action = safety.validate(proposal);
 wheels.execute(action);
 ```
 
 `planner.reason(...)` returns an **`ActionProposal`**. Only **`safety.validate()`** produces a
-**`SafeAction`** that actuators accept.
+**`SafeAction`** that `execute()` accepts. `ActionProposal` fields cannot feed `drive()` /
+`follow()` either. Literal non-AI `drive(...)` is still allowed and is clamped by `max_speed` /
+optional `max_angular` at runtime.
 
 ---
 
