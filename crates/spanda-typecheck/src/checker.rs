@@ -1695,6 +1695,7 @@ impl<'h> TypeChecker<'h> {
                 rules,
                 warnings,
                 span,
+                ..
             } = verify_decl;
             let saved = self.symbols.clone();
             self.symbols.insert(

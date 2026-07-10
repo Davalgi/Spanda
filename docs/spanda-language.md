@@ -386,9 +386,17 @@ simulate_compatibility {
 Faults modify the target profile during verification (camera/lidar/IMU removal, battery halving,
 network outage).
 
-## Behavioral verification
+## Runtime assertions (`assert` / `verify`)
 
-Distinct from hardware `spanda verify` — runtime assertions after behavior/task execution:
+Distinct from hardware `spanda verify` (prefer the alias `spanda compatibility`) — these are
+**runtime assertions** after behavior/task execution, not formal verification. Prefer `assert { }`
+in new code; `verify { }` remains accepted. See [verification-vocabulary.md](./verification-vocabulary.md).
+
+```spanda
+assert {
+  robot.velocity().linear <= 2.0 m/s;
+}
+```
 
 ```spanda
 verify {
@@ -446,11 +454,20 @@ behavior start_delivery() {
 
 ## Contracts
 
+`requires` / `ensures` / `invariant` are **runtime contracts**, not formal proofs. `ensures` is
+evaluated after the behavior or task body completes.
+
 ```spanda
-behavior move() requires lidar.nearest_distance > 0.5 m ensures true {
+behavior move()
+  requires lidar.nearest_distance > 0.5 m
+  ensures lidar.nearest_distance >= 0.0 m
+{
   wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
 }
 ```
+
+`ensures` expressions may reference sensors and locals in scope for the behavior/task — they are
+checked at **runtime** after the body, not discharged statically.
 
 ## Events and triggers
 

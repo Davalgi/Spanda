@@ -3888,7 +3888,7 @@ impl Parser {
                 twin_sync = Some(self.parse_twin_sync()?);
             } else if self.check(TokenType::Twin) {
                 twin = Some(self.parse_twin()?);
-            } else if self.check(TokenType::Verify) {
+            } else if self.check(TokenType::Verify) || self.check(TokenType::Assert) {
                 verify = Some(self.parse_verify()?);
             } else if self.check(TokenType::Observe) {
                 observe = Some(self.parse_observe()?);
@@ -5338,24 +5338,28 @@ impl Parser {
     }
 
     fn parse_verify(&mut self) -> Result<spanda_ast::foundations::VerifyDecl, SpandaError> {
-        // Description:
-        //     Parse verify.
+        // Parse `verify { … }` or preferred alias `assert { … }` runtime assertion blocks.
         //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
+        // Parameters:
+        // None (uses parser cursor).
         //
-        // Outputs:
-        //     result: Result<spanda_ast::foundations::VerifyDecl, SpandaError>
-        //         Return value from `parse_verify`.
+        // Returns:
+        // A `VerifyDecl`, or a parse error.
+        //
+        // Options:
+        // None.
         //
         // Example:
-        //     let result = spanda_parser::parse_verify(&mut self);
+        // self.parse_verify()?
 
-        // Import the items needed by the logic below.
         use spanda_ast::foundations::VerifyDecl;
         let start = self.advance();
-        self.expect(TokenType::Lbrace, "Expected '{' after verify")?;
+        let assert_alias = start.token_type == TokenType::Assert;
+        let keyword = if assert_alias { "assert" } else { "verify" };
+        self.expect(
+            TokenType::Lbrace,
+            &format!("Expected '{{' after {keyword}"),
+        )?;
         let mut rules = Vec::new();
         let mut warnings = Vec::new();
 
@@ -5367,12 +5371,19 @@ impl Parser {
             } else {
                 rules.push(self.parse_expr()?);
             }
-            self.expect(TokenType::Semicolon, "Expected ';' after verify rule")?;
+            self.expect(
+                TokenType::Semicolon,
+                &format!("Expected ';' after {keyword} rule"),
+            )?;
         }
-        let end = self.expect(TokenType::Rbrace, "Expected '}' to close verify block")?;
+        let end = self.expect(
+            TokenType::Rbrace,
+            &format!("Expected '}}' to close {keyword} block"),
+        )?;
         Ok(VerifyDecl::VerifyDecl {
             rules,
             warnings,
+            assert_alias,
             span: self.span_from(&start, &end),
         })
     }
@@ -11122,6 +11133,41 @@ robot Rover {
         };
         let SafetyBlock::SafetyBlock { rules, .. } = s;
         assert!(matches!(rules[0], SafetyRule::MaxAngularRule { .. }));
+    }
+
+    #[test]
+    fn parses_assert_block_alias() {
+        // Prefer assert { } as the runtime-assertion keyword.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // parses_assert_block_alias();
+
+        let ast = parse(
+            tokenize(
+                r#"robot R {
+  actuator wheels: DifferentialDrive;
+  assert { robot.velocity().linear <= 1.0 m/s; }
+  behavior b() {}
+}"#,
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        let RobotDecl::RobotDecl { verify, .. } = &ast.robots()[0];
+        let Some(spanda_ast::foundations::VerifyDecl::VerifyDecl { assert_alias, .. }) = verify
+        else {
+            panic!("expected assert/verify block");
+        };
+        assert!(*assert_alias);
     }
 
     #[test]

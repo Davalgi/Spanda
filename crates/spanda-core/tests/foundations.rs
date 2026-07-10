@@ -163,7 +163,7 @@ robot R {
   sensor lidar: Lidar on "/scan";
   actuator wheels: DifferentialDrive;
 
-  behavior move() requires lidar.nearest_distance > 0.5 m ensures true {
+  behavior move() requires lidar.nearest_distance > 0.5 m ensures lidar.nearest_distance >= 0.0 m {
     wheels.drive(linear: 0.2 m/s, angular: 0.0 rad/s);
   }
 }

@@ -456,7 +456,29 @@ fn lint_program_structure(program: &Program, issues: &mut Vec<LintIssue>) {
 
     // Handle each robot declared in the program.
     for robot in robots {
-        let RobotDecl::RobotDecl { behaviors, .. } = robot;
+        let RobotDecl::RobotDecl {
+            behaviors, verify, ..
+        } = robot;
+
+        // Prefer assert { } for runtime assertion blocks (vocabulary clarity).
+        if let Some(spanda_ast::foundations::VerifyDecl::VerifyDecl {
+            assert_alias,
+            span,
+            ..
+        }) = verify
+        {
+            if !assert_alias {
+                issues.push(LintIssue {
+                    rule: "verify-block-alias".into(),
+                    message: "`verify { }` is a runtime assertion block (not formal verification \
+                         or `spanda verify`). Prefer `assert { }` — see docs/verification-vocabulary.md"
+                        .into(),
+                    line: span.start.line,
+                    column: span.start.column,
+                    severity: LintSeverity::Warning,
+                });
+            }
+        }
 
         // Process each behavior.
         for behavior in behaviors {
@@ -566,6 +588,56 @@ mod tests {
             .issues
             .iter()
             .any(|i| i.rule == "trailing-whitespace"));
+    }
+
+    #[test]
+    fn warns_on_verify_block_preferring_assert_alias() {
+        // Runtime assertion blocks named verify { } get a vocabulary lint.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // warns_on_verify_block_preferring_assert_alias();
+
+        let source = r#"
+module demo;
+robot R {
+  actuator wheels: DifferentialDrive;
+  verify { robot.velocity().linear <= 1.0 m/s; }
+  behavior b() { wheels.stop(); }
+}
+"#;
+        let report = lint(source).expect("lint should parse");
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|i| i.rule == "verify-block-alias"),
+            "expected verify-block-alias warning, got {:?}",
+            report.issues
+        );
+
+        let preferred = r#"
+module demo;
+robot R {
+  actuator wheels: DifferentialDrive;
+  assert { robot.velocity().linear <= 1.0 m/s; }
+  behavior b() { wheels.stop(); }
+}
+"#;
+        let ok = lint(preferred).expect("lint should parse");
+        assert!(
+            !ok.issues.iter().any(|i| i.rule == "verify-block-alias"),
+            "assert {{ }} should not warn, got {:?}",
+            ok.issues
+        );
     }
 
     #[test]

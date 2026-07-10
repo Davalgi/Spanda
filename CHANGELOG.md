@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Verification vocabulary guide:** [docs/verification-vocabulary.md](docs/verification-vocabulary.md)
+  disentangles `spanda verify` / `compatibility`, `verify`/`assert` blocks, `certify` metadata, and
+  `ensures` runtime contracts — none are formal verification.
+- **`assert { }` alias** for runtime assertion blocks (preferred over `verify { }`); lint warns on
+  the older keyword.
 - **`safety { max_angular = … rad/s; }`:** optional turn-rate envelope, clamped on interpreter
   `drive` / `execute` / `safety.validate` (with `max_speed`).
 - **AI `drive` bypass gate:** `ActionProposal.linear` / `.angular` are opaque

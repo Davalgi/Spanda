@@ -57,6 +57,14 @@ per-waypoint SafeAction re-validation.
 
 ## Verification and certification
 
+Spanda does **not** perform formal verification. See
+[verification-vocabulary.md](./verification-vocabulary.md) for the three distinct mechanisms:
+
+- `spanda verify` / `spanda compatibility` — hardware fit checking
+- `verify { }` / `assert { }` — runtime assertions
+- `certify … { }` — **declared metadata** only (not a certification body sign-off)
+- `requires` / `ensures` — runtime contracts (`ensures` is checked after the body runs)
+
 - `certify ISO13849 { … }` is **verify-time metadata** — not a formal certification body sign-off.
 - Capability traceability and minimum-hardware checks are **static analysis** plus runtime health
   hooks — not IEC 61508 tooling.

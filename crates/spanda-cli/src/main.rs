@@ -223,8 +223,8 @@ fn usage() {
          Usage:\n\
            spanda check [--json] [--verification-json] [<file.sd> | --project]\n\
            spanda verify [--json] [--target <HardwareProfile>] [--policy <name>] [--profile <name>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
-           spanda certify prove [--json] [--strict] [--out <file.json>] <file.sd>\n\
-           spanda compatibility [--json] [--target <HardwareProfile>] [--all-targets] [--simulate] [--strict-certify] <file.sd>\n\
+           spanda compatibility …  (alias of verify — hardware fit check, not formal verification)\n\
+           spanda certify prove [--json] [--strict] [--out <file.json>] <file.sd>  (declared metadata / proof pack; not a certification result)\n\
            spanda run [--json] [--verbose] [--runtime auto|native|interpreter] [--twin-export <replay.json>] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--enforce-certify] <file.sd>\n\
            spanda sim [--json] [--replay] [--runtime auto|native|interpreter] [--twin-export <replay.json>] [--trace-realtime] [--metrics-json] [--record] [--persist-telemetry] [--trace-scheduler] [--trace-tasks] [--trace-triggers] [--trace-events] [--trace-providers] [--enforce-certify] [--enforce-policy <name>] <file.sd>\n\
            spanda run [--enforce-policy <name>] <file.sd>\n\

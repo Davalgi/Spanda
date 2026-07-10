@@ -187,8 +187,9 @@ fn render_keywords(out: &mut String) {
             ],
         ),
         (
-            "Safety and verification",
+            "Safety and contracts",
             &[
+                "assert",
                 "verify",
                 "observe",
                 "emergency_stop",
@@ -199,6 +200,7 @@ fn render_keywords(out: &mut String) {
                 "invariant",
                 "can",
                 "warning",
+                "certify",
             ],
         ),
         (
@@ -865,12 +867,12 @@ const CLI_COMMANDS: &[CliCommand] = &[
         name: "spanda-verify",
         section: 1,
         synopsis: "spanda verify [--json] [--target <profile>] [--all-targets] [--simulate] <file.sd>",
-        description: "Verify hardware compatibility and safety constraints for a deploy target.",
-        options: "`--target` — hardware profile name\n`--all-targets` — compatibility matrix\n`--simulate` — include simulator checks\n`--json` — JSON report",
-        examples: "spanda verify robot.sd --target RoverV1\nspanda verify robot.sd --all-targets --simulate",
-        exit_status: "0 when compatible; 1 on verification failures or errors.",
+        description: "Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.",
+        options: "`--target` — hardware profile name\n`--all-targets` — compatibility matrix\n`--simulate` — include simulator checks\n`--json` — JSON report\n`--strict-certify` — fail when certify metadata is missing/incomplete (metadata only)",
+        examples: "spanda verify robot.sd --target RoverV1\nspanda compatibility robot.sd --all-targets --simulate",
+        exit_status: "0 when compatible; 1 on compatibility failures or errors.",
         files: "Hardware profile definitions in the program or `hardware/` package paths.",
-        see_also: "spanda-check(1), spanda-run(1)",
+        see_also: "spanda-check(1), spanda-run(1), [verification-vocabulary.md](../verification-vocabulary.md)",
     },
     CliCommand {
         name: "spanda-run",

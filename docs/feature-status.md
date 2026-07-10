@@ -64,7 +64,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **AI agents** | `ai_model`, `agent`, `goal`, `memory`, **mock-backed** LLM/Vision providers by default, `ActionProposal` → `safety.validate()` → `SafeAction` |
 | **Robotics primitives** | `robot`, `sensor`, `actuator`, `behavior`, `task every Nms`, state machines, events |
 | **Hardware profiles** | `hardware`, `deploy`, `requires_hardware`, `requires_network`, SoC/HAL validation |
-| **Compatibility verification** | `spanda verify`, `--target`, `--all-targets`, `--simulate`, `--json` |
+| **Compatibility verification** | `spanda verify` (alias `spanda compatibility`) — hardware fit checking, not formal verification; see [verification-vocabulary.md](./verification-vocabulary.md) |
 | **Simulation** | `spanda run` / `spanda sim`, physics-lite 2D backend, lidar/arm/drone models |
 | **Communication** | `message`, `topic`, `service`, `action`, `publish`/`call`/`send_goal`, in-memory transport |
 | **Safety validation** | Safety zones, `max_speed`, optional `max_angular`, `stop_if`, emergency stop, compile-time `SafeAction` gate (including `drive`/`follow` AI bypass rejection) |
@@ -132,7 +132,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
 | **OTA rollout** | Deploy plan/rollout/rollback/status | Local state file + HTTP deploy agents; `--require-certify` blocks uncertified rollouts |
-| **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
+| **Certification metadata** | `certify ISO13849 { level PLd; }` | **Declared metadata** for verify/CI — not a certification result; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
 | **ROS2 adapter** | Native `rclrs` cdylib, rclpy daemon, CLI bridge | Requires ROS Humble; not default transport |
 | **LLVM / native codegen** | `spanda run --runtime auto\|native\|interpreter`; `llvm-ir`, `compile-native`; `scripts/llvm_golden_path.sh` | **Primary** execution path when SIR eligible; interpreter LTS fallback |
@@ -242,8 +242,9 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | recovery diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `recovery:*` categories; TS mirror in `scripts/lsp-readiness.mts` |
 | continuity diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `continuity:*` categories including `continuity:mission`; TS mirror in `src/continuity-diagnostics.ts` |
 | learned anomaly backends | **Experimental** | Runtime `scan_learned`; ONNX optional |
-| verify { } behavioral assertions | **Stable** | |
-| hardware / deploy | **Stable** | Rust verify CLI |
+| verify { } / assert { } runtime assertions | **Stable** | Not formal verification; `assert { }` preferred alias |
+| requires / ensures / invariant | **Stable** | Runtime contracts; `ensures` checked after body (not static proof) |
+| hardware / deploy | **Stable** | Rust verify CLI (`spanda compatibility` alias) |
 
 ### Tooling
 

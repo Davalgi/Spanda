@@ -93,6 +93,7 @@ export type TokenType =
   | "RESET_EMERGENCY_STOP"
   | "REMEMBER"
   | "VERIFY"
+  | "ASSERT"
   | "OBSERVE"
   | "SECRET"
   | "TRUST"
@@ -398,6 +399,7 @@ const KEYWORDS: Record<string, TokenType> = {
   reset_emergency_stop: "RESET_EMERGENCY_STOP",
   remember: "REMEMBER",
   verify: "VERIFY",
+  assert: "ASSERT",
   observe: "OBSERVE",
   secret: "SECRET",
   trust: "TRUST",

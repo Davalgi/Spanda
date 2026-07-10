@@ -1827,8 +1827,8 @@ class Parser {
       } else if (this.check("TWIN")) {
         twin = this.parseTwin();
 
-      // Otherwise, continue when this.check("VERIFY").
-      } else if (this.check("VERIFY")) {
+      // Otherwise, continue when this.check("VERIFY") or assert alias.
+      } else if (this.check("VERIFY") || this.check("ASSERT")) {
         verify = this.parseVerify();
 
       // Otherwise, continue when this.check("OBSERVE").
@@ -4836,44 +4836,40 @@ class Parser {
 }
 
   private parseVerify(): VerifyDecl {
-    // Description:
-    //     ParseVerify.
+    // Parse `verify { … }` or preferred alias `assert { … }`.
     //
-    // Inputs:
-    //     None.
+    // Parameters:
+    // None.
     //
-    // Outputs:
-    //     result: VerifyDecl
-    //         Return value from `parseVerify`.
+    // Returns:
+    // A VerifyDecl.
     //
-    // Example:
-    //     const result = parseVerify();
-    // Description:
-    //     ParseVerify.
-    //
-    // Inputs:
-    //     None.
-    //
-    // Outputs:
-    //     result: VerifyDecl
-    //         Return value from `parseVerify`.
+    // Options:
+    // None.
     //
     // Example:
-    //     const result = parseVerify();
+    // this.parseVerify();
 
-    // const result = parseVerify();
-    const start = this.expect("VERIFY", "Expected 'verify'");
-    this.expect("LBRACE", "Expected '{' after verify");
+    const assertAlias = this.check("ASSERT");
+    const keyword = assertAlias ? "assert" : "verify";
+    const start = assertAlias
+      ? this.expect("ASSERT", "Expected 'assert'")
+      : this.expect("VERIFY", "Expected 'verify'");
+    this.expect("LBRACE", `Expected '{' after ${keyword}`);
     const rules = [];
 
-    // Repeat while !this.check("RBRACE") && !this.check("EOF").
     while (!this.check("RBRACE") && !this.check("EOF")) {
       rules.push(this.parseExpr());
-      this.expect("SEMICOLON", "Expected ';' after verify rule");
+      this.expect("SEMICOLON", `Expected ';' after ${keyword} rule`);
     }
-    const end = this.expect("RBRACE", "Expected '}' to close verify block");
-    return { kind: "VerifyDecl", rules, span: this.spanFrom(start, end) };
-}
+    const end = this.expect("RBRACE", `Expected '}' to close ${keyword} block`);
+    return {
+      kind: "VerifyDecl",
+      rules,
+      assertAlias,
+      span: this.spanFrom(start, end),
+    };
+  }
 
   private parseTraitImpl(): TraitImplDecl {
     // Description:
