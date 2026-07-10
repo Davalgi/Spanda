@@ -1,6 +1,7 @@
 //! CLI commands for bio-inspired resilient autonomy architecture.
 //!
 use crate::config_load::{ensure_config_valid, load_system_config_from_cli_args};
+use spanda_ast::nodes::Program;
 use spanda_ast::policy_extract::{attention_rule_names, homeostasis_metric_names};
 use spanda_autonomy::format::format_report;
 use spanda_autonomy::types::AutonomyReportFormat;
