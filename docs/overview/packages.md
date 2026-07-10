@@ -5,7 +5,7 @@
 > **Canonical guides:** [packages.md](../packages.md) · [registry.md](../registry.md) ·
 > [official-packages.md](../official-packages.md)
 
-Spanda extends through a **lean core** plus **89 official packages** under `packages/registry/`.
+Spanda extends through a **lean core** plus **91 official packages** under `packages/registry/`.
 
 ```bash
 spanda init my_robot

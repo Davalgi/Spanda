@@ -103,15 +103,25 @@ Pre-release checks:
 ./scripts/verify_desktop_release_ready.sh  # before desktop tag
 ```
 
-## Current versions (2026-07-08)
+## Current versions (2026-07-10)
 
 | Stream | Version | Last tag |
 |--------|---------|----------|
-| Workspace / CLI | **0.6.3** | `v0.6.3` |
-| Official SDKs (published) | **0.5.8** | `crates-sdk-v0.5.8`, `sdk-python-v0.5.8`, `npm-sdk-v0.5.8` |
-| Official SDKs (workspace line) | **0.5.8** | *(aligned with published)* |
+| Workspace / CLI | **0.7.0** | `v0.7.0` |
+| Official SDKs (published) | **0.5.9** | `crates-sdk-v0.5.9`, `sdk-python-v0.5.9`, `npm-sdk-v0.5.9` |
+| Official SDKs (workspace line) | **0.5.9** | *(aligned with published)* |
 | Control Center desktop | **0.6.3** | `desktop-v0.6.3` |
-| Official registry packages | **89** | `packages/registry/` → `registry/index.json` |
+| Official registry packages | **91** | `packages/registry/` → `registry/index.json` |
+
+**Sources of truth (do not invent counts/versions in prose):**
+
+| Fact | Canonical source |
+|------|------------------|
+| Workspace version | `[workspace.package].version` in root `Cargo.toml` |
+| SDK versions | `crates/spanda-sdk/Cargo.toml`, `sdk/python/pyproject.toml`, `sdk/typescript/package.json` (keep aligned) |
+| Official package count | `ls -d packages/registry/*/ \| wc -l` (must match `registry/index.json` length after `build-registry.sh`) |
+
+When docs mention SDK version or package count, update them from these sources in the same change.
 
 ## Checklist
 
