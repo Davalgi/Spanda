@@ -66,7 +66,8 @@ Register import paths in `spanda-package` adapter + typecheck catalogs + `std_na
 
 - ~~Wire AST `@policy` metrics/rules into autonomy evaluators~~ — done via
   `spanda homeostasis|attention check --program` + `from_declared_*` helpers
-- Optional: Control Center / REST use the same AST→policy path as the CLI
+- ~~Control Center / REST use the same AST→policy path as the CLI~~ — done when
+  `control-center serve --program` is set (`policy_source` in homeostasis/attention JSON)
 - Hard-remove legacy keywords only after a major version
 
 ---

@@ -72,7 +72,7 @@ spanda homeostasis report
 
 | Surface | Endpoint / RPC |
 |---------|----------------|
-| REST | `GET /v1/autonomy/homeostasis` |
+| REST | `GET /v1/autonomy/homeostasis` (uses `@policy` metrics when Control Center started with `--program`) |
 | gRPC | `GetAutonomyHomeostasis` |
 | SDK | `HomeostasisClient::summary()` (Rust), `homeostasis().summary()` (TS/Python) |
 | Entity | `GET /v1/entities/{id}/autonomy` → `homeostasis` field |
