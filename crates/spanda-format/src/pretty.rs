@@ -837,6 +837,21 @@ impl PrettyPrinter {
                         }
                         self.write_line(";");
                     }
+                    SafetyRule::MaxAngularRule {
+                        name, value, unit, ..
+                    } => {
+                        let mut val = PrettyPrinter::new();
+                        val.print_expr(value);
+                        self.write(&format!("{name} = {}", val.out));
+
+                        // Append unit only when it is not already part of a unit literal.
+                        if !matches!(value, Expr::UnitLiteralExpr { .. }) && *unit != UnitKind::None
+                        {
+                            self.space();
+                            self.write(unit.as_str());
+                        }
+                        self.write_line(";");
+                    }
                     SafetyRule::StopIfRule { condition, .. } => {
                         let mut cond = PrettyPrinter::new();
                         cond.print_expr(condition);

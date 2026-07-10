@@ -2132,7 +2132,7 @@ class TypeChecker {
     //     const result = checkSafetyRule(rule);
 
     // const result = checkSafetyRule(rule);
-    if (rule.kind === "MaxSpeedRule") {
+    if (rule.kind === "MaxSpeedRule" || rule.kind === "MaxAngularRule") {
       const t = this.checkExpr(rule.value);
 
       // continue when kind differs from unit).

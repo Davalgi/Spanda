@@ -98,3 +98,49 @@ robot Rover {
         result.state.velocity.linear
     );
 }
+
+#[test]
+fn safety_max_angular_clamps_drive_at_runtime() {
+    // Drive above safety.max_angular must be clamped at runtime.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // safety_max_angular_clamps_drive_at_runtime();
+
+    let source = r#"
+robot Rover {
+  actuator wheels: DifferentialDrive;
+  safety {
+    max_speed = 1.0 m/s;
+    max_angular = 0.3 rad/s;
+  }
+
+  behavior turn() {
+    wheels.drive(linear: 0.1 m/s, angular: 2.0 rad/s);
+  }
+}
+"#;
+    let program = parse_source(source);
+    let result = run_program(
+        &program,
+        RunOptions {
+            entry_behavior: Some("turn".into()),
+            max_loop_iterations: 1,
+            ..Default::default()
+        },
+    )
+    .expect("run");
+    assert!(
+        (result.state.velocity.angular - 0.3).abs() < 1e-9,
+        "expected angular velocity clamped to 0.3 rad/s, got {}",
+        result.state.velocity.angular
+    );
+}

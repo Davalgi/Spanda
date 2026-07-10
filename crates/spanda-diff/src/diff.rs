@@ -426,6 +426,7 @@ fn safety_summary(safety: &SafetyBlock) -> String {
         .iter()
         .map(|rule| match rule {
             SafetyRule::MaxSpeedRule { name, .. } => format!("max_speed:{name}"),
+            SafetyRule::MaxAngularRule { name, .. } => format!("max_angular:{name}"),
             SafetyRule::StopIfRule { .. } => "stop_if".into(),
         })
         .collect::<Vec<_>>()

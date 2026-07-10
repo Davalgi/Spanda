@@ -32,6 +32,8 @@ pub type StopIfRule = Box<dyn Fn(&Environment) -> bool>;
 
 pub struct SafetyConfig {
     pub max_speed: f64,
+    /// Optional turn-rate cap in rad/s (`f64::INFINITY` = unbounded).
+    pub max_angular: f64,
     pub stop_if_rules: Vec<StopIfRule>,
     pub zones: Vec<SafetyZoneRuntime>,
     pub zone_speed_caps: HashMap<String, f64>,
@@ -210,7 +212,7 @@ impl SafetyMonitor {
         }
         ValidateActionResult::Ok(ValidatedMotion {
             linear: self.clamp_speed_at_pose(linear, pose),
-            angular,
+            angular: self.clamp_angular(angular),
         })
     }
 
@@ -295,6 +297,30 @@ impl SafetyMonitor {
             requested.signum()
         };
         requested.abs().min(self.effective_max_speed(pose)) * sign
+    }
+
+    pub fn clamp_angular(&self, requested: f64) -> f64 {
+        // Clamp angular velocity to `safety.max_angular` when configured.
+        //
+        // Parameters:
+        // - `requested` — requested angular velocity in rad/s
+        //
+        // Returns:
+        // The signed angular velocity limited by `max_angular`.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // assert_eq!(monitor.clamp_angular(2.0), 1.0);
+
+        // Preserve sign while applying the absolute turn-rate cap.
+        let sign = if requested == 0.0 {
+            1.0
+        } else {
+            requested.signum()
+        };
+        requested.abs().min(self.config.max_angular) * sign
     }
 
     pub fn is_in_zone(&self, zone_name: &str, pose: &Pose2d) -> bool {
@@ -516,9 +542,44 @@ pub fn create_safety_config_from_robot(
     // Example:
     //     let result = spanda_safety::create_safety_config_from_robot(ax_speed, stop_if_rules, zones, zone_speed_caps);
 
+    create_safety_config_from_robot_with_angular(
+        max_speed,
+        f64::INFINITY,
+        stop_if_rules,
+        zones,
+        zone_speed_caps,
+    )
+}
+
+pub fn create_safety_config_from_robot_with_angular(
+    max_speed: f64,
+    max_angular: f64,
+    stop_if_rules: Vec<StopIfRule>,
+    zones: Vec<SafetyZoneRuntime>,
+    zone_speed_caps: HashMap<String, f64>,
+) -> SafetyConfig {
+    // Build a SafetyConfig including an optional angular velocity cap.
+    //
+    // Parameters:
+    // - `max_speed` — linear speed cap (m/s)
+    // - `max_angular` — angular velocity cap (rad/s); use INFINITY for unbounded
+    // - `stop_if_rules` — emergency stop predicates
+    // - `zones` — runtime safety zones
+    // - `zone_speed_caps` — named zone linear speed caps
+    //
+    // Returns:
+    // A populated `SafetyConfig`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let cfg = create_safety_config_from_robot_with_angular(1.0, 0.5, vec![], vec![], HashMap::new());
+
     // Produce SafetyConfig as the result.
     SafetyConfig {
         max_speed,
+        max_angular,
         stop_if_rules,
         zones,
         zone_speed_caps,
@@ -724,6 +785,45 @@ mod tests {
         ));
         assert_eq!(monitor.clamp_speed(2.0), 1.0);
         assert_eq!(monitor.clamp_speed(-3.0), -1.0);
+    }
+
+    #[test]
+    fn clamps_angular_to_max_angular() {
+        // Angular velocity is limited by safety.max_angular.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // clamps_angular_to_max_angular();
+
+        let monitor = SafetyMonitor::new(create_safety_config_from_robot_with_angular(
+            1.0,
+            0.5,
+            vec![],
+            vec![],
+            HashMap::new(),
+        ));
+        assert_eq!(monitor.clamp_angular(2.0), 0.5);
+        assert_eq!(monitor.clamp_angular(-3.0), -0.5);
+        let validated = monitor.validate_action_proposal(
+            0.2,
+            1.5,
+            &Environment::new(),
+            &Pose2d { x: 0.0, y: 0.0 },
+        );
+        match validated {
+            ValidateActionResult::Ok(motion) => {
+                assert_eq!(motion.angular, 0.5);
+            }
+            ValidateActionResult::Err { reason } => panic!("unexpected reject: {reason}"),
+        }
     }
 
     #[test]

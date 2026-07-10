@@ -5314,7 +5314,12 @@ impl Parser {
             } else if self.check(TokenType::Zone) {
                 zones.push(self.parse_safety_zone()?);
             } else if self.check(TokenType::Ident) {
-                rules.push(self.parse_max_speed_rule()?);
+                // Dispatch named safety envelope rules by identifier.
+                if self.peek().lexeme == "max_angular" {
+                    rules.push(self.parse_max_angular_rule()?);
+                } else {
+                    rules.push(self.parse_max_speed_rule()?);
+                }
             } else {
                 let t = self.peek();
                 return Err(SpandaError::Parse {
@@ -6625,6 +6630,49 @@ impl Parser {
         };
         self.expect(TokenType::Semicolon, "Expected ';' after safety rule")?;
         Ok(SafetyRule::MaxSpeedRule {
+            name,
+            value,
+            unit,
+            span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_max_angular_rule(&mut self) -> Result<SafetyRule, SpandaError> {
+        // Parse `max_angular = <expr> rad/s;` inside a safety block.
+        //
+        // Parameters:
+        // None (uses parser cursor).
+        //
+        // Returns:
+        // A `SafetyRule::MaxAngularRule`, or a parse error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // // inside parse_safety: self.parse_max_angular_rule()?
+
+        // Capture the rule name token, then parse assignment and unit.
+        let start = self.advance();
+        let name = start.lexeme.clone();
+        self.expect(TokenType::Assign, "Expected '=' in safety rule")?;
+        let value = self.parse_expr()?;
+        let unit = if let Expr::UnitLiteralExpr { unit, .. } = &value {
+            *unit
+        } else {
+            self.parse_unit_suffix()?
+        };
+
+        // Reject non-angular-velocity units for max_angular.
+        if unit != UnitKind::RadPerS {
+            return Err(SpandaError::Parse {
+                message: "max_angular requires an angular velocity unit (rad/s)".into(),
+                line: start.line,
+                column: start.column,
+            });
+        }
+        self.expect(TokenType::Semicolon, "Expected ';' after safety rule")?;
+        Ok(SafetyRule::MaxAngularRule {
             name,
             value,
             unit,
@@ -11048,6 +11096,32 @@ robot Rover {
         };
         let SafetyBlock::SafetyBlock { rules, .. } = s;
         assert!(matches!(rules[0], SafetyRule::MaxSpeedRule { .. }));
+    }
+
+    #[test]
+    fn parses_max_angular_rule() {
+        // Parse max_angular inside a safety block.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // parses_max_angular_rule();
+
+        let ast =
+            parse(tokenize("robot R { safety { max_angular = 0.5 rad/s; } }").unwrap()).unwrap();
+        let RobotDecl::RobotDecl { safety, .. } = &ast.robots()[0];
+        let Some(s) = safety else {
+            panic!("expected safety block");
+        };
+        let SafetyBlock::SafetyBlock { rules, .. } = s;
+        assert!(matches!(rules[0], SafetyRule::MaxAngularRule { .. }));
     }
 
     #[test]

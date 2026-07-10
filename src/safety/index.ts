@@ -23,6 +23,8 @@ export type SafetyEvaluation = {
 
 export type SafetyConfig = {
   maxSpeed: number;
+  /** Turn-rate cap in rad/s (`Infinity` = unbounded). */
+  maxAngular: number;
   stopIfRules: Array<(env: Environment) => boolean>;
   zones: SafetyZoneRuntime[];
   zoneSpeedCaps: Map<string, number>;
@@ -134,7 +136,7 @@ export class SafetyMonitor {
     if (!peek.allowed) {
       return { ok: false, reason: peek.reason ?? "Safety validation failed" };
     }
-    return { ok: true, linear: this.clampSpeedAtPose(linear, pose), angular };
+    return { ok: true, linear: this.clampSpeedAtPose(linear, pose), angular: this.clampAngular(angular) };
   }
 
   effectiveMaxSpeed(pose: { x: number; y: number }): number {
@@ -157,6 +159,25 @@ export class SafetyMonitor {
     // Clamp requested linear speed to the effective cap at the current pose.
     const sign = requested === 0 ? 1 : Math.sign(requested);
     return Math.min(Math.abs(requested), this.effectiveMaxSpeed(pose)) * sign;
+  }
+
+  clampAngular(requested: number): number {
+    // Clamp angular velocity to safety.max_angular when configured.
+    //
+    // Parameters:
+    // - `requested` — requested angular velocity in rad/s
+    //
+    // Returns:
+    // The signed angular velocity limited by maxAngular.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // monitor.clampAngular(2.0);
+
+    const sign = requested === 0 ? 1 : Math.sign(requested);
+    return Math.min(Math.abs(requested), this.config.maxAngular) * sign;
   }
 
   isInZone(zoneName: string, pose: { x: number; y: number }): boolean {
@@ -294,8 +315,9 @@ export function createSafetyConfigFromRobot(
   stopIfRules: Array<(env: Environment) => boolean>,
   zones: SafetyZoneRuntime[] = [],
   zoneSpeedCaps: Map<string, number> = new Map(),
+  maxAngular: number = Infinity,
 ): SafetyConfig {
-  return { maxSpeed, stopIfRules, zones, zoneSpeedCaps };
+  return { maxSpeed, maxAngular, stopIfRules, zones, zoneSpeedCaps };
 }
 
 export function applyEmergencyStop(state: RobotState): RobotState {

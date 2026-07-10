@@ -5803,7 +5803,12 @@ class Parser {
 
       // Otherwise, continue when this.check("IDENT").
       } else if (this.check("IDENT")) {
-        rules.push(this.parseMaxSpeedRule());
+        // Dispatch named safety envelope rules by identifier.
+        if (this.peek().lexeme === "max_angular") {
+          rules.push(this.parseMaxAngularRule());
+        } else {
+          rules.push(this.parseMaxSpeedRule());
+        }
 
       // Handle any remaining cases.
       } else {
@@ -6259,6 +6264,49 @@ class Parser {
       span: this.spanFrom(start, end),
     };
 }
+
+  private parseMaxAngularRule(): SafetyRule {
+    // Parse `max_angular = <expr> rad/s;` inside a safety block.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // A MaxAngularRule SafetyRule.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // this.parseMaxAngularRule();
+
+    const start = this.peek();
+    const name = this.advance();
+    this.expect("ASSIGN", "Expected '=' in safety rule");
+    const value = this.parseExpr();
+    let unit: UnitKind;
+    if (value.kind === "UnitLiteralExpr") {
+      unit = value.unit;
+    } else {
+      unit = this.parseUnitSuffix();
+    }
+    if (unit !== "rad/s") {
+      throw new ParseError(
+        "max_angular requires an angular velocity unit (rad/s)",
+        start.line,
+        start.column,
+      );
+    }
+    this.expect("SEMICOLON", "Expected ';' after safety rule");
+    const end = this.previous();
+    return {
+      kind: "MaxAngularRule",
+      name: name.lexeme,
+      value,
+      unit,
+      span: this.spanFrom(start, end),
+    };
+  }
 
   private parseStopIfRule(): SafetyRule {
     // Description:

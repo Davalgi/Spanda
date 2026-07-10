@@ -2935,6 +2935,20 @@ impl<'h> TypeChecker<'h> {
                     );
                 }
             }
+            SafetyRule::MaxAngularRule {
+                value, unit, span, ..
+            } => {
+                let t = self.check_expr(value);
+
+                // Require an angular-velocity typed value for max_angular.
+                if !matches!(t, SpandaType::Number { .. }) || !units_compatible(t.unit(), *unit) {
+                    self.error(
+                        format!("Expected value with unit '{}' for max_angular", unit.as_str()),
+                        span.start.line,
+                        span.start.column,
+                    );
+                }
+            }
             SafetyRule::StopIfRule { condition, span } => {
                 // Keep entries that match the expected pattern.
                 if !matches!(self.check_expr(condition), SpandaType::Bool) {
