@@ -2,7 +2,7 @@
 
 ## NAME
 
-verify — Verify hardware compatibility and safety constraints for a deploy target.
+verify — Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.
 
 ## SYNOPSIS
 
@@ -12,7 +12,7 @@ spanda verify [--json] [--target <profile>] [--all-targets] [--simulate] <file.s
 
 ## DESCRIPTION
 
-Verify hardware compatibility and safety constraints for a deploy target.
+Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.
 
 ## OPTIONS
 
@@ -20,17 +20,18 @@ Verify hardware compatibility and safety constraints for a deploy target.
 `--all-targets` — compatibility matrix
 `--simulate` — include simulator checks
 `--json` — JSON report
+`--strict-certify` — fail when certify metadata is missing/incomplete (metadata only)
 
 ## EXAMPLES
 
 ```bash
 spanda verify robot.sd --target RoverV1
-spanda verify robot.sd --all-targets --simulate
+spanda compatibility robot.sd --all-targets --simulate
 ```
 
 ## EXIT STATUS
 
-0 when compatible; 1 on verification failures or errors.
+0 when compatible; 1 on compatibility failures or errors.
 
 ## FILES
 
@@ -38,4 +39,4 @@ Hardware profile definitions in the program or `hardware/` package paths.
 
 ## SEE ALSO
 
-spanda-check(1), spanda-run(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)
+spanda-check(1), spanda-run(1), [verification-vocabulary.md](../verification-vocabulary.md), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

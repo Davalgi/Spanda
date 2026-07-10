@@ -17,7 +17,7 @@ The Spanda CLI drives the autonomous systems platform: check, verify, simulate, 
 ## COMMANDS
 
 - **check** — Type-check and parse a Spanda program or project.
-- **verify** — Verify hardware compatibility and safety constraints for a deploy target.
+- **verify** — Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.
 - **run** — Execute a Spanda program on the interpreter backend.
 - **sim** — Run a program in the built-in simulator with optional trace recording.
 - **replay** — Replay or deterministically verify a recorded mission trace.

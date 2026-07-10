@@ -87,9 +87,9 @@ fn render_header(out: &mut String) {
          (`UntrustedLinear` / `UntrustedAngular`) cannot feed `DifferentialDrive.drive` / `follow` \
          (including via `let` bindings). Non-AI literal `drive` / `follow(path:)` remain available. \
          **Runtime (interpreter `run`/`sim`):** `safety { max_speed = … }` clamps linear velocity on \
-         `drive` and `execute` (and inside `safety.validate`); optional `max_angular = … rad/s` \
-         clamps turn rate on the same paths; `stop_if`, zones, and emergency stop still gate motion. \
-         **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp per-waypoint speeds. \
+         `drive`, `execute`, and `follow(path:)` cruise speed; optional `max_angular = … rad/s` \
+         clamps turn rate on `drive` / `execute`; `stop_if`, zones, and emergency stop still gate motion. \
+         **Not claimed:** `follow(path:)` does not re-derive SafeAction per waypoint. \
          Full write-up: [spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).\n\n",
     );
 }
@@ -583,7 +583,7 @@ fn method_description(type_name: &str, method: &str) -> &'static str {
         }
         ("DifferentialDrive", "stop") => "Stop all motion.",
         ("DifferentialDrive", "follow") => {
-            "Follow a trajectory path (low-level; not SafeAction-gated). ActionProposal fields cannot feed follow()."
+            "Follow a trajectory path. Cruise speed is clamped by safety.max_speed / zone caps; ActionProposal fields cannot feed follow()."
         }
         ("DifferentialDrive", "execute") => {
             "Execute a safety-validated SafeAction (only path for AI motion)."

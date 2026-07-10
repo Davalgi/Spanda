@@ -48,8 +48,8 @@ See the authoritative paragraph in
 [spanda-type-system.md — Safety motion guarantee](./spanda-type-system.md#safety-motion-guarantee-authoritative).
 In short: AI motion must use `safety.validate` → `execute(SafeAction)`; `drive`/`follow` cannot take
 `ActionProposal` components; `max_speed` and optional `max_angular` are clamped on the interpreter
-`drive`/`execute`/`validate` paths. `follow(path:)` is still a low-level path API without
-per-waypoint SafeAction re-validation.
+`drive`/`execute`/`validate` paths, and `follow(path:)` cruise speed is clamped by `max_speed` /
+zone caps. `follow(path:)` still does not re-derive SafeAction per waypoint.
 
 ## Connectivity and IoT
 

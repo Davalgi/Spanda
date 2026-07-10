@@ -106,8 +106,25 @@ impl<B: RobotBackend> Interpreter<B> {
             "follow" => {
                 let path_val = self.get_named_arg_value(named_args, "path")?;
                 let waypoints = get_trajectory_waypoints(&path_val).unwrap_or_default();
+                // Default follow cruise matches the historical simulator constant.
+                const DEFAULT_FOLLOW_SPEED: f64 = 0.5;
+                if let Some(reason) = self.check_runtime_policy_before_motion(DEFAULT_FOLLOW_SPEED)
+                {
+                    return self.block_motion_for_policy(name, reason, line);
+                }
+                let pose = self.backend.get_state().pose;
+                let pose2d = Pose2d {
+                    x: pose.x,
+                    y: pose.y,
+                };
+                // Clamp follow cruise to max_speed / zone caps at the current pose.
+                let max_linear = match self.safety_monitor.as_ref() {
+                    Some(m) => m.clamp_speed_at_pose(DEFAULT_FOLLOW_SPEED, &pose2d).abs(),
+                    None => DEFAULT_FOLLOW_SPEED,
+                };
                 self.backend.execute_motion(MotionCommand::Follow {
                     waypoints,
+                    max_linear,
                     actuator: name.to_string(),
                 });
             }

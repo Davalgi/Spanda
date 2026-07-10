@@ -144,3 +144,49 @@ robot Rover {
         result.state.velocity.angular
     );
 }
+
+#[test]
+fn safety_max_speed_clamps_follow_cruise_at_runtime() {
+    // follow(path:) cruise speed must respect safety.max_speed (default cruise is 0.5 m/s).
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // safety_max_speed_clamps_follow_cruise_at_runtime();
+
+    let source = r#"
+robot Rover {
+  actuator wheels: DifferentialDrive;
+  safety { max_speed = 0.2 m/s; }
+
+  behavior go() {
+    let start = pose(x: 0.0 m, y: 0.0 m, theta: 0.0 rad);
+    let goal = pose(x: 5.0 m, y: 0.0 m, theta: 0.0 rad);
+    let path = trajectory(from: start, to: goal, steps: 4);
+    wheels.follow(path: path);
+  }
+}
+"#;
+    let program = parse_source(source);
+    let result = run_program(
+        &program,
+        RunOptions {
+            entry_behavior: Some("go".into()),
+            max_loop_iterations: 1,
+            ..Default::default()
+        },
+    )
+    .expect("run");
+    assert!(
+        (result.state.velocity.linear - 0.2).abs() < 1e-9,
+        "expected follow cruise clamped to 0.2 m/s, got {}",
+        result.state.velocity.linear
+    );
+}

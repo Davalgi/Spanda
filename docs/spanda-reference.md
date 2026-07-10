@@ -10,7 +10,7 @@ See also: [spanda-language.md](./spanda-language.md) (tutorial-style guide), [st
 
 ## Safety motion guarantee
 
-**Compile time:** AI output is `ActionProposal`. Actuator `execute()` accepts only `SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components (`UntrustedLinear` / `UntrustedAngular`) cannot feed `DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` / `follow(path:)` remain available. **Runtime (interpreter `run`/`sim`):** `safety { max_speed = … }` clamps linear velocity on `drive` and `execute` (and inside `safety.validate`); optional `max_angular = … rad/s` clamps turn rate on the same paths; `stop_if`, zones, and emergency stop still gate motion. **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp per-waypoint speeds. Full write-up: [spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).
+**Compile time:** AI output is `ActionProposal`. Actuator `execute()` accepts only `SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components (`UntrustedLinear` / `UntrustedAngular`) cannot feed `DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` / `follow(path:)` remain available. **Runtime (interpreter `run`/`sim`):** `safety { max_speed = … }` clamps linear velocity on `drive`, `execute`, and `follow(path:)` cruise speed; optional `max_angular = … rad/s` clamps turn rate on `drive` / `execute`; `stop_if`, zones, and emergency stop still gate motion. **Not claimed:** `follow(path:)` does not re-derive SafeAction per waypoint. Full write-up: [spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).
 
 ## Contents
 
@@ -101,8 +101,9 @@ Reserved words recognized by the Spanda lexer. Identifiers cannot reuse these na
 - `true`
 - `false`
 
-### Safety and verification
+### Safety and contracts
 
+- `assert`
 - `verify`
 - `observe`
 - `emergency_stop`
@@ -113,6 +114,7 @@ Reserved words recognized by the Spanda lexer. Identifiers cannot reuse these na
 - `invariant`
 - `can`
 - `warning`
+- `certify`
 
 ### Reliability and realtime
 
@@ -163,7 +165,6 @@ Reserved words recognized by the Spanda lexer. Identifiers cannot reuse these na
 - `ble_service`
 - `bluetooth`
 - `call`
-- `certify`
 - `circle`
 - `connectivity`
 - `connectivity_policy`
@@ -1177,7 +1178,7 @@ Execute a safety-validated SafeAction (only path for AI motion).
 differentialdrive.follow(path: Path) -> Void
 ```
 
-Follow a trajectory path (low-level; not SafeAction-gated). ActionProposal fields cannot feed follow().
+Follow a trajectory path. Cruise speed is clamped by safety.max_speed / zone caps; ActionProposal fields cannot feed follow().
 
 #### `stop` {#type-DifferentialDrive-stop}
 
@@ -1656,69 +1657,25 @@ Fields on LiDAR `Scan` values.
 
 Vendor sensor drivers registered in the runtime. Each sensor type exposes `read()` and `calibrate()` unless noted otherwise.
 
+### `bosch.bme280`
+
+bme280 — Bosch v1.0.0: Bosch BME280 environmental sensor (humidity, pressure, temperature)
+
+### `sparkfun.ec`
+
+ec — SparkFun v1.0.0: SparkFun conductivity sensor
+
 ### `vegetronix.soil`
 
 soil — Vegetronix v1.0.0: Vegetronix soil moisture sensor
-
-### `ydlidar.x4`
-
-x4 — YDLIDAR v1.0.0: YDLIDAR X4 2D LiDAR
-
-### `atlas.salinity`
-
-salinity — Atlas v1.0.0: Atlas Scientific salinity sensor
-
-### `waveshare.uwmf`
-
-uwmf — Waveshare v1.0.0: Waveshare ultrasonic distance module
-
-### `dfrobot.turbidity`
-
-turbidity — DFRobot v1.0.0: DFRobot turbidity sensor
-
-### `ydlidar.g4`
-
-g4 — YDLIDAR v1.0.0: YDLIDAR G4 2D LiDAR
 
 ### `intel.realsense`
 
 realsense — Intel v1.0.0: Intel RealSense depth cameras
 
-### `adafruit.bh1750`
+### `atlas.salinity`
 
-bh1750 — Adafruit v1.0.0: Adafruit BH1750 digital light sensor
-
-### `bosch.bno055`
-
-bno055 — Bosch v1.0.0: Bosch BNO055 9-DOF absolute orientation IMU
-
-### `adafruit.vl53l0x`
-
-vl53l0x — Adafruit v1.0.0: Adafruit VL53L0X time-of-flight distance sensor
-
-### `sparkfun.lsm9ds1`
-
-lsm9ds1 — SparkFun v1.0.0: SparkFun LSM9DS1 9-DOF IMU breakout
-
-### `hokuyo.ust10`
-
-ust10 — Hokuyo v1.0.0: Hokuyo UST-10LX 2D LiDAR
-
-### `ouster.os1`
-
-os1 — Ouster v1.0.0: Ouster OS1 digital LiDAR sensor
-
-### `ublox.neo_m8n`
-
-neo_m8n — u-blox v1.0.0: u-blox NEO-M8N multi-GNSS receiver (UART NMEA)
-
-### `atlas.ph`
-
-ph — Atlas v1.0.0: Atlas Scientific pH sensor
-
-### `gq.gmc`
-
-gmc — GQ v1.0.0: GQ GMC geiger counter
+salinity — Atlas v1.0.0: Atlas Scientific salinity sensor
 
 ### `adafruit.veml6075`
 
@@ -1728,29 +1685,73 @@ veml6075 — Adafruit v1.0.0: Adafruit VEML6075 UV index sensor
 
 vlp16 — Velodyne v1.0.0: Velodyne VLP-16 3D LiDAR puck
 
+### `velodyne.vlp32`
+
+vlp32 — Velodyne v1.0.0: Velodyne VLP-32C ultra puck
+
+### `plantower.pms5003`
+
+pms5003 — Plantower v1.0.0: Plantower PMS5003 particulate matter sensor
+
+### `dfrobot.turbidity`
+
+turbidity — DFRobot v1.0.0: DFRobot turbidity sensor
+
+### `atlas.ph`
+
+ph — Atlas v1.0.0: Atlas Scientific pH sensor
+
+### `adafruit.bh1750`
+
+bh1750 — Adafruit v1.0.0: Adafruit BH1750 digital light sensor
+
+### `adafruit.vl53l0x`
+
+vl53l0x — Adafruit v1.0.0: Adafruit VL53L0X time-of-flight distance sensor
+
+### `sparkfun.lsm9ds1`
+
+lsm9ds1 — SparkFun v1.0.0: SparkFun LSM9DS1 9-DOF IMU breakout
+
+### `ublox.neo_m8n`
+
+neo_m8n — u-blox v1.0.0: u-blox NEO-M8N multi-GNSS receiver (UART NMEA)
+
 ### `hokuyo.utm30`
 
 utm30 — Hokuyo v1.0.0: Hokuyo UTM-30LX-EW outdoor LiDAR
 
-### `velodyne.vlp32`
+### `ouster.os1`
 
-vlp32 — Velodyne v1.0.0: Velodyne VLP-32C ultra puck
+os1 — Ouster v1.0.0: Ouster OS1 digital LiDAR sensor
+
+### `hokuyo.ust10`
+
+ust10 — Hokuyo v1.0.0: Hokuyo UST-10LX 2D LiDAR
+
+### `bosch.bno055`
+
+bno055 — Bosch v1.0.0: Bosch BNO055 9-DOF absolute orientation IMU
 
 ### `bosch.bmp388`
 
 bmp388 — Bosch v1.0.0: Bosch BMP388 barometric pressure sensor
 
-### `bosch.bme280`
+### `waveshare.uwmf`
 
-bme280 — Bosch v1.0.0: Bosch BME280 environmental sensor (humidity, pressure, temperature)
+uwmf — Waveshare v1.0.0: Waveshare ultrasonic distance module
 
-### `sparkfun.ec`
+### `ydlidar.g4`
 
-ec — SparkFun v1.0.0: SparkFun conductivity sensor
+g4 — YDLIDAR v1.0.0: YDLIDAR G4 2D LiDAR
 
-### `plantower.pms5003`
+### `gq.gmc`
 
-pms5003 — Plantower v1.0.0: Plantower PMS5003 particulate matter sensor
+gmc — GQ v1.0.0: GQ GMC geiger counter
+
+### `ydlidar.x4`
+
+x4 — YDLIDAR v1.0.0: YDLIDAR X4 2D LiDAR
 
 ## CLI reference (man pages)
 
@@ -1845,7 +1846,7 @@ spanda-verify(1), spanda-run(1), spanda-continuity(1)
 
 **NAME**
 
-`verify` — Verify hardware compatibility and safety constraints for a deploy target.
+`verify` — Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.
 
 **SYNOPSIS**
 
@@ -1855,7 +1856,7 @@ spanda verify [--json] [--target <profile>] [--all-targets] [--simulate] <file.s
 
 **DESCRIPTION**
 
-Verify hardware compatibility and safety constraints for a deploy target.
+Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.
 
 **OPTIONS**
 
@@ -1863,17 +1864,18 @@ Verify hardware compatibility and safety constraints for a deploy target.
 `--all-targets` — compatibility matrix
 `--simulate` — include simulator checks
 `--json` — JSON report
+`--strict-certify` — fail when certify metadata is missing/incomplete (metadata only)
 
 **EXAMPLES**
 
 ```bash
 spanda verify robot.sd --target RoverV1
-spanda verify robot.sd --all-targets --simulate
+spanda compatibility robot.sd --all-targets --simulate
 ```
 
 **EXIT STATUS**
 
-0 when compatible; 1 on verification failures or errors.
+0 when compatible; 1 on compatibility failures or errors.
 
 **FILES**
 
@@ -1881,7 +1883,7 @@ Hardware profile definitions in the program or `hardware/` package paths.
 
 **SEE ALSO**
 
-spanda-check(1), spanda-run(1)
+spanda-check(1), spanda-run(1), [verification-vocabulary.md](../verification-vocabulary.md)
 
 ### spanda-run(1) {#cli-run}
 
