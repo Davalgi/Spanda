@@ -350,7 +350,8 @@ pub enum MotionCommand {
     },
     Follow {
         waypoints: Vec<PoseValue>,
-        /// Cruise speed for trajectory tracking (m/s), already safety-clamped by the caller.
+        /// Requested cruise speed for trajectory tracking (m/s). Callers should pass the
+        /// unclamped request; the interpreter re-clamps per pose/tick via the safety monitor.
         max_linear: f64,
         actuator: String,
     },

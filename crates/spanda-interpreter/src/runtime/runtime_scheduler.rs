@@ -370,6 +370,7 @@ impl<B: RobotBackend> Interpreter<B> {
             } else {
                 (iteration as f64 + 1.0) * interval_ms
             };
+            self.reclamp_active_follow_cruise();
             self.backend.tick(interval_ms);
             self.sim_time_ms = sim_time;
             self.triggers_dispatched_this_tick = 0;
@@ -556,6 +557,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 sim_time += base_tick;
                 base_tick
             };
+            self.reclamp_active_follow_cruise();
             self.backend.tick(dt_ms);
             self.sim_time_ms = sim_time;
             self.triggers_dispatched_this_tick = 0;
@@ -683,6 +685,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 sim_time += base_tick;
                 base_tick
             };
+            self.reclamp_active_follow_cruise();
             self.backend.tick(dt_ms);
             self.sim_time_ms = sim_time;
             self.triggers_dispatched_this_tick = 0;

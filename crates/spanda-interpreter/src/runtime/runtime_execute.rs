@@ -125,6 +125,7 @@ impl<B: RobotBackend> Interpreter<B> {
                 // Process each max loop iteration.
                 for iteration in 0..self.options.max_loop_iterations {
                     let sim_time = (iteration as f64 + 1.0) * interval;
+                    self.reclamp_active_follow_cruise();
                     self.backend.tick(interval);
                     self.sim_time_ms = sim_time;
                     self.triggers_dispatched_this_tick = 0;

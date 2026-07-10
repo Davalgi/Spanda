@@ -78,6 +78,8 @@ pub struct Simulator {
     published: Vec<PublishedMessage>,
     follow_queue: Vec<PoseValue>,
     follow_speed: f64,
+    /// Unclamped cruise requested by `follow` (re-clamped each tick at the current pose).
+    follow_requested_speed: f64,
     service_log: Vec<String>,
     action_log: Vec<String>,
     hal: SimHalBackend,
@@ -116,6 +118,7 @@ impl Simulator {
             published: Vec::new(),
             follow_queue: Vec::new(),
             follow_speed: 0.5,
+            follow_requested_speed: 0.5,
             service_log: Vec::new(),
             action_log: Vec::new(),
             hal: create_sim_hal(),
@@ -515,8 +518,10 @@ impl RobotBackend for Simulator {
                 ..
             } => {
                 self.follow_queue = waypoints;
-                self.follow_speed = max_linear.max(0.0);
-                // Publish the clamped cruise speed immediately so callers observe the envelope.
+                // Store the requested cruise; the runtime re-clamps per pose before ticks.
+                self.follow_requested_speed = max_linear.max(0.0);
+                self.follow_speed = self.follow_requested_speed;
+                // Publish cruise immediately so callers observe motion before the first tick.
                 if !self.follow_queue.is_empty() {
                     self.velocity = VelocityState {
                         linear: self.follow_speed,
@@ -628,6 +633,33 @@ impl RobotBackend for Simulator {
         self.pose.x = new_x;
         self.pose.y = new_y;
         self.pose.theta = new_theta;
+    }
+
+    fn reclamp_follow_cruise(&mut self, capped_linear: f64) {
+        // Re-apply zone / max_speed cruise while a follow trajectory is active.
+        //
+        // Parameters:
+        // - `capped_linear` — effective max cruise (m/s) at the current pose
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // sim.reclamp_follow_cruise(0.1);
+
+        // Ignore re-clamp when no follow waypoints remain.
+        if self.follow_queue.is_empty() {
+            return;
+        }
+        // Cap the requested cruise without raising above what follow() asked for.
+        self.follow_speed = self
+            .follow_requested_speed
+            .min(capped_linear.max(0.0))
+            .max(0.0);
+        self.velocity.linear = self.follow_speed;
     }
 
     fn get_state(&self) -> RobotState {

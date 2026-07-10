@@ -259,10 +259,11 @@ non-AI `drive(linear: …, angular: …)` remains valid and is envelope-clamped 
 `DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` /
 `follow(path:)` remain available as low-level APIs. **Runtime (interpreter `run`/`sim`):**
 `safety { max_speed = … }` clamps linear velocity on `drive`, `execute`, and `follow(path:)` cruise
-speed (default 0.5 m/s, reduced by `max_speed` / zone caps at the call pose; also inside
-`safety.validate`); optional `max_angular = … rad/s` clamps turn rate on `drive` / `execute`;
-`stop_if`, zones, and emergency stop still gate motion via `before_motion`. **Not claimed:**
-`follow(path:)` does not re-derive SafeAction per waypoint; hard real-time deadlines are
+speed (default 0.5 m/s, reduced by `max_speed` / zone caps at the call pose and again each
+simulator tick while following; also inside `safety.validate`); optional `max_angular = … rad/s`
+clamps turn rate on `drive` / `execute`; `stop_if`, zones, and emergency stop still gate motion via
+`before_motion`. **Not claimed:** `follow(path:)` does not re-derive a `SafeAction` token per
+waypoint (cruise is envelope-clamped, not re-validated as AI motion); hard real-time deadlines are
 intent/monitoring on the interpreter path, not OS-level guarantees.
 
 ## Human interaction types

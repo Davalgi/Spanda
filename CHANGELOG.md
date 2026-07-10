@@ -27,7 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
   clear Experimental errors.
 - **`follow(path:)` cruise clamp:** trajectory follow speed (default 0.5 m/s) is clamped by
-  `safety.max_speed` / zone caps on the interpreter path (Rust + TS), matching `drive`/`execute`.
+  `safety.max_speed` / zone caps on the interpreter path (Rust + TS), matching `drive`/`execute`,
+  and re-clamped each tick while following so mid-path zone caps apply.
 - **Stringly seam literal checks:** unknown `ai_model` `provider:` strings and
   `serialize`/`deserialize` format literals fail at type-check (`mock`/`openai`/`anthropic`/`onnx`;
   `json`/`yaml`/`binary`).

@@ -190,3 +190,63 @@ robot Rover {
         result.state.velocity.linear
     );
 }
+
+#[test]
+fn safety_zone_reclamps_follow_cruise_per_tick() {
+    // follow() must re-clamp cruise when the robot enters a slower safety zone mid-path.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // safety_zone_reclamps_follow_cruise_per_tick();
+
+    let source = r#"
+safety_zone SlowLane {
+  max_speed 0.1 m/s;
+}
+
+robot Rover {
+  actuator wheels: DifferentialDrive;
+  safety {
+    max_speed = 1.0 m/s;
+    zone SlowLane circle at (3.0 m, 0.0 m) radius 1.5 m;
+  }
+
+  behavior go() {
+    let start = pose(x: 0.0 m, y: 0.0 m, theta: 0.0 rad);
+    let goal = pose(x: 5.0 m, y: 0.0 m, theta: 0.0 rad);
+    let path = trajectory(from: start, to: goal, steps: 10);
+    wheels.follow(path: path);
+    loop every 100ms { }
+  }
+}
+"#;
+    let program = parse_source(source);
+    let result = run_program(
+        &program,
+        RunOptions {
+            entry_behavior: Some("go".into()),
+            max_loop_iterations: 80,
+            ..Default::default()
+        },
+    )
+    .expect("run");
+    assert!(
+        result.state.pose.x > 1.5,
+        "expected robot to advance into SlowLane, pose.x={}",
+        result.state.pose.x
+    );
+    assert!(
+        (result.state.velocity.linear - 0.1).abs() < 1e-9,
+        "expected follow cruise re-clamped to zone 0.1 m/s, got {}",
+        result.state.velocity.linear
+    );
+}
+

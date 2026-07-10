@@ -147,6 +147,23 @@ pub trait RobotBackend {
     fn execute_motion(&mut self, cmd: MotionCommand);
     fn tick(&mut self, dt_ms: f64);
     fn get_state(&self) -> RobotState;
+    /// Re-apply a pose-aware cruise cap while a `follow` trajectory is active.
+    fn reclamp_follow_cruise(&mut self, capped_linear: f64) {
+        // Default backends ignore follow re-clamp (no trajectory queue).
+        //
+        // Parameters:
+        // - `capped_linear` — effective max cruise (m/s) at the current pose
+        //
+        // Returns:
+        // Nothing.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // backend.reclamp_follow_cruise(0.2);
+        let _ = capped_linear;
+    }
     fn set_emergency_stop(&mut self, _active: bool) {
         // Description:
         //     Set emergency stop.
