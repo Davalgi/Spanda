@@ -5161,7 +5161,7 @@ export class Interpreter {
         }
         this.options.backend.executeMotion({
           kind: "drive",
-          linear: safe.linear,
+          linear: this.safetyMonitor?.clampSpeedAtPose(safe.linear, this.options.backend.getState().pose) ?? safe.linear,
           angular: safe.angular,
           actuator: name,
         });

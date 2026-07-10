@@ -189,8 +189,19 @@ impl<B: RobotBackend> Interpreter<B> {
 
                 // Take this path when let RuntimeValue::SafeAction { linear, angular } = action val.
                 if let RuntimeValue::SafeAction { linear, angular } = action_val {
+                    // Re-clamp SafeAction speeds so execute() cannot exceed current envelope.
+                    let pose = self.backend.get_state().pose;
+                    let pose2d = Pose2d {
+                        x: pose.x,
+                        y: pose.y,
+                    };
+                    let clamped_linear = self
+                        .safety_monitor
+                        .as_ref()
+                        .map(|m| m.clamp_speed_at_pose(linear, &pose2d))
+                        .unwrap_or(linear);
                     self.backend.execute_motion(MotionCommand::Drive {
-                        linear,
+                        linear: clamped_linear,
                         angular,
                         actuator: name.to_string(),
                     });
