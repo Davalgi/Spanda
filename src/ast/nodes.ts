@@ -439,6 +439,13 @@ export type SafetyRule =
       span: Span;
     }
   | {
+      kind: "MaxAngularRule";
+      name: string;
+      value: Expr;
+      unit: UnitKind;
+      span: Span;
+    }
+  | {
       kind: "StopIfRule";
       condition: Expr;
       span: Span;

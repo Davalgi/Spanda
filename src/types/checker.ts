@@ -23,9 +23,14 @@ import { resolveStdImport } from "../stdlib.js";
 import {
   binaryPhysicalOpAllowed,
   isActionProposalType,
+  isKnownAiProvider,
+  isKnownSerializeFormat,
   resolveTypeName,
   isSafeActionType,
+  isUntrustedMotionComponent,
   typeKindName,
+  KNOWN_AI_PROVIDERS,
+  KNOWN_SERIALIZE_FORMATS,
 } from "../type-system.js";
 import type { ModuleRegistry } from "../modules/index.js";
 import { compileRegex, RegexError } from "../regex.js";
@@ -2131,7 +2136,7 @@ class TypeChecker {
     //     const result = checkSafetyRule(rule);
 
     // const result = checkSafetyRule(rule);
-    if (rule.kind === "MaxSpeedRule") {
+    if (rule.kind === "MaxSpeedRule" || rule.kind === "MaxAngularRule") {
       const t = this.checkExpr(rule.value);
 
       // continue when kind differs from unit).
@@ -2246,6 +2251,23 @@ class TypeChecker {
       );
     }
 
+    // Reject unknown provider string literals so typos fail at check time.
+    for (const entry of model.config) {
+      // Skip non-provider config keys.
+      if (entry.key !== "provider") {
+        continue;
+      }
+
+      // Validate only string provider values against the built-in set.
+      if (typeof entry.value === "string" && !isKnownAiProvider(entry.value)) {
+        this.error(
+          `Unknown AI provider '${entry.value}' (use ${KNOWN_AI_PROVIDERS.join(", ")})`,
+          entry.span.start.line,
+          entry.span.start.column,
+        );
+      }
+    }
+
     // continue when this.symbols.has(model.name).
     if (this.symbols.has(model.name)) {
       this.error(
@@ -2259,7 +2281,37 @@ class TypeChecker {
       roboType: AI_MODEL_TYPES[model.modelType] ?? { kind: "void" },
       kind: "ai_model",
     });
-}
+  }
+
+  private checkSerializeFormatExpr(expr: Expr): void {
+    // Reject unknown serialize/deserialize format string literals.
+    //
+    // Parameters:
+    // - `expr` — format argument expression (positional or named)
+    //
+    // Returns:
+    // Nothing; emits a diagnostic when a literal format is unknown.
+    //
+    // Options:
+    // Non-literal formats are left to runtime validation.
+    //
+    // Example:
+    // this.checkSerializeFormatExpr(formatArg);
+
+    // Only validate string literals; variables stay runtime-checked.
+    if (expr.kind !== "LiteralExpr" || typeof expr.value !== "string") {
+      return;
+    }
+
+    // Report formats outside the supported json/yaml/binary set.
+    if (!isKnownSerializeFormat(expr.value)) {
+      this.error(
+        `Unknown serialize format '${expr.value}' (use ${KNOWN_SERIALIZE_FORMATS.join(", ")})`,
+        expr.span.start.line,
+        expr.span.start.column,
+      );
+    }
+  }
 
   private checkAgent(agent: import("../ast/nodes.js").AgentDecl): void {
     // Description:
@@ -3821,6 +3873,22 @@ class TypeChecker {
         const actual = this.checkExpr(arg.value);
         this.assertCompatible(expected, actual, arg.span.start.line, arg.span.start.column);
       }
+
+      // Reject unknown serialize/deserialize format string literals early.
+      if (name === "serialize" || name === "deserialize") {
+        // Prefer a positional format argument when present.
+        if (expr.args.length >= 2) {
+          this.checkSerializeFormatExpr(expr.args[1]!);
+        }
+
+        // Also validate named `format:` arguments.
+        for (const arg of expr.namedArgs) {
+          // Skip unrelated named arguments.
+          if (arg.name === "format") {
+            this.checkSerializeFormatExpr(arg.value);
+          }
+        }
+      }
       return fn.returns;
     }
 
@@ -3996,6 +4064,22 @@ class TypeChecker {
           continue;
         }
         const actual = this.checkExpr(arg.value);
+
+        // Reject ActionProposal motion components on ungated drive/follow.
+        if (
+          typeName === "DifferentialDrive" &&
+          (member.property === "drive" || member.property === "follow") &&
+          isUntrustedMotionComponent(actual)
+        ) {
+          this.error(
+            `ActionProposal motion cannot feed actuator.${member.property}()\n` +
+              `Found: ${actual.kind === "named" ? actual.name : typeKindName(actual)}\n` +
+              `Hint: let action = safety.validate(proposal); wheels.execute(action);`,
+            arg.span.start.line,
+            arg.span.start.column,
+          );
+        }
+
         this.assertCompatible(expected, actual, arg.span.start.line, arg.span.start.column);
       }
     }

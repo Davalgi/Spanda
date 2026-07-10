@@ -36,5 +36,4 @@ spanda reference --out docs/spanda-reference.md --man-dir docs/man
 
 ## SEE ALSO
 
-spanda-doc(1), spanda-man(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-doc(1), spanda-man(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

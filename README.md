@@ -23,7 +23,7 @@ code.
 
 Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed
 robot programs, safety gates, hardware verification, cascading TOML configuration, simulation,
-replay, fleet operations, mission assurance, mission continuity, and **89** official packages.
+replay, fleet operations, mission assurance, mission continuity, and **91** official packages.
 
 **Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
 
@@ -188,7 +188,7 @@ Entity
 
 Guide: [docs/entity-model.md](docs/entity-model.md) · APIs:
 [docs/entity-apis.md](docs/entity-apis.md) · SDK: [docs/entity-sdk.md](docs/entity-sdk.md) ·
-Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.5.8** on crates.io, PyPI,
+Examples: [examples/entity/](examples/entity/) — **Stable** tier; SDKs **0.5.9** on crates.io, PyPI,
 npm
 
 Entity CLI commands require a project `spanda.toml` or `--config` (warehouse fixture above).

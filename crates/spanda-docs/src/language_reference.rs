@@ -80,6 +80,18 @@ fn render_header(out: &mut String) {
          [standard-library.md](./standard-library.md) (stdlib overview), \
          [spanda-type-system.md](./spanda-type-system.md) (type rules).\n\n",
     );
+    out.push_str("## Safety motion guarantee\n\n");
+    out.push_str(
+        "**Compile time:** AI output is `ActionProposal`. Actuator `execute()` accepts only \
+         `SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components \
+         (`UntrustedLinear` / `UntrustedAngular`) cannot feed `DifferentialDrive.drive` / `follow` \
+         (including via `let` bindings). Non-AI literal `drive` / `follow(path:)` remain available. \
+         **Runtime (interpreter `run`/`sim`):** `safety { max_speed = … }` clamps linear velocity on \
+         `drive` and `execute` (and inside `safety.validate`); optional `max_angular = … rad/s` \
+         clamps turn rate on the same paths; `stop_if`, zones, and emergency stop still gate motion. \
+         **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp per-waypoint speeds. \
+         Full write-up: [spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).\n\n",
+    );
 }
 
 fn render_toc(out: &mut String) {
@@ -98,6 +110,7 @@ fn render_toc(out: &mut String) {
     //     let result = spanda_docs::language_reference::render_toc(o);
 
     out.push_str("## Contents\n\n");
+    out.push_str("- [Safety motion guarantee](#safety-motion-guarantee)\n");
     out.push_str("- [Keywords](#keywords)\n");
     out.push_str("- [Triggers](#triggers)\n");
     out.push_str("- [Standard library (`std.*`)](#standard-library-std)\n");
@@ -174,8 +187,9 @@ fn render_keywords(out: &mut String) {
             ],
         ),
         (
-            "Safety and verification",
+            "Safety and contracts",
             &[
+                "assert",
                 "verify",
                 "observe",
                 "emergency_stop",
@@ -186,6 +200,7 @@ fn render_keywords(out: &mut String) {
                 "invariant",
                 "can",
                 "warning",
+                "certify",
             ],
         ),
         (
@@ -563,14 +578,22 @@ fn method_description(type_name: &str, method: &str) -> &'static str {
         ("Robot", "velocity") => "Current robot velocity.",
         ("Robot", "in_zone") => "True when the robot is inside a named zone.",
         ("Robot", "identity") => "Robot identity for signing and audit.",
-        ("DifferentialDrive", "drive") => "Drive with linear and angular velocity.",
+        ("DifferentialDrive", "drive") => {
+            "Drive with linear and angular velocity (non-AI); runtime-clamped by max_speed / max_angular. ActionProposal fields cannot feed drive()."
+        }
         ("DifferentialDrive", "stop") => "Stop all motion.",
-        ("DifferentialDrive", "follow") => "Follow a trajectory path.",
-        ("DifferentialDrive", "execute") => "Execute a safety-validated action.",
+        ("DifferentialDrive", "follow") => {
+            "Follow a trajectory path (low-level; not SafeAction-gated). ActionProposal fields cannot feed follow()."
+        }
+        ("DifferentialDrive", "execute") => {
+            "Execute a safety-validated SafeAction (only path for AI motion)."
+        }
         ("Lidar", "read") | ("Camera", "read") | ("IMU", "read") => "Read latest sensor data.",
         ("LLM", "reason") => "Run LLM reasoning over sensor input and goal.",
         ("LLM", "summarize") => "Summarize sensor input.",
-        ("Safety", "validate") => "Validate an action proposal; returns a safe action.",
+        ("Safety", "validate") => {
+            "Validate an ActionProposal; clamps max_speed / max_angular and returns SafeAction."
+        }
         ("Twin", "mirror") => "Mirror a field from the digital twin.",
         ("Twin", "replay") => "Replay twin state at an index.",
         _ => "Built-in method.",
@@ -844,12 +867,12 @@ const CLI_COMMANDS: &[CliCommand] = &[
         name: "spanda-verify",
         section: 1,
         synopsis: "spanda verify [--json] [--target <profile>] [--all-targets] [--simulate] <file.sd>",
-        description: "Verify hardware compatibility and safety constraints for a deploy target.",
-        options: "`--target` — hardware profile name\n`--all-targets` — compatibility matrix\n`--simulate` — include simulator checks\n`--json` — JSON report",
-        examples: "spanda verify robot.sd --target RoverV1\nspanda verify robot.sd --all-targets --simulate",
-        exit_status: "0 when compatible; 1 on verification failures or errors.",
+        description: "Check hardware compatibility for a deploy target (not formal verification). Alias: spanda compatibility.",
+        options: "`--target` — hardware profile name\n`--all-targets` — compatibility matrix\n`--simulate` — include simulator checks\n`--json` — JSON report\n`--strict-certify` — fail when certify metadata is missing/incomplete (metadata only)",
+        examples: "spanda verify robot.sd --target RoverV1\nspanda compatibility robot.sd --all-targets --simulate",
+        exit_status: "0 when compatible; 1 on compatibility failures or errors.",
         files: "Hardware profile definitions in the program or `hardware/` package paths.",
-        see_also: "spanda-check(1), spanda-run(1)",
+        see_also: "spanda-check(1), spanda-run(1), [verification-vocabulary.md](../verification-vocabulary.md)",
     },
     CliCommand {
         name: "spanda-run",

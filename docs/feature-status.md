@@ -64,10 +64,10 @@ Stable. Simulated-only paths must say so explicitly.
 | **AI agents** | `ai_model`, `agent`, `goal`, `memory`, **mock-backed** LLM/Vision providers by default, `ActionProposal` → `safety.validate()` → `SafeAction` |
 | **Robotics primitives** | `robot`, `sensor`, `actuator`, `behavior`, `task every Nms`, state machines, events |
 | **Hardware profiles** | `hardware`, `deploy`, `requires_hardware`, `requires_network`, SoC/HAL validation |
-| **Compatibility verification** | `spanda verify`, `--target`, `--all-targets`, `--simulate`, `--json` |
+| **Compatibility verification** | `spanda verify` (alias `spanda compatibility`) — hardware fit checking, not formal verification; see [verification-vocabulary.md](./verification-vocabulary.md) |
 | **Simulation** | `spanda run` / `spanda sim`, physics-lite 2D backend, lidar/arm/drone models |
 | **Communication** | `message`, `topic`, `service`, `action`, `publish`/`call`/`send_goal`, in-memory transport |
-| **Safety validation** | Safety zones, `max_speed`, `stop_if`, emergency stop, compile-time `SafeAction` gate |
+| **Safety validation** | Safety zones, `max_speed`, optional `max_angular`, `stop_if`, emergency stop, compile-time `SafeAction` gate (including `drive`/`follow` AI bypass rejection) |
 | **Trigger-driven execution** | Unified `on` / `every` / `when` / `while`; event, message, timer, condition, state, safety, hardware, AI, verification, twin |
 | **Cooperative concurrency** | `spawn`, `join`, `parallel`, channels, `select`, per-task `budget { }`; TypeScript mirror parity |
 | **Fleet simulation** | `spanda fleet run` — in-process multi-robot with deploy/peer wiring |
@@ -132,7 +132,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
 | **OTA rollout** | Deploy plan/rollout/rollback/status | Local state file + HTTP deploy agents; `--require-certify` blocks uncertified rollouts |
-| **Certification metadata** | `certify ISO13849 { level PLd; }` | Verify-only metadata; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
+| **Certification metadata** | `certify ISO13849 { level PLd; }` | **Declared metadata** for verify/CI — not a certification result; `--strict-certify` / `--enforce-certify`; `spanda certify prove`; deploy plan proof summary |
 | **Nav2 / SLAM packages** | Registry adapter stubs + example packages | External Nav2/Gazebo/OpenCV not bundled; optional `SPANDA_NAV2_CMD` / `SPANDA_SLAM_CMD` bridges |
 | **ROS2 adapter** | Native `rclrs` cdylib, rclpy daemon, CLI bridge | Requires ROS Humble; not default transport |
 | **LLVM / native codegen** | `spanda run --runtime auto\|native\|interpreter`; `llvm-ir`, `compile-native`; `scripts/llvm_golden_path.sh` | **Primary** execution path when SIR eligible; interpreter LTS fallback |
@@ -147,7 +147,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **WASM / web playground** | Browser check/run/verify | Limited surface vs native CLI |
 | **Live AI providers** | OpenAI, Anthropic, ONNX via Python bridge | Requires API keys or `SPANDA_ONNX_MODEL_PATH`; mock fallback by default |
 | **Live IoT bridges** | Modbus TCP, OPC-UA, zigbee, lora, matter, canbus | Env-gated (`SPANDA_LIVE_*=1`); in-memory hub fallback |
-| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **89** packages after `build-registry.sh` |
+| **Package publish** | `spanda publish`, registry search, mirror to `registry/packages/` | Remote upload via `SPANDA_REGISTRY_URL`; hosted index lists **91** packages after `build-registry.sh` |
 | **Official package provenance** | Registry-only provider bootstrap; path/git name-squatting blocked | `OfficialProvenance` API; `official_provenance` install warning; production `deploy gate` hard-fail |
 | **Registry signature policy** | `SPANDA_REGISTRY_REQUIRE_SIGNATURE=1` + lockfile signature audit | Required for production `deploy gate`; optional at install otherwise |
 
@@ -201,8 +201,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | Type checker + units | **Stable** | Physical unit algebra enforced |
 | modules / imports | **Stable** | `spanda install` vendor support |
 | structs / enums / traits | **Stable** | Generic struct literals; enum payloads |
-| generics | **Experimental** | Module fn + struct type params |
-| trait objects (`dyn Trait`) | **Stable** | Rust + TS mirror |
+| generics | **Experimental** | Module fn + struct type params; **no** `where` bounds, trait/enum generics, or full inference — see [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental) |
+| trait objects (`dyn Trait`) | **Stable** | Same-program `trait` / `impl`; no `export trait` yet |
 | match / Result / Option | **Stable** | |
 | async / await | **Stable** | Cooperative single-threaded |
 | spawn / select / channels | **Stable** | Cooperative concurrency with TS mirror |
@@ -210,7 +210,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | test blocks | **Stable** | Rust runtime + TS `runTests()` |
 | `extern fn` / FFI | **Experimental** | Subprocess bridges; optional in-process |
 | Spanda IR (SIR) | **Stable** | JSON export via `spanda ir` |
-| Codegen / LLVM | **Experimental** | HAL profiles; conditional codegen |
+| Codegen / LLVM | **Experimental** | HAL profiles; conditional codegen; `--target native\|wasm\|esp32` |
 
 ### Autonomous systems
 
@@ -218,10 +218,10 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 |---------|--------|-------|
 | robot / sensor / actuator | **Stable** | |
 | agent / goal / task / skill | **Mock-backed** (Stable API) | Default mock AI backend; live providers optional |
-| ActionProposal → SafeAction | **Stable** | Compile + runtime |
+| ActionProposal → SafeAction | **Stable** | Compile + runtime; `drive`/`follow` reject AI motion components; `max_speed` / optional `max_angular` clamped on interpreter path |
 | safety zones / emergency stop | **Stable** | |
 | deterministic scheduler | **Stable** | `task every Nms` |
-| deadline / jitter / priority | **Stable** | Compile-time validation; runtime telemetry |
+| deadline / jitter / priority | **Stable** | Compile-time validation + runtime telemetry; **not** OS hard-RT on interpreter — [realtime.md](./realtime.md) |
 | pipelines / watchdogs / modes | **Stable** | See `docs/reliability.md`, `docs/watchdogs.md`, `docs/degraded-modes.md` |
 | mission trace replay | **Stable** | `--record`, `spanda replay --deterministic` / `--playback` |
 | persistent telemetry store | **Stable** | `--persist-telemetry`, `spanda telemetry`; JSONL (default) or SQLite; OTLP export/push/serve, `fleet-push`, sessions — [telemetry-store.md](./telemetry-store.md) |
@@ -242,8 +242,9 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | recovery diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `recovery:*` categories; TS mirror in `scripts/lsp-readiness.mts` |
 | continuity diagnostics (CLI + LSP) | **Stable** | `spanda check --readiness-json` merges `continuity:*` categories including `continuity:mission`; TS mirror in `src/continuity-diagnostics.ts` |
 | learned anomaly backends | **Experimental** | Runtime `scan_learned`; ONNX optional |
-| verify { } behavioral assertions | **Stable** | |
-| hardware / deploy | **Stable** | Rust verify CLI |
+| verify { } / assert { } runtime assertions | **Stable** | Not formal verification; `assert { }` preferred alias |
+| requires / ensures / invariant | **Stable** | Runtime contracts; `ensures` checked after body (not static proof) |
+| hardware / deploy | **Stable** | Rust verify CLI (`spanda compatibility` alias) |
 
 ### Tooling
 

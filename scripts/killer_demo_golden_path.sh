@@ -7,6 +7,7 @@ cd "$ROOT"
 
 SPANDA="${SPANDA_BIN:-$ROOT/target/release/spanda}"
 UNSAFE="${ROOT}/examples/showcase/ai_safety_violation.sd"
+UNSAFE_DRIVE="${ROOT}/examples/showcase/ai_safety_drive_bypass.sd"
 SAFE="${ROOT}/examples/showcase/killer_demo.sd"
 
 if [[ ! -x "${SPANDA}" ]]; then
@@ -19,7 +20,14 @@ if "${SPANDA}" check "${UNSAFE}" >/dev/null 2>&1; then
   echo "expected compile error for ${UNSAFE}" >&2
   exit 1
 fi
-echo "✓ ${UNSAFE} rejected (ActionProposal gate)"
+echo "✓ ${UNSAFE} rejected (ActionProposal → execute gate)"
+
+echo "== unsafe AI drive bypass must fail check =="
+if "${SPANDA}" check "${UNSAFE_DRIVE}" >/dev/null 2>&1; then
+  echo "expected compile error for ${UNSAFE_DRIVE}" >&2
+  exit 1
+fi
+echo "✓ ${UNSAFE_DRIVE} rejected (ActionProposal → drive gate)"
 
 echo "== safe killer demo check =="
 "${SPANDA}" check "${SAFE}"

@@ -13,6 +13,9 @@ pub mod units;
 
 pub use import_catalog::resolve_package_import;
 pub use security_capabilities::is_known_capability;
+pub use type_system::{
+    is_known_ai_provider, is_known_serialize_format, KNOWN_AI_PROVIDERS, KNOWN_SERIALIZE_FORMATS,
+};
 
 pub use checker::{
     check, check_with_registry, format_type_name, get_library_for_sensor_type,

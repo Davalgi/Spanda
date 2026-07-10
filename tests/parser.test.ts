@@ -76,4 +76,23 @@ describe("parser", () => {
     const rule = ast.robots[0].safety!.rules[0];
     expect(rule.kind).toBe("MaxSpeedRule");
   });
+
+  it("parses safety max_angular rule", () => {
+    const tokens = tokenize("robot R { safety { max_angular = 0.5 rad/s; } }");
+    const ast = parse(tokens);
+    const rule = ast.robots[0].safety!.rules[0];
+    expect(rule.kind).toBe("MaxAngularRule");
+  });
+
+  it("parses assert block alias for runtime assertions", () => {
+    const tokens = tokenize(`
+      robot R {
+        actuator wheels: DifferentialDrive;
+        assert { true; }
+        behavior b() {}
+      }
+    `);
+    const ast = parse(tokens);
+    expect(ast.robots[0].verify?.assertAlias).toBe(true);
+  });
 });

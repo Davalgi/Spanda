@@ -25,7 +25,7 @@ use spanda_runtime::security_types::{
 use spanda_runtime::state_machine::StateMachineRuntime;
 use spanda_runtime::triggers::{ConditionTriggerState, TriggerRegistry, TriggerTimerSchedule};
 use spanda_runtime::twin::TwinRuntime;
-use spanda_safety::{create_safety_config_from_robot, SafetyMonitor};
+use spanda_safety::{create_safety_config_from_robot_with_angular, SafetyMonitor};
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -791,6 +791,7 @@ impl<B: RobotBackend> Interpreter<B> {
         }
         self.env.define("robot", RuntimeValue::Robot);
         let mut max_speed = f64::INFINITY;
+        let mut max_angular = f64::INFINITY;
 
         // Emit output when safety provides a safety block.
         if let Some(safety_block) = safety {
@@ -806,6 +807,14 @@ impl<B: RobotBackend> Interpreter<B> {
                             max_speed = value;
                         }
                     }
+                    SafetyRule::MaxAngularRule { value, .. } => {
+                        let val = self.eval_expr(value)?;
+
+                        // Capture the angular velocity envelope when the rule evaluates to a number.
+                        if let RuntimeValue::Number { value, .. } = val {
+                            max_angular = value;
+                        }
+                    }
                     SafetyRule::StopIfRule { condition, .. } => {
                         self.stop_if_conditions.push(condition.clone());
                     }
@@ -818,12 +827,15 @@ impl<B: RobotBackend> Interpreter<B> {
                 self.zones.push(evaluated);
             }
         }
-        self.safety_monitor = Some(SafetyMonitor::new(create_safety_config_from_robot(
-            max_speed,
-            vec![],
-            self.zones.clone(),
-            self.program_safety_zones.speed_caps().clone(),
-        )));
+        self.safety_monitor = Some(SafetyMonitor::new(
+            create_safety_config_from_robot_with_angular(
+                max_speed,
+                max_angular,
+                vec![],
+                self.zones.clone(),
+                self.program_safety_zones.speed_caps().clone(),
+            ),
+        ));
         self.load_reliability_config(robot)?;
         self.setup_state_estimators();
         Ok(())

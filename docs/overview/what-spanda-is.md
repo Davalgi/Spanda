@@ -28,7 +28,7 @@ Spanda **integrates with** existing ecosystems instead of replacing them. See
 | | | |
 |---|---|---|
 | **Language (.sd)** | **Safety validation** | **Hardware verify** |
-| **Simulation & replay** | **Mission assurance** | **Packages (89)** |
+| **Simulation & replay** | **Mission assurance** | **Packages (91)** |
 | **Health & readiness** | **Fleet & OTA** | **Control Center (E1–E4)** |
 | **ROS2 / IoT / AI bridges** | **Enterprise ops API** | **Python SDK + desktop shell** |
 

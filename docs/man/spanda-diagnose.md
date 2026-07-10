@@ -35,5 +35,4 @@ Optional mission trace input.
 
 ## SEE ALSO
 
-spanda-assure(1), spanda-heal(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-assure(1), spanda-heal(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

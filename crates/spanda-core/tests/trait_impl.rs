@@ -98,3 +98,39 @@ robot R {
         err.diagnostics()
     );
 }
+
+#[test]
+fn trait_impl_requires_trait_in_same_program() {
+    // Description:
+    //     Trait impl requires trait in same program.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    //     let result = spanda_core::trait_impl::trait_impl_requires_trait_in_same_program();
+
+    // Traits are compilation-unit scoped: there is no `export trait` / cross-module
+    // trait import yet. An impl whose trait is not declared in the same program fails.
+    let source = r#"
+robot R {
+  actuator wheels: DifferentialDrive;
+  agent Nav { tools [wheels]; goal "x"; plan { wheels.stop(); } }
+  impl PathPlanner for Nav {
+    fn plan(goal: Pose) -> Path { wheels.stop(); }
+  }
+}
+"#;
+    let err = check(source).expect_err("missing trait in program should fail");
+    assert!(
+        err.diagnostics()
+            .iter()
+            .any(|d| d.message.contains("Unknown trait")),
+        "got {:?}",
+        err.diagnostics()
+    );
+}

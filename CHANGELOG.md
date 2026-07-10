@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Stringly seam literal checks:** unknown `ai_model` `provider:` strings and
+  `serialize`/`deserialize` format literals fail at type-check (`mock`/`openai`/`anthropic`/`onnx`;
+  `json`/`yaml`/`binary`).
+- **Verification vocabulary guide:** [docs/verification-vocabulary.md](docs/verification-vocabulary.md)
+  disentangles `spanda verify` / `compatibility`, `verify`/`assert` blocks, `certify` metadata, and
+  `ensures` runtime contracts — none are formal verification.
+- **`assert { }` alias** for runtime assertion blocks (preferred over `verify { }`); lint warns on
+  the older keyword.
+- **Language surface inventory:** [docs/language-surface-inventory.md](docs/language-surface-inventory.md)
+  classifies declaration keywords and proposes `@policy` migration; lint warns on
+  `homeostasis_policy` / `attention_policy`.
+- **`safety { max_angular = … rad/s; }`:** optional turn-rate envelope, clamped on interpreter
+  `drive` / `execute` / `safety.validate` (with `max_speed`).
+- **AI `drive` bypass gate:** `ActionProposal.linear` / `.angular` are opaque
+  (`UntrustedLinear` / `UntrustedAngular`) and cannot feed `DifferentialDrive.drive` / `follow`;
+  negative fixture `examples/showcase/ai_safety_drive_bypass.sd`.
 - **Live vehicle I/O bridges:** env-gated LIN (`SPANDA_LIVE_LIN` / `SPANDA_LIN_CMD`), UDS
   (`SPANDA_LIVE_UDS` / `SPANDA_UDS_CMD`), and V2X (`SPANDA_LIVE_V2X` / `SPANDA_V2X_CMD`) for ADAS
   package dispatch; `scripts/adapters_vehicle_io_golden_path.sh`.
@@ -22,6 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Type-system / realtime honesty:** documented Experimental generics limits, same-program trait
+  scope, and interpreter realtime as intent+monitoring (not OS hard-RT) in
+  [spanda-type-system.md](docs/spanda-type-system.md), [realtime.md](docs/realtime.md),
+  [feature-status.md](docs/feature-status.md), [known-limitations.md](docs/known-limitations.md).
+- **Doc drift:** SDK version **0.5.9** and official package count **91** aligned across README /
+  overview / versioning (sources of truth noted in [versioning.md](docs/versioning.md)).
 - **Autonomous Entity Mesh** promoted to **Stable** (implementation tier) in `docs/feature-status.md`;
   organizational field pilot remains in progress.
 - **OIDC admin tests:** isolate Control Center state dir to prevent flaky reads of `.spanda/admin-oidc.json`.

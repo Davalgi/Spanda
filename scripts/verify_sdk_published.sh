@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify official SDK 0.5.5+ packages are published on crates.io, PyPI, and npm.
+# Verify official SDK 0.5.9+ packages are published on crates.io, PyPI, and npm.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

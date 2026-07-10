@@ -7,7 +7,7 @@
 Canonical status for ongoing release decisions: [`feature-status.md`](./feature-status.md).  
 This file tracks audit findings and closure history (supersedes the June 2026 snapshot).
 
-**Current counts:** **89** registry packages; SDK **0.5.9** published; workspace **v0.7.0**; desktop
+**Current counts:** **91** registry packages; SDK **0.5.9** published; workspace **v0.7.0**; desktop
 **v0.6.3**; gRPC proto **1.0.15** (**174** RPCs).
 
 ---
@@ -38,7 +38,7 @@ soak + third-party security audit.
 | `spanda demo differentiation` + `differentiation_smoke.sh` | **Closed** |
 | Platform maturity Phases A–D | **Closed** — **Stable** |
 | Entity Mesh implementation (CLI, REST, gRPC, SDK, Control Center, smoke) | **Closed** — **Stable** tier |
-| Registry package count (38 → 89) | **Closed** — aligned |
+| Registry package count (38 → 91) | **Closed** — aligned |
 | OIDC admin test isolation (`admin_oauth_tests`) | **Closed** — temp state dir per test |
 | ADAS live vehicle I/O (LIN/UDS/V2X `SPANDA_*_CMD` bridges) | **Closed** — experimental env path |
 | Cognitive live fusion supplier (`SPANDA_LIVE_FUSION_SENSORS=1`) | **Closed** — Beta path |

@@ -57,6 +57,18 @@ describe("safety", () => {
     expect(monitor.clampSpeed(-3.0)).toBe(-1.0);
   });
 
+  it("clamps angular to max_angular", () => {
+    const env = new Environment();
+    const monitor = new SafetyMonitor(createSafetyConfigFromRobot(1.0, [], [], new Map(), 0.5));
+    expect(monitor.clampAngular(2.0)).toBe(0.5);
+    expect(monitor.clampAngular(-3.0)).toBe(-0.5);
+    const result = monitor.validateActionProposal(0.2, 1.5, env, { x: 0, y: 0 });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.angular).toBe(0.5);
+    }
+  });
+
   it("enforces safety in interpreter — blocks drive on obstacle", () => {
     const source = `
       robot R {

@@ -1,7 +1,6 @@
 # Spanda manual pages
 
-Man-page style CLI reference (markdown). Regenerate with `python3
-scripts/generate_spanda_reference.py`.
+Man-page style CLI reference (markdown). Regenerate with `python3 scripts/generate_spanda_reference.py`.
 
 | Page | Command |
 |------|--------|
@@ -25,6 +24,7 @@ scripts/generate_spanda_reference.py`.
 | [spanda-run](./spanda-run.md) | `spanda run` |
 | [spanda-security](./spanda-security.md) | `spanda security` |
 | [spanda-sim](./spanda-sim.md) | `spanda sim` |
+| [spanda-telemetry](./spanda-telemetry.md) | `spanda telemetry` |
 | [spanda-test](./spanda-test.md) | `spanda test` |
 | [spanda-trace](./spanda-trace.md) | `spanda trace` |
 | [spanda-verify](./spanda-verify.md) | `spanda verify` |

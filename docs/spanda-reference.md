@@ -8,8 +8,13 @@ Structured like **JavaDoc** (hierarchical packages and types) and **man pages** 
 
 See also: [spanda-language.md](./spanda-language.md) (tutorial-style guide), [standard-library.md](./standard-library.md) (stdlib overview), [spanda-type-system.md](./spanda-type-system.md) (type rules).
 
+## Safety motion guarantee
+
+**Compile time:** AI output is `ActionProposal`. Actuator `execute()` accepts only `SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components (`UntrustedLinear` / `UntrustedAngular`) cannot feed `DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` / `follow(path:)` remain available. **Runtime (interpreter `run`/`sim`):** `safety { max_speed = … }` clamps linear velocity on `drive` and `execute` (and inside `safety.validate`); optional `max_angular = … rad/s` clamps turn rate on the same paths; `stop_if`, zones, and emergency stop still gate motion. **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp per-waypoint speeds. Full write-up: [spanda-type-system.md](./spanda-type-system.md#safety-motion-guarantee-authoritative).
+
 ## Contents
 
+- [Safety motion guarantee](#safety-motion-guarantee)
 - [Keywords](#keywords)
 - [Triggers](#triggers)
 - [Standard library (`std.*`)](#standard-library-std)
@@ -1156,7 +1161,7 @@ Built-in method.
 differentialdrive.drive(angular: Number(rad/s), linear: Number(m/s)) -> Void
 ```
 
-Drive with linear and angular velocity.
+Drive with linear and angular velocity (non-AI); runtime-clamped by max_speed / max_angular. ActionProposal fields cannot feed drive().
 
 #### `execute` {#type-DifferentialDrive-execute}
 
@@ -1164,7 +1169,7 @@ Drive with linear and angular velocity.
 differentialdrive.execute(SafeAction) -> Void
 ```
 
-Execute a safety-validated action.
+Execute a safety-validated SafeAction (only path for AI motion).
 
 #### `follow` {#type-DifferentialDrive-follow}
 
@@ -1172,7 +1177,7 @@ Execute a safety-validated action.
 differentialdrive.follow(path: Path) -> Void
 ```
 
-Follow a trajectory path.
+Follow a trajectory path (low-level; not SafeAction-gated). ActionProposal fields cannot feed follow().
 
 #### `stop` {#type-DifferentialDrive-stop}
 
@@ -1396,7 +1401,7 @@ Built-in method.
 safety.validate(ActionProposal) -> SafeAction
 ```
 
-Validate an action proposal; returns a safe action.
+Validate an ActionProposal; clamps max_speed / max_angular and returns SafeAction.
 
 ### `SparkfunEC` {#type-SparkfunEC}
 
@@ -1651,228 +1656,101 @@ Fields on LiDAR `Scan` values.
 
 Vendor sensor drivers registered in the runtime. Each sensor type exposes `read()` and `calibrate()` unless noted otherwise.
 
-### Adafruit
+### `vegetronix.soil`
 
-#### `adafruit.vl53l0x` — vl53l0x v1.0.0
+soil — Vegetronix v1.0.0: Vegetronix soil moisture sensor
 
-Adafruit VL53L0X time-of-flight distance sensor
+### `ydlidar.x4`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `AdafruitVL53L0X` | VL53L0X | i2c |
+x4 — YDLIDAR v1.0.0: YDLIDAR X4 2D LiDAR
 
-#### `adafruit.veml6075` — veml6075 v1.0.0
+### `atlas.salinity`
 
-Adafruit VEML6075 UV index sensor
+salinity — Atlas v1.0.0: Atlas Scientific salinity sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `AdafruitVEML6075` | VEML6075 | i2c |
+### `waveshare.uwmf`
 
-#### `adafruit.bh1750` — bh1750 v1.0.0
+uwmf — Waveshare v1.0.0: Waveshare ultrasonic distance module
 
-Adafruit BH1750 digital light sensor
+### `dfrobot.turbidity`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `AdafruitBH1750` | BH1750 | i2c |
+turbidity — DFRobot v1.0.0: DFRobot turbidity sensor
 
-### Atlas
+### `ydlidar.g4`
 
-#### `atlas.ph` — ph v1.0.0
+g4 — YDLIDAR v1.0.0: YDLIDAR G4 2D LiDAR
 
-Atlas Scientific pH sensor
+### `intel.realsense`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `AtlasPH` | pH | uart |
+realsense — Intel v1.0.0: Intel RealSense depth cameras
 
-#### `atlas.salinity` — salinity v1.0.0
+### `adafruit.bh1750`
 
-Atlas Scientific salinity sensor
+bh1750 — Adafruit v1.0.0: Adafruit BH1750 digital light sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `AtlasSalinity` | Salinity | uart |
+### `bosch.bno055`
 
-### Bosch
+bno055 — Bosch v1.0.0: Bosch BNO055 9-DOF absolute orientation IMU
 
-#### `bosch.bno055` — bno055 v1.0.0
+### `adafruit.vl53l0x`
 
-Bosch BNO055 9-DOF absolute orientation IMU
+vl53l0x — Adafruit v1.0.0: Adafruit VL53L0X time-of-flight distance sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `BoschBNO055` | BNO055 | i2c, uart |
+### `sparkfun.lsm9ds1`
 
-#### `bosch.bmp388` — bmp388 v1.0.0
+lsm9ds1 — SparkFun v1.0.0: SparkFun LSM9DS1 9-DOF IMU breakout
 
-Bosch BMP388 barometric pressure sensor
+### `hokuyo.ust10`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `BoschBMP388` | BMP388 | i2c, spi |
+ust10 — Hokuyo v1.0.0: Hokuyo UST-10LX 2D LiDAR
 
-#### `bosch.bme280` — bme280 v1.0.0
+### `ouster.os1`
 
-Bosch BME280 environmental sensor (humidity, pressure, temperature)
+os1 — Ouster v1.0.0: Ouster OS1 digital LiDAR sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `BoschBME280` | BME280 | i2c, spi |
+### `ublox.neo_m8n`
 
-### DFRobot
+neo_m8n — u-blox v1.0.0: u-blox NEO-M8N multi-GNSS receiver (UART NMEA)
 
-#### `dfrobot.turbidity` — turbidity v1.0.0
+### `atlas.ph`
 
-DFRobot turbidity sensor
+ph — Atlas v1.0.0: Atlas Scientific pH sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `DfrobotTurbidity` | Turbidity | uart, gpio |
+### `gq.gmc`
 
-### GQ
+gmc — GQ v1.0.0: GQ GMC geiger counter
 
-#### `gq.gmc` — gmc v1.0.0
+### `adafruit.veml6075`
 
-GQ GMC geiger counter
+veml6075 — Adafruit v1.0.0: Adafruit VEML6075 UV index sensor
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `GqGMC` | GMC | uart, usb |
+### `velodyne.vlp16`
 
-### Hokuyo
+vlp16 — Velodyne v1.0.0: Velodyne VLP-16 3D LiDAR puck
 
-#### `hokuyo.utm30` — utm30 v1.0.0
+### `hokuyo.utm30`
 
-Hokuyo UTM-30LX-EW outdoor LiDAR
+utm30 — Hokuyo v1.0.0: Hokuyo UTM-30LX-EW outdoor LiDAR
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `HokuyoUTM30` | UTM-30LX-EW | ethernet |
+### `velodyne.vlp32`
 
-#### `hokuyo.ust10` — ust10 v1.0.0
+vlp32 — Velodyne v1.0.0: Velodyne VLP-32C ultra puck
 
-Hokuyo UST-10LX 2D LiDAR
+### `bosch.bmp388`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `HokuyoUST10` | UST-10LX | ethernet, uart |
+bmp388 — Bosch v1.0.0: Bosch BMP388 barometric pressure sensor
 
-### Intel
+### `bosch.bme280`
 
-#### `intel.realsense` — realsense v1.0.0
+bme280 — Bosch v1.0.0: Bosch BME280 environmental sensor (humidity, pressure, temperature)
 
-Intel RealSense depth cameras
+### `sparkfun.ec`
 
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `IntelRealSenseD435` | D435 | usb |
-| `IntelRealSenseD455` | D455 | usb |
+ec — SparkFun v1.0.0: SparkFun conductivity sensor
 
-### Ouster
+### `plantower.pms5003`
 
-#### `ouster.os1` — os1 v1.0.0
-
-Ouster OS1 digital LiDAR sensor
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `OusterOS1` | OS1 | ethernet |
-
-### Plantower
-
-#### `plantower.pms5003` — pms5003 v1.0.0
-
-Plantower PMS5003 particulate matter sensor
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `PlantowerPMS5003` | PMS5003 | uart |
-
-### SparkFun
-
-#### `sparkfun.ec` — ec v1.0.0
-
-SparkFun conductivity sensor
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `SparkfunEC` | EC | uart, gpio |
-
-#### `sparkfun.lsm9ds1` — lsm9ds1 v1.0.0
-
-SparkFun LSM9DS1 9-DOF IMU breakout
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `SparkfunLSM9DS1` | LSM9DS1 | i2c, spi |
-
-### Vegetronix
-
-#### `vegetronix.soil` — soil v1.0.0
-
-Vegetronix soil moisture sensor
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `VegetronixSoil` | Soil | gpio, uart |
-
-### Velodyne
-
-#### `velodyne.vlp16` — vlp16 v1.0.0
-
-Velodyne VLP-16 3D LiDAR puck
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `VelodyneVLP16` | VLP-16 | ethernet, usb |
-
-#### `velodyne.vlp32` — vlp32 v1.0.0
-
-Velodyne VLP-32C ultra puck
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `VelodyneVLP32` | VLP-32C | ethernet |
-
-### Waveshare
-
-#### `waveshare.uwmf` — uwmf v1.0.0
-
-Waveshare ultrasonic distance module
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `WaveshareUWMF` | UWMF | gpio, uart |
-
-### YDLIDAR
-
-#### `ydlidar.g4` — g4 v1.0.0
-
-YDLIDAR G4 2D LiDAR
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `YdlidarG4` | G4 | uart, usb |
-
-#### `ydlidar.x4` — x4 v1.0.0
-
-YDLIDAR X4 2D LiDAR
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `YdlidarX4` | X4 | uart, usb |
-
-### u-blox
-
-#### `ublox.neo_m8n` — neo_m8n v1.0.0
-
-u-blox NEO-M8N multi-GNSS receiver (UART NMEA)
-
-| Sensor type | Model | Interfaces |
-|-------------|-------|------------|
-| `UbloxNEOM8N` | NEO-M8N | uart |
+pms5003 — Plantower v1.0.0: Plantower PMS5003 particulate matter sensor
 
 ## CLI reference (man pages)
 
@@ -1901,6 +1779,7 @@ The Spanda CLI drives the autonomous systems platform: check, verify, simulate, 
 - [`run`](./man/spanda-run.md)
 - [`sim`](./man/spanda-sim.md)
 - [`replay`](./man/spanda-replay.md)
+- [`telemetry`](./man/spanda-telemetry.md)
 - [`test`](./man/spanda-test.md)
 - [`readiness`](./man/spanda-readiness.md)
 - [`assure`](./man/spanda-assure.md)
@@ -2013,7 +1892,7 @@ spanda-check(1), spanda-run(1)
 **SYNOPSIS**
 
 ```
-spanda run [--json] [--verbose] [--trace-*] [--record] <file.sd>
+spanda run [--json] [--verbose] [--trace-*] [--record] [--persist-telemetry] <file.sd>
 ```
 
 **DESCRIPTION**
@@ -2025,12 +1904,14 @@ Execute a Spanda program on the interpreter backend.
 `--trace-scheduler`, `--trace-tasks`, `--trace-triggers`, `--trace-events` — scheduler telemetry
 `--trace-realtime`, `--metrics-json` — realtime metrics
 `--record` — write mission trace
+`--persist-telemetry` — append device/sensor/heartbeat events to `.spanda/telemetry-store.jsonl`
 
 **EXAMPLES**
 
 ```bash
 spanda run examples/rover.sd
 spanda run robot.sd --trace-realtime --metrics-json
+spanda run rover.sd --persist-telemetry
 ```
 
 **EXIT STATUS**
@@ -2039,7 +1920,7 @@ spanda run robot.sd --trace-realtime --metrics-json
 
 **FILES**
 
-Mission traces when using `--record` (default: `mission.trace`).
+Mission traces when using `--record` (default: `mission.trace`). Persistent telemetry when using `--persist-telemetry` (`.spanda/telemetry-store.jsonl`).
 
 **SEE ALSO**
 
@@ -2084,7 +1965,7 @@ Mission traces when using `--record`.
 
 **SEE ALSO**
 
-spanda-run(1), spanda-replay(1)
+spanda-run(1), spanda-replay(1), spanda-telemetry(1)
 
 ### spanda-replay(1) {#cli-replay}
 
@@ -2126,6 +2007,59 @@ Input mission trace file (`.trace`).
 **SEE ALSO**
 
 spanda-sim(1), spanda-run(1)
+
+### spanda-telemetry(1) {#cli-telemetry}
+
+**NAME**
+
+`telemetry` — Query the persistent telemetry store written by `--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`.
+
+**SYNOPSIS**
+
+```
+spanda telemetry list|latest|heartbeats|devices|stats|export|prometheus|otlp|push|serve|sessions|replay|info [flags]
+```
+
+**DESCRIPTION**
+
+Query the persistent telemetry store written by `--persist-telemetry` or `SPANDA_TELEMETRY_STORE=1`.
+
+**OPTIONS**
+
+`list` — filter by device, sensor, task, session, kind, since, limit
+`latest` — most recent device metric, sensor read, task heartbeat, or device liveness
+`heartbeats` / `devices` — index sidecar for tasks and devices
+`stats` — event counts (includes session and runtime_metrics)
+`info` — backend, paths, retention, migration backup
+`sessions` — list persisted run sessions with linked mission traces
+`replay` — replay the mission trace linked to a session (`--record` runs)
+`export` — copy event log (JSONL from SQLite when needed)
+`prometheus` — Prometheus text exposition
+`otlp` — OTLP/JSON metrics export
+`push` — POST OTLP/JSON to a remote collector (`--endpoint` or `SPANDA_OTLP_ENDPOINT`)
+`serve` — HTTP server (`/metrics`, `/otlp/v1/metrics`, `/healthz`)
+
+**EXAMPLES**
+
+```bash
+spanda telemetry stats
+spanda telemetry info
+spanda telemetry push --endpoint http://localhost:4318/v1/metrics
+spanda telemetry sessions --json
+spanda telemetry replay --session rover-123 --deterministic
+```
+
+**EXIT STATUS**
+
+0 on success; 1 when the store cannot be read.
+
+**FILES**
+
+`.spanda/telemetry-store.jsonl` or `.spanda/telemetry-store.db` when `SPANDA_TELEMETRY_BACKEND=sqlite` (override with `SPANDA_TELEMETRY_STORE_PATH`).
+
+**SEE ALSO**
+
+spanda-run(1), spanda-sim(1)
 
 ### spanda-test(1) {#cli-test}
 

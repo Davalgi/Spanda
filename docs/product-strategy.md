@@ -46,7 +46,7 @@ explainability, decision audit trail); Control Center Stable promotion.
 [#51](https://github.com/Davalgi/Spanda/issues/51).
 
 **Shipped (Stable, E1–E4):** Control Center (`spanda control-center serve`), REST v1 API, remote CLI
-with `--version`, official SDKs **0.5.8** (workspace line **0.5.8**), Tauri desktop **0.6.3** (auto
+with `--version`, official SDKs **0.5.9** (workspace line **0.5.9**), Tauri desktop **0.6.3** (auto
 `desktop-v*` on labeled CC
 PRs), WebSocket/OTLP observability, compliance/digital-thread/executive reporting — see
 [control-center.md](./control-center.md) ·
@@ -138,7 +138,7 @@ Foundational pillars that support the signature capabilities above.
 | Real-time drivers | C++/Rust | Call via FFI; don't rewrite |
 | Communication at scale | ROS2 | Bridge, don't replace |
 | Physics simulation | Gazebo/Isaac/Mujoco | Physics-lite sim for safety testing only |
-| Package ecosystem | PyPI/crates.io/ROS | Hosted index + in-repo mirror via `spanda publish`; 89 official packages |
+| Package ecosystem | PyPI/crates.io/ROS | Hosted index + in-repo mirror via `spanda publish`; 91 official packages |
 | Native performance | Rust/C++ | Interpreter first; LLVM deferred |
 
 ### Differentiation ratings
@@ -270,7 +270,7 @@ Not needed: blockchain, self-hosting, fleet runtime.
 | One documented ROS2 golden path | **Done** — `ros2_golden_path.sh` |
 | `spanda verify` CI integration guide | **Done** — [ci-verify.md](./ci-verify.md) |
 | Curated killer demo (`examples/showcase/killer_demo.sd`) | **Done** |
-| Package install from remote registry (small, curated) | **Done** — 89 packages; hosted index + `spanda publish` mirror |
+| Package install from remote registry (small, curated) | **Done** — 91 packages; hosted index + `spanda publish` mirror |
 | Differentiation NOW (contracts, explain, audit trail, coverage) | **Planned** — topic guides shipped; crates not started |
 
 P1 adoption enablers (CI verify, PyO3, LSP deploy hints, showcase trim, adoption quickstart) are

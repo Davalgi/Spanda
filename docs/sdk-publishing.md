@@ -252,7 +252,7 @@ Or edit manually:
 
 Commit and push to `main`.
 
-**Current release line:** **0.5.8** — Recovery Orchestrator client methods (`getRecoveryPredictive`,
+**Current release line:** **0.5.9** — Recovery Orchestrator client methods (`getRecoveryPredictive`,
 `listRecoverableEntities`, `recommendRecovery`; Rust gRPC when `grpc` feature enabled, proto semver
 from `GET /v1/version` — currently **1.0.15**). Prior **0.5.5** added Twin Cloud history,
 import-replay, and gRPC twins.
@@ -273,7 +273,7 @@ import-replay, and gRPC twins.
 Or tag manually:
 
 ```bash
-VERSION=0.5.8
+VERSION=0.5.9
 git tag crates-sdk-v${VERSION}
 git tag sdk-python-v${VERSION}
 git tag npm-sdk-v${VERSION}
@@ -285,22 +285,22 @@ git push origin crates-sdk-v${VERSION} sdk-python-v${VERSION} npm-sdk-v${VERSION
 **GitHub → Actions** — confirm **Publish Rust SDK**, **Publish Python SDK**, and **Publish
 TypeScript SDK** succeed.
 
-### 5. Verify install (published **0.5.8**)
+### 5. Verify install (published **0.5.9**)
 
 ```bash
-pip install spanda-sdk==0.5.8
+pip install spanda-sdk==0.5.9
 python -c "from spanda_sdk import SpandaClient; print(SpandaClient.local())"
 
-cargo add spanda-sdk@0.5.8
+cargo add spanda-sdk@0.5.9
 
-npm install @davalgi-spanda/sdk@0.5.8
+npm install @davalgi-spanda/sdk@0.5.9
 node -e "import('@davalgi-spanda/sdk').then(m => console.log(m.SpandaClient.local()))"
 ```
 
 ### 6. Verify registries (post-publish)
 
 ```bash
-./scripts/verify_sdk_published.sh 0.5.8   # latest published; use 0.5.8 after tagging
+./scripts/verify_sdk_published.sh 0.5.9   # latest published; use 0.5.9 after tagging
 ```
 
 GitHub Actions: **Verify published SDKs** (`sdk-publish-verify.yml`) — weekly or manual

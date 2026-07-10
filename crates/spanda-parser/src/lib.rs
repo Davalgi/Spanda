@@ -3888,7 +3888,11 @@ impl Parser {
                 twin_sync = Some(self.parse_twin_sync()?);
             } else if self.check(TokenType::Twin) {
                 twin = Some(self.parse_twin()?);
-            } else if self.check(TokenType::Verify) {
+            } else if self.check(TokenType::Verify)
+                || (self.check(TokenType::Assert)
+                    && self.pos + 1 < self.tokens.len()
+                    && self.tokens[self.pos + 1].token_type == TokenType::Lbrace)
+            {
                 verify = Some(self.parse_verify()?);
             } else if self.check(TokenType::Observe) {
                 observe = Some(self.parse_observe()?);
@@ -5314,7 +5318,12 @@ impl Parser {
             } else if self.check(TokenType::Zone) {
                 zones.push(self.parse_safety_zone()?);
             } else if self.check(TokenType::Ident) {
-                rules.push(self.parse_max_speed_rule()?);
+                // Dispatch named safety envelope rules by identifier.
+                if self.peek().lexeme == "max_angular" {
+                    rules.push(self.parse_max_angular_rule()?);
+                } else {
+                    rules.push(self.parse_max_speed_rule()?);
+                }
             } else {
                 let t = self.peek();
                 return Err(SpandaError::Parse {
@@ -5333,24 +5342,25 @@ impl Parser {
     }
 
     fn parse_verify(&mut self) -> Result<spanda_ast::foundations::VerifyDecl, SpandaError> {
-        // Description:
-        //     Parse verify.
+        // Parse `verify { … }` or preferred alias `assert { … }` runtime assertion blocks.
         //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
+        // Parameters:
+        // None (uses parser cursor).
         //
-        // Outputs:
-        //     result: Result<spanda_ast::foundations::VerifyDecl, SpandaError>
-        //         Return value from `parse_verify`.
+        // Returns:
+        // A `VerifyDecl`, or a parse error.
+        //
+        // Options:
+        // None.
         //
         // Example:
-        //     let result = spanda_parser::parse_verify(&mut self);
+        // self.parse_verify()?
 
-        // Import the items needed by the logic below.
         use spanda_ast::foundations::VerifyDecl;
         let start = self.advance();
-        self.expect(TokenType::Lbrace, "Expected '{' after verify")?;
+        let assert_alias = start.token_type == TokenType::Assert;
+        let keyword = if assert_alias { "assert" } else { "verify" };
+        self.expect(TokenType::Lbrace, &format!("Expected '{{' after {keyword}"))?;
         let mut rules = Vec::new();
         let mut warnings = Vec::new();
 
@@ -5362,12 +5372,19 @@ impl Parser {
             } else {
                 rules.push(self.parse_expr()?);
             }
-            self.expect(TokenType::Semicolon, "Expected ';' after verify rule")?;
+            self.expect(
+                TokenType::Semicolon,
+                &format!("Expected ';' after {keyword} rule"),
+            )?;
         }
-        let end = self.expect(TokenType::Rbrace, "Expected '}' to close verify block")?;
+        let end = self.expect(
+            TokenType::Rbrace,
+            &format!("Expected '}}' to close {keyword} block"),
+        )?;
         Ok(VerifyDecl::VerifyDecl {
             rules,
             warnings,
+            assert_alias,
             span: self.span_from(&start, &end),
         })
     }
@@ -6625,6 +6642,49 @@ impl Parser {
         };
         self.expect(TokenType::Semicolon, "Expected ';' after safety rule")?;
         Ok(SafetyRule::MaxSpeedRule {
+            name,
+            value,
+            unit,
+            span: self.span_from(&start, self.previous()),
+        })
+    }
+
+    fn parse_max_angular_rule(&mut self) -> Result<SafetyRule, SpandaError> {
+        // Parse `max_angular = <expr> rad/s;` inside a safety block.
+        //
+        // Parameters:
+        // None (uses parser cursor).
+        //
+        // Returns:
+        // A `SafetyRule::MaxAngularRule`, or a parse error.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // // inside parse_safety: self.parse_max_angular_rule()?
+
+        // Capture the rule name token, then parse assignment and unit.
+        let start = self.advance();
+        let name = start.lexeme.clone();
+        self.expect(TokenType::Assign, "Expected '=' in safety rule")?;
+        let value = self.parse_expr()?;
+        let unit = if let Expr::UnitLiteralExpr { unit, .. } = &value {
+            *unit
+        } else {
+            self.parse_unit_suffix()?
+        };
+
+        // Reject non-angular-velocity units for max_angular.
+        if unit != UnitKind::RadPerS {
+            return Err(SpandaError::Parse {
+                message: "max_angular requires an angular velocity unit (rad/s)".into(),
+                line: start.line,
+                column: start.column,
+            });
+        }
+        self.expect(TokenType::Semicolon, "Expected ';' after safety rule")?;
+        Ok(SafetyRule::MaxAngularRule {
             name,
             value,
             unit,
@@ -8992,6 +9052,14 @@ impl Parser {
             });
         }
 
+        // Soft-keyword: `assert(...)` builtin calls vs `assert { }` verify blocks.
+        if self.match_types(&[TokenType::Assert]) {
+            return Ok(Expr::IdentExpr {
+                name: "assert".into(),
+                span: self.span_from(&start, self.previous()),
+            });
+        }
+
         // Take this path when self.match types(&[TokenType::Actuator]).
         if self.match_types(&[TokenType::Actuator]) {
             return Ok(Expr::IdentExpr {
@@ -11048,6 +11116,67 @@ robot Rover {
         };
         let SafetyBlock::SafetyBlock { rules, .. } = s;
         assert!(matches!(rules[0], SafetyRule::MaxSpeedRule { .. }));
+    }
+
+    #[test]
+    fn parses_max_angular_rule() {
+        // Parse max_angular inside a safety block.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // parses_max_angular_rule();
+
+        let ast =
+            parse(tokenize("robot R { safety { max_angular = 0.5 rad/s; } }").unwrap()).unwrap();
+        let RobotDecl::RobotDecl { safety, .. } = &ast.robots()[0];
+        let Some(s) = safety else {
+            panic!("expected safety block");
+        };
+        let SafetyBlock::SafetyBlock { rules, .. } = s;
+        assert!(matches!(rules[0], SafetyRule::MaxAngularRule { .. }));
+    }
+
+    #[test]
+    fn parses_assert_block_alias() {
+        // Prefer assert { } as the runtime-assertion keyword.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // parses_assert_block_alias();
+
+        let ast = parse(
+            tokenize(
+                r#"robot R {
+  actuator wheels: DifferentialDrive;
+  assert { robot.velocity().linear <= 1.0 m/s; }
+  behavior b() {}
+}"#,
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        let RobotDecl::RobotDecl { verify, .. } = &ast.robots()[0];
+        let Some(spanda_ast::foundations::VerifyDecl::VerifyDecl { assert_alias, .. }) = verify
+        else {
+            panic!("expected assert/verify block");
+        };
+        assert!(*assert_alias);
     }
 
     #[test]

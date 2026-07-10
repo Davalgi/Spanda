@@ -90,14 +90,16 @@ impl<B: RobotBackend> Interpreter<B> {
                     x: pose.x,
                     y: pose.y,
                 };
-                let max_speed = self
-                    .safety_monitor
-                    .as_ref()
-                    .map(|m| m.clamp_speed_at_pose(linear, &pose2d))
-                    .unwrap_or(linear);
+                let (clamped_linear, clamped_angular) = match self.safety_monitor.as_ref() {
+                    Some(m) => (
+                        m.clamp_speed_at_pose(linear, &pose2d),
+                        m.clamp_angular(angular),
+                    ),
+                    None => (linear, angular),
+                };
                 self.backend.execute_motion(MotionCommand::Drive {
-                    linear: max_speed,
-                    angular,
+                    linear: clamped_linear,
+                    angular: clamped_angular,
                     actuator: name.to_string(),
                 });
             }
@@ -189,9 +191,22 @@ impl<B: RobotBackend> Interpreter<B> {
 
                 // Take this path when let RuntimeValue::SafeAction { linear, angular } = action val.
                 if let RuntimeValue::SafeAction { linear, angular } = action_val {
+                    // Re-clamp SafeAction speeds so execute() cannot exceed current envelope.
+                    let pose = self.backend.get_state().pose;
+                    let pose2d = Pose2d {
+                        x: pose.x,
+                        y: pose.y,
+                    };
+                    let (clamped_linear, clamped_angular) = match self.safety_monitor.as_ref() {
+                        Some(m) => (
+                            m.clamp_speed_at_pose(linear, &pose2d),
+                            m.clamp_angular(angular),
+                        ),
+                        None => (linear, angular),
+                    };
                     self.backend.execute_motion(MotionCommand::Drive {
-                        linear,
-                        angular,
+                        linear: clamped_linear,
+                        angular: clamped_angular,
                         actuator: name.to_string(),
                     });
                 }

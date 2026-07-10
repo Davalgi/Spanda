@@ -234,6 +234,9 @@ export function resolveTypeName(name: string): SpandaType {
       return { kind: "named", name: "ActionProposal" };
     case "SafeAction":
       return { kind: "named", name: "SafeAction" };
+    case "UntrustedLinear":
+    case "UntrustedAngular":
+      return { kind: "named", name: short };
     case "Command":
     case "Conversation":
     case "Speech":
@@ -610,6 +613,26 @@ export function isSafeActionType(ty: SpandaType): boolean {
   return ty.kind === "named" && ty.name === "SafeAction";
 }
 
+export function isUntrustedMotionComponent(ty: SpandaType): boolean {
+  // True when `ty` is an opaque ActionProposal motion component.
+  //
+  // Parameters:
+  // - `ty` — candidate type from member access or a let-bound alias
+  //
+  // Returns:
+  // Whether the type is UntrustedLinear or UntrustedAngular.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // isUntrustedMotionComponent({ kind: "named", name: "UntrustedLinear" });
+
+  return (
+    ty.kind === "named" && (ty.name === "UntrustedLinear" || ty.name === "UntrustedAngular")
+  );
+}
+
 export function typeKindName(ty: SpandaType): string {
   // Description:
   //     TypeKindName.
@@ -651,4 +674,50 @@ export function typeKindName(ty: SpandaType): string {
     default:
       return ty.kind;
   }
+}
+
+/** Built-in AI provider names accepted in `ai_model { provider: "…" }` string literals. */
+export const KNOWN_AI_PROVIDERS = ["mock", "openai", "anthropic", "onnx"] as const;
+
+/** Formats accepted by `serialize` / `deserialize` string literals. */
+export const KNOWN_SERIALIZE_FORMATS = ["json", "yaml", "binary"] as const;
+
+export function isKnownAiProvider(name: string): boolean {
+  // Return true when `name` matches a built-in AI provider (case-insensitive).
+  //
+  // Parameters:
+  // - `name` — provider string from an `ai_model` config entry
+  //
+  // Returns:
+  // `true` for mock, openai, anthropic, or onnx.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // assert(isKnownAiProvider("OpenAI"));
+
+  // Compare against the built-in provider list without regard to case.
+  const lower = name.toLowerCase();
+  return (KNOWN_AI_PROVIDERS as readonly string[]).includes(lower);
+}
+
+export function isKnownSerializeFormat(name: string): boolean {
+  // Return true when `name` is a supported serialize/deserialize format.
+  //
+  // Parameters:
+  // - `name` — format string literal passed to `serialize` / `deserialize`
+  //
+  // Returns:
+  // `true` for json, yaml, or binary.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // assert(isKnownSerializeFormat("JSON"));
+
+  // Compare against the built-in format list without regard to case.
+  const lower = name.toLowerCase();
+  return (KNOWN_SERIALIZE_FORMATS as readonly string[]).includes(lower);
 }

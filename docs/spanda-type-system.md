@@ -38,7 +38,68 @@ let nav: Action<Command, Feedback, Path>;
 The compiler reports arity errors when generic parameters are missing or extra, e.g. `Array`
 requires exactly one type argument.
 
-## Physical unit types
+### User-defined generics (Experimental)
+
+Spanda also supports **type parameters** on module functions and structs:
+
+```spanda
+module std.collections;
+
+export fn identity<T>(value: T) -> T {
+  return value;
+}
+
+struct Box<T> {
+  value: T;
+}
+```
+
+**Current limits (honest):**
+
+| Capability | Status |
+|------------|--------|
+| Module / export `fn` type params | Supported (inference from call args) |
+| `struct Name<T>` + `Name<Int> { … }` literals | Supported |
+| Trait / enum / agent type params | Not supported |
+| `where` bounds / trait bounds | Not supported |
+| Cross-module generic struct export parity | Limited — prefer same-program declarations |
+| Full Hindley–Milner inference | Not supported — annotate when ambiguous |
+
+Generics remain **Experimental** in [feature-status.md](./feature-status.md) until bounds and
+broader declaration parity land with tests. Do not treat them as Stable language surface yet.
+
+## Traits and `impl` (Stable API, compilation-unit scope)
+
+```spanda
+trait PathPlanner {
+  fn plan(goal: Pose) -> Path;
+}
+
+robot R {
+  agent Nav { … }
+  impl PathPlanner for Nav {
+    fn plan(goal: Pose) -> Path { … }
+  }
+}
+```
+
+Traits and `impl Trait for Agent` are resolved in the **same compilation unit** (one `.sd`
+program after imports are expanded). There is no `export trait` yet — a trait used by an `impl`
+must be declared in that program (or brought in via source that the checker sees as one unit).
+`dyn Trait` objects are supported for typed trait-object values.
+
+## Stringly seams (literal validation)
+
+Some configuration still uses strings. The type checker **rejects unknown string literals** for:
+
+| Seam | Accepted literals |
+|------|-------------------|
+| `ai_model { provider: "…" }` | `mock`, `openai`, `anthropic`, `onnx` |
+| `serialize` / `deserialize` format | `json`, `yaml`, `binary` |
+
+Non-literal expressions (variables) remain runtime-checked. CLI `spanda codegen --target` accepts
+only `native`, `wasm`, or `esp32` (unknown targets exit with an error). Full typed enums for these
+seams are a future hardening step; string shims stay for compatibility.
 
 Unit-aware types prevent mixing incompatible dimensions:
 
@@ -178,10 +239,26 @@ wheels.execute(action);   // OK
 
 ```spanda
 wheels.execute(proposal);   // COMPILE ERROR
+wheels.drive(linear: proposal.linear, angular: proposal.angular);  // COMPILE ERROR
 ```
 
-The type checker rejects `ActionProposal` passed to `actuator.execute()`. Only `SafeAction` from
-`safety.validate()` is permitted.
+The type checker rejects `ActionProposal` passed to `actuator.execute()`, and rejects
+`ActionProposal.linear` / `.angular` (opaque `UntrustedLinear` / `UntrustedAngular`) as arguments to
+`drive()` / `follow()`. Only `SafeAction` from `safety.validate()` may reach `execute()`. Literal
+non-AI `drive(linear: …, angular: …)` remains valid and is envelope-clamped at runtime.
+
+### Safety motion guarantee (authoritative)
+
+**Compile time:** AI output is typed as `ActionProposal`. Actuator `execute()` accepts only
+`SafeAction` from `safety.validate(ActionProposal)`. `ActionProposal` motion components cannot feed
+`DifferentialDrive.drive` / `follow` (including via `let` bindings). Non-AI literal `drive` /
+`follow(path:)` remain available as low-level APIs. **Runtime (interpreter `run`/`sim`):**
+`safety { max_speed = … }` clamps linear velocity on `drive` and `execute` (and inside
+`safety.validate`); optional `max_angular = … rad/s` clamps turn rate on the same paths; `stop_if`,
+zones, and emergency stop still gate motion via `before_motion`. Zone speed caps apply through
+`clamp_speed_at_pose`. **Not claimed:** `follow(path:)` does not re-derive SafeAction or clamp
+per-waypoint speeds; hard real-time deadlines are intent/monitoring on the interpreter path, not
+OS-level guarantees.
 
 ## Human interaction types
 

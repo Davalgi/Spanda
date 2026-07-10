@@ -34,5 +34,4 @@ Assurance metadata in program declarations.
 
 ## SEE ALSO
 
-spanda-readiness(1), spanda-diagnose(1), [spanda(1)](./spanda.md),
-[spanda-reference.md](../spanda-reference.md)
+spanda-readiness(1), spanda-diagnose(1), [spanda(1)](./spanda.md), [spanda-reference.md](../spanda-reference.md)

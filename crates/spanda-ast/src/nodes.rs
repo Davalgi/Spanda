@@ -899,6 +899,12 @@ pub enum SafetyRule {
         unit: UnitKind,
         span: Span,
     },
+    MaxAngularRule {
+        name: String,
+        value: Expr,
+        unit: UnitKind,
+        span: Span,
+    },
     StopIfRule {
         condition: Expr,
         span: Span,

@@ -3,7 +3,7 @@
 use glob::glob;
 use spanda_core::{compile, run, RunOptions};
 
-const NEGATIVE_FIXTURES: &[&str] = &["ai_safety_violation.sd"];
+const NEGATIVE_FIXTURES: &[&str] = &["ai_safety_violation.sd", "ai_safety_drive_bypass.sd"];
 
 #[test]
 fn examples_compile_and_run() {
@@ -81,6 +81,38 @@ fn negative_fixture_fails_type_check() {
             .iter()
             .any(|d| d.message.contains("SafeAction") || d.message.contains("ActionProposal")),
         "expected SafeAction/ActionProposal error, got: {:?}",
+        err.diagnostics()
+    );
+}
+
+#[test]
+fn negative_drive_bypass_fixture_fails_type_check() {
+    // Intentional drive() bypass of SafeAction must fail type check.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // negative_drive_bypass_fixture_fails_type_check();
+
+    let path = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/ai_safety_drive_bypass.sd"
+    );
+    let source = std::fs::read_to_string(path).expect("read ai_safety_drive_bypass.sd");
+    let err = compile(&source).expect_err("expected compile failure for drive bypass");
+    assert!(
+        err.diagnostics().iter().any(|d| {
+            d.message.contains("ActionProposal")
+                && (d.message.contains("drive") || d.message.contains("Untrusted"))
+        }),
+        "expected ActionProposal drive gate error, got: {:?}",
         err.diagnostics()
     );
 }

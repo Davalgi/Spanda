@@ -707,7 +707,10 @@ pub enum WorldModelDecl {
     WorldModelDecl { enabled: bool, span: Span },
 }
 
-/// System-level verification assertions checked after behavior/task execution.
+/// System-level runtime assertions checked after behavior/task execution.
+///
+/// Prefer the `assert { }` keyword in new code. `verify { }` remains accepted and is flagged by
+/// lint as a vocabulary clarification (not formal verification).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum VerifyDecl {
@@ -715,6 +718,9 @@ pub enum VerifyDecl {
         rules: Vec<Expr>,
         #[serde(default)]
         warnings: Vec<Expr>,
+        /// True when the block was introduced with `assert { }` rather than `verify { }`.
+        #[serde(default)]
+        assert_alias: bool,
         span: Span,
     },
 }

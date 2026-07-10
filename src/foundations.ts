@@ -498,6 +498,8 @@ export type TwinDecl = {
 export type VerifyDecl = {
   kind: "VerifyDecl";
   rules: Expr[];
+  /** True when parsed from `assert { }` rather than `verify { }`. */
+  assertAlias?: boolean;
   span: Span;
 };
 

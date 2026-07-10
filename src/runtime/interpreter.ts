@@ -2535,6 +2535,7 @@ export class Interpreter {
     this.env.define("robot", { kind: "robot" });
     const stopIfRules: Array<(env: Environment) => boolean> = [];
     let maxSpeed = Infinity;
+    let maxAngular = Infinity;
 
     // continue when robot.safety.
     if (robot.safety) {
@@ -2548,8 +2549,9 @@ export class Interpreter {
 
           // continue when kind equals "number".
           if (val.kind === "number") maxSpeed = val.value;
-
-        // Handle any remaining cases.
+        } else if (rule.kind === "MaxAngularRule") {
+          const val = this.evalExpr(rule.value);
+          if (val.kind === "number") maxAngular = val.value;
         } else {
           stopIfRules.push((env) => {
             const saved = this.env;
@@ -2572,6 +2574,7 @@ export class Interpreter {
         stopIfRules,
         this.zones,
         this.programSafetyZones.speedCaps(),
+        maxAngular,
       ),
     );
     this.reliability.loadFromRobot(
@@ -5089,7 +5092,13 @@ export class Interpreter {
         const angular = this.getNamedArgNumber(expr, "angular", 0);
         const pose = this.options.backend.getState().pose;
         const maxSpeed = this.safetyMonitor?.clampSpeedAtPose(linear, pose) ?? linear;
-        this.options.backend.executeMotion({ kind: "drive", linear: maxSpeed, angular, actuator: name });
+        const maxAngular = this.safetyMonitor?.clampAngular(angular) ?? angular;
+        this.options.backend.executeMotion({
+          kind: "drive",
+          linear: maxSpeed,
+          angular: maxAngular,
+          actuator: name,
+        });
         break;
       }
       case "follow": {
@@ -5161,8 +5170,8 @@ export class Interpreter {
         }
         this.options.backend.executeMotion({
           kind: "drive",
-          linear: safe.linear,
-          angular: safe.angular,
+          linear: this.safetyMonitor?.clampSpeedAtPose(safe.linear, this.options.backend.getState().pose) ?? safe.linear,
+          angular: this.safetyMonitor?.clampAngular(safe.angular) ?? safe.angular,
           actuator: name,
         });
         break;

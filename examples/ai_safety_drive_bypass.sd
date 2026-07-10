@@ -1,0 +1,25 @@
+// Showcase: AI motion via drive() blocked at compile time
+// Run: spanda check examples/showcase/ai_safety_drive_bypass.sd
+// Expected: error — ActionProposal motion cannot feed actuator.drive()
+robot UnsafeDriveBot {
+  sensor lidar: Lidar on "/scan";
+  actuator wheels: DifferentialDrive;
+
+  ai_model planner: LLM {
+    provider: "mock";
+    model: "unsafe-planner";
+    temperature: 0.0;
+  }
+
+  safety {
+    max_speed = 0.5 m/s;
+    stop_if lidar.nearest_distance < 0.5 m;
+  }
+
+  behavior unsafe() {
+    let scan = lidar.read();
+    let proposal = planner.reason(prompt: "Drive fast", input: scan);
+    // Bypass attempt: feed AI numbers into ungated drive() instead of execute(SafeAction)
+    wheels.drive(linear: proposal.linear, angular: proposal.angular);
+  }
+}
