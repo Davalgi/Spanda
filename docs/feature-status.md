@@ -201,8 +201,8 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | Type checker + units | **Stable** | Physical unit algebra enforced |
 | modules / imports | **Stable** | `spanda install` vendor support |
 | structs / enums / traits | **Stable** | Generic struct literals; enum payloads |
-| generics | **Experimental** | Module fn + struct type params; **no** `where` bounds, trait/enum generics, or full inference — see [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental) |
-| trait objects (`dyn Trait`) | **Stable** | Same-program `trait` / `impl`; no `export trait` yet |
+| generics | **Experimental** | Module fn + struct type params; empty/`where`/`T: Bound` rejected clearly — [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental) |
+| trait objects (`dyn Trait`) | **Stable** | `export trait` + import; same-program `impl` |
 | match / Result / Option | **Stable** | |
 | async / await | **Stable** | Cooperative single-threaded |
 | spawn / select / channels | **Stable** | Cooperative concurrency with TS mirror |

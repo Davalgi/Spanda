@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`export trait`:** traits can be `export`/`public` and imported across modules for `impl`.
+- **`@policy(kind: "homeostasis")` PoC:** attribute form parses alongside legacy
+  `homeostasis_policy` (lint still prefers migration).
+- **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
+  work); unknown values rejected at check time.
+- **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
+  clear Experimental errors.
 - **`follow(path:)` cruise clamp:** trajectory follow speed (default 0.5 m/s) is clamped by
   `safety.max_speed` / zone caps on the interpreter path (Rust + TS), matching `drive`/`execute`.
 - **Stringly seam literal checks:** unknown `ai_model` `provider:` strings and

@@ -102,15 +102,16 @@ trait PolicyHost {
 5. **Docs + examples** — new code uses attributes; old examples keep working with lint.
 6. **Hard remove** — only after a major version and empty usage in official examples.
 
-## Proof of concept (this session)
+## Proof of concept
 
-Full end-to-end migration of `homeostasis_policy` is **not** low-risk (wide example/compliance
-usage). This session ships:
+Shipped:
 
-- This inventory + design note
-- Lint rule `library-shaped-decl` warning on `homeostasis_policy` / `attention_policy`
+- Inventory + design note
+- Lint rule `library-shaped-decl` on `homeostasis_policy` / `attention_policy`
+- **`@policy(kind: "homeostasis") Name { metric …; }`** parse path (sets `legacy_syntax = false`);
+  legacy `homeostasis_policy` still parses (`legacy_syntax = true`) and keeps the lint
 
-A later PR can desugar one policy to `@policy(kind: …)` once attribute parsing exists.
+Still deferred: package `std.policies.*`, migrating official examples, hard-remove of keywords.
 
 ## Non-goals
 

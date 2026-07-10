@@ -36,10 +36,13 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
 
 ## Language surface (Experimental / stringly)
 
-- **User generics** are Experimental: module fn + struct type params only; no `where` bounds —
+- **Traits** support `export trait` across modules via `import`; private traits stay local.
+- **User generics** are Experimental: module fn + struct type params; empty `<>`, duplicates,
+  `T: Bound`, and `where` are rejected with clear errors —
   [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental).
-- **Traits** are same-program scoped (no `export trait` yet).
-- `serialize`/`deserialize` format literals must be `json`, `yaml`, or `binary`.
+- `serialize`/`deserialize` and AI `provider` accept bare idents or strings (`json` / `mock`, …).
+- `@policy(kind: "homeostasis") Name { … }` PoC parses alongside legacy `homeostasis_policy`
+  (lint still warns on the keyword).
 - `spanda codegen --target` accepts only `native`, `wasm`, `esp32`.
 
 ## Safety model (precise guarantee)
