@@ -41,6 +41,7 @@ export type ControlCenterTab =
   | "twins"
   | "traceability"
   | "administration"
+  | "about"
   | "mission"
   | "operator"
   | "assurance"
@@ -104,6 +105,7 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   "smart-spaces": ["*"],
   executive: ["*"],
   administration: ["administrator"],
+  about: ["*"],
   mission: ["administrator", "supervisor", "operator", "safety_officer"],
   simulation: ["administrator", "supervisor", "developer"],
   replay: ["*"],

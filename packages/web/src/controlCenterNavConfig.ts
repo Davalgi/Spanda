@@ -77,7 +77,7 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
   {
     id: "admin",
     label: "Administration",
-    tabs: ["administration", "marketplace"],
+    tabs: ["administration", "about", "marketplace"],
   },
 ];
 
@@ -113,6 +113,7 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   "smart-spaces": "Smart building facilities, zones, energy, and occupancy.",
   entities: "Unified entity graph — browse, search, and inspect relationships.",
   administration: "API keys, users, alert channels, and integrations.",
+  about: "Platform, UI, desktop, REST, and gRPC component versions for this instance.",
   "digital-thread": "Capability-to-device graph across the stack.",
   telemetry: "Live WebSocket telemetry, traces, and alert stream.",
   trends: "Readiness history slopes and forecasted mission risk.",
@@ -135,6 +136,7 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "ota") return "OTA";
   if (name === "twins") return "Twin Cloud";
   if (name === "administration") return "Administration";
+  if (name === "about") return "About";
   if (name === "mission") return "Mission";
   if (name === "simulation") return "Simulation";
   if (name === "replay") return "Replay";

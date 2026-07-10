@@ -1,6 +1,7 @@
 import type { RbacAction } from "./controlCenterRbac";
 import type { ControlCenterTab } from "./controlCenterRbac";
 import type { DeviceEntry, PluginPanelEntry } from "./controlCenterTypes";
+import { AboutPanel } from "./AboutPanel";
 import { AdministrationPanel } from "./AdministrationPanel";
 import { AdasPanel } from "./AdasPanel";
 import { AlertsPanel } from "./AlertsPanel";
@@ -318,6 +319,9 @@ export function ControlCenterTabContent({
           hasToken={hasToken}
         />
       );
+
+    case "about":
+      return <AboutPanel baseUrl={baseUrl} />;
 
     case "simulation":
       return (

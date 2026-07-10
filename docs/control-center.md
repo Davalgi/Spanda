@@ -1142,6 +1142,7 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Recovery | Orchestrator plans, metrics, playbooks, history, graph, plan/simulate/execute |
 | Cognitive & Resilience | Functional domain panels — reflex, attention, homeostasis, immunity, memory, damage risk (`/v1/autonomy/*`) |
 | Administration | API keys, users, alert channels, integrations (administrator) |
+| About | Live component versions from `GET /v1/version` (all roles) |
 | Simulation | Program sim execute with decision traces |
 | Replay | Trace library, deterministic replay |
 | **Telemetry** | Live WebSocket stream (`/v1/stream/telemetry`) |
@@ -1288,6 +1289,7 @@ shown in the sidebar, CLI, and API.
 | Surface | How to read the version |
 |---------|-------------------------|
 | UI sidebar | `vX.Y.Z` under the Control Center title |
+| About tab | Administration → About — platform, UI, REST, gRPC (and desktop when applicable) |
 | CLI | `spanda control-center --version` · `spanda control-center status` → `UI version` |
 | API | `GET /v1/version` → `control_center_ui_version` · `GET /v1/instance` |
 | Serve startup | `Spanda Control Center vX.Y.Z listening on …` |

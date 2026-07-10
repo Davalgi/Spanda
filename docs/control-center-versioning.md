@@ -31,12 +31,15 @@ sidebar.
 ### UI
 
 - **Sidebar** — under the “Control Center” title: `vX.Y.Z`
+- **About tab** — Administration → About lists live component versions from `GET /v1/version`
+  (platform, Control Center UI, REST API, gRPC proto) plus the desktop shell version when running
+  in Tauri; also shows the build-time UI bundle constant for the loaded page
 - **Tauri desktop** — reads `app_version` from the Tauri command `desktop_features` (desktop shell
   semver)
 - **Browser / embedded UI** — build-time constant from `packages/web` (`__CONTROL_CENTER_VERSION__`)
 
 Implementation: `packages/web/src/controlCenterVersion.ts`, `useControlCenterVersion.ts`,
-`ControlCenterPanel.tsx`.
+`ControlCenterPanel.tsx`, `AboutPanel.tsx`.
 
 ### CLI
 

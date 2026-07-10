@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Control Center About tab:** Administration → About lists live component versions from
+  `GET /v1/version` (platform, UI, REST, gRPC proto) plus desktop shell version when running in
+  Tauri.
+
 ### Fixed
 
 - **Control Center embedded UI version:** resynced SPA assets so the sidebar shows `packages/web`
