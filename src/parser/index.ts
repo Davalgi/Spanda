@@ -1827,8 +1827,11 @@ class Parser {
       } else if (this.check("TWIN")) {
         twin = this.parseTwin();
 
-      // Otherwise, continue when this.check("VERIFY") or assert alias.
-      } else if (this.check("VERIFY") || this.check("ASSERT")) {
+      // Otherwise, continue when this.check("VERIFY") or assert { } alias.
+      } else if (
+        this.check("VERIFY") ||
+        (this.check("ASSERT") && this.tokens[this.pos + 1]?.type === "LBRACE")
+      ) {
         verify = this.parseVerify();
 
       // Otherwise, continue when this.check("OBSERVE").
@@ -9205,6 +9208,7 @@ class Parser {
         "REQUEST",
         "DEVICE",
         "BUS",
+        "ASSERT",
       )
     ) {
       const tok = this.previous();

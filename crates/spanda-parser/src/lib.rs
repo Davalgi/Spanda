@@ -3888,7 +3888,11 @@ impl Parser {
                 twin_sync = Some(self.parse_twin_sync()?);
             } else if self.check(TokenType::Twin) {
                 twin = Some(self.parse_twin()?);
-            } else if self.check(TokenType::Verify) || self.check(TokenType::Assert) {
+            } else if self.check(TokenType::Verify)
+                || (self.check(TokenType::Assert)
+                    && self.pos + 1 < self.tokens.len()
+                    && self.tokens[self.pos + 1].token_type == TokenType::Lbrace)
+            {
                 verify = Some(self.parse_verify()?);
             } else if self.check(TokenType::Observe) {
                 observe = Some(self.parse_observe()?);
@@ -9044,6 +9048,14 @@ impl Parser {
         if self.match_types(&[TokenType::Safety]) {
             return Ok(Expr::IdentExpr {
                 name: "safety".into(),
+                span: self.span_from(&start, self.previous()),
+            });
+        }
+
+        // Soft-keyword: `assert(...)` builtin calls vs `assert { }` verify blocks.
+        if self.match_types(&[TokenType::Assert]) {
+            return Ok(Expr::IdentExpr {
+                name: "assert".into(),
                 span: self.span_from(&start, self.previous()),
             });
         }
