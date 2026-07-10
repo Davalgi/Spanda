@@ -182,6 +182,7 @@ export type TokenType =
   | "PRIORITY"
   | "REGEX_LITERAL"
   | "PERCENT"
+  | "AT_SIGN"
   | "IDENT"
   | "NUMBER"
   | "STRING"
@@ -695,6 +696,14 @@ export function tokenize(source: string): Token[] {
     // continue when ch equals "%".
     if (ch === "%") {
       tokens.push({ type: "PERCENT", lexeme: "%", value: null, ...start });
+      i++;
+      column++;
+      continue;
+    }
+
+    // Attribute introducer for `@policy(...)` and future attrs.
+    if (ch === "@") {
+      tokens.push({ type: "AT_SIGN", lexeme: "@", value: null, ...start });
       i++;
       column++;
       continue;

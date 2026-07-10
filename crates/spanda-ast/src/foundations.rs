@@ -5,9 +5,10 @@ use crate::regex::RegexPattern;
 use serde::{Deserialize, Serialize};
 
 /// Symbol visibility for module-level items.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Visibility {
+    #[default]
     Private,
     Public,
     Export,
@@ -152,6 +153,9 @@ pub enum TraitDecl {
         #[serde(default)]
         doc: Option<String>,
         name: String,
+        /// Module visibility (`export` / `public` / private). Defaults to private.
+        #[serde(default)]
+        visibility: Visibility,
         methods: Vec<TraitMethodDecl>,
         span: Span,
     },

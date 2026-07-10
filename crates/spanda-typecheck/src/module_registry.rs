@@ -1,5 +1,6 @@
 //! Multi-file module export registry for type checking linked projects.
 //!
+use spanda_ast::foundations::TraitDecl;
 use spanda_ast::foundations::{ModuleFnDecl, Visibility};
 use spanda_ast::nodes::Program;
 use std::collections::HashMap;
@@ -8,6 +9,7 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, Default)]
 pub struct ModuleExports {
     pub functions: HashMap<String, ModuleFnDecl>,
+    pub traits: HashMap<String, TraitDecl>,
 }
 
 /// Registry of parsed modules keyed by fully-qualified module name.
@@ -54,7 +56,9 @@ impl ModuleRegistry {
 
         //     let result = spanda_typecheck::module_registry::register(&mut self, odule_name, progra);
 
-        let Program::Program { functions, .. } = program;
+        let Program::Program {
+            functions, traits, ..
+        } = program;
         let mut exports = ModuleExports::default();
         for func in functions {
             let ModuleFnDecl {
@@ -62,6 +66,16 @@ impl ModuleRegistry {
             } = func;
             if matches!(visibility, Visibility::Public | Visibility::Export) {
                 exports.functions.insert(name.clone(), func.clone());
+            }
+        }
+
+        // Export public/export traits for cross-module `impl` resolution.
+        for trait_decl in traits {
+            let TraitDecl::TraitDecl {
+                name, visibility, ..
+            } = trait_decl;
+            if matches!(visibility, Visibility::Public | Visibility::Export) {
+                exports.traits.insert(name.clone(), trait_decl.clone());
             }
         }
         self.modules.insert(module_name.to_string(), exports);

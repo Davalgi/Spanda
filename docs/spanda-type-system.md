@@ -60,20 +60,24 @@ struct Box<T> {
 |------------|--------|
 | Module / export `fn` type params | Supported (inference from call args) |
 | `struct Name<T>` + `Name<Int> { … }` literals | Supported |
+| Empty `<>`, duplicate params, `T: Bound`, `where` | **Rejected** with clear parse errors |
 | Trait / enum / agent type params | Not supported |
-| `where` bounds / trait bounds | Not supported |
-| Cross-module generic struct export parity | Limited — prefer same-program declarations |
 | Full Hindley–Milner inference | Not supported — annotate when ambiguous |
+| Cross-module generic struct export parity | Limited — prefer same-program declarations |
 
-Generics remain **Experimental** in [feature-status.md](./feature-status.md) until bounds and
-broader declaration parity land with tests. Do not treat them as Stable language surface yet.
+Generics remain **Experimental** in [feature-status.md](./feature-status.md) until trait/enum
+generics and real bounds land with tests. Do not treat them as Stable language surface yet.
 
-## Traits and `impl` (Stable API, compilation-unit scope)
+## Traits and `impl` (Stable API)
 
 ```spanda
-trait PathPlanner {
+export trait PathPlanner {
   fn plan(goal: Pose) -> Path;
 }
+```
+
+```spanda
+import navigation.traits;
 
 robot R {
   agent Nav { … }
@@ -83,23 +87,24 @@ robot R {
 }
 ```
 
-Traits and `impl Trait for Agent` are resolved in the **same compilation unit** (one `.sd`
-program after imports are expanded). There is no `export trait` yet — a trait used by an `impl`
-must be declared in that program (or brought in via source that the checker sees as one unit).
-`dyn Trait` objects are supported for typed trait-object values.
+Traits and `impl Trait for Agent` resolve after imports are expanded. Prefer `export trait` in a
+module so importers can `impl` it; private traits stay module-local. `dyn Trait` objects are
+supported for typed trait-object values.
 
 ## Stringly seams (literal validation)
 
-Some configuration still uses strings. The type checker **rejects unknown string literals** for:
+Prefer **bare typed idents** where supported; string literals remain accepted. The type checker
+**rejects unknown** values for:
 
-| Seam | Accepted literals |
-|------|-------------------|
-| `ai_model { provider: "…" }` | `mock`, `openai`, `anthropic`, `onnx` |
-| `serialize` / `deserialize` format | `json`, `yaml`, `binary` |
+| Seam | Accepted values |
+|------|-----------------|
+| `ai_model { provider: … }` | `mock`, `openai`, `anthropic`, `onnx` (ident or `"…"`) |
+| `serialize` / `deserialize` format | `json`, `yaml`, `binary` (ident or `"…"`) |
 
 Non-literal expressions (variables) remain runtime-checked. CLI `spanda codegen --target` accepts
-only `native`, `wasm`, or `esp32` (unknown targets exit with an error). Full typed enums for these
-seams are a future hardening step; string shims stay for compatibility.
+only `native`, `wasm`, or `esp32`.
+
+## Physical unit types
 
 Unit-aware types prevent mixing incompatible dimensions:
 

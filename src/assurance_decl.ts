@@ -14,6 +14,7 @@ export type {
   DecisionTreeNestedBranch,
   OfflinePolicyDecl,
   ExpectedBehavior,
+  HomeostasisPolicyDecl,
   KnowledgeComponent,
   KnowledgeDependency,
   KnowledgeModelDecl,

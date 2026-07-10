@@ -170,6 +170,9 @@ pub enum HomeostasisPolicyDecl {
     HomeostasisPolicyDecl {
         name: String,
         metrics: Vec<String>,
+        /// True when parsed from legacy `homeostasis_policy` keyword (vs `@policy`).
+        #[serde(default)]
+        legacy_syntax: bool,
         span: Span,
     },
 }

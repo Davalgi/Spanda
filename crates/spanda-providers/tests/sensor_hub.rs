@@ -5,8 +5,43 @@ use spanda_providers::{
     read_gps_fix, read_imu_sample, seed_sensor_demos,
 };
 use spanda_runtime::value::RuntimeValue;
+use std::sync::{Mutex, OnceLock};
+
+static ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+fn env_lock() -> &'static Mutex<()> {
+    // Serialize tests that mutate process-wide live-sensor env vars.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Shared mutex guarding env mutation across this test binary.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let _guard = env_lock().lock().unwrap();
+
+    ENV_LOCK.get_or_init(|| Mutex::new(()))
+}
 
 fn clear_live_sensor_env() {
+    // Clear live GPS/IMU/camera env so hub stubs are deterministic.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // Nothing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // clear_live_sensor_env();
+
     for key in [
         "SPANDA_LIVE_GPS",
         "SPANDA_GPS_CMD",
@@ -23,6 +58,18 @@ fn clear_live_sensor_env() {
 
 #[test]
 fn sensor_hub_seeds_gps_imu_camera() {
+    // Description:
+    //     Sensor hub seeds gps imu camera.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     let gps = read_gps_fix("gps");
@@ -35,6 +82,18 @@ fn sensor_hub_seeds_gps_imu_camera() {
 
 #[test]
 fn package_dispatch_reads_imu_when_capability_granted() {
+    // Description:
+    //     Package dispatch reads imu when capability granted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     let mut registry = bootstrap_providers_for_packages(&["spanda-imu"]);
@@ -49,6 +108,18 @@ fn package_dispatch_reads_imu_when_capability_granted() {
 
 #[test]
 fn package_dispatch_reads_camera_when_capability_granted() {
+    // Description:
+    //     Package dispatch reads camera when capability granted.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     let mut registry = bootstrap_providers_for_packages(&["spanda-camera"]);
@@ -70,6 +141,18 @@ fn package_dispatch_reads_camera_when_capability_granted() {
 
 #[test]
 fn live_gps_cmd_overrides_hub_stub() {
+    // Description:
+    //     Live gps cmd overrides hub stub.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     std::env::set_var("SPANDA_LIVE_GPS", "1");
@@ -82,6 +165,18 @@ fn live_gps_cmd_overrides_hub_stub() {
 
 #[test]
 fn live_imu_cmd_overrides_hub_stub() {
+    // Description:
+    //     Live imu cmd overrides hub stub.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     std::env::set_var("SPANDA_LIVE_IMU", "1");
@@ -93,6 +188,18 @@ fn live_imu_cmd_overrides_hub_stub() {
 
 #[test]
 fn live_camera_cmd_overrides_hub_stub() {
+    // Description:
+    //     Live camera cmd overrides hub stub.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     std::env::set_var("SPANDA_LIVE_CAMERA", "1");
@@ -106,6 +213,18 @@ fn live_camera_cmd_overrides_hub_stub() {
 
 #[test]
 fn live_fusion_sensor_readings_use_gps_imu_camera() {
+    // Description:
+    //     Live fusion sensor readings use gps imu camera.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let _guard = env_lock().lock().unwrap();
     clear_live_sensor_env();
     seed_sensor_demos();
     std::env::set_var("SPANDA_LIVE_FUSION_SENSORS", "1");

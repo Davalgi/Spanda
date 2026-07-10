@@ -332,6 +332,7 @@ export async function compileAsync(source: string, backend?: CompileBackend): Pr
             operatingModes: [],
             missionPlans: [],
             resiliencePolicies: [],
+            homeostasisPolicies: [],
             recoveryPolicies: [],
             continuityPolicies: [],
             assuranceCases: [],
