@@ -734,10 +734,6 @@ class Parser {
         resiliencePolicies.push(parseResiliencePolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("AT_SIGN")) {
         this.parseAtPolicy(homeostasisPolicies, attentionPolicies);
-      } else if (this.check("IDENT") && this.peek().lexeme === "homeostasis_policy") {
-        homeostasisPolicies.push(this.parseHomeostasisPolicy());
-      } else if (this.check("IDENT") && this.peek().lexeme === "attention_policy") {
-        attentionPolicies.push(this.parseAttentionPolicy());
       } else if (this.check("IDENT") && this.peek().lexeme === "recovery_policy") {
         recoveryPolicies.push(parseRecoveryPolicy(this as unknown as AssuranceParseCtx));
       } else if (this.check("IDENT") && this.peek().lexeme === "continuity_policy") {
@@ -3895,84 +3891,6 @@ class Parser {
     };
   }
 
-  private parseHomeostasisPolicy(): import("../assurance_decl.js").HomeostasisPolicyDecl {
-    // Parse legacy `homeostasis_policy Name { metric …; }`.
-    //
-    // Parameters:
-    // None.
-    //
-    // Returns:
-    // Homeostasis policy with `legacySyntax = true`.
-    //
-    // Options:
-    // None.
-    //
-    // Example:
-    // this.parseHomeostasisPolicy();
-
-    const start = this.advance();
-    const name = this.parseLabel("Expected homeostasis_policy name");
-    this.expect("LBRACE", "Expected '{' after homeostasis_policy name");
-    const metrics: string[] = [];
-    while (!this.check("RBRACE") && !this.check("EOF")) {
-      if (this.check("IDENT") && this.peek().lexeme === "metric") {
-        this.advance();
-        metrics.push(this.parseLabel("Expected metric name"));
-        this.expect("SEMICOLON", "Expected ';' after metric");
-      } else {
-        const t = this.peek();
-        throw new ParseError("Expected metric in homeostasis_policy", t.line, t.column);
-      }
-    }
-    const end = this.expect("RBRACE", "Expected '}' to close homeostasis_policy");
-    return {
-      kind: "HomeostasisPolicyDecl",
-      name,
-      metrics,
-      legacySyntax: true,
-      span: this.spanFrom(start, end),
-    };
-  }
-
-  private parseAttentionPolicy(): import("../assurance_decl.js").AttentionPolicyDecl {
-    // Parse legacy `attention_policy Name { rule …; }`.
-    //
-    // Parameters:
-    // None.
-    //
-    // Returns:
-    // Attention policy with `legacySyntax = true`.
-    //
-    // Options:
-    // None.
-    //
-    // Example:
-    // this.parseAttentionPolicy();
-
-    const start = this.advance();
-    const name = this.parseLabel("Expected attention_policy name");
-    this.expect("LBRACE", "Expected '{' after attention_policy name");
-    const rules: string[] = [];
-    while (!this.check("RBRACE") && !this.check("EOF")) {
-      if (this.check("IDENT") && this.peek().lexeme === "rule") {
-        this.advance();
-        rules.push(this.parseLabel("Expected rule name"));
-        this.expect("SEMICOLON", "Expected ';' after rule");
-      } else {
-        const t = this.peek();
-        throw new ParseError("Expected rule in attention_policy", t.line, t.column);
-      }
-    }
-    const end = this.expect("RBRACE", "Expected '}' to close attention_policy");
-    return {
-      kind: "AttentionPolicyDecl",
-      name,
-      rules,
-      legacySyntax: true,
-      span: this.spanFrom(start, end),
-    };
-  }
-
   private parseAtPolicy(
     homeostasisPolicies: import("../assurance_decl.js").HomeostasisPolicyDecl[],
     attentionPolicies: import("../assurance_decl.js").AttentionPolicyDecl[],
@@ -6207,8 +6125,25 @@ class Parser {
     }
 
     // Bare identifiers are typed config literals (e.g. provider: mock).
+    // Closed enums: AiProvider.mock / SerializeFormat.json / CodegenTarget.wasm.
     if (this.match("IDENT")) {
-      return this.previous().lexeme;
+      const name = this.previous().lexeme;
+      if (this.match("DOT")) {
+        const variant = this.expect("IDENT", "Expected enum variant after '.' in config value");
+        if (
+          name === "AiProvider" ||
+          name === "SerializeFormat" ||
+          name === "CodegenTarget"
+        ) {
+          return variant.lexeme;
+        }
+        throw new ParseError(
+          `Unknown typed config enum '${name}' (use AiProvider, SerializeFormat, or CodegenTarget)`,
+          variant.line,
+          variant.column,
+        );
+      }
+      return name;
     }
 
     // continue when this.match("TRUE").

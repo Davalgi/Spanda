@@ -195,7 +195,7 @@ Guide: [mission-continuity.md](./mission-continuity.md)
 ## `@policy` homeostasis / attention
 
 Cognitive & Resilience Architecture hooks — platform stability metrics and attention rules.
-Prefer `@policy(kind: …)`; legacy `homeostasis_policy` / `attention_policy` still parse (lint warns).
+Prefer `@policy(kind: …)` only; legacy `homeostasis_policy` / `attention_policy` keywords were removed.
 
 ### Homeostasis (`kind: "homeostasis"`)
 

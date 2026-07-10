@@ -68,7 +68,7 @@ Register import paths in `spanda-package` adapter + typecheck catalogs + `std_na
   `spanda homeostasis|attention check --program` + `from_declared_*` helpers
 - ~~Control Center / REST use the same AST→policy path as the CLI~~ — done when
   `control-center serve --program` is set (`policy_source` in homeostasis/attention JSON)
-- Hard-remove legacy keywords only after a major version
+- ~~Hard-remove legacy keywords~~ — done in workspace major (keywords no longer parse)
 
 ---
 

@@ -710,8 +710,8 @@ robot R {
     }
 
     #[test]
-    fn warns_on_library_shaped_homeostasis_policy() {
-        // Thin policy decls get a migration-path lint.
+    fn legacy_homeostasis_policy_keyword_no_longer_parses() {
+        // Legacy keyword removal: lint never sees `homeostasis_policy` (parse fails first).
         //
         // Parameters:
         // None.
@@ -723,7 +723,7 @@ robot R {
         // None.
         //
         // Example:
-        // warns_on_library_shaped_homeostasis_policy();
+        // legacy_homeostasis_policy_keyword_no_longer_parses();
 
         let source = r#"
 module demo;
@@ -735,13 +735,11 @@ robot R {
   behavior b() { wheels.stop(); }
 }
 "#;
-        let report = lint(source).expect("lint should parse");
+        let err = lint(source).expect_err("legacy homeostasis_policy must fail to parse");
+        let msg = err.to_string();
         assert!(
-            report.issues.iter().any(
-                |i| i.rule == "library-shaped-decl" && i.message.contains("homeostasis_policy")
-            ),
-            "expected library-shaped-decl for homeostasis_policy, got {:?}",
-            report.issues
+            !msg.is_empty(),
+            "expected a parse error for legacy homeostasis_policy"
         );
     }
 

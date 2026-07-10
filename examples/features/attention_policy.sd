@@ -4,7 +4,7 @@
 //   spanda reflex list --json
 //
 // Prefer @policy + `import std.policies.attention` (package spanda-policies).
-// Legacy `attention_policy` still parses (lint warns).
+// Legacy `attention_policy` keywords were removed (breaking).
 // Docs: docs/cognitive-resilience-architecture.md
 // Smoke: ./scripts/cognitive_resilience_smoke.sh
 

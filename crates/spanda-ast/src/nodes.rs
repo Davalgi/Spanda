@@ -847,6 +847,11 @@ pub struct AiConfigEntry {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ConfigValue {
+    /// Typed closed-set literal such as `AiProvider.mock` or `SerializeFormat.json`.
+    EnumVariant {
+        enum_name: String,
+        variant: String,
+    },
     String(String),
     Number(f64),
     Bool(bool),

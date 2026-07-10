@@ -1,10 +1,10 @@
 //! Safety zone evaluation and motion gating.
 //!
 
-use super::{get_number, Interpreter, RobotBackend};
+use super::{get_number, Interpreter, MotionCommand, RobotBackend};
 use spanda_ast::nodes::{SafetyZoneDecl, ZoneShape};
 use spanda_error::SpandaError;
-use spanda_safety::{Pose2d, SafetyZoneRuntime, SafetyZoneShape};
+use spanda_safety::{Pose2d, SafetyZoneRuntime, SafetyZoneShape, ValidateActionResult};
 
 impl<B: RobotBackend> Interpreter<B> {
     pub(super) fn eval_safety_zone(
@@ -75,7 +75,7 @@ impl<B: RobotBackend> Interpreter<B> {
     }
 
     pub(super) fn reclamp_active_follow_cruise(&mut self) {
-        // Re-clamp follow cruise using the safety monitor at the current pose.
+        // Re-validate follow cruise like `safety.validate` at the current pose each tick.
         //
         // Parameters:
         // None.
@@ -98,10 +98,19 @@ impl<B: RobotBackend> Interpreter<B> {
             x: pose.x,
             y: pose.y,
         };
-        // Clamp the default follow request at the live pose (zone + max_speed).
-        let capped = monitor
-            .clamp_speed_at_pose(DEFAULT_FOLLOW_SPEED, &pose2d)
-            .abs();
-        self.backend.reclamp_follow_cruise(capped);
+        // Re-derive a SafeAction-equivalent envelope for the follow cruise segment.
+        let result =
+            monitor.validate_action_proposal(DEFAULT_FOLLOW_SPEED, 0.0, &self.env, &pose2d);
+        match result {
+            ValidateActionResult::Ok(motion) => {
+                self.backend.reclamp_follow_cruise(motion.linear.abs());
+            }
+            ValidateActionResult::Err { .. } => {
+                // Stop following when stop_if / e-stop / policy rejects the segment.
+                self.backend.execute_motion(MotionCommand::Stop {
+                    actuator: "follow".into(),
+                });
+            }
+        }
     }
 }

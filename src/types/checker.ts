@@ -2303,12 +2303,25 @@ class TypeChecker {
     // Example:
     // this.checkSerializeFormatExpr(formatArg);
 
-    // Validate string literals and bare format idents (json / yaml / binary).
+    // Validate string literals, bare format idents, and SerializeFormat.<variant>.
     let format: string | undefined;
     if (expr.kind === "LiteralExpr" && typeof expr.value === "string") {
       format = expr.value;
     } else if (expr.kind === "IdentExpr") {
       format = expr.name;
+    } else if (
+      expr.kind === "MemberExpr" &&
+      expr.object.kind === "IdentExpr" &&
+      expr.object.name === "SerializeFormat"
+    ) {
+      format = expr.property;
+    } else if (expr.kind === "MemberExpr" && expr.object.kind === "IdentExpr") {
+      this.error(
+        `serialize/deserialize format must use SerializeFormat.<variant>, not ${expr.object.name}.${expr.property}`,
+        expr.span.start.line,
+        expr.span.start.column,
+      );
+      return;
     } else {
       return;
     }
@@ -2316,7 +2329,7 @@ class TypeChecker {
     // Report formats outside the supported json/yaml/binary set.
     if (!isKnownSerializeFormat(format)) {
       this.error(
-        `Unknown serialize format '${format}' (use ${KNOWN_SERIALIZE_FORMATS.join(", ")})`,
+        `Unknown serialize format '${format}' (use ${KNOWN_SERIALIZE_FORMATS.join(", ")} or SerializeFormat.<variant>)`,
         expr.span.start.line,
         expr.span.start.column,
       );

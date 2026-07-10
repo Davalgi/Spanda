@@ -816,10 +816,6 @@ impl Parser {
                 resilience_policies.push(self.parse_resilience_policy()?);
             } else if self.check(TokenType::AtSign) {
                 self.parse_at_policy(&mut homeostasis_policies, &mut attention_policies)?;
-            } else if self.check(TokenType::Ident) && self.peek().lexeme == "homeostasis_policy" {
-                homeostasis_policies.push(self.parse_homeostasis_policy()?);
-            } else if self.check(TokenType::Ident) && self.peek().lexeme == "attention_policy" {
-                attention_policies.push(self.parse_attention_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "recovery_policy" {
                 recovery_policies.push(self.parse_recovery_policy()?);
             } else if self.check(TokenType::Ident) && self.peek().lexeme == "tamper_policy" {
@@ -6435,8 +6431,33 @@ impl Parser {
         if self.match_types(&[TokenType::String]) {
             Ok(ConfigValue::String(str_val(self.previous())))
         } else if self.match_types(&[TokenType::Ident]) {
-            // Bare identifiers are typed config literals (e.g. provider: mock).
-            Ok(ConfigValue::String(self.previous().lexeme.clone()))
+            let name = self.previous().lexeme.clone();
+            // Accept closed typed enums: AiProvider.mock, SerializeFormat.json, CodegenTarget.wasm.
+            if self.match_types(&[TokenType::Dot]) {
+                let variant_tok = self.expect(
+                    TokenType::Ident,
+                    "Expected enum variant after '.' in config value",
+                )?;
+                let variant = variant_tok.lexeme.clone();
+                match name.as_str() {
+                    "AiProvider" | "SerializeFormat" | "CodegenTarget" => {
+                        Ok(ConfigValue::EnumVariant {
+                            enum_name: name,
+                            variant,
+                        })
+                    }
+                    other => Err(SpandaError::Parse {
+                        message: format!(
+                            "Unknown typed config enum '{other}' (use AiProvider, SerializeFormat, or CodegenTarget)"
+                        ),
+                        line: variant_tok.line,
+                        column: variant_tok.column,
+                    }),
+                }
+            } else {
+                // Bare identifiers are typed config literals (e.g. provider: mock).
+                Ok(ConfigValue::String(name))
+            }
         } else if self.match_types(&[TokenType::True]) {
             Ok(ConfigValue::Bool(true))
         } else if self.match_types(&[TokenType::False]) {
@@ -10015,42 +10036,6 @@ impl Parser {
         })
     }
 
-    fn parse_homeostasis_policy(
-        &mut self,
-    ) -> Result<spanda_ast::assurance_decl::HomeostasisPolicyDecl, SpandaError> {
-        use spanda_ast::assurance_decl::HomeostasisPolicyDecl;
-        let start = self.advance();
-        let name = self.parse_label("Expected homeostasis_policy name")?;
-        self.expect(
-            TokenType::Lbrace,
-            "Expected '{' after homeostasis_policy name",
-        )?;
-        let mut metrics = Vec::new();
-        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
-            if self.check(TokenType::Ident) && self.peek().lexeme == "metric" {
-                self.advance();
-                metrics.push(self.parse_label("Expected metric name")?);
-                self.expect(TokenType::Semicolon, "Expected ';' after metric")?;
-            } else {
-                return Err(SpandaError::Parse {
-                    message: "Expected metric in homeostasis_policy".into(),
-                    line: self.peek().line,
-                    column: self.peek().column,
-                });
-            }
-        }
-        let end = self.expect(
-            TokenType::Rbrace,
-            "Expected '}' to close homeostasis_policy",
-        )?;
-        Ok(HomeostasisPolicyDecl::HomeostasisPolicyDecl {
-            name,
-            metrics,
-            legacy_syntax: true,
-            span: self.span_from(&start, &end),
-        })
-    }
-
     fn parse_at_policy(
         &mut self,
         homeostasis_policies: &mut Vec<spanda_ast::assurance_decl::HomeostasisPolicyDecl>,
@@ -10149,39 +10134,6 @@ impl Parser {
             }
         }
         Ok(())
-    }
-
-    fn parse_attention_policy(
-        &mut self,
-    ) -> Result<spanda_ast::assurance_decl::AttentionPolicyDecl, SpandaError> {
-        use spanda_ast::assurance_decl::AttentionPolicyDecl;
-        let start = self.advance();
-        let name = self.parse_label("Expected attention_policy name")?;
-        self.expect(
-            TokenType::Lbrace,
-            "Expected '{' after attention_policy name",
-        )?;
-        let mut rules = Vec::new();
-        while !self.check(TokenType::Rbrace) && !self.check(TokenType::Eof) {
-            if self.check(TokenType::Ident) && self.peek().lexeme == "rule" {
-                self.advance();
-                rules.push(self.parse_label("Expected rule name")?);
-                self.expect(TokenType::Semicolon, "Expected ';' after rule")?;
-            } else {
-                return Err(SpandaError::Parse {
-                    message: "Expected rule in attention_policy".into(),
-                    line: self.peek().line,
-                    column: self.peek().column,
-                });
-            }
-        }
-        let end = self.expect(TokenType::Rbrace, "Expected '}' to close attention_policy")?;
-        Ok(AttentionPolicyDecl::AttentionPolicyDecl {
-            name,
-            rules,
-            legacy_syntax: true,
-            span: self.span_from(&start, &end),
-        })
     }
 
     fn parse_recovery_policy(

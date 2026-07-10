@@ -51,7 +51,7 @@ can move to packages without losing today’s syntax (deprecation-preserving).
 
 | Keyword | Scope | Reasoning |
 |---------|-------|-----------|
-| `homeostasis_policy`†, `attention_policy`† | program | Thin named rule/metric lists |
+| `homeostasis_policy`†, `attention_policy`† | *(removed)* | Use `@policy(kind: …)` only |
 | `knowledge_model`†, `state_estimator`†, `anomaly_detector`†, `prognostics`† | program | “Register a named model” shape |
 | `assurance_case`†, `record`†, `provenance`†, `audit`† | program/robot | Assurance / compliance artifacts |
 | `policy`, `resilience_policy`†, `recovery_policy`†, `tamper_policy`†, `continuity_policy`†, `offline_policy`†, `health_policy`†, `restart_policy`†, `connectivity_policy` | program/robot | Repeated named-ruleset pattern |
@@ -79,7 +79,7 @@ HomeostasisPolicy PatrolHomeostasis {
 
 - Parser accepts `@attr` / `#attr` annotations on `struct` / `type` / future `policy` forms.
 - Registry maps `(kind, type)` → runtime hooks (same as today’s homeostasis monitor).
-- Old `homeostasis_policy Name { … }` desugars to the annotated form in the parser (compat shim).
+- Old `homeostasis_policy Name { … }` **removed** — migrate to `@policy(kind: "homeostasis")`.
 
 ### Option B — Trait-based registration API
 
@@ -95,24 +95,22 @@ trait PolicyHost {
 ### Migration path (deprecation-preserving)
 
 1. **Inventory** (this doc) — done.
-2. **Lint warnings** on library-shaped soft keywords (`homeostasis_policy`, `attention_policy`, …)
-   pointing here — additive; no breakage.
-3. **Desugar shim** — parser still accepts old syntax; emits annotated IR / AST flag `legacy_syntax`.
-4. **Package APIs** — move evaluators into `packages/registry` / `std.policies.*`.
-5. **Docs + examples** — new code uses attributes; old examples keep working with lint.
-6. **Hard remove** — only after a major version and empty usage in official examples.
+2. **Lint warnings** on library-shaped soft keywords — done (superseded by hard remove).
+3. **Desugar shim** — superseded; `@policy` is the only parse path.
+4. **Package APIs** — `std.policies.*` shipped.
+5. **Docs + examples** — attribute form only.
+6. **Hard remove** — **done** (workspace major): legacy `homeostasis_policy` /
+   `attention_policy` keywords no longer parse.
 
 ## Proof of concept
 
 Shipped:
 
 - Inventory + design note
-- Lint rule `library-shaped-decl` on legacy `homeostasis_policy` / `attention_policy` only
-- **`@policy(kind: "homeostasis")`** and **`@policy(kind: "attention")`** parse paths
-  (`legacy_syntax = false`); legacy keywords still parse (`legacy_syntax = true`)
+- **`@policy(kind: "homeostasis")`** and **`@policy(kind: "attention")`** only
+  (`legacy_syntax` remains on AST as always-false for attribute forms)
 - Feature examples under `examples/features/` use the attribute form
-
-Still deferred: hard-remove of legacy keywords (major version only).
+- Legacy keywords **removed** (breaking)
 
 Shipped package APIs: official **`spanda-policies`** → `std.policies.homeostasis` /
 `std.policies.attention` (scaffolds; evaluation remains in `spanda-autonomy`). See

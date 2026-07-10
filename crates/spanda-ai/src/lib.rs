@@ -950,6 +950,7 @@ fn config_string(map: &HashMap<String, ConfigValue>, key: &str, default: &str) -
     // Match on get and handle each case.
     match map.get(key) {
         Some(ConfigValue::String(s)) => s.clone(),
+        Some(ConfigValue::EnumVariant { variant, .. }) => variant.clone(),
         Some(ConfigValue::Number(n)) => n.to_string(),
         Some(ConfigValue::Bool(b)) => b.to_string(),
         None => default.to_string(),

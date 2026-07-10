@@ -119,3 +119,58 @@ robot R {
 "#;
     check(source).expect("known serialize format should type-check");
 }
+
+#[test]
+fn typed_enum_ai_provider_accepted() {
+    // AiProvider.mock is accepted as a closed typed-enum config literal.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // typed_enum_ai_provider_accepted();
+
+    let source = r#"
+robot R {
+  actuator wheels: DifferentialDrive;
+  ai_model planner: LLM { provider: AiProvider.mock; model: "x"; }
+  behavior run() { wheels.stop(); }
+}
+"#;
+    check(source).expect("AiProvider.mock should type-check");
+}
+
+#[test]
+fn typed_enum_serialize_format_accepted() {
+    // SerializeFormat.json is accepted as a closed typed-enum format literal.
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // typed_enum_serialize_format_accepted();
+
+    let source = r#"
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior run() {
+    let _ = serialize(1, SerializeFormat.json);
+    wheels.stop();
+  }
+}
+"#;
+    check(source).expect("SerializeFormat.json should type-check");
+}
+

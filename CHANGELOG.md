@@ -7,28 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-10
+
+### Breaking
+
+- **Legacy policy keywords removed:** `homeostasis_policy` / `attention_policy` no longer parse.
+  Use `@policy(kind: "homeostasis")` / `@policy(kind: "attention")` only.
+
 ### Added
 
+- **Closed typed enums:** `AiProvider.*`, `SerializeFormat.*`, and `CodegenTarget.*` config/format
+  literals (bare idents and strings still accepted).
+- **`follow(path:)` SafeAction-equivalent revalidation:** each tick runs `validate_action_proposal`
+  on the follow cruise and stops the trajectory on reject.
 - **`export trait`:** traits can be `export`/`public` and imported across modules for `impl`.
-- **`@policy(kind: "homeostasis"|"attention")`:** attribute forms parse alongside legacy
-  `homeostasis_policy` / `attention_policy`; lint warns only on legacy keywords. Feature examples,
-  `gps_loss_full_stack` workflow, and cognitive docs use `@policy`.
+- **`@policy(kind: "homeostasis"|"attention")`:** attribute forms for cognitive policies. Feature
+  examples, `gps_loss_full_stack` workflow, and cognitive docs use `@policy`.
 - **`spanda-policies` official package:** `import std.policies.homeostasis` /
   `std.policies.attention` scaffolds (evaluation stays in `spanda-autonomy`);
   [ADR 0002](docs/adr/0002-std-policies-package.md).
 - **Multi-segment `import` paths:** `import a.b.c;` parses (needed for `std.policies.*`).
-- **AST policy → autonomy CLI:** `spanda homeostasis check --program <file.sd>` and
-  `spanda attention check --program <file.sd>` use declared `@policy` / legacy metrics and rules
-  (`HomeostasisPolicy::from_declared_metrics` / `AttentionPolicy::from_declared_rules`).
-- **AST policy → Control Center:** `GET /v1/autonomy/homeostasis` and
-  `GET /v1/autonomy/attention` honor loaded `--program` decls (`policy_source` in the JSON).
+- **AST policy → autonomy CLI / Control Center:** `--program` and REST/gRPC honor declared metrics
+  and rules (`policy_source` in JSON).
 - **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
   work); unknown values rejected at check time.
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
-  clear Experimental errors.
+  clear errors.
 - **`follow(path:)` cruise clamp:** trajectory follow speed (default 0.5 m/s) is clamped by
-  `safety.max_speed` / zone caps on the interpreter path (Rust + TS), matching `drive`/`execute`,
-  and re-clamped each tick while following so mid-path zone caps apply.
+  `safety.max_speed` / zone caps and re-clamped each tick while following.
 - **Stringly seam literal checks:** unknown `ai_model` `provider:` strings and
   `serialize`/`deserialize` format literals fail at type-check (`mock`/`openai`/`anthropic`/`onnx`;
   `json`/`yaml`/`binary`).
@@ -38,8 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`assert { }` alias** for runtime assertion blocks (preferred over `verify { }`); lint warns on
   the older keyword.
 - **Language surface inventory:** [docs/language-surface-inventory.md](docs/language-surface-inventory.md)
-  classifies declaration keywords and proposes `@policy` migration; lint warns on
-  `homeostasis_policy` / `attention_policy`.
+  classifies declaration keywords and the `@policy` migration.
 - **`safety { max_angular = … rad/s; }`:** optional turn-rate envelope, clamped on interpreter
   `drive` / `execute` / `safety.validate` (with `max_speed`).
 - **AI `drive` bypass gate:** `ActionProposal.linear` / `.angular` are opaque
@@ -58,8 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Type-system / realtime honesty:** documented Experimental generics limits, same-program trait
-  scope, and interpreter realtime as intent+monitoring (not OS hard-RT) in
+- **User generics → Stable** for module fn + struct type params (`T: Bound` / `where` still
+  unsupported).
+- **Type-system / realtime honesty:** documented generics limits, trait export, and interpreter
+  realtime as intent+monitoring (not OS hard-RT) in
   [spanda-type-system.md](docs/spanda-type-system.md), [realtime.md](docs/realtime.md),
   [feature-status.md](docs/feature-status.md), [known-limitations.md](docs/known-limitations.md).
 - **Doc drift:** SDK version **0.5.9** and official package count **92** aligned across README /
