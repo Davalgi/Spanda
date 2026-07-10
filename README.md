@@ -23,7 +23,7 @@ code.
 
 Spanda is an autonomous systems platform centered on the **Spanda Language** (`.sd` files): typed
 robot programs, safety gates, hardware verification, cascading TOML configuration, simulation,
-replay, fleet operations, mission assurance, mission continuity, and **91** official packages.
+replay, fleet operations, mission assurance, mission continuity, and **92** official packages.
 
 **Spanda focuses on Readiness, Assurance, and Diagnosis for safety-critical autonomous systems.**
 

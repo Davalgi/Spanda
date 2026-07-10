@@ -683,6 +683,8 @@ export function resolveModuleImport(path: string): boolean {
     "std.audit",
     "std.crypto",
     "std.network",
+    "std.policies.homeostasis",
+    "std.policies.attention",
   ].includes(path);
 }
 

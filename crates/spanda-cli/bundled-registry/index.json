@@ -9,12 +9,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "8aad856ca33ace450ef9ef7b9160c60f339338afd6fad04e688407d81e91616a"
+      "0.1.0": "c79b105f11576cfad3b20da0a8817518ebd11e26c8de313d04ab3b6a2cbd97c4"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "6cd4783f8dc69155239adc0b0069c888b1850756670f8a68d0718070088a5ecc3061ae8957e533507c74dbd41e5c31eafb87d1ee005067d4cf9fbf3c22ed1b0f"
+        "signature": "56240a6b7f70d3ae12cf9472d8a413f969778ea4e63aa3c8d3ac368b2ced184e2efc7f863baebd2a138fd6ae8cdbccba3b8b5a13327ebd4a488740cf223d6a0d"
       }
     }
   },
@@ -28,12 +28,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "e051e3eb45e2bff045ea4b9728c3d2121f7a75429c641476fae083395e006ee3"
+      "0.1.0": "d41dbcff2dae24f74649c8da5d6d076901440adcf9c9440ea04b9758c7b76f35"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "75966a9eff909e4fff8778817114f51859e96a23f1cb585268f4b8e61a788f77cc6b4df23c930436a926809b39151c2f1446c12c95eac5d3fe55b7d9bad74e02"
+        "signature": "f01932ad2febb010992558c00cd0a582ba361b93ae84e7e929a7386f5641c9d69082b3337db1e92ba373f572791cabe3b27618a364bbb50ee7dd78d174d3b70c"
       }
     }
   },
@@ -47,12 +47,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "81afca3b13920db47fc79baa159f9a5522d90933bc5698f830ff6ce638ef52fe"
+      "0.1.0": "8b82d61b7ca1225a91a7501e313e21470e036e585361bf09266aa1d8b990f10e"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "c3c5ac9c9b3ed238d850ebcb0e98577ec216dffd411d1c52fe95e1475aa3cd2dfea616cac5637c38da49c15808661f4bf6ac299092a922f16093872c5dc15908"
+        "signature": "0e57d3377a8928647214d6e21eda9945cd181a31178f627835be055b8e200cef5a4f5214417672b4de898016997726273de28af65384280693f5f06105e81e08"
       }
     }
   },
@@ -66,12 +66,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "cc1a965032fdb49eb43a47ffc97b164511cfb0541098237b463f0def7693c9e2"
+      "0.1.0": "3074c7c788b72219e45b4c2be8c70c00d61b94db92a67cfc0bcc84a14638adca"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "a7cd54fcc3ef400ca666c8afed7fc0a42e8bba5d7145937cc34b078c5def3e46a869a5426fdf24bb5c00f5be1f2105ccf675949276cc982985fe0368efb2ae01"
+        "signature": "cba4800ace353fbe2110695395ad25ae53b657a1ecc37f8c2cc824afa321a6d3d2112d622dbc33201b94faf5841abe3c9ce2647994dfd2ad3087aa48fdbb090b"
       }
     }
   },
@@ -87,12 +87,12 @@
       "assurance.fusion"
     ],
     "version_checksums": {
-      "0.1.0": "54d3cbf57aec435969e6911930dee69a86da3b793ad5bddeeb55b294c2ccf829"
+      "0.1.0": "93632b92e3319983b6f1ad29cd206c8be2516bba69c0f6f461d8f17c00e1476e"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "a2208c428103418c35598e3114bfc035f07186bf4958c6581de8220144b28018364023ecdb60d83fea178b4b3eb3783902e80515236424933d9adea39716f30a"
+        "signature": "337a43ff4fc0a509b06386408d27c65d5c900cf8def5f7c19c9ed5b36defb69bde2e0c2aba9536c4331be90da9ecfa7d08b28290ae1eff30e0c79080152d8e0f"
       }
     }
   },
@@ -108,12 +108,12 @@
       "positioning.gps"
     ],
     "version_checksums": {
-      "0.1.0": "3d506369736b2cd9912bc3c11cdac925c1b30556657b5496373e510d41d89496"
+      "0.1.0": "9ab38c2810163272a44af47f6d01dfb07b94e0243f597af319ae8e5242216edc"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "97fc349b53a11873dda5e3616cd3a4501122dbc44eb166057e3845502009a2c32372f0c681b693ad5ca25fdd128e7248c4a9a8c1017323c88da5d6b9c244e208"
+        "signature": "c1940946f0531f703d56dcab0d20cf0358c98c90fde9dfc1680b957710418c0462369ccd83a3b14b0e2a22db5b6f92927ff38ae0a9605c7e40513b4ce0666501"
       }
     }
   },
@@ -127,12 +127,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "22e784ca14b050ba23b0ec8791489bbe567832b43e14d321ffcc561e29a2c8f4"
+      "0.1.0": "cc130bba93c3a75b0492aff902032526c443599772f43b06a2af103b06eab31f"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "b2ca7fd48dfb1b4516a9abe2e02704c9fa8c4767dd4c7094cab4abc7699ef7d30b36e1726924814f0f6778847205d04d380a3145efd7716c6227744079ee940a"
+        "signature": "3cc43a2d9444c07a511117ef71a2e86bf0dbd6f00fb96773dbdd1180234b73e023ca6ddc29cdee1fed11f1f73858ab20c00ad41ae8362a6d1cfde4f05f7cbd07"
       }
     }
   },
@@ -146,12 +146,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "e52df88a12a3a1d0b81915344906550678419dbc122902b80f4a72e7b849e351"
+      "0.1.0": "8265e7d80635aa716cf05567239cd32f331d097c41aa4c90558109f0b71538a1"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "1f6ab01eea004cc97be7accdc2a32eac9e0c5e7a0cdd379f2b9809f29b3b4bfc72c21afd07190afe098d794b3ff9826b8448f0ac12a1b72fb43cc6752d94de08"
+        "signature": "014386e03b1ed25de503d1d6ee822e33c00a8f75ff3a83f06904f7a8acb7e9ddd198bd23918eb10b6c7cdfaf618868ee5b8b23598cb5569e669a4e9a5b43670b"
       }
     }
   },
@@ -167,12 +167,12 @@
       "iot.matter"
     ],
     "version_checksums": {
-      "0.1.0": "efca258d41f8b57e865da3e72a970883dc6a675967086a1dcb3a37a26e94e35f"
+      "0.1.0": "82d6a2e449faa4d081917243d9fc6e9b736c6d089da0273eed5c72eaa0b06685"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "cab29eceb732c52fa23241759c9c63f0041167a4bc1520c132c1e198220562d74c5d7c354ecba6eb89088d26ccb0a34f18564d114edd83ccdc3759f1fb193608"
+        "signature": "249c94130cc1569bc12e184606c934a8a348c5776590a70bfa5781f0cd36739d9aea4756c597cf807c041b17b079715429eed9a15400e636a3be13331bcee00f"
       }
     }
   },
@@ -186,12 +186,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "3fecb6a886516adc821aff5d7a6a0ba9a4ce0d878a87e74105be43a41ebd9fa8"
+      "0.1.0": "9e0a29cb126c36dede1a271ee065027afa4c9cc9783ad2ebf7862028a235fd03"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "3fdf2dc904b91c8edf439e009e969e15ff36b035ab7216e89119d515251ac02e83a20f79f41d52153237cefdca4b354847648d689241df1a85ae448e8e37df02"
+        "signature": "f4ba956ab98245d50557357651be6f7db0c3f18641b3cdf8690bc1476fad281ef89d517af629f32d560982ce9738fb117740632a0b4c05be8cecacafdebb280e"
       }
     }
   },
@@ -205,12 +205,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "a458b2f857990744f6eb67dc8ac589b92d23b300f86f1079c7b96c571f9b6e13"
+      "0.1.0": "75667f041beab376c11a8328ad6727acc9bf5dd62f9bade0984f6293cbd40ed2"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "c48fe527e7fbb92ada85a720c12b0faf853eeb2118e12e0180100942da9edad1be0a0b89002adb375ee2aa5ef4bae38f30557b9058595c1f60c6dd3757436a03"
+        "signature": "1110f68df0f072fc9aacd52a87197dbf434468da22ad525f48290d01d3ab1a1a61daf86dc0cda933a8a5b0a9174e8910a6262f4a7ddc6814fa57eef7f267b60b"
       }
     }
   },
@@ -226,12 +226,12 @@
       "trust.jetson"
     ],
     "version_checksums": {
-      "0.1.0": "657d5aa971f7d10a461fe6c8a23260ca25c7df0facce9399c5f66cc631ee5ca1"
+      "0.1.0": "0bc0397e237342a6c69ca5eccdfa1b09b8d38ec6c15db1afe6a9359fd4d1c590"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "869f1093f6361165be4889c9b537e41f5ed3ceac536ce0e447252a83e847cee609a0ac335fd950c6da454a784c8e0d694fe5d8f198bc48ad7d97962e94c5bc0d"
+        "signature": "d9b3214567dc7ebc91f8797760eb7612f9f0ed140f80754e0f7d36057496dd4860ef7edbb07024a8fe2c5eea099f85d3f678160ec19a7c2efbab80f74841030f"
       }
     }
   },
@@ -247,12 +247,12 @@
       "trust.pi"
     ],
     "version_checksums": {
-      "0.1.0": "113d7c4dd03c187795876285078104b1220c4af601ca9045d06a102cb78136bb"
+      "0.1.0": "693481beedbd11572f4be200dd6c3b4258d9204d4e8cac44cf54415315fdb4e7"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "5bb622263cd2fa60635017fb110904e61b39cf733505773e3f0dfa8ca44d8f8dbd7ff2d4b40beec47762054ad8657608745a8695ea4dc6f371525354ca6a6c0c"
+        "signature": "eb26390c98a47d49638e7b9c882038b4d622d5bae658ffaf782865b2280c669a911a7ddb1a2c548a81478aba571f8b1581c6f3469b453159d32fa71d368bab0c"
       }
     }
   },
@@ -266,12 +266,12 @@
     "license": "Apache-2.0",
     "import_paths": [],
     "version_checksums": {
-      "0.1.0": "da4623d0427bc8598cbba12d9c43aa92545d3de87e71451f2ff7169971ab5814"
+      "0.1.0": "1e9c1cde720c2a60ddfa718f0741aafe6bd8e8a6cd020a76976053aaacade1ab"
     },
     "version_signatures": {
       "0.1.0": {
         "public_key": "7698681726dc94b389b7db096d358a750accde90979a4d92c4a2b46dec2f7b83",
-        "signature": "0ca4059cce600ecd994d0345c765162750800993b560fe3f2d8f01d4961d0fc914e79e3ed18ded03b1bea8e1118af4c7a065eeb5e349ffb1e92f3a416a947a0f"
+        "signature": "15f99041dcc5941404f81b4f3df80859b9de8d33937ee9583e99eef6a338aa8c0f5091349da5750607e76bf549588b3a972e83133b5fd731f750f26b828afa0a"
       }
     }
   }

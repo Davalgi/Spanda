@@ -111,7 +111,7 @@ Pre-release checks:
 | Official SDKs (published) | **0.5.9** | `crates-sdk-v0.5.9`, `sdk-python-v0.5.9`, `npm-sdk-v0.5.9` |
 | Official SDKs (workspace line) | **0.5.9** | *(aligned with published)* |
 | Control Center desktop | **0.6.3** | `desktop-v0.6.3` |
-| Official registry packages | **91** | `packages/registry/` → `registry/index.json` |
+| Official registry packages | **92** | `packages/registry/` → `registry/index.json` |
 
 **Sources of truth (do not invent counts/versions in prose):**
 

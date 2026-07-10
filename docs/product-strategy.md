@@ -138,7 +138,7 @@ Foundational pillars that support the signature capabilities above.
 | Real-time drivers | C++/Rust | Call via FFI; don't rewrite |
 | Communication at scale | ROS2 | Bridge, don't replace |
 | Physics simulation | Gazebo/Isaac/Mujoco | Physics-lite sim for safety testing only |
-| Package ecosystem | PyPI/crates.io/ROS | Hosted index + in-repo mirror via `spanda publish`; 91 official packages |
+| Package ecosystem | PyPI/crates.io/ROS | Hosted index + in-repo mirror via `spanda publish`; 92 official packages |
 | Native performance | Rust/C++ | Interpreter first; LLVM deferred |
 
 ### Differentiation ratings
@@ -270,7 +270,7 @@ Not needed: blockchain, self-hosting, fleet runtime.
 | One documented ROS2 golden path | **Done** — `ros2_golden_path.sh` |
 | `spanda verify` CI integration guide | **Done** — [ci-verify.md](./ci-verify.md) |
 | Curated killer demo (`examples/showcase/killer_demo.sd`) | **Done** |
-| Package install from remote registry (small, curated) | **Done** — 91 packages; hosted index + `spanda publish` mirror |
+| Package install from remote registry (small, curated) | **Done** — 92 packages; hosted index + `spanda publish` mirror |
 | Differentiation NOW (contracts, explain, audit trail, coverage) | **Planned** — topic guides shipped; crates not started |
 
 P1 adoption enablers (CI verify, PyO3, LSP deploy hints, showcase trim, adoption quickstart) are

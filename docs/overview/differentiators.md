@@ -38,7 +38,7 @@
 | **Cooperative concurrency** | `spawn`, `join`, `parallel`, channels, `select` |
 | **Simulation built in** | `spanda run` / `spanda sim` without hardware |
 | **Digital twins** | `twin { mirror …; replay true; }` |
-| **Platform packages** | **91** hosted packages; `spanda install`, provider dispatch |
+| **Platform packages** | **92** hosted packages; `spanda install`, provider dispatch |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, …; `spanda demo assurance` |
 | **Mission continuity** | `continuity_policy`, takeover/delegation/succession; `spanda continuity`, `spanda demo continuity` |
 | **Weighted sensor fusion** | `observe { }`, `state_estimator`, `fusion.read()`; `spanda-fusion` package |

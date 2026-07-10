@@ -112,7 +112,11 @@ Shipped:
   (`legacy_syntax = false`); legacy keywords still parse (`legacy_syntax = true`)
 - Feature examples under `examples/features/` use the attribute form
 
-Still deferred: package `std.policies.*`, hard-remove of legacy keywords.
+Still deferred: hard-remove of legacy keywords (major version only).
+
+Shipped package APIs: official **`spanda-policies`** → `std.policies.homeostasis` /
+`std.policies.attention` (scaffolds; evaluation remains in `spanda-autonomy`). See
+[ADR 0002](./adr/0002-std-policies-package.md).
 
 ## Non-goals
 

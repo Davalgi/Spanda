@@ -1200,44 +1200,37 @@ class Parser {
 }
 
   private parseImport(): ImportDecl {
-    // Description:
-    //     ParseImport.
+    // Parse `import a.b;` or longer dotted paths (`import std.policies.homeostasis;`).
     //
-    // Inputs:
-    //     None.
+    // Parameters:
+    // None.
     //
-    // Outputs:
-    //     result: ImportDecl
-    //         Return value from `parseImport`.
+    // Returns:
+    // Import declaration with a dotted path of at least two segments.
     //
-    // Example:
-    //     const result = parseImport();
-    // Description:
-    //     ParseImport.
-    //
-    // Inputs:
-    //     None.
-    //
-    // Outputs:
-    //     result: ImportDecl
-    //         Return value from `parseImport`.
+    // Options:
+    // None.
     //
     // Example:
-    //     const result = parseImport();
+    // this.parseImport();
 
-    // const result = parseImport();
     const start = this.advance();
-    const vendor = this.parseImportSegment("Expected library vendor name");
-    this.expect("DOT", "Expected '.' in import path");
-    const module = this.parseImportSegment("Expected library module name");
+    const path = this.parseDottedName("Expected import path");
+    if (!path.includes(".")) {
+      throw new ParseError(
+        "Import path must contain at least one '.' (e.g. std.policies.homeostasis)",
+        start.line,
+        start.column,
+      );
+    }
     this.expect("SEMICOLON", "Expected ';' after import");
     const end = this.previous();
     return {
       kind: "ImportDecl",
-      path: `${vendor}.${module}`,
+      path,
       span: this.spanFrom(start, end),
     };
-}
+  }
 
   private parseImportSegment(message: string): string {
     // Description:

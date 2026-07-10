@@ -38,6 +38,7 @@ Minor bug fixes and internal refactors without contract changes do not require A
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
 | [0001](./0001-permanent-architecture-governance.md) | Permanent Architecture Governance | Accepted | 2026-07-08 |
+| [0002](./0002-std-policies-package.md) | Official `std.policies.*` package scaffolds | Accepted | 2026-07-10 |
 
 ---
 

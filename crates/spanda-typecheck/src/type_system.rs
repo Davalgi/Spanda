@@ -830,6 +830,28 @@ pub fn std_namespaces() -> HashMap<&'static str, &'static [&'static str]> {
             "Action",
         ][..],
     );
+    m.insert(
+        "std.policies.homeostasis",
+        &[
+            "HomeostasisPolicy",
+            "StabilityMetric",
+            "StabilityRange",
+            "DriftSignal",
+            "CorrectionAction",
+            "StabilityReport",
+        ][..],
+    );
+    m.insert(
+        "std.policies.attention",
+        &[
+            "AttentionPolicy",
+            "AttentionScore",
+            "AttentionWindow",
+            "EventPriority",
+            "SuppressionRule",
+            "SignalPriority",
+        ][..],
+    );
     m.insert("std.core", &["Result", "Option", "Error", "Void"][..]);
     m.insert("std.math", &["Float", "Int"][..]);
     m.insert(

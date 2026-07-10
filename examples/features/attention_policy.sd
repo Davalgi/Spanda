@@ -3,9 +3,12 @@
 //   spanda check examples/features/attention_policy.sd
 //   spanda reflex list --json
 //
-// Legacy `attention_policy` still parses (lint warns). Prefer @policy.
+// Prefer @policy + `import std.policies.attention` (package spanda-policies).
+// Legacy `attention_policy` still parses (lint warns).
 // Docs: docs/cognitive-resilience-architecture.md
 // Smoke: ./scripts/cognitive_resilience_smoke.sh
+
+import std.policies.attention;
 
 @policy(kind: "attention")
 MissionFocus {

@@ -3198,28 +3198,34 @@ impl Parser {
     }
 
     fn parse_import(&mut self) -> Result<ImportDecl, SpandaError> {
-        // Description:
-        //     Parse import.
+        // Parse `import a.b;` or longer dotted paths (`import std.policies.homeostasis;`).
         //
-        // Inputs:
-        //     &mut self: input value
-        //         Caller-supplied &mut self.
+        // Parameters:
+        // None.
         //
-        // Outputs:
-        //     result: Result<ImportDecl, SpandaError>
-        //         Return value from `parse_import`.
+        // Returns:
+        // Import declaration with a dotted path of at least two segments.
+        //
+        // Options:
+        // None.
         //
         // Example:
-        //     let result = spanda_parser::parse_import(&mut self);
+        // self.parse_import()?
 
-        // Compute start for the following logic.
         let start = self.advance();
-        let vendor = self.parse_import_segment("Expected library vendor name")?;
-        self.expect(TokenType::Dot, "Expected '.' in import path")?;
-        let module = self.parse_import_segment("Expected library module name")?;
+        let path = self.parse_dotted_name("Expected import path")?;
+        if !path.contains('.') {
+            return Err(SpandaError::Parse {
+                message:
+                    "Import path must contain at least one '.' (e.g. std.policies.homeostasis)"
+                        .into(),
+                line: start.line,
+                column: start.column,
+            });
+        }
         self.expect(TokenType::Semicolon, "Expected ';' after import")?;
         Ok(ImportDecl::ImportDecl {
-            path: format!("{}.{}", vendor, module),
+            path,
             span: self.span_from(&start, self.previous()),
         })
     }

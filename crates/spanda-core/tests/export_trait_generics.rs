@@ -334,3 +334,35 @@ robot R {
         }
     }
 }
+
+#[test]
+fn multi_segment_import_parses() {
+    // Description:
+    //     Multi segment import parses.
+    //
+    // Inputs:
+    //     None.
+    //
+    // Outputs:
+    //     None.
+    //
+    // Example:
+
+    let source = r#"
+import std.policies.homeostasis;
+
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior run() { wheels.stop(); }
+}
+"#;
+    let tokens = tokenize(source).expect("tokenize multi-segment import");
+    let program = parse(tokens).expect("parse multi-segment import");
+    let Program::Program { imports, .. } = program;
+    assert_eq!(imports.len(), 1);
+    match &imports[0] {
+        spanda_ast::nodes::ImportDecl::ImportDecl { path, .. } => {
+            assert_eq!(path, "std.policies.homeostasis");
+        }
+    }
+}

@@ -3,9 +3,12 @@
 //   spanda check examples/features/homeostasis_policy.sd
 //   spanda homeostasis check --json
 //
-// Legacy `homeostasis_policy` still parses (lint warns). Prefer @policy.
+// Prefer @policy + `import std.policies.homeostasis` (package spanda-policies).
+// Legacy `homeostasis_policy` still parses (lint warns).
 // Docs: docs/cognitive-resilience-architecture.md
 // Smoke: ./scripts/cognitive_resilience_smoke.sh
+
+import std.policies.homeostasis;
 
 @policy(kind: "homeostasis")
 PlatformStability {

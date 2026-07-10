@@ -57,6 +57,8 @@ pub fn builtin_import_paths() -> &'static [&'static str] {
         "std.audit",
         "std.crypto",
         "std.network",
+        "std.policies.homeostasis",
+        "std.policies.attention",
     ]
 }
 
@@ -80,6 +82,8 @@ pub fn adapter_import_paths() -> &'static [&'static str] {
         "assurance.mission",
         "assurance.prognostics",
         "assurance.resilience",
+        "std.policies.homeostasis",
+        "std.policies.attention",
         "audit.siem",
         "automotive.ethernet",
         "automotive.lin",
