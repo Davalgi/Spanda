@@ -1,25 +1,23 @@
 // std.policies.attention — scaffolds for @policy(kind: "attention")
 //
-// Ranking stays in spanda-autonomy (`rank_events` / Control Center attention).
+// Ranking stays in spanda-autonomy (rank_events / Control Center attention).
 // This module exports helpers aligned with feature examples
-// (`suppress_low_priority`, `boost_critical_health`).
+// (suppress_low_priority, boost_critical_health).
 
 module std.policies.attention;
 
-/** Stable import path / backend id for registry and providers. */
+// Stable import path / backend id for registry and providers.
 export fn attention_backend_name() -> String {
     return "std.policies.attention";
 }
 
-/** Policy kind string for `@policy(kind: …)` (must match parser PoC). */
+// Policy kind string for @policy(kind: ...) (must match parser PoC).
 export fn attention_kind() -> String {
     return "attention";
 }
 
-/**
- * Return 1 when `name` is a known example attention rule used in official
- * feature examples and docs.
- */
+// Return 1 when name is a known example attention rule used in official
+// feature examples and docs.
 export fn is_example_rule(name: String) -> Int {
     if name == "suppress_low_priority" {
         return 1;
@@ -30,7 +28,7 @@ export fn is_example_rule(name: String) -> Int {
     return 0;
 }
 
-/** Count of documented example rule names (for smoke / docs). */
+// Count of documented example rule names (for smoke / docs).
 export fn example_rule_count() -> Int {
     return 2;
 }

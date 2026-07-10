@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `std.policies.attention` scaffolds (evaluation stays in `spanda-autonomy`);
   [ADR 0002](docs/adr/0002-std-policies-package.md).
 - **Multi-segment `import` paths:** `import a.b.c;` parses (needed for `std.policies.*`).
+- **AST policy → autonomy CLI:** `spanda homeostasis check --program <file.sd>` and
+  `spanda attention check --program <file.sd>` use declared `@policy` / legacy metrics and rules
+  (`HomeostasisPolicy::from_declared_metrics` / `AttentionPolicy::from_declared_rules`).
 - **Typed config/format idents:** `provider: mock` and `serialize(x, json)` accepted (strings still
   work); unknown values rejected at check time.
 - **Generics hardening:** empty `<>`, duplicate type params, `T: Bound`, and `where` rejected with
