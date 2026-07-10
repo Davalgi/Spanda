@@ -34,15 +34,16 @@ Honest constraints for **v0.7.0** evaluators. For capability tiers see
   bridges](./troubleshooting.md#live-ai-and-extern-bridges) ·
   [live-ai-provider.md](./live-ai-provider.md)
 
-## Language surface (Experimental / stringly)
+## Language surface
 
 - **Traits** support `export trait` across modules via `import`; private traits stay local.
-- **User generics** are Experimental: module fn + struct type params; empty `<>`, duplicates,
-  `T: Bound`, and `where` are rejected with clear errors —
-  [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-experimental).
-- `serialize`/`deserialize` and AI `provider` accept bare idents or strings (`json` / `mock`, …).
-- `@policy(kind: "homeostasis")` / `@policy(kind: "attention")` parse alongside legacy
-  `homeostasis_policy` / `attention_policy` (lint warns only on the keywords).
+- **User generics** are **Stable** for module fn + struct type params; `T: Bound`, `where`, and
+  trait/enum generics remain unsupported —
+  [spanda-type-system.md](./spanda-type-system.md#user-defined-generics-stable-subset).
+- Closed typed enums: `AiProvider.*`, `SerializeFormat.*`, `CodegenTarget.*` (bare idents/strings
+  still accepted).
+- Cognitive policies use **`@policy(kind: "homeostasis"|"attention")` only** — legacy
+  `homeostasis_policy` / `attention_policy` keywords are removed (breaking).
 - Official package `spanda-policies` exports `std.policies.homeostasis` /
   `std.policies.attention` scaffolds; evaluation remains in `spanda-autonomy`.
 - `spanda codegen --target` accepts only `native`, `wasm`, `esp32`.
@@ -53,8 +54,8 @@ See the authoritative paragraph in
 [spanda-type-system.md — Safety motion guarantee](./spanda-type-system.md#safety-motion-guarantee-authoritative).
 In short: AI motion must use `safety.validate` → `execute(SafeAction)`; `drive`/`follow` cannot take
 `ActionProposal` components; `max_speed` and optional `max_angular` are clamped on the interpreter
-`drive`/`execute`/`validate` paths, and `follow(path:)` cruise speed is clamped by `max_speed` /
-zone caps at call time and re-clamped each simulator tick as the robot moves through zones.
+`drive`/`execute`/`validate` paths, and `follow(path:)` cruise is re-validated each tick via
+`validate_action_proposal` (stops on reject; zone/`max_speed` caps still apply).
 
 ## Connectivity and IoT
 
