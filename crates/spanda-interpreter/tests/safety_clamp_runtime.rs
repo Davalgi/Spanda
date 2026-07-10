@@ -250,3 +250,53 @@ robot Rover {
     );
 }
 
+#[test]
+fn follow_stops_when_stop_if_rejects_segment() {
+    // follow() must stop when validate_action_proposal rejects (stop_if zone).
+    //
+    // Parameters:
+    // None.
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // follow_stops_when_stop_if_rejects_segment();
+
+    let source = r#"
+robot Rover {
+  actuator wheels: DifferentialDrive;
+  safety {
+    max_speed = 1.0 m/s;
+    zone keepout circle at (0.0 m, 0.0 m) radius 10.0 m;
+    stop_if robot.in_zone("keepout");
+  }
+
+  behavior go() {
+    let start = pose(x: 0.0 m, y: 0.0 m, theta: 0.0 rad);
+    let goal = pose(x: 5.0 m, y: 0.0 m, theta: 0.0 rad);
+    let path = trajectory(from: start, to: goal, steps: 4);
+    wheels.follow(path: path);
+  }
+}
+"#;
+    let program = parse_source(source);
+    let result = run_program(
+        &program,
+        RunOptions {
+            entry_behavior: Some("go".into()),
+            max_loop_iterations: 1,
+            ..Default::default()
+        },
+    )
+    .expect("run");
+    assert!(
+        result.state.velocity.linear.abs() < 1e-9,
+        "expected follow stopped by stop_if validation, got linear={}",
+        result.state.velocity.linear
+    );
+}
+
