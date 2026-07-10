@@ -358,7 +358,71 @@ fn lint_program(source: &str, program: &Program) -> LintReport {
     lint_program_structure(program, &mut issues);
     lint_imports(source, program, &mut issues);
     lint_concurrency(program, &mut issues);
+    lint_library_shaped_decls(program, &mut issues);
     LintReport { issues }
+}
+
+fn lint_library_shaped_decls(program: &Program, issues: &mut Vec<LintIssue>) {
+    // Warn on thin policy decls that are migration candidates (see language-surface-inventory).
+    //
+    // Parameters:
+    // - `program` — parsed program
+    // - `issues` — lint issue accumulator
+    //
+    // Returns:
+    // None.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // lint_library_shaped_decls(&program, &mut issues);
+
+    let Program::Program {
+        homeostasis_policies,
+        attention_policies,
+        ..
+    } = program;
+
+    // Flag each homeostasis_policy as library-shaped surface.
+    for policy in homeostasis_policies {
+        let spanda_ast::assurance_decl::HomeostasisPolicyDecl::HomeostasisPolicyDecl {
+            name,
+            span,
+            ..
+        } = policy;
+        issues.push(LintIssue {
+            rule: "library-shaped-decl".into(),
+            message: format!(
+                "`homeostasis_policy {name}` is library-shaped syntax — see \
+                 docs/language-surface-inventory.md (migration to @policy attrs planned; \
+                 syntax remains supported)"
+            ),
+            line: span.start.line,
+            column: span.start.column,
+            severity: LintSeverity::Warning,
+        });
+    }
+
+    // Flag each attention_policy as library-shaped surface.
+    for policy in attention_policies {
+        let spanda_ast::assurance_decl::AttentionPolicyDecl::AttentionPolicyDecl {
+            name,
+            span,
+            ..
+        } = policy;
+        issues.push(LintIssue {
+            rule: "library-shaped-decl".into(),
+            message: format!(
+                "`attention_policy {name}` is library-shaped syntax — see \
+                 docs/language-surface-inventory.md (migration to @policy attrs planned; \
+                 syntax remains supported)"
+            ),
+            line: span.start.line,
+            column: span.start.column,
+            severity: LintSeverity::Warning,
+        });
+    }
 }
 
 fn lint_source_style(source: &str, issues: &mut Vec<LintIssue>) {
@@ -637,6 +701,44 @@ robot R {
             !ok.issues.iter().any(|i| i.rule == "verify-block-alias"),
             "assert {{ }} should not warn, got {:?}",
             ok.issues
+        );
+    }
+
+    #[test]
+    fn warns_on_library_shaped_homeostasis_policy() {
+        // Thin policy decls get a migration-path lint.
+        //
+        // Parameters:
+        // None.
+        //
+        // Returns:
+        // None.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // warns_on_library_shaped_homeostasis_policy();
+
+        let source = r#"
+module demo;
+homeostasis_policy KeepAlive {
+  metric battery;
+}
+robot R {
+  actuator wheels: DifferentialDrive;
+  behavior b() { wheels.stop(); }
+}
+"#;
+        let report = lint(source).expect("lint should parse");
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|i| i.rule == "library-shaped-decl"
+                    && i.message.contains("homeostasis_policy")),
+            "expected library-shaped-decl for homeostasis_policy, got {:?}",
+            report.issues
         );
     }
 

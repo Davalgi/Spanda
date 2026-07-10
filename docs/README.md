@@ -199,6 +199,7 @@ guides, walkthroughs, and example libraries.
 | [registry.md](./registry.md) | **Hosted package registry, `spanda publish` mirror, and `spanda install`** |
 | [feature-status.md](./feature-status.md) | **Feature stability matrix (strict labels)** |
 | [verification-vocabulary.md](./verification-vocabulary.md) | **verify / certify / ensures — not formal verification** |
+| [language-surface-inventory.md](./language-surface-inventory.md) | **Primitives vs library-shaped decls + migration path** |
 | [scope-control.md](./scope-control.md) | **Next horizon phase — allowed vs not allowed** |
 | [organizational-gates.md](./organizational-gates.md) | **v0.7.0 → v1.0 path — field soak, security audit, exit checklist** |
 | [workspace-release-v0.7.0.md](./workspace-release-v0.7.0.md) | **v0.7.0 workspace release prep — tag checklist** |

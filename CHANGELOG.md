@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ensures` runtime contracts — none are formal verification.
 - **`assert { }` alias** for runtime assertion blocks (preferred over `verify { }`); lint warns on
   the older keyword.
+- **Language surface inventory:** [docs/language-surface-inventory.md](docs/language-surface-inventory.md)
+  classifies declaration keywords and proposes `@policy` migration; lint warns on
+  `homeostasis_policy` / `attention_policy`.
 - **`safety { max_angular = … rad/s; }`:** optional turn-rate envelope, clamped on interpreter
   `drive` / `execute` / `safety.validate` (with `max_speed`).
 - **AI `drive` bypass gate:** `ActionProposal.linear` / `.angular` are opaque
