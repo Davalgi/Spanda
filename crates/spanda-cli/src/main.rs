@@ -1994,6 +1994,12 @@ fn main() {
         return;
     }
 
+    if command == "attention" {
+        autonomy_cli::attention_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
     if command == "immunity" {
         autonomy_cli::immunity_dispatch(&args[2..]);
         let _ = io::stdout().flush();
