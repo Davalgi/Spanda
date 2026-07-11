@@ -104,6 +104,8 @@ Entity Mesh is **additive only**:
 
 ## Status
 
-**Experimental** — see [feature-status.md](./feature-status.md). Stable promotion checklist:
+**Stable** (implementation) — see [feature-status.md](./feature-status.md). Organizational field
+pilot and soak remain open — [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md).
+Stable promotion checklist:
 [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md). Field pilot:
 [entity-mesh-field-pilot.md](./entity-mesh-field-pilot.md).

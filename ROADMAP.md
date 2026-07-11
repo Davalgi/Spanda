@@ -344,7 +344,7 @@ manage continuity.
 | **Takeover** | Resume, restart, partial, shadow, hot, cold, human modes | **Stable** | Now | Core |
 | **Swarm** | Quorum, mesh health, `spanda swarm coordinate` | **Experimental** | Next | Core |
 | **Fleet** | In-process + HTTP agents + mesh telemetry | **Stable** / distributed **Experimental** | Now | Core |
-| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), SDK REST **0.5.7+** / TS gRPC **0.5.8+**, Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` | **Experimental** | Now | Core |
+| **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), SDK REST **0.5.7+** / TS gRPC **0.5.8+**, Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` | **Stable** (org pilot open) | Now | Core |
 | **OTA** | Deploy plan, rollout, rollback, canary | **Stable** local / remote **Experimental** | Now | Core |
 | **Human entity model** | Roles, identity, certifications (HRI) | **Stable** | Next | Core |
 | **Operator capabilities** | Capability verification for humans | **Stable** | Next | Core |
@@ -380,23 +380,23 @@ manage continuity.
 
 | Item | Tier |
 |------|------|
-| `spanda-autonomy` crate, entity `autonomy` profile | **Beta** |
-| `Entity.attention` on autonomy profile | **Beta** |
-| Reflex architecture (CLI, API, decision layer 0 integration, file-backed traces) | **Beta** |
-| Peripheral autonomy hierarchy | **Beta** |
-| Platform immunity (trust/tamper/quarantine integration) | **Beta** |
-| Sensory fusion + confidence model | **Experimental** |
-| Attention system | **Beta** (health-mapped scoring) |
-| Homeostasis | **Beta** (health + scheduler telemetry) |
-| Operational memory categories | **Preview** |
-| Habituation / sensitization | **Experimental** |
-| Damage-risk model | **Beta** |
-| Adaptive recovery confidence | **Experimental** |
-| Maintenance / sleep mode | **Preview** |
-| CLI (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`) | **Beta** |
-| Domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`, `RiskClient`) | **Beta** |
-| REST `/v1/autonomy/*` (+ `/fusion`, `/memory`), gRPC autonomy RPCs, `/v1/entities/{id}/autonomy`, SDK methods | **Beta** |
-| Control Center Cognitive & Resilience tab | **Experimental** (functional domain panels) |
+| `spanda-autonomy` crate, entity `autonomy` profile | **Stable** |
+| `Entity.attention` on autonomy profile | **Stable** |
+| Reflex architecture (CLI, API, decision layer 0 integration, file-backed traces) | **Stable** |
+| Peripheral autonomy hierarchy | **Stable** |
+| Platform immunity (trust/tamper/quarantine integration) | **Stable** |
+| Sensory fusion + confidence model | **Stable** (live sensors **Stable-with-env-gate**) |
+| Attention system | **Stable** (health-mapped scoring) |
+| Homeostasis | **Stable** (health + scheduler telemetry) |
+| Operational memory categories + episodic/replay store | **Stable** |
+| Habituation / sensitization | **Stable** (CLI alert analysis) |
+| Damage-risk model | **Stable** |
+| Adaptive recovery confidence + mission abort/replan preference | **Stable** |
+| Maintenance / sleep mode (`spanda maintenance window`) | **Stable** |
+| CLI (`reflex`, `fusion`, `confidence`, `homeostasis`, `immunity`, `alerts`, `recovery confidence`, `maintenance window`) | **Stable** |
+| Domain SDK clients (`ReflexClient`, `HomeostasisClient`, `AttentionClient`, `FusionClient`, `ImmunityClient`, `MemoryClient`, `RiskClient`) | **Stable** |
+| REST `/v1/autonomy/*` (+ `/fusion`, `/memory`, `/maintenance/windows`), gRPC autonomy RPCs, `/v1/entities/{id}/autonomy`, SDK methods | **Stable** |
+| Control Center Cognitive & Resilience tab | **Stable** (functional domain panels) |
 
 **Self-healing detail:**
 
@@ -531,8 +531,8 @@ tabs. Full spec: [docs/enterprise-operations-roadmap.md
 | P3 | **Desktop — native notifications** | **Stable** | Now | OS notifications for SRE fast-burn via `tauri-plugin-notification` |
 | P3 | **Desktop — system tray** | **Stable** | Now | Tray icon with polled fleet health tooltip |
 | P3 | **Desktop — offline cache** | **Stable** | Now | Last-known dashboard state in web shell |
-| P3 | **Multi-tenant tenant switcher** | **Stable** | Now | Saved connection profiles (API host + tenant) in auth shell |
-| P3 | **Twin Cloud usage dashboard** | **Stable** | Now | Twins tab usage meters |
+| P3 | **Multi-tenant tenant switcher** | **Stable** | Now | Profiles store API key + `tenant_id` label |
+| P3 | **Twin Cloud usage dashboard** | **Stable** | Now | Twins + Admin meters from `/v1/twins/usage` |
 | P3 | **WASM playground in Control Center** | **Stable** | Now | Playground tab |
 | P3 | **Discovery transport wizards** | **Stable** | Now | Guided OPC-UA, Modbus, MQTT, and CAN setup in Discovery tab |
 
@@ -583,7 +583,7 @@ marketplace growth.
 | **Provider Packages** | Trait implementations per protocol | **Stable** / **Experimental** | Now | Provider |
 | **Protocol Packages** | CAN, V2X, OPC-UA, Matter, BLE, … | **Experimental** | Now | Provider |
 | **Registry** | Hosted index, `spanda publish` mirror | **Stable** | Now | Core |
-| **Plugin system** | `spanda.plugin.toml`, WASM sandbox, Control Center panels, namespaced CLI | **Experimental** | Now | Core |
+| **Plugin system** | `spanda.plugin.toml`, WASM sandbox, Control Center panels, namespaced CLI, Marketplace REST | **Stable** | Now | Core |
 | **Marketplace** | Curated remote registry growth | **Next** | Next | Optional |
 | **Package Trust** | Scoring, `spanda trust` | **Stable** | Now | Core |
 | **Live AI providers** | OpenAI, Anthropic, ONNX | **Experimental** | Now | Provider |
@@ -1185,7 +1185,7 @@ parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
 |----------|-------|---------------------|-------------|
 | **P0** | Organizational gates | 30-day field soak, third-party security audit prep + sign-off ([#51](https://github.com/Davalgi/Spanda/issues/51)) | v1.0 blocker |
 | **P1** | Differentiation hardening | Mission contracts, explainability, decision audit trail — **Control Center + REST wired** (2026-07-04) | Stable |
-| **P1** | Control Center promotion | Playground server load, traceability matrix, assurance/diagnosis program APIs, Differentiation + Cognitive & Resilience tabs — **partial ship** (2026-07-04) | Beta → Stable |
+| **P1** | Control Center promotion | Playground auto-load, traceability matrix polish, structured assure/diagnose UI, Differentiation + Cognitive tabs — **shipped** | Stable |
 | **P2** | Adoption blockers | VS Code Marketplace listing (PAT configured; Microsoft scanner review) | Stable (extension) |
 | **P2** | Live paths | Swarm quorum, live vehicle I/O, env-gated AI/IoT golden paths | Experimental → Stable |
 | **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |
@@ -1203,8 +1203,8 @@ Maturity-based horizons — **not arbitrary calendar dates**.
 | Horizon | Meaning | Representative items |
 |---------|---------|------------------------|
 | **Now** | Stable or experimental-shipped; CI-backed | Language core, verify, sim, replay, continuity, recovery, bundled demos, differentiation NOW, E1 enterprise ops |
-| **Next** | Experimental hardening or partial ship | Control Center Stable promotion, VS Code Marketplace, swarm quorum, live vehicle I/O, SDKs, HRI H1–H2, warehouse/medical blueprints |
-| **Later** | Designed; experimental code exists | Compliance export polish, digital thread UI, agriculture/environmental blueprints, Gazebo scaffolds, scorecard Stable |
+| **Next** | Experimental hardening or partial ship | VS Code Marketplace, swarm quorum, live vehicle I/O, warehouse/medical blueprint depth |
+| **Later** | Designed; experimental code exists | Compliance export polish, agriculture/environmental blueprint depth, Gazebo scaffolds, scorecard Stable |
 | **Long Term** | Planned v1.0+ positioning | Production verify on 5+ profiles, native codegen Stable, self-hosting subset (non-primary), twin SaaS |
 | **Research** | Exploratory; no production commitment | Space blueprint, advanced swarm intelligence (**out of scope** for core), blockchain adapters (**community only**) |
 
@@ -1271,14 +1271,14 @@ Integration job: `differentiation-smoke`) — **met**. Marketplace publish runs 
 
 ### v0.7.0 — Entity Mesh and platform expansion (current line)
 
-**Theme:** Autonomous Entity Mesh (Experimental), Cognitive & Resilience Architecture, tiered CI,
+**Theme:** Autonomous Entity Mesh (Stable; org pilot open), Cognitive & Resilience Architecture, tiered CI,
 Control Center auth hardening, wasm32 dependency isolation.  
 **Version:** **0.7.0** (minor bump from v0.6.3).  
 **Tagged:** 2026-07-09 — [`v0.7.0`](https://github.com/Davalgi/Spanda/releases/tag/v0.7.0) (Release workflow builds installers).
 
 | Item | Status |
 |------|--------|
-| Autonomous Entity Mesh (crate, CLI, REST/gRPC, SDK, CC tab) | **Shipped (Experimental)** |
+| Autonomous Entity Mesh (crate, CLI, REST/gRPC, SDK, CC tab) | **Shipped (Stable; org pilot open)** |
 | Entity Mesh field pilot soak clock | **Started 2026-07-09** |
 | Cognitive & Resilience (11 domains, REST/gRPC, SDK clients) | **Shipped (Beta tab)** |
 | Tiered CI (Fast / Integration / Nightly) | **Shipped** |

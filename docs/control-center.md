@@ -662,9 +662,12 @@ panel.
 | `POST /v1/programs/audit/decisions` | Decision audit trail from a `.trace` — optional `"explain": true` |
 
 Control Center **Differentiation** tab (Governance group) surfaces contract verify, explain modes,
-and trace audit. **Assurance/Diagnosis** runs `POST /v1/programs/assure` and `/diagnose`.
-**Traceability** loads the capability matrix via `POST /v1/programs/verify/capabilities` with
-`traceability: true`. **Playground** can load the server program via `GET /v1/programs/source`.
+and trace audit. **Assurance/Diagnosis** run `POST /v1/programs/assure` and `/diagnose` with
+structured pass/fail cards and optional file / `.trace` inputs. **Traceability** loads the full
+capability + hardware matrix (`POST /v1/programs/verify/capabilities` with `traceability: true`),
+entity chain (`GET /v1/entities/traceability`), filters, and CSV export. **Playground** auto-loads
+the server `--program` via `GET /v1/programs/source` (optional `?file=` picker); gRPC
+`GetProgramSource` and SDK helpers provide parity.
 
 ### What requires authentication
 
@@ -748,18 +751,21 @@ organizes live panels by **functional domain**:
 | **Attention Queue** | Attention Engine | Prioritized event window (`GET /v1/autonomy/attention`) |
 | **Homeostasis** | Homeostasis Engine | Entity stability reports (`GET /v1/autonomy/homeostasis`) |
 | **Platform Immunity** | Platform Immunity | Quarantine scan (`GET /v1/autonomy/immunity`) |
-| **Operational Memory** | Operational Memory | Memory category refs (`GET /v1/autonomy/memory`) |
+| **Operational Memory** | Operational Memory | Browse-by-category memory + episodic/replay index (`GET /v1/autonomy/memory`) |
+| **Maintenance Schedule** | Maintenance & Optimization | Windows from `GET /v1/autonomy/maintenance/windows` |
 | **Damage Risk** | Damage Risk Assessment | Entity `damage_risk` from autonomy profile |
-| **Recovery Confidence** | Adaptive Learning | Platform recovery confidence + entity profile |
+| **Recovery Confidence** | Adaptive Learning | Platform recovery confidence + preferred strategy on abort/replan |
 
 Per-entity autonomy profiles: `GET /v1/entities/{id}/autonomy`. gRPC parity: `ListAutonomyReflexes`,
 `GetAutonomyHomeostasis`, `GetEntityAutonomy`, and related RPCs (proto **1.0.13+**).
 
-**Beta** — live REST panels shipped; promotion to **Stable** follows Control Center P1 backlog in
-[ROADMAP.md](../ROADMAP.md). Guide:
+**Stable** — live REST panels, fusion→readiness, episodic store, maintenance CLI/panel, and
+Operate-gated maintenance mutations. Field soak remains organizational
+([organizational-gates.md](./organizational-gates.md)). Guide:
 [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md) · Maturity:
 [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md) · Smoke:
-`./scripts/cognitive_resilience_smoke.sh`
+`./scripts/cognitive_resilience_smoke.sh` · Promotion gate:
+`./scripts/cognitive_resilience_stable_promotion_gate.sh`
 
 ### Human Interaction dashboard
 
@@ -1137,10 +1143,10 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | Health | Pool health rollup |
 | Readiness | Readiness impact check |
 | Compliance | Signed profile picker + accreditation export + evidence log |
-| Digital Thread | Interactive capability→device graph with filters |
-| Traceability | Trust and identity trace view |
+| Digital Thread | Interactive lifecycle graph (requirement → retire) with pan/zoom, search, export |
+| Traceability | Full capability/hardware matrix, entity chain, device pool mapping |
 | Recovery | Orchestrator plans, metrics, playbooks, history, graph, plan/simulate/execute |
-| Cognitive & Resilience | Functional domain panels — reflex, attention, homeostasis, immunity, memory, damage risk (`/v1/autonomy/*`) |
+| Cognitive & Resilience | Functional domain panels — reflex, attention, homeostasis, immunity, memory, damage risk, maintenance (`/v1/autonomy/*`) |
 | Administration | API keys, users, alert channels, integrations (administrator) |
 | About | Live component versions from `GET /v1/version` (all roles) |
 | Simulation | Program sim execute with decision traces |
@@ -1150,9 +1156,14 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | **Continuity** | Fleet-agent continuity poll and mission pause/resume/cancel |
 | **Fleet map** | Grid/geospatial markers (`GET /v1/fleet/map`) |
 | **Reports** | Scheduled report CRUD and compliance preview |
-| **Playground** | In-browser WASM check/run |
-| **Marketplace** | Installed plugin and Control Center panel browser |
+| **Playground** | In-browser WASM check/run; auto-loads server `--program` |
+| **Marketplace** | Plugin search/install/enable/disable + sandboxed panel host |
 | **Chaos** | Fault injection catalog and simulation (`/v1/chaos/*`) |
+| **SAR** | Search & Rescue — remote expert, mission approve, HRI sessions |
+| **Healthcare** | Wearables, human readiness, medical compliance |
+| **Warehouse** | Fleet delivery, pick missions, continuity |
+| **Agriculture** | Field fleet map and readiness trends |
+| **Maritime** | Fleet map, incidents, pre-departure readiness |
 
 **Enhancements on existing tabs:** SRE observability bridge (Grafana embed when `SPANDA_GRAFANA_URL`
 is set, Jaeger/trace links), config change history + deploy gate modal, bulk device

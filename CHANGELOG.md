@@ -9,9 +9,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Control Center solution domain tabs:** dedicated **SAR**, **Healthcare**, **Warehouse**,
+  **Agriculture**, and **Maritime** dashboards (compose fleet/mission/readiness/HRI/SRE APIs with
+  deep-links to shared tabs).
+- **Control Center Stable promotion (Phase 0):** playground auto-loads `GET /v1/programs/source`
+  (optional `?file=` picker); gRPC `GetProgramSource` + SDK `programSource` / `program_source`
+  helpers; full capability/hardware traceability matrix with filters, CSV export, and entity chain;
+  structured Assurance/Diagnosis report cards with file/`.trace` inputs; proto **1.0.16+** (Twin
+  usage later **1.0.17**).
+- **Hosted Twin Cloud Phase 5 (isolation + usage):** `GET /v1/twins/usage` and gRPC `GetTwinUsage`
+  (proto **1.0.17**) expose per-tenant twin/snapshot counts plus in-process push/sync/history
+  counters; get/history reject cross-tenant snapshots (403); push forces instance `tenant_id`;
+  Control Center Twins + Administration show usage meters; connection profiles store API key +
+  `tenant_id` label.
+- **Plugin system Stable:** Marketplace REST parity (`GET /v1/plugins/search`,
+  `POST /v1/plugins/install`, `POST /v1/plugins/{name}/enable|disable`); `GET /v1/plugins` includes
+  `control_center_panels`; sandboxed iframe panel host (postMessage bridge); promotion gate
+  `scripts/plugin_stable_promotion_gate.sh` + `scripts/plugin_system_smoke.sh` — see
+  [plugin-stable-promotion.md](docs/plugin-stable-promotion.md).
+- **Cognitive & Resilience Stable Phase 1:** fusion conflicts → readiness partial scoring; persistent
+  episodic store linked to replay index; browse-by-category Operational Memory UI; recovery
+  strategy preference on mission abort/replan; `spanda maintenance window` list/set + Control Center
+  schedule panel; `POST /v1/autonomy/maintenance/windows` (Operate RBAC); promotion gate
+  `scripts/cognitive_resilience_stable_promotion_gate.sh`.
+- **Digital Thread lifecycle edges:** `DigitalThreadReport.lifecycle_edges` (requirement → design →
+  deploy → operate → retire) derived from program dependencies and device overlays, plus optional
+  `phase_path` query (`requirement->deploy`); Control Center graph adds pan/zoom, search, phase-path
+  highlight, device nodes, and JSON/SVG export.
+
 - **Control Center About tab:** Administration → About lists live component versions from
   `GET /v1/version` (platform, UI, REST, gRPC proto) plus desktop shell version when running in
   Tauri.
+
+### Changed
+
+- **Control Center promotion** (playground / traceability / assure-diagnose) marked **shipped** in
+  ROADMAP (was partial ship 2026-07-04).
+- **Plugin system** promoted **Experimental → Stable** (remote curated marketplace remains **Next**).
+  See [plugin-stable-promotion.md](docs/plugin-stable-promotion.md).
+- **Cognitive & Resilience** domains and Control Center tab promoted **Beta/Experimental → Stable**
+  (live fusion remains **Stable-with-env-gate** via `SPANDA_LIVE_FUSION_SENSORS`). Field soak stays
+  organizational. See [cognitive-resilience-maturity.md](docs/cognitive-resilience-maturity.md).
 
 ### Fixed
 

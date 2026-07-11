@@ -35,11 +35,11 @@ Stable. Simulated-only paths must say so explicitly.
 | **Differentiation NOW** | `spanda demo differentiation`, all five NEXT analytics pillars **Stable** |
 | **Distributed decisions** | Decision trees, offline policy, signed trees, v3 signed traces, persistent escalation, conflict resolution — **Stable** |
 | **Enterprise operations** | Control Center E1–E4, device pool, gRPC parity — Stable |
-| **Cognitive & Resilience Architecture** | Eleven functional domains — **Beta** tier |
-| | Reflex, immunity, homeostasis, attention; fusion, memory, operational memory |
-| | Adaptive recovery **Experimental**; CC Cognitive & Resilience tab **Beta** |
-| | [architecture](./cognitive-resilience-architecture.md) · [maturity](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` |
-| **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate) |
+| **Cognitive & Resilience Architecture** | Eleven functional domains — **Stable** tier |
+| | Reflex, immunity, homeostasis, attention, fusion, memory, adaptive recovery, maintenance |
+| | CC Cognitive & Resilience tab **Stable**; live fusion **Stable-with-env-gate** (`SPANDA_LIVE_FUSION_SENSORS`) |
+| | [architecture](./cognitive-resilience-architecture.md) · [maturity](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` · gate: `scripts/cognitive_resilience_stable_promotion_gate.sh` |
+| **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate); Control Center domain tabs for SAR, Healthcare, Warehouse, Agriculture, Maritime |
 | **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), live transport discovery, SDK mesh REST + gRPC (**0.5.9+**), Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` — **Stable** (implementation); organizational field pilot **in progress** — [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
 
 ## v0.4.0 — Deploy & tooling
@@ -51,7 +51,7 @@ Stable. Simulated-only paths must say so explicitly.
 | **Distributed fleet** | `fleet orchestrate --remote`, agent registry — Experimental |
 | **CLI install** | `cargo install --path crates/spanda-cli` → binary `spanda` — Stable |
 | **Bundled demos** | `spanda demo` without full clone — Stable |
-| **Plugin system** | `spanda plugin search|install|enable|disable|list|inspect|trust`; `spanda.plugin.toml`; registry trust tiers; WASM sandbox (`wasm-loader`); namespaced CLI commands; Control Center `/v1/plugins` — Experimental |
+| **Plugin system** | `spanda plugin search|install|enable|disable|list|inspect|trust`; `spanda.plugin.toml`; registry trust tiers; WASM sandbox (`wasm-loader`); namespaced CLI commands; Control Center `/v1/plugins` (+ search/install/enable/disable); sandboxed iframe panel host — **Stable** — [plugin-stable-promotion.md](./plugin-stable-promotion.md) |
 | **Cascading configuration** | `spanda config`, `spanda drift`, `spanda device discover|inspect`, `spanda network scan`, `spanda device-tree`, `spanda map verify`; `DeviceRegistry` + network identity validation; config and agent drift (`--baseline`, `--agent`); `--config` on run/verify/readiness/replay/assurance — Experimental |
 
 ## v0.2.0 — Officially Supported
@@ -116,7 +116,7 @@ Stable. Simulated-only paths must say so explicitly.
 | | Live decision enforcement; `spanda compliance check`, `governance validate|report`, `certification list|inspect|report` |
 | | `deployment profile|verify`, `risk report`; REST/gRPC `/v1/governance/*`; Control Center Governance tab — **Stable** |
 | | [governance.md](./governance.md) · [stable-hardening-operational-governance.md](./stable-hardening-operational-governance.md) |
-| **Twin Cloud SaaS** | `spanda twin cloud`, `/v1/twins/*`, gRPC twins (proto **1.0.10**), file-backed store + history — **Stable** — [twin-cloud.md](./twin-cloud.md) · [stable-hardening-twin-cloud-saas.md](./stable-hardening-twin-cloud-saas.md) |
+| **Twin Cloud SaaS** | `spanda twin cloud`, `/v1/twins/*` (+ `/usage`), gRPC twins (proto **1.0.17**), tenant isolation, usage meters, file-backed store + history — **Stable** — [twin-cloud.md](./twin-cloud.md) · [stable-hardening-twin-cloud-saas.md](./stable-hardening-twin-cloud-saas.md) · [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
 | **LATER Control Center analytics** | `/v1/analytics/{mission-twin,certification-pack,time-travel,human-teaming,governance}` + gRPC `GetAnalytics*` (proto **1.0.7**); Analytics tab |
 | **Mission assurance** | `knowledge_model`, `state_estimator`, `anomaly_detector`, `on anomaly`, `prognostics`, `mitigation`, `resilience_policy`, `assurance_case`; CLI `assure`, `anomaly scan`, `diagnose`, `state estimate`, `prognostics`, `mission verify`, `resilience check`, `mitigation plan`; `spanda demo assurance` |
 | **Weighted sensor fusion** | `observe { }`, `state_estimator`, `fusion.read()` with type-weighted confidence; `spanda-fusion` package |
@@ -127,7 +127,7 @@ Stable. Simulated-only paths must say so explicitly.
 
 | Area | Capabilities | Caveats |
 |------|--------------|---------|
-| **Digital twins (live sync)** | Twin mirror + replay; Twin Cloud SaaS (`spanda twin cloud`, `/v1/twins/*`, file-backed store + history, RBAC mutations) — **Stable**; legacy `SPANDA_CLOUD_UPLOAD_URL` + `import-replay` bridge | Hosted managed product (billing, SLA) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
+| **Digital twins (live sync)** | Twin mirror + replay; Twin Cloud SaaS (`spanda twin cloud`, `/v1/twins/*` + usage meters, tenant isolation, file-backed store + history, RBAC mutations) — **Stable**; legacy `SPANDA_CLOUD_UPLOAD_URL` + `import-replay` bridge | Hosted managed product (SLA / multi-region) — [hosted-twin-cloud-product.md](./hosted-twin-cloud-product.md) |
 | **Replay** | `replay true`, frame buffer, mission traces | In-process only; v2 traces embed state snapshots for `--playback` |
 | **Advanced verification** | Fault injection, compatibility matrix | Matrix may report stub targets |
 | **Multi-agent systems** | Agent-to-agent comm, fleet peer messaging | In-process mesh + HTTP fleet agent relay (`fleet orchestrate --remote` / `--mesh-url`) |
@@ -273,7 +273,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 
 | Pillar | Status | Key surfaces |
 |--------|--------|--------------|
-| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel; RBAC tabs, OIDC SSO, API keys, admin config, mission/sim/replay, drift/trust/compliance/SRE; Tauri **0.6.3** (`desktop-v0.6.3`) — [authentication.md](./authentication.md) · [control-center-versioning.md](./control-center-versioning.md) |
+| **Control Center** | **Stable** | `spanda control-center serve`, embedded HTML + `@davalgi-spanda/web` panel; RBAC tabs, OIDC SSO, API keys, admin config, mission/sim/replay, drift/trust/compliance/SRE; domain tabs (ADAS, Humans, Smart Spaces, SAR, Healthcare, Warehouse, Agriculture, Maritime); Tauri **0.6.3** (`desktop-v0.6.3`) — [authentication.md](./authentication.md) · [control-center-versioning.md](./control-center-versioning.md) |
 | **Device Pool** | **Stable** | Lifecycle states, assign/trust/quarantine/retire, failover chains; multi-tenant API key scoping |
 | **Device Discovery** | **Stable** | Subnet, mDNS, BLE, USB, CAN, MQTT, ROS2 host probes; production TLS policy (`SPANDA_DISCOVERY_REQUIRE_TLS`, `spanda-discovery-tls`) |
 | **Provisioning** | **Stable** | `POST /v1/provision`, discover → ready workflow |
@@ -298,7 +298,7 @@ See [tier-3-experimental.md](./tier-3-experimental.md) and
 | | | Control Center Entities tab with read/write mutations; CI `entity_model_smoke.sh` (REST + TS + Python + Rust SDK) |
 | | | SDKs **0.5.9** on crates.io, PyPI, npm — [entity-model.md](./entity-model.md), [entity-apis.md](./entity-apis.md), [entity-sdk.md](./entity-sdk.md) |
 | **Observability** | **Stable** | OTLP trace/metrics export, correlation IDs, WebSocket telemetry; `spanda-otel-collector`; Grafana templates (`spanda-grafana-dashboards`); HA collector guide |
-| **Digital Thread** | **Stable** | Full lifecycle graph (requirement → retirement); `GET /v1/digital-thread/query` with `lifecycle_phase` filter |
+| **Digital Thread** | **Stable** | Full lifecycle graph (requirement → retirement); `lifecycle_edges` + optional `phase_path` on `GET /v1/digital-thread/query`; Control Center pan/zoom/search/export |
 
 See [enterprise-operations-roadmap.md](./enterprise-operations-roadmap.md) ·
 [control-center.md](./control-center.md) ·
