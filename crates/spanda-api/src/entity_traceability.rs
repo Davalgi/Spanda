@@ -108,6 +108,7 @@ pub fn build_entity_traceability_report(
         device_id: query.device_id.clone(),
         node_id: query.entity_id.clone(),
         lifecycle_phase: None,
+        phase_path: None,
     };
     let mut graph = build_dependency_graph(&program, &label, state.resolved.as_ref());
     let ctx = build_alignment_context(&graph, state.resolved.as_ref());

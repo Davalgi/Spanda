@@ -82,6 +82,7 @@ pub fn digital_thread_query(state: &ControlCenterState, query: &str) -> HttpResp
         device_id: params.get("device_id").cloned(),
         node_id: params.get("node_id").cloned(),
         lifecycle_phase: params.get("lifecycle_phase").cloned(),
+        phase_path: params.get("phase_path").cloned(),
     };
     let (program, _source, label) = match load_program(state) {
         Ok(value) => value,
