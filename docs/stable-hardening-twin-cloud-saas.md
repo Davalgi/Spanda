@@ -9,7 +9,8 @@ Local digital mission twin evaluation (`spanda twin mission`) remains **Stable**
 | Gate | Status |
 |------|--------|
 | REST `/v1/twins/*` + RBAC on mutations | **Shipped** |
-| gRPC `ListTwins` / `GetTwin` / `SyncTwin` / `PushTwinSnapshot` / `ImportTwinReplay` (proto **1.0.10**) | **Shipped** |
+| gRPC `ListTwins` / `GetTwinUsage` / `GetTwin` / `SyncTwin` / `PushTwinSnapshot` / `ImportTwinReplay` (proto **1.0.17**) | **Shipped** |
+| Tenant isolation (get/history 403; push forces `tenant_id`) + `GET /v1/twins/usage` | **Shipped** |
 | File-backed persistence + history ring | **Shipped** |
 | CLI `spanda twin cloud push\|pull\|list\|sync\|import-replay` | **Shipped** |
 | SDK REST + gRPC (0.5.5+) | **Shipped** |

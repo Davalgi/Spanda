@@ -11,7 +11,7 @@ import {
   getActiveProfileId,
   type ControlCenterProfile,
   setActiveProfileId,
-  upsertProfileTenant,
+  upsertProfileCredentials,
 } from "./controlCenterProfiles";
 import { type ControlCenterTab } from "./controlCenterRbac";
 import { useControlCenterAuth } from "./useControlCenterAuth";
@@ -63,18 +63,36 @@ export function ControlCenterPanel({ apiBase }: Props) {
   const core = useControlCenterCoreData({ baseUrl: base, authHeaders });
 
   useEffect(() => {
-    if (rbacCtx?.tenant_id && activeProfile?.id) {
-      setProfiles(upsertProfileTenant(activeProfile.id, rbacCtx.tenant_id));
+    if (!activeProfile?.id) return;
+    const next: { tenantId?: string; apiKey?: string } = {};
+    if (rbacCtx?.tenant_id) next.tenantId = rbacCtx.tenant_id;
+    if (auth.apiKey) next.apiKey = auth.apiKey;
+    if (next.tenantId || next.apiKey) {
+      setProfiles(upsertProfileCredentials(activeProfile.id, next));
     }
-  }, [activeProfile?.id, rbacCtx?.tenant_id]);
+  }, [activeProfile?.id, auth.apiKey, rbacCtx?.tenant_id]);
 
   useDesktopIntegration({ baseUrl: base });
   const controlCenterVersion = useControlCenterVersion();
 
-  const switchProfile = useCallback((profileId: string) => {
-    setActiveProfileId(profileId);
-    setActiveProfileIdState(profileId);
-  }, []);
+  const switchProfile = useCallback(
+    (profileId: string) => {
+      setActiveProfileId(profileId);
+      setActiveProfileIdState(profileId);
+      const profile = profiles.find((entry) => entry.id === profileId);
+      if (profile?.apiKey) {
+        void verifyAndSetApiKey(profile.apiKey, true);
+      }
+    },
+    [profiles, verifyAndSetApiKey],
+  );
+
+  const forgetTokenAndProfile = useCallback(() => {
+    if (activeProfile?.id) {
+      setProfiles(upsertProfileCredentials(activeProfile.id, { apiKey: null }));
+    }
+    forgetToken();
+  }, [activeProfile?.id, forgetToken]);
 
   const handleAddConnection = useCallback((nextBase: string) => {
     setProfiles(addProfile(nextBase));
@@ -159,7 +177,7 @@ export function ControlCenterPanel({ apiBase }: Props) {
             onVerify={verifyAndSetApiKey}
             onSignInWithOidc={signInWithOidc}
             oidcLoginEnabled={oidcLoginEnabled}
-            onForget={forgetToken}
+            onForget={forgetTokenAndProfile}
             onOpenSetup={() => setShowAuthSetup(true)}
           />
         </div>

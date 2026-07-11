@@ -1,10 +1,13 @@
-/** Saved Control Center connection profiles (API host + tenant metadata). @module */
+/** Saved Control Center connection profiles (API host + tenant + API key). @module */
 
 export type ControlCenterProfile = {
   id: string;
   label: string;
   apiBase: string;
+  /** Instance / key tenant id shown in the connection switcher. */
   tenantId?: string;
+  /** Optional remembered Bearer token for this connection profile. */
+  apiKey?: string;
 };
 
 const PROFILES_KEY = "spanda.control_center.profiles.v1";
@@ -14,12 +17,17 @@ function normalizeBase(apiBase: string): string {
   return apiBase.replace(/\/$/, "");
 }
 
-function profileLabel(apiBase: string): string {
+function profileLabel(apiBase: string, tenantId?: string): string {
+  let host: string;
   try {
-    return new URL(apiBase).host;
+    host = new URL(apiBase).host;
   } catch {
-    return apiBase;
+    host = apiBase;
   }
+  if (tenantId?.trim()) {
+    return `${host} · ${tenantId.trim()}`;
+  }
+  return host;
 }
 
 export function loadProfiles(): ControlCenterProfile[] {
@@ -57,23 +65,35 @@ export function setActiveProfileId(id: string): void {
   }
 }
 
-export function ensureProfile(apiBase: string, tenantId?: string): ControlCenterProfile[] {
+export function ensureProfile(
+  apiBase: string,
+  tenantId?: string,
+  apiKey?: string,
+): ControlCenterProfile[] {
   const base = normalizeBase(apiBase);
   const profiles = loadProfiles();
   const existing = profiles.find((profile) => normalizeBase(profile.apiBase) === base);
   if (existing) {
+    let changed = false;
     if (tenantId && existing.tenantId !== tenantId) {
       existing.tenantId = tenantId;
-      saveProfiles(profiles);
+      existing.label = profileLabel(base, tenantId);
+      changed = true;
     }
+    if (apiKey !== undefined && existing.apiKey !== apiKey) {
+      existing.apiKey = apiKey || undefined;
+      changed = true;
+    }
+    if (changed) saveProfiles(profiles);
     setActiveProfileId(existing.id);
     return profiles;
   }
   const created: ControlCenterProfile = {
     id: crypto.randomUUID(),
-    label: profileLabel(base),
+    label: profileLabel(base, tenantId),
     apiBase: base,
     tenantId,
+    apiKey: apiKey || undefined,
   };
   const next = [...profiles, created];
   saveProfiles(next);
@@ -82,9 +102,30 @@ export function ensureProfile(apiBase: string, tenantId?: string): ControlCenter
 }
 
 export function upsertProfileTenant(profileId: string, tenantId: string): ControlCenterProfile[] {
-  const profiles = loadProfiles().map((profile) =>
-    profile.id === profileId ? { ...profile, tenantId } : profile,
-  );
+  return upsertProfileCredentials(profileId, { tenantId });
+}
+
+export function upsertProfileCredentials(
+  profileId: string,
+  credentials: { tenantId?: string; apiKey?: string | null },
+): ControlCenterProfile[] {
+  const profiles = loadProfiles().map((profile) => {
+    if (profile.id !== profileId) return profile;
+    const tenantId =
+      credentials.tenantId !== undefined ? credentials.tenantId : profile.tenantId;
+    const apiKey =
+      credentials.apiKey === null
+        ? undefined
+        : credentials.apiKey !== undefined
+          ? credentials.apiKey
+          : profile.apiKey;
+    return {
+      ...profile,
+      tenantId,
+      apiKey,
+      label: profileLabel(profile.apiBase, tenantId),
+    };
+  });
   saveProfiles(profiles);
   return profiles;
 }

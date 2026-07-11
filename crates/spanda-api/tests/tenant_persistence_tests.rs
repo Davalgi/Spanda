@@ -127,6 +127,109 @@ fn runtime_state_persists_twin_cloud_snapshots() {
 }
 
 #[test]
+fn twin_cloud_get_rejects_foreign_tenant_snapshot() {
+    let _guard = ENV_TEST_LOCK.lock().unwrap();
+    std::env::set_var("SPANDA_TENANT_ID", "acme");
+    let mut state = ControlCenterState::new();
+    assert_eq!(state.tenant_id, "acme");
+
+    // Seed a snapshot stamped for a different tenant (shared-store isolation case).
+    let program = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/showcase/mission_twin/patrol.sd");
+    let source = std::fs::read_to_string(&program).expect("read patrol");
+    let tokens = spanda_lexer::tokenize(&source).expect("tokenize");
+    let parsed = spanda_parser::parse(tokens).expect("parse");
+    let mut foreign = spanda_twin_cloud::build_snapshot_from_program(
+        &parsed,
+        program.to_string_lossy().as_ref(),
+        Some("foreign-twin"),
+        "other",
+    );
+    foreign.tenant_id = "other".into();
+    state.twin_cloud_store.upsert(foreign);
+
+    let (get_resp, _) = handle_request(
+        &mut state,
+        &HttpRequest {
+            method: "GET".into(),
+            path: "/v1/twins/foreign-twin".into(),
+            body: String::new(),
+            authorization: None,
+        },
+        "",
+    );
+    assert_eq!(get_resp.status, 403, "{}", get_resp.body);
+    assert!(get_resp.body.contains("tenant mismatch"));
+
+    let (history_resp, _) = handle_request(
+        &mut state,
+        &HttpRequest {
+            method: "GET".into(),
+            path: "/v1/twins/foreign-twin/history".into(),
+            body: String::new(),
+            authorization: None,
+        },
+        "",
+    );
+    assert_eq!(history_resp.status, 403, "{}", history_resp.body);
+}
+
+#[test]
+fn twin_cloud_push_forces_instance_tenant_id() {
+    let _guard = ENV_TEST_LOCK.lock().unwrap();
+    std::env::set_var("SPANDA_TENANT_ID", "acme");
+    std::env::set_var("SPANDA_API_KEY", "twin-cloud-force-tenant");
+    let mut state = ControlCenterState::new();
+    state.api_keys = ApiKeyStore::from_env_and_file();
+
+    let program = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/showcase/mission_twin/patrol.sd");
+    let source = std::fs::read_to_string(&program).expect("read patrol");
+    let tokens = spanda_lexer::tokenize(&source).expect("tokenize");
+    let parsed = spanda_parser::parse(tokens).expect("parse");
+    let mut snapshot = spanda_twin_cloud::build_snapshot_from_program(
+        &parsed,
+        program.to_string_lossy().as_ref(),
+        Some("forced-tenant"),
+        "spoofed-tenant",
+    );
+    snapshot.tenant_id = "spoofed-tenant".into();
+
+    let (response, _) = handle_request(
+        &mut state,
+        &HttpRequest {
+            method: "POST".into(),
+            path: "/v1/twins/forced-tenant/snapshots".into(),
+            body: serde_json::to_string(&snapshot).expect("serialize"),
+            authorization: Some("twin-cloud-force-tenant".into()),
+        },
+        "",
+    );
+    assert_eq!(response.status, 200, "{}", response.body);
+    let stored = state
+        .twin_cloud_store
+        .get("forced-tenant")
+        .expect("stored twin");
+    assert_eq!(stored.tenant_id, "acme");
+
+    let (usage_resp, _) = handle_request(
+        &mut state,
+        &HttpRequest {
+            method: "GET".into(),
+            path: "/v1/twins/usage".into(),
+            body: String::new(),
+            authorization: None,
+        },
+        "",
+    );
+    assert_eq!(usage_resp.status, 200, "{}", usage_resp.body);
+    let usage: serde_json::Value = serde_json::from_str(&usage_resp.body).unwrap();
+    assert_eq!(usage["tenant_id"], "acme");
+    assert!(usage["twin_count"].as_u64().unwrap() >= 1);
+    assert!(usage["push_count"].as_u64().unwrap() >= 1);
+}
+
+#[test]
 fn recovery_history_persists_across_restart() {
     use spanda_api::persistence::persist_runtime_state;
     use spanda_api::recovery_ops::recovery_history;

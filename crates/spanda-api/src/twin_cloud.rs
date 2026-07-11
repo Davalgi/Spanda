@@ -1,6 +1,6 @@
 //! Twin Cloud SaaS REST handlers — mission twin snapshot registry.
 
-use crate::handlers::{bad_request, ensure_rbac, json_ok, parse_query, unauthorized};
+use crate::handlers::{bad_request, ensure_rbac, json_ok, parse_query, tenant_forbidden, unauthorized};
 use crate::persistence::persist_runtime_state;
 use crate::program::parse_program_file;
 use crate::state::ControlCenterState;
@@ -8,8 +8,9 @@ use spanda_deploy_http::HttpResponse;
 use spanda_security::{RbacAction, RbacContext};
 use spanda_twin_cloud::{
     build_snapshot_from_program, TwinCloudHistoryResponse, TwinCloudSnapshot,
-    TwinCloudSyncResponse, TWIN_CLOUD_API_VERSION,
+    TwinCloudSyncResponse, TwinCloudUsageResponse, TWIN_CLOUD_API_VERSION,
 };
+use std::sync::atomic::Ordering;
 
 pub fn route_twin_cloud(
     state: &mut ControlCenterState,
@@ -19,8 +20,12 @@ pub fn route_twin_cloud(
     body: &str,
     ctx: Option<&RbacContext>,
 ) -> Option<HttpResponse> {
+    // Dispatch list and usage before path-parameter routes.
     if path == "/v1/twins" && method == "GET" {
         return Some(list_twins(state));
+    }
+    if path == "/v1/twins/usage" && method == "GET" {
+        return Some(get_usage(state));
     }
     if path == "/v1/twins/sync" && method == "POST" {
         return Some(sync_twin(state, query, ctx));
@@ -45,6 +50,24 @@ pub fn route_twin_cloud(
 
 pub fn list_twins_json(state: &ControlCenterState) -> String {
     list_twins(state).body
+}
+
+pub fn get_twin_usage_json(state: &ControlCenterState) -> String {
+    // Serialize Twin Cloud usage meters for REST and gRPC callers.
+    //
+    // Parameters:
+    // - `state` — Control Center runtime state
+    //
+    // Returns:
+    // JSON body for `GET /v1/twins/usage` / `GetTwinUsage`.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let json = get_twin_usage_json(&state);
+
+    get_usage(state).body
 }
 
 pub fn get_twin_json(state: &ControlCenterState, twin_id: &str) -> String {
@@ -88,16 +111,40 @@ fn list_twins(state: &ControlCenterState) -> HttpResponse {
     )
 }
 
+fn get_usage(state: &ControlCenterState) -> HttpResponse {
+    // Build per-tenant meters from store-backed counts plus in-process API counters.
+    let tenant = state.tenant_id.as_str();
+    json_ok(&TwinCloudUsageResponse {
+        version: TWIN_CLOUD_API_VERSION.into(),
+        tenant_id: state.tenant_id.clone(),
+        twin_count: state.twin_cloud_store.twin_count(Some(tenant)),
+        snapshot_count: state.twin_cloud_store.snapshot_count(Some(tenant)),
+        push_count: state.twin_cloud_push_count.load(Ordering::Relaxed),
+        sync_count: state.twin_cloud_sync_count.load(Ordering::Relaxed),
+        history_count: state.twin_cloud_history_count.load(Ordering::Relaxed),
+    })
+}
+
 fn get_twin(state: &ControlCenterState, twin_id: &str) -> HttpResponse {
     let Some(snapshot) = state.twin_cloud_store.get(twin_id) else {
         return twin_not_found(twin_id);
     };
+
+    // Reject cross-tenant reads so shared Control Center instances stay isolated.
+    if snapshot.tenant_id != state.tenant_id {
+        return tenant_forbidden();
+    }
     json_ok(snapshot)
 }
 
 fn get_twin_history(state: &ControlCenterState, twin_id: &str) -> HttpResponse {
-    if state.twin_cloud_store.get(twin_id).is_none() {
+    let Some(latest) = state.twin_cloud_store.get(twin_id) else {
         return twin_not_found(twin_id);
+    };
+
+    // Reject cross-tenant history so other tenants cannot probe snapshot rings.
+    if latest.tenant_id != state.tenant_id {
+        return tenant_forbidden();
     }
     let snapshots: Vec<TwinCloudSnapshot> = state
         .twin_cloud_store
@@ -105,6 +152,9 @@ fn get_twin_history(state: &ControlCenterState, twin_id: &str) -> HttpResponse {
         .into_iter()
         .cloned()
         .collect();
+    state
+        .twin_cloud_history_count
+        .fetch_add(1, Ordering::Relaxed);
     json_ok(&TwinCloudHistoryResponse {
         version: TWIN_CLOUD_API_VERSION.into(),
         twin_id: twin_id.to_string(),
@@ -141,10 +191,11 @@ fn push_snapshot(
     } else if snapshot.twin_id != twin_id {
         return bad_request("snapshot twin_id must match path");
     }
-    if snapshot.tenant_id.is_empty() {
-        snapshot.tenant_id = state.tenant_id.clone();
-    }
+
+    // Always stamp the instance tenant — never trust a client-supplied tenant_id.
+    snapshot.tenant_id = state.tenant_id.clone();
     let stored = state.twin_cloud_store.upsert(snapshot);
+    state.twin_cloud_push_count.fetch_add(1, Ordering::Relaxed);
     let _ = persist_runtime_state(state);
     json_ok(&TwinCloudSyncResponse {
         version: TWIN_CLOUD_API_VERSION.into(),
@@ -170,6 +221,7 @@ fn sync_twin(
     };
     let snapshot = build_snapshot_from_program(&program, &label, twin_id, state.tenant_id.as_str());
     let stored = state.twin_cloud_store.upsert(snapshot);
+    state.twin_cloud_sync_count.fetch_add(1, Ordering::Relaxed);
     let _ = persist_runtime_state(state);
     json_ok(&TwinCloudSyncResponse {
         version: TWIN_CLOUD_API_VERSION.into(),
@@ -223,6 +275,7 @@ fn import_replay(
         return bad_request("replay JSON must include program or source path");
     };
     let stored = state.twin_cloud_store.upsert(snapshot);
+    state.twin_cloud_push_count.fetch_add(1, Ordering::Relaxed);
     let _ = persist_runtime_state(state);
     json_ok(&serde_json::json!({
         "ok": true,
@@ -244,7 +297,7 @@ fn load_program(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use spanda_security::ApiKeyStore;
+    use spanda_security::{ApiKeyRecord, ApiKeyStore, Role};
     use std::path::PathBuf;
 
     fn patrol_program() -> PathBuf {
@@ -252,11 +305,17 @@ mod tests {
             .join("../../examples/showcase/mission_twin/patrol.sd")
     }
 
-    fn operator_ctx(state: &ControlCenterState) -> RbacContext {
-        state
-            .api_keys
-            .authenticate(Some("twin-cloud-sync-test"))
-            .expect("auth ctx")
+    fn operator_store(token: &str) -> ApiKeyStore {
+        ApiKeyStore {
+            keys: vec![ApiKeyRecord {
+                key_id: "test".into(),
+                token: token.into(),
+                token_hash: None,
+                role: Role::Operator,
+                label: None,
+                tenant_id: "default".into(),
+            }],
+        }
     }
 
     #[test]
@@ -265,8 +324,7 @@ mod tests {
         assert!(program.exists());
         let mut state = ControlCenterState::new();
         state.program_path = Some(program);
-        std::env::set_var("SPANDA_API_KEY", "twin-cloud-sync-test");
-        state.api_keys = ApiKeyStore::from_env_and_file();
+        state.api_keys = operator_store("twin-cloud-sync-test");
         let ctx = state
             .api_keys
             .authenticate(Some("twin-cloud-sync-test"))
@@ -275,6 +333,7 @@ mod tests {
         assert_eq!(response.status, 200, "{}", response.body);
         let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
         assert_eq!(json["twin_id"], "patrol");
+        assert_eq!(state.twin_cloud_sync_count.load(Ordering::Relaxed), 1);
     }
 
     #[test]
@@ -284,5 +343,28 @@ mod tests {
         state.program_path = Some(program);
         let response = sync_twin(&mut state, "", None);
         assert_eq!(response.status, 401);
+    }
+
+    #[test]
+    fn twin_cloud_usage_reports_store_and_counters() {
+        let program = patrol_program();
+        let mut state = ControlCenterState::new();
+        state.program_path = Some(program);
+        state.api_keys = operator_store("twin-cloud-usage-test");
+        let ctx = state
+            .api_keys
+            .authenticate(Some("twin-cloud-usage-test"))
+            .expect("auth ctx");
+        let sync = sync_twin(&mut state, "", Some(&ctx));
+        assert_eq!(sync.status, 200, "{}", sync.body);
+        let history = get_twin_history(&state, "patrol");
+        assert_eq!(history.status, 200, "{}", history.body);
+        let usage = get_usage(&state);
+        assert_eq!(usage.status, 200, "{}", usage.body);
+        let json: serde_json::Value = serde_json::from_str(&usage.body).unwrap();
+        assert_eq!(json["twin_count"], 1);
+        assert!(json["snapshot_count"].as_u64().unwrap() >= 1);
+        assert_eq!(json["sync_count"], 1);
+        assert_eq!(json["history_count"], 1);
     }
 }

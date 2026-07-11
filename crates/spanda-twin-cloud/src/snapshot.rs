@@ -55,6 +55,23 @@ pub struct TwinCloudSyncResponse {
     pub snapshot: TwinCloudSnapshot,
 }
 
+/// Per-tenant Twin Cloud usage meters for billing and Control Center dashboards.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TwinCloudUsageResponse {
+    pub version: String,
+    pub tenant_id: String,
+    /// Distinct twins currently stored for the tenant.
+    pub twin_count: u64,
+    /// Total history snapshots stored for the tenant.
+    pub snapshot_count: u64,
+    /// In-process count of successful snapshot pushes (including import-replay).
+    pub push_count: u64,
+    /// In-process count of successful sync operations.
+    pub sync_count: u64,
+    /// In-process count of successful history reads.
+    pub history_count: u64,
+}
+
 /// Derive a stable twin id from a program label (basename without extension).
 pub fn default_twin_id(source_label: &str) -> String {
     let stem = std::path::Path::new(source_label)

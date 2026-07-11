@@ -1,6 +1,8 @@
+/** Twin Cloud registry panel with per-tenant usage meters. @module */
+
 import { useCallback, useEffect, useState } from "react";
 import type { RbacAction } from "./controlCenterRbac";
-import { CcBadge, CcEmptyState, CcMiniStats, CcPanelToolbar, CcSection } from "./controlCenterUi";
+import { CcEmptyState, CcMiniStats, CcPanelToolbar, CcSection } from "./controlCenterUi";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 
@@ -9,6 +11,15 @@ type TwinRow = {
   program?: string;
   readiness_score?: number;
   mission_ready?: boolean;
+  history_count?: number;
+};
+
+type TwinUsage = {
+  tenant_id?: string;
+  twin_count?: number;
+  snapshot_count?: number;
+  push_count?: number;
+  sync_count?: number;
   history_count?: number;
 };
 
@@ -21,6 +32,7 @@ type Props = {
 
 export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
   const [payload, setPayload] = useState<Record<string, unknown> | null>(null);
+  const [usage, setUsage] = useState<TwinUsage | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,15 +40,21 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`${baseUrl}/v1/twins`);
-      if (!res.ok) throw new Error(`twins ${res.status}`);
-      setPayload(await res.json());
+      const [twinsRes, usageRes] = await Promise.all([
+        fetch(`${baseUrl}/v1/twins`, { headers: authHeaders() }),
+        fetch(`${baseUrl}/v1/twins/usage`, { headers: authHeaders() }),
+      ]);
+      if (!twinsRes.ok) throw new Error(`twins ${twinsRes.status}`);
+      setPayload(await twinsRes.json());
+      if (usageRes.ok) {
+        setUsage((await usageRes.json()) as TwinUsage);
+      }
     } catch (err) {
       setError(String(err));
     } finally {
       setBusy(false);
     }
-  }, [baseUrl]);
+  }, [authHeaders, baseUrl]);
 
   useEffect(() => {
     void load();
@@ -79,43 +97,60 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
         </button>
       </CcPanelToolbar>
       {twins.length === 0 ? (
-          <CcEmptyState
-            title="No twins registered"
-            description="Push with spanda twin cloud push or sync a loaded program."
-          />
-        ) : (
-          <ControlCenterDataTable
-            rows={twins}
-            rowKey={(row) => String(row.twin_id ?? row.program)}
-            columns={[
-              { key: "id", header: "Twin ID", render: (row) => String(row.twin_id ?? "—") },
-              { key: "program", header: "Program", render: (row) => String(row.program ?? "—") },
-              {
-                key: "readiness",
-                header: "Readiness",
-                render: (row) => String(row.readiness_score ?? "—"),
-              },
-              {
-                key: "ready",
-                header: "Mission ready",
-                render: (row) => (row.mission_ready ? "yes" : "no"),
-              },
-              {
-                key: "history",
-                header: "History",
-                render: (row) => String(row.history_count ?? 0),
-              },
-            ]}
-          />
-        )}
-      {payload && (
+        <CcEmptyState
+          title="No twins registered"
+          description="Push with spanda twin cloud push or sync a loaded program."
+        />
+      ) : (
+        <ControlCenterDataTable
+          rows={twins}
+          rowKey={(row) => String(row.twin_id ?? row.program)}
+          columns={[
+            { key: "id", header: "Twin ID", render: (row) => String(row.twin_id ?? "—") },
+            { key: "program", header: "Program", render: (row) => String(row.program ?? "—") },
+            {
+              key: "readiness",
+              header: "Readiness",
+              render: (row) => String(row.readiness_score ?? "—"),
+            },
+            {
+              key: "ready",
+              header: "Mission ready",
+              render: (row) => (row.mission_ready ? "yes" : "no"),
+            },
+            {
+              key: "history",
+              header: "History",
+              render: (row) => String(row.history_count ?? 0),
+            },
+          ]}
+        />
+      )}
+      {(usage || payload) && (
         <CcSection title="Twin Cloud usage">
           <CcMiniStats
             items={[
-              { label: "Registered twins", value: twins.length },
               {
-                label: "Total history entries",
-                value: twins.reduce((sum, twin) => sum + (twin.history_count ?? 0), 0),
+                label: "Registered twins",
+                value: usage?.twin_count ?? twins.length,
+              },
+              {
+                label: "Stored snapshots",
+                value:
+                  usage?.snapshot_count ??
+                  twins.reduce((sum, twin) => sum + (twin.history_count ?? 0), 0),
+              },
+              {
+                label: "Push calls",
+                value: usage?.push_count ?? 0,
+              },
+              {
+                label: "Sync calls",
+                value: usage?.sync_count ?? 0,
+              },
+              {
+                label: "History reads",
+                value: usage?.history_count ?? 0,
               },
               {
                 label: "Mission-ready",
@@ -125,7 +160,8 @@ export function TwinsPanel({ baseUrl, authHeaders, hasToken, can }: Props) {
             ]}
           />
           <p className="cc-section-hint">
-            Billing dimensions: snapshot push, sync, and stored history count per tenant.
+            Tenant {usage?.tenant_id ?? "—"} · meters from{" "}
+            <code>GET /v1/twins/usage</code> (store counts + in-process API counters).
           </p>
         </CcSection>
       )}

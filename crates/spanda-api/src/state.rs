@@ -13,6 +13,7 @@ use spanda_security::{
     default_tenant_id, ApiKeyStore, AuthHandler, ManagedSecretVault, RateLimiter,
 };
 use std::path::{Path, PathBuf};
+use std::sync::atomic::AtomicU64;
 use std::sync::{Arc, Mutex};
 
 /// Application state backing REST handlers.
@@ -37,6 +38,12 @@ pub struct ControlCenterState {
     pub report_schedule_store: ReportScheduleStore,
     pub hri_session_store: HriSessionStore,
     pub twin_cloud_store: spanda_twin_cloud::TwinCloudStore,
+    /// In-process Twin Cloud push counter (resets on process restart).
+    pub twin_cloud_push_count: AtomicU64,
+    /// In-process Twin Cloud sync counter (resets on process restart).
+    pub twin_cloud_sync_count: AtomicU64,
+    /// In-process Twin Cloud history-read counter (resets on process restart).
+    pub twin_cloud_history_count: AtomicU64,
     pub entity_overlay: spanda_config::EntityMutationStore,
     pub admin_user_store: AdminUserStore,
     pub alert_channel_store: AlertChannelStore,
@@ -65,6 +72,9 @@ impl ControlCenterState {
             report_schedule_store: ReportScheduleStore::new(100),
             hri_session_store: HriSessionStore::new(),
             twin_cloud_store: spanda_twin_cloud::TwinCloudStore::new(),
+            twin_cloud_push_count: AtomicU64::new(0),
+            twin_cloud_sync_count: AtomicU64::new(0),
+            twin_cloud_history_count: AtomicU64::new(0),
             entity_overlay: spanda_config::load_entity_overlay(
                 &spanda_config::default_entity_overlay_path(),
             ),

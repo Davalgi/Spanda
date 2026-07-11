@@ -27,7 +27,7 @@ helm upgrade --install acme-twin-cloud deploy/twin-cloud-hosted/helm/twin-cloud 
 | Model | Isolation | Ops |
 |-------|-----------|-----|
 | **Stack per tenant** | Dedicated Deployment + PVC + `SPANDA_TENANT_ID` | Recommended for GA pilots |
-| **Shared Control Center** | Per API key `tenant_id`; store filters by tenant | Internal platform teams |
+| **Shared Control Center** | Per API key `tenant_id`; store filters by tenant; get/history enforce snapshot tenant match (403); push forces instance tenant | Internal platform teams |
 | **Regional cells** | One Helm release per region; DNS geo-routing | Multi-region GA |
 
 ## Product checklist (GA)
@@ -36,25 +36,29 @@ helm upgrade --install acme-twin-cloud deploy/twin-cloud-hosted/helm/twin-cloud 
 |------------|-------|-----------|
 | Snapshot push/pull/sync/history | Shipped (OSS) | Same API |
 | RBAC + tenant scoping | Shipped | Per-tenant key rotation |
+| Snapshot tenant isolation (get/history/push) | **Shipped** | Same |
 | Persistent volume / backup | K8s PVC + compose volume | Automated backup (S3-compatible) |
 | Ingress + TLS | Helm optional ingress | Required |
-| Billing meter | — | API calls / stored snapshots per tenant |
+| Billing meter (`GET /v1/twins/usage` + gRPC `GetTwinUsage`) | **Shipped** | Export to billing pipeline |
 | SLA / status page | — | 99.9% target, public status |
 | Multi-region | — | Active-passive or cell-per-region |
-| Control Center tenant switcher | — | Per-tenant API key / `tenant_id` in shell — [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) |
-| Twin Cloud usage dashboard | — | Snapshot meters, sync status in Control Center Administration — [ROADMAP.md § Pillar 6](../ROADMAP.md#pillar-6--operations-platform) |
+| Control Center tenant switcher | **Shipped** (profile stores API key + `tenant_id` label) | Per-tenant key rotation UX |
+| Twin Cloud usage dashboard | **Shipped** (Twins + Administration meters) | Snapshot meters, sync status in Control Center |
 
-## Billing integration (stub)
+## Billing integration
 
-Meter these dimensions per `tenant_id`:
+Meter these dimensions per `tenant_id` via `GET /v1/twins/usage` (and gRPC `GetTwinUsage`):
 
-- `POST /v1/twins/{id}/snapshots` (push)
-- `POST /v1/twins/sync`
-- `GET /v1/twins/{id}/history` (egress-heavy)
-- Stored snapshot count (PVC/object store size)
+| Field | Source |
+|-------|--------|
+| `twin_count` | Store-backed distinct twins for the instance tenant |
+| `snapshot_count` | Store-backed history ring size for the tenant |
+| `push_count` | In-process counter (`POST …/snapshots`, import-replay) |
+| `sync_count` | In-process counter (`POST /v1/twins/sync`) |
+| `history_count` | In-process counter (`GET …/history`) |
 
-Export via Control Center audit (`GET /v1/audit/mutations`) or OTLP metrics to your billing
-pipeline.
+Also export via Control Center audit (`GET /v1/audit/mutations`) or OTLP metrics to your billing
+pipeline. Process counters reset on Control Center restart; store counts survive persistence.
 
 ## SLA operations
 

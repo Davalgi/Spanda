@@ -88,6 +88,58 @@ impl TwinCloudStore {
             .collect()
     }
 
+    /// Count distinct twins for an optional tenant filter.
+    pub fn twin_count(&self, tenant_id: Option<&str>) -> u64 {
+        // Count distinct twins for an optional tenant filter.
+        //
+        // Parameters:
+        // - `tenant_id` — when `Some`, only twins for that tenant are counted
+        //
+        // Returns:
+        // Number of latest snapshots in scope.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let n = store.twin_count(Some("acme"));
+
+        // Count latest snapshots that match the tenant scope.
+        self.latest
+            .values()
+            .filter(|snapshot| tenant_id.is_none_or(|tenant| snapshot.tenant_id.as_str() == tenant))
+            .count() as u64
+    }
+
+    /// Count stored history snapshots for an optional tenant filter.
+    pub fn snapshot_count(&self, tenant_id: Option<&str>) -> u64 {
+        // Count stored history snapshots for an optional tenant filter.
+        //
+        // Parameters:
+        // - `tenant_id` — when `Some`, only history for that tenant's twins is summed
+        //
+        // Returns:
+        // Total history ring entries in scope.
+        //
+        // Options:
+        // None.
+        //
+        // Example:
+        // let n = store.snapshot_count(Some("acme"));
+
+        // Sum history ring lengths for twins owned by the tenant.
+        self.latest
+            .values()
+            .filter(|snapshot| tenant_id.is_none_or(|tenant| snapshot.tenant_id.as_str() == tenant))
+            .map(|snapshot| {
+                self.history
+                    .get(&snapshot.twin_id)
+                    .map(|entries| entries.len())
+                    .unwrap_or(0)
+            })
+            .sum::<usize>() as u64
+    }
+
     pub fn list_response(&self, tenant_id: Option<&str>) -> crate::snapshot::TwinCloudListResponse {
         crate::snapshot::TwinCloudListResponse {
             version: TWIN_CLOUD_API_VERSION.into(),

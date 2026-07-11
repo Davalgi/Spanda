@@ -48,14 +48,15 @@ spanda twin cloud import-replay replay.json --program patrol.sd
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/v1/twins` | optional | List twin summaries for tenant |
-| `GET` | `/v1/twins/{id}` | optional | Latest snapshot |
-| `GET` | `/v1/twins/{id}/history` | optional | Snapshot history ring |
-| `POST` | `/v1/twins/{id}/snapshots` | Bearer (Operate) | Push snapshot JSON |
+| `GET` | `/v1/twins/usage` | optional | Per-tenant usage meters (store + API counters) |
+| `GET` | `/v1/twins/{id}` | optional | Latest snapshot (403 on tenant mismatch) |
+| `GET` | `/v1/twins/{id}/history` | optional | Snapshot history ring (403 on tenant mismatch) |
+| `POST` | `/v1/twins/{id}/snapshots` | Bearer (Operate) | Push snapshot JSON (forces instance `tenant_id`) |
 | `POST` | `/v1/twins/sync` | Bearer (Operate) | Evaluate + store twin for loaded program |
 | `POST` | `/v1/twins/import-replay` | Bearer (Operate) | Import legacy replay JSON |
 
-gRPC parity: `ListTwins`, `GetTwin`, `GetTwinHistory`, `SyncTwin`, `PushTwinSnapshot`,
-`ImportTwinReplay` (proto **1.0.10**).
+gRPC parity: `ListTwins`, `GetTwinUsage`, `GetTwin`, `GetTwinHistory`, `SyncTwin`, `PushTwinSnapshot`,
+`ImportTwinReplay` (proto **1.0.17**).
 
 ## Crate
 
@@ -70,13 +71,14 @@ gRPC parity: `ListTwins`, `GetTwin`, `GetTwinHistory`, `SyncTwin`, `PushTwinSnap
 Rust (`spanda-sdk`), Python (`spanda_sdk`), and TypeScript (`@davalgi/spanda-sdk`) expose:
 
 - `list_twins` / `listTwins`
+- `get_twin_usage` / `getTwinUsage`
 - `get_twin` / `getTwin`
 - `get_twin_history` / `getTwinHistory`
 - `sync_twin` / `syncTwin` (auth required)
 - `push_twin_snapshot` / `pushTwinSnapshot` (auth required)
 - `import_twin_replay` / `importTwinReplay` (auth required)
 
-Rust gRPC client (`GrpcClient`, `grpc` feature) mirrors all six RPCs.
+Rust gRPC client (`GrpcClient`, `grpc` feature) mirrors all seven RPCs.
 
 ## Tests
 

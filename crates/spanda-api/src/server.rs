@@ -102,6 +102,7 @@ pub fn run_control_center_server(options: &ControlCenterOptions) -> Result<(), S
     eprintln!("  POST /v1/observability/otlp/export-metrics  push metrics to collector");
     eprintln!("  POST /v1/observability/otlp/export  push traces to Jaeger");
     eprintln!("  GET  /v1/twins              mission twin snapshot registry");
+    eprintln!("  GET  /v1/twins/usage        per-tenant twin usage meters");
     eprintln!("  POST /v1/twins/sync         sync twin from loaded program");
     if let Some(grpc_bind) = &options.grpc_bind {
         crate::grpc::spawn_grpc_server(grpc_bind.clone(), Arc::clone(&state));

@@ -37,6 +37,15 @@ type TwinSummary = {
   history_count?: number;
 };
 
+type TwinUsage = {
+  tenant_id?: string;
+  twin_count?: number;
+  snapshot_count?: number;
+  push_count?: number;
+  sync_count?: number;
+  history_count?: number;
+};
+
 type Props = {
   baseUrl: string;
   authHeaders: () => HeadersInit;
@@ -62,6 +71,7 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
   const [schedules, setSchedules] = useState<ScheduleRow[]>([]);
   const [integrations, setIntegrations] = useState<Record<string, unknown> | null>(null);
   const [twins, setTwins] = useState<TwinSummary[]>([]);
+  const [twinUsage, setTwinUsage] = useState<TwinUsage | null>(null);
   const [alertChannelsJson, setAlertChannelsJson] = useState("[]");
   const [persistPath, setPersistPath] = useState("");
   const [usersPath, setUsersPath] = useState("");
@@ -87,8 +97,16 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
     setError(null);
     try {
       const headers = authHeaders();
-      const [keysRes, usersRes, secretsRes, schedulesRes, integrationsRes, channelsRes, twinsRes] =
-        await Promise.all([
+      const [
+        keysRes,
+        usersRes,
+        secretsRes,
+        schedulesRes,
+        integrationsRes,
+        channelsRes,
+        twinsRes,
+        twinUsageRes,
+      ] = await Promise.all([
           fetch(`${baseUrl}/v1/admin/api-keys`, { headers }),
           fetch(`${baseUrl}/v1/admin/users`, { headers }),
           can("Deploy") ? fetch(`${baseUrl}/v1/secrets`, { headers }) : Promise.resolve(null),
@@ -98,6 +116,7 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
             : Promise.resolve(null),
           fetch(`${baseUrl}/v1/admin/alert-channels`, { headers }),
           fetch(`${baseUrl}/v1/twins`, { headers }),
+          fetch(`${baseUrl}/v1/twins/usage`, { headers }),
         ]);
       if (keysRes.ok) {
         const body = await keysRes.json();
@@ -125,6 +144,9 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
       if (twinsRes.ok) {
         const body = await twinsRes.json();
         setTwins(body.twins ?? []);
+      }
+      if (twinUsageRes.ok) {
+        setTwinUsage((await twinUsageRes.json()) as TwinUsage);
       }
     } catch (e) {
       setError(String(e));
@@ -530,6 +552,13 @@ export function AdministrationPanel({ baseUrl, authHeaders, can, hasToken }: Pro
       <p className="demo-hint">
         Mission twin snapshots from edge push or sync. Mutations require Operate permission.
       </p>
+      {twinUsage && (
+        <p className="demo-hint">
+          Tenant <code>{twinUsage.tenant_id ?? "—"}</code> · twins {twinUsage.twin_count ?? 0} ·
+          snapshots {twinUsage.snapshot_count ?? 0} · pushes {twinUsage.push_count ?? 0} · syncs{" "}
+          {twinUsage.sync_count ?? 0} · history reads {twinUsage.history_count ?? 0}
+        </p>
+      )}
       <div className="digital-thread-filters">
         <button type="button" onClick={() => void load()} disabled={busy}>
           Refresh twins
