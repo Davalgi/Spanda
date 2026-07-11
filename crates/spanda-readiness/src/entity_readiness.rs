@@ -71,6 +71,11 @@ pub fn evaluate_entity_readiness(
 
     snapshot_readiness_issues(entity, &mut issues);
 
+    // Fold sensory-fusion conflicts into partial readiness scoring.
+    if apply_fusion_conflict_readiness(entity, &mut issues) {
+        sources.push("sensory_fusion".into());
+    }
+
     let children_checked = match &entity.entity_type {
         EntityKind::Robot | EntityKind::Drone | EntityKind::Vehicle => {
             sources.push("device_pool".into());
@@ -134,10 +139,12 @@ pub fn evaluate_entity_readiness(
         .any(|i| i.severity == "high" || i.severity == "critical")
         && entity.readiness_status != EntityReadinessStatus::NotReady;
     let score = readiness_score(&issues, entity);
+    // Downgrade Ready → Partial when fusion conflicts contributed medium findings.
+    let readiness_status = effective_readiness_status(entity, &issues);
     let report = EntityReadinessReport {
         entity_id: entity.id.clone(),
         entity_type: entity.kind().to_string(),
-        readiness_status: entity.readiness_status.as_str().to_string(),
+        readiness_status,
         mission_ready,
         score: Some(score),
         issues,
@@ -196,6 +203,79 @@ fn snapshot_readiness_issues(entity: &EntityRecord, issues: &mut Vec<EntityReadi
     } else if entity.readiness_status == EntityReadinessStatus::Partial {
         push_issue(issues, "readiness", "medium", "Entity readiness is partial");
     }
+}
+
+/// Apply fusion conflict findings from the entity autonomy confidence snapshot.
+fn apply_fusion_conflict_readiness(
+    entity: &EntityRecord,
+    issues: &mut Vec<EntityReadinessFinding>,
+) -> bool {
+    // Lower readiness when sensory fusion reports unresolved source conflicts.
+    //
+    // Parameters:
+    // - `entity` — entity whose autonomy confidence may list conflicts
+    // - `issues` — readiness findings accumulator
+    //
+    // Returns:
+    // `true` when at least one fusion conflict finding was added.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let mut issues = vec![];
+    // assert!(apply_fusion_conflict_readiness(&entity, &mut issues) || !has_conflicts);
+
+    let Some(profile) = entity.autonomy.as_ref() else {
+        return false;
+    };
+    let Some(confidence) = profile.confidence.as_ref() else {
+        return false;
+    };
+    if confidence.conflicts.is_empty() {
+        return false;
+    }
+
+    // Emit one medium finding per conflict so partial scoring subtracts per conflict.
+    for conflict in &confidence.conflicts {
+        push_issue(
+            issues,
+            "fusion",
+            "medium",
+            format!("Sensory fusion conflict: {conflict}"),
+        );
+    }
+    true
+}
+
+/// Resolve reported readiness status after fusion and other findings.
+fn effective_readiness_status(
+    entity: &EntityRecord,
+    issues: &[EntityReadinessFinding],
+) -> String {
+    // Prefer NotReady when already set; otherwise Partial when fusion conflicts exist.
+    //
+    // Parameters:
+    // - `entity` — source readiness snapshot
+    // - `issues` — accumulated findings (may include fusion)
+    //
+    // Returns:
+    // Status string for the readiness report.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let status = effective_readiness_status(&entity, &issues);
+
+    if entity.readiness_status == EntityReadinessStatus::NotReady {
+        return entity.readiness_status.as_str().to_string();
+    }
+    let has_fusion = issues.iter().any(|i| i.factor == "fusion");
+    if has_fusion && entity.readiness_status == EntityReadinessStatus::Ready {
+        return EntityReadinessStatus::Partial.as_str().to_string();
+    }
+    entity.readiness_status.as_str().to_string()
 }
 
 fn evaluate_robot_readiness(
@@ -446,7 +526,14 @@ fn rollup_child_readiness(
 }
 
 fn readiness_score(issues: &[EntityReadinessFinding], entity: &EntityRecord) -> u32 {
-    let mut score: u32 = match entity.readiness_status {
+    // Start from Partial when fusion conflicts forced a readiness downgrade.
+    let has_fusion = issues.iter().any(|i| i.factor == "fusion");
+    let base_status = if has_fusion && entity.readiness_status == EntityReadinessStatus::Ready {
+        EntityReadinessStatus::Partial
+    } else {
+        entity.readiness_status
+    };
+    let mut score: u32 = match base_status {
         EntityReadinessStatus::Ready => 100,
         EntityReadinessStatus::Partial => 70,
         EntityReadinessStatus::NotReady => 30,
@@ -544,5 +631,32 @@ mod tests {
                 .expect("rover-001");
         assert_eq!(report.entity_id, "rover-001");
         assert!(report.score.is_some());
+    }
+
+    #[test]
+    fn fusion_conflicts_lower_readiness_to_partial() {
+        let config = warehouse_config();
+        let mut registry = build_entity_registry(&config);
+        let entity = registry.entities.get_mut("rover-001").expect("rover-001");
+        entity.readiness_status = EntityReadinessStatus::Ready;
+        entity.autonomy = Some(spanda_config::EntityAutonomyProfile {
+            confidence: Some(spanda_config::EntityConfidenceSnapshot {
+                score: 0.4,
+                conflicts: vec!["health_status vs readiness_status".into()],
+                sources: vec!["health_status".into(), "readiness_status".into()],
+            }),
+            ..Default::default()
+        });
+        let mut readiness_options = EntityReadinessOptions {
+            now_ms: 0.0,
+            ..Default::default()
+        };
+        let report =
+            evaluate_entity_readiness("rover-001", &registry, &config, &mut readiness_options)
+                .expect("rover-001");
+        assert_eq!(report.readiness_status, "partial");
+        assert!(report.issues.iter().any(|i| i.factor == "fusion"));
+        assert!(report.sources.iter().any(|s| s == "sensory_fusion"));
+        assert!(report.score.unwrap_or(100) < 100);
     }
 }

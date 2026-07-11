@@ -34,6 +34,7 @@ mod governance_cli;
 mod graph_cli;
 mod integrity_cli;
 mod mesh_cli;
+mod maintenance_cli;
 mod network_cli;
 mod operational_governance_cli;
 mod package;
@@ -2008,6 +2009,12 @@ fn main() {
 
     if command == "alerts" {
         autonomy_cli::alerts_dispatch(&args[2..]);
+        let _ = io::stdout().flush();
+        return;
+    }
+
+    if command == "maintenance" {
+        maintenance_cli::maintenance_dispatch(&args[2..]);
         let _ = io::stdout().flush();
         return;
     }

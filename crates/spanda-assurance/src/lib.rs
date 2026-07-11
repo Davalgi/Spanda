@@ -58,7 +58,8 @@ pub use diagnosis::{
 pub use evidence::{build_assurance_report, build_assurance_report_with_config, AssuranceReport};
 pub use knowledge::{capability_ontology, extract_knowledge_base, validate_knowledge_models};
 pub use mission::{
-    verify_mission_assurance, verify_mission_assurance_with_config, MissionAssuranceReport,
+    verify_mission_assurance, verify_mission_assurance_with_config,
+    verify_mission_assurance_with_recovery, MissionAssuranceReport,
 };
 pub use mitigation::{extract_mitigations, MitigationReport};
 pub use modes::{extract_operating_modes, validate_modes};

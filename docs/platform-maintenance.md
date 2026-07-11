@@ -2,7 +2,7 @@
 
 **Functional domain:** [Maintenance &
 Optimization](./functional-domains.md#maintenance--optimization)
-**Status: Beta** — OTA and fleet operations **Stable**; maintenance window types **Beta**.
+**Status: Stable** — OTA, fleet operations, and `spanda maintenance window` list/set.
 
 > Canonical architecture:
 > [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)
@@ -17,11 +17,11 @@ low-risk windows without compromising mission safety.
 | Responsibility | Platform service | Tier |
 |----------------|------------------|------|
 | OTA rollouts | Fleet OTA, `spanda deploy rollout` | **Stable** |
-| Maintenance windows | `spanda-autonomy::maintenance` | **Beta** |
-| Calibration | Device pool + verify | **Beta** |
+| Maintenance windows | `spanda maintenance window`, `/v1/autonomy/maintenance/windows` | **Stable** |
+| Calibration | Device pool + verify | **Stable** |
 | Log rotation / cleanup | Telemetry store | **Stable** |
 | Backup | Config snapshots | **Stable** |
-| Sleep / low-activity mode | `SleepMode`, `LowActivityMode` | **Beta** |
+| Sleep / low-activity mode | `SleepMode`, `LowActivityMode` | **Stable** |
 
 ## Types (`spanda-autonomy`)
 
@@ -53,20 +53,25 @@ spanda deploy rollout
 spanda deploy rollback
 ```
 
-Maintenance window CLI — **Planned** (`spanda maintenance window`).
+Maintenance window CLI:
+
+```bash
+spanda maintenance window list
+spanda maintenance window set --id nightly --start 2026-07-12T02:00:00Z --end 2026-07-12T04:00:00Z --activity ota
+```
 
 ## API
 
 | Surface | Endpoint |
 |---------|----------|
 | OTA | `/v1/ota/*` |
+| Maintenance windows | `GET/POST /v1/autonomy/maintenance/windows` (POST requires Operate) |
 | Homeostasis trigger | `GET /v1/autonomy/homeostasis` |
 | Governance windows | `GET /v1/governance` |
 
 ## Control Center
 
-OTA tab (**Stable**). Maintenance scheduling panel — **Planned**; homeostasis drift may recommend
-maintenance in Cognitive & Resilience tab.
+OTA tab (**Stable**). Maintenance schedule panel on Cognitive & Resilience tab (**Stable**).
 
 ## Related
 

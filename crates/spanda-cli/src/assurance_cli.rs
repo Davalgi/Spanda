@@ -7,7 +7,7 @@ use spanda_assurance::{
     diagnose_program_with_config, evaluate_prognostics, evaluate_recovery_coverage_with_config,
     evaluate_state_assurance, format_anomaly, format_assurance, format_diagnosis,
     format_mission_assurance, format_prognostics, format_recovery_coverage, format_resilience,
-    format_state, scan_anomalies, verify_mission_assurance_with_config,
+    format_state, scan_anomalies,
 };
 use spanda_lexer::tokenize;
 use spanda_parser::parse;
@@ -265,25 +265,42 @@ pub fn cmd_mission_verify(args: &[String]) {
     if let Some(ref c) = cfg {
         ensure_config_valid(Some(c.as_ref()));
     }
-    // Description:
-    //     Cmd mission verify.
+    // Verify mission plans and surface adaptive recovery preference on abort/replan.
     //
-    // Inputs:
-    //     args: &[String]
-    //         Caller-supplied args.
+    // Parameters:
+    // - `args` — CLI args including program path and optional `--config`
     //
-    // Outputs:
-    //     None.
+    // Returns:
+    // Nothing; prints the report and exits non-zero when blocked.
+    //
+    // Options:
+    // Loads entity recovery confidence from the registry when config is present.
     //
     // Example:
-
-    //     let result = spanda_cli::assurance_cli::cmd_mission_verify(args);
+    // spanda mission verify mission.sd --config spanda.toml
 
     let format = parse_format(args);
     let file = file_arg(args);
     let source = read_file(&file);
     let program = parse_program(&source);
-    let report = verify_mission_assurance_with_config(&program, cfg.as_ref().map(|a| a.as_ref()));
+
+    // Pull preferred recovery strategy from the first entity with recovery confidence.
+    let recovery = cfg.as_ref().and_then(|c| {
+        let mut registry = spanda_config::build_entity_registry(c);
+        spanda_autonomy::apply_registry_autonomy_profiles(&mut registry);
+        registry.entities.values().find_map(|entity| {
+            entity
+                .autonomy
+                .as_ref()
+                .and_then(|a| a.recovery_confidence.clone())
+        })
+    });
+
+    let report = spanda_assurance::verify_mission_assurance_with_recovery(
+        &program,
+        cfg.as_ref().map(|a| a.as_ref()),
+        recovery.as_ref(),
+    );
     println!("{}", format_mission_assurance(&report, format));
     if !report.passed {
         process::exit(1);

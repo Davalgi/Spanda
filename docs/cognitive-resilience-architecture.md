@@ -158,15 +158,15 @@ Eleven functional responsibility domains organize platform capabilities. Full de
 |--------|------------------------|--------|
 | [Strategic Planning](./functional-domains.md#strategic-planning) | Mission planning, policy, governance, deployment | **Stable** (mission planner, governance) |
 | [Operational Coordination](./functional-domains.md#operational-coordination) | Fleet, scheduling, delegation, takeover | **Stable** |
-| [Reflex & Safety](./functional-domains.md#reflex--safety) | Emergency stop, kill switch, local safety | **Beta** |
-| [Homeostasis Engine](./platform-homeostasis.md) | Stable operating conditions | **Beta** |
-| [Platform Immunity](./platform-immunity.md) | Quarantine, isolation, re-admission | **Beta** |
-| [Sensory Fusion](./sensory-fusion.md) | Multi-source confidence | **Beta** (entity-derived rule-based fusion) |
-| [Attention Engine](./attention-engine.md) | Event prioritization, alert fatigue | **Beta** |
-| [Operational Memory](./operational-memory.md) | Mission state, replay, playbooks | **Beta** |
-| [Adaptive Learning](./adaptive-operations.md) | Rule-based outcome learning | **Experimental** |
-| [Damage Risk Assessment](./damage-risk.md) | Harm potential modeling | **Beta** |
-| [Maintenance & Optimization](./platform-maintenance.md) | OTA, calibration, maintenance windows | **Stable** (OTA) / **Beta** (windows) |
+| [Reflex & Safety](./functional-domains.md#reflex--safety) | Emergency stop, kill switch, local safety | **Stable** |
+| [Homeostasis Engine](./platform-homeostasis.md) | Stable operating conditions | **Stable** |
+| [Platform Immunity](./platform-immunity.md) | Quarantine, isolation, re-admission | **Stable** |
+| [Sensory Fusion](./sensory-fusion.md) | Multi-source confidence | **Stable** (live sensors env-gated) |
+| [Attention Engine](./attention-engine.md) | Event prioritization, alert fatigue | **Stable** |
+| [Operational Memory](./operational-memory.md) | Mission state, replay, playbooks | **Stable** |
+| [Adaptive Learning](./adaptive-operations.md) | Rule-based outcome learning | **Stable** |
+| [Damage Risk Assessment](./damage-risk.md) | Harm potential modeling | **Stable** |
+| [Maintenance & Optimization](./platform-maintenance.md) | OTA, calibration, maintenance windows | **Stable** |
 
 ---
 

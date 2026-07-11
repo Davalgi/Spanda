@@ -1,7 +1,8 @@
 # Operational Memory Model
 
 **Functional domain:** [Operational Memory](./functional-domains.md#operational-memory)  
-**Status: Beta**
+**Status: Stable** — category refs, persistent episodic store linked to replay index, Control Center
+browse-by-category.
 
 > Canonical architecture:
 > [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)

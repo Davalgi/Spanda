@@ -40,6 +40,9 @@ run_spanda alerts fatigue-report >/dev/null
 echo "== recovery confidence CLI =="
 run_spanda recovery confidence >/dev/null
 
+echo "== maintenance window CLI =="
+run_spanda maintenance window list >/dev/null
+
 echo "== entity autonomy profile (warehouse fixture) =="
 run_spanda entity list --config crates/spanda-config/tests/fixtures/warehouse/spanda.toml >/dev/null
 

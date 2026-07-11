@@ -314,7 +314,20 @@ pub fn fusion_summary(state: &ControlCenterState) -> HttpResponse {
 /// GET /v1/autonomy/memory — operational memory references across entities.
 pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
     use spanda_autonomy::memory::build_operational_memory_model;
+    // Index replay traces into the persistent episodic store for the first entity.
+    let root = state
+        .project_root()
+        .or_else(|| {
+            state
+                .program_path
+                .as_ref()
+                .and_then(|p| p.parent().map(|d| d.to_path_buf()))
+        })
+        .unwrap_or_else(|| std::path::PathBuf::from("."));
     let registry = state.entity_registry();
+    if let Some(entity_id) = registry.entities.keys().next() {
+        let _ = spanda_autonomy::index_replay_traces_for_entity(entity_id, &root);
+    }
     let entries: Vec<_> = registry
         .entities
         .values()
@@ -332,11 +345,108 @@ pub fn memory_summary(state: &ControlCenterState) -> HttpResponse {
             })
         })
         .collect();
+    let by_category = serde_json::json!({
+        "reflex": entries.iter().flat_map(|e| {
+            e.get("refs").and_then(|r| r.get("reflex")).and_then(|v| v.as_array()).cloned().unwrap_or_default()
+                .into_iter().map(|ref_id| serde_json::json!({"entity_id": e.get("entity_id"), "ref": ref_id}))
+        }).collect::<Vec<_>>(),
+        "working": entries.iter().flat_map(|e| {
+            e.get("refs").and_then(|r| r.get("working")).and_then(|v| v.as_array()).cloned().unwrap_or_default()
+                .into_iter().map(|ref_id| serde_json::json!({"entity_id": e.get("entity_id"), "ref": ref_id}))
+        }).collect::<Vec<_>>(),
+        "episodic": spanda_autonomy::list_episodic_entries(Some("episodic")).into_iter().map(|row| {
+            serde_json::json!({
+                "entity_id": row.entity_id,
+                "ref": row.replay_path.unwrap_or_else(|| row.trace_id.unwrap_or_default()),
+                "artifact_kind": row.artifact_kind,
+                "timestamp": row.timestamp,
+            })
+        }).collect::<Vec<_>>(),
+        "semantic": entries.iter().flat_map(|e| {
+            e.get("refs").and_then(|r| r.get("semantic")).and_then(|v| v.as_array()).cloned().unwrap_or_default()
+                .into_iter().map(|ref_id| serde_json::json!({"entity_id": e.get("entity_id"), "ref": ref_id}))
+        }).collect::<Vec<_>>(),
+        "procedural": entries.iter().flat_map(|e| {
+            e.get("refs").and_then(|r| r.get("procedural")).and_then(|v| v.as_array()).cloned().unwrap_or_default()
+                .into_iter().map(|ref_id| serde_json::json!({"entity_id": e.get("entity_id"), "ref": ref_id}))
+        }).collect::<Vec<_>>(),
+    });
     json_ok(&serde_json::json!({
         "version": API_VERSION,
         "entities_with_memory": entries.len(),
         "memory": entries,
+        "by_category": by_category,
+        "episodic_store": spanda_autonomy::list_episodic_entries(None),
     }))
+}
+
+/// GET /v1/autonomy/maintenance/windows — list scheduled maintenance windows.
+pub fn list_maintenance_windows(_state: &ControlCenterState) -> HttpResponse {
+    // Return the persistent maintenance window schedule.
+    //
+    // Parameters:
+    // - `_state` — Control Center state (unused; schedule is process-global)
+    //
+    // Returns:
+    // JSON list of maintenance windows.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // GET /v1/autonomy/maintenance/windows
+
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "windows": spanda_autonomy::list_maintenance_windows(),
+    }))
+}
+
+/// POST /v1/autonomy/maintenance/windows — set a maintenance window (Operate required).
+pub fn set_maintenance_window(
+    _state: &ControlCenterState,
+    body: &str,
+    ctx: Option<&spanda_security::RbacContext>,
+) -> HttpResponse {
+    // Upsert a maintenance window; requires Operate RBAC permission.
+    //
+    // Parameters:
+    // - `_state` — Control Center state
+    // - `body` — JSON MaintenanceWindow
+    // - `ctx` — authenticated RBAC context
+    //
+    // Returns:
+    // Saved window JSON, or 401 when Operate is missing.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // POST /v1/autonomy/maintenance/windows {"id":"nightly",...}
+
+    use crate::handlers::{ensure_rbac, unauthorized};
+    use spanda_security::RbacAction;
+
+    if ensure_rbac(ctx, RbacAction::Operate).is_err() {
+        return unauthorized();
+    }
+    let Ok(window) = serde_json::from_str::<spanda_autonomy::MaintenanceWindow>(body) else {
+        return HttpResponse {
+            status: 400,
+            body: serde_json::json!({ "ok": false, "error": "invalid maintenance window body" })
+                .to_string(),
+        };
+    };
+    let saved = spanda_autonomy::set_maintenance_window(window);
+    json_ok(&serde_json::json!({
+        "version": API_VERSION,
+        "window": saved,
+    }))
+}
+
+/// JSON string helper for gRPC parity.
+pub fn list_maintenance_windows_json(state: &ControlCenterState) -> String {
+    list_maintenance_windows(state).body
 }
 
 /// JSON string helper for gRPC parity.

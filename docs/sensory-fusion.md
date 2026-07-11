@@ -1,8 +1,9 @@
 # Sensory Fusion
 
 **Functional domain:** [Sensory Fusion](./functional-domains.md#sensory-fusion)  
-**Status: Beta** — rule-based entity-derived fusion (`health_status`, `readiness_status`,
-`trust_status`); live multi-sensor pipeline **Planned**.
+**Status: Stable** — rule-based entity-derived fusion (`health_status`, `readiness_status`,
+`trust_status`); conflicts feed readiness partial scoring; live multi-sensor pipeline
+**Stable-with-env-gate** via `SPANDA_LIVE_FUSION_SENSORS=1`.
 
 > Canonical architecture:
 > [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)

@@ -1,7 +1,8 @@
 # Adaptive Operations
 
 **Functional domain:** [Adaptive Learning](./functional-domains.md#adaptive-learning)  
-**Status: Experimental** — rule-based statistics and confidence updates; **no ML dependency**.
+**Status: Stable** — rule-based statistics and confidence updates; strategy preference on mission
+abort/replan; **no ML dependency**.
 
 > Canonical architecture:
 > [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md)

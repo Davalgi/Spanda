@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+/** Cognitive & Resilience Control Center panel — functional domain live views. @module */
+
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
@@ -6,6 +8,30 @@ type Props = {
   baseUrl: string;
   authHeaders: () => HeadersInit;
 };
+
+type MemoryCategoryName = "reflex" | "working" | "episodic" | "semantic" | "procedural";
+
+type CategoryRow = {
+  entity_id?: string;
+  ref?: string;
+  artifact_kind?: string;
+  timestamp?: string;
+};
+
+type MaintenanceWindow = {
+  id: string;
+  start: string;
+  end: string;
+  activities: string[];
+};
+
+const MEMORY_CATEGORIES: MemoryCategoryName[] = [
+  "reflex",
+  "working",
+  "episodic",
+  "semantic",
+  "procedural",
+];
 
 function asArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
@@ -24,12 +50,32 @@ async function fetchJson(
 }
 
 export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
+  // Render Cognitive & Resilience domain panels from live Control Center REST.
+  //
+  // Parameters:
+  // - `baseUrl` — Control Center API base URL
+  // - `authHeaders` — bearer / API key header factory
+  //
+  // Returns:
+  // React panel element.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // <ResilientAutonomyPanel baseUrl={url} authHeaders={headers} />
+
   const [reflexes, setReflexes] = useState<unknown[]>([]);
   const [traces, setTraces] = useState<unknown[]>([]);
   const [homeostasis, setHomeostasis] = useState<unknown[]>([]);
   const [quarantined, setQuarantined] = useState<unknown[]>([]);
   const [attention, setAttention] = useState<unknown[]>([]);
   const [memory, setMemory] = useState<unknown[]>([]);
+  const [memoryByCategory, setMemoryByCategory] = useState<
+    Partial<Record<MemoryCategoryName, CategoryRow[]>>
+  >({});
+  const [memoryCategory, setMemoryCategory] = useState<MemoryCategoryName>("episodic");
+  const [maintenanceWindows, setMaintenanceWindows] = useState<MaintenanceWindow[]>([]);
   const [recoveryConfidence, setRecoveryConfidence] = useState<number | null>(null);
   const [entityAutonomy, setEntityAutonomy] = useState<Record<string, unknown> | null>(null);
   const [strategicPlanning, setStrategicPlanning] = useState<Record<string, unknown> | null>(null);
@@ -49,6 +95,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         attentionPayload,
         memoryPayload,
         metricsPayload,
+        maintenancePayload,
       ] = await Promise.all([
         fetchJson(baseUrl, "/v1/autonomy/reflex", authHeaders),
         fetchJson(baseUrl, "/v1/autonomy/reflex/traces", authHeaders),
@@ -57,6 +104,9 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         fetchJson(baseUrl, "/v1/autonomy/attention", authHeaders),
         fetchJson(baseUrl, "/v1/autonomy/memory", authHeaders),
         fetchJson(baseUrl, "/v1/recovery/metrics", authHeaders),
+        fetchJson(baseUrl, "/v1/autonomy/maintenance/windows", authHeaders).catch(() => ({
+          windows: [],
+        })),
       ]);
       setReflexes(asArray((reflexPayload as { reflexes?: unknown }).reflexes));
       setTraces(asArray((tracePayload as { traces?: unknown }).traces));
@@ -65,6 +115,12 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
       const attentionWindow = (attentionPayload as { attention?: { items?: unknown } }).attention;
       setAttention(asArray(attentionWindow?.items));
       setMemory(asArray((memoryPayload as { memory?: unknown }).memory));
+      const byCategory = (memoryPayload as { by_category?: Partial<Record<MemoryCategoryName, CategoryRow[]>> })
+        .by_category;
+      setMemoryByCategory(byCategory ?? {});
+      setMaintenanceWindows(
+        asArray((maintenancePayload as { windows?: MaintenanceWindow[] }).windows),
+      );
       const metrics = metricsPayload as { recovery_confidence?: number };
       setRecoveryConfidence(
         typeof metrics.recovery_confidence === "number" ? metrics.recovery_confidence : null,
@@ -110,12 +166,16 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
   useRegisterTabRefresh("resilient-autonomy", refresh);
 
+  const categoryRows = useMemo(() => {
+    return memoryByCategory[memoryCategory] ?? [];
+  }, [memoryByCategory, memoryCategory]);
+
   if (loading && !reflexes.length && !error) {
     return (
       <div className="cc-panel">
         <CcEmptyState
           title="Loading Cognitive & Resilience…"
-          hint="Fetching functional domain endpoints under /v1/autonomy/*."
+          description="Fetching functional domain endpoints under /v1/autonomy/*."
         />
       </div>
     );
@@ -127,6 +187,9 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
   const autonomyProfile = entityAutonomy?.autonomy as Record<string, unknown> | undefined;
   const damageRisk = autonomyProfile?.damage_risk;
+  const preferredStrategy = (
+    autonomyProfile?.recovery_confidence as { preferred_strategy?: string } | undefined
+  )?.preferred_strategy;
 
   return (
     <div className="cc-panel">
@@ -197,9 +260,89 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
       <CcSection
         title="Operational Memory"
-        hint="Memory category refs across entities — working, episodic, semantic, procedural, reflex."
+        hint="Browse memory by category — episodic rows link to the replay/trace index."
       >
-        <pre className="cc-code-block">{JSON.stringify(memory.slice(0, 5), null, 2)}</pre>
+        <div className="cc-inline-actions" style={{ marginBottom: "0.75rem", flexWrap: "wrap", gap: "0.35rem" }}>
+          {MEMORY_CATEGORIES.map((category) => (
+            <button
+              key={category}
+              type="button"
+              className={memoryCategory === category ? "primary" : "secondary"}
+              aria-pressed={memoryCategory === category}
+              onClick={() => setMemoryCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+        {categoryRows.length === 0 ? (
+          <CcEmptyState
+            title={`No ${memoryCategory} refs`}
+            description={
+              memory.length === 0
+                ? "Load a program/config so entities receive memory refs."
+                : "Switch category or index replay traces under the project root."
+            }
+          />
+        ) : (
+          <div className="cc-table-wrap">
+            <table className="cc-data-table">
+              <thead>
+                <tr>
+                  <th>Entity</th>
+                  <th>Reference</th>
+                  {memoryCategory === "episodic" ? <th>Kind</th> : null}
+                  {memoryCategory === "episodic" ? <th>Timestamp</th> : null}
+                </tr>
+              </thead>
+              <tbody>
+                {categoryRows.slice(0, 40).map((row, index) => (
+                  <tr key={`${row.entity_id ?? "e"}-${row.ref ?? index}`}>
+                    <td>{row.entity_id ?? "—"}</td>
+                    <td>{typeof row.ref === "string" ? row.ref : JSON.stringify(row.ref)}</td>
+                    {memoryCategory === "episodic" ? <td>{row.artifact_kind ?? "—"}</td> : null}
+                    {memoryCategory === "episodic" ? <td>{row.timestamp ?? "—"}</td> : null}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </CcSection>
+
+      <CcSection
+        title="Maintenance Schedule"
+        hint="Maintenance windows from GET /v1/autonomy/maintenance/windows (set via CLI or POST with Operate)."
+      >
+        {maintenanceWindows.length === 0 ? (
+          <CcEmptyState
+            title="No maintenance windows"
+            description="Schedule with: spanda maintenance window set --id nightly --start … --end …"
+          />
+        ) : (
+          <div className="cc-table-wrap">
+            <table className="cc-data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Activities</th>
+                </tr>
+              </thead>
+              <tbody>
+                {maintenanceWindows.map((window) => (
+                  <tr key={window.id}>
+                    <td>{window.id}</td>
+                    <td>{window.start}</td>
+                    <td>{window.end}</td>
+                    <td>{(window.activities ?? []).join(", ") || "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </CcSection>
 
       <CcSection
@@ -211,12 +354,18 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
       <CcSection
         title="Recovery Confidence"
-        hint="Adaptive Learning domain — strategy confidence from recovery history."
+        hint="Adaptive Learning — strategy preference feeds mission abort/replan."
       >
+        <p className="cc-muted">
+          Platform score:{" "}
+          {recoveryConfidence != null ? `${(recoveryConfidence * 100).toFixed(0)}%` : "—"}
+          {preferredStrategy ? ` · Preferred strategy: ${preferredStrategy}` : ""}
+        </p>
         <pre className="cc-code-block">
           {JSON.stringify(
             {
               platform_score: recoveryConfidence,
+              preferred_strategy: preferredStrategy ?? null,
               entity_profile: entityAutonomy,
             },
             null,

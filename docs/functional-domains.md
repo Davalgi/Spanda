@@ -54,7 +54,7 @@ runtime protection, protective shutdown.
 
 **Entity touchpoints:** `Entity.reflexes`, kill-switch handlers in `.sd` programs.
 
-**Status:** **Beta** — see [reflex-architecture.md](./reflex-architecture.md).
+**Status:** **Stable** — see [reflex-architecture.md](./reflex-architecture.md).
 
 ---
 
@@ -68,7 +68,7 @@ action, drift detection, stability maintenance.
 
 **Entity touchpoints:** `Entity.health`, `Entity.homeostasis`, `Entity.readiness`.
 
-**Status:** **Beta** — see [platform-homeostasis.md](./platform-homeostasis.md).
+**Status:** **Stable** — see [platform-homeostasis.md](./platform-homeostasis.md).
 
 ---
 
@@ -82,7 +82,7 @@ re-admission.
 
 **Entity touchpoints:** `Entity.trust`, `Entity.immunity` (`immunity_status`).
 
-**Status:** **Beta** — see [platform-immunity.md](./platform-immunity.md).
+**Status:** **Stable** — see [platform-immunity.md](./platform-immunity.md).
 
 ---
 
@@ -95,7 +95,7 @@ signal quality, sensor reliability.
 
 **Entity touchpoints:** `Entity.confidence`.
 
-**Status:** **Beta** — see [sensory-fusion.md](./sensory-fusion.md).
+**Status:** **Stable** — see [sensory-fusion.md](./sensory-fusion.md).
 
 ---
 
@@ -108,7 +108,7 @@ alerts; avoid alert fatigue via priority, suppression, aggregation, focus.
 
 **Entity touchpoints:** `Entity.attention`.
 
-**Status:** **Beta** — see [attention-engine.md](./attention-engine.md).
+**Status:** **Stable** — see [attention-engine.md](./attention-engine.md).
 
 ---
 
@@ -129,7 +129,7 @@ graph, replay, recovery history, decision history, playbooks.
 
 **Entity touchpoints:** `Entity.operationalMemory` (`memory_refs`).
 
-**Status:** **Beta** — see [operational-memory.md](./operational-memory.md).
+**Status:** **Stable** — see [operational-memory.md](./operational-memory.md).
 
 ---
 
@@ -144,7 +144,7 @@ graph, replay, recovery history, decision history, playbooks.
 
 **Entity touchpoints:** `Entity.recoveryConfidence`.
 
-**Status:** **Experimental** — see [adaptive-operations.md](./adaptive-operations.md).
+**Status:** **Stable** — see [adaptive-operations.md](./adaptive-operations.md).
 
 ---
 
@@ -157,7 +157,7 @@ asset risk, mission risk.
 
 **Entity touchpoints:** `Entity.damageRisk` (`damage_risk`).
 
-**Status:** **Beta** — see [damage-risk.md](./damage-risk.md).
+**Status:** **Stable** — see [damage-risk.md](./damage-risk.md).
 
 ---
 
@@ -171,5 +171,5 @@ optimization, resource balancing.
 
 **Entity touchpoints:** `Entity.lifecycle_state`, firmware/software version fields.
 
-**Status:** OTA **Stable**; maintenance/sleep mode **Beta** — see
+**Status:** OTA and maintenance windows **Stable** — see
 [platform-maintenance.md](./platform-maintenance.md).

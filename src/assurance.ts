@@ -82,6 +82,8 @@ export type MissionAssuranceReport = {
   execution: { plan: string; current_step: string | null; status: string };
   verification: MissionVerificationReport;
   abort_reasons: Array<{ reason: string; severity: string }>;
+  replan_recommendation?: string | null;
+  preferred_recovery_strategy?: string | null;
   passed: boolean;
 };
 
@@ -391,6 +393,8 @@ export function verifyMissionAssuranceTs(
     },
     verification,
     abort_reasons: verification.issues.map((reason) => ({ reason, severity: "High" })),
+    replan_recommendation: null,
+    preferred_recovery_strategy: null,
     passed,
   };
 }

@@ -9,6 +9,7 @@ pub mod adaptive_recovery;
 pub mod attention;
 pub mod damage_risk;
 pub mod entity;
+pub mod episodic_store;
 pub mod format;
 pub mod fusion;
 pub mod habituation;
@@ -25,8 +26,9 @@ pub mod trace_buffer;
 pub mod types;
 
 pub use adaptive_recovery::{
-    compute_recovery_confidence, compute_strategy_preference, AdaptiveRecoveryPolicy,
-    RecoveryConfidence, RecoveryHistory, StrategyPreference, StrategySuccessRate,
+    compute_recovery_confidence, compute_strategy_preference, mission_abort_replan_from_confidence,
+    AdaptiveRecoveryPolicy, MissionAbortReplanAdvice, RecoveryConfidence, RecoveryHistory,
+    StrategyPreference, StrategySuccessRate,
 };
 pub use attention::{
     compute_attention_score, rank_events, AttentionPolicy, AttentionScore, AttentionWindow,
@@ -36,6 +38,11 @@ pub use damage_risk::{
     evaluate_damage_risk, DamageRisk, HarmPotential, ProtectiveAction, RiskSignal, SafetyPainIndex,
 };
 pub use entity::{attach_default_autonomy_profile, enrich_entity_autonomy, EntityAutonomyContext};
+pub use episodic_store::{
+    default_episodic_store_path, episodic_refs_for_entity, index_replay_traces_for_entity,
+    list_episodic_entries, load_episodic_store_from_disk, persist_episodic_store_to_disk,
+    record_episodic_entry, EpisodicEntry,
+};
 pub use fusion::{
     detect_signal_conflict, fuse_observations, ConfidencePolicy, ConfidenceScore, FusedObservation,
     SensorConfidence, SignalAgreement, SignalConflict,
@@ -55,8 +62,9 @@ pub use immunity::{
 };
 pub use live_sensors::{merge_live_sensor_readings, register_live_sensor_supplier};
 pub use maintenance::{
-    CalibrationWindow, LowActivityMode, MaintenanceWindow, ScheduledRecovery, SleepMode,
-    UpdateWindow,
+    default_maintenance_window_path, list_maintenance_windows, load_maintenance_windows_from_disk,
+    persist_maintenance_windows_to_disk, set_maintenance_window, CalibrationWindow, LowActivityMode,
+    MaintenanceWindow, ScheduledRecovery, SleepMode, UpdateWindow,
 };
 pub use memory::{
     build_operational_memory_model, categorize_memory, enrich_entity_memory_refs,

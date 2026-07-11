@@ -88,7 +88,14 @@ pub fn enrich_entity_memory_refs(
     };
     refs.procedural.push("recovery.playbooks".into());
     refs.procedural.push("decision.policies".into());
-    refs.episodic.push(format!("trace:{}", entity.id));
+
+    // Prefer persistent episodic store entries linked to the replay index.
+    let stored = crate::episodic_store::episodic_refs_for_entity(&entity.id);
+    if stored.is_empty() {
+        refs.episodic.push(format!("trace:{}", entity.id));
+    } else {
+        refs.episodic.extend(stored);
+    }
     if matches!(
         entity.entity_type,
         EntityKind::Mission | EntityKind::Incident

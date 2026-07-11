@@ -118,20 +118,26 @@ Spanda does **not** perform formal verification. See
 
 ## Cognitive & Resilience Architecture
 
-- **Beta / Experimental tiers** — see [feature-status.md](./feature-status.md),
+- **Stable** implementation tier — see [feature-status.md](./feature-status.md),
   [cognitive-resilience-maturity.md](./cognitive-resilience-maturity.md), and
-  [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md).
-- Sensory fusion is entity-derived and rule-based (**Beta**); optional live multi-sensor pipeline via
-  `SPANDA_LIVE_FUSION_SENSORS=1` merges automotive proxy reads (radar/lidar/ultrasonic) when a
-  supplier is registered at CLI startup.
-- Control Center **Cognitive & Resilience** tab uses live REST panels; gRPC parity ships for
-  `/v1/autonomy/*`.
+  [cognitive-resilience-architecture.md](./cognitive-resilience-architecture.md). Field soak for
+  production claims remains organizational ([organizational-gates.md](./organizational-gates.md)).
+- Sensory fusion is entity-derived and rule-based (**Stable**); fusion conflicts lower entity
+  readiness to **partial** scoring. Optional live multi-sensor pipeline via
+  `SPANDA_LIVE_FUSION_SENSORS=1` (**Stable-with-env-gate**) merges GPS/IMU/camera or automotive
+  proxy reads when a supplier is registered at CLI startup.
+- Control Center **Cognitive & Resilience** tab uses live REST panels with browse-by-category
+  memory and a maintenance schedule; gRPC parity ships for `/v1/autonomy/*`.
 - Homeostasis merges entity health with interpreter scheduler telemetry when a recent `run`/`sim`
   completed.
 - Reflex traces persist to `.spanda/autonomy-reflex-traces.json` (override with
-  `SPANDA_AUTONOMY_TRACE_FILE`).
-- Adaptive recovery learning is statistics-based (no ML).
-- Maintenance/sleep mode scheduling is declarative; full OTA window integration is partial.
+  `SPANDA_AUTONOMY_TRACE_FILE`). Episodic memory persists to
+  `.spanda/autonomy-episodic-memory.json` and indexes `.trace` replay files.
+- Adaptive recovery learning is statistics-based (no ML); preferred strategy feeds
+  `spanda mission verify` abort/replan. Accuracy thresholds:
+  min 3 attempts, escalate below 30%, Stable field target ≥70% over 30-day soak.
+- Maintenance windows: `spanda maintenance window list|set` and
+  `GET/POST /v1/autonomy/maintenance/windows` (POST requires **Operate**).
 - Habituation/sensitization applies to CLI-reported alert analysis, not all telemetry backends.
 
 ---
