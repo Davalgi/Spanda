@@ -272,6 +272,22 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/plugins/search",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/plugins/install",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/plugins/{name}/enable",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/plugins/{name}/disable",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/plugins/control-center",
     },
     ApiRoute {
@@ -544,6 +560,14 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     },
     ApiRoute {
         method: "GET",
+        path: "/v1/autonomy/maintenance/windows",
+    },
+    ApiRoute {
+        method: "POST",
+        path: "/v1/autonomy/maintenance/windows",
+    },
+    ApiRoute {
+        method: "GET",
         path: "/v1/entities/{id}/autonomy",
     },
     ApiRoute {
@@ -737,6 +761,10 @@ pub const REST_V1_ROUTES: &[ApiRoute] = &[
     ApiRoute {
         method: "GET",
         path: "/v1/twins",
+    },
+    ApiRoute {
+        method: "GET",
+        path: "/v1/twins/usage",
     },
     ApiRoute {
         method: "POST",

@@ -81,8 +81,23 @@ Control Center API:
 
 ```bash
 curl -s http://127.0.0.1:8787/v1/plugins
+curl -s 'http://127.0.0.1:8787/v1/plugins/search?q=readiness'
+curl -s -X POST http://127.0.0.1:8787/v1/plugins/install \
+  -H "Authorization: Bearer $SPANDA_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"path":"examples/plugins/control-center-panel"}'
+curl -s -X POST http://127.0.0.1:8787/v1/plugins/spanda-plugin-control-center-panel/enable \
+  -H "Authorization: Bearer $SPANDA_API_KEY"
 curl -s http://127.0.0.1:8787/v1/plugins/control-center
+curl -s http://127.0.0.1:8787/v1/plugins/control-center/spanda-plugin-control-center-panel/bundle
 ```
+
+`GET /v1/plugins` returns inspect-style entries including `control_center_panels` for the
+Marketplace UI. Install requires **Provision**; enable/disable require **Operate**.
+
+**Stable** — promotion gate: `./scripts/plugin_stable_promotion_gate.sh` ·
+[plugin-stable-promotion.md](plugin-stable-promotion.md). Remote curated marketplace growth remains
+**Next**.
 
 ## Examples
 

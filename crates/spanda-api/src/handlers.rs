@@ -341,7 +341,14 @@ pub fn handle_request(
         );
         return (response, correlation_id);
     }
-    if let Some(response) = crate::plugins::route_plugins(state, path, &request.method) {
+    if let Some(response) = crate::plugins::route_plugins(
+        state,
+        path,
+        &request.method,
+        query,
+        &request.body,
+        ctx.as_ref(),
+    ) {
         e3::record_trace(
             state,
             &correlation_id,
@@ -534,6 +541,12 @@ pub fn handle_request(
         ("/v1/autonomy/attention", "GET") => crate::autonomy_ops::attention_queue(state),
         ("/v1/autonomy/fusion", "GET") => crate::autonomy_ops::fusion_summary(state),
         ("/v1/autonomy/memory", "GET") => crate::autonomy_ops::memory_summary(state),
+        ("/v1/autonomy/maintenance/windows", "GET") => {
+            crate::autonomy_ops::list_maintenance_windows(state)
+        }
+        ("/v1/autonomy/maintenance/windows", "POST") => {
+            crate::autonomy_ops::set_maintenance_window(state, &request.body, ctx.as_ref())
+        }
         ("/v1/recovery/history", "GET") => crate::recovery_ops::recovery_history(state),
         ("/v1/recovery/plan", "POST") => crate::recovery_ops::recovery_plan(state, &request.body),
         ("/v1/recovery/simulate", "POST") => {

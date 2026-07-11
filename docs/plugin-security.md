@@ -7,13 +7,21 @@ tiers, signature verification, sandboxing, and audit logging.
 
 | Control | Behavior |
 |---------|----------|
-| **Signature verification** | Ed25519 over canonical plugin payload |
+| **Signature verification** | Ed25519 over canonical plugin payload — **checked server-side at install** (`validate_install_security`); bundle GET does not re-verify |
 | **Manifest validation** | Schema, plugin type, capability names |
 | **Capability review** | Dangerous capabilities require `--approve-dangerous` |
-| **Sandboxing** | WASM default; `[security].sandbox = true` |
+| **Sandboxing** | WASM default; `[security].sandbox = true`; Control Center UI panels load in a sandboxed iframe (`allow-scripts` only) via postMessage |
 | **Trust tier** | Registry tier gates install (`blocked` rejected) |
 | **Audit logging** | Install, enable, disable, hook dispatch logged |
 | **Version compatibility** | Spanda semver + API `v1` enforced at install |
+
+## Control Center UI panels
+
+TypeScript/JS panel bundles (`index.js`) are **not** injected into the parent Control Center
+document. The panel host (`ControlCenterPluginPanel`) fetches
+`GET /v1/plugins/control-center/{plugin}/bundle` and delivers the source to a child iframe over
+`postMessage`. Prefer **official** plugins with `signed = true` so install-time signature
+verification applies before any bundle is served.
 
 ## Blocked installs
 

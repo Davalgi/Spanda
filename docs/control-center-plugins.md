@@ -40,3 +40,20 @@ spanda plugin enable spanda-plugin-healthcare
 
 UI plugins use the same capability and security model as other plugins. See
 [plugin-security.md](plugin-security.md).
+
+## Control Center host
+
+Enabled `control-center-ui` plugins appear in Control Center navigation. Panel bundles load in a
+**sandboxed iframe** (`sandbox="allow-scripts"`) with a postMessage bridge — see
+[plugin-stable-promotion.md](plugin-stable-promotion.md).
+
+Marketplace tab actions (search / install / enable / disable) call REST:
+
+| Method | Path | RBAC |
+|--------|------|------|
+| GET | `/v1/plugins` | read |
+| GET | `/v1/plugins/search?q=` | read |
+| POST | `/v1/plugins/install` | Provision |
+| POST | `/v1/plugins/{name}/enable` | Operate |
+| POST | `/v1/plugins/{name}/disable` | Operate |
+| GET | `/v1/plugins/control-center/{plugin}/bundle` | read |

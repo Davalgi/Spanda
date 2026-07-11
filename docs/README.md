@@ -68,6 +68,9 @@ guides, walkthroughs, and example libraries.
 | [tier-3-priority-plan.md](./tier-3-priority-plan.md) | **Priority plan: beta → experimental hardening → v1.0 → production Tier 3** |
 | [provider-interfaces.md](./provider-interfaces.md) | **Provider trait contracts for packages** |
 | [official-packages.md](./official-packages.md) | **Official package catalog** |
+| [plugins.md](./plugins.md) | **Plugin system** (CLI, registry, Control Center) |
+| [plugin-stable-promotion.md](./plugin-stable-promotion.md) | **Plugin system Experimental → Stable promotion** |
+| [plugin-security.md](./plugin-security.md) | **Plugin trust tiers, signatures, sandboxing** |
 | [how-packages-work.md](./how-packages-work.md) | **Package loading pipeline, provenance, and CLI workflow** |
 | [configuration.md](./configuration.md) | **Cascading TOML configuration and ResolvedSystemConfig** |
 | [entity-model.md](./entity-model.md) | **Unified Entity Model — foundational platform abstraction** |
