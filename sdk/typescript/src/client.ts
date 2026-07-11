@@ -107,6 +107,11 @@ export class SpandaClient {
     return this.request("POST", "/v1/programs/assure", this.programBody(fileOrProject));
   }
 
+  async programSource(file?: string): Promise<JsonValue> {
+    const qs = file ? `?file=${encodeURIComponent(file)}` : "";
+    return this.request("GET", `/v1/programs/source${qs}`);
+  }
+
   async diagnose(traceOrFile: string): Promise<JsonValue> {
     return this.request("POST", "/v1/programs/diagnose", this.programBody(traceOrFile));
   }
@@ -679,6 +684,10 @@ export class SpandaClient {
 
   async listTwins(): Promise<JsonValue> {
     return this.request("GET", "/v1/twins");
+  }
+
+  async getTwinUsage(): Promise<JsonValue> {
+    return this.request("GET", "/v1/twins/usage");
   }
 
   async getTwin(twinId: string): Promise<JsonValue> {

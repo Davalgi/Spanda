@@ -655,6 +655,10 @@ pub fn rpc_gateway(
             serde_json::from_str(&crate::sdk_ops::program_replay_json(state, body_json))
                 .unwrap_or_default()
         }
+        "spanda.v1.ControlCenter/GetProgramSource" => {
+            serde_json::from_str(&crate::sdk_ops::program_source_json(state, query))
+                .unwrap_or_default()
+        }
         "spanda.v1.ControlCenter/GetTrustProgram" => {
             serde_json::from_str(&crate::sdk_ops::trust_program_json(state, query))
                 .unwrap_or_default()

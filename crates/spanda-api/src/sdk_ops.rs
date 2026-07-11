@@ -1058,6 +1058,11 @@ pub fn program_replay_json(state: &ControlCenterState, body: &str) -> String {
     program_replay(state, body).body
 }
 
+/// JSON body for gRPC `GetProgramSource`.
+pub fn program_source_json(state: &ControlCenterState, query: &str) -> String {
+    program_source(state, query).body
+}
+
 /// JSON body for gRPC `GetTrustProgram`.
 pub fn trust_program_json(state: &ControlCenterState, query: &str) -> String {
     trust_program(state, query).body

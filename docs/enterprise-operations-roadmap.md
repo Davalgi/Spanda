@@ -284,8 +284,8 @@ spanda-api/
 |--------|------|------|----------------|
 | Readiness | `GET /v1/readiness/{robot}` | `EvaluateReadiness` | `spanda readiness` |
 | Health | `GET /v1/health/{robot}` | `GetHealth` | health_check runtime |
-| Assurance | `POST /v1/assure` | `RunAssurance` | `spanda assure` |
-| Diagnosis | `POST /v1/diagnose` | `Diagnose` | `spanda diagnose` |
+| Assurance | `POST /v1/programs/assure` | `EvaluateProgramAssure` | `spanda assure` |
+| Diagnosis | `POST /v1/programs/diagnose` | `EvaluateProgramDiagnose` | `spanda diagnose` |
 | Recovery | `POST /v1/recovery/execute` | `ExecuteRecovery` | `spanda recover` |
 | Fleet | `GET /v1/fleet/agents` | `ListAgents` | `spanda fleet agent list` |
 | Devices | `GET /v1/devices` | `ListDevices` | `spanda device discover` |
@@ -757,12 +757,14 @@ capabilities.
 
 ### 6.20 Digital Thread
 
-End-to-end traceability chain (v1 query shipped; full lifecycle graph UI planned):
+End-to-end traceability chain (v1 query + lifecycle edges shipped):
 
 Requirement → Mission → Capability → Hardware → Device → Provider → Package → Simulation →
 Verification → Deployment → Runtime → Recovery → Evidence → Audit → Retirement
 
 Builds on `spanda-capability` traceability matrices + `spanda-audit` + mission contracts.
+`GET /v1/digital-thread/query` returns `lifecycle_edges` and optional `phase_path` filtering;
+Control Center Digital Thread tab renders the interactive lifecycle graph.
 
 ---
 

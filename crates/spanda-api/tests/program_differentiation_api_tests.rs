@@ -79,6 +79,26 @@ fn program_source_returns_loaded_program() {
 }
 
 #[test]
+fn program_assure_and_diagnose_return_reports() {
+    let mut state = differentiation_state();
+    let assure = handle_post(&mut state, "/v1/programs/assure", "{}");
+    assert_eq!(assure.status, 200, "{}", assure.body);
+    let assure_body: serde_json::Value = serde_json::from_str(&assure.body).unwrap();
+    assert!(assure_body.get("passed").is_some() || assure_body.get("report").is_some());
+
+    let diagnose = handle_post(&mut state, "/v1/programs/diagnose", "{}");
+    assert_eq!(diagnose.status, 200, "{}", diagnose.body);
+    let diagnose_body: serde_json::Value = serde_json::from_str(&diagnose.body).unwrap();
+    assert!(
+        diagnose_body.get("passed").is_some()
+            || diagnose_body.get("report").is_some()
+            || diagnose_body.get("diagnoses").is_some()
+            || diagnose_body.get("findings").is_some()
+            || diagnose_body.as_object().map(|o| !o.is_empty()).unwrap_or(false)
+    );
+}
+
+#[test]
 fn program_audit_decisions_from_trace() {
     let trail = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/showcase/differentiation/decision_trail");

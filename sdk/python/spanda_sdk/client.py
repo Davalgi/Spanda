@@ -96,6 +96,14 @@ class SpandaClient:
             "POST", "/v1/programs/assure", self._program_body(file_or_project)
         )
 
+    def program_source(self, file: Optional[str] = None) -> Any:
+        path = "/v1/programs/source"
+        if file:
+            from urllib.parse import quote
+
+            path = f"{path}?file={quote(file, safe='')}"
+        return self._request("GET", path)
+
     def diagnose(self, trace_or_file: str) -> Any:
         return self._request(
             "POST", "/v1/programs/diagnose", self._program_body(trace_or_file)
@@ -558,6 +566,9 @@ class SpandaClient:
 
     def list_twins(self) -> Any:
         return self._request("GET", "/v1/twins")
+
+    def get_twin_usage(self) -> Any:
+        return self._request("GET", "/v1/twins/usage")
 
     def get_twin(self, twin_id: str) -> Any:
         return self._request("GET", f"/v1/twins/{twin_id}")

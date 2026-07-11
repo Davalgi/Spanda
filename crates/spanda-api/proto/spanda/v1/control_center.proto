@@ -1,5 +1,5 @@
 syntax = "proto3";
-// Spanda Control Center gRPC API — proto semver 1.0.15 (package spanda.v1).
+// Spanda Control Center gRPC API — proto semver 1.0.17 (package spanda.v1).
 package spanda.v1;
 
 message Empty {}
@@ -151,6 +151,7 @@ service ControlCenter {
   rpc VerifyProgramMission(JsonBodyRequest) returns (JsonResponse);
   rpc RunProgramSimulation(JsonBodyRequest) returns (JsonResponse);
   rpc ReplayProgram(JsonBodyRequest) returns (JsonResponse);
+  rpc GetProgramSource(QueryRequest) returns (JsonResponse);
   rpc GetTrustProgram(QueryRequest) returns (JsonResponse);
   rpc ListEntities(Empty) returns (JsonResponse);
   rpc GetEntity(EntityIdRequest) returns (JsonResponse);
@@ -240,6 +241,7 @@ service ControlCenter {
   rpc ListProgramTraces(QueryRequest) returns (JsonResponse);
   // Twin Cloud SaaS (mirrors /v1/twins/*)
   rpc ListTwins(Empty) returns (JsonResponse);
+  rpc GetTwinUsage(Empty) returns (JsonResponse);
   rpc GetTwin(EntityIdRequest) returns (JsonResponse);
   rpc GetTwinHistory(EntityIdRequest) returns (JsonResponse);
   rpc SyncTwin(QueryRequest) returns (JsonResponse);

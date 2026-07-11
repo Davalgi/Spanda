@@ -180,6 +180,20 @@ impl SpandaClient {
         Ok(AssuranceReport::from_api(value))
     }
 
+    /// Fetch loaded or requested program source text.
+    pub fn program_source(&self, file: Option<&str>) -> SpandaResult<Value> {
+        let path = match file {
+            Some(name) if !name.is_empty() => {
+                format!(
+                    "/v1/programs/source?file={}",
+                    Self::percent_encode_query(name)
+                )
+            }
+            _ => "/v1/programs/source".to_string(),
+        };
+        self.request("GET", &path, None, false)
+    }
+
     /// Diagnose a program or `.trace` file.
     pub fn diagnose(&self, trace_or_file: &str) -> SpandaResult<DiagnosisReport> {
         let body = Self::program_body(trace_or_file);
@@ -953,6 +967,11 @@ impl SpandaClient {
     /// List Twin Cloud mission twin snapshots (`GET /v1/twins`).
     pub fn list_twins(&self) -> SpandaResult<Value> {
         self.request("GET", "/v1/twins", None, false)
+    }
+
+    /// Per-tenant Twin Cloud usage meters (`GET /v1/twins/usage`).
+    pub fn get_twin_usage(&self) -> SpandaResult<Value> {
+        self.request("GET", "/v1/twins/usage", None, false)
     }
 
     /// Fetch latest Twin Cloud snapshot (`GET /v1/twins/{id}`).

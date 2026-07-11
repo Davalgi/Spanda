@@ -92,6 +92,20 @@ impl GrpcClient {
         Self::parse_json(resp.into_inner().json)
     }
 
+    /// Fetch program source via `GetProgramSource`.
+    pub async fn program_source(&mut self, file: Option<&str>) -> SpandaResult<Value> {
+        let query = file
+            .filter(|name| !name.is_empty())
+            .map(|name| format!("file={name}"))
+            .unwrap_or_default();
+        let resp = self
+            .inner
+            .get_program_source(QueryRequest { query })
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
     /// Run program simulation via `RunProgramSimulation`.
     pub async fn run_simulation(&mut self, file: &str, execute: bool) -> SpandaResult<Value> {
         let body = Self::program_body(file, serde_json::json!({ "execute": execute }));
@@ -971,6 +985,16 @@ impl GrpcClient {
         let resp = self
             .inner
             .list_twins(spanda_v1::Empty {})
+            .await
+            .map_err(|e| SpandaError::connection(e.to_string()))?;
+        Self::parse_json(resp.into_inner().json)
+    }
+
+    /// Per-tenant Twin Cloud usage meters via `GetTwinUsage`.
+    pub async fn get_twin_usage(&mut self) -> SpandaResult<Value> {
+        let resp = self
+            .inner
+            .get_twin_usage(spanda_v1::Empty {})
             .await
             .map_err(|e| SpandaError::connection(e.to_string()))?;
         Self::parse_json(resp.into_inner().json)

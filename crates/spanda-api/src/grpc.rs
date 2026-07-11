@@ -1091,6 +1091,16 @@ impl ControlCenter for GrpcControlCenter {
             .map(Response::new)
     }
 
+    async fn get_program_source(
+        &self,
+        request: Request<QueryRequest>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        let query = request.into_inner().query;
+        self.with_state(|state| crate::sdk_ops::program_source_json(state, &query))
+            .map(Response::new)
+    }
+
     async fn get_trust_program(
         &self,
         request: Request<QueryRequest>,
@@ -2018,6 +2028,15 @@ impl ControlCenter for GrpcControlCenter {
     async fn list_twins(&self, request: Request<Empty>) -> Result<Response<JsonResponse>, Status> {
         self.guard_request(&request)?;
         self.with_state(crate::twin_cloud::list_twins_json)
+            .map(Response::new)
+    }
+
+    async fn get_twin_usage(
+        &self,
+        request: Request<Empty>,
+    ) -> Result<Response<JsonResponse>, Status> {
+        self.guard_request(&request)?;
+        self.with_state(crate::twin_cloud::get_twin_usage_json)
             .map(Response::new)
     }
 
