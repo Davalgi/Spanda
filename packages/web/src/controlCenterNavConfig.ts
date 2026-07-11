@@ -72,7 +72,17 @@ export const CONTROL_CENTER_NAV_GROUPS: NavGroup[] = [
   {
     id: "analytics",
     label: "Analytics & domains",
-    tabs: ["analytics", "adas", "humans", "smart-spaces"],
+    tabs: [
+      "analytics",
+      "adas",
+      "humans",
+      "smart-spaces",
+      "sar",
+      "healthcare",
+      "warehouse",
+      "agriculture",
+      "maritime",
+    ],
   },
   {
     id: "admin",
@@ -107,14 +117,20 @@ export const TAB_DESCRIPTIONS: Partial<Record<ControlCenterTab, string>> = {
   executive: "Cross-domain KPI scorecard for leadership dashboards.",
   analytics: "What-if, mission risk, trust graph, and differentiation analytics.",
   twins: "Twin Cloud registry — persisted mission twin snapshots.",
-  traceability: "Device trust and logical name mapping for audit chains.",
+  traceability:
+    "Capability and hardware traceability matrix, entity chain, and device pool mapping.",
   adas: "ADAS vehicle health, trust, readiness, and OTA status.",
   humans: "Operators, wearables, HRI sessions, and mission approvals.",
   "smart-spaces": "Smart building facilities, zones, energy, and occupancy.",
+  sar: "Search & Rescue — remote expert, mission approve, AR sessions, continuity.",
+  healthcare: "Connected healthcare — wearables, human readiness, medical compliance.",
+  warehouse: "Warehouse automation — fleet delivery, pick missions, continuity.",
+  agriculture: "Agriculture — field fleet map and readiness trends.",
+  maritime: "Maritime — fleet map, incidents, and pre-departure readiness.",
   entities: "Unified entity graph — browse, search, and inspect relationships.",
   administration: "API keys, users, alert channels, and integrations.",
   about: "Platform, UI, desktop, REST, and gRPC component versions for this instance.",
-  "digital-thread": "Capability-to-device graph across the stack.",
+  "digital-thread": "Lifecycle graph (requirement → retirement) with device overlays and phase-path query.",
   telemetry: "Live WebSocket telemetry, traces, and alert stream.",
   trends: "Readiness history slopes and forecasted mission risk.",
   continuity: "Takeover, delegation, and mission pause during continuity events.",
@@ -132,6 +148,11 @@ export function tabLabel(name: ControlCenterTab): string {
   if (name === "adas") return "ADAS";
   if (name === "humans") return "Humans";
   if (name === "smart-spaces") return "Smart Spaces";
+  if (name === "sar") return "SAR";
+  if (name === "healthcare") return "Healthcare";
+  if (name === "warehouse") return "Warehouse";
+  if (name === "agriculture") return "Agriculture";
+  if (name === "maritime") return "Maritime";
   if (name === "sre") return "SRE";
   if (name === "ota") return "OTA";
   if (name === "twins") return "Twin Cloud";

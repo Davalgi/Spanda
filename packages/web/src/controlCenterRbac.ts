@@ -36,6 +36,11 @@ export type ControlCenterTab =
   | "adas"
   | "humans"
   | "smart-spaces"
+  | "sar"
+  | "healthcare"
+  | "warehouse"
+  | "agriculture"
+  | "maritime"
   | "executive"
   | "analytics"
   | "twins"
@@ -103,6 +108,11 @@ export const TAB_ACCESS: Record<ControlCenterTab, string[]> = {
   adas: ["*"],
   humans: ["*"],
   "smart-spaces": ["*"],
+  sar: ["*"],
+  healthcare: ["*"],
+  warehouse: ["*"],
+  agriculture: ["*"],
+  maritime: ["*"],
   executive: ["*"],
   administration: ["administrator"],
   about: ["*"],

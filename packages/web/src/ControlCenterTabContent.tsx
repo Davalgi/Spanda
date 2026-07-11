@@ -4,6 +4,7 @@ import type { DeviceEntry, PluginPanelEntry } from "./controlCenterTypes";
 import { AboutPanel } from "./AboutPanel";
 import { AdministrationPanel } from "./AdministrationPanel";
 import { AdasPanel } from "./AdasPanel";
+import { AgriculturePanel } from "./AgriculturePanel";
 import { AlertsPanel } from "./AlertsPanel";
 import { AnalyticsPanel } from "./AnalyticsPanel";
 import { AssuranceDiagnosisPanel } from "./AssuranceDiagnosisPanel";
@@ -22,8 +23,10 @@ import { EntitiesPanel } from "./EntitiesPanel";
 import { ExecutivePanel } from "./ExecutivePanel";
 import { FleetPanel } from "./FleetPanel";
 import { HealthPanel } from "./HealthPanel";
+import { HealthcarePanel } from "./HealthcarePanel";
 import { HumansPanel } from "./HumansPanel";
 import { MappingPanel } from "./MappingPanel";
+import { MaritimePanel } from "./MaritimePanel";
 import { MissionViewPanel } from "./MissionViewPanel";
 import { OperatorPanel } from "./OperatorPanel";
 import { OtaPanel } from "./OtaPanel";
@@ -33,12 +36,14 @@ import { RecoveryPanel } from "./RecoveryPanel";
 import { MeshPanel } from "./MeshPanel";
 import { ReplayPanel } from "./ReplayPanel";
 import { ResilientAutonomyPanel } from "./ResilientAutonomyPanel";
+import { SarPanel } from "./SarPanel";
 import { SecurityPanel } from "./SecurityPanel";
 import { SimulationPanel } from "./SimulationPanel";
 import { SmartSpacesPanel } from "./SmartSpacesPanel";
 import { SrePanel } from "./SrePanel";
 import { TraceabilityPanel } from "./TraceabilityPanel";
 import { TwinsPanel } from "./TwinsPanel";
+import { WarehousePanel } from "./WarehousePanel";
 import { ControlCenterTelemetryPanel } from "./ControlCenterTelemetryPanel";
 import { ReadinessTrendsPanel } from "./ReadinessTrendsPanel";
 import { ContinuityPanel } from "./ContinuityPanel";
@@ -361,6 +366,61 @@ export function ControlCenterTabContent({
     case "smart-spaces":
       return <SmartSpacesPanel baseUrl={baseUrl} />;
 
+    case "sar":
+      return (
+        <SarPanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          onNavigate={onNavigate}
+        />
+      );
+
+    case "healthcare":
+      return (
+        <HealthcarePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          onNavigate={onNavigate}
+        />
+      );
+
+    case "warehouse":
+      return (
+        <WarehousePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          onNavigate={onNavigate}
+        />
+      );
+
+    case "agriculture":
+      return (
+        <AgriculturePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          onNavigate={onNavigate}
+        />
+      );
+
+    case "maritime":
+      return (
+        <MaritimePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+          onNavigate={onNavigate}
+        />
+      );
+
     case "digital-thread":
       return <DigitalThreadPanel baseUrl={baseUrl} />;
 
@@ -396,7 +456,14 @@ export function ControlCenterTabContent({
       return <PlaygroundPanel baseUrl={baseUrl} />;
 
     case "marketplace":
-      return <MarketplacePanel baseUrl={baseUrl} />;
+      return (
+        <MarketplacePanel
+          baseUrl={baseUrl}
+          authHeaders={authHeaders}
+          can={can}
+          hasToken={hasToken}
+        />
+      );
 
     case "chaos":
       return (
