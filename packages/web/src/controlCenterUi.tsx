@@ -45,6 +45,38 @@ export function CcBadge({ tone = "neutral", children }: BadgeProps) {
   return <span className={`cc-badge tone-${tone}`}>{children}</span>;
 }
 
+type NoticeProps = {
+  tone?: CcTone;
+  title: string;
+  children?: ReactNode;
+};
+
+/** Inline honesty / provenance banner for composite or simulated data. */
+export function CcNotice({ tone = "info", title, children }: NoticeProps) {
+  // Render a compact provenance banner so simulated/composite views stay honest.
+  //
+  // Parameters:
+  // - `tone` — visual severity (`info` | `warn` | …)
+  // - `title` — short headline
+  // - `children` — optional detail copy
+  //
+  // Returns:
+  // Banner element.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // <CcNotice tone="warn" title="Simulated">Seeded occupancy</CcNotice>
+
+  return (
+    <div className={`cc-notice tone-${tone}`} role="note">
+      <strong className="cc-notice-title">{title}</strong>
+      {children ? <div className="cc-notice-body">{children}</div> : null}
+    </div>
+  );
+}
+
 type EmptyStateProps = {
   title: string;
   description?: string;

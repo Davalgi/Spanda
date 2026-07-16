@@ -24,6 +24,7 @@ const CONFIG = {
     { tab: "continuity" as const, label: "Continuity" },
     { tab: "diagnosis" as const, label: "Diagnosis" },
   ],
+  domainTags: ["sar", "search", "rescue", "remote-expert"],
 };
 
 const EXTRA_LOADS = [

@@ -36,8 +36,23 @@ pub fn list_reflex(state: &ControlCenterState) -> HttpResponse {
     }))
 }
 
-/// GET /v1/autonomy/reflex/traces — reflex trace catalog from runtime buffer + defaults.
+/// GET /v1/autonomy/reflex/traces — runtime traces only; catalog examples stay separate.
 pub fn list_reflex_traces(state: &ControlCenterState) -> HttpResponse {
+    // Return recorded runtime traces, or an empty list plus non-live catalog examples.
+    //
+    // Parameters:
+    // - `state` — Control Center state (entity registry for catalog entity ids)
+    //
+    // Returns:
+    // JSON with `traces` (runtime only), `source` (`runtime` | `none`), and
+    // `catalog_examples` when no runtime buffer entries exist.
+    //
+    // Options:
+    // None.
+    //
+    // Example:
+    // let response = list_reflex_traces(state);
+
     let registry = state.entity_registry();
     let entity_id = registry
         .entities
@@ -46,15 +61,20 @@ pub fn list_reflex_traces(state: &ControlCenterState) -> HttpResponse {
         .cloned()
         .unwrap_or_else(|| "platform".into());
     let recorded = spanda_autonomy::list_recorded_reflex_traces();
+
+    // Prefer the live reflex buffer so the UI never treats catalog demos as events.
     if !recorded.is_empty() {
         return json_ok(&serde_json::json!({
             "version": API_VERSION,
             "traces": recorded,
             "source": "runtime",
+            "catalog_examples": [],
         }));
     }
+
+    // Build illustrative catalog rows for docs/UI toggles — not returned as `traces`.
     let actions = list_reflex_actions();
-    let traces: Vec<ReflexTrace> = ["emergency", "obstacle", "thermal"]
+    let catalog_examples: Vec<ReflexTrace> = ["emergency", "obstacle", "thermal"]
         .iter()
         .filter_map(|hint| {
             evaluate_reflex_priority(&actions, hint).map(|action| ReflexTrace {
@@ -69,8 +89,9 @@ pub fn list_reflex_traces(state: &ControlCenterState) -> HttpResponse {
         .collect();
     json_ok(&serde_json::json!({
         "version": API_VERSION,
-        "traces": traces,
-        "source": "catalog",
+        "traces": [],
+        "source": "none",
+        "catalog_examples": catalog_examples,
     }))
 }
 

@@ -23,6 +23,7 @@ const CONFIG = {
     { tab: "continuity" as const, label: "Continuity" },
     { tab: "readiness" as const, label: "Readiness" },
   ],
+  domainTags: ["warehouse", "delivery", "pick", "amr"],
 };
 
 const EXTRA_LOADS = [

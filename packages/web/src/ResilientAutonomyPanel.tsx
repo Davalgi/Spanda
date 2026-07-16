@@ -1,7 +1,14 @@
 /** Cognitive & Resilience Control Center panel — functional domain live views. @module */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import {
+  CcBadge,
+  CcEmptyState,
+  CcMiniStats,
+  CcNotice,
+  CcSection,
+} from "./controlCenterUi";
+import { ControlCenterDataTable } from "./controlCenterDataTable";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
@@ -23,6 +30,15 @@ type MaintenanceWindow = {
   start: string;
   end: string;
   activities: string[];
+};
+
+type TraceRow = {
+  reflex_id?: string;
+  entity_id?: string;
+  trigger?: string;
+  action_taken?: string;
+  timestamp?: string;
+  priority?: number | string;
 };
 
 const MEMORY_CATEGORIES: MemoryCategoryName[] = [
@@ -49,6 +65,12 @@ async function fetchJson(
   return response.json();
 }
 
+function sourceTone(source: string): "ok" | "warn" | "info" | "neutral" {
+  if (source === "runtime" || source === "program") return "ok";
+  if (source === "platform_defaults" || source === "catalog" || source === "none") return "warn";
+  return "neutral";
+}
+
 export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
   // Render Cognitive & Resilience domain panels from live Control Center REST.
   //
@@ -65,11 +87,16 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
   // Example:
   // <ResilientAutonomyPanel baseUrl={url} authHeaders={headers} />
 
-  const [reflexes, setReflexes] = useState<unknown[]>([]);
-  const [traces, setTraces] = useState<unknown[]>([]);
-  const [homeostasis, setHomeostasis] = useState<unknown[]>([]);
-  const [quarantined, setQuarantined] = useState<unknown[]>([]);
-  const [attention, setAttention] = useState<unknown[]>([]);
+  const [reflexes, setReflexes] = useState<Record<string, unknown>[]>([]);
+  const [traces, setTraces] = useState<TraceRow[]>([]);
+  const [catalogExamples, setCatalogExamples] = useState<TraceRow[]>([]);
+  const [traceSource, setTraceSource] = useState<string>("none");
+  const [showCatalog, setShowCatalog] = useState(false);
+  const [homeostasis, setHomeostasis] = useState<Record<string, unknown>[]>([]);
+  const [homeoPolicySource, setHomeoPolicySource] = useState<string>("platform_defaults");
+  const [quarantined, setQuarantined] = useState<Record<string, unknown>[]>([]);
+  const [attention, setAttention] = useState<Record<string, unknown>[]>([]);
+  const [attentionPolicySource, setAttentionPolicySource] = useState<string>("platform_defaults");
   const [memory, setMemory] = useState<unknown[]>([]);
   const [memoryByCategory, setMemoryByCategory] = useState<
     Partial<Record<MemoryCategoryName, CategoryRow[]>>
@@ -109,14 +136,32 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         })),
       ]);
       setReflexes(asArray((reflexPayload as { reflexes?: unknown }).reflexes));
-      setTraces(asArray((tracePayload as { traces?: unknown }).traces));
+      const traceBody = tracePayload as {
+        traces?: unknown;
+        catalog_examples?: unknown;
+        source?: string;
+      };
+      setTraces(asArray<TraceRow>(traceBody.traces));
+      setCatalogExamples(asArray<TraceRow>(traceBody.catalog_examples));
+      setTraceSource(typeof traceBody.source === "string" ? traceBody.source : "none");
       setHomeostasis(asArray((homeoPayload as { reports?: unknown }).reports));
+      setHomeoPolicySource(
+        typeof (homeoPayload as { policy_source?: string }).policy_source === "string"
+          ? (homeoPayload as { policy_source: string }).policy_source
+          : "platform_defaults",
+      );
       setQuarantined(asArray((immunityPayload as { quarantined?: unknown }).quarantined));
       const attentionWindow = (attentionPayload as { attention?: { items?: unknown } }).attention;
       setAttention(asArray(attentionWindow?.items));
+      setAttentionPolicySource(
+        typeof (attentionPayload as { policy_source?: string }).policy_source === "string"
+          ? (attentionPayload as { policy_source: string }).policy_source
+          : "platform_defaults",
+      );
       setMemory(asArray((memoryPayload as { memory?: unknown }).memory));
-      const byCategory = (memoryPayload as { by_category?: Partial<Record<MemoryCategoryName, CategoryRow[]>> })
-        .by_category;
+      const byCategory = (
+        memoryPayload as { by_category?: Partial<Record<MemoryCategoryName, CategoryRow[]>> }
+      ).by_category;
       setMemoryByCategory(byCategory ?? {});
       setMaintenanceWindows(
         asArray((maintenancePayload as { windows?: MaintenanceWindow[] }).windows),
@@ -164,11 +209,13 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
     void refresh();
   }, [refresh]);
 
-  useRegisterTabRefresh("resilient-autonomy", refresh);
+  useRegisterTabRefresh(refresh);
 
   const categoryRows = useMemo(() => {
     return memoryByCategory[memoryCategory] ?? [];
   }, [memoryByCategory, memoryCategory]);
+
+  const visibleTraces = showCatalog && traces.length === 0 ? catalogExamples : traces;
 
   if (loading && !reflexes.length && !error) {
     return (
@@ -181,9 +228,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
     );
   }
 
-  const unstableCount = homeostasis.filter(
-    (row) => typeof row === "object" && row && (row as { stable?: boolean }).stable === false,
-  ).length;
+  const unstableCount = homeostasis.filter((row) => row.stable === false).length;
 
   const autonomyProfile = entityAutonomy?.autonomy as Record<string, unknown> | undefined;
   const damageRisk = autonomyProfile?.damage_risk;
@@ -197,8 +242,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         <h2>Cognitive & Resilience</h2>
         <p className="cc-panel-subtitle">
           Functional architecture view — reflex & safety, attention, homeostasis, platform immunity,
-          operational memory, damage risk, and recovery confidence. Organized by responsibility
-          domain, not implementation layer.
+          operational memory, damage risk, and recovery confidence.
         </p>
       </header>
 
@@ -207,6 +251,16 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
           <p className="cc-muted">{error}</p>
         </CcSection>
       ) : null}
+
+      {(homeoPolicySource === "platform_defaults" ||
+        attentionPolicySource === "platform_defaults" ||
+        traceSource !== "runtime") && (
+        <CcNotice tone="warn" title="Showing live APIs — some sections use defaults until a program runs">
+          Load <code>--program</code> with autonomy policy blocks and trigger reflexes (or{" "}
+          <code>spanda reflex trace …</code>) for runtime traces. Policy badges below mark{" "}
+          <code>program</code> vs <code>platform_defaults</code>.
+        </CcNotice>
+      )}
 
       <CcMiniStats
         items={[
@@ -225,37 +279,205 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         title="Strategic Planning"
         hint="Governance, deployment profiles, and entity inventory — mission planning context."
       >
-        <pre className="cc-code-block">{JSON.stringify(strategicPlanning, null, 2)}</pre>
         <p className="cc-muted">Entities in registry: {entityCount}</p>
+        {strategicPlanning ? (
+          <ControlCenterDataTable
+            rows={[
+              {
+                key: "entities",
+                label: "Entity inventory",
+                value: String(entityCount),
+              },
+              {
+                key: "governance",
+                label: "Governance payload",
+                value: strategicPlanning.governance ? "loaded" : "unavailable",
+              },
+              {
+                key: "profiles",
+                label: "Deployment profiles",
+                value: strategicPlanning.deployment_profiles ? "loaded" : "unavailable",
+              },
+            ]}
+            rowKey={(row) => String(row.key)}
+            columns={[
+              { key: "label", header: "Signal", render: (row) => String(row.label) },
+              { key: "value", header: "Status", render: (row) => String(row.value) },
+            ]}
+          />
+        ) : (
+          <CcEmptyState title="No strategic planning data" />
+        )}
       </CcSection>
 
       <CcSection
-        title="Reflex Events"
-        hint="Reflex & Safety domain — layer-0 safety actions from /v1/autonomy/reflex."
+        title="Reflex catalog"
+        hint="Platform reflex actions from GET /v1/autonomy/reflex (definitions, not events)."
       >
-        <pre className="cc-code-block">{JSON.stringify(reflexes.slice(0, 5), null, 2)}</pre>
-        <p className="cc-muted">Recent traces: {traces.length}</p>
+        {reflexes.length === 0 ? (
+          <CcEmptyState title="No reflex actions registered" />
+        ) : (
+          <ControlCenterDataTable
+            rows={reflexes.slice(0, 20)}
+            rowKey={(row, index) => String(row.id ?? index)}
+            columns={[
+              { key: "id", header: "ID", render: (row) => String(row.id ?? "—") },
+              { key: "trigger", header: "Trigger", render: (row) => String(row.trigger ?? "—") },
+              { key: "action", header: "Action", render: (row) => String(row.action ?? "—") },
+              {
+                key: "priority",
+                header: "Priority",
+                render: (row) => String(row.priority ?? "—"),
+              },
+            ]}
+          />
+        )}
+      </CcSection>
+
+      <CcSection
+        title="Reflex events"
+        hint="Runtime traces only — catalog examples stay opt-in."
+        actions={
+          <>
+            <CcBadge tone={sourceTone(traceSource)}>source: {traceSource}</CcBadge>
+            {catalogExamples.length > 0 && traces.length === 0 && (
+              <button type="button" className="secondary" onClick={() => setShowCatalog((v) => !v)}>
+                {showCatalog ? "Hide catalog examples" : "Show catalog examples"}
+              </button>
+            )}
+          </>
+        }
+      >
+        {showCatalog && traces.length === 0 && (
+          <p className="demo-hint">
+            Catalog examples are illustrative — not recorded runtime events.
+          </p>
+        )}
+        {visibleTraces.length === 0 ? (
+          <CcEmptyState
+            title="No runtime reflex traces"
+            description="Trigger a reflex on a running program, or enable catalog examples above."
+          />
+        ) : (
+          <ControlCenterDataTable
+            rows={visibleTraces}
+            rowKey={(row, index) => `${row.reflex_id ?? "r"}-${row.timestamp ?? index}`}
+            columns={[
+              { key: "reflex", header: "Reflex", render: (row) => String(row.reflex_id ?? "—") },
+              { key: "entity", header: "Entity", render: (row) => String(row.entity_id ?? "—") },
+              { key: "trigger", header: "Trigger", render: (row) => String(row.trigger ?? "—") },
+              {
+                key: "action",
+                header: "Action",
+                render: (row) => String(row.action_taken ?? "—"),
+              },
+              {
+                key: "time",
+                header: "Timestamp",
+                render: (row) => String(row.timestamp ?? "—"),
+              },
+            ]}
+          />
+        )}
       </CcSection>
 
       <CcSection
         title="Attention Queue"
         hint="Attention Engine — prioritized signals; mission and safety events surface first."
+        actions={
+          <CcBadge tone={sourceTone(attentionPolicySource)}>
+            policy: {attentionPolicySource}
+          </CcBadge>
+        }
       >
-        <pre className="cc-code-block">{JSON.stringify(attention.slice(0, 8), null, 2)}</pre>
+        {attention.length === 0 ? (
+          <CcEmptyState
+            title="Attention queue empty"
+            description="Events appear when entities emit attention signals under the active policy."
+          />
+        ) : (
+          <ControlCenterDataTable
+            rows={attention.slice(0, 20)}
+            rowKey={(row, index) => String(row.id ?? row.event_id ?? index)}
+            columns={[
+              {
+                key: "id",
+                header: "Event",
+                render: (row) => String(row.id ?? row.event_id ?? row.kind ?? "—"),
+              },
+              {
+                key: "priority",
+                header: "Priority",
+                render: (row) => String(row.priority ?? row.score ?? "—"),
+              },
+              {
+                key: "summary",
+                header: "Summary",
+                render: (row) => String(row.summary ?? row.message ?? row.kind ?? "—"),
+              },
+            ]}
+          />
+        )}
       </CcSection>
 
       <CcSection
         title="Homeostasis"
-        hint="Homeostasis Engine — stability reports from entity health, readiness, and scheduler telemetry."
+        hint="Stability reports from entity health, readiness, and scheduler telemetry."
+        actions={
+          <CcBadge tone={sourceTone(homeoPolicySource)}>policy: {homeoPolicySource}</CcBadge>
+        }
       >
-        <pre className="cc-code-block">{JSON.stringify(homeostasis.slice(0, 5), null, 2)}</pre>
+        {homeostasis.length === 0 ? (
+          <CcEmptyState title="No homeostasis reports" description="Register entities via --config." />
+        ) : (
+          <ControlCenterDataTable
+            rows={homeostasis.slice(0, 20)}
+            rowKey={(row, index) => String(row.entity_id ?? index)}
+            columns={[
+              {
+                key: "entity",
+                header: "Entity",
+                render: (row) => String(row.entity_id ?? "—"),
+              },
+              {
+                key: "stable",
+                header: "Stable",
+                render: (row) => String(row.stable ?? "—"),
+              },
+              {
+                key: "score",
+                header: "Score",
+                render: (row) => String(row.score ?? row.stability ?? "—"),
+              },
+            ]}
+          />
+        )}
       </CcSection>
 
       <CcSection
         title="Platform Immunity"
         hint="Trust-boundary violations requiring quarantine or isolation."
       >
-        <pre className="cc-code-block">{JSON.stringify(quarantined, null, 2)}</pre>
+        {quarantined.length === 0 ? (
+          <CcEmptyState title="Nothing quarantined" />
+        ) : (
+          <ControlCenterDataTable
+            rows={quarantined}
+            rowKey={(row, index) => String(row.entity_id ?? row.id ?? index)}
+            columns={[
+              {
+                key: "entity",
+                header: "Entity",
+                render: (row) => String(row.entity_id ?? row.id ?? "—"),
+              },
+              {
+                key: "reason",
+                header: "Reason",
+                render: (row) => String(row.reason ?? row.cause ?? "—"),
+              },
+            ]}
+          />
+        )}
       </CcSection>
 
       <CcSection
@@ -312,7 +534,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
       <CcSection
         title="Maintenance Schedule"
-        hint="Maintenance windows from GET /v1/autonomy/maintenance/windows (set via CLI or POST with Operate)."
+        hint="Maintenance windows from GET /v1/autonomy/maintenance/windows."
       >
         {maintenanceWindows.length === 0 ? (
           <CcEmptyState
@@ -347,9 +569,13 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
 
       <CcSection
         title="Damage Risk"
-        hint="Damage Risk Assessment — harm potential from first entity autonomy profile."
+        hint="Harm potential from the first entity autonomy profile (empty until entities exist)."
       >
-        <pre className="cc-code-block">{JSON.stringify(damageRisk ?? {}, null, 2)}</pre>
+        {damageRisk == null ? (
+          <CcEmptyState title="No entity autonomy profile" description="Register entities via --config." />
+        ) : (
+          <pre className="cc-code-block">{JSON.stringify(damageRisk, null, 2)}</pre>
+        )}
       </CcSection>
 
       <CcSection
@@ -361,17 +587,21 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
           {recoveryConfidence != null ? `${(recoveryConfidence * 100).toFixed(0)}%` : "—"}
           {preferredStrategy ? ` · Preferred strategy: ${preferredStrategy}` : ""}
         </p>
-        <pre className="cc-code-block">
-          {JSON.stringify(
-            {
-              platform_score: recoveryConfidence,
-              preferred_strategy: preferredStrategy ?? null,
-              entity_profile: entityAutonomy,
-            },
-            null,
-            2,
-          )}
-        </pre>
+        {entityAutonomy == null && recoveryConfidence == null ? (
+          <CcEmptyState title="No recovery metrics yet" />
+        ) : (
+          <pre className="cc-code-block">
+            {JSON.stringify(
+              {
+                platform_score: recoveryConfidence,
+                preferred_strategy: preferredStrategy ?? null,
+                entity_id: entityAutonomy?.entity_id ?? entityAutonomy?.id ?? null,
+              },
+              null,
+              2,
+            )}
+          </pre>
+        )}
       </CcSection>
     </div>
   );

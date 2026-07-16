@@ -39,7 +39,7 @@ Stable. Simulated-only paths must say so explicitly.
 | | Reflex, immunity, homeostasis, attention, fusion, memory, adaptive recovery, maintenance |
 | | CC Cognitive & Resilience tab **Stable**; live fusion **Stable-with-env-gate** (`SPANDA_LIVE_FUSION_SENSORS`) |
 | | [architecture](./cognitive-resilience-architecture.md) · [maturity](./cognitive-resilience-maturity.md) · CI: `scripts/cognitive_resilience_smoke.sh` · gate: `scripts/cognitive_resilience_stable_promotion_gate.sh` |
-| **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate); Control Center domain tabs for SAR, Healthcare, Warehouse, Agriculture, Maritime |
+| **Solution blueprints** | ADAS, Smart Spaces, Spatial Computing — Stable (organizational soak gates separate); Control Center **composite** domain tabs (SAR, Healthcare, Warehouse, Agriculture, Maritime) over shared fleet APIs — not dedicated domain backends |
 | **Autonomous Entity Mesh** | `spanda mesh *`, `/v1/mesh/*`, gRPC mesh RPCs (proto **1.0.15+**), live transport discovery, SDK mesh REST + gRPC (**0.5.9+**), Control Center **Entity Mesh** tab, `entity_mesh_smoke.sh` — **Stable** (implementation); organizational field pilot **in progress** — [entity-mesh-stable-promotion.md](./entity-mesh-stable-promotion.md) |
 
 ## v0.4.0 — Deploy & tooling
@@ -156,7 +156,7 @@ Stable. Simulated-only paths must say so explicitly.
 | Area | Description |
 |------|-------------|
 | **Human Interaction & Spatial Computing (H1–H6)** | **Stable** — H1–H6 platform APIs, Control Center Humans tab, `/v1/humans` + `/v1/hri/*`, promotion gate `hri_stable_promotion_gate.sh`; registry vendor packages remain **Experimental** — [stable-hardening-human-interaction.md](./stable-hardening-human-interaction.md) |
-| **Smart Spaces & Ambient Intelligence** | **Stable** — blueprint #15 feature-complete: simulation matrix, Control Center panels (REST + gRPC 1.0.5), live env I/O bridges, weighted readiness, CI `smart_spaces_promotion_gate.sh` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md) |
+| **Smart Spaces & Ambient Intelligence** | **Stable** — blueprint #15 feature-complete: simulation matrix, Control Center panels (REST + gRPC 1.0.5), live env I/O bridges, weighted readiness, CI `smart_spaces_promotion_gate.sh`. Detail telemetry may be **simulated** (`source` badges); live BACnet via `SPANDA_LIVE_BACNET=1` — [stable-hardening-smart-spaces.md](./stable-hardening-smart-spaces.md) · [solutions/smart-spaces.md](./solutions/smart-spaces.md) |
 | **Platform maturity (Phase A)** | **Stable** — `spanda graph`, `spanda deploy gate`, `spanda explain`, `spanda trust` — [platform-maturity-roadmap.md](./platform-maturity-roadmap.md) |
 | **Platform maturity (Phase B)** | **Stable** — threat model, mission diff, scorecard (`spanda score`), policy engine (`spanda verify --policy`, `readiness --policy`, `deploy gate --operational-policy`, runtime `--enforce-policy`) |
 | **Platform maturity (Phase C)** | **Stable** — chaos, readiness trends, resource estimation, compliance profiles, ADR (`spanda adr`) |

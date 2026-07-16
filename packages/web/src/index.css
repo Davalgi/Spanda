@@ -1431,6 +1431,70 @@ html:has(.cc-desktop-app) body {
   color: #8b949e;
 }
 
+.cc-notice {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #161b22;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.cc-notice-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.cc-notice-body {
+  color: #8b949e;
+}
+
+.cc-notice-body code {
+  font-size: 0.8em;
+}
+
+.cc-notice.tone-info {
+  border-color: #388bfd66;
+  background: #388bfd14;
+}
+
+.cc-notice.tone-warn {
+  border-color: #9e6a0366;
+  background: #9e6a0314;
+}
+
+.cc-notice.tone-ok {
+  border-color: #23863666;
+  background: #23863614;
+}
+
+.cc-notice.tone-danger {
+  border-color: #da363366;
+  background: #da363314;
+}
+
+.cc-facility-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 0.75rem;
+}
+
+.cc-facility-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+
+.cc-facility-picker select {
+  min-width: 10rem;
+}
+
 .cc-empty-state {
   padding: 2rem 1rem;
   text-align: center;

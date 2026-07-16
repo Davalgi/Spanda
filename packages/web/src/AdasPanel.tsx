@@ -1,6 +1,8 @@
+/** ADAS vehicle Control Center panel — live health/assurance with honest trust probing. @module */
+
 import { useCallback, useEffect, useState } from "react";
 import { AnalyticsSection } from "./AnalyticsSection";
-import { CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcMiniStats, CcNotice, CcSection } from "./controlCenterUi";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type DevicePool = {
@@ -23,11 +25,66 @@ type Props = {
   alertCount?: number;
 };
 
+const ADAS_TRUST_CANDIDATES = [
+  "spanda-gps",
+  "spanda-imu",
+  "spanda-camera",
+  "spanda-lidar",
+  "spanda-radar",
+];
+
+async function probeTrustPackage(
+  baseUrl: string,
+  names: string[],
+): Promise<{ name: string; body: Record<string, unknown> } | null> {
+  // Try configured / ADAS package names until one returns a trust payload.
+  //
+  // Parameters:
+  // - `baseUrl` — API base
+  // - `names` — candidate package names
+  //
+  // Returns:
+  // First successful trust package body, or null.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // const hit = await probeTrustPackage(url, ["spanda-gps"]);
+
+  for (const name of names) {
+    const res = await fetch(`${baseUrl}/v1/trust/package?name=${encodeURIComponent(name)}`);
+    if (!res.ok) continue;
+    const body = (await res.json()) as Record<string, unknown>;
+    if (body.trust_score != null || body.trust_level != null || body.ok === true) {
+      return { name, body };
+    }
+  }
+  return null;
+}
+
 export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
+  // Load ADAS-oriented health, assurance, diagnosis, OTA, and package trust.
+  //
+  // Parameters:
+  // - `baseUrl` — Control Center API base URL
+  // - `devicePool` — optional pool counts from the parent shell
+  // - `alertCount` — open alert count
+  //
+  // Returns:
+  // ADAS panel element.
+  //
+  // Options:
+  // None.
+  //
+  // Example:
+  // <AdasPanel baseUrl={url} devicePool={pool} />
+
   const [health, setHealth] = useState<Record<string, unknown> | null>(null);
   const [assurance, setAssurance] = useState<Record<string, unknown> | null>(null);
   const [diagnosis, setDiagnosis] = useState<Record<string, unknown> | null>(null);
   const [trust, setTrust] = useState<Record<string, unknown> | null>(null);
+  const [trustPackage, setTrustPackage] = useState<string | null>(null);
   const [otaStatus, setOtaStatus] = useState<Record<string, unknown> | null>(null);
   const [readiness, setReadiness] = useState<ReadinessImpact | null>(null);
   const [busy, setBusy] = useState(false);
@@ -37,18 +94,34 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const [healthRes, assuranceRes, diagnosisRes, trustRes, otaRes] = await Promise.all([
+      const [healthRes, assuranceRes, diagnosisRes, otaRes, dashRes] = await Promise.all([
         fetch(`${baseUrl}/v1/health/summary`),
         fetch(`${baseUrl}/v1/assurance/summary`),
         fetch(`${baseUrl}/v1/diagnosis/summary`),
-        fetch(`${baseUrl}/v1/trust/package?name=spanda-gps`),
         fetch(`${baseUrl}/v1/ota/status`),
+        fetch(`${baseUrl}/v1/dashboard`),
       ]);
       if (healthRes.ok) setHealth(await healthRes.json());
       if (assuranceRes.ok) setAssurance(await assuranceRes.json());
       if (diagnosisRes.ok) setDiagnosis(await diagnosisRes.json());
-      if (trustRes.ok) setTrust(await trustRes.json());
       if (otaRes.ok) setOtaStatus(await otaRes.json());
+
+      // Prefer package names discovered from the loaded device pool / dashboard.
+      const candidates = [...ADAS_TRUST_CANDIDATES];
+      if (dashRes.ok) {
+        const dash = (await dashRes.json()) as {
+          device_pool?: { devices?: Array<{ package?: string; name?: string }> };
+        };
+        for (const device of dash.device_pool?.devices ?? []) {
+          const pkg = device.package ?? device.name;
+          if (typeof pkg === "string" && pkg.length > 0 && !candidates.includes(pkg)) {
+            candidates.unshift(pkg);
+          }
+        }
+      }
+      const hit = await probeTrustPackage(baseUrl, candidates);
+      setTrust(hit?.body ?? null);
+      setTrustPackage(hit?.name ?? null);
     } catch (err) {
       setError(String(err));
     } finally {
@@ -83,13 +156,26 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
+      <CcNotice tone="info" title="ADAS composite — serve the ADAS blueprint for vehicle devices">
+        Health, assurance, diagnosis, and OTA are live fleet APIs. Trust probes the first package
+        found in the device pool (ADAS sensor candidates otherwise). Example:{" "}
+        <code>
+          spanda control-center serve --config examples/solutions/adas/spanda.toml --program
+          examples/solutions/adas/src/highway_drive.sd
+        </code>
+        .
+      </CcNotice>
+
       <CcMiniStats
         items={[
           { label: "Vehicle health", value: String(health?.overall_status ?? "—") },
           { label: "Sensor devices", value: devicePool?.total ?? 0 },
           { label: "Healthy sensors", value: devicePool?.healthy ?? 0 },
           { label: "Degraded", value: devicePool?.degraded ?? 0 },
-          { label: "Trust score", value: trustScore },
+          {
+            label: trustPackage ? `Trust (${trustPackage})` : "Trust score",
+            value: trustScore,
+          },
           { label: "Active alerts", value: alertCount },
         ]}
       />

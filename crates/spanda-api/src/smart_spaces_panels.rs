@@ -230,10 +230,17 @@ pub fn zone_environment_get(state: &ControlCenterState, zone_id: &str) -> HttpRe
     let temp = 21.0 + (seed % 10) as f64 * 0.3;
     let humidity = 40 + (seed % 25);
     let aq = 20 + (seed % 35);
+    // Label seed-derived readings so Control Center can badge them as simulated.
+    let source = if twin.is_some() {
+        "twin_profile"
+    } else {
+        "simulated"
+    };
     json_ok(&serde_json::json!({
         "version": "v1",
         "zone_id": zone_id,
         "zone": summarize_zone(zone),
+        "source": source,
         "readings": {
             "co2_ppm": co2,
             "temperature_c": temp,
@@ -292,6 +299,7 @@ pub fn energy_system_get(state: &ControlCenterState, system_id: &str) -> HttpRes
     json_ok(&serde_json::json!({
         "version": "v1",
         "system": summarize_energy(system),
+        "source": "simulated",
         "detail": detail,
     }))
 }

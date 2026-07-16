@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ControlCenterTab } from "./controlCenterRbac";
 import type { RbacAction } from "./controlCenterRbac";
-import { CcEmptyState, CcMiniStats, CcSection } from "./controlCenterUi";
+import { CcEmptyState, CcMiniStats, CcNotice, CcSection } from "./controlCenterUi";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
@@ -15,6 +15,8 @@ export type SolutionDomainConfig = {
   exampleProgram: string;
   deepLinks: { tab: ControlCenterTab; label: string }[];
   complianceProfile?: string;
+  /** Optional tags/keywords used to highlight domain-relevant missions. */
+  domainTags?: string[];
 };
 
 type Props = {
@@ -106,9 +108,29 @@ export function SolutionDomainPanel({
       ? (fleetMap?.robots as Record<string, unknown>[])
       : [];
 
+  const domainTags = (config.domainTags ?? [config.id]).map((tag) => tag.toLowerCase());
+
+  // Prefer missions that mention the domain tag; fall back to the full live queue.
+  const taggedMissions = missions.filter((row) => {
+    const haystack = JSON.stringify(row).toLowerCase();
+    return domainTags.some((tag) => haystack.includes(tag));
+  });
+  const missionRows = taggedMissions.length > 0 ? taggedMissions : missions;
+  const showingUnfiltered = taggedMissions.length === 0 && missions.length > 0;
+
   return (
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
+
+      <CcNotice tone="info" title="Composite solution view — shared fleet APIs, not a separate domain product">
+        This tab composes live <code>/v1/health</code>, missions, fleet map, and SRE data. Serve the
+        matching blueprint so the tables reflect {config.title} entities:{" "}
+        <code>
+          spanda control-center serve --config {config.exampleConfig} --program{" "}
+          {config.exampleProgram}
+        </code>
+        . Domain-specific extras below are only present when that config exposes them.
+      </CcNotice>
 
       <CcMiniStats
         items={[
@@ -122,7 +144,7 @@ export function SolutionDomainPanel({
                   ? "no"
                   : "—",
           },
-          { label: "Missions", value: missions.length },
+          { label: "Missions", value: missionRows.length },
           { label: "Approvals", value: approvals.length },
           { label: "Map pins", value: mapPins.length },
           { label: "Incidents", value: Number(sre?.open_incidents ?? sre?.incident_count ?? 0) },
@@ -130,13 +152,6 @@ export function SolutionDomainPanel({
       />
 
       <CcSection title={config.title} hint={config.hint}>
-        <p className="cc-section-hint">
-          Example:{" "}
-          <code>
-            spanda control-center serve --config {config.exampleConfig} --program{" "}
-            {config.exampleProgram}
-          </code>
-        </p>
         <div className="cc-action-bar" style={{ flexWrap: "wrap" }}>
           {config.deepLinks.map((link) => (
             <button key={link.tab} type="button" onClick={() => onNavigate(link.tab)}>
@@ -181,12 +196,22 @@ export function SolutionDomainPanel({
         )}
       </CcSection>
 
-      <CcSection title="Active missions">
-        {missions.length === 0 ? (
-          <CcEmptyState title="No operator missions" />
+      <CcSection
+        title="Active missions"
+        hint={
+          showingUnfiltered
+            ? `No missions tagged for ${config.id} — showing full operator queue from the loaded config.`
+            : `Missions matching ${domainTags.join(", ")} when present.`
+        }
+      >
+        {missionRows.length === 0 ? (
+          <CcEmptyState
+            title="No operator missions"
+            description={`Load ${config.exampleConfig} to populate this solution view.`}
+          />
         ) : (
           <ControlCenterDataTable
-            rows={missions.slice(0, 20)}
+            rows={missionRows.slice(0, 20)}
             rowKey={(row, index) => String(row.id ?? row.mission_id ?? index)}
             columns={[
               {
@@ -244,12 +269,51 @@ export function SolutionDomainPanel({
 
       {extraLoads.map((item) => {
         const data = extras[item.key];
+        const rows = Array.isArray(data)
+          ? (data as Record<string, unknown>[])
+          : Array.isArray(data?.items)
+            ? (data.items as Record<string, unknown>[])
+            : Array.isArray(data?.sessions)
+              ? (data.sessions as Record<string, unknown>[])
+              : Array.isArray(data?.humans)
+                ? (data.humans as Record<string, unknown>[])
+                : null;
         return (
-          <CcSection key={item.key} title={item.label}>
-            {data ? (
+          <CcSection
+            key={item.key}
+            title={item.label}
+            hint={`GET ${item.path} — empty unless the loaded blueprint exposes this endpoint.`}
+          >
+            {rows ? (
+              <ControlCenterDataTable
+                rows={rows.slice(0, 20)}
+                rowKey={(row, index) => String(row.id ?? row.name ?? index)}
+                columns={[
+                  {
+                    key: "id",
+                    header: "ID",
+                    render: (row) => String(row.id ?? row.name ?? "—"),
+                  },
+                  {
+                    key: "status",
+                    header: "Status",
+                    render: (row) => String(row.status ?? row.state ?? row.ready ?? "—"),
+                  },
+                  {
+                    key: "detail",
+                    header: "Detail",
+                    render: (row) =>
+                      String(row.summary ?? row.label ?? row.type ?? row.role ?? "—"),
+                  },
+                ]}
+              />
+            ) : data ? (
               <pre className="cc-action-result">{JSON.stringify(data, null, 2)}</pre>
             ) : (
-              <CcEmptyState title={`No ${item.label.toLowerCase()} data`} />
+              <CcEmptyState
+                title={`No ${item.label.toLowerCase()} data`}
+                description={`Serve with ${config.exampleConfig} or open the linked domain tab.`}
+              />
             )}
           </CcSection>
         );

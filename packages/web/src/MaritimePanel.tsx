@@ -23,6 +23,7 @@ const CONFIG = {
     { tab: "readiness" as const, label: "Readiness" },
     { tab: "alerts" as const, label: "Alerts" },
   ],
+  domainTags: ["maritime", "harbor", "vessel", "ship"],
 };
 
 const EXTRA_LOADS = [

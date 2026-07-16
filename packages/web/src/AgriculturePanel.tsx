@@ -23,6 +23,7 @@ const CONFIG = {
     { tab: "fleet" as const, label: "Fleet" },
     { tab: "telemetry" as const, label: "Telemetry" },
   ],
+  domainTags: ["agriculture", "field", "farm", "crop"],
 };
 
 const EXTRA_LOADS = [

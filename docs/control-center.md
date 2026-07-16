@@ -836,16 +836,23 @@ spanda control-center serve \
   --program examples/solutions/smart-spaces/smart-building/floor_readiness.sd
 ```
 
-The **Smart Spaces** tab (experimental) shows building and facility operations across residential,
-commercial, and campus deployments. See [solutions/smart-spaces.md](./solutions/smart-spaces.md).
+The **Smart Spaces** tab shows building and facility operations across residential, commercial, and
+campus deployments. See [solutions/smart-spaces.md](./solutions/smart-spaces.md).
 
-**Experimental** — Smart Spaces tab and panels:
+**Honesty:** Facility / zone / device **inventory** comes from `--config`. Occupancy, environment,
+and energy **detail readings** are often seed / zone-profile simulated unless a live twin or
+`SPANDA_LIVE_BACNET=1` bridge is configured — the UI badges `source: simulated|zone_profile|twin`.
+Floor map is a **schematic** tiled from zone inventory, not a CAD plan. Pick facility / zone /
+energy system from the Selection controls (no hardcoded demo IDs).
+
+**Smart Spaces tab and panels:**
 
 | Panel | Content |
 |-------|---------|
-| **Buildings** | Facility list, floor map, readiness rollup per building |
-| **Rooms & zones** | Zone tree, occupancy counts, ambient context |
-| **Occupancy** | Presence timeline, flow between zones |
+| **Selection** | Facility / zone / energy pickers from live summary inventory |
+| **Buildings** | Facility list, schematic floor map, readiness rollup per building |
+| **Rooms & zones** | Zone tree from config |
+| **Occupancy** | Presence timeline (badged when simulated) |
 | **Devices** | IoT inventory, gateway primary/backup role, battery quorum |
 | **Robots** | Vacuum, service, inspection robot status and missions |
 | **Wearables** | Linked wearables, health opt-in indicator |
@@ -1159,11 +1166,14 @@ The `@davalgi-spanda/web` Control Center panel includes:
 | **Playground** | In-browser WASM check/run; auto-loads server `--program` |
 | **Marketplace** | Plugin search/install/enable/disable + sandboxed panel host |
 | **Chaos** | Fault injection catalog and simulation (`/v1/chaos/*`) |
-| **SAR** | Search & Rescue — remote expert, mission approve, HRI sessions |
-| **Healthcare** | Wearables, human readiness, medical compliance |
-| **Warehouse** | Fleet delivery, pick missions, continuity |
-| **Agriculture** | Field fleet map and readiness trends |
-| **Maritime** | Fleet map, incidents, pre-departure readiness |
+| **SAR** | Composite solution view — remote expert, mission approve, HRI (serve SAR blueprint) |
+| **Healthcare** | Composite — wearables, human readiness, medical compliance |
+| **Warehouse** | Composite — fleet delivery, pick missions, continuity |
+| **Agriculture** | Composite — field fleet map and readiness trends |
+| **Maritime** | Composite — fleet map, incidents, pre-departure readiness |
+
+Solution domain tabs compose shared `/v1/*` fleet APIs (not separate domain products). Each tab
+banners the required `--config` / `--program` and filters missions by domain tags when present.
 
 **Enhancements on existing tabs:** SRE observability bridge (Grafana embed when `SPANDA_GRAFANA_URL`
 is set, Jaeger/trace links), config change history + deploy gate modal, bulk device

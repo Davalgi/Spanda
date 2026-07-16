@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Control Center honesty pass:** Cognitive & Resilience no longer presents catalog reflex rows as
+  live events (`traces` empty with `source: none` + opt-in `catalog_examples`); policy/source badges
+  for homeostasis/attention; Smart Spaces facility/zone/energy pickers from inventory with simulated
+  telemetry badges; solution domain tabs (SAR/Healthcare/Warehouse/Agriculture/Maritime) and ADAS
+  labeled as composite views over shared fleet APIs.
+
 ### Added
 
 - **Control Center solution domain tabs:** dedicated **SAR**, **Healthcare**, **Warehouse**,

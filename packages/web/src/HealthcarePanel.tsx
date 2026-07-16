@@ -25,6 +25,7 @@ const CONFIG = {
     { tab: "readiness" as const, label: "Readiness" },
   ],
   complianceProfile: "medical",
+  domainTags: ["healthcare", "medical", "wearable", "patient", "health"],
 };
 
 const EXTRA_LOADS = [
