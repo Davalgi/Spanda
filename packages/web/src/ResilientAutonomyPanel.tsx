@@ -9,6 +9,7 @@ import {
   CcSection,
 } from "./controlCenterUi";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
+import { useControlCenterDemoMode } from "./useControlCenterDemoMode";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
@@ -88,6 +89,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
   // <ResilientAutonomyPanel baseUrl={url} authHeaders={headers} />
 
   const [reflexes, setReflexes] = useState<Record<string, unknown>[]>([]);
+  const { demoMode } = useControlCenterDemoMode();
   const [traces, setTraces] = useState<TraceRow[]>([]);
   const [catalogExamples, setCatalogExamples] = useState<TraceRow[]>([]);
   const [traceSource, setTraceSource] = useState<string>("none");
@@ -215,7 +217,9 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
     return memoryByCategory[memoryCategory] ?? [];
   }, [memoryByCategory, memoryCategory]);
 
-  const visibleTraces = showCatalog && traces.length === 0 ? catalogExamples : traces;
+  // Demo mode (or an explicit toggle) shows catalog examples when the runtime buffer is empty.
+  const useCatalog = (demoMode || showCatalog) && traces.length === 0;
+  const visibleTraces = useCatalog ? catalogExamples : traces;
 
   if (loading && !reflexes.length && !error) {
     return (
@@ -252,15 +256,25 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         </CcSection>
       ) : null}
 
-      {(homeoPolicySource === "platform_defaults" ||
-        attentionPolicySource === "platform_defaults" ||
-        traceSource !== "runtime") && (
-        <CcNotice tone="warn" title="Showing live APIs — some sections use defaults until a program runs">
-          Load <code>--program</code> with autonomy policy blocks and trigger reflexes (or{" "}
-          <code>spanda reflex trace …</code>) for runtime traces. Policy badges below mark{" "}
-          <code>program</code> vs <code>platform_defaults</code>.
+      {demoMode && catalogExamples.length > 0 && traces.length === 0 ? (
+        <CcNotice tone="info" title="Demo mode — catalog reflex examples">
+          Showing illustrative catalog traces until runtime events are recorded. Turn Demo mode off
+          for an empty runtime-only queue, or load a program and trigger reflexes.
         </CcNotice>
-      )}
+      ) : null}
+      {!demoMode &&
+        (homeoPolicySource === "platform_defaults" ||
+          attentionPolicySource === "platform_defaults" ||
+          traceSource !== "runtime") && (
+          <CcNotice
+            tone="warn"
+            title="Showing live APIs — some sections use defaults until a program runs"
+          >
+            Load <code>--program</code> with autonomy policy blocks and trigger reflexes (or{" "}
+            <code>spanda reflex trace …</code>) for runtime traces. Policy badges below mark{" "}
+            <code>program</code> vs <code>platform_defaults</code>.
+          </CcNotice>
+        )}
 
       <CcMiniStats
         items={[
@@ -339,8 +353,10 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         hint="Runtime traces only — catalog examples stay opt-in."
         actions={
           <>
-            <CcBadge tone={sourceTone(traceSource)}>source: {traceSource}</CcBadge>
-            {catalogExamples.length > 0 && traces.length === 0 && (
+            <CcBadge tone={useCatalog ? "info" : sourceTone(traceSource)}>
+              {useCatalog ? "source: catalog (demo)" : `source: ${traceSource}`}
+            </CcBadge>
+            {!demoMode && catalogExamples.length > 0 && traces.length === 0 && (
               <button type="button" className="secondary" onClick={() => setShowCatalog((v) => !v)}>
                 {showCatalog ? "Hide catalog examples" : "Show catalog examples"}
               </button>
@@ -348,7 +364,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
           </>
         }
       >
-        {showCatalog && traces.length === 0 && (
+        {useCatalog && (
           <p className="demo-hint">
             Catalog examples are illustrative — not recorded runtime events.
           </p>
@@ -356,7 +372,7 @@ export function ResilientAutonomyPanel({ baseUrl, authHeaders }: Props) {
         {visibleTraces.length === 0 ? (
           <CcEmptyState
             title="No runtime reflex traces"
-            description="Trigger a reflex on a running program, or enable catalog examples above."
+            description="Trigger a reflex on a running program, or turn on Demo mode in the header."
           />
         ) : (
           <ControlCenterDataTable

@@ -5,6 +5,7 @@ import type { ControlCenterTab } from "./controlCenterRbac";
 import type { RbacAction } from "./controlCenterRbac";
 import { CcEmptyState, CcMiniStats, CcNotice, CcSection } from "./controlCenterUi";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
+import { useControlCenterDemoMode } from "./useControlCenterDemoMode";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 export type SolutionDomainConfig = {
@@ -42,6 +43,7 @@ export function SolutionDomainPanel({
   onNavigate,
   extraLoads = [],
 }: Props) {
+  const { demoMode } = useControlCenterDemoMode();
   // Hold composed fleet/mission/readiness/domain payloads for the solution dashboard.
   const [health, setHealth] = useState<Record<string, unknown> | null>(null);
   const [readiness, setReadiness] = useState<Record<string, unknown> | null>(null);
@@ -122,9 +124,17 @@ export function SolutionDomainPanel({
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcNotice tone="info" title="Composite solution view — shared fleet APIs, not a separate domain product">
-        This tab composes live <code>/v1/health</code>, missions, fleet map, and SRE data. Serve the
-        matching blueprint so the tables reflect {config.title} entities:{" "}
+      <CcNotice
+        tone={demoMode ? "info" : "warn"}
+        title={
+          demoMode
+            ? `Demo mode — ${config.title} composite showcase`
+            : "Composite solution view — shared fleet APIs, not a separate domain product"
+        }
+      >
+        This tab composes live <code>/v1/health</code>, missions, fleet map, and SRE data
+        {demoMode ? " for blueprint demos" : ""}. Serve the matching blueprint so tables reflect{" "}
+        {config.title} entities:{" "}
         <code>
           spanda control-center serve --config {config.exampleConfig} --program{" "}
           {config.exampleProgram}

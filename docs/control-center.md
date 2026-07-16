@@ -839,11 +839,15 @@ spanda control-center serve \
 The **Smart Spaces** tab shows building and facility operations across residential, commercial, and
 campus deployments. See [solutions/smart-spaces.md](./solutions/smart-spaces.md).
 
-**Honesty:** Facility / zone / device **inventory** comes from `--config`. Occupancy, environment,
-and energy **detail readings** are often seed / zone-profile simulated unless a live twin or
-`SPANDA_LIVE_BACNET=1` bridge is configured — the UI badges `source: simulated|zone_profile|twin`.
-Floor map is a **schematic** tiled from zone inventory, not a CAD plan. Pick facility / zone /
-energy system from the Selection controls (no hardcoded demo IDs).
+**Honesty / Demo mode:** Facility / zone / device **inventory** comes from `--config`. Occupancy,
+environment, and energy **detail readings** are often seed / zone-profile simulated unless a live
+twin or `SPANDA_LIVE_BACNET=1` bridge is configured — the UI badges
+`source: simulated|zone_profile|twin`. Floor map is a **schematic** tiled from zone inventory, not a
+CAD plan. Pick facility / zone / energy system from the Selection controls (no hardcoded demo IDs).
+
+Use the header **Demo mode** toggle (default on, persisted in `localStorage`) to keep simulated
+telemetry and Cognitive catalog examples visible for showcase; turn it off for runtime-only empty
+states.
 
 **Smart Spaces tab and panels:**
 
@@ -1128,6 +1132,19 @@ spanda control-center serve --config spanda.toml --program rover.sd
 ```
 
 ---
+
+## Demo mode
+
+The main header includes a **Demo mode** toggle (default **on**, stored as
+`spanda.control_center.demo_mode.v1` in `localStorage`):
+
+| On (default) | Off |
+|--------------|-----|
+| Cognitive catalog reflex examples fill an empty runtime buffer | Runtime traces only (empty until reflexes fire) |
+| Smart Spaces / solution notices describe intentional showcase data | Warn when detail telemetry is simulated / composite |
+| Shell banner: “Demo mode on…” | No demo banner |
+
+Turn Demo mode **off** for field/ops views that should never look populated by catalog or seed data.
 
 ## Control Center UI sections
 

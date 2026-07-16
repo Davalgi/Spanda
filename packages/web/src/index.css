@@ -2404,6 +2404,38 @@ html:has(.cc-desktop-app) body {
   color: #ffa198;
 }
 
+.cc-demo-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #161b22;
+  color: #c9d1d9;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cc-demo-toggle input {
+  margin: 0;
+  accent-color: #388bfd;
+}
+
+.cc-demo-toggle.is-on {
+  border-color: #388bfd66;
+  background: #388bfd14;
+}
+
+.cc-demo-banner {
+  margin: 0 1rem 0.75rem;
+  border-color: #388bfd66;
+  background: #388bfd14;
+  color: #c9d1d9;
+}
+
 .cc-offline-banner {
   border-color: #9e6a03;
   background: #9e6a0322;

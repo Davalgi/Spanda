@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CcBadge, CcEmptyState, CcMiniStats, CcNotice, CcSection } from "./controlCenterUi";
-import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 import { ControlCenterDataTable } from "./controlCenterDataTable";
+import { useControlCenterDemoMode } from "./useControlCenterDemoMode";
+import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type Props = {
   baseUrl: string;
@@ -35,6 +36,7 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
   // Example:
   // <SmartSpacesPanel baseUrl={url} />
 
+  const { demoMode } = useControlCenterDemoMode();
   const [summary, setSummary] = useState<Record<string, unknown> | null>(null);
   const [readiness, setReadiness] = useState<Record<string, unknown> | null>(null);
   const [facilityId, setFacilityId] = useState<string>("");
@@ -211,11 +213,19 @@ export function SmartSpacesPanel({ baseUrl }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcNotice tone="warn" title="Inventory is live — detail telemetry may be simulated">
-        Facility / zone / device lists come from <code>--config</code>. Occupancy, environment, and
-        energy readings are labeled when they use seed / zone-profile backends (not live sensors).
-        Live BACnet probes require <code>SPANDA_LIVE_BACNET=1</code>.
-      </CcNotice>
+      {demoMode ? (
+        <CcNotice tone="info" title="Demo mode — simulated detail telemetry is intentional">
+          Inventory is from <code>--config</code>. Occupancy, environment, and energy use seed /
+          zone-profile backends for showcase (badged below). Turn Demo mode off to treat those
+          sections as non-live. Live BACnet: <code>SPANDA_LIVE_BACNET=1</code>.
+        </CcNotice>
+      ) : (
+        <CcNotice tone="warn" title="Inventory is live — detail telemetry may be simulated">
+          Facility / zone / device lists come from <code>--config</code>. Occupancy, environment,
+          and energy readings are labeled when they use seed / zone-profile backends (not live
+          sensors). Live BACnet probes require <code>SPANDA_LIVE_BACNET=1</code>.
+        </CcNotice>
+      )}
 
       <CcMiniStats
         items={[

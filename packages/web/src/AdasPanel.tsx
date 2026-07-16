@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnalyticsSection } from "./AnalyticsSection";
 import { CcMiniStats, CcNotice, CcSection } from "./controlCenterUi";
+import { useControlCenterDemoMode } from "./useControlCenterDemoMode";
 import { useRegisterTabRefresh } from "./useControlCenterTabRefresh";
 
 type DevicePool = {
@@ -80,6 +81,7 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
   // Example:
   // <AdasPanel baseUrl={url} devicePool={pool} />
 
+  const { demoMode } = useControlCenterDemoMode();
   const [health, setHealth] = useState<Record<string, unknown> | null>(null);
   const [assurance, setAssurance] = useState<Record<string, unknown> | null>(null);
   const [diagnosis, setDiagnosis] = useState<Record<string, unknown> | null>(null);
@@ -156,7 +158,14 @@ export function AdasPanel({ baseUrl, devicePool, alertCount = 0 }: Props) {
     <div className="cc-panel">
       {error && <div className="error">{error}</div>}
 
-      <CcNotice tone="info" title="ADAS composite — serve the ADAS blueprint for vehicle devices">
+      <CcNotice
+        tone={demoMode ? "info" : "warn"}
+        title={
+          demoMode
+            ? "Demo mode — ADAS composite showcase"
+            : "ADAS composite — serve the ADAS blueprint for vehicle devices"
+        }
+      >
         Health, assurance, diagnosis, and OTA are live fleet APIs. Trust probes the first package
         found in the device pool (ADAS sensor candidates otherwise). Example:{" "}
         <code>

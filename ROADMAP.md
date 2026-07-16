@@ -1185,7 +1185,7 @@ parallel — see [docs/organizational-gates.md](docs/organizational-gates.md).
 |----------|-------|---------------------|-------------|
 | **P0** | Organizational gates | 30-day field soak, third-party security audit prep + sign-off ([#51](https://github.com/Davalgi/Spanda/issues/51)) | v1.0 blocker |
 | **P1** | Differentiation hardening | Mission contracts, explainability, decision audit trail — **Control Center + REST wired** (2026-07-04) | Stable |
-| **P1** | Control Center promotion | Playground auto-load, traceability matrix polish, structured assure/diagnose UI, Differentiation + Cognitive tabs — **shipped**; honesty pass (no silent catalog/sim demos; composite domain-tab labels) — **shipped** | Stable |
+| **P1** | Control Center promotion | Playground auto-load, traceability matrix polish, structured assure/diagnose UI, Differentiation + Cognitive tabs — **shipped**; honesty pass + global **Demo mode** toggle (catalog/sim showcase vs runtime-only) — **shipped** | Stable |
 | **P2** | Adoption blockers | VS Code Marketplace listing (PAT configured; Microsoft scanner review) | Stable (extension) |
 | **P2** | Live paths | Swarm quorum, live vehicle I/O, env-gated AI/IoT golden paths | Experimental → Stable |
 | **P2** | Compiler backend | Native codegen golden paths for selected HAL profiles | Experimental → Stable |

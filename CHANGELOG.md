@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   for homeostasis/attention; Smart Spaces facility/zone/energy pickers from inventory with simulated
   telemetry badges; solution domain tabs (SAR/Healthcare/Warehouse/Agriculture/Maritime) and ADAS
   labeled as composite views over shared fleet APIs.
+- **Control Center Demo mode:** global header toggle (persisted, default on) shows catalog reflex
+  examples and treats Smart Spaces / solution composite notices as intentional showcase; turn off
+  for runtime-only empty states.
 
 ### Added
 
