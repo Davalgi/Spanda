@@ -134,7 +134,7 @@
     "publish:marketplace": "node ../../scripts/vscode-publish-marketplace.mjs"
   },
   "dependencies": {
-    "vscode-languageclient": "^9.0.1"
+    "vscode-languageclient": "^10.1.0"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.6.1",
